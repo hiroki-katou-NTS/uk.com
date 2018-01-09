@@ -91,6 +91,11 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 		
 		List<KshmtFixedWorkTimeSet> newListEntity = new ArrayList<>();
 		
+		// sort asc start time
+		lstWorkingTimezone.stream()
+				.sorted((item1, item2) -> item1.getTimezone().getStart().v() - item2.getTimezone().getStart().v())
+				.collect(Collectors.toList());
+		
 		for (EmTimeZoneSet domain : lstWorkingTimezone) {
 			
 			KshmtFixedWorkTimeSetPK pk = new KshmtFixedWorkTimeSetPK(this.cid, this.worktimeCd, this.type,
@@ -98,7 +103,7 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 			
 			// get entity existed
 			KshmtFixedWorkTimeSet entity = lstEntity.stream()
-					.filter(item -> item.getKshmtFixedWorkTimeSetPK() == pk)
+					.filter(item -> item.getKshmtFixedWorkTimeSetPK().equals(pk))
 					.findFirst()
 					.orElse(new KshmtFixedWorkTimeSet(pk));
 			
@@ -151,6 +156,11 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 		
 		List<KshmtFixedOtTimeSet> newListEntity = new ArrayList<>();
 		
+		// sort asc start time
+		lstOTTimezone.stream()
+				.sorted((item1, item2) -> item1.getTimezone().getStart().v() - item2.getTimezone().getStart().v())
+				.collect(Collectors.toList());
+		
 		for (OverTimeOfTimeZoneSet domain : lstOTTimezone) {
 			
 			KshmtFixedOtTimeSetPK pk = new KshmtFixedOtTimeSetPK(this.cid, this.worktimeCd, this.type,
@@ -158,7 +168,7 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 			
 			// get entity existed
 			KshmtFixedOtTimeSet entity = lstEntity.stream()
-					.filter(item -> item.getKshmtFixedOtTimeSetPK() == pk)
+					.filter(item -> item.getKshmtFixedOtTimeSetPK().equals(pk))
 					.findFirst()
 					.orElse(new KshmtFixedOtTimeSet(pk));
 			

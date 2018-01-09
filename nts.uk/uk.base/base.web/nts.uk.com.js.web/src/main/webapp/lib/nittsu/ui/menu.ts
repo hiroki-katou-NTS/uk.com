@@ -196,6 +196,11 @@ module nts.uk.ui.menu {
      */
     function getProgram() {
         nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function(pg: any) {
+            // show program name on title of browser
+            ui.viewModelBuilt.add(() => {
+                ui._viewModel.kiban.programName(pg);
+            });
+            
             let $pgArea = $("#pg-area");
             $("<div/>").attr("id", "pg-name").text(pg).appendTo($pgArea);
             let $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
@@ -297,7 +302,7 @@ module nts.uk.ui.menu {
                 $titleDiv.append($titleImage);
                 
                 if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
-                    let fqpImage = nts.uk.request.specials.createPathToFile(t.imageFile);
+                    let fqpImage = nts.uk.request.file.pathToGet(t.imageFile);
                     // TODO: Show image
                     $titleImage.attr("src", fqpImage).show();
 //                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();

@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -43,17 +42,5 @@ public class TimeSheet extends DomainObject {
 	public void saveToMemento(TimeSheetSetMemento memento){
 		memento.setStartTime(this.startTime);
 		memento.setEndTime(this.endTime);
-	}
-	
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.dom.DomainObject#validate()
-	 */
-	@Override
-	public void validate(){
-		
-		// コアタイム時間帯.開始時刻 >= コアタイム時間帯.終了時刻 => Msg_770 
-		if (this.startTime.greaterThanOrEqualTo(this.endTime)) {
-			throw new BusinessException("Msg_770");
-		}
 	}
 }

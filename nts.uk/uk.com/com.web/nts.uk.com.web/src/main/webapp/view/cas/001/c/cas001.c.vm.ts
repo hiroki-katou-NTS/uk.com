@@ -54,7 +54,7 @@ module nts.uk.com.view.cas001.c.viewmodel {
                dialog.confirm({messageId: "Msg_64"}).ifYes(() => {
                     let roleObj = { roleIdDestination: self.roleCopy().roleId, roleIds: self.roleCodeArray };
                     service.update(roleObj).done(function(obj) {
-                        dialog.info({ messageId: "Msg_20" }).then(function() {
+                        dialog.info({ messageId: "Msg_926" }).then(function() {
                             close();
                         });
                     }).fail(function(res: any) {

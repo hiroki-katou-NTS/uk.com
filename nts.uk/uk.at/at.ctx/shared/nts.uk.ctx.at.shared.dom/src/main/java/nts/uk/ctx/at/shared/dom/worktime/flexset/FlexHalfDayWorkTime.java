@@ -45,6 +45,27 @@ public class FlexHalfDayWorkTime extends DomainObject {
 		if (this.restTimezone.isFixRestTime() && !this.isInFixedWork(this.restTimezone)) {
 			throw new BusinessException("Msg_755");
 		}
+		
+		// validate 770 for list work
+		this.workTimezone.getLstWorkingTimezone().stream().forEach(item -> {
+			item.getTimezone().validateRange("KMK003_86");
+		});
+		
+		// validate 770 for list ot
+		this.workTimezone.getLstOTTimezone().stream().forEach(item -> {
+			item.getTimezone().validateRange("KMK003_89");
+		});
+		
+		
+		if (this.restTimezone.isFixRestTime()) {
+			// validate Msg_770 for rest time
+			this.restTimezone.getFixedRestTimezone().getTimezones().stream().forEach(item -> {
+				item.validateRange("KMK003_20");
+			});
+			
+			// validate Msg_515 for rest time
+			this.restTimezone.getFixedRestTimezone().checkOverlap("KMK003_20");
+		}
 	}
 
 	/**

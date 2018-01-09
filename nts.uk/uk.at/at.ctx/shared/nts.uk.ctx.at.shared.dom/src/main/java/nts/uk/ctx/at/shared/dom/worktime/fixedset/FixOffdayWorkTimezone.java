@@ -62,7 +62,17 @@ public class FixOffdayWorkTimezone extends DomainObject {
 		this.checkRestTimezone();
 
 		// #Msg_515 - domain TimezoneOfFixedRestTimeSet - validate overlap
-		this.validOverlap();		
+		this.validOverlap();
+		
+		//validate 770 for work time
+		this.lstWorkTimezone.stream().forEach(item->{
+			item.getTimezone().validateRange("KMK003_90");
+		});
+		
+		// validate 770 for rest
+		this.restTimezone.getLstTimezone().stream().forEach(item -> {
+			item.validateRange("KMK003_21");
+		});
 	}
 
 	/**
@@ -82,10 +92,13 @@ public class FixOffdayWorkTimezone extends DomainObject {
 				break;
 			}
 			TimeZoneRounding next = iterator.next().getTimezone();
-			if (current.getEnd().greaterThanOrEqualTo(next.getStart())) {
-				throw new BusinessException("Msg_515");
+			if (current.getEnd().greaterThan(next.getStart())) {
+				throw new BusinessException("Msg_515","KMK003_90");
 			}
 		}
+		
+		//validate msg_515
+		this.restTimezone.validOverlap("KMK003_21");
 	}
 	
 	/**

@@ -123,6 +123,7 @@ module nts.uk.com.view.cmm018.shr {
             /** まとめて設定モード(0) - 申請個別設定モード(1)*/
             mode: number;
             lstAppType: Array<ApplicationType>;
+            overLap: boolean;
         }
         //ScreenI
         export class IData{
@@ -137,18 +138,21 @@ module nts.uk.com.view.cmm018.shr {
             /** 履歴から引き継ぐか、初めから作成するかを選択する*/
             copyDataFlag: boolean;
             lstAppType: Array<ApplicationType>;
+            overLap: boolean;
             constructor(startDate: string,
                 startDateOld: string,
                 check: number,
                 mode: number,
                 copyDataFlag: boolean,
-                lstAppType: Array<ApplicationType>){
+                lstAppType: Array<ApplicationType>,
+                overLap: boolean){
                     this.startDate = startDate;
                     this.startDateOld = startDateOld;
                     this.check = check;
                     this.mode = mode;
                     this.copyDataFlag = copyDataFlag;
                     this.lstAppType = lstAppType;
+                    this.overLap = overLap;
             }
         }
         //ScreenJ
@@ -552,7 +556,7 @@ module nts.uk.com.view.cmm018.shr {
                         lstC.push(obj);
                     }
                     if(obj.employRootAtr == 3){//anyItem
-                        lstC.push(obj);
+                        lstD.push(obj);
                     }
                 });
                 let sortByA =  _.orderBy(lstA, ["appTypeValue"], ["asc"]);

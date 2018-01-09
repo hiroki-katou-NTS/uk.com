@@ -28,7 +28,7 @@ public class WorkplaceInfo extends AggregateRoot {
 
 	/** The workplace code. */
 	//職場コード
-	private WorkplaceCode workplaceCode;
+	private WkpCode workplaceCode;
 
 	/** The workplace name. */
 	//職場名称

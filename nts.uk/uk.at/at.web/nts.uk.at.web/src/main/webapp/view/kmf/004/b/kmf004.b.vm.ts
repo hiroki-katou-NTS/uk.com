@@ -38,7 +38,7 @@ module nts.uk.at.view.kmf004 {
                 let self = this,
                     view: any = __viewContext.viewModel,
                     oldtab: TabModel = _.find(self.tabs(), t => t.active());
-
+                
                 // cancel action if tab self click
                 if (oldtab.id == tab.id) {
                     return;
@@ -55,12 +55,14 @@ module nts.uk.at.view.kmf004 {
                         self.currentTab('B');
                         if (!!view.viewmodelB && typeof view.viewmodelB.start == 'function') {
                             view.viewmodelB.start();
+                            nts.uk.ui.errors.clearAll();
                         }
                         break;
                     case 'C':
                         self.currentTab('C');
                         if (!!view.viewmodelC && typeof view.viewmodelC.start == 'function') {
                             view.viewmodelC.start();
+                            nts.uk.ui.errors.clearAll();
                         }
                         break;
                 }

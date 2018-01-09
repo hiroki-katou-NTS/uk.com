@@ -304,6 +304,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	
 	@Override
 	public ErrorFlag checkApprovalRoot(List<ApprovalPhase> listApprovalPhaseBefore, List<ApprovalPhase> listApprovalPhaseAfter) {
+		if(CollectionUtil.isEmpty(listApprovalPhaseBefore)|CollectionUtil.isEmpty(listApprovalPhaseAfter)){
+			return ErrorFlag.NO_APPROVER;
+		}
 		for(int i = 0; i < listApprovalPhaseBefore.size(); i++){
 			ApprovalPhase approvalPhaseBefore = listApprovalPhaseBefore.get(i);
 			ApprovalPhase approvalPhaseAfter = listApprovalPhaseBefore.get(i);

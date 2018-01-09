@@ -51,7 +51,7 @@ module nts.uk.pr.view.ksu006.c {
                 // Create Customs handle For event rened nts grid.
                 (<any>ko.bindingHandlers).rended = {
                 update: function(element: any, valueAccessor: any, allBindings: KnockoutAllBindingsAccessor) {
-                        let dataLog = ko.unwrap(valueAccessor());
+                        let dataLog = ko.unwrap(valueAccessor());                                       
                         if (!self.isFilterData) {
                             self.eventClick(dataLog);
                         }
@@ -98,9 +98,9 @@ module nts.uk.pr.view.ksu006.c {
                 _.forEach(self.dataLog(), item => {
                     $('#download-log-' + item.executeId).on('click', function() {
                         nts.uk.ui.block.grayout();
-                        
+                         
                         // download detail error
-                        service.downloadDetailError(item.executeId).done(function() {
+                        service.downloadDetailError(item.executeId).done(function() {                        
                             dfd.resolve();
                         }).fail(function(res: any) {
                             self.showMessageError(res);
@@ -125,6 +125,8 @@ module nts.uk.pr.view.ksu006.c {
                 // Completion: DONE(1)
                 if (self.isDone()) {
                     listState.push(1);
+                }else{
+                    nts.uk.ui.dialog.alertError({messageId: 'Msg_160'});
                 }
                 // Completion: INTERRUPTION(2)
                 if (self.isInterruption()) {
@@ -139,6 +141,10 @@ module nts.uk.pr.view.ksu006.c {
                 self.loadDataLog(true, listState).done(() => {
                     self.isFilterData = true;
                 });
+                
+                if (self.dataLog().length == 0) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_160' });
+                }  
             }
             
             /**

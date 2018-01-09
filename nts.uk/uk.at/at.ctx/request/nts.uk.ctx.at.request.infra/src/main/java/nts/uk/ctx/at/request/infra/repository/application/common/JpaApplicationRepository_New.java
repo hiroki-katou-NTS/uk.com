@@ -7,10 +7,9 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
 /**
@@ -35,6 +34,10 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ "AND c.appType = :applicationType "
 			+ "ORDER BY c.inputDate DESC";
 	private final String SELECT_BY_DATE = SELECT_FROM_APPLICATION + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
+	private final String SELECT_BEFORE_APPLICATION = SELECT_FROM_APPLICATION 
+			+ " AND a.appDate = :appDate "
+			+ " AND a.appType = :applicationType "
+			+ " AND a.prePostAtr = :prePostAtr ORDER BY a.inputDate DESC";
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class)
@@ -93,5 +96,15 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("endDate", endDate)
 				.getList(c -> c.toDomain());
 		return data;
+	}
+	@Override
+	public List<Application_New> getBeforeApplication(String companyId, GeneralDate appDate, GeneralDateTime inputDate,
+			int appType, int prePostAtr) {
+		return this.queryProxy().query(SELECT_BEFORE_APPLICATION, KrqdtApplication_New.class)
+				.setParameter("companyID", companyId)
+				.setParameter("appDate", appDate)
+				.setParameter("applicationType", appType)
+				.setParameter("prePostAtr", prePostAtr)				
+				.getList(c -> c.toDomain());
 	}
 }

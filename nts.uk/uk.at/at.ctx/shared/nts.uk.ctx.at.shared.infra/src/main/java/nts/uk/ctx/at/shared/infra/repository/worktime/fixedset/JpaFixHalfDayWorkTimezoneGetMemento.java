@@ -78,6 +78,7 @@ public class JpaFixHalfDayWorkTimezoneGetMemento implements FixHalfDayWorkTimezo
 			this.entity.setKshmtFixedWorkTimeSets(new ArrayList<>());
 		}
 		List<KshmtFixedWorkTimeSet> kshmtFixedWorkTimeSets = this.entity.getKshmtFixedWorkTimeSets().stream()
+				.sorted((item1, item2) -> item1.getTimeStr() - item2.getTimeStr())
 				.filter(entity -> entity.getKshmtFixedWorkTimeSetPK().getAmPmAtr() == this.type.value)
 				.collect(Collectors.toList());
 		// KSHMT_FIXED_OT_TIME_SET 残業時間の時間帯設定
@@ -85,6 +86,7 @@ public class JpaFixHalfDayWorkTimezoneGetMemento implements FixHalfDayWorkTimezo
 			this.entity.setKshmtFixedOtTimeSets(new ArrayList<>());
 		}
 		List<KshmtFixedOtTimeSet> kshmtFixedOtTimeSets = this.entity.getKshmtFixedOtTimeSets().stream()
+				.sorted((item1, item2) -> item1.getTimeStr() - item2.getTimeStr())
 				.filter(entity -> entity.getKshmtFixedOtTimeSetPK().getAmPmAtr() == this.type.value)
 				.collect(Collectors.toList());
 		return new FixedWorkTimezoneSet(new JpaFixedWorkTimezoneSetGetMemento(kshmtFixedWorkTimeSets, kshmtFixedOtTimeSets));

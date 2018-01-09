@@ -16,6 +16,6 @@ public class OptionalItemOfDailyPerformDto implements ConvertibleAttendanceItem 
 	
 	private GeneralDate date;
 	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "任意項目値", isList = true, listMaxLength = 99)
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "任意項目値", isList = true, listMaxLength = 99, setFieldWithIndex = "itemNo")
 	private List<OptionalItemValueDto> optionalItems;
 }

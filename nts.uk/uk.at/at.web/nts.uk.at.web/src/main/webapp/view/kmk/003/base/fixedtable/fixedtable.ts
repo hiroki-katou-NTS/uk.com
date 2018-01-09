@@ -52,6 +52,8 @@ module nts.fixedtable {
         * Set width table
         */
         width?: number;
+        
+        helpImageUrl?: string;
     }
 
     /**
@@ -174,6 +176,7 @@ module nts.fixedtable {
         roudingDataSource: KnockoutObservableArray<any>;
         isSelectSpecialUnit: KnockoutObservable<boolean>;
         specialRoudingDataSource: KnockoutObservableArray<any>;
+        helpImageUrl: string;
         
         tableId: string;
         
@@ -193,6 +196,7 @@ module nts.fixedtable {
             if (!self.tabindex) {
                 self.tabindex = -1;
             }
+            self.helpImageUrl = data.helpImageUrl;
             self.itemList = data.dataSource;
             self.isEnableAllControl = ko.observable(isDisableAll ? isDisableAll() : true);
             self.roudingDataSource = ko.observableArray([
@@ -239,8 +243,6 @@ module nts.fixedtable {
             
             // subscribe itemList
             self.itemList.subscribe((newList) => {
-                $('#' + self.tableId).find('.nts-editor').ntsError('clear');
-                
                 if (!newList) {
                     self.isSelectAll(false);
                     return;
@@ -282,7 +284,7 @@ module nts.fixedtable {
             
             // update width table
             if (!self.width) {
-                self.width = self.tableStyle.width + 130;
+                self.width = self.tableStyle.width;
             }
             
             // render html table
@@ -305,6 +307,10 @@ module nts.fixedtable {
                 });
             });
             self.itemList.push(row);
+            self.$element.find('.time-range-editor').ntsError('clear');
+            self.$element.find('.time-range-editor').each((index, element) => {
+                $('#' + element.id).validateTimeRange();
+            });
         }
         
         /**
@@ -318,7 +324,22 @@ module nts.fixedtable {
             if (lstItemChecked.length <= 0) {
                 return;
             }
-            self.itemList(self.itemList().filter(item => item.isChecked() == false));
+            self.$element.find('.nts-editor').ntsError('clear');
+            self.$element.find('.ntsControl').ntsError('clear');
+            self.$element.find('.time-range-editor').ntsError('clear');
+            _.defer(() => {
+                self.itemList(self.itemList().filter(item => item.isChecked() == false));
+                self.$element.find('.nts-editor').each((index, element) => {
+                    if (!element.id) {
+                        element.id = nts.uk.util.randomId();
+                    } 
+                    
+                    $('#' + element.id).ntsEditor('validate');
+                });
+                self.$element.find('.time-range-editor').each((index, element) => {
+                    $('#' + element.id).validateTimeRange();
+                });
+            });
         }
         
         /**
@@ -385,9 +406,9 @@ module nts.fixedtable {
         public calStyleTable() {
             let self = this;
             let heigthCell = 33;
-            self.tableStyle.height = heigthCell * self.maxRowDisplay + 1;
+            self.tableStyle.height = heigthCell * self.maxRowDisplay + 29;
             
-            self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0);
+            self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0) + 30;
         }
         
         /**
@@ -745,7 +766,7 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
 
                 // set height table
-                screenModel.$tableSelector.height(screenModel.tableStyle.height);
+                //screenModel.$tableSelector.height(screenModel.tableStyle.height);
 
                 // remove min-width default of ntsComboBox
                 screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
@@ -757,8 +778,13 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                     });
                 }
                 screenModel.initEventChangeComboBox($(element));
+                screenModel.$element.find('.table-fixed-kmk003').ntsFixedTable({height: screenModel.tableStyle.height})
                 //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
                 screenModel.$element.on('click', '.check-box-column > div', function(event){
+                    _.defer(() => screenModel.itemList.valueHasMutated());
+                })
+                
+                screenModel.$element.on('change', '.time-edior-column', function(event){
                     _.defer(() => screenModel.itemList.valueHasMutated());
                 })
             });

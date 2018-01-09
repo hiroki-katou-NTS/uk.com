@@ -189,13 +189,12 @@ module nts.uk.at.view.kal003.share.model {
         itemConditionId:        string;
         constructor(param: ICondition) {
             let self = this;
-            self.itemCheck  = param.itemCheck;
-            self.target     = param.target;
-            self.operatorCd = param.operatorCd;
-            self.comparisonOperatorId = param.comparisonOperatorId;
-            self.itemConditionId = param.itemConditionId;
+            self.itemCheck  = param.itemCheck || 0;
+            self.target     = param.target || 0;
+            self.operatorCd = param.operatorCd || '';
+            self.comparisonOperatorId = param.comparisonOperatorId || 0;
+            self.itemConditionId = param.itemConditionId || '';
         }
-    
     }
     // group condition
     export interface IGroupCondition {
@@ -235,9 +234,9 @@ module nts.uk.at.view.kal003.share.model {
     
     
     
-    export interface ISettingCdlKal003B {
+    export interface IErrorAlarmCondition {
         category:               number;
-        errAlaCheckId:          string;
+        erAlCheckId:            string;
         checkItem:              number;
         workTypeRange:          string;
         workTypeSelections:     Array<string>;
@@ -251,12 +250,11 @@ module nts.uk.at.view.kal003.share.model {
         message:                string;
         isBold:                 boolean;
         compoundCondition :     CompoundCondition;
-        dailyAttendanceItemId:  string;
     }
     
-    export class SettingCdlKal003B {
+    export class ErrorAlarmCondition {
         category:               number;
-        errAlaCheckId:          string;
+        erAlCheckId:            string;
         checkItem:              KnockoutObservable<number>;
         workTypeRange:          KnockoutObservable<string>;
         workTypeSelections:     KnockoutObservableArray<string>;
@@ -270,11 +268,10 @@ module nts.uk.at.view.kal003.share.model {
         message:                KnockoutObservable<string>;
         isBold:                 KnockoutObservable<boolean>;
         compoundCondition :     KnockoutObservable<CompoundCondition>;
-        dailyAttendanceItemId:  KnockoutObservable<string>;
-        constructor(param : ISettingCdlKal003B) {
+        constructor(param : IErrorAlarmCondition) {
             let self = this;
             self.category               = param.category || 0;
-            self.errAlaCheckId          = param.errAlaCheckId || '';
+            self.erAlCheckId            = param.erAlCheckId || '';
             self.checkItem              = ko.observable(param.checkItem || 0);
             self.workTypeRange          = ko.observable(param.workTypeRange || '');
             self.workTypeSelections     = ko.observableArray(param.workTypeSelections || []);
@@ -288,9 +285,39 @@ module nts.uk.at.view.kal003.share.model {
             self.message                = ko.observable(param.message || '');
             self.isBold                 = ko.observable(param.isBold || false);
             self.compoundCondition      = ko.observable(param.compoundCondition);
-            self.dailyAttendanceItemId  = ko.observable(param.dailyAttendanceItemId);
         }
     }
+    export interface IWorkRecordExtractingCondition {
+        errorAlarmCheckID   : string;
+        checkItem           : number;
+        sortOrderBy         : number;
+        useAtr              : boolean;
+        nameWKRecord        : string;
+        errorAlamCondition  : IErrorAlarmCondition;
+        rowId               : number;
+    }
+        
+    export class WorkRecordExtractingCondition {
+        errorAlarmCheckID   : KnockoutObservable<string>;
+        checkItem           : KnockoutObservable<number>;
+        sortOrderBy         : KnockoutObservable<number>;
+        useAtr              : KnockoutObservable<boolean>;
+        nameWKRecord        : KnockoutObservable<string>;
+        errorAlamCondition  : KnockoutObservable<ErrorAlarmCondition>;
+        rowId               : KnockoutObservable<number>;
+        constructor(param : IWorkRecordExtractingCondition) {
+            let self = this;
+            self.errorAlarmCheckID   = ko.observable(param.errorAlarmCheckID || '');
+            self.checkItem           = ko.observable(param.checkItem || 0);
+            self.sortOrderBy         = ko.observable(param.sortOrderBy || 0);
+            self.useAtr              = ko.observable(param.useAtr || false);
+            self.nameWKRecord        = ko.observable(param.nameWKRecord || '');
+            self.errorAlamCondition  = ko.observable(param.errorAlamCondition || null);
+            self.rowId               = ko.observable(param.rowId || 0);
+        }
+        
+    }
+    
     //---------------- KAL003 - B end------------------//
 
 }

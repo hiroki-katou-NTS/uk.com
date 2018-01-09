@@ -2,7 +2,7 @@
 	padding: 27px 0px 0px 10px;
 	float: left;
 	background-color: #E0F59E;
-	width: 352px;
+	width: 240px;
     height: 410px;
     margin-top: 40px;
 	border-radius: 7px;
@@ -10,13 +10,30 @@
 }
 
 #right-content {
-	margin-left: 50px;
+	margin-left: 40px;
 	float: left;
 	margin-top: 13px;
-	width: calc(100% - 550px);
+}
+.container{
+	width: 1320px !important;
+	
+}
+#check-condition-text{
+	width: 890px;
+	margin-bottom: 10px;
+	display: inline-block;
 }
 
-.control-group td {
-	padding-bottom: 10px;
-	padding-left: 10px;
+#select-text{
+	float: left;
+    border-bottom: 1px solid;
+    width: 390px;
+    padding-bottom: 3px;
+}
+#selected-text{
+	float: right;
+    margin-right: 15px;
+    border-bottom: 1px solid;
+    width: 390px;
+    padding-bottom: 3px;
 }

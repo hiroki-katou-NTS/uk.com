@@ -167,6 +167,7 @@ public class ScheCreExeWorkTimeHandler {
 	public boolean checkNullOrDefaulCode(String workingCode) {
 		return StringUtil.isNullOrEmpty(workingCode, false) || workingCode.equals(DEFAULT_CODE);
 	}
+	
 
 	
 	/**
@@ -266,11 +267,10 @@ public class ScheCreExeWorkTimeHandler {
 		// employment status is HOLIDAY or LEAVE_OF_ABSENCE
 		if (employmentStatus.getStatusOfEmployment() == HOLIDAY
 				|| employmentStatus.getStatusOfEmployment() == LEAVE_OF_ABSENCE) {
-			return DEFAULT_CODE;
+			return null;
 		}
 		throw (new BusinessException("Employment status not found"));
 	}
-	
 	
 	/**
 	 * Check holiday setting.
@@ -481,8 +481,8 @@ public class ScheCreExeWorkTimeHandler {
 			} else {
 
 				// check default code by working code
-				if (this.checkNullOrDefaulCode(command.getWorkingCode())) {
-					return DEFAULT_CODE;
+				if (command.getWorkingCode() == null) {
+					return null;
 				}
 
 				// check exist data work category of week day
@@ -491,7 +491,7 @@ public class ScheCreExeWorkTimeHandler {
 				}
 			}
 		}
-		return DEFAULT_CODE;
+		return null;
 	}
 	
 	
@@ -512,7 +512,7 @@ public class ScheCreExeWorkTimeHandler {
 		// employment status is HOLIDAY or LEAVE_OF_ABSENCE
 		if (employmentStatus.getStatusOfEmployment() == HOLIDAY
 				|| employmentStatus.getStatusOfEmployment() == LEAVE_OF_ABSENCE) {
-			return DEFAULT_CODE;
+			return null;
 		}
 		throw (new BusinessException("Employment status not found"));
 	}
@@ -542,8 +542,8 @@ public class ScheCreExeWorkTimeHandler {
 	private String getWorkTimeZoneCodeInOfficeDayOfWeek(WorkTimeConvertCommand command) {
 
 		// check default work time code by basic work setting
-		if (this.checkNullOrDefaulCode(command.getWorkingCode())) {
-			return DEFAULT_CODE;
+		if (command.getWorkingCode() == null) {
+			return null;
 		}
 		
 		// find work type by id
@@ -553,7 +553,7 @@ public class ScheCreExeWorkTimeHandler {
 		// check exist data work type
 		if (optional.isPresent()) {
 			if (this.checkHolidayDailyWork(optional.get().getDailyWork())) {
-				return DEFAULT_CODE;
+				return null;
 			}
 			
 			Optional<WorkingConditionItem> optionalWorkingConditionItem = this.getLaborConditionItem(
@@ -561,11 +561,11 @@ public class ScheCreExeWorkTimeHandler {
 					command.getBaseGetter().getToDate());
 
 			if (!optionalWorkingConditionItem.isPresent()) {
-				return DEFAULT_CODE;
+				return null;
 			}
 			return this.getWorkTimeCodeOfDayOfWeekPersonalCondition(command, optionalWorkingConditionItem.get());
 		}
-		return DEFAULT_CODE;
+		return null;
 	}
 	
 	/**
@@ -585,7 +585,7 @@ public class ScheCreExeWorkTimeHandler {
 		if (employmentStatus.getStatusOfEmployment() == INCUMBENT) {
 			return this.getWorkTimeZoneCodeInOfficeDayOfWeek(command);
 		}
-		return DEFAULT_CODE;
+		return null;
 	}
 
 	/**
@@ -786,6 +786,11 @@ public class ScheCreExeWorkTimeHandler {
 
 		}
 
+		// check work time code null
+		if(worktimeCode == null){
+			return Optional.of(worktimeCode);
+		}
+		
 		// check not exist data work
 		if (!this.workTimeRepository.findByCode(command.getBaseGetter().getCompanyId(), worktimeCode).isPresent()) {
 

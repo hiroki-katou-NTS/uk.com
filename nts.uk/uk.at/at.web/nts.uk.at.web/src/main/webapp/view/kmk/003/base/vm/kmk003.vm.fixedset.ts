@@ -119,12 +119,12 @@ module nts.uk.at.view.kmk003.a {
                     this.lstTimezone = this.originalList;
                 }
 
-                toListTimeRange(): Array<TimeRangeModel> {
+                toConvertedList(): Array<TimeRangeModel> {
                     let self = this;
                     return _.map(self.lstTimezone(), tz => self.toTimeRangeItem(tz.start(), tz.end()));
                 }
 
-                fromListTimeRange(newList: Array<TimeRangeModel>): Array<DeductionTimeModel> {
+                fromConvertedList(newList: Array<TimeRangeModel>): Array<DeductionTimeModel> {
                     return _.map(newList, newVl => {
                         let vl = new DeductionTimeModel();
                         vl.start(newVl.column1().startTime);
@@ -135,11 +135,11 @@ module nts.uk.at.view.kmk003.a {
                 
                 updateData(data: FixRestTimezoneSetDto) {
                     let mapped = _.map(data.lstTimezone, (dataDTO) => {
-                        let dataModel: DeductionTimeModel = new DeductionTimeModel();
+                        let dataModel = new DeductionTimeModel();
                         dataModel.updateData(dataDTO);
                         return dataModel;
                     });  
-                    this.lstTimezone(mapped);
+                    this.lstTimezone(_.sortBy(mapped, item => item.start()));
                 }
                 
                 toDto(): FixRestTimezoneSetDto {

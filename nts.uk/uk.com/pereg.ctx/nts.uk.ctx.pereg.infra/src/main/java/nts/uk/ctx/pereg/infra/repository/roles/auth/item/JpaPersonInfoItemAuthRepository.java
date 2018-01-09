@@ -176,17 +176,27 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 	
 	@Override
 	public Map<String, List<PersonInfoItemAuth>> getByRoleIdAndCategories(String roleId, List<String> categoryIdList) {
-		List<PpemtPersonItemAuth> itemAuthList = this.queryProxy().query(SEL_ALL_BY_ROLE_ID_CTG_ID_LIST, PpemtPersonItemAuth.class)
-				.setParameter("roleId", roleId).setParameter("categoryIdList", categoryIdList).getList();
+
+		if (categoryIdList.isEmpty()) {
+			return new HashMap<>();
+		}
+
+		List<PpemtPersonItemAuth> itemAuthList = this.queryProxy()
+				.query(SEL_ALL_BY_ROLE_ID_CTG_ID_LIST, PpemtPersonItemAuth.class).setParameter("roleId", roleId)
+				.setParameter("categoryIdList", categoryIdList).getList();
+
 		Map<String, List<PersonInfoItemAuth>> resultMap = new HashMap<>();
-		for ( PpemtPersonItemAuth itemAuth : itemAuthList) {
-			List<PersonInfoItemAuth> resultItemAuthList = resultMap.get(itemAuth.ppemtPersonItemAuthPk.personInfoCategoryAuthId);
-			if ( resultItemAuthList == null ) {
+		
+		for (PpemtPersonItemAuth itemAuth : itemAuthList) {
+			List<PersonInfoItemAuth> resultItemAuthList = resultMap
+					.get(itemAuth.ppemtPersonItemAuthPk.personInfoCategoryAuthId);
+			if (resultItemAuthList == null) {
 				resultItemAuthList = new ArrayList<>();
 				resultMap.put(itemAuth.ppemtPersonItemAuthPk.personInfoCategoryAuthId, resultItemAuthList);
 			}
 			resultItemAuthList.add(toDomain(itemAuth));
 		}
+		
 		return resultMap;
 	}
 

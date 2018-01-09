@@ -29,6 +29,9 @@ public class FixedWorkTimezoneSetDto implements FixedWorkTimezoneSetGetMemento {
 
 	/** The lst OT timezone. */
 	private List<OverTimeOfTimeZoneSetDto> lstOTTimezone;
+	
+	/** The work timezone no. */
+	private int workTimezoneNo = 0;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetGetMemento#getLstWorkingTimezone()
@@ -50,6 +53,17 @@ public class FixedWorkTimezoneSetDto implements FixedWorkTimezoneSetGetMemento {
 		if (CollectionUtil.isEmpty(lstOTTimezone)) {
 			return new ArrayList<>();
 		}
+		
+		
+		this.lstOTTimezone = this.lstOTTimezone.stream().sorted((timezone1, timezone2) -> timezone1.getTimezone()
+				.getStart().compareTo(timezone2.getTimezone().getStart())).collect(Collectors.toList());
+		
+		workTimezoneNo = 0;
+		this.lstOTTimezone.forEach(timezone -> {
+			workTimezoneNo++;
+			timezone.setWorkTimezoneNo(workTimezoneNo);
+		});
+		
 		return this.lstOTTimezone.stream().map(timezone -> new OverTimeOfTimeZoneSet(timezone))
 				.collect(Collectors.toList());
 	}

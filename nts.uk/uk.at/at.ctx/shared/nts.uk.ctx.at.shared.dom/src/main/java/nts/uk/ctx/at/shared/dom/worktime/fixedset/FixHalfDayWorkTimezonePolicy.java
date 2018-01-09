@@ -14,8 +14,8 @@ public interface FixHalfDayWorkTimezonePolicy {
 	/**
 	 * Validate.
 	 *
-	 * @param fixHalfDay the fix half day
+	 * @param fixedWorkSetting the fixed work setting
 	 * @param predTime the pred time
 	 */
-	void validate(FixHalfDayWorkTimezone fixHalfDay, PredetemineTimeSetting predTime);
+	void validate(FixedWorkSetting fixedWorkSetting, PredetemineTimeSetting predTime);
 }

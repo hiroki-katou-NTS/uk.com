@@ -22,6 +22,7 @@ module a3 {
         isFlexMode: KnockoutObservable<boolean>;
         isFixedMode: KnockoutObservable<boolean>;
         isLoading: KnockoutObservable<boolean>;
+        isDetailMode: KnockoutObservable<boolean>;
         dataSourceOnedayFixed: KnockoutObservableArray<any>;
         dataSourceMorningFixed: KnockoutObservableArray<any>;
         dataSourceAfternoonFixed: KnockoutObservableArray<any>;
@@ -38,11 +39,13 @@ module a3 {
         /**
         * Constructor.
         */
-        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isLoading: KnockoutObservable<boolean>) {
+        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, 
+        isLoading: KnockoutObservable<boolean>, isDetailMode: KnockoutObservable<boolean>) {
             let self = this;
             self.settingEnum = settingEnum;
             self.mainSettingModel = mainSettingModel;
             self.isLoading = isLoading;
+            self.isDetailMode = isDetailMode;
             self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
             self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
             self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
@@ -64,7 +67,6 @@ module a3 {
                 }
             });
 
-           
             self.selectedCodeAutoCalUse = ko.observable('1');
             
             // update time zone flow
@@ -527,7 +529,7 @@ module a3 {
                     width: 250, 
                     template: `<div class= "fixtable" data-bind="ntsTimeRangeEditor: { 
                         startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
-                        required: true, enable: true, inputFormat: 'time',  startTimeNameId: '#[KMK003_166]', endTimeNameId: '#[KMK003_167]'}"/>`
+                        required: true, enable: true, inputFormat: 'time',  startTimeNameId: '#[KMK003_166]', endTimeNameId: '#[KMK003_167]',paramId:'KMK003_89'}"/>`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_56"),
@@ -617,8 +619,8 @@ module a3 {
             var settingEnum: WorkTimeSettingEnumDto = input.enum;
             var mainSettingModel: MainSettingModel = input.mainModel;
             var isLoading:  KnockoutObservable<boolean> = input.isLoading; 
-
-            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading);
+            var isDetailMode:  KnockoutObservable<boolean> = input.isDetailMode;
+            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading, isDetailMode);
             nts.uk.at.view.kmk003.a3.service.findAllOvertimeWorkFrame().done(function(data) {
                 screenModel.lstOvertimeWorkFrame = data;
                 screenModel.initDataModel();

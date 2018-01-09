@@ -406,6 +406,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dfd = $.Deferred();
             service.addAndUpdate(dataChangeProcess).done((data) => {
                // alert("done");
+                dataChange = {};
                 self.btnExtraction_Click();
                 dfd.resolve();
             }).fail((data) => {
@@ -678,11 +679,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         btnSaveColumnWidth_Click() {
             var self = this;
             let command = {
-                lstHeader: {}
+                lstHeader: {},
+                formatCode: self.formatCodes()
             };
-            _.forEach(self.headersGrid(), (header) => {
-                if (nts.uk.ntsNumber.isNumber(header.key)) {
-                    command.lstHeader[header.key] = header.width.split("px")[0];
+            let jsonColumnWith = localStorage.getItem(window.location.href + '/dpGrid');
+            let valueTemp = 0;
+            _.forEach($.parseJSON(jsonColumnWith), (value, key) => {
+                if (key.indexOf('A') != -1) {
+                    if (nts.uk.ntsNumber.isNumber(key.substring(1, key.length))) {
+                        command.lstHeader[key.substring(1, key.length)] = value;
+                    }
+                }
+                if (key.indexOf('Code') != -1 || key.indexOf('NO') != -1) {
+                    valueTemp = value;
+                } else if (key.indexOf('Name') != -1) {
+                    command.lstHeader[key.substring(4, key.length)] = value + valueTemp;
+                    valueTemp = 0;
                 }
             });
             service.saveColumnWidth(command);
@@ -1209,7 +1221,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         delete header.group[0].group;
                         //delete header.key;
                         delete header.dataType;
-                        delete header.width;
+                       // delete header.width;
                         delete header.ntsControl;
                         delete header.changedByOther;
                         delete header.changedByYou;

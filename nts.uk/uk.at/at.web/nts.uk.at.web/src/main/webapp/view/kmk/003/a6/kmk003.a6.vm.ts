@@ -85,7 +85,7 @@ module a6 {
             self.fixTableOptionFlow = {
                 maxRow: 10,
                 minRow: 0,
-                maxRowDisplay: 5,
+                maxRowDisplay: 10,
                 isShowButton: true,
                 dataSource: self.dataSourceFlow,
                 isMultipleSelect: true,
@@ -95,7 +95,7 @@ module a6 {
             self.fixTableOptionFlex = {
                 maxRow: 10,
                 minRow: 0,
-                maxRowDisplay: 5,
+                maxRowDisplay: 10,
                 isShowButton: true,
                 dataSource: self.dataSourceFlex,
                 isMultipleSelect: true,
@@ -105,7 +105,7 @@ module a6 {
             self.fixTableOptionFixed = {
                 maxRow: 10,
                 minRow: 0,
-                maxRowDisplay: 5,
+                maxRowDisplay: 10,
                 isShowButton: true,
                 dataSource: self.dataSourceFixed,
                 isMultipleSelect: true,
@@ -238,7 +238,8 @@ module a6 {
                     width: 250,
                     template: `<div class= "fixtable" data-bind="ntsTimeRangeEditor: { 
                         startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                        startTimeNameId: '#[KMK003_163]', endTimeNameId: '#[KMK003_164]',
+                        required: true, enable: true, inputFormat: 'time', paramId: 'KMK003_90'}"/>`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_77"),

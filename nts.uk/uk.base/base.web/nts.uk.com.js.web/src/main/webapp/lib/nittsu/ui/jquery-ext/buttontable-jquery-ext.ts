@@ -15,7 +15,7 @@ module nts.uk.ui.jqueryExtentions {
                     break;
                 }
                 case "dataSource": {
-                    builder = $element.data("builder");
+                    builder = $element.data("builder"); 
                     if (isNull(option) || !$.isArray(option)) {
                         return builder.getDataSource();
                     }
@@ -24,7 +24,7 @@ module nts.uk.ui.jqueryExtentions {
                     builder.drawTable();
                     break;
                 }
-                case "column": {
+                case "column": { 
                     builder = $element.data("builder");
                     if (isNull(option)) {
                         return builder.column;
@@ -193,8 +193,8 @@ module nts.uk.ui.jqueryExtentions {
                     let action = function() {
                         let element: JQuery = self.container.data("context-opening");
                         //                        m.action(element).done(function(result){
-                        m.action(element, element.parent().data("cell-data")).done(function(result) {
-                            element.trigger("contextmenufinished", result);
+                        m.action(element, element.parent().data("cell-data")).done(function(result){
+                            element.trigger("contextmenufinished", result);    
                         });
                     }
                     return new nts.uk.ui.contextmenu.ContextMenuItem(m.id, m.text, action, m.style);
@@ -269,11 +269,10 @@ module nts.uk.ui.jqueryExtentions {
 
                 button.bind("cellselecting", function(evt, data) {
                     let c = $(this);
-                    if (!c.data("empty-cell")) {
-                        if (c.hasClass("ntsButtonCellSelected")) {
-                            c.removeClass("ntsButtonCellSelected");
-                            //                            self.container.trigger("cellselectedchanging", { column: -1, row: -1 });
-                            self.container.trigger("cellselectedchanging", { column: -1, row: -1, data: c.parent().data("cell-data") });
+                    if(!c.data("empty-cell")){
+                        if(c.hasClass("ntsButtonCellSelected")){
+                            c.removeClass("ntsButtonCellSelected");     
+                            self.container.trigger("cellselectedchanging", {column: -1, row: -1, data: c.parent().data("cell-data")});
                         } else {
                             self.container.find(".ntsButtonCellSelected").removeClass("ntsButtonCellSelected");
                             c.addClass("ntsButtonCellSelected");
@@ -286,11 +285,9 @@ module nts.uk.ui.jqueryExtentions {
                         let oldSelected = self.container.find(".ntsButtonCellSelected");
                         if (!nts.uk.util.isNullOrEmpty(oldSelected)) {
                             let oCell = oldSelected.parent();
-                            //                            self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")) });
-                            self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")), data: oCell.data("cell-data") });
+                            self.container.trigger("cellselectedchanging", {column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")), data: oCell.data("cell-data")});    
                         } else {
-                            //                            self.container.trigger("cellselectedchanging", { column: -1, row: -1 });
-                            self.container.trigger("cellselectedchanging", { column: -1, row: -1, data: null });
+                            self.container.trigger("cellselectedchanging", {column: -1, row: -1, data: null });
                         }
                     }
                 });

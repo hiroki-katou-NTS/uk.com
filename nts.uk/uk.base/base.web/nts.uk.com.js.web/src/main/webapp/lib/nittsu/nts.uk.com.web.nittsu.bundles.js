@@ -1846,7 +1846,7 @@ var nts;
                 }
                 if (isMinutes) {
                     var hoursX = uk.ntsNumber.trunc(time / 60);
-                    time = hoursX + uk.text.padLeft((Math.abs(time - hoursX * 60)).toString(), '0', 2);
+                    time = (time < 0 && hoursX == 0 ? "-" : "") + hoursX + uk.text.padLeft((Math.abs(time - hoursX * 60)).toString(), '0', 2);
                 }
                 if (!(time instanceof String)) {
                     time = time.toString();
@@ -2145,25 +2145,23 @@ var nts;
                 var inputFormats = (inputFormat) ? inputFormat : findFormat(outputFormat);
                 var momentObject = moment.utc(datetime, inputFormats, true);
                 var result = new MomentResult(momentObject, outputFormat);
-                if (momentObject.isValid()) {
-                    if (momentObject.isAfter(result.systemMax()) || momentObject.isBefore(result.systemMin())) {
-                        var parsedFormat = momentObject.creationData().format;
-                        if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") >= 0) {
-                            result.failedWithMessegeId("FND_E_DATE_YM", [result.systemMin().format("YYYY/MM"), result.systemMax().format("YYYY/MM")]);
-                        }
-                        else if (parsedFormat.indexOf("D") < 0 && parsedFormat.indexOf("M") < 0 && parsedFormat.indexOf("Y") >= 0) {
-                            result.failedWithMessegeId("FND_E_DATE_Y", [result.systemMin().format("YYYY"), result.systemMax().format("YYYY")]);
-                        }
-                        else {
-                            result.failedWithMessegeId("FND_E_DATE_YMD", [result.systemMin().format("YYYY/MM/DD"), result.systemMax().format("YYYY/MM/DD")]);
-                        }
-                    }
-                    else {
-                        result.succeeded();
-                    }
+                if (momentObject.isValid() && (momentObject.isSameOrBefore(result.systemMax()) && momentObject.isSameOrAfter(result.systemMin()))) {
+                    result.succeeded();
                 }
                 else {
-                    result.failed();
+                    var parsedFormat = momentObject.creationData().format;
+                    var isHasYear = (nts.uk.util.isNullOrEmpty(outputFormat) ? false : outputFormat.indexOf("Y") >= 0) || parsedFormat.indexOf("Y") >= 0;
+                    var isHasMonth = (nts.uk.util.isNullOrEmpty(outputFormat) ? false : outputFormat.indexOf("M") >= 0) || parsedFormat.indexOf("M") >= 0;
+                    var isHasDay = (nts.uk.util.isNullOrEmpty(outputFormat) ? false : outputFormat.indexOf("D") >= 0) || parsedFormat.indexOf("D") >= 0;
+                    if (isHasDay && isHasMonth && isHasYear) {
+                        result.failedWithMessegeId("FND_E_DATE_YMD", [result.systemMin().format("YYYY/MM/DD"), result.systemMax().format("YYYY/MM/DD")]);
+                    }
+                    else if (isHasMonth && isHasYear) {
+                        result.failedWithMessegeId("FND_E_DATE_YM", [result.systemMin().format("YYYY/MM"), result.systemMax().format("YYYY/MM")]);
+                    }
+                    else {
+                        result.failedWithMessegeId("FND_E_DATE_Y", [result.systemMin().format("YYYY"), result.systemMax().format("YYYY")]);
+                    }
                 }
                 return result;
             }
@@ -3029,15 +3027,11 @@ var nts;
                 }
                 asyncTask.requestToCancel = requestToCancel;
             })(asyncTask = request.asyncTask || (request.asyncTask = {}));
-            var specials;
-            (function (specials) {
-                function getAsyncTaskInfo(taskId) {
-                    return asyncTask.getInfo(taskId);
-                }
-                specials.getAsyncTaskInfo = getAsyncTaskInfo;
-                function donwloadFile(fileId) {
+            var file;
+            (function (file) {
+                function donwload(fileId) {
                     var dfd = $.Deferred();
-                    $.fileDownload(resolvePath('/webapi/shr/infra/file/storage/get/' + fileId), {
+                    $.fileDownload(pathToGet(fileId), {
                         successCallback: function (url) {
                             dfd.resolve();
                         },
@@ -3049,16 +3043,36 @@ var nts;
                     });
                     return dfd.promise();
                 }
-                specials.donwloadFile = donwloadFile;
-                //        export function createPathToFile(fileId: string) {
-                //            return resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId);
-                //        }
-                function deleteFile(fileId) {
+                file.donwload = donwload;
+                function remove(fileId) {
                     return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
+                }
+                file.remove = remove;
+                function isExist(fileId) {
+                    return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
+                }
+                file.isExist = isExist;
+                function pathToGet(fileId) {
+                    return resolvePath('/webapi/shr/infra/file/storage/get/' + fileId);
+                }
+                file.pathToGet = pathToGet;
+            })(file = request.file || (request.file = {}));
+            var specials;
+            (function (specials) {
+                function getAsyncTaskInfo(taskId) {
+                    return asyncTask.getInfo(taskId);
+                }
+                specials.getAsyncTaskInfo = getAsyncTaskInfo;
+                function donwloadFile(fileId) {
+                    return file.donwload(fileId);
+                }
+                specials.donwloadFile = donwloadFile;
+                function deleteFile(fileId) {
+                    return file.remove(fileId);
                 }
                 specials.deleteFile = deleteFile;
                 function isFileExist(fileId) {
-                    return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
+                    return file.isExist(fileId);
                 }
                 specials.isFileExist = isFileExist;
                 var errorPages;
@@ -3074,21 +3088,33 @@ var nts;
                 })(errorPages = specials.errorPages || (specials.errorPages = {}));
             })(specials = request.specials || (request.specials = {}));
             function jump(webAppId, path, data) {
+                uk.ui.block.invisible();
+                // handle overload
                 if (typeof arguments[1] !== 'string') {
-                    return jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    return;
                 }
-                if (webAppId == nts.uk.request.location.currentAppId) {
-                    path = resolvePath(path);
-                }
-                else {
-                    path = nts.uk.request.location.siteRoot
-                        .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-                        .mergeRelativePath(path).serialize();
+                if (webAppId != nts.uk.request.location.currentAppId) {
+                    jumpToOtherWebApp.apply(this, arguments);
+                    return;
                 }
                 uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
-                window.location.href = path;
+                window.location.href = resolvePath(path);
             }
             request.jump = jump;
+            function jumpToOtherWebApp(webAppId, path, data) {
+                var resolvedPath = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                    .mergeRelativePath(path).serialize();
+                uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
+                login.keepSerializedSession()
+                    .then(function () {
+                    return login.restoreSessionTo(webAppId);
+                })
+                    .then(function () {
+                    window.location.href = resolvedPath;
+                });
+            }
             function jumpToMenu(path) {
                 var end = path.charAt(0) === '/' ? path.indexOf("/", 1) : path.indexOf("/");
                 var appName = path.substring(0, end);
@@ -3113,6 +3139,7 @@ var nts;
             var login;
             (function (login) {
                 var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
+                var STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
                 function keepUsedLoginPage() {
                     uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
                 }
@@ -3121,10 +3148,25 @@ var nts;
                     uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(function (path) {
                         window.location.href = path;
                     }).ifEmpty(function () {
-                        request.jump('/view/ccg/007/a/index.xhtml');
+                        //request.jump('/view/ccg/007/a/index.xhtml');
+                        request.jump('/view/ccg/007/b/index.xhtml');
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
+                function keepSerializedSession() {
+                    var dfd = $.Deferred();
+                    request.ajax("/shr/web/session/serialize").done(function (res) {
+                        uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
+                        dfd.resolve();
+                    });
+                    return dfd.promise();
+                }
+                login.keepSerializedSession = keepSerializedSession;
+                function restoreSessionTo(webAppId) {
+                    var serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
+                    return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket);
+                }
+                login.restoreSessionTo = restoreSessionTo;
             })(login = request.login || (request.login = {}));
             function jumpToTopPage() {
                 jumpToMenu('nts.uk.com.web/view/ccg/008/a/index.xhtml');
@@ -3185,7 +3227,16 @@ var nts;
             // Kiban ViewModel
             var KibanViewModel = (function () {
                 function KibanViewModel(dialogOptions) {
-                    this.title = ko.observable('');
+                    var _this = this;
+                    this.systemName = ko.observable("");
+                    this.programName = ko.observable("");
+                    this.title = ko.computed(function () {
+                        var pgName = _this.programName();
+                        if (pgName === "" || pgName === undefined || pgName === null) {
+                            return _this.systemName();
+                        }
+                        return _this.programName() + " - " + _this.systemName();
+                    });
                     this.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel(dialogOptions);
                 }
                 return KibanViewModel;
@@ -3206,7 +3257,10 @@ var nts;
                             isEmpty: ko.computed(function () { return !kiban.errorDialogViewModel.occurs(); })
                         }
                     };
-                    kiban.title(__viewContext.title || 'THIS IS TITLE');
+                    kiban.title.subscribe(function (newTitle) {
+                        document.title = newTitle;
+                    });
+                    kiban.systemName(__viewContext.env.systemName);
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
                     // off event reset for class reset-not-apply
@@ -3434,6 +3488,10 @@ var nts;
                  */
                 function getProgram() {
                     nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
+                        // show program name on title of browser
+                        ui.viewModelBuilt.add(function () {
+                            ui._viewModel.kiban.programName(pg);
+                        });
                         var $pgArea = $("#pg-area");
                         $("<div/>").attr("id", "pg-name").text(pg).appendTo($pgArea);
                         var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
@@ -3527,7 +3585,7 @@ var nts;
                             var $titleImage = $("<img/>").addClass("title-image").hide();
                             $titleDiv.append($titleImage);
                             if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
-                                var fqpImage = nts.uk.request.specials.createPathToFile(t.imageFile);
+                                var fqpImage = nts.uk.request.file.pathToGet(t.imageFile);
                                 // TODO: Show image
                                 $titleImage.attr("src", fqpImage).show();
                                 //                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
@@ -3937,10 +3995,6 @@ var nts;
                         else if (!uk.ntsNumber.isNumber(inputText, isDecimalNumber, undefined, message)) {
                             validateFail = true;
                         }
-                        if (!(/^-?\d*(\.\d+)?$/).test(inputText)) {
-                            result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]), message.id);
-                            return result;
-                        }
                         var value = isDecimalNumber ?
                             uk.ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
                         if (!util.isNullOrUndefined(this.constraint.max)) {
@@ -3958,6 +4012,9 @@ var nts;
                             var parts = String(value).split(".");
                             if (parts[1] !== undefined && parts[1].length > mantissaMaxLength)
                                 validateFail = true;
+                        }
+                        if (!(/^-?\d*(\.\d+)?$/).test(inputText)) {
+                            validateFail = true;
                         }
                         if (validateFail) {
                             result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]), message.id);
@@ -4131,7 +4188,7 @@ var nts;
                         maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
                         var parsed = uk.time.minutesBased.clock.dayattr.parseString(inputText);
                         if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
-                            result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_TIME");
+                            result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_CLOCK");
                         }
                         else {
                             result.success(parsed.asMinutes);
@@ -4171,7 +4228,7 @@ var nts;
         var ui;
         (function (ui) {
             var errors;
-            (function (errors) {
+            (function (errors_1) {
                 var ErrorsViewModel = (function () {
                     function ErrorsViewModel(dialogOptions) {
                         var _this = this;
@@ -4180,11 +4237,11 @@ var nts;
                         this.errors.extend({ rateLimit: 1 });
                         this.gridErrors = ko.observableArray([]);
                         this.displayErrors = !uk.util.isNullOrUndefined(dialogOptions) && dialogOptions.forGrid ? this.gridErrors : this.errors;
-                        this.option = ko.mapping.fromJS(new ui.option.ErrorDialogOption(dialogOptions));
+                        this.option = ko.observable(ko.mapping.fromJS(new ui.option.ErrorDialogOption(dialogOptions)));
                         this.occurs = ko.computed(function () { return _this.errors().length !== 0 || _this.gridErrors().length !== 0; });
                         this.allResolved = $.Callbacks();
                         this.allCellsResolved = $.Callbacks();
-                        this.option.show.extend({ notify: "always" });
+                        this.option().show.extend({ notify: "always" });
                         this.errors.subscribe(function () {
                             if (_this.errors().length === 0) {
                                 _this.allResolved.fire();
@@ -4204,13 +4261,13 @@ var nts;
                         });
                     }
                     ErrorsViewModel.prototype.closeButtonClicked = function () {
-                        this.option.show(false);
+                        this.option().show(false);
                     };
                     ErrorsViewModel.prototype.open = function () {
-                        this.option.show(true);
+                        this.option().show(true);
                     };
                     ErrorsViewModel.prototype.hide = function () {
-                        this.option.show(false);
+                        this.option().show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
                         var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control)
@@ -4292,9 +4349,60 @@ var nts;
                             return false;
                         return true;
                     };
+                    ErrorsViewModel.prototype.stashMemento = function () {
+                        var memento = new ErrorViewModelMemento();
+                        memento.setErrors(ko.unwrap(this.errors));
+                        memento.setGridErrors(ko.unwrap(this.gridErrors));
+                        memento.option = ko.unwrap(this.option);
+                        memento.allResolved = this.allResolved;
+                        memento.allCellsResolved = this.allCellsResolved;
+                        memento.setErrorElements();
+                        this.clearError();
+                        return memento;
+                    };
+                    ErrorsViewModel.prototype.restoreFrom = function (memento) {
+                        this.errors(memento.errors);
+                        this.gridErrors(memento.gridErrors);
+                        this.option(memento.option);
+                        this.allResolved = memento.allResolved;
+                        this.allCellsResolved = memento.allCellsResolved;
+                        memento.restoreErrorElements();
+                    };
                     return ErrorsViewModel;
                 }());
-                errors.ErrorsViewModel = ErrorsViewModel;
+                errors_1.ErrorsViewModel = ErrorsViewModel;
+                var ErrorViewModelMemento = (function () {
+                    function ErrorViewModelMemento() {
+                    }
+                    ErrorViewModelMemento.prototype.setErrors = function (errors) {
+                        var _this = this;
+                        if (!_.isArray(errors)) {
+                            return;
+                        }
+                        this.errors = [];
+                        errors.forEach(function (e) {
+                            _this.errors.push(e);
+                        });
+                    };
+                    ErrorViewModelMemento.prototype.setGridErrors = function (gridErrors) {
+                        var _this = this;
+                        if (!_.isArray(gridErrors)) {
+                            return;
+                        }
+                        this.gridErrors = [];
+                        gridErrors.forEach(function (e) {
+                            _this.gridErrors.push(e);
+                        });
+                    };
+                    ErrorViewModelMemento.prototype.setErrorElements = function () {
+                        this.errorElements = $(".error").removeClass("error");
+                    };
+                    ErrorViewModelMemento.prototype.restoreErrorElements = function () {
+                        this.errorElements.addClass("error");
+                    };
+                    return ErrorViewModelMemento;
+                }());
+                errors_1.ErrorViewModelMemento = ErrorViewModelMemento;
                 var ErrorHeader = (function () {
                     function ErrorHeader(name, text, width, visible) {
                         this.name = name;
@@ -4304,56 +4412,56 @@ var nts;
                     }
                     return ErrorHeader;
                 }());
-                errors.ErrorHeader = ErrorHeader;
+                errors_1.ErrorHeader = ErrorHeader;
                 /**
                  *  Public API
                 **/
                 function errorsViewModel() {
                     return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
                 }
-                errors.errorsViewModel = errorsViewModel;
+                errors_1.errorsViewModel = errorsViewModel;
                 function show() {
                     errorsViewModel().open();
                 }
-                errors.show = show;
+                errors_1.show = show;
                 function hide() {
                     errorsViewModel().hide();
                 }
-                errors.hide = hide;
+                errors_1.hide = hide;
                 function add(error) {
                     errorsViewModel().addError(error);
                 }
-                errors.add = add;
+                errors_1.add = add;
                 function hasError() {
                     return errorsViewModel().hasError();
                 }
-                errors.hasError = hasError;
+                errors_1.hasError = hasError;
                 function clearAll() {
                     if (nts.uk.ui._viewModel !== undefined)
                         errorsViewModel().clearError();
                 }
-                errors.clearAll = clearAll;
+                errors_1.clearAll = clearAll;
                 function removeByElement($control) {
                     errorsViewModel().removeErrorByElement($control);
                 }
-                errors.removeByElement = removeByElement;
+                errors_1.removeByElement = removeByElement;
                 function getErrorByElement($element) {
                     return errorsViewModel().getErrorByElement($element);
                 }
-                errors.getErrorByElement = getErrorByElement;
+                errors_1.getErrorByElement = getErrorByElement;
                 // Grid errors
                 function addCell(error) {
                     errorsViewModel().addCellError(error);
                 }
-                errors.addCell = addCell;
+                errors_1.addCell = addCell;
                 function removeCell($grid, rowId, columnKey) {
                     errorsViewModel().removeCellError($grid, rowId, columnKey);
                 }
-                errors.removeCell = removeCell;
+                errors_1.removeCell = removeCell;
                 function gridHasError() {
                     return errorsViewModel().gridHasError();
                 }
-                errors.gridHasError = gridHasError;
+                errors_1.gridHasError = gridHasError;
             })(errors = ui.errors || (ui.errors = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -4592,11 +4700,22 @@ var nts;
                         return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
                     };
                     ScreenWindowContainer.prototype.setShared = function (key, data, isRoot, persist) {
-                        if (persist || isRoot) {
-                            this.shared[key] = data;
+                        var transferData;
+                        // Null or Undefined
+                        if (uk.util.isNullOrUndefined(data)) {
+                            transferData = data;
+                        }
+                        else if (!_.isFunction(data) || ko.isObservable(data)) {
+                            transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
                         else {
-                            this.localShared[key] = data;
+                            transferData = data;
+                        }
+                        if (persist || isRoot) {
+                            this.shared[key] = transferData;
+                        }
+                        else {
+                            this.localShared[key] = transferData;
                         }
                     };
                     ScreenWindowContainer.prototype.close = function (id) {
@@ -5992,17 +6111,25 @@ var nts;
                         if (selectedValue !== undefined && selectedValue !== null) {
                             container.igCombo("value", selectedValue);
                         }
+                        var isDropDownWidthSpecified = false;
                         // Set width for multi columns.
                         if (haveColumn && (isChangeOptions || isInitCombo)) {
-                            var totalWidth = 0;
+                            var componentWidth = 0;
                             var $dropDownOptions = $(container.igCombo("dropDown"));
                             _.forEach(columns, function (item, i) {
-                                var charLength = item.length;
-                                var width = charLength * maxWidthCharacter + 10;
-                                $dropDownOptions.find('.nts-combo-column-' + i).css("width", width);
-                                totalWidth += width + 10;
+                                isDropDownWidthSpecified = (isDropDownWidthSpecified || item.lengthDropDown !== undefined);
+                                if (item.lengthDropDown === undefined) {
+                                    item.lengthDropDown = item.length;
+                                }
+                                var componentColumnWidth = item.length * maxWidthCharacter + 10;
+                                var dropDownColumnWidth = item.lengthDropDown * maxWidthCharacter + 10;
+                                $dropDownOptions.find('.nts-combo-column-' + i).css("width", dropDownColumnWidth);
+                                componentWidth += componentColumnWidth + 10;
                             });
-                            container.css({ 'min-width': totalWidth });
+                            container.css({ 'min-width': componentWidth });
+                            if (isDropDownWidthSpecified) {
+                                container.find(".ui-igcombo-dropdown").css("width", "auto");
+                            }
                         }
                         container.data("columns", columns);
                         container.data("comboMode", comboMode);
@@ -6688,8 +6815,8 @@ var nts;
                         return self;
                     };
                     DatePickerNormalizer.prototype.onKeyup = function () {
-                        this.$input.off(this.EVENT_KEYUP, this._beforeShow);
-                        this.$input.on(this.EVENT_KEYUP, $.proxy(this._beforeShow, this));
+                        //            this.$input.off(this.EVENT_KEYUP, this._beforeShow);
+                        //            this.$input.on(this.EVENT_KEYUP, $.proxy(this._beforeShow, this));
                         return this;
                     };
                     DatePickerNormalizer.prototype.onPick = function () {
@@ -6929,7 +7056,7 @@ var nts;
                                 $('.ui-widget-overlay').last().css('z-index', nts.uk.ui.dialog.getMaxZIndex());
                             },
                             close: function (event) {
-                                bindingContext.$data.option.show(false);
+                                bindingContext.$data.option().show(false);
                             }
                         });
                     };
@@ -7221,9 +7348,22 @@ var nts;
                                 var validator = self.getValidator(data);
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
-                                $input.ntsError('clear');
                                 if (!result.isValid) {
-                                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                                    var oldError = $("#companyCode").ntsError('getError');
+                                    if (nts.uk.util.isNullOrUndefined(oldError)) {
+                                        $input.ntsError('set', result.errorMessage, result.errorCode);
+                                    }
+                                    else {
+                                        if (oldError.errorCode !== result.errorCode) {
+                                            $input.ntsError('clear');
+                                            setTimeout(function () {
+                                                $input.ntsError('set', result.errorMessage, result.errorCode);
+                                            }, 10);
+                                        }
+                                    }
+                                }
+                                else {
+                                    $input.ntsError('clear');
                                 }
                             }
                         });
@@ -7899,7 +8039,7 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
-                        if (!(String($grid.attr("filtered")) === "true") && $grid.data("ui-changed") !== true) {
+                        if ($grid.data("ui-changed") !== true) {
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -7918,21 +8058,21 @@ var nts;
                                 $grid.igGrid("dataBind");
                             }
                         }
-                        else if (String($grid.attr("filtered")) === "true") {
-                            var filteredSource_1 = [];
-                            _.forEach(gridSource, function (item) {
-                                var itemX = _.find(sources, function (s) {
-                                    return s[optionsValue] === item[optionsValue];
-                                });
-                                if (!nts.uk.util.isNullOrUndefined(itemX)) {
-                                    filteredSource_1.push(itemX);
-                                }
-                            });
-                            if (!_.isEqual(filteredSource_1, gridSource)) {
-                                $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
-                                $grid.igGrid("dataBind");
-                            }
-                        }
+                        //            else if(String($grid.attr("filtered")) === "true"){
+                        //                let filteredSource = [];
+                        //                _.forEach(gridSource, function(item){
+                        //                    let itemX = _.find(sources, function (s){
+                        //                        return s[optionsValue] === item[optionsValue];        
+                        //                    });
+                        //                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
+                        //                        filteredSource.push(itemX);
+                        //                    }     
+                        //                });     
+                        //                if(!_.isEqual(filteredSource, gridSource)){
+                        //                    $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
+                        //                    $grid.igGrid("dataBind");    
+                        //                }
+                        //            }
                         var currentSelectedItems = $grid.ntsGridList('getSelected');
                         var isEqual = _.isEqualWith(currentSelectedItems, data.value(), function (current, newVal) {
                             if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
@@ -8356,17 +8496,17 @@ var nts;
                             }
                         }
                         else if (String(container.attr("filtered")) === "true") {
-                            var filteredSource_2 = [];
+                            var filteredSource_1 = [];
                             _.forEach(currentSource, function (item) {
                                 var itemX = _.find(sources, function (s) {
                                     return s[optionValue] === item[optionValue];
                                 });
                                 if (!nts.uk.util.isNullOrUndefined(itemX)) {
-                                    filteredSource_2.push(itemX);
+                                    filteredSource_1.push(itemX);
                                 }
                             });
-                            if (!_.isEqual(filteredSource_2, currentSource)) {
-                                container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_2));
+                            if (!_.isEqual(filteredSource_1, currentSource)) {
+                                container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
                                 container.igGrid("dataBind");
                             }
                         }
@@ -9071,6 +9211,9 @@ var nts;
                         var leftColumns = data.leftColumns || data.columns;
                         var rightColumns = data.rightColumns || data.columns;
                         var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
+                        var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
+                        // 動作が不安定なので、使わないようにする
+                        data.draggable = false;
                         $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
                         if (totalWidth !== undefined) {
                             $swap.parent().width(totalWidth);
@@ -9096,7 +9239,7 @@ var nts;
                         var gridHeight = (height - 20);
                         var grid1Id = "#" + elementId + "-grid1";
                         var grid2Id = "#" + elementId + "-grid2";
-                        var defaultSearchText = "コード・名称で検索・・・"; // nts.uk.resource.getText("");
+                        //var defaultSearchText = "コード・名称で検索・・・"; // nts.uk.resource.getText("");
                         if (!uk.util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showRight)) {
                             var initSearchArea = function ($SearchArea, searchMode, searchText) {
                                 $SearchArea.append("<div class='ntsSearchTextContainer'/>")
@@ -10088,6 +10231,10 @@ var nts;
                             var content = tabs[i].content;
                             container.children(content).wrap('<div id="' + id + '"></div>');
                         }
+                        container.bind("parentactived", function (evt, dataX) {
+                            dataX.child.find("div[role='tabpanel'][aria-hidden='false']:first").removeClass("disappear");
+                            //                data.active.valueHasMutated();
+                        });
                         container.tabs({
                             create: function (event, ui) {
                                 container.find('.ui-tabs-panel').addClass('disappear');
@@ -10101,6 +10248,8 @@ var nts;
                                 container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
                                 container.children('ul').children('.ui-state-disabled').addClass('disabled');
                                 container.children('ul').children('li').not('.ui-state-disabled').removeClass('disabled');
+                                var child = ui.newPanel.children().find(".ui-tabs:first");
+                                child.trigger("parentactived", { child: child });
                             }
                         }).addClass(direction);
                     };
@@ -10302,6 +10451,8 @@ var nts;
                         features.push({
                             name: "RowSelectors",
                             enableCheckBoxes: showCheckBox,
+                            rowSelectorColumnWidth: showCheckBox ? 40 : 0,
+                            enableRowNumbering: false,
                             checkBoxMode: "biState"
                         });
                         features.push({ name: "Resizing" });
@@ -12536,7 +12687,8 @@ var nts;
                             var menu = _.map(contextMenu, function (m) {
                                 var action = function () {
                                     var element = self.container.data("context-opening");
-                                    m.action(element).done(function (result) {
+                                    //                        m.action(element).done(function(result){
+                                    m.action(element, element.parent().data("cell-data")).done(function (result) {
                                         element.trigger("contextmenufinished", result);
                                     });
                                 };
@@ -12608,23 +12760,24 @@ var nts;
                                 if (!c.data("empty-cell")) {
                                     if (c.hasClass("ntsButtonCellSelected")) {
                                         c.removeClass("ntsButtonCellSelected");
-                                        self.container.trigger("cellselectedchanging", { column: -1, row: -1 });
+                                        self.container.trigger("cellselectedchanging", { column: -1, row: -1, data: c.parent().data("cell-data") });
                                     }
                                     else {
                                         self.container.find(".ntsButtonCellSelected").removeClass("ntsButtonCellSelected");
                                         c.addClass("ntsButtonCellSelected");
                                         var oCell = c.parent();
-                                        self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")) });
+                                        //                            self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")) });
+                                        self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")), data: oCell.data("cell-data") });
                                     }
                                 }
                                 else {
                                     var oldSelected = self.container.find(".ntsButtonCellSelected");
                                     if (!nts.uk.util.isNullOrEmpty(oldSelected)) {
                                         var oCell = oldSelected.parent();
-                                        self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")) });
+                                        self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")), data: oCell.data("cell-data") });
                                     }
                                     else {
-                                        self.container.trigger("cellselectedchanging", { column: -1, row: -1 });
+                                        self.container.trigger("cellselectedchanging", { column: -1, row: -1, data: null });
                                     }
                                 }
                             });
@@ -13223,6 +13376,7 @@ var nts;
                                 if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
                                     self.cropper.destroy();
                                 }
+                                self.$root.data("original-img", image.src);
                                 var option = {
                                     viewMode: 1,
                                     guides: false,
@@ -14236,6 +14390,8 @@ var nts;
         (function (ui_26) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
+                var errorMementos = {};
+                var currentTabIndex = undefined;
                 var ntsSideBar;
                 (function (ntsSideBar) {
                     ;
@@ -14292,15 +14448,27 @@ var nts;
                                 settings.activate.call(this, event, info);
                             }
                         });
-                        active(control, settings.active);
+                        active(control, settings.active, true);
                         return control;
                     }
-                    function active(control, index) {
+                    function active(control, index, isInit) {
+                        if (isInit === void 0) { isInit = false; }
                         control.find("#sidebar-area .navigator a").removeClass("active");
                         control.find("#sidebar-area .navigator a").eq(index).addClass("active");
                         control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
                         var $displayPanel = $(control.find("#sidebar-area .navigator a").eq(index).attr("href"));
                         if ($displayPanel.length > 0) {
+                            if (!isInit) {
+                                // keep error in old tab
+                                if (currentTabIndex !== undefined) {
+                                    errorMementos[currentTabIndex] = ui.errors.errorsViewModel().stashMemento();
+                                }
+                                // restore error in new tab
+                                if (errorMementos[index] !== undefined) {
+                                    ui.errors.errorsViewModel().restoreFrom(errorMementos[index]);
+                                }
+                            }
+                            currentTabIndex = index;
                             $displayPanel.removeClass("disappear");
                             setErrorPosition($displayPanel);
                         }
@@ -18787,6 +18955,7 @@ var nts;
                         });
                         $(element).bind("cellselectedchanging", function (evt, value) {
                             if (!nts.uk.util.isNullOrUndefined(data.selectedCell)) {
+                                $(element).data("o-selected", _.cloneDeep(value));
                                 data.selectedCell(value);
                             }
                         });
@@ -18812,10 +18981,12 @@ var nts;
                         }
                         container.ntsButtonTable("row", row);
                         container.ntsButtonTable("column", column);
+                        // insert on develop "&& !_.isEqual(container.data("o-selected"), selectedCell)"
                         if (!nts.uk.util.isNullOrUndefined(selectedCell) && !nts.uk.util.isNullOrUndefined(selectedCell.column)
-                            && !nts.uk.util.isNullOrUndefined(selectedCell.row)) {
+                            && !nts.uk.util.isNullOrUndefined(selectedCell.row) && !_.isEqual(container.data("o-selected"), selectedCell)) {
                             container.ntsButtonTable("setSelectedCell", selectedCell.row, selectedCell.column);
                         }
+                        container.data("o-selected", _.cloneDeep(selectedCell));
                     };
                     return NtsTableButtonBindingHandler;
                 }());
@@ -22396,37 +22567,37 @@ var nts;
                     validation.formatTime = formatTime;
                 })(validation || (validation = {}));
                 var errors;
-                (function (errors_1) {
-                    errors_1.ERROR_CLS = "x-error";
-                    errors_1.ERRORS = "errors";
+                (function (errors_2) {
+                    errors_2.ERROR_CLS = "x-error";
+                    errors_2.ERRORS = "errors";
                     /**
                      * Add.
                      */
                     function add($grid, $cell, rowIdx, columnKey, innerIdx, value) {
                         if (any($cell, innerIdx))
                             return;
-                        var errors = $grid.data(errors_1.ERRORS);
+                        var errors = $grid.data(errors_2.ERRORS);
                         var newErr = new selection.Cell(rowIdx, columnKey, value, innerIdx);
                         if (!errors) {
                             errors = [newErr];
-                            $grid.data(errors_1.ERRORS, errors);
+                            $grid.data(errors_2.ERRORS, errors);
                         }
                         else {
                             errors.push(newErr);
                         }
                         if ($cell.is("td") && !uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1) {
-                            $cell.find("div:eq(" + innerIdx + ")").addClass(errors_1.ERROR_CLS);
+                            $cell.find("div:eq(" + innerIdx + ")").addClass(errors_2.ERROR_CLS);
                         }
                         else {
-                            $cell.addClass(errors_1.ERROR_CLS);
+                            $cell.addClass(errors_2.ERROR_CLS);
                         }
                     }
-                    errors_1.add = add;
+                    errors_2.add = add;
                     /**
                      * Remove.
                      */
                     function remove($grid, $cell, rowIdx, columnKey, innerIdx) {
-                        var errors = $grid.data(errors_1.ERRORS);
+                        var errors = $grid.data(errors_2.ERRORS);
                         if (!errors)
                             return;
                         var idx;
@@ -22439,42 +22610,42 @@ var nts;
                         if (!uk.util.isNullOrUndefined(idx)) {
                             errors.splice(idx, 1);
                             if ($cell.is("td") && !uk.util.isNullOrUndefined(innerIdx) && innerIdx > -1) {
-                                $cell.find("div:eq(" + innerIdx + ")").removeClass(errors_1.ERROR_CLS);
+                                $cell.find("div:eq(" + innerIdx + ")").removeClass(errors_2.ERROR_CLS);
                             }
                             else {
-                                $cell.removeClass(errors_1.ERROR_CLS);
+                                $cell.removeClass(errors_2.ERROR_CLS);
                             }
                         }
                     }
-                    errors_1.remove = remove;
+                    errors_2.remove = remove;
                     /**
                      * Clear.
                      */
                     function clear($grid) {
-                        $grid.data(errors_1.ERRORS, null);
+                        $grid.data(errors_2.ERRORS, null);
                     }
-                    errors_1.clear = clear;
+                    errors_2.clear = clear;
                     /**
                      * Any.
                      */
                     function any($cell, innerIdx) {
                         var $childCells = $cell.find("." + render.CHILD_CELL_CLS);
                         if (!uk.util.isNullOrUndefined(innerIdx) && $childCells.length > 0) {
-                            return $($childCells[innerIdx]).hasClass(errors_1.ERROR_CLS);
+                            return $($childCells[innerIdx]).hasClass(errors_2.ERROR_CLS);
                         }
-                        return $cell.hasClass(errors_1.ERROR_CLS);
+                        return $cell.hasClass(errors_2.ERROR_CLS);
                     }
-                    errors_1.any = any;
+                    errors_2.any = any;
                     /**
                      * Occurred.
                      */
                     function occurred($grid) {
-                        var errs = $grid.data(errors_1.ERRORS);
+                        var errs = $grid.data(errors_2.ERRORS);
                         if (!errs)
                             return false;
                         return errs.length > 0;
                     }
-                    errors_1.occurred = occurred;
+                    errors_2.occurred = occurred;
                 })(errors || (errors = {}));
                 var selection;
                 (function (selection) {
@@ -26380,6 +26551,9 @@ var nts;
                             case "upload": {
                                 return uploadImage($element, option);
                             }
+                            case "uploadOriginal": {
+                                return uploadImageOriginal($element, option);
+                            }
                             case "selectByFileId": {
                                 return downloadImage($element, option);
                             }
@@ -26400,21 +26574,27 @@ var nts;
                         return $element.data("img-status");
                     }
                     function uploadImage($element, option) {
-                        var dfd = $.Deferred();
                         var dataFile = $element.find(".image-preview").attr("src");
-                        if (!isNotNull(dataFile)) {
+                        return upload($element, option, dataFile, isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked());
+                    }
+                    function uploadImageOriginal($element, option) {
+                        return upload($element, option, $element.data("original-img"), false);
+                    }
+                    function upload($element, option, fileData, isCrop) {
+                        var dfd = $.Deferred();
+                        if (!isNotNull(fileData)) {
                             var cropper = $element.data("cropper");
                             var cropperData = cropper.getData(true);
                             var formData = {
                                 "fileName": $element.data("file-name"),
                                 "stereoType": isNotNull(option) ? "image" : option.stereoType,
-                                "file": dataFile,
+                                "file": fileData,
                                 "format": $element.data("file-type"),
                                 "x": cropperData.x,
                                 "y": cropperData.y,
                                 "width": cropperData.width,
                                 "height": cropperData.height,
-                                "crop": isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked()
+                                "crop": isCrop
                             };
                             nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function (data) {
                                 if (nts.uk.util.exception.isBusinessError(data)) {

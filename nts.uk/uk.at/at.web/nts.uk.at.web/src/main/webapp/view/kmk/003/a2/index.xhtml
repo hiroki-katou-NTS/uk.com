@@ -68,7 +68,7 @@
 			<div tabindex="49" style="margin-right: 10px;" data-bind="ntsComboBox: {
 						options: settingEnum.roundingTime,
 						optionsValue: 'value',
-						visibleItemsCount: 5,
+						visibleItemsCount: 8,
 						value: selectedRoundingTime,
 						optionsText: 'localizedName',
 						editable: false,
@@ -97,7 +97,7 @@
 		<div style="width: 50%">
 			<hr />
 		</div>
-		<div tabindex="51" class="itemleft" style="display: inline-grid;" data-bind="ntsRadioBoxGroup: {
+		<div tabindex="51" class="itemleft" style="width: 300px;" data-bind="ntsRadioBoxGroup: {
 					options: calculationMethods,
 					optionsValue: 'code',
 					optionsText: 'name',
@@ -117,7 +117,7 @@
 				data-bind="ntsComboBox: {
 					options: settingEnum.lstFixedChangeAtr,
 					optionsValue: 'value',
-					visibleItemsCount: 5,
+					visibleItemsCount: 3,
 					value: selectedCodeSetting,
 					optionsText: 'localizedName',
 					editable: false,

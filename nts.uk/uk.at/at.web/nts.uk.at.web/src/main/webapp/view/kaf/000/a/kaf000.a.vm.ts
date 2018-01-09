@@ -66,6 +66,11 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             //Call approval list
             self.getAppDataDate(appType, standardDate, true).done(function() {
                 dfd.resolve(); 
+            }).fail((res)=>{
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
+                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                    nts.uk.ui.block.clear();
+                });  
             });
             return dfd.promise();
         }
@@ -79,6 +84,23 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 isStartup: isStartup
             }).done((data)=>{
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
+                if(isStartup==false){
+                    switch(data.errorFlag){
+                        case 1:
+                            $('#listApproverRootState').ntsError('set', {messageId:"Msg_324"});
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_324" });
+                            break;
+                        case 2: 
+                            $('#listApproverRootState').ntsError('set', {messageId:"Msg_238"});
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_238" });
+                            break;
+                        case 3:
+                            $('#listApproverRootState').ntsError('set', {messageId:"Msg_237"});
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_237" });
+                            break;
+                        default: 
+                    }               
+                }
                 let deadlineMsg = data.outputMessageDeadline;
                 if(!nts.uk.text.isNullOrEmpty(deadlineMsg.message)){
                     self.reasonOutputMessFull(self.reasonOutputMess + deadlineMsg.message);    
@@ -92,8 +114,8 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                     self.messageArea(true);
                 }
                 dfd.resolve();
-            }).fail(()=>{
-                dfd.reject();    
+            }).fail((res)=>{
+                dfd.reject(res);    
             });            
             return dfd.promise();
         }
