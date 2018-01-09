@@ -9,16 +9,16 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.WorkRecordFixedCheckItem;
 @Value
 public class FixedConditionWorkRecordCmd {
 	/** 日次のアラームチェック条件ID */
-	private String dailyAlarmConID;
+	private String errorAlarmCode;
 	/** No */
 	private int fixConWorkRecordNo;
 	/** メッセージ */
 	private String message;
 	/** 使用区分 */
 	private boolean useAtr;
-	public FixedConditionWorkRecordCmd(String dailyAlarmConID, int fixConWorkRecordNo, String message, boolean useAtr) {
+	public FixedConditionWorkRecordCmd(String errorAlarmCode, int fixConWorkRecordNo, String message, boolean useAtr) {
 		super();
-		this.dailyAlarmConID = dailyAlarmConID;
+		this.errorAlarmCode = errorAlarmCode;
 		this.fixConWorkRecordNo = fixConWorkRecordNo;
 		this.message = message;
 		this.useAtr = useAtr;
@@ -26,7 +26,7 @@ public class FixedConditionWorkRecordCmd {
 	
 	public FixedConditionWorkRecord fromDomain() {
 		return new FixedConditionWorkRecord(
-				this.dailyAlarmConID,
+				this.errorAlarmCode,
 				EnumAdaptor.valueOf(this.fixConWorkRecordNo, WorkRecordFixedCheckItem.class),
 				new FixedConditionWorkRecordName(this.message),
 				this.useAtr

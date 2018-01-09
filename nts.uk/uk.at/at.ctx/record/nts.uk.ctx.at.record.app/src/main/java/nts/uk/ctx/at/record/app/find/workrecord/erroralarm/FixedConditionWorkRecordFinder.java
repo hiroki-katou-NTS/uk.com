@@ -26,16 +26,16 @@ public class FixedConditionWorkRecordFinder {
 		return data;
 	}
 	
-	public List<FixedConditionWorkRecordDto> getAllFixedConWRByAlarmID(String dailyAlarmConID){
-		List<FixedConditionWorkRecordDto> data = repo.getAllFixedConWRByAlarmID(dailyAlarmConID).stream()
+	public List<FixedConditionWorkRecordDto> getAllFixedConWRByAlarmID(String errorAlarmCode){
+		List<FixedConditionWorkRecordDto> data = repo.getAllFixedConWRByAlarmID(errorAlarmCode).stream()
 				.map(c->FixedConditionWorkRecordDto.fromDomain(c)).collect(Collectors.toList());
 		if(data.isEmpty())
 			return Collections.emptyList();
 		return data;
 	}
 	
-	public FixedConditionWorkRecordDto getFixedConWRByCode(String dailyAlarmConID,int fixConWorkRecordNo){
-		Optional<FixedConditionWorkRecordDto> data = repo.getFixedConWRByCode(dailyAlarmConID, fixConWorkRecordNo)
+	public FixedConditionWorkRecordDto getFixedConWRByCode(InputParamGetFixedCon inputParamGetFixedCon){
+		Optional<FixedConditionWorkRecordDto> data = repo.getFixedConWRByCode(inputParamGetFixedCon.getErrorAlarmCode(), inputParamGetFixedCon.getFixConWorkRecordNo())
 				.map(c->FixedConditionWorkRecordDto.fromDomain(c));
 		if(data.isPresent())
 			return data.get();

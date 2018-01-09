@@ -21,9 +21,10 @@ public class DeleteWorkRecordExtraConCommandHandler extends CommandHandler<Delet
 	protected void handle(CommandHandlerContext<DeleteWorkRecordExtraConCommand> context) {
 		// TODO Auto-generated method stub
 		Optional<WorkRecordExtractingCondition> checkData = repo.getWorkRecordExtraConById(
-				context.getCommand().getErrorAlarmCheckID());
+				context.getCommand().getErrorAlarmCheckID(),
+				context.getCommand().getCheckItem());
 		if(checkData.isPresent()) {
-			repo.deleteWorkRecordExtraCon(context.getCommand().getErrorAlarmCheckID());
+			repo.deleteWorkRecordExtraCon(context.getCommand().getErrorAlarmCheckID(),context.getCommand().getCheckItem());
 		} else {
 			throw new BusinessException("Msg_3");
 		}	
