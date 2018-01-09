@@ -37,7 +37,7 @@
 				<div class="container">
 					<div class="left-content">
 						<div
-							data-bind="ntsPanel:{width: '300px', height: '500px', direction: 'right', showIcon: false, visible: true}">
+							data-bind="ntsPanel:{width: '300px', height: '450px', direction: 'right', showIcon: false, visible: true}">
 							<div class="valign-center control-group">
 								<label>#{i18n.getText('KAL003_48')}</label>
 								<div id="combo-box" data-bind="ntsComboBox: {
@@ -70,22 +70,22 @@
 					<div class="right-content">
 						<div data-bind="with: selectedAlarmCheckCondition">
 							<div class="valign-center control-group">
-								<label>#{i18n.getText('KAL003_11')}</label> 
-								<input data-bind="ntsTextEditor: {value: code, required: true, enable: $parent.screenMode() == 0}" /> 
-								<label>#{i18n.getText('KAL003_12')}</label>
+								<label class="flabel">#{i18n.getText('KAL003_11')}</label> 
+								<input data-bind="ntsTextEditor: {value: code, required: true, enable: $parent.screenMode() == 0, option: {width: '80px'}}" /> 
+								<label style="padding-left: 50px">#{i18n.getText('KAL003_12')}</label>
 								<input data-bind="ntsTextEditor: {value: name, required: true}" />
 							</div>
 							<div class="valign-center control-group">
-								<label>#{i18n.getText('KAL003_9')}</label> 
+								<label class="flabel">#{i18n.getText('KAL003_9')}</label> 
 								<label data-bind="text: displayCategory"></label>
 							</div>
 							<div class="valign-center control-group">
-								<label>#{i18n.getText('KAL003_13')}</label> 
+								<label class="flabel">#{i18n.getText('KAL003_13')}</label> 
 								<input data-bind="ntsTextEditor: {value: displayAvailableRoles, readonly: true}" />
 								<button tabindex="9">#{i18n.getText('KAL003_14')}</button>
 							</div>
 							<div class="valign-center control-group" id="AA1">
-								<label>#{i18n.getText('KAL003_50')}</label>
+								<label class="flabel">#{i18n.getText('KAL003_50')}</label>
 								<div data-bind="ntsRadioBoxGroup: {
 									options: $parent.radioItemList,
 									optionsValue: 'code',
@@ -105,7 +105,7 @@
 								<span>Tab Content 2</span><br />
 <!-- 								<ui:include src="../b/index.xhtml" /> -->
 							</div>
-							<div class="tab-content-3" data-bind="with: $parent.checkConditionTab">
+							<div class="tab-content-3" data-bind="with: checkConditionTab">
  								<ui:include src="common/checkconditions.xhtml" />
 							</div>
 							<div class="tab-content-4">
