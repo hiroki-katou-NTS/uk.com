@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenProcessor;
 import nts.uk.screen.at.app.schedule.basicschedule.ScheduleDisplayControlScreenDto;
@@ -54,9 +55,10 @@ public class Ksu001Webservice extends WebService {
 	 * @return List WorkType WorkTime
 	 */
 	@POST
-	public ListDataInitScreenDto init() {
-		ListDataInitScreenDto result = new ListDataInitScreenDto(this.bScheduleScreenProces.findByCIdAndDeprecateCls(),
-				this.bScheduleScreenProces.getListWorkTime());
+	public DataInitScreenDto init() {
+		PresentClosingPeriodExport obj = this.bScheduleScreenProces.getPresentClosingPeriodExport();
+		DataInitScreenDto result = new DataInitScreenDto(this.bScheduleScreenProces.findByCIdAndDeprecateCls(),
+				this.bScheduleScreenProces.getListWorkTime(), obj.getClosureStartDate(), obj.getClosureEndDate());
 		return result;
 	}
 
@@ -65,7 +67,7 @@ public class Ksu001Webservice extends WebService {
 	public List<ComPatternScreenDto> getDataComPattern() {
 		return this.bScheduleScreenProces.getDataComPattern();
 	}
-	
+
 	@POST
 	@Path("getDataWkpPattern")
 	public List<WkpPatternScreenDto> getDataWkpPattern(String workplaceId) {

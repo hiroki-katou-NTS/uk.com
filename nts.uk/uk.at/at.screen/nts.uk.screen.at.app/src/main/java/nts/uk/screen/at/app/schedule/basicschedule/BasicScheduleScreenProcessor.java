@@ -9,14 +9,16 @@ import javax.inject.Inject;
 
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
-import nts.uk.ctx.at.shared.dom.worktype.DisplayAtr;
+import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
+import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.shift.workpairpattern.ComPatternScreenDto;
 import nts.uk.screen.at.app.shift.workpairpattern.WkpPatternScreenDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * Get data DB BASIC_SCHEDULE, WORKTIME, WORKTYPE not through dom layer
+ * Get data DB BASIC_SCHEDULE, WORKTIME, WORKTYPE, CLOSURE not through dom layer
  * 
  * @author sonnh1
  *
@@ -31,8 +33,10 @@ public class BasicScheduleScreenProcessor {
 	@Inject
 	private BasicScheduleService bScheduleService;
 
+	@Inject
+	private ShClosurePub shClosurePub;
+
 	/**
-	 * 
 	 * @param params
 	 * @return
 	 */
@@ -41,17 +45,29 @@ public class BasicScheduleScreenProcessor {
 	}
 
 	/**
+	 * get list workTime with abolishAtr = NOT_ABOLISH (in contrast to DISPLAY)
 	 * 
 	 * @return
 	 */
 	public List<WorkTimeScreenDto> getListWorkTime() {
 		String companyId = AppContexts.user().companyId();
-		return this.bScheduleScreenRepo.getListWorkTime(companyId, DisplayAtr.DisplayAtr_Display.value);
+		return this.bScheduleScreenRepo.getListWorkTime(companyId, AbolishAtr.NOT_ABOLISH.value);
 	}
 
 	/**
-	 * Find by companyId and DeprecateClassification = Deprecated (added by
-	 * sonnh1)
+	 * getPresentClosingPeriodExport to get startDate and endDate for screen
+	 * KSU001.A
+	 * 
+	 * @return
+	 */
+	public PresentClosingPeriodExport getPresentClosingPeriodExport() {
+		String companyId = AppContexts.user().companyId();
+		int closureId = 1;
+		return shClosurePub.find(companyId, closureId).get();
+	}
+
+	/**
+	 * find by companyId and DeprecateClassification = Deprecated
 	 * 
 	 * @return List WorkTypeDto
 	 */

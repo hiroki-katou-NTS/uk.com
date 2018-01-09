@@ -52,20 +52,34 @@
 								<td><label data-bind="text: exeStart()"></label></td>
 								<td><label data-bind="text: exeEnd()"></label></td>
 								<td><label data-bind="text: executionDateTime()"></label></td>
-								<td><div data-bind="foreach: executionContent">
+								<td><div id="executionContent" data-bind="foreach: executionContent">
 										<p data-bind="text: $data" />
 									</div></td>
-								<td><div data-bind="foreach: detailContentMethod">
+								<td><div id ="detailContentMethod" data-bind="foreach: detailContentMethod">
 										<p data-bind="text: $data" />
 									</div></td>
-								<td><a id="execution-number" tabindex="1" class="nounderline"
-									href="javascript:void(0);"
-									data-bind="text: executionNumber(),click: openEmployeeTargetListDialog">
-								</a></td>
-								<td><a id="error-number" tabindex="2" class="nounderline"
-									href="javascript:void(0);"
-									data-bind="text:errorNumber(),click : openErrorContentDialog">
-								</a></td>
+								<td>
+								   <div data-bind="if:countexecutionNumber() >0">
+										<a id="execution-number" tabindex="1" class="nounderline"
+											href="javascript:void(0);"
+											data-bind="text: executionNumber(),click: openEmployeeTargetListDialog">
+										</a>
+									</div>
+									<div data-bind = "ifnot: countexecutionNumber() > 0 " >
+										<span data-bind="text :executionNumber() "></span>
+									</div>
+								</td>
+								<td>
+									 <div data-bind="if: countError() > 0">
+										<a id="error-number" tabindex="2" class="nounderline"
+										href="javascript:void(0);"
+										data-bind="text:errorNumber(),click : openErrorContentDialog">
+									</a>
+									</div>
+									<div data-bind = "ifnot: countError() > 0">
+										<span data-bind="text :errorNumber() "></span>
+									</div>
+								</td>
 							</tr>
 						</tbody>
 					</table>
