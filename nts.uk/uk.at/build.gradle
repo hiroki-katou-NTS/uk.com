@@ -437,6 +437,7 @@ project (':at.screen:nts.uk.screen.at.app') {
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.app')
 		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.app')
 	 	compile project (':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+	 	compile project(':at.ctx:shared:nts.uk.ctx.at.shared.pub')
 	 	compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.app')
 	 	compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 	 	compile project (':at.ctx:record:nts.uk.ctx.at.record.app')
