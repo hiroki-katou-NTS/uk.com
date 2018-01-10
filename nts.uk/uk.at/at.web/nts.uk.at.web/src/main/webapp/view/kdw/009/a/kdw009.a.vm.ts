@@ -51,8 +51,8 @@ module nts.uk.at.view.kdw009.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.getAll().done((lstData: Array<viewmodel.BusinessType>) => {
-                    let sortedData = _.orderBy(lstData, ['businessTypeCode'], ['asc']);
-                    self.lstBusinessType(sortedData);
+                let sortedData = _.orderBy(lstData, ['businessTypeCode'], ['asc']);
+                self.lstBusinessType(sortedData);
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
