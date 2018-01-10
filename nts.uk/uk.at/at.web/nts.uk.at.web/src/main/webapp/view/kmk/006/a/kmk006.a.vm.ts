@@ -476,10 +476,8 @@ module nts.uk.at.view.kmk006.a {
                 nts.uk.ui.block.invisible();
 
                 // get setting
-                service.findEnumAutoCalAtrOvertime().done(function(dataRes: Array<Enum>) {
-
-                    self.autoCalAtrOvertimeEnum = dataRes;
-
+                service.findEnumAutoCalAtrOvertime().done(function(dataRes: Array<Enum>) {                  
+                    self.autoCalAtrOvertimeEnum = dataRes;                  
                     nts.uk.ui.block.clear();
 
                     dfd.resolve();
@@ -669,7 +667,7 @@ module nts.uk.at.view.kmk006.a {
                 self.valueEnumFleTimeLi(list.flexOTTime.flexOtTime.upLimitOtSet());
                 self.valueEnumFleTimeAtr(list.flexOTTime.flexOtTime.calAtr());
                 self.valueEnumResResLi(list.restTime.restTime.upLimitOtSet());
-                self.valueEnumResResAtr(list.restTime.restTime.calAtr());
+                self.valueEnumResResAtr(list.restTime.restTime.calAtr());               
                 self.valueEnumResLatLi(list.restTime.lateNightTime.upLimitOtSet());
                 self.valueEnumResLatAtr(list.restTime.lateNightTime.calAtr());
             }

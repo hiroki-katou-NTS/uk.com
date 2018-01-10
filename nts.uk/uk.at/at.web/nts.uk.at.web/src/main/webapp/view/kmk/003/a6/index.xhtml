@@ -8,13 +8,13 @@
    	</com:ValidatorScript>
 	<com:ko tag="ifnot" bind="isFlowMode">
 		<com:ko tag="if" bind="isFlexMode">
-			<div id="tab6_fixtable_flex" data-bind="ntsFixTableCustom: {option: fixTableOptionFlex}"></div>
+			<div  tabindex="89" id="tab6_fixtable_flex" data-bind="ntsFixTableCustom: {option: fixTableOptionFlex}"></div>
 		</com:ko>
-		<com:ko tag="if" bind="isFixedMode">
-			<div id="tab6_fixtable_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionFixed}"></div>
+		<com:ko tag="if"  bind="isFixedMode">
+			<div tabindex="89" id="tab6_fixtable_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionFixed}"></div>
 		</com:ko>
 	</com:ko>
 	<com:ko tag="if" bind="isFlowMode">
-		<div  id="tab6_fixtable_flow" data-bind="ntsFixTableCustom: {option: fixTableOptionFlow}"></div>
+		<div tabindex="90" id="tab6_fixtable_flow" data-bind="ntsFixTableCustom: {option: fixTableOptionFlow}"></div>
 	</com:ko>
 </ui:composition>
