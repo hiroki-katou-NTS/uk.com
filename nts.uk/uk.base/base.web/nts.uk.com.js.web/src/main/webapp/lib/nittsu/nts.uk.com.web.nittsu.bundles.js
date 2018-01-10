@@ -165,10 +165,10 @@ var nts;
                         case 'Decimal':
                         case 'Integer':
                         case 'Date':
-                        case 'Duration':
                         case 'Time':
-                        case 'Clock ':
-                        case 'TimePoint ':
+                        case 'Clock':
+                        case 'Duration':
+                        case 'TimePoint':
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
