@@ -113,11 +113,6 @@ module nts.custombinding {
                         margin-top: 3px;
                     }
 
-                    .layout-control .item-classification div.set-item-list,
-                    .layout-control .item-classification div.multiple-items {
-                        margin-left: 5px;
-                    }
-
                     .layout-control .item-classification div.multiple-items {
                         overflow: hidden;
                     }
