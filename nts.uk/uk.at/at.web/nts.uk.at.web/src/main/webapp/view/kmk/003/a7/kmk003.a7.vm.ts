@@ -102,7 +102,7 @@ module a7 {
                 maxRowDisplay: 5,
                 isShowButton: false,
                 dataSource: self.dataSourceForFlowOrFlexNotUse2,
-                isMultipleSelect: true,
+                isMultipleSelect: false,
                 columns: self.columnSetting2(),
                 tabindex: 97
             };
@@ -127,6 +127,7 @@ module a7 {
             });
             
             self.useFixedRestTime.subscribe((v) => {
+                self.clearTabError();
                 self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime(v == UseDivision.USE);
                 //TODO load
 //                self.dataSourceForFixedOrDiffTime(self.backUpOfFixedOrDiffTime);
@@ -151,6 +152,13 @@ module a7 {
             });
             
             
+        }
+        
+        private clearTabError() {
+            $('#nts-fix-table-a7-fixed-difftime').find('.time-range-editor').ntsError('clear');
+            $('#nts-fix-table-a7-flow-flex-use').find('.time-range-editor').ntsError('clear');
+            $('#nts-fix-table-a7-flow-flex-notuse-1').find('.nts-editor').ntsError('clear');
+            $('#nts-fix-table-a7-flow-flex-notuse-2').find('.nts-editor').ntsError('clear');
         }
 
         private loadDataToScreen() {
