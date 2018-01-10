@@ -168,7 +168,7 @@ public class ProgramsManager {
 	 * CPS007A
 	 */
 	public static final Program CPS007A = new Program(WebAppId.COM, ProgramIdConsts.CPS007A, "CPS007_1",
-			"/view/cps/007/b/index.xhtml");
+			"/view/cps/007/a/index.xhtml");
 	
 	/**
 	 * CPS007B
@@ -200,7 +200,14 @@ public class ProgramsManager {
 	
 	public static final Program CMM044D = new Program(WebAppId.COM, ProgramIdConsts.CMM044D, "CMM044_33",
 			"/view/cmm/044/d/index.xhtml"); 
-		
+	
+	/**
+	 * CPS005A
+	 */
+	public static final Program CPS005A  = new Program(WebAppId.COM, ProgramIdConsts.CPS005B, "CPS005_36",
+			"/view/cps/005/a/index.xhtml");
+	
+	
 	/**
 	 * CPS005B
 	 */
