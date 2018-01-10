@@ -771,9 +771,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
         stringItemLength: number;
 
         stringItemDataType: number;
-
+        getIitle: KnockoutObservable<string> = ko.observable("");
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
+            self.getIitle(self.getWidthText(params.itemName) > 200 ? params.itemName : "");
             self.fixedItem = params.fixedItem;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
             self.settingId = ko.observable(params.settingId || "");
@@ -804,7 +805,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.itemType = ko.observable(params.itemType || undefined);
             self.dataType = ko.observable(params.dataType || undefined);
-
+            
             if (params.dataType === 3) {
                 if (params.dateType === 1) {
                     self.dateValue = ko.observable(params.dateValue || undefined);
@@ -941,6 +942,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
 
 
+        }
+        getWidthText(str: string) : number{
+            let div = $('<span>').text(str).appendTo('body'), width = div.width(); div.remove(); 
+            return width;
         }
     }
 
