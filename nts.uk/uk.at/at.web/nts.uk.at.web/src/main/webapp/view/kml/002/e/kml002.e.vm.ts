@@ -186,7 +186,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                     
                     $.when(self.formulaTime()).done(function() {
                         if (self.allItemTime().length > 0) {
-                            self.displayItemsRuleTime(self.allItemTime(), self.catCodeTime(), value);
+                            self.displayItemsRuleTime(self.allItemTime(), self.catCodeTime(), self.checkedTime());
                             self.bindDataMoney(self.currentData.moneyFunc.lstMoney);
                         }
                     }).fail(function(res) {
