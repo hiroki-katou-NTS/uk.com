@@ -50,7 +50,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	public String attendanceActualPlaceCode;
 
 	@Column(name = "ATD_ACTUAL_SOURCE_INFO")
-	public Integer attendanceActualSourceInfo;
+	public int attendanceActualSourceInfo;
 
 	@Column(name = "ATD_STAMP_ROUDING_TIME_DAY")
 	public Integer attendanceStampRoudingTime;
@@ -62,10 +62,10 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	public String attendanceStampPlaceCode;
 
 	@Column(name = "ATD_STAMP_SOURCE_INFO")
-	public Integer attendanceStampSourceInfo;
+	public int attendanceStampSourceInfo;
 
 	@Column(name = "ATD_NUMBER_STAMP")
-	public Integer attendanceNumberStamp;
+	public int attendanceNumberStamp;
 
 	@Column(name = "LWK_ACTUAL_ROUDING_TIME_DAY")
 	public Integer leaveWorkActualRoundingTime;
@@ -77,7 +77,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	public String leaveWorkActualPlaceCode;
 
 	@Column(name = "LWK_ACTUAL_SOURCE_INFO")
-	public Integer leaveActualSourceInfo;
+	public int leaveActualSourceInfo;
 
 	@Column(name = "LWK_STAMP_ROUDING_TIME_DAY")
 	public Integer leaveWorkStampRoundingTime;
@@ -89,34 +89,34 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	public String leaveWorkStampPlaceCode;
 
 	@Column(name = "LWK_STAMP_SOURCE_INFO")
-	public Integer leaveWorkStampSourceInfo;
+	public int leaveWorkStampSourceInfo;
 
 	@Column(name = "LWK_NUMBER_STAMP")
-	public Integer leaveWorkNumberStamp;
+	public int leaveWorkNumberStamp;
 
 	public TimeLeavingWork toDomain() {
 		TimeLeavingWork domain = new TimeLeavingWork(new WorkNo(this.krcdtTimeLeavingWorkPK.workNo),
 				Optional.of(new TimeActualStamp(
-						new WorkStamp(new TimeWithDayAttr(this.attendanceActualRoudingTime),
-								new TimeWithDayAttr(this.attendanceActualTime),
-								new WorkLocationCD(this.attendanceActualPlaceCode),
-								EnumAdaptor.valueOf(this.attendanceActualSourceInfo, StampSourceInfo.class)),
-						new WorkStamp(new TimeWithDayAttr(this.attendanceStampRoudingTime),
-								new TimeWithDayAttr(this.attendanceStampTime),
-								new WorkLocationCD(this.attendanceStampPlaceCode),
-								EnumAdaptor.valueOf(this.attendanceStampSourceInfo, StampSourceInfo.class)),
-						this.attendanceNumberStamp.intValue())),
+						getWorkStamp(this.attendanceActualRoudingTime, this.attendanceActualTime, 
+								this.attendanceActualPlaceCode, this.attendanceActualSourceInfo),
+						getWorkStamp(this.attendanceStampRoudingTime, this.attendanceStampTime,
+								this.attendanceStampPlaceCode, this.attendanceStampSourceInfo),
+						this.attendanceNumberStamp)),
 				Optional.of(new TimeActualStamp(
-						new WorkStamp(new TimeWithDayAttr(this.leaveWorkActualRoundingTime),
-								new TimeWithDayAttr(this.leaveWorkActualTime),
-								new WorkLocationCD(this.leaveWorkActualPlaceCode),
-								EnumAdaptor.valueOf(this.leaveActualSourceInfo, StampSourceInfo.class)),
-						new WorkStamp(new TimeWithDayAttr(this.leaveWorkStampRoundingTime),
-								new TimeWithDayAttr(this.leaveWorkStampTime),
-								new WorkLocationCD(this.leaveWorkStampPlaceCode),
-								EnumAdaptor.valueOf(this.leaveWorkStampSourceInfo, StampSourceInfo.class)),
-						this.leaveWorkNumberStamp.intValue())));
+						getWorkStamp(this.leaveWorkActualRoundingTime, this.leaveWorkActualTime,
+								this.leaveWorkActualPlaceCode, this.leaveActualSourceInfo),
+						getWorkStamp(this.leaveWorkStampRoundingTime, this.leaveWorkStampTime,
+								this.leaveWorkStampPlaceCode, this.leaveWorkStampSourceInfo),
+						this.leaveWorkNumberStamp)));
 		return domain;
+	}
+
+	private WorkStamp getWorkStamp(Integer roudingTime, Integer time, String placeCode, int sourceInfo) {
+		return new WorkStamp(
+				roudingTime == null ? null : new TimeWithDayAttr(roudingTime),
+				time == null ? null : new TimeWithDayAttr(time),
+				placeCode == null ? null : new WorkLocationCD(placeCode),
+				EnumAdaptor.valueOf(sourceInfo, StampSourceInfo.class));
 	}
 
 	public static KrcdtTimeLeavingWork toEntity(String employeeId, GeneralDate ymd, TimeLeavingWork domain, int type) {
@@ -158,7 +158,6 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 			} else {
 				krcdtTimeLeavingWork.attendanceActualPlaceCode = null;
 				krcdtTimeLeavingWork.attendanceActualRoudingTime = null;
-				krcdtTimeLeavingWork.attendanceActualSourceInfo = null;
 				krcdtTimeLeavingWork.attendanceActualTime = null;
 			}
 			if (attendanceStamp.getStamp() != null && attendanceStamp.getStamp().isPresent()) {
@@ -169,7 +168,6 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 			} else {
 				krcdtTimeLeavingWork.attendanceStampPlaceCode = null;
 				krcdtTimeLeavingWork.attendanceStampRoudingTime = null;
-				krcdtTimeLeavingWork.attendanceStampSourceInfo = null;
 				krcdtTimeLeavingWork.attendanceStampTime = null;
 			}
 			krcdtTimeLeavingWork.attendanceNumberStamp = attendanceStamp.getNumberOfReflectionStamp();
@@ -177,12 +175,9 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 		} else {
 			krcdtTimeLeavingWork.attendanceActualPlaceCode = null;
 			krcdtTimeLeavingWork.attendanceActualRoudingTime = null;
-			krcdtTimeLeavingWork.attendanceActualSourceInfo = null;
 			krcdtTimeLeavingWork.attendanceActualTime = null;
-			krcdtTimeLeavingWork.attendanceNumberStamp = null;
 			krcdtTimeLeavingWork.attendanceStampPlaceCode = null;
 			krcdtTimeLeavingWork.attendanceStampRoudingTime = null;
-			krcdtTimeLeavingWork.attendanceStampSourceInfo = null;
 			krcdtTimeLeavingWork.attendanceStampTime = null;
 		}
 		
@@ -198,7 +193,6 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 			} else {
 				krcdtTimeLeavingWork.leaveWorkActualPlaceCode = null;
 				krcdtTimeLeavingWork.leaveWorkActualRoundingTime = null;
-				krcdtTimeLeavingWork.leaveActualSourceInfo = null;
 				krcdtTimeLeavingWork.leaveWorkActualTime = null;
 			}
 			if (leaveStamp.getStamp() != null && leaveStamp.getStamp().isPresent()) {
@@ -209,19 +203,15 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 			} else {
 				krcdtTimeLeavingWork.leaveWorkStampPlaceCode = null;
 				krcdtTimeLeavingWork.leaveWorkStampRoundingTime = null;
-				krcdtTimeLeavingWork.leaveWorkStampSourceInfo = null;
 				krcdtTimeLeavingWork.leaveWorkStampTime = null;
 			}
 			krcdtTimeLeavingWork.leaveWorkNumberStamp = leaveStamp.getNumberOfReflectionStamp();
 		} else {
 			krcdtTimeLeavingWork.leaveWorkActualPlaceCode = null;
 			krcdtTimeLeavingWork.leaveWorkActualRoundingTime = null;
-			krcdtTimeLeavingWork.leaveActualSourceInfo = null;
 			krcdtTimeLeavingWork.leaveWorkActualTime = null;
-			krcdtTimeLeavingWork.leaveWorkNumberStamp = null;
 			krcdtTimeLeavingWork.leaveWorkStampPlaceCode = null;
 			krcdtTimeLeavingWork.leaveWorkStampRoundingTime = null;
-			krcdtTimeLeavingWork.leaveWorkStampSourceInfo = null;
 			krcdtTimeLeavingWork.leaveWorkStampTime = null;
 		}
 	}

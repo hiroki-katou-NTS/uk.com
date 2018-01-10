@@ -71,19 +71,17 @@ public class PersonInfoItemGroupFinder {
 		} else {
 			List<PerInfoItemDefDto> items = itemDfFinder.getPerInfoItemDefByListId(listItemDfId);
 
-			items.stream().map(m -> {
+			return items.stream().map(m -> {
 				PerInfoCtgFullDto cat = categoryFinder.getPerInfoCtg(m.getPerInfoCtgId());
 				if (cat.getIsAbolition() == 0) {
 					return m;
 				}
 				return null;
-			}).filter(f -> f != null).forEach(m -> {
+			}).filter(f -> f != null).map(m -> {
 				int catDispOrder = categoryFinder.getDispOrder(m.getPerInfoCtgId());
 				m.setDispOrder(catDispOrder * 100000 + m.getDispOrder());
-			});
-
-			return items;
+				return m;
+			}).sorted((o1, o2) -> o1.getDispOrder() - o2.getDispOrder()).collect(Collectors.toList());
 		}
-
 	}
 }

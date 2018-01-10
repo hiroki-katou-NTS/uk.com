@@ -343,7 +343,7 @@ module nts.fixedtable {
         public calStyleTable() {
             let self = this;
             let heigthCell = 33;
-            self.tableStyle.height = heigthCell * self.maxRowDisplay + 29;
+            self.tableStyle.height = heigthCell * self.maxRowDisplay + 31;
             
             self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0) + 30;
         }

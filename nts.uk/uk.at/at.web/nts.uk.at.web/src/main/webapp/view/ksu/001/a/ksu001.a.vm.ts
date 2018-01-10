@@ -310,11 +310,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.updateExTable();
                     });
                 }
-                //nts.uk.ui.block.clear();
             })
-//                .always(() => {
-//                nts.uk.ui.block.clear();
-//            });
         }
 
         /**
@@ -325,7 +321,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.ccgcomponent = {
                 baseDate: ko.observable(new Date()),
                 // Show/hide options 
-                isQuickSearchTab: true,
+                isQuickSearchTab: false,
                 isAdvancedSearchTab: true,
                 isAllReferableEmployee: true,
                 isOnlyMe: true,
@@ -615,10 +611,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         /**
-         *  update extable 
+         *  update extable
+         *  create new dataSource for some part of exTable
+         *   set color for extable
          */
         updateExTable(): void {
             let self = this;
+            nts.uk.ui.block.grayout();
+
             let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newDetailHeaderDs = [], newObjDetailHeaderDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
 
             _.each(self.listSid(), (x) => {
@@ -673,7 +673,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let leftmostContentDeco = [], detailHeaderDeco = [], detailContentDeco = [];
 
             self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
-
                 let updateLeftmostContent = {
                     dataSource: newLeftMostDs,
                     features: [{
@@ -681,6 +680,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         decorator: leftmostContentDeco
                     }]
                 }
+
                 let updateDetailHeader = {
                     columns: newDetailColumns,
                     dataSource: newDetailHeaderDs,
@@ -746,15 +746,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 $("#extable").on("extablecellupdated", function() { });
                 $("#extable").on("extablerowupdated", function() { });
-
-                //set lock cell
-                _.each(self.dataSource(), (x) => {
-                    if (x.confirmedAtr == 1) {
-                        $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
-                    } else {
-                        $("#extable").exTable("unlockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
-                    }
-                });
             }).always(() => {
                 nts.uk.ui.block.clear();
             });
@@ -1354,7 +1345,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     });
                 }
-                //                self.checkStateWorkTypeCode(lstWorkTypeCode).done(function() {
                 // lstData: list object in dataSource. It has workTypeCode, which exist in master data WORKTYPE
                 let lstData: BasicSchedule[] = [];
                 _.each(__viewContext.viewModel.viewO.listWorkType(), (item) => {
@@ -1381,7 +1371,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                 });
                 dfd.resolve();
-                //                });
             } else {
                 dfd.resolve();
             }
@@ -1485,7 +1474,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             if (self.empItems().length != 0) {
                 // getDataSpecDateAndHoliday always query to server
-                // because date is changed when click nextMonth
+                // because date is changed when click nextMonth or backMonth
                 $.when(self.getDataSpecDateAndHoliday()).done(() => {
                     _.each(self.arrDay, (date) => {
                         let ymd = date.yearMonthDay;
@@ -1545,7 +1534,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setColor(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco), self.setColorForText(detailHeaderDeco, detailContentDeco),
-                self.setColorForCell(detailHeaderDeco, detailContentDeco), self.setColorForLeftmostContent()).done(() => {                    //set lock cell                    _.each(self.dataSource(), (x) => {                        if (x.confirmedAtr == 1) {                            $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));                        }                    });                    dfd.resolve();                });
+                self.setColorForCell(detailHeaderDeco, detailContentDeco), self.setColorForLeftmostContent()).done(() => {                    //set lock cell
+                    _.each(self.dataSource(), (x) => {
+                        if (x.confirmedAtr == 1) {
+                            $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                        } else {
+                            $("#extable").exTable("unlockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                        }
+                    });                    dfd.resolve();                });
             return dfd.promise();
         }
 

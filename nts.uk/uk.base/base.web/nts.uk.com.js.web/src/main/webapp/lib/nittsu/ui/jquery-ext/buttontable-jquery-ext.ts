@@ -280,7 +280,7 @@ module nts.uk.ui.jqueryExtentions {
                             //                            self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")) });
                             self.container.trigger("cellselectedchanging", { column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")), data: oCell.data("cell-data") });
 
-                        }
+                        } 
                     } else {
                         let oldSelected = self.container.find(".ntsButtonCellSelected");
                         if (!nts.uk.util.isNullOrEmpty(oldSelected)) {

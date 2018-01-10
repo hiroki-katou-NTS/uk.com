@@ -118,7 +118,7 @@ module a2 {
             self.fixTableOptionOneDaySimpleMode = {
                 maxRow: 1,
                 minRow: 1,
-                maxRowDisplay: 2,
+                maxRowDisplay: 1,
                 isShowButton: false,
                 dataSource: self.dataSourceOneDaySimpleMode,
                 isMultipleSelect: false,

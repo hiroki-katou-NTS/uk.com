@@ -113,11 +113,6 @@ module nts.custombinding {
                         margin-top: 3px;
                     }
 
-                    .layout-control .item-classification div.set-item-list,
-                    .layout-control .item-classification div.multiple-items {
-                        margin-left: 5px;
-                    }
-
                     .layout-control .item-classification div.multiple-items {
                         overflow: hidden;
                     }
@@ -999,7 +994,13 @@ module nts.custombinding {
                                             if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
                                                 services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
                                                     if (defs && defs.length) {
-                                                        _(defs).filter(x => !x.isAbolition).orderBy(x => x.dispOrder).each((x, i) => { x.dispOrder = i + 1; item.listItemDf.push(x) });
+                                                        _(defs)
+                                                            .filter(x => !x.isAbolition)
+                                                            .orderBy(x => x.dispOrder)
+                                                            .each((x, i) => {
+                                                                x.dispOrder = i + 1;
+                                                                item.listItemDf.push(x);
+                                                            });
 
                                                         opts.sortable.pushItem(item);
                                                     }
@@ -1809,6 +1810,10 @@ module nts.custombinding {
                 // remove all data in listbox
                 opts.listbox.options.removeAll();
 
+                if (opts.sortable.isEditable() != 0) {
+                    return;
+                }
+
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
                     opts.comboxbox.options.removeAll();
                     services.getCats().done((data: any) => {
@@ -1877,6 +1882,10 @@ module nts.custombinding {
 
             // load listbox data
             opts.comboxbox.value.subscribe(cid => {
+                if (opts.sortable.isEditable() != 0) {
+                    return;
+                }
+
                 if (cid) {
                     let data: Array<IItemCategory> = ko.toJS(opts.comboxbox.options),
                         item: IItemCategory = _.find(data, x => x.id == cid);

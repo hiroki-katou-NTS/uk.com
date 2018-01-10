@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.commonsetting.CalcMethodIfLeaveWorkDuringBreakTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
@@ -41,7 +42,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 * @param deductionAtr
 	 * @param withinStatutoryAtr
 	 */
-	private TimeSheetOfDeductionItem(TimeSpanWithRounding withRounding
+	private TimeSheetOfDeductionItem(TimeZoneRounding withRounding
 									,TimeSpanForCalc timeSpan
 									,List<TimeSheetOfDeductionItem> deductionTimeSheets
 									,List<BonusPayTimesheet> bonusPayTimeSheet
@@ -65,7 +66,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 * @param withinStatutoryAtr
 	 * @return
 	 */
-	public static TimeSheetOfDeductionItem createTimeSheetOfDeductionItemAsFixed(TimeSpanWithRounding withRounding
+	public static TimeSheetOfDeductionItem createTimeSheetOfDeductionItemAsFixed(TimeZoneRounding withRounding
 			,TimeSpanForCalc timeSpan
 			,List<TimeSheetOfDeductionItem> deductionTimeSheets
 			,List<BonusPayTimesheet> bonusPayTimeSheet
@@ -94,7 +95,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 */
 	public TimeSheetOfDeductionItem replaceTimeSpan(TimeSpanForCalc timeSpan) {
 		return new TimeSheetOfDeductionItem(
-											new TimeSpanWithRounding(timeSpan.getStart(), timeSpan.getEnd(), this.timeSheet.getRounding()),
+											new TimeZoneRounding(timeSpan.getStart(), timeSpan.getEnd(), this.timeSheet.getRounding()),
 											timeSpan,
 											this.deductionTimeSheet,
 											this.bonusPayTimeSheet,
@@ -158,7 +159,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 				TimeSpanForCalc duplicationSpan = this.getCalcrange().getDuplicatedWith(compareTimeSheet.getCalcrange()).get();
 				map.add(this.replaceTimeSpan(this.calcrange.getNotDuplicationWith(compareTimeSheet.calcrange).get()));
 				//List<TimeSheetOfDeductionItem> replaceDeductionItemList = new ArrayList();//this.deductionTimeSheets;
-				compareTimeSheet.deductionTimeSheet.add(new TimeSheetOfDeductionItem(new TimeSpanWithRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), Finally.empty())
+				compareTimeSheet.deductionTimeSheet.add(new TimeSheetOfDeductionItem(new TimeZoneRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), null)
 																		 , duplicationSpan
 																		 , Collections.emptyList()
 																		 , Collections.emptyList()
@@ -189,7 +190,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 			if(!fluidFixedAtr.isFluidWork()) {
 				TimeSpanForCalc duplicationSpan = compareTimeSheet.getCalcrange().getDuplicatedWith(this.getCalcrange()).get();
 				map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
-				this.deductionTimeSheet.add(new TimeSheetOfDeductionItem(new TimeSpanWithRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), Finally.empty())
+				this.deductionTimeSheet.add(new TimeSheetOfDeductionItem(new TimeZoneRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), null)
 																		, duplicationSpan
 																		, Collections.emptyList()
 																		, Collections.emptyList()

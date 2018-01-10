@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,9 +9,9 @@ import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.HasTimeSpanList;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.commonsetting.PredetermineTime;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -21,9 +22,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
-public class PredetermineTimeSetForCalc implements HasTimeSpanList<Timezone>{
+public class PredetermineTimeSetForCalc {
 	
-	private final List<Timezone> timeSheets;
+	private final List<TimezoneUse> timeSheets;
 	
 	private final TimeWithDayAttr AMEndTime;
 
@@ -44,7 +45,7 @@ public class PredetermineTimeSetForCalc implements HasTimeSpanList<Timezone>{
 	 * @param timeSheets
 	 */
 	public PredetermineTimeSetForCalc(
-			List<Timezone> timeSheets,
+			List<TimezoneUse> timeSheets,
 			TimeWithDayAttr AMEndTime,
 			TimeWithDayAttr PMStartTime,
 			PredetermineTime addtionSet,
@@ -61,11 +62,11 @@ public class PredetermineTimeSetForCalc implements HasTimeSpanList<Timezone>{
 	/**
 	 * Aggregateの所定時間から計算用所定時間クラスへの変換
 	 */
-	public static PredetermineTimeSetForCalc convertFromAggregatePremiumTime(WorkTimeSet predetermineTimeSet){
-		return new PredetermineTimeSetForCalc(predetermineTimeSet.getPrescribedTimezoneSetting().getTimezone()
+	public static PredetermineTimeSetForCalc convertFromAggregatePremiumTime(PredetemineTimeSetting predetermineTimeSet){
+		return new PredetermineTimeSetForCalc(predetermineTimeSet.getPrescribedTimezoneSetting().getLstTimezone()
 											  ,predetermineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime()
 											  ,predetermineTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime()
-											  ,predetermineTimeSet.getAdditionSetID()
+											  ,predetermineTimeSet.getPredTime()
 											  ,predetermineTimeSet.getRangeTimeDay()
 											  ,predetermineTimeSet.getStartDateClock());
 	}
@@ -84,11 +85,26 @@ public class PredetermineTimeSetForCalc implements HasTimeSpanList<Timezone>{
 
 	
 	public void correctTimeSheet(TimeWithDayAttr start, TimeWithDayAttr end) {
-		  val corrected = this.extractBetween(start, end);
+		  val corrected = extractBetween(start, end);
 		  this.timeSheets.clear();
 		  this.timeSheets.addAll(corrected);
 	 }
 
+	
+	private List<TimezoneUse> extractBetween(TimeWithDayAttr start, TimeWithDayAttr end) {
+		val targetSpan = new TimeSpanForCalc(start, end);
+		List<TimezoneUse> result = new ArrayList<>();
+		
+		this.timeSheets.stream().forEach(source -> {
+			source.timeSpan().getDuplicatedWith(targetSpan).ifPresent(duplicated -> {
+				source.updateStartTime(duplicated.getStart());
+				source.updateEndTime(duplicated.getEnd());
+				result.add(source);
+			});
+		});
+		return result;
+	}
+	
 	/**
 	 * 午前出勤、午後出勤の判定
 	 * @param attr
@@ -116,11 +132,11 @@ public class PredetermineTimeSetForCalc implements HasTimeSpanList<Timezone>{
 	public AttendanceTime getpredetermineTime(DailyWork dailyWork) {
 		switch(dailyWork.getAttendanceHolidayAttr()) {
 		case FULL_TIME:
-			return additionSet.getTime().getOneDay();
+			return additionSet.getAddTime().getOneDay();
 		case MORNING:
-			return additionSet.getTime().getMorning();
+			return additionSet.getAddTime().getMorning();
 		case AFTERNOON:
-			return additionSet.getTime().getAfternoon();
+			return additionSet.getAddTime().getAfternoon();
 		default:
 			return new AttendanceTime(0);
 		}
@@ -130,18 +146,13 @@ public class PredetermineTimeSetForCalc implements HasTimeSpanList<Timezone>{
 	 * 所定時間設定を所定時間設定(計算用)に変換する
 	 * @param master 所定時間設定
 	 */
-	public static PredetermineTimeSetForCalc convertMastarToCalc(WorkTimeSet master) {
-		return new PredetermineTimeSetForCalc(master.getPrescribedTimezoneSetting().getTimezone(),
+	public static PredetermineTimeSetForCalc convertMastarToCalc(PredetemineTimeSetting master) {
+		return new PredetermineTimeSetForCalc(master.getPrescribedTimezoneSetting().getLstTimezone(),
 											  master.getPrescribedTimezoneSetting().getMorningEndTime(),
 											  master.getPrescribedTimezoneSetting().getAfternoonStartTime(),
-											  master.getAdditionSetID(),
+											  master.getPredTime(),
 											  master.getRangeTimeDay(),
 											  master.getStartDateClock());
-	}
-	
-	@Override
-	public List<Timezone> getTimeSpanList() {
-		return this.timeSheets;
 	}
 	
 }
