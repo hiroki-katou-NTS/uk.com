@@ -674,7 +674,11 @@ module cps001.a.vm {
                                         if (data && data.length) {
                                             self.gridlist(data);
                                             if (!loadData || !loadData.infoId) {
-                                                self.infoId(data[0].optionValue);
+                                                if (self.infoId() != data[0].optionValue) {
+                                                    self.infoId(data[0].optionValue);
+                                                } else {
+                                                    self.infoId.valueHasMutated();
+                                                }
                                             } else {
                                                 if (loadData.infoId != self.infoId()) {
                                                     self.infoId(loadData.infoId);
