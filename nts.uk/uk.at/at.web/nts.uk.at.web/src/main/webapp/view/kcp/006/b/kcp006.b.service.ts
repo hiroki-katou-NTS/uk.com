@@ -12,8 +12,9 @@ module nts.uk.at.view.kcp006.b.service {
         return nts.uk.request.ajax(paths.getCompanyEvent, lstDate.map((date) => { return moment(date, "YYYYMMDD").utc().toISOString(); }));
     }
 
-    export function getWorkplaceEvent(lstDate): JQueryPromise<Array<model.EventObj>> {
-        return nts.uk.request.ajax(paths.getWorkplaceEvent, lstDate.map((date) => { return moment(date, "YYYYMMDD").utc().toISOString(); }));
+    export function getWorkplaceEvent(data): JQueryPromise<Array<model.EventObj>> {
+        data.lstDate = data.lstDate.map((date) => { return moment(date, "YYYYMMDD").utc().toISOString(); });
+        return nts.uk.request.ajax(paths.getWorkplaceEvent, data);
     }
     
     export function addCompanyEvent(event): JQueryPromise<Array<model.EventObj>> {
