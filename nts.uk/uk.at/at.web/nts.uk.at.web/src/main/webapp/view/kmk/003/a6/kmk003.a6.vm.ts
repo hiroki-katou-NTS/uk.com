@@ -252,7 +252,7 @@ module a6 {
                     width: 120,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'workdayoffFrName',
                                     editable: false,
                                     enable: true,
@@ -267,7 +267,7 @@ module a6 {
                     width: 120,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'workdayoffFrName',
                                     editable: false,
                                     enable: true,
@@ -282,7 +282,7 @@ module a6 {
                     width: 180,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'workdayoffFrName',
                                     editable: false,
                                     enable: true,
@@ -343,7 +343,7 @@ module a6 {
                     width: 120,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 10,
                                     optionsText: 'workdayoffFrName',
                                     editable: false,
                                     enable: true,
@@ -358,7 +358,7 @@ module a6 {
                     width: 120,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 10,
                                     optionsText: 'workdayoffFrName',
                                     editable: false,
                                     enable: true,
@@ -373,7 +373,7 @@ module a6 {
                     width: 180,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 10,
                                     optionsText: 'workdayoffFrName',
                                     editable: false,
                                     enable: true,
@@ -388,7 +388,7 @@ module a6 {
                     width: 120,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'localizedName',
                                     editable: false,
                                     enable: true,
