@@ -1416,7 +1416,12 @@ public class ProgramsManager {
 	public static final Program KAF009A = new Program(WebAppId.AT, ProgramIdConsts.KAF009A, null,
 			"/view/kaf/009/a/index.xhtml");
 	// TODO: Define new programs here.
-
+	/**
+	 * CMM051A
+	 */
+	public static final Program CMM051A = new Program(WebAppId.COM, ProgramIdConsts.CMM051A, "CMM051_1",
+			"/view/cmm/051/a/index.xhtml");
+	
 	/**
 	 * All programs map.
 	 */
