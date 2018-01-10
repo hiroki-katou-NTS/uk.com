@@ -33,6 +33,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 //        atdItem: DailyAttendanceItemDto;
         attendanceModel: AttendanceModel;
         enableAtdBtn: KnockoutObservable<boolean>;
+        checkedCountAtr: KnockoutObservable<boolean>;
         
         constructor() {
             var self = this;
@@ -102,6 +103,19 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.selectUnder.subscribe(function(isUnder) {
                 self.loadBySelectUse(self.checkSelectUse(), isUnder, self.selectUppper());
             });
+            
+            self.checkedCountAtr = ko.observable();
+            self.checkedCountAtr.subscribe(function(value) {
+                if (typeof self.checkedCountAtr() != "undefined") {
+                    if (value == false) {
+                        self.itemTotalTimesDetail.countAtr(1);   
+                    } else {
+                        self.itemTotalTimesDetail.countAtr(0);
+                    }    
+                } else {
+                    self.switchCheckbox(self.itemTotalTimesDetail.countAtr());
+                }
+            }); 
 
         }
 
@@ -166,6 +180,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                         self.loadAllTotalTimesDetail(self.currentCode()).done(() => {
                             if (self.totalClsEnums.length > 0) {
                                 self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail.summaryAtr()].value);
+                                self.switchCheckbox(self.itemTotalTimesDetail.countAtr());
                             }
                             
                             $(document).on("keydown", function(e) {
@@ -394,11 +409,6 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             //trim() name
             self.itemTotalTimesDetail.totalTimesName($.trim(self.itemTotalTimesDetail.totalTimesName()));
             self.itemTotalTimesDetail.totalTimesABName($.trim(self.itemTotalTimesDetail.totalTimesABName()));
-            if (self.itemTotalTimesDetail.countAtr()) {
-                self.itemTotalTimesDetail.countAtr(0);
-            } else {
-                self.itemTotalTimesDetail.countAtr(1);
-            }
             // save enum
             self.itemTotalTimesDetail.summaryAtr(self.valueEnum());
             // define dataDto
@@ -611,12 +621,16 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 saveData.totalCondition.attendanceItemId(1);
             }
         }
-               
+        
+        private switchCheckbox(value: number): void {
+            let self = this;
+            if (value == 0) {
+                self.checkedCountAtr(false);   
+            } else {
+                self.checkedCountAtr(true);
+            }    
+        }      
     }
-
-
-
-
 
     export class TotalTimesModel {
         totalCountNo: number;
