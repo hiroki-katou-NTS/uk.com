@@ -60,7 +60,7 @@
 					<button data-bind="click: btnAfter, enable: enableAfter"><i class="icon icon-button-arrow-right"></i></button>
 					<!-- B1_4 -->
 					<button class="proceed" data-bind="click: btnApprove, 
-													enable: displayButtonControl().enableApproval(),
+													enable: displayButtonControl().enableApproval() &amp; $root.errors.isEmpty(),
 													visible: !displayButtonControl().displayApproval()">#{i18n.getText('KAF000_15')}</button>
 					<!-- B1_14 -->
 					<div class="comment" data-bind="visible: !displayButtonControl().displayApprovalLabel()">
@@ -68,23 +68,23 @@
 					</div>
 					<!-- B1_5 -->
 					<button data-bind="click: btnDeny, 
-									enable: displayButtonControl().enableDeny(),
+									enable: displayButtonControl().enableDeny() &amp; $root.errors.isEmpty(),
 									visible: !displayButtonControl().displayDeny()" >#{i18n.getText('KAF000_16')}</button>
 					<!-- B1_15 -->
 					<div class="comment" data-bind="visible: !displayButtonControl().displayDenyLabel()">
 						<label>【否認】</label>
 					</div>
 					<!-- B1_6 -->
-					<button data-bind="enable: displayButtonControl().enableRemand(),
+					<button data-bind="enable: displayButtonControl().enableRemand() &amp; $root.errors.isEmpty(),
 									   visible: !displayButtonControl().displayRemand()">#{i18n.getText('KAF000_17')}</button>
 					<!-- B1_7 -->
 					<button data-bind="click: btnRelease, 
-									enable: displayButtonControl().enableRelease(),
+									enable: displayButtonControl().enableRelease() &amp; $root.errors.isEmpty(),
 									visible: !displayButtonControl().displayRelease()" >#{i18n.getText('KAF000_18')}</button>
 					
 					<!-- B1_8 -->
 					<button class="proceed" data-bind="click: update,
-													enable : displayButtonControl().enableUpdate(), 
+													enable : displayButtonControl().enableUpdate() &amp; $root.errors.isEmpty(), 
 -													visible: !displayButtonControl().displayUpdate()">#{i18n.getText('KAF000_19')}</button>	
 
 					<!-- B1_9 -->
@@ -96,12 +96,12 @@
 					
 					<!-- B1_12 -->
 					<button  class="danger" data-bind="click: btnDelete,
-													enable : displayButtonControl().enableDelete(),
+													enable : displayButtonControl().enableDelete() &amp; $root.errors.isEmpty(),
 -													visible: !displayButtonControl().displayDelete()" >#{i18n.getText('KAF000_23')}</button>
 					
 					<!-- B1_13 -->
 					<button  class="danger" data-bind="click: btnCancel , 
-													enable : displayButtonControl().enableCancel(),
+													enable : displayButtonControl().enableCancel() &amp; $root.errors.isEmpty(),
 													visible: !displayButtonControl().displayCancel()">#{i18n.getText('KAF000_24')}</button>
 					<br></br>
 				</div>

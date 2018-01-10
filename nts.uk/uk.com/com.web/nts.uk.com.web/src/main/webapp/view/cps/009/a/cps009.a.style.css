@@ -24,6 +24,7 @@
 	background-color: #C7F391;
 }
 
+
 .input-units {
 	width: 209px !important;
 }
@@ -39,32 +40,34 @@
 .nts-datepicker-wrapper .ntsDatepicker {
 	width: 161px !important;
 }
-
+#datey.nts-input{
+	padding: 3px 10px !important;
+}
 #date {
 	border: 0px solid #999999 !important;
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #datey {
 	border: 0px solid #999999 !important;
-	width: 210px !important;
+	width: 192px !important;
 	padding-left: 2px;
 }
 
 #timeItem {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #timePoint {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #number {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #string {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #content-right {
@@ -250,6 +253,9 @@ table tr td, table tr th {
 .input-units-1 {
 	min-width: 200px;
 	max-width: 200px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .input-units-2 {
@@ -258,8 +264,7 @@ table tr td, table tr th {
 }
 
 .input-units-3 {
-	min-width: 240px;
-	max-width: 240px;
+	width: 240px !important;
 }
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
     .ntsControl .nts-input{
@@ -372,3 +377,29 @@ label[for] {
 .ui-state-default{
 	border: 1px solid #c5c5c500 !important;;
 }
+/* Tooltip container */
+/* .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; If you want dots under the hoverable text
+} */
+
+/* Tooltip text */
+/* .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+ 
+    Position the tooltip text - see examples below!
+    position: absolute;
+    z-index: 1;
+} */
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+} 
