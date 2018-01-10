@@ -378,3 +378,6 @@ label[for] {
 	border: 1px solid #c5c5c500 !important;;
 }
 
+abbr[title]{
+	text-decoration: none;
+}
