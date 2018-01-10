@@ -105,8 +105,9 @@ module nts.uk.com.view.cmm018.a {
                         //check add history new
                         if(self.checkAddHistory()){
                             self.getDataCompany(0);
+                            
                         }
-                        self.convertHistForCom(self.lstCompany());
+                       // self.convertHistForCom(self.lstCompany());
                         let lstCompany = self.findAppIdForCom(codeChanged);
                         if(lstCompany != undefined){
                             _.each(lstCompany.lstCompanyRoot, function(item){
@@ -134,7 +135,7 @@ module nts.uk.com.view.cmm018.a {
                         if(self.checkAddHistory()){
                             self.getDataWorkplace(0);
                         }
-                        self.convertHistForWp(self.lstWorkplace());
+                        //self.convertHistForWp(self.lstWorkplace());
                         let lstWorkplace: vmbase.DataDisplayWpDto = self.findAppIdForWp(codeChanged);
                         if(lstWorkplace != undefined){
                             _.each(lstWorkplace.lstWorkplaceRoot, function(item){
@@ -161,7 +162,7 @@ module nts.uk.com.view.cmm018.a {
                         if(self.checkAddHistory()){
                             self.getDataPerson(0);
                         }
-                        self.convertHistForPs(self.lstPerson());
+                        //self.convertHistForPs(self.lstPerson());
                         let lstPerson: vmbase.DataDisplayPsDto = self.findAppIdForPs(codeChanged);
                         if(lstPerson != undefined){
                            _.each(lstPerson.lstPersonRoot, function(item){
