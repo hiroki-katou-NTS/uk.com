@@ -33,7 +33,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         constructor() {
 
             let self = this;
-
             self.initValue();
             self.start(undefined);
             self.initSettingId.subscribe(function(value: string) {
@@ -90,6 +89,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
 
         }
+        
+        getTitleName(itemName: string){
+            return ko.computed(()=>{
+                return itemName.length > 5 ? itemName : "";
+            });
+        }
 
         // get item list
         getItemList(settingId: string, ctgId: string) {
@@ -138,16 +143,17 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList(itemConvert);
                     self.lstItemFilter = itemConvert;
-                    $.fn.hasScrollBar = function() {
-                        return this.get(0).scrollHeight > this.height();
-                    }
-                    if($("#sub-right>table>tbody").hasScrollBar()){
-                        $(".contents-header thead, #sub-right>table>tbody").css("width", "651px");
-                        $("#COL_3").css("width", "257px !important");
-                    }else{
-                        $(".contents-header thead, #sub-right>table>tbody").css("width", "634px");
-                        $("#COL_3").css("width", "240px !important");
-                    }
+                       
+//                    $.fn.hasScrollBar = function() {
+//                        return this.get(0).scrollHeight > this.height();
+//                    }
+//                    if($("#sub-right>table>tbody").hasScrollBar()){
+//                        $(".contents-header thead, #sub-right>table>tbody").css("width", "651px");
+//                        $("#COL_3").css("width", "257px !important");
+//                    }else{
+//                        $(".contents-header thead, #sub-right>table>tbody").css("width", "634px");
+//                        $("#COL_3").css("width", "240px !important");
+//                    }
                 } else {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList([]);
@@ -911,7 +917,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.numericItemMin = params.numericItemMin || undefined;
                 self.numericItemMax = params.numericItemMax || undefined;
                 self.stringValue.subscribe(x => {
-                    console.log(this.itemName());
                     let itemName: string = this.itemName();
                     if (__viewContext["viewModel"].errorList().errors !== undefined) {
                         if (__viewContext["viewModel"].errorList().errors.length > 0) {
