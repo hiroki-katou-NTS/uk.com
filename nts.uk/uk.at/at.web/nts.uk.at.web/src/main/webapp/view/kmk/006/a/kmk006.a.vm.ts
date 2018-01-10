@@ -348,31 +348,31 @@ module nts.uk.at.view.kmk006.a {
 
 
                 self.enableEnumNorLegLi = ko.computed(function() {
-                    return self.valueEnumNorLegAtr() != 2;
+                    return self.valueEnumNorLegAtr() != 0;
                 });
                 self.enableEnumNorLegMidLi = ko.computed(function() {
-                    return self.valueEnumNorLegMidAtr() != 2;
+                    return self.valueEnumNorLegMidAtr() != 0;
                 });
                 self.enableEnumNorNorLi = ko.computed(function() {
-                    return self.valueEnumNorNorAtr() != 2;
+                    return self.valueEnumNorNorAtr() != 0;
                 });
                 self.enableEnumNorNorMidLi = ko.computed(function() {
-                    return self.valueEnumNorNorMidAtr() != 2;
+                    return self.valueEnumNorNorMidAtr() != 0;
                 });
                 self.enableEnumNorEarLi = ko.computed(function() {
-                    return self.valueEnumNorEarAtr() != 2;
+                    return self.valueEnumNorEarAtr() != 0;
                 });
                 self.enableEnumNorEarMidLi = ko.computed(function() {
-                    return self.valueEnumNorEarMidAtr() != 2;
+                    return self.valueEnumNorEarMidAtr() != 0;
                 });
                 self.enableEnumFleTimeLi = ko.computed(function() {
-                    return self.valueEnumFleTimeAtr() != 2;
+                    return self.valueEnumFleTimeAtr() != 0;
                 });
                 self.enableEnumResResLi = ko.computed(function() {
                     return self.valueEnumResResAtr() != 0;
                 });
                 self.enableEnumResLatLi = ko.computed(function() {
-                    return self.valueEnumResLatAtr() != 2;
+                    return self.valueEnumResLatAtr() != 0;
                 }); 
             }
 
@@ -667,7 +667,7 @@ module nts.uk.at.view.kmk006.a {
                 self.valueEnumFleTimeLi(list.flexOTTime.flexOtTime.upLimitOtSet());
                 self.valueEnumFleTimeAtr(list.flexOTTime.flexOtTime.calAtr());
                 self.valueEnumResResLi(list.restTime.restTime.upLimitOtSet());
-                self.valueEnumResResAtr(list.restTime.restTime.calAtr());               
+                self.valueEnumResResAtr(list.restTime.restTime.calAtr());                
                 self.valueEnumResLatLi(list.restTime.lateNightTime.upLimitOtSet());
                 self.valueEnumResLatAtr(list.restTime.lateNightTime.calAtr());
             }
