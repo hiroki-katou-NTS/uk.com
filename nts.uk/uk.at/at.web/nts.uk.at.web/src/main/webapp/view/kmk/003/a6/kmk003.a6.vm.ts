@@ -307,6 +307,8 @@ module a6 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_57"),
                     key: "rounding",
+                    isRoudingColumn: true,
+                    unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
                     width: 150,
@@ -398,6 +400,8 @@ module a6 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_57"),
                     key: "rounding",
+                    isRoudingColumn: true,
+                    unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
                     width: 150,
