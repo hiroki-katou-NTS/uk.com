@@ -310,11 +310,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.updateExTable();
                     });
                 }
-                //nts.uk.ui.block.clear();
             })
-//                .always(() => {
-//                nts.uk.ui.block.clear();
-//            });
         }
 
         /**
@@ -619,6 +615,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateExTable(): void {
             let self = this;
+            nts.uk.ui.block.grayout();
+
             let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newDetailHeaderDs = [], newObjDetailHeaderDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
 
             _.each(self.listSid(), (x) => {
