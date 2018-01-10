@@ -149,6 +149,10 @@ public class PerInfoCategoryFinder {
 		return resultCtg;
 
 	};
+	
+	public int getDispOrder(String perInfoCtgId) {
+		return perInfoCtgRepositoty.getDispOrder(perInfoCtgId);
+	}
 
 	private boolean isChangeAbleCtgType(String perInfoCtgId) {
 

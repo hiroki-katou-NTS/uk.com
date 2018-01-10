@@ -8,6 +8,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import tab = nts.uk.at.view.kal003.a.tab;
 
     export class ScreenModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
@@ -23,50 +24,37 @@ module nts.uk.at.view.kal003.a.viewmodel {
         listAlarmCheckCondition: KnockoutObservableArray<model.AlarmCheckConditionByCategory>;
         selectedAlarmCheckConditionCode: KnockoutObservable<string>;
         selectedAlarmCheckCondition: KnockoutObservable<model.AlarmCheckConditionByCategory>;
-        checkConditionTab : nts.uk.at.view.kal003.CheckCheckConditionTab = new nts.uk.at.view.kal003.CheckConditionTab();
+        
+        //scope check tab
+        tabScopeCheck: tab.ScopeCheckTab;
+        
+        //check condition tab
+        checkConditionTab : tab.CheckConditionTab = new tab.CheckConditionTab();
         constructor() {
             var self = this;
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: getText('KAL003_15'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: getText('KAL003_16'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-3', title: 'Tab Title 3', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-2', title: 'Tab Title 2', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-4', title: 'Tab Title 4', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
             self.selectedTab = ko.observable('tab-1');
-            self.cbbItemList = ko.observableArray([
-                new model.ItemModel(0, 'スケジュール日次'),
-                new model.ItemModel(1, 'スケジュール週次'),
-                new model.ItemModel(2, 'スケジュール4週'),
-                new model.ItemModel(3, 'スケジュール月次'),
-                new model.ItemModel(4, 'スケジュール年間'),
-                new model.ItemModel(5, '日次'),
-                new model.ItemModel(6, '週次'),
-                new model.ItemModel(7, '月次'),
-                new model.ItemModel(8, '申請承認'),
-                new model.ItemModel(9, '複数月'),
-                new model.ItemModel(10, '任意期間'),
-                new model.ItemModel(11, '年休付与用出勤率'),
-                new model.ItemModel(12, '３６協定'),
-                new model.ItemModel(13, '工数チェック')
-            ]);
+            self.cbbItemList = ko.observableArray(model.getListCategory());
             self.selectedCategory = ko.observable(model.CATEGORY.DAILY);
 
-            self.radioItemList = ko.observableArray([
-                new model.ItemModel(0, '全て'),
-                new model.ItemModel(1, '確認済のデータ'),
-                new model.ItemModel(2, '未確認のデータ')
-            ]);
+            self.radioItemList = ko.observableArray(model.getListConditionToExtractDaily());
             self.selectedDataCondition = ko.observable(model.DATA_CONDITION_TO_EXTRACT.ALL);
 
             self.listAlarmCheckCondition = ko.observableArray([]);
             self.selectedAlarmCheckConditionCode = ko.observable('');
-            self.selectedAlarmCheckCondition = ko.observable(new model.AlarmCheckConditionByCategory('', '', 'category1', [], new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], [])));
+            self.selectedAlarmCheckCondition = ko.observable(new model.AlarmCheckConditionByCategory('', '', new model.ItemModel(0, ""), [], new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], [])));
 
             self.selectedAlarmCheckConditionCode.subscribe(function(data: any) {
                 if (data) {
                     let item = _.find(self.listAlarmCheckCondition(), (x: model.AlarmCheckConditionByCategory) => x.code() == data);
                     if (item) {
                         self.selectedAlarmCheckCondition(item);
+                        self.tabScopeCheck.targetCondition(item.targetCondition())
                         self.screenMode(model.SCREEN_MODE.UPDATE);
                     }
                 }
@@ -88,20 +76,35 @@ module nts.uk.at.view.kal003.a.viewmodel {
             });
             
             self.screenMode = ko.observable(model.SCREEN_MODE.UPDATE);
+            
+            self.tabScopeCheck = new tab.ScopeCheckTab();
         }
 
         startPage(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
+            let self = this,
+                    dfd = $.Deferred();
             block.invisible();
-            self.listAlarmCheckCondition([
-                new model.AlarmCheckConditionByCategory('001', 'name1', 'category1', [], new model.AlarmCheckTargetCondition(false, true, false, false, [], ['cls01', 'cls02'], [], [])),
-                new model.AlarmCheckConditionByCategory('002', 'name2', 'category1', [], new model.AlarmCheckTargetCondition(true, false, false, false, ['emp01', 'emp02'], [], [], [])),
-                new model.AlarmCheckConditionByCategory('003', 'name3', 'category1', [], new model.AlarmCheckTargetCondition(false, false, false, true, [], [], [], ['bustype01', 'bustype02'])),
-                new model.AlarmCheckConditionByCategory('004', 'name4', 'category1', [], new model.AlarmCheckTargetCondition(false, false, true, false, [], [], ['job01', 'job02'], []))
-            ]);
-            self.selectedAlarmCheckConditionCode(self.listAlarmCheckCondition()[1].code());
-            dfd.resolve();
-            block.clear();
+
+            service.getAllData(self.selectedCategory()).done(function(data: Array<any>) {
+                if (data && data.length) {
+                    
+                } else {
+                    let category = _.find(ko.toJS(self.cbbItemList), (x: model.ItemModel) => x.code == self.selectedCategory());
+                    self.listAlarmCheckCondition([
+                        new model.AlarmCheckConditionByCategory('001', 'name1', category, [], new model.AlarmCheckTargetCondition(false, true, false, false, [], ['cls01', 'cls02'], [], [])),
+                        new model.AlarmCheckConditionByCategory('002', 'name2', category, [], new model.AlarmCheckTargetCondition(true, false, false, false, ['emp01', 'emp02'], [], [], [])),
+                        new model.AlarmCheckConditionByCategory('003', 'name3', category, [], new model.AlarmCheckTargetCondition(false, false, false, true, [], [], [], ['bustype01', 'bustype02'])),
+                        new model.AlarmCheckConditionByCategory('004', 'name4', category, [], new model.AlarmCheckTargetCondition(false, false, true, false, [], [], ['job01', 'job02'], []))
+                    ]);
+                    self.selectedAlarmCheckConditionCode(self.listAlarmCheckCondition()[1].code());
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                alertError({ messageId: error.messageId });
+                dfd.reject();
+            }).always(() => {
+                block.clear();
+            });
             return dfd.promise();
         }
 
@@ -109,26 +112,84 @@ module nts.uk.at.view.kal003.a.viewmodel {
             let self = this;
             nts.uk.ui.errors.clearAll();
             self.selectedAlarmCheckConditionCode('');
-            self.selectedAlarmCheckCondition(new model.AlarmCheckConditionByCategory('', '', 'category1', [], new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], [])));
+            self.openKAL003dDialog();
+            let category = _.find(ko.toJS(self.cbbItemList), (x: model.ItemModel) => x.code == self.selectedCategory());
+            self.selectedAlarmCheckCondition(new model.AlarmCheckConditionByCategory('', '', category, [], new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], [])));
             self.selectedDataCondition(model.DATA_CONDITION_TO_EXTRACT.ALL);
+            self.tabScopeCheck.targetCondition(self.selectedAlarmCheckCondition().targetCondition());
             self.screenMode(model.SCREEN_MODE.NEW);
         }
 
         registerAlarmCheckCondition() {
-            let self = this;
-            self.listAlarmCheckCondition.push(self.selectedAlarmCheckCondition());
+            //self.listAlarmCheckCondition.push(self.selectedAlarmCheckCondition());
+            let self = this, 
+            data: model.AlarmCheckConditionByCategory = new model.AlarmCheckConditionByCategory(self.selectedAlarmCheckCondition().code(), self.selectedAlarmCheckCondition().name(), new model.ItemModel(self.selectedAlarmCheckCondition().category(), self.selectedAlarmCheckCondition().displayCategory), self.selectedAlarmCheckCondition().availableRoles(), self.selectedAlarmCheckCondition().targetCondition());
+
+            let command: any = ko.toJS(data);
+            //$(".ntsDateRange_Component").trigger("validate");
+            //if (!nts.uk.ui.errors.hasError() && data.employeeId) {
+            block.invisible();
+            service.registerData(command).done(function() {
+                data.targetCondition(self.tabScopeCheck.targetCondition());
+                let item = _.find(self.listAlarmCheckCondition(), (x: model.AlarmCheckConditionByCategory) => x.code() == data.code());
+                if (item) {
+                    
+                } else {
+                    self.listAlarmCheckCondition.push(data);
+                }
+                
+            }).fail(error => {
+                alertError({ messageId: error.messageId });
+            }).always(() => {
+                block.clear();
+            });
+            //}
         }
 
         deleteAlarmCheckCondition() {
-            let self = this;
+            let self = this, data: model.AlarmCheckConditionByCategory = self.selectedAlarmCheckCondition();
 
-        }
-        test(): void {
-            console.log("success!");
-            modal("../../004/b/index.xhtml").onClosed(() => {
-                console.log("success!");
+            let command: any = ko.toJS(data);
+
+            confirm({ messageId: "Msg_18" }).ifYes(() => {
+                block.invisible();
+                let indexItemDelete = _.findIndex(self.listAlarmCheckCondition(), (item: model.AlarmCheckConditionByCategory) => { return item.code() == data.code(); });
+                service.deleteData(command).done(function() {
+                    //self.loadRoleSetHolder(self.selectedRoleSet()).done(() => {
+                    self.listAlarmCheckCondition.remove( function (item) { return item.code() == data.code(); } )
+                    if (self.listAlarmCheckCondition().length == 0) {
+                        self.createNewAlarmCheckCondition();
+                    } else {
+                        if (indexItemDelete == self.listAlarmCheckCondition().length) {
+                            self.selectedAlarmCheckConditionCode(self.listAlarmCheckCondition()[indexItemDelete - 1].code());
+                        } else {
+                            self.selectedAlarmCheckConditionCode(self.listAlarmCheckCondition()[indexItemDelete].code());
+                        }
+                    }
+                    info({ messageId: "Msg_16" }).then(() => {
+                        //block.clear();
+                    });
+                    //});
+                }).fail(error => {
+                    alertError({ messageId: error.messageId });
+                }).always(() => {
+                    block.clear();
+                });
+
+            }).ifCancel(() => {
             });
         }
+        
+        openKAL003dDialog() {
+            let self = this;
+            modal("/view/kal/003/d/index.xhtml").onClosed(() => {
+                var output = getShared("outputKAL003d");
+                if (output) {
+                    self.selectedCategory(output);
+                }
+            });
+        }
+        
     }
 
 }

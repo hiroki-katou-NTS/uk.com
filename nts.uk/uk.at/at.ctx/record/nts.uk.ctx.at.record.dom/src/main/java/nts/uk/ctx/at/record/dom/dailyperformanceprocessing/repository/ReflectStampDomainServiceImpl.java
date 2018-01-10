@@ -149,12 +149,13 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			reflectStamp = this.ReflectEmbossingDomainService.reflectStamp(workInfoOfDailyPerformance,
 					timeLeavingOfDailyPerformance, lstStampItem, stampReflectRangeOutput, processingDate, employeeID,
 					companyID);
+			// エラーチェック
+			this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
+					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(), 
+					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance);
 		}
 
-		// エラーチェック
-		this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
-				reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(), 
-				reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance);
+		
 		
 		return reflectStamp;
 	}
@@ -475,25 +476,25 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		if (useAtr == UseAtr.USE) {
 
 			// 臨時系打刻漏れをチェックする
-			missingOfTemporaryStampChecking.missingOfTemporaryStampChecking(companyID, employeeID, processingDate, temporaryTimeOfDailyPerformance);
+			// missingOfTemporaryStampChecking.missingOfTemporaryStampChecking(companyID, employeeID, processingDate, temporaryTimeOfDailyPerformance);
 
 			// 臨時系打刻順序不正をチェックする
-			temporaryStampOrderChecking.temporaryStampOrderChecking(employeeID, companyID, processingDate, temporaryTimeOfDailyPerformance);
+			// temporaryStampOrderChecking.temporaryStampOrderChecking(employeeID, companyID, processingDate, temporaryTimeOfDailyPerformance);
 
 			// 臨時系二重打刻をチェックする
-			temporaryDoubleStampChecking.temporaryDoubleStampChecking(companyID, employeeID, processingDate, temporaryTimeOfDailyPerformance);
+			// temporaryDoubleStampChecking.temporaryDoubleStampChecking(companyID, employeeID, processingDate, temporaryTimeOfDailyPerformance);
 		}
 		// 外出系打刻漏れをチェックする
-		goingOutStampLeakageChecking.goingOutStampLeakageChecking(companyID, employeeID, processingDate, outingTimeOfDailyPerformance);
+		// goingOutStampLeakageChecking.goingOutStampLeakageChecking(companyID, employeeID, processingDate, outingTimeOfDailyPerformance);
 
 		// 外出系打刻順序不正をチェックする
-		goingOutStampOrderChecking.goingOutStampOrderChecking(companyID, employeeID, processingDate, outingTimeOfDailyPerformance, timeLeavingOfDailyPerformance, temporaryTimeOfDailyPerformance);
+		// goingOutStampOrderChecking.goingOutStampOrderChecking(companyID, employeeID, processingDate, outingTimeOfDailyPerformance, timeLeavingOfDailyPerformance, temporaryTimeOfDailyPerformance);
 
 		// 休憩系打刻漏れをチェックする
-		breakTimeStampLeakageChecking.breakTimeStampLeakageChecking(companyID, employeeID, processingDate, breakTimeOfDailyPerformance);
+		// breakTimeStampLeakageChecking.breakTimeStampLeakageChecking(companyID, employeeID, processingDate, breakTimeOfDailyPerformance);
 
 		// 休憩系打刻順序不正をチェックする
-		breakTimeStampIncorrectOrderChecking.breakTimeStampIncorrectOrderChecking(companyID, employeeID, processingDate, breakTimeOfDailyPerformance);
+		// breakTimeStampIncorrectOrderChecking.breakTimeStampIncorrectOrderChecking(companyID, employeeID, processingDate, breakTimeOfDailyPerformance);
 	}
 
 	/*

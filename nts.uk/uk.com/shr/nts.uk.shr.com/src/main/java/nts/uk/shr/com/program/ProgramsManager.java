@@ -1400,10 +1400,28 @@ public class ProgramsManager {
 	/**	KSC001K	 */
 	public static final Program KSC001K = new Program(WebAppId.AT, ProgramIdConsts.KSC001K, "KSC001_80",
 			"/view/ksc/001/k/index.xhtml");
-	
-	
+	/**	 KAF002A*/
+	public static final Program KAF002A = new Program(WebAppId.AT, ProgramIdConsts.KAF002A, null,
+			"/view/kaf/002/a/index.xhtml");
+	/**	 KAF005A*/
+	public static final Program KAF004A = new Program(WebAppId.AT, ProgramIdConsts.KAF004A, null,
+			"/view/kaf/004/a/index.xhtml");
+	/**	 KAF005A*/
+	public static final Program KAF005A = new Program(WebAppId.AT, ProgramIdConsts.KAF005A, null,
+			"/view/kaf/005/a/index.xhtml");
+	/**	 KAF007A*/
+	public static final Program KAF007A = new Program(WebAppId.AT, ProgramIdConsts.KAF007A, null,
+			"/view/kaf/007/a/index.xhtml");
+	/**	 KAF007A*/
+	public static final Program KAF009A = new Program(WebAppId.AT, ProgramIdConsts.KAF009A, null,
+			"/view/kaf/009/a/index.xhtml");
 	// TODO: Define new programs here.
-
+	/**
+	 * CMM051A
+	 */
+	public static final Program CMM051A = new Program(WebAppId.COM, ProgramIdConsts.CMM051A, "CMM051_1",
+			"/view/cmm/051/a/index.xhtml");
+	
 	/**
 	 * All programs map.
 	 */

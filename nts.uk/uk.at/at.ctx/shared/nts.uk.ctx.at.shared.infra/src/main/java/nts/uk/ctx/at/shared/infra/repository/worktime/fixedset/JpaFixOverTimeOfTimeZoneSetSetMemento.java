@@ -82,6 +82,8 @@ public class JpaFixOverTimeOfTimeZoneSetSetMemento implements OverTimeOfTimeZone
 	public void setTimezone(TimeZoneRounding timezone) {
 		this.entity.setTimeStr(timezone.getStart().valueAsMinutes());
 		this.entity.setTimeEnd(timezone.getEnd().valueAsMinutes());
+		this.entity.setUnit(timezone.getRounding().getRoundingTime().value);
+		this.entity.setRounding(timezone.getRounding().getRounding().value);
 	}
 
 	/*

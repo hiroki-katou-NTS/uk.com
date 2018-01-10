@@ -85,34 +85,34 @@ public class GoingOutStampOrderChecking {
 
 						List<Integer> attendanceItemIDList = new ArrayList<>();
 
-						if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((1)))) {
+						if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(1))) {
 							attendanceItemIDList.add(88);
 							attendanceItemIDList.add(91);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((2)))) {
+						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(2))) {
 							attendanceItemIDList.add(95);
 							attendanceItemIDList.add(98);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((3)))) {
+						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(3))) {
 							attendanceItemIDList.add(102);
 							attendanceItemIDList.add(105);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((4)))) {
+						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(4))) {
 							attendanceItemIDList.add(109);
 							attendanceItemIDList.add(112);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((5)))) {
+						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(5))) {
 							attendanceItemIDList.add(116);
 							attendanceItemIDList.add(119);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((6)))) {
+						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(6))) {
 							attendanceItemIDList.add(123);
 							attendanceItemIDList.add(126);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((7)))) {
+						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(7))) {
 							attendanceItemIDList.add(130);
 							attendanceItemIDList.add(133);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((8)))) {
+						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(8))) {
 							attendanceItemIDList.add(137);
 							attendanceItemIDList.add(140);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((9)))) {
+						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(9))) {
 							attendanceItemIDList.add(144);
 							attendanceItemIDList.add(147);
-						} else if (outingTimeSheet.getOutingFrameNo().equals(new WorkNo((10)))) {
+						} else if (outingTimeSheet.getOutingFrameNo().equals(new OutingFrameNo(10))) {
 							attendanceItemIDList.add(151);
 							attendanceItemIDList.add(154);
 						}

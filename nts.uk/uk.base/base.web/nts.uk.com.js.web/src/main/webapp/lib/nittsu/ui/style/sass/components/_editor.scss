@@ -12,6 +12,12 @@ $editor-border-color: #999999;
 			outline: none;
 			box-shadow: 0 0 1px 1px $focused_color;
 		}
+	
+		&.enterkey {
+		    background-image: url('images/icons/enter_mark.png');
+		    background-position: right;
+		    background-repeat: no-repeat;
+		}
 	}
 	
 	/* Extra Symbol */

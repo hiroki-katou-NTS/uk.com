@@ -3,7 +3,7 @@ module nts.uk.com.view.cas012.b {
         var screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
         $("#search").focus();
-        $("#search").keyup(function(event) {
+        $("#search").keydown(function(event) {
             if (event.keyCode == 13) {
                 $("#searchButton").click();
             }

@@ -381,4 +381,16 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		return ctg;
 	}
 
+	@Override
+	public int getDispOrder(String perInfoCtgId) {
+		if (perInfoCtgId.equals("")) {
+			return 0;
+		}
+		// TODO Auto-generated method stub
+		return this.queryProxy().query(
+				"SELECT po.disporder FROM PpemtPerInfoCtgOrder po WHERE po.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId",
+				Integer.class)
+				.setParameter("perInfoCtgId", perInfoCtgId)
+				.getSingle(m -> m.intValue()).orElse(0);
+	}
 }

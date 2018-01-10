@@ -103,7 +103,8 @@
 					#{i18n.getText('KMK003_5')}</button>
 				<button class="danger" data-bind="enable: isUpdateMode, click: removeWorkTime">
 					#{i18n.getText('KMK003_6')}</button>
-				<button style="display: none" data-bind="visible: isTestMode, click: testData">Fill test data</button>
+				<button style="display: none" data-bind="visible: isTestMode, click: testFlex">Test flex</button>
+				<button style="display: none" data-bind="visible: isTestMode, click: testFixed">Test fixed</button>
 			</div>
 			<div id="contents-area" style="display: none"
 				data-bind="visible: true">
@@ -149,23 +150,25 @@
 									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_9')}
 								</div>
 								</com:ko>
-								<div style="width: 300px"
+								<div style="clear: both">
+									<div style="width: 300px"
 									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'worktimeCode', 
 									comId: 'single-list', items: workTimeSettings,  selectedKey: 'worktimeCode', 
 									fields: ['workTimeName', 'worktimeCode'], mode: 'igGrid'}">
+									</div>
+									<table id="single-list"
+										data-bind="ntsGridList: {
+										name: '#[KMK003_86]',
+										height: 320,
+										width: 300,
+										options: workTimeSettings,
+										optionsValue: 'worktimeCode',
+										columns: columnWorktimeSettings,
+										multiple: false,
+										value: selectedWorkTimeCode
+										}">
+									</table>
 								</div>
-								<table id="single-list"
-									data-bind="ntsGridList: {
-									name: '#[KMK003_86]',
-									height: 320,
-									width: 300,
-									options: workTimeSettings,
-									optionsValue: 'worktimeCode',
-									columns: columnWorktimeSettings,
-									multiple: false,
-									value: selectedWorkTimeCode
-									}">
-								</table>
 							</div>
 						</td>
 						<td class="screen-content-right">
@@ -335,7 +338,7 @@
 											</div>
 											<div class="tab-a3">
 												<div data-bind="ntsKMK003A3: {enum: settingEnum, isDetailMode: isDetailMode,
-													mainModel: mainSettingModel, isLoading: isLoading}">
+													useHalfDay: useHalfDay, mainModel: mainSettingModel, isLoading: isLoading}">
 												</div>
 											</div>
 											<div class="tab-a4">

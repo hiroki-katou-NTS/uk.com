@@ -84,7 +84,10 @@ module nts.uk.com.view.cps005.a {
                     new service.Service().updatePerInfoCtg(updateCategory).done(function() {
                         self.reloadData();
                         info({ messageId: "Msg_15" }).then(() => {
-                            $("#category-name-control").focus();
+                            let ctrl = $("#category-name-control"),
+                                str = ctrl.val();
+
+                            ctrl.focus().val('').val(str);
                             block.clear();
                         });
                     }).fail(error => {
@@ -107,7 +110,10 @@ module nts.uk.com.view.cps005.a {
                                     let ctgCode = self.currentData().perInfoCtgSelectCode();
                                     self.currentData().perInfoCtgSelectCode("");
                                     self.currentData().perInfoCtgSelectCode(ctgCode);
-                                    $("#category-name-control").focus();
+                                    let ctrl = $("#category-name-control"),
+                                        str = ctrl.val();
+
+                                    ctrl.focus().val('').val(str);
                                     block.clear();
                                 });
                             }).ifNo(() => {
@@ -181,7 +187,10 @@ module nts.uk.com.view.cps005.a {
                     if (self.currentCtgSelected().fixedIsSelected()) {
                         self.isEnableButtonProceed(false);
                     }
-                    $('#category-name-control').focus();
+                    let ctrl = $("#category-name-control"),
+                        str = ctrl.val();
+
+                    ctrl.focus().val('').val(str);
                 });
             });
         }

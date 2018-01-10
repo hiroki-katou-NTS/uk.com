@@ -1,20 +1,17 @@
-package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition;
+package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm;
 
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.FixedConditionWorkRecord;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.FixedConditionWorkRecordName;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.WorkRecordFixedCheckItem;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordName;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.WorkRecordFixedCheckItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
@@ -36,9 +33,6 @@ public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serial
 	@Column(name = "USE_ATR")
 	public int useAtr;
 	
-	@ManyToOne
-	@JoinColumn(name="DAILY_ALARM_CON_ID", referencedColumnName="DAILY_ALARM_CON_ID", insertable = false, updatable = false)
-	public KrcmtDailyAlarmCondition dailyalarmcondition;
 	
 	public KrcmtFixedConditionWorkRecord(KrcmtFixedConditionWorkRecordPK krcmtFixedConditionWorkRecordPK,
 			String message, int useAtr) {
