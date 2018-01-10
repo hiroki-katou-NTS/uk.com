@@ -49,7 +49,7 @@ public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serial
 	
 	public static KrcmtFixedConditionWorkRecord toEntity(FixedConditionWorkRecord domain) {
 		return new KrcmtFixedConditionWorkRecord(
-				new KrcmtFixedConditionWorkRecordPK( domain.getDailyAlarmConID(),
+				new KrcmtFixedConditionWorkRecordPK( domain.getErrorAlarmCode(),
 				domain.getFixConWorkRecordNo().value),
 				domain.getMessage().v(),
 				domain.isUseAtr()?1:0

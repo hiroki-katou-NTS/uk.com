@@ -17,9 +17,9 @@ module nts.uk.at.view.kal003.b.viewmodel{
         itemListTargetServiceType_BA1_2         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetSelectionRange_BA1_5         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetSelectionRange_BA1_5_target_working_hours : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
-        listAllWorkType         : Array<model.WorkTypeDto> = ([]);
-        listAllAttdItem         : Array<model.AttdItemDto> = ([]);
-        listAllSettingTimeZone  : Array<model.AttdItemDto> = ([]);
+        listAllWorkType         : Array<string> = ([]);
+        listAllAttdItem         : Array<number> = ([]);
+        listAllSettingTimeZone  : Array<string> = ([]);
 
         displayWorkTypeSelections_BA1_4 :       KnockoutObservable<string> = ko.observable('');
         displayWorkTimeItemSelections_BA2_3:    KnockoutObservable<string> = ko.observable('');
@@ -253,24 +253,13 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let self = this,
             currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
             //ドメインモデル「日次の勤怠項目」を取得する - Acquire domain model "DailyAttendanceItem"
-            var jsItemCheckCmd : any = {
-                    checkItem : currentErrAlaCheckCondition.checkItem()
-            };
             self.listAllAttdItem = [];
+            
             service.getDailyItemChkItemComparison(currentErrAlaCheckCondition.checkItem()).done((itemAttendances) => {
-                if (itemAttendances) {
-                    self.listAllAttdItem.push(itemAttendances);
-                }
-                /* TODO: why get EA condition at here?
-                if (currentErrAlaCheckCondition.erAlCheckId) {
-                    service.getErrorAlarmCondition().done((erAlWorkRecorCondition : any) => {
-                */
-                //    self.generateNameCorrespondingToAttendanceItem(currentErrAlaCheckCondition.workTimeItemSelections()).done((names) => {
-                //        self.displayWorkTypeSelections_BA1_4(names);
-                //    });
-                /*
-                    });
-                }*/
+                self.listAllAttdItem.push(self.getListAttendanceIdFromDtos(itemAttendances));
+                
+                //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
+                self.getListWorkTypeCodes();
             });
         }
         
@@ -278,22 +267,13 @@ module nts.uk.at.view.kal003.b.viewmodel{
          * Initial in case Daily Item Check Continuous Time
          */
         private initialDailyItemChkCountinuousTime() {
-            let self = this,
-            currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+            let self = this;
             //ドメインモデル「日次の勤怠項目」を取得する - Acquire domain model "DailyAttendanceItem"
             self.listAllAttdItem = [];
             service.getAttendCoutinousTime().done((itemAttendances) => {
-                if (itemAttendances) {
-                    self.listAllAttdItem.push(itemAttendances);
-                }
-                /* TODO: why get EA condition at here?
-                if (currentErrAlaCheckCondition.erAlCheckId) {
-                    service.getErrorAlarmCondition().done((erAlWorkRecorCondition : any) => {
-                */
-                //    self.getAttendanceItemName();
-                /*
-                    });
-                }*/
+                self.listAllAttdItem.push(self.getListAttendanceIdFromDtos(itemAttendances));
+                //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
+                self.getListWorkTypeCodes();
             });
         }
         
@@ -301,39 +281,22 @@ module nts.uk.at.view.kal003.b.viewmodel{
          * Initial in case Daily Item Check Continuous Work
          */
         private initialDailyItemChkCountinuousWork() {
-            let self = this,
-            currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+            let self = this;
             //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
-            self.listAllWorkType = [];
-            service.getAttendCoutinousWork().done((workTypes) => {
-                if (workTypes) {
-                    self.listAllWorkType.push(workTypes);
-                }
-                /* TODO: why get EA condition at here?
-                if (currentErrAlaCheckCondition.erAlCheckId) {
-                    service.getErrorAlarmCondition().done((erAlWorkRecorCondition : any) => {
-                    });
-                }*/
-            });
+            self.getListWorkTypeCodes();
         }
         
         /**
          * Initial in case Daily Item Check Continuous Time zone
          */
         private initialDailyItemChkCountinuousTimeZone() {
-            let self = this,
-            currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+            let self = this;
             //ドメインモデル「就業時間帯の設定」を取得する - Acquire domain model "WorkTimeSetting"
             self.listAllSettingTimeZone = [];
             service.getAttendCoutinousTimeZone().done((settingTimeZones) => {
-                if (settingTimeZones) {
-                    self.listAllSettingTimeZone.push(settingTimeZones);
-                }
-                /* TODO: why get EA condition at here?
-                if (currentErrAlaCheckCondition.erAlCheckId) {
-                    service.getErrorAlarmCondition().done((erAlWorkRecorCondition : any) => {
-                    });
-                }*/
+                self.getListSettingTimeZoneCodesFromDtos(settingTimeZones);
+              //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
+                self.getListWorkTypeCodes();
             });
         }
         
@@ -342,13 +305,6 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let self = this,
             currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
             //アルゴリズム「複合条件の項目取得」を実行する - Execute the algorithm "item acquisition of compound condition"
-            
-            /* TODO: why get EA condition at here?
-            if (currentErrAlaCheckCondition.erAlCheckId) {
-                service.getErrorAlarmCondition().done((erAlWorkRecorCondition : any) => {
-                });
-            }*/
-
             self.listAllAttdItem = [];
             service.getAttendCompound(currentErrAlaCheckCondition.erAlCheckId).done((data) => {
                 if (data) {
@@ -373,11 +329,10 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     } 
                 }
                 */
-                service.getAttendNameByIds(ko.toJS(listAttendanceItemCode)).done((dailyAttendanceItemNames) => {
+                service.getAttendNameByIds(listAttendanceItemCode).done((dailyAttendanceItemNames) => {
                     if (dailyAttendanceItemNames && dailyAttendanceItemNames.length > 0) {
                         var attendanceName : string = '';
-                        if (dailyAttendanceItemNames) {
-                            for(var i = 0; i < dailyAttendanceItemNames.length; i++)
+                        for(var i = 0; i < dailyAttendanceItemNames.length; i++) {
                             if (attendanceName) {
                                 attendanceName = attendanceName + "," + dailyAttendanceItemNames[i].attendanceItemName;
                             } else {
@@ -388,7 +343,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     } else {
                         dfd.resolve('');
                     }
-                }).alway(() => {
+                }).always(() => {
                     dfd.resolve('');
                 });
             } else {
@@ -413,6 +368,49 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 }
             }
             return retNames;
+        }
+        
+        /**
+         * //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
+         * 
+         */
+        private getListWorkTypeCodes() : void {
+            let self =this;
+            self.listAllWorkType = [];
+            service.getAttendCoutinousWork().done((workTypes) => {
+                if (workTypes && workTypes != undefined) {
+                    for(var i = 0; i < workTypes.length; i++) {
+                        self.listAllWorkType.push(workTypes[i].workTypeCode);
+                    }
+                }
+            });
+        }
+        
+        /**
+         * Get list of attendance id from list Dtos
+         * @param itemAttendances
+         */
+        private getListAttendanceIdFromDtos(itemAttendances : Array<any>) : Array<string> {
+            let listAllAttdItemCode : Array<string> = [];
+            if (itemAttendances && itemAttendances != undefined) {
+                for(var i = 0; i < itemAttendances.length; i++) {
+                    listAllAttdItemCode.push(itemAttendances[i].attendanceItemId);
+                }
+            }
+            return listAllAttdItemCode;
+        }
+        
+        /**
+         * Get list of Setting Time Zone Code from list Dtos
+         * @param settingTimeZones
+         */
+        private getListSettingTimeZoneCodesFromDtos (settingTimeZones : Array<any>) {
+            let self = this;
+            if (settingTimeZones && settingTimeZones != undefined) {
+                for(var i = 0; i < settingTimeZones.length; i++) {
+                    self.listAllSettingTimeZone.push(settingTimeZones[i].worktimeCode);
+                }
+            }
         }
           //==========Daily session End====================
 
@@ -441,7 +439,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let lstSelectedCode = currentErrAlaCheckCondition.workTypeSelections();
             //let lstSelectableCode = "001,002,003,006,111,112,113,114,115,116,117,118,119,120,121,122, 123,124,125,126,127,999".split(",");
 
-            windows.setShared('KDL002_Multiple',true);
+            windows.setShared('KDL002_Multiple', true);
             //all possible items
             windows.setShared('KDL002_AllItemObj', self.listAllWorkType);
             //selected items
@@ -469,15 +467,15 @@ module nts.uk.at.view.kal003.b.viewmodel{
 
             block.invisible();
             let lstSelectedCode = currentErrAlaCheckCondition.workingTimeZoneSelections();
-            windows.setShared('KDL002_Multiple', false);
+            windows.setShared('kml001multiSelectMode', true);
             //all possible items
-            windows.setShared('KDL002_AllItemObj',self.listAllSettingTimeZone);
+            windows.setShared('kml001selectAbleCodeList',self.listAllSettingTimeZone);
             //selected items
-            windows.setShared('KDL002_SelectedItemId',lstSelectedCode);
+            windows.setShared('kml001selectedCodeList',lstSelectedCode);
             
-            windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目'}).onClosed(function(): any {
+            windows.sub.modal('/view/kdl/001/a/index.xhtml', { title: '割増項目の設定', dialogClass: 'no-close' }).onClosed(function(): any {
               //get data from share window
-                let listItems = windows.getShared('KDL002_SelectedNewItem');
+                let listItems = windows.getShared('kml001selectedCodeList');
                 if (listItems != null && listItems != undefined) {
                     //items: KnockoutObservableArray<model.ItemModelKdl002> = ko.observableArray(listCds);
                     currentErrAlaCheckCondition.workingTimeZoneSelections(self.getListCode(listItems));
@@ -496,15 +494,15 @@ module nts.uk.at.view.kal003.b.viewmodel{
 
             block.invisible();
             let lstSelectedCode = currentErrAlaCheckCondition.workTimeItemSelections();
-            windows.setShared('KDL002_Multiple', false);
+            windows.setShared('Multiple', true);
             //all possible items
-            windows.setShared('KDL002_AllItemObj', self.listAllAttdItem);
+            windows.setShared('AllAttendanceObj', self.listAllAttdItem);
             //selected items
-            windows.setShared('KDL002_SelectedItemId', lstSelectedCode);
+            windows.setShared('SelectedAttendanceId', lstSelectedCode);
             
-            windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目'}).onClosed(function(): any {
+            windows.sub.modal('/view/kdl/021/a/index.xhtml', {dialogClass: 'no-close'}).onClosed(function(): any {
               //get data from share window
-                let listItems = windows.getShared('KDL002_SelectedNewItem');
+                let listItems = windows.getShared('selectedChildAttendace');
                 if (listItems != null && listItems != undefined) {
                     //items: KnockoutObservableArray<model.ItemModelKdl002> = ko.observableArray(listCds);
                     currentErrAlaCheckCondition.workTimeItemSelections(self.getListCode(listItems));
