@@ -6206,6 +6206,7 @@ var nts;
                         }
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+                        setEnterHandlerIfRequired($input, data);
                         $input.on(valueUpdate, function (e) {
                             var newText = $input.val();
                             var validator = _this.getValidator(data);
@@ -6323,14 +6324,7 @@ var nts;
                         }
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
-                        var handlesEnterKey = (typeof data.enterkey === "function");
-                        var onEnterKey = handlesEnterKey ? data.enterkey : $.noop;
-                        if (handlesEnterKey) {
-                            $input.addClass("enterkey")
-                                .onkey("down", uk.KeyCodes.Enter, function (e) {
-                                onEnterKey(e);
-                            });
-                        }
+                        setEnterHandlerIfRequired($input, data);
                         $input.on("keyup", function (e) {
                             var code = e.keyCode || e.which;
                             if (!readonly && code.toString() !== '9') {
@@ -6701,6 +6695,17 @@ var nts;
                     };
                     return NtsTimeWithDayAttrEditorBindingHandler;
                 }(NtsEditorBindingHandler));
+                function setEnterHandlerIfRequired($input, data) {
+                    var handlesEnterKey = (typeof data.enterkey === "function");
+                    var onEnterKey = handlesEnterKey ? data.enterkey : $.noop;
+                    if (handlesEnterKey) {
+                        $input.addClass("enterkey")
+                            .onkey("down", uk.KeyCodes.Enter, function (e) {
+                            $input.change();
+                            onEnterKey.call(ko.dataFor(e.target), e);
+                        });
+                    }
+                }
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
                 ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();

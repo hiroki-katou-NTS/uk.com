@@ -40,7 +40,7 @@ __viewContext.ready(function () {
         }
         
         submit() {
-            nts.uk.ui.dialog.info("submit!!");
+            nts.uk.ui.dialog.info("submit: " + this.value());
         }
     }
 
