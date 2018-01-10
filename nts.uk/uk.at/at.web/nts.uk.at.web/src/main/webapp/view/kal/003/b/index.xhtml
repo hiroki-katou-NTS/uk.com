@@ -321,7 +321,7 @@
 	                            <td></td>
 	                            <td class = "pad_left_5px">
 	                               <div>
-		                                <!-- BA3-2--> <!-- TODO contrain Continuous period chua taoj -> tam thoi dungf CheckedTimesValue -->
+		                                <!-- BA3-2--> <!-- TODO constrain Continuous period chua taoj -> tam thoi dungf CheckedTimesValue -->
 		                                <input class="value-input needcheck" data-bind="ntsNumberEditor: {
 		                                       name: '#[KAL003_61]',
 		                                       value: continuousPeriodInput,
@@ -502,9 +502,11 @@
                             </td>
                             <td class = "pad_left_5px">
                                 <!-- B3-2-->
-                                <div id="input-area">
-                                    <TEXTAREA id="input-text" rows="5" cols="54" data-bind="value: message"></TEXTAREA>
+                                <div id="inpMessage">
+                                    <textarea style="width: 432px; height: 90px;" data-name="message" data-bind="ntsMultilineEditor: {name: '#[KAL003_25]',
+                                        value: message, constraint: true, enable: true, readonly: false}" />
                                 </div>
+
                             </td>
                         </tr>
                         <tr class="row">

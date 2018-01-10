@@ -49,7 +49,8 @@ module nts.uk.at.view.kal003.share {
          */
         export function getDefaultErrorAlarmCondition(checkItem : number) : model.ErrorAlarmCondition {
             let self = this;
-            return model.IErrorAlarmCondition = {
+            let defaultCompoundCondition = getDefaultCompoundCondition(checkItem);
+            let errorAlarmCondition = new model.ErrorAlarmCondition({
                 category:                   0
                 , erAlCheckId:              ''
                 , checkItem:                checkItem || 0
@@ -64,8 +65,9 @@ module nts.uk.at.view.kal003.share {
                 , color:                    ''
                 , message:                  ''
                 , isBold:                   false
-                , compoundCondition:        getDefaultCompoundCondition(checkItem)
-            };
+                , compoundCondition:        defaultCompoundCondition
+            });
+            return errorAlarmCondition;
         }
         
         /**
@@ -73,15 +75,16 @@ module nts.uk.at.view.kal003.share {
          * @param checkItem
          */
         export function getDefaultWorkRecordExtractingCondition(checkItem : number) : model.WorkRecordExtractingCondition {
-            return model.WorkRecordExtractingCondition = {
+            let workRecordExtractingCondition = new model.WorkRecordExtractingCondition({
                 errorAlarmCheckID   : ''
                 , checkItem           : checkItem || 0
                 , sortOrderBy         : 0
                 , useAtr              : false
                 , nameWKRecord        : ''
-                , errorAlamCondition  : getDefaultErrorAlarmCondition(checkItem)
+                , errorAlarmCondition  : getDefaultErrorAlarmCondition(checkItem)
                 , rowId               : 0
-            }
+            });
+            return workRecordExtractingCondition;
         }
     }
 }
