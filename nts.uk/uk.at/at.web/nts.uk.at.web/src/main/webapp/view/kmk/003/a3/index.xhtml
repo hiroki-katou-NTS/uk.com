@@ -11,7 +11,7 @@
 		<com:ko tag="ifnot" bind="isFlowMode">
 			<com:ko tag="if" bind="isDetailMode">
 				<div class="labelSetting">
-					<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_185')}</div>
+					<div tabindex="-1" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_185')}</div>
 					<div tabindex="54" data-bind="ntsSwitchButton: {
 						options: autoCalUseAttrs,
 						optionsValue: 'code',
@@ -20,20 +20,20 @@
 						value: mainSettingModel.fixedWorkSetting.legalOTSetting,
 						enable: true }">
 					</div>
-					<button style="margin-left: 20px;"
+					<button tabindex="55" style="margin-left: 20px;"
 						data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_1.png', position: 'right top' }">?</button>
 				</div>
 				<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
 					<h3>
 						<label>#{i18n.getText('KMK003_51')}</label>
 					</h3>
-					<div class ="accordion-content">
-						<div id="tab3_fixtable_oneday_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixed}"></div>
+					<div tabindex="-1" class ="accordion-content">
+						<div tabindex="56" id="tab3_fixtable_oneday_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixed}"></div>
 					</div>
 				</div>
 			</com:ko>
 			<com:ko tag="ifnot" bind="isDetailMode">
-				<div id="tab3_fixtable_oneday_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixed}"></div>
+				<div tabindex="56" id="tab3_fixtable_oneday_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixed}"></div>
 			</com:ko>
 			<com:ko tag="if" bind="isDetailMode">
 				<com:ko tag="if" bind="isUseHalfDay">
@@ -41,23 +41,23 @@
 						<h3>
 							<label>#{i18n.getText('KMK003_60')}</label>
 						</h3>
-						<div class ="accordion-content">
-							<div id="tab3_fixtable_morning_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionMorningFixed}"></div>
+						<div  tabindex="-1" class ="accordion-content">
+							<div  tabindex="57" id="tab3_fixtable_morning_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionMorningFixed}"></div>
 						</div>
 					</div>
 					<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true}">
 						<h3>
 							<label>#{i18n.getText('KMK003_61')}</label>
 						</h3>
-						<div class ="accordion-content">
-							<div id="tab3_fixtable_afternoon_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonFixed}"></div>
+						<div  tabindex="-1" class ="accordion-content">
+							<div  tabindex="58" id="tab3_fixtable_afternoon_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonFixed}"></div>
 						</div>
 					</div>
 				</com:ko>
 			</com:ko>
 		</com:ko>
 		<com:ko tag="if" bind="isFlowMode">
-			<div id="tab3_fixtable_flow" data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlow}"></div>
+			<div  tabindex="59" id="tab3_fixtable_flow" data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlow}"></div>
 		</com:ko>
 	</com:ko>
 	<com:ko tag="if" bind="isFlexMode">
@@ -66,8 +66,8 @@
 			<h3>
 				<label>#{i18n.getText('KMK003_51')}</label>
 			</h3>
-			<div class ="accordion-content">
-				<div id="tab3_fixtable_oneday_flex" data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFlex}"></div>
+			<div  tabindex="-1" class ="accordion-content">
+				<div  tabindex="56" id="tab3_fixtable_oneday_flex" data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFlex}"></div>
 			</div>
 		</div>
 		<com:ko tag="if" bind="isDetailMode">
@@ -76,16 +76,16 @@
 					<h3>
 						<label>#{i18n.getText('KMK003_60')}</label>
 					</h3>
-					<div class ="accordion-content">
-						<div id="tab3_fixtable_morning_flex" data-bind="ntsFixTableCustom: {option: fixTableOptionMorningFlex}"></div>
+					<div  tabindex="-1" class ="accordion-content">
+						<div tabindex="57" id="tab3_fixtable_morning_flex" data-bind="ntsFixTableCustom: {option: fixTableOptionMorningFlex}"></div>
 					</div>
 				</div>
 				<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true}">
 					<h3>
 						<label>#{i18n.getText('KMK003_61')}</label>
 					</h3>
-					<div class ="accordion-content">
-						<div id="tab3_fixtable_afternoon_flex" data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonFlex}"></div>
+					<div  tabindex="-1" class ="accordion-content">
+						<div  tabindex="58" id="tab3_fixtable_afternoon_flex" data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonFlex}"></div>
 					</div>
 				</div>
 			</com:ko>
