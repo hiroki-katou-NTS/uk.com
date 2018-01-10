@@ -33,7 +33,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         constructor() {
 
             let self = this;
-
             self.initValue();
             self.start(undefined);
             self.initSettingId.subscribe(function(value: string) {
@@ -89,6 +88,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
             });
 
 
+        }
+        
+        getTitleName(itemName: string){
+            return ko.computed(()=>{
+                return itemName.length > 5 ? itemName : "";
+            });
         }
 
         // get item list
