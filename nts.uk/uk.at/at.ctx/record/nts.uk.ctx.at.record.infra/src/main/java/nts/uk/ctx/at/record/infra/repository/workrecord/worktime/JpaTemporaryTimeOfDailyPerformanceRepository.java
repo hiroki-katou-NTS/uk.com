@@ -86,13 +86,8 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 			return;
 		}
 		
-		KrcdtDaiTemporaryTime krcdtDaiTemporaryTime = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiTemporaryTime.class).setParameter("employeeId", domain.getEmployeeId())
-			.setParameter("ymd", domain.getYmd()).getSingle().orElse(null);
-		if(krcdtDaiTemporaryTime == null){
-			krcdtDaiTemporaryTime = new KrcdtDaiTemporaryTime();
-			krcdtDaiTemporaryTime.krcdtDaiTemporaryTimePK = new KrcdtDaiTemporaryTimePK(domain.getEmployeeId(), domain.getYmd());
-			krcdtDaiTemporaryTime.timeLeavingWorks = new ArrayList<>();
-		}
+		KrcdtDaiTemporaryTime krcdtDaiTemporaryTime = getDailyTemporary(domain.getEmployeeId(), domain.getYmd());
+		
 		List<KrcdtTimeLeavingWork> timeWorks = krcdtDaiTemporaryTime.timeLeavingWorks;
  		krcdtDaiTemporaryTime.workTimes = domain.getWorkTimes().v();
  		domain.getTimeLeavingWorks().stream().forEach(c -> {
@@ -143,15 +138,30 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  				}
  				krcdtTimeLeavingWork.leaveWorkNumberStamp = leaveStamp.getNumberOfReflectionStamp();
  			}
+ 			krcdtTimeLeavingWork.daiTemporaryTime = krcdtDaiTemporaryTime;
  			if(isNew){
  				timeWorks.add(krcdtTimeLeavingWork);
  			}
  		});
+ 		krcdtDaiTemporaryTime.timeLeavingWorks = timeWorks.isEmpty() ? null : timeWorks;
  		this.commandProxy().update(krcdtDaiTemporaryTime);
- 		krcdtDaiTemporaryTime.timeLeavingWorks = timeWorks;
- 		this.commandProxy().update(krcdtDaiTemporaryTime.timeLeavingWorks);
+ 		if(!timeWorks.isEmpty()){
+ 			this.commandProxy().updateAll(krcdtDaiTemporaryTime.timeLeavingWorks);
+ 		}
 		this.getEntityManager().flush();
 	 	
+	}
+
+	private KrcdtDaiTemporaryTime getDailyTemporary(String employee, GeneralDate date) {
+		KrcdtDaiTemporaryTime krcdtDaiTemporaryTime = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiTemporaryTime.class)
+				.setParameter("employeeId", employee)
+			.setParameter("ymd", date).getSingle().orElse(null);
+		if(krcdtDaiTemporaryTime == null){
+			krcdtDaiTemporaryTime = new KrcdtDaiTemporaryTime();
+			krcdtDaiTemporaryTime.krcdtDaiTemporaryTimePK = new KrcdtDaiTemporaryTimePK(employee, date);
+			krcdtDaiTemporaryTime.timeLeavingWorks = new ArrayList<>();
+		}
+		return krcdtDaiTemporaryTime;
 	}
 
 	@Override
