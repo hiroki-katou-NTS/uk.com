@@ -98,6 +98,12 @@ public class ProgramIdConsts {
 	public static final String KDW001I = "KDW001I";
 	public static final String KDW001J = "KDW001J";
 	
+	public static final String KDW006B = "KDW006B";
+	public static final String KDW006C = "KDW006C";
+	public static final String KDW006D = "KDW006D";
+	public static final String KDW006E = "KDW006E";
+	
+	
 	public static final String KDW009A = "KDW009A";
 	
 	public static final String KSM002A = "KSM002A";
