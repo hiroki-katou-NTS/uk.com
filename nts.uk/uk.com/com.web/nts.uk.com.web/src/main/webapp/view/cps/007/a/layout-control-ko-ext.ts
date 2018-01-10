@@ -1804,6 +1804,10 @@ module nts.custombinding {
                 // remove all data in listbox
                 opts.listbox.options.removeAll();
 
+                if (opts.sortable.isEditable() != 0) {
+                    return;
+                }
+
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
                     opts.comboxbox.options.removeAll();
                     services.getCats().done((data: any) => {
@@ -1872,6 +1876,10 @@ module nts.custombinding {
 
             // load listbox data
             opts.comboxbox.value.subscribe(cid => {
+                if (opts.sortable.isEditable() != 0) {
+                    return;
+                }
+                
                 if (cid) {
                     let data: Array<IItemCategory> = ko.toJS(opts.comboxbox.options),
                         item: IItemCategory = _.find(data, x => x.id == cid);
