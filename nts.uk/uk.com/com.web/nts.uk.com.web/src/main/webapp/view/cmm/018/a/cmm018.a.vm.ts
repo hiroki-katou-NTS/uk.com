@@ -1044,12 +1044,12 @@ module nts.uk.com.view.cmm018.a {
                 let confirmedPerson = '';
                 _.each(obj.approver, function(item){
                     if(item.approvalAtr == 0){
-                       self.approverInfor.push({id: item.employeeId, approvalAtr: item.approvalAtr}); 
+                       self.approverInfor.push({id: item.employeeId, approvalAtr: item.approvalAtr, dispOrder: item.orderNumber}); 
                         if(item.confirmPerson == 1){
                         confirmedPerson = item.employeeId;
                     }
                     }else{
-                        self.approverInfor.push({id: item.jobTitleId, approvalAtr: item.approvalAtr});
+                        self.approverInfor.push({id: item.jobTitleId, approvalAtr: item.approvalAtr, dispOrder: item.orderNumber});
                         if(item.confirmPerson == 1){
                         confirmedPerson = item.jobTitleId;
                         }
