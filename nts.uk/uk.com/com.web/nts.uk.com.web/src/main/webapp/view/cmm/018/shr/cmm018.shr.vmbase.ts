@@ -623,11 +623,13 @@ module nts.uk.com.view.cmm018.shr {
             name: string;
             /**区分  0: 個人(person) - 1: 職位(jobTitle)*/
             approvalAtr: number;
-            constructor(id: string, code: string, name: string , approvalAtr: number){
+            dispOrder: number;
+            constructor(id: string, code: string, name: string , approvalAtr: number,dispOrder: number){
                 this.id = id;
                 this.code = code;
                 this.name = name;    
                 this.approvalAtr = approvalAtr;
+                this.dispOrder = dispOrder;
             }
         } 
         //__________KCP009_________
