@@ -204,9 +204,8 @@ public class ProgramsManager {
 	/**
 	 * CPS005A
 	 */
-	public static final Program CPS005A  = new Program(WebAppId.COM, ProgramIdConsts.CPS005B, "CPS005_36",
+	public static final Program CPS005A  = new Program(WebAppId.COM, ProgramIdConsts.CPS005A, "CPS005_36",
 			"/view/cps/005/a/index.xhtml");
-	
 	
 	/**
 	 * CPS005B
