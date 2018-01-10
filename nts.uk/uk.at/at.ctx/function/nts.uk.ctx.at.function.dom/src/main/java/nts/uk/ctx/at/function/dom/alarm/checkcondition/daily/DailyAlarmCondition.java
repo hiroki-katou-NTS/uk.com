@@ -20,14 +20,15 @@ public class DailyAlarmCondition extends ExtractionCondition  {
 	
 	private boolean addApplication;
 	
+	private String errorAlarmCode;
 
-	public DailyAlarmCondition(String dailyAlarmConID, ConExtractedDaily conExtractedDaily, boolean addApplication) {
+	public DailyAlarmCondition(String dailyAlarmConID, ConExtractedDaily conExtractedDaily, boolean addApplication,
+			String errorAlarmCode) {
 		super();
 		this.dailyAlarmConID = dailyAlarmConID;
 		this.conExtractedDaily = conExtractedDaily;
 		this.addApplication = addApplication;
+		this.errorAlarmCode = errorAlarmCode;
 	}
-	
-	
 
 }
