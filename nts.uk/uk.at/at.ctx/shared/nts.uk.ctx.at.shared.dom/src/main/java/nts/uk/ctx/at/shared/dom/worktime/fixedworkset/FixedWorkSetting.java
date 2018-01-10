@@ -43,12 +43,4 @@ public class FixedWorkSetting extends AggregateRoot {
 	// 詳細設定
 	 private WorkTimeCommonSet advancedSetting;
 	
-	/**
-	 * 指定した区分の就業時間の時間帯設定を返す
-	 * @param classification 一日or午前or午後
-	 * @return 就業時間の時間帯設定
-	 */
-	public WorkTimeOfTimeSheetSetList getWorkingHourSet(AmPmClassification classification) {
-		return new WorkTimeOfTimeSheetSetList(this.weekdayWorkTimes.get(classification).getWorkingTime().getWorkingHours());
-	}
 }

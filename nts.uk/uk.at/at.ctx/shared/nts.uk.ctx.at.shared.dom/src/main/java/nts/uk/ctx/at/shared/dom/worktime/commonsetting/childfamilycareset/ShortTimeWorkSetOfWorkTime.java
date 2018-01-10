@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.commonsetting.childfamilycareset;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Getter;
  *
  */
 @Getter
+@AllArgsConstructor
 public class ShortTimeWorkSetOfWorkTime {
 
 	private boolean childCareWorkUse;

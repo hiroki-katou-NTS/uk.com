@@ -6,5 +6,5 @@ import nts.arc.time.GeneralDate;
 
 public interface EmploymentContractHistoryAdopter {
 
-	Optional<EmploymentContractHistory> findByEmployeeIdAndBaseDate(String employeeId, GeneralDate baseDate);
+	//Optional<EmploymentContractHistory> findByEmployeeIdAndBaseDate(String employeeId, GeneralDate baseDate);
 }

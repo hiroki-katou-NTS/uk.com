@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class EmTimeZoneSet.
@@ -73,5 +74,14 @@ public class EmTimeZoneSet extends DomainObject {
 
 	}
 
+	/**
+	 * 開始と終了だけ変更した新しいインスタンスを作る
+	 * @param start 開始時刻
+	 * @param end 終了時刻
+	 * @return 新しいインスタンス
+	 */
+	public EmTimeZoneSet newSpanWith(TimeWithDayAttr start, TimeWithDayAttr end) {
+		return new EmTimeZoneSet(this.employmentTimeFrameNo, new TimeZoneRounding(start, end, this.timezone.getRounding()));
+	}
 	
 }
