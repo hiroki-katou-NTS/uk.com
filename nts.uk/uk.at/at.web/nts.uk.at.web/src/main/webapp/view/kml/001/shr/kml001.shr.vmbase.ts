@@ -27,7 +27,7 @@ module nts.uk.at.view.kml001.shr {
             memo: KnockoutObservable<string>;
             premiumSets : KnockoutObservableArray<PremiumSetting>;
             constructor(companyID: string, historyID: string, startDate: string, endDate: string, unitPrice: number, memo: string, 
-                premiumSets: Array<PremiumSettingInterface>, premiumItems: Array<PremiumItem>) {
+                premiumSets: Array<PremiumSettingInterface>) {
                 var self = this;
                 self.companyID = ko.observable(companyID);
                 self.historyID = ko.observable(historyID);
@@ -35,22 +35,7 @@ module nts.uk.at.view.kml001.shr {
                 self.endDate = ko.observable(endDate);
                 self.unitPrice = ko.observable(unitPrice);
                 self.memo = ko.observable(memo);
-                let koPremiumSets = [];
-                premiumItems.forEach(function(premiumItem, index){
-                    if(premiumItem.useAtr()){
-                        let premiumSet = _.find(premiumSets, function(o) { 
-                            return o.displayNumber == index+1; 
-                        })
-                        if(premiumSet) {
-                            koPremiumSets.push(ProcessHandler.fromObjectPremiumSet(premiumSet));        
-                        } else {
-                            koPremiumSets.push(
-                                new vmbase.PremiumSetting("", "", premiumItem.displayNumber(), 1, premiumItem.name(), premiumItem.useAtr(), [])
-                            );    
-                        }
-                    }
-                });
-                self.premiumSets = ko.observableArray(koPremiumSets);
+                self.premiumSets = ko.observableArray(_.map(premiumSets, premiumSet => vmbase.ProcessHandler.fromObjectPremiumSet(premiumSet)));
             }
         }
         
@@ -121,7 +106,7 @@ module nts.uk.at.view.kml001.shr {
             /**
              * convert PersonCostCalculation JS object to PersonCostCalculation knockoutJS object 
              */
-            static fromObjectPerconCost(object: PersonCostCalculationInterface, premiumItems: Array<PremiumItem>): PersonCostCalculation {
+            static fromObjectPerconCost(object: PersonCostCalculationInterface): PersonCostCalculation {
                 return new PersonCostCalculation(
                     object.companyID, 
                     object.historyID, 
@@ -129,8 +114,7 @@ module nts.uk.at.view.kml001.shr {
                     object.endDate,
                     object.unitPrice,
                     object.memo,
-                    object.premiumSets, 
-                    premiumItems);
+                    object.premiumSets);
             }
             
             /**
@@ -177,6 +161,34 @@ module nts.uk.at.view.kml001.shr {
                     useAtr: koObject.useAtr(),
                     attendanceItems: _.map(koObject.attendanceItems() , function(item){ return {shortAttendanceID: item.shortAttendanceID, name: item.name}})   
                 };    
+            }
+            
+            static createPersonCostCalFromValue(objectPersonCostCalculation: PersonCostCalculationInterface, premiumItems: Array<PremiumItem>): PersonCostCalculation {
+                let personCostCalculation = new PersonCostCalculation("","","","",0,"",[]);
+                var self = this;
+                personCostCalculation.companyID(objectPersonCostCalculation.companyID);
+                personCostCalculation.historyID(objectPersonCostCalculation.historyID);
+                personCostCalculation.startDate(objectPersonCostCalculation.startDate);
+                personCostCalculation.endDate(objectPersonCostCalculation.endDate);
+                personCostCalculation.unitPrice(objectPersonCostCalculation.unitPrice);
+                personCostCalculation.memo(objectPersonCostCalculation.memo);
+                let koPremiumSets = [];
+                premiumItems.forEach(function(premiumItem, index){
+                    if(premiumItem.useAtr()){
+                        let premiumSet = _.find(objectPersonCostCalculation.premiumSets, function(o) { 
+                            return o.displayNumber == index+1; 
+                        })
+                        if(premiumSet) {
+                            koPremiumSets.push(ProcessHandler.fromObjectPremiumSet(premiumSet));        
+                        } else {
+                            koPremiumSets.push(
+                                new vmbase.PremiumSetting("", "", premiumItem.displayNumber(), 1, premiumItem.name(), premiumItem.useAtr(), [])
+                            );    
+                        }
+                    }
+                });
+                personCostCalculation.premiumSets(koPremiumSets);
+                return personCostCalculation;
             }
             
             /**
