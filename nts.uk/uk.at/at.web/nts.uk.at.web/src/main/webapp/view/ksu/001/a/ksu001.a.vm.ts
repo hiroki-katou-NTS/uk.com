@@ -200,7 +200,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 if (self.listSid() && self.listSid().length > 0) {
-//                    self.updateExTable();
+                    self.updateExTable();
                 }
             });
 
@@ -611,7 +611,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         /**
-         *  update extable 
+         *  update extable
+         *  create new dataSource for some part of exTable
+         *   set color for extable
          */
         updateExTable(): void {
             let self = this;
