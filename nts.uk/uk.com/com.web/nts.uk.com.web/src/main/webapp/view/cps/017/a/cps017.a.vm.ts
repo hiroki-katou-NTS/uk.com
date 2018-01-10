@@ -224,7 +224,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     if (param != null && param != undefined) {
                         self.isDialog(param.isDialog);
                         self.closeUp(true);
-                        self.perInfoSelectionItem().selectionItemId(param.selectionItemId);
+                        let isContain = _.findIndex(self.listItems(), (x) => {
+                            return x.selectionItemId == param.selectionItemId;
+                        });
+                        if (isContain > 0) {
+                            self.perInfoSelectionItem().selectionItemId(param.selectionItemId);
+                        } else {
+                            self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                        }
                     } else {
                         self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                     }

@@ -181,7 +181,7 @@ module nts.uk.at.view.ksu001.ja.viewmodel {
         closeDialog(): void {
             let self = this;
             setShared('dataFromJA', {
-                selectedLinkButton: self.selectedLinkButton
+                selectedLinkButton: self.selectedLinkButton()
             });
             nts.uk.ui.windows.close();
         }

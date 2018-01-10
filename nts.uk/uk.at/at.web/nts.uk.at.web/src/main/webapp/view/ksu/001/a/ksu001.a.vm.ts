@@ -69,8 +69,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         //Date time
         currentDate: Date = new Date();
-        dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/11/01'));
-        dtAft: KnockoutObservable<Date> = ko.observable(new Date('2017/11/30'));
+        dtPrev: KnockoutObservable<Date> = ko.observable(null);
+        dtAft: KnockoutObservable<Date> = ko.observable(null);
         dateTimePrev: KnockoutObservable<string>;
         dateTimeAfter: KnockoutObservable<string>;
 
@@ -239,6 +239,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // getWorkTypeTimeAndStartEndDate: get data workType-workTime for 2 combo-box of screen O
             // and startDate-endDate of screen A
             $.when(__viewContext.viewModel.viewO.getWorkTypeTimeAndStartEndDate(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
+                self.dtPrev(new Date(__viewContext.viewModel.viewO.startDateScreenA));
+                self.dtAft(new Date(__viewContext.viewModel.viewO.endDateScreenA));
                 // get state of list workTypeCode
                 // get data for screen A
                 let lstWorkTypeCode = [];
@@ -276,13 +278,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }));
             });
             //get workPlaceName to display A3-1
-            
             self.workplaceId = self.empItems()[0].workplaceId;
+
             let data = {
-                workplaceId:self.workplaceId,
-                baseDate:moment().toISOString()    
+                workplaceId: self.workplaceId,
+                baseDate: moment().toISOString()
             }
-            service.getWorkPlaceById(data).done((wkp)=>{
+            service.getWorkPlaceById(data).done((wkp) => {
                 self.workPlaceNameDisplay(wkp.wkpDisplayName);
             });
             //get data WorkPattern
@@ -616,7 +618,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             _.each(self.listSid(), (x) => {
                 //newLeftMost dataSource
                 let empItem: PersonModel = _.find(self.empItems(), ['empId', x]);
-                newLeftMostDs.push({ empId: x, empName: empItem.empCd + ' ' + empItem.empName });
+                newLeftMostDs.push({ empId: x, empName: nts.uk.text.padRight(empItem.empCd, ' ', 12) + ' ' + empItem.empName });
                 //newMiddle dataSource
                 newMiddleDs.push({ empId: x, team: "1", rank: "A", qualification: "★", employmentName: "アルバイト", workplaceName: "東京本社", classificationName: "分類", positionName: "一般" });
                 //newDetail dataSource
@@ -1064,17 +1066,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             //state = 0 || 3 : rest || work all day
             //state = 1 || 2 : work in morning || work in afternoon
-            let tmp = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': item.workTypeCode });
-            if (tmp.state == 1 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
-                item.symbolName = symbolName + self.dataScheduleDisplayControl().symbolHalfDayName;
-            }
+            let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': item.workTypeCode });
+            if (stateWorkTypeCode) {
+                let state = stateWorkTypeCode.state;
+                if (state == 1 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
+                    item.symbolName = symbolName + self.dataScheduleDisplayControl().symbolHalfDayName;
+                }
 
-            if (tmp.state == 2 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
-                item.symbolName = self.dataScheduleDisplayControl().symbolHalfDayName + symbolName;
-            }
+                if (state == 2 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
+                    item.symbolName = self.dataScheduleDisplayControl().symbolHalfDayName + symbolName;
+                }
 
-            if (tmp.state == 0 || tmp.state == 3) {
-                item.symbolName = symbolName;
+                if (state == 0 || state == 3) {
+                    item.symbolName = symbolName;
+                }
             }
         }
 
@@ -1379,76 +1384,77 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // TO-DO
                 // 日単位でチェック handler will return state 　非表示　or 確定　or 応援者　or 修正不可
                 // but pharse 2 not to do
-
+                // do chua co bang master cua STATE nên comment đoạn code bên dưới.
                 //get data from WorkScheduleState
-                self.getDataWorkScheduleState().done(() => {
-                    if (self.selectedModeDisplay() === 3) {
-                        _.each(self.listSid(), (sId) => {
-                            let endDate = self.dtAft(), startDate = self.dtPrev();
-                            for (let currDate = startDate; startDate <= endDate; startDate.setDate(startDate.getDate() + 1)) {
-                                let cDate1 = moment(currDate).format('YYYY/MM/DD'), cDate2 = moment(currDate).format('YYYYMMDD');
-                                let arr: any[] = _.filter(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 0 });
-                                if (arr.length == 3) {
-                                    let scheduleEditStateItem: number = _.find(self.dataWScheduleState(), (item) => {
-                                        return (item.employeeId == sId) && (moment(item.date).format('YYYY/MM/DD') === cDate1) && (item.scheduleEditState != 0);
-                                    }).scheduleEditState;
-
-                                    if (scheduleEditStateItem == 2) {
-                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
-                                    } else if (scheduleEditStateItem == 1) {
-                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
-                                    } else if (scheduleEditStateItem == 3) {
-                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
-                                    }
-                                } else if (arr.length <= 2) {
-                                    if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 2 })) {
-                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
-                                    } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 1 })) {
-                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
-                                    } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 3 })) {
-                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
-                                    }
-                                }
-                            }
-                        });
-                    } else {
-                        //Return value of ScheduleEditState of WorkScheduleState
-                        let data = [];
-                        if (self.selectedModeDisplay() === 2) {
-                            //scheduleItemId = 3: it is id of StartTime
-                            //scheduleItemId = 4: it is id of EndTime
-                            data = _.reduce(self.dataWScheduleState(), (result, item) => {
-                                if (item.scheduleItemId == 3 || item.scheduleItemId == 4) {
-                                    result.push(item);
-                                }
-                                return result;
-                            }, []);
-                        } else {
-                            //scheduleItemId = 1: it is id of WorkType
-                            //scheduleItemId = 2: it is id of WorkTime
-                            data = _.reduce(self.dataWScheduleState(), (result, item) => {
-                                if (item.scheduleItemId == 1 || item.scheduleItemId == 2) {
-                                    result.push(item);
-                                }
-                                return result;
-                            }, []);
-                        }
-
-                        _.each(data, (item) => {
-                            if (item.scheduleEditState == 1) {
-                                //手修正(本人) = bg-daily-alter-self
-                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-self"));
-                            } else if (item.scheduleEditState == 2) {
-                                //手修正(他人) = bg-daily-alter-other
-                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-other"));
-                            } else if (item.scheduleEditState == 3) {
-                                //申請反映 = bg-daily-reflect-application
-                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-reflect-application"));
-                            }
-                        });
-                    }
-                    dfd.resolve();
-                });
+                //                self.getDataWorkScheduleState().done(() => {
+                //                    if (self.selectedModeDisplay() === 3) {
+                //                        _.each(self.listSid(), (sId) => {
+                //                            let endDate = self.dtAft(), startDate = self.dtPrev();
+                //                            for (let currDate = startDate; startDate <= endDate; startDate.setDate(startDate.getDate() + 1)) {
+                //                                let cDate1 = moment(currDate).format('YYYY/MM/DD'), cDate2 = moment(currDate).format('YYYYMMDD');
+                //                                let arr: any[] = _.filter(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 0 });
+                //                                if (arr.length == 3) {
+                //                                    let scheduleEditStateItem: number = _.find(self.dataWScheduleState(), (item) => {
+                //                                        return (item.employeeId == sId) && (moment(item.date).format('YYYY/MM/DD') === cDate1) && (item.scheduleEditState != 0);
+                //                                    }).scheduleEditState;
+                //
+                //                                    if (scheduleEditStateItem == 2) {
+                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
+                //                                    } else if (scheduleEditStateItem == 1) {
+                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
+                //                                    } else if (scheduleEditStateItem == 3) {
+                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
+                //                                    }
+                //                                } else if (arr.length <= 2) {
+                //                                    if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 2 })) {
+                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
+                //                                    } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 1 })) {
+                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
+                //                                    } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 3 })) {
+                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
+                //                                    }
+                //                                }
+                //                            }
+                //                        });
+                //                    } else {
+                //                        //Return value of ScheduleEditState of WorkScheduleState
+                //                        let data = [];
+                //                        if (self.selectedModeDisplay() === 2) {
+                //                            //scheduleItemId = 3: it is id of StartTime
+                //                            //scheduleItemId = 4: it is id of EndTime
+                //                            data = _.reduce(self.dataWScheduleState(), (result, item) => {
+                //                                if (item.scheduleItemId == 3 || item.scheduleItemId == 4) {
+                //                                    result.push(item);
+                //                                }
+                //                                return result;
+                //                            }, []);
+                //                        } else {
+                //                            //scheduleItemId = 1: it is id of WorkType
+                //                            //scheduleItemId = 2: it is id of WorkTime
+                //                            data = _.reduce(self.dataWScheduleState(), (result, item) => {
+                //                                if (item.scheduleItemId == 1 || item.scheduleItemId == 2) {
+                //                                    result.push(item);
+                //                                }
+                //                                return result;
+                //                            }, []);
+                //                        }
+                //
+                //                        _.each(data, (item) => {
+                //                            if (item.scheduleEditState == 1) {
+                //                                //手修正(本人) = bg-daily-alter-self
+                //                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-self"));
+                //                            } else if (item.scheduleEditState == 2) {
+                //                                //手修正(他人) = bg-daily-alter-other
+                //                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-other"));
+                //                            } else if (item.scheduleEditState == 3) {
+                //                                //申請反映 = bg-daily-reflect-application
+                //                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-reflect-application"));
+                //                            }
+                //                        });
+                //                    }
+                //                    dfd.resolve();
+                //                });
+                dfd.resolve();
             }
             return dfd.promise();
         }
@@ -1482,10 +1488,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     });
 
+                    // set class bg-schedule-that-day for currentDay
                     if (self.dateTimePrev() <= moment().format('YYYY/MM/DD') && moment().format('YYYY/MM/DD') <= self.dateTimeAfter()) {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment().format('YYYYMMDD'), 0, "bg-schedule-that-day "));
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment().format('YYYYMMDD'), 1, "bg-schedule-that-day"));
+                        let arrCellColorFilter = _.filter(detailHeaderDeco, ['columnKey', "_" + moment().format('YYYYMMDD')]);
+                        _.map(arrCellColorFilter, (cellColor: any) => {
+                            cellColor.clazz = cellColor.clazz.replace(/bg-\w*/g, 'bg-schedule-that-day');
+                        });
                     }
+
                     self.listColorOfHeader(detailHeaderDeco);
                     dfd.resolve();
                 });

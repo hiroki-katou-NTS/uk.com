@@ -36,7 +36,7 @@
 						<div
 							data-bind="ntsPanel:{width: '300px', height: '530px', direction: 'right', showIcon: false, visible: true}">
 							<div tabindex="3" style="width: 300px"
-								data-bind="ntsSearchBox: {placeHolder:'名称で検索…',searchMode: 'filter',targetKey: 'id', comId: 'category-list-items', 
+								data-bind="ntsSearchBox: {placeHolder:'名称で検索…',searchText: '絞り込み', searchMode: 'filter',targetKey: 'id', comId: 'category-list-items', 
 									items: categoryList, selected: perInfoCtgSelectCode, selectedKey: 'id', fields: ['categoryName'], mode: 'igGrid'}" />
 							<table id="category-list-items"
 								data-bind="ntsGridList: {								

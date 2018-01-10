@@ -236,6 +236,7 @@ public class DailyRecordWorkCommandHandler {
 			handler = isUpdate ? this.breakTimeUpdateHandler : this.breakTimeAddHandler;
 			break;
 		case "G":
+			//
 			handler = isUpdate ? this.attendanceTimeUpdateHandler : this.attendanceTimeAddHandler;
 			break;
 		case "H":

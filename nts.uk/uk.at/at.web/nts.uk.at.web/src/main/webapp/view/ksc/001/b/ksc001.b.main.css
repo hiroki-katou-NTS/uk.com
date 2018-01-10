@@ -195,6 +195,7 @@ button.nts-switch-button {
 
 .labelCenter {
 	margin-top: 8px;
+	white-space:pre;
 }
 
 .rangeLabel {

@@ -353,7 +353,7 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 				   new AttendanceTime(this.preOverTimeAppTime9),
 				   new AttendanceTime(0)));
 		
-		list.add(new OverTimeFrameTime(new OverTimeFrameNo(100),
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(10),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.overTime10), new AttendanceTime(this.calcOverTime10)),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.transTime10), new AttendanceTime(this.calcTransTime10)),
 				   new AttendanceTime(this.preOverTimeAppTime10),

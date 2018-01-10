@@ -2,6 +2,7 @@
 
     export module KeyCodes {
         export const Tab = 9;
+        export const Enter = 13;
     }
 
     export module util {

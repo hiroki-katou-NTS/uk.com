@@ -5,22 +5,32 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition>
-		<article class="cf">
-			<div class="tabs">
-				<ol>
-					<li><a href="#tabs-html">Usage</a></li>
-					<li><a href="#tabs-api">API</a></li>
-				</ol>
-				<div id="tabs-html" class="cf">
-					<h2>tap 1222</h2>
-	
-				</div>
-				<div id="tabs-api" class="cf">
-					<h2>Tap 2</h2>
+	<ui:composition template="../../../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="daily.start.js" />
+			<com:scriptfile path="daily.vm.js" />
+			<com:scriptfile path="daily.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab,direction:'horizontal' }">
+					<div class="tab-content-1">
+						<span>Tab Content 1</span><br/>
+					</div>
+					<div class="tab-content-2">
+						<span>Tab Content 2</span><br/>
+					</div>
+					<div class="tab-content-3">
+						<span>Tab Content 3</span><br/>
+					</div>
+					<div class="tab-content-4">
+						<span>Tab Content 4</span><br/>
+					</div>
 				</div>
 			</div>
-		</article>
+		</ui:define>
 	</ui:composition>
 </body>
 </html>
