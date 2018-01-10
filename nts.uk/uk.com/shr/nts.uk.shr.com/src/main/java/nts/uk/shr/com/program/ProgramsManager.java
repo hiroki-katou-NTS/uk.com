@@ -1429,9 +1429,14 @@ public class ProgramsManager {
 	/**	 KAF002A*/
 	public static final Program KAF002A = new Program(WebAppId.AT, ProgramIdConsts.KAF002A, null,
 			"/view/kaf/002/a/index.xhtml");
-	/**	 KAF005A*/
+	public static final Program KAF002B = new Program(WebAppId.AT, ProgramIdConsts.KAF002B, null,
+			"/view/kaf/002/b/index.xhtml");
+	/**	 KAF004A*/
 	public static final Program KAF004A = new Program(WebAppId.AT, ProgramIdConsts.KAF004A, null,
 			"/view/kaf/004/a/index.xhtml");
+	/**	 KAF005A*/
+	public static final Program KAF004B = new Program(WebAppId.AT, ProgramIdConsts.KAF004B, null,
+			"/view/kaf/004/b/index.xhtml");
 	/**	 KAF005A*/
 	public static final Program KAF005A = new Program(WebAppId.AT, ProgramIdConsts.KAF005A, null,
 			"/view/kaf/005/a/index.xhtml");
