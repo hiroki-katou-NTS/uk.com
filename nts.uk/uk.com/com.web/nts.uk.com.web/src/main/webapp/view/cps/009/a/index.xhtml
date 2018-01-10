@@ -199,8 +199,7 @@
 													data-bind="css:{ 
 											requiredCell: isRequired(), 
 											notrequiredCell:!isRequired()}">
-													<span style="display: none" data-bind="text: itemName" class="itemNameHide"></span>
-													<abbr data-bind="attr:{'title': ko.computed(()=>{return document.createElement('canvas').getContext('2d').measureText(itemName()).width>149?itemName():'';})}"><span class="months-input" data-bind="text: itemName" /></abbr>
+													<abbr data-bind="attr:{'title': getTitle}"><span class="months-input" data-bind="text: itemName" /></abbr>
 												</td>
 												<td class="input-units-2">
 													<div id="combo-box"
