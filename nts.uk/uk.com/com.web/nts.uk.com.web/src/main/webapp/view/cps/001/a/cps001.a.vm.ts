@@ -689,11 +689,15 @@ module cps001.a.vm {
                                         } else {
                                             self.events.add();
                                             self.gridlist.removeAll();
+                                            setShared(REPL_KEY, undefined);
+                                            self.infoId.valueHasMutated();
                                         }
                                         setShared(RELOAD_DT_KEY, undefined);
                                     }).fail(mgs => {
                                         self.gridlist.removeAll();
+                                        setShared(REPL_KEY, undefined);
                                         setShared(RELOAD_DT_KEY, undefined);
+                                        self.infoId.valueHasMutated();
                                     });
                                 } else {
                                     self.infoId.valueHasMutated();
