@@ -27,12 +27,14 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data.add((RestTimeZoneOfDailyDto) item);
+		if(item != null){
+			this.data.add((RestTimeZoneOfDailyDto) item);
+		}
 	}
 	
 	@Override
 	public List<BreakTimeOfDailyPerformance> toDomain() {
-		return ConvertHelper.mapTo(this.data, (c) -> new BreakTimeOfDailyPerformance(c.getEmployeeId(),
+		return ConvertHelper.mapTo(this.data, (c) -> new BreakTimeOfDailyPerformance(this.getEmployeeId(),
 				EnumAdaptor.valueOf(c.getRestTimeType(), BreakType.class),
 				ConvertHelper.mapTo(c.getTimeZone(),
 						(d) -> new BreakTimeSheet(new BreakFrameNo(d.getTimeSheetNo()),
@@ -40,13 +42,14 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 								createWorkStamp(d.getEnd()),
 								// TODO: calculate break time
 								new AttendanceTime(d.getBreakTime()))),
-				c.getYmd()));
+				this.getWorkDate()));
 	}
 
 	private WorkStamp createWorkStamp(TimeStampDto d) {
-		return d == null ? null : new WorkStamp(new TimeWithDayAttr(d.getAfterRoundingTimesOfDay()),
-				new TimeWithDayAttr(d.getTimesOfDay()),
-				new WorkLocationCD(d.getPlaceCode()),
+		return d == null ? null : new WorkStamp(
+				d.getAfterRoundingTimesOfDay() == null ? null : new TimeWithDayAttr(d.getAfterRoundingTimesOfDay()),
+				d.getTimesOfDay() == null ? null : new TimeWithDayAttr(d.getTimesOfDay()),
+				d.getPlaceCode() == null ? null : new WorkLocationCD(d.getPlaceCode()),
 				EnumAdaptor.valueOf(d.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

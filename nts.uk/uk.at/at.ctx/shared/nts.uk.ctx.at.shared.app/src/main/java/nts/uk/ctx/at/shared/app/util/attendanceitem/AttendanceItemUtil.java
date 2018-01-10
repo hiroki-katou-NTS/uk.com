@@ -152,12 +152,12 @@ public class AttendanceItemUtil {
 	private static <R extends ConvertibleAttendanceItem, T extends ConvertibleAttendanceItem> void processListProperty(
 			T object, Entry<String, List<ItemValue>> group, Field field) {
 		Map<String, List<ItemValue>> listGroup = groupMapLayout(group.getValue(), 1, true);
-		if (!listGroup.isEmpty()) {
-			AttendanceItemLayout layout = getLayoutAnnotation(field);
-			List<R> value = ReflectionUtil.getFieldValue(field, object); 
-			initNewList(field, layout, value);
-			ReflectionUtil.setFieldValue(field, object, getList(value, listGroup, layout.listMaxLength()));
-		}
+//		if (!listGroup.isEmpty()) {
+		AttendanceItemLayout layout = getLayoutAnnotation(field);
+		List<R> value = ReflectionUtil.getFieldValue(field, object); 
+		initNewList(field, layout, value);
+		ReflectionUtil.setFieldValue(field, object, getList(value, listGroup, layout.listMaxLength()));
+//		}
 	}
 
 	private static <R extends ConvertibleAttendanceItem> List<R> getList(List<R> list,
@@ -216,9 +216,9 @@ public class AttendanceItemUtil {
 			int layoutIdx, Class<T> classType, String pathName, String extraCondition, boolean needCheckWithIdx) {
 		List<T> value = getNotNullListValue(f, object);
 		Map<String, List<ItemValue>> listGroup = groupMapLayout(attendanceItems, layoutIdx, true);
-		String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
-		String newExCondition = getExCondition(extraCondition, object, layout);
-		boolean newNeedCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
+//		String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
+//		String newExCondition = getExCondition(extraCondition, object, layout);
+//		boolean newNeedCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
 		String idxFieldName = layout.setFieldWithIndex();
 		boolean isIndexField = !idxFieldName.isEmpty();
 		processListToMax(value, layout.listMaxLength(), classType, idxFieldName);
@@ -231,8 +231,8 @@ public class AttendanceItemUtil {
 			}
 			if (values != null) {
 				// TODO: for multiple index (current, not need)
-				return mergeToObject(v, values, layoutIdx + 1, idx, newPathName,
-						newExCondition, newNeedCheckWithIdx);
+				return mergeToObject(v, values, layoutIdx + 1, idx, pathName,
+						extraCondition, needCheckWithIdx);
 			}
 			return v;
 		}).collect(Collectors.toList());

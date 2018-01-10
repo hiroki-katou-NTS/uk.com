@@ -12,8 +12,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWork;
-import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiTemporaryTime;
-import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiTemporaryTimePK;
+import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWorkPK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
 
@@ -72,7 +71,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
 		this.getEntityManager().createQuery(REMOVE_TIME_LEAVING_WORK).setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).setParameter("timeLeavingType", 1).executeUpdate();
+				.setParameter("ymd", ymd).setParameter("timeLeavingType", 0).executeUpdate();
 		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).executeUpdate();
 		this.getEntityManager().flush();
@@ -100,16 +99,9 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		if(domain==null){
 			return;
 		}
-		KrcdtDaiTemporaryTime krcdtDaiTemporaryTime = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiTemporaryTime.class)
-				.setParameter("employeeId", domain.getEmployeeId())
-				.setParameter("ymd", domain.getYmd()).getSingle().orElse(null);
-		if(krcdtDaiTemporaryTime == null){
-			krcdtDaiTemporaryTime = new KrcdtDaiTemporaryTime();
-			krcdtDaiTemporaryTime.krcdtDaiTemporaryTimePK = new KrcdtDaiTemporaryTimePK(domain.getEmployeeId(), domain.getYmd());
-			krcdtDaiTemporaryTime.timeLeavingWorks = new ArrayList<>();
-		}
-		List<KrcdtTimeLeavingWork> timeWorks = krcdtDaiTemporaryTime.timeLeavingWorks;
- 		krcdtDaiTemporaryTime.workTimes = domain.getWorkTimes().v();
+		KrcdtDaiLeavingWork entity = getDailyLeaving(domain.getEmployeeId(), domain.getYmd());
+		List<KrcdtTimeLeavingWork> timeWorks = entity.timeLeavingWorks;
+ 		entity.workTimes = domain.getWorkTimes().v();
  		domain.getTimeLeavingWorks().stream().forEach(c -> {
  			KrcdtTimeLeavingWork krcdtTimeLeavingWork = timeWorks.stream()
  					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()).findFirst().orElse(null);
@@ -158,15 +150,30 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
  				}
  				krcdtTimeLeavingWork.leaveWorkNumberStamp = leaveStamp.getNumberOfReflectionStamp();
  			}
+ 			krcdtTimeLeavingWork.daiLeavingWork = entity;
  			if(isNew){
  				timeWorks.add(krcdtTimeLeavingWork);
  			}
  		});
-		
- 		this.commandProxy().update(krcdtDaiTemporaryTime);
- 		krcdtDaiTemporaryTime.timeLeavingWorks = timeWorks;
- 		this.commandProxy().update(krcdtDaiTemporaryTime.timeLeavingWorks);
+
+ 		entity.timeLeavingWorks = timeWorks.isEmpty() ? null : timeWorks;
+ 		this.commandProxy().update(entity);
+ 		if(!timeWorks.isEmpty()){
+ 			this.commandProxy().updateAll(entity.timeLeavingWorks);
+ 		}
 		this.getEntityManager().flush();
+	}
+	
+	private KrcdtDaiLeavingWork getDailyLeaving(String employee, GeneralDate date) {
+		KrcdtDaiLeavingWork krcdtDaiTemporaryTime = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiLeavingWork.class)
+				.setParameter("employeeId", employee)
+			.setParameter("ymd", date).getSingle().orElse(null);
+		if(krcdtDaiTemporaryTime == null){
+			krcdtDaiTemporaryTime = new KrcdtDaiLeavingWork();
+			krcdtDaiTemporaryTime.krcdtDaiLeavingWorkPK = new KrcdtDaiLeavingWorkPK(employee, date);
+			krcdtDaiTemporaryTime.timeLeavingWorks = new ArrayList<>();
+		}
+		return krcdtDaiTemporaryTime;
 	}
 
 	@Override
