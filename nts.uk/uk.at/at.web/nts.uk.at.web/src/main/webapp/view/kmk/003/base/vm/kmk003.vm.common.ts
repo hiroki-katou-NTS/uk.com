@@ -1183,8 +1183,8 @@ module nts.uk.at.view.kmk003.a {
                     return dataDTO;
                 }
                 
-                resetData() {
-                    this.fontRearSection(0);
+                resetData(section: number) {
+                    this.fontRearSection(section == 0 ? 1 : 0);
                     this.roundingTimeUnit(0);
                 }
             }
@@ -1212,7 +1212,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData() {
-                    this.roundingSet.resetData();
+                    this.roundingSet.resetData(this.section());
                 }
             }
 
@@ -1240,7 +1240,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData() {
-                    this.stampAtr(0);
+                    this.stampAtr(this.priorityAtr() == 1 ? 1 : 0);
                 }
             }
 

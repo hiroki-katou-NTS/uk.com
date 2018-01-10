@@ -11,7 +11,7 @@
 		<com:ko tag="ifnot" bind="isFlowMode">
 			<div class="labelSetting">
 				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_185')}</div>
-				<div data-bind="ntsSwitchButton: {
+				<div style="padding-right:20px;" data-bind="ntsSwitchButton: {
 					options: autoCalUseAttrs,
 					optionsValue: 'code',
 					optionsText: 'name',
@@ -19,8 +19,8 @@
 					value: mainSettingModel.fixedWorkSetting.legalOTSetting,
 					enable: true }">
 				</div>
-				<button style="margin-left: 20px;"
-					data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_1.png', position: 'right top' }">?</button>
+				<button
+					data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_1.png', position: 'bottom left-250' }">?</button>
 			</div>
 			<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
 				<h3>
