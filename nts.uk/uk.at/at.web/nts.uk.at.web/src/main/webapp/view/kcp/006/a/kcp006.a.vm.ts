@@ -77,8 +77,8 @@ module nts.uk.at.view.kcp006.a.viewmodel {
             self.firstDay = ko.observable(0);
             self.startDate = 1;
             self.endDate = 31;
-            self.workplaceId = ko.observable("1");
-            self.workplaceName = ko.observable("aaaa");
+            self.workplaceId = ko.observable("0");
+            self.workplaceName = ko.observable("");
             self.eventDisplay = ko.observable(true);
             self.eventUpdatable = ko.observable(true);
             self.holidayDisplay = ko.observable(true);
