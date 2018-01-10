@@ -369,7 +369,7 @@ module nts.uk.at.view.kmk006.a {
                     return self.valueEnumFleTimeAtr() != 2;
                 });
                 self.enableEnumResResLi = ko.computed(function() {
-                    return self.valueEnumResResAtr() != 2;
+                    return self.valueEnumResResAtr() != 0;
                 });
                 self.enableEnumResLatLi = ko.computed(function() {
                     return self.valueEnumResLatAtr() != 2;
