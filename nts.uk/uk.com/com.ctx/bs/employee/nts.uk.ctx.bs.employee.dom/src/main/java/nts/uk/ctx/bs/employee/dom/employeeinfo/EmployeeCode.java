@@ -5,12 +5,15 @@
 package nts.uk.ctx.bs.employee.dom.employeeinfo;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * The Class EmployeeCode.
  */
 // 社員CD
+@StringCharType(CharType.ANY_HALF_WIDTH)
 @StringMaxLength(12)
 public class EmployeeCode extends StringPrimitiveValue<EmployeeCode> {
 
