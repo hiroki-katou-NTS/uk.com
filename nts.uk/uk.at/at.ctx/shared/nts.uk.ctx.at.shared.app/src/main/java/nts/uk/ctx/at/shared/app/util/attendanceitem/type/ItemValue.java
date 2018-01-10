@@ -29,13 +29,13 @@ public class ItemValue {
 		}
 		switch (this.valueType) {
 		case INTEGER:
-			return (T) new Integer(this.value);
+			return this.value == null || this.value.isEmpty() ? null : (T) new Integer(this.value);
 		case STRING:
 			return (T) this.value;
 		case DECIMAL:
-			return (T) new BigDecimal(this.value);
+			return this.value == null || this.value.isEmpty() ? null : (T) new BigDecimal(this.value);
 		case DATE:
-			return (T) GeneralDate.fromString(this.value, "yyyyMMdd");
+			return this.value == null || this.value.isEmpty() ? null : (T) GeneralDate.fromString(this.value, "yyyyMMdd");
 		default:
 			throw new RuntimeException("invalid type: " + this.valueType);
 		}
