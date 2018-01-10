@@ -236,13 +236,13 @@ module nts.uk.at.view.kmk003.a {
 
                 private initListHalfDay(): Array<FlexHalfDayWorkTimeModel> {
                     let self = this;
-                    let oneDay = FlexHalfDayWorkTimeModel.initOneDay;
+                    let oneDay = FlexHalfDayWorkTimeModel.initOneDay();
                     oneDay.bindFixRestTime(self.fixRestTime);
 
-                    let morning = FlexHalfDayWorkTimeModel.initMorning;
+                    let morning = FlexHalfDayWorkTimeModel.initMorning();
                     morning.bindFixRestTime(self.fixRestTime);
 
-                    let afternoon = FlexHalfDayWorkTimeModel.initAfternoon;
+                    let afternoon = FlexHalfDayWorkTimeModel.initAfternoon();
                     afternoon.bindFixRestTime(self.fixRestTime);
 
                     let list: FlexHalfDayWorkTimeModel[] = [];
