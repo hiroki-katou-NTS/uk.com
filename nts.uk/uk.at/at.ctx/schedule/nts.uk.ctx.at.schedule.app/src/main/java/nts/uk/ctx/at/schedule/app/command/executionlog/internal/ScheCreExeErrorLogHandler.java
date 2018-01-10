@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -41,7 +42,7 @@ public class ScheCreExeErrorLogHandler {
 	 */
 	public void addError(ScheduleErrorLogGeterCommand command, String employeeId, String messageId) {
 		// check exist error
-		if (!this.checkExistError(command, employeeId)) {
+		if (!this.checkExistErrorByKey(command, employeeId)) {
 			this.scheduleErrorLogRepository.add(this.toScheduleErrorLog(command, employeeId, messageId));
 		}
 	}
@@ -62,6 +63,19 @@ public class ScheCreExeErrorLogHandler {
 			return false;
 		}
 		return true;
+	}
+	/**
+	 * Check exist error.
+	 *
+	 * @param command the command
+	 * @param employeeId the employee id
+	 * @return true, if successful
+	 */
+	public boolean checkExistErrorByKey(ScheduleErrorLogGeterCommand command, String employeeId) {
+		Optional<ScheduleErrorLog> optionalError = this.scheduleErrorLogRepository.findByKey(command.getExecutionId(),
+				employeeId, command.getToDate());
+
+		return optionalError.isPresent();
 	}
 	/**
 	 * To schedule error log.
