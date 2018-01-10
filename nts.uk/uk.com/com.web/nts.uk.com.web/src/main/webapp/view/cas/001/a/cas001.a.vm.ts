@@ -60,7 +60,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 let newPersonRole = _.find(self.personRoleList(), (role) => { return role.roleId === newRoleId });
 
 
-
                 service.getPersonRoleAuth(newRoleId).done((result: IPersonRole) => {
 
                     newPersonRole.loadRoleCategoriesList(newRoleId).done(() => {
@@ -80,10 +79,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                             dialog({ messageId: "Msg_364" });
                         }
 
-                    }).always(() => {
-
-
-                    });
+                    })
                 });
 
             });
@@ -425,7 +421,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 _.forEach(self.component.listRole(), function(iPersonRole: IPersonRole) {
 
-                    self.personRoleList().push(new PersonRole(iPersonRole));
+                    self.personRoleList(_.map(self.component.listRole(), x => new PersonRole(x)));
 
                 });
 
@@ -582,11 +578,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 screenModel.RoleCategoryList.removeAll();
 
-                _.forEach(result, function(iPersonRoleCategory: IPersonRoleCategory) {
-
-                    screenModel.RoleCategoryList.push(new PersonRoleCategory(iPersonRoleCategory));
-
-                });
+                screenModel.RoleCategoryList(_.map(result, x => new PersonRoleCategory(x)));
 
                 dfd.resolve();
             });
@@ -670,10 +662,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             service.getPersonRoleItemList(roleId, CategoryId).done(function(result: Array<IPersonRoleItem>) {
 
                 self.roleItemList.removeAll();
-                _.forEach(result, function(iPersonRoleItem: IPersonRoleItem) {
-                    self.roleItemList.push(new PersonRoleItem(iPersonRoleItem));
-                });
-
+                self.roleItemList(_.map(result, x => new PersonRoleItem(x)));
                 if (self.roleItemList().length < 1) {
                     dialog({ messageId: "Msg_217" });
                 }
