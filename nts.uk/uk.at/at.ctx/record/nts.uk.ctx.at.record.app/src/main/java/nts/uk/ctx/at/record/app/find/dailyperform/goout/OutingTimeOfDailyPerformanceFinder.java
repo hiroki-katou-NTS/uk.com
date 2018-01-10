@@ -52,9 +52,10 @@ public class OutingTimeOfDailyPerformanceFinder extends FinderFacade {
 	}
 
 	private TimeStampDto getTimeStamp(WorkStamp c) {
-		return c == null ? null : new TimeStampDto(c.getTimeWithDay().valueAsMinutes(),
-				c.getAfterRoundingTime().valueAsMinutes(),
-				c.getLocationCode().v(), c.getStampSourceInfo().value);
+		return c == null ? null : new TimeStampDto(
+				c.getTimeWithDay() == null ? null : c.getTimeWithDay().valueAsMinutes(),
+				c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
+				c.getLocationCode() == null ? null : c.getLocationCode().v(), c.getStampSourceInfo().value);
 	}
 
 }
