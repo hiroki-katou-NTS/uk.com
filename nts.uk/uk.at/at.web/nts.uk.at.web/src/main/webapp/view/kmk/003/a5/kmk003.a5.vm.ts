@@ -93,10 +93,6 @@ module a5 {
                 { code: false, name: nts.uk.resource.getText("KMK003_143") }
             ];
 
-            // flag
-            self.flexFixedRestTime = ko.observable(true); // initial value = lead
-            self.flowFixedRestTime = ko.observable(true); // initial value = lead
-
             // load data from main setting model
             self.mainSettingModel = valueAccessor.mainSettingModel;
             self.isDetailMode = valueAccessor.isDetailMode;
@@ -122,6 +118,10 @@ module a5 {
             let fixedOneday = self.mainSettingModel.fixedWorkSetting.getHDWtzOneday();
             let fixedMorning = self.mainSettingModel.fixedWorkSetting.getHDWtzMorning();
             let fixedAfternoon = self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon();
+
+            // set switch button value
+            self.flexFixedRestTime = flex.fixRestTime;
+            self.flowFixedRestTime = ko.observable(true); // TODO chua lam flow
 
             // set flex timezones
             self.oneDayFlexTimezones = flexOneday.restTimezone.fixedRestTimezone.convertedList;
