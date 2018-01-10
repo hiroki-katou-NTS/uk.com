@@ -144,7 +144,6 @@ module nts.uk.at.view.kdw008.a {
                 self.businessTypeList([]);
                 new service.Service().getBusinessType().done(function(data: Array<IDailyPerformanceFormatType>) {
                     if (data && data.length > 0) {
-                        data = _.orderBy(data, ["dailyPerformanceFormatCode"], ['asc']); 
                         self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
                         self.currentDailyFormatCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
                         self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);

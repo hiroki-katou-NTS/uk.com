@@ -46,6 +46,10 @@ module nts.uk.com.view.cas013.b.viewmodel {
                 nts.uk.ui.block.clear();    
             });
         }
+        
+        enterPress() {
+            this.search();   
+        }
 
         decision() {
             var self = this;
