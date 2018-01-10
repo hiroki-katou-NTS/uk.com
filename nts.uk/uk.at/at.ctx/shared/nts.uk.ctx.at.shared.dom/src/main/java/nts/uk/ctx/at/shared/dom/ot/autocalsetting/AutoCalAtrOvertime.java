@@ -9,18 +9,18 @@ package nts.uk.ctx.at.shared.dom.ot.autocalsetting;
  */
 // 時間外の自動計算区分
 public enum AutoCalAtrOvertime {
+	
+	/** The applymanuallyenter. */
+	// 申請または手入力
+	APPLYMANUALLYENTER(0, "Enum_AutoCalAtrOvertime_ApplyOrManuallyEnter", "申請または手入力"),
+	
+	/** The calculatemboss. */
+	// 打刻から計算する
+	CALCULATEMBOSS(2, "Enum_AutoCalAtrOvertime_CalculateEmbossing", "打刻から計算する"),
 
 	/** The timerecorder. */
 	// タイムレコーダーで選択
-	TIMERECORDER(0, "Enum_AutoCalAtrOvertime_TimeRecorder", "タイムレコーダーで選択"),
-
-	/** The calculatemboss. */
-	// 打刻から計算する
-	CALCULATEMBOSS(1, "Enum_AutoCalAtrOvertime_CalculateEmbossing", "打刻から計算する"),
-
-	/** The applymanuallyenter. */
-	// 申請または手入力
-	APPLYMANUALLYENTER(2, "Enum_AutoCalAtrOvertime_ApplyOrManuallyEnter", "申請または手入力");
+	TIMERECORDER(1, "Enum_AutoCalAtrOvertime_TimeRecorder", "タイムレコーダーで選択");
 
 	/** The value. */
 	public final int value;
