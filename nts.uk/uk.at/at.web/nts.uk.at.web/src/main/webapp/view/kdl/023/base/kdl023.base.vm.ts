@@ -312,16 +312,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
             let dfd = $.Deferred<void>();
             service.getAllWorkType().done(function(list: Array<WorkType>) {
-                if (list && list.length > 0) {                   
-                    list.sort(function(a, b) {
-                        // get & unwrap        
-                        if (a.workTypeCode < b.workTypeCode) {
-                            return -1;
-                        } else if (a.workTypeCode > b.workTypeCode) {
-                            return 1;
-                        }
-                        return 0;
-                    });            
+                if (list && list.length > 0) {                             
                     self.listWorkType(list);
                 } else {
                     self.isDataEmpty = true;
