@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -21,13 +22,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCMT_WK_RECORD_EXTRA_CON")
 public class KrcmtWorkRecordExtraCon  extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	@Id
-	@Column(name = "ERROR_ALARM_CHECK_ID")
-	public String errorAlarmCheckID;
-	
-	@Column(name = "CHECK_ITEM")
-	public int checkItem;
+	@EmbeddedId
+	public KrcmtWorkRecordExtraConPK krcmtWorkRecordExtraConPK;
 	
 	@Column(name = "MESSAGE_BOLD")
 	public int messageBold;
@@ -46,14 +42,13 @@ public class KrcmtWorkRecordExtraCon  extends UkJpaEntity implements Serializabl
 	
 	@Override
 	protected Object getKey() {
-		return errorAlarmCheckID;
+		return krcmtWorkRecordExtraConPK;
 	}
 
-	public KrcmtWorkRecordExtraCon(String errorAlarmCheckID, int checkItem, int messageBold, String messageColor,
-			int sortOrderBy, int useAtr, String nameWKRecord) {
+	public KrcmtWorkRecordExtraCon(KrcmtWorkRecordExtraConPK krcmtWorkRecordExtraConPK, int messageBold,
+			String messageColor, int sortOrderBy, int useAtr, String nameWKRecord) {
 		super();
-		this.errorAlarmCheckID = errorAlarmCheckID;
-		this.checkItem = checkItem;
+		this.krcmtWorkRecordExtraConPK = krcmtWorkRecordExtraConPK;
 		this.messageBold = messageBold;
 		this.messageColor = messageColor;
 		this.sortOrderBy = sortOrderBy;
@@ -61,10 +56,12 @@ public class KrcmtWorkRecordExtraCon  extends UkJpaEntity implements Serializabl
 		this.nameWKRecord = nameWKRecord;
 	}
 	
+	
 	public static KrcmtWorkRecordExtraCon toEntity(WorkRecordExtractingCondition domain) {
 		return new KrcmtWorkRecordExtraCon(
-				domain.getErrorAlarmCheckID(),
-				domain.getCheckItem().value,
+				new KrcmtWorkRecordExtraConPK(
+						domain.getErrorAlarmCheckID(),
+						domain.getCheckItem().value),
 				domain.getDisplayMessages().isMessageBold()?1:0,
 				domain.getDisplayMessages().getMessageColor().v(),
 				domain.getSortOrderBy(),
@@ -75,8 +72,8 @@ public class KrcmtWorkRecordExtraCon  extends UkJpaEntity implements Serializabl
 	
 	public WorkRecordExtractingCondition toDomain() {
 		return new WorkRecordExtractingCondition(
-				this.errorAlarmCheckID,
-				EnumAdaptor.valueOf(this.checkItem, TypeCheckWorkRecord.class),
+				this.krcmtWorkRecordExtraConPK.errorAlarmCheckID,
+				EnumAdaptor.valueOf(this.krcmtWorkRecordExtraConPK.checkItem, TypeCheckWorkRecord.class),
 				new DisplayMessages(
 					this.messageBold == 1?true:false,
 					new ColorCode(this.messageColor)),
@@ -85,6 +82,10 @@ public class KrcmtWorkRecordExtraCon  extends UkJpaEntity implements Serializabl
 				new NameWKRecord(this.nameWKRecord)
 				);
 	}
+
+
+
+	
 	
 	
 	

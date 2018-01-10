@@ -39,7 +39,7 @@ module cas009.b.viewmodel {
                 this.screenId = screenId;
                 this.programId = programId;
                 this.queryString = queryString;
-                this.url = "/nts.uk.com.web/view/" + programId.substr(0,3).toLowerCase() + "/" +programId.substr(3,6) + "/" + queryString + "/index.xhtml";
+                this.url = "/nts.uk.com.web/view/" + programId.substr(0,3).toLowerCase() + "/" +programId.substr(3,6) + "/" + screenId + "/index.xhtml";
             }
        }
     }

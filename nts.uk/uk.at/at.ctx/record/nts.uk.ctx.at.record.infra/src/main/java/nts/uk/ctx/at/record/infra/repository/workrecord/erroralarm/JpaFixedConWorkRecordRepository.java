@@ -17,7 +17,7 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 	private final String SELECT_FROM_FIXED_CON = " SELECT c FROM KrcmtFixedConditionWorkRecord c ";
 	
 	private final String SELECT_FIXED_CON_BY_ALARM_ID =SELECT_FROM_FIXED_CON 
-			+ " WHERE c.krcmtFixedConditionWorkRecordPK.dailyAlarmConID = :dailyAlarmConID ";
+			+ " WHERE c.krcmtFixedConditionWorkRecordPK.errorAlarmCode = :errorAlarmCode ";
 	
 	private final String SELECT_FIXED_CON_BY_CODE = SELECT_FIXED_CON_BY_ALARM_ID
 			+" AND c.krcmtFixedConditionWorkRecordPK.fixConWorkRecordNo = :fixConWorkRecordNo ";
@@ -30,17 +30,17 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 	}
 
 	@Override
-	public List<FixedConditionWorkRecord> getAllFixedConWRByAlarmID(String dailyAlarmConID) {
+	public List<FixedConditionWorkRecord> getAllFixedConWRByAlarmID(String errorAlarmCode) {
 		List<FixedConditionWorkRecord> data = this.queryProxy().query(SELECT_FIXED_CON_BY_ALARM_ID,KrcmtFixedConditionWorkRecord.class)
-				.setParameter("dailyAlarmConID", dailyAlarmConID)
+				.setParameter("errorAlarmCode", errorAlarmCode)
 				.getList(c->c.toDomain());
 		return data;
 	}
 
 	@Override
-	public Optional<FixedConditionWorkRecord> getFixedConWRByCode(String dailyAlarmConID, int fixConWorkRecordNo) {
+	public Optional<FixedConditionWorkRecord> getFixedConWRByCode(String errorAlarmCode, int fixConWorkRecordNo) {
 		Optional<FixedConditionWorkRecord> data = this.queryProxy().query(SELECT_FIXED_CON_BY_CODE,KrcmtFixedConditionWorkRecord.class)
-				.setParameter("dailyAlarmConID", dailyAlarmConID)
+				.setParameter("errorAlarmCode", errorAlarmCode)
 				.setParameter("fixConWorkRecordNo", fixConWorkRecordNo)
 				.getSingle(c->c.toDomain());
 		return data;
@@ -58,7 +58,7 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 		KrcmtFixedConditionWorkRecord newEntity = KrcmtFixedConditionWorkRecord.toEntity(fixedConditionWorkRecord);
 		KrcmtFixedConditionWorkRecord updateEntity = this.queryProxy().find(
 				new KrcmtFixedConditionWorkRecordPK(
-				newEntity.krcmtFixedConditionWorkRecordPK.dailyAlarmConID,
+				newEntity.krcmtFixedConditionWorkRecordPK.errorAlarmCode,
 				newEntity.krcmtFixedConditionWorkRecordPK.fixConWorkRecordNo),
 				KrcmtFixedConditionWorkRecord.class).get();
 		updateEntity.message = newEntity.message;
@@ -67,9 +67,9 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 	}
 
 	@Override
-	public void deleteFixedConWorkRecord(String dailyAlarmConID, int fixConWorkRecordNo) {
+	public void deleteFixedConWorkRecord(String errorAlarmCode, int fixConWorkRecordNo) {
 		this.commandProxy().remove(KrcmtFixedConditionWorkRecord.class,new KrcmtFixedConditionWorkRecordPK(
-				dailyAlarmConID,fixConWorkRecordNo));
+				errorAlarmCode,fixConWorkRecordNo));
 		
 	}
 
