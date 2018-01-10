@@ -771,10 +771,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
         stringItemLength: number;
 
         stringItemDataType: number;
-        getIitle: KnockoutObservable<string> = ko.observable("");
+        getTitle: KnockoutObservable<string> = ko.observable("");
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
-            self.getIitle(self.getWidthText(params.itemName) > 200 ? params.itemName : "");
+            self.getTitle(self.getWidthText(params.itemName) > 200 ? params.itemName : "");
             self.fixedItem = params.fixedItem;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
             self.settingId = ko.observable(params.settingId || "");
