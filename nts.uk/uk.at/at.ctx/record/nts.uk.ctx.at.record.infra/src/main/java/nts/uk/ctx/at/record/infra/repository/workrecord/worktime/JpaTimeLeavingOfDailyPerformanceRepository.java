@@ -72,7 +72,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
 		this.getEntityManager().createQuery(REMOVE_TIME_LEAVING_WORK).setParameter("employeeId", employeeId)
-				.setParameter("ymd", ymd).setParameter("timeLeavingType", 1).executeUpdate();
+				.setParameter("ymd", ymd).setParameter("timeLeavingType", 0).executeUpdate();
 		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).executeUpdate();
 		this.getEntityManager().flush();
