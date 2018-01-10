@@ -75,12 +75,32 @@ module nts.uk.at.view.kmk003.a {
                 workNo: KnockoutObservable<number>;
                 start: KnockoutObservable<number>;
                 end: KnockoutObservable<number>;
+                valueChangedNotifier: KnockoutObservable<any>;
 
                 constructor() {
                     this.useAtr = ko.observable(false);
                     this.workNo = ko.observable(0);
                     this.start = ko.observable(0);
                     this.end = ko.observable(0);
+                    this.valueChangedNotifier = ko.observable();
+                    this.start.subscribe(() => {
+                        this.valueChangedNotifier.valueHasMutated();
+                    });
+                    this.end.subscribe(() => {
+                        this.valueChangedNotifier.valueHasMutated();
+                    });
+                }
+
+                public static createShiftOne(): TimezoneModel {
+                    let m = new TimezoneModel();
+                    m.workNo(1);
+                    return m;
+                }
+
+                public static createShiftTwo(): TimezoneModel {
+                    let m = new TimezoneModel();
+                    m.workNo(2);
+                    return m;
                 }
 
                 resetData(): void {
@@ -111,12 +131,14 @@ module nts.uk.at.view.kmk003.a {
             export class PrescribedTimezoneSettingModel {
                 morningEndTime: KnockoutObservable<number>;
                 afternoonStartTime: KnockoutObservable<number>;
-                lstTimezone: TimezoneModel[];
+                shiftOne: TimezoneModel;
+                shiftTwo: TimezoneModel;
 
                 constructor() {
                     this.morningEndTime = ko.observable(0);
                     this.afternoonStartTime = ko.observable(0);
-                    this.lstTimezone = [];
+                    this.shiftOne = TimezoneModel.createShiftOne();
+                    this.shiftTwo = TimezoneModel.createShiftTwo();
                 }
 
                 updateData(data: PrescribedTimezoneSettingDto) {
@@ -126,63 +148,21 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateTimeZone(data: TimezoneDto[]) {
-                    for (var dataDTO of data) {
-                        var dataModel: TimezoneModel = this.getTimezoneByWorkNo(dataDTO.workNo);
-                        if (!dataModel) {
-                            dataModel = new TimezoneModel();
-                            dataModel.updateData(dataDTO);
-                            this.lstTimezone.push(dataModel);
-                        }
-                        else {
-                            dataModel.updateData(dataDTO);
-                        }
+                    let self = this;
+                    let shift1 = _.find(data, item => item.workNo == 1);
+                    let shift2 = _.find(data, item => item.workNo == 2);
+                    if (shift1) {
+                        self.shiftOne.updateData(shift1);
                     }
-                }
-                
-                // get time zone one
-                getTimezoneOne(): TimezoneModel {
-                    var self = this;
-                    var data: TimezoneModel = _.find(self.lstTimezone, timezone => timezone.workNo() == 1);
-                    if (!data) {
-                        data = new TimezoneModel();
-                        data.workNo(1);
-                        this.lstTimezone.push(data);
-                        return data;
+                    if (shift2) {
+                        self.shiftTwo.updateData(shift2);
                     }
-                    return data;
-                }
-                
-               
-                getTimezoneByWorkNo(workNo: number): TimezoneModel {
-                    var self = this;
-                    var data: TimezoneModel = _.find(self.lstTimezone, timezone => timezone.workNo() == workNo);
-                    if (!data) {
-                        data = new TimezoneModel();
-                        data.workNo(workNo);
-                        this.lstTimezone.push(data);
-                        return data;
-                    }
-                    return data;
-                }
-
-                // get time zone two
-                getTimezoneTwo(): TimezoneModel {
-                    var self = this;
-                    var data: TimezoneModel = _.find(self.lstTimezone, timezone => timezone.workNo() == 2);
-                    if (!data) {
-                        data = new TimezoneModel();
-                        data.workNo(2);
-                        this.lstTimezone.push(data);
-                        return data;
-                    }
-                    return data;
                 }
                 
                 toDto(): PrescribedTimezoneSettingDto {
                     var lstTimezone: TimezoneDto[] = [];
-                    for (var dataModel of this.lstTimezone) {
-                        lstTimezone.push(dataModel.toDto());
-                    }
+                    lstTimezone.push(this.shiftOne.toDto());
+                    lstTimezone.push(this.shiftTwo.toDto());
                     var dataDTO: PrescribedTimezoneSettingDto = {
                         morningEndTime: this.morningEndTime(),
                         afternoonStartTime: this.afternoonStartTime(),
@@ -194,8 +174,8 @@ module nts.uk.at.view.kmk003.a {
                 resetData() {
                     this.morningEndTime(0);
                     this.afternoonStartTime(0);
-                    this.getTimezoneOne().resetData();
-                    this.getTimezoneTwo().resetData();
+                    this.shiftOne.resetData();
+                    this.shiftTwo.resetData();
                 }
             }
 

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDa
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 
-public class ExtractionRangeCommand {
+public class ExtractionPeriodDailyCommand {
 	
 	private String extractionId;
 	

@@ -20,6 +20,8 @@ public interface IMaintenanceLayoutRepository {
 
 	boolean checkExit(String cpmpanyId, String layoutCode);
 	
+	boolean isNewLayout(String cpmpanyId, String layoutId);
+	
 	List<MaintenanceLayout> getAllMaintenanceLayout(String cid);
 
 	Optional<MaintenanceLayout> getById(String cid, String id);

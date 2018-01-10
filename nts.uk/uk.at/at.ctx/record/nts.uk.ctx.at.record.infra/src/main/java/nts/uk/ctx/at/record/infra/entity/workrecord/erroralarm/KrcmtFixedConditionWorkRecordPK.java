@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition;
+package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm;
 
 import java.io.Serializable;
 

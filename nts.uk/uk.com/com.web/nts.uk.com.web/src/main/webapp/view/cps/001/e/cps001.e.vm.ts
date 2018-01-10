@@ -27,9 +27,10 @@ module cps001.e.vm {
             let self = this,
                 params = getShared("CPS001E_PARAMS");
             self.empFileMn().employeeId = params.employeeId;
+            self.empFileMn().isAvatar = false;
             //get employee file management domain by employeeId
             block();
-            service.getAvatar(self.empFileMn().employeeId).done(function(data) {
+            service.getMap(self.empFileMn().employeeId).done(function(data) {
                 if (data) {
                     self.empFileMn().fileId = data.fileId ? data.fileId : "";
                     self.empFileMn().fileType = 1;
@@ -78,7 +79,7 @@ module cps001.e.vm {
                 if (self.isChange()) {
                     $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
                         self.empFileMn().fileId = data.id;
-                        self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType };
+                        self.oldEmpFileMn = { employeeId: self.empFileMn().employeeId, fileId: self.empFileMn().fileId, fileType: self.empFileMn().fileType, isAvatar: false };
                         self.updateImage(self.oldEmpFileMn, ko.toJS(self.empFileMn()));
                     });
                 } else self.close();
@@ -110,7 +111,7 @@ module cps001.e.vm {
                     block();
                     service.insertAvaOrMap(currentEmpFileMn).done(function() {
                         setShared("CPS001E_VALUES", ko.unwrap(self.empFileMn));
-                         unblock();
+                        unblock();
                         self.close();
                     }).fail((mes) => {
                         unblock();
@@ -151,5 +152,6 @@ module cps001.e.vm {
         employeeId: string;
         fileId?: string;
         fileType?: number;
+        isAvatar: boolean;
     }
 }

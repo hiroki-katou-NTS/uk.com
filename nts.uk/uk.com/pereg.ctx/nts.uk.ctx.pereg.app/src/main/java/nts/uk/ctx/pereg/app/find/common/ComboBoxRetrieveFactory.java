@@ -23,7 +23,10 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
@@ -40,9 +43,11 @@ import nts.uk.ctx.pereg.app.find.person.info.item.MasterRefConditionDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionFinder;
+import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.find.PeregQuery;
 
 /**
  * @author danpv
@@ -75,6 +80,15 @@ public class ComboBoxRetrieveFactory {
 
 	@Inject
 	private JobTitleInfoRepository jobTitleRepo;
+	
+	@Inject
+	private LayoutingProcessor layoutingProcessor;
+	
+	@Inject
+	private WorkTimeWorkplaceRepository workTimePlaceRepo;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepo;
 
 	private static Map<String, Class<?>> enumMap;
 	static {
@@ -104,7 +118,7 @@ public class ComboBoxRetrieveFactory {
 	private final String JP_SPACE = "　";
 
 	@SuppressWarnings("unchecked")
-	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto,
+	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
 			GeneralDate standardDate, boolean isCps001) {
 		String companyId = AppContexts.user().companyId();
 		switch (selectionItemDto.getReferenceType()) {
@@ -228,7 +242,15 @@ public class ComboBoxRetrieveFactory {
 				}
 			case "M00009":
 				// 就業時間帯マスタ
-				return Arrays.asList(new ComboBoxObject("001", "固定名"));
+				AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) layoutingProcessor
+						.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate)).getDomainDto();
+				String workPlaceId = workPlaceItem.getWorkplaceCode();
+				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workPlaceId);
+				return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
+						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
+								workTimeSetting.getWorktimeCode() + JP_SPACE
+										+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName()))
+						.collect(Collectors.toList());
 			default:
 				break;
 			}

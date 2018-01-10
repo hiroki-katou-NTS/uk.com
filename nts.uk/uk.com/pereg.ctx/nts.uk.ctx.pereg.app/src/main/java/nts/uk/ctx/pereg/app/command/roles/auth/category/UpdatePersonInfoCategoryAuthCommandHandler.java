@@ -46,32 +46,12 @@ public class UpdatePersonInfoCategoryAuthCommandHandler extends CommandHandler<U
 
 			} else {
 
-				List<PersonInfoCategoryAuth> categoryLst = this.categoryAuthRepo
-						.getAllCategoryAuthByRoleId(p.getRoleId());
-				if (categoryLst.size() > 0) {
-					categoryLst.stream().forEach(c -> {
+				PersonInfoCategoryAuth categoryAuth = this.categoryAuthRepo
+						.getDetailPersonCategoryAuthByPId(p.getRoleId(), p.getCategoryId()).orElse(null);
+				if (categoryAuth != null) {
+					categoryAuth.updateFromJavaType(p.getAllowPersonRef(), p.getAllowOtherRef());
+					this.categoryAuthRepo.update(categoryAuth);
 
-						PersonInfoCategoryAuth categoryAuth = this.categoryAuthRepo
-								.getDetailPersonCategoryAuthByPId(p.getRoleId(), p.getCategoryId()).orElse(null);
-						if (categoryAuth != null) {
-							categoryAuth.updateFromJavaType(p.getAllowPersonRef(), p.getAllowOtherRef(),
-									categoryAuth.getAllowOtherCompanyRef().value,
-									categoryAuth.getSelfPastHisAuth().value, categoryAuth.getSelfFutureHisAuth().value,
-									categoryAuth.getSelfAllowAddHis().value, categoryAuth.getSelfAllowDelHis().value,
-									categoryAuth.getOtherPastHisAuth().value,
-									categoryAuth.getOtherFutureHisAuth().value,
-									categoryAuth.getOtherAllowAddHis().value, categoryAuth.getOtherAllowDelHis().value,
-									categoryAuth.getSelfAllowAddMulti().value,
-									categoryAuth.getSelfAllowDelMulti().value,
-									categoryAuth.getOtherAllowAddMulti().value,
-									categoryAuth.getOtherAllowDelMulti().value);
-							this.categoryAuthRepo.update(categoryAuth);
-
-						} else {
-
-							this.categoryAuthRepo.add(addCategoryAuth);
-						}
-					});
 				} else {
 
 					this.categoryAuthRepo.add(addCategoryAuth);

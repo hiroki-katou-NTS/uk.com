@@ -43,7 +43,7 @@
 										<div data-bind="text: overtimeNo"></div>
 									</td>
 									<td>
-										<input tabindex="2" data-bind="attr: {'id': 'overtimeNo_'+overtimeNo()}, ntsTextEditor: {value: name, constraint: 'OvertimeName',  required: requiredText}"/>
+										<input tabindex="2" data-bind="attr: {'id': 'overtimeNo_'+overtimeNo()}, ntsTextEditor: {value: name, constraint: 'OvertimeName',  required: requiredText, name: $parent.switchNameResource()}"/>
 									</td>
 								</tr>
 							</com:ko>

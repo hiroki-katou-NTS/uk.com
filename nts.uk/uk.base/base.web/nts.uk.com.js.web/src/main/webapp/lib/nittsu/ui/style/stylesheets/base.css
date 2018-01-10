@@ -1042,31 +1042,37 @@ button .icon {
   outline: none;
   box-shadow: 0 0 1px 1px #0096f2;
 }
-/* line 18, ../sass/components/_editor.scss */
+/* line 16, ../sass/components/_editor.scss */
+.ntsControl .nts-input.enterkey {
+  background-image: url("images/icons/enter_mark.png");
+  background-position: right;
+  background-repeat: no-repeat;
+}
+/* line 24, ../sass/components/_editor.scss */
 .ntsControl.symbol {
   position: relative;
 }
-/* line 21, ../sass/components/_editor.scss */
+/* line 27, ../sass/components/_editor.scss */
 .ntsControl.symbol:after {
   position: absolute;
   content: attr(data-content);
   top: 6px;
   color: #999;
 }
-/* line 29, ../sass/components/_editor.scss */
+/* line 35, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-left .nts-input {
   padding-left: 20px;
 }
-/* line 31, ../sass/components/_editor.scss */
+/* line 37, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-left:after {
   left: 5px;
   text-align: left;
 }
-/* line 38, ../sass/components/_editor.scss */
+/* line 44, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-right .nts-input {
   padding-right: 20px;
 }
-/* line 40, ../sass/components/_editor.scss */
+/* line 46, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-right:after {
   right: 5px;
   text-align: right;

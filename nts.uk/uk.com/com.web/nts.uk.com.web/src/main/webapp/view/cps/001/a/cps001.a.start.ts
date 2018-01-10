@@ -5,7 +5,6 @@ module cps001.a {
     __viewContext.ready(() => {
         __viewContext.transferred.ifPresent(data => {
             setShared("CPS001A_PARAMS", data);
-            sessionStorage.clear();
         });
 
         __viewContext['viewModel'] = new vm.ViewModel();

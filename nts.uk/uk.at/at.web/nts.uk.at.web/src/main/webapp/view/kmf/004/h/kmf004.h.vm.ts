@@ -100,37 +100,36 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             let self = this;
             let code = "";  
             $("#inpPattern").trigger("validate");
-            let updateOption = new Relationship(self.selectedCode(), self.selectedName()); 
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             code = self.codeObject();
-            _.defer(() => {
-                if (nts.uk.ui.errors.hasError() === false) {
-                    // update item to list  
-                    if(self.checkUpdate() == true){
-                        service.update(updateOption).done(function(){
-                            self.getData().done(function(){
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(()=>{
-                                    self.selectedCode(code);  
-                                }); 
-                            });
+            let updateOption = new Relationship(self.selectedCode(), self.selectedName()); 
+            // update item to list  
+            if(self.checkUpdate() == true){
+                service.update(updateOption).done(function(){
+                    self.getData().done(function(){
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(()=>{
+                            self.selectedCode(code);  
+                        }); 
+                    });
+                });
+            }
+            else{
+                self.selectedOption(null);
+                let obj = new Relationship(self.codeObject(), self.selectedName());
+                // insert item to list
+                service.insert(obj).done(function(){
+                    self.getData().done(function(){
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(()=>{
+                            self.selectedCode(code);  
                         });
-                    }
-                    else{
-                        code = self.codeObject();
-                        self.selectedOption(null);
-                        let obj = new Relationship(self.codeObject(), self.selectedName());
-                        // insert item to list
-                        service.insert(obj).done(function(){
-                            self.getData().done(function(){
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(()=>{
-                                    self.selectedCode(code);  
-                                });
-                            });
-                        }).fail(function(res){
-                            $('#inpCode').ntsError('set', res);
-                        });
-                    }
-                }
-            });    
+                    });
+                }).fail(function(res){
+                    $('#inpCode').ntsError('set', res);
+                });
+            }
+                
             $("#inpPattern").focus();        
         } 
         //  new mode 

@@ -10,43 +10,33 @@ module cps008.b.vm {
         constructor() {
             let self = this,
                 layout = self.layout();
-            
+
             self.start();
 
             var currentDialog = nts.uk.ui.windows.getSelf();
             var doit;
-
             $(currentDialog.parent.globalContext).resize(function() {
-
                 clearTimeout(doit);
                 doit = setTimeout(self.resizedw(), 1000);
-
             });
-
-
         }
 
         resizedw() {
             let self = this,
                 currentDialog = nts.uk.ui.windows.getSelf();
             $(currentDialog.parent.globalContext).css("overflow", "hidden");
-            
-            if (currentDialog.parent.globalContext.innerWidth <= 1260) {
+
+            if (currentDialog.parent.globalContext.innerWidth <= 1270) {
                 currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 30);
             } else {
                 currentDialog.setWidth(1260);
             }
 
-            if (currentDialog.parent.globalContext.innerHeight <= 750) {
+            if (currentDialog.parent.globalContext.innerHeight <= 775) {
                 currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 30);
             } else {
-                currentDialog.setHeight(750);
+                currentDialog.setHeight(650);
             }
-
-
-            //currentDialog.setWidth(currentDialog.$dialog.width() <= 1260 ? (currentDialog.parent.globalContext.innerWidth - 20) : 1260);
-            //currentDialog.setHeight(currentDialog.$dialog.height() <= 750 ? (currentDialog.parent.globalContext.innerHeight - 20) : 750);
-
         }
 
         start() {
@@ -82,10 +72,12 @@ module cps008.b.vm {
             if (cls && cls.length) {
                 layout.itemsClassification.removeAll();
                 _.each(cls, x => layout.itemsClassification.push(_.omit(x, ["items"])));
-            } else {
+            } else if (dto.isNewLayout) {
                 service.getData().done((x: ILayout) => {
                     layout.itemsClassification(initData(x.itemsClassification));
                 });
+            }else{
+                 layout.itemsClassification([]);
             }
         }
 

@@ -165,5 +165,12 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 		this.otherAllowDelMulti = EnumAdaptor.valueOf(otherAllowDelMulti, PersonInfoPermissionType.class);
 
 	}
+	
+	public void updateFromJavaType(int allowPersonRef, int allowOtherRef) {
+
+		this.allowPersonRef = EnumAdaptor.valueOf(allowPersonRef, PersonInfoPermissionType.class);
+		this.allowOtherRef = EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class);
+
+	}
 
 }

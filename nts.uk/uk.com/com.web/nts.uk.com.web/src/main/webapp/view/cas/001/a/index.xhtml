@@ -317,7 +317,8 @@
 														enable: $parents[1].allowOtherRef()===1 ,
 														columns: [
 															{ prop: 'name', length: 5 },
-														]}"></div></td>
+														],
+														dropDownAttachedToBody:true}"></div></td>
 																<td><div id="A4_027"
 																		data-bind="ntsComboBox: {
 														options: $parents[1].itemListCbb,
@@ -328,7 +329,8 @@
 														enable: $parents[1].allowOtherRef()===1 ,
 														columns: [
 															{ prop: 'name', length: 5 },
-														]}"></div></td>
+														],
+														dropDownAttachedToBody:true}"></div></td>
 															</tr>
 															<tr>
 																<th>#{i18n.getText('CAS001_31')}</th>
@@ -356,7 +358,8 @@
 														enable: $parents[1].allowPersonRef() === 1 ,
 														columns: [
 															{ prop: 'name', length: 5 },
-														]}"></div></td>
+														],
+														dropDownAttachedToBody:true}"></div></td>
 																<td><div id="A4_023"
 																		data-bind="ntsComboBox: {
 														options: $parents[1].itemListCbb,
@@ -367,7 +370,9 @@
 														enable: $parents[1].allowPersonRef() === 1  ,
 														columns: [
 															{ prop: 'name', length: 5 },
-														]}"></div></td>
+														],
+														dropDownAttachedToBody:true
+														}"></div></td>
 															</tr>
 														</table>
 													</com:ko-if>
