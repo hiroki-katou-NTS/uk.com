@@ -660,20 +660,28 @@ module nts.uk.at.view.kmk003.a {
                     self.originalList = ko.observableArray([]);
                     self.originalListTemp = [];
                     self.convertedListTemp = [];
-                    
+
                     self.originalList.subscribe(newList => {
-                        let newTemp = self.toOriginalListTemp(newList);
-                        if (self.isNotEqual(newTemp, self.originalListTemp)) {
-                            self.originalListTemp = newTemp;
-                            self.convertedList(self.toConvertedList());
+                        // set new original list temp
+                        self.originalListTemp = self.toOriginalListTemp(newList);
+
+                        // check new converted list vs converted list temp
+                        let newConverted = self.toConvertedList();
+                        let newConvertedTemp = self.toConvertedListTemp(newConverted);
+                        if (self.isNotEqual(newConvertedTemp, self.convertedListTemp)) {
+                            self.convertedList(newConverted); // update new converted list
                         }
                     });
 
                     self.convertedList.subscribe(newList => {
-                        let newTemp = self.toConvertedListTemp(newList);
-                        if (self.isNotEqual(newTemp, self.convertedListTemp)) {
-                            self.convertedListTemp = newTemp;
-                            self.originalList(self.fromConvertedList(newList));
+                        // set new converted list temp
+                        self.convertedListTemp = self.toConvertedListTemp(newList);
+
+                        // check new original list vs original list temp
+                        let newOriginal = self.fromConvertedList(newList);
+                        let newOriginalTemp = self.toOriginalListTemp(newOriginal);
+                        if (self.isNotEqual(newOriginalTemp, self.originalListTemp)) {
+                            self.originalList(newOriginal); // update new original list
                         }
                     });
                 }
