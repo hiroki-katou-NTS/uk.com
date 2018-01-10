@@ -131,7 +131,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             var self = this;
             //add item in  dropdownlist
             self.itemListCbb.removeAll();
-            self.itemListCbb.push(new shrVm.ApproverDtoK('','','指定しない',0));
+            self.itemListCbb.push(new shrVm.ApproverDtoK('','','指定しない',0,0));
             if(self.approverList().length > 0){
                 _.forEach(self.approverList(),function(item: shrVm.ApproverDtoK){
                     self.itemListCbb.push(item);    
@@ -148,8 +148,9 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 _.forEach(data.approverInfor, function(sID){
                     if(sID.approvalAtr === 0){
                         service.getPersonInfor(sID.id).done(function(data: any){
-                            self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName, 0));
-                        })                            
+                            self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName, 0,sID.dispOrder));
+                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]);
+                        })
                     }else{
                         let job = new service.model.JobtitleInfor;
                         job.positionId = sID.id;
@@ -160,7 +161,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                         job.sequenceCode = "";
                         job.endDate = moment(new Date()).toDate();
                         service.getJobTitleName(job).done(function(data: any){
-                            self.approverList.push(new shrVm.ApproverDtoK(data.positionId, data.positionCode, data.positionName, 1));
+                            self.approverList.push(new shrVm.ApproverDtoK(data.positionId, data.positionCode, data.positionName, 1,sID.dispOrder));
+                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]);
                         })    
                     }
                 })    
@@ -183,7 +185,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 service.searchModeEmployee(employeeSearch).done(function(data: any){
                     let lstTmp = self.toUnitModelList(data);
                     _.each(lstTmp, function(item){
-                        self.employeeList.push(new shrVm.ApproverDtoK(item.id, item.code, item.name, item.approvalAtr))
+                        self.employeeList.push(new shrVm.ApproverDtoK(item.id, item.code, item.name, item.approvalAtr,0))
                     });
                 }).fail(function(res: any){
                     nts.uk.ui.dialog.alert(res.messageId);
@@ -192,7 +194,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             }else{
                 service.getJobTitleInfor(self.standardDate()).done(function(data: string){
                     _.forEach(data, function(value: service.model.JobtitleInfor){
-                        var job = new shrVm.ApproverDtoK(value.positionId,value.positionCode,value.positionName, 1);
+                        var job = new shrVm.ApproverDtoK(value.positionId,value.positionCode,value.positionName, 1,0);
                         self.employeeList.push(job);
                     })    
                 }).fail(function(res: any){
