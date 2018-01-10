@@ -17,9 +17,9 @@ module nts.uk.at.view.kal003.b.viewmodel{
         itemListTargetServiceType_BA1_2         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetSelectionRange_BA1_5         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetSelectionRange_BA1_5_target_working_hours : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
-        listAllWorkType         : Array<model.WorkTypeDto> = ([]);
-        listAllAttdItem         : Array<model.AttdItemDto> = ([]);
-        listAllSettingTimeZone  : Array<model.AttdItemDto> = ([]);
+        listAllWorkType         : Array<string> = ([]);
+        listAllAttdItem         : Array<number> = ([]);
+        listAllSettingTimeZone  : Array<string> = ([]);
 
         displayWorkTypeSelections_BA1_4 :       KnockoutObservable<string> = ko.observable('');
         displayWorkTimeItemSelections_BA2_3:    KnockoutObservable<string> = ko.observable('');
@@ -253,23 +253,13 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let self = this,
             currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
             //ドメインモデル「日次の勤怠項目」を取得する - Acquire domain model "DailyAttendanceItem"
-            var jsItemCheckCmd : any = {
-                    checkItem : currentErrAlaCheckCondition.checkItem()
-            };
             self.listAllAttdItem = [];
             
             service.getDailyItemChkItemComparison(currentErrAlaCheckCondition.checkItem()).done((itemAttendances) => {
-                if (itemAttendances) {
-                    self.listAllAttdItem.push(itemAttendances);
-                }
+                self.listAllAttdItem.push(self.getListAttendanceIdFromDtos(itemAttendances));
                 
                 //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
-                self.listAllWorkType = [];
-                service.getAttendCoutinousWork().done((workTypes) => {
-                    if (workTypes) {
-                        self.listAllWorkType.push(workTypes);
-                    }
-                });
+                self.getListWorkTypeCodes();
             });
         }
         
@@ -277,21 +267,13 @@ module nts.uk.at.view.kal003.b.viewmodel{
          * Initial in case Daily Item Check Continuous Time
          */
         private initialDailyItemChkCountinuousTime() {
-            let self = this,
-            currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+            let self = this;
             //ドメインモデル「日次の勤怠項目」を取得する - Acquire domain model "DailyAttendanceItem"
             self.listAllAttdItem = [];
             service.getAttendCoutinousTime().done((itemAttendances) => {
-                if (itemAttendances) {
-                    self.listAllAttdItem.push(itemAttendances);
-                }
+                self.listAllAttdItem.push(self.getListAttendanceIdFromDtos(itemAttendances));
                 //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
-                self.listAllWorkType = [];
-                service.getAttendCoutinousWork().done((workTypes) => {
-                    if (workTypes) {
-                        self.listAllWorkType.push(workTypes);
-                    }
-                });
+                self.getListWorkTypeCodes();
             });
         }
         
@@ -299,36 +281,22 @@ module nts.uk.at.view.kal003.b.viewmodel{
          * Initial in case Daily Item Check Continuous Work
          */
         private initialDailyItemChkCountinuousWork() {
-            let self = this,
-            currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+            let self = this;
             //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
-            self.listAllWorkType = [];
-            service.getAttendCoutinousWork().done((workTypes) => {
-                if (workTypes) {
-                    self.listAllWorkType.push(workTypes);
-                }
-            });
+            self.getListWorkTypeCodes();
         }
         
         /**
          * Initial in case Daily Item Check Continuous Time zone
          */
         private initialDailyItemChkCountinuousTimeZone() {
-            let self = this,
-            currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+            let self = this;
             //ドメインモデル「就業時間帯の設定」を取得する - Acquire domain model "WorkTimeSetting"
             self.listAllSettingTimeZone = [];
             service.getAttendCoutinousTimeZone().done((settingTimeZones) => {
-                if (settingTimeZones) {
-                    self.listAllSettingTimeZone.push(settingTimeZones);
-                }
+                self.getListSettingTimeZoneCodesFromDtos(settingTimeZones);
               //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
-                self.listAllWorkType = [];
-                service.getAttendCoutinousWork().done((workTypes) => {
-                    if (workTypes) {
-                        self.listAllWorkType.push(workTypes);
-                    }
-                });
+                self.getListWorkTypeCodes();
             });
         }
         
@@ -361,11 +329,10 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     } 
                 }
                 */
-                service.getAttendNameByIds(ko.toJS(listAttendanceItemCode)).done((dailyAttendanceItemNames) => {
+                service.getAttendNameByIds(listAttendanceItemCode).done((dailyAttendanceItemNames) => {
                     if (dailyAttendanceItemNames && dailyAttendanceItemNames.length > 0) {
                         var attendanceName : string = '';
-                        if (dailyAttendanceItemNames) {
-                            for(var i = 0; i < dailyAttendanceItemNames.length; i++)
+                        for(var i = 0; i < dailyAttendanceItemNames.length; i++) {
                             if (attendanceName) {
                                 attendanceName = attendanceName + "," + dailyAttendanceItemNames[i].attendanceItemName;
                             } else {
@@ -402,6 +369,49 @@ module nts.uk.at.view.kal003.b.viewmodel{
             }
             return retNames;
         }
+        
+        /**
+         * //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
+         * 
+         */
+        private getListWorkTypeCodes() : void {
+            let self =this;
+            self.listAllWorkType = [];
+            service.getAttendCoutinousWork().done((workTypes) => {
+                if (workTypes && workTypes != undefined) {
+                    for(var i = 0; i < workTypes.length; i++) {
+                        self.listAllWorkType.push(workTypes[i].workTypeCode);
+                    }
+                }
+            });
+        }
+        
+        /**
+         * Get list of attendance id from list Dtos
+         * @param itemAttendances
+         */
+        private getListAttendanceIdFromDtos(itemAttendances : Array<any>) : Array<string> {
+            let listAllAttdItemCode : Array<string> = [];
+            if (itemAttendances && itemAttendances != undefined) {
+                for(var i = 0; i < itemAttendances.length; i++) {
+                    listAllAttdItemCode.push(itemAttendances[i].attendanceItemId);
+                }
+            }
+            return listAllAttdItemCode;
+        }
+        
+        /**
+         * Get list of Setting Time Zone Code from list Dtos
+         * @param settingTimeZones
+         */
+        private getListSettingTimeZoneCodesFromDtos (settingTimeZones : Array<any>) {
+            let self = this;
+            if (settingTimeZones && settingTimeZones != undefined) {
+                for(var i = 0; i < settingTimeZones.length; i++) {
+                    self.listAllSettingTimeZone.push(settingTimeZones[i].worktimeCode);
+                }
+            }
+        }
           //==========Daily session End====================
 
         /**
@@ -429,7 +439,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let lstSelectedCode = currentErrAlaCheckCondition.workTypeSelections();
             //let lstSelectableCode = "001,002,003,006,111,112,113,114,115,116,117,118,119,120,121,122, 123,124,125,126,127,999".split(",");
 
-            windows.setShared('KDL002_Multiple',true);
+            windows.setShared('KDL002_Multiple', true);
             //all possible items
             windows.setShared('KDL002_AllItemObj', self.listAllWorkType);
             //selected items
