@@ -1240,7 +1240,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     dtMoment = dtMoment.subtract(1, 'months');
                 }
                 dtMoment.add(1, 'days');
-                self.dtPrev(dtMoment.toDate());
+                self.dtPrev(new Date(dtMoment.format('YYYY/MM/DD')));
                 self.dataSource([]);
                 self.updateDetailAndHorzSum();
             }
@@ -1632,8 +1632,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setShared('dataForScreenD', {
                 dataSource: self.dataSource(),
                 empItems: self.empItems(),
-                startDate: self.dtPrev(),
-                endDate: self.dtAft(),
+                startDate: moment(self.dtPrev()).format('YYYY/MM/DD'),
+                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
                 // in phare 2, permissionHandCorrection allow false
                 permissionHandCorrection: false,
                 listColorOfHeader: self.listColorOfHeader()

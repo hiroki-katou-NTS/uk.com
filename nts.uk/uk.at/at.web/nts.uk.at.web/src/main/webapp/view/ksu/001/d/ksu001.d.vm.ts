@@ -23,11 +23,10 @@ module nts.uk.at.view.ksu001.d.viewmodel {
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
 
         //ExCalendar
-        startDate: KnockoutObservable<Date> = ko.observable(getShared("dataForScreenD").startDate);
-        endDate: KnockoutObservable<Date> = ko.observable(getShared("dataForScreenD").endDate);
+        startDate: KnockoutObservable<string> = ko.observable(getShared("dataForScreenD").startDate);
+        endDate: KnockoutObservable<string> = ko.observable(getShared("dataForScreenD").endDate);
         permissionHandCorrection: KnockoutObservable<boolean> = ko.observable(getShared("dataForScreenD").permissionHandCorrection);
         listColorOfHeader: any = ko.observableArray(getShared("dataForScreenD").listColorOfHeader);
-
         selectedIds: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
