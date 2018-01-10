@@ -233,6 +233,8 @@ public class EmpCtgFinder {
 	}
 	private void sortDate(List<String> optionText, PeregQuery query){
 		optionText.sort((a, b) -> {
+			if(a.equals("")) return 1;
+			if(b.equals("")) return 0;
 			GeneralDate start = GeneralDate.fromString(a, "yyyy/MM/dd");
 			GeneralDate end = GeneralDate.fromString(b, "yyyy/MM/dd");
 			return start.compareTo(end);
