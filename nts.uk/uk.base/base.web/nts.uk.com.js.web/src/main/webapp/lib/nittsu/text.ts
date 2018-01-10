@@ -509,6 +509,15 @@
 
             return charType;
         }
+        
+        export function getCharTypeByType(charTypeName: string): CharType {
+            var charType = charTypes[charTypeName];
+            if (charType === undefined) {
+                throw new Error('invalid charTypeName: ' + charTypeName);
+            }
+
+            return charType;
+        }
 
         /**
          * Format for EmployeeCode
