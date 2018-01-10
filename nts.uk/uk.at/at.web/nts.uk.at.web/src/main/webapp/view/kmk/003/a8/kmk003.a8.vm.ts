@@ -231,6 +231,7 @@ module a8 {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
                 screenModel.startTab(screenMode);
+                $('#personal-setting-tab').css({"width":"665px","overflow-x":"scroll"});
             });
         }
 

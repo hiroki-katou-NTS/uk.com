@@ -215,7 +215,7 @@ module nts.uk.com.view.cmm007.d {
                 
                 service.savePlanYearHdFrame(params).done(() => {
                     _self.start_page().done(() => {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => { 
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
                             dfd.resolve();
                             blockUI.clear();
                             $('#plan_year_hd_frame1').focus();

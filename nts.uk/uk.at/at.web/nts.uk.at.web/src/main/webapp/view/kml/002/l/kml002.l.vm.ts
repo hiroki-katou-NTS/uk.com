@@ -16,6 +16,11 @@ module kml002.l.viewmodel {
                 { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 1, hidden: true }
             ]);
             self.currentCodeList = ko.observableArray([]);
+            self.currentCodeList.subscribe((newList) => {
+                let sortedList = _.sortBy(newList, ["primaryKey"]);
+                if (!_.isEqual(newList, sortedList))
+                    self.currentCodeList(sortedList);
+            });
             self.fixVerticalId = ko.observable(getShared("KML002H_VERTICAL_ID"))();
         }
         start() {

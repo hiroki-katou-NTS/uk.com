@@ -234,14 +234,17 @@ module a2 {
                 }
 
                 //============= Convert =============
-                let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneOne();
-                let timeRange: TimePeriod = {
-                    startTime: item.start(),
-                    endTime: item.end()
-                }
-                self.dataSourceOneDaySimpleMode([]);
-                self.dataSourceOneDaySimpleMode.push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
-                    emTimezone ? emTimezone.timezone.rounding.rounding() : 0));
+                let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne;
+                item.valueChangedNotifier.subscribe(() => {
+                    let timeRange: TimePeriod = {
+                        startTime: item.start(),
+                        endTime: item.end()
+                    }
+                    self.dataSourceOneDaySimpleMode([]);
+                    self.dataSourceOneDaySimpleMode.push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
+                        emTimezone ? emTimezone.timezone.rounding.rounding() : 0));
+                });
+                item.valueChangedNotifier.valueHasMutated();
             }
             // Detail mode
             else {

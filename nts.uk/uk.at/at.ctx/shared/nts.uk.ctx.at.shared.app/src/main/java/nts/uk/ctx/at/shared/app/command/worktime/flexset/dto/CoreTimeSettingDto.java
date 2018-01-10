@@ -58,7 +58,7 @@ public class CoreTimeSettingDto implements CoreTimeSettingGetMemento{
 	 */
 	@Override
 	public AttendanceTime getMinWorkTime() {
-		return new AttendanceTime(this.minWorkTime);
+		return this.minWorkTime == null ? null : new AttendanceTime(this.minWorkTime);
 	}
 
 }

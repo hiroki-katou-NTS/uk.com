@@ -25,10 +25,10 @@ public class TimezoneDto implements TimezoneGetMemento{
 	public Integer workNo;
 
 	/** The start. */
-	public Integer start;
+	public int start;
 
 	/** The end. */
-	public Integer end;
+	public int end;
 
 
 	/* (non-Javadoc)

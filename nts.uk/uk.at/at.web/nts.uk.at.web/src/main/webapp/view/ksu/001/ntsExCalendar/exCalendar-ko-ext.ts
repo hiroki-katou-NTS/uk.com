@@ -7,8 +7,9 @@ module nts.uk.at.view.ksu001 {
             let colors: any[] = ko.unwrap(data.colors());
             let heightC: string = !!data.height ? ko.unwrap(data.height()) : 'auto';
             let widthC: string = !!data.width ? ko.unwrap(data.width()) : '400px';
-            let startDate: Date = ko.unwrap(data.startDate());
+            let startDate: Date = new Date(ko.unwrap(data.startDate()));
             let endDate: Date = new Date(ko.unwrap(data.endDate()));
+            let startDateString: string = moment(startDate).format('YYYY/MM/DD');
             let endDateString: string = moment(endDate).format('YYYY/MM/DD');
             //if endDate is 2017/12/23,calendar will display to 2017/12/22, so add 1 days
             endDate.setDate(endDate.getDate() + 1);
@@ -51,7 +52,7 @@ module nts.uk.at.view.ksu001 {
 
             //create timeLable and button
             $(container).prepend("<div id='periodCoverd' data-bind='ntsFormLabel: {}'>" + nts.uk.resource.getText("KSU001_346") + "</div>");
-            $("<span id='startDate' data-bind='text: ko.observable(" + '"' + moment(startDate).format('YYYY/MM/DD') + '"' + ")'></span>").insertAfter("#periodCoverd");
+            $("<span id='startDate' data-bind='text: ko.observable(" + '"' + startDateString + '"' + ")'></span>").insertAfter("#periodCoverd");
             $("<span id='special'>" + nts.uk.resource.getText("KSU001_347") + "</span>").insertAfter("#startDate");
             $("<span id='endDate' data-bind='text: ko.observable(" + '"' + endDateString + '"' + ")'></span>").insertAfter("#special");
             $("<button id='checkAll'>" + nts.uk.resource.getText("KSU001_76") + "</button>").insertAfter("#endDate");

@@ -174,61 +174,63 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         } else {
                             self.addLineEnable(false);
                         }
-
-                        for (var i = 0; i < sortedItems.length; i++) {
-                            var item: ICalculatorItem = {
-                                isChecked: false,
-                                itemCd: data.verticalCalItems[i].itemId,
-                                attribute: data.verticalCalItems[i].attributes,
-                                itemName: data.verticalCalItems[i].itemName,
-                                settingMethod: data.verticalCalItems[i].calculateAtr,
-                                formula: "",
-                                displayAtr: data.verticalCalItems[i].displayAtr,
-                                total: data.verticalCalItems[i].cumulativeAtr,
-                                rounding: data.verticalCalItems[i].rounding,
-                                fraction: data.verticalCalItems[i].roundingProcessing,
-                                order: data.verticalCalItems[i].dispOrder,
-                                attrEnable: false,
-                                settingMethodEnable: false,
-                                totalEnable: data.verticalCalItems[i].attributes == 4 ? false : true,
-                                formBuilt: data.verticalCalItems[i].formBuilt,
-                                formTime: data.verticalCalItems[i].formTime,
-                                formPeople: data.verticalCalItems[i].formPeople,
-                                formulaAmount: data.verticalCalItems[i].formulaAmount,
-                                numerical: data.verticalCalItems[i].numerical,
-                                unitPrice: data.verticalCalItems[i].unitPrice
-                            };
-
-                            var curDataItem = null;
-                            var beforeFormula = "";
-
-                            if (item.formBuilt != null) {
-                                curDataItem = item.formBuilt
-                            } else if (item.formTime != null) {
-                                curDataItem = item.formTime
-                            } else if (item.formPeople != null) {
-                                curDataItem = item.formPeople
-                            } else if (item.formulaAmount != null) {
-                                curDataItem = item.formulaAmount
-                            } else if (item.numerical.length > 0) {
-                                curDataItem = item.numerical
-                            } else if (item.unitPrice != null) {
-                                curDataItem = item.unitPrice
-                            }
-
-                            if (i > 0) {
-                                beforeFormula = sortedItems[i - 1].formula;
-                            }
-
-                            var formulaResult = self.formulaGeneration(item.itemName, item.settingMethod, item.attribute,
-                                i, curDataItem, beforeFormula, true);
-                            item.formula = formulaResult;
-
-                            items.push(new CalculatorItem(item));
-                        }
                         
-                        var sorted = _.sortBy(items, [function(o) { return o.order(); }]);
-                        self.calculatorItems(sorted);
+                        $.when(self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems(), self.formulaTimeUnit(), self.formulaTime(), self.getAmountItems()).done(function() {
+                            for (var i = 0; i < sortedItems.length; i++) {
+                                var item: ICalculatorItem = {
+                                    isChecked: false,
+                                    itemCd: data.verticalCalItems[i].itemId,
+                                    attribute: data.verticalCalItems[i].attributes,
+                                    itemName: data.verticalCalItems[i].itemName,
+                                    settingMethod: data.verticalCalItems[i].calculateAtr,
+                                    formula: "",
+                                    displayAtr: data.verticalCalItems[i].displayAtr,
+                                    total: data.verticalCalItems[i].cumulativeAtr,
+                                    rounding: data.verticalCalItems[i].rounding,
+                                    fraction: data.verticalCalItems[i].roundingProcessing,
+                                    order: data.verticalCalItems[i].dispOrder,
+                                    attrEnable: false,
+                                    settingMethodEnable: false,
+                                    totalEnable: data.verticalCalItems[i].attributes == 4 ? false : true,
+                                    formBuilt: data.verticalCalItems[i].formBuilt,
+                                    formTime: data.verticalCalItems[i].formTime,
+                                    formPeople: data.verticalCalItems[i].formPeople,
+                                    formulaAmount: data.verticalCalItems[i].formulaAmount,
+                                    numerical: data.verticalCalItems[i].numerical,
+                                    unitPrice: data.verticalCalItems[i].unitPrice
+                                };
+    
+                                var curDataItem = null;
+                                var beforeFormula = "";
+    
+                                if (item.formBuilt != null) {
+                                    curDataItem = item.formBuilt
+                                } else if (item.formTime != null) {
+                                    curDataItem = item.formTime
+                                } else if (item.formPeople != null) {
+                                    curDataItem = item.formPeople
+                                } else if (item.formulaAmount != null) {
+                                    curDataItem = item.formulaAmount
+                                } else if (item.numerical.length > 0) {
+                                    curDataItem = item.numerical
+                                } else if (item.unitPrice != null) {
+                                    curDataItem = item.unitPrice
+                                }
+    
+                                if (i > 0) {
+                                    beforeFormula = sortedItems[i - 1].formula;
+                                }
+    
+                                var formulaResult = self.formulaGeneration(item.itemName, item.settingMethod, item.attribute,
+                                    i, curDataItem, beforeFormula, true);
+                                item.formula = formulaResult;
+    
+                                items.push(new CalculatorItem(item));
+                            }
+                            
+                            var sorted = _.sortBy(items, [function(o) { return o.order(); }]);
+                            self.calculatorItems(sorted);
+                        });
                     });
                 }
             });
@@ -379,7 +381,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             blockUI.invisible();
 
-            $.when(self.getData(), self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems(), self.formulaTimeUnit(), self.formulaTime()).done(function() {
+            $.when(self.getData(), self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems(), self.formulaTimeUnit(), self.formulaTime(),self.getAmountItems()).done(function() {
 
                 if (self.settingItems().length > 0) {
                     self.singleSelectedCode(self.settingItems()[0].verticalCalCd);
@@ -506,13 +508,13 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             var dailyAttendanceAtrs = [];
             dailyAttendanceAtrs.push(5);
-            var param = {
+            var paramC = {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs,
                 scheduleAtr: 0,
                 budgetAtr: 0,
-                unitAtr: 0
+                unitAtr: self.unitSelected()
             };
-            service.getDailyItems(param).done(function(data) {
+            service.getDailyItems(paramC).done(function(data) {
                 let temp = [];
                 let items = _.sortBy(data, ['companyId', 'dispOrder']);
 
@@ -541,7 +543,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
             let param = {
                 budgetAtr: 1,
                 // received from mother screen 0: day or 1: time
-                unitAtr: 0
+                unitAtr: self.unitSelected()
             }
 
             service.getByAtr(param).done((data) => {
@@ -558,9 +560,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     externalBudgetName: nts.uk.resource.getText("KML002_110"),
                     unitAtr: 0
                 }
-
-                temp.push(a);
-                self.amountItems = _.clone(temp);
 
                 temp.push(b);
                 self.peopleItems = _.clone(temp);
@@ -584,7 +583,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs,
                 scheduleAtr: 0,
                 budgetAtr: 1,
-                unitAtr: 0
+                unitAtr: self.unitSelected()
             };
             service.getDailyItems(param).done(function(data) {
                 let temp = [];
@@ -615,7 +614,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 dailyAttendanceItemAtrs: dailyAttendanceAtrs,
                 scheduleAtr: 2,
                 budgetAtr: 2,
-                unitAtr: 0
+                unitAtr: self.unitSelected()
             };
             service.getDailyItems(param).done(function(data) {
                 let temp = [];
@@ -636,6 +635,43 @@ module nts.uk.at.view.kml002.a.viewmodel {
             return dfd.promise();
         }
 
+        getAmountItems() {
+            var self = this;
+            var dfd = $.Deferred();
+
+            let param = {
+                budgetAtr: 2,
+                // received from mother screen 0: day or 1: time
+                unitAtr: self.unitSelected()
+            }
+
+            service.getByAtr(param).done((data) => {
+                var temp = data;
+                let a = {
+                    budgetAtr: 2,
+                    externalBudgetCode: (data.length + 1).toString(),
+                    externalBudgetName: nts.uk.resource.getText("KML002_109"),
+                    unitAtr: 0
+                }
+                let b = {
+                    budgetAtr: 2,
+                    externalBudgetCode: (data.length + 2).toString(),
+                    externalBudgetName: nts.uk.resource.getText("KML002_110"),
+                    unitAtr: 0
+                }
+
+                temp.push(a);
+                self.amountItems = _.clone(temp);
+
+
+                dfd.resolve(data);
+            }).fail(function(res) {
+                dfd.reject(res);
+            });
+
+            return dfd.promise();
+        }
+        
         /**
          * Get F screen data.
          */
@@ -645,7 +681,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             let param = {
                 budgetAtr: 3,
-                unitAtr: 0
+                unitAtr: self.unitSelected()
             }
 
             service.getByAtr(param).done((data) => {
@@ -836,7 +872,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 var dataD = self.calculatorItems()[i].formPeople != null ? self.calculatorItems()[i].formPeople : self.dataD;
                 var dataE = self.calculatorItems()[i].formulaAmount != null ? self.calculatorItems()[i].formulaAmount : self.dataE;
                 var dataF = self.calculatorItems()[i].numerical != null ? self.calculatorItems()[i].numerical : self.dataF;
-                var dataG = self.calculatorItems()[i].unitPrice != null ? self.calculatorItems()[i].unitPrice : self.dataG;
+                var dataG = self.calculatorItems()[i].unitPrice != null ? self.calculatorItems()[i].unitPrice : self.dataG; 
 
                 var item = {
                     verticalCalCd: code,

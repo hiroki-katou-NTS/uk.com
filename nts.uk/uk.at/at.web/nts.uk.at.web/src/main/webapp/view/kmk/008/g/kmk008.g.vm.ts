@@ -172,13 +172,13 @@ module nts.uk.at.view.kmk008.g {
                 self.selectedCode.subscribe(newValue => {
 
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
-                    let data = $('#component-items-list').getDataList();
+                    let data = self.selectedEmployee();
                     let employee = _.find(data, function(o) {
-                        return o.code == self.selectedCode();
+                        return o.employeeCode == self.selectedCode();
                     });
                     self.getDetail(employee.employeeId);
                     self.selectedId(employee.employeeId);
-                    self.employeeName(employee.name);
+                    self.employeeName(employee.employeeName);
 
                 });
 

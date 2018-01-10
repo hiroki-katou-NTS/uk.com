@@ -7,11 +7,12 @@ module cps008.b {
         // Re-calculate size
         var currentDialog = nts.uk.ui.windows.getSelf();
         if (currentDialog.parent.globalContext.innerHeight < currentDialog.$dialog.height()) {
-            currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 30);
+            currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 150);
         }
         
         if (currentDialog.parent.globalContext.innerWidth < currentDialog.$dialog.width()) {
             currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 30);
         }
+        
     });
 }
