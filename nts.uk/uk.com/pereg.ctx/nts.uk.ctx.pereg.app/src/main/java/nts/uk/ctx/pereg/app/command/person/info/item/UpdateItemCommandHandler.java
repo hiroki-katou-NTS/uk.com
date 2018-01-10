@@ -32,7 +32,10 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		UpdateItemCommand itemCommand = context.getCommand();
 		// String mess = "Msg_233";
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
-
+		
+		if (itemCommand.getItemName().trim().equals("")) {
+			throw new BusinessException(new RawErrorMessage("Msg_928"));
+		}
 		if (itemCommand.getSingleItem().getDataType() == 6) {
 
 			List<Selection> selection = new ArrayList<>();
