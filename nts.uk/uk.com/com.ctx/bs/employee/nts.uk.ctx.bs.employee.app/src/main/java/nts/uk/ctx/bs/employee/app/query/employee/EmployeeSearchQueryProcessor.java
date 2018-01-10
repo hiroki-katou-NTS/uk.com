@@ -362,11 +362,10 @@ public class EmployeeSearchQueryProcessor {
 		String employeeId = loginUserContext.employeeId();
 
 		// get data work place history
-		Optional<AffWorkplaceHistory_ver1> wh = this.workplaceHistoryRepository.getByEmpIdAndStandDate(employeeId, baseDate);
-		AffWorkplaceHistoryItem item = this.itemRepository.getByHistId(wh.get().items().get(0).identifier()).get();
+		List<AffWorkplaceHistoryItem> items = this.itemRepository.getAffWrkplaHistItemByEmpIdAndDate(baseDate, employeeId);
 
 		// return data
-		return Arrays.asList(item.getWorkplaceId());
+		return items.stream().map(AffWorkplaceHistoryItem::getWorkplaceId).collect(Collectors.toList());
 	}
 
 	/**

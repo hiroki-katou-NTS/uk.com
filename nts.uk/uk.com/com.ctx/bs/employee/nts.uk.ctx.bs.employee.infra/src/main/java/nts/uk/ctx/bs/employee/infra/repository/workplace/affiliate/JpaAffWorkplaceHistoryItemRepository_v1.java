@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
@@ -127,14 +127,27 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 		}).collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.affiliate.
+	 * AffWorkplaceHistoryItemRepository_v1#getAffWrkplaHistItemByEmpIdAndDate(
+	 * nts.arc.time.GeneralDate, java.lang.String)
+	 */
 	@Override
-	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpIdAndDate(GeneralDate basedate, String employeeId) {
-		List<BsymtAffiWorkplaceHistItem> listHistItem = this.queryProxy().query(SELECT_BY_EMPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
+	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpIdAndDate(GeneralDate basedate,
+			String employeeId) {
+		List<BsymtAffiWorkplaceHistItem> listHistItem = this.queryProxy()
+				.query(SELECT_BY_EMPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
 				.setParameter("employeeId", employeeId).setParameter("standDate", basedate)
 				.getList();
-		if(listHistItem.isEmpty()){
+
+		// Check exist items
+		if (listHistItem.isEmpty()) {
 			return Collections.emptyList();
 		}
+
+		// Return
 		return listHistItem.stream().map(e -> {
 			AffWorkplaceHistoryItem domain = this.toDomain(e);
 			return domain;
