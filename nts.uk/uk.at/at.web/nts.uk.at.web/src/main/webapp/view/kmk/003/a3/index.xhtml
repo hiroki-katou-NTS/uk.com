@@ -9,25 +9,30 @@
    	</com:ValidatorScript>
 	<com:ko tag="ifnot" bind="isFlexMode">
 		<com:ko tag="ifnot" bind="isFlowMode">
-			<div class="labelSetting">
-				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_185')}</div>
-				<div data-bind="ntsSwitchButton: {
-					options: autoCalUseAttrs,
-					optionsValue: 'code',
-					optionsText: 'name',
-					name: '#[KMK003_212]',
-					value: mainSettingModel.fixedWorkSetting.legalOTSetting,
-					enable: true }">
+			<com:ko tag="if" bind="isDetailMode">
+				<div class="labelSetting">
+					<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_185')}</div>
+					<div tabindex="54" data-bind="ntsSwitchButton: {
+						options: autoCalUseAttrs,
+						optionsValue: 'code',
+						optionsText: 'name',
+						name: '#[KMK003_212]',
+						value: mainSettingModel.fixedWorkSetting.legalOTSetting,
+						enable: true }">
+					</div>
+					<button style="margin-left: 20px;"
+						data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_1.png', position: 'right top' }">?</button>
 				</div>
-				<button style="margin-left: 20px;"
-					data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_1.png', position: 'right top' }">?</button>
-			</div>
-			<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-				<h3>
-					<label>#{i18n.getText('KMK003_51')}</label>
-				</h3>
-			<div id="tab3_fixtable_oneday_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixed}"></div>
-			</div>
+				<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
+					<h3>
+						<label>#{i18n.getText('KMK003_51')}</label>
+					</h3>
+					<div id="tab3_fixtable_oneday_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixed}"></div>
+				</div>
+			</com:ko>
+			<com:ko tag="ifnot" bind="isDetailMode">
+				<div id="tab3_fixtable_oneday_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixed}"></div>
+			</com:ko>
 			<com:ko tag="if" bind="isDetailMode">
 				<com:ko tag="if" bind="isUseHalfDay">
 					<div tabindex="-1" class="accordion setting_detail_tab3" data-bind="ntsAccordion: {enable: true}">
