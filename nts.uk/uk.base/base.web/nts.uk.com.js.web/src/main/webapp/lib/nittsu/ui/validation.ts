@@ -291,7 +291,7 @@ module nts.uk.ui.validation {
                 if (!validateResult.isValid) {
                     result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, 
                                 [ this.name, (!util.isNullOrUndefined(this.constraint.maxLength) 
-                                    ? this.constraint.maxLength : 9999) ]), validateResult.errorCode);
+                                    ? this.charType.getViewLength(this.constraint.maxLength) : 9999) ]), validateResult.errorCode);
                     return result;
                 }
             }
@@ -299,7 +299,7 @@ module nts.uk.ui.validation {
             if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
             	let maxLength = this.constraint.maxLength;
             	if (this.constraint.charType == "Any")
-            		maxLength = maxLength/2;
+            		maxLength = nts.uk.text.getCharTypeByType("Any").getViewLength(maxLength);
                 result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
                             [ this.name, maxLength ]), validateResult.errorCode);
                 return result;
