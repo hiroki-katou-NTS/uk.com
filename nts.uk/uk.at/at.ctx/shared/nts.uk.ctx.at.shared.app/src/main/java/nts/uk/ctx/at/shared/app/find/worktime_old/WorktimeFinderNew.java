@@ -198,9 +198,11 @@ public class WorktimeFinderNew {
 				WorkTimeSetting currentWorkTime = workTimeItems.stream().filter(x -> x.getWorktimeCode().toString().equals(item.getWorkTimeCode().toString())).findAny().get();
 				if (item.getPrescribedTimezoneSetting().getLstTimezone().isEmpty()) {
 					continue;
-				} else if (this.checkNotUse(item)) {
+				} 
+				/*else if (this.checkNotUse(item)) {
 					continue;
-				} else {
+				}*/ 
+				else {
 					TimezoneUse timezone1 = item.getPrescribedTimezoneSetting().getLstTimezone().get(FIRST_ITEM);
 					TimezoneUse timezone2 = null;
 					//if have 2 timezone
