@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetPolicy;
@@ -40,12 +39,6 @@ public class FixedWorkTimezoneSetPolicyImpl implements FixedWorkTimezoneSetPolic
 		// validate list emTimezone
 		fixedWtz.getLstWorkingTimezone().forEach(wtz -> this.emTzPolicy.validate(predTime, wtz));
 
-		// validate list OTtimezone
-		val emTimezone1 = fixedWtz.getLstWorkingTimezone().stream()
-				.filter(emTz -> emTz.getEmploymentTimeFrameNo().v() == 1).findFirst();
-		if (!emTimezone1.isPresent()) {
-			return;
-		}
-		fixedWtz.getLstOTTimezone().forEach(otz -> this.otPolicy.validate(predTime, otz, emTimezone1.get()));
+		fixedWtz.getLstOTTimezone().forEach(otz -> this.otPolicy.validate(predTime, otz));
 	}
 }

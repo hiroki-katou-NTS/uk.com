@@ -16,7 +16,6 @@ public interface OverTimeOfTimeZoneSetPolicy {
 	 *
 	 * @param predTime the pred time
 	 * @param otSet the ot set
-	 * @param emTimezone the em timezone
 	 */
-	void validate(PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet, EmTimeZoneSet emTimezone);
+	void validate(PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet);
 }
