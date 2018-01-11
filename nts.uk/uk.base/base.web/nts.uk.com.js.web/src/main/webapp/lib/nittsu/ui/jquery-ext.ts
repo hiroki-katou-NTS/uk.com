@@ -49,12 +49,30 @@ module nts.uk.ui.jqueryExtentions {
         
         let $container = $dialog.closest(".ui-dialog");
         
-        let offsetContentsArea = 92;
+        let offsetContentsArea = $("#header").height();
         let offsetDialog = $container.offset();
+        
         if (offsetDialog.top < offsetContentsArea) {
             offsetDialog.top = offsetContentsArea;
-            $container.offset(offsetDialog);
         }
         
+        if (offsetDialog.left < 0) {
+            offsetDialog.left = 0;
+        }
+        
+        $container.offset(offsetDialog);
+        
+        $dialog.dialog({dragStop: (event, ui) => {
+            
+            let offsetDialog = $container.offset();
+            
+            if (offsetDialog.top < offsetContentsArea) {
+                offsetDialog.top = offsetContentsArea;
+                $container.offset(offsetDialog);
+                return false;
+            }
+        }});
+        
+        return $dialog;
     };
 }

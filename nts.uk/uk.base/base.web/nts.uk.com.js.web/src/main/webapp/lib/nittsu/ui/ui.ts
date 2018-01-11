@@ -25,10 +25,7 @@ module nts.uk.ui {
             autoOpen: false,
             draggable: true,
             resizable: false,
-            dialogClass: "no-close",
-            create: function(event) {
-                $(event.target).dialog('widget').css({ position: 'fixed' });
-            }
+            dialogClass: "no-close"
         };
 
 		/**
@@ -438,6 +435,7 @@ module nts.uk.ui {
                         window.parent.$(event.target).remove();
                     }
                 });
+            $this.dialogPositionControl();
             //add header text if it has
             if (header && header.text) {
                 $this.dialog("option", "title", header.text);
