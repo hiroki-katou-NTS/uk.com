@@ -11,8 +11,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
-import nts.arc.time.GeneralDate;
+import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -45,8 +45,8 @@ public class PpedtEmployeeRegistrationHistory extends UkJpaEntity implements Ser
 
 	@Basic(optional = true)
 	@Column(name = "REG_DATE")
-	@Convert(converter = GeneralDateToDBConverter.class)
-	public GeneralDate registeredDate;
+	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	public GeneralDateTime registeredDate;
 
 	/**
 	 * 最後に登録した社員ID
