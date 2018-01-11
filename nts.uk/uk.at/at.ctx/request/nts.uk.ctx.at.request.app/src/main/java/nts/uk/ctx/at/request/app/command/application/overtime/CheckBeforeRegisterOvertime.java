@@ -165,7 +165,7 @@ public class CheckBeforeRegisterOvertime {
 	public static List<OverTimeInput> getOverTimeInput(CreateOvertimeCommand command, String Cid, String appId) {
 		List<OverTimeInput> overTimeInputs = new ArrayList<OverTimeInput>();
 		/**
-		 * 休出時間 ATTENDANCE_ID = 2
+		 * 休憩時間  ATTENDANCE_ID = 2
 		 */
 		if (null != command.getBreakTimes()) {
 			overTimeInputs.addAll(getOverTimeInput(command.getBreakTimes(), Cid, appId, AttendanceID.BREAKTIME.value));
@@ -178,7 +178,7 @@ public class CheckBeforeRegisterOvertime {
 					.addAll(getOverTimeInput(command.getOvertimeHours(), Cid, appId, AttendanceID.NORMALOVERTIME.value));
 		}
 		/**
-		 * 加給時間 ATTENDANCE_ID = 0
+		 * 休出時間 ATTENDANCE_ID = 0
 		 */
 		if (null != command.getRestTime()) {
 			overTimeInputs

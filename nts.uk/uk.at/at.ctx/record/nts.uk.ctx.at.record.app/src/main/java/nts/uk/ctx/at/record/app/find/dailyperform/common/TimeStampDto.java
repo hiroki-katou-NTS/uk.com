@@ -28,5 +28,5 @@ public class TimeStampDto {
 	private String placeCode;
 	
 	
-	private int stampSourceInfo;
+	private Integer stampSourceInfo;
 }

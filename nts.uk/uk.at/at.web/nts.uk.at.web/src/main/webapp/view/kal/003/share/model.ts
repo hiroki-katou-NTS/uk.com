@@ -40,7 +40,7 @@ module nts.uk.at.view.kal003.share.model {
         availableRoles: KnockoutObservableArray<string>;
         targetCondition: KnockoutObservable<AlarmCheckTargetCondition>;
         displayAvailableRoles: KnockoutObservable<string>;
-        conditionToExtractDaily: KnockoutObservable<number>;
+        dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, []));
 
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
@@ -51,7 +51,6 @@ module nts.uk.at.view.kal003.share.model {
             this.displayCategory = category.name;
             this.availableRoles = ko.observableArray(availableRoles);
             this.targetCondition = ko.observable(targetCondition);
-            this.conditionToExtractDaily = ko.observable(DATA_CONDITION_TO_EXTRACT.ALL);
             this.displayAvailableRoles = ko.computed(function() {
                 return this.availableRoles().join(", ");
             }, this);
@@ -174,6 +173,16 @@ module nts.uk.at.view.kal003.share.model {
                 this.description = description;
             }
         }
+    }
+    
+    export class DailyAlarmCheckCondition {
+        conditionToExtractDaily: KnockoutObservable<number>;
+        listWorkRecordExtractingConditions: KnockoutObservableArray<WorkRecordExtractingCondition>;
+        
+        constructor(conditionToExtractDaily: number, listWorkRecordExtractingConditions: Array<WorkRecordExtractingCondition>) {
+            this.conditionToExtractDaily = ko.observable(conditionToExtractDaily);
+            this.listWorkRecordExtractingConditions = ko.observableArray(listWorkRecordExtractingConditions);
+        } 
     }
 
     export enum CATEGORY {

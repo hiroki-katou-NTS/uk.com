@@ -196,18 +196,13 @@ public class AppOvertimeFinder {
 		}
 		// 06-02_残業時間を取得
 		List<CaculationTime> caculationTimeHours = this.overtimeSixProcess.getCaculationOvertimeHours(companyID, employeeID, appDate, ApplicationType.OVER_TIME_APPLICATION.value,overtimeHours);
-		
+		caculationTimes.addAll(caculationTimeHours);
 		
 		// 06-03_加給時間を取得
 		List<CaculationTime> caculationTimeBonus= this.overtimeSixProcess.getCaculationBonustime(companyID, employeeID, appDate,  ApplicationType.OVER_TIME_APPLICATION.value,bonusTimes);
+		caculationTimes.addAll(caculationTimeBonus);
 		
-		for(CaculationTime overtimeHour : caculationTimeHours){
-			caculationTimes.add(overtimeHour);
-		}
-		for(CaculationTime bonusTime : caculationTimeBonus){
-			caculationTimes.add(bonusTime);
-		}
-		// 計算フラグ=0
+		// 計算フラグ=0(client setting)
 		
 		return caculationTimes;
 	}

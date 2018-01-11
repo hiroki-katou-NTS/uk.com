@@ -87,7 +87,8 @@ public class ClosureFinder {
 			String formatDate = "yyyyMMdd";
 			if(optClosureInf.isPresent()) {
 				ClosureHistory closureInf = optClosureInf.get();
-				if(closureInf.getClosureDate().getLastDayOfMonth()) {
+				lstClosureCdName.add(ClosureCdNameDto.fromDomain(closureInf));
+				/*if(closureInf.getClosureDate().getLastDayOfMonth()) {
 					GeneralDate startDateTmp = GeneralDate.fromString(closureInf.getStartYearMonth().toString() + "01", formatDate);
 					GeneralDate startDate = startDateTmp.addMonths(1);
 					GeneralDate endDate = GeneralDate.today();
@@ -109,7 +110,7 @@ public class ClosureFinder {
 					if(startDate.addDays(1).before(GeneralDate.today()) && endDate.after(GeneralDate.today())) {
 						lstClosureCdName.add(ClosureCdNameDto.fromDomain(closureInf));
 					}
-				}
+				}*/
 			}
 		});
 		// Map list Employment Dto and list EmployClosure Dom. 取得した雇用コードをもとにドメイン「雇用に紐づく就業締め」を取得する

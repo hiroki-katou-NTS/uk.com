@@ -2,9 +2,9 @@ module nts.uk.com.view.cas003.a {
     export module service {
         var paths: any = {
             
-            getAccountLockPolicy:"ctx/sys/gateway/login/getAccountLockPolicy",
-            getPasswordPolicy:"ctx/sys/gateway/login/getPasswordPolicy",
-            updateAccountPolicy:"ctx/sys/gateway/login/updateAccountPolicy"
+            getAccountLockPolicy:"ctx/sys/gateway/securitypolicy/getAccountLockPolicy",
+            getPasswordPolicy:"ctx/sys/gateway/securitypolicy/getPasswordPolicy",
+            updateAccountPolicy:"ctx/sys/gateway/securitypolicy/updateAccountPolicy"
             }
 
      
