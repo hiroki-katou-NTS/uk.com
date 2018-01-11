@@ -189,5 +189,10 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
             listTotalSubjects.add(dto);
         }
         command.setListTotalSubjects(listTotalSubjects);
+        
+        if (command.getTotalCondition().getLowerLimitSettingAtr() == 0 
+        		&& command.getTotalCondition().getUpperLimitSettingAtr() == 0) {
+        	command.getTotalCondition().setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId());
+        }
     }
 }

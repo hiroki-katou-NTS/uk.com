@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -16,10 +17,12 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLog;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLogPK;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLogPK_;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLog_;
 
@@ -152,7 +155,12 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 	public void add(ScheduleErrorLog domain) {
 		this.commandProxy().insert(this.toEntity(domain));
 	}
-	
+
+	@Override
+	public Optional<ScheduleErrorLog> findByKey(String executionId, String employeeId, GeneralDate baseDate) {
+		return this.queryProxy().find(new KscdtScheErrLogPK(executionId, employeeId, baseDate), KscdtScheErrLog.class)
+				.map(entity -> new ScheduleErrorLog(new JpaScheduleErrorLogGetMemento(entity)));
+	}
 	/**
 	 * To entity.
 	 *

@@ -434,6 +434,15 @@ public class AttendanceItemIdContainer {
 		ITEM_ID_CONTAINER.put("日別実績の計算区分.残業時間.法定内深夜残業時間.計算区分", 632);
 		ITEM_ID_CONTAINER.put("日別実績の計算区分.フレックス超過時間.計算区分", 635);
 		
+		ITEM_ID_CONTAINER.put("日別実績の短時間勤務時間帯.時間帯.開始-育児1", 759);
+		ITEM_ID_CONTAINER.put("日別実績の短時間勤務時間帯.時間帯.終了-育児1", 760);
+		ITEM_ID_CONTAINER.put("日別実績の短時間勤務時間帯.時間帯.開始-育児2", 761);
+		ITEM_ID_CONTAINER.put("日別実績の短時間勤務時間帯.時間帯.終了-育児2", 762);
+		ITEM_ID_CONTAINER.put("日別実績の短時間勤務時間帯.時間帯.開始-介護1", 763);
+		ITEM_ID_CONTAINER.put("日別実績の短時間勤務時間帯.時間帯.終了-介護1", 764);
+		ITEM_ID_CONTAINER.put("日別実績の短時間勤務時間帯.時間帯.開始-介護2", 765);
+		ITEM_ID_CONTAINER.put("日別実績の短時間勤務時間帯.時間帯.終了-介護2", 766);
+		
 	}
 
 	public static Integer getId(String key) {
