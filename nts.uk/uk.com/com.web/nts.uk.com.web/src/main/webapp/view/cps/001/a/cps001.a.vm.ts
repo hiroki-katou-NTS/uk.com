@@ -11,6 +11,7 @@ module cps001.a.vm {
     import clearError = nts.uk.ui.errors.clearAll;
     import liveView = nts.uk.request.liveView;
     import permision = service.getCurrentEmpPermision;
+    import permision4Cat = service.getPermision4Cat;
     import format = nts.uk.text.format;
 
     const REPL_KEY = '__REPLACE',
@@ -76,6 +77,8 @@ module cps001.a.vm {
         // output data on category changed
         multipleData: KnockoutObservableArray<MultiData> = ko.observableArray([new MultiData()]);
 
+        saveAble: KnockoutObservable<boolean> = ko.observable(false);
+
         categories: KnockoutComputed<Array<IListData>> = ko.computed(() => {
             let self = this,
                 categories = self.multipleData().map(x => x.categories());
@@ -95,10 +98,12 @@ module cps001.a.vm {
 
             permision().done((data: IPersonAuth) => {
                 if (data) {
+                    auth.roleId(data.roleId);
                     auth.allowDocRef(!!data.allowDocRef);
                     auth.allowAvatarRef(!!data.allowAvatarRef);
                     auth.allowMapBrowse(!!data.allowMapBrowse);
                 } else {
+                    auth.roleId(undefined);
                     auth.allowDocRef(false);
                     auth.allowAvatarRef(false);
                     auth.allowMapBrowse(false);
@@ -150,6 +155,7 @@ module cps001.a.vm {
                     }
 
                     layoutData.mode(tab);
+                    layoutData.roleId(self.auth().roleId());
 
                     switch (tab) {
                         default:
@@ -224,6 +230,22 @@ module cps001.a.vm {
             });
 
             self.start();
+
+            setInterval(() => {
+                let aut = _(self.multipleData())
+                    .map(m => m.layout())
+                    .map(m => m.listItemCls())
+                    .flatten() // get item of all layout
+                    .map((m: any) => _.has(m, 'items') && ko.isObservable(m.items) ? ko.toJS(m.items) : undefined)
+                    .filter(x => !!x)
+                    .flatten() // flat set item
+                    .flatten() // flat list item
+                    .map((m: any) => !ko.toJS(m.readonly))
+                    .filter(x => !!x)
+                    .value();
+
+                self.saveAble(!!aut.length);
+            }, 0);
         }
 
         start() {
@@ -448,6 +470,12 @@ module cps001.a.vm {
         replace: (callback?: void) => void;
     }
 
+    interface Permisions {
+        add: KnockoutObservable<boolean>;
+        remove: KnockoutObservable<boolean>;
+        replace: KnockoutObservable<boolean>;
+    }
+
     class Layout {
         outData: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -485,6 +513,7 @@ module cps001.a.vm {
     class MultiData {
         title: KnockoutObservable<string> = undefined;
         mode: KnockoutObservable<TABS> = ko.observable(undefined);
+        roleId: KnockoutObservable<string> = ko.observable(undefined);
 
         // selected value on list data
         id: KnockoutObservable<string> = ko.observable(undefined);
@@ -502,55 +531,85 @@ module cps001.a.vm {
         // event action
         events: Events = {
             add: (callback?: any) => {
-                let self = this;
+                let self = this,
+                    catId: string = ko.toJS(self.id),
+                    roleId: string = ko.toJS(self.roleId),
+                    selEmId: string = self.employeeId(),
+                    logInId: string = __viewContext.user.employeeId;
 
-                self.changTitle(ATCS.ADD);
-                setShared(REPL_KEY, REPL_KEYS.ADDNEW);
+                permision4Cat(roleId, catId).done((perm: ICatAuth) => {
+                    if (perm && !!(selEmId == logInId ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
+                        self.changTitle(ATCS.ADD);
+                        setShared(REPL_KEY, REPL_KEYS.ADDNEW);
 
-                self.infoId(undefined);
-                //self.id.valueHasMutated();
+                        self.infoId(undefined);
+                        //self.id.valueHasMutated();
 
-                if (callback && _.isFunction(callback)) {
-                    callback();
-                }
+                        if (callback && _.isFunction(callback)) {
+                            callback();
+                        }
+                    }
+                });
             },
             remove: (callback?: any) => {
                 let self = this,
-                    category = self.category();
+                    category = self.category(),
+                    catId: string = ko.toJS(self.id),
+                    roleId: string = ko.toJS(self.roleId),
+                    selEmId: string = self.employeeId(),
+                    logInId: string = __viewContext.user.employeeId;
 
-                confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    let query = {
-                        recordId: self.infoId(),
-                        personId: self.personId(),
-                        employeeId: self.employeeId(),
-                        categoryId: category.categoryCode()
-                    };
+                permision4Cat(roleId, catId).done((perm: ICatAuth) => {
+                    if (perm && !!(selEmId == logInId ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
+                        confirm({ messageId: "Msg_18" }).ifYes(() => {
+                            let query = {
+                                recordId: self.infoId(),
+                                personId: self.personId(),
+                                employeeId: self.employeeId(),
+                                categoryId: category.categoryCode()
+                            };
 
-                    service.removeCurrentCategoryData(query).done(x => {
-                        info({ messageId: "Msg_16" }).then(() => {
-                            self.infoId(undefined);
-                            self.id.valueHasMutated();
+                            service.removeCurrentCategoryData(query).done(x => {
+                                info({ messageId: "Msg_16" }).then(() => {
+                                    self.infoId(undefined);
+                                    self.id.valueHasMutated();
 
-                            if (callback && _.isFunction(callback)) {
-                                callback();
-                            }
+                                    if (callback && _.isFunction(callback)) {
+                                        callback();
+                                    }
+                                });
+                            });
                         });
-                    });
+                    }
                 });
             },
             replace: (callback?: any) => {
-                let self = this;
+                let self = this,
+                    catId: string = ko.toJS(self.id),
+                    roleId: string = ko.toJS(self.roleId),
+                    selEmId: string = self.employeeId(),
+                    logInId: string = __viewContext.user.employeeId;
 
-                self.changTitle(ATCS.COPY);
-                setShared(REPL_KEY, REPL_KEYS.REPLICATION);
-                self.infoId.valueHasMutated();
-                //self.id.valueHasMutated();
+                permision4Cat(roleId, catId).done((perm: ICatAuth) => {
+                    if (perm && !!(selEmId == logInId ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
+                        self.changTitle(ATCS.COPY);
+                        setShared(REPL_KEY, REPL_KEYS.REPLICATION);
+                        self.infoId.valueHasMutated();
+                        //self.id.valueHasMutated();
 
-                if (callback && _.isFunction(callback)) {
-                    callback();
-                }
+                        if (callback && _.isFunction(callback)) {
+                            callback();
+                        }
+                    }
+                });
             }
         }
+
+        permisions: Permisions = {
+            add: ko.observable(false),
+            remove: ko.observable(false),
+            replace: ko.observable(false)
+        };
 
         combobox: KnockoutObservableArray<IListData> = ko.observableArray([]);
         gridlist: KnockoutObservableArray<IListData> = ko.observableArray([]);
@@ -766,6 +825,28 @@ module cps001.a.vm {
                                 self.changTitle(ATCS.UPDATE);
                             }
                             layout.listItemCls(data.classificationItems);
+
+                            let roleId = self.roleId(),
+                                catId = self.categoryId() || self.id();
+
+                            permision4Cat(roleId, catId).done((perm: ICatAuth) => {
+                                let selEmId: string = self.employeeId(),
+                                    logInId: string = __viewContext.user.employeeId;
+
+                                if (perm && !!(selEmId == logInId ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
+                                    self.permisions.add(true);
+                                    self.permisions.replace(true);
+                                } else {
+                                    self.permisions.add(false);
+                                    self.permisions.replace(false);
+                                }
+
+                                if (perm && !!(selEmId == logInId ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
+                                    self.permisions.remove(true);
+                                } else {
+                                    self.permisions.remove(false);
+                                }
+                            });
                         });
                     } else {
                         setShared(REPL_KEY, REPL_KEYS.NORMAL);
@@ -1015,6 +1096,7 @@ module cps001.a.vm {
     }
 
     class PersonAuth {
+        roleId: KnockoutObservable<string> = ko.observable('');
         allowAvatarRef: KnockoutObservable<boolean> = ko.observable(false);
         allowDocRef: KnockoutObservable<boolean> = ko.observable(false);
         allowMapBrowse: KnockoutObservable<boolean> = ko.observable(false);
@@ -1022,11 +1104,36 @@ module cps001.a.vm {
         constructor(param?: IPersonAuth) {
             let self = this;
             if (param) {
+                self.roleId(param.roleId);
                 self.allowAvatarRef(!!param.allowAvatarRef);
                 self.allowDocRef(!!param.allowDocRef);
                 self.allowMapBrowse(!!param.allowMapBrowse);
             }
         }
+    }
+
+    interface ICatAuth {
+        roleId: string;
+        personInfoCategoryAuthId: string;
+        allowPersonRef: number;
+        allowOtherRef: number;
+        allowOtherCompanyRef: number;
+        selfPastHisAuth: number;
+        selfFutureHisAuth: number;
+        selfAllowAddHis: number;
+        selfAllowDelHis: number;
+        otherPastHisAuth: number;
+        otherFutureHisAuth: number;
+        otherAllowAddHis: number;
+        otherAllowDelHis: number;
+        selfAllowAddMulti: number;
+        selfAllowDelMulti: number;
+        otherAllowAddMulti: number;
+        otherAllowDelMulti: number;
+    }
+
+    class CatAuth {
+
     }
 
     enum ATCS {
