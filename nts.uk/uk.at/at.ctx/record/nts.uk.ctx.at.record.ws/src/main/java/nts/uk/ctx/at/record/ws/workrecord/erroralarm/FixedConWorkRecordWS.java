@@ -42,9 +42,9 @@ public class FixedConWorkRecordWS {
 	}
 	
 	@POST
-	@Path("getallfixedconwrbyalarmid/{errorAlarmCode}")
-	public List<FixedConditionWorkRecordDto> getAllFixedConWRByAlarmID(@PathParam("errorAlarmCode") String errorAlarmCode){
-		List<FixedConditionWorkRecordDto> data = finder.getAllFixedConWRByAlarmID(errorAlarmCode);
+	@Path("getallfixedconwrbyalarmid/{errorAlarmID}")
+	public List<FixedConditionWorkRecordDto> getAllFixedConWRByAlarmID(@PathParam("errorAlarmID") String errorAlarmID){
+		List<FixedConditionWorkRecordDto> data = finder.getAllFixedConWRByAlarmID(errorAlarmID);
 		return data;
 	}
 	

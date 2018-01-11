@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 900,
-					height : 780
+					height : 600
 				};
 			</script>
 			<com:ValidatorScript>
@@ -56,7 +56,7 @@
 						<tr>
 							<td>#{i18n.getText('KMF003_46')}</td>
 							<td style="text-align: right">
-								<div class="cal-value" data-bind="ntsDatePicker: {value: referenceDate, dateFormat: 'YYYY/MM/DD'}, hasfocus: true"></div>
+								<div id="reference-date" class="cal-value" data-bind="ntsDatePicker: {value: referenceDate, dateFormat: 'YYYY/MM/DD'}, hasfocus: true"></div>
 							</td>
 							<td></td>
 						</tr>

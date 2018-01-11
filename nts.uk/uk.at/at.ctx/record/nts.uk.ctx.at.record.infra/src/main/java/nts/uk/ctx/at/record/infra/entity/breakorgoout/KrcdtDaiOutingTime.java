@@ -56,7 +56,7 @@ public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 	public Integer outActualSourceInfo;
 
 	@Column(name = "OUT_NUMBER_STAMP")
-	public Integer outNumberStamp;
+	public int outNumberStamp;
 
 	@Column(name = "BACK_STAMP_TIME")
 	public Integer backStampTime;
@@ -83,7 +83,7 @@ public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 	public Integer backActualSourceInfo;
 
 	@Column(name = "BACK_NUMBER_STAMP")
-	public Integer backNumberStamp;
+	public int backNumberStamp;
 
 	@Column(name = "OUTING_TIME_CALCULATION")
 	public Integer outingTimeCalculation;

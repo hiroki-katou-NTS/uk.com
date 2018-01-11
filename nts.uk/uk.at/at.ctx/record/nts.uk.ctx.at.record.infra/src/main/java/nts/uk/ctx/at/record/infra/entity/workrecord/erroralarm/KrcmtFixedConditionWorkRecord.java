@@ -49,7 +49,7 @@ public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serial
 	
 	public static KrcmtFixedConditionWorkRecord toEntity(FixedConditionWorkRecord domain) {
 		return new KrcmtFixedConditionWorkRecord(
-				new KrcmtFixedConditionWorkRecordPK( domain.getErrorAlarmCode(),
+				new KrcmtFixedConditionWorkRecordPK( domain.getErrorAlarmID(),
 				domain.getFixConWorkRecordNo().value),
 				domain.getMessage().v(),
 				domain.isUseAtr()?1:0
@@ -58,7 +58,7 @@ public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serial
 	
 	public FixedConditionWorkRecord toDomain() {
 		return new FixedConditionWorkRecord(
-				this.krcmtFixedConditionWorkRecordPK.errorAlarmCode,
+				this.krcmtFixedConditionWorkRecordPK.errorAlarmID,
 				EnumAdaptor.valueOf(this.krcmtFixedConditionWorkRecordPK.fixConWorkRecordNo, WorkRecordFixedCheckItem.class),
 				new FixedConditionWorkRecordName(this.message),
 				this.useAtr == 1?true:false

@@ -173,5 +173,25 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 		return entity;
 	}
 
+	@Override
+	public Integer distinctErrorByExecutionIdNew(String executionId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
+		Root<KscdtScheErrLog> root = cq.from(KscdtScheErrLog.class);
+		// select root
+		cq.select(criteriaBuilder.count(root));
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KscdtScheErrLog_.kscdtScheErrLogPK).get(KscdtScheErrLogPK_.exeId), executionId));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		int cntError = em.createQuery(cq).getSingleResult().intValue();
+		return cntError;
+	}
 
 }
