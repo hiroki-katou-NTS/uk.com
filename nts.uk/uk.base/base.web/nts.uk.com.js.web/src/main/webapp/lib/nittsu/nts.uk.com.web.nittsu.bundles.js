@@ -1333,7 +1333,7 @@ var nts;
         var ntsNumber;
         (function (ntsNumber) {
             function isInteger(value, option) {
-                if (option !== undefined && option.groupseperator() !== undefined) {
+                if (option !== undefined && option.groupseperator !== undefined) {
                     value = isInteger(value) ? value : uk.text.replaceAll(value.toString(), option.groupseperator(), '');
                 }
                 return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
@@ -1362,7 +1362,7 @@ var nts;
                 var val = parseFloat(value);
                 if (message !== undefined)
                     message.id = 'FND_E_HALFINT';
-                if (val !== NaN && (val * 2) % 1 === 0)
+                if (val !== NaN && ((Math.ceil(val) - val) === 0.5) && (val * 2) % 1 === 0)
                     return true;
                 return false;
             }
@@ -3571,8 +3571,12 @@ var nts;
                         }
                         var minValue = uk.time.minutesBased.clock.dayattr.MIN_VALUE;
                         var maxValue = uk.time.minutesBased.clock.dayattr.MAX_VALUE;
-                        minValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
-                        maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
+                        if (!util.isNullOrUndefined(this.constraint.min)) {
+                            minValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
+                        }
+                        if (!util.isNullOrUndefined(this.constraint.max)) {
+                            maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
+                        }
                         var parsed = uk.time.minutesBased.clock.dayattr.parseString(inputText);
                         if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
                             result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_CLOCK");
@@ -12158,6 +12162,7 @@ var nts;
                             if (feature.isEnable(options.ntsFeatures, feature.CELL_EDIT)) {
                                 updateFeature.editMode = "cell";
                                 updateFeature.editCellStarting = startEditCell;
+                                updateFeature.editCellStarted = editStarted;
                                 updateFeature.editCellEnding = beforeFinishEditCell;
                             }
                             return updateFeature;
@@ -12170,10 +12175,10 @@ var nts;
                         }
                         updating.containsNtsControl = containsNtsControl;
                         function startEditCell(evt, ui) {
+                            var selectedCell = selection.getSelectedCell($(evt.target));
                             if (containsNtsControl($(evt.currentTarget)) || utils.isEnterKey(evt) || utils.isTabKey(evt)) {
                                 if ($(evt.currentTarget).find("div[class*='nts-editor-container']").length > 0)
                                     return false;
-                                var selectedCell = selection.getSelectedCell($(evt.target));
                                 if (uk.util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target)))
                                     return;
                                 $(evt.target).igGridSelection("selectCell", selectedCell.rowIndex, selectedCell.index, utils.isFixedColumnCell(selectedCell, utils.getVisibleColumnsMap($(evt.target))));
@@ -12181,7 +12186,33 @@ var nts;
                             }
                             else if (utils.disabled($(evt.currentTarget)))
                                 return false;
+                            if (uk.util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target)))
+                                return;
+                            var $cell = $(selectedCell.element);
+                            if ($cell.hasClass("currency-symbol"))
+                                $cell.removeClass("currency-symbol");
                             return true;
+                        }
+                        function editStarted(evt, ui) {
+                            var $grid = $(ui.owner.element);
+                            var valueType = validation.getValueType($grid, ui.columnKey);
+                            if (valueType === "TimeWithDay") {
+                                var timeWithDayAttr_1 = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes);
+                                setTimeout(function () {
+                                    var $editor = $(ui.editor.find("input")[0]);
+                                    $editor.val(timeWithDayAttr_1.shortText).select();
+                                }, 140);
+                            }
+                            else if (valueType === "Currency") {
+                                var groupSeparator = validation.getGroupSeparator($grid, ui.columnKey) || ",";
+                                var value_1 = uk.text.replaceAll(ui.value, groupSeparator, "");
+                                setTimeout(function () {
+                                    ui.editor.addClass("input-currency-symbol");
+                                    var $editor = $(ui.editor.find("input")[0]);
+                                    var numb = Number(value_1);
+                                    $editor.val(isNaN(numb) ? value_1 : numb).css("text-align", "right").select();
+                                }, 140);
+                            }
                         }
                         function onEditCell(evt, cell) {
                             var $grid = fixedColumns.realGridOf($(evt.currentTarget));
@@ -12220,6 +12251,9 @@ var nts;
                             var $targetGrid = fixedColumns.realGridOf($(evt.currentTarget));
                             if (!utils.updatable($targetGrid))
                                 return;
+                            var $cell = $(cell.element);
+                            if ($cell.hasClass("currency-symbol"))
+                                $cell.removeClass("currency-symbol");
                             utils.startEdit($targetGrid, cell);
                             if (!utils.isDeleteKey(evt)) {
                                 setTimeout(function () {
@@ -12264,7 +12298,7 @@ var nts;
                                 && utils.isEditMode($grid) && errors.any(selectedCell)) {
                                 return false;
                             }
-                            if (utils.isEditMode($grid) && (utils.isTabKey(evt) || utils.isEnterKey(evt))) {
+                            if (utils.isEditMode($grid) && (utils.isTabKey(evt) || utils.isEnterKey(evt) || evt.keyCode === undefined)) {
                                 var gridUpdate_1 = $grid.data("igGridUpdating");
                                 var origValues = gridUpdate_1._originalValues;
                                 if (!uk.util.isNullOrUndefined(origValues)) {
@@ -12283,6 +12317,9 @@ var nts;
                             if ($editorContainer.length > 0)
                                 $editorContainer.css(errors.NO_ERROR_STL);
                             specialColumn.tryDo($grid, selectedCell, ui.value);
+                            if (ui.editor.hasClass("input-currency-symbol")) {
+                                $(selectedCell.element).addClass("currency-symbol");
+                            }
                             return true;
                         }
                         function _updateRow($grid, rowId, visibleColumnsMap, updatedRowData) {
@@ -12299,6 +12336,14 @@ var nts;
                             var autoCommit = grid.options.autoCommit;
                             var columnsMap = allColumnsMap || utils.getColumnsMap($grid);
                             var rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
+                            var validators = $grid.data(validation.VALIDATORS);
+                            var fieldValidator = validators[columnKey];
+                            if (fieldValidator) {
+                                var result = fieldValidator.probe(String(cellValue));
+                                if (result.isValid) {
+                                    cellValue = result.parsedValue;
+                                }
+                            }
                             grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                             var isControl = utils.isNtsControl($grid, columnKey);
                             if (!isControl || forceRender)
@@ -13466,11 +13511,11 @@ var nts;
                                 };
                                 $input.on(events.Handler.KEY_DOWN, function (evt) {
                                     if (utils.isEnterKey(evt)) {
-                                        var value_1 = $input.val();
-                                        self.validate(data.controlDef, value_1).success(function (t) {
+                                        var value_2 = $input.val();
+                                        self.validate(data.controlDef, value_2).success(function (t) {
                                             cell = self.cellBelongTo($input);
                                             errors.clear(self.$containedGrid, cell);
-                                            var val = valueToDs(constraint.valueType, value_1, t);
+                                            var val = valueToDs(constraint.valueType, value_2, t);
                                             $input.data(internal.TXT_RAW, val);
                                             data.update(val);
                                         }).fail(function (errId) {
@@ -14321,15 +14366,23 @@ var nts;
                                 this.options = options;
                             }
                             ColumnFieldValidator.prototype.probe = function (value) {
-                                var constraint = nts.uk.ui.validation.getConstraint(this.primitiveValue);
-                                switch (constraint.valueType) {
+                                var valueType = this.primitiveValue ? ui.validation.getConstraint(this.primitiveValue).valueType
+                                    : this.options.cDisplayType;
+                                switch (valueType) {
                                     case "String":
                                         return new nts.uk.ui.validation.StringValidator(this.name, this.primitiveValue, this.options)
                                             .validate(value, this.options);
                                     case "Integer":
                                     case "Decimal":
                                     case "HalfInt":
-                                        return new nts.uk.ui.validation.NumberValidator(this.name, this.primitiveValue, this.options)
+                                        return new NumberValidator(this.name, valueType, this.primitiveValue, this.options)
+                                            .validate(value);
+                                    case "Currency":
+                                        var opts = new ui.option.CurrencyEditorOption();
+                                        opts.grouplength = this.options.groupLength | 3;
+                                        opts.decimallength = this.options.decimalLength | 2;
+                                        opts.currencyformat = this.options.currencyFormat ? this.options.currencyFormat : "JPY";
+                                        return new NumberValidator(this.name, valueType, this.primitiveValue, opts)
                                             .validate(value);
                                     case "Time":
                                         this.options.mode = "time";
@@ -14339,11 +14392,80 @@ var nts;
                                         this.options.outputFormat = "time";
                                         return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                             .validate(value);
+                                    case "TimeWithDay":
+                                        this.options.timeWithDay = true;
+                                        var result = new ui.validation.TimeWithDayValidator(this.name, this.primitiveValue, this.options)
+                                            .validate(value);
+                                        if (result.isValid) {
+                                            var formatter = new uk.text.TimeWithDayFormatter(this.options);
+                                            result.parsedValue = formatter.format(result.parsedValue);
+                                        }
+                                        return result;
                                 }
                             };
                             return ColumnFieldValidator;
                         }());
                         validation.ColumnFieldValidator = ColumnFieldValidator;
+                        var NumberValidator = (function () {
+                            function NumberValidator(name, displayType, primitiveValue, options) {
+                                this.name = name;
+                                this.displayType = displayType;
+                                this.primitiveValue = primitiveValue;
+                                this.options = options;
+                            }
+                            NumberValidator.prototype.validate = function (text) {
+                                var self = this;
+                                if (self.primitiveValue) {
+                                    return new nts.uk.ui.validation.NumberValidator(self.name, self.primitiveValue, self.options).validate(text);
+                                }
+                                if (self.displayType === "Currency") {
+                                    text = uk.text.replaceAll(text, self.options.groupseperator, "");
+                                }
+                                var result = new ui.validation.ValidationResult();
+                                if ((uk.util.isNullOrUndefined(text) || text.length === 0)) {
+                                    if (self.options && self.options.required) {
+                                        result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [self.name]), 'FND_E_REQ_INPUT');
+                                        return result;
+                                    }
+                                    if (!self.options || (self.options && !self.options.required)) {
+                                        result.success(text);
+                                        return result;
+                                    }
+                                }
+                                var message = {};
+                                var isValid;
+                                if (self.displayType === "HalfInt") {
+                                    isValid = uk.ntsNumber.isHalfInt(text, message);
+                                }
+                                else if (self.displayType === "Integer") {
+                                    isValid = uk.ntsNumber.isNumber(text, false, self.options, message);
+                                }
+                                else if (self.displayType === "Decimal" || self.displayType === "Currency") {
+                                    isValid = uk.ntsNumber.isNumber(text, true, self.options, message);
+                                }
+                                var min = 0, max = 999999999;
+                                var value = parseFloat(text);
+                                if (!uk.util.isNullOrUndefined(self.options.min)) {
+                                    min = self.options.min;
+                                    if (value < min)
+                                        isValid = false;
+                                }
+                                if (!uk.util.isNullOrUndefined(self.options.max)) {
+                                    max = self.options.max;
+                                    if (value > max)
+                                        isValid = false;
+                                }
+                                if (!isValid) {
+                                    result.fail(uk.resource.getMessage(message.id, [self.name, min, max]), message.id);
+                                    return result;
+                                }
+                                var formatter = new uk.text.NumberFormatter({ option: self.options });
+                                var formatted = formatter.format(text);
+                                result.success(self.displayType === "Currency" ? formatted : value + "");
+                                return result;
+                            };
+                            return NumberValidator;
+                        }());
                         var Result = (function () {
                             function Result(isValid, formatted, messageId) {
                                 this.onSuccess = $.noop;
@@ -14409,6 +14531,22 @@ var nts;
                             return Result.OK(formatRes);
                         }
                         validation.parseTime = parseTime;
+                        function getValueType($grid, columnKey) {
+                            var validators = $grid.data(validation.VALIDATORS);
+                            if (!validators || !validators[columnKey])
+                                return;
+                            var column = validators[columnKey];
+                            return column.primitiveValue ? ui.validation.getConstraint(column.primitiveValue).valueType
+                                : column.options.cDisplayType;
+                        }
+                        validation.getValueType = getValueType;
+                        function getGroupSeparator($grid, columnKey) {
+                            var validators = $grid.data(validation.VALIDATORS);
+                            if (!validators || !validators[columnKey])
+                                return;
+                            return validators[columnKey].options.groupseperator;
+                        }
+                        validation.getGroupSeparator = getGroupSeparator;
                     })(validation || (validation = {}));
                     var errors;
                     (function (errors) {
@@ -15186,7 +15324,8 @@ var nts;
                         }
                         utils.isArrowRight = isArrowRight;
                         function isAlphaNumeric(evt) {
-                            return evt.keyCode >= 48 && evt.keyCode <= 90;
+                            return (evt.keyCode >= 48 && evt.keyCode <= 90)
+                                || (evt.keyCode >= 96 && evt.keyCode <= 105);
                         }
                         utils.isAlphaNumeric = isAlphaNumeric;
                         function isTabKey(evt) {

@@ -349,6 +349,7 @@ module nts.uk.ui.jqueryExtentions {
                 if (feature.isEnable(options.ntsFeatures, feature.CELL_EDIT)) {
                     updateFeature.editMode = "cell";
                     updateFeature.editCellStarting = startEditCell;
+                    updateFeature.editCellStarted = editStarted;
                     updateFeature.editCellEnding = beforeFinishEditCell;
                 }
                 return updateFeature;
@@ -367,15 +368,43 @@ module nts.uk.ui.jqueryExtentions {
              * Edit cell
              */
             function startEditCell(evt: any, ui: any) {
+                let selectedCell = selection.getSelectedCell($(evt.target));
                 if (containsNtsControl($(evt.currentTarget)) || utils.isEnterKey(evt) || utils.isTabKey(evt)) {
                     if ($(evt.currentTarget).find("div[class*='nts-editor-container']").length > 0) return false;
-                    let selectedCell = selection.getSelectedCell($(evt.target));
                     if (util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target))) return;
                     $(evt.target).igGridSelection("selectCell", selectedCell.rowIndex, selectedCell.index,
                                     utils.isFixedColumnCell(selectedCell, utils.getVisibleColumnsMap($(evt.target))));
                     return false;
                 } else if (utils.disabled($(evt.currentTarget))) return false;
+                if (util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target))) return;
+                let $cell = $(selectedCell.element);
+                if ($cell.hasClass("currency-symbol")) $cell.removeClass("currency-symbol");
                 return true; 
+            }
+            
+            /**
+             * Edit started.
+             */
+            function editStarted(evt: any, ui: any) {
+                let $grid = $(ui.owner.element);
+                let valueType = validation.getValueType($grid, ui.columnKey);
+                if (valueType === "TimeWithDay") {
+                    let timeWithDayAttr = time.minutesBased.clock.dayattr.create(
+                        time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes);
+                    setTimeout(function() {
+                        let $editor = $(ui.editor.find("input")[0]);
+                        $editor.val(timeWithDayAttr.shortText).select();
+                    }, 140);
+                } else if (valueType === "Currency") {
+                    let groupSeparator = validation.getGroupSeparator($grid, ui.columnKey) || ",";
+                    let value = text.replaceAll(ui.value, groupSeparator, "");
+                    setTimeout(function() {
+                        ui.editor.addClass("input-currency-symbol");
+                        let $editor = $(ui.editor.find("input")[0]);
+                        let numb = Number(value);
+                        $editor.val(isNaN(numb) ? value : numb).css("text-align", "right").select();
+                    }, 140);
+                }
             }
             
             /**
@@ -422,6 +451,8 @@ module nts.uk.ui.jqueryExtentions {
             function startEdit(evt: any, cell: any) {
                 let $targetGrid = fixedColumns.realGridOf($(evt.currentTarget));
                 if (!utils.updatable($targetGrid)) return;
+                let $cell = $(cell.element);
+                if ($cell.hasClass("currency-symbol")) $cell.removeClass("currency-symbol");
                 utils.startEdit($targetGrid, cell);
                 // Keep text contents if any, otherwise set input value
 //                if ($(cell.element).text().trim() !== "") evt.preventDefault();
@@ -474,7 +505,7 @@ module nts.uk.ui.jqueryExtentions {
                     return false;
                 }
                 
-                if (utils.isEditMode($grid) && (utils.isTabKey(evt) || utils.isEnterKey(evt))) {
+                if (utils.isEditMode($grid) && (utils.isTabKey(evt) || utils.isEnterKey(evt) || evt.keyCode === undefined)) {
                     let gridUpdate: any = $grid.data("igGridUpdating");
                     let origValues = gridUpdate._originalValues;
                     if (!util.isNullOrUndefined(origValues)) {
@@ -495,7 +526,10 @@ module nts.uk.ui.jqueryExtentions {
                 let $editorContainer = $(selectedCell.element).find(errors.EDITOR_SELECTOR);
                 if ($editorContainer.length > 0) $editorContainer.css(errors.NO_ERROR_STL);
                 
-                specialColumn.tryDo($grid, selectedCell, ui.value); 
+                specialColumn.tryDo($grid, selectedCell, ui.value);
+                if (ui.editor.hasClass("input-currency-symbol")) {
+                    $(selectedCell.element).addClass("currency-symbol");
+                }
                 return true;
             }
             
@@ -519,6 +553,15 @@ module nts.uk.ui.jqueryExtentions {
                 let autoCommit = grid.options.autoCommit;
                 let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
+                
+                let validators = $grid.data(validation.VALIDATORS);
+                let fieldValidator = validators[columnKey];
+                if (fieldValidator) {
+                    let result = fieldValidator.probe(String(cellValue));
+                    if (result.isValid) {
+                        cellValue = result.parsedValue; 
+                    }
+                }
                 grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                 let isControl = utils.isNtsControl($grid, columnKey);
                 if (!isControl || forceRender) renderCell($grid, rId, columnKey);
@@ -2720,15 +2763,23 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 
                 probe(value: string) {
-                    let constraint = nts.uk.ui.validation.getConstraint(this.primitiveValue);
-                    switch (constraint.valueType) {
+                    let valueType = this.primitiveValue ? ui.validation.getConstraint(this.primitiveValue).valueType
+                                    : this.options.cDisplayType;
+                    switch (valueType) {
                         case "String":
                             return new nts.uk.ui.validation.StringValidator(this.name, this.primitiveValue, this.options)
                                     .validate(value, this.options);
                         case "Integer":
                         case "Decimal":
                         case "HalfInt":
-                            return new nts.uk.ui.validation.NumberValidator(this.name, this.primitiveValue, this.options)
+                            return new NumberValidator(this.name, valueType, this.primitiveValue, this.options) 
+                                   .validate(value);
+                        case "Currency":
+                            let opts: any = new ui.option.CurrencyEditorOption();
+                            opts.grouplength = this.options.groupLength | 3;
+                            opts.decimallength = this.options.decimalLength | 2;
+                            opts.currencyformat = this.options.currencyFormat ? this.options.currencyFormat : "JPY";
+                            return new NumberValidator(this.name, valueType, this.primitiveValue, opts)
                                     .validate(value);
                         case "Time":
                             this.options.mode = "time";
@@ -2738,7 +2789,82 @@ module nts.uk.ui.jqueryExtentions {
                             this.options.outputFormat = "time";
                             return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                     .validate(value);
+                        case "TimeWithDay":
+                            this.options.timeWithDay = true;
+                            let result = new ui.validation.TimeWithDayValidator(this.name, this.primitiveValue, this.options)
+                                            .validate(value);
+                            if (result.isValid) {
+                                let formatter = new text.TimeWithDayFormatter(this.options);
+                                result.parsedValue = formatter.format(result.parsedValue);
+                            }
+                            return result;
                     }
+                }
+            }
+            
+            class NumberValidator {
+                name: string;
+                displayType: string;
+                primitiveValue: string;s
+                options: any;
+                constructor(name: string, displayType: string, primitiveValue?: string, options?: any) {
+                    this.name = name;
+                    this.displayType = displayType;
+                    this.primitiveValue = primitiveValue;
+                    this.options = options;
+                }
+                
+                validate(text: string) {
+                    let self = this;
+                    if (self.primitiveValue) {
+                        return new nts.uk.ui.validation.NumberValidator(self.name, self.primitiveValue, self.options).validate(text);
+                    }
+                    
+                    if (self.displayType === "Currency") {
+                        text = uk.text.replaceAll(text, self.options.groupseperator, "");
+                    }
+                    
+                    let result = new ui.validation.ValidationResult();
+                    if ((util.isNullOrUndefined(text) || text.length === 0)) {
+                        if (self.options && self.options.required) {
+                            result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ self.name ]), 'FND_E_REQ_INPUT');
+                            return result;
+                        }
+                        if (!self.options || (self.options && !self.options.required)) {
+                            result.success(text);
+                            return result;
+                        }
+                    }
+                    let message: any = {};
+                    let isValid;
+                    if (self.displayType === "HalfInt") {
+                         isValid = ntsNumber.isHalfInt(text, message);
+                    } else if (self.displayType === "Integer") {
+                        isValid = ntsNumber.isNumber(text, false, self.options, message);
+                    } else if (self.displayType === "Decimal" || self.displayType === "Currency") {
+                        isValid = ntsNumber.isNumber(text, true, self.options, message);
+                    }
+                    
+                    let min = 0, max = 999999999;
+                    let value = parseFloat(text);
+                    if (!util.isNullOrUndefined(self.options.min)) {
+                        min = self.options.min;
+                        if (value < min) isValid = false;
+                    }
+                    if (!util.isNullOrUndefined(self.options.max)) {
+                        max = self.options.max;
+                        if (value > max) isValid = false;
+                    }
+                    
+                    if (!isValid) {
+                        result.fail(resource.getMessage(message.id, [ self.name, min, max ]), message.id);
+                        return result;
+                    }
+                    
+                    let formatter = new uk.text.NumberFormatter({ option: self.options });
+                    let formatted = formatter.format(text);
+                    result.success(self.displayType === "Currency" ? formatted : value + "");
+                    return result;
                 }
             }
             
@@ -2808,6 +2934,20 @@ module nts.uk.ui.jqueryExtentions {
                 let formatRes = uk.time.applyFormat(format, value, undefined);
                 if (!formatRes) return Result.invalid("NEED_MSG_INVALID_TIME_FORMAT");
                 return Result.OK(formatRes);
+            }
+            
+            export function getValueType($grid: JQuery, columnKey: any) {
+                let validators: any = $grid.data(validation.VALIDATORS);
+                if (!validators || !validators[columnKey]) return;
+                let column = validators[columnKey];
+                return column.primitiveValue ? ui.validation.getConstraint(column.primitiveValue).valueType
+                                    : column.options.cDisplayType
+            }
+            
+            export function getGroupSeparator($grid: JQuery, columnKey: any) {
+                let validators: any = $grid.data(validation.VALIDATORS);
+                if (!validators || !validators[columnKey]) return;
+                return validators[columnKey].options.groupseperator;
             }
         }
         
@@ -3676,7 +3816,8 @@ module nts.uk.ui.jqueryExtentions {
                 return evt.keyCode === 39;
             }
             export function isAlphaNumeric(evt: any) {
-                return evt.keyCode >= 48 && evt.keyCode <= 90;
+                return (evt.keyCode >= 48 && evt.keyCode <= 90) 
+                        || (evt.keyCode >= 96 && evt.keyCode <= 105);
             }
             export function isTabKey(evt: any) {
                 return evt.keyCode === 9;

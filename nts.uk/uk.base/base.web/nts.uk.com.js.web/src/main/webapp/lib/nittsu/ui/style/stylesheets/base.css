@@ -3615,7 +3615,7 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,
 .nts-grid tr td.ui-state-hover,
 .nts-grid tr.ui-ig-altrecord td.ui-state-hover {
-  background-color: aqua;
+  background-color: #C5F1F7;
   border-color: #AAB7B8;
 }
 
@@ -3630,6 +3630,23 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid tr.ui-ig-altrecord td.ntsgrid-disable.ui-state-hover {
   background-color: #CCC;
   color: gray;
+}
+
+.nts-grid-wrapper td.currency-symbol:before,
+.nts-grid td.currency-symbol:before {
+	content: '\00a5';
+	top: 6px;
+	color: #999;
+	padding-right: 4px;
+}
+
+.nts-grid-wrapper span.input-currency-symbol:before,
+.nts-grid span.input-currency-symbol:before {
+	position: absolute;
+	content: '\00a5';
+	top: 4px;
+	left: 2px;
+	color: #999;
 }
 
 /* line 30, ../sass/components/_ntsgrid.scss */
