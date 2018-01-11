@@ -520,7 +520,7 @@ module a3 {
                  key: "settlementOrder",
                  dataSource: self.lstSettlementOrder,
                  defaultValue: ko.observable(1),
-                 width: 75,
+                 width: 50,
                  template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'settlementOrder',
                                     visibleItemsCount: 10,
