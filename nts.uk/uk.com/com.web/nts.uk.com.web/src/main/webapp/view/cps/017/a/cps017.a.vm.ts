@@ -270,7 +270,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
             selection.selectionName('');
             selection.memoSelection('');
             self.checkCreateaaa(true);
-//            self.enableSelName(true);
+            if (self.enableSelName() == true){
+                 self.selectionCd(true);
+            } else {
+                self.selectionCd(false);
+            }
             self.revDisSel02(false);
             self.revDisSel03(false);
             self.revDisSel04(false);
