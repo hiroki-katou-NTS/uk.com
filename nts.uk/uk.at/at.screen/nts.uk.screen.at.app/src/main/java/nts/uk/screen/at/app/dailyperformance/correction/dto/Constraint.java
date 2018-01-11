@@ -6,6 +6,14 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class Constraint {
-	private String primitiveValue;
+	private String cDisplayType;
 	private Boolean required;
+//	private int min;
+//	private int max;
+//	public Constraint(String cDisplayType, Boolean required) {
+//		super();
+//		this.cDisplayType = cDisplayType;
+//		this.required = required;
+//	}
+	
 }

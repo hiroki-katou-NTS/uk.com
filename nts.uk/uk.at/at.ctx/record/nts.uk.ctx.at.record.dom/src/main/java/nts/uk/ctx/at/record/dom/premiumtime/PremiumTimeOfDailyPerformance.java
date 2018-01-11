@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 public class PremiumTimeOfDailyPerformance {
 	
 	//割増時間NO - primitive value
-	private String premiumTimeNo;
+	private Integer premiumTimeNo;
 	
 	//割増時間
 	private AttendanceTime premitumTime;

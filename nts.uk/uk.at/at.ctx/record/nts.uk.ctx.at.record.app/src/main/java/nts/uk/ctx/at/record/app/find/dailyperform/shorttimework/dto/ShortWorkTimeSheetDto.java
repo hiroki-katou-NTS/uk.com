@@ -20,27 +20,42 @@ public class ShortWorkTimeSheetDto {
 
 	/** 育児介護区分: 育児介護区分 */
 	/** @see nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+//	@AttendanceItemLayout(layout = "B", jpPropertyName = "")
+//	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer childCareAttr;
 
 	/** 開始: 時刻(日区分付き) */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "C", jpPropertyName = "開始", needCheckIDWithIndex = true, needCheckIDWithMethod = "childCare")
+	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
 	private Integer startTime;
 
 	/** 終了: 時刻(日区分付き) */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "D", jpPropertyName = "終了", needCheckIDWithIndex = true, needCheckIDWithMethod = "childCare")
+	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
 	private Integer endTime;
 
 	/** 控除時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+//	@AttendanceItemLayout(layout = "E", jpPropertyName = "")
+//	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer deductionTime;
 
 	/** 時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "F", jpPropertyName = "")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+//	@AttendanceItemLayout(layout = "F", jpPropertyName = "")
+//	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer shortTime;
+	
+	public String childCare(){
+		if(childCareAttr == null){
+			return "";
+		}
+		
+		switch (childCareAttr) {
+		case 0:
+			return "育児";
+		case 1:
+			return "介護";
+		default:
+			return "";
+		}
+	}
 }

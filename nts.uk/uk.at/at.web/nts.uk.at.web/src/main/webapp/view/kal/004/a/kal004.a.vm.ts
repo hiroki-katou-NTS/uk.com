@@ -11,7 +11,7 @@ module nts.uk.at.view.kal004.a.model {
     import service = nts.uk.at.view.kal004.a.service;
     export class ScreenModel {
         alarmSource: KnockoutObservableArray<share.AlarmPatternSettingDto>;
-        currentAlarm: KnockoutObservable<share.AlarmPatternSettingDto>;
+        currentAlarm: share.AlarmPatternSettingDto;
         alarmHeader: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<string>;
         createMode: KnockoutObservable<boolean>;
@@ -28,7 +28,7 @@ module nts.uk.at.view.kal004.a.model {
 
         // Tab 2: Period setting
         periodSetting: any = new nts.uk.at.view.kal004.tab2.viewModel.ScreenModel();
-        
+          
         // Tab 3: SetPermission
         setPermissionModel: any = new nts.uk.at.view.kal004.tab3.viewmodel.ScreenModel();
 

@@ -32,6 +32,13 @@
 		border: 2px solid $frame_border_color;
 		border-radius: 7px;
 		display: block !important;
+		
+		&.disappear {
+			> div {
+				height: 100% !important;
+				overflow: hidden !important;
+			}
+		}
 	}
 	
 	&.vertical {

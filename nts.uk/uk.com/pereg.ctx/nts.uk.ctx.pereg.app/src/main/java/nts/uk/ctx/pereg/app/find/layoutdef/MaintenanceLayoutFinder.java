@@ -23,15 +23,17 @@ public class MaintenanceLayoutFinder {
 	@Inject
 	private LayoutPersonInfoClsFinder ClsFinder;
 
-	String companyId = AppContexts.user().companyId();
+	
 
 	public List<MaintenanceLayoutDto> getAllLayout() {
+		String companyId = AppContexts.user().companyId();
 		// get All Maintenance Layout
 		return this.layoutRepo.getAllMaintenanceLayout(companyId).stream()
 				.map(item -> MaintenanceLayoutDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
 	public MaintenanceLayoutDto getDetails(String layoutId) {
+		String companyId = AppContexts.user().companyId();
 		// get detail maintenanceLayout By Id
 		MaintenanceLayoutDto dto = this.layoutRepo.getById(companyId, layoutId).map(c -> MaintenanceLayoutDto.fromDomain(c)).get();
 

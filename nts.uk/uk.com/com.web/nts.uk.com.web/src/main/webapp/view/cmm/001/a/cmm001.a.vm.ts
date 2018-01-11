@@ -265,6 +265,7 @@ module cmm001.a {
                     });
                     self.start().then(function() {
                         self.currentCompanyCode(code);
+                        self.display.valueHasMutated();
                     });
                 }).fail(function(error) {
                     if (error.messageId == 'Msg_810') {
@@ -283,6 +284,7 @@ module cmm001.a {
                     self.start().then(function() {
                         self.currentCompanyCode(code);
                         $('#companyName').focus();
+                        self.display.valueHasMutated();
                     });
                 }).fail(function(error) {
                     if (error.messageId == 'Msg_809') {
