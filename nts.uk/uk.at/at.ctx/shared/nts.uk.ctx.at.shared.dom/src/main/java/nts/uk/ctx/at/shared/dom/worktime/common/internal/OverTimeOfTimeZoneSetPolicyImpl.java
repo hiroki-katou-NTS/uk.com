@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingPolicy;
@@ -34,7 +33,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 	 * nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet, EmTimeZoneSet emTimezone) {
+	public void validate(PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet) {
 		val otTimezone = otSet.getTimezone();
 		val shift1Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftOne();
 		val shift2Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftTwo();

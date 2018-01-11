@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DAILY_ALARM_CONDITION")
+@Table(name = "KRCMT_FIX_CON_WORK_RECORD")
 public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serializable {
 
 	/**
@@ -49,7 +49,7 @@ public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serial
 	
 	public static KrcmtFixedConditionWorkRecord toEntity(FixedConditionWorkRecord domain) {
 		return new KrcmtFixedConditionWorkRecord(
-				new KrcmtFixedConditionWorkRecordPK( domain.getDailyAlarmConID(),
+				new KrcmtFixedConditionWorkRecordPK( domain.getErrorAlarmCode(),
 				domain.getFixConWorkRecordNo().value),
 				domain.getMessage().v(),
 				domain.isUseAtr()?1:0
@@ -58,7 +58,7 @@ public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serial
 	
 	public FixedConditionWorkRecord toDomain() {
 		return new FixedConditionWorkRecord(
-				this.krcmtFixedConditionWorkRecordPK.dailyAlarmConID,
+				this.krcmtFixedConditionWorkRecordPK.errorAlarmCode,
 				EnumAdaptor.valueOf(this.krcmtFixedConditionWorkRecordPK.fixConWorkRecordNo, WorkRecordFixedCheckItem.class),
 				new FixedConditionWorkRecordName(this.message),
 				this.useAtr == 1?true:false

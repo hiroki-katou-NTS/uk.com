@@ -249,6 +249,8 @@ module nts.uk.at.view.kmk003.a {
                     this.getHDWtzMorning().resetData();
                     this.getHDWtzAfternoon().resetData();
                     this.lstStampReflectTimezone = [];
+                    //update ver7.2 
+                    this.legalOTSetting(1);
                 }
             }
             

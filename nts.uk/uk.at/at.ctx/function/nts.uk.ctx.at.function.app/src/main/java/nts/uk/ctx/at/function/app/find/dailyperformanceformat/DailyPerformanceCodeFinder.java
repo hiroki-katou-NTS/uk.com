@@ -31,6 +31,7 @@ public class DailyPerformanceCodeFinder {
 					return new DailyPerformanceCodeDto(f.getDailyPerformanceFormatCode().v(),
 							f.getDailyPerformanceFormatName().v());
 				}).collect(Collectors.toList());
+		dailyPerformanceCodeDtos.sort((c1, c2) -> c1.getDailyPerformanceFormatCode().compareTo(c2.getDailyPerformanceFormatCode()));
 
 		return dailyPerformanceCodeDtos;
 	}

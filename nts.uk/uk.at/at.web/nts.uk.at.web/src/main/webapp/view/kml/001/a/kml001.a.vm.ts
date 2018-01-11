@@ -16,7 +16,7 @@ module nts.uk.at.view.kml001.a {
                 $('#formula-child-1').html(nts.uk.resource.getText('KML001_7').replace(/\n/g,'<br/>'));
                 var self = this;
                 self.personCostList = ko.observableArray([]);
-                self.currentPersonCost = ko.observable(new vmbase.PersonCostCalculation('', '', "", "9999/12/31", 0, '', [], []));
+                self.currentPersonCost = ko.observable(new vmbase.PersonCostCalculation('', '', "", "9999/12/31", 0, '', []));
                 self.newStartDate = ko.observable(null);
                 self.gridPersonCostList = ko.observableArray([]);
                 self.currentGridPersonCost = ko.observable(null);
@@ -110,7 +110,7 @@ module nts.uk.at.view.kml001.a {
                 
                 // set data to currrent PersonCostCalculation
                 res.forEach(function(personCostCalc) {
-                    self.personCostList.push(vmbase.ProcessHandler.fromObjectPerconCost(personCostCalc, self.premiumItems()));
+                    self.personCostList.push(vmbase.ProcessHandler.createPersonCostCalFromValue(personCostCalc, self.premiumItems()));
                 });
                 if(self.personCostList()!=null) self.currentPersonCost(self.clonePersonCostCalculation(self.personCostList()[index]));
                 
@@ -313,8 +313,7 @@ module nts.uk.at.view.kml001.a {
                                         "9999/12/31",
                                         lastItem.unitPrice(),
                                         lastItem.memo(),
-                                        [],
-                                        self.premiumItems()));
+                                        []));
                                 self.currentPersonCost().premiumSets(lastItem.premiumSets());
                                 ko.utils.arrayForEach(self.currentPersonCost().premiumSets(), function(premiumSet, i) {
                                     let iDList = [];
@@ -333,8 +332,7 @@ module nts.uk.at.view.kml001.a {
                                         "9999/12/31",
                                         0,
                                         '',
-                                        [],
-                                        self.premiumItems()));
+                                        []));
                                 let newPremiumSets = [];
                                 self.premiumItems().forEach(function(item,index) {
                                     if(item.useAtr()) {
@@ -374,8 +372,7 @@ module nts.uk.at.view.kml001.a {
                                     "9999/12/31",
                                     0,
                                     '',
-                                    [],
-                                    self.premiumItems()));
+                                    []));
                             let newPremiumSets = [];
                             self.premiumItems().forEach(function(item,index) {
                                 if(item.useAtr()) {
@@ -426,8 +423,10 @@ module nts.uk.at.view.kml001.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let index = _.findIndex(self.personCostList(), function(o){ return self.currentPersonCost().startDate() == o.startDate();});
-                nts.uk.ui.windows.setShared('personCostList', self.personCostList());
-                nts.uk.ui.windows.setShared('currentPersonCost', self.currentPersonCost());
+                nts.uk.ui.windows.setShared('personCostList', 
+                    _.map(self.personCostList(), item => vmbase.ProcessHandler.toObjectPersonCost(item))
+                );
+                nts.uk.ui.windows.setShared('currentPersonCost', vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()));
                 nts.uk.ui.windows.sub.modal("/view/kml/001/d/index.xhtml", { title: "履歴の編集", dialogClass: "no-close" }).onClosed(function() {
                     let editedIndex = nts.uk.ui.windows.getShared('isEdited');
                     if (editedIndex != null) { // when data is edited
@@ -499,7 +498,7 @@ module nts.uk.at.view.kml001.a {
                 var self = this; 
                 let result = vmbase.ProcessHandler.fromObjectPerconCost(
                                                 _.cloneDeep(
-                                                    vmbase.ProcessHandler.toObjectPersonCost(object)),self.premiumItems());
+                                                    vmbase.ProcessHandler.toObjectPersonCost(object)));
                 return result;
             }
             

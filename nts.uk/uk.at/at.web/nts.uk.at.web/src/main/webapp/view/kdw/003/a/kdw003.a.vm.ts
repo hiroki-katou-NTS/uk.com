@@ -417,17 +417,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             });
             let param = { itemValues: dataChangeProcess }
-            let dfd = $.Deferred();
-            service.addAndUpdate(dataChangeProcess).done((data) => {
-               // alert("done");
-                dataChange = {};
-                self.btnExtraction_Click();
-                dfd.resolve();
-            }).fail((data) => {
-                alert("fail");
-                dfd.resolve();
-            });
-            dfd.promise();
+            if (dataChangeProcess.length > 0) {
+                let dfd = $.Deferred();
+                service.addAndUpdate(dataChangeProcess).done((data) => {
+                    // alert("done");
+                    dataChange = {};
+                    self.btnExtraction_Click();
+                    dfd.resolve();
+                }).fail((data) => {
+                    alert("fail");
+                    dfd.resolve();
+                });
+                dfd.promise();
+            }
             debugger;
         }
         checkIsColumn(dataCell: any, key: any): boolean {

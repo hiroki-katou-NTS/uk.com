@@ -20,7 +20,7 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcmtBusinessType a ");
-		builderString.append("WHERE a.krcmtBusinessTypePK.companyId = :companyId ORDER BY a.krcmtBusinessTypePK.businessTypeCode DESC ");
+		builderString.append("WHERE a.krcmtBusinessTypePK.companyId = :companyId ORDER BY a.krcmtBusinessTypePK.businessTypeCode ASC ");
 		FIND = builderString.toString();
 	} 
 	/**
