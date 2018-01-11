@@ -44,7 +44,7 @@ module nts.uk.at.view.ksc001.b {
             confirm: KnockoutObservable<boolean>;
 
             periodDate: KnockoutObservable<any>;
-            copyStartDate: KnockoutObservable<Date>;
+            copyStartDate: KnockoutObservable<any>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
 
@@ -799,7 +799,7 @@ module nts.uk.at.view.ksc001.b {
                     resetTimeAssignment: data.resetTimeAssignment,
                     confirm: data.confirm,
                     createMethodAtr: data.createMethodAtr,
-                    copyStartDate: self.copyStartDate(),
+                    copyStartDate: self.toDate(self.copyStartDate()),
                     employeeIds: self.findEmployeeIdsByCode(self.selectedEmployeeCode())
                 };
                 return dto;

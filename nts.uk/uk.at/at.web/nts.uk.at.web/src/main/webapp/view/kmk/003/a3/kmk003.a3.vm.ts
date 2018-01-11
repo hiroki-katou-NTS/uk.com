@@ -544,7 +544,7 @@ module a3 {
                     key: "timezone",
                     defaultValue: ko.observable({ startTime: 0, endTime: 0 }), 
                     width: 250, 
-                    template: `<div class= "fixtable" data-bind="ntsTimeRangeEditor: { 
+                    template: `<div data-bind="ntsTimeRangeEditor: { 
                         startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
                         required: true, enable: true, inputFormat: 'time',  startTimeNameId: '#[KMK003_166]', endTimeNameId: '#[KMK003_167]',paramId:'KMK003_89'}"/>`
                 },

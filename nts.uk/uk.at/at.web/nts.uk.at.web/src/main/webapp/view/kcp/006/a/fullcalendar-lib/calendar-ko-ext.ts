@@ -31,6 +31,9 @@ module nts.uk.at.view.kcp006.a {
         }
     }
 
+    var _lstHoliday = [];
+    var _lstEvent = [];
+    var _lstDate = [];
 
     class CalendarBindingHandler implements KnockoutBindingHandler {
         /**
@@ -171,49 +174,38 @@ module nts.uk.at.view.kcp006.a {
             _.remove(lstDate, (val) => {
                 return val === "Invalid date";
             });
-            //convert date options to events
-            let events = [];
-            if (optionDates.length > 0) {
-                events = optionDates.map(function(option) {
-                    let lstEvent = [];
-                    for (let i = 0; i < option.listText.length; i++) {
-                        lstEvent.push({
-                            id: i,
-                            title: option.listText[i],
-                            start: option.start,
-                            textColor: option.textColor,
-                            color: option.backgroundColor
-                        });
-                    }
-                    return lstEvent;
-                }).reduce(function(a, b) {
-                    return a.concat(b);
-                });
-            };
             // create duration month
             let durationMonth = 1;
             if (startDate >= endDate) {
                 durationMonth = 2;
             };
             //render view after load db
-            let lstHoliday = [];
-            let lstEvent = [];
             let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
-            fullCalendarRender.loadDataFromDB(lstDate, lstHoliday, lstEvent, workplaceId).done(() => {
+            if (_.difference(lstDate, _lstDate).length > 0) {
+                fullCalendarRender.loadDataFromDB(lstDate, _lstHoliday, _lstEvent, workplaceId).done(() => {
+                    $(container).fullCalendar('option', {
+                        firstDay: firstDay,
+                        validRange: fullCalendarRender.validRange(yearMonth, startDate, endDate, durationMonth),
+                        viewRender: function(view, element) {
+                            fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, _lstHoliday, _lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
+                        },
+                        eventAfterAllRender: function(view) {
+                            fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, _lstHoliday, _lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates);
+                        }
+                    });
+                    $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
+                });
+            } else {
                 $(container).fullCalendar('option', {
-                    firstDay: firstDay,
-                    validRange: fullCalendarRender.validRange(yearMonth, startDate, endDate, durationMonth),
                     viewRender: function(view, element) {
-                        fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, lstHoliday, lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
+                        fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, _lstHoliday, _lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
                     },
                     eventAfterAllRender: function(view) {
-                        fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, lstHoliday, lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates);
+                        fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, _lstHoliday, _lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates);
                     }
                 });
-                $(container).fullCalendar('removeEvents');
-                $(container).fullCalendar('addEventSource', events);
-                $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
-            });
+            }
+            _lstDate = lstDate;
         }
     }
 
@@ -384,6 +376,38 @@ module nts.uk.at.view.kcp006.a {
                 if (optionDates[i].headerBackgroundColor) {
                     $("#" + currentCalendar + " .fc-day-top[data-date='" + optionDates[i].start + "']").attr("style", 'background-color: ' + optionDates[i].headerBackgroundColor + '!important');
                 }
+            }
+            // add list text to days cell
+            for (let i = 0; i < optionDates.length; i++) {
+                let displayText = "";
+                for (let j = 0; j < optionDates[i].listText.length; j++) {
+                    if (optionDates[i].listText.length <= 3) {
+                        displayText += optionDates[i].listText[j] + '<br/>';
+                    } else {
+                        if (j < 2) {
+                            displayText += optionDates[i].listText[j] + '<br/>';
+                        } else if (j == 2) {
+                            displayText += "。。。";
+                        }
+                    }
+                }
+                displayText = displayText.replace(new RegExp('\r?\n', 'g'), '<br/>');
+                let elementWrap = _.find($($("#" + currentCalendar + " .fc-widget-content[data-date='" + optionDates[i].start + "']")[0]).parents(), (parent) => {
+                    return parent.className == 'fc-row fc-week fc-widget-content fc-rigid';
+                });
+                let bgElement = $(elementWrap).find($(".fc-bg"))[0];
+                let currentIndex = 0;
+                let lstTd = $(bgElement).find($("td"));
+                for (let j = 0; j < lstTd.length; j++) {
+                    if ($(lstTd[j]).attr("data-date") === optionDates[i].start) {
+                        currentIndex = j;
+                    }
+                }
+                let skeletonElement = $(elementWrap).find($(".fc-content-skeleton"))[0];
+                lstTd = $($($(skeletonElement).find($("tbody"))[0]).find($("tr"))[0]).find($("td"));
+                let targetTd = lstTd[currentIndex];
+                $(targetTd).addClass("fc-event-container");
+                $(targetTd).append("<a class='fc-day-grid-event fc-h-event fc-event fc-start fc-end' style='background-color:" + optionDates[i].backgroundColor + ";border-color:" + optionDates[i].backgroundColor + ";color:" + optionDates[i].textColor + "'><div class='fc-content'> <span class='fc-title'>" + displayText + "</span></div></a>");
             }
         }
 

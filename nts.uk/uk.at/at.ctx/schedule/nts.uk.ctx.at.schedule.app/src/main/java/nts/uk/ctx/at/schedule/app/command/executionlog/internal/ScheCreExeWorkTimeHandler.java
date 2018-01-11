@@ -788,7 +788,7 @@ public class ScheCreExeWorkTimeHandler {
 
 		// check work time code null
 		if(worktimeCode == null){
-			return Optional.of(worktimeCode);
+			return Optional.of("");
 		}
 		
 		// check not exist data work

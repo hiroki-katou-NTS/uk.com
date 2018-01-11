@@ -86,8 +86,7 @@ public class LayoutFinderOld {
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
 		String loginEmpId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
-		// String roleId = AppContexts.user().roles().forPersonnel();
-		String roleId = "99900000-0000-0000-0000-000000000001";
+		String roleId = AppContexts.user().roles().forPersonnel();
 		boolean selfBrowsing = loginEmpId.equals(browsingEmpId);
 
 		List<MaintenanceLayout> simpleLayouts = layoutRepo.getAllMaintenanceLayout(companyId);

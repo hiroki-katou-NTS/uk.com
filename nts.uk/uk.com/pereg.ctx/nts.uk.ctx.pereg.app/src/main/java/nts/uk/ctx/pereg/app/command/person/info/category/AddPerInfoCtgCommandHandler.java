@@ -37,7 +37,7 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 		AddPerInfoCtgCommand perInfoCtgCommand = context.getCommand();
 		// need ctgId = ' ' becase sql oracle server can't query ''
 		if (perInfoCtgCommand.getCategoryName().trim().equals("")) {
-			throw new BusinessException(new RawErrorMessage(""));
+			throw new BusinessException(new RawErrorMessage("Msg_928"));
 		}
 
 		if (!this.perInfoCtgRep.checkCtgNameIsUnique(PersonInfoCategory.ROOT_COMPANY_ID,
