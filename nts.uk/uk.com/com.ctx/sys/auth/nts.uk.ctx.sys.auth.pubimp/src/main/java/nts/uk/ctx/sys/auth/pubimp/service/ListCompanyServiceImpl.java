@@ -6,6 +6,8 @@ package nts.uk.ctx.sys.auth.pubimp.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -65,21 +67,12 @@ public class ListCompanyServiceImpl implements ListCompanyService {
 			}
 		}
 
-		if (lstCompanyId.isEmpty()) {
-			for (EmployeeImport em : lstEm) {
+		for (EmployeeImport em : lstEm) {
+			if (em.getCompanyId() != null) {
 				lstCompanyId.add(em.getCompanyId());
 			}
-		} else {
-			for (EmployeeImport em : lstEm) {
-				boolean haveComId = lstCompanyId.stream().anyMatch(item -> {
-					return em.getCompanyId().equals(item);
-				});
-				if (!haveComId) {
-					lstCompanyId.add(em.getCompanyId());
-				}
-			}
 		}
-		return lstCompanyId;
+		return lstCompanyId.stream().distinct().collect(Collectors.toList());
 	}
 
 }

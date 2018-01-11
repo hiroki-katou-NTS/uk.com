@@ -173,7 +173,7 @@ public class AddEmployeeCommandHelper {
 
 		Optional<EmpRegHistory> optRegHist = this.empHisRepo.getLastRegHistory(currentEmpId);
 
-		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(currentEmpId, companyId, GeneralDate.today(),
+		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(currentEmpId, companyId, GeneralDateTime.now(),
 				employeeId, "");
 
 		if (optRegHist.isPresent()) {
