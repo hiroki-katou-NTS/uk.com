@@ -334,6 +334,11 @@ module nts.fixedtable {
                 self.$element.find('.time-range-editor').each((index, element) => {
                     $('#' + element.id).validateTimeRange();
                 });
+                
+                // Focus check box default last item of table after remove.
+                if (self.itemList().length > 0) {
+                    self.$element.find('.column-checkbox-header').last().focus();
+                }
             });
         }
         
@@ -409,7 +414,7 @@ module nts.fixedtable {
             let rowHtml: string = "";
             
             // mode multiple
-            rowHtml += "<td class='check-box-column' style='text-align: center;'><div data-bind=\"attr: {tabindex: $parent.tabindex}, " 
+            rowHtml += "<td class='check-box-column' style='text-align: center;'><div class='column-checkbox-header' data-bind=\"attr: {tabindex: $parent.tabindex}, " 
                     + "visible: $index() >= $parent.minRow, ntsCheckBox: { checked: isChecked, "
                     + "enable: true, text:''}\"></div></td>";
             
@@ -425,10 +430,10 @@ module nts.fixedtable {
                 }
                 if (item.isRoudingColumn) {
                     rowHtml += '<!-- ko if: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
-                                    + self.generateColumnHtml(item, true)
+                                    + self.generateColumnHtml(item, false)
                                     + '<!-- /ko -->'
                                     + '<!-- ko ifnot: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
-                                    + self.generateColumnHtml(item, false)
+                                    + self.generateColumnHtml(item, true)
                                     + '<!-- /ko -->';
                     return;
                 }
