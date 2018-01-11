@@ -254,7 +254,7 @@ public class WorkTimeSettingFinder {
 	 */
 	private boolean checkNotUse(PredetemineTimeSetting workTimeSet) {
 		for (TimezoneUse timezone : workTimeSet.getPrescribedTimezoneSetting().getLstTimezone()) {
-			if (timezone.getUseAtr().equals(UseSetting.NOT_USE) && timezone.getWorkNo() == 1)
+			if (timezone.getUseAtr().equals(UseSetting.NOT_USE) && timezone.getWorkNo() == TimezoneUse.SHIFT_ONE)
 				return true;
 		}
 		return false;
