@@ -196,13 +196,16 @@ module nts.uk.at.view.kcp006.a {
                     $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
                 });
             } else {
-                $(container).fullCalendar('option', {
-                    viewRender: function(view, element) {
-                        fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, _lstHoliday, _lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
-                    },
-                    eventAfterAllRender: function(view) {
-                        fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, _lstHoliday, _lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates);
-                    }
+                service.getPublicHoliday(lstDate).done((data: Array<model.EventObj>) => {
+                    data.forEach((a) => { _lstHoliday.push({ start: moment(a.date).format("YYYY-MM-DD"), holidayName: a.holidayName }); });
+                    $(container).fullCalendar('option', {
+                        viewRender: function(view, element) {
+                            fullCalendarRender.viewRender(container[0].id, optionDates, firstDay, _lstHoliday, _lstEvent, eventDisplay, holidayDisplay, cellButtonDisplay);
+                        },
+                        eventAfterAllRender: function(view) {
+                            fullCalendarRender.eventAfterAllRender(container[0].id, lstDate, _lstHoliday, _lstEvent, workplaceId, workplaceName, eventUpdatable, optionDates);
+                        }
+                    });
                 });
             }
             _lstDate = lstDate;
@@ -245,6 +248,8 @@ module nts.uk.at.view.kcp006.a {
 
         loadDataFromDB(lstDate, lstHoliday, lstEvent, workplaceId): JQueryPromise<any> {
             let dfdLoadDB = $.Deferred<any>();
+            lstHoliday = [];
+            lstEvent = [];
             // list holiday received from server
             let dfdGetHoliday = $.Deferred<any>();
             service.getPublicHoliday(lstDate)
