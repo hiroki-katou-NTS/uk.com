@@ -99,7 +99,8 @@ public class ProgramIdConsts {
 	public static final String KDW001H = "KDW001H";
 	public static final String KDW001I = "KDW001I";
 	public static final String KDW001J = "KDW001J";
-	
+
+	public static final String KDW006A = "KDW006A";
 	public static final String KDW006B = "KDW006B";
 	public static final String KDW006C = "KDW006C";
 	public static final String KDW006D = "KDW006D";
