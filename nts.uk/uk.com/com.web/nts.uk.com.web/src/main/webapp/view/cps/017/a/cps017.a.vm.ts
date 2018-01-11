@@ -40,6 +40,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         revDisSel03: KnockoutObservable<boolean> = ko.observable(false);
         revDisSel04: KnockoutObservable<boolean> = ko.observable(false);
         disbleAdUpHist: KnockoutObservable<boolean> = ko.observable(true);
+        selectionCd: KnockoutObservable<boolean> = ko.observable(true);
         constraints: KnockoutObservable<any> = ko.observable();
 
         constructor() {
@@ -105,6 +106,11 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     //historySelection.histId(undefined);
                     self.registerData();
                 }
+                if (self.selection().selectionID() == undefined && self.enableSelName() == true ){
+                     self.selectionCd(true);
+                } else {
+                    self.selectionCd(false);
+                }
             });
 
             //sub theo historyID:
@@ -138,6 +144,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.revDisSel01(false);
                             self.revDisSel03(false);
                             self.revDisSel04(false);
+                            self.enableSelName(false);
                         } else {
                             self.disbleAdUpHist(true);
                             self.revDisSel01(true);
@@ -146,17 +153,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.revDisSel04(true);
                         }
                     }
-
-                    let ondeHisIdlits = _.find(self.listHistorySelection(), a => a.histId == x);
-                    if (ondeHisIdlits != undefined) {
-                        if (ondeHisIdlits.endDate == '9999/12/31') {
-                            self.enableSelName(true);
-                            //                            self.registerData();
-                        } else {
-                            self.enableSelName(false);
-                        }
-                    }
-
 
                     self.listSelection.removeAll();
                     service.getAllOrderItemSelection(x).done((itemList: Array<ISelection>) => {                        if (itemList && itemList.length > 0) {
@@ -179,6 +175,16 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         self.listSelection.valueHasMutated();
 
                     });
+                    
+                    let ondeHisIdlits = _.find(self.listHistorySelection(), a => a.histId == x);
+                    if (ondeHisIdlits != undefined) {
+                        if (ondeHisIdlits.endDate == '9999/12/31') {
+                            self.enableSelName(true);
+                            //                            self.registerData();
+                        } else {
+                            self.enableSelName(false);
+                        }
+                    }
                 } else {
                     self.listSelection.removeAll();
                     self.registerData();
@@ -262,7 +268,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
             selection.selectionName('');
             selection.memoSelection('');
             self.checkCreateaaa(true);
-            self.enableSelName(true);
+//            self.enableSelName(true);
             self.revDisSel02(false);
             self.revDisSel03(false);
             self.revDisSel04(false);
