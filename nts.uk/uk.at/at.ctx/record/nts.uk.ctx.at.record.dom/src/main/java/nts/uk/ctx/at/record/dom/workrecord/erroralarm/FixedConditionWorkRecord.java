@@ -13,7 +13,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @NoArgsConstructor
 public class FixedConditionWorkRecord extends AggregateRoot {
 	/** 日次のアラームチェック条件ID */
-	private String errorAlarmCode;
+	private String errorAlarmID;
 	/** No */
 	private WorkRecordFixedCheckItem fixConWorkRecordNo;
 	/** メッセージ */
@@ -21,10 +21,10 @@ public class FixedConditionWorkRecord extends AggregateRoot {
 	/** 使用区分 */
 	private boolean useAtr;
 
-	public FixedConditionWorkRecord(String errorAlarmCode, WorkRecordFixedCheckItem fixConWorkRecordNo,
+	public FixedConditionWorkRecord(String errorAlarmID, WorkRecordFixedCheckItem fixConWorkRecordNo,
 			FixedConditionWorkRecordName message, boolean useAtr) {
 		super();
-		this.errorAlarmCode = errorAlarmCode;
+		this.errorAlarmID = errorAlarmID;
 		this.fixConWorkRecordNo = fixConWorkRecordNo;
 		this.message = message;
 		this.useAtr = useAtr;

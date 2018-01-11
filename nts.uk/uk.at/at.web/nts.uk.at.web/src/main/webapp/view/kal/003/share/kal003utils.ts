@@ -13,7 +13,7 @@ module nts.uk.at.view.kal003.share {
             itemCheck:              itemcheck || 0,
             target:                 0,
             operatorCd:             '',
-            comparisonOperatorId:   0,
+            comparisonOperatorId:   null,
             itemConditionId:        ''
             });
         }
@@ -77,7 +77,7 @@ module nts.uk.at.view.kal003.share {
         export function getDefaultWorkRecordExtractingCondition(checkItem : number) : model.WorkRecordExtractingCondition {
             let workRecordExtractingCondition = new model.WorkRecordExtractingCondition({
                 errorAlarmCheckID   : ''
-                , checkItem           : checkItem || 0
+                , checkItem           : checkItem || 7
                 , sortOrderBy         : 0
                 , useAtr              : false
                 , nameWKRecord        : ''

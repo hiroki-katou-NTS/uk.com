@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="fixedcheck.start.js" />
+			<com:scriptfile path="fixedcheck.vm.js" />
+			<com:scriptfile path="fixedcheck.service.js" />
+			<com:EnumScript>
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.WorkRecordFixedCheckItem
+			</com:EnumScript>
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab,direction:'horizontal' }">
+					<div class="tab-content-1">
+						<!-- <table id="multi-list" data-bind="ntsGridList: {
+							height: 350,
+							options: items,
+							optionsValue: 'no',
+							columns: columns,
+							multiple: true,
+							value: currentItem
+						}"></table> -->
+						<table id="table-fixed">
+							<thead>
+							<tr class="bg-green">
+								<!-- I2_2 3 4 5 6 7 8 9 -->
+								<th style="width: 55px;text-align: center;"><div data-bind="ntsCheckBox: { checked: false }"></div></th>
+								<th style="width: 100px;">#{i18n.getText('KDW001_25')}</th>
+								<th style="width: 155px; text-align: center;">#{i18n.getText('KDW001_26')}</th>
+								<th style="width: 200px;">#{i18n.getText('KDW001_80')}</th>
+								
+							</tr>
+						</thead>
+						<tbody>
+							<com:ko-foreach bind="items">
+								<tr>
+									<td style="text-align: center;">
+										<div data-bind="ntsCheckBox: { checked: false }"></div>
+									</td>
+									<td data-bind="text: $data.no"></td>
+									<td data-bind="text: $data.name"></td>
+									<td data-bind="text: $data.message"></td>
+								</tr>
+							</com:ko-foreach>
+						</tbody>
+						</table>
+					</div>
+					<div class="tab-content-2">
+						<span>Tab Content 2</span><br/>
+					</div>
+					<div class="tab-content-3">
+						<span>Tab Content 3</span><br/>
+					</div>
+					<div class="tab-content-4">
+						<span>Tab Content 4</span><br/>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

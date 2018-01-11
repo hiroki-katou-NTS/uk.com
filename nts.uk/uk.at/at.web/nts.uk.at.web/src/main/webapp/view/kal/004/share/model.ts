@@ -35,20 +35,20 @@ module nts.uk.at.view.kal004.share.model {
                 this.extractionDailyDto = new ExtractionDaily({
                     extractionId: "",
                     extractionRange: 0,
-                    strSpecify: 0,
+                    strSpecify: 1,
                     strPreviousDay: null,
                     strMakeToDay: null,
                     strDay: null,
-                    strPreviousMonth: null,
-                    strCurrentMonth: null,
-                    strMonth: null,
-                    endSpecify: 0,
+                    strPreviousMonth: 0,
+                    strCurrentMonth: 1,
+                    strMonth: 0,
+                    endSpecify: 1,
                     endPreviousDay: null,
                     endMakeToDay: null,
                     endDay: null,
-                    endPreviousMonth: null,
-                    endCurrentMonth: null,
-                    endMonth: null
+                    endPreviousMonth: 0,
+                    endCurrentMonth: 1,
+                    endMonth: 0
                 });
             } else {
                 this.extractionDailyDto = new ExtractionDaily(extractionDailyDto);

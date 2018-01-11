@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.WorkRecordFixedCheckItem;
 public class FixedConditionWorkRecordDto {
 
 	/** 日次のアラームチェック条件ID */
-	private String errorAlarmCode;
+	private String errorAlarmID;
 	/** No */
 	private int fixConWorkRecordNo;
 	/** メッセージ */
@@ -20,9 +20,9 @@ public class FixedConditionWorkRecordDto {
 	private boolean useAtr;
 	
 	
-	public FixedConditionWorkRecordDto(String errorAlarmCode, int fixConWorkRecordNo, String message, boolean useAtr) {
+	public FixedConditionWorkRecordDto(String errorAlarmID, int fixConWorkRecordNo, String message, boolean useAtr) {
 		super();
-		this.errorAlarmCode = errorAlarmCode;
+		this.errorAlarmID = errorAlarmID;
 		this.fixConWorkRecordNo = fixConWorkRecordNo;
 		this.message = message;
 		this.useAtr = useAtr;
@@ -31,7 +31,7 @@ public class FixedConditionWorkRecordDto {
 
 	public FixedConditionWorkRecord toDto() {
 		return new FixedConditionWorkRecord(
-				this.errorAlarmCode,
+				this.errorAlarmID,
 				EnumAdaptor.valueOf(this.fixConWorkRecordNo, WorkRecordFixedCheckItem.class),
 				new FixedConditionWorkRecordName(this.message),
 				this.useAtr
@@ -40,7 +40,7 @@ public class FixedConditionWorkRecordDto {
 	
 	public static  FixedConditionWorkRecordDto fromDomain(FixedConditionWorkRecord domain) {
 		return new FixedConditionWorkRecordDto(
-				domain.getErrorAlarmCode(),
+				domain.getErrorAlarmID(),
 				domain.getFixConWorkRecordNo().value,
 				domain.getMessage().v(),
 				domain.isUseAtr()

@@ -1,8 +1,9 @@
-module nts.uk.at.view.kal003.a {
+module nts.uk.at.view.kal003.a.daily.fixedcheckcondition {  
     __viewContext.ready(function() {
-        var screenModel = new viewmodel.ScreenModel();
+        let screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
         });
-    });
+        
+    }); 
 }
