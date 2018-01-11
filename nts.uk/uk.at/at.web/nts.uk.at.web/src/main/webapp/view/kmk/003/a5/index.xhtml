@@ -26,12 +26,12 @@
 	<!-- End of Fixed rest time switch button -->
 	<!-- Begin Fixed timezones -->
 	<com:ko tag="if" bind="isFixed()">
-		<!-- Simple mode -->
+		<!-- Begin Simple mode -->
 		<com:ko tag="if" bind="!isDetailMode()">
 			<div id="fixedOneDay" data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
 		</com:ko>
 		<!-- End of Simple mode -->
-		<!-- One day -->
+		<!-- Begin Detail mode -->
 		<com:ko tag="if" bind="isDetailMode">
 			<!-- One day -->
 			<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
@@ -43,27 +43,30 @@
 				</div>
 			</div>
 			<!-- One day -->
-			<!-- Morning -->
-			<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-				<h3>
-					<label>#{i18n.getText('KMK003_60')}</label>
-				</h3>
-				<div class ="accordion-content">
-					<div id="fixedMorning" data-bind="ntsFixTableCustom: {option: morningFixedTimezoneOption}"></div>
+			<com:ko tag="if" bind="useHalfDay">
+				<!-- Morning -->
+				<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
+					<h3>
+						<label>#{i18n.getText('KMK003_60')}</label>
+					</h3>
+					<div class ="accordion-content">
+						<div id="fixedMorning" data-bind="ntsFixTableCustom: {option: morningFixedTimezoneOption}"></div>
+					</div>
 				</div>
-			</div>
-			<!-- Morning -->
-			<!-- Afternoon -->
-			<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-				<h3>
-					<label>#{i18n.getText('KMK003_61')}</label>
-				</h3>
-				<div class ="accordion-content">
-					<div id="fixedAfternoon" data-bind="ntsFixTableCustom: {option: afternoonFixedTimezoneOption}"></div>
+				<!-- Morning -->
+				<!-- Afternoon -->
+				<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
+					<h3>
+						<label>#{i18n.getText('KMK003_61')}</label>
+					</h3>
+					<div class ="accordion-content">
+						<div id="fixedAfternoon" data-bind="ntsFixTableCustom: {option: afternoonFixedTimezoneOption}"></div>
+					</div>
 				</div>
-			</div>
-			<!-- Afternoon -->
+				<!-- Afternoon -->
+			</com:ko>
 		</com:ko>
+		<!-- End of Detail mode -->
 	</com:ko>
 	<!-- End of Fixed timezones -->
 	<!-- Begin Flex timezones -->
