@@ -91,3 +91,6 @@ table#fixed-tableWpB tbody tr{
 table#fixed-tablePsB tbody tr{
 	max-height: 50px !important;
 }
+.overflow-visible {
+	overflow: visible !important;
+}
