@@ -125,7 +125,7 @@ module nts.uk.ui.koExtentions {
                 close: function(event) {
                     bindingContext.$data.option().show(false);
                 }
-            });
+            }).dialogPositionControl();
         }
 
         /**
