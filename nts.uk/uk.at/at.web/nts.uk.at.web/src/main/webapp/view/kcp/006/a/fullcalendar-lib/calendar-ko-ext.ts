@@ -197,6 +197,7 @@ module nts.uk.at.view.kcp006.a {
                 });
             } else {
                 service.getPublicHoliday(lstDate).done((data: Array<model.EventObj>) => {
+                    _lstHoliday = [];
                     data.forEach((a) => { _lstHoliday.push({ start: moment(a.date).format("YYYY-MM-DD"), holidayName: a.holidayName }); });
                     $(container).fullCalendar('option', {
                         viewRender: function(view, element) {
