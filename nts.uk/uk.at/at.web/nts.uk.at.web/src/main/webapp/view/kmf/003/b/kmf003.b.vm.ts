@@ -235,7 +235,11 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             var self = this;
             if (value) {
                 for (let i = index; i < self.items().length; i++) {
-                    self.items()[i].grantSimultaneity(value);
+                    if(self.items()[i].lengthOfServiceMonths() != null && self.items()[i].lengthOfServiceYears() != null) {
+                        self.items()[i].grantSimultaneity(value);
+                    } else {
+                        self.items()[i].grantSimultaneity(false);
+                    }                    
                 }
             } else {
                 for (let i = 0; i < index; i++) {

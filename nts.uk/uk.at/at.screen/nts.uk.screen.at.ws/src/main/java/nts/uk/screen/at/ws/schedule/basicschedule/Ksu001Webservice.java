@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenParams;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenProcessor;
 import nts.uk.screen.at.app.schedule.basicschedule.ScheduleDisplayControlScreenDto;
@@ -55,8 +56,9 @@ public class Ksu001Webservice extends WebService {
 	 */
 	@POST
 	public DataInitScreenDto init() {
+		PresentClosingPeriodExport obj = this.bScheduleScreenProces.getPresentClosingPeriodExport();
 		DataInitScreenDto result = new DataInitScreenDto(this.bScheduleScreenProces.findByCIdAndDeprecateCls(),
-				this.bScheduleScreenProces.getListWorkTime());
+				this.bScheduleScreenProces.getListWorkTime(), obj.getClosureStartDate(), obj.getClosureEndDate());
 		return result;
 	}
 

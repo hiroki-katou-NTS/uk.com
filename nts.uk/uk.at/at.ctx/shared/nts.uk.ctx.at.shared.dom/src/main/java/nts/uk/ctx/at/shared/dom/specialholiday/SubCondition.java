@@ -11,28 +11,35 @@ import nts.arc.layer.dom.DomainObject;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
+
 public class SubCondition extends DomainObject {
 
 	/* 会社ID */
+	@Getter
 	private String companyId;
 
 	/* 特別休暇コード */
+	@Getter
 	private SpecialHolidayCode specialHolidayCode;
 
 	/* 性別制限 */
+	@Getter
 	private UseGender useGender;
 
 	/* 雇用制限 */
+	@Getter
 	private UseEmployee useEmployee;
 
 	/* 分類制限 */
+	@Getter
 	private UseCls useCls;
 
 	/* 年齢制限 */
+	@Getter
 	private UseAge useAge;
 
 	/* 性別区分 */
+	@Getter
 	private GenderAtr genderAtr;
 
 	/* 年齢上限 */
@@ -42,16 +49,21 @@ public class SubCondition extends DomainObject {
 	private LimitAgeTo limitAgeTo;
 
 	/* 年齢基準区分 */
+	@Getter
 	private AgeCriteriaAtr ageCriteriaAtr;
 
 	/* 年齢基準年区分 */
+	@Getter
 	private AgeBaseYearAtr ageBaseYearAtr;
 
 	/* 年齢基準日 */
+	@Getter
 	private AgeBaseDates ageBaseDates;
 	
+	@Getter
 	private List<String> employmentList;
 	
+	@Getter
 	private List<String> classificationList;
 
 	@Override
@@ -118,4 +130,13 @@ public class SubCondition extends DomainObject {
 				EnumAdaptor.valueOf(ageCriteriaAtr, AgeCriteriaAtr.class),
 				EnumAdaptor.valueOf(ageBaseYearAtr, AgeBaseYearAtr.class), new AgeBaseDates(ageBaseDates) ,employmentList, classificationList);
 	}
+	
+	public LimitAgeFrom getLimitAgeFrom() {
+		return this.limitAgeFrom == null ? null : this.limitAgeFrom;
+	}
+	
+	public LimitAgeTo getLimitAgeTo() {
+		return this.limitAgeTo == null ? null : this.limitAgeTo;
+	}
+	
 }

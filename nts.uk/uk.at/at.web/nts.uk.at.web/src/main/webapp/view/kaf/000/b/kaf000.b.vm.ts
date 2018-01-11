@@ -45,6 +45,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         displayButtonControl: KnockoutObservable<model.DisplayButtonControl> = ko.observable(new model.DisplayButtonControl());
         
         approvalRootState: any = ko.observableArray([]);
+        empEditable: KnockoutObservable<boolean> = ko.observable(true);
+        
         constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
             //reason input event
@@ -115,6 +117,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             if (self.outputDetailCheck() != null) {
                 //※5
                 let user = self.outputDetailCheck().user;
+                switch(user){
+                    case 0: self.empEditable(true); break;
+                    case 1: self.empEditable(false); break;
+                    case 2: self.empEditable(true); break;
+                    default: self.empEditable(false);    
+                }
+                
                 switch(user){                    
                     case 1:{ //承認者 
                         //登録  ×
@@ -260,11 +269,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         checkDisplayAction() {
             let self = this;
             let Status = {NOTREFLECTED: 0, // 未反映
-                            REMAND: 1,//差し戻し
-                            CANCELED: 2, //取消済
+                            WAITREFLECTION: 1, //反映待ち
+                            REFLECTED: 2, //反映済
                             WAITCANCEL: 3, //取消待ち
-                            REFLECTED: 4, //反映済
-                            WAITREFLECTION: 5, //反映待ち
+                            CANCELED: 4, //取消済
+                            REMAND: 5,//差し戻し
                             DENIAL: 6, //否認
                             PASTAPP: 99 //過去申請 
                             };
@@ -474,13 +483,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     }
                 });
             }).fail(function(res: any) {
-                if(res.optimisticLock == true){
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
-                        location.reload();
-                    });    
-                } else {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
-                }
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
             });
         }
         /**
@@ -500,14 +503,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         location.reload();    
                     }
                 });
-           }).fail(function(res: any) {
-                if(res.optimisticLock == true){
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
-                        location.reload();
-                    });    
-                } else {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
-                }
+            }).fail(function(res: any) {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
             }); 
         }
 
@@ -524,13 +521,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         location.reload();    
                     });
                 }).fail(function(res: any) {
-                    if(res.optimisticLock == true){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
-                            location.reload();
-                        });    
-                    } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
-                    }
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
                 }); 
             }).ifNo(()=>{
                 nts.uk.ui.block.clear();        
@@ -580,15 +571,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         
                     });
                 }).fail(function(res: any) {
-                    if(res.optimisticLock == true){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
-                            nts.uk.request.jump("../test/index.xhtml");
-                        });    
-                    } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){
-                            nts.uk.request.jump("../test/index.xhtml");
-                        }); 
-                    }
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                        nts.uk.request.jump("../test/index.xhtml");
+                    }); 
                 }); 
             }).ifNo(function(){
                 nts.uk.ui.block.clear();    
@@ -657,6 +642,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
                     }
                 }); 
+            }).ifNo(function(){
+                nts.uk.ui.block.clear();    
             });
         }
 

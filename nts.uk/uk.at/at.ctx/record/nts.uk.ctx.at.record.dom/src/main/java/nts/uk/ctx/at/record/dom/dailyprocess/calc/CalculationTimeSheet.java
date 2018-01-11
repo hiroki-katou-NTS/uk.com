@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -27,7 +28,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 public abstract class CalculationTimeSheet {
-	protected TimeSpanWithRounding timeSheet;
+	protected TimeZoneRounding timeSheet;
 	protected final TimeSpanForCalc calcrange;
 	@Setter
 	//計上用
@@ -46,7 +47,7 @@ public abstract class CalculationTimeSheet {
 	 * @param 控除用
 	 * @param 計上用
 	 */
-	public CalculationTimeSheet(TimeSpanWithRounding timeSheet,
+	public CalculationTimeSheet(TimeZoneRounding timeSheet,
 								TimeSpanForCalc calcrange) {
 		this.timeSheet = timeSheet;
 		this.calcrange = calcrange;
@@ -59,7 +60,7 @@ public abstract class CalculationTimeSheet {
 	 * @param calcrange 計算範囲
 	 * @param midNighttimeSheet 深夜時間帯
 	 */
-	public CalculationTimeSheet(TimeSpanWithRounding timeSheet,
+	public CalculationTimeSheet(TimeZoneRounding timeSheet,
 								TimeSpanForCalc calcrange,
 								List<TimeSheetOfDeductionItem> deductionTimeSheets,
 								List<BonusPayTimesheet> bonusPayTimeSheet,
@@ -102,20 +103,20 @@ public abstract class CalculationTimeSheet {
 	 * @param assingnTime 指定時間
 	 * @return 縮小後の時間帯
 	 */
-	public TimeSpanWithRounding reduceUntilSpecifiedTime(AttendanceTime assignTime) {
+	public TimeZoneRounding reduceUntilSpecifiedTime(AttendanceTime assignTime) {
 		AttendanceTime shortened = calcTotalTime().minusMinutes(assignTime.valueAsMinutes());
 		
 		AttendanceTime newEnd = new AttendanceTime(timeSheet.getStart().forwardByMinutes(shortened.valueAsMinutes()).valueAsMinutes());
 		
-		TimeSpanWithRounding newTimeSpan = new TimeSpanWithRounding(new TimeWithDayAttr(shortened.valueAsMinutes()),new TimeWithDayAttr(newEnd.valueAsMinutes()),this.timeSheet.getRounding());
-		List<TimeSheetOfDeductionItem> refineList = duplicateNewTimeSpan(newTimeSpan);
+		TimeZoneRounding newTimeSpan = new TimeZoneRounding(new TimeWithDayAttr(shortened.valueAsMinutes()),new TimeWithDayAttr(newEnd.valueAsMinutes()),this.timeSheet.getRounding());
+		List<TimeSheetOfDeductionItem> refineList = duplicateNewTimeSpan(newTimeSpan.timeSpan());
 		
 		while(true) {
 			AttendanceTime deductionTime = new AttendanceTime(0);
-			newTimeSpan = new TimeSpanWithRounding(timeSheet.getStart(),new TimeWithDayAttr(newEnd.valueAsMinutes()), this.timeSheet.getRounding());
+			newTimeSpan = new TimeZoneRounding(timeSheet.getStart(),new TimeWithDayAttr(newEnd.valueAsMinutes()), this.timeSheet.getRounding());
 			for(TimeSheetOfDeductionItem deductionItem : refineList) {
 				deductionTime = deductionItem.calcTotalTime();
-				newTimeSpan = new TimeSpanWithRounding(timeSheet.getStart(),newTimeSpan.getEnd().forwardByMinutes(deductionTime.valueAsMinutes()), this.timeSheet.getRounding());
+				newTimeSpan = new TimeZoneRounding(timeSheet.getStart(),newTimeSpan.getEnd().forwardByMinutes(deductionTime.valueAsMinutes()), this.timeSheet.getRounding());
 			}
 			
 			List<TimeSheetOfDeductionItem> moveSpanDuplicateDeductionTimeSheet = duplicateNewTimeSpan(new TimeSpanForCalc(timeSheet.getEnd(), newTimeSpan.getEnd()));

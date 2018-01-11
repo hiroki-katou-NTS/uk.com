@@ -994,7 +994,13 @@ module nts.custombinding {
                                             if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
                                                 services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
                                                     if (defs && defs.length) {
-                                                        _(defs).filter(x => !x.isAbolition).orderBy(x => x.dispOrder).each((x, i) => { x.dispOrder = i + 1; item.listItemDf.push(x) });
+                                                        _(defs)
+                                                            .filter(x => !x.isAbolition)
+                                                            .orderBy(x => x.dispOrder)
+                                                            .each((x, i) => {
+                                                                x.dispOrder = i + 1;
+                                                                item.listItemDf.push(x);
+                                                            });
 
                                                         opts.sortable.pushItem(item);
                                                     }
@@ -1879,7 +1885,7 @@ module nts.custombinding {
                 if (opts.sortable.isEditable() != 0) {
                     return;
                 }
-                
+
                 if (cid) {
                     let data: Array<IItemCategory> = ko.toJS(opts.comboxbox.options),
                         item: IItemCategory = _.find(data, x => x.id == cid);

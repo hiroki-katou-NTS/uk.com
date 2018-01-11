@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
@@ -33,7 +32,7 @@ public class UpdateNamePerInfoCtgCommandHandler extends CommandHandler<UpdateNam
 		String contractCd = companyId.substring(0, 12);
 
 		if (update.getCategoryName().trim().equals("")) {
-			throw new BusinessException(new RawErrorMessage("Msg_928"));
+			throw new BusinessException("Msg_928");
 		}
 		boolean nameList = this.perInfoCtgRepositoty.checkCtgNameIsUnique(companyId, update.getCategoryName(),
 				update.getCategoryId());

@@ -30,7 +30,7 @@ public class UpdateItemChangeCommandHandler extends CommandHandler<UpdateItemCha
 	protected void handle(CommandHandlerContext<UpdateItemChangeCommand> context) {
 		UpdateItemChangeCommand command = context.getCommand();
 		if (command.getItemName().trim().equals("")) {
-			throw new BusinessException(new RawErrorMessage("Msg_928"));
+			throw new BusinessException("Msg_928");
 		}
 		
 		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep

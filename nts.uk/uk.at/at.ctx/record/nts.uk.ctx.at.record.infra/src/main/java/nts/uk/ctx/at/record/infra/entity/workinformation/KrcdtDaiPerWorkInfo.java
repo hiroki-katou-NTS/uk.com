@@ -64,6 +64,11 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	@OneToMany(mappedBy = "daiPerWorkInfo", cascade = CascadeType.ALL)
 	public List<KrcdtWorkScheduleTime> scheduleTimes;
 
+	public KrcdtDaiPerWorkInfo(KrcdtDaiPerWorkInfoPK krcdtDaiPerWorkInfoPK) {
+		super();
+		this.krcdtDaiPerWorkInfoPK = krcdtDaiPerWorkInfoPK;
+	}
+	
 	@Override
 	protected Object getKey() {
 		return this.krcdtDaiPerWorkInfoPK;

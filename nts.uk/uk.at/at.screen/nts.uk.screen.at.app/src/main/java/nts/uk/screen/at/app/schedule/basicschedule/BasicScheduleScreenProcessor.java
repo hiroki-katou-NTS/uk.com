@@ -11,6 +11,8 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
+import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.shift.workpairpattern.ComPatternScreenDto;
 import nts.uk.screen.at.app.shift.workpairpattern.WkpPatternScreenDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -31,6 +33,9 @@ public class BasicScheduleScreenProcessor {
 	@Inject
 	private BasicScheduleService bScheduleService;
 
+	@Inject
+	private ShClosurePub shClosurePub;
+
 	/**
 	 * @param params
 	 * @return
@@ -47,6 +52,18 @@ public class BasicScheduleScreenProcessor {
 	public List<WorkTimeScreenDto> getListWorkTime() {
 		String companyId = AppContexts.user().companyId();
 		return this.bScheduleScreenRepo.getListWorkTime(companyId, AbolishAtr.NOT_ABOLISH.value);
+	}
+
+	/**
+	 * getPresentClosingPeriodExport to get startDate and endDate for screen
+	 * KSU001.A
+	 * 
+	 * @return
+	 */
+	public PresentClosingPeriodExport getPresentClosingPeriodExport() {
+		String companyId = AppContexts.user().companyId();
+		int closureId = 1;
+		return shClosurePub.find(companyId, closureId).get();
 	}
 
 	/**
