@@ -425,10 +425,10 @@ module nts.fixedtable {
                 }
                 if (item.isRoudingColumn) {
                     rowHtml += '<!-- ko if: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
-                                    + self.generateColumnHtml(item, true)
+                                    + self.generateColumnHtml(item, false)
                                     + '<!-- /ko -->'
                                     + '<!-- ko ifnot: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
-                                    + self.generateColumnHtml(item, false)
+                                    + self.generateColumnHtml(item, true)
                                     + '<!-- /ko -->';
                     return;
                 }

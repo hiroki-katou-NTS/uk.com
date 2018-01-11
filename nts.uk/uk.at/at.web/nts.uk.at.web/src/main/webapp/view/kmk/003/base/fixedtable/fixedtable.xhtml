@@ -42,8 +42,8 @@
 					<tr style="height: 30px;">
 						<com:ko tag="if" bind="isVisibleSelectAll">
 							<th style="text-align: center;" class="ui-widget-header"><div
-									data-bind="ntsCheckBox: { checked: isSelectAll,
-											enable: true, text:'', attr: {tabindex: tabindex}}"></div>
+									data-bind="attr: {tabindex: tabindex}, ntsCheckBox: { checked: isSelectAll,
+											enable: true, text:''}"></div>
 							</th>
 						</com:ko>
 						<com:ko tag="if" bind="!isVisibleSelectAll()">
