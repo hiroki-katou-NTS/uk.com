@@ -292,7 +292,6 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 			krcdtDaiOutingTime.outActualRoundingTimeDay = null;
 			krcdtDaiOutingTime.outActualSourceInfo = null;
 			krcdtDaiOutingTime.outActualTime = null;
-			krcdtDaiOutingTime.outNumberStamp = null;
 			setGoOutStampNull(krcdtDaiOutingTime);
 		}
 	}
