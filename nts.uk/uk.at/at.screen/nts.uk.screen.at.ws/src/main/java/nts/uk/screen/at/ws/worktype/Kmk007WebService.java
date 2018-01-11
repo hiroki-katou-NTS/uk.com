@@ -45,4 +45,9 @@ public class Kmk007WebService {
 		return workTypeProcessor.findWorkTypeByDailyWorkType(param.getDailyWorkTypeAtr());
 	}
 
+	@POST
+	@Path("findAllSpe")
+	public List<WorkTypeDto> findByDailyWorkTypeSpe(){
+		return workTypeProcessor.findWorkTypeSpe();
+	}
 }
