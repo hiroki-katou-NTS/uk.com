@@ -36,4 +36,25 @@ module nts.uk.ui.jqueryExtentions {
         
         return $element;
     };
+    
+    $.fn.dialogPositionControl = function () {
+        let $dialog = $(this);
+        
+        $dialog.dialog("option", "position", {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "none"
+        });
+        
+        let $container = $dialog.closest(".ui-dialog");
+        
+        let offsetContentsArea = 92;
+        let offsetDialog = $container.offset();
+        if (offsetDialog.top < offsetContentsArea) {
+            offsetDialog.top = offsetContentsArea;
+            $container.offset(offsetDialog);
+        }
+        
+    };
 }
