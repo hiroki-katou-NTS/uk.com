@@ -381,13 +381,13 @@ public class ProgramsManager {
 			"/view/kdw/001/j/index.xhtml");
 	///////////
 	public static final Program KDW006B = new Program(WebAppId.AT, ProgramIdConsts.KDW006B, "KDW006_20",
-			"/view/kdw/006/b/index.xhtml");
+			"/view/kdw/006/b/b/index.xhtml");
 	public static final Program KDW006C = new Program(WebAppId.AT, ProgramIdConsts.KDW006C, "KDW006_21",
-			"/view/kdw/006/c/index.xhtml");
+			"/view/kdw/006/b/c/index.xhtml");
 	public static final Program KDW006D = new Program(WebAppId.AT, ProgramIdConsts.KDW006D, "KDW006_22",
-			"/view/kdw/006/d/index.xhtml");
+			"/view/kdw/006/b/d/index.xhtml");
 	public static final Program KDW006E = new Program(WebAppId.AT, ProgramIdConsts.KDW006E, "KDW006_23",
-			"/view/kdw/006/e/index.xhtml");
+			"/view/kdw/006/b/e/index.xhtml");
 	
 	
 	
