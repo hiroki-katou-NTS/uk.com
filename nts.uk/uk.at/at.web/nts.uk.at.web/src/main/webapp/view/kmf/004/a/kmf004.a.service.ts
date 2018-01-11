@@ -4,7 +4,7 @@ module nts.uk.at.view.kmf004.a.service {
         deleteSpecialHoliday: "shared/specialholiday/delete",
         addSpecialHoliday: "shared/specialholiday/add",
         updateSpecialHoliday: "shared/specialholiday/update",
-        findWorkType: "at/screen/worktype/findAll",
+        findWorkType: "at/screen/worktype/findAllSpe",
         findEmployment: "bs/employee/employment/findAll",
         findClass: "bs/employee/classification/findAll",
         findAllGrantRelationship: "at/shared/grantrelationship/findAll/"
