@@ -31,28 +31,28 @@ public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 	public KrcdtDaiBreakTimePK krcdtDaiBreakTimePK;
 
 	@Column(name = "STR_STAMP_TIME")
-	public int startStampTime;
+	public Integer startStampTime;
 
 	@Column(name = "STR_STAMP_ROUDING_TIME_DAY")
-	public int startStampRoundingTimeDay;
+	public Integer startStampRoundingTimeDay;
 
 	@Column(name = "STR_STAMP_PLACE_CODE")
 	public String startStampPlaceCode;
 
 	@Column(name = "STR_STAMP_SOURCE_INFO")
-	public int startStampSourceInfo;
+	public Integer startStampSourceInfo;
 
 	@Column(name = "END_STAMP_TIME")
-	public int endStampTime;
+	public Integer endStampTime;
 
 	@Column(name = "END_STAMP_ROUDING_TIME_DAY")
-	public int endStampRoundingTimeDay;
+	public Integer endStampRoundingTimeDay;
 
 	@Column(name = "END_STAMP_PLACE_CODE")
 	public String endStampPlaceCode;
 
 	@Column(name = "END_STAMP_SOURCE_INFO")
-	public int endStampSourceInfo;
+	public Integer endStampSourceInfo;
 
 	@Override
 	protected Object getKey() {
@@ -65,10 +65,10 @@ public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 					c.getStartTime() == null || c.getStartTime().getTimeWithDay() == null ? null : c.getStartTime().getTimeWithDay().valueAsMinutes(),
 					c.getStartTime() == null || c.getStartTime().getAfterRoundingTime() == null ? null : c.getStartTime().getAfterRoundingTime().valueAsMinutes(), 
 					c.getStartTime() == null || c.getStartTime().getLocationCode() == null ? null : c.getStartTime().getLocationCode().v(),
-					c.getStartTime() == null ? null : c.getStartTime().getStampSourceInfo().value, 
+					c.getStartTime() == null || c.getStartTime().getStampSourceInfo() == null ? null : c.getStartTime().getStampSourceInfo().value, 
 					c.getEndTime() == null || c.getEndTime().getTimeWithDay() == null ? null : c.getEndTime().getTimeWithDay().valueAsMinutes(),
 					c.getEndTime() == null || c.getEndTime().getAfterRoundingTime() == null ? null : c.getEndTime().getAfterRoundingTime().valueAsMinutes(), 
 					c.getEndTime() == null || c.getEndTime().getLocationCode() == null ? null : c.getEndTime().getLocationCode().v(),
-					c.getEndTime() == null ? null : c.getEndTime().getStampSourceInfo().value)).collect(Collectors.toList());
+					c.getEndTime() == null || c.getStartTime().getLocationCode() == null ? null : c.getEndTime().getStampSourceInfo().value)).collect(Collectors.toList());
 	}
 }

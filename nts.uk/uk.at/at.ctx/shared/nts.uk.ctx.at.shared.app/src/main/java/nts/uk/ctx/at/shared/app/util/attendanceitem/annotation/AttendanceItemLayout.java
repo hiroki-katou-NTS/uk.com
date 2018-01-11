@@ -25,7 +25,7 @@ public @interface AttendanceItemLayout {
 	
 	boolean isOptional() default false;
 	
-	String setFieldWithIndex() default "";
+	String[] setFieldWithIndex() default "";
 	
 	boolean isUpdate() default false;
 }
