@@ -147,7 +147,7 @@ module nts.uk.ui.koExtentions {
                                 .searchControl($swap.find(".ntsSwapSearchLeft").find(".search-btn")) 
                                 .clearControl($swap.find(".ntsSwapSearchLeft").find(".clear-btn"))
                                 .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
-                                .setDataSource(originalSource)
+                                .withDataSource(originalSource)
                                 .setSearchCriterion(data.leftSearchCriterion || data.searchCriterion || leftCriterion)
                                 .setSearchMode(data.searchMode || "highlight")
                                 .setColumns(leftColumns())
@@ -161,7 +161,7 @@ module nts.uk.ui.koExtentions {
                                 .searchControl($swap.find(".ntsSwapSearchRight").find(".search-btn")) 
                                 .clearControl($swap.find(".ntsSwapSearchRight").find(".clear-btn"))
                                 .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
-                                .setDataSource(data.value())
+                                .withDataSource(data.value())
                                 .setSearchCriterion(data.rightSearchCriterion || data.searchCriterion || rightCriterion) 
                                 .setSearchMode(data.searchMode || "highlight")
                                 .setColumns(rightColumns())  
@@ -282,12 +282,12 @@ module nts.uk.ui.koExtentions {
                 }) !== undefined;
             });
 //            if (!_.isEqual(currentSource, newSources)) {
-                this.swapper.Model.swapParts[0].bindData(newSources.slice());
+                this.swapper.Model.swapParts[0].setDataSource(newSources.slice());
                 this.swapper.Model.transportBuilder.setFirst(newSources);
 //            }
 
 //            if (!_.isEqual(currentSelectedList, newSelectedList)) {
-                this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
+                this.swapper.Model.swapParts[1].setDataSource(newSelectedList.slice());
                 this.swapper.Model.transportBuilder.setSecond(newSelectedList);
 //            }
         }
@@ -552,8 +552,15 @@ module nts.uk.ui.koExtentions {
             return this;
         }
         
+        withDataSource(dataSource: Array<any>) {
+            this.dataSource = dataSource
+            this.resetOriginalDataSource();
+            return this;
+        }
+        
         setDataSource(dataSource: Array<any>) {
-            this.dataSource = dataSource;
+            this.bindData(dataSource);
+            this.resetOriginalDataSource();
             return this;
         }
         
@@ -587,7 +594,7 @@ module nts.uk.ui.koExtentions {
         }
         
         resetOriginalDataSource() {
-            this.originalDataSource = this.dataSource;
+            this.originalDataSource = _.cloneDeep(this.dataSource);
         }
         
         search(): SearchResult {
@@ -812,8 +819,8 @@ module nts.uk.ui.koExtentions {
             var firstSource = this.transportBuilder.getFirst();
             var secondSource = this.transportBuilder.getSecond();
             
-            this.swapParts[0].bindData(firstSource);
-            this.swapParts[1].bindData(secondSource);
+            this.swapParts[0].setDataSource(firstSource);
+            this.swapParts[1].setDataSource(secondSource);
             value(secondSource);
             $source.igGridSelection("clearSelection");
             $dest.igGridSelection("clearSelection");
