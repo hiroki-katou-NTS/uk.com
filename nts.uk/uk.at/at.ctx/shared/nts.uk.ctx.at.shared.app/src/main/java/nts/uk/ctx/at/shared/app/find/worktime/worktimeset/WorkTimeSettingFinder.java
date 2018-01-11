@@ -163,8 +163,7 @@ public class WorkTimeSettingFinder {
 	 *            the end time
 	 * @return the list
 	 */
-	public List<WorkTimeDto> findByTime(List<String> codeList, int startAtr, int startTime,
-			int endAtr, int endTime) {
+	public List<WorkTimeDto> findByTime(List<String> codeList, Integer startTime, Integer endTime) {
 		if (codeList.isEmpty()) {
 			return Collections.emptyList();
 		} else {
@@ -172,24 +171,23 @@ public class WorkTimeSettingFinder {
 			List<WorkTimeSetting> workTimeItems = new ArrayList<>();
 			List<PredetemineTimeSetting> workTimeSetItems = new ArrayList<>();
 			// when both start time and end time is valid
-			if ((startTime > -1) && (endTime > -1)) {
+			if ((startTime != null) && (endTime != null)) {
 				// compare start time and end time
-				if (((24 * 60 * startAtr) + startTime) > ((24 * 60 * endAtr) + endTime))
+				if (startTime > endTime)
 					throw new BusinessException("Msg_54");
 				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
-				workTimeSetItems = this.predetemineTimeSettingRepository.findByStartAndEnd(
-						companyID, codeList, startAtr * 24 * 60 + startTime,
-						endAtr * 24 * 60 + endTime);
+				workTimeSetItems = this.predetemineTimeSettingRepository
+						.findByStartAndEnd(companyID, codeList, startTime, endTime);
 				// when only start time is select
-			} else if ((startTime > -1) && (endTime <= -1)) {
+			} else if ((startTime != null) && (endTime == null)) {
 				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
 				workTimeSetItems = this.predetemineTimeSettingRepository.findByStart(companyID,
-						codeList, startAtr * 24 * 60 + startTime);
+						codeList, startTime);
 				// when only end time is select
-			} else if ((startTime <= -1) && (endTime > -1)) {
+			} else if ((startTime == null) && (endTime != null)) {
 				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
 				workTimeSetItems = this.predetemineTimeSettingRepository.findByEnd(companyID,
-						codeList, endAtr * 24 * 60 + endTime);
+						codeList, endTime);
 				// when both start time and end time is invalid
 			} else {
 				throw new BusinessException("Msg_53");
