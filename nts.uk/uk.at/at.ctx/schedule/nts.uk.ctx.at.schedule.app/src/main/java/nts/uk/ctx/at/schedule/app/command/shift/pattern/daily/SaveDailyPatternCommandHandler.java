@@ -18,8 +18,8 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPatternRepository;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -41,7 +41,7 @@ public class SaveDailyPatternCommandHandler extends CommandHandler<DailyPatternC
 
 	/** The monthly pattern repository. */
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 
 	/** The monthly pattern repository. */
 	@Inject
@@ -89,7 +89,7 @@ public class SaveDailyPatternCommandHandler extends CommandHandler<DailyPatternC
 
 				// check setting work time
 				if (!StringUtil.isNullOrEmpty(item.getWorkingHoursCd(), true)) {
-					Optional<WorkTime> worktime = this.workTimeRepository.findByCode(companyId,
+					Optional<WorkTimeSetting> worktime = this.workTimeRepository.findByCode(companyId,
 							item.getWorkingHoursCd());
 
 					// not exist data
@@ -98,9 +98,9 @@ public class SaveDailyPatternCommandHandler extends CommandHandler<DailyPatternC
 					}
 
 					// not use
-					if (worktime.get().getDispAtr().value == UseSetting.UseAtr_NotUse.value) {
-						throw new BusinessException("Msg_417");
-					}
+//					if (worktime.get().getDispAtr().value == UseSetting.UseAtr_NotUse.value) {
+//						throw new BusinessException("Msg_417");
+//					}
 				}
 
 				// Check pair

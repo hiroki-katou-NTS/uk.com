@@ -16,8 +16,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -36,7 +36,7 @@ public class ScheBatchCorrectSetCheckSaveCommandHandler extends CommandHandler<S
 	
 	/** The work time repository. */
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 	
 	/** The basic schedule service. */
 	@Inject BasicScheduleService basicScheduleService;
@@ -126,7 +126,7 @@ public class ScheBatchCorrectSetCheckSaveCommandHandler extends CommandHandler<S
 		}
 
 		// call repository find work time by code
-		Optional<WorkTime> optionalWorkTime = this.workTimeRepository.findByCode(companyId, workTimeCode);
+		Optional<WorkTimeSetting> optionalWorkTime = this.workTimeRepository.findByCode(companyId, workTimeCode);
 
 		// check work time not exits
 		if (!optionalWorkTime.isPresent()) {
@@ -134,8 +134,8 @@ public class ScheBatchCorrectSetCheckSaveCommandHandler extends CommandHandler<S
 		}
 
 		// work time exits => check display attr not display
-		if (optionalWorkTime.isPresent() && optionalWorkTime.get().getDispAtr() == UseSetting.UseAtr_NotUse) {
-			throw new BusinessException("Msg_469");
-		}
+//		if (optionalWorkTime.isPresent() && optionalWorkTime.get().getDispAtr() == UseSetting.UseAtr_NotUse) {
+//			throw new BusinessException("Msg_469");
+//		}
 	}
 }

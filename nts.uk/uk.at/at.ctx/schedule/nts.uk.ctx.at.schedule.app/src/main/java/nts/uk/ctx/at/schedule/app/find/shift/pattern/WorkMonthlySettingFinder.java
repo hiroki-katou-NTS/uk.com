@@ -18,8 +18,8 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -59,7 +59,7 @@ public class WorkMonthlySettingFinder {
 	
 	/** The work time repository. */
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 	
 	/** The work type repository. */
 	@Inject
@@ -112,12 +112,12 @@ public class WorkMonthlySettingFinder {
 		List<WorkMonthlySettingDto> resDataWorkMonthlySetting  = new ArrayList<>();
 		
 		// list work time of company id
-		List<WorkTime> workTimes = workTimeRepository.findByCompanyID(companyId);
+		List<WorkTimeSetting> workTimes = workTimeRepository.findByCompanyId(companyId);
 		
 		// convert to map work time map
-		Map<String, WorkTime> mapWorkTime = workTimes.stream()
+		Map<String, WorkTimeSetting> mapWorkTime = workTimes.stream()
 				.collect(Collectors.toMap((worktime) -> {
-					return worktime.getSiftCD().v();
+					return worktime.getWorktimeCode().v();
 				}, Function.identity()));
 		
 		// list work type of company id

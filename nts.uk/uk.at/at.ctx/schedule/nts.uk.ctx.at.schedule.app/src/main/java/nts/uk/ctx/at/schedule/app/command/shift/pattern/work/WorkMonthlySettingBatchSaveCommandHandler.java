@@ -26,10 +26,9 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
-import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -62,7 +61,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 	/** The monthly pattern repository. */
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 
 	/** The monthly pattern repository. */
 	@Inject
@@ -151,7 +150,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		// check setting work time
 		lstDomain.forEach(domain -> {
 			if (!StringUtil.isNullOrEmpty(domain.getWorkingCode().v(), true)) {
-				Optional<WorkTime> worktime = this.workTimeRepository.findByCode(companyId,
+				Optional<WorkTimeSetting> worktime = this.workTimeRepository.findByCode(companyId,
 						domain.getWorkingCode().v());
 
 				// not exist data
@@ -160,9 +159,9 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 				}
 
 				// not use
-				if (worktime.get().getDispAtr().value == UseSetting.UseAtr_NotUse.value) {
-					throw new BusinessException("Msg_417");
-				}
+//				if (worktime.get().getDispAtr().value == UseSetting.UseAtr_NotUse.value) {
+//					throw new BusinessException("Msg_417");
+//				}
 			}
 		});
 

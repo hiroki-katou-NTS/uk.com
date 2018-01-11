@@ -21,8 +21,8 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.WorkTypeAtr;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -39,7 +39,7 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
     
     /** The work time repository. */
     @Inject
-    private WorkTimeRepository workTimeRepository;
+    private WorkTimeSettingRepository workTimeRepository;
 
     /** The work type repository. */
     @Inject
@@ -145,7 +145,7 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
             break;
 
         case WORKINGTIME:
-            Optional<WorkTime> optionalWorkTime = this.workTimeRepository.findByCode(companyId,
+            Optional<WorkTimeSetting> optionalWorkTime = this.workTimeRepository.findByCode(companyId,
                     totalObj.getWorkTypeCode().v());
             if (!optionalWorkTime.isPresent()) {
                 throw new BusinessException("Msg_216", "KMK009_9");
