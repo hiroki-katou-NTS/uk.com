@@ -46,7 +46,7 @@
                 //console.log(data);
                 self.dataSource(data);
                 if(data.topPage!=null && data.topPage.standardMenuUrl!=null){//hien thi standardmenu
-                    location.href = data.topPage.standardMenuUrl;
+                    nts.uk.request.jump(data.topPage.standardMenuUrl);
                 }
                 if(data.checkMyPage == false ){//k hien thi my page
                     self.visibleMyPage(false);
