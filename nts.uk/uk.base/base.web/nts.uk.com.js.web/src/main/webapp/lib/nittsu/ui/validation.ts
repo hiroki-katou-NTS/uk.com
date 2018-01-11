@@ -563,11 +563,14 @@ module nts.uk.ui.validation {
             var minValue: any = time.minutesBased.clock.dayattr.MIN_VALUE;
             var maxValue: any = time.minutesBased.clock.dayattr.MAX_VALUE;
             
-            minValue = time.minutesBased.clock.dayattr.create(
-                time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
-            maxValue = time.minutesBased.clock.dayattr.create(
-                time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);            
-            
+            if (!util.isNullOrUndefined(this.constraint.min)) { 
+                minValue = time.minutesBased.clock.dayattr.create(
+                    time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
+            }
+            if (!util.isNullOrUndefined(this.constraint.max)) {
+                maxValue = time.minutesBased.clock.dayattr.create(
+                    time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);            
+            }
             
             var parsed = time.minutesBased.clock.dayattr.parseString(inputText);
             if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {

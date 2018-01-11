@@ -388,7 +388,7 @@ module nts.uk.at.view.kaf005.b {
                     calculateFlag: self.calculateFlag()
                 }
                 
-                service.checkBeforeRegister(command).done((data) => {                
+                service.checkBeforeUpdate(command).done((data) => {                
                     if (data.errorCode == 0) {
                         if (data.confirm) {
                             //メッセージNO：829

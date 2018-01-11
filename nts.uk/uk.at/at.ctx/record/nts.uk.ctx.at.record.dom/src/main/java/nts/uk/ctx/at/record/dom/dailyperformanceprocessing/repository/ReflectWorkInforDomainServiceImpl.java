@@ -67,6 +67,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
@@ -586,7 +587,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 		}
 
-		if (errMesInfos.isEmpty()) {
+		if (errMesInfos.isEmpty() && stampOutput != null) {
 			// 登録する - register - activity ⑤社員の日別実績を作成する
 			// ドメインモデル「日別実績の勤務情報」を更新する - update
 			// WorkInfoOfDailyPerformance
@@ -973,7 +974,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					return new TimeLeavingWork(item.getWorkNo(), Optional.ofNullable(attendanceStamp),
 							Optional.ofNullable(leaveStamp));
 				}).collect(Collectors.toList());
-				// timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkList);
+				 timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkList);
 
 			}
 
@@ -1121,10 +1122,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				for (TimeLeavingWork item : timeLeavingWorkLst) {
 					timeLeavingWorkList.add(item);
 				}
-				timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkList);
-				timeLeavingOptional.setEmployeeId(employeeID);
-				timeLeavingOptional.setYmd(day);
 			}
+			timeLeavingOptional.setWorkTimes(new WorkTimes(1));
+			timeLeavingOptional.setTimeLeavingWorks(timeLeavingWorkList);
+			timeLeavingOptional.setEmployeeId(employeeID);
+			timeLeavingOptional.setYmd(day);
 		}
 	}
 

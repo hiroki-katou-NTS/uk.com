@@ -51,13 +51,15 @@ module nts.uk.at.view.ksc001.k {
                 service.findAllError(parentData.executionId).done(function(data: Array<any>) {
                     self.targetRange(nts.uk.resource.getText("KSC001_46", [parentData.startDate, parentData.endDate]));
                     self.errorNumber(nts.uk.resource.getText("KSC001_47", [parentData.countError]));
+                    let arr = [];
                     if (data) {
                         data.forEach(function(item, index) {
-                            self.items.push(new ItemModel(index, item.executionId, item.employeeCode, item.employeeName, item.date, item.errorContent));
+                            arr.push(new ItemModel(index, item.executionId, item.employeeCode, item.employeeName, item.date, item.errorContent));
                         });
                     }
                     //sort by employee code
-                    self.items().sort(self.compare);
+                    arr = _.orderBy(arr,[self.compareCode,self.compareDate],['asc','asc']);
+                    self.items(arr);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -66,17 +68,16 @@ module nts.uk.at.view.ksc001.k {
             /**
              * define function to sort
              */
-            private compare(a: any, b: any) {
-                let genreA: string = a.code.toUpperCase();
-                let genreB: string = b.code.toUpperCase();
-
-                let comparison = 0;
-                if (genreA > genreB) {
-                    comparison = 1;
-                } else if (genreA < genreB) {
-                    comparison = -1;
-                }
-                return comparison;
+            private compareCode(a: any) {
+                return a.code.toUpperCase();
+               
+            }
+            /**
+             * define function to sort
+             */
+            private compareDate(a: any) {
+                 return new Date(a.date);
+              
             }
 
             /**

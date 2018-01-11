@@ -29,17 +29,22 @@ public class UpdateItemChangeCommandHandler extends CommandHandler<UpdateItemCha
 	@Override
 	protected void handle(CommandHandlerContext<UpdateItemChangeCommand> context) {
 		UpdateItemChangeCommand command = context.getCommand();
+		if (command.getItemName().trim().equals("")) {
+			throw new BusinessException("Msg_928");
+		}
+		
 		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep
 				.getPerInfoItemDefById(command.getId(), AppContexts.user().contractCode()).get();
+
 		List<Selection> selection = new ArrayList<>();
 		if (command.getDataType() == 6) {
 			if (command.getPersonEmployeeType() == 1) {
-				
+
 				selection = this.selectionRepo.getAllSelectionByHistoryId(command.getSelectionItemId(),
 						GeneralDate.today(), 0);
-				
+
 			} else if (command.getPersonEmployeeType() == 2) {
-				
+
 				selection = this.selectionRepo.getAllSelectionByHistoryId(command.getSelectionItemId(),
 						GeneralDate.today(), 1);
 
