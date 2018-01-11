@@ -11268,6 +11268,11 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                var FILES_CACHE_FOR_CANCEL = "files-cache-for-cancel";
+                var IS_RESTORED_BY_CANCEL = "restored-by-cancel";
+                var SELECTED_FILE_NAME = "selected-file-name";
+                var STEREOTYPE = "stereotype";
+                var IMMEDIATE_UPLOAD = "immediate-upload";
                 var NtsFileUploadBindingHandler = (function () {
                     function NtsFileUploadBindingHandler() {
                     }
@@ -11277,9 +11282,7 @@ var nts;
                         var onchange = (data.onchange !== undefined) ? data.onchange : $.noop;
                         var onfilenameclick = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
                         var uploadFinished = (data.uploadFinished !== undefined) ? data.uploadFinished : $.noop;
-                        var container = $(element)
-                            .data("stereotype", ko.unwrap(data.stereoType))
-                            .data("immediate-upload", ko.unwrap(data.immediateUpload) === true);
+                        var $container = $(element);
                         var $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
                         var $fileBrowserButton = $("<button class='browser-button'></button>");
                         var $fileNameWrap = $("<span class='nts-editor-wrapped ntsControl'/>");
@@ -11291,26 +11294,31 @@ var nts;
                         $fileuploadContainer.append($fileNameWrap);
                         $fileuploadContainer.append($fileNameLabel);
                         $fileuploadContainer.append($fileInput);
-                        $fileuploadContainer.appendTo(container);
+                        $fileuploadContainer.appendTo($container);
                         $fileBrowserButton.attr("tabindex", -1).click(function () {
                             $fileInput.click();
                         });
                         $fileInput.change(function () {
+                            if ($container.data(IS_RESTORED_BY_CANCEL) === true) {
+                                $container.data(IS_RESTORED_BY_CANCEL, false);
+                                return;
+                            }
                             var selectedFilePath = $(this).val();
                             if (nts.uk.util.isNullOrEmpty(selectedFilePath)) {
-                                if (!nts.uk.util.isNullOrUndefined(container.data("file"))) {
-                                    this.files = (container.data("file"));
+                                if (!nts.uk.util.isNullOrUndefined($container.data(FILES_CACHE_FOR_CANCEL))) {
+                                    $container.data(IS_RESTORED_BY_CANCEL, true);
+                                    this.files = ($container.data(FILES_CACHE_FOR_CANCEL));
                                 }
                                 return;
                             }
-                            container.data("file", this.files);
-                            var getSelectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
-                            container.data("file-name", getSelectedFileName);
-                            fileName(getSelectedFileName);
-                            onchange(getSelectedFileName);
-                            if (container.data("immediate-upload")) {
+                            $container.data(FILES_CACHE_FOR_CANCEL, this.files);
+                            var selectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
+                            $container.data(SELECTED_FILE_NAME, selectedFileName);
+                            fileName(selectedFileName);
+                            onchange(selectedFileName);
+                            if ($container.data(IMMEDIATE_UPLOAD)) {
                                 nts.uk.ui.block.grayout();
-                                $fileInput.ntsFileUpload({ stereoType: container.data("stereotype") })
+                                $fileInput.ntsFileUpload({ stereoType: $container.data(STEREOTYPE) })
                                     .done(function (data) {
                                     uploadFinished.call(bindingContext.$data, data[0]);
                                 })
@@ -11333,24 +11341,19 @@ var nts;
                         var asLink = (data.aslink !== undefined) ? ko.unwrap(data.aslink) : false;
                         var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参照";
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var container = $(element)
-                            .data("stereotype", ko.unwrap(data.stereoType))
-                            .data("immediate-upload", ko.unwrap(data.immediateUpload) === true);
-                        container.find("input[type='file']").attr("accept", accept.toString());
-                        var $fileNameWrap = container.find(".nts-editor-wrapped");
-                        var $fileNameInput = container.find(".nts-input");
-                        var $fileNameLabel = container.find(".filenamelabel");
-                        if (container.data("file-name") !== fileName) {
-                            container.data("file-name", "");
-                            $fileNameInput.val("");
-                            $fileNameLabel.text("");
-                            container.find("input[type='file']").val(null);
-                            data.filename("");
+                        var $container = $(element)
+                            .data(STEREOTYPE, ko.unwrap(data.stereoType))
+                            .data(IMMEDIATE_UPLOAD, ko.unwrap(data.immediateUpload) === true);
+                        $container.find("input[type='file']").attr("accept", accept.toString());
+                        var $fileNameWrap = $container.find(".nts-editor-wrapped");
+                        var $fileNameInput = $container.find(".nts-input");
+                        var $fileNameLabel = $container.find(".filenamelabel");
+                        if ($container.data(SELECTED_FILE_NAME) !== fileName) {
+                            $container.data(SELECTED_FILE_NAME, "");
+                            $container.find("input[type='file']").val(null);
                         }
-                        else {
-                            $fileNameLabel.text(fileName);
-                            $fileNameInput.val(fileName);
-                        }
+                        $fileNameInput.val(fileName);
+                        $fileNameLabel.text(fileName);
                         if (asLink == true) {
                             $fileNameLabel.removeClass("hidden");
                             $fileNameWrap.addClass("hidden");
@@ -11359,7 +11362,7 @@ var nts;
                             $fileNameLabel.addClass("hidden");
                             $fileNameWrap.removeClass("hidden");
                         }
-                        var $fileBrowserButton = container.find(".browser-button");
+                        var $fileBrowserButton = $container.find(".browser-button");
                         $fileBrowserButton.text(text);
                         $fileBrowserButton.prop("disabled", !enable);
                         $fileNameInput.prop("disabled", !enable);
@@ -23668,7 +23671,7 @@ var nts;
                         }
                         return dfd.promise();
                     };
-                })(ntsFileUpload || (ntsFileUpload = {}));
+                })(ntsFileUpload = jqueryExtentions.ntsFileUpload || (jqueryExtentions.ntsFileUpload = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
