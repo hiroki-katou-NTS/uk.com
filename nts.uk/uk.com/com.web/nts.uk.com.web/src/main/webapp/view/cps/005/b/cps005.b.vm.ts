@@ -131,8 +131,16 @@ module nts.uk.com.view.cps005.b {
                         });
                         info({ messageId: "Msg_15" }).then(() => { block.clear(); });
                     }).fail(error => {
-
-                        alertError({ messageId: error.message });
+                        if (error.message == 'Msg_928') {
+                            alertError({
+                                messageId: error.message,
+                                messageParams: ["項目"]
+                            }).then(() => {
+                                $('#item-name-control').focus();
+                            });
+                        } else {
+                            alertError({ messageId: error.message });
+                        }
                         block.clear();
 
                     });

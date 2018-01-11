@@ -91,16 +91,16 @@ module nts.uk.com.view.cps005.a {
                             block.clear();
                         });
                     }).fail(res => {
-                        if (res.messageId == 'Msg_928') {
+                        if (res.message == 'Msg_928') {
                             alertError({
-                                messageId: res.messageId,
+                                messageId: res.message,
                                 messageParams: ["個人情報カテゴリ"]
                             }).then(() => {
                                 $("#category-name-control").focus();
                             });
                         } else {
 
-                            alertError({ messageId: res.messageId });
+                            alertError({ messageId: res.message });
                         }
                         block.clear();
                     });
@@ -133,15 +133,15 @@ module nts.uk.com.view.cps005.a {
                         });
                     }).fail(res => {
 
-                        if (res.messageId == 'Msg_928') {
+                        if (res.message == 'Msg_928') {
                             alertError({
-                                messageId: res.messageId,
+                                messageId: res.message,
                                 messageParams: ["個人情報カテゴリ"]
                             }).then(() => {
                                 $("#category-name-control").focus();
                             });
                         } else {
-                            alertError({ messageId: res.messageId });
+                            alertError({ messageId: res.message });
                         }
                         block.clear();
                     });
