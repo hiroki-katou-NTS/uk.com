@@ -166,6 +166,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         submit() {
             var self = this;
             
+            $('#reference-date').ntsError('clear');
+            
             if (nts.uk.ui.errors.hasError()) {
                 return;    
             }
