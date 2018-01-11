@@ -40,6 +40,9 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 		String perInfoItemId = null;
 		AddItemCommand addItemCommand = context.getCommand();
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
+		if (addItemCommand.getItemName().trim().equals("")) {
+			throw new BusinessException(new RawErrorMessage("Msg_928"));
+		}
 		if (addItemCommand.getSingleItem().getDataType() == 6) {
 			List<Selection> selection = new ArrayList<>();
 			if (addItemCommand.getPersonEmployeeType() == 1) {

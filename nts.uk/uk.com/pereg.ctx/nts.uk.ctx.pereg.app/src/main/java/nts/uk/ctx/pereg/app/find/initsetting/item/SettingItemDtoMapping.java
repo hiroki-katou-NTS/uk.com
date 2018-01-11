@@ -22,12 +22,12 @@ public class SettingItemDtoMapping {
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxFac;
 
-	public void setTextForItem(List<SettingItemDto> result) {
-		setTextForSelectionItem(result);
+	public void setTextForItem(List<SettingItemDto> result, String employeeId) {
+		setTextForSelectionItem(result, employeeId);
 		setTextForSetItem(result);
 	}
 
-	public void setTextForSelectionItem(List<SettingItemDto> result) {
+	public void setTextForSelectionItem(List<SettingItemDto> result, String employeeId) {
 
 		List<SettingItemDto> SelectionItemLst = result.stream()
 				.filter(x -> x.getDataType().equals(DataTypeValue.SELECTION)).collect(Collectors.toList());
@@ -36,7 +36,7 @@ public class SettingItemDtoMapping {
 			SelectionItemLst.forEach(item -> {
 
 				List<ComboBoxObject> comboxList = this.comboBoxFac.getComboBox(item.getSelectionItemRefType(),
-						item.getSelectionItemRefCd(), GeneralDate.today());
+						item.getSelectionItemRefCd(), GeneralDate.today(), employeeId);
 
 				comboxList.forEach(cbItem -> {
 					if (cbItem.getOptionValue().equals(item.getSaveData().getValue())) {

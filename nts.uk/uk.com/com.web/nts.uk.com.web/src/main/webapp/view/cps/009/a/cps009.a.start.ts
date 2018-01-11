@@ -13,8 +13,12 @@ module nts.uk.com.view.cps009.a {
             $(".goout").css("display", "none");
             $("#closeBtn").css("visibility", "visible");
         }
-
-
-
+        
+        $(".ntsControl .nts-input").focusout(()=>{
+            $(".ntsControl .nts-input").css("padding-top", "5px !important");
+            $(".ntsControl .nts-input").css("padding-bottom", "5px !important");
+        });
+        
+       
     });
 }

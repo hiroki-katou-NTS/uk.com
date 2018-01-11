@@ -207,9 +207,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.selectedModeDisplayObject.subscribe((newValue) => {
                 if (self.listSid().length > 0) {
                     if (newValue == 2) {
-                        // actual data display mode (in phase 2 not done, so the actual data is set to null)
+                        // actual data display mode 
+                        // (in phase 2 not done, so the actual data = intended data)
                         // if actual data is null, display intended data
-                        self.updateExTable();
+                        self.setDatasource().done(function() {
+                            self.updateExTable();
+                        });
                     } else {
                         // intended data display mode 
                         self.setDatasource().done(function() {
@@ -253,8 +256,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $.when(self.checkStateWorkTypeCode(lstWorkTypeCode), self.getDataWorkEmpCombine()).done(() => {
                     self.initCCG001();
                     self.initExTable();
-                    nts.uk.ui.block.clear();
                     dfd.resolve();
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             });
             return dfd.promise();
@@ -266,6 +270,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {
             let self = this;
+            nts.uk.ui.block.grayout();
+
             self.empItems.removeAll();
             _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
                 self.empItems.push(new PersonModel({
@@ -277,38 +283,34 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     workplaceName: item.workplaceName,
                 }));
             });
-            //get workPlaceName to display A3-1
             self.workplaceId = self.empItems()[0].workplaceId;
-
-            let data = {
-                workplaceId: self.workplaceId,
-                baseDate: moment().toISOString()
-            }
-            service.getWorkPlaceById(data).done((wkp) => {
-                self.workPlaceNameDisplay(wkp.wkpDisplayName);
-            });
-            //get data WorkPattern
-            $.when(self.getDataWkpPattern()).done(() => {
-                if (__viewContext.viewModel.viewQ.selectedTab() === 'workplace') {
-                    __viewContext.viewModel.viewQ.initScreenQ();
-                }
-            });
-
+            // get data for listSid
             self.listSid([]);
             let arrSid: string[] = [];
             _.each(self.empItems(), (x) => {
                 arrSid.push(x.empId);
             });
             self.listSid(arrSid);
-            if (self.selectedModeDisplayObject() == 1) {
-                //intended data display mode 
-                self.setDatasource().done(function() {
-                    self.updateExTable();
-                });
-            } else {
-                //actual data display mode 
-                self.updateExTable();
-            }
+            //getDataOfWorkPlace(): get workPlaceName to display A3-1
+            //getDataWkpPattern() : get data WorkPattern for screen Q
+            $.when(self.getDataWkpPattern(), self.getDataOfWorkPlace()).done(() => {
+                if (__viewContext.viewModel.viewQ.selectedTab() === 'workplace') {
+                    __viewContext.viewModel.viewQ.initScreenQ();
+                }
+
+                if (self.selectedModeDisplayObject() == 1) {
+                    // intended data display mode 
+                    self.setDatasource().done(function() {
+                        self.updateExTable();
+                    });
+                } else {
+                    // actual data display mode 
+                    // in phare 2, set actual data = intended data
+                    self.setDatasource().done(function() {
+                        self.updateExTable();
+                    });
+                }
+            })
         }
 
         /**
@@ -609,16 +611,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         /**
-         *  update extable 
+         *  update extable
+         *  create new dataSource for some part of exTable
+         *   set color for extable
          */
         updateExTable(): void {
             let self = this;
+            nts.uk.ui.block.grayout();
+
             let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newDetailHeaderDs = [], newObjDetailHeaderDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
 
             _.each(self.listSid(), (x) => {
                 //newLeftMost dataSource
                 let empItem: PersonModel = _.find(self.empItems(), ['empId', x]);
-                newLeftMostDs.push({ empId: x, empName: empItem.empCd + ' ' + empItem.empName });
+                newLeftMostDs.push({ empId: x, empName: nts.uk.text.padRight(empItem.empCd, ' ', 12) + ' ' + empItem.empName });
                 //newMiddle dataSource
                 newMiddleDs.push({ empId: x, team: "1", rank: "A", qualification: "★", employmentName: "アルバイト", workplaceName: "東京本社", classificationName: "分類", positionName: "一般" });
                 //newDetail dataSource
@@ -667,7 +673,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let leftmostContentDeco = [], detailHeaderDeco = [], detailContentDeco = [];
 
             self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
-
                 let updateLeftmostContent = {
                     dataSource: newLeftMostDs,
                     features: [{
@@ -675,6 +680,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         decorator: leftmostContentDeco
                     }]
                 }
+
                 let updateDetailHeader = {
                     columns: newDetailColumns,
                     dataSource: newDetailHeaderDs,
@@ -695,7 +701,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             },
                             popup: {
                                 rows: [1],
-                                provider: function() { return $("#popup-area4"); }
+                                provider: function() { return $("#popup-area8"); }
                             }
                         }]
                 };
@@ -740,15 +746,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 $("#extable").on("extablecellupdated", function() { });
                 $("#extable").on("extablerowupdated", function() { });
-
-                //set lock cell
-                _.each(self.dataSource(), (x) => {
-                    if (x.confirmedAtr == 1) {
-                        $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
-                    } else {
-                        $("#extable").exTable("unlockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
-                    }
-                });
+            }).always(() => {
+                nts.uk.ui.block.clear();
             });
         }
 
@@ -757,6 +756,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateDetailAndHorzSum(): void {
             let self = this;
+            nts.uk.ui.block.grayout();
             //Get dates in time period
             let currentDay = new Date(self.dtPrev().toString());
             self.arrDay = [];
@@ -796,48 +796,49 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             //if haven't data in extable, only update header detail and header horizontal
             if (self.empItems().length == 0) {
-                self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco);
+                self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco).done(() => {
+                    let updateDetailHeader = {
+                        columns: newDetailColumns,
+                        dataSource: newDetailHeaderDs,
+                        features: [{
+                            name: "HeaderRowHeight",
+                            rows: { 0: "40px", 1: "20px" }
+                        }, {
+                                name: "HeaderCellStyle",
+                                decorator: detailHeaderDeco
+                            }, {
+                                name: "HeaderPopups",
+                                menu: {
+                                    rows: [0],
+                                    items: [
+                                        { id: "日付別", text: nts.uk.resource.getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
+                                        { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
+                                    ]
+                                },
+                                popup: {
+                                    rows: [1],
+                                    provider: function() { return $("#popup-area8"); }
+                                }
+                            }]
+                    };
 
-                let updateDetailHeader = {
-                    columns: newDetailColumns,
-                    dataSource: newDetailHeaderDs,
-                    features: [{
-                        name: "HeaderRowHeight",
-                        rows: { 0: "40px", 1: "20px" }
-                    }, {
+                    let updateHorzSumHeader = {
+                        columns: newDetailColumns,
+                        dataSource: newDetailHeaderDs,
+                        features: [{
                             name: "HeaderCellStyle",
                             decorator: detailHeaderDeco
-                        }, {
-                            name: "HeaderPopups",
-                            menu: {
-                                rows: [0],
-                                items: [
-                                    { id: "日付別", text: nts.uk.resource.getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
-                                    { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
-                                ]
-                            },
-                            popup: {
-                                rows: [1],
-                                provider: function() { return $("#popup-area8"); }
-                            }
                         }]
-                };
+                    };
 
-                let updateHorzSumHeader = {
-                    columns: newDetailColumns,
-                    dataSource: newDetailHeaderDs,
-                    features: [{
-                        name: "HeaderCellStyle",
-                        decorator: detailHeaderDeco
-                    }]
-                };
-
-                $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
-                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
+                    $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
+                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
             } else if (self.selectedModeDisplayObject() == 1) {
                 self.setDatasource().done(() => {
                     self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
-
                         let updateDetailHeader = {
                             columns: newDetailColumns,
                             dataSource: newDetailHeaderDs,
@@ -896,65 +897,72 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
                     });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             } else if (self.selectedModeDisplayObject() == 2) {
-                self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
-                    let updateDetailHeader = {
-                        columns: newDetailColumns,
-                        dataSource: newDetailHeaderDs,
-                        features: [{
-                            name: "HeaderRowHeight",
-                            rows: { 0: "40px", 1: "20px" }
-                        }, {
+                // in phare 2, set dataSource of actual data = dataSource of intended data
+                self.setDatasource().done(() => {
+                    self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
+                        let updateDetailHeader = {
+                            columns: newDetailColumns,
+                            dataSource: newDetailHeaderDs,
+                            features: [{
+                                name: "HeaderRowHeight",
+                                rows: { 0: "40px", 1: "20px" }
+                            }, {
+                                    name: "HeaderCellStyle",
+                                    decorator: detailHeaderDeco
+                                }, {
+                                    name: "HeaderPopups",
+                                    menu: {
+                                        rows: [0],
+                                        items: [
+                                            { id: "日付別", text: nts.uk.resource.getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
+                                            { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
+                                        ]
+                                    },
+                                    popup: {
+                                        rows: [1],
+                                        provider: function() { return $("#popup-area8"); }
+                                    }
+                                }]
+                        };
+
+                        // actual data display mode , if hasn't actual data, display intended data
+                        _.each(self.listSid(), (x) => {
+                            let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
+                            newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+                        });
+
+                        let updateDetailContent = {
+                            columns: newDetailColumns,
+                            dataSource: newDetailContentDs,
+                            features: [{
+                                name: "BodyCellStyle",
+                                decorator: detailContentDeco
+                            }]
+                        };
+
+                        let updateHorzSumHeader = {
+                            columns: newDetailColumns,
+                            dataSource: newDetailHeaderDs,
+                            features: [{
                                 name: "HeaderCellStyle",
                                 decorator: detailHeaderDeco
-                            }, {
-                                name: "HeaderPopups",
-                                menu: {
-                                    rows: [0],
-                                    items: [
-                                        { id: "日付別", text: nts.uk.resource.getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
-                                        { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
-                                    ]
-                                },
-                                popup: {
-                                    rows: [1],
-                                    provider: function() { return $("#popup-area8"); }
-                                }
                             }]
-                    };
+                        };
 
-                    //actual data display mode , if hasn't actual data, display intended data
-                    _.each(self.listSid(), (x) => {
-                        let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
-                        newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+                        let updateHorzSumContent = {
+                            columns: newDetailColumns,
+                            dataSource: horzSumContentDs
+                        };
+
+                        $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
+                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
                     });
-
-                    let updateDetailContent = {
-                        columns: newDetailColumns,
-                        dataSource: newDetailContentDs,
-                        features: [{
-                            name: "BodyCellStyle",
-                            decorator: detailContentDeco
-                        }]
-                    };
-
-                    let updateHorzSumHeader = {
-                        columns: newDetailColumns,
-                        dataSource: newDetailHeaderDs,
-                        features: [{
-                            name: "HeaderCellStyle",
-                            decorator: detailHeaderDeco
-                        }]
-                    };
-
-                    let updateHorzSumContent = {
-                        columns: newDetailColumns,
-                        dataSource: horzSumContentDs
-                    };
-
-                    $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
         }
@@ -1066,17 +1074,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             //state = 0 || 3 : rest || work all day
             //state = 1 || 2 : work in morning || work in afternoon
-            let tmp = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': item.workTypeCode });
-            if (tmp.state == 1 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
-                item.symbolName = symbolName + self.dataScheduleDisplayControl().symbolHalfDayName;
-            }
+            let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': item.workTypeCode });
+            if (stateWorkTypeCode) {
+                let state = stateWorkTypeCode.state;
+                if (state == 1 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
+                    item.symbolName = symbolName + self.dataScheduleDisplayControl().symbolHalfDayName;
+                }
 
-            if (tmp.state == 2 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
-                item.symbolName = self.dataScheduleDisplayControl().symbolHalfDayName + symbolName;
-            }
+                if (state == 2 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
+                    item.symbolName = self.dataScheduleDisplayControl().symbolHalfDayName + symbolName;
+                }
 
-            if (tmp.state == 0 || tmp.state == 3) {
-                item.symbolName = symbolName;
+                if (state == 0 || state == 3) {
+                    item.symbolName = symbolName;
+                }
             }
         }
 
@@ -1237,7 +1248,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     dtMoment = dtMoment.subtract(1, 'months');
                 }
                 dtMoment.add(1, 'days');
-                self.dtPrev(dtMoment.toDate());
+                self.dtPrev(new Date(dtMoment.format('YYYY/MM/DD')));
                 self.dataSource([]);
                 self.updateDetailAndHorzSum();
             }
@@ -1292,19 +1303,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             service.registerData(arrObj).done(function(error: any) {
-                if (error.length != 0) {
-                    self.addListError(error);
-                } else {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                }
                 //get data and update extable
                 self.setDatasource().done(function() {
                     self.updateExTable();
-                    nts.uk.ui.block.clear();
+                    if (error.length != 0) {
+                        self.addListError(error);
+                    } else {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    }
                 });
             }).fail(function(error: any) {
-                nts.uk.ui.block.grayout();
                 nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(() => {
+                nts.uk.ui.block.clear();
             });
         }
 
@@ -1315,6 +1326,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             //Set color for text in cell 
             if (self.selectedModeDisplayObject() == 2) {
+                // isIntendedData': false => this is actual data
                 let arrActualData: any[] = _.filter(self.dataSource(), { 'isIntendedData': false });
                 if (arrActualData.length > 0) {
                     _.each(arrActualData, (item: BasicSchedule) => {
@@ -1333,8 +1345,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     });
                 }
-                //                self.checkStateWorkTypeCode(lstWorkTypeCode).done(function() {
-                //lstData: list object in dataSource. It has workTypeCode, which exist in master data WORKTYPE
+                // lstData: list object in dataSource. It has workTypeCode, which exist in master data WORKTYPE
                 let lstData: BasicSchedule[] = [];
                 _.each(__viewContext.viewModel.viewO.listWorkType(), (item) => {
                     let obj = _.filter(self.dataSource(), { 'workTypeCode': item.workTypeCode });
@@ -1360,7 +1371,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                 });
                 dfd.resolve();
-                //                });
             } else {
                 dfd.resolve();
             }
@@ -1381,76 +1391,77 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // TO-DO
                 // 日単位でチェック handler will return state 　非表示　or 確定　or 応援者　or 修正不可
                 // but pharse 2 not to do
-
+                // do chua co bang master cua STATE nên comment đoạn code bên dưới.
                 //get data from WorkScheduleState
-                self.getDataWorkScheduleState().done(() => {
-                    if (self.selectedModeDisplay() === 3) {
-                        _.each(self.listSid(), (sId) => {
-                            let endDate = self.dtAft(), startDate = self.dtPrev();
-                            for (let currDate = startDate; startDate <= endDate; startDate.setDate(startDate.getDate() + 1)) {
-                                let cDate1 = moment(currDate).format('YYYY/MM/DD'), cDate2 = moment(currDate).format('YYYYMMDD');
-                                let arr: any[] = _.filter(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 0 });
-                                if (arr.length == 3) {
-                                    let scheduleEditStateItem: number = _.find(self.dataWScheduleState(), (item) => {
-                                        return (item.employeeId == sId) && (moment(item.date).format('YYYY/MM/DD') === cDate1) && (item.scheduleEditState != 0);
-                                    }).scheduleEditState;
-
-                                    if (scheduleEditStateItem == 2) {
-                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
-                                    } else if (scheduleEditStateItem == 1) {
-                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
-                                    } else if (scheduleEditStateItem == 3) {
-                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
-                                    }
-                                } else if (arr.length <= 2) {
-                                    if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 2 })) {
-                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
-                                    } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 1 })) {
-                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
-                                    } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 3 })) {
-                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
-                                    }
-                                }
-                            }
-                        });
-                    } else {
-                        //Return value of ScheduleEditState of WorkScheduleState
-                        let data = [];
-                        if (self.selectedModeDisplay() === 2) {
-                            //scheduleItemId = 3: it is id of StartTime
-                            //scheduleItemId = 4: it is id of EndTime
-                            data = _.reduce(self.dataWScheduleState(), (result, item) => {
-                                if (item.scheduleItemId == 3 || item.scheduleItemId == 4) {
-                                    result.push(item);
-                                }
-                                return result;
-                            }, []);
-                        } else {
-                            //scheduleItemId = 1: it is id of WorkType
-                            //scheduleItemId = 2: it is id of WorkTime
-                            data = _.reduce(self.dataWScheduleState(), (result, item) => {
-                                if (item.scheduleItemId == 1 || item.scheduleItemId == 2) {
-                                    result.push(item);
-                                }
-                                return result;
-                            }, []);
-                        }
-
-                        _.each(data, (item) => {
-                            if (item.scheduleEditState == 1) {
-                                //手修正(本人) = bg-daily-alter-self
-                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-self"));
-                            } else if (item.scheduleEditState == 2) {
-                                //手修正(他人) = bg-daily-alter-other
-                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-other"));
-                            } else if (item.scheduleEditState == 3) {
-                                //申請反映 = bg-daily-reflect-application
-                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-reflect-application"));
-                            }
-                        });
-                    }
-                    dfd.resolve();
-                });
+                //                self.getDataWorkScheduleState().done(() => {
+                //                    if (self.selectedModeDisplay() === 3) {
+                //                        _.each(self.listSid(), (sId) => {
+                //                            let endDate = self.dtAft(), startDate = self.dtPrev();
+                //                            for (let currDate = startDate; startDate <= endDate; startDate.setDate(startDate.getDate() + 1)) {
+                //                                let cDate1 = moment(currDate).format('YYYY/MM/DD'), cDate2 = moment(currDate).format('YYYYMMDD');
+                //                                let arr: any[] = _.filter(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 0 });
+                //                                if (arr.length == 3) {
+                //                                    let scheduleEditStateItem: number = _.find(self.dataWScheduleState(), (item) => {
+                //                                        return (item.employeeId == sId) && (moment(item.date).format('YYYY/MM/DD') === cDate1) && (item.scheduleEditState != 0);
+                //                                    }).scheduleEditState;
+                //
+                //                                    if (scheduleEditStateItem == 2) {
+                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
+                //                                    } else if (scheduleEditStateItem == 1) {
+                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
+                //                                    } else if (scheduleEditStateItem == 3) {
+                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
+                //                                    }
+                //                                } else if (arr.length <= 2) {
+                //                                    if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 2 })) {
+                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
+                //                                    } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 1 })) {
+                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
+                //                                    } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 3 })) {
+                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
+                //                                    }
+                //                                }
+                //                            }
+                //                        });
+                //                    } else {
+                //                        //Return value of ScheduleEditState of WorkScheduleState
+                //                        let data = [];
+                //                        if (self.selectedModeDisplay() === 2) {
+                //                            //scheduleItemId = 3: it is id of StartTime
+                //                            //scheduleItemId = 4: it is id of EndTime
+                //                            data = _.reduce(self.dataWScheduleState(), (result, item) => {
+                //                                if (item.scheduleItemId == 3 || item.scheduleItemId == 4) {
+                //                                    result.push(item);
+                //                                }
+                //                                return result;
+                //                            }, []);
+                //                        } else {
+                //                            //scheduleItemId = 1: it is id of WorkType
+                //                            //scheduleItemId = 2: it is id of WorkTime
+                //                            data = _.reduce(self.dataWScheduleState(), (result, item) => {
+                //                                if (item.scheduleItemId == 1 || item.scheduleItemId == 2) {
+                //                                    result.push(item);
+                //                                }
+                //                                return result;
+                //                            }, []);
+                //                        }
+                //
+                //                        _.each(data, (item) => {
+                //                            if (item.scheduleEditState == 1) {
+                //                                //手修正(本人) = bg-daily-alter-self
+                //                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-self"));
+                //                            } else if (item.scheduleEditState == 2) {
+                //                                //手修正(他人) = bg-daily-alter-other
+                //                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-other"));
+                //                            } else if (item.scheduleEditState == 3) {
+                //                                //申請反映 = bg-daily-reflect-application
+                //                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-reflect-application"));
+                //                            }
+                //                        });
+                //                    }
+                //                    dfd.resolve();
+                //                });
+                dfd.resolve();
             }
             return dfd.promise();
         }
@@ -1462,6 +1473,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setColorForCellHeaderDetailAndHoz(detailHeaderDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             if (self.empItems().length != 0) {
+                // getDataSpecDateAndHoliday always query to server
+                // because date is changed when click nextMonth or backMonth
                 $.when(self.getDataSpecDateAndHoliday()).done(() => {
                     _.each(self.arrDay, (date) => {
                         let ymd = date.yearMonthDay;
@@ -1484,10 +1497,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     });
 
+                    // set class bg-schedule-that-day for currentDay
                     if (self.dateTimePrev() <= moment().format('YYYY/MM/DD') && moment().format('YYYY/MM/DD') <= self.dateTimeAfter()) {
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment().format('YYYYMMDD'), 0, "bg-schedule-that-day "));
-                        detailHeaderDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment().format('YYYYMMDD'), 1, "bg-schedule-that-day"));
+                        let arrCellColorFilter = _.filter(detailHeaderDeco, ['columnKey', "_" + moment().format('YYYYMMDD')]);
+                        _.map(arrCellColorFilter, (cellColor: any) => {
+                            cellColor.clazz = cellColor.clazz.replace(/bg-\w*/g, 'bg-schedule-that-day');
+                        });
                     }
+
                     self.listColorOfHeader(detailHeaderDeco);
                     dfd.resolve();
                 });
@@ -1516,15 +1533,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         setColor(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco), self.setColorForText(detailHeaderDeco, detailContentDeco), self.setColorForCell(detailHeaderDeco, detailContentDeco), self.setColorForLeftmostContent()).done(() => {
-                //set lock cell
-                _.each(self.dataSource(), (x) => {
-                    if (x.confirmedAtr == 1) {
-                        $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
-                    }
-                });
-                dfd.resolve();
-            });
+            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco), self.setColorForText(detailHeaderDeco, detailContentDeco),
+                self.setColorForCell(detailHeaderDeco, detailContentDeco), self.setColorForLeftmostContent()).done(() => {                    //set lock cell
+                    _.each(self.dataSource(), (x) => {
+                        if (x.confirmedAtr == 1) {
+                            $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                        } else {
+                            $("#extable").exTable("unlockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
+                        }
+                    });                    dfd.resolve();                });
             return dfd.promise();
         }
 
@@ -1604,6 +1621,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         /**
+         * get data of workplace by pk
+         */
+        getDataOfWorkPlace(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            let data = {
+                workplaceId: self.workplaceId,
+                baseDate: moment().toISOString()
+            }
+            service.getWorkPlaceById(data).done((wkp) => {
+                self.workPlaceNameDisplay(wkp.wkpDisplayName);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+
+            return dfd.promise();
+        }
+
+        /**
          * open dialog C
          */
         openDialogC(): void {
@@ -1624,8 +1660,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setShared('dataForScreenD', {
                 dataSource: self.dataSource(),
                 empItems: self.empItems(),
-                startDate: self.dtPrev(),
-                endDate: self.dtAft(),
+                startDate: moment(self.dtPrev()).format('YYYY/MM/DD'),
+                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
                 // in phare 2, permissionHandCorrection allow false
                 permissionHandCorrection: false,
                 listColorOfHeader: self.listColorOfHeader()

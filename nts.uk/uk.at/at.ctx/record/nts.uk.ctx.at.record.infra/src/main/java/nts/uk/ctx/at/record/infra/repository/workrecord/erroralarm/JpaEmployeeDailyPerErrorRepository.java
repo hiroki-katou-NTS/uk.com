@@ -19,7 +19,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
+		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM KrcdtSyainDpErList a ");
 		builderString.append("WHERE a.krcdtSyainDpErListPK.processingDate = :processingDate ");
 		builderString.append("AND a.krcdtSyainDpErListPK.employeeId = :employeeId ");
@@ -30,6 +30,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	@Override
 	public void insert(EmployeeDailyPerError employeeDailyPerformanceError) {
 		KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).forEach(f -> this.commandProxy().insert(f));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -62,6 +63,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	@Override
 	public void update(EmployeeDailyPerError employeeDailyPerformanceError) {
 		this.commandProxy().updateAll(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
+		this.getEntityManager().flush();
 	}
 
 }

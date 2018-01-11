@@ -67,6 +67,11 @@
 							<input id="an-txt" data-bind="ntsTextEditor: { name: 'Uppercase', value: valueUan, constraint: 'PersonalWageCode' }"/>
 						</div>
 						
+						<h3>Handle enter key</h3>
+						<div class="control-group valign-center">
+							<input data-bind="ntsTextEditor: { value: value, enterkey: submit }"></input>
+						</div>
+						
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -86,7 +91,8 @@
 		option: option,
 		required: required,
 		enable: enable,
-		readonly: readonly}" />
+		readonly: readonly,
+		enterkey: submit}" />
 </div>]]></pre>
 									<h2>ViewModel</h2>
 <pre><![CDATA[class ScreenModel {
@@ -160,6 +166,14 @@
 													<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
 													<b>Default:</b> false<br/>
 													Set readonly for editor
+												</td>
+											</tr>
+											<tr>
+												<td>enterkey<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> (JQueryEventObject) => void<br/>
+													<b>Default:</b> undefined<br/>
+													Set function called when enter key is down. If set any function, "enter mark" is shown in editor, 
 												</td>
 											</tr>
 											<tr>

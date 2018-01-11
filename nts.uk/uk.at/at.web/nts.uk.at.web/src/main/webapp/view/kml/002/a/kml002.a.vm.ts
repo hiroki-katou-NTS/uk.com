@@ -175,7 +175,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             self.addLineEnable(false);
                         }
                         
-                        $.when(self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems(), self.formulaTimeUnit(), self.formulaTime()).done(function() {
+                        $.when(self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems(), self.formulaTimeUnit(), self.formulaTime(), self.getAmountItems()).done(function() {
                             for (var i = 0; i < sortedItems.length; i++) {
                                 var item: ICalculatorItem = {
                                     isChecked: false,
@@ -381,7 +381,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
 
             blockUI.invisible();
 
-            $.when(self.getData(), self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems(), self.formulaTimeUnit(), self.formulaTime()).done(function() {
+            $.when(self.getData(), self.getDailyItems(), self.getPeopleItems(), self.getNumericalItems(), self.formulaTimeUnit(), self.formulaTime(),self.getAmountItems()).done(function() {
 
                 if (self.settingItems().length > 0) {
                     self.singleSelectedCode(self.settingItems()[0].verticalCalCd);
@@ -561,9 +561,6 @@ module nts.uk.at.view.kml002.a.viewmodel {
                     unitAtr: 0
                 }
 
-                temp.push(a);
-                self.amountItems = _.clone(temp);
-
                 temp.push(b);
                 self.peopleItems = _.clone(temp);
 
@@ -638,6 +635,43 @@ module nts.uk.at.view.kml002.a.viewmodel {
             return dfd.promise();
         }
 
+        getAmountItems() {
+            var self = this;
+            var dfd = $.Deferred();
+
+            let param = {
+                budgetAtr: 2,
+                // received from mother screen 0: day or 1: time
+                unitAtr: self.unitSelected()
+            }
+
+            service.getByAtr(param).done((data) => {
+                var temp = data;
+                let a = {
+                    budgetAtr: 2,
+                    externalBudgetCode: (data.length + 1).toString(),
+                    externalBudgetName: nts.uk.resource.getText("KML002_109"),
+                    unitAtr: 0
+                }
+                let b = {
+                    budgetAtr: 2,
+                    externalBudgetCode: (data.length + 2).toString(),
+                    externalBudgetName: nts.uk.resource.getText("KML002_110"),
+                    unitAtr: 0
+                }
+
+                temp.push(a);
+                self.amountItems = _.clone(temp);
+
+
+                dfd.resolve(data);
+            }).fail(function(res) {
+                dfd.reject(res);
+            });
+
+            return dfd.promise();
+        }
+        
         /**
          * Get F screen data.
          */
@@ -838,7 +872,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                 var dataD = self.calculatorItems()[i].formPeople != null ? self.calculatorItems()[i].formPeople : self.dataD;
                 var dataE = self.calculatorItems()[i].formulaAmount != null ? self.calculatorItems()[i].formulaAmount : self.dataE;
                 var dataF = self.calculatorItems()[i].numerical != null ? self.calculatorItems()[i].numerical : self.dataF;
-                var dataG = self.calculatorItems()[i].unitPrice != null ? self.calculatorItems()[i].unitPrice : self.dataG;
+                var dataG = self.calculatorItems()[i].unitPrice != null ? self.calculatorItems()[i].unitPrice : self.dataG; 
 
                 var item = {
                     verticalCalCd: code,

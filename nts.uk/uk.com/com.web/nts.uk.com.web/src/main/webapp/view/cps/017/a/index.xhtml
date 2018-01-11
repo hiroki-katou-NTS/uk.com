@@ -13,7 +13,6 @@
 					height : 750
 				};
 			</script>
-			<title>#{i18n.getText('CPS017_51')}</title>
 			<com:ValidatorScript>
 					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemName
 					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionCodeLength
@@ -70,7 +69,7 @@
 							<!-- thanh tìm kiếm  -->
 						<div tabindex="7"
 							data-bind="ntsSearchBox: {
-								searchMode: 'filter',
+								searchMode: 'highlight',
 								targetKey: 'selectionItemId',
 								mode: 'igGrid', 
 								comId: 'sel_item_grid',

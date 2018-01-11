@@ -7,7 +7,6 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
-<!-- 			<title>#{i18n.getText('CPS008_1')}</title> -->
 			<script>
 				var dialogSize = { width: 1290, height: 800 };
 				
@@ -53,7 +52,7 @@
 						<div style="float: left">
 							<div style="width: 395px"
 								data-bind="ntsSearchBox: {       
-   									searchMode: 'filter',       
+   									searchMode: 'highlight',       
    									targetKey: 'selectionItemId',        
    									comId: 'single-list',       
    									items: listItems,        

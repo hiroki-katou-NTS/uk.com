@@ -16,8 +16,12 @@ module nts.uk.at.view.kml001.d {
             newStartDate: KnockoutObservable<string>;
             constructor() {
                 var self = this;
-                self.personCostList = ko.observableArray(<Array<vmbase.PersonCostCalculation>>nts.uk.ui.windows.getShared('personCostList'));
-                self.currentPersonCost = ko.observable(<vmbase.PersonCostCalculation>nts.uk.ui.windows.getShared('currentPersonCost'));
+                self.personCostList = ko.observableArray(
+                    _.map(nts.uk.ui.windows.getShared('personCostList'), (item : vmbase.PersonCostCalculationInterface) => { return vmbase.ProcessHandler.fromObjectPerconCost(item); })
+                );
+                self.currentPersonCost = ko.observable(
+                    vmbase.ProcessHandler.fromObjectPerconCost(nts.uk.ui.windows.getShared('currentPersonCost'))
+                );
                 self.size = _.size(self.personCostList());
                 self.isLast = ko.observable((_.findIndex(self.personCostList(), function(o){return self.currentPersonCost().startDate() == o.startDate(); })==(self.size-1))?true:false);
                 self.deleteAble = ko.observable((self.isLast()&&(self.size>1))); // can delete when item is last and list have more than one item

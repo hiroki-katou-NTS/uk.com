@@ -178,7 +178,7 @@ module nts.uk.at.view.kmk008.g {
                     });
                     self.getDetail(employee.employeeId);
                     self.selectedId(employee.employeeId);
-                    self.employeeName(employee.name);
+                    self.employeeName(employee.employeeName);
 
                 });
 

@@ -198,7 +198,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		}).collect(Collectors.toList());
 		List<KrcdtDaiOutingTime> krcdtDaiOutingTimeLists = this.queryProxy().query(SELECT_BY_KEY, KrcdtDaiOutingTime.class)
 				.setParameter("employeeId", domain.getEmployeeId())
-				.setParameter("ymd", domain.getEmployeeId())
+				.setParameter("ymd", domain.getYmd())
 				.setParameter("outingFrameNos", outingFrameNos).getList();
 		
 		List<OutingTimeSheet> outingTimeSheets = domain.getOutingTimeSheets();
@@ -221,41 +221,58 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		this.getEntityManager().flush();
 	}
 
-	private void setEntityValue(OutingTimeSheet outingTimeSheet, KrcdtDaiOutingTime krcdtDaiOutingTime) {
-		setBackMainStamp(outingTimeSheet.getComeBack().orElse(null), krcdtDaiOutingTime);
-		krcdtDaiOutingTime.outingReason = outingTimeSheet.getReasonForGoOut().value;
-		krcdtDaiOutingTime.outingTime = outingTimeSheet.getOutingTime().v();
-		krcdtDaiOutingTime.outingTimeCalculation = outingTimeSheet.getOutingTimeCalculation().v();
-		setGoOutMainStamp(outingTimeSheet.getGoOut().orElse(null), krcdtDaiOutingTime);
+	private void setEntityValue(OutingTimeSheet domain, KrcdtDaiOutingTime krcdtDaiOutingTime) {
+		setBackMainStamp(domain.getComeBack().orElse(null), krcdtDaiOutingTime);
+		krcdtDaiOutingTime.outingReason = domain.getReasonForGoOut().value;
+		krcdtDaiOutingTime.outingTime = domain.getOutingTime().v();
+		krcdtDaiOutingTime.outingTimeCalculation = domain.getOutingTimeCalculation().v();
+		setGoOutMainStamp(domain.getGoOut().orElse(null), krcdtDaiOutingTime);
 	}
 
-	private void setBackMainStamp(TimeActualStamp outingTimeSheet, KrcdtDaiOutingTime krcdtDaiOutingTime) {
-		if(outingTimeSheet != null){
-			krcdtDaiOutingTime.backActualPlaceCode = outingTimeSheet.getActualStamp().getLocationCode().v();
-			krcdtDaiOutingTime.backActualRoundingTimeDay = outingTimeSheet.getActualStamp().getAfterRoundingTime().v();
-			krcdtDaiOutingTime.backActualSourceInfo = outingTimeSheet.getActualStamp().getStampSourceInfo().value;
-			krcdtDaiOutingTime.backActualTime = outingTimeSheet.getActualStamp().getTimeWithDay().v();
-			krcdtDaiOutingTime.backNumberStamp = outingTimeSheet.getNumberOfReflectionStamp();
-			setBackStamp(outingTimeSheet.getStamp().orElse(null), krcdtDaiOutingTime);
+	private void setBackMainStamp(TimeActualStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
+		if(stamp != null){
+			setBackActualStamp(stamp.getActualStamp(), krcdtDaiOutingTime);
+			krcdtDaiOutingTime.backNumberStamp = stamp.getNumberOfReflectionStamp();
+			setBackStamp(stamp.getStamp().orElse(null), krcdtDaiOutingTime);
 		} else {
-			krcdtDaiOutingTime.backActualPlaceCode = null;
-			krcdtDaiOutingTime.backActualRoundingTimeDay = null;
-			krcdtDaiOutingTime.backActualSourceInfo = null;
-			krcdtDaiOutingTime.backActualTime = null;
-			krcdtDaiOutingTime.backNumberStamp = null;
+			setBackActualStampNull(krcdtDaiOutingTime);
 			setGoOutStampNull(krcdtDaiOutingTime);
 		}
 	}
+	
+	private void setBackActualStamp(WorkStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
+		if(stamp != null){
+			krcdtDaiOutingTime.backActualPlaceCode = stamp.getLocationCode() == null 
+					? null : stamp.getLocationCode().v();
+			krcdtDaiOutingTime.backActualRoundingTimeDay = stamp.getAfterRoundingTime() == null 
+					? null : stamp.getAfterRoundingTime().valueAsMinutes();
+			krcdtDaiOutingTime.backActualSourceInfo = stamp.getStampSourceInfo().value;
+			krcdtDaiOutingTime.backActualTime = stamp.getTimeWithDay() == null 
+					? null : stamp.getTimeWithDay().valueAsMinutes();
+		} else {
+			setBackActualStampNull(krcdtDaiOutingTime);
+		}
+	}
 
-	private void setBackStamp(WorkStamp outingTimeSheet, KrcdtDaiOutingTime krcdtDaiOutingTime) {
-		if(outingTimeSheet != null){
-			krcdtDaiOutingTime.backStampPlaceCode = outingTimeSheet.getLocationCode().v();
-			krcdtDaiOutingTime.backStampRoundingTimeDay = outingTimeSheet.getAfterRoundingTime().v();
-			krcdtDaiOutingTime.backStampSourceInfo = outingTimeSheet.getStampSourceInfo().value;
-			krcdtDaiOutingTime.backStampTime = outingTimeSheet.getTimeWithDay().v();
+	private void setBackStamp(WorkStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
+		if(stamp != null){
+			krcdtDaiOutingTime.backStampPlaceCode = stamp.getLocationCode() == null 
+					? null : stamp.getLocationCode().v();
+			krcdtDaiOutingTime.backStampRoundingTimeDay = stamp.getAfterRoundingTime() == null 
+					? null : stamp.getAfterRoundingTime().valueAsMinutes();
+			krcdtDaiOutingTime.backStampSourceInfo = stamp.getStampSourceInfo().value;
+			krcdtDaiOutingTime.backStampTime = stamp.getTimeWithDay() == null 
+					? null : stamp.getTimeWithDay().valueAsMinutes();
 		} else {
 			setBackStampNull(krcdtDaiOutingTime);
 		}
+	}
+	
+	private void setBackActualStampNull(KrcdtDaiOutingTime krcdtDaiOutingTime) {
+		krcdtDaiOutingTime.backActualPlaceCode = null;
+		krcdtDaiOutingTime.backActualRoundingTimeDay = null;
+		krcdtDaiOutingTime.backActualSourceInfo = null;
+		krcdtDaiOutingTime.backActualTime = null;
 	}
 
 	private void setBackStampNull(KrcdtDaiOutingTime krcdtDaiOutingTime) {
@@ -265,30 +282,50 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		krcdtDaiOutingTime.backStampTime = null;
 	}
 	
-	private void setGoOutMainStamp(TimeActualStamp outingTimeSheet, KrcdtDaiOutingTime krcdtDaiOutingTime) {
-		if(outingTimeSheet != null){
-			krcdtDaiOutingTime.outActualPlaceCode = outingTimeSheet.getActualStamp().getLocationCode().v();
-			krcdtDaiOutingTime.outActualRoundingTimeDay = outingTimeSheet.getActualStamp().getAfterRoundingTime().v();
-			krcdtDaiOutingTime.outActualSourceInfo = outingTimeSheet.getActualStamp().getStampSourceInfo().value;
-			krcdtDaiOutingTime.outActualTime = outingTimeSheet.getActualStamp().getTimeWithDay().v();
-			krcdtDaiOutingTime.outNumberStamp = outingTimeSheet.getNumberOfReflectionStamp();
-			setGoOutStamp(outingTimeSheet.getStamp().orElse(null), krcdtDaiOutingTime);
+	private void setGoOutMainStamp(TimeActualStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
+		if(stamp != null){
+			setGoOutActualStamp(stamp.getActualStamp(), krcdtDaiOutingTime);
+			krcdtDaiOutingTime.outNumberStamp = stamp.getNumberOfReflectionStamp();
+			setGoOutStamp(stamp.getStamp().orElse(null), krcdtDaiOutingTime);
 		} else {
 			krcdtDaiOutingTime.outActualPlaceCode = null;
 			krcdtDaiOutingTime.outActualRoundingTimeDay = null;
 			krcdtDaiOutingTime.outActualSourceInfo = null;
 			krcdtDaiOutingTime.outActualTime = null;
-			krcdtDaiOutingTime.outNumberStamp = null;
 			setGoOutStampNull(krcdtDaiOutingTime);
 		}
 	}
+	
+	private void setGoOutActualStamp(WorkStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
+		if(stamp != null){
+			krcdtDaiOutingTime.outActualPlaceCode = stamp.getLocationCode() == null 
+					? null : stamp.getLocationCode().v();
+			krcdtDaiOutingTime.outActualRoundingTimeDay = stamp.getAfterRoundingTime() == null 
+					? null : stamp.getAfterRoundingTime().valueAsMinutes();
+			krcdtDaiOutingTime.outActualSourceInfo = stamp.getStampSourceInfo().value;
+			krcdtDaiOutingTime.outActualTime = stamp.getTimeWithDay() == null 
+					? null : stamp.getTimeWithDay().valueAsMinutes();
+		} else {
+			setGoOutActualStampNull(krcdtDaiOutingTime);
+		}
+	}
+	
+	private void setGoOutActualStampNull(KrcdtDaiOutingTime krcdtDaiOutingTime) {
+		krcdtDaiOutingTime.outActualPlaceCode = null;
+		krcdtDaiOutingTime.outActualRoundingTimeDay = null;
+		krcdtDaiOutingTime.outActualSourceInfo = null;
+		krcdtDaiOutingTime.outActualTime = null;
+	}
 
-	private void setGoOutStamp(WorkStamp outingTimeSheet, KrcdtDaiOutingTime krcdtDaiOutingTime) {
-		if(outingTimeSheet != null){
-			krcdtDaiOutingTime.outStampPlaceCode = outingTimeSheet.getLocationCode().v();
-			krcdtDaiOutingTime.outStampRoundingTimeDay = outingTimeSheet.getAfterRoundingTime().v();
-			krcdtDaiOutingTime.outStampSourceInfo = outingTimeSheet.getStampSourceInfo().value;
-			krcdtDaiOutingTime.outStampTime = outingTimeSheet.getTimeWithDay().v();
+	private void setGoOutStamp(WorkStamp stamp, KrcdtDaiOutingTime krcdtDaiOutingTime) {
+		if(stamp != null){
+			krcdtDaiOutingTime.outStampPlaceCode = stamp.getLocationCode() == null 
+					? null : stamp.getLocationCode().v();
+			krcdtDaiOutingTime.outStampRoundingTimeDay = stamp.getAfterRoundingTime() == null 
+					? null : stamp.getAfterRoundingTime().valueAsMinutes();
+			krcdtDaiOutingTime.outStampSourceInfo = stamp.getStampSourceInfo().value;
+			krcdtDaiOutingTime.outStampTime = stamp.getTimeWithDay() == null 
+					? null : stamp.getTimeWithDay().valueAsMinutes();
 		} else {
 			setGoOutStampNull(krcdtDaiOutingTime);
 		}

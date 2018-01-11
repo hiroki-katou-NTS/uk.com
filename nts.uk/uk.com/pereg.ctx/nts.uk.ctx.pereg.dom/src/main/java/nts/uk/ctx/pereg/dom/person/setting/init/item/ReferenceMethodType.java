@@ -23,7 +23,7 @@ public enum ReferenceMethodType {
 	/** (社員コードと同じ): */
 	SAMEASEMPLOYEECODE(5),
 	/** (システム日付): */
-	SAMEASBIRTHDATE(6),
+	SAMEASSYSTEMDATE(6),
 	/** (氏名と同じ ): */
 	SAMEASNAME(7),
 	/** (氏名（カナ）と同じ): */

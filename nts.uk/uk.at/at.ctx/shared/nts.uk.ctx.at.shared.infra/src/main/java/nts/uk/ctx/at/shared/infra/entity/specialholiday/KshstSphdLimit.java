@@ -12,9 +12,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.specialholiday.SphdLimit;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_SPHD_LIMIT")
@@ -55,5 +55,23 @@ public class KshstSphdLimit extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return kshstSphdLimitPK;
+	}
+
+	public KshstSphdLimit(KshstSphdLimitPK kshstSphdLimitPK, int specialVacationMonths, int specialVacationYears,
+			int grantCarryForward, int limitCarryoverDays, int specialVacationMethod) {
+		super();
+		this.kshstSphdLimitPK = kshstSphdLimitPK;
+		this.specialVacationMonths = specialVacationMonths;
+		this.specialVacationYears = specialVacationYears;
+		this.grantCarryForward = grantCarryForward;
+		this.limitCarryoverDays = limitCarryoverDays;
+		this.specialVacationMethod = specialVacationMethod;
+	}
+	
+	public static KshstSphdLimit toEntity(SphdLimit domain){
+		return new KshstSphdLimit(new KshstSphdLimitPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()),
+				domain.getSpecialVacationMonths().v(), domain.getSpecialVacationYears().v(), domain.getGrantCarryForward().value,
+				domain.getLimitCarryoverDays().v(), domain.getSpecialVacationMethod().value);
+		
 	}
 }

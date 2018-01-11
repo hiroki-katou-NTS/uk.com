@@ -765,7 +765,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             } 
             return appReason;
         }
-        
     }
 
 }

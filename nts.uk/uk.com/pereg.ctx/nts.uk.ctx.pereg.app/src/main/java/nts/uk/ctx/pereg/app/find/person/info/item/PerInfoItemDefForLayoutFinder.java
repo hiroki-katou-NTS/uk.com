@@ -87,7 +87,7 @@ public class PerInfoItemDefForLayoutFinder {
 			int dataTypeValue = singleItemDom.getDataTypeState().getDataTypeValue().value;
 			if(dataTypeValue == 6){
 				DataTypeStateDto dataTypeStateDto = createDataTypeStateDto(singleItemDom.getDataTypeState());
-				perInfoItemDefForLayoutDto.setLstComboxBoxValue(getLstComboBoxValue(dataTypeStateDto));
+				perInfoItemDefForLayoutDto.setLstComboxBoxValue(getLstComboBoxValue(dataTypeStateDto, empId));
 			}
 		}
 		return perInfoItemDefForLayoutDto;
@@ -204,8 +204,8 @@ public class PerInfoItemDefForLayoutFinder {
 	
 	
 	
-	public List<ComboBoxObject> getLstComboBoxValue(DataTypeStateDto dataTypeStateDto){
+	public List<ComboBoxObject> getLstComboBoxValue(DataTypeStateDto dataTypeStateDto, String empId){
 		SelectionItemDto selectionItemDto = (SelectionItemDto) dataTypeStateDto;
-		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, GeneralDate.today(), true);
+		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, empId, GeneralDate.today(), true);
 	}
 }

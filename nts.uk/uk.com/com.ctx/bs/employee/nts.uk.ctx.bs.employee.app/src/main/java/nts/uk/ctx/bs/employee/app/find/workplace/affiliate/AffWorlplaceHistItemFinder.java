@@ -56,7 +56,7 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 		return null;
 	}
 
-	private PeregDomainDto getByEmpIdAndStandDate(String employeeId, GeneralDate standDate) {
+	public AffWorlplaceHistItemDto getByEmpIdAndStandDate(String employeeId, GeneralDate standDate) {
 		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getByEmpIdAndStandDate(employeeId,
 				standDate);
 		if (affWrkplcHist.isPresent()) {

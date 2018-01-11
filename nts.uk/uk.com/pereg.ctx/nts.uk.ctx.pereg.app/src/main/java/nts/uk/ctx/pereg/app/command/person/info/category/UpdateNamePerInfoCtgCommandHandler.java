@@ -32,7 +32,7 @@ public class UpdateNamePerInfoCtgCommandHandler extends CommandHandler<UpdateNam
 		String contractCd = companyId.substring(0, 12);
 
 		if (update.getCategoryName().trim().equals("")) {
-			throw new BusinessException("");
+			throw new BusinessException("Msg_928");
 		}
 		boolean nameList = this.perInfoCtgRepositoty.checkCtgNameIsUnique(companyId, update.getCategoryName(),
 				update.getCategoryId());

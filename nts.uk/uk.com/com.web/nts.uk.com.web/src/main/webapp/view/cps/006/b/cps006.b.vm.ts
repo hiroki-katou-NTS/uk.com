@@ -212,9 +212,9 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                         });
                     });
-                }).fail(function() {
+                }).fail(function(res) {
 
-                    dialog({ messageId: "Msg_233" });
+                    dialog({ messageId: res.messageId });
                     block.clear();
 
                 });
@@ -377,8 +377,9 @@ module nts.uk.com.view.cps006.b.viewmodel {
         }
 
         genTime(time) {
+            
 
-            return nts.uk.time.parseTime(time, false).format();
+            return nts.uk.time.parseTime(time, true).format();
 
 
         }

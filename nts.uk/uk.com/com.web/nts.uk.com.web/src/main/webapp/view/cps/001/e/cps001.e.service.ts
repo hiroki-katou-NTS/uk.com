@@ -4,7 +4,7 @@ module cps001.e.service {
 
     let parentPath ="basic/organization/empfilemanagement/";
     let paths: any = {
-        getAvaOrMap: 'find/getAvaOrMap/{0}/{1}',
+        getMap: 'find/getAvaOrMap/{0}/{1}',
         insertAva: "command/insertAvaOrMap",
         updateAva: "command/updateAvaOrMap",
         removeAva: "command/removeAvaOrMap",
@@ -12,8 +12,8 @@ module cps001.e.service {
         permision: 'ctx/pereg/roles/auth/get-self-auth'
     };
 
-    export function getAvatar(sid) {
-        return ajax(format(parentPath + paths.getAvaOrMap, sid, 1));
+    export function getMap(sid) {
+        return ajax(format(parentPath + paths.getMap, sid, 1));
     }
     
     export function checkEmpFileMnExist(sid) {

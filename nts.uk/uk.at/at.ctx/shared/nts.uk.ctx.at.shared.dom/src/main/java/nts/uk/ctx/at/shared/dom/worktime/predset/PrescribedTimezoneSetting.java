@@ -31,12 +31,6 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	//時間帯
 	private List<TimezoneUse> lstTimezone;
 
-	/** The shift one. */
-	public static Integer SHIFT_ONE = 1;
-	
-	/** The shift two. */
-	public static Integer SHIFT_TWO = 2;
-	
 	/** The size one. */
 	public static Integer SIZE_ONE = 1;
 	
@@ -68,7 +62,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @return the timezone shift one
 	 */
 	public TimezoneUse getTimezoneShiftOne() {
-		return this.getTimezone(SHIFT_ONE);
+		return this.getTimezone(TimezoneUse.SHIFT_ONE);
 	}
 
 	/**
@@ -77,7 +71,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @return the timezone shift two
 	 */
 	public TimezoneUse getTimezoneShiftTwo() {
-		return this.getTimezone(SHIFT_TWO);
+		return this.getTimezone(TimezoneUse.SHIFT_TWO);
 	}
 
 	/**
