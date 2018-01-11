@@ -219,8 +219,6 @@ public class WorkTimeSettingFinder {
 						.get();
 				if (item.getPrescribedTimezoneSetting().getLstTimezone().isEmpty()) {
 					continue;
-				} else if (this.checkNotUse(item)) {
-					continue;
 				} else {
 					TimezoneUse timezone1 = item.getPrescribedTimezoneSetting().getLstTimezone()
 							.get(FIRST_ITEM);
@@ -245,7 +243,6 @@ public class WorkTimeSettingFinder {
 									currentWorkTime.getNote().v()));
 				}
 			}
-			;
 		}
 		return workTimeDtos;
 	}
