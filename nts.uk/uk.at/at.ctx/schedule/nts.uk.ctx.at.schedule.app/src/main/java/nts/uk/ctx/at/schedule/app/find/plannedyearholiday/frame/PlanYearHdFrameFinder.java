@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrame;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class PlanYearHdFrameFinder.
@@ -31,12 +30,8 @@ public class PlanYearHdFrameFinder {
 	 * @return the list
 	 */
 	public List<PlanYearHdFrameFindDto> findAll(){
-		
-		// get login info
-		LoginUserContext loginUserContext = AppContexts.user();
-		
 		// get company id
-		String companyId = loginUserContext.companyId();
+		String companyId = AppContexts.user().companyId();
 
 		// get all
 		List<PlanYearHolidayFrame> managementCategories = this.repository
