@@ -34,9 +34,9 @@ public class OutingTimeOfDailyPerformanceFinder extends FinderFacade {
 			dto.setYmd(domain.getYmd());
 			dto.setTimeZone(ConvertHelper.mapTo(domain.getOutingTimeSheets(),
 					(c) -> new OutingTimeZoneDto(
-							c.getOutingFrameNo().v().intValue(),
-							toWithActualTimeStamp(c.getGoOut()),
-							toWithActualTimeStamp(c.getComeBack()),
+							c.getOutingFrameNo().v(),
+							toWithActualTimeStamp(c.getGoOut().orElse(null)),
+							toWithActualTimeStamp(c.getComeBack().orElse(null)),
 							c.getReasonForGoOut().value, 
 							c.getOutingTimeCalculation() == null ? null : c.getOutingTimeCalculation().valueAsMinutes(),
 							c.getOutingTime() == null ? null : c.getOutingTime().valueAsMinutes())));
@@ -44,17 +44,19 @@ public class OutingTimeOfDailyPerformanceFinder extends FinderFacade {
 		return dto;
 	}
 
-	private WithActualTimeStampDto toWithActualTimeStamp(Optional<TimeActualStamp> c) {
-		return new WithActualTimeStampDto(
-				getTimeStamp(c.get().getStamp().orElse(null)),
-				getTimeStamp(c.get().getActualStamp()),
-				c.get().getNumberOfReflectionStamp());
+	private WithActualTimeStampDto toWithActualTimeStamp(TimeActualStamp c) {
+		return c == null ? null : new WithActualTimeStampDto(
+				getTimeStamp(c.getStamp().orElse(null)),
+				getTimeStamp(c.getActualStamp()),
+				c.getNumberOfReflectionStamp());
 	}
 
 	private TimeStampDto getTimeStamp(WorkStamp c) {
-		return c == null ? null : new TimeStampDto(c.getTimeWithDay().valueAsMinutes(),
-				c.getAfterRoundingTime().valueAsMinutes(),
-				c.getLocationCode().v(), c.getStampSourceInfo().value);
+		return c == null ? null : new TimeStampDto(
+				c.getTimeWithDay() == null ? null : c.getTimeWithDay().valueAsMinutes(),
+				c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
+				c.getLocationCode() == null ? null : c.getLocationCode().v(), 
+				c.getStampSourceInfo() == null ? null : c.getStampSourceInfo().value);
 	}
 
 }

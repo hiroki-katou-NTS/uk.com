@@ -499,7 +499,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             cwt.oneDayCls(0);
             cwt.morningCls(0);
             cwt.afternoonCls(0);
-            cwt.calculatorMethod(0);
+            cwt.calculatorMethod(1);
 
             od.workTypeCode('');
             od.workAtr(0);

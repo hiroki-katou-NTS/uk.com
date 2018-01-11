@@ -11,8 +11,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.specialholiday.Classfication;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_SPHD_CLASSIFICATION")
@@ -37,5 +37,9 @@ public class KshstSphdClassfication extends UkJpaEntity implements Serializable 
 	@Override
 	protected Object getKey() {
 		return kshstSphdClassficationPK;
+	}
+
+	public static KshstSphdClassfication toEntity(Classfication domain){
+		return new KshstSphdClassfication(new KshstSphdClassficationPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v(), domain.getClassficationCode()));
 	}
 }

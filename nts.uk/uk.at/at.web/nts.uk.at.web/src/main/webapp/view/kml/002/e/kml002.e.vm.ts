@@ -167,7 +167,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                             self.enableReturnTime(false);
                         }).ifCancel(() => {
                             flagChange = false;
-                            self.selectedMethod(1);
+                            self.selectedMethod()==1;
                             return;
                         })
                     }
@@ -186,7 +186,7 @@ module nts.uk.at.view.kml002.e.viewmodel {
                     
                     $.when(self.formulaTime()).done(function() {
                         if (self.allItemTime().length > 0) {
-                            self.displayItemsRuleTime(self.allItemTime(), self.catCodeTime(), value);
+                            self.displayItemsRuleTime(self.allItemTime(), self.catCodeTime(), self.checkedTime());
                             self.bindDataMoney(self.currentData.moneyFunc.lstMoney);
                         }
                     }).fail(function(res) {
@@ -211,9 +211,9 @@ module nts.uk.at.view.kml002.e.viewmodel {
                         self.selectedProcessing(self.currentData.timeUnit.actualDisplayAtr),
                         self.uPCd(self.currentData.timeUnit.unitPrice)
                     } else {
-                        self.checkedTime(self.currentData.moneyFunc.actualDisplayAtrTime);
-                        self.selectedMethod(self.currentData.calMethodAtr);// == 0 ? false : true
-                        self.catCodeTime(self.currentData.moneyFunc.categoryIndicatorTime);
+                        self.checkedTime(self.currentData.moneyFunc.actualDisplayAtr);
+                        self.selectedMethod(self.currentData.calMethodAtr ? 1 : 0);// == 0 ? false : true
+                        self.catCodeTime(self.currentData.moneyFunc.categoryIndicator);
                         self.rightItemsTime.removeAll();
                         self.bindDataMoney(self.currentData.moneyFunc.lstMoney);
                     }
@@ -392,10 +392,10 @@ module nts.uk.at.view.kml002.e.viewmodel {
                 var formulaAmount = {
                     verticalCalCd: data.verticalCalCd,
                     verticalCalItemId: data.itemId,
-                    calMethodAtr: self.selectedMethod() ? 1 : 0,
+                    calMethodAtr: self.selectedMethod(),
                     moneyFunc: {
-                        categoryIndicatorTime: self.catCodeTime(),
-                        actualDisplayAtrTime: self.checkedTime() ? 1 : 0,
+                        categoryIndicator: self.catCodeTime()? 1 : 0,
+                        actualDisplayAtr: self.checkedTime() ? 1 : 0,
                         lstMoney: formTime
                     },
                     timeUnit: {

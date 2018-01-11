@@ -91,7 +91,7 @@ public class CopySettingItemFinder {
 
 		if (isSetText) {
 
-			this.settingItemMap.setTextForItem(result);
+			this.settingItemMap.setTextForItem(result, employeeId);
 
 			return result.stream().filter(item -> StringUtils.isEmpty(item.getItemParentCd()))
 					.collect(Collectors.toList());

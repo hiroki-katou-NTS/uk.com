@@ -175,10 +175,6 @@
 	padding: 15px 0px 0px 30px;
 }
 
-#init_list {
-	
-}
-
 .table_item {
 	border-collapse: collapse;
 }
@@ -191,11 +187,6 @@
 	border: 1px solid black;
 	padding: 5px;
 	min-height: 20px;
-}
-
-.table_item td {
-	max-width: 250px;
-	word-break: keep-all;
 }
 
 .table_item th {

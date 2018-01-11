@@ -141,8 +141,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		List<StampItem> lstStampItem = this.stampDomainService.handleData(stampReflectRangeOutput, reCreateAttr,
 				empCalAndSumExecLogID, processingDate, employeeID, companyID);
 		ReflectStampOutput reflectStamp = null;
-		if (lstStampItem != null) {
-			reflectStamp = new ReflectStampOutput();
+		if (lstStampItem == null) {
+			reflectStamp = null;
 		}
 		
 		if (lstStampItem != null && !lstStampItem.isEmpty()) {
@@ -154,8 +154,14 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(), 
 					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance);
 		}
-
 		
+		if(lstStampItem != null && lstStampItem.isEmpty()){
+			reflectStamp = new ReflectStampOutput();
+			reflectStamp.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
+//			reflectStamp.setLstStamp(lstStampItem);
+//			reflectStamp.setOutingTimeOfDailyPerformance(outingTimeOfDailyPerformance);
+//			reflectStamp.setTemporaryTimeOfDailyPerformance(temporaryTimeOfDailyPerformance);
+		}
 		
 		return reflectStamp;
 	}

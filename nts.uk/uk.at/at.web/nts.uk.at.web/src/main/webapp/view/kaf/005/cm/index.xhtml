@@ -82,7 +82,7 @@
 			<div data-bind="if: screenModeNew" style="display: inline-block;">
 				<!--A3_6 申請日入力-->
 				<div tabindex="6" id="inputdate" class ="fix-margin-left"
-					data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF005_33')}',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}"></div>
+					data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF005_33')}',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}, acceptJapaneseCalendar: true"></div>
 			</div>
 			<div data-bind="if: !screenModeNew()" style="display: inline-block;">
 				<span class="label fix-margin-left" data-bind="text: appDate"></span>
@@ -189,16 +189,16 @@
 							<th class="ui-widget-header" rowspan="2">#{i18n.getText('KAF005_42')}</th>
 						</tr>
 					</thead>
-					<tbody data-bind="foreach: restTime">
+					<tbody data-bind="foreach: restTime"> 
 						<tr>
 							<!--A5_5 休憩時間順序--> 						
 							<td class="header" data-bind="text: frameName"></td>
 							<!--A5_6 開始時刻--> 						
 							<td><input tabindex="12" class="right-content"
-								data-bind="attr: { id: 'restTimeStart_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {value: startTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+								data-bind="attr: { id: 'restTimeStart_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF005_337]', value: startTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
 							<!--A5_7 終了時刻--> 						
 							<td><input tabindex="12" class="right-content"
-								data-bind="attr: { id: 'restTimeEnd_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {value: endTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+								data-bind="attr: { id: 'restTimeEnd_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF005_338]', value: endTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
 						</tr>
 					</tbody>
 				</table>
@@ -238,7 +238,7 @@
 							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
 							<!--A6_8 残業申請時間入力--> 						
 							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="15" class="right-content"
-								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, ntsTimeEditor: {name: nameID ,value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
+								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, ntsTimeEditor: {name: '#[KAF005_55]' ,value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
 							<!--A6_9 残業事前申請時間--> 						
 							<td class="right-content" data-bind="text: preAppTime"></td>
 							<!--A6_11 実績時間--> 						
@@ -312,8 +312,12 @@
 							<!--A8_6 加給時間名称ラベル--> 												
 							<td class="header" data-bind="text: frameName"></td>
 							<!--A8_7 加給時間入力--> 
-							<td><input tabindex="17" class="right-content"
-								data-bind="ntsTimeEditor: {name: '#[KAF005_85]',value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
+							<td>
+							<!-- <div>#{i18n.getText('KAF005_85',[frameName])}</div>    -->
+							<input tabindex="17" class="right-content"
+								data-bind="ntsTimeEditor: {
+								name:itemName,
+								value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
 							<!--A8_8 事前申請時間--> 
 							<td class="right-content" data-bind="text: preAppTime"></td>
 						</tr>

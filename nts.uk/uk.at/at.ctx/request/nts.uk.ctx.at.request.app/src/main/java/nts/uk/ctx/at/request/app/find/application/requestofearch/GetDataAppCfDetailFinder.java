@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDea
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
@@ -77,7 +78,11 @@ public class GetDataAppCfDetailFinder {
 			/*
 			ドメインモデル「締め」を取得する(lấy thông tin domain「締め」)
 			*/
-			String employmentCD = employeeAdaptor.getEmploymentCode(companyID, sid, metaDto.getAppDate());
+			SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, sid, metaDto.getAppDate());
+			if(empHistImport==null || empHistImport.getEmploymentCode()==null){
+				throw new BusinessException("Msg_426");
+			}
+			String employmentCD = empHistImport.getEmploymentCode();
 			Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
 			if(!closureEmployment.isPresent()){
 				throw new RuntimeException("締めがない。");

@@ -51,7 +51,7 @@ public class TimeLeavingOfDailyPerformanceFinder extends FinderFacade {
 		return c == null ? null : new TimeStampDto(
 				c.getTimeWithDay() == null ? null :c.getTimeWithDay().valueAsMinutes(),
 				c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
-				c.getLocationCode().v(),
+				c.getLocationCode() == null ? null : c.getLocationCode().v(),
 				c.getStampSourceInfo().value);
 	}
 

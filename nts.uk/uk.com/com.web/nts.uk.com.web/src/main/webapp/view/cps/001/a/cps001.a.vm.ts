@@ -99,7 +99,7 @@ module cps001.a.vm {
                     auth.allowAvatarRef(!!data.allowAvatarRef);
                     auth.allowMapBrowse(!!data.allowMapBrowse);
                 } else {
-                    auth.allowAvatarRef(false);
+                    auth.allowDocRef(false);
                     auth.allowAvatarRef(false);
                     auth.allowMapBrowse(false);
                 }
@@ -307,7 +307,7 @@ module cps001.a.vm {
             }
 
             permision().done((perm: IPersonAuth) => {
-                if (!!perm.allowAvatarUpload) {
+                if (!!perm.allowAvatarRef) {
                     setShared("CPS001D_PARAMS", {
                         employeeId: iemp.employeeId
                     });
@@ -674,7 +674,11 @@ module cps001.a.vm {
                                         if (data && data.length) {
                                             self.gridlist(data);
                                             if (!loadData || !loadData.infoId) {
-                                                self.infoId(data[0].optionValue);
+                                                if (self.infoId() != data[0].optionValue) {
+                                                    self.infoId(data[0].optionValue);
+                                                } else {
+                                                    self.infoId.valueHasMutated();
+                                                }
                                             } else {
                                                 if (loadData.infoId != self.infoId()) {
                                                     self.infoId(loadData.infoId);
@@ -685,11 +689,15 @@ module cps001.a.vm {
                                         } else {
                                             self.events.add();
                                             self.gridlist.removeAll();
+                                            setShared(REPL_KEY, undefined);
+                                            self.infoId.valueHasMutated();
                                         }
                                         setShared(RELOAD_DT_KEY, undefined);
                                     }).fail(mgs => {
                                         self.gridlist.removeAll();
+                                        setShared(REPL_KEY, undefined);
                                         setShared(RELOAD_DT_KEY, undefined);
+                                        self.infoId.valueHasMutated();
                                     });
                                 } else {
                                     self.infoId.valueHasMutated();
@@ -924,12 +932,9 @@ module cps001.a.vm {
                     });
 
                     permision().done((perm: IPersonAuth) => {
-                        // Current Employee has permision view other employee avatar
-                        if (!!perm.allowAvatarRef) {
-                            service.getAvatar(id).done((data: any) => {
-                                self.avatar(data.fileId ? liveView(data.fileId) : undefined);
-                            });
-                        }
+                        service.getAvatar(id).done((data: any) => {
+                            self.avatar(data.fileId ? liveView(data.fileId) : undefined);
+                        });
                     });
                 } else {
                     person.gender(undefined);
