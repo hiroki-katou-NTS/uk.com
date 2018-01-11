@@ -215,9 +215,7 @@ public class WorkTimeSettingFinder {
 				WorkTimeSetting currentWorkTime = workTimeItems.stream()
 						.filter(x -> x.getWorktimeCode().equals(item.getWorkTimeCode())).findAny()
 						.get();
-				if (item.getPrescribedTimezoneSetting().getLstTimezone().isEmpty()) {
-					continue;
-				} else if (this.checkNotUse(item)) {
+				if (item.getPrescribedTimezoneSetting().getLstTimezone().isEmpty() || this.checkNotUse(item)) {
 					continue;
 				} else {
 					TimezoneUse timezone1 = item.getPrescribedTimezoneSetting().getLstTimezone()
@@ -243,7 +241,6 @@ public class WorkTimeSettingFinder {
 									currentWorkTime.getNote().v()));
 				}
 			}
-			;
 		}
 		return workTimeDtos;
 	}
@@ -257,7 +254,7 @@ public class WorkTimeSettingFinder {
 	 */
 	private boolean checkNotUse(PredetemineTimeSetting workTimeSet) {
 		for (TimezoneUse timezone : workTimeSet.getPrescribedTimezoneSetting().getLstTimezone()) {
-			if (timezone.getUseAtr().equals(UseSetting.NOT_USE))
+			if (timezone.getUseAtr().equals(UseSetting.NOT_USE) && timezone.getWorkNo() == 1)
 				return true;
 		}
 		return false;
