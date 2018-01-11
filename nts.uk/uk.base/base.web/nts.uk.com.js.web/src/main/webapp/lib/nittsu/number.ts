@@ -1,7 +1,7 @@
 ﻿module nts.uk.ntsNumber {
 
     function isInteger(value: any, option?: any) {
-        if (option !== undefined && option.groupseperator() !== undefined) {
+        if (option !== undefined && option.groupseperator !== undefined) {
             value = isInteger(value) ? value : text.replaceAll(value.toString(), option.groupseperator(), '');
         }
         return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
@@ -28,7 +28,7 @@
     export function isHalfInt(value: any, message?: any) {
         var val = parseFloat(value);
         if (message !== undefined) message.id = 'FND_E_HALFINT';
-        if (val !== NaN && (val * 2) % 1 === 0) return true;
+        if (val !== NaN && ((Math.ceil(val) - val) === 0.5) && (val * 2) % 1 === 0) return true;
         return false;
     }
 
