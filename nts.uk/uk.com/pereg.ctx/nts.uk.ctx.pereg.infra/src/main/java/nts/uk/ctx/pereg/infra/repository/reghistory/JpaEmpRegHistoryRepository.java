@@ -15,7 +15,7 @@ import nts.uk.ctx.pereg.infra.entity.reghistory.PpedtEmployeeRegistrationHistory
 public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegHistoryRepository {
 
 	private static final String SELECT_ALL = "SELECT rh,em.employeeCode FROM PpedtEmployeeRegistrationHistory rh"
-			+ " INNER JOIN BsymtEmployeeDataMngInfo em ON rh.lastRegEmployeeID = em.bsymtEmployeeDataMngInfoPk.sId";
+			+ " INNER JOIN BsymtEmployeeDataMngInfo em ON rh.lastRegEmployeeID = em.bsymtEmployeeDataMngInfoPk.sId AND em.delStatus = 0";
 
 	private static final String GET_LAST_REG_BY_COMPANY_QUERY_STRING = SELECT_ALL
 			+ " WHERE rh.companyId= :companyId  ORDER BY rh.registeredDate DESC ";
