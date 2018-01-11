@@ -46,4 +46,16 @@ public interface ScWorkplaceAdapter {
 	 */
 	// RequestList #83
 	List<String> findParentWpkIdsByWkpId(String companyId, String workplaceId, GeneralDate date);
+	
+	/**
+	 * Find wpk ids by sid.
+	 *
+	 * @param companyId the company id
+	 * @param employeeId the employee id
+	 * @param date the date
+	 * @return the list
+	 */
+	// RequestList #65
+	List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date);
+
 }

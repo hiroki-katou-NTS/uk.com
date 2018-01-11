@@ -63,9 +63,9 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 				application.getAppDate());
 		approvalRootStateAdapter.updateReason(appID, employeeID, memo);
 		if(allApprovalFlg.equals(Boolean.TRUE)){
-			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REFLECTED);
+			// 実績反映状態 = 反映状態．反映待ち
+			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
 			applicationRepository.updateWithVersion(application);
-			// ドメインモデル「申請」と紐付き「反映情報」をUpdateする(update domain 「申請」va domain「反映情報」 tương ứng)
 		}
 		AppTypeDiscreteSetting discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 		// 承認処理時に自動でメールを送信するが trueの場合

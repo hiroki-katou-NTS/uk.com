@@ -391,6 +391,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 txtReasonTmp = reasonText.reasonName;
             }
             let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
+                0,
+                "",
                 txtReasonTmp,
                 self.prePostSelected(),
                 moment().format(self.dateType),

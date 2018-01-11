@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class OvertimeWorkFrameFinder.
@@ -31,12 +30,8 @@ public class OvertimeWorkFrameFinder {
 	 * @return the list
 	 */
 	public List<OvertimeWorkFrameFindDto> findAll(){
-		
-		// get login info
-		LoginUserContext loginUserContext = AppContexts.user();
-		
 		// get company id
-		String companyId = loginUserContext.companyId();
+		String companyId = AppContexts.user().companyId();
 
 		// get all
 		List<OvertimeWorkFrame> managementCategories = this.repository
