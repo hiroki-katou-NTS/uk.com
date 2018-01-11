@@ -106,11 +106,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     //historySelection.histId(undefined);
                     self.registerData();
                 }
-                if (self.selection().selectionID() == undefined && self.enableSelName() == true ){
-                     self.selectionCd(true);
-                } else {
-                    self.selectionCd(false);
-                }
+               
             });
 
             //sub theo historyID:
@@ -205,6 +201,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     $("#name").focus();
                 } else {
                     self.registerData();
+                }
+                
+                if (x == undefined && self.enableSelName() == true){
+                     self.selectionCd(true);
+                } else {
+                    self.selectionCd(false);
                 }
             });
 
