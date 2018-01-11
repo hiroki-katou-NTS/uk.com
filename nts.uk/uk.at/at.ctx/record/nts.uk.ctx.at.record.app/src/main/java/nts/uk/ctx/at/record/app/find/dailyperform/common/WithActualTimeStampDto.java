@@ -20,5 +20,5 @@ public class WithActualTimeStampDto {
 	/** 打刻反映回数 */
 	// @AttendanceItemLayout(layout = "C")
 	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
-	private Integer numberOfReflectionStamp;
+	private int numberOfReflectionStamp;
 }

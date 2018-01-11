@@ -59,7 +59,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                     let c = _.find(self.listWorkTime(), ['workTimeCode', workTimeCd]);
                     if (c) {
                         workTimeName = c.abName;
-                        workTimeCode = (c.workTimeCode == '000' ? '' : c.workTimeCode);
+                        workTimeCode = (c.workTimeCode == '000' ? null : c.workTimeCode);
                         startTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.startTime, true).format() : '';
                         endTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.endTime, true).format() : '';
                     } else {

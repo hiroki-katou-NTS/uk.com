@@ -23,10 +23,12 @@ module nts.uk.com.view.cmm018.m {
                 }
                 var master = new service.MasterApproverRootQuery(self.date(), self.isCompany(), self.isWorkplace(), self.isPerson());
                 //service.searchModeEmployee(master);
+                nts.uk.ui.block.grayout();
                 service.saveAsExcel(master).done(function(data: service.MasterApproverRootQuery){
-                    console.log(data);
+                    nts.uk.ui.block.clear();
                 }).fail(function(res: any){
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId});                        
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId});  
+                    nts.uk.ui.block.clear();                      
                 });
             }
         }

@@ -24,6 +24,12 @@ public class TimezoneUse extends TimeZone {
 	//勤務NO
 	private int workNo;
 
+	/** The shift one. */
+	public static Integer SHIFT_ONE = 1;
+	
+	/** The shift two. */
+	public static Integer SHIFT_TWO = 2;
+
 	public void updateStartTime(TimeWithDayAttr start) {
 		this.start = start;
 	}
@@ -42,8 +48,11 @@ public class TimezoneUse extends TimeZone {
 	 */
 	@Override
 	public void validate() {
-		if (this.isUsed() && this.start.greaterThanOrEqualTo(this.end)) {
-			throw new BusinessException("Msg_770","KMK003_216");
+		if (this.isUsed()) {
+			if (this.workNo == SHIFT_TWO && (this.start == null || this.end == null)) {
+				throw new BusinessException("Msg_516", "KMK003_216");
+			}
+			this.validateRange("KMK003_216");
 		}
 	}
 

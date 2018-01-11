@@ -170,13 +170,19 @@ module nts.uk.ui.gridlist {
 //                                    ],
                                 { headerText: 'Inbound time', key: 'time', dataType: 'string', width: '140px',
                                                 constraint: { 
-                                                                primitiveValue: 'SampleTimeClock',
+//                                                                primitiveValue: 'SampleTimeClock',
+                                                                cDisplayType: "Clock",
                                                                 required: true
                                                             }
                                 },
                                 { headerText: 'Address',
                                     group: [
-                                            { headerText: 'Item<br/>Code', key: 'addressCode1', dataType: 'string', width: '150px' },
+                                            { headerText: 'Item<br/>Code', key: 'addressCode1', dataType: 'string', width: '150px', //columnCssClass: 'currency-symbol',
+                                                constraint: {
+                                                    cDisplayType: "HalfInt",
+                                                    min: 3, max: 9,
+                                                    required: true
+                                                }},
                                             { headerText: 'Address1', key: 'address1', dataType: 'string', width: '150px'}
                                            ]
                                 },

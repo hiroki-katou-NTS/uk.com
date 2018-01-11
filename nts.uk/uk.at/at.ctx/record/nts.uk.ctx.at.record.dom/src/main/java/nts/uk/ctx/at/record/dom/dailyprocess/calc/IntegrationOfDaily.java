@@ -18,5 +18,6 @@ public class IntegrationOfDaily {
 	private TimeLeavingOfDailyPerformance attendanceLeave;
 	@Setter
 	private AttendanceTimeOfDailyPerformance attendanceTimeOfDailyPerformance; 
+	
 
 }

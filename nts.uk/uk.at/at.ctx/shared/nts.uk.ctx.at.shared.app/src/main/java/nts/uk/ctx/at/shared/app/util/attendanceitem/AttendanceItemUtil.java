@@ -54,12 +54,7 @@ public class AttendanceItemUtil {
 
 			if (layout.isList()) {
 				List<T> listValue = (List<T>) ReflectionUtil.getFieldValue(f, attendanceItems);
-				if (listValue == null || listValue.isEmpty()) {
-					listValue = new ArrayList<>();
-					for (int i = 0; i < layout.listMaxLength(); i++) {
-						listValue.add(ReflectionUtil.newInstance(getGenericType(f)));
-					}
-				}
+				initNewList(f, layout, listValue);
 				List<ItemValue> result = new ArrayList<>();
 				for (int x = 0; x < listValue.size(); x++) {
 					result.addAll(toItemValues(listValue.get(x), layout == null ? "" : layout.layout(), itemIds, x));
@@ -82,6 +77,22 @@ public class AttendanceItemUtil {
 			}
 			return toItemValues(fieldValue, layout == null ? "" : layout.layout(), itemIds, 0);
 		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+
+	private static <T extends ConvertibleAttendanceItem> List<T> initNewList(Field f, AttendanceItemLayout layout, List<T> oldList) {
+		if(oldList == null){
+			oldList = new ArrayList<>();
+		}
+		Class<T> listGenericType = getGenericType(f);
+		int start = (oldList == null || oldList.isEmpty()) ? 0 : oldList.size(); 
+		for (int i = start; i < layout.listMaxLength(); i++) {
+			T newValue = ReflectionUtil.newInstance(listGenericType);
+			if(!layout.setFieldWithIndex().isEmpty()){
+				ReflectionUtil.setFieldValue(getField(layout.setFieldWithIndex(), listGenericType), newValue, i);
+			}
+			oldList.add(newValue);
+		}
+		return oldList;
 	}
 
 	public static <T extends ConvertibleAttendanceItem> T toConvertibleAttendanceItem(Class<T> classType,
@@ -140,26 +151,18 @@ public class AttendanceItemUtil {
 
 	private static <R extends ConvertibleAttendanceItem, T extends ConvertibleAttendanceItem> void processListProperty(
 			T object, Entry<String, List<ItemValue>> group, Field field) {
-		Class<R> classType = getGenericType(field);
 		Map<String, List<ItemValue>> listGroup = groupMapLayout(group.getValue(), 1, true);
-		if (!listGroup.isEmpty()) {
-			int max = getLayoutAnnotation(field).listMaxLength();//getMax(listGroup);
-			List<R> value = ReflectionUtil.getFieldValue(field, object); 
-			if(value == null){
-				value = new ArrayList<>();
-			}
-			if(value.size() < max){
-				for(int x = value.size(); x < max; x++){
-					value.add(ReflectionUtil.newInstance(classType));
-				}
-			}
-			ReflectionUtil.setFieldValue(field, object, getList(value, listGroup, max));
-		}
+//		if (!listGroup.isEmpty()) {
+		AttendanceItemLayout layout = getLayoutAnnotation(field);
+		List<R> value = ReflectionUtil.getFieldValue(field, object); 
+		initNewList(field, layout, value);
+		ReflectionUtil.setFieldValue(field, object, getList(value, listGroup, layout.listMaxLength()));
+//		}
 	}
 
 	private static <R extends ConvertibleAttendanceItem> List<R> getList(List<R> list,
 			Map<String, List<ItemValue>> listGroup, int max) {
-		return IntStream.range(0, max + 1).mapToObj(idx -> {
+		return IntStream.range(0, max).mapToObj(idx -> {
 			List<ItemValue> values = listGroup.get(String.valueOf(idx));
 			if (values != null) {
 				return toConvertibleAttendanceItem(list.get(idx), values, 1);
@@ -213,9 +216,9 @@ public class AttendanceItemUtil {
 			int layoutIdx, Class<T> classType, String pathName, String extraCondition, boolean needCheckWithIdx) {
 		List<T> value = getNotNullListValue(f, object);
 		Map<String, List<ItemValue>> listGroup = groupMapLayout(attendanceItems, layoutIdx, true);
-		String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
-		String newExCondition = getExCondition(extraCondition, object, layout);
-		boolean newNeedCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
+//		String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
+//		String newExCondition = getExCondition(extraCondition, object, layout);
+//		boolean newNeedCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
 		String idxFieldName = layout.setFieldWithIndex();
 		boolean isIndexField = !idxFieldName.isEmpty();
 		processListToMax(value, layout.listMaxLength(), classType, idxFieldName);
@@ -228,8 +231,8 @@ public class AttendanceItemUtil {
 			}
 			if (values != null) {
 				// TODO: for multiple index (current, not need)
-				return mergeToObject(v, values, layoutIdx + 1, idx, newPathName,
-						newExCondition, newNeedCheckWithIdx);
+				return mergeToObject(v, values, layoutIdx + 1, idx, pathName,
+						extraCondition, needCheckWithIdx);
 			}
 			return v;
 		}).collect(Collectors.toList());
@@ -389,6 +392,7 @@ public class AttendanceItemUtil {
 		int itemId = valueType.getIdFromUtil() ? itemIds.get(0) : itemIds.get(idx);
 		//System.out.println("id:" + itemId);
 		if (onNeedItemIds.isEmpty() || onNeedItemIds.contains(itemId)) {
+//			Logger.getLogger(AttendanceItemUtil.class.getName()).info(pathName + " - " + itemId);
 			ItemValue itemValue = new ItemValue(valueType.type(), mergeLayout(currentLayout, layoutCode), itemId);
 			itemValue.value(value);
 			return Arrays.asList(itemValue);

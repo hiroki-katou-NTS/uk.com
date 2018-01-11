@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.temporarytime;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -33,22 +34,32 @@ public class TemporaryTimeOfDailyPerformanceCommand extends DailyWorkCommonComma
 	@Override
 	public TemporaryTimeOfDailyPerformance toDomain() {
 		return !data.isPresent() ? null : new TemporaryTimeOfDailyPerformance(getEmployeeId(), new WorkTimes(data.get().getWorkTimes()),
-						ConvertHelper.mapTo(data.get().getWorkLeaveTime(), (c) -> toTimeLeaveWork(c)), getWorkDate());
+				data.get().getWorkLeaveTime() == null ? new ArrayList<>() : ConvertHelper.mapTo(data.get().getWorkLeaveTime(), (c) -> toTimeLeaveWork(c)), getWorkDate());
 	}
 
 	private TimeLeavingWork toTimeLeaveWork(WorkLeaveTimeDto c) {
-		return c == null ? null : new TimeLeavingWork(new WorkNo(c.getWorkNo()), Optional.of(toTimeActualStamp(c.getWorking())),
-				Optional.of(toTimeActualStamp(c.getLeave())));
+		return c == null ? null : new TimeLeavingWork(
+									new WorkNo(c.getWorkNo()), 
+									toTimeActualStamp(c.getWorking()),
+									toTimeActualStamp(c.getLeave()));
 	}
 
-	private TimeActualStamp toTimeActualStamp(WithActualTimeStampDto c) {
-		return c == null ? null : new TimeActualStamp(toWorkStamp(c.getActualTime()), toWorkStamp(c.getTime()),
-						c.getNumberOfReflectionStamp());
+	private Optional<TimeActualStamp> toTimeActualStamp(WithActualTimeStampDto c) {
+		return c == null ? Optional.empty() : Optional.of(new TimeActualStamp(
+												toWorkStamp(c.getActualTime()), 
+												toWorkStamp(c.getTime()),
+												c.getNumberOfReflectionStamp()));
 	}
 
 	private WorkStamp toWorkStamp(TimeStampDto c) {
-		return c == null ? null : new WorkStamp(new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
-						new TimeWithDayAttr(c.getTimesOfDay()), new WorkLocationCD(c.getPlaceCode()),
-						ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
+		return c == null ? null : new WorkStamp(
+					createAttendanceTime(c.getAfterRoundingTimesOfDay()),
+					createAttendanceTime(c.getTimesOfDay()), 
+					c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
+					ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
+	}
+
+	private TimeWithDayAttr createAttendanceTime(Integer c) {
+		return c == null ? null : new TimeWithDayAttr(c);
 	}
 }

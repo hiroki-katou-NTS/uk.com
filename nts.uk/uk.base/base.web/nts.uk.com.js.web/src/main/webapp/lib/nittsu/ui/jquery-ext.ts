@@ -24,4 +24,16 @@ module nts.uk.ui.jqueryExtentions {
             return;
         }
     }
+    
+    $.fn.onkey = function (command: "down"|"up"|"press", keyCode: number, handler: (JQueryEventObject) => void) {
+        var $element = $(this);
+        
+        $element.on("key" + command, e => {
+            if (e.keyCode === keyCode) {
+                return handler(e);
+            }
+        });
+        
+        return $element;
+    };
 }
