@@ -4,7 +4,7 @@ module nts.uk.at.view.ksm005.e {
         
         var paths = {
             findAllWorkType : "at/share/worktype/findAll",
-            findAllWorkTime: "at/shared/worktime/findByCompanyID",
+            findAllWorkTime: "at/shared/worktimesetting/findAll",
             checkPublicHoliday: "at/schedule/holiday/getHolidayByDate",
             checkWeeklyWorkSetting: "ctx/at/schedule/pattern/work/weekly/setting/checkDate",
             batchWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/batch"
