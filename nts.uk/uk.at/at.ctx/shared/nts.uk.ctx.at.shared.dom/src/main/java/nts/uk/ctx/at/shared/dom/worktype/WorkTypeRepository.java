@@ -31,6 +31,14 @@ public interface WorkTypeRepository {
 	 * @return the list
 	 */
 	List<WorkType> findByCompanyId(String companyId);
+	
+	/**
+	 * 廃止されていない勤務種類をすべて取得する 
+	 * @author danpv
+	 * @param companyId
+	 * @return
+	 */
+	List<WorkType> findNotDeprecateByCompanyId(String companyId);
 
 	/**
 	 * Find not deprecated.

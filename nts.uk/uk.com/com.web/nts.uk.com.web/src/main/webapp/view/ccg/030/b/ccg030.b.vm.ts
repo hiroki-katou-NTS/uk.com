@@ -2,7 +2,7 @@ module ccg030.b.viewmodel {
     import flowmenuModel = ccg030.a.viewmodel.model;
 
     export class ScreenModel {
-        flowmenu: KnockoutObsrvable<flowmenuModel.FlowMenu>;
+        flowmenu: KnockoutObservable<flowmenuModel.FlowMenu>;
 
         constructor() {
             this.flowmenu = ko.observable(null);
@@ -12,11 +12,14 @@ module ccg030.b.viewmodel {
         startPage(): void {
             var self = this;
             var liveviewcontainer = $(".panel-content");
-            var flowmenu: flowmenuModel.FlowMenu = nts.uk.ui.windows.getShared("flowmenu");
+            var flowmenuDTO: flowmenuModel.FlowMenuDto = nts.uk.ui.windows.getShared("flowmenu");
             var fileID: string = nts.uk.ui.windows.getShared("fileID");
 
-            if (flowmenu !== undefined)
-                self.flowmenu(flowmenu);
+            if (flowmenuDTO !== undefined) {
+                let flowMenu = new flowmenuModel.FlowMenu("", "", "", "", "未設定", 0, 4, 4);
+                flowMenu.fromDTO(flowmenuDTO);
+                self.flowmenu(flowMenu);
+            }
             _.defer(() => { self.setupPositionAndSize(self.flowmenu()); });
             //view image
             liveviewcontainer.html($("<iframe width = '100%' height = '100%' />").attr("src", nts.uk.request.liveView(fileID)));

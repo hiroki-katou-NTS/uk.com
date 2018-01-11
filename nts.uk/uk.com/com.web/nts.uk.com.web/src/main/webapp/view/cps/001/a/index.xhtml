@@ -29,7 +29,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button type="button" class="proceed"
-					data-bind="click: saveData, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('CPS001_4')}</button>
+					data-bind="click: saveData, enable: $root.errors.isEmpty &amp;&amp; saveAble" tabindex="1">#{i18n.getText('CPS001_4')}</button>
 				<button type="button" data-bind="click: unManagerEmployee" tabindex="2">#{i18n.getText('CPS001_5')}</button>
 				<button type="button" class="danger"
 					data-bind="click: deleteEmployee" tabindex="3">#{i18n.getText('CPS001_6')}</button>
@@ -189,7 +189,8 @@
 													add: multiple.events.add,
 													replication: multiple.events.replace,
 													delete: multiple.events.remove
-												}
+												},
+												permisions: multiple.permisions
 											} }">
 											</div>
 										</div>
@@ -328,12 +329,17 @@
 						add: function() {},
 						replication: function() {},
 						delete: function() {}
+					},
+					permisions: {
+						add: ko.observable(),
+						replication: ko.observable(),
+						delete: ko.observable()
 					}
 				}">
 				<div class="form-group search-box">
-					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}, enable: $data.list.value()" tabindex="10">#{i18n.getText('CPS001_32')}</button>
-					<button type="button" class="btn-repli" data-bind="click: $data.event.replication || function() {}, enable: $data.list.value()" tabindex="11">#{i18n.getText('CPS001_33')}</button>
-					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: _.indexOf(_.map(ko.toJS($data.list.dataSource), function(x) { return x.optionValue; }), $data.list.value()) == 0 , " tabindex="12">#{i18n.getText('CPS001_34')}</button>
+					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.add()" tabindex="10">#{i18n.getText('CPS001_32')}</button>
+					<button type="button" class="btn-repli" data-bind="click: $data.event.replication || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.replace() &amp;&amp; $data.list.value()" tabindex="11">#{i18n.getText('CPS001_33')}</button>
+					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.remove() &amp;&amp; _.indexOf(_.map(ko.toJS($data.list.dataSource), function(x) { return x.optionValue; }), $data.list.value()) == 0 , " tabindex="12">#{i18n.getText('CPS001_34')}</button>
 				</div>
 				<div data-bind="template: {
 						name: 'list-data',
@@ -363,6 +369,10 @@
 					event: {
 						add: function() {},
 						delete: function() {}						
+					},
+					permisions: {
+						add: ko.observable(),
+						delete: ko.observable()
 					}
 				}">
 				<div class="form-group search-box">
@@ -413,6 +423,11 @@
 								data: {
 									items: multiple.layout().listItemCls,
 									outData: multiple.layout().outData
+								},
+								permision: {
+									add: ko.observable(),
+									replication: ko.observable(),
+									delete: ko.observable()
 								}
 							}"></div>
 					</div>
@@ -422,6 +437,11 @@
 								data: {
 									items: multiple.layout().listItemCls,
 									outData: multiple.layout().outData
+								},
+								permision: {
+									add: ko.observable(),
+									replication: ko.observable(),
+									delete: ko.observable()
 								}
 							}"></div>
 					</div>

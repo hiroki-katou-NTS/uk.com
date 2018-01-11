@@ -17,6 +17,7 @@ import nts.arc.time.GeneralDateTime;
 @AllArgsConstructor
 public class CreateApplicationCommand {
 	
+	private Long version;
 	
 	/**
 	 * 申請ID

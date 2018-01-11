@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.file.at.app.outsideot;
+package nts.uk.file.at.app.export.outsideot;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 @Getter
 @Setter
@@ -15,12 +15,12 @@ public class EmpRegHistory extends AggregateRoot {
 
 	protected String registeredEmployeeID;
 	protected String companyId;
-	protected GeneralDate registeredDate;
+	protected GeneralDateTime registeredDate;
 	protected String lastRegEmployeeID;
 	protected String lastRegEmployeeCd;
 
 	public static EmpRegHistory createFromJavaType(String registeredEmployeeID, String companyId,
-			GeneralDate registeredDate, String lastRegEmployeeID, String lastRegEmployeeCd) {
+			GeneralDateTime registeredDate, String lastRegEmployeeID, String lastRegEmployeeCd) {
 		return new EmpRegHistory(registeredEmployeeID, companyId, registeredDate, lastRegEmployeeID, lastRegEmployeeCd);
 	}
 

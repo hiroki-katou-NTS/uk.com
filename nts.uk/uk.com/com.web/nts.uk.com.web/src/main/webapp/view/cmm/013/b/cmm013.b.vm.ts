@@ -45,7 +45,7 @@ module nts.uk.com.view.cmm013.b {
                     return;
                 }               
                 
-                nts.uk.ui.dialog.confirm({ messageId: "Msg_482", messageParams: [_self.endDate().substring(0, 10), _self.jobTitleCode(), _self.jobTitleName()]})
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_482", messageParams: [moment(_self.endDate()).format("YYYY/MM/DD"), _self.jobTitleCode(), _self.jobTitleName()]})
                     .ifYes(() => { 
                         nts.uk.ui.block.grayout();
                         service.removeJobTitle(_self.toJSON())

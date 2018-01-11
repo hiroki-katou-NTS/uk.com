@@ -1060,7 +1060,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                             formBuilt: self.calculatorItems()[i].formBuilt,
                             formTime: self.calculatorItems()[i].formTime,
                             formPeople: self.calculatorItems()[i].formPeople,
-                            formAmount: self.calculatorItems()[i].formAmount,
+                            formulaAmount: self.calculatorItems()[i].formulaAmount,
                             numerical: self.calculatorItems()[i].numerical,
                             unitPrice: self.calculatorItems()[i].unitPrice
                         };
@@ -1095,7 +1095,7 @@ module nts.uk.at.view.kml002.a.viewmodel {
                         formBuilt: selectedItems[i].formBuilt,
                         formTime: selectedItems[i].formTime,
                         formPeople: selectedItems[i].formPeople,
-                        formAmount: selectedItems[i].formAmount,
+                        formulaAmount: selectedItems[i].formulaAmount,
                         numerical: selectedItems[i].numerical,
                         unitPrice: selectedItems[i].unitPrice
                     };
@@ -1519,8 +1519,8 @@ module nts.uk.at.view.kml002.a.viewmodel {
                                         var name = data.moneyFunc.lstMoney[i].name != null ? data.moneyFunc.lstMoney[i].name : "";
                                         var item = _.find(self.amountItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
                                         var itemTime = _.find(self.timeItems, function(o) { return o.externalBudgetCode == data.moneyFunc.lstMoney[i].externalBudgetCd; });
-                                        var attendanceTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].attendanceItemIdTime && o.itemType == 0; });
-                                        var presetTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].presetItemIdTime; });
+                                        var attendanceTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].attendanceItemId && o.itemType == 0; });
+                                        var presetTime = _.find(self.timeItems, function(o) { return o.id.slice(0, -1) == data.moneyFunc.lstMoney[i].presetItemId; });
                                         if (name != "") {
                                             formulaResult += operatorAtr + " " + name + " ";
                                         } else if (item != null) {

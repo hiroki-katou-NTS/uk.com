@@ -19,6 +19,10 @@ public class OutsideOTBRDItemNameLangData{
 	
 	/** The overtime no. */
 	private Integer breakdownItemNo;
+	
+	/** The is use. */
+	private Boolean isUse;
+	
 
 	/**
 	 * Instantiates a new outside OTBRD item name lang data.

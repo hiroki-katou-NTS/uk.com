@@ -334,6 +334,11 @@ module nts.fixedtable {
                 self.$element.find('.time-range-editor').each((index, element) => {
                     $('#' + element.id).validateTimeRange();
                 });
+                
+                // Focus check box default last item of table after remove.
+                if (self.itemList().length > 0) {
+                    self.$element.find('.column-checkbox-header').last().focus();
+                }
             });
         }
         
@@ -346,6 +351,9 @@ module nts.fixedtable {
             self.tableStyle.height = heigthCell * self.maxRowDisplay + 31;
             
             self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0) + 30;
+            if (self.tableStyle.width > 630) {
+                self.tableStyle.width = 630
+            }
         }
         
         /**
@@ -406,7 +414,7 @@ module nts.fixedtable {
             let rowHtml: string = "";
             
             // mode multiple
-            rowHtml += "<td class='check-box-column' style='text-align: center;'><div data-bind=\"attr: {tabindex: $parent.tabindex}, " 
+            rowHtml += "<td class='check-box-column' style='text-align: center;'><div class='column-checkbox-header' data-bind=\"attr: {tabindex: $parent.tabindex}, " 
                     + "visible: $index() >= $parent.minRow, ntsCheckBox: { checked: isChecked, "
                     + "enable: true, text:''}\"></div></td>";
             
@@ -422,10 +430,10 @@ module nts.fixedtable {
                 }
                 if (item.isRoudingColumn) {
                     rowHtml += '<!-- ko if: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
-                                    + self.generateColumnHtml(item, true)
+                                    + self.generateColumnHtml(item, false)
                                     + '<!-- /ko -->'
                                     + '<!-- ko ifnot: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
-                                    + self.generateColumnHtml(item, false)
+                                    + self.generateColumnHtml(item, true)
                                     + '<!-- /ko -->';
                     return;
                 }
@@ -637,7 +645,14 @@ module nts.fixedtable {
             var self = this;
             if (element) {
                 element.delegate('.ui-igcombo-wrapper', "igcomboselectionchanged", function(evt, ui) {
-                    _.defer(() => self.itemList.valueHasMutated());
+                    var key = $(this).data('key');
+                    var newValue = ui.items[0].data[key];
+                    var oldValue = $(this).data('value');
+                    if (!oldValue || oldValue != newValue) {
+                        _.defer(() => self.itemList.valueHasMutated());
+                        $(this).data('value', newValue);
+                        console.log('Test');
+                    }
                 });
             }
         }
@@ -701,7 +716,7 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                     });
                 }
                 screenModel.initEventChangeComboBox($(element));
-                screenModel.$element.find('.table-fixed-kmk003').ntsFixedTable({height: screenModel.tableStyle.height})
+                screenModel.$element.find('.table-fixed-kmk003').ntsFixedTable({width: 630, height: screenModel.tableStyle.height})
                 //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
                 screenModel.$element.on('click', '.check-box-column > div', function(event){
                     _.defer(() => screenModel.itemList.valueHasMutated());

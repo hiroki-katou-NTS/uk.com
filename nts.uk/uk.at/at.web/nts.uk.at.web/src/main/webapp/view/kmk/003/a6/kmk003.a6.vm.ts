@@ -249,7 +249,7 @@ module a6 {
                     key: "inLegalBreakFrameNo",
                     dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 120,
+                    width: 150,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
@@ -264,7 +264,7 @@ module a6 {
                     key: "outLegalBreakFrameNo",
                     dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 120,
+                    width: 150,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
@@ -279,7 +279,7 @@ module a6 {
                     key: "outLegalPubHolFrameNo",
                     defaultValue: ko.observable(1),
                     dataSource: self.lstWorkDayOffFrame,
-                    width: 180,
+                    width: 150,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
@@ -294,7 +294,7 @@ module a6 {
                     key: "roundingTime",
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0),
-                    width: 120,
+                    width: 80,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
@@ -311,7 +311,7 @@ module a6 {
                     unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 150,
+                    width: 200,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 3,
@@ -342,7 +342,7 @@ module a6 {
                     key: "inLegalBreakFrameNo",
                     dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 120,
+                    width: 150,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
@@ -357,7 +357,7 @@ module a6 {
                     key: "outLegalBreakFrameNo",
                     dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 120,
+                    width: 150,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
@@ -372,7 +372,7 @@ module a6 {
                     key: "outLegalPubHolFrameNo",
                     dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 180,
+                    width: 150,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
@@ -387,7 +387,7 @@ module a6 {
                     key: "roundingTime",
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0),
-                    width: 120,
+                    width: 80,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
@@ -404,7 +404,7 @@ module a6 {
                     unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 150,
+                    width: 200,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 3,

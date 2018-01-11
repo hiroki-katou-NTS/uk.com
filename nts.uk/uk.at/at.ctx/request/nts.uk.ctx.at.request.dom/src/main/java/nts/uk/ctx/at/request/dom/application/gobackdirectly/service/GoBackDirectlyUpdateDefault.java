@@ -8,10 +8,9 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -19,6 +18,9 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyReposi
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -38,16 +40,42 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
+	
+	@Inject
+	private GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
+	
+	@Inject
+	private GoBackDirectlyRegisterService goBackDirectlyRegisterService;
 
 	/**
 	 * アルゴリズム「直行直帰更新前チェック」を実行する
 	 */
 	@Override
-	public void checkErrorBeforeUpdate(String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, PrePostAtr postAtr, Long version) {
+	public void checkErrorBeforeUpdate(GoBackDirectly goBackDirectly, String companyID, String appID, Long version) {
 		// アルゴリズム「4-1.詳細画面登録前の処理」を実行する
-		String companyId = AppContexts.user().companyId();
-		this.detailBeforeUpdate.processBeforeDetailScreenRegistration(companyId, employeeID, appDate, employeeRouteAtr,
-				appID, postAtr, version);
+		Application_New application_New = appRepo.findByID(companyID, appID).get();
+		this.detailBeforeUpdate.processBeforeDetailScreenRegistration(
+				companyID, 
+				application_New.getEmployeeID(), 
+				application_New.getAppDate(), 
+				EmploymentRootAtr.APPLICATION.value,
+				application_New.getAppID(), 
+				application_New.getPrePostAtr(), 
+				version);
+		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
+		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
+		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
+		GoBackDirectLateEarlyOuput goBackLateEarly = goBackDirectlyRegisterService.goBackDirectLateEarlyCheck(goBackDirectly);
+		//直行直帰遅刻早退のチェック
+		//TODO: chua the thuc hien duoc nen mac dinh luc nao cung co loi エラーあり
+		if(goBackLateEarly.isError) {
+			//直行直帰申請共通設定.早退遅刻設定がチェックする
+			if(goBackCommonSet.getLateLeaveEarlySettingAtr() == CheckAtr.CHECKREGISTER) {
+				throw new BusinessException("Msg_297");
+			}else if(goBackCommonSet.getLateLeaveEarlySettingAtr() == CheckAtr.CHECKNOTREGISTER) {
+				throw new BusinessException("Msg_298");	
+			}
+		}
 	}
 
 	/**

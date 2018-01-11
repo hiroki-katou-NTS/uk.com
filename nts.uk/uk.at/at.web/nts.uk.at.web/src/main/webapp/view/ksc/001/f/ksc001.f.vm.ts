@@ -6,7 +6,7 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
     export module viewmodel {
 
         export class ScreenModel {
-            errorLogs: KnockoutObservableArray<ScheduleErrorLogDto>;
+            errorLogs: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
@@ -29,10 +29,10 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 self.errorLogs = ko.observableArray([]);
 
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KSC001_55"), key: 'employeeId', width: 80},
+                    { headerText: nts.uk.resource.getText("KSC001_55"), key: 'noID', width: 80},
                     { headerText: nts.uk.resource.getText("KSC001_56"), key: 'employeeCode', width: 150 },
                     { headerText: nts.uk.resource.getText("KSC001_57"), key: 'employeeName', width: 150 },
-                    { headerText: nts.uk.resource.getText("KSC001_58"), key: 'errorContent', width: 150 }
+                    { headerText: nts.uk.resource.getText("KSC001_58"), key: 'date', width: 150 }
                 ]);
 
                 self.currentCode = ko.observable();
@@ -121,10 +121,26 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                             });
                             windowSize.$dialog.resize();
                             // update error to view
-                            self.errorLogs(errorLogs); 
+                            let order = _.orderBy(errorLogs,[self.compareCode,self.compareDate],['asc','asc']);
+                            let array = _.forEach(order,(object,index)=>{ object.noID = index+1;});
+                            self.errorLogs(array); 
                         }
                     });
                 });
+            }
+            /**
+             * define function to sort
+             */
+            private compareCode(a: any) {
+                return a.employeeCode.toUpperCase();
+               
+            }
+            /**
+             * define function to sort
+             */
+            private compareDate(a: any) {
+                return new Date(a.date);
+              
             }
             
             /**

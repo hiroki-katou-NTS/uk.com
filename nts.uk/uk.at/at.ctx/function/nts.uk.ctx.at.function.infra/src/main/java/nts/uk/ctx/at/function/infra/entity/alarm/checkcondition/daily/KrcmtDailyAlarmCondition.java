@@ -46,7 +46,7 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 	public int category;
 
 	@Column(name = "ERROR_ALARM_CHECK_ID")
-	public String errorAlarmCode;
+	public String errorAlarmID;
 
 	@Column(name = "CON_EXTRACTED_DAILY")
 	public int conExtractedDaily;
@@ -63,13 +63,13 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 	public KfnmtAlarmCheckConditionCategory condition;
 
 	public KrcmtDailyAlarmCondition(String dailyAlarmConID, String companyId, String code, int category,
-			String errorAlarmCode, int conExtractedDaily, int addApplication) {
+			String errorAlarmID, int conExtractedDaily, int addApplication) {
 		super();
 		this.dailyAlarmConID = dailyAlarmConID;
 		this.companyId = companyId;
 		this.code = code;
 		this.category = category;
-		this.errorAlarmCode = errorAlarmCode;
+		this.errorAlarmID = errorAlarmID;
 		this.conExtractedDaily = conExtractedDaily;
 		this.addApplication = addApplication;
 	}
@@ -85,7 +85,7 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 					companyId,
 					code.v(),
 					category.value,
-					domain.getErrorAlarmCode(),
+					domain.getErrorAlarmID(),
 					domain.getConExtractedDaily().value,
 					domain.isAddApplication()?1:0
 				);
@@ -95,9 +95,9 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 		return new DailyAlarmCondition(
 				this.dailyAlarmConID,
 				EnumAdaptor.valueOf(this.conExtractedDaily, ConExtractedDaily.class) ,
-				
 				this.addApplication == 1?true:false,
-				this.errorAlarmCode
+				this.errorAlarmID,
+				null
 				);
 	}
 
