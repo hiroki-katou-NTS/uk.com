@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.stamp;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -9,6 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStamp;
+import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStampPK;
 
 @Stateless
 public class JpaStampRepository extends JpaRepository implements StampRepository {
@@ -91,6 +93,23 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	public List<StampItem> findByDate(String companyId, String cardNumber, String startDate, String endDate) {
 		// TODO Auto-generated method stubs
 		return null;
+	}
+
+	@Override
+	public void updateStampItem(StampItem stampItem) {
+		Optional<KwkdtStamp> kwkdtStampOptional = this.queryProxy().find(new KwkdtStampPK(stampItem.getCardNumber().v(), stampItem.getAttendanceTime().v().intValue(), stampItem.getStampAtr().value, stampItem.getDate()), KwkdtStamp.class);
+		if(kwkdtStampOptional.isPresent()){
+			KwkdtStamp kwkdtStamp = kwkdtStampOptional.get();
+			kwkdtStamp.goOutReason = stampItem.getGoOutReason().value;
+			kwkdtStamp.reflectedAtr = stampItem.getReflectedAtr().value;
+			kwkdtStamp.siftCd = stampItem.getSiftCd().v();
+			kwkdtStamp.stampCombinationAtr = stampItem.getStampCombinationAtr().value;
+			kwkdtStamp.stampMethod = stampItem.getStampMethod().value;
+			kwkdtStamp.workLocationCd = stampItem.getWorkLocationCd().v();
+			this.commandProxy().update(kwkdtStamp);
+		}else{
+			this.commandProxy().insert(new KwkdtStamp(new KwkdtStampPK(stampItem.getCardNumber().v(), stampItem.getAttendanceTime().v().intValue(), stampItem.getStampAtr().value, stampItem.getDate()), stampItem.getSiftCd().v(), stampItem.getStampCombinationAtr().value, stampItem.getWorkLocationCd().v(), stampItem.getStampMethod().value, stampItem.getGoOutReason().value, stampItem.getReflectedAtr().value));
+		}
 	}
 
 }

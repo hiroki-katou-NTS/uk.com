@@ -69,7 +69,7 @@ module kdl002.a.viewmodel {
                 }
             });
             let sortByA =  _.orderBy(lstA, ["dispOrder"], ["asc"]);
-            let sortByB =  _.orderBy(lstB, ["code"], ["asc"]);
+            let sortByB =  _.orderBy(lstB, ["workTypeCode"], ["asc"]);
                 //push list A (common)
                 _.each(sortByA, function(obj){
                     result.push(obj);

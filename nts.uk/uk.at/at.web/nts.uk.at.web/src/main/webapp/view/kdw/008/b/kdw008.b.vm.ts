@@ -135,7 +135,6 @@ module nts.uk.at.view.kdw008.b {
                 self.businessTypeList([]);
                 new service.Service().getBusinessType().done(function(data: Array<IBusinessType>) {
                     if (data && data.length > 0) {
-                        data = _.orderBy(data, ["businessTypeCode"], ['asc']);
                         self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
                         self.currentBusinessTypeCode(self.businessTypeList()[0].businessTypeCode);
                         self.currentBusinessTypeName(self.businessTypeList()[0].businessTypeName);

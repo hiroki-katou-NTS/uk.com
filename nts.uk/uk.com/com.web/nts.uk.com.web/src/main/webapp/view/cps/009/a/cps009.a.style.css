@@ -45,7 +45,7 @@
 }
 #date {
 	border: 0px solid #999999 !important;
-	width: 208px !important;
+	width: 200px !important;
 }
 
 #datey {
@@ -55,19 +55,19 @@
 }
 
 #timeItem {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #timePoint {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #number {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #string {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #content-right {
@@ -289,6 +289,7 @@ table tr td, table tr th {
 span.caret-background.caret-right.direction-right {
 	position: fixed !important;
 	margin-top: 50px !important;
+	margin-left: 2px !important;
 }
 
 .table-container {
@@ -378,29 +379,6 @@ label[for] {
 	border: 1px solid #c5c5c500 !important;;
 }
 
-/* Tooltip container */
-/* .tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black; If you want dots under the hoverable text
-} */
-
-/* Tooltip text */
-/* .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
- 
-    Position the tooltip text - see examples below!
-    position: absolute;
-    z-index: 1;
-} */
-
-/* Show the tooltip text when you mouse over the tooltip container */
-/* .tooltip:hover .tooltiptext {
-    visibility: visible;
-} */
+abbr[title]{
+	text-decoration: none;
+}

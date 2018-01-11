@@ -34,7 +34,7 @@ public class TeamAddCommandHandler extends CommandHandler<TeamCommand> {
 		// get command
 		TeamCommand command = context.getCommand();
 
-		Optional<Team> team = this.teamRespository.findTeamByTeamCode(command.getTeamCode());
+		Optional<Team> team = this.teamRespository.findTeamByPK(command.getTeamCode(),command.getWorkPlaceId());
 		if (team.isPresent()) {
 			throw new BusinessException("Msg_3");
 		}

@@ -3,10 +3,5 @@ module nts.uk.com.view.cas013.b {
         var screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
         $("#search").focus();
-        $("#search").keyup(function(event) {
-            if (event.keyCode == 13) {
-                $("#searchButton").click();
-            }
-        });
     });
 }

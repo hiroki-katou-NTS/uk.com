@@ -1,25 +1,22 @@
-package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition;
+package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm;
 
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.FixedConditionWorkRecord;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.FixedConditionWorkRecordName;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.WorkRecordFixedCheckItem;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordName;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.WorkRecordFixedCheckItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DAILY_ALARM_CONDITION")
+@Table(name = "KRCMT_FIX_CON_WORK_RECORD")
 public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serializable {
 
 	/**
@@ -36,9 +33,6 @@ public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serial
 	@Column(name = "USE_ATR")
 	public int useAtr;
 	
-	@ManyToOne
-	@JoinColumn(name="DAILY_ALARM_CON_ID", referencedColumnName="DAILY_ALARM_CON_ID", insertable = false, updatable = false)
-	public KrcmtDailyAlarmCondition dailyalarmcondition;
 	
 	public KrcmtFixedConditionWorkRecord(KrcmtFixedConditionWorkRecordPK krcmtFixedConditionWorkRecordPK,
 			String message, int useAtr) {
@@ -55,7 +49,7 @@ public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serial
 	
 	public static KrcmtFixedConditionWorkRecord toEntity(FixedConditionWorkRecord domain) {
 		return new KrcmtFixedConditionWorkRecord(
-				new KrcmtFixedConditionWorkRecordPK( domain.getDailyAlarmConID(),
+				new KrcmtFixedConditionWorkRecordPK( domain.getErrorAlarmCode(),
 				domain.getFixConWorkRecordNo().value),
 				domain.getMessage().v(),
 				domain.isUseAtr()?1:0
@@ -64,7 +58,7 @@ public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serial
 	
 	public FixedConditionWorkRecord toDomain() {
 		return new FixedConditionWorkRecord(
-				this.krcmtFixedConditionWorkRecordPK.dailyAlarmConID,
+				this.krcmtFixedConditionWorkRecordPK.errorAlarmCode,
 				EnumAdaptor.valueOf(this.krcmtFixedConditionWorkRecordPK.fixConWorkRecordNo, WorkRecordFixedCheckItem.class),
 				new FixedConditionWorkRecordName(this.message),
 				this.useAtr == 1?true:false

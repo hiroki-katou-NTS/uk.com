@@ -33,7 +33,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         constructor() {
 
             let self = this;
-
             self.initValue();
             self.start(undefined);
             self.initSettingId.subscribe(function(value: string) {
@@ -89,6 +88,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
             });
 
 
+        }
+        
+        getTitleName(itemName: string){
+            return ko.computed(()=>{
+                return itemName.length > 5 ? itemName : "";
+            });
         }
 
         // get item list
@@ -766,9 +771,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
         stringItemLength: number;
 
         stringItemDataType: number;
-
+        getTitle: KnockoutObservable<string> = ko.observable("");
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
+            self.getTitle(self.getWidthText(params.itemName) > 200 ? params.itemName : "");
             self.fixedItem = params.fixedItem;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
             self.settingId = ko.observable(params.settingId || "");
@@ -799,7 +805,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.itemType = ko.observable(params.itemType || undefined);
             self.dataType = ko.observable(params.dataType || undefined);
-
+            
             if (params.dataType === 3) {
                 if (params.dateType === 1) {
                     self.dateValue = ko.observable(params.dateValue || undefined);
@@ -936,6 +942,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
 
 
+        }
+        getWidthText(str: string) : number{
+            let div = $('<span>').text(str).appendTo('body'), width = div.width(); div.remove(); 
+            return width;
         }
     }
 

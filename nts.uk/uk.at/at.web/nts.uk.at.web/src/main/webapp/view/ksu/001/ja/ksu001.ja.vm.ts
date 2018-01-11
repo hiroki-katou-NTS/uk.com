@@ -181,7 +181,7 @@ module nts.uk.at.view.ksu001.ja.viewmodel {
         closeDialog(): void {
             let self = this;
             setShared('dataFromJA', {
-                selectedLinkButton: self.selectedLinkButton
+                selectedLinkButton: self.selectedLinkButton()
             });
             nts.uk.ui.windows.close();
         }
@@ -235,6 +235,7 @@ module nts.uk.at.view.ksu001.ja.viewmodel {
                 return;
             }
 
+            nts.uk.ui.block.grayout();
             let listInsertPatternItemCommand = [];
             for (var i = 0; i < self.source().length; i++) {
                 if (!_.isEmpty(self.source()[i])) {
@@ -273,6 +274,8 @@ module nts.uk.at.view.ksu001.ja.viewmodel {
             }).fail(function(error) {
                 nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                 dfd.reject();
+            }).always(() => {
+                nts.uk.ui.block.clear();
             });
             return dfd.promise();
         }

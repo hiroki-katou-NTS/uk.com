@@ -3,7 +3,6 @@ package nts.uk.ctx.pereg.app.find.layout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,7 +29,6 @@ import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSe
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
-import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutItemType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -108,12 +106,6 @@ public class RegisterLayoutFinder {
 		}
 		setData(dataServer, listItemCls, command.getCreateType());
 
-		if (command.getCreateType() == 2) {
-
-			return listItemCls.stream().filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getItems()))
-					.collect(Collectors.toList());
-		}
-
 		return listItemCls;
 	}
 
@@ -140,14 +132,12 @@ public class RegisterLayoutFinder {
 					SettingItemDto setItem = setItemOpt.get();
 					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value, itemCls);
 				} else {
-					if (itemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM.value || createType != 2) {
-						infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value, itemCls);
-					}
+
+					infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value, itemCls);
+
 				}
 
-				if (infoValue != null) {
-					itemDataList.add(infoValue);
-				}
+				itemDataList.add(infoValue);
 
 			});
 			itemCls.getListItemDf().clear();
@@ -169,10 +159,6 @@ public class RegisterLayoutFinder {
 		if (!CollectionUtil.isEmpty(itemDataList)) {
 
 			itemCls.setItems(itemDataList);
-		} else {
-			if (itemCls.getLayoutItemType().equals(LayoutItemType.SeparatorLine))
-
-				itemCls.setItems(null);
 		}
 
 	}
@@ -195,8 +181,8 @@ public class RegisterLayoutFinder {
 			int dataTypeValue = dataObject.getItem().getDataTypeValue();
 			if (dataTypeValue == 6) {
 				SelectionItemDto selectionItemDto = (SelectionItemDto) dataObject.getItem();
-				List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(),
-						GeneralDate.today(), true);
+				List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
+						AppContexts.user().employeeId(), GeneralDate.today(), true);
 				dataObject.setLstComboBoxValue(lstComboBox);
 			}
 		}

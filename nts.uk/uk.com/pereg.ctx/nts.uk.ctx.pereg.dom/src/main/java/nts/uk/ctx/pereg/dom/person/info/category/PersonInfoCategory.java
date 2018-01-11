@@ -10,15 +10,52 @@ import nts.gul.text.IdentifierUtil;
 
 @Getter
 public class PersonInfoCategory extends AggregateRoot {
+	
+	/**
+	 * 個人情報カテゴリID
+	 */
 	private String personInfoCategoryId;
-	private String companyId;
+	
+	/**
+	 * カテゴリコード
+	 */
 	private CategoryCode categoryCode;
-	private CategoryCode categoryParentCode;
+	
+	/**
+	 * カテゴリ名
+	 */
 	private CategoryName categoryName;
-	private PersonEmployeeType personEmployeeType;
-	private IsAbolition isAbolition;
-	private CategoryType categoryType;
+	
+	/**
+	 * 会社ID
+	 */
+	private String companyId;
+	
+	/**
+	 * 既定区分
+	 */
 	private IsFixed isFixed;
+	
+	/**
+	 * 個人・社員区分
+	 */
+	private PersonEmployeeType personEmployeeType;
+	
+	/**
+	 * 種類
+	 */
+	private CategoryType categoryType;
+	
+	/**
+	 * 廃止区分
+	 */
+	private IsAbolition isAbolition;
+	
+	/**
+	 * 個人情報カテゴリ親ID
+	 */
+	private CategoryCode categoryParentCode;
+	
 	private boolean alreadyCopy;
 
 	public final static String ROOT_COMPANY_ID = "000000000000-0000";

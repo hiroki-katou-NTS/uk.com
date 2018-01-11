@@ -7,7 +7,6 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
-			<title>#{i18n.getText('CPS009_1')}</title>
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
 					nts.uk.shr.com.time.TimeWithDayAttr
@@ -199,7 +198,7 @@
 													data-bind="css:{ 
 											requiredCell: isRequired(), 
 											notrequiredCell:!isRequired()}">
-													<span class="months-input tooltip" data-bind="text: itemName" />
+													<abbr data-bind="attr:{'title': getTitle}"><span class="months-input" data-bind="text: itemName" /></abbr>
 												</td>
 												<td class="input-units-2">
 													<div id="combo-box"
@@ -405,7 +404,7 @@
 															attr: { NameID: itemName }" />
 															</com:ko-if>
 														</com:ko-if> <!--   list box  --> <com:ko-if bind="(dataType() === 6)">
-															<div id="combox1" class="input-units-3 "
+															<div id="combox1" 
 																data-bind="ntsComboBox: {
 													options: selection,
 													optionsValue: 'optionValue',
