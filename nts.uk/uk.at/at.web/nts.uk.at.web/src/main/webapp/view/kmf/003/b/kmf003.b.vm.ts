@@ -57,7 +57,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             var dfd = $.Deferred();
             
             service.findByCode(self.conditionData.conditionNo, self.conditionData.code).done(function(data){
-                self.bindData(data);                
+                let sortedData = _.orderBy(data, ['grantYearHolidayNo'], ['asc']);
+                self.bindData(sortedData);                
                 dfd.resolve();
             }).fail(function(res) {
                 dfd.reject(res);    
