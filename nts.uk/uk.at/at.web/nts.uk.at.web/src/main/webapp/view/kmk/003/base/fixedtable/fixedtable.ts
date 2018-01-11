@@ -645,7 +645,14 @@ module nts.fixedtable {
             var self = this;
             if (element) {
                 element.delegate('.ui-igcombo-wrapper', "igcomboselectionchanged", function(evt, ui) {
-                    _.defer(() => self.itemList.valueHasMutated());
+                    var key = $(this).data('key');
+                    var newValue = ui.items[0].data[key];
+                    var oldValue = $(this).data('value');
+                    if (!oldValue || oldValue != newValue) {
+                        _.defer(() => self.itemList.valueHasMutated());
+                        $(this).data('value', newValue);
+                        console.log('Test');
+                    }
                 });
             }
         }
