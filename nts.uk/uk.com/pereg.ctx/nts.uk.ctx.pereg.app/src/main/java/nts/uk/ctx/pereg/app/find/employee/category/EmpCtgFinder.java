@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
@@ -36,6 +35,7 @@ import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepos
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoPermissionType;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
@@ -91,34 +91,28 @@ public class EmpCtgFinder {
 	 * @return List<Category Dto>
 	 */
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg(String selectedEmployeeIdId) {
-		//App contexts
+		//App contexts of login employee 
 		String companyId = AppContexts.user().companyId();
 		String empIdCurrentLogin = AppContexts.user().employeeId();
 		String roleIdOfLogin = AppContexts.user().roles().forPersonalInfo();
 		//String roleIdOfLogin = "99900000-0000-0000-0000-000000000001";
-
+		
+		//companyId of viewer
+		String viewerCId = (employeeRepository.findByEmpId(selectedEmployeeIdId).get()).getCompanyId();
+		
 		// get list Category
 		List<PersonInfoCategory> listCategory = perInfoCategoryRepositoty.getAllPerInfoCtg(companyId);
 
 		boolean isSelf = selectedEmployeeIdId.equals(empIdCurrentLogin);
-		
+		boolean isSameCom = companyId.equals(viewerCId);
 		// get category domain list
+		Map<String, PersonInfoCategoryAuth> mapCategoryAuth = personInfoCategoryAuthRepository
+			    .getAllCategoryAuthByRoleId(roleIdOfLogin).stream()
+			    .collect(Collectors.toMap(e -> e.getPersonInfoCategoryAuthId(), e -> e));
 		List<PersonInfoCategory> returnList = listCategory.stream().filter(x -> {
-			Optional<PersonInfoCategoryAuth> perInfoCtgAuth = personInfoCategoryAuthRepository
-					.getDetailPersonCategoryAuthByPId(roleIdOfLogin, x.getPersonInfoCategoryId());
-			if (!perInfoCtgAuth.isPresent())
-				return false;
-			if(isSelf) {
-				if( perInfoCtgAuth.get().getAllowPersonRef() == PersonInfoPermissionType.YES) {
-					List<PersonInfoItemAuth> lstItemAuths = itemAuth.getAllItemAuth(roleIdOfLogin, x.getPersonInfoCategoryId());
-					return lstItemAuths.stream().filter(item -> item.getSelfAuth().value == 1).collect(Collectors.toList()).size() != lstItemAuths.size();
-				}else return false;
-			}else {
-				if(perInfoCtgAuth.get().getAllowOtherRef() == PersonInfoPermissionType.YES) {
-					List<PersonInfoItemAuth> lstItemAuths = itemAuth.getAllItemAuth(roleIdOfLogin, x.getPersonInfoCategoryId());
-					return lstItemAuths.stream().filter(item -> item.getOtherAuth().value == 1).collect(Collectors.toList()).size() != lstItemAuths.size();
-				}else return false;
-			}
+			String ctgId = x.getPersonInfoCategoryId();
+			PersonInfoCategoryAuth ctgAuth = mapCategoryAuth.get(ctgId);
+			return checkRole(ctgAuth, roleIdOfLogin, ctgId, isSelf, isSameCom);
 		}).collect(Collectors.toList());
 		
 		//convert to dto and return
@@ -139,7 +133,11 @@ public class EmpCtgFinder {
 	public List<ComboBoxObject> getListInfoCtgByCtgIdAndSid(PeregQuery query){
 		// app contexts
 		String contractCode = AppContexts.user().contractCode();
+		String empIdCurrentLogin = AppContexts.user().employeeId();
 		String roleId = AppContexts.user().roles().forPersonalInfo();
+		String loginCId = AppContexts.user().companyId();
+		String viewerCId = (employeeRepository.findByEmpId(query.getEmployeeId()).get()).getCompanyId();
+		boolean isSameCom = loginCId.equals(viewerCId);
 		//String roleId = "99900000-0000-0000-0000-000000000001";
 
 		//get category
@@ -157,7 +155,14 @@ public class EmpCtgFinder {
 			infoList = getInfoListOfOptionalCtg(perInfoCtg, query);		
 		query.setCategoryCode(perInfoCtg.getCategoryCode().v());
 		infoList = layoutingProcessor.getListFirstItems(query);
-		return infoList;
+		
+		boolean isSelf = query.getEmployeeId().equals(empIdCurrentLogin);
+		PersonInfoCategoryAuth ctgAuth = personInfoCategoryAuthRepository.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
+		
+		infoList.stream().filter(x -> {
+			return checkRole(ctgAuth, roleId, x.getOptionValue(), isSelf,isSameCom);
+		}).collect(Collectors.toList());
+		return fiterOfContHist(ctgAuth, infoList, roleId, isSelf);	
 	}
 	
 	private List<ComboBoxObject> getInfoListOfOptionalCtg(PersonInfoCategory perInfoCtg, PeregQuery query){
@@ -270,5 +275,47 @@ public class EmpCtgFinder {
 			return after.compareTo(before);
 		});
 		return strDates.stream().map(x -> comboBoxs.get(x)).collect(Collectors.toList());
+	}
+	
+	/**
+	 * filter based on past and future history
+	 * @param infoList
+	 * @param roleId
+	 * @param isSelf
+	 * @return
+	 */
+	private List<ComboBoxObject> fiterOfContHist(PersonInfoCategoryAuth perInfoCtgAuth, List<ComboBoxObject> infoList, String roleId, boolean isSelf){
+		GeneralDate today = GeneralDate.today();
+		infoList.stream().filter(x -> {
+			boolean isPast = true;
+			String enddate = x.getOptionText().substring(13);
+			if(!enddate.equals("")) {
+				isPast = today.afterOrEquals(GeneralDate.fromString(enddate, "yyyy/MM/dd"));
+			}
+			if(!isPast) {
+				return isSelf?perInfoCtgAuth.getSelfFutureHisAuth() != PersonInfoAuthType.HIDE : perInfoCtgAuth.getOtherFutureHisAuth() != PersonInfoAuthType.HIDE;
+			}else {
+				return isSelf?perInfoCtgAuth.getSelfPastHisAuth() != PersonInfoAuthType.HIDE : perInfoCtgAuth.getOtherPastHisAuth() != PersonInfoAuthType.HIDE;
+			}
+		}).collect(Collectors.toList());
+		return infoList;
+	}
+	
+	private boolean checkRole(PersonInfoCategoryAuth perInfoCtgAuth, String roleId, String categoryId, boolean isSelf, boolean isSameCom) {
+		if (perInfoCtgAuth == null)
+			return false;
+		if(isSelf) {
+			if( perInfoCtgAuth.getAllowPersonRef() == PersonInfoPermissionType.YES) {
+				List<PersonInfoItemAuth> lstItemAuths = itemAuth.getAllItemAuth(roleId, categoryId);
+				return lstItemAuths.stream().filter(item -> item.getSelfAuth().value == 1).collect(Collectors.toList()).size() != lstItemAuths.size();
+			}else return false;
+		}else {
+			if(!isSameCom) return false;
+			if(!(perInfoCtgAuth.getAllowOtherCompanyRef() == PersonInfoPermissionType.NO)) return false;
+			if(perInfoCtgAuth.getAllowOtherRef() == PersonInfoPermissionType.YES) {
+				List<PersonInfoItemAuth> lstItemAuths = itemAuth.getAllItemAuth(roleId, categoryId);
+				return lstItemAuths.stream().filter(item -> item.getOtherAuth().value == 1).collect(Collectors.toList()).size() != lstItemAuths.size();
+			}else return false;
+		}
 	}
 }
