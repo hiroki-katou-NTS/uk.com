@@ -22,7 +22,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 let matchCheckCondition = _.find(listCurrentCheckCondition, (item) => {
                     return item.alarmCategory == category.category;
                 });
-                let checkCondition = new share.CheckCondition(category.category, category.categoryName, matchCheckCondition);
+                let checkCondition = new share.CheckCondition(category.category, category.categoryName, matchCheckCondition.extractionDailyDto);
                 listCheckCondition.push(checkCondition);
             });
             self.listCheckCondition(listCheckCondition);
@@ -34,6 +34,4 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             });
         }
     }
-
-
 }

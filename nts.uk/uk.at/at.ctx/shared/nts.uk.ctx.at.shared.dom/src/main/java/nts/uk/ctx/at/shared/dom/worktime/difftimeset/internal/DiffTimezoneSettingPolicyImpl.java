@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSetting;
@@ -43,9 +42,7 @@ public class DiffTimezoneSettingPolicyImpl implements DiffTimezoneSettingPolicy 
 		diffTzSet.getEmploymentTimezones().forEach(empTz -> this.emTzPolicy.validate(predSet, empTz));
 
 		// validate list DiffTimeOTTimezoneSet
-		val emTimezone1 = diffTzSet.getEmploymentTimezones().stream()
-				.filter(emTz -> emTz.getEmploymentTimeFrameNo().v() == 1).findFirst().get();
-		diffTzSet.getOTTimezones().forEach(otTimezone -> this.otSetPolicy.validate(predSet, otTimezone, emTimezone1));
+		diffTzSet.getOTTimezones().forEach(otTimezone -> this.otSetPolicy.validate(predSet, otTimezone));
 	}
 
 }

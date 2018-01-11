@@ -127,7 +127,7 @@ public class ScheduleExecutionLogFinder {
 		dto.setTotalNumber(this.scheduleCreatorRepository.countdAll(executionId));
 		
 		// set total number error
-		dto.setTotalNumberError(this.scheduleErrorLogRepository.distinctErrorByExecutionId(executionId));
+		dto.setTotalNumberError(this.scheduleErrorLogRepository.distinctErrorByExecutionIdNew(executionId));
 		
 		// set total number created
 		dto.setTotalNumberCreated(
