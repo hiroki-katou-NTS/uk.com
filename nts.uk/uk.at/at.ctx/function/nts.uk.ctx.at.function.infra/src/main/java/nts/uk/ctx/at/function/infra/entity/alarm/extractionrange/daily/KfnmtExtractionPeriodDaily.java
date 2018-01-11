@@ -121,7 +121,7 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 		if (strPrev == StartSpecify.DAYS) {
 			this.strPreviousDay = startDate.getStrDays().get().getDayPrevious().value;
 			this.strMakeToDay = startDate.getStrDays().get().isMakeToDay() == true ? 1 : 0;
-			this.strDay = startDate.getStrDays().get().getDay();
+			this.strDay = startDate.getStrDays().get().getDay().v();
 		} else if (strPrev == StartSpecify.MONTH) {
 			this.strPreviousMonth = startDate.getStrMonth().get().getMonthPrevious().value;
 			this.strCurrentMonth = startDate.getStrMonth().get().isCurentMonth() == true ? 1 : 0;
@@ -134,7 +134,7 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 		if (endPrev == EndSpecify.DAYS) {
 			this.endPreviousDay = endDate.getEndDays().get().getDayPrevious().value;
 			this.endMakeToDay = endDate.getEndDays().get().isMakeToDay() == true ? 1 : 0;
-			this.endDay = endDate.getEndDays().get().getDay();
+			this.endDay = endDate.getEndDays().get().getDay().v();
 		} else if (endPrev == EndSpecify.MONTH) {
 			this.endPreviousMonth = endDate.getEndMonth().get().getMonthPrevious().value;
 			this.endCurrentMonth = endDate.getEndMonth().get().isCurentMonth() == true ? 1 : 0;

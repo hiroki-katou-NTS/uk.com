@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -1042,31 +1043,37 @@ button .icon {
   outline: none;
   box-shadow: 0 0 1px 1px #0096f2;
 }
-/* line 18, ../sass/components/_editor.scss */
+/* line 16, ../sass/components/_editor.scss */
+.ntsControl .nts-input.enterkey {
+  background-image: url("images/icons/enter_mark.png");
+  background-position: right;
+  background-repeat: no-repeat;
+}
+/* line 24, ../sass/components/_editor.scss */
 .ntsControl.symbol {
   position: relative;
 }
-/* line 21, ../sass/components/_editor.scss */
+/* line 27, ../sass/components/_editor.scss */
 .ntsControl.symbol:after {
   position: absolute;
   content: attr(data-content);
   top: 6px;
   color: #999;
 }
-/* line 29, ../sass/components/_editor.scss */
+/* line 35, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-left .nts-input {
   padding-left: 20px;
 }
-/* line 31, ../sass/components/_editor.scss */
+/* line 37, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-left:after {
   left: 5px;
   text-align: left;
 }
-/* line 38, ../sass/components/_editor.scss */
+/* line 44, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-right .nts-input {
   padding-right: 20px;
 }
-/* line 40, ../sass/components/_editor.scss */
+/* line 46, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-right:after {
   right: 5px;
   text-align: right;
@@ -2627,12 +2634,14 @@ button.nts-switch-button[disabled]:hover {
   display: inline-block;
   margin-right: 5px;
   margin: .1em 0;
+  /* 繧｢繧､繧ｳ繝ｳ縺梧ｱｺ縺ｾ繧九∪縺ｧ髱櫁｡ｨ遉ｺ縺ｫ縺励※縺翫￥ */
+  display: none;
 }
-/* line 33, ../sass/components/_dialog.scss */
+/* line 36, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-titlebar-container {
   width: 100%;
 }
-/* line 36, ../sass/components/_dialog.scss */
+/* line 39, ../sass/components/_dialog.scss */
 .ui-dialog .ui-resizable-se {
   width: 14px;
   height: 14px;
@@ -2640,25 +2649,25 @@ button.nts-switch-button[disabled]:hover {
   bottom: 3px;
   background-position: -80px -224px;
 }
-/* line 44, ../sass/components/_dialog.scss */
+/* line 47, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-titlebar-close:active {
   top: calc(50% + 3px);
 }
-/* line 48, ../sass/components/_dialog.scss */
+/* line 51, ../sass/components/_dialog.scss */
 .ui-dialog.no-close-btn .ui-dialog-titlebar-close {
   display: none;
 }
-/* line 52, ../sass/components/_dialog.scss */
+/* line 55, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content {
   padding: 20px;
 }
-/* line 55, ../sass/components/_dialog.scss */
+/* line 58, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog {
   min-width: 250px;
   padding: 0;
   position: relative;
 }
-/* line 60, ../sass/components/_dialog.scss */
+/* line 63, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog > .text {
   display: inline-block;
   margin: 20px;
@@ -2668,14 +2677,14 @@ button.nts-switch-button[disabled]:hover {
   overflow-y: auto;
   line-height: 22px;
 }
-/* line 69, ../sass/components/_dialog.scss */
+/* line 72, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog > .control {
   right: 10px;
   bottom: 0px;
   position: absolute;
   color: gray;
 }
-/* line 78, ../sass/components/_dialog.scss */
+/* line 81, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane {
   padding: 10px 0;
   margin: 0px;
@@ -2683,11 +2692,11 @@ button.nts-switch-button[disabled]:hover {
   text-align: center;
   position: relative;
 }
-/* line 85, ../sass/components/_dialog.scss */
+/* line 88, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane .ui-dialog-buttonset {
   float: none;
 }
-/* line 89, ../sass/components/_dialog.scss */
+/* line 92, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane > .ui-dialog-buttonpane-resize {
   right: 0px;
   bottom: 0px;
@@ -2695,23 +2704,23 @@ button.nts-switch-button[disabled]:hover {
   max-width: 20px;
   max-height: 20px;
 }
-/* line 97, ../sass/components/_dialog.scss */
+/* line 100, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane button {
   margin: 0 10px;
   min-width: 80px;
   font-family: "Meiryo UI";
 }
-/* line 104, ../sass/components/_dialog.scss */
+/* line 107, ../sass/components/_dialog.scss */
 .ui-dialog #error-board {
   overflow: hidden;
 }
-/* line 107, ../sass/components/_dialog.scss */
+/* line 110, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table {
   border-collapse: collapse;
   width: 100%;
   margin: 0;
 }
-/* line 113, ../sass/components/_dialog.scss */
+/* line 116, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,
 .ui-dialog #error-board table td {
   border: solid 1px #bbb;
@@ -2722,20 +2731,20 @@ button.nts-switch-button[disabled]:hover {
   box-sizing: border-box;
   cursor: pointer;
 }
-/* line 124, ../sass/components/_dialog.scss */
+/* line 127, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,
 .ui-dialog #error-board table td:first-child {
   background-color: #A4EEB0;
 }
-/* line 129, ../sass/components/_dialog.scss */
+/* line 132, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table thead tr {
   position: relative;
 }
-/* line 134, ../sass/components/_dialog.scss */
+/* line 137, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table tbody {
   overflow: auto;
 }
-/* line 138, ../sass/components/_dialog.scss */
+/* line 141, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table tbody tr td:last-child {
   color: gray;
 }
@@ -3609,7 +3618,7 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,
 .nts-grid tr td.ui-state-hover,
 .nts-grid tr.ui-ig-altrecord td.ui-state-hover {
-  background-color: aqua;
+  background-color: #C5F1F7;
   border-color: #AAB7B8;
 }
 
@@ -3624,6 +3633,23 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid tr.ui-ig-altrecord td.ntsgrid-disable.ui-state-hover {
   background-color: #CCC;
   color: gray;
+}
+
+.nts-grid-wrapper td.currency-symbol:before,
+.nts-grid td.currency-symbol:before {
+	content: '\00a5';
+	top: 6px;
+	color: #999;
+	padding-right: 4px;
+}
+
+.nts-grid-wrapper span.input-currency-symbol:before,
+.nts-grid span.input-currency-symbol:before {
+	position: absolute;
+	content: '\00a5';
+	top: 4px;
+	left: 2px;
+	color: #999;
 }
 
 /* line 30, ../sass/components/_ntsgrid.scss */

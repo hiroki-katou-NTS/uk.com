@@ -118,7 +118,7 @@ module a2 {
             self.fixTableOptionOneDaySimpleMode = {
                 maxRow: 1,
                 minRow: 1,
-                maxRowDisplay: 2,
+                maxRowDisplay: 1,
                 isShowButton: false,
                 dataSource: self.dataSourceOneDaySimpleMode,
                 isMultipleSelect: false,
@@ -234,14 +234,17 @@ module a2 {
                 }
 
                 //============= Convert =============
-                let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneOne();
-                let timeRange: TimePeriod = {
-                    startTime: item.start(),
-                    endTime: item.end()
-                }
-                self.dataSourceOneDaySimpleMode([]);
-                self.dataSourceOneDaySimpleMode.push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
-                    emTimezone ? emTimezone.timezone.rounding.rounding() : 0));
+                let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne;
+                item.valueChangedNotifier.subscribe(() => {
+                    let timeRange: TimePeriod = {
+                        startTime: item.start(),
+                        endTime: item.end()
+                    }
+                    self.dataSourceOneDaySimpleMode([]);
+                    self.dataSourceOneDaySimpleMode.push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
+                        emTimezone ? emTimezone.timezone.rounding.rounding() : 0));
+                });
+                item.valueChangedNotifier.valueHasMutated();
             }
             // Detail mode
             else {

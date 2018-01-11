@@ -35,8 +35,10 @@ public class MissingOfTemporaryStampChecking {
 			List<Integer> attendanceItemIds = new ArrayList<>();
 			
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
-				if (!timeLeavingWork.getAttendanceStamp().isPresent() || (timeLeavingWork.getAttendanceStamp().isPresent()
-						&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())) {
+				if (timeLeavingWork.getAttendanceStamp() == null
+						|| !timeLeavingWork.getAttendanceStamp().isPresent()
+						|| (timeLeavingWork.getAttendanceStamp().isPresent() && timeLeavingWork.getAttendanceStamp().get().getStamp() == null)
+						|| (timeLeavingWork.getAttendanceStamp().isPresent() && !timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())) {
 					if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 						attendanceItemIds.add(51);
 					} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
@@ -45,8 +47,10 @@ public class MissingOfTemporaryStampChecking {
 						attendanceItemIds.add(67);
 					}
 				}
-				if (!timeLeavingWork.getLeaveStamp().isPresent() || (timeLeavingWork.getLeaveStamp().isPresent()
-						&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())) {
+				if (timeLeavingWork.getLeaveStamp() == null 
+						|| !timeLeavingWork.getLeaveStamp().isPresent() 
+						|| (timeLeavingWork.getLeaveStamp().isPresent() && timeLeavingWork.getLeaveStamp().get().getStamp() != null)
+						|| (timeLeavingWork.getLeaveStamp().isPresent() && !timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())) {
 					if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 						attendanceItemIds.add(53);
 					} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {

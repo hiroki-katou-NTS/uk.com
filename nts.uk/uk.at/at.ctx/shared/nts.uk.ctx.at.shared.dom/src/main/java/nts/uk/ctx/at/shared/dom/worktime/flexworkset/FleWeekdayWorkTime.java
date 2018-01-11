@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flexworkset;
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixedWorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
 
 /**
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
 public class FleWeekdayWorkTime {
 
 	// 勤務時間帯
-	 private FixedWorkTimeSet workingTime;
+	 private FixedWorkTimezoneSet workingTime;
 
 	/** The rest time. */
 	// 休憩時間帯

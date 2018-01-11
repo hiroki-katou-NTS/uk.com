@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTi
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidworktimesheet.FluWorkHolidayTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -53,7 +54,7 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 	 * @param holidayWorkTimeSheetNo
 	 */
 	public HolidayWorkFrameTimeSheet(
-			TimeSpanWithRounding timeSheet,
+			TimeZoneRounding timeSheet,
 			TimeSpanForCalc calculationTimeSheet,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			List<BonusPayTimesheet> bonusPayTimeSheet, 
@@ -111,7 +112,7 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 		TimeSpanForCalc holidayWorkFrameTimeSheet = new TimeSpanForCalc(collectCalcRange.getStart(),endClock);
 		//控除時間帯分ループ
 		for(TimeSheetOfDeductionItem timeSheetOfDeductionItem : deductionTimeSheet.getForDeductionTimeZoneList()) {
-			TimeSpanForCalc duplicateTime = holidayWorkFrameTimeSheet.getDuplicatedWith(timeSheetOfDeductionItem.getTimeSheet().getSpan()).orElse(null);
+			TimeSpanForCalc duplicateTime = holidayWorkFrameTimeSheet.getDuplicatedWith(timeSheetOfDeductionItem.getTimeSheet().timeSpan()).orElse(null);
 			if(duplicateTime!=null) {//重複している場合の処理
 				//控除項目の時間帯に法定内区分をセット
 				//TODO: createBreakTimeSheetAsFixed
@@ -122,9 +123,9 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 //						timeSheetOfDeductionItem.getDeductionAtr(),
 //						WithinStatutoryAtr.WithinStatutory);
 				//控除時間分、終了時刻を遅くする
-				TimeSpanForCalc collectTimeSheet = this.timeSheet.shiftEndBack(duplicateTime.lengthAsMinutes());
-				TimeSpanWithRounding newTimeSheet = this.timeSheet;
-				newTimeSheet.newTimeSpan(collectTimeSheet);
+				TimeSpanForCalc collectTimeSheet = this.timeSheet.timeSpan().shiftEndBack(duplicateTime.lengthAsMinutes());
+				TimeZoneRounding newTimeSheet = this.timeSheet;
+				// ここはベトナムへ連絡後コメントアウトを外すnewTimeSheet.newTimeSpan(collectTimeSheet);
 			}	
 		}
 		

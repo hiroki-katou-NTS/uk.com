@@ -65,8 +65,8 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		entity.krcdtDaiAffiliationInfPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
 		entity.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
 		entity.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode() != null ? affiliationInforOfDailyPerfor.getBonusPaySettingCode().v() : null;
-		entity.classificationCode = affiliationInforOfDailyPerfor.getClsCode().v();
-		entity.employmentCode = affiliationInforOfDailyPerfor.getEmploymentCode().v();
+		entity.classificationCode = affiliationInforOfDailyPerfor.getClsCode() == null ? null : affiliationInforOfDailyPerfor.getClsCode().v();
+		entity.employmentCode = affiliationInforOfDailyPerfor.getEmploymentCode() == null ? null : affiliationInforOfDailyPerfor.getEmploymentCode().v();
 		entity.jobtitleID = affiliationInforOfDailyPerfor.getJobTitleID();
 		entity.workplaceID = affiliationInforOfDailyPerfor.getWplID();
 
@@ -87,7 +87,8 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 
 	@Override
 	public void updateByKey(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor) {
-		Optional<KrcdtDaiAffiliationInf> dataOpt = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiAffiliationInf.class).setParameter("employeeId", affiliationInforOfDailyPerfor.getEmployeeId())
+		Optional<KrcdtDaiAffiliationInf> dataOpt = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiAffiliationInf.class)
+				.setParameter("employeeId", affiliationInforOfDailyPerfor.getEmployeeId())
 				.setParameter("ymd", affiliationInforOfDailyPerfor.getYmd()).getSingle();
 		KrcdtDaiAffiliationInf data = dataOpt.isPresent() ? dataOpt.get() : new KrcdtDaiAffiliationInf();
 		if(!dataOpt.isPresent()){
@@ -95,9 +96,9 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		}
 		data.krcdtDaiAffiliationInfPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
 		data.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
-		data.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode().v();
-		data.classificationCode = affiliationInforOfDailyPerfor.getClsCode().v();
-		data.employmentCode = affiliationInforOfDailyPerfor.getEmploymentCode().v();
+		data.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode() == null ? null : affiliationInforOfDailyPerfor.getBonusPaySettingCode().v();
+		data.classificationCode = affiliationInforOfDailyPerfor.getClsCode() == null ? null : affiliationInforOfDailyPerfor.getClsCode().v();
+		data.employmentCode = affiliationInforOfDailyPerfor.getEmploymentCode() == null ? null : affiliationInforOfDailyPerfor.getEmploymentCode().v();
 		data.jobtitleID = affiliationInforOfDailyPerfor.getJobTitleID();
 		this.commandProxy().update(data);
 	}

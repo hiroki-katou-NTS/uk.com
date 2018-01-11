@@ -830,11 +830,14 @@
 					</div>
 					<div>
 						<!-- CCG001 -->
-						<div id="ccgcomponent"></div>
+						<div data-bind="visible: visibleCCG001">
+							<div id="ccgcomponent"></div>
+						</div>
 						<!-- SCREEN E -->
 						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
 							<!-- A2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 90px;">
+							<div id = "left-contents" style="float: left;"
+							data-bind="style: {marginLeft: visibleCCG001() ? '90px' : '20px'}">
 								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<button class="dateControlBtn" data-bind="click: $data.openDialogI,enable: enableCreatNew">#{i18n.getText('CMM018_20')}</button>
@@ -856,7 +859,8 @@
 								</div>
 							</div>
 							<!-- E3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;">
+							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;"
+							data-bind="style: {marginRight: visibleCCG001() ? '0px' : '60px'}">
 								<div>
 									<!-- E3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
@@ -881,39 +885,39 @@
 									</colgroup>
 									<thead>
 										<tr>
-											<!-- A3_4: 申請の種類（見出し） -->
+											<!-- E3_4: 申請の種類（見出し） -->
 											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_24')}</th>
-											<!-- A3_5: フェーズ1⇒（見出し） -->
+											<!-- E3_5: フェーズ1⇒（見出し） -->
 											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_30')}</th>
-											<!-- A3_6: フェーズ2⇒（見出し） -->
+											<!-- E3_6: フェーズ2⇒（見出し） -->
 											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_31')}</th>
-											<!-- A3_7: フェーズ3⇒（見出し） -->
+											<!-- E3_7: フェーズ3⇒（見出し） -->
 											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_32')}</th>
-											<!-- A3_8: フェーズ4⇒（見出し） -->
+											<!-- E3_8: フェーズ4⇒（見出し） -->
 											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_33')}</th>
-											<!-- A3_9: フェーズ5（見出し） -->
+											<!-- E3_9: フェーズ5（見出し） -->
 											<th colspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_34')}</th>
-											<!-- A3_29: クリア（見出し） -->
+											<!-- E3_29: クリア（見出し） -->
 											<th rowspan="2" class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_95')}</th>
 										</tr>
 										<tr>
 											<!-- E3_10: 承認者指定（見出し） -->
 											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- A3_11: 承認者（見出し） -->
+											<!-- E3_11: 承認者（見出し） -->
 											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- A3_10 -->
+											<!-- E3_10 -->
 											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- A3_11 -->
+											<!-- E3_11 -->
 											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- A3_10 -->
+											<!-- E3_10 -->
 											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- A3_11 -->
+											<!-- E3_11 -->
 											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- A3_10 -->
+											<!-- E3_10 -->
 											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- A3_11 -->
+											<!-- E3_11 -->
 											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- A3_10 -->
+											<!-- E3_10 -->
 											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- E3_11 -->
 											<th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
@@ -1002,8 +1006,9 @@
 						<!-- SCREEN F -->
 						<div class="mode_Private" data-bind="visible: selectedModeCode">
 							<!-- F2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 86px;" data-bind="with: $parent.viewmodelB">
-								<div style="width: 310px; height: 470px;" class="caret-right caret-background bg-green">
+							<div id = "left-contents" style="float: left;" 
+							data-bind="style: {marginLeft: visibleCCG001() ? '86px' : '20px'}">
+								<div style="width: 280px; height: 470px;" data-bind="with: $parent.viewmodelB" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<!-- F2_2: -->
 										<button class="dateControlBtn" data-bind="click: openDialogI,enable: enableCreatNewB">#{i18n.getText('CMM018_20')}</button>
@@ -1014,7 +1019,7 @@
 									<div>
 									<table id="treegrid2"
 											data-bind="ntsTreeGridView:{
-												width: 310,
+												width: 270,
 												dataSource: dataDisplay,
 												value: singleSelectedCode,
 												optionsValue: 'approvalId',
@@ -1029,15 +1034,16 @@
 								</div>
 							</div>
 							<!-- F3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;"  data-bind="with: $parent.viewmodelB">
-								<div>
+							<div id = "right-contents" style="float: right; margin-top: 10px; margin-bottom: 20px;"  
+							data-bind="style: {marginRight: visibleCCG001() ? '0px' : '50px'}">
+								<div data-bind="with: $parent.viewmodelB">
 									<!-- F3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
 									<!-- F3_2: 選択する期間 -->
 									<div style = "width: 600px;display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
 								<br/>
-								<table class="contents-header" id = "fixed-tablePsB" style = "table-layout: fixed;">
+								<table class="contents-header" id = "fixed-tablePsB" style = "table-layout: fixed;" data-bind="with: $parent.viewmodelB">
 									<colgroup>
 										<col width="100px"/>
 										<col width="80px"/>

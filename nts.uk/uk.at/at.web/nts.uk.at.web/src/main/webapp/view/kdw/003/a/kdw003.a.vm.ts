@@ -172,7 +172,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             });
             self.dateRanger({
-                startDate: moment().add(-1, "M").format("YYYY/MM/DD"),
+                startDate: moment().add(-1, "M").add(1 ,"d").format("YYYY/MM/DD"),
                 endDate: moment().format("YYYY/MM/DD")
             });
         }
@@ -367,53 +367,82 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
                 if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
                     if (data.columnKey.indexOf("Name") != -1) {
-                        let value = "";
-                        if (self.checkIsColumn(dataTemp.cellDatas, data.columnKey.substring(4, data.columnKey.length))) {
-                            value = $("#dpGrid").igGrid("getCellValue", data.rowId, "NO" + data.columnKey.substring(4, data.columnKey.length));
-                        }
-                        else {
-                            value = $("#dpGrid").igGrid("getCellValue", data.rowId, "Code" + data.columnKey.substring(4, data.columnKey.length));
-                        }
-                        //get layout , and type
-                        let layoutAndType : any  = _.find(self.itemValueAll(), (item :any) =>{
-                              return item.itemId == data.columnKey.substring(4, data.columnKey.length);
-                            });
-                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(4, data.columnKey.length), value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
-                        dataChangeProcess.push(dataMap);
+//                        let value = "";
+//                        if (self.checkIsColumn(dataTemp.cellDatas, data.columnKey.substring(4, data.columnKey.length))) {
+//                            value = $("#dpGrid").igGrid("getCellValue", data.rowId, "NO" + data.columnKey.substring(4, data.columnKey.length));
+//                        }
+//                        else {
+//                            value = $("#dpGrid").igGrid("getCellValue", data.rowId, "Code" + data.columnKey.substring(4, data.columnKey.length));
+//                        }
+//                        //get layout , and type
+//                        let layoutAndType : any  = _.find(self.itemValueAll(), (item :any) =>{
+//                              return item.itemId == data.columnKey.substring(4, data.columnKey.length);
+//                            });
+//                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(4, data.columnKey.length), value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
+//                        dataChangeProcess.push(dataMap);
                     } else {
                         //get layout , and type
                         let layoutAndType : any  = _.find(self.itemValueAll(), (item :any) =>{
                               return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                             });
-                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), data.value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
+                        let value: any;
+                        if (String(data.value).indexOf(':') !== -1) {
+                            value = Number(data.value.split(':')[0]) * 60 + Number(data.value.split(':')[1]);
+                        }
+                        else {
+                            value = data.value;
+                        }
+                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
                         dataChangeProcess.push(dataMap);
                     }
-                }
-            });
-            _.each(self.itemValueAllTemp(), (data: any) => {
-                if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
-                    let dataTemp = _.find(self.dpData, (item: any) => {
-                        return item.id == data.rowId.substring(1, data.rowId.length);
-                    });
+                }else{
+                    let columnKey: any;
+                    if (data.columnKey.indexOf("Code") != -1) {
+                        columnKey = data.columnKey.substring(4, data.columnKey.length);
+                    } else {
+                        columnKey = data.columnKey.substring(2, data.columnKey.length);
+                    }
+
                     let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-                        return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                        return item.itemId == columnKey;
                     });
-                    let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), data.value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
+                    let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
                     dataChangeProcess.push(dataMap);
                 }
             });
+//            _.each(self.itemValueAllTemp(), (data: any) => {
+//                if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
+//                    let dataTemp = _.find(self.dpData, (item: any) => {
+//                        return item.id == data.rowId.substring(1, data.rowId.length);
+//                    });
+//                    let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+//                        return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+//                    });
+//                    let value: any;
+//                    if (String(data.value).indexOf(':') !== -1) {
+//                        value = Number(data.value.split(':')[0]) * 60 + Number(data.value.split(':')[1]);
+//                    }
+//                    else {
+//                        value = data.value;
+//                    }
+//                    let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
+//                    dataChangeProcess.push(dataMap);
+//                }
+//            });
             let param = { itemValues: dataChangeProcess }
-            let dfd = $.Deferred();
-            service.addAndUpdate(dataChangeProcess).done((data) => {
-               // alert("done");
-                dataChange = {};
-                self.btnExtraction_Click();
-                dfd.resolve();
-            }).fail((data) => {
-                alert("fail");
-                dfd.resolve();
-            });
-            dfd.promise();
+            if (dataChangeProcess.length > 0) {
+                let dfd = $.Deferred();
+                service.addAndUpdate(dataChangeProcess).done((data) => {
+                    // alert("done");
+                    dataChange = {};
+                    self.btnExtraction_Click();
+                    dfd.resolve();
+                }).fail((data) => {
+                    alert("fail");
+                    dfd.resolve();
+                });
+                dfd.promise();
+            }
             debugger;
         }
         checkIsColumn(dataCell: any, key: any): boolean {

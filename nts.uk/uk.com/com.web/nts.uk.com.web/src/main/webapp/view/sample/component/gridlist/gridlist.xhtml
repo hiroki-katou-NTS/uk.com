@@ -31,8 +31,8 @@
 						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 						<hr />
 						<h3>Single selecting mode</h3>
-						<div style="position: relative; width: 150px;">
 						<table id="single-list" data-bind="ntsGridList: {
+                                height: 350,
 								dataSource: items,
 								primaryKey: 'code',
 								columns: columns,
@@ -41,7 +41,6 @@
 								value: currentCode,
 								rows: 10
 							}"></table>
-						</div>
 						currentCode: <span data-bind="text: currentCode"></span><br/>
 						<button data-bind="click: prev">Prev</button>
 						<button data-bind="click: next">Next</button>

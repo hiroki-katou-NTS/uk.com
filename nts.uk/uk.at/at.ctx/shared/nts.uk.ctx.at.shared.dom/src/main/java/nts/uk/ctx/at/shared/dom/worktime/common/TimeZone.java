@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -24,6 +25,7 @@ public class TimeZone extends DomainObject {
 	// 終了
 	protected TimeWithDayAttr end;
 
+	
 	/**
 	 * Instantiates a new time zone.
 	 *
@@ -100,6 +102,10 @@ public class TimeZone extends DomainObject {
 	 */
 	public boolean consistOf(TimeWithDayAttr time) {
 		return time.greaterThanOrEqualTo(this.start) && time.lessThanOrEqualTo(this.end);
+	}
+	
+	public TimeSpanForCalc timeSpan() {
+		return new TimeSpanForCalc(this.start,this.end);
 	}
 
 }
