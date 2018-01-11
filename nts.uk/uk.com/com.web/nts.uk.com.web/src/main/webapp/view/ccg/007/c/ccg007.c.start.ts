@@ -6,6 +6,7 @@ module nts.uk.pr.view.ccg007.c {
             $('#company-code-inp').focus();
             $("#password-input").keyup(function(event) {
                 if (event.keyCode == 13) {
+                    screenModel.password($('#password-input').val());
                     $("#search-btn").click();
                 }
             });

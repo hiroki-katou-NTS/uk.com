@@ -750,12 +750,12 @@ module nts.uk.at.view.kmk003.a {
             
             resetData(isNewMode?: boolean){
                 this.useHalfDay(false);
-                this.workTimeSetting.resetData();
                 this.predetemineTimeSetting.resetData();
                 this.fixedWorkSetting.resetData();
                 this.flexWorkSetting.resetData();
                 this.commonSetting.resetData();
                 if (!isNewMode) {
+                    this.workTimeSetting.resetData();
                     this.workTimeSetting.resetWorkTimeDivision();
                 }
                 //TODO update diff viewmodel
