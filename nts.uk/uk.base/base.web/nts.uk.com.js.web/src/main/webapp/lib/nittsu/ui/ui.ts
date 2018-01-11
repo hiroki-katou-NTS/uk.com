@@ -720,7 +720,7 @@ module nts.uk.ui {
                     },
                     close: function(event) {
                     }
-                });
+                }).dialogPositionControl();
             }, 0);
             
             return {

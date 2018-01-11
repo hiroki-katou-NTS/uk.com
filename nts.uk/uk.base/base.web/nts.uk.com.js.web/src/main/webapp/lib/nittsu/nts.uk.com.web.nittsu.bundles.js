@@ -3945,18 +3945,6 @@ var nts;
                                 open: function () {
                                     var $dialog = $(this);
                                     $dialog.dialogPositionControl();
-<<<<<<< HEAD
-=======
-                                    //                            if ($(this).parent().height() >= $("#contents-area").height()) {
-                                    //                                $(this).dialog("option", "position", {
-                                    //                                    my: "center top",
-                                    //                                    at: "center top",
-                                    //                                    of: $("#contents-area"),
-                                    //                                    collision: "none"
-                                    //                                })
-                                    //                                $(this).parent().css("position", "absolute");
-                                    //                            }
->>>>>>> 35a927a... fix controling dialog position
                                     var $dialogDocument = $(this).parent();
                                     var $dialogContentDoc = $(this.lastElementChild.contentDocument);
                                     $dialogDocument.on("keydown", ":tabbable", function (evt) {
@@ -4220,11 +4208,7 @@ var nts;
                             window.parent.$(event.target).remove();
                         }
                     });
-<<<<<<< HEAD
-=======
                     $this.dialogPositionControl();
-                    //add header text if it has
->>>>>>> 35a927a... fix controling dialog position
                     if (header && header.text) {
                         $this.dialog("option", "title", header.text);
                     }
@@ -4462,7 +4446,7 @@ var nts;
                             },
                             close: function (event) {
                             }
-                        });
+                        }).dialogPositionControl();
                     }, 0);
                     return {
                         then: function (callback) {
@@ -4839,7 +4823,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_3) {
+        (function (ui_2) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 $.fn.exposeVertically = function ($target) {
@@ -4880,16 +4864,6 @@ var nts;
                         collision: "none"
                     });
                     var $container = $dialog.closest(".ui-dialog");
-<<<<<<< HEAD
-                    var offsetContentsArea = 92;
-                    var offsetDialog = $container.offset();
-                    if (offsetDialog.top < offsetContentsArea) {
-                        offsetDialog.top = offsetContentsArea;
-                        $container.offset(offsetDialog);
-                    }
-                };
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
-=======
                     var offsetContentsArea = $("#header").height();
                     var offsetDialog = $container.offset();
                     if (offsetDialog.top < offsetContentsArea) {
@@ -4909,8 +4883,7 @@ var nts;
                         } });
                     return $dialog;
                 };
-            })(jqueryExtentions = ui_3.jqueryExtentions || (ui_3.jqueryExtentions = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(jqueryExtentions = ui_2.jqueryExtentions || (ui_2.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -4919,11 +4892,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
-        (function (ui_2) {
-=======
-        (function (ui_4) {
->>>>>>> 35a927a... fix controling dialog position
+        (function (ui_3) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsCheckboxBindingHandler = (function () {
@@ -5108,11 +5077,7 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
-<<<<<<< HEAD
-            })(koExtentions = ui_2.koExtentions || (ui_2.koExtentions = {}));
-=======
-            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(koExtentions = ui_3.koExtentions || (ui_3.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -5121,11 +5086,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
-        (function (ui_3) {
-=======
-        (function (ui_5) {
->>>>>>> 35a927a... fix controling dialog position
+        (function (ui_4) {
             var koExtentions;
             (function (koExtentions) {
                 var ComboBoxBindingHandler = (function () {
@@ -5281,11 +5242,7 @@ var nts;
                     return ComboBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
-<<<<<<< HEAD
-            })(koExtentions = ui_3.koExtentions || (ui_3.koExtentions = {}));
-=======
-            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6155,7 +6112,7 @@ var nts;
                             close: function (event) {
                                 bindingContext.$data.option().show(false);
                             }
-                        });
+                        }).dialogPositionControl();
                     };
                     NtsErrorDialogBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
@@ -6850,11 +6807,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
-        (function (ui_4) {
-=======
-        (function (ui_6) {
->>>>>>> 35a927a... fix controling dialog position
+        (function (ui_5) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsGridListBindingHandler = (function () {
@@ -7250,11 +7203,7 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
-<<<<<<< HEAD
-            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
-=======
-            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -7546,11 +7495,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
-        (function (ui_5) {
-=======
-        (function (ui_7) {
->>>>>>> 35a927a... fix controling dialog position
+        (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsRadioBoxBindingHandler = (function () {
@@ -7766,11 +7711,7 @@ var nts;
                 }
                 ko.bindingHandlers['ntsRadioButton'] = new NtsRadioBoxBindingHandler();
                 ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
-<<<<<<< HEAD
-            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
-=======
-            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -7779,11 +7720,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
-        (function (ui_6) {
-=======
-        (function (ui_8) {
->>>>>>> 35a927a... fix controling dialog position
+        (function (ui_7) {
             var koExtentions;
             (function (koExtentions) {
                 var SearchBox = (function () {
@@ -8091,11 +8028,7 @@ var nts;
                     return NtsSearchBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSearchBox'] = new NtsSearchBoxBindingHandler();
-<<<<<<< HEAD
-            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
-=======
-            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8104,11 +8037,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
-        (function (ui_7) {
-=======
-        (function (ui_9) {
->>>>>>> 35a927a... fix controling dialog position
+        (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsSwapListBindingHandler = (function () {
@@ -8941,11 +8870,7 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
-<<<<<<< HEAD
-            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
-=======
-            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8954,11 +8879,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
-        (function (ui_8) {
-=======
-        (function (ui_10) {
->>>>>>> 35a927a... fix controling dialog position
+        (function (ui_9) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsSwitchButtonBindingHandler = (function () {
@@ -9082,11 +9003,7 @@ var nts;
                     return NtsSwitchButtonBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
-<<<<<<< HEAD
-            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
-=======
-            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9095,11 +9012,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
-        (function (ui_9) {
-=======
-        (function (ui_11) {
->>>>>>> 35a927a... fix controling dialog position
+        (function (ui_10) {
             var koExtentions;
             (function (koExtentions) {
                 var TabPanelBindingHandler = (function () {
@@ -9185,11 +9098,7 @@ var nts;
                     return TabPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
-<<<<<<< HEAD
-            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
-=======
-            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9250,11 +9159,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
-        (function (ui_10) {
-=======
-        (function (ui_12) {
->>>>>>> 35a927a... fix controling dialog position
+        (function (ui_11) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsTreeGridViewBindingHandler = (function () {
@@ -9547,11 +9452,7 @@ var nts;
                     return ExpandNode;
                 }());
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
-<<<<<<< HEAD
-            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
-=======
-            })(koExtentions = ui_12.koExtentions || (ui_12.koExtentions = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9560,11 +9461,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
-        (function (ui_11) {
-=======
-        (function (ui_13) {
->>>>>>> 35a927a... fix controling dialog position
+        (function (ui_12) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsUpDownBindingHandler = (function () {
@@ -9808,11 +9705,7 @@ var nts;
                     return NtsUpDownBindingHandler;
                 }());
                 ko.bindingHandlers['ntsUpDown'] = new NtsUpDownBindingHandler();
-<<<<<<< HEAD
-            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
-=======
-            })(koExtentions = ui_13.koExtentions || (ui_13.koExtentions = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(koExtentions = ui_12.koExtentions || (ui_12.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10023,11 +9916,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
-        (function (ui_12) {
-=======
-        (function (ui_14) {
->>>>>>> 35a927a... fix controling dialog position
+        (function (ui_13) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsCharsetSettingBindingHandler = (function () {
@@ -10082,11 +9971,7 @@ var nts;
                     return NtsCharsetSettingBindingHandler;
                 }());
                 ko.bindingHandlers['ntsCharsetSetting'] = new NtsCharsetSettingBindingHandler();
-<<<<<<< HEAD
-            })(koExtentions = ui_12.koExtentions || (ui_12.koExtentions = {}));
-=======
-            })(koExtentions = ui_14.koExtentions || (ui_14.koExtentions = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(koExtentions = ui_13.koExtentions || (ui_13.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10095,11 +9980,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
-        (function (ui_13) {
-=======
-        (function (ui_15) {
->>>>>>> 35a927a... fix controling dialog position
+        (function (ui_14) {
             var contextmenu;
             (function (contextmenu) {
                 var ContextMenu = (function () {
@@ -10217,8 +10098,7 @@ var nts;
                     return ContextMenuItem;
                 }());
                 contextmenu.ContextMenuItem = ContextMenuItem;
-<<<<<<< HEAD
-            })(contextmenu = ui_13.contextmenu || (ui_13.contextmenu = {}));
+            })(contextmenu = ui_14.contextmenu || (ui_14.contextmenu = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10227,7 +10107,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_14) {
+        (function (ui_15) {
             var option;
             (function (option_2) {
                 var DialogOption = (function () {
@@ -10348,9 +10228,9 @@ var nts;
                     function ErrorDialogWithTabOption(option) {
                         _super.call(this);
                         this.headers = (option && option.headers) ? option.headers : [
-                            new ui_14.errors.ErrorHeader("tab", "タブ", 90, true),
-                            new ui_14.errors.ErrorHeader("location", "エラー箇所", 115, true),
-                            new ui_14.errors.ErrorHeader("message", "エラー詳細", 250, true)
+                            new ui_15.errors.ErrorHeader("tab", "タブ", 90, true),
+                            new ui_15.errors.ErrorHeader("location", "エラー箇所", 115, true),
+                            new ui_15.errors.ErrorHeader("message", "エラー詳細", 250, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -10378,7 +10258,7 @@ var nts;
                     return DialogButton;
                 }());
                 option_2.DialogButton = DialogButton;
-            })(option = ui_14.option || (ui_14.option = {}));
+            })(option = ui_15.option || (ui_15.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10441,9 +10321,6 @@ var nts;
                 }());
                 file_1.FileDownload = FileDownload;
             })(file = ui.file || (ui.file = {}));
-=======
-            })(contextmenu = ui_15.contextmenu || (ui_15.contextmenu = {}));
->>>>>>> 35a927a... fix controling dialog position
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10791,7 +10668,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_16) {
+        (function (ui_17) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsColorPickerBindingHandler = (function () {
@@ -10939,7 +10816,7 @@ var nts;
                     return NtsColorPickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsColorPicker'] = new NtsColorPickerBindingHandler();
-            })(koExtentions = ui_16.koExtentions || (ui_16.koExtentions = {}));
+            })(koExtentions = ui_17.koExtentions || (ui_17.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11012,7 +10889,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_17) {
+        (function (ui_18) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsFixedTable;
@@ -11109,7 +10986,7 @@ var nts;
                         return controls;
                     }
                 })(ntsFixedTable || (ntsFixedTable = {}));
-            })(jqueryExtentions = ui_17.jqueryExtentions || (ui_17.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_18.jqueryExtentions || (ui_18.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11118,7 +10995,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_18) {
+        (function (ui_19) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGridList;
@@ -11320,7 +11197,7 @@ var nts;
                             mousePos = {
                                 x: e.pageX,
                                 y: e.pageY,
-                                rowIndex: ui_18.ig.grid.getRowIndexFrom($(e.target))
+                                rowIndex: ui_19.ig.grid.getRowIndexFrom($(e.target))
                             };
                             dragSelectRange.push(mousePos.rowIndex);
                             var $scroller = $('#' + $grid.attr('id') + '_scrollContainer');
@@ -11334,11 +11211,7 @@ var nts;
                                 $grid.igGrid('virtualScrollTo', (currentScrolls + delta) + 'px');
                             }, 20);
                             $(window).bind('mousemove.NtsGridListDragging', function (e) {
-                                var newPointedRowIndex = ui_18.ig.grid.getRowIndexFrom($(e.target));
-<<<<<<< HEAD
-=======
-                                // selected range is not changed
->>>>>>> 35a927a... fix controling dialog position
+                                var newPointedRowIndex = ui_19.ig.grid.getRowIndexFrom($(e.target));
                                 if (mousePos.rowIndex === newPointedRowIndex) {
                                     return;
                                 }
@@ -11401,7 +11274,7 @@ var nts;
                         $grid.unbind('iggridselectionrowselectionchanged');
                     }
                 })(ntsGridList || (ntsGridList = {}));
-            })(jqueryExtentions = ui_18.jqueryExtentions || (ui_18.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11410,7 +11283,6 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
@@ -11548,9 +11420,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-=======
->>>>>>> 35a927a... fix controling dialog position
-        (function (ui_19) {
+        (function (ui_20) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsWizard;
@@ -11639,7 +11509,7 @@ var nts;
                         return wizard.steps("getCurrentIndex");
                     }
                 })(ntsWizard || (ntsWizard = {}));
-            })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_20.jqueryExtentions || (ui_20.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11648,7 +11518,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_20) {
+        (function (ui_21) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var errorMementos = {};
@@ -11767,7 +11637,7 @@ var nts;
                         return control.find("#sidebar-area .navigator a.active").closest("li").index();
                     }
                 })(ntsSideBar || (ntsSideBar = {}));
-            })(jqueryExtentions = ui_20.jqueryExtentions || (ui_20.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_21.jqueryExtentions || (ui_21.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11855,7 +11725,6 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
@@ -11898,9 +11767,6 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
-=======
-        (function (ui_20) {
->>>>>>> 35a927a... fix controling dialog position
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsSearchBox;
@@ -12015,2101 +11881,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_21) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var ntsGrid;
-                (function (ntsGrid) {
-                    var storage;
-                    var dist;
-                    (function (dist) {
-                        dist.REMOTE = "Remote";
-                        function query(features) {
-                            storage = new Local();
-                            var store = feature.find(features, feature.STORAGE);
-                            if (!store)
-                                return;
-                            if (store.type === dist.REMOTE) {
-                                storage = new Remote(store.loadPath, store.savePath);
-                            }
-                        }
-                        dist.query = query;
-                        var Local = (function () {
-                            function Local() {
-                            }
-                            Local.prototype.getItem = function (key) {
-                                var dfd = $.Deferred();
-                                dfd.resolve(uk.localStorage.getItem(key));
-                                return dfd.promise();
-                            };
-                            Local.prototype.setItemAsJson = function (key, value) {
-                                var dfd = $.Deferred();
-                                uk.localStorage.setItemAsJson(key, value);
-                                dfd.resolve(true);
-                                return dfd.promise();
-                            };
-                            return Local;
-                        }());
-                        dist.Local = Local;
-                        var Remote = (function () {
-                            function Remote(loadPath, savePath) {
-                                this.loadPath = loadPath;
-                                this.savePath = savePath;
-                            }
-                            Remote.prototype.getItem = function (key) {
-                                var dfd = $.Deferred();
-                                uk.request.ajax(this.loadPath, { value: key }).done(function (widths) {
-                                    dfd.resolve(uk.util.optional.of(widths));
-                                });
-                                return dfd.promise();
-                            };
-                            Remote.prototype.setItemAsJson = function (key, value) {
-                                var dfd = $.Deferred();
-                                uk.request.ajax(this.savePath, { key: key, columns: value }).done(function (res) {
-                                    dfd.resolve(res);
-                                });
-                                return dfd.promise();
-                            };
-                            return Remote;
-                        }());
-                        dist.Remote = Remote;
-                    })(dist || (dist = {}));
-                    $.fn.ntsGrid = function (options) {
-                        var self = this;
-                        if (typeof options === "string") {
-                            return functions.ntsAction($(self), options, [].slice.call(arguments).slice(1));
-                        }
-                        if (options.ntsControls === undefined) {
-                            $(this).igGrid(options);
-                            return;
-                        }
-                        if (options.hidePrimaryKey) {
-                            _.forEach(options.columns, function (c) {
-                                if (c.key === options.primaryKey) {
-                                    c.width = "1px";
-                                    return false;
-                                }
-                            });
-                        }
-                        var flatCols = validation.scanValidators($(self), options.columns);
-                        var cellFormatter = new color.CellFormatter($(this), options.ntsFeatures);
-                        $(this).addClass('compact-grid nts-grid').wrap($("<div class='nts-grid-wrapper'/>"));
-                        var columnControlTypes = {};
-                        var columnSpecialTypes = {};
-                        var bounceCombos = {};
-                        var cbHeaderColumns = [];
-                        var cbSelectionColumns = {};
-                        var formatColumn = function (column) {
-                            if (column.hidden)
-                                return column;
-                            if (column.showHeaderCheckbox) {
-                                column.headerText = ntsControls.createHeaderCheckbox({
-                                    controlDef: {
-                                        options: { value: 1, text: column.headerText },
-                                        optionsValue: 'value',
-                                        optionsText: 'text'
-                                    }
-                                }, column.key);
-                                cbHeaderColumns.push(column.key);
-                                cbSelectionColumns[column.key] = {
-                                    selectAll: false, quantity: 0,
-                                    onSelect: function (value) {
-                                        var fs = this;
-                                        if (value && ++fs.quantity === options.dataSource.length) {
-                                            fs.th.find(".nts-grid-header-control-" + column.key).find("input[type='checkbox']").prop("checked", true);
-                                            fs.selectAll = true;
-                                        }
-                                        else if (!value && fs.quantity > 0) {
-                                            fs.quantity--;
-                                            if (fs.selectAll) {
-                                                fs.th.find(".nts-grid-header-control-" + column.key).find("input[type='checkbox']").prop("checked", false);
-                                                fs.selectAll = false;
-                                            }
-                                        }
-                                    }
-                                };
-                            }
-                            if (!uk.util.isNullOrUndefined(column.group)) {
-                                var cols = _.map(column.group, formatColumn);
-                                column.group = cols;
-                                return column;
-                            }
-                            specialColumn.ifTrue(columnSpecialTypes, column, bounceCombos, flatCols);
-                            if (column.ntsControl === undefined) {
-                                columnControlTypes[column.key] = ntsControls.TEXTBOX;
-                                return cellFormatter.format(column);
-                            }
-                            if (column.ntsControl === ntsControls.LABEL) {
-                                ntsControls.drawLabel($(self), column, cellFormatter);
-                                columnControlTypes[column.key] = ntsControls.LABEL;
-                                return cellFormatter.format(column);
-                            }
-                            var controlDef = _.find(options.ntsControls, function (ctl) {
-                                return ctl.name === column.ntsControl;
-                            });
-                            if (!uk.util.isNullOrUndefined(controlDef))
-                                columnControlTypes[column.key] = controlDef.controlType;
-                            else {
-                                columnControlTypes[column.key] = ntsControls.TEXTBOX;
-                                return cellFormatter.format(column);
-                            }
-                            var $self = $(self);
-                            column.formatter = function (value, rowObj) {
-                                if (uk.util.isNullOrUndefined(rowObj))
-                                    return value;
-                                var rowId = rowObj[$self.igGrid("option", "primaryKey")];
-                                var update = function (val) {
-                                    if (!uk.util.isNullOrUndefined($self.data("igGrid"))) {
-                                        updating.updateCell($self, rowId, column.key, column.dataType !== 'string' ? val : val.toString());
-                                        if (options.autoCommit === undefined || options.autoCommit === false) {
-                                            var updatedRow = $self.igGrid("rowById", rowId, false);
-                                            $self.igGrid("commit");
-                                            if (updatedRow !== undefined)
-                                                $self.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
-                                        }
-                                    }
-                                };
-                                var deleteRow = function () {
-                                    if ($self.data("igGrid") !== null)
-                                        $self.data("igGridUpdating").deleteRow(rowId);
-                                };
-                                var ntsControl = ntsControls.getControl(controlDef.controlType);
-                                var cell = $self.igGrid("cellById", rowId, column.key);
-                                var isEnable = $(cell).find("." + ntsControl.containerClass()).data("enable");
-                                isEnable = isEnable !== undefined ? isEnable : controlDef.enable === undefined ? true : controlDef.enable;
-                                var data = {
-                                    rowId: rowId,
-                                    columnKey: column.key,
-                                    controlDef: controlDef,
-                                    update: update,
-                                    deleteRow: deleteRow,
-                                    initValue: value,
-                                    rowObj: rowObj,
-                                    showHeaderCheckbox: column.showHeaderCheckbox,
-                                    enable: isEnable
-                                };
-                                var back;
-                                if (back = bounceCombos[column.key]) {
-                                    data.bounce = back;
-                                }
-                                var controlCls = "nts-grid-control-" + column.key + "-" + rowId;
-                                var $container = $("<div/>").append($("<div/>").addClass(controlCls).css("height", ntsControls.HEIGHT_CONTROL));
-                                var $_self = $self;
-                                setTimeout(function () {
-                                    var $self = $_self;
-                                    var rowId = rowObj[$self.igGrid("option", "primaryKey")];
-                                    var $gridCell = $self.igGrid("cellById", rowId, column.key);
-                                    if (!$gridCell)
-                                        return;
-                                    if ($($gridCell.children()[0]).children().length === 0) {
-                                        var $control = ntsControl.draw(data);
-                                        $("." + controlCls).append($control);
-                                        if (controlDef.controlType === ntsControls.CHECKBOX && column.showHeaderCheckbox) {
-                                            var cbSelectCols = $self.data(internal.CB_SELECTED) || {};
-                                            var cbColConf_1 = cbSelectCols[column.key];
-                                            if (cbColConf_1) {
-                                                $control.on("change", function () {
-                                                    cbColConf_1.onSelect($(this).find("input[type='checkbox']").is(":checked"));
-                                                });
-                                            }
-                                        }
-                                    }
-                                    ntsControl.$containedGrid = $self;
-                                    var c = {
-                                        id: rowId,
-                                        columnKey: column.key,
-                                        element: $gridCell[0]
-                                    };
-                                    cellFormatter.style($self, c);
-                                    color.rememberDisabled($self, c);
-                                }, 0);
-                                return $container.html();
-                            };
-                            return column;
-                        };
-<<<<<<< HEAD
-=======
-                        TableBuildingConstructor.prototype.setCellValue = function (button, data) {
-                            var cell = button.parent();
-                            if (!isNull(data) && !isEmpty(data.text)) {
-                                cell.data("cell-data", _.cloneDeep(data));
-                                button.text(data.text);
-                                button.attr("title", data.tooltip);
-                                button.addClass("ntsButtonCellData");
-                                button.data("empty-cell", false);
-                            }
-                            else {
-                                cell.data("cell-data", null);
-                                button.text("+");
-                                button.removeAttr("title");
-                                button.removeClass("ntsButtonCellData");
-                                button.data("empty-cell", true);
-                                data = {};
-                            }
-                            var rowIdx = parseInt(cell.attr("row-idx"));
-                            var columnIdx = parseInt(cell.attr("column-idx"));
-                            if (nts.uk.util.isNullOrUndefined(this.source[rowIdx])) {
-                                this.source[rowIdx] = [];
-                            }
-                            this.source[rowIdx][columnIdx] = data;
-                            this.updateOriginalSource();
-                        };
-                        TableBuildingConstructor.prototype.updateOriginalSource = function () {
-                            this.originalSource = this.toFlatSource();
-                            this.container.trigger("sourcechanging", { source: this.cloneSource() });
-                        };
-                        TableBuildingConstructor.prototype.toFlatSource = function () {
-                            var result = [];
-                            _.forEach(this.source, function (row) {
-                                _.forEach(row, function (cell) {
-                                    result.push(_.cloneDeep(cell));
-                                });
-                            });
-                            return result;
-                        };
-                        TableBuildingConstructor.prototype.cloneSource = function () {
-                            return this.getDataSource();
-                        };
-                        return TableBuildingConstructor;
-                    }());
-                    var TableButtonEntity = (function () {
-                        function TableButtonEntity(rowId, columnId, viewText, tooltipText) {
-                            this.rowId = rowId;
-                            this.columnId = columnId;
-                            this.viewText = viewText;
-                            this.tooltipText = tooltipText;
-                        }
-                        TableButtonEntity.prototype.setRowId = function (rowId) {
-                            this.rowId = rowId;
-                        };
-                        TableButtonEntity.prototype.setColumnId = function (columnId) {
-                            this.columnId = columnId;
-                        };
-                        TableButtonEntity.prototype.setViewText = function (viewText) {
-                            this.viewText = viewText;
-                        };
-                        TableButtonEntity.prototype.setTooltipText = function (tooltipText) {
-                            this.tooltipText = tooltipText;
-                        };
-                        TableButtonEntity.prototype.getRowId = function () {
-                            return this.rowId;
-                        };
-                        TableButtonEntity.prototype.getColumnId = function () {
-                            return this.columnId;
-                        };
-                        TableButtonEntity.prototype.getViewText = function (rowId) {
-                            return this.viewText;
-                        };
-                        TableButtonEntity.prototype.getTooltipText = function () {
-                            return this.tooltipText;
-                        };
-                        return TableButtonEntity;
-                    }());
-                    ntsButtonTable.TableButtonEntity = TableButtonEntity;
-                })(ntsButtonTable || (ntsButtonTable = {}));
-            })(jqueryExtentions = ui_20.jqueryExtentions || (ui_20.jqueryExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui_21) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * Tree binding handler
-                 */
-                var NtsTreeDragAndDropBindingHandler = (function () {
-                    /**
-                     * Constructor.
-                     */
-                    function NtsTreeDragAndDropBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsTreeDragAndDropBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var ROW_HEIGHT = 30;
-                        var HEADER_HEIGHT = 24;
-                        // Get data. 
-                        var data = valueAccessor();
-                        var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
-                        var optionsValue = ko.unwrap(data.primaryKey !== undefined ? data.primaryKey : data.optionsValue);
-                        var optionsText = ko.unwrap(data.primaryText !== undefined ? data.primaryText : data.optionsText);
-                        var optionsChild = ko.unwrap(data.childDataKey !== undefined ? data.childDataKey : data.optionsChild);
-                        var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : false;
-                        var selectedValues = ko.unwrap(data.selectedValues);
-                        var singleValue = ko.unwrap(data.value);
-                        var rows = ko.unwrap(data.rows);
-                        var selectOnParent = data.selectOnParent != undefined ? ko.unwrap(data.selectOnParent) : false;
-                        var allowOtherTreeNode = data.receiveOtherTreeNode !== undefined ? ko.unwrap(data.receiveOtherTreeNode) : false;
-                        var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
-                        var height = ko.unwrap(data.height !== undefined ? data.height : 0);
-                        var width = ko.unwrap(data.width !== undefined ? data.width : 0);
-                        var maxDeepLeaf = ko.unwrap(data.maxDeepLeaf !== undefined ? data.maxDeepLeaf : 10);
-                        var maxChildInNode = ko.unwrap(data.maxChildInNode !== undefined ? data.maxChildInNode : 999);
-                        var customValidate = data.customValidate;
-                        if (!nts.uk.util.isNullOrEmpty(rows)) {
-                            height = rows * ROW_HEIGHT;
-                        }
-                        var $tree = $(element);
-                        //            let template = "{{if ${"+optionsValue+"}.indexOf('1') >= 0}} <img src='http://igniteui.com/images/samples/tree/book.png'>" + 
-                        //                " {{elseif ${"+optionsValue+"}.indexOf('2') >= 0}}<img src='http://igniteui.com/images/samples/tree/coins.png'>" +
-                        //                "{{else}}<img src='http://igniteui.com/images/samples/tree/documents-folder.png'/>{{/if}}${"+optionsValue+"}"
-                        // Init ig grid.
-                        $tree.igTree({
-                            width: width,
-                            height: height,
-                            dataSource: _.cloneDeep(options),
-                            initialExpandDepth: 0,
-                            tabIndex: -1,
-                            checkboxMode: !multiple ? "off" : selectOnParent ? "triState" : "biState",
-                            singleBranchExpand: false,
-                            pathSeparator: '_',
-                            bindings: {
-                                textKey: optionsText,
-                                valueKey: optionsValue,
-                                childDataProperty: optionsChild
-                            },
-                            dragAndDrop: true,
-                            dragAndDropSettings: {
-                                allowDrop: allowOtherTreeNode,
-                                customDropValidation: function (element) {
-                                    var dragInfor = $tree.data("dragInfor");
-                                    var mousePosition = $tree.data("mousePosition");
-                                    // Validates the drop target
-                                    var droppableNode = $(this);
-                                    if (droppableNode.prop("tagName").toLowerCase() !== "li") {
-                                        droppableNode = droppableNode.closest("li");
-                                    }
-                                    var isOutTarget = mousePosition.top < droppableNode.offset().top
-                                        || mousePosition.top > droppableNode.offset().top + droppableNode.height();
-                                    var dragParent = $tree.igTree("parentNode", element);
-                                    var targetParent = $tree.igTree("parentNode", droppableNode);
-                                    var targetNode = $tree.igTree("nodeFromElement", droppableNode);
-                                    if (!isOutTarget) {
-                                        if (!nts.uk.util.isNullOrEmpty(targetNode.path)) {
-                                            var targetDeep = (targetNode.path.match(/_/g) || []).length;
-                                            if (targetDeep + 1 >= maxDeepLeaf) {
-                                                return false;
-                                            }
-                                        }
-                                        else {
-                                            return false;
-                                        }
-                                        var targetNodeChildren = $tree.igTree("children", droppableNode);
-                                        if (targetNodeChildren.length >= maxChildInNode) {
-                                            return false;
-                                        }
-                                    }
-                                    else if (targetParent !== null && !targetParent.is(dragParent)) {
-                                        targetNode = $tree.igTree("nodeFromElement", targetParent);
-                                        if (!nts.uk.util.isNullOrEmpty(targetNode.path)) {
-                                            var targetDeep = (targetNode.path.match(/_/g) || []).length;
-                                            if (targetDeep + 1 >= maxDeepLeaf) {
-                                                return false;
-                                            }
-                                        }
-                                        else {
-                                            return false;
-                                        }
-                                        var targetNodeChildren = $tree.igTree("children", targetParent);
-                                        if (targetNodeChildren.length >= maxChildInNode) {
-                                            return false;
-                                        }
-                                    }
-                                    var customValidateResult = nts.uk.util.isNullOrUndefined(customValidate) ? true : customValidate();
-                                    if (customValidateResult === false) {
-                                        return false;
-                                    }
-                                    return true;
-                                }
-                            },
-                            dragStart: function (evt, ui) {
-                                $tree.data("dragInfor", {
-                                    helper: ui.helper,
-                                    targetNodePath: ui.path,
-                                    mousePosition: ui.position
-                                });
-                            },
-                            selectionChanged: function (evt, ui) {
-                                if (ko.unwrap(data.multiple)) {
-                                    if (ko.isObservable(data.selectedValues)) {
-                                        var selectedNodes = $tree.igTree("checkedNodes");
-                                        var checkedNodes = _.map(selectedNodes, function (s) {
-                                            return s.data[optionsValue];
-                                        });
-                                        if (ui.selectedNodes.length > 0) {
-                                            checkedNodes.push(ui.selectedNodes[0].data[optionsValue]);
-                                        }
-                                        data.selectedValues(_.uniq(checkedNodes));
-                                    }
-                                }
-                                else {
-                                    if (ko.isObservable(data.value)) {
-                                        var selectedRows = ui.selectedNodes;
-                                        data.value(selectedRows.length <= 0 ? undefined : selectedRows[0].data[optionsValue]);
-                                    }
-                                }
-                            },
-                            nodeCheckstateChanged: function (evt, ui) {
-                                if (ko.isObservable(data.selectedValues)) {
-                                    if (ko.isObservable(data.selectedValues)) {
-                                        var selectedNodes = $tree.igTree("checkedNodes");
-                                        data.selectedValues(_.map(selectedNodes, function (s) {
-                                            return s.data[optionsValue];
-                                        }));
-                                    }
-                                }
-                            }
-                        });
-                        $tree.mousemove(function (event) {
-                            var pageCoords = { top: event.pageY, left: event.pageX };
-                            $tree.data("mousePosition", pageCoords);
-                        });
-                        $tree.setupSearchScroll("igTree");
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsTreeDragAndDropBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data.
-                        var data = valueAccessor();
-                        var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
-                        var selectedValues = ko.unwrap(data.selectedValues);
-                        var singleValue = ko.unwrap(data.value);
-                        var $tree = $(element);
-                        var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : false;
-                        // Update datasource.
-                        var originalSource = $tree.igTree('option', 'dataSource').__ds;
-                        if (!_.isEqual(originalSource, options)) {
-                            $tree.igTree("option", "dataSource", _.cloneDeep(options));
-                            $tree.igTree("dataBind");
-                        }
-                        // Clear selection.
-                        if (nts.uk.util.isNullOrEmpty(selectedValues) && nts.uk.util.isNullOrUndefined(singleValue)) {
-                            $tree.ntsTreeDrag("deselectAll");
-                            $tree.find("a").removeClass("ui-state-active");
-                        }
-                        else {
-                            if (multiple) {
-                                $tree.find("a").removeClass("ui-state-active");
-                                selectedValues.forEach(function (val) {
-                                    var $node = $tree.igTree("nodesByValue", val);
-                                    $node.find("a:first").addClass("ui-state-active");
-                                    var $checkbox = $node.find("span[data-role=checkbox]:first").find(".ui-icon-check");
-                                    if ($tree.igTree("checkState", $node) === "off") {
-                                        $tree.igTree("toggleCheckstate", $node);
-                                    }
-                                });
-                            }
-                            else {
-                                $tree.igTree("select", $tree.igTree("nodesByValue", singleValue));
-                            }
-                        }
-                    };
-                    return NtsTreeDragAndDropBindingHandler;
-                }());
-                ko.bindingHandlers['ntsTreeDragAndDrop'] = new NtsTreeDragAndDropBindingHandler();
-            })(koExtentions = ui_21.koExtentions || (ui_21.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
         (function (ui_22) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * Dialog binding handler
-                 */
-                var NtsMonthDaysBindingHandler = (function () {
-                    function NtsMonthDaysBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsMonthDaysBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var $container = $(element);
-                        var self = this;
-                        var value = ko.unwrap(data.value);
-                        var dataName = ko.unwrap(data.name);
-                        var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
-                        var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
-                        $container.removeAttr("tabindex");
-                        $container.data("tabindex", tabIndex);
-                        $container.addClass("ntsControl ntsMonthDays_Container");
-                        $container.append("<div class='ntsMonthDays'/>");
-                        var $control = $container.find(".ntsMonthDays");
-                        $control.append("<div class='ntsMonthPicker ntsComboBox ntsMonthDays_Component' /><div class='ntsMonthLabel ntsLabel ntsMonthDays_Component'/>" +
-                            "<div class='ntsDayPicker ntsComboBox ntsMonthDays_Component' /><div class='ntsDayLabel ntsLabel ntsMonthDays_Component'/>");
-                        var $monthPicker = $control.find(".ntsMonthPicker");
-                        var $dayPicker = $control.find(".ntsDayPicker");
-                        var $monthLabel = $control.find(".ntsMonthLabel");
-                        var $dayLabel = $control.find(".ntsDayLabel");
-                        $monthLabel.append("<label>月</label>");
-                        $dayLabel.append("<label>日</label>");
-                        $monthPicker.igCombo({
-                            dataSource: NtsMonthDaysBindingHandler.getMonths(),
-                            textKey: "text",
-                            valueKey: "value",
-                            width: "60px",
-                            height: "30px",
-                            mode: "dropdown",
-                            selectionChanged: function (evt, ui) {
-                                var currentMonth = ui.items[0].data.value;
-                                var currentDay = $dayPicker.igCombo("selectedItems");
-                                var days = NtsMonthDaysBindingHandler.getDaysInMonth(currentMonth);
-                                var value = currentDay[0].data.value > days.length ? days.length : currentDay[0].data.value;
-                                $dayPicker.igCombo("option", "dataSource", days);
-                                data.value(currentMonth * 100 + value);
-                            }
-                        });
-                        $dayPicker.igCombo({
-                            dataSource: NtsMonthDaysBindingHandler.getDaysInMonth(1),
-                            textKey: "text",
-                            valueKey: "value",
-                            width: "60px",
-                            height: "30px",
-                            mode: "dropdown",
-                            selectionChanged: function (evt, ui) {
-                                var currentDay = ui.items[0].data.value;
-                                var currentMonth = $monthPicker.igCombo("selectedItems")[0].data.value;
-                                data.value(currentMonth * 100 + currentDay);
-                            }
-                        });
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsMonthDaysBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var $container = $(element);
-                        var value = ko.unwrap(data.value);
-                        var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
-                        var $monthPicker = $container.find(".ntsMonthPicker");
-                        var $dayPicker = $container.find(".ntsDayPicker");
-                        if (enable !== false) {
-                            $monthPicker.igCombo('option', 'disabled', false);
-                            $dayPicker.igCombo('option', 'disabled', false);
-                            $container.find("input").attr("tabindex", $container.data("tabindex"));
-                        }
-                        else {
-                            $monthPicker.igCombo('option', 'disabled', true);
-                            $dayPicker.igCombo('option', 'disabled', true);
-                            $container.find("input").attr("tabindex", "-1");
-                        }
-                        if (!nts.uk.util.isNullOrUndefined(value) && nts.uk.ntsNumber.isNumber(value)) {
-                            var month = nts.uk.ntsNumber.trunc(parseInt(value) / 100);
-                            var day = parseInt(value) % 100;
-                            $monthPicker.igCombo("value", month);
-                            $dayPicker.igCombo("value", day);
-                        }
-                        var currentDay = $dayPicker.igCombo("selectedItems")[0].data.value;
-                        var currentMonth = $monthPicker.igCombo("selectedItems")[0].data.value;
-                        data.value(currentMonth * 100 + currentDay);
-                    };
-                    NtsMonthDaysBindingHandler.getMonths = function () {
-                        var monthSource = [];
-                        while (monthSource.length < 12) {
-                            monthSource.push({ text: monthSource.length + 1, value: monthSource.length + 1 });
-                        }
-                        return monthSource;
-                    };
-                    NtsMonthDaysBindingHandler.getDaysInMonth = function (month) {
-                        var daysInMonth = moment(month, "MM").daysInMonth();
-                        if (daysInMonth !== NaN) {
-                            //                if (month === 2){
-                            //                    daysInMonth++;        
-                            //                }
-                            var days = [];
-                            while (days.length < daysInMonth) {
-                                days.push({ text: days.length + 1, value: days.length + 1 });
-                            }
-                            return days;
-                        }
-                        return [];
-                    };
-                    return NtsMonthDaysBindingHandler;
-                }());
-                ko.bindingHandlers['ntsMonthDays'] = new NtsMonthDaysBindingHandler();
-            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui_23) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * Dialog binding handler
-                 */
-                var NtsImageEditorBindingHandler = (function () {
-                    function NtsImageEditorBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsImageEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var editable = nts.uk.util.isNullOrUndefined(data.editable) ? false : ko.unwrap(data.editable);
-                        var zoomble = nts.uk.util.isNullOrUndefined(data.zoomble) ? false : ko.unwrap(data.zoomble);
-                        var width = nts.uk.util.isNullOrUndefined(data.width) ? 600 : ko.unwrap(data.width);
-                        var freeResize = nts.uk.util.isNullOrUndefined(data.freeResize) ? true : ko.unwrap(data.freeResize);
-                        var resizeRatio = nts.uk.util.isNullOrUndefined(data.resizeRatio) ? 1 : ko.unwrap(data.resizeRatio);
-                        var height = nts.uk.util.isNullOrUndefined(data.height) ? 600 : ko.unwrap(data.height);
-                        var extension = nts.uk.util.isNullOrUndefined(data.accept) ? [] : ko.unwrap(data.accept);
-                        var msgIdForUnknownFile = nts.uk.util.isNullOrUndefined(data.msgIdForUnknownFile) ? 'Msg_77' : ko.unwrap(data.msgIdForUnknownFile);
-                        var croppable = false;
-                        var helper = new ImageEditorHelper(extension, msgIdForUnknownFile);
-                        var $container = $("<div>", { 'class': 'image-editor-container' }), $element = $(element).append($container);
-                        var constructSite = new ImageEditorConstructSite($element, helper);
-                        var $uploadArea = $("<div>", { "class": "image-upload-container image-editor-area cf" });
-                        $container.append($uploadArea);
-                        if (editable === true) {
-                            croppable = true;
-                            var confirm_1 = { checked: ko.observable(true) };
-                            $(element).data('checkbox', confirm_1);
-                            var $editContainer = $("<div>", { "class": "edit-action-container image-editor-area" });
-                            $container.append($editContainer);
-                            constructSite.buildCheckBoxArea(allBindingsAccessor, viewModel, bindingContext);
-                        }
-                        constructSite.buildActionArea();
-                        constructSite.buildUploadAction();
-                        constructSite.buildImagePreviewArea();
-                        constructSite.buildFileChangeHandler();
-                        var customOption = {
-                            aspectRatio: freeResize ? 0 : resizeRatio,
-                            dragMode: croppable ? "crop" : "none",
-                            modal: false
-                        };
-                        constructSite.buildImageLoadedHandler(zoomble, customOption);
-                        constructSite.buildSrcChangeHandler();
-                        constructSite.buildImageDropEvent();
-                        $element.find(".image-holder").width(width - 12).height(height - 12);
-                        return { 'controlsDescendantBindings': true };
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsImageEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor(), $element = $(element), confirm = $(element).data('checkbox'), $checkbox = $element.find('.comfirm-checkbox');
-                        if (!nts.uk.util.isNullOrEmpty($checkbox)) {
-                            ko.bindingHandlers["ntsCheckBox"].update($checkbox[0], function () {
-                                return confirm;
-                            }, allBindingsAccessor, viewModel, bindingContext);
-                        }
-                    };
-                    return NtsImageEditorBindingHandler;
-                }());
-                var ImageEditorConstructSite = (function () {
-                    function ImageEditorConstructSite($root, helper) {
-                        this.$root = $root;
-                        this.helper = helper;
-                    }
-                    ImageEditorConstructSite.prototype.buildCheckBoxArea = function (allBindingsAccessor, viewModel, bindingContext) {
-                        var self = this;
-                        var $checkboxHolder = $("<div>", { "class": "checkbox-holder image-editor-component" });
-                        var $editContainer = this.$root.find(".edit-action-container");
-                        $editContainer.append($checkboxHolder);
-                        this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: "表示エリア選択する" });
-                        var $comment = $("<div>", { "class": "crop-description cf" });
-                        $checkboxHolder.append(this.$checkbox);
-                        $checkboxHolder.append($comment);
-                        var $cropAreaIcon = $("<div>", { "class": "crop-icon inline-container" });
-                        var $cropText = $("<div>", { "class": "crop-description-text inline-container" });
-                        var $mousePointerIcon = $("<div>", { "class": "mouse-icon inline-container" });
-                        var $mouseText = $("<div>", { "class": "mouse-description-text inline-container" });
-                        $("<label>", { "class": "info-label", "text": "のエリア内をメイン画面に表示します。" }).appendTo($cropText);
-                        $("<label>", { "class": "info-label", "text": "マウスのドラッグ＆ドロップでエリアを変更できます。" }).appendTo($mouseText);
-                        $comment.append($cropAreaIcon).append($cropText).append($mousePointerIcon).append($mouseText);
-                        var checkboxId = nts.uk.util.randomId();
-                        ko.bindingHandlers["ntsCheckBox"].init(this.$checkbox[0], function () {
-                            return self.$root.data('checkbox');
-                        }, allBindingsAccessor, viewModel, bindingContext);
-                    };
-                    ImageEditorConstructSite.prototype.buildActionArea = function () {
-                        this.$inputFile = $("<input>", { "class": "fileinput", "type": "file", "accept": this.helper.toStringExtension() })
-                            .appendTo($("<div>", { "class": "image-editor-component inline-container nts-fileupload-container" }));
-                        this.$imageNameLbl = $("<label>", { "class": "image-name-lbl info-label" })
-                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
-                        this.$imageSizeLbl = $("<label>", { "class": "image-info-lbl info-label" })
-                            .appendTo(this.$imageNameLbl.parent());
-                        this.$uploadBtn = $("<button>", { "class": "upload-btn" })
-                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
-                        var $uploadArea = this.$root.find(".image-upload-container");
-                        $uploadArea.append(this.$uploadBtn.parent());
-                        $uploadArea.append(this.$imageNameLbl.parent());
-                        $uploadArea.append(this.$inputFile.parent());
-                    };
-                    ImageEditorConstructSite.prototype.buildImagePreviewArea = function () {
-                        this.$previewArea = $("<div>", { "class": "image-preview-container image-editor-area" });
-                        this.$previewArea.appendTo(this.$root.find(".image-editor-container"));
-                        var imagePreviewId = nts.uk.util.randomId();
-                        var $imageContainer = $("<div>", { "class": "image-container container-no-upload-background" }).appendTo(this.$previewArea);
-                        var $imageHolder = $("<div>", { "class": "image-holder image-editor-component image-upload-icon" }).appendTo($imageContainer);
-                        this.$imagePreview = $("<img>", { "class": "image-preview", "id": imagePreviewId }).appendTo($imageHolder);
-                    };
-                    ImageEditorConstructSite.prototype.buildUploadAction = function () {
-                        var self = this;
-                        self.$uploadBtn.text("参照").click(function (evt) {
-                            self.$inputFile.click();
-                        });
-                    };
-                    ImageEditorConstructSite.prototype.buildImageDropEvent = function () {
-                        var self = this;
-                        self.$previewArea.on('drop dragdrop', function (evt, ui) {
-                            event.preventDefault();
-                            var files = evt.originalEvent["dataTransfer"].files;
-                            if (!nts.uk.util.isNullOrEmpty(files)) {
-                                self.validateFile(files);
-                            }
-                        });
-                        this.$previewArea.on('dragenter', function (event) {
-                            event.preventDefault();
-                        });
-                        this.$previewArea.on('dragleave', function (evt, ui) {
-                        });
-                        this.$previewArea.on('dragover', function (event) {
-                            event.preventDefault();
-                        });
-                    };
-                    ImageEditorConstructSite.prototype.buildImageLoadedHandler = function (zoomble, customOption) {
-                        var self = this;
-                        self.$root.data("img-status", self.buildImgStatus("not init", 0));
-                        self.$imagePreview.on('load', function () {
-                            var image = new Image();
-                            image.src = self.$imagePreview.attr("src");
-                            image.onload = function () {
-                                self.$imageSizeLbl.text("　(大きさ " + this.height + "x" + this.width + "　　サイズ " + self.helper.getFileSize(self.$root.data("size")) + ")");
-                                if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
-                                    self.cropper.destroy();
-                                }
-                                self.$root.data("original-img", image.src);
-                                var option = {
-                                    viewMode: 1,
-                                    guides: false,
-                                    autoCrop: false,
-                                    highlight: false,
-                                    zoomable: zoomble,
-                                    crop: function (e) {
-                                        //                            console.log(e);
-                                    }, cropstart: function (e) {
-                                        //                            e.preventDefault();
-                                        //                            console.log(e);
-                                        //                            return croppable;
-                                    }
-                                };
-                                jQuery.extend(option, customOption);
-                                self.cropper = new Cropper(self.$imagePreview[0], option);
-                                self.$root.data("cropper", self.cropper);
-                                self.$root.data("img-status", self.buildImgStatus("loaded", 4));
-                                var evtData = {
-                                    size: self.$root.data("size"),
-                                    height: this.height,
-                                    width: this.width,
-                                    name: self.$root.data("file-name"),
-                                    fileType: self.$root.data("file-type")
-                                };
-                                self.$root.trigger("imgloaded", evtData);
-                            };
-                        }).on("error", function () {
-                            self.$root.data("img-status", self.buildImgStatus("load fail", 3));
-                        });
-                    };
-                    ImageEditorConstructSite.prototype.buildImgStatus = function (status, statusCode) {
-                        return {
-                            imgOnView: statusCode === 4 ? true : false,
-                            imgStatus: status,
-                            imgStatusCode: statusCode
-                        };
-                    };
-                    ImageEditorConstructSite.prototype.buildSrcChangeHandler = function () {
-                        var self = this;
-                        self.$root.bind("srcchanging", function (evt, query) {
-                            self.$root.data("img-status", self.buildImgStatus("img loading", 2));
-                            var target = self.helper.getUrl(query);
-                            var xhr = self.getXRequest();
-                            if (xhr === null) {
-                                self.destroyImg();
-                                return;
-                            }
-                            xhr.open('GET', target);
-                            xhr.responseType = 'blob';
-                            xhr.onload = function (e) {
-                                if (this.status == 200) {
-                                    if (xhr.response.type.indexOf("image") >= 0) {
-                                        var reader = new FileReader();
-                                        reader.readAsDataURL(xhr.response);
-                                        reader.onload = function () {
-                                            self.helper.getFileNameFromUrl().done(function (fileName) {
-                                                var fileType = xhr.response.type.split("/")[1], fileName = self.helper.data.isOutSiteUrl ? (fileName + "." + fileType) : fileName;
-                                                self.backupData(null, fileName, fileType, xhr.response.size);
-                                                self.$imagePreview.attr("src", reader.result);
-                                                self.$imagePreview.closest(".image-holder").removeClass(".image-upload-icon");
-                                                self.$imagePreview.closest(".image-container").removeClass(".container-no-upload-background");
-                                            });
-                                        };
-                                    }
-                                    else {
-                                        self.destroyImg();
-                                    }
-                                }
-                                else {
-                                    self.destroyImg();
-                                }
-                            };
-                            xhr.send();
-                        });
-                    };
-                    ImageEditorConstructSite.prototype.destroyImg = function () {
-                        var self = this;
-                        nts.uk.ui.dialog.alert("画像データが正しくないです。。");
-                        self.$root.data("img-status", self.buildImgStatus("load fail", 3));
-                        self.backupData(null, "", "", 0);
-                        self.$imagePreview.attr("src", "");
-                        self.$imagePreview.closest(".image-holder").addClass(".image-upload-icon");
-                        self.$imagePreview.closest(".image-container").addClass(".container-no-upload-background");
-                        self.$imageSizeLbl.text("");
-                        if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
-                            self.cropper.destroy();
-                        }
-                        self.$root.data("cropper", self.cropper);
-                    };
-                    ImageEditorConstructSite.prototype.getXRequest = function () {
-                        if (typeof XDomainRequest != "undefined") {
-                            // IE8
-                            return new XDomainRequest();
-                        }
-                        else if (typeof XMLHttpRequest != "undefined") {
-                            // firefox 他
-                            return new XMLHttpRequest();
-                        }
-                        else if (window.ActiveXObject) {
-                            // IE 7 以前
-                            return new ActiveXObject("Microsoft.XMLHTTP");
-                        }
-                        else {
-                            // 未対応ブラウザ
-                            return null;
-                        }
-                    };
-                    ImageEditorConstructSite.prototype.buildFileChangeHandler = function () {
-                        var self = this;
-                        self.$inputFile.change(function () {
-                            self.$root.data("img-status", self.buildImgStatus("img loading", 2));
-                            if (nts.uk.util.isNullOrEmpty(this.files)) {
-                                self.$root.data("img-status", self.buildImgStatus("load fail", 3));
-                                return;
-                            }
-                            self.validateFile(this.files);
-                        });
-                    };
-                    ImageEditorConstructSite.prototype.validateFile = function (files) {
-                        var self = this;
-                        var firstImageFile = self.helper.getFirstFile(files);
-                        if (!nts.uk.util.isNullOrUndefined(firstImageFile)) {
-                            self.assignImageToView(firstImageFile);
-                        }
-                        else {
-                            nts.uk.ui.dialog.alertError({ messageId: self.helper.getMsgIdForUnknownFile(), messageParams: [self.helper.toStringExtension()] });
-                        }
-                    };
-                    ImageEditorConstructSite.prototype.assignImageToView = function (file) {
-                        var self = this;
-                        if (FileReader && file) {
-                            var fr = new FileReader();
-                            fr.onload = function () {
-                                self.$imagePreview.attr("src", fr.result);
-                                self.backupData(file, file.name, file.type.split("/")[1], file.size);
-                            };
-                            fr.onerror = function () {
-                                self.destroyImg();
-                            };
-                            fr.readAsDataURL(file);
-                        }
-                    };
-                    ImageEditorConstructSite.prototype.backupData = function (file, name, format, size) {
-                        var self = this;
-                        self.$root.data("file", file);
-                        self.$root.data("file-name", name);
-                        self.$root.data("file-type", format);
-                        self.$root.data("size", size);
-                        self.$imageNameLbl.text(name);
-                    };
-                    return ImageEditorConstructSite;
-                }());
-                var ImageEditorHelper = (function () {
-                    function ImageEditorHelper(extensions, msgIdForUnknownFile, query) {
-                        this.IMAGE_EXTENSION = [".png", ".PNG", ".jpg", ".JPG", ".JPEG", ".jpeg"];
-                        this.BYTE_SIZE = 1024;
-                        this.SIZE_UNITS = ["BYTE", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-                        var self = this;
-                        self.data = query;
-                        self.msgIdForUnknownFile = msgIdForUnknownFile;
-                        if (!nts.uk.util.isNullOrEmpty(extensions)) {
-                            self.IMAGE_EXTENSION = [];
-                            _.forEach(extensions, function (ex) {
-                                self.IMAGE_EXTENSION.push(ex.toLowerCase());
-                                self.IMAGE_EXTENSION.push(ex.toUpperCase());
-                            });
-                        }
-                    }
-                    ImageEditorHelper.prototype.toStringExtension = function () {
-                        return this.IMAGE_EXTENSION.join(", ");
-                    };
-                    ImageEditorHelper.prototype.getMsgIdForUnknownFile = function () {
-                        return this.msgIdForUnknownFile;
-                    };
-                    ImageEditorHelper.prototype.getFirstFile = function (files) {
-                        var IMAGE_EXTENSION = this.IMAGE_EXTENSION;
-                        return _.find(files, function (file) {
-                            return _.find(IMAGE_EXTENSION, function (ie) {
-                                var isType = file.type === ie.replace(".", "");
-                                var isType2 = file.name.substr(file.name.lastIndexOf(".")) === ie;
-                                return isType || isType2;
-                            }) !== undefined;
-                        });
-                    };
-                    ImageEditorHelper.prototype.getFileSize = function (originalSize) {
-                        var i = 0, result = originalSize;
-                        while (result > 5 * this.BYTE_SIZE) {
-                            result = result / this.BYTE_SIZE;
-                            i++;
-                        }
-                        var idx = i < this.SIZE_UNITS.length ? i : this.SIZE_UNITS.length - 1;
-                        return uk.ntsNumber.trunc(result) + this.SIZE_UNITS[idx];
-                    };
-                    ImageEditorHelper.prototype.getUrl = function (query) {
-                        if (!nts.uk.util.isNullOrUndefined(query)) {
-                            this.data = query;
-                        }
-                        if (!this.isOutSiteUrl(this.data.url)) {
-                            return this.data.url;
-                        }
-                        else {
-                            return "http://cors-anywhere.herokuapp.com/" + this.data.url;
-                        }
-                    };
-                    ImageEditorHelper.prototype.getFileNameFromUrl = function () {
-                        var dfd = $.Deferred();
-                        var urlElements = this.data.url.split("/"), fileName = urlElements[urlElements.length - 1];
-                        if (this.data.isOutSiteUrl) {
-                            dfd.resolve(fileName);
-                        }
-                        else {
-                            nts.uk.request.ajax("/shr/infra/file/storage/infor/" + fileName).done(function (res) {
-                                dfd.resolve(res.originalName);
-                            }).fail(function (error) {
-                                dfd.reject(error);
-                            });
-                        }
-                        return dfd.promise();
-                    };
-                    ImageEditorHelper.prototype.isOutSiteUrl = function (url) {
-                        return url.indexOf(nts.uk.request.location.siteRoot.rawUrl) < 0;
-                    };
-                    return ImageEditorHelper;
-                }());
-                ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
-            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui_24) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * CheckBox binding handler
-                 */
-                var NtsFunctionPanelBindingHandler = (function () {
-                    /**
-                     * Constructor.
-                     */
-                    function NtsFunctionPanelBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsFunctionPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
-                        var width = (data.width !== undefined) ? ko.unwrap(data.width) : 100;
-                        var headerText = (data.headerText !== undefined) ? ko.unwrap(data.headerText) : "";
-                        var items = (data.dataSource !== undefined) ? ko.unwrap(data.dataSource) : [];
-                        // Container
-                        var container = $(element);
-                        if (nts.uk.util.isNullOrEmpty(container.attr("id"))) {
-                            container.attr("id", nts.uk.util.randomId());
-                        }
-                        container.width(width);
-                        container.addClass("ntsControl ntsFunctionPanel").on("click", function (e) {
-                            if (container.data("readonly") === true)
-                                e.preventDefault();
-                        });
-                        container.append("<div class='function-header' /><div class='function-items'/>");
-                        var header = container.find('.function-header');
-                        header.append("<div class='function-icon'/><div class='function-link'><a class='header-link function-item'>" + headerText + "</a></div>");
-                        var itemAreas = container.find('.function-items');
-                        header.find(".function-item").click(function (evt, ui) {
-                            var current = $(this);
-                            if ($(this).data("dbClick") === false) {
-                                itemAreas.find(".function-item-container").hide("fast", function () {
-                                    current.data("dbClick", true);
-                                });
-                            }
-                            else {
-                                itemAreas.find(".function-item-container").show("fast", "linear", function () {
-                                    current.data("dbClick", false);
-                                });
-                            }
-                        });
-                        container.mouseleave(function (evt) {
-                            var current = header.find(".function-item");
-                            itemAreas.find(".function-item-container").hide("fast", function () {
-                                current.data("dbClick", true);
-                            });
-                        });
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsFunctionPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
-                        var width = (data.width !== undefined) ? ko.unwrap(data.width) : 100;
-                        var headerText = (data.headerText !== undefined) ? ko.unwrap(data.headerText) : "";
-                        var items = (data.dataSource !== undefined) ? ko.unwrap(data.dataSource) : [];
-                        // Container
-                        var container = $(element);
-                        var itemAreas = container.find('.function-items');
-                        var headerLink = container.find('.header-link');
-                        var containerId = container.attr("id");
-                        headerLink.text(headerText);
-                        itemAreas.empty();
-                        _.forEach(items, function (item, idx) {
-                            var div = $("<div class='function-item-container' />");
-                            div.attr("data-idx", idx);
-                            div.width(width);
-                            div.append("<div class='function-icon'/><div class='function-link'/>");
-                            var itemLink = $("<a id='" + (containerId + '-' + idx) + "' class='function-item'>" + item["text"] + "</a>");
-                            itemLink.click(item["action"]);
-                            itemLink.appendTo(div.find(".function-link"));
-                            var icon = $("<img class='ft-icon' src='" + item["icon"] + "'/>");
-                            icon.appendTo(div.find(".function-icon"));
-                            div.appendTo(itemAreas);
-                        });
-                        container.find(".function-item-container").hide();
-                    };
-                    return NtsFunctionPanelBindingHandler;
-                }());
-                ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var ntsEditor;
-                (function (ntsEditor) {
-                    $.fn.ntsEditor = function (action) {
-                        var $editor = $(this);
-                        switch (action) {
-                            case 'validate':
-                                validate($editor);
-                            default:
-                                break;
-                        }
-                    };
-                    function validate($editor) {
-                        var validateEvent = new CustomEvent("validate", {});
-                        $editor.each(function (index) {
-                            var $input = $(this);
-                            document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
-                        });
-                        //            document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
-                        //            $editor.trigger("validate");
-                    }
-                })(ntsEditor || (ntsEditor = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var sharedvm;
-            (function (sharedvm) {
-                var KibanTimer = (function () {
-                    function KibanTimer(target) {
-                        var self = this;
-                        self.elapsedSeconds = 0;
-                        self.formatted = ko.observable(uk.time.formatSeconds(this.elapsedSeconds, 'hh:mm:ss'));
-                        self.targetComponent = target;
-                        self.isTimerStart = ko.observable(false);
-                        self.oldDated = ko.observable(undefined);
-                        document.getElementById(self.targetComponent).innerHTML = self.formatted();
-                    }
-                    KibanTimer.prototype.run = function (timer) {
-                        var x = new Date().getTime() - timer.oldDated().getTime();
-                        x = Math.floor(x / 1000);
-                        timer.elapsedSeconds = x;
-                        document.getElementById(timer.targetComponent).innerHTML
-                            = uk.time.formatSeconds(x, 'hh:mm:ss');
-                    };
-                    KibanTimer.prototype.start = function () {
-                        var self = this;
-                        if (!self.isTimerStart()) {
-                            self.oldDated(new Date());
-                            self.isTimerStart(true);
-                            self.interval = setInterval(self.run, 1000, self);
-                        }
-                    };
-                    KibanTimer.prototype.end = function () {
-                        var self = this;
-                        if (self.isTimerStart()) {
-                            self.oldDated(undefined);
-                            self.isTimerStart(false);
-                            clearInterval(self.interval);
-                        }
-                    };
-                    return KibanTimer;
-                }());
-                sharedvm.KibanTimer = KibanTimer;
-            })(sharedvm = ui.sharedvm || (ui.sharedvm = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var ntsFileUpload;
-                (function (ntsFileUpload) {
-                    $.fn.ntsFileUpload = function (option) {
-                        var dfd = $.Deferred();
-                        var fileInput;
-                        if ($(this).find("input[type='file']").length == 0) {
-                            fileInput = $(this).get(0);
-                        }
-                        else {
-                            fileInput = $(this).find("input[type='file']").get(0);
-                        }
-                        if (fileInput !== undefined) {
-                            var files = fileInput.files;
-                            if (files.length > 0) {
-                                // Check file is deleted on Chrome
-                                if (files[0].size == 0) {
-                                    dfd.reject({ message: nts.uk.resource.getMessage("Msg_158"), messageId: "Msg_158" });
-                                    return dfd.promise();
-                                }
-                                var formData = new FormData();
-                                formData.append("stereotype", option.stereoType);
-                                formData.append("userfile", files[0]);
-                                formData.append("filename", files[0].name);
-                                nts.uk.request.uploadFile(formData, option).done(function (data, textStatus, jqXHR) {
-                                    // Business Exception
-                                    if (nts.uk.util.exception.isBusinessError(data)) {
-                                        if (option.onFail)
-                                            option.onFail();
-                                        dfd.reject(data);
-                                    }
-                                    else {
-                                        if (option.onSuccess)
-                                            option.onSuccess();
-                                        dfd.resolve(data);
-                                    }
-                                }).fail(function (jqXHR, textStatus, errorThrown) {
-                                    if (jqXHR.status === 413) {
-                                        dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
-                                    }
-                                    else {
-                                        // Client Exception
-                                        dfd.reject({ message: "アップロード処理に失敗しました。", messageId: "0" });
-                                    }
-                                });
-                            }
-                            else {
-                                dfd.reject({ message: "ファイルを選択してください。", messageId: "0" });
-                            }
-                        }
-                        else {
-                            dfd.reject({ messageId: "0", message: "ファイルを読み込めません。" });
-                        }
-                        return dfd.promise();
-                    };
-                })(ntsFileUpload = jqueryExtentions.ntsFileUpload || (jqueryExtentions.ntsFileUpload = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui_25) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * Accordion binding handler
-                 */
-                var NtsAccordionBindingHandler = (function () {
-                    function NtsAccordionBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsAccordionBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var active = (data.active !== undefined) ? (data.active) : ko.observable(false);
-                        var realActive = (nts.uk.ntsNumber.isNumber(ko.unwrap(active))) ? Number(ko.unwrap(active)) : ko.unwrap(active);
-                        var animate = (data.animate !== undefined) ? ko.unwrap(data.animate) : {};
-                        var collapsible = (data.collapsible !== undefined) ? ko.unwrap(data.collapsible) : true;
-                        var event = (data.event !== undefined) ? ko.unwrap(data.event) : "click";
-                        var header = (data.header !== undefined) ? ko.unwrap(data.header) : "> li > :first-child,> :not(li):even";
-                        var heightStyle = (data.heightStyle !== undefined) ? ko.unwrap(data.heightStyle) : "content";
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var activate = (data.activate !== undefined) ? (data.activate) : function (event, ui) { };
-                        var create = (data.create !== undefined) ? (data.create) : function (event, ui) { };
-                        var container = $(element);
-                        container.accordion({
-                            active: realActive,
-                            animate: animate,
-                            collapsible: collapsible,
-                            event: event,
-                            header: header,
-                            heightStyle: heightStyle,
-                            disabled: !enable,
-                            beforeActivate: function (event, ui) {
-                                ui.newPanel.removeClass("disappear");
-                                ui.newPanel.stop(false, false);
-                            },
-                            activate: function (event, ui) {
-                                if (ko.isObservable(active))
-                                    active(container.accordion("option", "active"));
-                                ui.oldPanel.addClass("disappear");
-                                ui.newPanel.removeClass("disappear");
-                                activate.call(this, event, ui);
-                            },
-                            create: function (event, ui) {
-                                container.find(".nts-accordion-content").addClass("disappear");
-                                ui.panel.removeClass("disappear");
-                                create.call(this, event, ui);
-                            },
-                            icons: { "header": "ui-icon-caret-1-s", "activeHeader": "ui-icon-caret-1-n" },
-                            classes: {
-                                "ui-accordion": "ntsAccordion",
-                                "ui-accordion-content": "ui-corner-bottom nts-accordion-content"
-                            }
-                        });
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsAccordionBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var active = (data.active !== undefined) ? (data.active) : ko.observable(false);
-                        var animate = (data.animate !== undefined) ? ko.unwrap(data.animate) : {};
-                        var collapsible = (data.collapsible !== undefined) ? ko.unwrap(data.collapsible) : true;
-                        var event = (data.event !== undefined) ? ko.unwrap(data.event) : "click";
-                        var heightStyle = (data.heightStyle !== undefined) ? ko.unwrap(data.heightStyle) : "content";
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var container = $(element);
-                        var currentOption = container.accordion("option");
-                        if (ko.isObservable(active) && currentOption.active !== ko.unwrap(active))
-                            container.accordion("option", "active", Number(ko.unwrap(active)));
-                        if (currentOption.animate != animate)
-                            container.accordion("option", "animate", animate);
-                        if (currentOption.collapsible != collapsible)
-                            container.accordion("option", "collapsible", collapsible);
-                        if (currentOption.event != event)
-                            container.accordion("option", "event", event);
-                        if (currentOption.heightStyle != heightStyle)
-                            container.accordion("option", "heightStyle", heightStyle);
-                        if (currentOption.disabled != !enable)
-                            container.accordion("option", "disabled", !enable);
-                    };
-                    return NtsAccordionBindingHandler;
-                }());
-                ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
-            })(koExtentions = ui_25.koExtentions || (ui_25.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var file;
-            (function (file_1) {
-                var FileDownload = (function () {
-                    function FileDownload(servicePath, data) {
-                        var self = this;
-                        self.servicePath = servicePath;
-                        self.data = data;
-                        self.isFinishTask = ko.observable(false);
-                        self.isFinishTask.subscribe(function (value) {
-                            if (value) {
-                                clearInterval(self.interval);
-                                self.isFinishTask(false);
-                                self.download();
-                            }
-                        });
-                    }
-                    FileDownload.prototype.isTaskFinished = function (file) {
-                        var options = {
-                            dataType: 'text',
-                            contentType: 'text/plain'
-                        };
-                        uk.request.ajax("file/file/isfinished", file.taskId).done(function (res) {
-                            file.isFinishTask(res);
-                        }).fail(function (error) {
-                            file.reject(error);
-                        });
-                    };
-                    FileDownload.prototype.print = function () {
-                        var self = this;
-                        self.deferred = $.Deferred();
-                        var options = {
-                            dataType: 'text',
-                            contentType: 'application/json'
-                        };
-                        uk.request.ajax(self.servicePath, self.data, options).done(function (res) {
-                            self.taskId = res;
-                            self.interval = setInterval(self.isTaskFinished, 1000, self);
-                        }).fail(function (error) {
-                            self.deferred.reject(error);
-                        });
-                        return self.deferred.promise();
-                    };
-                    FileDownload.prototype.download = function () {
-                        var self = this;
-                        window.location.href = ("http://localhost:8080/nts.uk.pr.web/webapi/file/file/dl/" + self.taskId);
-                        if (self.deferred) {
-                            self.deferred.resolve();
-                        }
-                    };
-                    return FileDownload;
-                }());
-                file_1.FileDownload = FileDownload;
-            })(file = ui.file || (ui.file = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * LinkButton
-                 */
-                var NtsLinkButtonBindingHandler = (function () {
-                    function NtsLinkButtonBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsLinkButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var jump = ko.unwrap(data.jump);
-                        var action = data.action;
-                        var linkText = $(element).text();
-                        var $linkButton = $(element).wrap('<div class="ntsControl"/>')
-                            .addClass('link-button')
-                            .click(function () {
-                            event.preventDefault();
-                            if (!nts.uk.util.isNullOrUndefined(action))
-                                action.call(viewModel);
-                            else if (!nts.uk.util.isNullOrUndefined(jump))
-                                nts.uk.request.jump(jump);
-                        });
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsLinkButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                    };
-                    return NtsLinkButtonBindingHandler;
-                }());
-                ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui_26) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * Dialog binding handler
-                 */
-                var NtsColorPickerBindingHandler = (function () {
-                    function NtsColorPickerBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsColorPickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var $container = $(element);
-                        var width = ko.unwrap(data.width);
-                        var color = ko.unwrap(data.value);
-                        var dataName = data.name === undefined ? "" : nts.uk.resource.getControlName(ko.unwrap(data.name));
-                        var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
-                        var required = data.required === undefined ? false : ko.unwrap(data.required);
-                        var tag = $container.prop("tagName").toLowerCase();
-                        var id = $container.attr("id");
-                        var $picker;
-                        if (tag === "input") {
-                            $picker = $container;
-                            $picker.wrap("<div class='ntsControl ntsColorPicker_Container'/>");
-                            $picker.addClass("ntsColorPicker");
-                            $container = $picker.parent();
-                        }
-                        else if (tag === 'div') {
-                            $container.addClass("ntsControl ntsColorPicker_Container");
-                            $container.append("<input class='ntsColorPicker'/>");
-                            $picker = $container.find(".ntsColorPicker");
-                        }
-                        else {
-                            $container.wrap("<div class='ntsControl ntsColorPicker_Container'/>");
-                            $container.removeAttr("id");
-                            $container.hide();
-                            $container = $container.parent();
-                            $container.append("<input class='ntsColorPicker'/>");
-                            $picker = $container.find(".ntsColorPicker");
-                        }
-                        $container.css("min-height", 32).attr("id", id);
-                        $picker.data("required", required).removeAttr("id");
-                        if (nts.uk.util.isNullOrEmpty($container.attr("tabindex"))) {
-                            $container.attr("tabindex", "0");
-                        }
-                        $picker.addClass("ntsColorPicker").attr("data-name", dataName);
-                        $picker.spectrum({
-                            preferredFormat: "name",
-                            showPaletteOnly: true,
-                            togglePaletteOnly: true,
-                            togglePaletteMoreText: 'その他の色',
-                            togglePaletteLessText: '隠す',
-                            color: color,
-                            disabled: !enable,
-                            showInput: true,
-                            showSelectionPalette: true,
-                            showInitial: true,
-                            chooseText: "確定",
-                            cancelText: "キャンセル",
-                            allowEmpty: true,
-                            showAlpha: false,
-                            palette: [
-                                ["#000", "#444", "#666", "#999", "#ccc", "#eee", "#f3f3f3", "#fff"],
-                                ["#f00", "#f90", "#ff0", "#0f0", "#0ff", "#00f", "#90f", "#f0f"],
-                                ["#f4cccc", "#fce5cd", "#fff2cc", "#d9ead3", "#d0e0e3", "#cfe2f3", "#d9d2e9", "#ead1dc"],
-                                ["#ea9999", "#f9cb9c", "#ffe599", "#b6d7a8", "#a2c4c9", "#9fc5e8", "#b4a7d6", "#d5a6bd"],
-                                ["#e06666", "#f6b26b", "#ffd966", "#93c47d", "#76a5af", "#6fa8dc", "#8e7cc3", "#c27ba0"],
-                                ["#c00", "#e69138", "#f1c232", "#6aa84f", "#45818e", "#3d85c6", "#674ea7", "#a64d79"],
-                                ["#900", "#b45f06", "#bf9000", "#38761d", "#134f5c", "#0b5394", "#351c75", "#741b47"],
-                                ["#600", "#783f04", "#7f6000", "#274e13", "#0c343d", "#073763", "#20124d", "#4c1130"]
-                            ],
-                            change: function (color) {
-                                var required = $picker.data("required");
-                                $picker.ntsError('clear');
-                                if (!nts.uk.util.isNullOrUndefined(color) && !nts.uk.util.isNullOrUndefined(data.value)) {
-                                    data.value(color.toHexString()); // #ff0000    
-                                }
-                                else if (nts.uk.util.isNullOrUndefined(color)) {
-                                    if (required === true) {
-                                        $picker.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]), 'FND_E_REQ_INPUT');
-                                    }
-                                    else {
-                                        data.value(null);
-                                    }
-                                }
-                            }
-                        });
-                        var validateRequired = function ($p) {
-                            $p.ntsError('clear');
-                            var value = $p.spectrum("get");
-                            if (nts.uk.util.isNullOrUndefined(value)) {
-                                $p.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [dataName]), 'FND_E_REQ_INPUT');
-                            }
-                        };
-                        $container.keydown(function (evt, ui) {
-                            var code = evt.which || evt.keyCode;
-                            if (code.toString() === "9") {
-                                if (required === true) {
-                                    validateRequired($picker);
-                                }
-                                $picker.spectrum("hide");
-                            }
-                        });
-                        $container.on('validate', (function (e) {
-                            if (required === true) {
-                                validateRequired($picker);
-                            }
-                        }));
-                        $picker.spectrum("container").find(".sp-clear").click(function (e) {
-                            $picker.spectrum("set", null);
-                            if (required === true) {
-                                validateRequired($picker);
-                            }
-                            else if (!nts.uk.util.isNullOrUndefined(data.value)) {
-                                data.value(null);
-                            }
-                        });
-                        if (!nts.uk.util.isNullOrUndefined(width) && nts.uk.ntsNumber.isNumber(width)) {
-                            $container.width(width);
-                            $container.find(".sp-replacer").width(width - 10);
-                            $container.find(".sp-preview").width(width - 30);
-                        }
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsColorPickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var tag = $(element).prop("tagName").toLowerCase();
-                        var $picker;
-                        if (tag === "input") {
-                            $picker = $(element);
-                        }
-                        else if (tag === 'div') {
-                            $picker = $(element).find(".ntsColorPicker");
-                        }
-                        else {
-                            $picker = $(element).parent().find(".ntsColorPicker");
-                            $(element).hide();
-                        }
-                        var colorCode = ko.unwrap(data.value);
-                        var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
-                        var required = data.required === undefined ? false : ko.unwrap(data.required);
-                        $picker.data("required", required);
-                        $picker.spectrum("set", colorCode);
-                        if (enable !== false) {
-                            $picker.spectrum("enable");
-                        }
-                        else {
-                            $picker.spectrum("disable");
-                        }
-                    };
-                    return NtsColorPickerBindingHandler;
-                }());
-                ko.bindingHandlers['ntsColorPicker'] = new NtsColorPickerBindingHandler();
-            })(koExtentions = ui_26.koExtentions || (ui_26.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                var FILES_CACHE_FOR_CANCEL = "files-cache-for-cancel";
-                var IS_RESTORED_BY_CANCEL = "restored-by-cancel";
-                var SELECTED_FILE_NAME = "selected-file-name";
-                var STEREOTYPE = "stereotype";
-                var IMMEDIATE_UPLOAD = "immediate-upload";
-                /**
-                 * CheckBox binding handler
-                 */
-                var NtsFileUploadBindingHandler = (function () {
-                    /**
-                     * Constructor..
-                     */
-                    function NtsFileUploadBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsFileUploadBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
-                        var fileName = data.filename;
-                        var onchange = (data.onchange !== undefined) ? data.onchange : $.noop;
-                        var onfilenameclick = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
-                        var uploadFinished = (data.uploadFinished !== undefined) ? data.uploadFinished : $.noop;
-                        // Container
-                        var $container = $(element);
-                        var $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
-                        var $fileBrowserButton = $("<button class='browser-button'></button>");
-                        var $fileNameWrap = $("<span class='nts-editor-wrapped ntsControl'/>");
-                        var $fileNameInput = $("<input class='nts-editor nts-input' readonly='readonly'/>");
-                        var $fileNameLabel = $("<span class='filenamelabel hyperlink'></span> ");
-                        var $fileInput = $("<input type='file' class='fileinput'/>");
-                        $fileuploadContainer.append($fileBrowserButton);
-                        $fileNameWrap.append($fileNameInput);
-                        $fileuploadContainer.append($fileNameWrap);
-                        $fileuploadContainer.append($fileNameLabel);
-                        $fileuploadContainer.append($fileInput);
-                        $fileuploadContainer.appendTo($container);
-                        $fileBrowserButton.attr("tabindex", -1).click(function () {
-                            $fileInput.click();
-                        });
-                        $fileInput.change(function () {
-                            if ($container.data(IS_RESTORED_BY_CANCEL) === true) {
-                                $container.data(IS_RESTORED_BY_CANCEL, false);
-                                return;
-                            }
-                            var selectedFilePath = $(this).val();
-                            // canceled on selecting file dialog
-                            if (nts.uk.util.isNullOrEmpty(selectedFilePath)) {
-                                if (!nts.uk.util.isNullOrUndefined($container.data(FILES_CACHE_FOR_CANCEL))) {
-                                    $container.data(IS_RESTORED_BY_CANCEL, true);
-                                    this.files = ($container.data(FILES_CACHE_FOR_CANCEL));
-                                }
-                                return;
-                            }
-                            $container.data(FILES_CACHE_FOR_CANCEL, this.files);
-                            var selectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
-                            $container.data(SELECTED_FILE_NAME, selectedFileName);
-                            fileName(selectedFileName);
-                            onchange(selectedFileName);
-                            if ($container.data(IMMEDIATE_UPLOAD)) {
-                                nts.uk.ui.block.grayout();
-                                $fileInput.ntsFileUpload({ stereoType: $container.data(STEREOTYPE) })
-                                    .done(function (data) {
-                                    uploadFinished.call(bindingContext.$data, data[0]);
-                                })
-                                    .fail(function (data) {
-                                    nts.uk.ui.dialog.alertError(data);
-                                })
-                                    .always(function () {
-                                    nts.uk.ui.block.clear();
-                                });
-                            }
-                        });
-                        $fileNameLabel.click(function () {
-                            onfilenameclick($(this).text());
-                        });
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsFileUploadBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var fileName = ko.unwrap(data.filename);
-                        var accept = (data.accept !== undefined) ? ko.unwrap(data.accept) : "";
-                        var asLink = (data.aslink !== undefined) ? ko.unwrap(data.aslink) : false;
-                        var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参照";
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var $container = $(element)
-                            .data(STEREOTYPE, ko.unwrap(data.stereoType))
-                            .data(IMMEDIATE_UPLOAD, ko.unwrap(data.immediateUpload) === true);
-                        $container.find("input[type='file']").attr("accept", accept.toString());
-                        var $fileNameWrap = $container.find(".nts-editor-wrapped");
-                        var $fileNameInput = $container.find(".nts-input");
-                        var $fileNameLabel = $container.find(".filenamelabel");
-                        // when change just only filename, file in input must be cleared
-                        if ($container.data(SELECTED_FILE_NAME) !== fileName) {
-                            $container.data(SELECTED_FILE_NAME, "");
-                            $container.find("input[type='file']").val(null);
-                        }
-                        $fileNameInput.val(fileName);
-                        $fileNameLabel.text(fileName);
-                        if (asLink == true) {
-                            $fileNameLabel.removeClass("hidden");
-                            $fileNameWrap.addClass("hidden");
-                        }
-                        else {
-                            $fileNameLabel.addClass("hidden");
-                            $fileNameWrap.removeClass("hidden");
-                        }
-                        var $fileBrowserButton = $container.find(".browser-button");
-                        $fileBrowserButton.text(text);
-                        $fileBrowserButton.prop("disabled", !enable);
-                        $fileNameInput.prop("disabled", !enable);
-                    };
-                    return NtsFileUploadBindingHandler;
-                }());
-                ko.bindingHandlers['ntsFileUpload'] = new NtsFileUploadBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * Let binding handler
-                 */
-                var NtsLetBindingHandler = (function () {
-                    function NtsLetBindingHandler() {
-                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                            // Make a modified binding context, with extra properties, and apply it to descendant elements
-                            ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
-                            return { controlsDescendantBindings: true };
-                        };
-                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) { };
-                    }
-                    return NtsLetBindingHandler;
-                }());
-                ko.bindingHandlers['let'] = new NtsLetBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui_27) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var errorMementos = {};
-                var currentTabIndex = undefined;
-                var ntsSideBar;
-                (function (ntsSideBar) {
-                    ;
-                    var defaultOption = {
-                        active: 0,
-                        beforeActivate: function (event, info) { },
-                        activate: function (event, info) { },
-                    };
-                    $.fn.ntsSideBar = function (action, option) {
-                        var $control = $(this);
-                        if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
-                            return init($control, option);
-                        }
-                        else if (action === "active") {
-                            return active($control, option);
-                        }
-                        else if (action === "enable") {
-                            return enable($control, option);
-                        }
-                        else if (action === "disable") {
-                            return disable($control, option);
-                        }
-                        else if (action === "show") {
-                            return show($control, option);
-                        }
-                        else if (action === "hide") {
-                            return hide($control, option);
-                        }
-                        else if (action === "getCurrent") {
-                            return getCurrent($control);
-                        }
-                        else {
-                            return $control;
-                        }
-                        ;
-                    };
-                    function init(control, option) {
-                        $("html").addClass("sidebar-html");
-                        control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
-                        var settings = $.extend({}, defaultOption, option);
-                        control.off("click.sideBarClick", "#sidebar-area .navigator a");
-                        control.on("click.sideBarClick", "#sidebar-area .navigator a", function (event) {
-                            event.preventDefault();
-                            var info = {
-                                oldIndex: getCurrent(control),
-                                newIndex: $(this).closest("li").index(),
-                                oldTab: control.find("#sidebar-area .navigator a.active").closest("li"),
-                                newTab: $(this).closest("li")
-                            };
-                            if ($(this).attr("disabled") !== "true" && $(this).attr("disabled") !== "disabled") {
-                                settings.beforeActivate.call(this, event, info);
-                                if ($(this).attr("href") !== undefined)
-                                    active(control, $(this).closest("li").index());
-                                settings.activate.call(this, event, info);
-                            }
-                        });
-                        active(control, settings.active, true);
-                        return control;
-                    }
-                    function active(control, index, isInit) {
-                        if (isInit === void 0) { isInit = false; }
-                        control.find("#sidebar-area .navigator a").removeClass("active");
-                        control.find("#sidebar-area .navigator a").eq(index).addClass("active");
-                        control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
-                        var $displayPanel = $(control.find("#sidebar-area .navigator a").eq(index).attr("href"));
-                        if ($displayPanel.length > 0) {
-                            if (!isInit) {
-                                // keep error in old tab
-                                if (currentTabIndex !== undefined) {
-                                    errorMementos[currentTabIndex] = ui.errors.errorsViewModel().stashMemento();
-                                }
-                                // restore error in new tab
-                                if (errorMementos[index] !== undefined) {
-                                    ui.errors.errorsViewModel().restoreFrom(errorMementos[index]);
-                                }
-                            }
-                            currentTabIndex = index;
-                            $displayPanel.removeClass("disappear");
-                            setErrorPosition($displayPanel);
-                        }
-                        return control;
-                    }
-                    function setErrorPosition($displayPanel) {
-                        setTimeout(function () {
-                            if ($displayPanel.find(".sidebar-content-header").length > 0) {
-                                $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
-                            }
-                            else {
-                                setErrorPosition($(".sidebar-content"));
-                            }
-                        }, 10);
-                    }
-                    function enable(control, index) {
-                        control.find("#sidebar-area .navigator a").eq(index).removeAttr("disabled");
-                        return control;
-                    }
-                    function disable(control, index) {
-                        control.find("#sidebar-area .navigator a").eq(index).attr("disabled", "disabled");
-                        return control;
-                    }
-                    function show(control, index) {
-                        control.find("#sidebar-area .navigator a").eq(index).show();
-                        return control;
-                    }
-                    function hide(control, index) {
-                        var current = getCurrent(control);
-                        if (current === index) {
-                            active(control, 0);
-                        }
-                        control.find("#sidebar-area .navigator a").eq(index).hide();
-                        return control;
-                    }
-                    function getCurrent(control) {
-                        return control.find("#sidebar-area .navigator a.active").closest("li").index();
-                    }
-                })(ntsSideBar || (ntsSideBar = {}));
-            })(jqueryExtentions = ui_27.jqueryExtentions || (ui_27.jqueryExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * HelpButton binding handler
-                 */
-                var NtsIconBindingHandler = (function () {
-                    function NtsIconBindingHandler() {
-                    }
-                    NtsIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
-                        var iconNo = ko.unwrap(data.no);
-                        var width = ko.unwrap(data.width) || "100%";
-                        var height = ko.unwrap(data.height) || "100%";
-                        var iconFileName = iconNo + ".png";
-                        var iconPath = nts.uk.request.location.siteRoot
-                            .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                            .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                            .mergeRelativePath(iconFileName)
-                            .serialize();
-                        var $icon = $(element);
-                        $icon.addClass("img-icon");
-                        $icon.css({
-                            "background-image": "url(" + iconPath + ")",
-                            "background-size": "contain",
-                            width: width,
-                            height: height
-                        });
-                    };
-                    NtsIconBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
-                    };
-                    return NtsIconBindingHandler;
-                }());
-                ko.bindingHandlers['ntsIcon'] = new NtsIconBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var ntsSearchBox;
-                (function (ntsSearchBox) {
-                    $.fn.setupSearchScroll = function (controlType, virtualization) {
-                        var $control = this;
-                        if (controlType.toLowerCase() == 'iggrid')
-                            return setupIgGridScroll($control, virtualization);
-                        if (controlType.toLowerCase() == 'igtreegrid')
-                            return setupTreeGridScroll($control, virtualization);
-                        if (controlType.toLowerCase() == 'igtree')
-                            return setupIgTreeScroll($control);
-                        return this;
-                    };
-                    function setupIgGridScroll($control, virtualization) {
-                        var $grid = $control;
-                        if (virtualization) {
-                            $grid.on("selectChange", function () {
-                                var row = null;
-                                var selectedRows = $grid.igGrid("selectedRows");
-                                if (selectedRows) {
-                                    row = selectedRows[0];
-                                }
-                                else {
-                                    row = $grid.igGrid("selectedRow");
-                                }
-                                if (row) {
-                                    var rowScrollTop = row.index * row.element.height();
-                                    var scrollContainer = $($grid.igGrid("container")).find("#" + $grid.igGrid("id") + "_scrollContainer");
-                                    if (isNaN(rowScrollTop) // In case virtualization not render row 
-                                        || rowScrollTop < scrollContainer.scrollTop()
-                                        || rowScrollTop > scrollContainer.scrollTop() + scrollContainer.height() - row.element.height()) {
-                                        $grid.igGrid("virtualScrollTo", row.index === undefined ? getSelectRowIndex($grid, row.id) : row.index);
-                                    }
-                                }
-                            });
-                        }
-                        else {
-                            $grid.on("selectChange", function () {
-                                var row = null;
-                                var selectedRows = $grid.igGrid("selectedRows");
-                                if (selectedRows) {
-                                    row = selectedRows[0];
-                                }
-                                else {
-                                    row = $grid.igGrid("selectedRow");
-                                }
-                                if (row) {
-                                    var index = row.index;
-                                    var height = row.element[0].scrollHeight;
-                                    var gridId = $grid.attr('id');
-                                    $("#" + gridId + "_scrollContainer").scrollTop(index * height);
-                                }
-                            });
-                        }
-                        return $grid;
-                    }
-                    function getSelectRowIndex($grid, selectedValue) {
-                        var dataSource = $grid.igGrid("option", "dataSource");
-                        var primaryKey = $grid.igGrid("option", "primaryKey");
-                        return _.findIndex(dataSource, function (s) { return s[primaryKey].toString() === selectedValue.toString(); });
-                    }
-                    function setupTreeGridScroll($control, virtualization) {
-                        var $treegrid = $control;
-                        var id = $treegrid.attr('id');
-                        $treegrid.on("selectChange", function () {
-                            var row = null;
-                            var selectedRows = $treegrid.igTreeGridSelection("selectedRows");
-                            if (selectedRows) {
-                                row = selectedRows[0];
-                            }
-                            else {
-                                row = $treegrid.igTreeGridSelection("selectedRow");
-                            }
-                            if (row) {
-                                ui.ig.tree.grid.expandTo(row.id, $treegrid);
-                            }
-                        });
-                        return $treegrid;
-                    }
-                    function setupIgTreeScroll($control) {
-                        var id = $control.attr('id');
-                        $control.on("selectChange", function () {
-                            var selectedRows = $control.ntsTreeDrag("getSelected");
-                            if ($.isArray(selectedRows)) {
-                                selectedRows = selectedRows[0];
-                            }
-                            if (!nts.uk.util.isNullOrUndefined(selectedRows)) {
-                                $control.igTree("expandToNode", selectedRows.element);
-                                var index = _.findIndex($control.find("li"), function (e) {
-                                    return $(e).is(selectedRows.element);
-                                });
-                                if (index >= 0) {
-                                    var scrollTo_1 = index * 29;
-                                    var scrollTop = $control.scrollTop();
-                                    var height = $control.height();
-                                    if (scrollTo_1 < scrollTop || scrollTo_1 > scrollTop + height - 28) {
-                                        $control.scrollTop(scrollTo_1);
-                                    }
-                                }
-                            }
-                        });
-                        return $control;
-                    }
-                })(ntsSearchBox || (ntsSearchBox = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui_28) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGrid;
@@ -14118,9 +11890,6 @@ var nts;
                     var dist;
                     (function (dist) {
                         dist.REMOTE = "Remote";
-                        /**
-                         * Query.
-                         */
                         function query(features) {
                             storage = new Local();
                             var store = feature.find(features, feature.STORAGE);
@@ -14134,17 +11903,11 @@ var nts;
                         var Local = (function () {
                             function Local() {
                             }
-                            /**
-                             * Get item.
-                             */
                             Local.prototype.getItem = function (key) {
                                 var dfd = $.Deferred();
                                 dfd.resolve(uk.localStorage.getItem(key));
                                 return dfd.promise();
                             };
-                            /**
-                             * Set item.
-                             */
                             Local.prototype.setItemAsJson = function (key, value) {
                                 var dfd = $.Deferred();
                                 uk.localStorage.setItemAsJson(key, value);
@@ -14159,9 +11922,6 @@ var nts;
                                 this.loadPath = loadPath;
                                 this.savePath = savePath;
                             }
-                            /**
-                             * Get item.
-                             */
                             Remote.prototype.getItem = function (key) {
                                 var dfd = $.Deferred();
                                 uk.request.ajax(this.loadPath, { value: key }).done(function (widths) {
@@ -14169,9 +11929,6 @@ var nts;
                                 });
                                 return dfd.promise();
                             };
-                            /**
-                             * Set item.
-                             */
                             Remote.prototype.setItemAsJson = function (key, value) {
                                 var dfd = $.Deferred();
                                 uk.request.ajax(this.savePath, { key: key, columns: value }).done(function (res) {
@@ -14201,7 +11958,6 @@ var nts;
                             });
                         }
                         var flatCols = validation.scanValidators($(self), options.columns);
-                        // Cell color
                         var cellFormatter = new color.CellFormatter($(this), options.ntsFeatures);
                         $(this).addClass('compact-grid nts-grid').wrap($("<div class='nts-grid-wrapper'/>"));
                         var columnControlTypes = {};
@@ -14239,15 +11995,12 @@ var nts;
                                     }
                                 };
                             }
-                            // Have column group
                             if (!uk.util.isNullOrUndefined(column.group)) {
                                 var cols = _.map(column.group, formatColumn);
                                 column.group = cols;
                                 return column;
                             }
-                            // Special column types
                             specialColumn.ifTrue(columnSpecialTypes, column, bounceCombos, flatCols);
-                            // Control types
                             if (column.ntsControl === undefined) {
                                 columnControlTypes[column.key] = ntsControls.TEXTBOX;
                                 return cellFormatter.format(column);
@@ -14267,12 +12020,10 @@ var nts;
                                 return cellFormatter.format(column);
                             }
                             var $self = $(self);
-                            // Format column
                             column.formatter = function (value, rowObj) {
                                 if (uk.util.isNullOrUndefined(rowObj))
                                     return value;
                                 var rowId = rowObj[$self.igGrid("option", "primaryKey")];
-                                // Update
                                 var update = function (val) {
                                     if (!uk.util.isNullOrUndefined($self.data("igGrid"))) {
                                         updating.updateCell($self, rowId, column.key, column.dataType !== 'string' ? val : val.toString());
@@ -14284,12 +12035,10 @@ var nts;
                                         }
                                     }
                                 };
-                                // Delete row
                                 var deleteRow = function () {
                                     if ($self.data("igGrid") !== null)
                                         $self.data("igGridUpdating").deleteRow(rowId);
                                 };
-                                // Get control
                                 var ntsControl = ntsControls.getControl(controlDef.controlType);
                                 var cell = $self.igGrid("cellById", rowId, column.key);
                                 var isEnable = $(cell).find("." + ntsControl.containerClass()).data("enable");
@@ -14332,13 +12081,11 @@ var nts;
                                         }
                                     }
                                     ntsControl.$containedGrid = $self;
-                                    // Cell state color
                                     var c = {
                                         id: rowId,
                                         columnKey: column.key,
                                         element: $gridCell[0]
                                     };
-                                    // Format cell
                                     cellFormatter.style($self, c);
                                     color.rememberDisabled($self, c);
                                 }, 0);
@@ -14346,44 +12093,23 @@ var nts;
                             };
                             return column;
                         };
->>>>>>> 35a927a... fix controling dialog position
                         var columns = _.map(options.columns, formatColumn);
                         options.columns = columns;
                         updating.addFeature(options);
                         options.autoCommit = true;
                         dist.query(options.ntsFeatures);
-<<<<<<< HEAD
                         events.onCellClick($(self));
-=======
-                        // Decorate editor border
-                        events.onCellClick($(self));
-                        // Copy&Paste
->>>>>>> 35a927a... fix controling dialog position
                         copyPaste.ifOn($(self), options);
                         events.afterRendered(options, cbSelectionColumns);
                         columnSize.init($(self), options.columns);
                         ntsControls.bindCbHeaderColumns(options, cbHeaderColumns, cbSelectionColumns);
-<<<<<<< HEAD
                         $(this).data(internal.CONTROL_TYPES, columnControlTypes);
                         $(this).data(internal.SPECIAL_COL_TYPES, columnSpecialTypes);
                         sheet.load.setup($(self), options);
-=======
-                        // Group column key and its control type 
-                        $(this).data(internal.CONTROL_TYPES, columnControlTypes);
-                        // Group column key and its special type
-                        $(this).data(internal.SPECIAL_COL_TYPES, columnSpecialTypes);
-                        // Sheet
-                        sheet.load.setup($(self), options);
-                        // Common settings
->>>>>>> 35a927a... fix controling dialog position
                         settings.build($(self), options);
                         if (!onDemand.initial($(self), options)) {
                             $(this).igGrid(options);
                         }
-<<<<<<< HEAD
-=======
-                        // Window resize
->>>>>>> 35a927a... fix controling dialog position
                         $(window).resize(function () {
                             if (options.autoFitWindow) {
                                 settings.setGridSize($(self));
@@ -17859,11 +15585,7 @@ var nts;
                         utils.setChildrenTabIndex = setChildrenTabIndex;
                     })(utils || (utils = {}));
                 })(ntsGrid = jqueryExtentions.ntsGrid || (jqueryExtentions.ntsGrid = {}));
-<<<<<<< HEAD
-            })(jqueryExtentions = ui_21.jqueryExtentions || (ui_21.jqueryExtentions = {}));
-=======
-            })(jqueryExtentions = ui_28.jqueryExtentions || (ui_28.jqueryExtentions = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(jqueryExtentions = ui_22.jqueryExtentions || (ui_22.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -18481,7 +16203,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_22) {
+        (function (ui_23) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var isNull = nts.uk.util.isNullOrUndefined;
@@ -18846,7 +16568,7 @@ var nts;
                     }());
                     ntsButtonTable.TableButtonEntity = TableButtonEntity;
                 })(ntsButtonTable || (ntsButtonTable = {}));
-            })(jqueryExtentions = ui_22.jqueryExtentions || (ui_22.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_23.jqueryExtentions || (ui_23.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -18855,7 +16577,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_23) {
+        (function (ui_24) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsTreeDragAndDropBindingHandler = (function () {
@@ -19032,7 +16754,7 @@ var nts;
                     return NtsTreeDragAndDropBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeDragAndDrop'] = new NtsTreeDragAndDropBindingHandler();
-            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
+            })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -19041,11 +16763,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-<<<<<<< HEAD
-        (function (ui_24) {
-=======
-        (function (ui_29) {
->>>>>>> 35a927a... fix controling dialog position
+        (function (ui_25) {
             var exTable;
             (function (exTable_1) {
                 var NAMESPACE = "extable";
@@ -24982,7 +22700,7 @@ var nts;
                         return css;
                     }
                 })(widget || (widget = {}));
-            })(exTable = ui_24.exTable || (ui_24.exTable = {}));
+            })(exTable = ui_25.exTable || (ui_25.exTable = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -24991,7 +22709,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_25) {
+        (function (ui_26) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsMonthDaysBindingHandler = (function () {
@@ -25096,7 +22814,7 @@ var nts;
                     return NtsMonthDaysBindingHandler;
                 }());
                 ko.bindingHandlers['ntsMonthDays'] = new NtsMonthDaysBindingHandler();
-            })(koExtentions = ui_25.koExtentions || (ui_25.koExtentions = {}));
+            })(koExtentions = ui_26.koExtentions || (ui_26.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -25294,7 +23012,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_26) {
+        (function (ui_27) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsImageEditorBindingHandler = (function () {
@@ -25594,7 +23312,6 @@ var nts;
                             });
                         }
                     }
-<<<<<<< HEAD
                     ImageEditorHelper.prototype.toStringExtension = function () {
                         return this.IMAGE_EXTENSION.join(", ");
                     };
@@ -25652,11 +23369,7 @@ var nts;
                     return ImageEditorHelper;
                 }());
                 ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
-            })(koExtentions = ui_26.koExtentions || (ui_26.koExtentions = {}));
-=======
-                })(widget || (widget = {}));
-            })(exTable = ui_29.exTable || (ui_29.exTable = {}));
->>>>>>> 35a927a... fix controling dialog position
+            })(koExtentions = ui_27.koExtentions || (ui_27.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -25665,7 +23378,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_27) {
+        (function (ui_28) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsFunctionPanelBindingHandler = (function () {
@@ -25739,7 +23452,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_27.koExtentions || (ui_27.koExtentions = {}));
+            })(koExtentions = ui_28.koExtentions || (ui_28.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -25986,7 +23699,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_28) {
+        (function (ui_29) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsAccordionBindingHandler = (function () {
@@ -26062,7 +23775,7 @@ var nts;
                     return NtsAccordionBindingHandler;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
-            })(koExtentions = ui_28.koExtentions || (ui_28.koExtentions = {}));
+            })(koExtentions = ui_29.koExtentions || (ui_29.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
