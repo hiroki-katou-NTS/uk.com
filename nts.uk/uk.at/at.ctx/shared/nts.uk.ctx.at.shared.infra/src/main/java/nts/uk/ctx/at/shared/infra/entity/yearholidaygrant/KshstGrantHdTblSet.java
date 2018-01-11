@@ -54,7 +54,7 @@ public class KshstGrantHdTblSet extends UkJpaEntity {
 	public String yearHolidayNote;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantHdTblSet", orphanRemoval = true)
-	@OrderBy("CONDITION_NO ASC")
+	@OrderBy("kshstGrantConditionPK.conditionNo ASC")
 	public List<KshstGrantCondition> grantConditions;
 	
 	@Override
