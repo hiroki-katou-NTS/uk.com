@@ -13,12 +13,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegular;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_GRANT_REGULAR")
@@ -51,15 +50,30 @@ public class KshstGrantRegular extends UkJpaEntity implements Serializable {
 	})
 	public KshstSpecialHoliday specialHoliday;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="grantRegularCom", orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy="grantRegularCom", orphanRemoval = false)
 	public KshstGrantDateCom grantDateCom;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantRegularPer", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy="grantRegularPer", orphanRemoval = false)
 	public List<KshstGrantDatePer> grantDatePer;
 
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
 		return kshstGrantRegularPK;
+	}
+
+	public KshstGrantRegular(KshstGrantRegularPK kshstGrantRegularPK, GeneralDate grantStartDate, int months, int years,
+			int grantRegularMethod) {
+		super();
+		this.kshstGrantRegularPK = kshstGrantRegularPK;
+		this.grantStartDate = grantStartDate;
+		this.months = months;
+		this.years = years;
+		this.grantRegularMethod = grantRegularMethod;
+	}
+	
+	public static KshstGrantRegular toEntity(GrantRegular domain){
+		return new KshstGrantRegular(new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), domain.getGrantStartDate(), domain.getMonths().v(), 
+				domain.getYears().v(), domain.getGrantRegularMethod().value);
 	}
 }

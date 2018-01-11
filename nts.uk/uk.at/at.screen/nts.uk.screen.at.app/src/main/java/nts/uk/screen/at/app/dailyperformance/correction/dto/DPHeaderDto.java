@@ -112,17 +112,17 @@ public class DPHeaderDto {
 		}
 		if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
 			//dto.setNtsControl("TextEditorNumberSeparated");
-			dto.setConstraint(new Constraint("CommonAmount", true));
+			dto.setConstraint(new Constraint("Currency", true));
 		}
 		if(attendanceAtr == DailyAttendanceAtr.Time.value){
 			//dto.setNtsControl("TextEditorTimeShortHM");
-			dto.setConstraint(new Constraint("SampleTimeClock", true));
+			dto.setConstraint(new Constraint("Clock", true));
 		}
 		if(attendanceAtr == DailyAttendanceAtr.NumberOfTime.value){
-			dto.setConstraint(new Constraint("ProcessingNo", true));
+			dto.setConstraint(new Constraint("Integer", true));
 		}
 		if(attendanceAtr == DailyAttendanceAtr.TimeOfDay.value){
-			dto.setConstraint(new Constraint("TimeWithDayAttr", false));
+			dto.setConstraint(new Constraint("TimeWithDay", true));
 		}
 		return dto;
 	}

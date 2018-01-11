@@ -3,7 +3,7 @@ module nts.uk.at.view.kmk005.k.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        getWorkTime: "at/shared/worktime/findByCompanyID",
+        getWorkTime: "at/shared/worktimesetting/findAll",
         getWorkingTimesheetBonusPaySet: "at/share/wtBonusPaySetting/getListWTBonusPaySettingSetting",
         getWorkingTimesheetBonusPaySetByCode: "at/share/wtBonusPaySetting/getWTBPSetting/{0}",
         getBonusPaySettingByCode: "at/share/bonusPaySetting/getBonusPaySetting/{0}",

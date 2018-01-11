@@ -1,11 +1,11 @@
 module nts.uk.at.view.kal003.b.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
-
+    //getAttendCoutinousWork:         "at/record/attendanceitem/daily/getattendcoutinouswork",
     var paths = {
             getAttendComparison:            "at/record/attendanceitem/daily/getattendcomparison/{0}",
             getAttendCoutinousTime:         "at/record/attendanceitem/daily/getattendcoutinoustime",
-            getAttendCoutinousWork:         "at/record/attendanceitem/daily/getattendcoutinouswork",
+            getAttendCoutinousWork:         "at/share/worktype/findNotDeprecated",
             getAttendCoutinousTimeZone:     "at/record/attendanceitem/daily/getattendcoutinoustimezone",
             getAttendCompound:              "at/record/attendanceitem/daily/getattendcompound/{0}",
             getAttendNameByIds:             "at/record/attendanceitem/daily/getattendnamebyids",
