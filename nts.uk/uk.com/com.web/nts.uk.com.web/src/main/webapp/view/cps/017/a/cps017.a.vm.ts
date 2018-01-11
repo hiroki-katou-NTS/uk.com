@@ -41,6 +41,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         revDisSel04: KnockoutObservable<boolean> = ko.observable(false);
         disbleAdUpHist: KnockoutObservable<boolean> = ko.observable(true);
         selectionCd: KnockoutObservable<boolean> = ko.observable(true);
+        refecToAll: KnockoutObservable<boolean> = ko.observable(true);
         constraints: KnockoutObservable<any> = ko.observable();
 
         constructor() {
@@ -71,6 +72,12 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         self.constraints.selectionName = selectedObject.formatSelection.selectionName;
                         self.constraints.selectionExternalCode = selectedObject.formatSelection.selectionExternalCode;
                         //self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                    }
+                    // システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
+                    if (selectedObject.reflectedToAllCompanies === 1) {
+                        self.refecToAll(true);
+                    } else {
+                        self.refecToAll(false);
                     }
                     //history
                     service.getAllPerInfoHistorySelection(x).done((_selectionItemList: IHistorySelection) => {
@@ -106,7 +113,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     //historySelection.histId(undefined);
                     self.registerData();
                 }
-               
+
             });
 
             //sub theo historyID:
@@ -171,7 +178,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         self.listSelection.valueHasMutated();
 
                     });
-                    
+
                     let ondeHisIdlits = _.find(self.listHistorySelection(), a => a.histId == x);
                     if (ondeHisIdlits != undefined) {
                         if (ondeHisIdlits.endDate == '9999/12/31') {
@@ -202,9 +209,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 } else {
                     self.registerData();
                 }
-                
-                if (x == undefined && self.enableSelName() == true){
-                     self.selectionCd(true);
+
+                if (x == undefined && self.enableSelName() == true) {
+                    self.selectionCd(true);
                 } else {
                     self.selectionCd(false);
                 }
@@ -243,6 +250,13 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     } else {
                         self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                     }
+                    // システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
+                    if (self.listItems()[0].reflectedToAllCompanies === 1) {
+                        self.refecToAll(true);
+                    } else {
+                        self.refecToAll(false);
+                    }
+
                 } else {
                     self.checkCreate(false);
                     alertError({ messageId: "Msg_455" });
@@ -270,8 +284,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
             selection.selectionName('');
             selection.memoSelection('');
             self.checkCreateaaa(true);
-            if (self.enableSelName() == true){
-                 self.selectionCd(true);
+            if (self.enableSelName() == true) {
+                self.selectionCd(true);
             } else {
                 self.selectionCd(false);
             }
@@ -587,17 +601,17 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 exCd = self.selection().externalCD(),
                 allValid = true;
             if (!self.constraints) return false;
-            if (selCD.length != self.constraints.selectionCode) {
+            if (selCD.length > self.constraints.selectionCode) {
                 allValid = false;
-                $('#code').ntsError('set', "Selection code length must equals " + self.constraints.selectionCode);
+                $('#code').ntsError('set', getText('CPS017_21') + "は" + self.constraints.selectionCode + "桁を超えない");
             }
-            if (selName.length != self.constraints.selectionName) {
+            if (selName.length > self.constraints.selectionName) {
                 allValid = false;
-                $('#name').ntsError('set', "Selection code length must equals " + self.constraints.selectionName);
+                $('#name').ntsError('set', getText('CPS017_22') + "は" + self.constraints.selectionName + "桁を超えない");
             }
-            if (exCd.length != self.constraints.selectionExternalCode && exCd != "") {
+            if (exCd.length > self.constraints.selectionExternalCode && exCd != "") {
                 allValid = false;
-                $('#exCode').ntsError('set', "Selection code length must equals " + self.constraints.selectionExternalCode);
+                $('#exCode').ntsError('set', getText('CPS017_24') + "は" + self.constraints.selectionExternalCode + "桁を超えない");
             }
             return allValid;
         }
@@ -608,17 +622,19 @@ module nts.uk.com.view.cps017.a.viewmodel {
         selectionItemId: string;
         selectionItemName: string;
         formatSelection: any;
+        reflectedToAllCompanies: number;
     }
 
     class SelectionItem {
         selectionItemId: KnockoutObservable<string> = ko.observable('');
         selectionItemName: KnockoutObservable<string> = ko.observable('');
         selectionCodeCharacter: KnockoutObservable<number> = ko.observable(1);
+        reflectedToAllCompanies: KnockoutObservable<number> = ko.observable();
         constructor(param: ISelectionItem) {
             let self = this;
             self.selectionItemId(param.selectionItemId || '');
             self.selectionItemName(param.selectionItemName || '');
-
+            self.reflectedToAllCompanies(param.reflectedToAllCompanies || '');
         }
     }
 
@@ -667,7 +683,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
         externalCD: KnockoutObservable<string> = ko.observable('');
         memoSelection: KnockoutObservable<string> = ko.observable('');
         initSelection: KnockoutObservable<number> = ko.observable();
-
         constructor(param: ISelection) {
             let self = this;
             self.selectionID(param.selectionID || '');
@@ -677,7 +692,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             self.externalCD(param.externalCD || '');
             self.memoSelection(param.memoSelection || '');
             self.initSelection(param.initSelection || '');
-
         }
     }
 

@@ -42,12 +42,19 @@ public class EmpRegHistoryFinder {
 
 			boolean setComNameRes = false;
 			if (regHistDto.getLastRegEmployeeOfCompany() != null) {
-				if (regHistDto.getLastRegEmployee().EmployeeID != regHistDto.getLastRegEmployeeOfCompany().EmployeeID) {
+				if (regHistDto.getLastRegEmployee() != null) {
 
-					setComNameRes = setLastRegName(regHistDto.getLastRegEmployeeOfCompany());
+					if (regHistDto.getLastRegEmployee().EmployeeID != regHistDto
+							.getLastRegEmployeeOfCompany().EmployeeID) {
+
+						setComNameRes = setLastRegName(regHistDto.getLastRegEmployeeOfCompany());
+					} else {
+
+						regHistDto.setLastRegEmployeeOfCompany(null);
+					}
 				} else {
+					setComNameRes = setLastRegName(regHistDto.getLastRegEmployeeOfCompany());
 
-					regHistDto.setLastRegEmployeeOfCompany(null);
 				}
 			}
 
