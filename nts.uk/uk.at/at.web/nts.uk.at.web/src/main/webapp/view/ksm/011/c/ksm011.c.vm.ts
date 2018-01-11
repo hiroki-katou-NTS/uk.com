@@ -55,6 +55,9 @@ module nts.uk.at.view.ksm011.c.viewmodel {
         openDialog() {
             var self = this;
             
+            nts.uk.ui.windows.sub.modal("/view/kdl/002/a/index.xhtml").onClosed(() => {
+                
+            });
         }
     }
 }

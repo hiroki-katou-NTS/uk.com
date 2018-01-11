@@ -123,6 +123,7 @@ module nts.uk.at.view.kmk006.a {
                 self.treeOptionsWkp = {
                     isShowAlreadySet: true,
                     isMultiSelect: false,
+                    isMultipleUse: false,
                     treeType: TreeType.WORK_PLACE,
                     selectedWorkplaceId: self.multiSelectedWorkplaceId,
                     baseDate: self.baseDateTreeList,
@@ -130,18 +131,21 @@ module nts.uk.at.view.kmk006.a {
                     isShowSelectButton: false,
                     isDialog: false,
                     alreadySettingList: self.wkpAlreadySettingList,
-                    maxRows: 20
+                    maxRows: 20,
+                    systemType: 2
                 };
                 self.treeOptionsWkpTotal = {
                     isShowAlreadySet: false,
                     isMultiSelect: false,
+                    isMultipleUse: true,
                     treeType: TreeType.WORK_PLACE,
                     selectedWorkplaceId: self.totalSelectedWorkplaceId,
                     baseDate: self.baseDateTreeListTotal,
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: false,
                     isDialog: false,
-                    maxRows: 10
+                    maxRows: 10,
+                    systemType: 2
                 };
                 self.itemComAutoCalModel = new ComAutoCalSettingModel();
                 self.itemJobAutoCalModel = new JobAutoCalSettingModel();
@@ -190,6 +194,7 @@ module nts.uk.at.view.kmk006.a {
                     isShowAlreadySet: true,
                     baseDate: self.baseDateJobList,
                     isMultiSelect: false,
+                    isMultipleUse: false,
                     listType: ListType.JOB_TITLE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.selectedCode,
@@ -202,6 +207,7 @@ module nts.uk.at.view.kmk006.a {
                     isShowAlreadySet: false,
                     baseDate: self.baseDateJobListTotal,
                     isMultiSelect: false,
+                    isMultipleUse: true,
                     listType: ListType.JOB_TITLE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.totalSelectedCode,
@@ -342,31 +348,31 @@ module nts.uk.at.view.kmk006.a {
 
 
                 self.enableEnumNorLegLi = ko.computed(function() {
-                    return self.valueEnumNorLegAtr() != 2;
+                    return self.valueEnumNorLegAtr() != 0;
                 });
                 self.enableEnumNorLegMidLi = ko.computed(function() {
-                    return self.valueEnumNorLegMidAtr() != 2;
+                    return self.valueEnumNorLegMidAtr() != 0;
                 });
                 self.enableEnumNorNorLi = ko.computed(function() {
-                    return self.valueEnumNorNorAtr() != 2;
+                    return self.valueEnumNorNorAtr() != 0;
                 });
                 self.enableEnumNorNorMidLi = ko.computed(function() {
-                    return self.valueEnumNorNorMidAtr() != 2;
+                    return self.valueEnumNorNorMidAtr() != 0;
                 });
                 self.enableEnumNorEarLi = ko.computed(function() {
-                    return self.valueEnumNorEarAtr() != 2;
+                    return self.valueEnumNorEarAtr() != 0;
                 });
                 self.enableEnumNorEarMidLi = ko.computed(function() {
-                    return self.valueEnumNorEarMidAtr() != 2;
+                    return self.valueEnumNorEarMidAtr() != 0;
                 });
                 self.enableEnumFleTimeLi = ko.computed(function() {
-                    return self.valueEnumFleTimeAtr() != 2;
+                    return self.valueEnumFleTimeAtr() != 0;
                 });
                 self.enableEnumResResLi = ko.computed(function() {
-                    return self.valueEnumResResAtr() != 2;
+                    return self.valueEnumResResAtr() != 0;
                 });
                 self.enableEnumResLatLi = ko.computed(function() {
-                    return self.valueEnumResLatAtr() != 2;
+                    return self.valueEnumResLatAtr() != 0;
                 }); 
             }
 
@@ -470,10 +476,8 @@ module nts.uk.at.view.kmk006.a {
                 nts.uk.ui.block.invisible();
 
                 // get setting
-                service.findEnumAutoCalAtrOvertime().done(function(dataRes: Array<Enum>) {
-
-                    self.autoCalAtrOvertimeEnum = dataRes;
-
+                service.findEnumAutoCalAtrOvertime().done(function(dataRes: Array<Enum>) {                  
+                    self.autoCalAtrOvertimeEnum = dataRes;                  
                     nts.uk.ui.block.clear();
 
                     dfd.resolve();
@@ -663,7 +667,7 @@ module nts.uk.at.view.kmk006.a {
                 self.valueEnumFleTimeLi(list.flexOTTime.flexOtTime.upLimitOtSet());
                 self.valueEnumFleTimeAtr(list.flexOTTime.flexOtTime.calAtr());
                 self.valueEnumResResLi(list.restTime.restTime.upLimitOtSet());
-                self.valueEnumResResAtr(list.restTime.restTime.calAtr());
+                self.valueEnumResResAtr(list.restTime.restTime.calAtr());                
                 self.valueEnumResLatLi(list.restTime.lateNightTime.upLimitOtSet());
                 self.valueEnumResLatAtr(list.restTime.lateNightTime.calAtr());
             }
@@ -891,15 +895,16 @@ module nts.uk.at.view.kmk006.a {
                 self.baseDateTreeListTotal(self.inputDate());
                 
                 // Reload table
-                if (emptyBaseDate) {
+                if (!emptyBaseDate) {
                     $('#tree-grid').ntsTreeComponent(self.treeOptionsWkpTotal).done(function() {
-
+                        let code = $('#tree-grid').getDataList()[0].workplaceId;
+                        self.totalSelectedWorkplaceId(code);
                     });
     
                     $('#jobtitles').ntsListComponent(self.jobTotalListOptions).done(function() {
                         let code = $('#jobtitles').getDataList()[0].id;
                         self.totalSelectedCode(code);
-                        self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId(), code);
+                        self.loadWkpJobAutoCal(self.multiSelectedWorkplaceId(),  self.totalSelectedCode());
                         // load ready setting
                         self.loadWkpJobAlreadySettingList().done(function() {
     

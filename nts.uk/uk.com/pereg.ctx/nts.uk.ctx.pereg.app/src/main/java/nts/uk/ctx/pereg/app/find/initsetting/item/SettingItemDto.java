@@ -65,13 +65,13 @@ public class SettingItemDto {
 
 		switch (saveDataType) {
 		case DATE:
-			resultDto.setValue(dateValue.toString());
+			resultDto = new SaveDataDto(SaveDataType.DATE, dateValue);
 			break;
 		case NUMBERIC:
-			resultDto.setValue(intValue.toString());
+			resultDto = new SaveDataDto(SaveDataType.NUMBERIC, intValue);
 			break;
 		case STRING:
-			resultDto.setValue(stringValue);
+			resultDto = new SaveDataDto(SaveDataType.DATE, stringValue);
 			break;
 		}
 
@@ -107,8 +107,17 @@ public class SettingItemDto {
 
 	}
 
-	public void setData(GeneralDate value) {
-		this.setSaveData(new SaveDataDto(SaveDataType.DATE, value.toString()));
+	public void setData(Object value) {
+		if (value.getClass().equals(Integer.class)) {
+			this.setSaveData(new SaveDataDto(SaveDataType.NUMBERIC, value));
+		}
+		if (value.getClass().equals(String.class)) {
+			this.setSaveData(new SaveDataDto(SaveDataType.STRING, value));
+		}
+
+		if (value.getClass().equals(GeneralDate.class)) {
+			this.setSaveData(new SaveDataDto(SaveDataType.DATE, value));
+		}
 
 	}
 

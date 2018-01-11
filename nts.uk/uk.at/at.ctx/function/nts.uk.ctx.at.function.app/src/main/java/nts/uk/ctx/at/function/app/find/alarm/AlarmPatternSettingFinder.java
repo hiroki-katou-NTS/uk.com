@@ -7,7 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionRangeDto;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodDailyDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.SpecifiedMonthDto;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
@@ -39,7 +40,7 @@ public class AlarmPatternSettingFinder {
 	public AlarmPatternSettingDto convertToAlarmPatternDto(AlarmPatternSetting domain) {
 		
 		List<CheckConditionDto> checkConditionDtos = domain.getCheckConList().stream()
-				.map(c -> new CheckConditionDto(c.getAlarmCategory().value, c.getCheckConditionList(), ExtractionRangeDto.fromDomain((ExtractionPeriodDaily)c.getExtractPeriod())))
+				.map(c -> new CheckConditionDto(c.getAlarmCategory().value, c.getCheckConditionList(), ExtractionPeriodDailyDto.fromDomain((ExtractionPeriodDaily)c.getExtractPeriod())))
 				.collect(Collectors.toList());
 		AlarmPermissionSettingDto alarmPerSet = new AlarmPermissionSettingDto(domain.getAlarmPerSet().isAuthSetting(), domain.getAlarmPerSet().getRoleIds());
 		
@@ -47,7 +48,7 @@ public class AlarmPatternSettingFinder {
 	}
 	
 	public AlarmCheckConditonCodeDto  convertToCheckConditionCode(AlarmCheckConditionByCategory domain) {		
-		return new AlarmCheckConditonCodeDto(domain.getCategory().value, domain.getCode().v(), domain.getName().v(), domain.getListRoleId());
+		return new AlarmCheckConditonCodeDto(EnumAdaptor.convertToValueName(domain.getCategory()), domain.getCode().v(), domain.getName().v(), domain.getListRoleId());
 	}
 	
 	public List<SpecifiedMonthDto> getSpecifiedMonth(){

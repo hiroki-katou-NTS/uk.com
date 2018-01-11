@@ -66,11 +66,6 @@ module sample.sidebar.viewmodel {
                 }
             });
 
-            $("#sidebar").ntsSideBar("init", {
-                activate: (event, info) => {
-                    console.log(info);
-                }
-            });
 
             $("#grid").igGrid({
                 dataSource: self.items(),

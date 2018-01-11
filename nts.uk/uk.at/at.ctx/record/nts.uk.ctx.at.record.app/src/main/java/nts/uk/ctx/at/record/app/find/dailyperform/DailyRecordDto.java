@@ -51,7 +51,7 @@ public class DailyRecordDto implements ConvertibleAttendanceItem {
 	private Optional<OutingTimeOfDailyPerformanceDto> outingTime = Optional.empty();
 
 	/** 休憩時間帯: 日別実績の休憩時間帯 */
-	@AttendanceItemLayout(layout = "F", jpPropertyName = "", isList = true, listMaxLength = 10)
+	@AttendanceItemLayout(layout = "F", jpPropertyName = "", isList = true, listMaxLength = 2, setFieldWithIndex = "restTimeType")
 	private List<RestTimeZoneOfDailyDto> breakTime= new ArrayList<>();
 
 	/** 勤怠時間: 日別実績の勤怠時間 */

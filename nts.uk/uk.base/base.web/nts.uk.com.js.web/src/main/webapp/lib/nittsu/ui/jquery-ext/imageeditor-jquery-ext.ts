@@ -36,14 +36,14 @@ module nts.uk.ui.jqueryExtentions {
 
         function uploadImage($element: JQuery, option){
             let dataFile = $element.find(".image-preview").attr("src");
-            return upload($element, option, dataFile);   
+            return upload($element, option, dataFile, isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked());   
         }
         
         function uploadImageOriginal($element: JQuery, option){
-            return upload($element, option, $element.data("original-img"));   
+            return upload($element, option, $element.data("original-img"), false);   
         }
         
-        function upload($element: JQuery, option, fileData){
+        function upload($element: JQuery, option, fileData, isCrop){
             let dfd = $.Deferred();
             
             if (!isNotNull(fileData)) {
@@ -60,7 +60,7 @@ module nts.uk.ui.jqueryExtentions {
                         "y": cropperData.y, 
                         "width": cropperData.width,
                         "height": cropperData.height,
-                        "crop": isNotNull($element.data('checkbox')) ? false : $element.data('checkbox').checked() 
+                        "crop": isCrop 
                      };
                 
                 nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function(data) {

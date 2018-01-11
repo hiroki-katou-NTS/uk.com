@@ -66,6 +66,11 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             //Call approval list
             self.getAppDataDate(appType, standardDate, true).done(function() {
                 dfd.resolve(); 
+            }).fail((res)=>{
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
+                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                    nts.uk.ui.block.clear();
+                });  
             });
             return dfd.promise();
         }
@@ -78,6 +83,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 appDate: appDate,
                 isStartup: isStartup
             }).done((data)=>{
+                nts.uk.ui.errors.clearAll();
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
                 if(isStartup==false){
                     switch(data.errorFlag){

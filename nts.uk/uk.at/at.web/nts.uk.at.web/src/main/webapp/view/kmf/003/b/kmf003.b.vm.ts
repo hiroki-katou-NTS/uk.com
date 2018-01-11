@@ -170,7 +170,9 @@ module nts.uk.at.view.kmf003.b.viewmodel {
 
             var grantHolidayTblList = [];
             _.forEach(self.items(), function(item) {
-                if (item.lengthOfServiceYears() != null || item.lengthOfServiceMonths() != null || item.grantDays() != null || item.limitedTimeHdDays() != null || item.limitedHalfHdCnt() != null) {
+                if ((item.lengthOfServiceYears() != null || item.lengthOfServiceMonths() != null || item.grantDays() != null || item.limitedTimeHdDays() != null || 
+                    item.limitedHalfHdCnt() != null) && (item.lengthOfServiceYears().toString() != "" || item.lengthOfServiceMonths().toString() != "" || item.grantDays().toString() != "" || 
+                    item.limitedTimeHdDays().toString() != "" || item.limitedHalfHdCnt().toString() != "")) {
                     grantHolidayTblList.push({
                         grantYearHolidayNo: item.grantYearHolidayNo(),
                         conditionNo: item.conditionNo(),
@@ -233,7 +235,11 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             var self = this;
             if (value) {
                 for (let i = index; i < self.items().length; i++) {
-                    self.items()[i].grantSimultaneity(value);
+                    if(self.items()[i].lengthOfServiceMonths() != null && self.items()[i].lengthOfServiceYears() != null) {
+                        self.items()[i].grantSimultaneity(value);
+                    } else {
+                        self.items()[i].grantSimultaneity(false);
+                    }                    
                 }
             } else {
                 for (let i = 0; i < index; i++) {

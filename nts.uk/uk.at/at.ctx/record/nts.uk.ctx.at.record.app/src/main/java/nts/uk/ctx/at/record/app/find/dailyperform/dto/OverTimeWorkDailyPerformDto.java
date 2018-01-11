@@ -30,11 +30,11 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class OverTimeWorkDailyPerformDto {
 
 	/** 残業枠時間: 残業枠時間 */
-	@AttendanceItemLayout(layout = "A", isList = true, jpPropertyName="残業枠時間", listMaxLength = 10)
+	@AttendanceItemLayout(layout = "A", isList = true, jpPropertyName="残業枠時間", listMaxLength = 10, setFieldWithIndex = "overtimeFrameNo")
 	private List<OverTimeFrameTimeDto> overTimeFrameTime;
 
 	/** 残業枠時間帯: 残業枠時間帯 */
-//	@AttendanceItemLayout(layout = "B", isList = true, listMaxLength = ?)
+//	@AttendanceItemLayout(layout = "B", isList = true, listMaxLength = ?, setFieldWithIndex = "overtimeFrameNo")
 	private List<OverTimeFrameTimeSheetDto> overTimeFrameTimeSheet;
 
 	/** 所定外深夜時間: 法定外残業深夜時間 */

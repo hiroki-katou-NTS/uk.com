@@ -37,7 +37,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	private final String SELECT_BEFORE_APPLICATION = SELECT_FROM_APPLICATION 
 			+ " AND a.appDate = :appDate "
 			+ " AND a.appType = :applicationType "
-			+ " AND a.prePostAtr = :prePostAtr ORDER BY c.inputDate DESC";
+			+ " AND a.prePostAtr = :prePostAtr ORDER BY a.inputDate DESC";
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class)

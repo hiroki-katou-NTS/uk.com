@@ -60,7 +60,8 @@ module nts.uk.at.view.ksm004.a {
                 isShowSelectButton: false,
                 baseDate: ko.observable(new Date()),
                 selectedWorkplaceId: this.currentCalendarWorkPlace().key,
-                alreadySettingList: ko.observableArray([])
+                alreadySettingList: ko.observableArray([]),
+                systemType : 2
             };
             kcpGridlist: IGridList = {
                 listType: 2,
@@ -80,6 +81,7 @@ module nts.uk.at.view.ksm004.a {
                 self.yearMonthPicked.subscribe(value => {
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.block.invisible();
+                        self.calendarPanel.optionDates.removeAll();
                         self.getAllCalendarCompany().done(() => {
                             if(Math.floor(value/100)!=Number(Object.keys(self.cssRangerYM())[0])){
                                 self.getCalendarCompanySet()
@@ -100,6 +102,7 @@ module nts.uk.at.view.ksm004.a {
                 self.yearMonthPicked1.subscribe(value => {
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.block.invisible();
+                        self.calendarPanel1.optionDates.removeAll();
                         self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key()).done(()=>{
                             if(Math.floor(value/100)!=Number(Object.keys(self.cssRangerYM1())[0])){
                                 self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key())
@@ -120,6 +123,7 @@ module nts.uk.at.view.ksm004.a {
                 self.yearMonthPicked2.subscribe(value => {
                     if(!nts.uk.util.isNullOrEmpty(value)){
                         nts.uk.ui.block.invisible();
+                        self.calendarPanel2.optionDates.removeAll();
                         self.getCalendarClassById(self.currentCalendarClass().key()).done(()=>{
                             if(Math.floor(value/100)!=Number(Object.keys(self.cssRangerYM2())[0])){
                                 self.getCalendarClassSet(self.currentCalendarClass().key())
@@ -158,6 +162,7 @@ module nts.uk.at.view.ksm004.a {
                 $('#tree-grid').ntsTreeComponent(self.kcpTreeGrid).done(() => {
                     $('#classification-list-setting').ntsListComponent(self.kcpGridlist).done(() => {
                         nts.uk.ui.block.invisible();
+                        self.calendarPanel.optionDates.removeAll();
                         $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
                         .done(()=>{
                             $("#yearMonthPicker1").datepicker("hide");
@@ -184,6 +189,7 @@ module nts.uk.at.view.ksm004.a {
                             } else {
                                 self.currentCalendarWorkPlace().name('');
                             }
+                            self.calendarPanel1.optionDates.removeAll();
                             $.when(self.getCalendarWorkplaceSet(value),self.getCalenderWorkPlaceByCode(value))
                             .done(()=>{ nts.uk.ui.block.clear(); })
                             .fail((res) => {
@@ -201,6 +207,7 @@ module nts.uk.at.view.ksm004.a {
                             } else {
                                 self.currentCalendarClass().name('');
                             }
+                            self.calendarPanel2.optionDates.removeAll();
                             $.when(self.getCalendarClassSet(value),self.getCalendarClassById(value))
                             .done(()=>{nts.uk.ui.block.clear();})
                             .fail((res) => {
@@ -521,7 +528,7 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.getAllCalendarCompany(self.yearMonthPicked().toString())
                     .done((dataCompany) => {
-                        self.calendarPanel.optionDates.removeAll();
+                        //self.calendarPanel.optionDates.removeAll();
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataCompany)){
                             _.forEach(dataCompany,(companyItem)=>{
@@ -550,7 +557,6 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.getCalendarWorkPlaceByCode(value,self.yearMonthPicked1().toString())
                     .done((dataWorkPlace) => {
-                        self.calendarPanel1.optionDates.removeAll();
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataWorkPlace)){
                             _.forEach(dataWorkPlace,(workPlaceItem)=>{
@@ -579,7 +585,6 @@ module nts.uk.at.view.ksm004.a {
                 var dfd = $.Deferred();
                 aService.getCalendarClassById(value,self.yearMonthPicked2().toString())
                     .done((dataClass) => {
-                        self.calendarPanel2.optionDates.removeAll();
                         let a = [];
                         if(!nts.uk.util.isNullOrEmpty(dataClass)){
                             _.forEach(dataClass,(companyItem)=>{
@@ -609,6 +614,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.insertCalendarCompany(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.calendarPanel.optionDates.removeAll();
                         $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
                         .done(()=>{ dfd.resolve(); })
                         .fail((res) => { dfd.reject(res); });   
@@ -627,6 +633,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.insertCalendarWorkPlace(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.calendarPanel1.optionDates.removeAll();
                         $.when(
                             self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key()),
                             self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key())
@@ -647,6 +654,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.insertCalendarClass(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.calendarPanel2.optionDates.removeAll();
                         $.when(
                             self.getCalendarClassSet(self.currentCalendarClass().key()),
                             self.getCalendarClassById(self.currentCalendarClass().key())
@@ -667,6 +675,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.updateCalendarCompany(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.calendarPanel.optionDates.removeAll();
                         $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
                         .done(()=>{ dfd.resolve(); })
                         .fail((res) => { dfd.reject(res); });    
@@ -685,6 +694,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.updateCalendarWorkPlace(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.calendarPanel1.optionDates.removeAll();
                         $.when(
                             self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key()),
                             self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key())
@@ -705,6 +715,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.updateCalendarClass(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.calendarPanel2.optionDates.removeAll();
                         $.when(
                             self.getCalendarClassSet(self.currentCalendarClass().key()),
                             self.getCalendarClassById(self.currentCalendarClass().key())
@@ -725,6 +736,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.deleteCalendarCompany(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        self.calendarPanel.optionDates.removeAll();
                         $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
                         .done(()=>{ dfd.resolve(); })
                         .fail((res) => { dfd.reject(res); });  
@@ -743,6 +755,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.deleteCalendarWorkPlace(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        self.calendarPanel1.optionDates.removeAll();
                         $.when(
                             self.getCalendarWorkplaceSet(self.currentCalendarWorkPlace().key()),
                             self.getCalenderWorkPlaceByCode(self.currentCalendarWorkPlace().key())
@@ -763,6 +776,7 @@ module nts.uk.at.view.ksm004.a {
                 aService.deleteCalendarClass(value)
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        self.calendarPanel2.optionDates.removeAll();
                         $.when(
                             self.getCalendarClassSet(self.currentCalendarClass().key()),
                             self.getCalendarClassById(self.currentCalendarClass().key())
@@ -870,13 +884,8 @@ module nts.uk.at.view.ksm004.a {
                 });
                 nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     self.isShowDatepicker = false;
-                    let optionOLd = [];
-                   _.forEach(self.calendarPanel.optionDates(),(data) =>{
-                       optionOLd.push(data);
-                   });
                     $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
                     .done(()=>{
-                        self.calendarPanel.optionDates(optionOLd); 
                         self.isShowDatepicker = true;
                         nts.uk.ui.block.clear(); 
                     })
@@ -985,6 +994,7 @@ module nts.uk.at.view.ksm004.a {
             baseDate: KnockoutObservable<any>;
             selectedWorkplaceId: KnockoutObservable<any>;
             alreadySettingList: KnockoutObservableArray<any>;
+            systemType : number;
         }
         
         interface IGridList {

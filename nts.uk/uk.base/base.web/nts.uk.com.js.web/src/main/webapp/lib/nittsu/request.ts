@@ -312,16 +312,12 @@ module nts.uk.request {
             ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId);
         }
     }
-
-    export module specials {
-
-        export function getAsyncTaskInfo(taskId: string) {
-            return asyncTask.getInfo(taskId);
-        }
-
-        export function donwloadFile(fileId: string) {
+    
+    export module file {
+        
+        export function donwload(fileId: string) {
             var dfd = $.Deferred();
-            $.fileDownload(resolvePath('/webapi/shr/infra/file/storage/get/' + fileId), {
+            $.fileDownload(pathToGet(fileId), {
                 successCallback: function(url) {
                     dfd.resolve();
                 },
@@ -331,19 +327,39 @@ module nts.uk.request {
                     dfd.reject(error);
                 }
             });
+            
             return dfd.promise();
         }
         
-//        export function createPathToFile(fileId: string) {
-//            return resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId);
-//        }
-        
-        export function deleteFile(fileId: string) {
+        export function remove(fileId: string) {
             return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
         }
         
-        export function isFileExist(fileId: string): boolean {
+        export function isExist(fileId: string): boolean {
             return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
+        }
+        
+        export function pathToGet(fileId: string) {
+            return resolvePath('/webapi/shr/infra/file/storage/get/' + fileId);
+        }
+    }
+
+    export module specials {
+
+        export function getAsyncTaskInfo(taskId: string) {
+            return asyncTask.getInfo(taskId);
+        }
+
+        export function donwloadFile(fileId: string) {
+            return file.donwload(fileId);
+        }
+        
+        export function deleteFile(fileId: string) {
+            return file.remove(fileId);
+        }
+        
+        export function isFileExist(fileId: string): boolean {
+            return file.isExist(fileId);
         }
         
         export module errorPages {
@@ -376,7 +392,11 @@ module nts.uk.request {
             return;
         }
         
-        uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
+        if (data === undefined) {
+            uk.sessionStorage.removeItem(STORAGE_KEY_TRANSFER_DATA)
+        } else {
+            uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
+        }
 
         window.location.href = resolvePath(path);
     }

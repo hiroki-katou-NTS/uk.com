@@ -169,4 +169,6 @@ public interface DailyPerformanceScreenRepo {
 	List<WorkTypeChangedDto> findWorkTypeChanged(String employmentCode, String typeCode, String companyId);
 	
 	List<CodeName> findWorkType(String companyId, Set<String> typeCodes);
+	
+	void updateColumnsWidth(Map<Integer, Integer> lstHeader, List<String> formatCodes);
  }

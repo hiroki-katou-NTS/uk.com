@@ -59,10 +59,10 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @param dispOrder
 	 * @return
 	 */
-	public PerInfoItemDefForLayoutDto createFromDomain(String empId, int ctgType, PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder){
-		ActionRole actionRole = getActionRole(empId, itemDef.getPerInfoCategoryId(), itemDef.getPerInfoItemDefId());
+	public PerInfoItemDefForLayoutDto createFromDomain(String empId, int ctgType, PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder, String roleId){
+		ActionRole actionRole = getActionRole(empId, itemDef.getPerInfoCategoryId(), itemDef.getPerInfoItemDefId(), roleId);
 		if(actionRole == ActionRole.HIDDEN) return null;
-		List<PerInfoItemDefForLayoutDto> lstChildren = getPerItemSet(empId,ctgType, itemDef.getItemTypeState(), perInfoCd, dispOrder);
+		List<PerInfoItemDefForLayoutDto> lstChildren = getPerItemSet(empId,ctgType, itemDef.getItemTypeState(), perInfoCd, dispOrder, roleId);
 		if(lstChildren.size() == 0 && itemDef.getItemTypeState().getItemType().value == 1) return null;
 		PerInfoItemDefForLayoutDto perInfoItemDefForLayoutDto = new PerInfoItemDefForLayoutDto();
 		perInfoItemDefForLayoutDto.setLstChildItemDef(lstChildren);
@@ -87,7 +87,7 @@ public class PerInfoItemDefForLayoutFinder {
 			int dataTypeValue = singleItemDom.getDataTypeState().getDataTypeValue().value;
 			if(dataTypeValue == 6){
 				DataTypeStateDto dataTypeStateDto = createDataTypeStateDto(singleItemDom.getDataTypeState());
-				perInfoItemDefForLayoutDto.setLstComboxBoxValue(getLstComboBoxValue(dataTypeStateDto));
+				perInfoItemDefForLayoutDto.setLstComboxBoxValue(getLstComboBoxValue(dataTypeStateDto, empId));
 			}
 		}
 		return perInfoItemDefForLayoutDto;
@@ -162,10 +162,9 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @param perInfoItemId
 	 * @return
 	 */
-	private ActionRole getActionRole(String empId, String ctgId, String perInfoItemId) {
+	private ActionRole getActionRole(String empId, String ctgId, String perInfoItemId, String roleId) {
 		String loginEmpId = AppContexts.user().employeeId();
 		//String roleId = AppContexts.user().roles().forPersonalInfo();
-		String roleId = "99900000-0000-0000-0000-000000000001";
 		boolean isSelfAuth = empId.equals(loginEmpId);
 		Optional<PersonInfoItemAuth> perItemAuth =  personInfoItemAuthRepository.getItemDetai(roleId, ctgId, perInfoItemId);
 		if(!perItemAuth.isPresent()) return ActionRole.HIDDEN;
@@ -183,7 +182,7 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @param item
 	 * @return
 	 */
-	private List<PerInfoItemDefForLayoutDto> getPerItemSet(String empId, int ctgType, ItemTypeState item, String perInfoCd, int dispOrder) {
+	private List<PerInfoItemDefForLayoutDto> getPerItemSet(String empId, int ctgType, ItemTypeState item, String perInfoCd, int dispOrder, String roleId) {
 		// 1 set - 2 Single
 		List<PerInfoItemDefForLayoutDto> lstResult = new ArrayList<>();
 		if (item.getItemType().value == 1) {
@@ -198,15 +197,15 @@ public class PerInfoItemDefForLayoutFinder {
 			List<PersonInfoItemDefinition> lstDomain = perInfoItemDefRepositoty
 					.getPerInfoItemDefByListId(items, contractCode);
 			for (int i = 0; i < lstDomain.size(); i++)
-				lstResult.add(createFromDomain(empId, ctgType, lstDomain.get(i), perInfoCd, dispOrder));
+				lstResult.add(createFromDomain(empId, ctgType, lstDomain.get(i), perInfoCd, dispOrder, roleId));
 		}
 		return lstResult;
 	}
 	
 	
 	
-	public List<ComboBoxObject> getLstComboBoxValue(DataTypeStateDto dataTypeStateDto){
+	public List<ComboBoxObject> getLstComboBoxValue(DataTypeStateDto dataTypeStateDto, String empId){
 		SelectionItemDto selectionItemDto = (SelectionItemDto) dataTypeStateDto;
-		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, GeneralDate.today(), true);
+		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, empId, GeneralDate.today(), true);
 	}
 }

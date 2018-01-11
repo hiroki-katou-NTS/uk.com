@@ -13,7 +13,6 @@
 					height : 750
 				};
 			</script>
-			<title>#{i18n.getText('CPS017_51')}</title>
 			<com:ValidatorScript>
 					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemName
 					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionCodeLength
@@ -70,7 +69,7 @@
 							<!-- thanh tìm kiếm  -->
 						<div tabindex="7"
 							data-bind="ntsSearchBox: {
-								searchMode: 'filter',
+								searchMode: 'highlight',
 								targetKey: 'selectionItemId',
 								mode: 'igGrid', 
 								comId: 'sel_item_grid',
@@ -175,7 +174,8 @@
 						</div>
 						
 						<div class="input">
-							<span data-bind="if: infoSelection().selectionCodeCharacter() == 0"> 
+							<div>
+								<span data-bind="if: infoSelection().selectionCodeCharacter() == 0"> 
 								<input id="code" data-bind="ntsNumberEditor: {
 										name: '#[CPS017_21]', 
 										value: selectionCD,
@@ -184,8 +184,8 @@
 										enable: $parent.selection().selectionID() == undefined , 
 		 								immediate: false									
 										}" />
-							</span>
-							<span data-bind="if: infoSelection().selectionCodeCharacter() == 1">
+								</span>
+								<span data-bind="if: infoSelection().selectionCodeCharacter() == 1">
 								<input id="code"
 									data-bind="ntsTextEditor: {
 										name: '#[CPS017_21]', 
@@ -194,8 +194,10 @@
 										required: true, 
 										enable: $parent.selection().selectionID() == undefined , 
 		 								immediate: false}" />
-							</span> 
-							<input id="name"
+								</span> 
+							</div>
+							<div>
+								<input id="name"
 								data-bind="ntsTextEditor: {
 								name: '#[CPS017_22]',
 								value: selectionName, 
@@ -203,6 +205,7 @@
 								required: true, 
  								enable: $parent.enableSelName, 
 								immediate: false}" />
+							</div>
 						</div>
 					</div>
 					

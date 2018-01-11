@@ -73,6 +73,12 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 self.currentAtdItemCondition.compareStartValue(0);
                 self.currentAtdItemCondition.compareEndValue(0);
             });
+            self.currentAtdItemCondition.compareOperator.subscribe((value) => {
+                self.validateRange();
+            });
+            $(".value-input").blur(()=>{
+                self.validateRange();    
+            });
             self.fillTextDisplayTarget();
             self.fillTextDisplayComparison();
         }
@@ -217,11 +223,17 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
         validateRange() {
             let self = this;
-            if (self.currentAtdItemCondition.conditionType() === 0 && self.currentAtdItemCondition.compareOperator() > 5) {
-                if (self.currentAtdItemCondition.compareStartValue() >= self.currentAtdItemCondition.compareEndValue()) {
-                    $('.value-input').ntsError('set', '開始時刻と終了値の入力が不正です');
-                } else {
-                    $('.value-input').ntsError('clear');
+            $('.value-input').ntsError('clear');
+            $(".value-input").trigger("validate");
+            if (self.currentAtdItemCondition.conditionType() === 0 && (self.currentAtdItemCondition.compareOperator() === 7 || self.currentAtdItemCondition.compareOperator() === 9)) {
+                if (parseInt(self.currentAtdItemCondition.compareStartValue()) > parseInt(self.currentAtdItemCondition.compareEndValue())) {
+                    $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                    $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                }
+            } else if (self.currentAtdItemCondition.conditionType() === 0 && (self.currentAtdItemCondition.compareOperator() === 6 || self.currentAtdItemCondition.compareOperator() === 8)) {
+                if (parseInt(self.currentAtdItemCondition.compareStartValue()) >= parseInt(self.currentAtdItemCondition.compareEndValue())) {
+                    $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                    $('#endValue').ntsError('set', { messageId: "Msg_927" });
                 }
             }
         }
@@ -229,7 +241,6 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         returnData() {
             let self = this;
             $(".need-check").trigger("validate");
-            $(".value-input").trigger("validate");
             self.validateRange();
             $(".value-input").blur(function() {
                 self.validateRange();

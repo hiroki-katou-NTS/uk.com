@@ -11,6 +11,7 @@ module nts.uk.at.view.ksu001.a.service {
         getDataSpecDateAndHoliday: "screen/at/schedule/basicschedule/getDataSpecDateAndHoliday",
         getDataComPattern: "screen/at/schedule/basicschedule/getDataComPattern",
         getDataWkpPattern: "screen/at/schedule/basicschedule/getDataWkpPattern",
+        findWorkPlaceById: "bs/employee/workplace/info/findDetail",
     }
 
     export function getDataBasicSchedule(obj): JQueryPromise<any> {
@@ -24,7 +25,7 @@ module nts.uk.at.view.ksu001.a.service {
     export function getShiftCondition(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getShiftCondition);
     }
-    
+
     export function getShiftConditionCategory(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getShiftConditionCategory);
     }
@@ -55,5 +56,8 @@ module nts.uk.at.view.ksu001.a.service {
 
     export function getDataWkpPattern(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataWkpPattern, obj);
+    }
+    export function getWorkPlaceById(data: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("com", paths.findWorkPlaceById, data);
     }
 }

@@ -59,6 +59,7 @@ import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -303,7 +304,13 @@ public class LayoutFinder {
 	 */
 	private List<PerInfoItemDefDto> validateAuthItem(List<PersonInfoItemAuth> authItems,
 			List<PerInfoItemDefDto> listItemDef, boolean selfBrowsing) {
+
+		if ( authItems == null ) {
+			return new ArrayList<>();
+		}
+		
 		List<PerInfoItemDefDto> dataInfoItems = new ArrayList<>();
+
 		for (PerInfoItemDefDto itemDef : listItemDef) {
 			Optional<PersonInfoItemAuth> authItemOpt = authItems.stream()
 					.filter(p -> p.getPersonItemDefId().equals(itemDef.getId())).findFirst();
@@ -315,8 +322,8 @@ public class LayoutFinder {
 				}
 			}
 		}
-		return dataInfoItems;
 
+		return dataInfoItems;
 	}
 
 	/**
@@ -389,7 +396,7 @@ public class LayoutFinder {
 				DataTypeStateDto itemDataTypeSate = valueItem.getItem();
 				if ( itemDataTypeSate != null && itemDataTypeSate.getDataTypeValue() == DataTypeValue.SELECTION.value) {
 					SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
-					valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, standardDate, true));
+					valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, employeeId, standardDate, true));
 				}
 			}
 		});
@@ -575,6 +582,10 @@ public class LayoutFinder {
 	private void checkActionRoleItemData(List<PersonInfoItemAuth> inforAuthItems, LayoutPersonInfoClsDto classItem,
 			boolean selfBrowsing) {
 
+		if ( inforAuthItems == null) {
+			return;
+		}
+		
 		for (Object item : classItem.getItems()) {
 			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 
@@ -590,6 +601,7 @@ public class LayoutFinder {
 				}
 				valueItem.setActionRole(actionrole);
 			}
+			
 		}
 
 	}

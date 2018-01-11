@@ -180,7 +180,7 @@ module nts.uk.at.view.kml002 {
                 var dfd = $.Deferred();
                 nts.uk.ui.block.invisible();
                 service.addFixedVertical(ko.toJS(self.items())).done(function(any) {
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).always(()=>{
                     nts.uk.ui.block.clear();    
                 });

@@ -11,9 +11,11 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
+import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
@@ -48,7 +50,6 @@ public class GetDataAppCfDetailFinder {
 	@Inject
 	private nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository applicationDeadlineRepository;
 	
-
 	public OutputMessageDeadline getDataConfigDetail(ApplicationMetaDto metaDto) {
 		String message = "";
 		String deadline = "";
@@ -77,7 +78,11 @@ public class GetDataAppCfDetailFinder {
 			/*
 			ドメインモデル「締め」を取得する(lấy thông tin domain「締め」)
 			*/
-			String employmentCD = employeeAdaptor.getEmploymentCode(companyID, sid, metaDto.getAppDate());
+			SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, sid, metaDto.getAppDate());
+			if(empHistImport==null || empHistImport.getEmploymentCode()==null){
+				throw new BusinessException("Msg_426");
+			}
+			String employmentCD = empHistImport.getEmploymentCode();
 			Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
 			if(!closureEmployment.isPresent()){
 				throw new RuntimeException("締めがない。");
@@ -166,4 +171,20 @@ public class GetDataAppCfDetailFinder {
 	private String formatTime(int time) {
 		  return String.format("%02d:%02d", time / 60, time % 60);
 		 }
+	
+	/**
+	 * find Application Deadline By Closure Id
+	 * @param closureId
+	 * @return
+	 * @author yennth
+	 */
+	public ApplicationDeadlineDto findByClosureId(int closureId){
+		String companyId = AppContexts.user().companyId();
+		return this.applicationDeadlineRepository.getDeadlineByClosureId(companyId, closureId)
+				.map(c -> {
+					return new ApplicationDeadlineDto(companyId, closureId, 
+														c.getUserAtr().value, c.getDeadline().v(), 
+														c.getDeadlineCriteria().value);
+				}).orElse(null);
+	}
 }

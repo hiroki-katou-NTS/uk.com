@@ -12,6 +12,12 @@ public class EmpAvaOrMapCommand {
 	private String fileId;
 	/**file type*/
 	private int fileType;
+	
+	/**file id*/
+	private String fileIdnew;
+	
+	private boolean isAvatar;
+	
 	public EmpAvaOrMapCommand(){}
 }
 

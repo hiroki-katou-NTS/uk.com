@@ -13,6 +13,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.ParamForGetPerItem;
@@ -73,6 +75,9 @@ public class EmpCtgFinder {
 	@Inject 
 	private EmployeeDataMngInfoRepository employeeRepository;
 	
+	@Inject
+	private PerInfoCategoryFinder perInfoCategoryFinder;
+	
 	/**
 	 * Get all category by selected employee
 	 * @author xuan vinh
@@ -85,6 +90,7 @@ public class EmpCtgFinder {
 		String companyId = AppContexts.user().companyId();
 		String empIdCurrentLogin = AppContexts.user().employeeId();
 		String roleIdOfLogin = AppContexts.user().roles().forPersonalInfo();
+		//String roleIdOfLogin = "99900000-0000-0000-0000-000000000001";
 
 		// get list Category
 		List<PersonInfoCategory> listCategory = perInfoCategoryRepositoty.getAllPerInfoCtg(companyId);
@@ -119,11 +125,15 @@ public class EmpCtgFinder {
 	public List<ComboBoxObject> getListInfoCtgByCtgIdAndSid(PeregQuery query){
 		// app contexts
 		String contractCode = AppContexts.user().contractCode();
-		
+		String roleId = AppContexts.user().roles().forPersonalInfo();
+		//String roleId = "99900000-0000-0000-0000-000000000001";
+
 		//get category
 		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCategoryId(), contractCode)
 				.get();
-		
+		if (!perInfoCategoryFinder.checkPerInfoCtgAuth(query.getEmployeeId(), perInfoCtg.getPersonInfoCategoryId(), roleId)) {
+			return new ArrayList<>();
+		}
 		if (perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO)
 			return new ArrayList<>();
 		query.setCtgType(perInfoCtg.getCategoryType().value);
@@ -223,6 +233,8 @@ public class EmpCtgFinder {
 	}
 	private void sortDate(List<String> optionText, PeregQuery query){
 		optionText.sort((a, b) -> {
+			if(a.equals("")) return 1;
+			if(b.equals("")) return 0;
 			GeneralDate start = GeneralDate.fromString(a, "yyyy/MM/dd");
 			GeneralDate end = GeneralDate.fromString(b, "yyyy/MM/dd");
 			return start.compareTo(end);

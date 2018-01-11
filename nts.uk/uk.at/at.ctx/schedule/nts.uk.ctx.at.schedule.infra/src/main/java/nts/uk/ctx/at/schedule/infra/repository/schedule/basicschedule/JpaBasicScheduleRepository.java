@@ -103,22 +103,16 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			Optional<KscdtWorkScheduleTimeZone> optionalEntity = this.findWorkScheduleTimeZone(employeeId, date,
 					schedule.getScheduleCnt());
 			// check null of startTime-endTime
-			// if (schedule.getScheduleStartClock() == null ||
-			// schedule.getScheduleEndClock() == null) {
-			// if (optionalEntity.isPresent()) {
-			// entity = optionalEntity.get();
-			// this.commandProxy().remove(KscdtWorkScheduleTimeZone.class,
-			// entity.kscdtWorkScheduleTimeZonePk);
-			// }
-			// return;
-			// }
-			//
+			if (schedule.getScheduleStartClock() == null || schedule.getScheduleEndClock() == null) {
+				if (optionalEntity.isPresent()) {
+					entity = optionalEntity.get();
+					this.commandProxy().remove(KscdtWorkScheduleTimeZone.class, entity.kscdtWorkScheduleTimeZonePk);
+				}
+				return;
+			}
+
 			if (optionalEntity.isPresent()) {
 				entity = optionalEntity.get();
-				if (schedule.getScheduleStartClock() == null || schedule.getScheduleEndClock() == null) {
-					this.commandProxy().remove(KscdtWorkScheduleTimeZone.class, entity.kscdtWorkScheduleTimeZonePk);
-					return;
-				}
 			}
 			schedule.saveToMemento(new JpaWorkScheduleTimeZoneSetMemento(entity, employeeId, date));
 			entities.add(entity);

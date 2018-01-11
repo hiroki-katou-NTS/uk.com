@@ -11,50 +11,59 @@ module nts.uk.com.view.kal004.b.viewmodel {
         
         
         //Combo Box
-        listItems: KnockoutObservableArray<item>;
-        selected: KnockoutObservable<string>;
-        simpleValue: KnockoutObservable<string>;
+        strListSpecifiedMonth: KnockoutObservableArray<any>;
+        strMonthSelected: KnockoutObservable<any>;
+        endListSpecifiedMonth: KnockoutObservableArray<any>;
+        endMonthSelected: KnockoutObservable<any>;
         
         constructor() {
             var self = this;
             self.enable = ko.observable(true);
             self.selectMonth = ko.observable(true);
-            self.strSelected = ko.observable(0);
+            self.strSelected = ko.observable(1);
             self.endSelected = ko.observable(0);
             self.txtDay = ko.observable(resource.getText('KAL004_32'));
             self.txtMonth = ko.observable(resource.getText('KAL004_32'));
             
             // combo box
-            self.selected = ko.observable('1');
-            self.simpleValue = ko.observable('test');
-            self.listItems = ko.observableArray([
-                new item('1', 'test', 'test'),
-                new item('2', 'test2', 'test2')
-            ]);
+            self.strMonthSelected = ko.observable(0);
+            self.endMonthSelected = ko.observable(1);
+            self.strListSpecifiedMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
+            self.endListSpecifiedMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
+            console.log(self.endMonthSelected());
         }
 
         cancel_Dialog(): any {
             nts.uk.ui.windows.close();
         }
         test(): void {
-            console.log("success!");
             nts.uk.ui.windows.sub.modal("../004/b/index.xhtml").onClosed(() => {
                 console.log("success!");
             });  
         }
 
     }
-}
-class BoxModel {
-    id: number;
-    name: string;
-    constructor(id, name){
-        var self = this;
-        self.id = id;
-        self.name = name;
+    export interface ExtractionRangeDto{
+        extractionId: string;
+        extractionRange: number;
+        strSpecify: number;
+        strPreviousDay: number;
+        strMakeToDay: number;
+        strDay: number;
+        strPreviousMonth: number;
+        strCurrentMonth: number;
+        strMonth: number;
+        endSpecify: number;
+        endPreviousDay: number;
+        endMakeToDay: number;
+        endDay: number;
+        endPreviousMonth: number;
+        endCurrentMonth: number;
+        endMonth: number;  
     }
 }
-class item {
+
+class items {
     value: string;
     name: string;
     description: string;
@@ -66,4 +75,5 @@ class item {
         self.description = description;
     }
 }
+    
 

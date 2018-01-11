@@ -1,7 +1,8 @@
 #contents-area {
-	width: 1280px;
+	width: 1290px;
 	height: 100%;
-	overflow-y: hidden !important;
+	/* overflow-y: hidden !important; */
+	overflow-y: inherit !important;
 }
 
 .float-right {
@@ -23,10 +24,9 @@
 	background-color: #C7F391;
 }
 
+
 .input-units {
 	width: 209px !important;
-	min-height: 16px !important;
-	max-height: 16px !important;
 }
 
 .sub-input-units {
@@ -35,43 +35,44 @@
 	margin-right: 3px !important;
 	border: 0px !important;
 	text-align: right !important;
-	max-height: 12px !important;
 }
 
 .nts-datepicker-wrapper .ntsDatepicker {
 	width: 161px !important;
 }
-
+#datey.nts-input{
+	padding: 3px 10px !important;
+}
 #date {
 	border: 0px solid #999999 !important;
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #datey {
 	border: 0px solid #999999 !important;
-	width: 210px !important;
+	width: 192px !important;
 	padding-left: 2px;
 }
 
 #timeItem {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #timePoint {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #number {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #string {
-	width: 210px !important;
+	width: 200px !important;
 }
 
 #content-right {
 	float: left;
-	width: 930px;
+	width: 940px;
 }
 
 #category_grid_container {
@@ -82,6 +83,7 @@
 	margin-top: 10px !important;
 	width: 250px;
 }
+
 .distane {
 	margin-bottom: 5px;
 }
@@ -124,19 +126,29 @@ input.ntsSearchBox {
 
 #sub-left {
 	width: 265px;
-	height: 590px;
+	/* height: 590px; */
 	float: left;
+	margin-top: -10px;
 }
 
 #sub-right {
 	float: left;
-	width: 630px;
+	width: 634px;
 	margin-left: 30px;
+}
+#sub-right>table>tbody, #sub-right>table>thead{
+	display: block;
+}
+#sub-right>table>tbody{
+    max-height: 510px;       /* Just for the demo          */
+    overflow-y: scroll;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
+    width: 634px;
 }
 
 #search_his {
 	margin-top: 38px;
-	margin-bottom: 15px;
+	margin-bottom: 5px;
 }
 
 #history {
@@ -146,7 +158,7 @@ input.ntsSearchBox {
 
 .contents-header {
 	width: 100%;
-	margin-top: 10px !important;
+	heigth: 650px !important;
 }
 
 .contents-data {
@@ -157,21 +169,14 @@ input.ntsSearchBox {
 .contents-data  td {
 	border: 1px solid #CCC;
 	text-align: left;
-	min-height: 16px !important;
-	max-height: 16px !important;
 }
 
-.contents-data  tr {
-	min-height: 16px !important;
-	max-height: 16px !important;
-}
 
 table.contents-data thead, table.contents-data tbody {
 	display: block !important;
 }
-
+    
 table.contents-data tbody {
-	height: 500px;
 	overflow-y: auto;
 	overflow-x: hidden;
 	border: 1px solid #CCC;
@@ -179,65 +184,51 @@ table.contents-data tbody {
 
 thead {
 	background-color: #CFF1A5;
-/* 	height: 35px !important; */
+	/* 	height: 35px !important; */
 }
 
-table.contents-data tr {
-	min-height: 16px !important;
-	max-height: 16px !important;
-}
 
 table tr td, table tr th {
 	font-size: 14px;
 	font-family: "DroidSansMono", "Meiryo";
 }
 
-.ui-igcombo-buttonicon, .ui-igcombo-clearicon {
-	top: 20% !important;
-	margin-top: -8px !important;
-	position: inherit !important;
-}
-
 .ui-igcombo-wrapper {
-	position: relative;
-	display: inline-block;
-	overflow: visible;
-	width: 160px;
-	height: 15px;
+	display: block;
+	width: initial;
+	width: auto;
 }
 
 .value {
 	width: 200px !important;
 }
 
-#combox1 {
-	height: 18px;
-	margin-left: 16px;
+/* #combox1 {
 	min-width: 210px !important;
 	max-width: 210px !important;
-}
+} */
 
-.contents-header td {
+.contents-header thead td {
 	border: 1px solid #CCC;
 	text-align: left;
-	height: 35px;
 	padding: 0px 0px;
 	font-weight: bold;
 }
 
+.contents-header thead{
+	width: 634px;
+}
+
 #COL_1 {
-	min-width: 200px !important;
-	max-width: 200px !important;
+	width: 200px !important;
 }
 
 #COL_2 {
-	min-width: 190px !important;
-	max-width: 190px !important;
+	width: 190px !important;
 }
 
 #COL_3 {
-	min-width: 234px !important;
-	max-width: 240px !important;
+	width: 240px !important;
 }
 
 #A2_012 {
@@ -255,14 +246,16 @@ table tr td, table tr th {
 }
 
 #combo-box {
-	margin-left: 9px;
+/* 	margin-left: 9px; */
 	min-width: 100px !important;
-	height: 20px;
 }
 
 .input-units-1 {
 	min-width: 200px;
 	max-width: 200px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .input-units-2 {
@@ -271,9 +264,17 @@ table tr td, table tr th {
 }
 
 .input-units-3 {
-	min-width: 240px;
-	max-width: 240px;
+	width: 240px !important;
 }
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .ntsControl .nts-input{
+		padding: 3px 10px !important;
+	}
+	.ntsControl .nts-input:focus{
+		padding: 5px 10px !important;
+	}
+}
+
 
 #notdata {
 	min-width: 240px !important;
@@ -287,12 +288,13 @@ table tr td, table tr th {
 
 span.caret-background.caret-right.direction-right {
 	position: fixed !important;
-	margin-top: 50px !important; 
+	margin-top: 50px !important;
+	margin-left: 2px !important;
 }
 
 .table-container {
 	color: #000;
-/* 	position: relative; */
+	/* 	position: relative; */
 	border: 1px solid #ccc;
 }
 
@@ -312,7 +314,6 @@ th>div {
 	top: 0;
 	padding: 3px;
 	color: #000;
-	line-height: 32px;
 	position: absolute;
 	border-left: 1px solid #ccc;
 	background-color: #CFF1A5 !important;
@@ -363,15 +364,21 @@ label[for] {
 	margin-left: 5px !important;
 }
 
-.ui-dialog ui-corner-all ui-widget ui-widget-content ui-front no-close ui-dialog-buttons ui-draggable ui-resizable{
+.ui-dialog ui-corner-all ui-widget ui-widget-content ui-front no-close ui-dialog-buttons ui-draggable ui-resizable
+	{
 	top: 578.5px !important;
 }
 
 /* div[role]{
 	top: 578.5px !important;
 } */
+.caret-background caret-right direction-right {
+	margin-top: 90px !important;
+}
+.ui-state-default{
+	border: 1px solid #c5c5c500 !important;;
+}
 
-
-.caret-background caret-right direction-right{
-	margin-top:90px !important;
+abbr[title]{
+	text-decoration: none;
 }

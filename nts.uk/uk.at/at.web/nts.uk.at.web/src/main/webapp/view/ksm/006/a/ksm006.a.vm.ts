@@ -62,7 +62,8 @@ module nts.uk.at.view.ksm006.a {
                     isShowSelectButton: false,
                     isDialog: false,
                     alreadySettingList: self.workplaceAlreadySetList,
-                    maxRows: 10
+                    maxRows: 10,
+                    systemType: 2
                 };
 
                 self.selectedClassifi = ko.observable("");

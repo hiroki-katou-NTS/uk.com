@@ -46,6 +46,8 @@
 					<div data-bind="ntsCheckBox: { checked: show }">Show Item "操作"</div>
 					<br />
 					<div data-bind="ntsCheckBox: { checked: enable }">Enable Item "1 &amp; 2"</div>
+					<hr />
+					<input data-bind="ntsTextEditor: {value: ko.observable(''), name: 'aa', required: true}" />
 				</div>
 			</div>
 			<div id="tabpanel-2" role="tabpanel">
@@ -68,6 +70,9 @@
 							multiple: true,
 							value: currentCodeList
 						}"></table>
+					<hr />
+					<input data-bind="ntsTextEditor: {value: ko.observable(''), name: 'B', required: true}" />
+					<input data-bind="ntsTextEditor: {value: ko.observable(''), name: 'C', required: true}" />
                </div>
 			</div>
 			<div id="tabpanel-3" role="tabpanel">

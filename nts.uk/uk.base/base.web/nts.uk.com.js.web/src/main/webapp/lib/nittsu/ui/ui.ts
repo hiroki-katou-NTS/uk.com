@@ -259,13 +259,20 @@ module nts.uk.ui {
 
             setShared(key: string, data: any, isRoot: boolean, persist?: boolean) {
                 var transferData;
-                // Check is data or KO data
-                if (!_.isFunction(data) || ko.isObservable(data)) {
-                    transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
-                } else {
+                
+                // Null or Undefined
+                if (util.isNullOrUndefined(data)) {
                     transferData = data;
                 }
-                
+                // Data or KO data
+                else if (!_.isFunction(data) || ko.isObservable(data)) {
+                    transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
+                }
+                // Callback function
+                else {
+                    transferData = data;
+                }
+				
                 if (persist || isRoot) {
                     this.shared[key] = transferData;
                 } else {

@@ -8,6 +8,7 @@ interface ViewContext {
     primitiveValueConstraints: { [key: string]: any };
     codeNames: { [key: string]: string };
     messages: { [key: string]: string };
+    env: any;
 
     title: string;
     transferred: nts.uk.util.optional.Optional<any>;

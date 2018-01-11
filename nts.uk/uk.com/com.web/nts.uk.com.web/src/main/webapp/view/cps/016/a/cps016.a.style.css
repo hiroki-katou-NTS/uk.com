@@ -8,17 +8,14 @@
 
 #A_BTN_NEW {
 	margin-left: 19px;
-	width: 85px;
 }
 
 #A_BTN_REGISTER {
 	margin-left: 10px;
-	width: 85px;
 }
 
 #A_BTN_COPPY {
 	margin-left: 15px;
-	width: 105px;
 }
 
 #functions-area button.danger {
@@ -28,19 +25,16 @@
 
 #A_BTN_DELETE {
 	margin-left: 100px;
-	width: 80px;
 }
 
 #A_BTN_JUMP {
 	min-width: 0px;
 	margin-left: 0px;
-	width: 120px;
 }
 
 #A_BTN_CPS016_4 {
 	margin-left: 15px;
 	margin-right: 0px;
-	width: 80px;
 }
 
 #left-content {
@@ -92,7 +86,7 @@ div#left-content.relative.bg-green.caret-right.caret-background {
 }
 
 input.ntsSearchBox.nts-editor.ntsSearchBox_Component {
-	width: 207px	 !important;
+	width: 278px	 !important;
 }
 
 i.icon.icon-searchbox {

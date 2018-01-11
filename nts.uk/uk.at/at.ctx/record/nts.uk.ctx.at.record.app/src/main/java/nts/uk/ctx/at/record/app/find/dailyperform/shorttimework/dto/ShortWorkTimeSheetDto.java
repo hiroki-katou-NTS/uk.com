@@ -14,8 +14,8 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 public class ShortWorkTimeSheetDto {
 
 	/** 短時間勤務枠NO: 短時間勤務枠NO */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+//	@AttendanceItemLayout(layout = "A", jpPropertyName = "")
+//	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer shortWorkTimeFrameNo;
 
 	/** 育児介護区分: 育児介護区分 */

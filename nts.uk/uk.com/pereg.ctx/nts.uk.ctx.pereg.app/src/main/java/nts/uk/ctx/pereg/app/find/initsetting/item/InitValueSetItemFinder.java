@@ -13,7 +13,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.app.find.additionaldata.item.EmpInfoItemDataFinder;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
 import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
-import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.ReferenceMethodType;
@@ -74,9 +73,11 @@ public class InitValueSetItemFinder {
 
 		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASEMPLOYMENTDATE, command.getHireDate());
 
+		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASSYSTEMDATE, GeneralDate.today());
+
 		if (isSetText) {
 
-			this.settingItemMap.setTextForSelectionItem(result);
+			this.settingItemMap.setTextForSelectionItem(result, employeeId);
 
 		}
 
@@ -166,7 +167,7 @@ public class InitValueSetItemFinder {
 							if (itemDtoOpt.isPresent()) {
 								Object value = dataMap.get(itemDtoOpt.get().getItemCode());
 								if (value != null) {
-									itemDtoOpt.get().setData(value.toString());
+									itemDtoOpt.get().setData(value);
 								}
 							}
 						});

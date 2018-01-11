@@ -163,6 +163,15 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
      * @param totalTimeDb the total time db
      */
     private void ignoredDataIfNeed(TotalTimesCommand command, TotalTimes totalTimeDb) {
+    	/*
+			In case UseAtr.Use.value or uncheck both LowerLimitSettingAtr and UpperLimitSettingAtr
+			will value in DB
+    	*/
+    	if (command.getTotalCondition().getLowerLimitSettingAtr() == 0 
+        		&& command.getTotalCondition().getUpperLimitSettingAtr() == 0) {
+        	command.getTotalCondition().setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId());
+        }
+    	
         if (command.getUseAtr() == UseAtr.Use.value) {
             return;
         }

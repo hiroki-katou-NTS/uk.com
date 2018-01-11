@@ -123,7 +123,7 @@ module nts.uk.ui.koExtentions {
                     $('.ui-widget-overlay').last().css('z-index', nts.uk.ui.dialog.getMaxZIndex());
                 },
                 close: function(event) {
-                    bindingContext.$data.option.show(false);
+                    bindingContext.$data.option().show(false);
                 }
             });
         }

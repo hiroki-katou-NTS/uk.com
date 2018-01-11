@@ -125,6 +125,7 @@ public class PeregProcessor {
 		String companyId = AppContexts.user().companyId();
 		String loginEmpId = AppContexts.user().employeeId();
 		String roleId = AppContexts.user().roles().forPersonalInfo();
+		//String roleId = "99900000-0000-0000-0000-000000000001";
 
 		// get Person ID
 		query.setPersonId(empRepo.findByEmpId(query.getEmployeeId()).get().getPersonId());
@@ -139,7 +140,7 @@ public class PeregProcessor {
 
 		// get PerInfoItemDefForLayoutDto
 		// check per info auth
-		if (!perInfoCategoryFinder.checkPerInfoCtgAuth(query.getEmployeeId(), perInfoCtg.getPersonInfoCategoryId())) {
+		if (!perInfoCategoryFinder.checkPerInfoCtgAuth(query.getEmployeeId(), perInfoCtg.getPersonInfoCategoryId(), roleId)) {
 			return new EmpMaintLayoutDto();
 		}
 
@@ -156,7 +157,7 @@ public class PeregProcessor {
 		List<PerInfoItemDefForLayoutDto> lstPerInfoItemDefForLayout = new ArrayList<>();
 		for (int i = 0; i < lstItemDef.size(); i++) {
 			PerInfoItemDefForLayoutDto perInfoItemDefForLayoutDto = perInfoItemDefForLayoutFinder
-					.createFromDomain(query.getEmployeeId(), perInfoCtg.getCategoryType().value, lstItemDef.get(i), perInfoCtg.getCategoryCode().v(), i);
+					.createFromDomain(query.getEmployeeId(), perInfoCtg.getCategoryType().value, lstItemDef.get(i), perInfoCtg.getCategoryCode().v(), i, roleId);
 			if (perInfoItemDefForLayoutDto != null)
 				lstPerInfoItemDefForLayout.add(perInfoItemDefForLayoutDto);
 		}

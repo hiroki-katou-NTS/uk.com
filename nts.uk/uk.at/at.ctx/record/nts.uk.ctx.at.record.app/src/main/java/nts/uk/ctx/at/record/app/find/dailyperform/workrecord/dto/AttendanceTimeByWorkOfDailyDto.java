@@ -20,6 +20,6 @@ public class AttendanceTimeByWorkOfDailyDto implements ConvertibleAttendanceItem
 
 	/** 作業一覧: 日別実績の作業時間 */
 	//TODO: set list max length
-//	@AttendanceItemLayout(layout = "A", jpPropertyName = "", isList = true, listMaxLength = ?)
+//	@AttendanceItemLayout(layout = "A", jpPropertyName = "", isList = true, listMaxLength = ?, setFieldWithIndex = "workFrameNo")
 	private List<WorkTimeOfDailyDto> workTimes;
 }

@@ -17,11 +17,13 @@ import nts.uk.shr.com.time.AttendanceClock;
 @Getter
 public class BonusPayTimesheet {
 
+	//sheet id
 	private int timeSheetId;
 
 	private UseAtr useAtr;
 
-	private String timeItemId;
+	//item no
+	private int timeItemId;
 
 	private AttendanceClock startTime;
 
@@ -32,7 +34,7 @@ public class BonusPayTimesheet {
 	private RoundingAtr roundingAtr;
 
 	public BonusPayTimesheet(
-			int timeSheetId, UseAtr useAtr, String timeItemId,
+			int timeSheetId, UseAtr useAtr, int timeItemId,
 			AttendanceClock startTime, AttendanceClock endTime, UnitAtr roundingTimeAtr,
 			RoundingAtr roundingAtr) {
 		this.timeSheetId = timeSheetId;
@@ -48,7 +50,7 @@ public class BonusPayTimesheet {
 //		super();
 //	}
 
-	public static BonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId, int startTime,
+	public static BonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, int timeItemId, int startTime,
 			int endTime, int roundingTimeAtr, int roundingAtr) {
 		return new BonusPayTimesheet(
 				timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class), timeItemId,

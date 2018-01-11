@@ -122,12 +122,6 @@
 	margin-right: 277px;
 }
 
-.tab-content-2, .tab-content-1, .tab-content-3, .tab-content-4 {
-	height: 407px !important;
-	width: 550px !important;
-	overflow-y: hidden !important;
-}
-
 .cell-column1 {
 	margin-left: -10px;
 }

@@ -44,7 +44,7 @@
 										<div class="tdcenter" tabindex="-1" data-bind="text: breakdownItemNo"></div>
 									</td>
 									<td>
-										<input tabindex="2"  data-bind="attr: {'id': 'breakdownItemNo_'+breakdownItemNo()}, ntsTextEditor: {value: name, constraint: 'BreakdownItemName', required: requiredText }"/>
+										<input tabindex="2"  data-bind="attr: {'id': 'breakdownItemNo_'+breakdownItemNo()}, ntsTextEditor: {value: name, constraint: 'BreakdownItemName', required: requiredText, name: $parent.switchNameResource()}"/>
 									</td>
 									<td>
 										<div tabindex="3" class="selectProductNumber" data-bind="ntsComboBox: {

@@ -26,8 +26,8 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
             self.listWorkTimeComboBox = ko.observableArray(self.listWorkTime());
 
             self.columnsWorkTime = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KSU001_1402"), key: 'siftCd', width: 70 },
-                { headerText: nts.uk.resource.getText("KSU001_1403"), key: 'symbol', width: 70 },
+                { headerText: nts.uk.resource.getText("KSU001_1402"), key: 'workTimeCode', width: 70 },
+                { headerText: nts.uk.resource.getText("KSU001_1403"), key: 'symbolName', width: 70 },
                 { headerText: nts.uk.resource.getText("KSU001_1404"), key: 'name', width: 110 },
                 { headerText: nts.uk.resource.getText("KSU001_1406"), key: 'timeZone1', width: 160 },
                 { headerText: nts.uk.resource.getText("KSU001_1407"), key: 'timeZone2', width: 160 },
@@ -49,19 +49,19 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                         workTypeCode = null;
                     }
 
-                    let siftCode: string = null;
+                    let workTimeCd: string = null;
                     if (self.selectedWorkTimeCode()) {
-                        siftCode = self.selectedWorkTimeCode().slice(0, 3);
+                        workTimeCd = self.selectedWorkTimeCode().slice(0, 3);
                     } else {
-                        siftCode = self.selectedWorkTimeCode()
+                        workTimeCd = self.selectedWorkTimeCode()
                     }
 
-                    let c = _.find(self.listWorkTime(), ['siftCd', siftCode]);
+                    let c = _.find(self.listWorkTime(), ['workTimeCode', workTimeCd]);
                     if (c) {
                         workTimeName = c.abName;
-                        workTimeCode = (c.siftCd == '000' ? '' : c.siftCd);
-                        startTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.start, true).format() : '';
-                        endTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.end, true).format() : '';
+                        workTimeCode = (c.workTimeCode == '000' ? null : c.workTimeCode);
+                        startTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.startTime, true).format() : '';
+                        endTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.endTime, true).format() : '';
                     } else {
                         workTimeName = null;
                         workTimeCode = null;
@@ -115,6 +115,10 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
+
+        /**
+         * search time
+         */
         search(): void {
             let self = this;
             if (!self.time1() && !self.time2()) {
@@ -126,17 +130,21 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
             self.listWorkTimeComboBox([]);
             _.forEach(self.listWorkTime(), (obj) => {
                 if (self.time1() && self.time2()
-                    && (moment.duration(self.time1()).asMinutes() == obj.start)
-                    && (moment.duration(self.time2()).asMinutes() == obj.end)) {
+                    && (moment.duration(self.time1()).asMinutes() == obj.startTime)
+                    && (moment.duration(self.time2()).asMinutes() == obj.endTime)) {
                     self.listWorkTimeComboBox.push(obj);
-                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() <= obj.start)) {
+                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() <= obj.startTime)) {
                     self.listWorkTimeComboBox.push(obj);
-                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() >= obj.end)) {
+                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() >= obj.endTime)) {
                     self.listWorkTimeComboBox.push(obj);
                 }
             });
             $("#single-list").focus();
         }
+
+        /**
+         * clear search time
+         */
         clear(): void {
             let self = this;
             self.listWorkTimeComboBox([]);

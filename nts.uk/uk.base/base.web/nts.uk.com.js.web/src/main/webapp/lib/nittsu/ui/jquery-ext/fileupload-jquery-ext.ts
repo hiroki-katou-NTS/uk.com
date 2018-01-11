@@ -1,7 +1,11 @@
 /// <reference path="../../reference.ts"/>
 
+interface JQuery {
+    ntsFileUpload(options: nts.uk.ui.jqueryExtentions.ntsFileUpload.FileUploadOption);
+}
+
 module nts.uk.ui.jqueryExtentions {
-    module ntsFileUpload {
+    export module ntsFileUpload {
         export interface FileUploadOption {
             stereoType: string;
             onSuccess?(): any;

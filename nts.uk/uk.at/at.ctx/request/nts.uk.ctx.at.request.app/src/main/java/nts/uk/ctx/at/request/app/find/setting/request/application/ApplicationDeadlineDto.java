@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.app.find.setting.request.application;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 
 /**
@@ -9,6 +11,8 @@ import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline
  *
  */
 @AllArgsConstructor
+@Data
+@NoArgsConstructor
 public class ApplicationDeadlineDto {
 	public String companyId;
 	public Integer closureId;

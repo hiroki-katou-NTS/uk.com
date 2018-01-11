@@ -38,6 +38,7 @@ module nts.uk.com.view.cdl009.a {
                 self.selectedEmps = ko.observableArray([]);
                 // Initial listComponentOption
                 self.treeGrid = {
+                    isMultipleUse: true,
                     isMultiSelect: true,
                     treeType: TreeType.WORK_PLACE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -46,7 +47,8 @@ module nts.uk.com.view.cdl009.a {
                     isShowSelectButton: true,
                     isDialog: true,
                     maxRows: 12,
-                    tabindex: 1
+                    tabindex: 1,
+                    systemType : 2
                 };
                 self.listComponentOpt = {
                     isMultiSelect: self.isMultiSelect(),
@@ -155,15 +157,13 @@ module nts.uk.com.view.cdl009.a {
              */
             decideData(): void {
                 let self = this;
-                // Get Emp List 
-                let empList = $('#emp-component').getDataList();
                 
                 var isNoSelectRowSelected = $("#emp-component").isNoSelectRowSelected();
                 if (self.isMultiSelect()) {
                     if ((!self.selectedEmps() || self.selectedEmps().length == 0)) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_644" });
                     } else {
-                        let empIds = self.getEmpIds(empList, self.selectedEmps());
+                        let empIds = self.getEmpIds();
                         setShared('CDL009Output', empIds);
                         close();
                     }
@@ -172,7 +172,7 @@ module nts.uk.com.view.cdl009.a {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_644" });
                 } else {
                     // Get Emp Id
-                    let emp: any = empList.filter((item) => {
+                    let emp: any = self.employeeList().filter((item) => {
                         return item.code == self.selectedEmpCode();
                     })[0];
                     setShared('CDL009Output', emp.id);
@@ -183,10 +183,11 @@ module nts.uk.com.view.cdl009.a {
             /**
              * Get employee Ids
              */
-            private getEmpIds(empList: Array<any>, empCodes: Array<string>): Array<any> {
+            private getEmpIds(): Array<any> {
+                let self = this;
                 let data: Array<string> = [];
-                for (let empCode of empCodes) {
-                    let emp: any = empList.filter((item) => {
+                for (let empCode of self.selectedEmps()) {
+                    let emp: any = self.employeeList().filter((item) => {
                         return item.code == empCode;
                     })[0];
                     data.push(emp.id);

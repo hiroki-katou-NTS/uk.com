@@ -97,6 +97,7 @@
 							<td data-bind="text: $index() + 1"></td>
 							<td class="hidden-right-border">
 								<input id="year" data-bind="ntsNumberEditor: {
+										name: '#[KMF004_81]',
 										value: year, 
 										constraint: 'GrantDateYear',
 										option: ko.mapping.fromJS({
@@ -106,6 +107,7 @@
 							</td>
 							<td>
 								<input id="month" data-bind="ntsNumberEditor: {
+										name: '#[KMF004_82]',
 										value: month, 
 										constraint: 'GrantDateMonth',
 										option: ko.mapping.fromJS({

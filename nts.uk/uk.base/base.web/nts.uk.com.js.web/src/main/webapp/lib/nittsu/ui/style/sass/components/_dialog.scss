@@ -29,6 +29,9 @@
 		display:inline-block;
 		margin-right:5px;
 		margin: .1em 0;
+		
+		/* アイコンが決まるまで非表示にしておく */
+		display: none;
 	}
 	.ui-dialog-titlebar-container{
 		width:100%;

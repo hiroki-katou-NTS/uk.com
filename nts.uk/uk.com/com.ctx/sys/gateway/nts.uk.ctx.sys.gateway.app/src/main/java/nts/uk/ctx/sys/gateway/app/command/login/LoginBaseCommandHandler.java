@@ -186,21 +186,24 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	//set roll id into login user context 
 	protected void setRoleId(String userId)
 	{
-		String employmentRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE);
+		String humanResourceRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE);
+		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT);
 		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY);
 		String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER);
 		String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER);
 		String systemManagerRoleId = this.getRoleId(userId, RoleType.SYSTEM_MANAGER);
 		String personalInfoRoleId = this.getRoleId(userId, RoleType.PERSONAL_INFO);
 		// 就業
-		
+		if (employmentRoleId != null) {
+			manager.roleIdSetter().forAttendance(employmentRoleId);
+		}
 		// 給与
 		if (salaryRoleId != null) {
 			manager.roleIdSetter().forPayroll(salaryRoleId);
 		}
 		// 人事
-		if (employmentRoleId != null) {
-			manager.roleIdSetter().forPersonnel(employmentRoleId);
+		if (humanResourceRoleId != null) {
+			manager.roleIdSetter().forPersonnel(humanResourceRoleId);
 		}
 		// オフィスヘルパー
 		if (officeHelperRoleId != null) {

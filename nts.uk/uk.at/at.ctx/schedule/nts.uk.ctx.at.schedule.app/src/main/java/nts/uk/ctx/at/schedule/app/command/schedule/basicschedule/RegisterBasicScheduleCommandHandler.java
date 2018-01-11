@@ -17,21 +17,18 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
-import nts.uk.ctx.at.shared.dom.worktype.DisplayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
+ * Insert or Update data to DB BASIC_SCHEDULE. If error exist return error
  * 
  * @author sonnh1
- * 
- *         Insert or Update data to DB BASIC_SCHEDULE. If error exist, return
- *         error
- *
  */
 @RequestScoped
 public class RegisterBasicScheduleCommandHandler
@@ -40,7 +37,7 @@ public class RegisterBasicScheduleCommandHandler
 	private WorkTypeRepository workTypeRepo;
 
 	@Inject
-	private WorkTimeRepository workTimeRepo;
+	private WorkTimeSettingRepository workTimeSettingRepo;
 
 	@Inject
 	private BasicScheduleRepository basicScheduleRepo;
@@ -63,14 +60,14 @@ public class RegisterBasicScheduleCommandHandler
 		}).collect(Collectors.toList());
 
 		List<WorkType> listWorkType = workTypeRepo.getPossibleWorkType(companyId, listWorkTypeCode);
-		List<WorkTime> listWorkTime = workTimeRepo.findByCodeList(companyId, listWorkTimeCode);
+		List<WorkTimeSetting> listWorkTime = workTimeSettingRepo.findByCodes(companyId, listWorkTimeCode);
 
 		Map<String, WorkType> workTypeMap = listWorkType.stream().collect(Collectors.toMap(x -> {
 			return x.getWorkTypeCode().v();
 		}, x -> x));
 
-		Map<String, WorkTime> workTimeMap = listWorkTime.stream().collect(Collectors.toMap(x -> {
-			return x.getSiftCD().v();
+		Map<String, WorkTimeSetting> workTimeMap = listWorkTime.stream().collect(Collectors.toMap(x -> {
+			return x.getWorktimeCode().v();
 		}, x -> x));
 
 		for (RegisterBasicScheduleCommand bSchedule : bScheduleCommand) {
@@ -92,18 +89,18 @@ public class RegisterBasicScheduleCommandHandler
 			}
 
 			// Check WorkTime
-			WorkTime workTime = workTimeMap.get(bSchedule.getWorkTimeCode());
+			WorkTimeSetting workTimeSetting = workTimeMap.get(bSchedule.getWorkTimeCode());
 
 			if (!StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true)
 					&& !("000").equals(bSchedule.getWorkTimeCode())) {
 
-				if (workTime == null) {
+				if (workTimeSetting == null) {
 					// Set error to list
 					addMessage(errList, "Msg_437");
 					continue;
 				}
 
-				if (workTime.getDispAtr().value == DisplayAtr.DisplayAtr_NotDisplay.value) {
+				if (workTimeSetting.getAbolishAtr().value == AbolishAtr.ABOLISH.value) {
 					// Set error to list
 					addMessage(errList, "Msg_469");
 					continue;
@@ -112,12 +109,12 @@ public class RegisterBasicScheduleCommandHandler
 
 			// Check workType-workTime
 			try {
-				if (workTime == null) {
+				if (workTimeSetting == null) {
 					basicScheduleService.checkPairWorkTypeWorkTime(workType.getWorkTypeCode().v(),
 							bSchedule.getWorkTimeCode());
 				} else {
 					basicScheduleService.checkPairWorkTypeWorkTime(workType.getWorkTypeCode().v(),
-							workTime.getSiftCD().v());
+							workTimeSetting.getWorktimeCode().v());
 				}
 			} catch (RuntimeException ex) {
 				BusinessException businessException = (BusinessException) ex.getCause();
@@ -161,7 +158,6 @@ public class RegisterBasicScheduleCommandHandler
 				basicScheduleRepo.insert(basicScheduleObj);
 			}
 		}
-
 		return errList;
 	}
 

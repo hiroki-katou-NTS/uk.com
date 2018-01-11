@@ -20,7 +20,7 @@ public class GrantConditionDto {
 	private int conditionNo;
 	
 	/* 条件値 */
-	private int conditionValue;
+	private Integer conditionValue;
 	
 	/* 条件利用区分 */
 	private int useConditionAtr;
@@ -33,7 +33,7 @@ public class GrantConditionDto {
 			domain.getCompanyId(),
 			domain.getYearHolidayCode().v(),
 			domain.getConditionNo(),
-			domain.getConditionValue().v(),
+			domain.getConditionValue() != null ? domain.getConditionValue().v() : null,
 			domain.getUseConditionAtr().value,
 			domain.isHadSet()
 		);

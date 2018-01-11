@@ -3,9 +3,9 @@ module nts.uk.at.view.kdl003.a {
         var paths: any = {
             findAllWorkType: "at/share/worktype/findNotDeprecated",
             findWorkTypeByCodes: "at/share/worktype/findNotDeprecatedByListCode",
-            findAllWorkTime: "at/shared/worktime/findAll",
-            findWorkTimeByCodes: "at/shared/worktime/findByCodes",
-            findByTime: "at/shared/worktime/findByTime",
+            findAllWorkTime: "at/shared/worktimesetting/findAll",
+            findWorkTimeByCodes: "at/shared/worktimesetting/findByCodes",
+            findByTime: "at/shared/worktimesetting/findByTime",
             isWorkTimeSettingNeeded: "at/schedule/basicschedule/isWorkTimeSettingNeeded",
             checkPairWorkTypeWorkTime: "at/schedule/basicschedule/checkPairWorkTypeWorkTime",
 

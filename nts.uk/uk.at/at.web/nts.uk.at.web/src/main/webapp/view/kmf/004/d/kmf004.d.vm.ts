@@ -167,20 +167,20 @@ module nts.uk.at.view.kmf004 {
                     lengthServiceYearAtr: self.selectedId(),
                     yearServiceSets: ko.toJS(items)
                 }
-
-                service.update(dataTranfer).done(function(errors) {
-                    if (errors && errors.length > 0) {
-                        self.addListError(errors);
-                    } else {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(){
-                            self.start();
-                            $("#button_radio").focus();
-                        });
-                    }
-                }).fail(function(error) {
-                    alert(error.message);
-                });
-                
+                if(!nts.uk.ui.errors.hasError()){
+                    service.update(dataTranfer).done(function(errors) {
+                        if (errors && errors.length > 0) {
+                            self.addListError(errors);
+                        } else {
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(){
+                                self.start();
+                                $("#button_radio").focus();
+                            });
+                        }
+                    }).fail(function(error) {
+                        alert(error.message);
+                    });
+                }
                 nts.uk.ui.block.clear();
             }   
    

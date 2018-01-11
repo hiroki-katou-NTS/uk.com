@@ -10,11 +10,16 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode
 				nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayName
+				nts.uk.ctx.at.shared.dom.specialholiday.SpecialVacationMonths
+				nts.uk.ctx.at.shared.dom.specialholiday.SpecialVacationYears
+				nts.uk.ctx.at.shared.dom.specialholiday.LimitAgeFrom
+				nts.uk.ctx.at.shared.dom.specialholiday.LimitAgeTo
 				nts.uk.ctx.at.shared.dom.specialholiday.grantday.FixNumberDays
 				nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateMonth
 				nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateYear
 				nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantDay
 				nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantAge
+				nts.uk.ctx.at.shared.dom.specialholiday.LimitCarryoverDays
 				nts.uk.shr.com.primitive.Memo
 				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -229,8 +234,8 @@
 											<span class="label">#{i18n.getText('KMF004_45')}</span>
 										</label> <input style="width: 40px;" tabindex="22" id="specialVacationMonths"
 											data-bind="ntsNumberEditor: {
-												constraint: 'GrantDateYear',
-												value: specialVacationMonths,
+												constraint: 'SpecialVacationYears',
+												value: specialVacationYears,
 												option: ko.mapping.fromJS({
 												unitID: 'YEARS',
 												width: '60'}),
@@ -239,8 +244,8 @@
 												name: '#[KMF004_46]'}" />
 										<input style="width: 40px;" tabindex="23" id="specialVacationYears"
 											data-bind="ntsNumberEditor: {
-												constraint: 'GrantDateMonth',
-												value: specialVacationYears,
+												constraint: 'SpecialVacationMonths',
+												value: specialVacationMonths,
 												option: ko.mapping.fromJS({
 												unitID: 'MONTHS',
 												width: '60'}),
@@ -273,16 +278,13 @@
 												required: $parent.inp_grantMethod() == 0,
 												enable: true,
 												name: '#[KMF004_53]',
-												constraint: 'GrantDay',
+												constraint: 'LimitCarryoverDays',
 												enable: grantCarryForward() ==0}" />
 									</div>
 								</div>
 							</div>
 							<div class="tab-content-4"
 								data-bind="with: currentItem().subCondition">
-								<div>
-									<span>#{i18n.getText('KMF004_55')}</span>
-								</div>
 								<div>
 									<span>#{i18n.getText('KMF004_55')}</span>
 								</div>
@@ -326,7 +328,7 @@
 												required: ko.computed(function(){ return useAge()==1 &amp;&amp; $parent.inp_grantMethod() == 0;}),
 												enable: useAge()==1,
 												name: '#[KMF004_57]',
-												constraint: 'GrantAge'}" />
+												constraint: 'LimitAgeFrom'}" />
 									<span>～</span> <input style="width: 30px; margin-top: 3px;"
 										id="limitAgeTo" tabindex="34"
 										data-bind="ntsNumberEditor: {
@@ -337,7 +339,7 @@
 												required: ko.computed(function(){ return useAge()==1 &amp;&amp; $parent.inp_grantMethod() == 0;}),
 												enable: useAge()==1,
 												name: '#[KMF004_58]',
-												constraint: 'GrantAge'}" />
+												constraint: 'LimitAgeTo'}" />
 								</div>
 								<span style="margin-left: 75px;">#{i18n.getText('KMF004_132')}</span>
 								<button
@@ -369,7 +371,7 @@
 											<label class="ntsRadioBox"> <input type="radio" 
 												name="grantDaySingleType"
 												data-bind="checkedValue: 0, checked: grantDaySingleType, enable: true "  tabindex="35"/>
-												<span class="box" tabindex="35"></span><span class="label">#{i18n.getText('KMF004_43')}</span>
+												<span class="box" tabindex="35"></span><span class="label">#{i18n.getText('KMF004_32')}</span>
 											</label> <span style="vertical-align: middle; margin-left: 80px;">#{i18n.getText('KMF004_31')}</span>
 											<input style="width: 40px;" id="fixNumberDays"
 												data-bind="ntsNumberEditor: {
@@ -401,7 +403,7 @@
 								<div style="margin-top: 20px;">
 									<span style="display: block;">オプション</span>
 									<div style="margin-left: 35px;">
-										<span>#{i18n.getText('KMF004_126')}</span>
+										<span>#{i18n.getText('KMF004_68')}</span>
 										<div style="margin-left: 100px;" class="cf"
 											data-bind="ntsSwitchButton: {
 													options: $parent.roundingMakeInvitation,
@@ -412,7 +414,7 @@
 									</div>
 									<div  style="margin-top: 10px;">
 										<div style="margin-left: 34px;">
-											<span >#{i18n.getText('KMF004_126')}</span>
+											<span >#{i18n.getText('KMF004_69')}</span>
 											<div id="sw1" class="cf1"
 												data-bind="ntsSwitchButton: {
 													options: $parent.roundingMakeInvitation,

@@ -58,6 +58,10 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	// RequestList #30
 	@Override
 	public WorkplaceImport findBySid(String employeeId, GeneralDate baseDate) {
+		Optional<SWkpHistExport> dataOptional = wpPub.findBySid(employeeId, baseDate);
+		if(!dataOptional.isPresent()) {
+			return new WorkplaceImport("", "", "");
+		}
 		SWkpHistExport data = wpPub.findBySid(employeeId, baseDate).get();
 		WorkplaceImport result = new WorkplaceImport(data.getWorkplaceId(), data.getWorkplaceCode(), data.getWorkplaceName());
 		return result;

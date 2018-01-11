@@ -26,8 +26,8 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
@@ -41,7 +41,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 	@Inject
 	private OvertimeRepository overTimeRepository;
 	@Inject
@@ -152,10 +152,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, GeneralDate.today());
 				
 				if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
-					List<WorkTime> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);
-					for(WorkTime workTime : workTimes){
+					List<WorkTimeSetting> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);
+					for(WorkTimeSetting workTime : workTimes){
 						SiftType siftType = new SiftType();
-						siftType.setSiftCode(workTime.getSiftCD().toString());
+						siftType.setSiftCode(workTime.getWorktimeCode().toString());
 						siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
 						result.add(siftType);
 					}
@@ -163,7 +163,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				}
 			}
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	/**
@@ -201,9 +201,12 @@ public class OvertimeServiceImpl implements OvertimeService {
 				workTypeOvertime.setWorkTypeName(workType.get().getName().toString());
 			}
 			workTypeAndSiftType.setWorkType(workTypeOvertime);
-			Optional<WorkTime> workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
-			siftType.setSiftCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
-			siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
+			WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString())
+					.orElseGet(()->{
+						return workTimeRepository.findByCompanyId(companyID).get(0);
+					});
+			siftType.setSiftCode(workTime.getWorktimeCode().toString());
+			siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
 			workTypeAndSiftType.setSiftType(siftType);
 		}
 		return workTypeAndSiftType;

@@ -123,14 +123,13 @@ module nts.uk.at.view.kaf007.share {
            constructor() {
                let self = this;
                self.prePostAtr = ko.observable(0);
-               //self.inputDate =  ko.observable(moment().format("YYYY/MM/DD"));
                self.enteredPersonSID = ko.observable('');
-               self.applicationDate =  ko.observable(moment().format("YYYY/MM/DD"));
+               self.applicationDate =  ko.observable('');
                self.applicationReason = ko.observable('');
                self.applicationType = ko.observable(2);
                self.applicantSID = ko.observable('');
-               self.startDate =  ko.observable(moment().format("YYYY/MM/DD"));
-               self.endDate =  ko.observable(moment().format("YYYY/MM/DD"));
+               self.startDate =  ko.observable('');
+               self.endDate =  ko.observable('');
            }
        }
         /**

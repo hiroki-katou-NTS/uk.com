@@ -22,7 +22,12 @@ module kcp.share.list {
         isShowAlreadySet: boolean;
         
         /**
-         * is Multi select.
+         * is Multi use (複数使用区分). Setting use multiple components?
+         */
+        isMultipleUse: boolean;
+        
+        /**
+         * is Multi select (選択モード). Setting multiple selection in grid.
          */
         isMultiSelect: boolean;
         
@@ -189,7 +194,8 @@ module kcp.share.list {
         itemList: KnockoutObservableArray<UnitModel>;
         selectedCodes: KnockoutObservable<any>;
         listComponentColumn: Array<any>;
-        isMultiple: boolean;
+        isMultipleUse: boolean;
+        isMultipleSelect: boolean;
         isDialog: boolean;
         hasBaseDate: boolean;
         baseDate: KnockoutObservable<Date>;
@@ -212,7 +218,8 @@ module kcp.share.list {
         constructor() {
             this.itemList = ko.observableArray([]);
             this.listComponentColumn = [];
-            this.isMultiple = false;
+            this.isMultipleUse = false;
+            this.isMultipleSelect = false;
             this.componentGridId = (Date.now()).toString();
             this.alreadySettingList = ko.observableArray([]);
             this.isDisplayClosureSelection = false;
@@ -232,18 +239,21 @@ module kcp.share.list {
             ko.cleanNode($input[0]);
             
             // Init self data.
-            self.isMultiple = data.isMultiSelect;
+            if (data.isMultipleUse) {
+                self.isMultipleUse = data.isMultipleUse;
+            }
+            self.isMultipleSelect = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
             self.maxRows = data.maxRows ? data.maxRows : 12;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
-            self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
+            self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultipleUse;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.isShowNoSelectRow = data.isShowNoSelectRow;
             
             // Init data for employment list component.
-            if (data.listType == ListType.EMPLOYMENT && data.isDisplayClosureSelection) {
+            if (data.listType == ListType.EMPLOYMENT) {
                 self.selectedClosureId = data.selectedClosureId ? data.selectedClosureId : ko.observable(null);
                 self.selectedClosureId.subscribe(id => {
                     self.reloadEmployment(id);
@@ -251,7 +261,9 @@ module kcp.share.list {
                 self.isDisplayClosureSelection = data.isDisplayClosureSelection ? true : false;
                 self.isDisplayFullClosureOption = data.isDisplayFullClosureOption ? true : false;
                 self.closureSelectionType = data.closureSelectionType ? data.closureSelectionType : ClosureSelectionType.NO_SELECT;
-                self.initSelectClosureOption(data);
+                if (data.isDisplayClosureSelection) {
+                    self.initSelectClosureOption(data);
+                }
             }
             self.initGridStyle(data);
             if (data.maxWidth && data.maxWidth <= 350) {
@@ -413,7 +425,7 @@ module kcp.share.list {
             }
             $.fn.reloadJobtitleDataList = self.reload;
             $.fn.isNoSelectRowSelected = function() {
-                if (self.isMultiple) {
+                if (self.isMultipleSelect) {
                     return false;
                 }
                 var selectedRow: any = $('#' + self.componentGridId).igGridSelection("selectedRow");
@@ -434,7 +446,7 @@ module kcp.share.list {
             self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
             
             // Check is show no select row.
-            if (isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultiple) {
+            if (isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultipleSelect) {
                 self.itemList.unshift({code: '', id: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
         }
@@ -512,7 +524,7 @@ module kcp.share.list {
                     //self.selectedCodes(data.selectedCode());
                     return;
                 case SelectType.SELECT_ALL:
-                    if (!self.isMultiple){
+                    if (!self.isMultipleSelect){
                         return;
                     }
                     self.selectedCodes(dataList.map(item => self.listType == ListType.JOB_TITLE ? item.id : item.code));
@@ -550,7 +562,7 @@ module kcp.share.list {
          * Select data for multiple or not
          */
         private selectData(option: ComponentOption, data: UnitModel) :any {
-            if (this.isMultiple) {
+            if (this.isMultipleSelect) {
                 return option.listType == ListType.JOB_TITLE ? [data.id] : [data.code];
             }
             if (option.listType == ListType.JOB_TITLE) {
@@ -634,8 +646,12 @@ module kcp.share.list {
                             });
                         })
                         return dfd.promise();
-                    } 
-                    return service.findEmployments(0);
+                    } else {
+                        if (self.selectedClosureId()){
+                            return service.findEmployments(self.selectedClosureId());
+                        }
+                        return service.findAllEmployments();
+                    }
                 case ListType.JOB_TITLE:
                     return service.findJobTitles(this.baseDate());
                 case ListType.Classification:
@@ -650,7 +666,7 @@ module kcp.share.list {
          */
         public selectAll() {
             var self = this;
-            if (self.itemList().length == 0 || !self.isMultiple) {
+            if (self.itemList().length == 0 || !self.isMultipleSelect) {
                 return;
             }
             self.selectedCodes(self.itemList().map(item => item.code));
@@ -734,7 +750,7 @@ module kcp.share.list {
         /**
          * Find Employment list.
          */
-        export function findEmployments(closureId: number): JQueryPromise<Array<UnitModel>> {
+        export function findEmployments(closureId?: number): JQueryPromise<Array<UnitModel>> {
             
             // Find Employment Closure.
             var dfd = $.Deferred<Array<UnitModel>>();
@@ -749,6 +765,10 @@ module kcp.share.list {
                 dfd.resolve([])
             })
             return dfd.promise();
+        }
+        
+        export function findAllEmployments(): JQueryPromise<Array<UnitModel>>{
+            return nts.uk.request.ajax('com', servicePath.findEmployments);
         }
         
         /**

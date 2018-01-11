@@ -11,7 +11,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         listSpecialHlFrame: KnockoutObservableArray<any>;
         listAbsenceFrame: KnockoutObservableArray<any>;
         oneDay: KnockoutObservable<WorkTypeSet>;
-
         currentOneDayCls: KnockoutObservable<number>;
         currentMorningCls: KnockoutObservable<number>;
         currentAfternoonCls: KnockoutObservable<number>;
@@ -21,7 +20,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         itemHodidayAtr: KnockoutObservableArray<ItemModel>;
         itemCloseAtr: KnockoutObservableArray<ItemModel>;
         itemListHaftDay: KnockoutObservableArray<ItemModel>;
-        itemCalculatorMethod: KnockoutObservableArray<ItemModel>;
+        itemCalculatorMethod: KnockoutObservableArray<any>;
         enableMethod: KnockoutObservable<boolean>;
         isCreated: KnockoutObservable<boolean>;
         index: KnockoutObservable<number>;
@@ -131,10 +130,10 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
             //出勤率の計算方法
             self.itemCalculatorMethod = ko.observableArray([
-                new ItemModel(0, nts.uk.resource.getText('Enum_CalculateMethod_DO_NOT_GO_TO_WORK'), 0),
-                new ItemModel(1, nts.uk.resource.getText('Enum_CalculateMethod_MAKE_ATTENDANCE_DAY'), 0),
-                new ItemModel(2, nts.uk.resource.getText('Enum_CalculateMethod_EXCLUDE_FROM_WORK_DAY'), 0),
-                new ItemModel(3, nts.uk.resource.getText('Enum_CalculateMethod_TIME_DIGEST_VACATION'), 0),
+                {code: 0, name: nts.uk.resource.getText('Enum_CalculateMethod_DO_NOT_GO_TO_WORK')},
+                {code: 1, name: nts.uk.resource.getText('Enum_CalculateMethod_MAKE_ATTENDANCE_DAY')},
+                {code: 2, name: nts.uk.resource.getText('Enum_CalculateMethod_EXCLUDE_FROM_WORK_DAY')},
+                {code: 3, name: nts.uk.resource.getText('Enum_CalculateMethod_TIME_DIGEST_VACATION')}
             ]);
 
             self.roundingRules = ko.observableArray([
@@ -500,7 +499,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             cwt.oneDayCls(0);
             cwt.morningCls(0);
             cwt.afternoonCls(0);
-            cwt.calculatorMethod(0);
+            cwt.calculatorMethod(1);
 
             od.workTypeCode('');
             od.workAtr(0);

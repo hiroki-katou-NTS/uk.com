@@ -40,7 +40,7 @@
 				<span class="title" data-bind="text: title"></span>
 				<com:ko-if bind="currentTab()==='d'">
 					<button class="proceed"
-						data-bind="click: $parent.viewmodelD.register.bind($parent.viewmodelD)">#{i18n.getText('KMF004_2')}</button>
+						data-bind="enable: $root.errors.isEmpty, click: $parent.viewmodelD.register.bind($parent.viewmodelD)">#{i18n.getText('KMF004_2')}</button>
 					<button class="cancel"
 						data-bind="click: $parent.viewmodelD.closeDialog">#{i18n.getText('KMF004_4')}</button>
 				</com:ko-if>	

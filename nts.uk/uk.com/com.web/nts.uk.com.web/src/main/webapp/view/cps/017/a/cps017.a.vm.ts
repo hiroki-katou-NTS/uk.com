@@ -65,7 +65,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     if (selectedObject != undefined) {
                         perInfoSelectionItem.selectionItemName(selectedObject.selectionItemName);
                         perInfoSelectionItem.selectionCodeCharacter(selectedObject.formatSelection.selectionCodeCharacter);
-                        
+
                         self.constraints.selectionCode = selectedObject.formatSelection.selectionCode;
                         self.constraints.selectionName = selectedObject.formatSelection.selectionName;
                         self.constraints.selectionExternalCode = selectedObject.formatSelection.selectionExternalCode;
@@ -100,7 +100,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.historySelection().histId(self.listHistorySelection()[0].histId);
                         }
                     });
-                    
+
                 } else {
                     //historySelection.histId(undefined);
                     self.registerData();
@@ -151,7 +151,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     if (ondeHisIdlits != undefined) {
                         if (ondeHisIdlits.endDate == '9999/12/31') {
                             self.enableSelName(true);
-//                            self.registerData();
+                            //                            self.registerData();
                         } else {
                             self.enableSelName(false);
                         }
@@ -171,7 +171,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                             self.selection().selectionID(self.listSelection()[0].selectionID);
                         } else {
                             //self.enableSelName(true);
-                            
+
                             self.registerData();
                             //$("#code").focus();
                         }
@@ -224,7 +224,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     if (param != null && param != undefined) {
                         self.isDialog(param.isDialog);
                         self.closeUp(true);
-                        self.perInfoSelectionItem().selectionItemId(param.selectionItemId);
+                        let isContain = _.findIndex(self.listItems(), (x) => {
+                            return x.selectionItemId == param.selectionItemId;
+                        });
+                        if (isContain > 0) {
+                            self.perInfoSelectionItem().selectionItemId(param.selectionItemId);
+                        } else {
+                            self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                        }
                     } else {
                         self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                     }
@@ -293,7 +300,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 oldIds = listSelection.map(m => m.selectionID),
                 histList: HistorySelection = self.historySelection(),
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem();
-            if(!self.checkSelectionConstraints()) return;
+            if (!self.checkSelectionConstraints()) return;
             let oldIndex = _.find(listSelection, x => x.selectionID == currentItem.selectionID());
 
             currentItem.histId(self.historySelection().histId());
@@ -346,7 +353,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 currentItem: Selection = self.selection(),
                 listSelection: Array<Selection> = self.listSelection(),
                 _selectionCD = _.find(listSelection, x => x.selectionCD == currentItem.selectionCD());
-            if(!self.checkSelectionConstraints()) return;
+            if (!self.checkSelectionConstraints()) return;
             currentItem.histId(self.historySelection().histId());
             let command = ko.toJS(currentItem);
 
@@ -360,9 +367,14 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     let oldIndex = _.findIndex(itemList, x => x.selectionID == currentItem.selectionID());
                     let newItem = itemList[oldIndex];
                     currentItem.selectionID(newItem.selectionID);
+                    $("#name").focus();
                 });
-                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                //nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => {
+                    $("#name").focus();
+                });
                 self.listSelection.valueHasMutated();
+                // $("#name").focus();
 
             });
         }
@@ -393,16 +405,20 @@ module nts.uk.com.view.cps017.a.viewmodel {
                                 }
                                 let newItem = itemList[oldIndex];
                                 currentItem.selectionID(newItem.selectionID);
-                               
+
                             } else {
                                 self.registerData();
                                 histList.histId.valueHasMutated();
                             }
+                            $("#name").focus();
                             //                            histList.histId.valueHasMutated();
                         });
                         self.listItems.valueHasMutated();
                         perInfoSelectionItem.selectionItemId.valueHasMutated();
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_16" }).then(() => {
+                            $("#name").focus();
+                        });
+
                     });
                 }).ifNo(() => {
                     self.listItems.valueHasMutated();
@@ -522,6 +538,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 //reload lai History:
                 perInfoSelectionItem.selectionItemId.valueHasMutated();
                 block.clear();
+                $("#name").focus();
             });
         }
 
@@ -543,31 +560,32 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 //reload lai History:
                 perInfoSelectionItem.selectionItemId.valueHasMutated();
                 block.clear();
+                $("#name").focus();
             });
         }
         close() {
             nts.uk.ui.windows.close();
         }
-        
+
         //check constraints from cps 016
-        checkSelectionConstraints(){
+        checkSelectionConstraints() {
             let self = this,
-            selCD = self.selection().selectionCD(),
-            selName = self.selection().selectionName(),
-            exCd = self.selection().externalCD(),
-            allValid = true;
-            if(!self.constraints) return false;
-            if(selCD.length != self.constraints.selectionCode){
+                selCD = self.selection().selectionCD(),
+                selName = self.selection().selectionName(),
+                exCd = self.selection().externalCD(),
+                allValid = true;
+            if (!self.constraints) return false;
+            if (selCD.length != self.constraints.selectionCode) {
                 allValid = false;
                 $('#code').ntsError('set', "Selection code length must equals " + self.constraints.selectionCode);
             }
-            if(selName.length != self.constraints.selectionName){
+            if (selName.length != self.constraints.selectionName) {
                 allValid = false;
-                $('#name').ntsError('set',  "Selection code length must equals " + self.constraints.selectionName);
+                $('#name').ntsError('set', "Selection code length must equals " + self.constraints.selectionName);
             }
-            if(exCd.length != self.constraints.selectionExternalCode && exCd != ""){
+            if (exCd.length != self.constraints.selectionExternalCode && exCd != "") {
                 allValid = false;
-                $('#exCode').ntsError('set',  "Selection code length must equals " + self.constraints.selectionExternalCode);
+                $('#exCode').ntsError('set', "Selection code length must equals " + self.constraints.selectionExternalCode);
             }
             return allValid;
         }

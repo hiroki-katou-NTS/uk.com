@@ -33,7 +33,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         constructor() {
 
             let self = this;
-
             self.initValue();
             self.start(undefined);
             self.initSettingId.subscribe(function(value: string) {
@@ -80,7 +79,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 if (value) {
 
                     self.getItemList(self.initSettingId(), value);
-
+ 
 
                 } else {
                     return;
@@ -89,6 +88,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
             });
 
 
+        }
+        
+        getTitleName(itemName: string){
+            return ko.computed(()=>{
+                return itemName.length > 5 ? itemName : "";
+            });
         }
 
         // get item list
@@ -138,6 +143,17 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList(itemConvert);
                     self.lstItemFilter = itemConvert;
+                       
+//                    $.fn.hasScrollBar = function() {
+//                        return this.get(0).scrollHeight > this.height();
+//                    }
+//                    if($("#sub-right>table>tbody").hasScrollBar()){
+//                        $(".contents-header thead, #sub-right>table>tbody").css("width", "651px");
+//                        $("#COL_3").css("width", "257px !important");
+//                    }else{
+//                        $(".contents-header thead, #sub-right>table>tbody").css("width", "634px");
+//                        $("#COL_3").css("width", "240px !important");
+//                    }
                 } else {
                     self.currentCategory().itemList.removeAll();
                     self.currentCategory().itemList([]);
@@ -516,6 +532,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
             });
         }
 
+        closeDialog() {
+            nts.uk.ui.windows.close();
+        }
+
     }
     export class InitValueSettingDetail {
         settingCode: KnockoutObservable<string>;
@@ -751,9 +771,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
         stringItemLength: number;
 
         stringItemDataType: number;
-
+        getTitle: KnockoutObservable<string> = ko.observable("");
         constructor(params: IPerInfoInitValueSettingItemDto) {
             let self = this;
+            self.getTitle(self.getWidthText(params.itemName) > 200 ? params.itemName : "");
             self.fixedItem = params.fixedItem;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
             self.settingId = ko.observable(params.settingId || "");
@@ -784,7 +805,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.itemType = ko.observable(params.itemType || undefined);
             self.dataType = ko.observable(params.dataType || undefined);
-
+            
             if (params.dataType === 3) {
                 if (params.dateType === 1) {
                     self.dateValue = ko.observable(params.dateValue || undefined);
@@ -839,7 +860,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     { code: 2, name: ReferenceMethodType.FIXEDVALUE },
                     { code: 3, name: ReferenceMethodType.SAMEASLOGIN },
                     { code: 4, name: ReferenceMethodType.SAMEASEMPLOYMENTDATE },
-                    { code: 6, name: ReferenceMethodType.SAMEASBIRTHDATE }]);
+                    { code: 6, name: ReferenceMethodType.SAMEASSYSTEMDATE }]);
             } else {
                 self.listComboItem = ko.observableArray([
                     { code: 1, name: ReferenceMethodType.NOSETTING },
@@ -897,7 +918,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.numericItemMin = params.numericItemMin || undefined;
                 self.numericItemMax = params.numericItemMax || undefined;
                 self.stringValue.subscribe(x => {
-                    console.log(this.itemName());
                     let itemName: string = this.itemName();
                     if (__viewContext["viewModel"].errorList().errors !== undefined) {
                         if (__viewContext["viewModel"].errorList().errors.length > 0) {
@@ -922,6 +942,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
 
 
+        }
+        getWidthText(str: string) : number{
+            let div = $('<span>').text(str).appendTo('body'), width = div.width(); div.remove(); 
+            return width;
         }
     }
 
@@ -970,7 +994,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         /** (社員コードと同じ):5 */
         SAMEASEMPLOYEECODE = '社員コードと同じ',
         /** (システム日付):6 */
-        SAMEASBIRTHDATE = 'システム日付と同じ',
+        SAMEASSYSTEMDATE = 'システム日付と同じ',
         /** (氏名と同じ ):7 */
         SAMEASNAME = '氏名と同じ ',
         /** (氏名（カナ）と同じ):8 */

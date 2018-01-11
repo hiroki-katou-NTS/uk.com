@@ -34,5 +34,5 @@ public class LeaveEarlyTimeDailyPerformDto {
 	/** 勤務NO/勤務回数: 勤務NO */
 //	@AttendanceItemLayout(layout = "E")
 //	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
-	private Integer workTimes;
+	private Integer workNo;
 }

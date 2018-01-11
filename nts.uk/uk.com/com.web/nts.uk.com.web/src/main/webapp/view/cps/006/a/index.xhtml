@@ -7,9 +7,6 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<title>#{i18n.getText('CPS006_56')}</title> 
-			
-			
 			<com:ValidatorScript>
 				nts.uk.ctx.pereg.dom.person.info.category.CategoryName
 			</com:ValidatorScript>
@@ -105,8 +102,8 @@
 									<label id="continue">#{i18n.getText('CPS006_48')}</label>
 								</com:ko-if>
 								<button
-									data-bind="ntsHelpButton: {image: '/view/cps/005/image/single-multi-select.PNG', 
-									position: 'right+50 top',
+									data-bind="ntsHelpButton: {image: '/view/cps/005/image/singe_multi.png', 
+									position: 'right+100 top',
 									enable: true }">?</button>
 							</com:ko-if>
 
@@ -137,7 +134,7 @@
 								</com:ko-if>
 
 								<button
-									data-bind="ntsHelpButton: {image: '/view/cps/005/image/history-type.PNG', position: 'right+50 top', enable: true }">?</button>
+									data-bind="ntsHelpButton: {image: '/view/cps/005/image/history_type.png', position: 'right+100 top', enable: true }">?</button>
 							</com:ko-if>
 						</div>
 					</div>

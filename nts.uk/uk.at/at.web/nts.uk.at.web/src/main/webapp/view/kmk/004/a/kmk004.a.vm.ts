@@ -659,7 +659,8 @@ module nts.uk.at.view.kmk004.a {
                     selectedWorkplaceId: self.selectedWorkplaceId,
                     baseDate: self.baseDate,
                     isDialog: false,
-                    alreadySettingList: self.alreadySettingWorkplaces
+                    alreadySettingList: self.alreadySettingWorkplaces,
+                    systemType: 2
                 };
             }
 

@@ -34,7 +34,7 @@ public class SpecBonusPayTimesheet {
 
 	private UseAtr useAtr;
 
-	private String timeItemId;
+	private int timeItemId;
 
 	private AttendanceClock startTime;
 
@@ -49,7 +49,7 @@ public class SpecBonusPayTimesheet {
 	private SpecBonusPayNumber specBonusPayNumber;
 
 	private SpecBonusPayTimesheet(
-			int timeSheetId, UseAtr useAtr, String timeItemId,
+			int timeSheetId, UseAtr useAtr, int timeItemId,
 			AttendanceClock startTime, AttendanceClock endTime, UnitAtr roundingTimeAtr,
 			RoundingAtr roundingAtr, int dateCode,SpecBonusPayNumber specBonusPayNumber) {
 		//super(timeSheetId, useAtr, timeItemId, startTime, endTime, roundingTimeAtr, roundingAtr);
@@ -64,7 +64,7 @@ public class SpecBonusPayTimesheet {
 		this.specBonusPayNumber = specBonusPayNumber;
 	}
 
-	public static SpecBonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId,
+	public static SpecBonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, int timeItemId,
 			int startTime, int endTime, int roundingTimeAtr, int roundingAtr, int dateCode) {
 		return new SpecBonusPayTimesheet(
 				timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class),

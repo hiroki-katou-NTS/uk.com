@@ -49,7 +49,7 @@ module nts.uk.com.view.cmm007.e {
                 service.saveOvertimeWorkFrame(arrDto).done(() => {
                     _self.findAll().done(() => {
                     });
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         $('#overtime_work_name1').focus();
                     });
                     dfd.resolve();

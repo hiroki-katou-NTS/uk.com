@@ -42,7 +42,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " INNER JOIN PpemtPerInfoItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId"
 			+ " INNER JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPersonRole pr" + " ON pr.ppemtPersonRolePk.roleId = p.ppemtPersonCategoryAuthPk.roleId"
+			+ " INNER JOIN SacmtPersonRole pr" + " ON pr.roleId = p.ppemtPersonCategoryAuthPk.roleId"
 			+ " WHERE c.cid = :companyId" + " AND c.abolitionAtr = 0" + " AND p.allowOtherRef = 1"
 			+ "	AND c.ppemtPerInfoCtgPK.perInfoCtgId IN :perInfoCtgIdlst" + "	ORDER BY co.disporder ";
 

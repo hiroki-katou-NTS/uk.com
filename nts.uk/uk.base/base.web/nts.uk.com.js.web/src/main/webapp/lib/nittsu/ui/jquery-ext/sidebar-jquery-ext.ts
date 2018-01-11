@@ -5,6 +5,9 @@ interface JQuery {
 }
 
 module nts.uk.ui.jqueryExtentions {
+    
+    var errorMementos: { [tabIndex: number]: ui.errors.ErrorViewModelMemento } = {};
+    var currentTabIndex: number = undefined;
 
     module ntsSideBar {
         export interface SideBarSetting {
@@ -76,16 +79,31 @@ module nts.uk.ui.jqueryExtentions {
                 }
             });
 
-            active(control, settings.active);
+            active(control, settings.active, true);
             return control;
         }
 
-        function active(control: JQuery, index: number): JQuery {
+        function active(control: JQuery, index: number, isInit = false): JQuery {
             control.find("#sidebar-area .navigator a").removeClass("active");
             control.find("#sidebar-area .navigator a").eq(index).addClass("active");
             control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
             var $displayPanel = $(control.find("#sidebar-area .navigator a").eq(index).attr("href"));
             if ($displayPanel.length > 0) {
+                
+                if (!isInit) {
+                    // keep error in old tab
+                    if (currentTabIndex !== undefined) {
+                        errorMementos[currentTabIndex] = ui.errors.errorsViewModel().stashMemento();
+                    }
+                    
+                    // restore error in new tab
+                    if (errorMementos[index] !== undefined) {
+                        ui.errors.errorsViewModel().restoreFrom(errorMementos[index]);
+                    }
+                }
+                
+                currentTabIndex = index;
+                
                 $displayPanel.removeClass("disappear");
                 setErrorPosition($displayPanel);
             }

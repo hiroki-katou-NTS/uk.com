@@ -43,7 +43,7 @@ public class SpecBPTimesheetAddCommandHandler extends CommandHandler<List<SpecBP
 
 	private SpecBonusPayTimesheet toSpecBonusPayTimesheetDomain(SpecBPTimesheetAddCommand specBPTimesheetAddCommand) {
 		return SpecBonusPayTimesheet.createFromJavaType(specBPTimesheetAddCommand.timeSheetNO,
-				specBPTimesheetAddCommand.useAtr, specBPTimesheetAddCommand.timeItemId,
+				specBPTimesheetAddCommand.useAtr, specBPTimesheetAddCommand.timeItemID,
 				specBPTimesheetAddCommand.startTime, specBPTimesheetAddCommand.endTime,
 				specBPTimesheetAddCommand.roundingTimeAtr, specBPTimesheetAddCommand.roundingAtr,
 				specBPTimesheetAddCommand.specialDateItemNO);

@@ -98,6 +98,12 @@ public class ProgramIdConsts {
 	public static final String KDW001I = "KDW001I";
 	public static final String KDW001J = "KDW001J";
 	
+	public static final String KDW006B = "KDW006B";
+	public static final String KDW006C = "KDW006C";
+	public static final String KDW006D = "KDW006D";
+	public static final String KDW006E = "KDW006E";
+	
+	
 	public static final String KDW009A = "KDW009A";
 	
 	public static final String KSM002A = "KSM002A";
@@ -360,6 +366,8 @@ public class ProgramIdConsts {
 	
 	public static final String CPS006B = "CPS006B";
 
+	public static final String CPS005A = "CPS005A";
+	
 	public static final String CPS005B = "CPS005B";
 	
 	public static final String CPS002A = "CPS002A";
@@ -443,8 +451,14 @@ public class ProgramIdConsts {
 	public static final String CMM013F = "CMM013F";
 	
 	public static final String CDL004 = "CDL004";
+	
+	public static final String KDW003A = "KDW003A";
 
 	public static final String KDW003B = "KDW003B";
+	
+	public static final String KDW003C = "KDW003C";
+
+	public static final String KDW003D = "KDW003D";
 	
 	public static final String CMM018A = "CMM018A";
 
@@ -576,5 +590,25 @@ public class ProgramIdConsts {
 	public static final String KSM011B = "KSM011B";
 	public static final String KSM011C = "KSM011C";
 	public static final String KSM011E = "KSM011E";
+	
+	public static final String KSC001A = "KSC001A";
+	public static final String KSC001B = "KSC001B";
+	public static final String KSC001C = "KSC001C";
+	public static final String KSC001D = "KSC001D";
+	public static final String KSC001E = "KSC001E";
+	public static final String KSC001F = "KSC001F";
+	public static final String KSC001G = "KSC001G";
+	public static final String KSC001H = "KSC001H";
+	public static final String KSC001I = "KSC001I";
+	public static final String KSC001K = "KSC001K";
+	public static final String KAF002A = "KAF002A";
+	public static final String KAF002B = "KAF002B";
+	public static final String KAF004A = "KAF004A";
+	public static final String KAF004B = "KAF004B";
+	public static final String KAF005A = "KAF005A";
+	public static final String KAF007A = "KAF007A";
+	public static final String KAF009A = "KAF009A";
+	
+	public static final String CMM051A = "CMM051A";
 	
 }

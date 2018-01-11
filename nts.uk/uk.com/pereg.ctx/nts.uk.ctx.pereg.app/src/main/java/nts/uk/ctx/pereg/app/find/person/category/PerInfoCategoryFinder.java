@@ -80,9 +80,8 @@ public class PerInfoCategoryFinder {
 	 * @param ctgId
 	 * @return
 	 */
-	public boolean checkPerInfoCtgAuth(String empId, String ctgId) {
+	public boolean checkPerInfoCtgAuth(String empId, String ctgId, String roleId) {
 		String loginEmpId = AppContexts.user().employeeId();
-		String roleId = AppContexts.user().roles().forPersonalInfo();
 		boolean isSelfAuth = empId.equals(loginEmpId);
 		// get perInfoCtgAuth
 		Optional<PersonInfoCategoryAuth> perInfoCtgAuth = personInfoCategoryAuthRepository
@@ -150,6 +149,10 @@ public class PerInfoCategoryFinder {
 		return resultCtg;
 
 	};
+	
+	public int getDispOrder(String perInfoCtgId) {
+		return perInfoCtgRepositoty.getDispOrder(perInfoCtgId);
+	}
 
 	private boolean isChangeAbleCtgType(String perInfoCtgId) {
 

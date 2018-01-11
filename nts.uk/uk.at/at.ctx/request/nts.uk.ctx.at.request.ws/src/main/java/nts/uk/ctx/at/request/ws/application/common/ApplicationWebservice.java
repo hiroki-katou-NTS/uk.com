@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import lombok.Value;
@@ -29,6 +30,7 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDt
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
+import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
 
 @Path("at/request/application")
@@ -162,6 +164,16 @@ public class ApplicationWebservice extends WebService {
 		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup(), param.getAppID());
 	}
 	
+	/**
+	 * @author yennth
+	 * @param closureId
+	 * @return
+	 */
+	@POST
+    @Path("getalldatabyclosureId/{closureId}")
+    public ApplicationDeadlineDto getDeadlineByClosureId(@PathParam("closureId") int closureId){
+        return this.getDataAppCfDetailFinder.findByClosureId(closureId);
+    }
 }
 
 @Value

@@ -3,6 +3,9 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 
 /** 勤務予定時間 */
 @Data
@@ -11,7 +14,8 @@ import lombok.NoArgsConstructor;
 public class WorkScheduleTimeDto {
 
 	/** 合計時間: 勤怠時間 */
-	//TODO: confirm 
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "予定時間")
+	@AttendanceItemValue(itemId = 27, type = ValueType.INTEGER)
 	private Integer total;
 	
 	/** 所定外時間: 勤怠時間 */

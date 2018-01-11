@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.workinformation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,9 @@ import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfo;
+import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfoPK;
+import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTime;
+import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
 
 /**
  * 
@@ -90,32 +94,49 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	}
 
 	@Override
-	public void updateByKey(WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
-		Optional<KrcdtDaiPerWorkInfo> dataOpt = this.queryProxy().query(FIND_BY_ID, KrcdtDaiPerWorkInfo.class).setParameter("employeeId", workInfoOfDailyPerformance.getEmployeeId())
-				.setParameter("ymd", workInfoOfDailyPerformance.getYmd()).getSingle();
-		KrcdtDaiPerWorkInfo data = dataOpt.isPresent() ? dataOpt.get() : new KrcdtDaiPerWorkInfo();
-		if(workInfoOfDailyPerformance != null){
-		data.krcdtDaiPerWorkInfoPK.employeeId = workInfoOfDailyPerformance.getEmployeeId();
-		data.krcdtDaiPerWorkInfoPK.ymd = workInfoOfDailyPerformance.getYmd();
-		data.recordWorkWorktimeCode = workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTimeCode().v();
-		data.recordWorkWorktypeCode = workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode().v();
-		data.scheduleWorkWorktimeCode = workInfoOfDailyPerformance.getScheduleWorkInformation().getWorkTimeCode().v();
-		data.scheduleWorkWorktypeCode = workInfoOfDailyPerformance.getScheduleWorkInformation().getWorkTypeCode().v();
-		data.calculationState = workInfoOfDailyPerformance.getCalculationState().value;
-		data.backStraightAttribute = workInfoOfDailyPerformance.getBackStraightAtr().value;
-		data.goStraightAttribute = workInfoOfDailyPerformance.getGoStraightAtr().value;
-		
-		List<ScheduleTimeSheet> scheduleTimeSheets = workInfoOfDailyPerformance.getScheduleTimeSheets();
-		data.scheduleTimes.forEach(item -> {
-			Optional<ScheduleTimeSheet> scheduleTimeSheet = scheduleTimeSheets.stream().filter(items -> item.krcdtWorkScheduleTimePK.employeeId.equals(workInfoOfDailyPerformance.getEmployeeId())
-					&& item.krcdtWorkScheduleTimePK.ymd.equals(workInfoOfDailyPerformance.getYmd())).findFirst();
-			item.krcdtWorkScheduleTimePK.employeeId = workInfoOfDailyPerformance.getEmployeeId();
-			item.krcdtWorkScheduleTimePK.ymd = workInfoOfDailyPerformance.getYmd();
-			item.krcdtWorkScheduleTimePK.workNo = scheduleTimeSheet.get().getWorkNo().v();
-			item.attendance = scheduleTimeSheet.get().getAttendance().v();
-			item.leaveWork = scheduleTimeSheet.get().getLeaveWork().v();
-		});
-		this.commandProxy().update(data);
+	public void updateByKey(WorkInfoOfDailyPerformance domain) {
+		Optional<KrcdtDaiPerWorkInfo> dataOpt = this.queryProxy().query(FIND_BY_ID, KrcdtDaiPerWorkInfo.class).setParameter("employeeId", domain.getEmployeeId())
+				.setParameter("ymd", domain.getYmd()).getSingle();
+		KrcdtDaiPerWorkInfo data = dataOpt.isPresent() ? dataOpt.get() : new KrcdtDaiPerWorkInfo(new KrcdtDaiPerWorkInfoPK(domain.getEmployeeId(), domain.getYmd()));
+		if(domain != null){
+			if(data.scheduleTimes == null){
+				data.scheduleTimes = new ArrayList<>();
+			}
+//			data.krcdtDaiPerWorkInfoPK.employeeId = domain.getEmployeeId();
+//			data.krcdtDaiPerWorkInfoPK.ymd = domain.getYmd();
+			if(domain.getRecordWorkInformation() != null){
+				data.recordWorkWorktimeCode = domain.getRecordWorkInformation().getWorkTimeCode().v();
+				data.recordWorkWorktypeCode = domain.getRecordWorkInformation().getWorkTypeCode().v();
+			}
+			if(domain.getScheduleWorkInformation() != null){
+				data.scheduleWorkWorktimeCode = domain.getScheduleWorkInformation().getWorkTimeCode().v();
+				data.scheduleWorkWorktypeCode = domain.getScheduleWorkInformation().getWorkTypeCode().v();
+			}
+			data.calculationState = domain.getCalculationState().value;
+			data.backStraightAttribute = domain.getBackStraightAtr().value;
+			data.goStraightAttribute = domain.getGoStraightAtr().value;
+			
+			List<ScheduleTimeSheet> scheduleTimeSheets = domain.getScheduleTimeSheets();
+			scheduleTimeSheets.stream().forEach(c -> {
+				KrcdtWorkScheduleTime item = data.scheduleTimes.stream().filter(x -> 
+					x.krcdtWorkScheduleTimePK.employeeId.equals(domain.getEmployeeId())
+						&& x.krcdtWorkScheduleTimePK.ymd.equals(domain.getYmd()) 
+						&& x.krcdtWorkScheduleTimePK.workNo == c.getWorkNo().v()).findFirst().orElse(null);
+				
+				if(item != null){
+//					item.krcdtWorkScheduleTimePK.employeeId = domain.getEmployeeId();
+//					item.krcdtWorkScheduleTimePK.ymd = domain.getYmd();
+//					item.krcdtWorkScheduleTimePK.workNo = c.getWorkNo().v();
+					item.attendance = c.getAttendance().valueAsMinutes();
+					item.leaveWork = c.getLeaveWork().valueAsMinutes();
+				} else {
+					KrcdtWorkScheduleTime newItem = new KrcdtWorkScheduleTime(new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(), c.getWorkNo().v()),
+							c.getAttendance().valueAsMinutes(), c.getLeaveWork().valueAsMinutes());
+					data.scheduleTimes.add(newItem);
+				}
+			});
+			this.commandProxy().update(data);
+			this.commandProxy().updateAll(data.scheduleTimes);
 		}
 	}
 

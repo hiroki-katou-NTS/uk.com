@@ -19,6 +19,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItem;
+import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItemPK;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtDailyPerformanceDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
@@ -48,6 +49,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVac
 import nts.uk.ctx.at.shared.infra.entity.workplace.KshmtWorkTimeWorkplace;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmpClosureEmploymentPK;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime_old.KwtmtWorkTime;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassification;
@@ -168,8 +170,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			+ " WHERE a.kshmtWorkTimeWorkplacePK.companyID = :companyID "
 			+ " AND a.kshmtWorkTimeWorkplacePK.workplaceID = :workplaceID ";
 
-	private final String FIND_WORK_TIME_ZONE = "SELECT a FROM KwtmtWorkTime a "
-			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID";
+	private final String FIND_WORK_TIME_ZONE = "SELECT a FROM KshmtWorkTimeSet a "
+			+ "WHERE a.kshmtWorkTimeSetPK.cid = :companyID";
 
 	private final String GET_ALL_WORK_TYPE_CHANGED = "SELECT wtc FROM KrcmtWorktypeChangeable wtc"
 			+ " WHERE wtc.pk.cid = :companyId AND wtc.pk.empCode = :employeeCode";
@@ -177,13 +179,15 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final String SELECT_WORKTYPE = " SELECT c FROM KshmtWorkType c WHERE c.kshmtWorkTypePK.companyId = :companyId";
 
 	static {
-		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT DISTINCT b.krcmtBusinessTypeSyainPK.businessTypeCode");
-		builderString.append(" FROM KrcmtBusinessTypeSyain b");
-		builderString.append(" WHERE b.krcmtBusinessTypeSyainPK.sId IN :lstSID");
-		builderString.append(" AND b.krcmtBusinessTypeSyainPK.startYmd <= :endYmd");
-		builderString.append(" AND b.krcmtBusinessTypeSyainPK.endYmd >= :startYmd");
-		builderString.append(" ORDER BY b.krcmtBusinessTypeSyainPK.businessTypeCode ASC");
+		StringBuilder builderString = new StringBuilder();		
+		builderString.append("SELECT DISTINCT b.businessTypeCode");
+		builderString.append(" FROM KrcmtBusinessTypeOfEmployee b");
+		builderString.append(" JOIN KrcmtBusinessTypeOfHistory h");
+		builderString.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.KrcmtBusinessTypeOfHistoryPK.historyId");
+		builderString.append(" WHERE b.sId IN :lstSID");
+		builderString.append(" AND h.startDate <= :endYmd");
+		builderString.append(" AND h.endDate >= :startYmd");
+		builderString.append(" ORDER BY b.businessTypeCode ASC");
 		SEL_BUSINESS_TYPE = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -823,16 +827,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<CodeName> findWorkTimeZone(String companyId, List<String> shifCode) {
 		if (shifCode.isEmpty()) {
 			return this.queryProxy()
-					.query(FIND_WORK_TIME_ZONE + " ORDER BY a.kwtmpWorkTimePK.siftCD ASC ", KwtmtWorkTime.class)
+					.query(FIND_WORK_TIME_ZONE + " ORDER BY a.kshmtWorkTimeSetPK.worktimeCd ASC ", KshmtWorkTimeSet.class)
 					.setParameter("companyID", companyId)
-					.getList(x -> new CodeName(x.kwtmpWorkTimePK.siftCD, x.workTimeName));
+					.getList(x -> new CodeName(x.getKshmtWorkTimeSetPK().getWorktimeCd(), x.getName()));
 		} else {
 			return this.queryProxy()
 					.query(FIND_WORK_TIME_ZONE
-							+ " AND  a.kwtmpWorkTimePK.siftCD IN :shifCode ORDER BY a.kwtmpWorkTimePK.siftCD ASC",
-							KwtmtWorkTime.class)
+							+ " AND  a.kshmtWorkTimeSetPK.worktimeCd IN :shifCode ORDER BY a.kshmtWorkTimeSetPK.worktimeCd ASC",
+							KshmtWorkTimeSet.class)
 					.setParameter("companyID", companyId).setParameter("shifCode", shifCode)
-					.getList(x -> new CodeName(x.kwtmpWorkTimePK.siftCD, x.workTimeName));
+					.getList(x -> new CodeName(x.getKshmtWorkTimeSetPK().getWorktimeCd(), x.getName()));
 		}
 	}
 
@@ -873,5 +877,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					.getList(c -> new CodeName(c.kshmtWorkTypePK.workTypeCode, c.name));
 		}
 	}
-
+	
+	@Override
+	public void updateColumnsWidth(Map<Integer, Integer> lstHeader, List<String> formatCodes) {
+		List<AuthorityFomatDailyDto> items = this.findAuthorityFomatDaily(AppContexts.user().companyId(), formatCodes);
+		List<KfnmtAuthorityDailyItem> entitys = items.stream()
+				.map(x -> new KfnmtAuthorityDailyItem(
+						new KfnmtAuthorityDailyItemPK(x.getCompanyId(), x.getDailyPerformanceFormatCode(),
+								x.getAttendanceItemId(), x.getSheetNo()),
+						x.getDisplayOrder(), new BigDecimal(lstHeader.get(x.getAttendanceItemId()))))
+				.collect(Collectors.toList());
+		this.commandProxy().updateAll(entitys);
+	}
 }
