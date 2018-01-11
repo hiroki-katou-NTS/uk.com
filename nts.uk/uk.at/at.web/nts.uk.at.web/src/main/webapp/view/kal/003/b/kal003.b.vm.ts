@@ -164,7 +164,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
          */
         private getLocalizedNameForEnum(listEnum : Array<model.EnumModel>) : Array<model.EnumModel> {
             if (listEnum) {
-                for (var i = 0, len = listEnum.length; i < len; i++) {
+                for (var i = 0; i < listEnum.length; i++) {
                     if (listEnum[i].localizedName) {
                         listEnum[i].localizedName = resource.getText(listEnum[i].localizedName);
                     }
@@ -486,7 +486,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
             //all possible items
             windows.setShared("kml001selectAbleCodeList", self.listAllSettingTimeZone);
             //selected items
-            windows.setShared(""kml001selectedCodeList", lstSelectedCode);
+            windows.setShared("kml001selectedCodeList", lstSelectedCode);
             windows.sub.modal("/view/kdl/001/a/index.xhtml", 
                     { title: "割増項目の設定", dialogClass: "no-close"}).onClosed(function(): any {
               //get data from share window
