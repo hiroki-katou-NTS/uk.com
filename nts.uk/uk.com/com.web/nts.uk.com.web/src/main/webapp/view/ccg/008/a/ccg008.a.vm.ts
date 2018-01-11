@@ -46,7 +46,8 @@
                 //console.log(data);
                 self.dataSource(data);
                 if(data.topPage!=null && data.topPage.standardMenuUrl!=null){//hien thi standardmenu
-                    nts.uk.request.jump(data.topPage.standardMenuUrl);
+                    var res = "/" + data.topPage.standardMenuUrl.split("web/")[2];
+                    nts.uk.request.jump(res);
                 }
                 if(data.checkMyPage == false ){//k hien thi my page
                     self.visibleMyPage(false);
