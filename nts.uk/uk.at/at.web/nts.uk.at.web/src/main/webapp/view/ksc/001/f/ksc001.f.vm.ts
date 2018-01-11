@@ -29,9 +29,9 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 self.errorLogs = ko.observableArray([]);
 
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KSC001_55"), key: 'employeeId', width: 80},
-                    { headerText: nts.uk.resource.getText("KSC001_56"), key: 'employeeCode', width: 150 },
-                    { headerText: nts.uk.resource.getText("KSC001_57"), key: 'employeeName', width: 150 },
+                    { headerText: nts.uk.resource.getText("KSC001_55"), key: 'employeeCode', width: 150},
+                    { headerText: nts.uk.resource.getText("KSC001_56"), key: 'employeeName', width: 150 },
+                    { headerText: nts.uk.resource.getText("KSC001_57"), key: 'date', width: 150 },
                     { headerText: nts.uk.resource.getText("KSC001_58"), key: 'errorContent', width: 150 }
                 ]);
 
@@ -121,10 +121,25 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                             });
                             windowSize.$dialog.resize();
                             // update error to view
+                            errorLogs = _.orderBy(errorLogs,[self.compareCode,self.compareDate],['asc','asc']);
                             self.errorLogs(errorLogs); 
                         }
                     });
                 });
+            }
+            /**
+             * define function to sort
+             */
+            private compareCode(a: any) {
+                return a.employeeCode.toUpperCase();
+               
+            }
+            /**
+             * define function to sort
+             */
+            private compareDate(a: any) {
+                return new Date(a.date);
+              
             }
             
             /**
