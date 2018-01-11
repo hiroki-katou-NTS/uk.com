@@ -294,6 +294,11 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.showLblSet04(false);
             self.showLblSet05(false);
             
+            self.useCls02(false);
+            self.useCls03(false);
+            self.useCls04(false);
+            self.useCls05(false);
+            
             //Grid data
             self.singleSelectedCode([]);
             
