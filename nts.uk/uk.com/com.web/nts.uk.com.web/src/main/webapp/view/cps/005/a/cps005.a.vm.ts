@@ -90,8 +90,18 @@ module nts.uk.com.view.cps005.a {
                             ctrl.focus().val('').val(str);
                             block.clear();
                         });
-                    }).fail(error => {
-                        alertError({ messageId: error.message });
+                    }).fail(res => {
+                        if (res.message == 'Msg_928') {
+                            alertError({
+                                messageId: res.message,
+                                messageParams: ["個人情報カテゴリ"]
+                            }).then(() => {
+                                $("#category-name-control").focus();
+                            });
+                        } else {
+
+                            alertError({ messageId: res.message });
+                        }
                         block.clear();
                     });
                 } else {
@@ -121,8 +131,18 @@ module nts.uk.com.view.cps005.a {
                                 return;
                             })
                         });
-                    }).fail(error => {
-                        alertError({ messageId: error.message });
+                    }).fail(res => {
+
+                        if (res.message == 'Msg_928') {
+                            alertError({
+                                messageId: res.message,
+                                messageParams: ["個人情報カテゴリ"]
+                            }).then(() => {
+                                $("#category-name-control").focus();
+                            });
+                        } else {
+                            alertError({ messageId: res.message });
+                        }
                         block.clear();
                     });
                 }
@@ -253,7 +273,7 @@ module nts.uk.com.view.cps005.a {
                     self.historyClassSelectedText(getText("CPS005_54"));
                 }
                 self.fixedIsSelected(data.isFixed == 1 ? true : false);
-                self.isChangeAbleCtgType(data.isChangeAbleCtgType);
+                self.isChangeAbleCtgType(data.changeAbleCtgType);
             }
             //subscribe select history type (1: history, 2: not history)
             self.historyClassSelected.subscribe(newHisClassification => {

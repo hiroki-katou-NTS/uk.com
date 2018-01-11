@@ -7,9 +7,9 @@ public enum TargetServiceType {
     /* 全て */
     ALL(0, "Enum_TargetServiceType_All"),
     /* 選択 */
-    SELECTION(0, "Enum_TargetServiceType_Selection"),
+    SELECTION(1, "Enum_TargetServiceType_Selection"),
     /* 選択以外*/
-    OTHER_SELECTION(1, "Enum_TargetServiceType_OtherSelection");
+    OTHER_SELECTION(2, "Enum_TargetServiceType_OtherSelection");
     
     public final int value;
 

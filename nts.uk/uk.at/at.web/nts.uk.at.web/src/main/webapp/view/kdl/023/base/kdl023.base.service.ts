@@ -2,7 +2,7 @@ module nts.uk.at.view.kdl023.base.service {
 
     let servicePath: any = {
         getHoliday: 'at/schedule/holiday/getHolidayByListDate',
-        getWorkTime: 'at/shared/worktime/findByCompanyID',
+        getWorkTime: 'at/shared/worktimesetting/findAll',
         getWorkType: 'at/share/worktype/findAll',
         getAllPattern: 'ctx/at/schedule/shift/pattern/daily/getall',
         findPatternByCode: 'ctx/at/schedule/shift/pattern/daily/find',

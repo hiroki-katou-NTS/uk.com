@@ -45,7 +45,7 @@
 							</td>
 							<td style="width:230px; padding: 10px;">
 								<div>
-									<input tabindex="2"
+									<input tabindex="2" id="password-input"
 										data-bind="ntsTextEditor: {
 											name: '#{i18n.getText('CCG007_2')}',
 											value: password,
@@ -63,7 +63,7 @@
 				<div style="padding-bottom: 5px;">
 					<div>※#{i18n.getText('CCG007_11')}</div>
 				</div>
-				<button tabindex="3" data-bind=" click: AuthContract"
+				<button tabindex="3" id="login-btn" data-bind=" click: AuthContract"
 					class="btn-default proceed large">#{i18n.getText('CCG007_12')}</button>
 			</div>
 		</ui:define>

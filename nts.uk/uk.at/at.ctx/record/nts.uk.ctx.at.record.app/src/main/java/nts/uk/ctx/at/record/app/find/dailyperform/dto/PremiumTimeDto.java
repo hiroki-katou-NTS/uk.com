@@ -19,6 +19,6 @@ public class PremiumTimeDto {
 	private Integer premitumTime;
 
 	/** 割増時間NO: 割増時間NO */
-	private String premiumTimeNo;
+	private Integer premiumTimeNo;
 
 }

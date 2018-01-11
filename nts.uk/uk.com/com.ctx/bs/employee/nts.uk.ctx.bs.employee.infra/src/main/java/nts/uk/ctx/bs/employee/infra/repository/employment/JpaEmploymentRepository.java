@@ -14,7 +14,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -56,15 +55,11 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 				cb.equal(root.get(BsymtEmployment_.bsymtEmploymentPK).get(BsymtEmploymentPK_.cid),
 						companyId));
 
-		List<Order> orderList = new ArrayList<Order>();
-
-		// Order by employment Code
-		orderList.add(
-				cb.asc(root.get(BsymtEmployment_.bsymtEmploymentPK).get(BsymtEmploymentPK_.code)));
-
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		cq.orderBy(orderList);
+		
+		// order by no id asc
+		cq.orderBy(cb.asc(root.get(BsymtEmployment_.bsymtEmploymentPK).get(BsymtEmploymentPK_.code)));
 
 		// Create Query
 		TypedQuery<BsymtEmployment> query = em.createQuery(cq);

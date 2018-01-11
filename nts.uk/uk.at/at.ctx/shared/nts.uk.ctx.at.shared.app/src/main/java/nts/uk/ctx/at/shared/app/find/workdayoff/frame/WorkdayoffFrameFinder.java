@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class WorkdayoffFrameFinder.
@@ -31,12 +30,8 @@ public class WorkdayoffFrameFinder {
 	 * @return the list
 	 */
 	public List<WorkdayoffFrameFindDto> findAll(){
-		
-		// get login info
-		LoginUserContext loginUserContext = AppContexts.user();
-		
 		// get company id
-		String companyId = loginUserContext.companyId();
+		String companyId = AppContexts.user().companyId();
 
 		// get all
 		List<WorkdayoffFrame> allWorkdayoffFrame = this.repository

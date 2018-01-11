@@ -11,17 +11,17 @@ public interface FixedConditionWorkRecordRepository {
 	List<FixedConditionWorkRecord> getAllFixedConditionWorkRecord();
 	/**
 	 * get all fixed condition work record by daily alarm condition code
-	 * @param dailyAlarmConID
+	 * @param errorAlarmID
 	 * @return
 	 */
-	List<FixedConditionWorkRecord> getAllFixedConWRByAlarmID(String errorAlarmCode);
+	List<FixedConditionWorkRecord> getAllFixedConWRByAlarmID(String errorAlarmID);
 	/**
 	 * get fixed condition work record by dailyAlarmConID and fixConWorkRecordNo
-	 * @param dailyAlarmConID
+	 * @param errorAlarmID
 	 * @param fixConWorkRecordNo
 	 * @return
 	 */
-	Optional<FixedConditionWorkRecord> getFixedConWRByCode(String errorAlarmCode,int fixConWorkRecordNo);
+	Optional<FixedConditionWorkRecord> getFixedConWRByCode(String errorAlarmID,int fixConWorkRecordNo);
 	/**
 	 * add fixed Condition Work Record
 	 * @param fixedConditionWorkRecord

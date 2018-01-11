@@ -63,6 +63,11 @@ public class ScWorkplaceAdapterImpl implements ScWorkplaceAdapter {
 	public List<String> findParentWpkIdsByWkpId(String companyId, String workplaceId, GeneralDate date) {
 		return this.workplacePub.findParentWpkIdsByWkpId(companyId, workplaceId, date);
 	}
+
+	@Override
+	public List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date) {
+		return this.workplacePub.findWpkIdsBySid(companyId, employeeId, date);
+	}
 	
 	
 

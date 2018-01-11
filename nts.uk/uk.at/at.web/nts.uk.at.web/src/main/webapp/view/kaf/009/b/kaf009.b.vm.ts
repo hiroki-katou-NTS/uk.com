@@ -368,6 +368,8 @@ module nts.uk.at.view.kaf009.b {
                     txtReasonTmp = reasonText.reasonName;
                 }
                 let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
+                    self.version,
+                    self.appID(),
                     txtReasonTmp,
                     self.prePostSelected(),
                     self.appDate(),
