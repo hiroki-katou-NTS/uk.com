@@ -116,14 +116,30 @@ module cps002.a.vm {
                     return item.itemCode == initCode;
                 });
                 if (InitSetting) {
+
+                    let currentCtgCode = self.categorySelectedCode();
                     service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
-                        self.categorySelectedCode("");
+
                         if (result.length) {
                             self.categoryList(_.map(result, item => {
                                 return new CategoryItem(item);
                             }));
+                            if (currentCtgCode === "") {
+                                self.categorySelectedCode(result[0].categoryCd);
+                            } else {
 
-                            self.categorySelectedCode(result[0].categoryCd);
+                                let currentCtg = _.find(result, item => {
+                                    return item.categoryCd == currentCtgCode;
+                                });
+                                if (currentCtg) {
+                                    self.categorySelectedCode(currentCtgCode);
+                                } else {
+                                    self.categorySelectedCode(result[0].categoryCd);
+                                }
+                            }
+                            self.categorySelectedCode.valueHasMutated();
+
+
                         } else {
                             self.categoryList.removeAll();
                         }
@@ -519,6 +535,7 @@ module cps002.a.vm {
                             self.initSettingSelectedCode(result[0].settingCode);
                         }
                     }
+                    self.initSettingSelectedCode.valueHasMutated();
                     $("#initSearchBox input").focus();
                 }
             }).fail((error) => {
@@ -534,15 +551,19 @@ module cps002.a.vm {
 
         prev() {
             let self = this;
+            if (self.currentStep() === 1) {
+                $('#emp_reg_info_wizard').ntsWizard("prev");
+            }
             if (self.currentStep() === 2) {
-                //self.layout(new Layout({ id: '', code: '', name: '' }));
+                self.gotoStep2();
                 nts.uk.ui.errors.clearAll();
             }
             if (self.createTypeId() === 3) {
                 $('#emp_reg_info_wizard').ntsWizard("goto", 0);
                 return;
             }
-            $('#emp_reg_info_wizard').ntsWizard("prev");
+
+
 
 
         }
