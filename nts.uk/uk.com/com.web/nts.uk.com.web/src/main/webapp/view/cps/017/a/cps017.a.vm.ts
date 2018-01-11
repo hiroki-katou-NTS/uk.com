@@ -575,15 +575,15 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 exCd = self.selection().externalCD(),
                 allValid = true;
             if (!self.constraints) return false;
-            if (selCD.length != self.constraints.selectionCode) {
+            if (selCD.length > self.constraints.selectionCode) {
                 allValid = false;
                 $('#code').ntsError('set', "Selection code length must equals " + self.constraints.selectionCode);
             }
-            if (selName.length != self.constraints.selectionName) {
+            if (selName.length > self.constraints.selectionName) {
                 allValid = false;
                 $('#name').ntsError('set', "Selection code length must equals " + self.constraints.selectionName);
             }
-            if (exCd.length != self.constraints.selectionExternalCode && exCd != "") {
+            if (exCd.length > self.constraints.selectionExternalCode && exCd != "") {
                 allValid = false;
                 $('#exCode').ntsError('set', "Selection code length must equals " + self.constraints.selectionExternalCode);
             }
