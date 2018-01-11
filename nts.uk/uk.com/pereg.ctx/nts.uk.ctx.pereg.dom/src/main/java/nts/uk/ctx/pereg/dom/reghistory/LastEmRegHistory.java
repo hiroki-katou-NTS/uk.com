@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 @Getter
 @Setter
@@ -15,14 +15,14 @@ public class LastEmRegHistory extends EmpRegHistory {
 	String lastRegEmployeeOfCompanyCd;
 
 	public static LastEmRegHistory createFromJavaType(String registeredEmployeeID, String companyId,
-			GeneralDate registeredDate, String lastRegEmployeeID, String lastRegEmployeeCd,
+			GeneralDateTime registeredDate, String lastRegEmployeeID, String lastRegEmployeeCd,
 			String lastRegEmployeeOfCompanyID, String lastRegEmployeeOfCompanyCd) {
 		return new LastEmRegHistory(registeredEmployeeID, companyId, registeredDate, lastRegEmployeeID,
 				lastRegEmployeeCd, lastRegEmployeeOfCompanyID, lastRegEmployeeOfCompanyCd);
 
 	}
 
-	public LastEmRegHistory(String registeredEmployeeID, String companyId, GeneralDate registeredDate,
+	public LastEmRegHistory(String registeredEmployeeID, String companyId, GeneralDateTime registeredDate,
 			String lastRegEmployeeID, String lastRegEmployeeCd, String lastRegEmployeeOfCompanyID,
 			String lastRegEmployeeOfCompanyCd) {
 		super(registeredEmployeeID, companyId, registeredDate, lastRegEmployeeID, lastRegEmployeeCd);

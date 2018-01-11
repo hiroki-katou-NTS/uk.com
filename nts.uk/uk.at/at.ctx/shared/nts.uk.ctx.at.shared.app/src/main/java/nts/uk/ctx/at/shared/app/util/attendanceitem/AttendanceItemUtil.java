@@ -165,11 +165,12 @@ public class AttendanceItemUtil {
 	private static <R extends ConvertibleAttendanceItem> List<R> getList(List<R> list,
 			Map<String, List<ItemValue>> listGroup, int max) {
 		return IntStream.range(0, max).mapToObj(idx -> {
+			R oldValue = list.get(idx);
 			List<ItemValue> values = listGroup.get(String.valueOf(idx));
 			if (values != null) {
-				return toConvertibleAttendanceItem(list.get(idx), values, 1);
+				return toConvertibleAttendanceItem(oldValue, values, 1);
 			}
-			return null;
+			return oldValue;
 		}).filter(c -> c != null).collect(Collectors.toList());
 	}
 

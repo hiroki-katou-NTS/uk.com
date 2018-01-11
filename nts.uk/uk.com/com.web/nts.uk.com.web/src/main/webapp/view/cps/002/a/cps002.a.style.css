@@ -250,3 +250,6 @@
 	overflow: hidden;
 }
 /* step 3 end */
+.finish .ui-dialog-titlebar-close {
+	display: none;
+}
