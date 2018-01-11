@@ -27,6 +27,7 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
@@ -159,9 +160,9 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 				}
 
 				// not use
-//				if (worktime.get().getDispAtr().value == UseSetting.UseAtr_NotUse.value) {
-//					throw new BusinessException("Msg_417");
-//				}
+				if (worktime.get().getAbolishAtr().value == AbolishAtr.ABOLISH.value) {
+					throw new BusinessException("Msg_417");
+				}
 			}
 		});
 
