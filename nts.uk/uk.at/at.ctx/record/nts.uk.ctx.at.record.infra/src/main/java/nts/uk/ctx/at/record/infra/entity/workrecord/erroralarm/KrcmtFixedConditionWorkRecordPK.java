@@ -18,7 +18,7 @@ public class KrcmtFixedConditionWorkRecordPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "ERROR_ALARM_CHECK_ID")
-	public String errorAlarmCode;
+	public String errorAlarmID;
 
 	@Column(name = "FIX_CON_WORK_RECORD_NO")
 	public int fixConWorkRecordNo;

@@ -1153,8 +1153,8 @@ module nts.custombinding {
                                 let max = (Math.pow(10, dts.integerPart) - Math.pow(10, -(dts.decimalPart || 0)));
 
                                 constraint.charType = 'Numeric';
+                                constraint.min = dts.numericItemMin || 0;
                                 constraint.max = dts.numericItemMax || max;
-                                constraint.min = dts.numericItemMin || -max;
                                 break;
                             case ITEM_SINGLE_TYPE.DATE:
                                 constraint.valueType = "Date";

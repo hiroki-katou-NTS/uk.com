@@ -27,9 +27,9 @@ module nts.uk.at.view.kal003.a.viewmodel {
         
         //scope check tab
         tabScopeCheck: tab.ScopeCheckTab;
-        
         //check condition tab
-        checkConditionTab : tab.CheckConditionTab = new tab.CheckConditionTab();
+        tabCheckCondition: tab.CheckConditionTab;
+        
         constructor() {
             var self = this;
             self.tabs = ko.observableArray([
@@ -54,7 +54,9 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     let item = _.find(self.listAlarmCheckCondition(), (x: model.AlarmCheckConditionByCategory) => x.code() == data);
                     if (item) {
                         self.selectedAlarmCheckCondition(item);
-                        self.tabScopeCheck.targetCondition(item.targetCondition())
+                        self.tabScopeCheck.targetCondition(item.targetCondition());
+                        self.tabCheckCondition.listWorkRecordExtractingConditions(item.dailyAlarmCheckCondition().listWorkRecordExtractingConditions());
+                        self.selectedDataCondition(item.dailyAlarmCheckCondition().conditionToExtractDaily());
                         self.screenMode(model.SCREEN_MODE.UPDATE);
                     }
                 }
@@ -72,12 +74,13 @@ module nts.uk.at.view.kal003.a.viewmodel {
             });
             
             self.selectedDataCondition.subscribe((data) => {
-                self.selectedAlarmCheckCondition().conditionToExtractDaily(data);
+                self.selectedAlarmCheckCondition().dailyAlarmCheckCondition().conditionToExtractDaily(data);
             });
             
             self.screenMode = ko.observable(model.SCREEN_MODE.UPDATE);
             
             self.tabScopeCheck = new tab.ScopeCheckTab();
+            self.tabCheckCondition = new tab.CheckConditionTab();
         }
 
         startPage(): JQueryPromise<any> {
@@ -116,7 +119,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
             let category = _.find(ko.toJS(self.cbbItemList), (x: model.ItemModel) => x.code == self.selectedCategory());
             self.selectedAlarmCheckCondition(new model.AlarmCheckConditionByCategory('', '', category, [], new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], [])));
             self.selectedDataCondition(model.DATA_CONDITION_TO_EXTRACT.ALL);
-            self.tabScopeCheck.targetCondition(self.selectedAlarmCheckCondition().targetCondition());
+            self.tabScopeCheck = new tab.ScopeCheckTab();
+            self.tabCheckCondition = new tab.CheckConditionTab();
             self.screenMode(model.SCREEN_MODE.NEW);
         }
 
@@ -131,6 +135,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             block.invisible();
             service.registerData(command).done(function() {
                 data.targetCondition(self.tabScopeCheck.targetCondition());
+                data.dailyAlarmCheckCondition().listWorkRecordExtractingConditions(self.tabCheckCondition.listWorkRecordExtractingConditions());
                 let item = _.find(self.listAlarmCheckCondition(), (x: model.AlarmCheckConditionByCategory) => x.code() == data.code());
                 if (item) {
                     
@@ -156,7 +161,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 let indexItemDelete = _.findIndex(self.listAlarmCheckCondition(), (item: model.AlarmCheckConditionByCategory) => { return item.code() == data.code(); });
                 service.deleteData(command).done(function() {
                     //self.loadRoleSetHolder(self.selectedRoleSet()).done(() => {
-                    self.listAlarmCheckCondition.remove( function (item) { return item.code() == data.code(); } )
+                    self.listAlarmCheckCondition.remove( function (item) { return item.code() == data.code(); } );
                     if (self.listAlarmCheckCondition().length == 0) {
                         self.createNewAlarmCheckCondition();
                     } else {

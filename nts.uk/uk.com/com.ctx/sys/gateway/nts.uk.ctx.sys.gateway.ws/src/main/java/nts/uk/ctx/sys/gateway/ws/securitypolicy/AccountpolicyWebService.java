@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.ws.SecurityPolicy;
+package nts.uk.ctx.sys.gateway.ws.securitypolicy;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.gateway.app.find.securitypolicy.PasswordPolicyFinder;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.dto.AccountLockPolicyDto;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.dto.PasswordPolicyDto;
 
-@Path("ctx/sys/gateway/login")
+@Path("ctx/sys/gateway/securitypolicy")
 @Produces("application/json")
 @Stateless
 public class AccountpolicyWebService {

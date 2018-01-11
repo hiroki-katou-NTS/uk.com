@@ -105,15 +105,15 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             });
             
             self.checkedCountAtr = ko.observable();
-            self.checkedCountAtr.subscribe(function(value) {
+            self.checkedCountAtr.subscribe(function() {
                 if (typeof self.checkedCountAtr() != "undefined") {
-                    if (value == false) {
-                        self.itemTotalTimesDetail.countAtr(1);   
+                   if (self.checkedCountAtr() == true) {
+                        self.itemTotalTimesDetail.countAtr(0);                    
                     } else {
-                        self.itemTotalTimesDetail.countAtr(0);
+                        self.itemTotalTimesDetail.countAtr(1);
                     }    
                 } else {
-                    self.switchCheckbox(self.itemTotalTimesDetail.countAtr());
+                    self.switchCheckbox(self.itemTotalTimesDetail.countAtr());    
                 }
             }); 
 
@@ -625,9 +625,9 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         private switchCheckbox(value: number): void {
             let self = this;
             if (value == 0) {
-                self.checkedCountAtr(false);   
+                self.checkedCountAtr(true);   
             } else {
-                self.checkedCountAtr(true);
+                self.checkedCountAtr(false);
             }    
         }      
     }

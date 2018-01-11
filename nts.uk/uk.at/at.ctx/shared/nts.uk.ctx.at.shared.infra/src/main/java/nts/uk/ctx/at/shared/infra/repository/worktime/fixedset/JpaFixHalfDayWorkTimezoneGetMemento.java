@@ -60,6 +60,7 @@ public class JpaFixHalfDayWorkTimezoneGetMemento implements FixHalfDayWorkTimezo
 			this.entity.setKshmtFixedHalfRestSets(new ArrayList<>());
 		}
 		List<KshmtFixedHalfRestSet> kshmtFixedHalfRestSets = this.entity.getKshmtFixedHalfRestSets().stream()
+				.sorted((item1, item2) -> item1.getStartTime() - item2.getEndTime())
 				.filter(entity -> entity.getKshmtFixedHalfRestSetPK().getAmPmAtr() == this.type.value)
 				.collect(Collectors.toList());
 		return new FixRestTimezoneSet(new JpaFixRestHalfdayTzGetMemento(kshmtFixedHalfRestSets));

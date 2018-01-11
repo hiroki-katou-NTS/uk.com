@@ -67,7 +67,7 @@ module nts.uk.at.view.kdw002.c {
                             bussinessCodeItems.push(new BusinessType(empRole));
                             //   self.bussinessCodeItems.push(new BusinessType(businessType));
                         });
-                        var bTypes = _.sortBy(bussinessCodeItems, 'roleId');
+                        var bTypes = _.sortBy(bussinessCodeItems, 'roleCode');
                         self.bussinessCodeItems(bTypes);
                         var businessTypeCode = bTypes[0].roleId;
                         self.currentRoleId(businessTypeCode);

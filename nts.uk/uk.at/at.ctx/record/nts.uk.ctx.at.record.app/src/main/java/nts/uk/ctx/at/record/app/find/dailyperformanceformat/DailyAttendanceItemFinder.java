@@ -113,13 +113,12 @@ public class DailyAttendanceItemFinder {
 	/**
 	 * アルゴリズム「連続勤務の項目取得」を実行する
 	 * Execute the algorithm "Item acquisition for continuous work"
-	 * @param eralCheckId
 	 * @return
 	 */
-	public List<WorkTypeDto> findDailyAttendanceContinousWorkBy(List<String> workTypeCodes) {
+	public List<WorkTypeDto> findDailyAttendanceContinousWorkType() {
 	    String companyId = AppContexts.user().companyId();
 	    
-	    List<WorkTypeDto> lstWorkTypeDtos = workTypeRepo.findNotDeprecatedByListCode(companyId, workTypeCodes).stream()
+	    List<WorkTypeDto> lstWorkTypeDtos = workTypeRepo.findNotDeprecated(companyId).stream()
 	            .map(dom -> WorkTypeDto.fromDomain(dom))
 	            .sorted(Comparator.comparing(WorkTypeDto::getWorkTypeCode))
 	            .collect(Collectors.toList());
@@ -136,7 +135,6 @@ public class DailyAttendanceItemFinder {
         List<WorkTimeSetting> WorkTimeSettings = workTimeSettingRepo.findByCompanyId(companyId).stream()
                 .filter(item -> !item.isAbolish())
                 .collect(Collectors.toList());
-                // 表示区分　=　表示する ?? TODO
 
         List<SimpleWorkTimeSettingDto> lstSimpleWorkTimeSettingDto = WorkTimeSettings.stream().map(item -> {
             return SimpleWorkTimeSettingDto.builder()

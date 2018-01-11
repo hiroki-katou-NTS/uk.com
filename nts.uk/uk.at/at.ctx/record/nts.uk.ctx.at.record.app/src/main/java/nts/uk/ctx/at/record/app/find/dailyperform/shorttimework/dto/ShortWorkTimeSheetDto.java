@@ -30,7 +30,7 @@ public class ShortWorkTimeSheetDto {
 	private Integer startTime;
 
 	/** 終了: 時刻(日区分付き) */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "終了")
+	@AttendanceItemLayout(layout = "D", jpPropertyName = "終了", needCheckIDWithIndex = true, needCheckIDWithMethod = "childCare")
 	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
 	private Integer endTime;
 

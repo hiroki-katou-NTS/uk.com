@@ -2527,7 +2527,12 @@ module nts.uk.com.view.cmm018.a {
                                 self.singleSelectedCode(codeSelected.company.approvalId);
                             }else{
                                 let code = vmbase.ProcessHandler.findAppbyValue(appType,employRootAtr,self.lstNameAppType());
-                                self.singleSelectedCode(code.localizedName);
+                                if(code == undefined){
+                                    self.singleSelectedCode('共通ルート');
+                                }else{
+                                    self.singleSelectedCode(code.localizedName);
+                                }
+                                
                             }
                         });
                     }else if(self.tabSelectedB()==1){
@@ -2537,7 +2542,11 @@ module nts.uk.com.view.cmm018.a {
                                 self.singleSelectedCode(codeSelected.workplace.approvalId);
                             }else{
                                 let code = vmbase.ProcessHandler.findAppbyValue(appType,employRootAtr,self.lstNameAppType());
-                                self.singleSelectedCode(code.localizedName);
+                                if(code == undefined){
+                                    self.singleSelectedCode('共通ルート');
+                                }else{
+                                    self.singleSelectedCode(code.localizedName);
+                                }
                             }
                         });
                     }else{
@@ -2547,7 +2556,11 @@ module nts.uk.com.view.cmm018.a {
                                 self.singleSelectedCode(codeSelected.person.approvalId);
                             }else{
                                 let code = vmbase.ProcessHandler.findAppbyValue(appType,employRootAtr,self.lstNameAppType());
-                                self.singleSelectedCode(code.localizedName);
+                                if(code == undefined){
+                                    self.singleSelectedCode('共通ルート');
+                                }else{
+                                    self.singleSelectedCode(code.localizedName);
+                                }
                             }
                         });
                     }
