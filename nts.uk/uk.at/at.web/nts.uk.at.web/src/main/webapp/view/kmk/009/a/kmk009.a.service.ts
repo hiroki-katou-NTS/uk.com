@@ -8,11 +8,11 @@ module nts.uk.at.view.kmk009.a {
             totalUseEnum: "at/shared/scherec/totaltimes/find/totalUseEnum",
             saveAllTotalTimes: "at/shared/scherec/totaltimes/save",
             findByIdWorkType: "at/share/worktype/findById",
-            findByIdWorkTime: "at/shared/worktime/findById",
+            findByIdWorkTime: "at/shared/worktimesetting/findById",
             findByIdListWorkTypes: "at/share/worktype/getpossibleworktype",
-            findByIdlistWorkTimes: "at/shared/worktime/findByCodeList",
+            findByIdlistWorkTimes: "at/shared/worktimesetting/findByCodes",
             findAlldWorkType: "at/share/worktype/findAll",
-            findAllWorkTime: "at/shared/worktime/findAll",
+            findAllWorkTime: "at/shared/worktimesetting/findAll",
             findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems"
         }
 
