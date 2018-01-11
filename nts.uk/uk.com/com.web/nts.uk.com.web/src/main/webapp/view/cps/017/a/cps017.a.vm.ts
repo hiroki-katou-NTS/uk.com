@@ -172,7 +172,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         } else {
                             //self.enableSelName(true);
 
-                            //self.registerData();
+                            self.registerData();
                             //$("#code").focus();
                         }
 
@@ -198,7 +198,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     selection.memoSelection(selectLists.memoSelection);
                     $("#name").focus();
                 } else {
-                    //self.registerData();
+                    self.registerData();
                 }
             });
 
