@@ -35,22 +35,22 @@ public class OutingTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand 
 		return !data.isPresent() ? null
 				: new OutingTimeOfDailyPerformance(getEmployeeId(), getWorkDate(), ConvertHelper.mapTo(
 						data.get().getTimeZone(),
-						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getWorkNo()), Optional.of(createTimeActual(c.getOuting())),
+						(c) -> new OutingTimeSheet(new OutingFrameNo(c.getWorkNo()), createTimeActual(c.getOuting()),
 								new AttendanceTime(c.getOutTimeCalc()), new AttendanceTime(c.getOutTIme()),
 								ConvertHelper.getEnum(c.getReason(), GoingOutReason.class),
-								Optional.of(createTimeActual(c.getComeBack())))));
+								createTimeActual(c.getComeBack()))));
 	}
 
-	private TimeActualStamp createTimeActual(WithActualTimeStampDto c) {
-		return new TimeActualStamp(createWorkStamp(c.getActualTime()), createWorkStamp(c.getTime()),
-				c.getNumberOfReflectionStamp());
+	private Optional<TimeActualStamp> createTimeActual(WithActualTimeStampDto c) {
+		return c == null ? Optional.empty() : Optional.of(new TimeActualStamp(createWorkStamp(c.getActualTime()), createWorkStamp(c.getTime()),
+				c.getNumberOfReflectionStamp()));
 	}
 
 	private WorkStamp createWorkStamp(TimeStampDto c) {
-		return new WorkStamp(
+		return c == null ? null : new WorkStamp(
 				c.getAfterRoundingTimesOfDay() == null ? null : new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
 				c.getTimesOfDay() == null ? null : new TimeWithDayAttr(c.getTimesOfDay()),
 				c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
-				ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
+				c.getStampSourceInfo() == null ? null : ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }
