@@ -77,7 +77,7 @@ public class ActualWorkTimeDailyPerformDto {
 	private static List<PremiumTimeDto> getPremiumTime(PremiumTimeOfDailyPerformance domain) {
 		return domain == null ? new ArrayList<>() : Arrays.asList(new PremiumTimeDto(
 					domain.getPremitumTime() == null ? null: domain.getPremitumTime().valueAsMinutes(),
-					domain.getPremiumTimeNo()));
+					Integer.valueOf(domain.getPremiumTimeNo())));
 	}
 
 	public ActualWorkingTimeOfDaily toDomain() {
