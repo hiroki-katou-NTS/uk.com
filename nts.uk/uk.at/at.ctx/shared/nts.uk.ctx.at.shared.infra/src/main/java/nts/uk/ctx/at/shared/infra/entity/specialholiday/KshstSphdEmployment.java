@@ -11,6 +11,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.specialholiday.Classfication;
+import nts.uk.ctx.at.shared.dom.specialholiday.Employment;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,5 +39,9 @@ public class KshstSphdEmployment extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return kshstSphdEmploymentPK;
+	}
+	
+	public static KshstSphdEmployment toEntity(Employment domain){
+		return new KshstSphdEmployment(new KshstSphdEmploymentPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v(), domain.getEmploymentCode()));
 	}
 }
