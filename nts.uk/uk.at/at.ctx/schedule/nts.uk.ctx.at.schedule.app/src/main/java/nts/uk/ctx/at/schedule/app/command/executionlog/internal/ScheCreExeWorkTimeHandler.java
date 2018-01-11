@@ -102,7 +102,7 @@ public class ScheCreExeWorkTimeHandler {
 	public static final int RETIREMENT = 6;
 	
 	/** The Constant DEFAULT_CODE. */
-	public static final String DEFAULT_CODE = "000";
+	public static final String DEFAULT_CODE = null;
 	
 	/** The Constant SHIFT1. */
 	public static  final int SHIFT1 = 1;
