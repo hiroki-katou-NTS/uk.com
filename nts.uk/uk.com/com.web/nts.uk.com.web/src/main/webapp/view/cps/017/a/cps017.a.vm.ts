@@ -106,7 +106,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                     //historySelection.histId(undefined);
                     self.registerData();
                 }
-               
+
             });
 
             //sub theo historyID:
@@ -171,7 +171,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
                         self.listSelection.valueHasMutated();
 
                     });
-                    
+
                     let ondeHisIdlits = _.find(self.listHistorySelection(), a => a.histId == x);
                     if (ondeHisIdlits != undefined) {
                         if (ondeHisIdlits.endDate == '9999/12/31') {
@@ -202,9 +202,9 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 } else {
                     self.registerData();
                 }
-                
-                if (x == undefined && self.enableSelName() == true){
-                     self.selectionCd(true);
+
+                if (x == undefined && self.enableSelName() == true) {
+                    self.selectionCd(true);
                 } else {
                     self.selectionCd(false);
                 }
@@ -270,8 +270,8 @@ module nts.uk.com.view.cps017.a.viewmodel {
             selection.selectionName('');
             selection.memoSelection('');
             self.checkCreateaaa(true);
-            if (self.enableSelName() == true){
-                 self.selectionCd(true);
+            if (self.enableSelName() == true) {
+                self.selectionCd(true);
             } else {
                 self.selectionCd(false);
             }
@@ -589,15 +589,15 @@ module nts.uk.com.view.cps017.a.viewmodel {
             if (!self.constraints) return false;
             if (selCD.length > self.constraints.selectionCode) {
                 allValid = false;
-                $('#code').ntsError('set', "Selection code length must equals " + self.constraints.selectionCode);
+                $('#code').ntsError('set', getText('CPS017_21') + "は" + self.constraints.selectionCode + "桁を超えない");
             }
             if (selName.length > self.constraints.selectionName) {
                 allValid = false;
-                $('#name').ntsError('set', "Selection code length must equals " + self.constraints.selectionName);
+                $('#name').ntsError('set', getText('CPS017_22') + "は" + self.constraints.selectionName + "桁を超えない");
             }
             if (exCd.length > self.constraints.selectionExternalCode && exCd != "") {
                 allValid = false;
-                $('#exCode').ntsError('set', "Selection code length must equals " + self.constraints.selectionExternalCode);
+                $('#exCode').ntsError('set', getText('CPS017_24') + "は" + self.constraints.selectionExternalCode + "桁を超えない");
             }
             return allValid;
         }
