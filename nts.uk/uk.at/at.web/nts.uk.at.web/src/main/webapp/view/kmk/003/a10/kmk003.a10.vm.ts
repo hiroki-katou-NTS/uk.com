@@ -92,6 +92,9 @@ module a10 {
                 if (listResult.selecteds[0]) {                    
                     _self.bonusPaySettingCode(listResult.selecteds[0]);
                     _self.bonusPaySettingName(listResult.selecteds[0]);
+                } else {
+                    _self.bonusPaySettingCode(null);
+                    _self.bonusPaySettingName(null);
                 }
             });
         }
