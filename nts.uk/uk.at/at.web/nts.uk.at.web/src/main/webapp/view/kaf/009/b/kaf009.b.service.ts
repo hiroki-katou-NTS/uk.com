@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf009.b.service {
         getAllWorkLocation: "at/record/worklocation/findall",
         getGoBackDirectlySetting: "/at/request/application/gobackdirectly/getGoBackCommonSetting",
         getGoBackDirectDetail: "/at/request/application/gobackdirectly/getGoBackDirectDetail/{0}",
-        checkBeforeChange: "/at/request/application/gobackdirectly/checkBeforeChangeGoBackDirectly",
+        checkBeforeChange: "/at/request/application/gobackdirectly/checkBeforeUpdateGoBackData",
         updateGoBackDirectly: "/at/request/application/gobackdirectly/updateGoBackDirectly"
     }
     /**

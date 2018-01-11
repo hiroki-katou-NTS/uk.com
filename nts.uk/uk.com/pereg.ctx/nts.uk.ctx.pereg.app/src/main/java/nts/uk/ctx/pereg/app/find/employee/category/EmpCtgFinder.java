@@ -38,6 +38,8 @@ import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoPermissionType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
+import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
@@ -78,6 +80,9 @@ public class EmpCtgFinder {
 	@Inject
 	private PerInfoCategoryFinder perInfoCategoryFinder;
 	
+	@Inject
+	private PersonInfoItemAuthRepository itemAuth;
+	
 	/**
 	 * Get all category by selected employee
 	 * @author xuan vinh
@@ -103,8 +108,17 @@ public class EmpCtgFinder {
 					.getDetailPersonCategoryAuthByPId(roleIdOfLogin, x.getPersonInfoCategoryId());
 			if (!perInfoCtgAuth.isPresent())
 				return false;
-			return isSelf ? perInfoCtgAuth.get().getAllowPersonRef() == PersonInfoPermissionType.YES
-					: perInfoCtgAuth.get().getAllowOtherRef() == PersonInfoPermissionType.YES;
+			if(isSelf) {
+				if( perInfoCtgAuth.get().getAllowPersonRef() == PersonInfoPermissionType.YES) {
+					List<PersonInfoItemAuth> lstItemAuths = itemAuth.getAllItemAuth(roleIdOfLogin, x.getPersonInfoCategoryId());
+					return lstItemAuths.stream().filter(item -> item.getSelfAuth().value == 1).collect(Collectors.toList()).size() != lstItemAuths.size();
+				}else return false;
+			}else {
+				if(perInfoCtgAuth.get().getAllowOtherRef() == PersonInfoPermissionType.YES) {
+					List<PersonInfoItemAuth> lstItemAuths = itemAuth.getAllItemAuth(roleIdOfLogin, x.getPersonInfoCategoryId());
+					return lstItemAuths.stream().filter(item -> item.getOtherAuth().value == 1).collect(Collectors.toList()).size() != lstItemAuths.size();
+				}else return false;
+			}
 		}).collect(Collectors.toList());
 		
 		//convert to dto and return
@@ -131,17 +145,19 @@ public class EmpCtgFinder {
 		//get category
 		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCategoryId(), contractCode)
 				.get();
+		List<ComboBoxObject> infoList = new ArrayList<>();
 		if (!perInfoCategoryFinder.checkPerInfoCtgAuth(query.getEmployeeId(), perInfoCtg.getPersonInfoCategoryId(), roleId)) {
-			return new ArrayList<>();
+			return infoList;
 		}
 		if (perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO)
-			return new ArrayList<>();
+			return infoList;
 		query.setCtgType(perInfoCtg.getCategoryType().value);
 		//get combobox object
 		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED)
-			return getInfoListOfOptionalCtg(perInfoCtg, query);		
+			infoList = getInfoListOfOptionalCtg(perInfoCtg, query);		
 		query.setCategoryCode(perInfoCtg.getCategoryCode().v());
-		return layoutingProcessor.getListFirstItems(query);
+		infoList = layoutingProcessor.getListFirstItems(query);
+		return infoList;
 	}
 	
 	private List<ComboBoxObject> getInfoListOfOptionalCtg(PersonInfoCategory perInfoCtg, PeregQuery query){

@@ -47,6 +47,14 @@ public interface ScheduleErrorLogRepository {
 	 */
 	public Integer distinctErrorByExecutionId(String executionId);
 	
+	/**
+	 * Distinct error by execution id.
+	 *
+	 * @param executionId the execution id
+	 * @return the list
+	 */
+	public Integer distinctErrorByExecutionIdNew(String executionId);
+	
 	
 	/**
 	 * Adds the.

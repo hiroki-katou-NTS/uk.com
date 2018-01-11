@@ -14,8 +14,8 @@
 }
 
 div[class^="tab-content"] {
-	width: 600px;
-	height: 300px;
+	/*width: 600px;
+	height: 300px;*/
 }
 
 .tab-content-1 button {
@@ -34,4 +34,8 @@ div[class^="tab-content"] {
 
 .ntsRadioBox .label {
 	padding-right: 20px;
+}
+
+#div_table_check_conditions .nts-fixed-table .nts-fixed-body-container {
+	overflow-x: hidden;
 }

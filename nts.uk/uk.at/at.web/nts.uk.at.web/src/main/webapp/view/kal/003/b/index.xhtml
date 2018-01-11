@@ -31,7 +31,8 @@
 
         <ui:define name="content">
             <div id="contents-area">
-                <div class="form-group" style="text-align: center;"
+                <!-- <div class="form-group" -->
+                <div id="content" class="cf"
                     data-bind="with: currentErrAlaCheckCondition">
                     <!--  B1 -->
                     <div id="div_common_header">
@@ -75,7 +76,7 @@
                             <colgroup>
                                 <col width="150px" />
                                 <col width="250px" />
-                                <col width="218px" />
+                                <col width="266px" />
                                 <col width="*" />
                             </colgroup>
                             <tr class="row">
@@ -152,7 +153,7 @@
 		                        <colgroup>
 		                            <col width="150px" />
 		                            <col width="250px" />
-		                            <col width="200px" />
+		                            <col width="266px" />
 		                            <col width="50px" />
 		                            <col width="50px" />
 		                        </colgroup>
@@ -269,7 +270,7 @@
 	                        <colgroup>
 	                            <col width="150px" />
 	                            <col width="250px" />
-                                <col width="218px" />
+                                <col width="266px" />
                                 <col width="*" />
 	                        </colgroup>
 	                        <tr class="row">
@@ -369,12 +370,13 @@
 			                        </tr>
 			                    </table>
 	                        </div>
+	                        
 	                        <div class = "pad_left_10px">
 	                           <!-- B5_4 -->
-	                            <table id="table-groupcondition" class="fixed-table" >
+	                            <table id="table-group1condition">
 						            <colgroup>
-						                <col width="807px"/>
-						                <col width="*"/>
+						                <col width="822px"/>
+						                <col width="52"/>
 						            </colgroup>
 						            <thead>
 						               <tr> 
@@ -393,7 +395,7 @@
 						        </table>
 	                        </div>
 	                        <!--  group 2 -->
-	                        <div>
+	                        <div class = "pad_left_10px">
 	                            <table >
 	                                <colgroup>
 	                                    <col width="200px" />
@@ -408,7 +410,6 @@
 	                                    <!-- B6-2:  -->
 	                                    <com:ko-if bind="hasGroup2()">
 		                                    <td class = "pad_left_5px">
-		                                       
 		                                        <div id ="div_b6_2">#{i18n.getText('KAL003_35')}</div>
 		                                    </td>
 		                                    <!-- B6-3:  -->
@@ -428,10 +429,10 @@
 	                        <com:ko-if bind="hasGroup2()">
 		                        <div id ="B16" class = "pad_left_10px cf">
 		                            <!-- B16_1 -->
-	                                <table id="table-groupcondition" class="fixed-table" >
+	                                <table id="table-group2condition" >
 	                                    <colgroup>
-	                                        <col width="807px"/>
-	                                        <col width="*"/>
+                                            <col width="822px"/>
+                                            <col width="52"/>
 	                                    </colgroup>
 	                                    <thead>
 	                                       <tr> 
@@ -503,10 +504,9 @@
                             <td class = "pad_left_5px">
                                 <!-- B3-2-->
                                 <div id="inpMessage">
-                                    <textarea style="width: 432px; height: 90px;" data-name="message" data-bind="ntsMultilineEditor: {name: '#[KAL003_25]',
+                                    <textarea style="width: 462px; height: 90px;" data-name="message" data-bind="ntsMultilineEditor: {name: '#[KAL003_25]',
                                         value: message, constraint: true, enable: true, readonly: false}" />
                                 </div>
-
                             </td>
                         </tr>
                         <tr class="row">

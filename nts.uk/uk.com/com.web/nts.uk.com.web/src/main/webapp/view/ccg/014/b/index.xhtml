@@ -31,7 +31,7 @@
 					<span style="text-align: center; margin-right: 15px;">#{i18n.getText('CCG014_18')}</span>
 					<div data-bind="ntsFormLabel: { constraint: ['TitleMenuCD' , 'Name'], required: true }">#{i18n.getText('CCG014_13')}</div>
 					<input id="copycode" data-bind="ntsTextEditor: {value: copyTitleCD, constraint: 'TitleMenuCD', required: true,name: '#[CCG014_21]'}" tabindex="1" />
-	     			<input id="copyname" data-bind="ntsTextEditor: {value: copyName, constraint: 'Name', required: true ,name: '[#CCG014_22]'}" tabindex="2"/>
+	     			<input id="copyname" data-bind="ntsTextEditor: {value: copyName, constraint: 'Name', required: true ,name: '#[CCG014_22]'}" tabindex="2"/>
 				</div>
 				<div id="functions-area-bottom">
 					<div id="checkOverwritting" data-bind="ntsCheckBox: { checked: checkOverwritting }" tabindex="3">#{i18n.getText('CCG014_23')}</div><br/>

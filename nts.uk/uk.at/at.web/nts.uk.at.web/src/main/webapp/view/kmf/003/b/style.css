@@ -24,6 +24,7 @@ tr {
 .panel.panel-frame {
 	width: 300px;
     float: right;
+    margin: -85px 0px;
 }
 
 .cal-value {
@@ -38,9 +39,8 @@ tr {
 }
 
 .bound {
-	height: 20px;
+	height: 62px;
 	z-index: -999999;
-    height: 140px;
 }
 
 span.nts-editor-wrapped.ntsControl.symbol.symbol-right {
@@ -111,7 +111,7 @@ table.contents-data thead, table.contents-data tbody {
 }
 
 table.contents-data tbody {
-    height: 350px;   
+    height: 245px;   
     overflow-y: auto;   
     overflow-x: hidden; 
     border: 1px solid #CCC;

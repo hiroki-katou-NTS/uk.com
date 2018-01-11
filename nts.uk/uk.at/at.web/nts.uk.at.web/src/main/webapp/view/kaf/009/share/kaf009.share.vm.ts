@@ -344,6 +344,7 @@ module nts.uk.at.view.kaf009.share {
          * Application detail
          */
         export class ApplicationCommand {
+            version: number;
             applicationID: string;
             appReasonID: string;
             prePostAtr: number;
@@ -366,6 +367,8 @@ module nts.uk.at.view.kaf009.share {
             endDate: string;
             listPhase: any;
             constructor(
+                version: number,
+                applicationID: string,
                 appReasonID: string,
                 prePostAtr: number,
                 inputDate: string,
@@ -378,7 +381,8 @@ module nts.uk.at.view.kaf009.share {
                 reflectPerTime: string,
                 startDate: string,
                 endDate: string) {
-                this.applicationID = "";
+                this.version = version;
+                this.applicationID = applicationID;
                 this.appReasonID = appReasonID;
                 this.prePostAtr = prePostAtr;
                 this.inputDate = moment.utc(inputDate, "YYYY/MM/DD").toISOString();

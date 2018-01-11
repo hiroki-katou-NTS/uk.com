@@ -386,13 +386,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                               return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                             });
                         let value: any;
-                        if (String(data.value).indexOf(':') !== -1) {
-                            value = Number(data.value.split(':')[0]) * 60 + Number(data.value.split(':')[1]);
-                        }
-                        else {
-                            value = data.value;
-                        }
-                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
+                        value = self.getPrimitiveValue(data.value);
+                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" :layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
                         dataChangeProcess.push(dataMap);
                     }
                 }else{
@@ -454,6 +449,44 @@ module nts.uk.at.view.kdw003.a.viewmodel {
               }
               });
             return check;
+        }
+        
+        getPrimitiveValue(value : any): string{
+            var self = this;
+            let valueResult : string = "";
+            if(String(value).indexOf("日") != -1){
+                //時刻
+                let valueTemp : any;
+                valueTemp = value.split('日')[1];
+                if(String(value).indexOf("当日") != -1){
+                    // same date
+                    valueResult = String(self.getHours(valueTemp));
+                }else if(String(value).indexOf("翌日") != -1){
+                    // 1 date
+                     valueResult = String(24*60 + (self.getHours(valueTemp)));
+                }else if(String(value).indexOf("翌々日") != -1){
+                    // 2 date
+                     valueResult = String(24*60*2 + (self.getHours(valueTemp)));
+                }else{
+                    // -1 date 前日
+                    valueResult = String("-"+self.getHours(valueTemp));
+                }
+                
+            }else if(String(value).indexOf(".") != -1){
+                //Money
+                for(let i = 0; i< value.split(',').length; i++){
+                    valueResult += value.split(',')[i];
+                }
+            }else if(String(value).indexOf(":") != -1){
+                // Time
+                valueResult = String(self.getHours(value));
+            }else{
+                valueResult = value;
+            }
+            return valueResult;
+        }
+        getHours(value: any) : number{
+            return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
         }
         hideComponent() {
             var self = this;
@@ -1242,6 +1275,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             _.forEach(self.optionalHeader, (header) => {
                 if (header.constraint == null) {
                     delete header.constraint;
+                }else{
+                    header.constraint["cDisplayType"] = header.constraint.cdisplayType;
+                    delete header.constraint.cdisplayType;
                 }
                 if (header.group != undefined) {
                     if (header.group.length > 0) {

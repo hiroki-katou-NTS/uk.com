@@ -26,6 +26,9 @@ public class FlexOffdayWorkTimeDto implements FlexOffdayWorkTimeGetMemento{
 
 	/** The lst work timezone. */
 	private List<HDWorkTimeSheetSettingDto> lstWorkTimezone;
+	
+	/** The work time no. */
+	private int workTimeNo = 0;
 
 	/** The rest timezone. */
 	private FlowWorkRestTimezoneDto restTimezone;
@@ -35,9 +38,17 @@ public class FlexOffdayWorkTimeDto implements FlexOffdayWorkTimeGetMemento{
 	 */
 	@Override
 	public List<HDWorkTimeSheetSetting> getLstWorkTimezone() {
-		if(CollectionUtil.isEmpty(this.lstWorkTimezone)){
+		if (CollectionUtil.isEmpty(this.lstWorkTimezone)) {
 			return new ArrayList<>();
 		}
+		this.lstWorkTimezone = this.lstWorkTimezone.stream().sorted((timezone1, timezone2) -> timezone1.getTimezone()
+				.getStart().compareTo(timezone2.getTimezone().getStart())).collect(Collectors.toList());
+
+		workTimeNo = 0;
+		this.lstWorkTimezone.forEach(timezone -> {
+			workTimeNo++;
+			timezone.setWorkTimeNo(workTimeNo);
+		});
 		return this.lstWorkTimezone.stream().map(worktimezone -> new HDWorkTimeSheetSetting(worktimezone))
 				.collect(Collectors.toList());
 	}
