@@ -107,10 +107,8 @@ public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 		WorkStamp outActual = gooutactualStamp == null ? null : gooutactualStamp.getActualStamp();
 		WorkStamp backActual = backactualStamp == null ? null : backactualStamp.getActualStamp();
 		return new KrcdtDaiOutingTime(new KrcdtDaiOutingTimePK(employeeId, date, outingTime.getOutingFrameNo().v()),
-				outStamp == null ? null
-						: outStamp.getTimeWithDay() == null ? null : outStamp.getTimeWithDay().valueAsMinutes(),
-				outStamp == null ? null
-						: outStamp.getAfterRoundingTime() == null ? null
+				outStamp == null ? null : outStamp.getTimeWithDay() == null ? null : outStamp.getTimeWithDay().valueAsMinutes(),
+				outStamp == null ? null : outStamp.getAfterRoundingTime() == null ? null
 								: outStamp.getAfterRoundingTime().valueAsMinutes(),
 				outStamp == null ? null : outStamp.getLocationCode().v(),
 				outStamp == null ? null : outStamp.getStampSourceInfo().value,

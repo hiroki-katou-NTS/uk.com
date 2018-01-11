@@ -18,7 +18,7 @@ public class Days {
 		
 	/** Day*/
 	// 日
-	private int day;
+	private Day day;
 	
 	/** Make it the day*/
 	// 当日とする
@@ -26,7 +26,7 @@ public class Days {
 
 	public Days(PreviousClassification dayPrevious, int day, boolean makeToDay) {
 		this.dayPrevious = dayPrevious;
-		this.day = day;
+		this.day = new Day(day);
 		this.makeToDay = makeToDay;
 	}
 }

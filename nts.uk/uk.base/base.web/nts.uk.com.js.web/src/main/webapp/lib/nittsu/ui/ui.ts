@@ -272,7 +272,7 @@ module nts.uk.ui {
                 else {
                     transferData = data;
                 }
-                
+				
                 if (persist || isRoot) {
                     this.shared[key] = transferData;
                 } else {

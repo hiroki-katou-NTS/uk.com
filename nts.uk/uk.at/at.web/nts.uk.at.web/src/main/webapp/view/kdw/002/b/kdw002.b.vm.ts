@@ -37,15 +37,16 @@ module nts.uk.at.view.kdw002.b {
                                 var l = filteredData.length;
                                 for (i = 0; i < l; i++) {
                                     if (!filteredData[i].userCanSet || !filteredData[i].use) {
-                                        var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
-                                        var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
-                                        cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
-                                        cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
-                                        cellYouCanChangeIt.firstChild.disabled= true;
-                                        cellCanBeChangedByOthers.firstChild.disabled= true;
                                         if (!filteredData[i].userCanSet) {
                                             $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", false);
                                         }
+                                        var rowId = filteredData[i].attendanceItemId;
+                                        var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
+                                        var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
+                                        cellYouCanChangeIt.addClass('readOnlyColorIsUse');
+                                        cellCanBeChangedByOthers.addClass('readOnlyColorIsUse');
+                                        cellYouCanChangeIt.children().prop("disabled", true);
+                                        cellCanBeChangedByOthers.children().prop("disabled", true);
                                     }
                                 }
                             }
@@ -260,6 +261,9 @@ function useChanged(element, rowId) {
         cellCanBeChangedByOthers.removeClass('readOnlyColorIsUse');
         cellYouCanChangeIt.children().prop("disabled", false);
         cellCanBeChangedByOthers.children().prop("disabled", false);
+    } else {
+        cellYouCanChangeIt.children().prop("disabled", true);
+        cellCanBeChangedByOthers.children().prop("disabled", true);
     }
 
 }
@@ -296,19 +300,21 @@ function useHeaderChanged(element) {
         var l = filteredData.length;
         for (i = 0; i < l; i++) {
             $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "use", true);
+            var rowId = filteredData[i].attendanceItemId;
+            var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
+            var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
             if (filteredData[i].userCanSet) {
-                var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
-                var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
-                if (cellYouCanChangeIt.classList.contains('readOnlyColorIsUse')) {
-                    cellYouCanChangeIt.classList.remove('readOnlyColorIsUse');
+                if (cellYouCanChangeIt.hasClass('readOnlyColorIsUse')) {
+                    cellYouCanChangeIt.removeClass('readOnlyColorIsUse');
                 }
-
-                if (cellCanBeChangedByOthers.classList.contains('readOnlyColorIsUse')) {
-                    cellCanBeChangedByOthers.classList.remove('readOnlyColorIsUse');
+                if (cellCanBeChangedByOthers.hasClass('readOnlyColorIsUse')) {
+                    cellCanBeChangedByOthers.removeClass('readOnlyColorIsUse');
                 }
-                cellYouCanChangeIt.firstChild.disabled = false;
-                cellCanBeChangedByOthers.firstChild.disabled = false;
-
+                cellYouCanChangeIt.children().prop("disabled", false);
+                cellCanBeChangedByOthers.children().prop("disabled", false);
+            } else {
+                cellYouCanChangeIt.children().prop("disabled", true);
+                cellCanBeChangedByOthers.children().prop("disabled", true);
             }
         }
 
@@ -317,19 +323,21 @@ function useHeaderChanged(element) {
         var l = filteredData.length;
         for (i = 0; i < l; i++) {
             $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "use", false);
+            var rowId = filteredData[i].attendanceItemId;
+            var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
+            var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
             if (filteredData[i].userCanSet) {
-                var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
-                var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
-                if (!cellYouCanChangeIt.classList.contains('readOnlyColorIsUse')) {
-                    cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
+                if (!cellYouCanChangeIt.hasClass('readOnlyColorIsUse')) {
+                    cellYouCanChangeIt.addClass('readOnlyColorIsUse');
                 }
-
-                if (!cellCanBeChangedByOthers.classList.contains('readOnlyColorIsUse')) {
-                    cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
+                if (!cellCanBeChangedByOthers.hasClass('readOnlyColorIsUse')) {
+                    cellCanBeChangedByOthers.addClass('readOnlyColorIsUse');
                 }
-                cellYouCanChangeIt.firstChild.disabled = true;
-                cellCanBeChangedByOthers.firstChild.disabled = true;
-
+                cellYouCanChangeIt.children().prop("disabled", true);
+                cellCanBeChangedByOthers.children().prop("disabled", true);
+            } else {
+                cellYouCanChangeIt.children().prop("disabled", true);
+                cellCanBeChangedByOthers.children().prop("disabled", true);
             }
         }
 

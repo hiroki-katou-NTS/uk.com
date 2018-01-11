@@ -64,7 +64,7 @@ public class TimeActualStamp {
 	public TimeActualStamp(WorkStamp actualStamp, WorkStamp stamp, int numberOfReflectionStamp) {
 		super();
 		this.actualStamp = actualStamp;
-		this.stamp = Optional.of(stamp);
+		this.stamp = Optional.ofNullable(stamp);
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
 	}
 	public void setPropertyTimeActualStamp(WorkStamp actualStamp, Optional<WorkStamp> stamp, int numberOfReflectionStamp){
