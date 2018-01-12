@@ -90,6 +90,11 @@ public class CompanyBasicWorkFinder {
 			return a.length() > 0;
 		}).collect(Collectors.toList());
 		
+		
+		
+		
+		
+		
 		// Find WorkTime
 		List<WorkTimeSetting> workingList = this.worktimeRepo.findByCodes(companyId, workingCodeList);
 
@@ -114,7 +119,7 @@ public class CompanyBasicWorkFinder {
 
 			// Set WorkingDisplayName
 			if (worktime == null) {
-				item.setWorkTypeDisplayName(TextResource.localize("KSM006_13"));
+				item.setWorkingDisplayName(TextResource.localize("KSM006_13"));
 			} else {
 				item.setWorkingDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 			}
