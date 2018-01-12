@@ -48,10 +48,6 @@ public class GrantRegular extends DomainObject {
 			return;
 		}
 		
-		if (this.grantStartDate == null) {
-			throw new BusinessException("Msg_94");
-		}
-		
 		if ((this.months.v() == 0 && this.months.v() < 0) || (this.years.v() == 0 && this.years.v() < 0)) {
 			throw new BusinessException("Msg_95");
 		}

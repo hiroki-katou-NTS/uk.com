@@ -259,7 +259,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				updateEntity.useAge = subCondition.getUseAge().value;
 				updateEntity.genderAtr = subCondition.getGenderAtr().value;
 			if (UseAge.Allow.equals(subCondition.getUseAge())) {
-				updateEntity.limitAgeFrom = subCondition.getLimitAgeFrom().v();
+				updateEntity.limitAgeFrom = subCondition.getLimitAgeFrom() .v();
 				updateEntity.limitAgeTo = subCondition.getLimitAgeTo().v();
 			}
 			updateEntity.ageCriteriaAtr = subCondition.getAgeCriteriaAtr().value;

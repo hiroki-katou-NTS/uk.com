@@ -304,10 +304,12 @@ public class PeregProcessor {
 	}
 	
 	private boolean checkCtgIsViewOnly(PeregDto peregDto, PersonInfoCategory perInfoCtg, String roleId, String infoId, boolean isSelf) {
+		PersonInfoCategoryAuth perInfoCtgAuth = perAuth.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
+		if(perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO) return false;
 		DateRangeItem dateRangeItem = perInfoCtgRepositoty
 				.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
 		String eDateId = dateRangeItem.getEndDateItemId();
-		PersonInfoCategoryAuth perInfoCtgAuth = perAuth.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
+		
 		boolean isFuture = true;
 		if(perInfoCtg.getIsFixed() == IsFixed.FIXED) {
 			String endDateItemCode = perItemRepo.getPerInfoItemDefById(eDateId, AppContexts.user().contractCode()).get().getItemCode().v();
