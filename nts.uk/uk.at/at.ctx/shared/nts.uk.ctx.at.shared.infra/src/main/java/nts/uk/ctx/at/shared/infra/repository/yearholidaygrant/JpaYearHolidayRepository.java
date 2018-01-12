@@ -71,7 +71,7 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 		List<KshstGrantCondition> grantCoditionList = yearHoliday.getGrantConditions().stream()
 				.map(x -> {
 					KshstGrantConditionPK conditionKey = new KshstGrantConditionPK(yearHoliday.getCompanyId(), yearHoliday.getYearHolidayCode().v(), x.getConditionNo());
-					return new KshstGrantCondition(conditionKey, x.getConditionValue().v(), x.getUseConditionAtr().value);
+					return new KshstGrantCondition(conditionKey, x.getConditionValue() != null ? x.getConditionValue().v() : null, x.getUseConditionAtr().value);
 				}).collect(Collectors.toList());
 		
 		kshstYearHoliday.grantConditions = grantCoditionList;
