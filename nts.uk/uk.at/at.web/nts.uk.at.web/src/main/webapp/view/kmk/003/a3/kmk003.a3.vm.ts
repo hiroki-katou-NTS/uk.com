@@ -505,7 +505,7 @@ module a3 {
                  key: "legalOTframeNo",
                  dataSource: self.lstOvertimeWorkFrame,
                  defaultValue: ko.observable(1),
-                 width: 150,
+                 width: 130,
                  template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,
@@ -571,7 +571,7 @@ module a3 {
                     unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 180,
+                    width: 170,
                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 5,
@@ -586,7 +586,7 @@ module a3 {
                     key: "otFrameNo",
                     dataSource: self.lstOvertimeWorkFrame,
                     defaultValue: ko.observable(1),
-                    width: 150,
+                    width: 130,
                     template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,
