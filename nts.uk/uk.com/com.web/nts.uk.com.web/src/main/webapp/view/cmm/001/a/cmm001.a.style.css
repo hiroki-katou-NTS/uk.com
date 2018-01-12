@@ -311,6 +311,9 @@ body>div:nth-child(4) {
 
 #tab-1, #tab-2, #tab-3 {
 	height: 370px;
+	overflow: visible !important;
 }
 
-
+#tab-1.disappear, #tab-2.disappear, #tab-3.disappear {
+	overflow: hidden !important;
+}

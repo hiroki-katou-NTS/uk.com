@@ -66,6 +66,10 @@ public class MonthlyAttendanceItemFinder {
 			attdItems.addAll(filtered);
 		}
 
+		if (attdItems.isEmpty()) {
+			return attdItems;
+		}
+
 		// convert to map
 		Map<Integer, AttdItemDto> attdItemsMap = attdItems.stream()
 				.collect(Collectors.toMap(k -> k.getAttendanceItemId(), vl -> vl));

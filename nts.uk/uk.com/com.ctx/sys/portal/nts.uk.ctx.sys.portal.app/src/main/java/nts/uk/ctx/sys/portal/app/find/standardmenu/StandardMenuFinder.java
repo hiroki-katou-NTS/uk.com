@@ -22,6 +22,7 @@ public class StandardMenuFinder {
 
 	/**
 	 * find all StandardMenu by companyID
+	 * 
 	 * @param conpanyID
 	 * @return List
 	 */
@@ -57,16 +58,17 @@ public class StandardMenuFinder {
 	}
 
 	/**
-	 * find by companyId, system = common, menuClassification = top page or
-	 * afterLoginDis = display
+	 * find by companyId, menuClassification = top page or afterLoginDis =
+	 * display
+	 * 
+	 * note : menuClassification = top page (8) mean system = common (0)
 	 * 
 	 * @return
 	 */
 	public List<StandardMenuDto> findDataForAfterLoginDis() {
 		String companyId = AppContexts.user().companyId();
-		return this.standardMenuRepository
-				.findDataForAfterLoginDis(companyId, 1, System.COMMON.value, MenuClassification.TopPage.value).stream()
-				.map(x -> StandardMenuDto.fromDomain(x)).collect(Collectors.toList());
+		return this.standardMenuRepository.findDataForAfterLoginDis(companyId, 1, MenuClassification.TopPage.value)
+				.stream().map(x -> StandardMenuDto.fromDomain(x)).collect(Collectors.toList());
 	}
 
 	/**

@@ -110,7 +110,7 @@ public class EmployeeSearchQueryProcessor {
 		
 		// Filter by state
 		employeeDatas = employeeDatas.stream()
-				.filter(item -> EmployeeDeletionAttr.NOTDELETED.equals(item.getDeletedStatus()))
+				.filter(item -> { return EmployeeDeletionAttr.NOTDELETED.value == item.getDeletedStatus().value; })
 				.collect(Collectors.toList());
 
 		// get work place history by employee
