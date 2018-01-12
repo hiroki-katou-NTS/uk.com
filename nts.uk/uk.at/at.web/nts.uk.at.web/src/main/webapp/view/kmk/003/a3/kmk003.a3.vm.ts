@@ -419,7 +419,7 @@ module a3 {
                      dataSource: self.settingEnum.roundingTime,
                      defaultValue: ko.observable(0),
                      width: 80,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
                                     optionsText: 'localizedName',
@@ -437,7 +437,7 @@ module a3 {
                      dataSource: self.settingEnum.rounding,
                      defaultValue: ko.observable(0),
                      width: 180,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 5,
                                     optionsText: 'localizedName',
@@ -452,7 +452,7 @@ module a3 {
                      dataSource: self.lstOvertimeWorkFrame,
                      defaultValue: ko.observable(1),
                      width: 150,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                     template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
@@ -467,7 +467,7 @@ module a3 {
                      dataSource: self.lstOvertimeWorkFrame,
                      defaultValue: ko.observable(1),
                      width: 120,
-                     template:  `<div class="column-combo-box" data-bind="ntsComboBox: {
+                     template:  `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
@@ -482,7 +482,7 @@ module a3 {
                      dataSource: self.lstOvertimeWorkFrame,
                      defaultValue: ko.observable(1),
                      width: 100,
-                     template:  `<div class="column-combo-box" data-bind="ntsComboBox: {
+                     template:  `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
@@ -506,7 +506,7 @@ module a3 {
                  dataSource: self.lstOvertimeWorkFrame,
                  defaultValue: ko.observable(1),
                  width: 150,
-                 template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                 template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
@@ -521,7 +521,7 @@ module a3 {
                  dataSource: self.lstSettlementOrder,
                  defaultValue: ko.observable(1),
                  width: 50,
-                 template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                 template: `<div data-key="settlementOrder" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'settlementOrder',
                                     visibleItemsCount: 10,
                                     optionsText: 'settlementOrderName',
@@ -554,7 +554,7 @@ module a3 {
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0),
                     width: 80,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
                                     optionsText: 'localizedName',
@@ -572,7 +572,7 @@ module a3 {
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
                     width: 180,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 5,
                                     optionsText: 'localizedName',
@@ -587,7 +587,7 @@ module a3 {
                     dataSource: self.lstOvertimeWorkFrame,
                     defaultValue: ko.observable(1),
                     width: 150,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
