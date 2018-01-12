@@ -179,11 +179,11 @@ public class PeregProcessor {
 		PeregDto peregDto = null;
 		
 		boolean ctgIsViewOnly = false;
+		if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
+			peregDto = layoutingProcessor.findSingle(query);
+		}
 		if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO
 				&& query.getInfoId() != null) {
-			if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
-				peregDto = layoutingProcessor.findSingle(query);
-			}
 			ctgIsViewOnly = checkCtgIsViewOnly(peregDto, perInfoCtg, roleId, query.getInfoId(), loginEmpId.equals(query.getEmployeeId()));
 		}
 		for (int i = 0; i < lstItemDef.size(); i++) {
