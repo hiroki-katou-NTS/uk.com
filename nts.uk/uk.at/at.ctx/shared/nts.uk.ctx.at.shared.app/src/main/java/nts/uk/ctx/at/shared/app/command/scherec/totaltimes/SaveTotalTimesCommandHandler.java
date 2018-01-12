@@ -21,10 +21,6 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.WorkTypeAtr;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -36,14 +32,6 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
     /** The total times repo. */
     @Inject
     private TotalTimesRepository totalTimesRepo;
-    
-    /** The work time repository. */
-    @Inject
-    private WorkTimeSettingRepository workTimeRepository;
-
-    /** The work type repository. */
-    @Inject
-    private WorkTypeRepository workTypeRepository;
 
     /*
      * (non-Javadoc)
@@ -76,9 +64,6 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
         // valid list total subjects
         this.validTotalSubject(totalTimes);
         
-        // valid master data of worktype and worktime existed?
-        this.validMasterData(totalTimes);
-
         // Alway has 30 items and allow update only
         this.totalTimesRepo.update(totalTimes);
     }
@@ -111,48 +96,6 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
 
         if (isEmptyTotalSubject || isEmptyWorkType || isEmptyWorkTime) {
             throw new BusinessException("Msg_10");
-        }
-    }
-    
-    /**
-     * Valid master data.
-     *
-     * @param totalTime the total time
-     */
-    private void validMasterData(TotalTimes totalTime) {
-        if (totalTime.getUseAtr() == UseAtr.NotUse) {
-            return;
-        }
-        for (TotalSubjects totalObj : totalTime.getTotalSubjects()) {
-            this.validExistedData(totalTime.getCompanyId().v(), totalObj);
-        }
-    }
-
-    /**
-     * Valid existed data.
-     *
-     * @param companyId the company id
-     * @param totalObj the total obj
-     */
-    private void validExistedData(String companyId, TotalSubjects totalObj) {
-        switch (totalObj.getWorkTypeAtr()) {
-        case WORKTYPE:
-            Optional<WorkType> optionalWorkType = this.workTypeRepository.findByPK(companyId,
-                    totalObj.getWorkTypeCode().v());
-            if (!optionalWorkType.isPresent()) {
-                throw new BusinessException("Msg_216", "KMK009_8");
-            }
-            break;
-
-        case WORKINGTIME:
-            Optional<WorkTimeSetting> optionalWorkTime = this.workTimeRepository.findByCode(companyId,
-                    totalObj.getWorkTypeCode().v());
-            if (!optionalWorkTime.isPresent()) {
-                throw new BusinessException("Msg_216", "KMK009_9");
-            }
-            break;
-        default:
-            throw new RuntimeException("Worktype atr not supported.");
         }
     }
     
