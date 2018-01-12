@@ -1,28 +1,35 @@
-/*
- * 
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.file.at.app.export.outsideot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLangRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumExtra60HRate;
+import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMed;
 import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMedRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
-import nts.uk.file.at.app.outsideot.data.OutsideOTBRDItemNameLangData;
-import nts.uk.file.at.app.outsideot.data.OvertimeNameLanguageData;
+import nts.uk.file.at.app.export.outsideot.data.OutsideOTBRDItemNameLangData;
+import nts.uk.file.at.app.export.outsideot.data.OvertimeNameLanguageData;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.i18n.TextResource;
@@ -34,12 +41,131 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 
 /**
- * The Interface OutsideOTSettingExportGenerator.
+ * The Class OutsideOTSettingExportImpl.
  */
 @Stateless
 @DomainID(value = "outsideot")
 public class OutsideOTSettingExportImpl implements MasterListData {
 
+	
+	/** The overtime name lang repository. */
+	@Inject
+	private OvertimeNameLangRepository overtimeNameLangRepository;
+
+	/** The outside OTBRD item lang repository. */
+	@Inject
+	private OutsideOTBRDItemLangRepository outsideOTBRDItemLangRepository;
+
+	/** The super HD 60 H con med finder. */
+	@Inject
+	private SuperHD60HConMedRepository superHD60HConMedRepository;
+
+	/** The daily attendance item repository. */
+	@Inject
+	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
+
+	/** The outside OT setting repository. */
+	@Inject
+	private OutsideOTSettingRepository outsideOTSettingRepository;
+	
+	/** The Constant TOTA_NUMBER_COLS_A9_5. */
+	private static final int TOTA_NUMBER_COLS_A9_5 = 100;
+
+	/** The Constant LANGUAGE_ID_JAPAN. */
+	public static final String LANGUAGE_ID_JAPAN = "ja";
+
+	/** The Constant TABLE_ONE. */
+	private static final String TABLE_ONE = "Table 001";
+
+	/** The Constant TABLE_TWO. */
+	private static final String TABLE_TWO = "Table 002";
+	
+	/** The Constant TABLE_THREE. */
+	private static final String TABLE_THREE = "Table 003";
+	
+	/** The Constant TABLE_FOUR. */
+	private static final String TABLE_FOUR = "Table 004";
+
+	/** The Constant START_COL. */
+	public static final int START_COL = 1;
+	
+	/** The Constant START_BREAKDOWN_ITEM. */
+	public static final int START_BREAKDOWN_ITEM = 4;
+
+	/** The Constant NUMBER_COLS_1. */
+	private static final String NUMBER_COLS_1 = "Column 1";
+	
+	/** The Constant NUMBER_COLS. */
+	private static final String NUMBER_COLS = "Column ";
+
+	/** The Constant NUMBER_COLS_12. */
+	private static final String NUMBER_COLS_2 = "Column 2";
+
+	/** The Constant NUMBER_COLS_3. */
+	private static final String NUMBER_COLS_3 = "Column 3";
+
+	/** The Constant NUMBER_COLS_4. */
+	private static final String NUMBER_COLS_4 = "Column 4";
+	
+	/** The Constant NUMBER_COLS_END. */
+	private static final String NUMBER_COLS_END = "Column End";
+	
+	/** The Constant NUMBER_COLS_START. */
+	private static final String NUMBER_COLS_START = "Column Start";
+
+	/** The Constant NAME_VALUE_A5_1. */
+	private static final String NAME_VALUE_A5_1 = "KMK010_49";
+
+	/** The Constant NAME_VALUE_A7_1. */
+	private static final String NAME_VALUE_A7_1 = "KMK010_51";
+
+	/** The Constant NAME_VALUE_A7_2. */
+	private static final String NAME_VALUE_A7_2 = "KMK010_52";
+
+	/** The Constant NAME_VALUE_A7_3. */
+	private static final String NAME_VALUE_A7_3 = "KMK010_53";
+
+	/** The Constant NAME_VALUE_A7_4. */
+	private static final String NAME_VALUE_A7_4 = "KMK010_54";
+
+	/** The Constant NAME_VALUE_A7_5. */
+	private static final String NAME_VALUE_A7_5 = "KMK010_66";
+
+	/** The Constant NAME_VALUE_A9_1. */
+	private static final String NAME_VALUE_A9_1 = "KMK010_55";
+
+	/** The Constant NAME_VALUE_A9_2. */
+	private static final String NAME_VALUE_A9_2 = "KMK010_56";
+
+	/** The Constant NAME_VALUE_A9_3. */
+	private static final String NAME_VALUE_A9_3 = "KMK010_57";
+
+	/** The Constant NAME_VALUE_A9_4. */
+	private static final String NAME_VALUE_A9_4 = "KMK010_58";
+
+	/** The Constant NAME_VALUE_A9_4. */
+	private static final String NAME_VALUE_A9_5 = "KMK010_59";
+
+	/** The Constant NAME_VALUE_A9_4. */
+	private static final String NAME_VALUE_A9_6 = "KMK010_67";
+
+	/** The Constant NAME_VALUE_A15_1. */
+	private static final String NAME_VALUE_A15_1 = "KMK010_60";
+
+	/** The Constant NAME_VALUE_A15_1. */
+	private static final String NAME_VALUE_A15_2 = "KMK010_61";
+
+	/** The Constant NAME_VALUE_A15_3. */
+	private static final String NAME_VALUE_A15_3 = "KMK010_62";
+
+	/** The Constant TRUE_SETTING_RATE. */
+	private static final String TRUE_SETTING_RATE = "休暇発生する";
+
+	/** The Constant FALSE_SETTING_RATE. */
+	private static final String FALSE_SETTING_RATE = "休暇発生しない";
+	
+	/** The start col. */
+	private int startCol = 0;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -61,7 +187,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 		}
 		return masterDatas;
 	}
-	
+
 	/**
 	 * Gets the setting by login.
 	 *
@@ -87,15 +213,17 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 	 */
 	@Override
 	public Map<String, List<MasterData>> getExtraMasterData(MasterListExportQuery query) {
-		Map<String, List<MasterData>> mapTableData = new HashMap<>();
+		Map<String, List<MasterData>> mapTableData = new LinkedHashMap<>();
 		Optional<OutsideOTSetting> optionalSetting = this.getSettingByLogin();
 		if (optionalSetting.isPresent()) {
 			mapTableData.put(TABLE_ONE, this.getMasterDataOne(query, optionalSetting.get()));
 			mapTableData.put(TABLE_TWO, this.getMasterDataTwo(query, optionalSetting.get()));
+			mapTableData.put(TABLE_THREE, this.getMasterDataThree(query));
+			mapTableData.put(TABLE_FOUR, this.getMasterDataFour());
 		}
 		return mapTableData;
 	};
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -104,12 +232,15 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 	 * MasterListExportQuery)
 	 */
 	@Override
-	public Map<String, List<MasterHeaderColumn>> getExtraHeaderColumn(MasterListExportQuery query){
-		Map<String, List<MasterHeaderColumn>> mapColum = new HashMap<>();
-		mapColum.put(TABLE_ONE, this.getHeaderColumnOnes());
-		mapColum.put(TABLE_TWO, this.getHeaderColumnTwos());
+	public Map<String, List<MasterHeaderColumn>> getExtraHeaderColumn(MasterListExportQuery query) {
+		Map<String, List<MasterHeaderColumn>> mapColum = new LinkedHashMap<>();
+		mapColum.put(TABLE_ONE, this.getHeaderColumnOnes(query));
+		mapColum.put(TABLE_TWO, this.getHeaderColumnTwos(query));
+		mapColum.put(TABLE_THREE, this.getHeaderColumnThrees(query));
+		mapColum.put(TABLE_FOUR, this.getHeaderColumnFours());
 		return mapColum;
 	};
+
 	/**
 	 * Gets the master data one.
 	 *
@@ -131,15 +262,15 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 		for (int index = OvertimeNo.ONE.value; index <= OvertimeNo.FIVE.value; index++) {
 			OvertimeNameLanguageData language = new OvertimeNameLanguageData("", index, false);
 			language.setViewTime("");
+			language.setLanguageOther("");
 			overtimeNameLanguageData.add(language);
 		}
 
-
-		if (!query.getLanguageId().equals(LANGUAGE_ID_JAPAN)) {
+		if (!this.isLanugeJapan(query.getLanguageId())) {
 			this.overtimeNameLangRepository.findAll(companyId, query.getLanguageId()).forEach(languageRepository -> {
 				overtimeNameLanguageData.forEach(language -> {
 					if (languageRepository.getOvertimeNo().value == language.getOvertimeNo()) {
-						language.setLanguage(languageRepository.getName().v());
+						language.setLanguageOther(languageRepository.getName().v());
 					}
 				});
 			});
@@ -149,23 +280,35 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 				if (overtimeLange.getOvertimeNo() == overtime.getOvertimeNo().value) {
 					overtimeLange.setIsUse(true);
 					overtimeLange.setViewTime(this.toTimeView(overtime.getOvertime().v()));
-					if (query.getLanguageId().equals(LANGUAGE_ID_JAPAN)) {
-						overtimeLange.setLanguage(overtime.getName().v());
-					}
+					overtimeLange.setLanguage(overtime.getName().v());
 				}
 			});
 		});
-		overtimeNameLanguageData.forEach(overtimeLanguage->{
+		overtimeNameLanguageData.forEach(overtimeLanguage -> {
 			Map<String, Object> dataA71 = new HashMap<>();
 			dataA71.put(NUMBER_COLS_1, overtimeLanguage.getOvertimeNo());
 			dataA71.put(NUMBER_COLS_2, this.toUse(overtimeLanguage.getIsUse()));
 			dataA71.put(NUMBER_COLS_3, overtimeLanguage.getLanguage());
 			dataA71.put(NUMBER_COLS_4, overtimeLanguage.getViewTime());
+			if (overtimeLanguage.getIsUse() && !this.isLanugeJapan(query.getLanguageId())) {
+				dataA71.put(NUMBER_COLS_END, overtimeLanguage.getLanguageOther());
+			}
 			masterDatas.add(new MasterData(dataA71, null, ""));
 		});
-		
+
 		return masterDatas;
 	}
+	
+	/**
+	 * Checks if is lanuge japan.
+	 *
+	 * @param languageId the language id
+	 * @return true, if is lanuge japan
+	 */
+	private boolean isLanugeJapan(String languageId) {
+		return languageId.equals(LANGUAGE_ID_JAPAN);
+	}
+
 	/**
 	 * Gets the master data one.
 	 *
@@ -173,52 +316,131 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 	 */
 	private List<MasterData> getMasterDataTwo(MasterListExportQuery query, OutsideOTSetting outsideOTSetting) {
 		List<MasterData> masterDatas = new ArrayList<>();
-		
+
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
-		
+
 		// get company id
 		String companyId = loginUserContext.companyId();
-		
-		
+
 		List<OutsideOTBRDItemNameLangData> breakdownNameLanguageData = new ArrayList<>();
-		
+
 		// for each all data overtime language
 		for (int index = BreakdownItemNo.ONE.value; index <= BreakdownItemNo.TEN.value; index++) {
 			OutsideOTBRDItemNameLangData language = new OutsideOTBRDItemNameLangData("", index);
 			language.setIsUse(false);
 			breakdownNameLanguageData.add(language);
 		}
+		Map<Integer, DailyAttendanceItem> mapAttendanceItem = this.dailyAttendanceItemRepository
+				.getList(companyId).stream().collect(Collectors.toMap((attendanceItem -> {
+					return attendanceItem.getAttendanceItemId();
+				}), Function.identity()));
 		
-		if (!query.getLanguageId().equals(LANGUAGE_ID_JAPAN)) {
+		
+
+		if (!this.isLanugeJapan(query.getLanguageId())) {
 			this.outsideOTBRDItemLangRepository.findAll(companyId, query.getLanguageId())
-			.forEach(languageRepository -> {
-				breakdownNameLanguageData.forEach(language -> {
-					if (languageRepository.getBreakdownItemNo().value == language.getBreakdownItemNo()) {
-						language.setLanguage(languageRepository.getName().v());
-					}
-				});
-			});
+					.forEach(languageRepository -> {
+						breakdownNameLanguageData.forEach(language -> {
+							if (languageRepository.getBreakdownItemNo().value == language.getBreakdownItemNo()) {
+								language.setLanguageOther(languageRepository.getName().v());
+							}
+						});
+					});
 		}
 		outsideOTSetting.getBreakdownItems().forEach(breakdownItem -> {
-			breakdownNameLanguageData.forEach(overtimeLange -> {
-				if (overtimeLange.getBreakdownItemNo() == breakdownItem.getBreakdownItemNo().value) {
-					overtimeLange.setIsUse(true);
-					if (query.getLanguageId().equals(LANGUAGE_ID_JAPAN)) {
-						overtimeLange.setLanguage(breakdownItem.getName().v());
-					}
+			breakdownNameLanguageData.forEach(breakdownItemLange -> {
+				if (breakdownItemLange.getBreakdownItemNo() == breakdownItem.getBreakdownItemNo().value) {
+					breakdownItemLange.setIsUse(true);
+					breakdownItemLange.setLanguage(breakdownItem.getName().v());
+					breakdownItemLange.setProductNumber(breakdownItem.getProductNumber().value);
 				}
 			});
 		});
-		breakdownNameLanguageData.forEach(overtimeLanguage->{
+		breakdownNameLanguageData.forEach(breakdownItemLange -> {
 			Map<String, Object> dataA91 = new HashMap<>();
-			dataA91.put(NUMBER_COLS_11, overtimeLanguage.getBreakdownItemNo());
-			dataA91.put(NUMBER_COLS_21, this.toUse(overtimeLanguage.getIsUse()));
-			dataA91.put(NUMBER_COLS_31, overtimeLanguage.getLanguage());
-			dataA91.put(NUMBER_COLS_41, overtimeLanguage.getLanguage());
+			dataA91.put(NUMBER_COLS_1, breakdownItemLange.getBreakdownItemNo());
+			dataA91.put(NUMBER_COLS_2, this.toUse(breakdownItemLange.getIsUse()));
+			dataA91.put(NUMBER_COLS_3, breakdownItemLange.getLanguage());
+			dataA91.put(NUMBER_COLS_4, breakdownItemLange.getProductNumber());
+			if (breakdownItemLange.getIsUse()) {
+				outsideOTSetting.getBreakdownItems().forEach(breakdownItem -> {
+					if (breakdownItem.getBreakdownItemNo().value == breakdownItemLange.getBreakdownItemNo()) {
+						startCol = START_BREAKDOWN_ITEM;
+						breakdownItem.getAttendanceItemIds().forEach(attendanceItemId -> {
+							String attendanceItemName = "";
+							if (mapAttendanceItem.containsKey(attendanceItemId)) {
+								attendanceItemName = mapAttendanceItem.get(attendanceItemId).getAttendanceName().v();
+							}
+							startCol++;
+							dataA91.put(NUMBER_COLS + startCol, attendanceItemName);
+						});
+						if (!this.isLanugeJapan(query.getLanguageId())) {
+							dataA91.put(NUMBER_COLS_END, breakdownItemLange.getLanguageOther());
+						}
+					}
+				});
+
+			}
 			masterDatas.add(new MasterData(dataA91, null, ""));
 		});
-		
+
+		return masterDatas;
+	}
+
+	/**
+	 * Gets the master data three.
+	 *
+	 * @param query the query
+	 * @param outsideOTSetting the outside OT setting
+	 * @return the master data three
+	 */
+	private List<MasterData> getMasterDataThree(MasterListExportQuery query) {
+		List<MasterData> masterDatas = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
+		Map<String, Object> dataA121 = new HashMap<>();
+		List<Overtime> lstOvertime = this.outsideOTSettingRepository.findAllOvertime(companyId);
+		lstOvertime.forEach(overtime -> {
+			dataA121.put(NUMBER_COLS + (overtime.getOvertimeNo().value),
+					overtime.isSuperHoliday60HOccurs() ? TRUE_SETTING_RATE : FALSE_SETTING_RATE);
+		});
+		masterDatas.add(new MasterData(dataA121, null, ""));
+		List<PremiumExtra60HRate> lstExtra60Rate = this.superHD60HConMedRepository.findAllPremiumRate(companyId);
+		this.outsideOTSettingRepository.findAllBRDItem(companyId).forEach(breakdownItem -> {
+			Map<String, Object> dataA141 = new HashMap<>();
+			dataA141.put(NUMBER_COLS_START, breakdownItem.getName().v());
+			if (breakdownItem.isUseClass()) {
+				lstExtra60Rate.forEach(extraRate -> {
+					if (extraRate.getBreakdownItemNo() == breakdownItem.getBreakdownItemNo()) {
+						dataA141.put(NUMBER_COLS + extraRate.getOvertimeNo().value,
+								this.toPercent(extraRate.getPremiumRate().v()));
+					}
+				});
+			}
+			masterDatas.add(new MasterData(dataA141, null, ""));
+		});
+
+		return masterDatas;
+	}
+	
+	/**
+	 * Gets the master data four.
+	 *
+	 * @param query the query
+	 * @return the master data four
+	 */
+	private List<MasterData> getMasterDataFour() {
+		List <MasterData> masterDatas = new ArrayList<>();
+		Map<String, Object> dataA161 = new HashMap<>();
+		String companyId = AppContexts.user().companyId();
+		Optional<SuperHD60HConMed> optionalHD60ConMed = this.superHD60HConMedRepository.findById(companyId);
+		if(optionalHD60ConMed.isPresent()){
+			SuperHD60HConMed superHD60HConMed = optionalHD60ConMed.get();
+			dataA161.put(NUMBER_COLS_1, superHD60HConMed.getTimeRoundingSetting().getRoundingTime().nameId);
+			dataA161.put(NUMBER_COLS_2, superHD60HConMed.getTimeRoundingSetting().getRounding().nameId);
+			dataA161.put(NUMBER_COLS_3, this.toTimeView(superHD60HConMed.getSuperHolidayOccurrenceUnit().v()));
+		}
+		masterDatas.add(new MasterData(dataA161, null, ""));
 		return masterDatas;
 	}
 	/*
@@ -230,19 +452,20 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 	 */
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn(NUMBER_COLS_1, TextResource.localize(NAME_VALUE_A5_1),
-				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(NUMBER_COLS_1, TextResource.localize(NAME_VALUE_A5_1), ColumnTextAlign.LEFT,
+				"", true));
 		return columns;
 	}
+
 	
 	/**
 	 * Gets the header column ones.
 	 *
 	 * @return the header column ones
 	 */
-	public List<MasterHeaderColumn> getHeaderColumnOnes() {
+	public List<MasterHeaderColumn> getHeaderColumnOnes(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn(NUMBER_COLS_1, TextResource.localize(NAME_VALUE_A7_1), ColumnTextAlign.LEFT,
+		columns.add(new MasterHeaderColumn(NUMBER_COLS_1, TextResource.localize(NAME_VALUE_A7_1), ColumnTextAlign.RIGHT,
 				"", true));
 		columns.add(new MasterHeaderColumn(NUMBER_COLS_2, TextResource.localize(NAME_VALUE_A7_2), ColumnTextAlign.LEFT,
 				"", true));
@@ -250,284 +473,80 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 				"", true));
 		columns.add(new MasterHeaderColumn(NUMBER_COLS_4, TextResource.localize(NAME_VALUE_A7_4), ColumnTextAlign.LEFT,
 				"", true));
+		if (!this.isLanugeJapan(query.getLanguageId())) {
+			columns.add(new MasterHeaderColumn(NUMBER_COLS_END, TextResource.localize(NAME_VALUE_A7_5),
+					ColumnTextAlign.LEFT, "", true));
+		}
 		return columns;
 	}
-	
+
 	/**
 	 * Gets the header column twos.
 	 *
 	 * @return the header column twos
 	 */
-	public List<MasterHeaderColumn> getHeaderColumnTwos() {
+	public List<MasterHeaderColumn> getHeaderColumnTwos(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn(NUMBER_COLS_11, TextResource.localize(NAME_VALUE_A9_1), ColumnTextAlign.LEFT,
+		columns.add(new MasterHeaderColumn(NUMBER_COLS_1, TextResource.localize(NAME_VALUE_A9_1), ColumnTextAlign.RIGHT,
 				"", true));
-		columns.add(new MasterHeaderColumn(NUMBER_COLS_21, TextResource.localize(NAME_VALUE_A9_2), ColumnTextAlign.LEFT,
+		columns.add(new MasterHeaderColumn(NUMBER_COLS_2, TextResource.localize(NAME_VALUE_A9_2), ColumnTextAlign.LEFT,
 				"", true));
-		columns.add(new MasterHeaderColumn(NUMBER_COLS_31, TextResource.localize(NAME_VALUE_A9_3), ColumnTextAlign.LEFT,
+		columns.add(new MasterHeaderColumn(NUMBER_COLS_3, TextResource.localize(NAME_VALUE_A9_3), ColumnTextAlign.LEFT,
 				"", true));
-		columns.add(new MasterHeaderColumn(NUMBER_COLS_41, TextResource.localize(NAME_VALUE_A9_4), ColumnTextAlign.LEFT,
+		columns.add(new MasterHeaderColumn(NUMBER_COLS_4, TextResource.localize(NAME_VALUE_A9_4), ColumnTextAlign.LEFT,
 				"", true));
+		
+		for (int index = START_COL; index <= TOTA_NUMBER_COLS_A9_5; index++) {
+			columns.add(new MasterHeaderColumn(NUMBER_COLS + (START_BREAKDOWN_ITEM + index),
+					TextResource.localize(NAME_VALUE_A9_5) + index, ColumnTextAlign.LEFT, "", true));
+		}
+		
+		if (!this.isLanugeJapan(query.getLanguageId())) {
+			columns.add(new MasterHeaderColumn(NUMBER_COLS_END, TextResource.localize(NAME_VALUE_A9_6),
+					ColumnTextAlign.LEFT, "", true));
+		}
 		return columns;
 	}
 	
-    
-    /** The overtime name lang repository. */
-    @Inject
-    private OvertimeNameLangRepository overtimeNameLangRepository;
-    
-    /** The outside OTBRD item lang repository. */
-    @Inject
-    private OutsideOTBRDItemLangRepository outsideOTBRDItemLangRepository;
-        
-    /** The super HD 60 H con med finder. */
-    @Inject
-    private SuperHD60HConMedRepository superHD60HConMedRepository;
-    
-    /** The daily attendance item repository. */
-    @Inject
-    private DailyAttendanceItemRepository dailyAttendanceItemRepository;
-    
-    /** The outside OT setting repository. */
-    @Inject
-    private OutsideOTSettingRepository outsideOTSettingRepository;
- 
-    
-    /** The Constant LANGUAGE_ID_JAPAN. */
-    public static final String LANGUAGE_ID_JAPAN = "ja"; 
-    
-	/** The Constant TABLE_ONE. */
-	private static final String TABLE_ONE = "Table 001";
+	/**
+	 * Gets the header column threes.
+	 *
+	 * @param query the query
+	 * @return the header column threes
+	 */
+	public List<MasterHeaderColumn> getHeaderColumnThrees(MasterListExportQuery query) {
+		List<MasterHeaderColumn> columns = new ArrayList<>();
+		columns.add(new MasterHeaderColumn(NUMBER_COLS_START, "", ColumnTextAlign.LEFT, "", true));
+		String companyId = AppContexts.user().companyId();
+		this.outsideOTSettingRepository.findAllOvertime(companyId).forEach(overtime -> {
+			columns.add(new MasterHeaderColumn(NUMBER_COLS + overtime.getOvertimeNo().value, overtime.getName().v(),
+					ColumnTextAlign.LEFT, "", true));
+		});
+		return columns;
+	}
 	
-	/** The Constant TABLE_TWO. */
-	private static final String TABLE_TWO = "Table 002";
-    
-    /** The start row. */
-	private int startRow = 0;
-	
-	/** The start col. */
-	private int startCol = 0;
-	
-	
-	/** The Constant START_OVERTIME. */
-	public static final int START_OVERTIME = 13;
-	
-	/** The Constant START_OVERTIME_RATE. */
-	public static final int START_OVERTIME_RATE = 33;
-	
-	/** The Constant START_OVERTIME_RATE_NEXT. */
-	public static final int START_OVERTIME_RATE_NEXT = 34;
-		
-	/** The Constant START_BREAKDOWN_ITEM. */
-	public static final int START_BREAKDOWN_ITEM = 21;
-	
-	/** The Constant START_PREMIUM_RATE. */
-	public static final int START_PREMIUM_RATE = 35;
-	
-	/** The Constant START_COL. */
-	public static final int START_COL = 1;
-	
-	/** The Constant START_COL_ZERO. */
-	public static final int START_COL_ZERO = 0;
-	
-	/** The Constant START_COL_BREADOWN_LANG. */
-	public static final int START_COL_BREADOWN_LANG = 104;
-	
-	/** The Constant NUMBER_ROWS_A5_1. */
-	private static final int NUMBER_ROWS_A5_1 = 8;
-	
-	/** The Constant NUMBER_COLS_1. */
-	private static final String NUMBER_COLS_1 = "Column 1";
-	
-	/** The Constant NUMBER_COLS_12. */
-	private static final String NUMBER_COLS_2 = "Column 2";
-	
-	/** The Constant NUMBER_COLS_3. */
-	private static final String NUMBER_COLS_3 = "Column 3";
-	
-	/** The Constant NUMBER_COLS_4. */
-	private static final String NUMBER_COLS_4 = "Column 4";
-	
-	/** The Constant NUMBER_COLS_1. */
-	private static final String NUMBER_COLS_11 = "Column 11";
-	
-	/** The Constant NUMBER_COLS_21. */
-	private static final String NUMBER_COLS_21 = "Column 21";
-	
-	/** The Constant NUMBER_COLS_31. */
-	private static final String NUMBER_COLS_31 = "Column 31";
-	
-	/** The Constant NUMBER_COLS_41. */
-	private static final String NUMBER_COLS_41 = "Column 41";
-	
-	/** The Constant NAME_VALUE_A5_1. */
-	private static final String NAME_VALUE_A5_1 ="KMK010_49";
-	
-	/** The Constant NUMBER_ROWS_A6_1. */
-	private static final int NUMBER_ROWS_A6_1 = 9;
-	
-	/** The Constant NUMBER_COLS_A6_1. */
-	private static final int NUMBER_COLS_A6_1 = 0;
-	
-	/** The Constant NUMBER_ROWS_A7_1. */
-	private static final int NUMBER_ROWS_A7_1 = 12;
+	/**
+	 * Gets the header column fours.
+	 *
+	 * @return the header column fours
+	 */
+	public List<MasterHeaderColumn> getHeaderColumnFours() {
+		List<MasterHeaderColumn> columns = new ArrayList<>();
+		columns.add(new MasterHeaderColumn(NUMBER_COLS_1, TextResource.localize(NAME_VALUE_A15_1), ColumnTextAlign.LEFT,
+				"", true));
+		columns.add(new MasterHeaderColumn(NUMBER_COLS_2, TextResource.localize(NAME_VALUE_A15_2), ColumnTextAlign.LEFT,
+				"", true));
+		columns.add(new MasterHeaderColumn(NUMBER_COLS_3, TextResource.localize(NAME_VALUE_A15_3), ColumnTextAlign.RIGHT,
+				"", true));
+		return columns;
+	}
 
-	/** The Constant NUMBER_COLS_A7_1. */
-	private static final int NUMBER_COLS_A7_1 = 0;
 
-	/** The Constant NAME_VALUE_A7_1. */
-	private static final String NAME_VALUE_A7_1 = "KMK010_51";
-
-	/** The Constant NUMBER_ROWS_A7_2. */
-	private static final int NUMBER_ROWS_A7_2 = 12;
-
-	/** The Constant NUMBER_COLS_A7_2. */
-	private static final int NUMBER_COLS_A7_2 = 1;
-
-	/** The Constant NAME_VALUE_A7_2. */
-	private static final String NAME_VALUE_A7_2 = "KMK010_52";
-
-	/** The Constant NUMBER_ROWS_A7_3. */
-	private static final int NUMBER_ROWS_A7_3 = 12;
-
-	/** The Constant NUMBER_COLS_A7_3. */
-	private static final int NUMBER_COLS_A7_3 = 2;
-
-	/** The Constant NAME_VALUE_A7_3. */
-	private static final String NAME_VALUE_A7_3 = "KMK010_53";
-	
-	/** The Constant NUMBER_ROWS_A7_4. */
-	private static final int NUMBER_ROWS_A7_4 = 12;
-
-	/** The Constant NUMBER_COLS_A7_4. */
-	private static final int NUMBER_COLS_A7_4 = 3;
-
-	/** The Constant NAME_VALUE_A7_4. */
-	private static final String NAME_VALUE_A7_4 = "KMK010_54";
-	
-	/** The Constant NUMBER_ROWS_A7_5. */
-	private static final int NUMBER_ROWS_A7_5 = 12;
-
-	/** The Constant NUMBER_COLS_A7_5. */
-	private static final int NUMBER_COLS_A7_5 = 4;
-
-	/** The Constant NAME_VALUE_A7_5. */
-	private static final String NAME_VALUE_A7_5 = "KMK010_66";
-	
-	/** The Constant NUMBER_ROWS_A9_1. */
-	private static final int NUMBER_ROWS_A9_1 = 20;
-	
-	/** The Constant NUMBER_COLS_A9_1. */
-	private static final int NUMBER_COLS_A9_1 = 0;
-	
-	/** The Constant NAME_VALUE_A9_1. */
-	private static final String NAME_VALUE_A9_1 = "KMK010_55";
-	
-	/** The Constant NUMBER_ROWS_A9_2. */
-	private static final int NUMBER_ROWS_A9_2 = 20;
-	
-	/** The Constant NUMBER_COLS_A9_2. */
-	private static final int NUMBER_COLS_A9_2 = 1;
-	
-	/** The Constant NAME_VALUE_A9_2. */
-	private static final String NAME_VALUE_A9_2 = "KMK010_56";
-	
-	/** The Constant NUMBER_ROWS_A9_3. */
-	private static final int NUMBER_ROWS_A9_3 = 20;
-	
-	/** The Constant NUMBER_COLS_A9_3. */
-	private static final int NUMBER_COLS_A9_3 = 2;
-	
-	/** The Constant NAME_VALUE_A9_3. */
-	private static final String NAME_VALUE_A9_3 = "KMK010_57";
-	
-	/** The Constant NUMBER_ROWS_A9_4. */
-	private static final int NUMBER_ROWS_A9_4 = 20;
-	
-	/** The Constant NUMBER_COLS_A9_4. */
-	private static final int NUMBER_COLS_A9_4 = 3;
-	
-	/** The Constant NAME_VALUE_A9_4. */
-	private static final String NAME_VALUE_A9_4 = "KMK010_58";
-	/** The Constant NUMBER_ROWS_A9_4. */
-	private static final int NUMBER_ROWS_A9_5 = 20;
-	
-	/** The Constant NUMBER_COLS_A9_4. */
-	private static final int NUMBER_COLS_A9_5 = 3;
-	
-	/** The Constant TOTA_NUMBER_COLS_A9_5. */
-	private static final int TOTA_NUMBER_COLS_A9_5 = 100;
-	
-	/** The Constant NAME_VALUE_A9_4. */
-	private static final String NAME_VALUE_A9_5 = "KMK010_59";
-	
-
-	/** The Constant NUMBER_ROWS_A9_4. */
-	private static final int NUMBER_ROWS_A9_6 = 20;
-	
-	/** The Constant NUMBER_COLS_A9_4. */
-	private static final int NUMBER_COLS_A9_6 = 104;
-	
-	/** The Constant NAME_VALUE_A9_4. */
-	private static final String NAME_VALUE_A9_6 = "KMK010_67";
-	
-	/** The Constant NUMBER_ROWS_A15_1. */
-	private static final int NUMBER_ROWS_A15_1 = 47;
-	
-	/** The Constant NUMBER_COLS_A15_1. */
-	private static final int NUMBER_COLS_A15_1 = 0;
-	
-	/** The Constant NAME_VALUE_A15_1. */
-	private static final String NAME_VALUE_A15_1 = "KMK010_60";
-	
-	/** The Constant NUMBER_ROWS_A15_1. */
-	private static final int NUMBER_ROWS_A15_2 = 47;
-	
-	/** The Constant NUMBER_COLS_A15_1. */
-	private static final int NUMBER_COLS_A15_2 = 1;
-	
-	/** The Constant NAME_VALUE_A15_1. */
-	private static final String NAME_VALUE_A15_2 = "KMK010_61";
-	
-	/** The Constant NUMBER_ROWS_A15_1. */
-	private static final int NUMBER_ROWS_A15_3 = 47;
-	
-	/** The Constant NUMBER_ROWS_A16_1. */
-	private static final int NUMBER_ROWS_A16_1 = 48;
-	
-	/** The Constant NUMBER_ROWS_A16_2. */
-	private static final int NUMBER_ROWS_A16_2 = 48;
-	
-	/** The Constant NUMBER_ROWS_A16_2. */
-	private static final int NUMBER_ROWS_A16_3 = 48;
-	
-	/** The Constant NUMBER_COLS_A16_1. */
-	private static final int NUMBER_COLS_A16_1 = 0;
-	
-	/** The Constant NUMBER_COLS_A16_2. */
-	private static final int NUMBER_COLS_A16_2 = 1;
-	
-	/** The Constant NUMBER_COLS_A16_3. */
-	private static final int NUMBER_COLS_A16_3 = 2;
-	
-	/** The Constant NUMBER_COLS_A15_1. */
-	private static final int NUMBER_COLS_A15_3 = 2;
-	
-	/** The Constant NAME_VALUE_A15_1. */
-	private static final String NAME_VALUE_A15_3= "KMK010_62";
-
-	/** The Constant TRUE_SETTING_RATE. */
-	private static final String TRUE_SETTING_RATE= "休暇発生する";
-	
-	/** The Constant FALSE_SETTING_RATE. */
-	private static final String FALSE_SETTING_RATE= "休暇発生しない";
-	
-	
-    
 	/**
 	 * To percent.
 	 *
-	 * @param percent the percent
+	 * @param percent
+	 *            the percent
 	 * @return the string
 	 */
 	private String toPercent(int percent) {
@@ -537,7 +556,8 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 	/**
 	 * To use.
 	 *
-	 * @param use the use
+	 * @param use
+	 *            the use
 	 * @return the string
 	 */
 	private String toUse(Boolean use) {
@@ -545,46 +565,6 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 			return "o";
 		}
 		return "-";
-	}
-
-	/**
-	 * Gets the header report.
-	 *
-	 * @return the header report
-	 */
-	private List<MasterData> getHeaderReport() {
-
-		
-
-		/*
-		// add header
-		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A5_1, NUMBER_COLS_A5_1,
-		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A7_1, NUMBER_COLS_A7_1,
-				TextResource.localize(NAME_VALUE_A7_1)));
-		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A7_2, NUMBER_COLS_A7_2,
-				TextResource.localize(NAME_VALUE_A7_2)));
-		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A7_3, NUMBER_COLS_A7_3,
-				TextResource.localize(NAME_VALUE_A7_3)));
-		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A7_4, NUMBER_COLS_A7_4,
-				TextResource.localize(NAME_VALUE_A7_4)));
-		if (!isLanugeJapan) {
-			reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A7_5, NUMBER_COLS_A7_5,
-					TextResource.localize(NAME_VALUE_A7_5)));
-		}
-		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_1, NUMBER_COLS_A9_1,
-				TextResource.localize(NAME_VALUE_A9_1)));
-		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_2, NUMBER_COLS_A9_2,
-				TextResource.localize(NAME_VALUE_A9_2)));
-		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_3, NUMBER_COLS_A9_3,
-				TextResource.localize(NAME_VALUE_A9_3)));
-		reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_4, NUMBER_COLS_A9_4,
-				TextResource.localize(NAME_VALUE_A9_4)));
-		for (int index = START_COL; index <= TOTA_NUMBER_COLS_A9_5; index++) {
-			reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A9_5, NUMBER_COLS_A9_5 + index,
-					TextResource.localize(NAME_VALUE_A9_5) + index));
-		}
-		*/
-		return new ArrayList<>();
 	}
 
 	/**
@@ -618,4 +598,3 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 
 	}
 }
-
