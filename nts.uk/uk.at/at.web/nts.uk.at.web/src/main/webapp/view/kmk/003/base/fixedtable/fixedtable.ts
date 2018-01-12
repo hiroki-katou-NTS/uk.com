@@ -422,6 +422,9 @@ module nts.fixedtable {
                 if (item.template.indexOf('ntsTimeRangeEditor') != -1) {
                     item.width = 173;
                 }
+                if (item.template.indexOf('ntsComboBox') != -1) {
+                    item.width = item.width < 70 ? 70 : item.width;
+                }
                 if (item.isRoudingColumn) {
                     rowHtml += '<!-- ko if: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
                                     + self.generateColumnHtml(item, false)
