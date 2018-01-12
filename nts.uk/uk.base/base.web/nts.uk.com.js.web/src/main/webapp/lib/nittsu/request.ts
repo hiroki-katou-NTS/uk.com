@@ -155,7 +155,7 @@ module nts.uk.request {
     }
 
     export function ajax(path: string, data?: any, options?: any);
-    export function ajax(webAppId: WebAppId, path: string, data?: any, options?: any) {
+    export function ajax(webAppId: WebAppId, path: string, data?: any, options?: any, restoresSession?: boolean) {
 
         if (typeof arguments[1] !== 'string') {
             return ajax.apply(null, _.concat(location.currentAppId, arguments));
@@ -163,6 +163,8 @@ module nts.uk.request {
 
         var dfd = $.Deferred();
         options = options || {};
+        
+        restoresSession = restoresSession !== false;
 
         if (typeof data === 'object') {
             data = JSON.stringify(data);
@@ -172,27 +174,35 @@ module nts.uk.request {
             .mergeRelativePath(WEB_APP_NAME[webAppId] + '/')
             .mergeRelativePath(location.ajaxRootDir)
             .mergeRelativePath(path);
-
-        $.ajax({
-            type: options.method || 'POST',
-            contentType: options.contentType || 'application/json',
-            url: webserviceLocator.serialize(),
-            dataType: options.dataType || 'json',
-            data: data,
-            headers: {
-                'PG-Path': location.current.serialize()
-            }
-        }).done(function(res) {
-            if (nts.uk.util.exception.isErrorToReject(res)) {
-                dfd.reject(res);
-            } else if (res !== undefined && res.commandResult === true) {
-                dfd.resolve(res.value);
-            } else {
-                dfd.resolve(res);
-            }
-        }).fail(function () {
-            specials.errorPages.systemError();
-        });
+        
+        function ajaxFunc() {
+            $.ajax({
+                type: options.method || 'POST',
+                contentType: options.contentType || 'application/json',
+                url: webserviceLocator.serialize(),
+                dataType: options.dataType || 'json',
+                data: data,
+                headers: {
+                    'PG-Path': location.current.serialize()
+                }
+            }).done(function(res) {
+                if (nts.uk.util.exception.isErrorToReject(res)) {
+                    dfd.reject(res);
+                } else if (res !== undefined && res.commandResult === true) {
+                    dfd.resolve(res.value);
+                } else {
+                    dfd.resolve(res);
+                }
+            }).fail(function () {
+                specials.errorPages.systemError();
+            });
+        }
+        
+        if (restoresSession && webAppId != nts.uk.request.location.currentAppId) {
+            doTaskShareingSesion(webAppId, ajaxFunc);
+        } else {
+            ajaxFunc();
+        }
 
         return dfd.promise();
     }
@@ -215,31 +225,49 @@ module nts.uk.request {
             .mergeRelativePath(location.ajaxRootDir)
             .mergeRelativePath(path);
 
-        $.ajax({
-            type: options.method || 'POST',
-            contentType: options.contentType || 'application/json',
-            url: webserviceLocator.serialize(),
-            dataType: options.dataType || 'json',
-            data: data,
-            async: false,
-            headers: {
-                'PG-Path': location.current.serialize()
-            },
-            success: function(res) {
-                if (nts.uk.util.exception.isErrorToReject(res)) {
-                    dfd.reject(res);
-                } else if (res !== undefined && res.commandResult === true) {
-                    dfd.resolve(res.value);
-                } else {
-                    dfd.resolve(res);
+        function ajaxFunc() {
+            $.ajax({
+                type: options.method || 'POST',
+                contentType: options.contentType || 'application/json',
+                url: webserviceLocator.serialize(),
+                dataType: options.dataType || 'json',
+                data: data,
+                async: false,
+                headers: {
+                    'PG-Path': location.current.serialize()
+                },
+                success: function(res) {
+                    if (nts.uk.util.exception.isErrorToReject(res)) {
+                        dfd.reject(res);
+                    } else if (res !== undefined && res.commandResult === true) {
+                        dfd.resolve(res.value);
+                    } else {
+                        dfd.resolve(res);
+                    }
+                },
+                error: function(xhr,status, error) {
+                    specials.errorPages.systemError();
                 }
-            },
-            error: function(xhr,status, error) {
-                specials.errorPages.systemError();
-            }
-        });
+            });
+        }
+        
+        if (webAppId != nts.uk.request.location.currentAppId) {
+            doTaskShareingSesion(webAppId, ajaxFunc);
+        } else {
+            ajaxFunc();
+        }
 
         return dfd.promise();
+    }
+    
+    function doTaskShareingSesion(webAppId: WebAppId, task: () => void) {
+         login.keepSerializedSession()
+            .then(() => {
+                return login.restoreSessionTo(webAppId);
+            })
+            .then(() => {
+                task();
+            });
     }
 	
     export function uploadFile(data: FormData, option?: any): JQueryPromise<any> {
@@ -407,7 +435,11 @@ module nts.uk.request {
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
                 .mergeRelativePath(path).serialize();
         
-        uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
+        if (data === undefined) {
+            uk.sessionStorage.removeItem(STORAGE_KEY_TRANSFER_DATA)
+        } else {
+            uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
+        }
         
         login.keepSerializedSession()
             .then(() => {
@@ -469,7 +501,7 @@ module nts.uk.request {
         
         export function restoreSessionTo(webAppId: WebAppId) {
             let serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
-            return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket);
+            return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
         }
     }
     
