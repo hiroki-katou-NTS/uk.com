@@ -49,8 +49,8 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 self.settingEnableComparisonMaxValueField();
             });
 
-            self.currentErrAlaCheckCondition().compoundCondition().hasGroup2.subscribe((hsGroup) => {
-                if (hsGroup) {
+            self.currentErrAlaCheckCondition().compoundCondition().hasGroup2.subscribe((hsGroup2) => {
+                if (hsGroup2) {
                     $("#table-group2condition").ntsFixedTable();
                 }
             });
