@@ -59,7 +59,7 @@
                 });
                 
             }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
             }).always(function() {
                 nts.uk.ui.block.clear();      
             });
