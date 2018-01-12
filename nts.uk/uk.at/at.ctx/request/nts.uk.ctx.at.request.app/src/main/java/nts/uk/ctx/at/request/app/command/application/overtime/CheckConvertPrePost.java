@@ -31,8 +31,8 @@ import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReas
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -47,7 +47,7 @@ public class CheckConvertPrePost {
 	private IOvertimePreProcess iOvertimePreProcess;
 	
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
@@ -143,7 +143,7 @@ public class CheckConvertPrePost {
 			SiftType siftType = new SiftType();
 
 			siftType.setSiftCode(appOvertime.getSiftCode().toString());
-			Optional<WorkTime> workTime = workTimeRepository.findByCode(companyID,
+			Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyID,
 					appOvertime.getSiftCode().toString());
 			if (workTime.isPresent()) {
 				siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());

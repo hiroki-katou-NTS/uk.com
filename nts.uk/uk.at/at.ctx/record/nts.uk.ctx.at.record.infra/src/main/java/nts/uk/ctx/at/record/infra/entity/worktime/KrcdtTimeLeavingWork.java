@@ -151,7 +151,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	private static void toEntityAttendance(KrcdtTimeLeavingWork krcdtTimeLeavingWork, TimeActualStamp attendanceStamp){
 		if (attendanceStamp != null) {
 			if(attendanceStamp.getActualStamp() != null){
-				krcdtTimeLeavingWork.attendanceActualPlaceCode = attendanceStamp.getActualStamp().getLocationCode().v() != null ? attendanceStamp.getActualStamp().getLocationCode().v() : null;
+				krcdtTimeLeavingWork.attendanceActualPlaceCode = attendanceStamp.getActualStamp().getLocationCode() != null ? attendanceStamp.getActualStamp().getLocationCode().v() : null;
 				krcdtTimeLeavingWork.attendanceActualRoudingTime = attendanceStamp.getActualStamp().getAfterRoundingTime() != null ? attendanceStamp.getActualStamp().getAfterRoundingTime().valueAsMinutes() : null;
 				krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceStamp.getActualStamp().getStampSourceInfo() != null ? attendanceStamp.getActualStamp().getStampSourceInfo().value : null;
 				krcdtTimeLeavingWork.attendanceActualTime = attendanceStamp.getActualStamp().getTimeWithDay() != null ? attendanceStamp.getActualStamp().getTimeWithDay().v() : null;

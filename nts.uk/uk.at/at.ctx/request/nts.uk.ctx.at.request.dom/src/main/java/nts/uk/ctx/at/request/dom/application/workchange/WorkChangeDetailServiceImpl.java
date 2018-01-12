@@ -19,8 +19,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
@@ -50,7 +50,7 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	ApplicationReasonRepository appFormReposity;
 	
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
@@ -76,7 +76,7 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 		//アルゴリズム「勤務変更申請基本データ（更新）」を実行する
 		AppWorkChange appWorkChange = appWorkChangeReposity.getAppworkChangeById(cid, appId).get();		
 		//Get work type name & work time name
-		Optional<WorkTime> workTime = workTimeRepository.findByCode(cid, appWorkChange.getWorkTimeCd());
+		Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(cid, appWorkChange.getWorkTimeCd());
 		if (workTime.isPresent()) {
 			appWorkChange.setWorkTimeName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().v());
 		}

@@ -27,8 +27,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 @Stateless
 public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	final String DATE_FORMAT = "yyyy/MM/dd";
@@ -45,9 +45,9 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	@Inject
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
 	@Inject
-	private WorkTimeSetRepository workTimeSetRepository;
+	private PredetemineTimeSettingRepository workTimeSetRepository;
 	@Inject
-	private IOvertimePreProcess IOvertimePreProcess;
+	private IOvertimePreProcess overtimePreProcess;
 	
 	/* 
 	 * 06-01_色表示チェック
@@ -93,11 +93,11 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		if(condition){
 			//Imported(申請承認)「勤務実績」を取得する
 			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
-			Optional<WorkTimeSet> workTimeSetOtp = workTimeSetRepository.findByCode(companyID, siftCD);
+			Optional<PredetemineTimeSetting> workTimeSetOtp = workTimeSetRepository.findByWorkTimeCode(companyID, siftCD);
 			if (workTimeSetOtp.isPresent()) {
-				WorkTimeSet workTimeSet = workTimeSetOtp.get();
+				PredetemineTimeSetting workTimeSet = workTimeSetOtp.get();
 				
-				if(IOvertimePreProcess.checkTimeDay(appDate.toString("yyyy/MM/dd"),workTimeSet)){
+				if(overtimePreProcess.checkTimeDay(appDate.toString("yyyy/MM/dd"),workTimeSet)){
 					// 06-04-3_当日の場合
 					overTimeInputs = checkDuringTheDay(companyID, employeeID, appDate.toString("yyyy/MM/dd"), requestAppDetailSetting, siftCD, overTimeInputs,recordWorkInfoImport);
 				}else{

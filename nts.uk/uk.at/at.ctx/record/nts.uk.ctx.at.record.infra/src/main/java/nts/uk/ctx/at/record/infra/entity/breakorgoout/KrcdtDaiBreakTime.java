@@ -69,6 +69,6 @@ public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 					c.getEndTime() == null || c.getEndTime().getTimeWithDay() == null ? null : c.getEndTime().getTimeWithDay().valueAsMinutes(),
 					c.getEndTime() == null || c.getEndTime().getAfterRoundingTime() == null ? null : c.getEndTime().getAfterRoundingTime().valueAsMinutes(), 
 					c.getEndTime() == null || c.getEndTime().getLocationCode() == null ? null : c.getEndTime().getLocationCode().v(),
-					c.getEndTime() == null || c.getEndTime().getLocationCode() == null ? null : c.getEndTime().getStampSourceInfo().value)).collect(Collectors.toList());
+					c.getEndTime() == null || c.getEndTime().getStampSourceInfo() == null ? null : c.getEndTime().getStampSourceInfo().value)).collect(Collectors.toList());
 	}
 }

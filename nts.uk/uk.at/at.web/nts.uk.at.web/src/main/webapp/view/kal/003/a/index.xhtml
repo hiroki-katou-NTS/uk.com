@@ -84,7 +84,7 @@
 								<input data-bind="ntsTextEditor: {value: displayAvailableRoles, readonly: true}" />
 								<button tabindex="9">#{i18n.getText('KAL003_14')}</button>
 							</div>
-							<div class="valign-center control-group" id="AA1">
+							<div class="valign-center control-group" data-bind="visible: category() == 5">
 								<label class="flabel">#{i18n.getText('KAL003_50')}</label>
 								<div data-bind="ntsRadioBoxGroup: {
 									options: $parent.radioItemList,

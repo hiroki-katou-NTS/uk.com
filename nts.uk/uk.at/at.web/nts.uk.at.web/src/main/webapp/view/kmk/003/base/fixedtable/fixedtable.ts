@@ -351,9 +351,6 @@ module nts.fixedtable {
             self.tableStyle.height = heigthCell * self.maxRowDisplay + 31;
             
             self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0) + 30;
-            if (self.tableStyle.width > 630) {
-                self.tableStyle.width = 630
-            }
         }
         
         /**
@@ -423,10 +420,7 @@ module nts.fixedtable {
                 
                 // set width fixed control TimeRange
                 if (item.template.indexOf('ntsTimeRangeEditor') != -1) {
-                    item.width = 243;
-                }
-                if (item.template.indexOf('ntsComboBox') != -1) {
-                    item.width = item.width < 105 ? 105 : item.width;
+                    item.width = 173;
                 }
                 if (item.isRoudingColumn) {
                     rowHtml += '<!-- ko if: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
@@ -706,17 +700,13 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 // set height table
                 //screenModel.$tableSelector.height(screenModel.tableStyle.height);
 
-                // remove min-width default of ntsComboBox
-                screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
-                    $("." + column.cssClassName).css({ "min-width": "" });
-                });
                 if (document.getElementById($(element)[0].id)) {
                     document.getElementById($(element)[0].id).addEventListener('timerangedatachange', function(event) {
                         screenModel.itemList.valueHasMutated();
                     });
                 }
                 screenModel.initEventChangeComboBox($(element));
-                screenModel.$element.find('.table-fixed-kmk003').ntsFixedTable({width: 630, height: screenModel.tableStyle.height})
+                screenModel.$element.find('.table-fixed-kmk003').ntsFixedTable({height: screenModel.tableStyle.height})
                 //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
                 screenModel.$element.on('click', '.check-box-column > div', function(event){
                     _.defer(() => screenModel.itemList.valueHasMutated());
