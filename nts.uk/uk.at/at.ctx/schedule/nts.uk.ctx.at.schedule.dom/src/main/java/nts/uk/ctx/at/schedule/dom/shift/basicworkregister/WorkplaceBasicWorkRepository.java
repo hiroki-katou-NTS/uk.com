@@ -11,28 +11,27 @@ import java.util.Optional;
  * The Interface WorkplaceBasicWorkRepository.
  */
 public interface WorkplaceBasicWorkRepository {
-	
+
 	/**
 	 * Insert.
 	 *
 	 * @param workplaceBasicWork the workplace basic work
 	 */
 	void insert(WorkplaceBasicWork workplaceBasicWork);
-	
+
 	/**
 	 * Update.
 	 *
 	 * @param workplaceBasicWork the workplace basic work
 	 */
 	void update(WorkplaceBasicWork workplaceBasicWork);
-	
+
 	/**
 	 * Removes the.
 	 *
 	 * @param workplaceId the workplace id
 	 */
 	void remove(String workplaceId);
-	
 
 	/**
 	 * Find all.
@@ -41,13 +40,13 @@ public interface WorkplaceBasicWorkRepository {
 	 * @return the list
 	 */
 	Optional<WorkplaceBasicWork> findById(String workplaceId);
-	
+
 	/**
 	 * Find workplace.
 	 *
 	 * @return the list
 	 */
-	List<WorkplaceId> findSetting();
-	
-//	List<WorkplaceBasicWork> findAll();
+	List<String> findSetting();
+
+	// List<WorkplaceBasicWork> findAll();
 }

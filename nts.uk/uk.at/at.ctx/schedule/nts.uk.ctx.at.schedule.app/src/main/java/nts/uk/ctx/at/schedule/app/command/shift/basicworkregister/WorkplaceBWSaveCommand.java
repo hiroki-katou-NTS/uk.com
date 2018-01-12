@@ -12,7 +12,6 @@ import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkGetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
 
 /**
  * The Class WorkplaceBWSaveCommand.
@@ -62,8 +61,8 @@ public class WorkplaceBWSaveCommand extends BaseBWSaveCommand {
 		 * WorkplaceBasicWorkGetMemento#getWorkPlaceId()
 		 */
 		@Override
-		public WorkplaceId getWorkPlaceId() {
-			return new WorkplaceId(this.command.workplaceId);
+		public String getWorkPlaceId() {
+			return this.command.workplaceId;
 		}
 
 		/*

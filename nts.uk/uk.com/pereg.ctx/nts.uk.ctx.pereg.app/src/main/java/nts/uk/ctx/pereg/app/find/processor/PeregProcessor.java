@@ -179,7 +179,8 @@ public class PeregProcessor {
 		PeregDto peregDto = null;
 		
 		boolean ctgIsViewOnly = false;
-		if (perInfoCtg.getIsFixed() == IsFixed.FIXED && query.getInfoId() != null) {
+		if ((perInfoCtg.getIsFixed() == IsFixed.FIXED && query.getInfoId() != null)
+				||(query.getInfoId() == null && perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO)) {
 			peregDto = layoutingProcessor.findSingle(query);
 		}
 		if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO
