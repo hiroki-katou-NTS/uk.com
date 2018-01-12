@@ -547,7 +547,7 @@ module ccg013.a.viewmodel {
 
         optionEDialog(): void {
             var self = this;
-            var data = self.currentWebMenu();
+            var data = ko.toJS(self.currentWebMenu());
             setShared("CCG013E_COPY", data);
             modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
                 let newWebMenuCode = getShared("CCG013E_WEB_CODE_COPY");
