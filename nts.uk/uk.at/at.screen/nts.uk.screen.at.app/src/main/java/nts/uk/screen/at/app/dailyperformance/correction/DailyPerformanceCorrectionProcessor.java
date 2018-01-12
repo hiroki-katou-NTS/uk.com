@@ -349,9 +349,11 @@ public class DailyPerformanceCorrectionProcessor {
 		/** 画面制御に関する情報を取得する | Acquire information on screen control */
 		// アルゴリズム「社員の日別実績の権限をすべて取得する」を実行する | Execute "Acquire all permissions of
 		// employee's daily performance"--
-		// roleId = AppContexts.user().roles().forPersonalInfo() fixed
-		List<DailyPerformanceAuthorityDto> dailyPerformans = repo
-				.findDailyAuthority("00000000-0000-0000-0000-000000000001");
+		String roleId = AppContexts.user().roles().forAttendance();
+		List<DailyPerformanceAuthorityDto> dailyPerformans = new ArrayList<>();
+		if (roleId != null) {
+			dailyPerformans = repo.findDailyAuthority(roleId);
+		}
 		if (dailyPerformans.isEmpty()) {
 			throw new BusinessException("Msg_671");
 		} else {

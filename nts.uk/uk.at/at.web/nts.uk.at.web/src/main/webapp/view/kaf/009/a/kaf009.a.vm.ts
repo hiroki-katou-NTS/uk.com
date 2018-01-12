@@ -191,6 +191,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.selectedBack.subscribe(value => { $("#inpEndTime1").ntsError("clear"); });
                     self.selectedGo2.subscribe(value => { $("#inpStartTime2").ntsError("clear"); });
                     self.selectedBack2.subscribe(value => { $("#inpEndTime2").ntsError("clear"); });
+                    //Focus process
+                    self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });
                 }
                 dfd.resolve();
             }).fail((res) => {
