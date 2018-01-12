@@ -46,6 +46,7 @@ module nts.uk.ui.jqueryExtentions {
                     $parent.attr('data-value', selectedValue);
                     $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);
                     $grid.igGrid("commit");
+                    $grid.trigger("switchvaluechanged", {columnKey: columnKey, rowKey: rowKey, value: parseInt(selectedValue)});
                     if ($grid.igGrid("hasVerticalScrollbar")) {
 //                        let current = $grid.ntsGridList("getSelected");
 //                        if(current !== undefined){
