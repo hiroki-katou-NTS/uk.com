@@ -540,9 +540,9 @@ module nts.fixedtable {
                 cssClassName = columnSetting.cssClassName;
             }
             if (template.indexOf('ntsCheckBox') > -1) {
-                cssClassName += ' check-box-column';
+                cssClassName += 'center-align check-box-column';
             }
-            return "<td style='text-align: center;' class='" + cssClassName + "'>" + template + "</td>";
+            return "<td class='" + cssClassName + "'>" + template + "</td>";
         }
         
         /**
