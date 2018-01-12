@@ -26,9 +26,9 @@ module nts.uk.pr.view.ccg015.b {
                 self.selectedUsingMyPage = ko.observable(0);
                 self.tabs = ko.observableArray([
                     { id: 'tab_widget', title: nts.uk.resource.getText("Enum_TopPagePartType_Widget"), content: '#widget', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab_dash_board', title: nts.uk.resource.getText("Enum_TopPagePartType_Dashboard"), content: '#dash_board', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab_flow_menu', title: nts.uk.resource.getText("Enum_TopPagePartType_Flowmenu"), content: '#flow_menu', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab_url', title: nts.uk.resource.getText("Enum_TopPagePartType_Url"), content: '#url', enable: ko.observable(true), visible: ko.observable(true) }
+                    { id: 'tab_dash_board', title: nts.uk.resource.getText("Enum_TopPagePartType_DashBoard"), content: '#dash_board', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab_flow_menu', title: nts.uk.resource.getText("Enum_TopPagePartType_FlowMenu"), content: '#flow_menu', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab_url', title: nts.uk.resource.getText("Enum_TopPagePartType_ExternalUrl"), content: '#url', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.selectedTab = ko.observable('tab_widget');
                 self.myPageSettingModel = ko.observable(new MyPageSettingModel());

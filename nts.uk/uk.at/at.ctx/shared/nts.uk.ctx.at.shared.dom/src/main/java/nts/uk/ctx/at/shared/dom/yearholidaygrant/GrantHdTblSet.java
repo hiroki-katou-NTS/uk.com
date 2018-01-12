@@ -81,10 +81,14 @@ public class GrantHdTblSet extends AggregateRoot {
 			// 条件NO：1、条件値 > 条件NO：2、条件値 > 条件NO：3、条件値 > 条件NO：4、条件値 > 条件NO：5、条件値
 			if(this.grantConditions.get(i - 1).getConditionValue() != null) {
 				int firstValue = this.grantConditions.get(i - 1).getConditionValue().v();
-				int secondValue = currentCondition.getConditionValue().v();
-				if (firstValue <= secondValue) {
-					throw new BusinessException("Msg_264");
-				}
+				
+				if(currentCondition.getConditionValue() != null) {
+					int secondValue = currentCondition.getConditionValue().v();
+					
+					if (firstValue <= secondValue) {
+						throw new BusinessException("Msg_264");
+					}
+				}				
 			}
 		}
 	}

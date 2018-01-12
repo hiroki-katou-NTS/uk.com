@@ -7,7 +7,9 @@ package nts.uk.ctx.at.shared.app.find.worktime.worktimeset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -20,6 +22,7 @@ import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSett
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -208,14 +211,16 @@ public class WorkTimeSettingFinder {
 	private List<WorkTimeDto> getWorkTimeDtos(List<WorkTimeSetting> workTimeItems,
 			List<PredetemineTimeSetting> workTimeSetItems) {
 		List<WorkTimeDto> workTimeDtos = new ArrayList<>();
+		Map<WorkTimeCode, WorkTimeSetting> mapworkTimeItems = workTimeItems.stream()
+				.collect(Collectors.toMap(WorkTimeSetting::getWorktimeCode, Function.identity()));
 		if (workTimeItems.isEmpty() || workTimeSetItems.isEmpty()) {
 			workTimeDtos = Collections.emptyList();
 		} else {
 			for (PredetemineTimeSetting item : workTimeSetItems) {
-				WorkTimeSetting currentWorkTime = workTimeItems.stream()
-						.filter(x -> x.getWorktimeCode().equals(item.getWorkTimeCode())).findAny()
-						.get();
-				if (item.getPrescribedTimezoneSetting().getLstTimezone().isEmpty() || this.checkNotUse(item)) {
+				WorkTimeSetting currentWorkTime = mapworkTimeItems.get(item.getWorkTimeCode());
+				// || this.checkNotUse(item)
+				if (currentWorkTime == null
+						|| item.getPrescribedTimezoneSetting().getLstTimezone().isEmpty()) {
 					continue;
 				} else {
 					TimezoneUse timezone1 = item.getPrescribedTimezoneSetting().getLstTimezone()
@@ -254,7 +259,8 @@ public class WorkTimeSettingFinder {
 	 */
 	private boolean checkNotUse(PredetemineTimeSetting workTimeSet) {
 		for (TimezoneUse timezone : workTimeSet.getPrescribedTimezoneSetting().getLstTimezone()) {
-			if (timezone.getUseAtr().equals(UseSetting.NOT_USE) && timezone.getWorkNo() == TimezoneUse.SHIFT_ONE)
+			if (timezone.getUseAtr().equals(UseSetting.NOT_USE)
+					&& timezone.getWorkNo() == TimezoneUse.SHIFT_ONE)
 				return true;
 		}
 		return false;
