@@ -122,6 +122,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 self.appWorkChange().workChange().workTypeName(self.appWorkChange().dataWork().selectedWorkTypeName);
                 self.appWorkChange().workChange().workTimeCd(self.appWorkChange().dataWork().selectedWorkTimeCd);
                 self.appWorkChange().workChange().workTimeName(self.appWorkChange().dataWork().selectedWorkTimeName);
+                //Focus process
+                self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });
                 //フォーカス制御
                 self.changeFocus('#inputdatestart'); 
                               

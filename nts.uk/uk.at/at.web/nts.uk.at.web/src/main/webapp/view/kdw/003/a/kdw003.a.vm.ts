@@ -367,19 +367,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
                 if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
                     if (data.columnKey.indexOf("Name") != -1) {
-//                        let value = "";
-//                        if (self.checkIsColumn(dataTemp.cellDatas, data.columnKey.substring(4, data.columnKey.length))) {
-//                            value = $("#dpGrid").igGrid("getCellValue", data.rowId, "NO" + data.columnKey.substring(4, data.columnKey.length));
-//                        }
-//                        else {
-//                            value = $("#dpGrid").igGrid("getCellValue", data.rowId, "Code" + data.columnKey.substring(4, data.columnKey.length));
-//                        }
-//                        //get layout , and type
-//                        let layoutAndType : any  = _.find(self.itemValueAll(), (item :any) =>{
-//                              return item.itemId == data.columnKey.substring(4, data.columnKey.length);
-//                            });
-//                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(4, data.columnKey.length), value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
-//                        dataChangeProcess.push(dataMap);
+                        // todo
                     } else {
                         //get layout , and type
                         let layoutAndType : any  = _.find(self.itemValueAll(), (item :any) =>{
@@ -405,25 +393,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dataChangeProcess.push(dataMap);
                 }
             });
-//            _.each(self.itemValueAllTemp(), (data: any) => {
-//                if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
-//                    let dataTemp = _.find(self.dpData, (item: any) => {
-//                        return item.id == data.rowId.substring(1, data.rowId.length);
-//                    });
-//                    let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-//                        return item.itemId == data.columnKey.substring(1, data.columnKey.length);
-//                    });
-//                    let value: any;
-//                    if (String(data.value).indexOf(':') !== -1) {
-//                        value = Number(data.value.split(':')[0]) * 60 + Number(data.value.split(':')[1]);
-//                    }
-//                    else {
-//                        value = data.value;
-//                    }
-//                    let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
-//                    dataChangeProcess.push(dataMap);
-//                }
-//            });
             let param = { itemValues: dataChangeProcess }
             if (dataChangeProcess.length > 0) {
                 let dfd = $.Deferred();
@@ -891,8 +860,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         totalNumber(data) {
             let total = 0;
-            let currentPageIndex = $("#grid2").igGridPaging("option", "currentPageIndex");
-            let pageSize = $("#grid2").igGridPaging("option", "pageSize");
+            let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
             let startIndex: any = currentPageIndex * pageSize;
             let endIndex: any = startIndex + pageSize;
             _.forEach(data, function(d, i) {
@@ -903,8 +872,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return total;
         }
         totalTime(data) {
-            let currentPageIndex = $("#grid2").igGridPaging("option", "currentPageIndex");
-            let pageSize = $("#grid2").igGridPaging("option", "pageSize");
+            let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
             let startIndex: any = currentPageIndex * pageSize;
             let endIndex: any = startIndex + pageSize;
             let total = moment.duration("0");
@@ -1191,23 +1160,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                            // $("#dpGrid").igGridUpdating("setCellValue", ui.rowID, "Name" + ui.columnKey.substring(4, ui.columnKey.length), (data == undefined ? "Not found" : data.name));
                            // nts.uk.ui.block.clear();
                             var object = {};
-                            object["Name" + ui.columnKey.substring(4, ui.columnKey.length)] = (data == undefined ? "なし" : data.name);
+                            object["Name" + ui.columnKey.substring(4, ui.columnKey.length)] = (data == undefined ? nts.uk.resource.getText("KDW003_81") : data.name);
                             $("#dpGrid").ntsGrid("updateRow", ui.rowID, object);
                             dfd.resolve();
                         });
                         dfd.promise();
                     }
-                } else {
-                    let itemTemp = _.find(self.itemValueAllTemp(), item => {
-                        if (item.columnKey == ui.columnKey && item.rowId == ui.rowID) {
-                            item.value = ui.value;
-                            return item.columnKey == ui.columnKey && item.rowId == ui.rowID;
-                        }
-                    })
-                    if (!itemTemp) {
-                        self.itemValueAllTemp().push({ columnKey: ui.columnKey, rowId: ui.rowID, value: ui.value })
-                    }
-                    }
+                } 
             });
         }
         

@@ -5,7 +5,7 @@ module nts.uk.at.view.kal003.a.tab {
     import getShared = nts.uk.ui.windows.getShared;
     export class ScopeCheckTab {
         
-        targetCondition: KnockoutObservable<model.AlarmCheckTargetCondition> = ko.observable(new model.AlarmCheckTargetCondition(false, false, true, false, [], [], [], []));
+        targetCondition: KnockoutObservable<model.AlarmCheckTargetCondition> = ko.observable(new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], []));
         
         constructor(targetCondition?: model.AlarmCheckTargetCondition) {
             if (targetCondition) {
