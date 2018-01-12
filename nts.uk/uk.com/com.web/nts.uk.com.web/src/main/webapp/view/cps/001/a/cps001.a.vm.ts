@@ -539,7 +539,7 @@ module cps001.a.vm {
 
                 permision4Cat(roleId, catId).done((perm: ICatAuth) => {
                     if (perm && !!(selEmId == logInId ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
-                        self.changTitle(ATCS.ADD);
+                        self.changeTitle(ATCS.ADD);
                         setShared(REPL_KEY, REPL_KEYS.ADDNEW);
 
                         self.infoId(undefined);
@@ -592,7 +592,7 @@ module cps001.a.vm {
 
                 permision4Cat(roleId, catId).done((perm: ICatAuth) => {
                     if (perm && !!(selEmId == logInId ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
-                        self.changTitle(ATCS.COPY);
+                        self.changeTitle(ATCS.COPY);
                         setShared(REPL_KEY, REPL_KEYS.REPLICATION);
                         self.infoId.valueHasMutated();
                         //self.id.valueHasMutated();
@@ -705,7 +705,7 @@ module cps001.a.vm {
                             case IT_CAT_TYPE.SINGLE:
                                 self.infoId(undefined);
 
-                                self.changTitle(ATCS.UPDATE);
+                                self.changeTitle(ATCS.UPDATE);
 
                                 service.getCatData(query).done(data => {
                                     if (data) {
@@ -732,6 +732,8 @@ module cps001.a.vm {
                                     service.getHistData(query).done((data: Array<any>) => {
                                         if (data && data.length) {
                                             self.gridlist(data);
+                                            self.changeTitle(ATCS.UPDATE);
+
                                             if (!loadData || !loadData.infoId) {
                                                 if (self.infoId() != data[0].optionValue) {
                                                     self.infoId(data[0].optionValue);
@@ -748,15 +750,27 @@ module cps001.a.vm {
                                         } else {
                                             self.events.add();
                                             self.gridlist.removeAll();
+                                            self.changeTitle(ATCS.ADD);
                                             setShared(REPL_KEY, undefined);
-                                            self.infoId.valueHasMutated();
+
+                                            if (self.infoId()) {
+                                                self.infoId(undefined);
+                                            } else {
+                                                self.infoId.valueHasMutated();
+                                            }
                                         }
                                         setShared(RELOAD_DT_KEY, undefined);
                                     }).fail(mgs => {
                                         self.gridlist.removeAll();
+                                        self.changeTitle(ATCS.ADD);
                                         setShared(REPL_KEY, undefined);
                                         setShared(RELOAD_DT_KEY, undefined);
-                                        self.infoId.valueHasMutated();
+
+                                        if (self.infoId()) {
+                                            self.infoId(undefined);
+                                        } else {
+                                            self.infoId.valueHasMutated();
+                                        }
                                     });
                                 } else {
                                     self.infoId.valueHasMutated();
@@ -775,27 +789,18 @@ module cps001.a.vm {
 
                 if (id && mode == TABS.CATEGORY) {
                     let catid = self.categoryId(),
-                        query = {
-                            infoId: infoId,
-                            categoryId: catid || id,
-                            personId: self.personId(),
-                            employeeId: self.employeeId(),
-                            standardDate: undefined,
-                            categoryCode: cat.categoryCode()
-                        },
                         rep: number = getShared(REPL_KEY) || REPL_KEYS.NORMAL;
 
                     if ([REPL_KEYS.NORMAL, REPL_KEYS.REPLICATION, REPL_KEYS.ADDNEW].indexOf(rep) > -1) {
                         let catid = self.categoryId(),
                             query = {
-                                infoId: self.infoId(),
+                                infoId: infoId,
                                 categoryId: catid || id,
                                 personId: self.personId(),
                                 employeeId: self.employeeId(),
                                 standardDate: undefined,
                                 categoryCode: cat.categoryCode()
                             };
-
                         service.getCatData(query).done(data => {
                             if (rep == REPL_KEYS.ADDNEW) {
                                 setShared(REPL_KEY, REPL_KEYS.NORMAL);
@@ -822,7 +827,7 @@ module cps001.a.vm {
                                     }
                                 });
                             } else if (self.infoId()) {
-                                self.changTitle(ATCS.UPDATE);
+                                self.changeTitle(ATCS.UPDATE);
                             }
                             layout.listItemCls(data.classificationItems);
 
@@ -855,7 +860,7 @@ module cps001.a.vm {
             });
         }
 
-        changTitle = (action: ATCS) => {
+        changeTitle = (action: ATCS) => {
             let self = this,
                 title = self.title,
                 category = self.category(),

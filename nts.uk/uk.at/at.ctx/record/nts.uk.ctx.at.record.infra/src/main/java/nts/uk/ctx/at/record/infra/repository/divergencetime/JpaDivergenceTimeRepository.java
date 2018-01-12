@@ -149,7 +149,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 		x.setDivTimeUseSet(a.divTimeUseSet);
 		x.setAlarmTime(a.alarmTime);
 		x.setErrTime(a.errTime);
-		x.setSelectUseSet(x.selectUseSet);
+		x.setSelectUseSet(a.selectUseSet);
 		x.setCancelErrSelReason(a.cancelErrSelReason);
 		x.setInputUseSet(a.inputUseSet);
 		x.setCancelErrInputReason(a.cancelErrInputReason);

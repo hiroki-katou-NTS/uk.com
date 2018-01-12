@@ -179,11 +179,11 @@ public class PeregProcessor {
 		PeregDto peregDto = null;
 		
 		boolean ctgIsViewOnly = false;
+		if (perInfoCtg.getIsFixed() == IsFixed.FIXED && query.getInfoId() != null) {
+			peregDto = layoutingProcessor.findSingle(query);
+		}
 		if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO
 				&& query.getInfoId() != null) {
-			if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
-				peregDto = layoutingProcessor.findSingle(query);
-			}
 			ctgIsViewOnly = checkCtgIsViewOnly(peregDto, perInfoCtg, roleId, query.getInfoId(), loginEmpId.equals(query.getEmployeeId()));
 		}
 		for (int i = 0; i < lstItemDef.size(); i++) {
@@ -304,10 +304,13 @@ public class PeregProcessor {
 	}
 	
 	private boolean checkCtgIsViewOnly(PeregDto peregDto, PersonInfoCategory perInfoCtg, String roleId, String infoId, boolean isSelf) {
+		PersonInfoCategoryAuth perInfoCtgAuth = perAuth.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
+		if((perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO && !isSelf)
+				||(perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) return true;
 		DateRangeItem dateRangeItem = perInfoCtgRepositoty
 				.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
 		String eDateId = dateRangeItem.getEndDateItemId();
-		PersonInfoCategoryAuth perInfoCtgAuth = perAuth.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
+		
 		boolean isFuture = true;
 		if(perInfoCtg.getIsFixed() == IsFixed.FIXED) {
 			String endDateItemCode = perItemRepo.getPerInfoItemDefById(eDateId, AppContexts.user().contractCode()).get().getItemCode().v();

@@ -71,10 +71,10 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -124,14 +124,14 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	@Inject
 	private WorkdayoffFrameRepository breaktimeFrameRep;
 	@Inject
-	private WorkTimeSetRepository workTimeSetRepository;
+	private PredetemineTimeSettingRepository workTimeSetRepository;
 
 	@Inject
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
 	@Inject
 	private OvertimeSixProcess overtimeSixProcess;
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
@@ -243,13 +243,13 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			// 01-14-3_始業時刻、退勤時刻を初期表示
 			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,
 					GeneralDate.fromString(appDate, DATE_FORMAT));
-			Optional<WorkTimeSet> workTimeSet = workTimeSetRepository.findByCode(companyID, siftCD);
+			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, siftCD);
 			if (workTimeSet.isPresent()) {
-				if (workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().size() > 1) {
-					startTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().get(1).getStart().v();
+				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 1) {
+					startTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(1).getStart().v();
 				}
-				if (workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().size() > 0) {
-					startTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().get(0).getStart().v();
+				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 0) {
+					startTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(0).getStart().v();
 				}
 			}
 			if (recordWorkInfoImport.getLeaveStampTimeFirst() == -1) {
@@ -270,15 +270,15 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		}
 		case AT_START_WORK_OFF_ENDWORK: {
 			// 01-14-4_始業時刻、終業時刻を初期表示
-			Optional<WorkTimeSet> workTimeSet = workTimeSetRepository.findByCode(companyID, siftCD);
+			Optional<PredetemineTimeSetting> workTimeSet = workTimeSetRepository.findByWorkTimeCode(companyID, siftCD);
 			if (workTimeSet.isPresent()) {
-				if (workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().size() > 1) {
-					startTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().get(1).getStart().v();
-					endTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().get(1).getEnd().v();
+				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 1) {
+					startTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(1).getStart().v();
+					endTime2 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(1).getEnd().v();
 				}
-				if (workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().size() > 0) {
-					startTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().get(0).getStart().v();
-					endTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getTimezone().get(0).getEnd().v();
+				if (workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().size() > 0) {
+					startTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(0).getStart().v();
+					endTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(0).getEnd().v();
 				}
 			}
 			break;
@@ -457,7 +457,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 				SiftType siftType = new SiftType();
 
 				siftType.setSiftCode(recordWorkInfoImport.getWorkTimeCode());
-				Optional<WorkTime> workTime = workTimeRepository.findByCode(companyID,
+				Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyID,
 						recordWorkInfoImport.getWorkTimeCode().toString());
 				if (workTime.isPresent()) {
 					siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
@@ -473,9 +473,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			result.setAppDateRefer(appDate);
 			
 			
-			Optional<WorkTimeSet> workTimeSetOtp = workTimeSetRepository.findByCode(companyID, siftCode);
+			Optional<PredetemineTimeSetting> workTimeSetOtp = workTimeSetRepository.findByWorkTimeCode(companyID, siftCode);
 			if (workTimeSetOtp.isPresent()) {
-				WorkTimeSet workTimeSet = workTimeSetOtp.get();
+				PredetemineTimeSetting workTimeSet = workTimeSetOtp.get();
 				
 				if(checkTimeDay(appDate,workTimeSet)){
 					// 06-04-3_当日の場合
@@ -510,16 +510,16 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	 * @param workTimeSet
 	 * @return
 	 */
-	public boolean checkTimeDay(String appDate, WorkTimeSet workTimeSet) {
+	public boolean checkTimeDay(String appDate, PredetemineTimeSetting workTimeSet) {
 		GeneralDateTime appDateGeneralstart = GeneralDateTime.fromString(appDate + " 00:00", "yyyy/MM/dd HH:mm");
 		GeneralDateTime appDateGeneralEnd = GeneralDateTime.fromString(appDate + " 00:00", "yyyy/MM/dd HH:mm");
 
 		if (workTimeSet.getPrescribedTimezoneSetting() != null) {
-			if (workTimeSet.getPrescribedTimezoneSetting().getTimezone() != null) {
-				appDateGeneralstart = appDateGeneralstart.addHours(workTimeSet.getPrescribedTimezoneSetting().getTimezone().get(0).getStart().hour());
-				appDateGeneralstart = appDateGeneralstart.addMinutes(workTimeSet.getPrescribedTimezoneSetting().getTimezone().get(0).getStart().minute());
-				appDateGeneralEnd = appDateGeneralEnd.addHours(workTimeSet.getPrescribedTimezoneSetting().getTimezone().get(0).getEnd().hour());
-				appDateGeneralEnd = appDateGeneralEnd.addMinutes(workTimeSet.getPrescribedTimezoneSetting().getTimezone().get(0).getEnd().minute());
+			if (workTimeSet.getPrescribedTimezoneSetting().getLstTimezone() != null) {
+				appDateGeneralstart = appDateGeneralstart.addHours(workTimeSet.getPrescribedTimezoneSetting().getLstTimezone().get(0).getStart().hour());
+				appDateGeneralstart = appDateGeneralstart.addMinutes(workTimeSet.getPrescribedTimezoneSetting().getLstTimezone().get(0).getStart().minute());
+				appDateGeneralEnd = appDateGeneralEnd.addHours(workTimeSet.getPrescribedTimezoneSetting().getLstTimezone().get(0).getEnd().hour());
+				appDateGeneralEnd = appDateGeneralEnd.addMinutes(workTimeSet.getPrescribedTimezoneSetting().getLstTimezone().get(0).getEnd().minute());
 				GeneralDateTime appDateGeneralSystem = GeneralDateTime.fromString(GeneralDateTime.now().toString("yyyy/MM/dd HH:mm"), "yyyy/MM/dd HH:mm");
 				if(appDateGeneralSystem.after(appDateGeneralstart) && appDateGeneralSystem.before(appDateGeneralEnd)){
 					return true;
