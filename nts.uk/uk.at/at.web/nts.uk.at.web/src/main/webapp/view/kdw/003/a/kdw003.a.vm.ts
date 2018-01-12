@@ -227,7 +227,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         item['summaryOperands'] = [{
                             rowDisplayLabel: "合計",
                             type: "custom",
-                            summaryCalculator: $.proxy(self.totalNumber, this),
+                            summaryCalculator: $.proxy(self.totalMoney, this),
                             order: 0
                         }]
                     }
@@ -897,6 +897,29 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let roundMin = Math.round(minute);
             let minuteStr = roundMin < 10 ? ("0" + roundMin) : String(roundMin);
             return hour + ":" + minuteStr;
+        }
+        
+         totalMoney(data) {
+            let total = 0;
+            let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
+            let startIndex: any = currentPageIndex * pageSize;
+            let endIndex: any = startIndex + pageSize;
+            let  valueResult = "";
+            _.forEach(data, function(d, i) {
+                if (i < startIndex || i >= endIndex) return;
+                if (String(data).indexOf(",") != -1) {
+                    for (let i = 0; i < data.split(',').length; i++) {
+                        valueResult += data.split(',')[i];
+                    }
+                    let n = parseFloat(d);
+                    if (!isNaN(n)) total += n;
+                }else{
+                    let n = parseFloat(d);
+                    if (!isNaN(n)) total += n;
+                }
+            });
+            return total;
         }
         //load kcp009 component: employee picker
         loadKcp009() {
