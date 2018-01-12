@@ -2,48 +2,43 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.file.at.app.outsideot.data;
+package nts.uk.file.at.app.export.outsideot.data;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class OvertimeNameLanguageData.
- */
-
-/**
- * Gets the view time.
- *
- * @return the view time
+ * The Class OutsideOTBRDItemNameLangData.
  */
 @Getter
 @Setter
-public class OvertimeNameLanguageData{
-
+public class OutsideOTBRDItemNameLangData{
+	
 	/** The language. */
 	private String language;
 	
 	/** The overtime no. */
-	private Integer overtimeNo;
+	private Integer breakdownItemNo;
 	
 	/** The is use. */
 	private Boolean isUse;
 	
-	/** The view time. */
-	private String viewTime;
+	/** The product number. */
+	private int productNumber;
+	
+	/** The language other. */
+	private String languageOther;
+	
 
 	/**
-	 * Instantiates a new overtime name language data.
+	 * Instantiates a new outside OTBRD item name lang data.
 	 *
 	 * @param language the language
-	 * @param overtimeNo the overtime no
-	 * @param isUse the is use
+	 * @param breakdownItemNo the breakdown item no
 	 */
-	public OvertimeNameLanguageData(String language, Integer overtimeNo, Boolean isUse) {
-		super();
+	public OutsideOTBRDItemNameLangData(String language, Integer breakdownItemNo) {
 		this.language = language;
-		this.overtimeNo = overtimeNo;
-		this.isUse = isUse;
+		this.breakdownItemNo = breakdownItemNo;
 	}
 
 	
