@@ -10,15 +10,13 @@
 	min-width: 1260px;
 }
 
-@media ( min-width : 1280px) {
-	#functions-area, #contents-area {
-		overflow-x: hidden;
-	}
+@media ( min-width : 1260px) {
+	#functions-area, #contents-area {}
 }
 
 #contents-area {
-	overflow-x: hidden;
-	overflow-y: hidden;
+	overflow-x: auto;
+	overflow-y: auto;
 }
 
 .valign-center {
@@ -28,7 +26,6 @@
 .divHeader {
 	margin: 5px;
 }
-
 
 #A_BTN_DELETE {
 	margin-left: 45px !important;

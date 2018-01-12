@@ -141,7 +141,7 @@ public class ProgramsManager {
 	/**
 	 * CCG030B
 	 */
-	public static final Program CCG030B = new Program(WebAppId.COM, ProgramIdConsts.CCG030B, "CCG030_2",
+	public static final Program CCG030B = new Program(WebAppId.COM, ProgramIdConsts.CCG030B, "CCG030_4",
 			"/view/ccg/030/b/index.xhtml");
 
 	/**
@@ -583,15 +583,15 @@ public class ProgramsManager {
 			"/view/kml/004/d/index.xhtml");
 
 	/** The Constant KDL003. */
-	public static final Program KDL003 = new Program(WebAppId.AT, ProgramIdConsts.KDL003, "KDL003_1",
+	public static final Program KDL003A = new Program(WebAppId.AT, ProgramIdConsts.KDL003A, "KDL003_1",
 			"/view/kdl/003/a/index.xhtml");
 	
 	/** The Constant KSM006. */
-	public static final Program KSM006 = new Program(WebAppId.AT, ProgramIdConsts.KSM006, "KSM006_1",
+	public static final Program KSM006A = new Program(WebAppId.AT, ProgramIdConsts.KSM006A, "KSM006_1",
 			"/view/ksm/006/a/index.xhtml");
 	
 	/** The Constant KSM003. */
-	public static final Program KSM003 = new Program(WebAppId.AT, ProgramIdConsts.KSM003, "KSM003_1",
+	public static final Program KSM003A = new Program(WebAppId.AT, ProgramIdConsts.KSM003A, "KSM003_1",
 			"/view/ksm/003/a/index.xhtml");
 	
 	/** The Constant KSM005A. */
@@ -622,11 +622,11 @@ public class ProgramsManager {
 			"/view/kdl/023/b/index.xhtml");
 	
 	/** The Constant KSM001. */
-	public static final Program KSM001 = new Program(WebAppId.AT, ProgramIdConsts.KSM001, "KSM001_62",
+	public static final Program KSM001A = new Program(WebAppId.AT, ProgramIdConsts.KSM001A, "KSM001_62",
 			"/view/ksm/001/a/index.xhtml");
 	
 	/** The Constant KMK009. */
-	public static final Program KMK009 = new Program(WebAppId.AT, ProgramIdConsts.KMK009, null ,
+	public static final Program KMK009A = new Program(WebAppId.AT, ProgramIdConsts.KMK009A, null ,
 			"/view/kmk/009/a/index.xhtml");
 	
 	/** The Constant KSU006. */
@@ -1052,11 +1052,11 @@ public class ProgramsManager {
 			"/view/cps/002/i/index.xhtml");
 	
 	
-	public static final Program CMM008 = new Program(WebAppId.COM, ProgramIdConsts.CMM008, null,
+	public static final Program CMM008A = new Program(WebAppId.COM, ProgramIdConsts.CMM008A, null,
 			"/view/cmm/008/a/index.xhtml");
 	
 	/** The Constant CMM014. */	
-	public static final Program CMM014 = new Program(WebAppId.COM, ProgramIdConsts.CMM014, "CMM014_9",
+	public static final Program CMM014A = new Program(WebAppId.COM, ProgramIdConsts.CMM014A, "CMM014_9",
 			"/view/cmm/014/a/index.xhtml");
 	
 	public static final Program CDL002 = new Program(WebAppId.COM, ProgramIdConsts.CDL002, "CDL002_4",

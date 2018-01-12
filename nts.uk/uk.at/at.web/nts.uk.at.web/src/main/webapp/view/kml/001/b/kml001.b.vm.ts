@@ -11,7 +11,7 @@ module nts.uk.at.view.kml001.b {
                 var self = this;
                 self.premiumItemList = ko.observableArray([]);   
                 self.isInsert = nts.uk.ui.windows.getShared('isInsert');
-                self.textKML001_18 = nts.uk.resource.getText("KML001_18",[__viewContext.primitiveValueConstraints.PremiumName.maxLength/2]);
+                self.textKML001_18 = nts.uk.resource.getText("KML001_28",[__viewContext.primitiveValueConstraints.PremiumName.maxLength/2]);
             }
             
             getText(index): string {

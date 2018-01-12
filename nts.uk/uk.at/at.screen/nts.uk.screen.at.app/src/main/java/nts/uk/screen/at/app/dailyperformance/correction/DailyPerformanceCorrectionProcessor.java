@@ -71,6 +71,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.Re
 import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ShowColumnDependent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -348,9 +349,11 @@ public class DailyPerformanceCorrectionProcessor {
 		/** 画面制御に関する情報を取得する | Acquire information on screen control */
 		// アルゴリズム「社員の日別実績の権限をすべて取得する」を実行する | Execute "Acquire all permissions of
 		// employee's daily performance"--
-		// roleId = AppContexts.user().roles().forPersonalInfo() fixed
-		List<DailyPerformanceAuthorityDto> dailyPerformans = repo
-				.findDailyAuthority("00000000-0000-0000-0000-000000000001");
+		String roleId = AppContexts.user().roles().forAttendance();
+		List<DailyPerformanceAuthorityDto> dailyPerformans = new ArrayList<>();
+		if (roleId != null) {
+			dailyPerformans = repo.findDailyAuthority(roleId);
+		}
 		if (dailyPerformans.isEmpty()) {
 			throw new BusinessException("Msg_671");
 		} else {
@@ -539,11 +542,11 @@ public class DailyPerformanceCorrectionProcessor {
 							cellDatas.add(new DPCellDataDto("Code" + String.valueOf(item.getId()), value ,
 									String.valueOf(item.getAttendanceAtr()), "label"));
 							if(value.equals("")){
-								value = "なし";
+								value = TextResource.localize("KDW003_82");
 							}else{
 								CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(TypeLink.valueOf(item.getTypeGroup()).value, new ParamDialog("", screenDto.getEmploymentCode(), data.getWorkplaceId(), data.getDate(), value));
 								//CodeName codeName = null;
-								value = (codeName == null) ? "なし" : codeName.getName();
+								value = (codeName == null) ? TextResource.localize("KDW003_81") : codeName.getName();
 							}
 							cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()),
 									value , String.valueOf(item.getAttendanceAtr()), "Link2"));
