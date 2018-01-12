@@ -4,6 +4,9 @@ module nts.uk.at.view.kaf009.b {
     export module viewmodel{
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
             DATE_FORMAT: string = 'YYYY/MM/DD';
+            screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
+            //画面モード(表示/編集)
+            editable: KnockoutObservable<boolean> = ko.observable( true );
             //kaf000
             kaf000_a: kaf000.a.viewmodel.ScreenModel;
             //current Data
@@ -89,7 +92,7 @@ module nts.uk.at.view.kaf009.b {
                 }));
                 //self.startPage(currentApp.appID);
                 self.startPage(self.appID());
-                //self.appID(currentApp.appID);
+                //self.appID(currentApp.appID);                
             }
 
             /**
@@ -169,11 +172,18 @@ module nts.uk.at.view.kaf009.b {
                         self.selectedBack.subscribe(value => { $("#inpEndTime1").ntsError("clear"); });
                         self.selectedGo2.subscribe(value => { $("#inpStartTime2").ntsError("clear"); });
                         self.selectedBack2.subscribe(value => { $("#inpEndTime2").ntsError("clear"); });
+                        
+                        //画面モード(表示/編集)
+                        self.editable = ko.observable(detailData.outMode == 0 ? true: false);
+                        //Focus process
+                        self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });
+                        //フォーカス制御 => 勤務時間直行
+                        $("#inpStartTime1").focus();
                     }).fail(function() {
                         dfd.resolve();
                     });
                     dfd.resolve();
-                });
+                });                               
                 return dfd.promise();
             }
 
@@ -181,6 +191,10 @@ module nts.uk.at.view.kaf009.b {
              * 
              */
             update() {
+                $("#inpStartTime1").ntsError("clear"); 
+                $("#inpEndTime1").ntsError("clear"); 
+                $("#inpStartTime2").ntsError("clear");
+                $("#inpEndTime2").ntsError("clear");
                 nts.uk.ui.block.invisible();
                 let self = this;
                 var promiseResult = self.checkUse();
@@ -246,20 +260,20 @@ module nts.uk.at.view.kaf009.b {
                             nts.uk.ui.block.clear();
                             //入力項目を警告「黄色」枠を表示する
                             if(self.selectedGo() == 1 && !nts.uk.util.isNullOrEmpty(self.timeStart1())){
-                                $('#inpStartTime1').css('background', '#FFFF00');
+                                $("#inpStartTime1").css("background", "#FFFF00");
                                 showMsg = false;
                             }
                             if(self.selectedBack()== 1 && !nts.uk.util.isNullOrEmpty(self.timeEnd1())){
-                                $('#inpEndTime1').css('background', '#FFFF00');
+                                $("#inpEndTime1").css("background", "#FFFF00");
                                 showMsg = false;
                             }
                             if(self.useMulti()){
                                 if(self.selectedGo2()==1 && !nts.uk.util.isNullOrEmpty(self.timeStart2())){
-                                    $('#inpStartTime2').css('background', '#FFFF00');
+                                    $("#inpStartTime2").css("background", "#FFFF00");
                                     showMsg = false;
                                 }
                                 if(self.selectedBack2()==1 && !nts.uk.util.isNullOrEmpty(self.timeEnd2())){
-                                    $('#inpEndTime2').css('background', '#FFFF00');
+                                    $("#inpEndTime2").css("background", "#FFFF00");
                                     showMsg = false;
                                 }
                             }
@@ -273,20 +287,20 @@ module nts.uk.at.view.kaf009.b {
                         let showMsg : boolean = true;
                         nts.uk.ui.block.clear();
                         if(self.selectedGo() == 1 && !nts.uk.util.isNullOrEmpty(self.timeStart1())){
-                            $('#inpStartTime1').ntsError('set', {messageId:"Msg_298"});
+                            $("#inpStartTime1").ntsError('set', {messageId:"Msg_298"});
                             showMsg = false;
                         }
                         if(self.selectedBack()== 1 && !nts.uk.util.isNullOrEmpty(self.timeEnd1())){
-                            $('#inpEndTime1').ntsError('set', {messageId:"Msg_298"});
+                            $("#inpEndTime1").ntsError('set', {messageId:"Msg_298"});
                             showMsg = false;
                         }
                         if(self.useMulti()){
                             if(self.selectedGo2()==1 && !nts.uk.util.isNullOrEmpty(self.timeStart2())){
-                                $('#inpStartTime2').ntsError('set', {messageId:"Msg_298"});
+                                $("#inpStartTime2").ntsError('set', {messageId:"Msg_298"});
                                 showMsg = false;
                             }
                             if(self.selectedBack2()==1 && !nts.uk.util.isNullOrEmpty(self.timeEnd2())){
-                                $('#inpEndTime2').ntsError('set', {messageId:"Msg_298"});
+                                $("#inpEndTime2").ntsError('set', {messageId:"Msg_298"});
                                 showMsg = false;
                             }
                         }
@@ -356,6 +370,8 @@ module nts.uk.at.view.kaf009.b {
                     txtReasonTmp = reasonText.reasonName;
                 }
                 let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
+                    self.version,
+                    self.appID(),
                     txtReasonTmp,
                     self.prePostSelected(),
                     self.appDate(),
@@ -467,12 +483,12 @@ module nts.uk.at.view.kaf009.b {
                         self.workLocationCD(returnWorkLocationCD);
                         self.workLocationName(self.findWorkLocationName(returnWorkLocationCD));
                         //フォーカス制御 => 直行区分1
-                        $('#goWorkAtr1').focus();
+                        $("#goWorkAtr1").focus();
                     } else {
                         self.workLocationCD2(returnWorkLocationCD);
                         self.workLocationName2(self.findWorkLocationName(returnWorkLocationCD));
                         //フォーカス制御 => 直行区分2
-                        $('#goWorkAtr2').focus();
+                        $("#goWorkAtr2").focus();
                     }                   
                 }
                 else {
@@ -511,6 +527,8 @@ module nts.uk.at.view.kaf009.b {
                         self.workTypeName(childData.selectedWorkTypeName);
                         self.siftCD(childData.selectedWorkTimeCode);
                         self.siftName(childData.selectedWorkTimeName);
+                        //フォーカス制御 => 定型理由
+                        $("#combo-box").focus();
                     }
                 })
             }

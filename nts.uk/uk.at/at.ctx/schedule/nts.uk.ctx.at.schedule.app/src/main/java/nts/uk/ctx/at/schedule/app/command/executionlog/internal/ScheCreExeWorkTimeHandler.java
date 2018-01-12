@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
@@ -59,7 +59,7 @@ public class ScheCreExeWorkTimeHandler {
 		
 	/** The work time repository. */
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 	
 	/** The sche cre exe error log handler. */
 	@Inject
@@ -102,7 +102,7 @@ public class ScheCreExeWorkTimeHandler {
 	public static final int RETIREMENT = 6;
 	
 	/** The Constant DEFAULT_CODE. */
-	public static final String DEFAULT_CODE = "000";
+	public static final String DEFAULT_CODE = null;
 	
 	/** The Constant SHIFT1. */
 	public static  final int SHIFT1 = 1;
@@ -788,7 +788,7 @@ public class ScheCreExeWorkTimeHandler {
 
 		// check work time code null
 		if(worktimeCode == null){
-			return Optional.of(worktimeCode);
+			return Optional.of("");
 		}
 		
 		// check not exist data work

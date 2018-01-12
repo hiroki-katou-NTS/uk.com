@@ -84,11 +84,24 @@ module nts.uk.com.view.cps005.a {
                     new service.Service().updatePerInfoCtg(updateCategory).done(function() {
                         self.reloadData();
                         info({ messageId: "Msg_15" }).then(() => {
-                            $("#category-name-control").focus();
+                            let ctrl = $("#category-name-control"),
+                                str = ctrl.val();
+
+                            ctrl.focus().val('').val(str);
                             block.clear();
                         });
-                    }).fail(error => {
-                        alertError({ messageId: error.message });
+                    }).fail(res => {
+                        if (res.message == 'Msg_928') {
+                            alertError({
+                                messageId: res.message,
+                                messageParams: ["個人情報カテゴリ"]
+                            }).then(() => {
+                                $("#category-name-control").focus();
+                            });
+                        } else {
+
+                            alertError({ messageId: res.message });
+                        }
                         block.clear();
                     });
                 } else {
@@ -107,7 +120,10 @@ module nts.uk.com.view.cps005.a {
                                     let ctgCode = self.currentData().perInfoCtgSelectCode();
                                     self.currentData().perInfoCtgSelectCode("");
                                     self.currentData().perInfoCtgSelectCode(ctgCode);
-                                    $("#category-name-control").focus();
+                                    let ctrl = $("#category-name-control"),
+                                        str = ctrl.val();
+
+                                    ctrl.focus().val('').val(str);
                                     block.clear();
                                 });
                             }).ifNo(() => {
@@ -115,8 +131,18 @@ module nts.uk.com.view.cps005.a {
                                 return;
                             })
                         });
-                    }).fail(error => {
-                        alertError({ messageId: error.message });
+                    }).fail(res => {
+
+                        if (res.message == 'Msg_928') {
+                            alertError({
+                                messageId: res.message,
+                                messageParams: ["個人情報カテゴリ"]
+                            }).then(() => {
+                                $("#category-name-control").focus();
+                            });
+                        } else {
+                            alertError({ messageId: res.message });
+                        }
                         block.clear();
                     });
                 }
@@ -181,7 +207,10 @@ module nts.uk.com.view.cps005.a {
                     if (self.currentCtgSelected().fixedIsSelected()) {
                         self.isEnableButtonProceed(false);
                     }
-                    $('#category-name-control').focus();
+                    let ctrl = $("#category-name-control"),
+                        str = ctrl.val();
+
+                    ctrl.focus().val('').val(str);
                 });
             });
         }
@@ -244,7 +273,7 @@ module nts.uk.com.view.cps005.a {
                     self.historyClassSelectedText(getText("CPS005_54"));
                 }
                 self.fixedIsSelected(data.isFixed == 1 ? true : false);
-                self.isChangeAbleCtgType(data.isChangeAbleCtgType);
+                self.isChangeAbleCtgType(data.changeAbleCtgType);
             }
             //subscribe select history type (1: history, 2: not history)
             self.historyClassSelected.subscribe(newHisClassification => {

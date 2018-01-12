@@ -9,22 +9,32 @@
 		<div class="valign-center control-group "
 			data-bind="if: prePostDisp()">
 			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_8')}</div>
-			<div class="cf"
-				data-bind="ntsSwitchButton: {
-								options:ko.observableArray([
-						                { prePostCode: 0, prePostName: '#{i18n.getText('KAF009_9')}' },
-						                { prePostCode: 1, prePostName: '#{i18n.getText('KAF009_10')}' }
-						                ]),
-								optionsValue: 'prePostCode',
-								optionsText: 'prePostName',
-								value: prePostSelected,
-								enable: prePostEnable}">
+			<div data-bind="if: screenModeNew" class="mode-style">
+				<div class="cf"
+					data-bind="ntsSwitchButton: {
+									options:ko.observableArray([
+							                { prePostCode: 0, prePostName: '#{i18n.getText('KAF009_9')}' },
+							                { prePostCode: 1, prePostName: '#{i18n.getText('KAF009_10')}' }
+							                ]),
+									optionsValue: 'prePostCode',
+									optionsText: 'prePostName',
+									value: prePostSelected,
+									enable: prePostEnable}">
+				</div>
+			</div>
+			<div data-bind="if: !screenModeNew()" class="mode-style">
+				<span data-bind="text: prePostSelected()==0 ? '#{i18n.getText('KAF009_9')}' : '#{i18n.getText('KAF009_10')}'"></span>
 			</div>
 		</div>
 		<div class="valign-center control-group">
 			<!--申請日付 -->
 			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF009_11')}</div>
-			<div id = "inputdate" data-bind="ntsDatePicker: {name: '#[KAF009_12]',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}"></div>
+			<div data-bind="if: screenModeNew()" class="mode-style">
+				<div id = "inputdate" data-bind="ntsDatePicker: {name: '#[KAF009_12]',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}"></div>
+			</div>
+			<div data-bind="if: !screenModeNew()" class="mode-style">
+				<span data-bind="text: appDate"></span>
+			</div>
 		</div>
 		<!--勤務時間 1-->
 		<div class="valign-center control-group">
@@ -39,7 +49,7 @@
 															constraint:'TimeWithDayAttr',
 															required:true,
 															value: timeStart1, 
-															enable: true, 
+															enable: editable(), 
 															readonly: false }" />
 						<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
 					</div>
@@ -49,13 +59,13 @@
 															constraint:'TimeWithDayAttr',
 															required:true, 
 															value: timeEnd1, 
-															enable: true, 
+															enable: editable(), 
 															readonly: false}" />
 					</div>
 					<div class="cell valign-top row-cell-margin" style="display: inline-block">
 						<!--選択場所　Button-->
 						<button id="btnLocation1" class="location-button-009"
-							data-bind="click: function(){openLocationDialog(1)}">#{i18n.getText('KAF009_15')}</button>
+							data-bind="click: function(){openLocationDialog(1)}, enable: editable()">#{i18n.getText('KAF009_15')}</button>
 						<label id = "lblLocation"
 							data-bind="text : workLocationCD() + '　' +workLocationName()"></label>
 					</div>
@@ -236,7 +246,7 @@
 			<div class="lblTitleKAF009"
 				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
 			<div id="inpReason">
-				<textarea
+				<textarea id="inpReasonTextarea"
 					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption, constraint: 'AppReason', required : requiredReason(), name: '#[KAF009_29]'}" />
 			</div>
 		</div>

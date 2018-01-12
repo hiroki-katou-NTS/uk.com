@@ -54,16 +54,35 @@ public class DefaultClosureServiceImpl implements ClosureService {
 		ClosureHistory closureHistory = optClosureHistory.get();
 
 		ClosureDay closureDay = closureHistory.getClosureDate().getClosureDay();
-		GeneralDate startDate = GeneralDate.ymd(processingYm.year(), processingYm.month(), 1);
-		GeneralDate endDate = DateUtil.getLastDateOfMonth(processingYm.year(),
-				processingYm.month());
 
-		if (closureHistory.getClosureDate().getLastDayOfMonth() || !DateUtil
-				.isDateOfMonth(processingYm.year(), processingYm.month(), closureDay.v())) {
-			return new DatePeriod(startDate, endDate);
-		}
+		Boolean isLastDayOfMonth = closureHistory.getClosureDate().getLastDayOfMonth();
 
-		endDate = GeneralDate.ymd(processingYm.year(), processingYm.month(), closureDay.v());
+		GeneralDate startDate = this.getExpectionDate(isLastDayOfMonth, processingYm.year(),
+				processingYm.month() - 1, closureDay.v() + 1);
+
+		GeneralDate endDate = this.getExpectionDate(isLastDayOfMonth, processingYm.year(),
+				processingYm.month(), closureDay.v());
+
 		return new DatePeriod(startDate, endDate);
+	}
+
+	/**
+	 * Gets the expection date.
+	 *
+	 * @param lastDayOfMonth the last day of month
+	 * @param year the year
+	 * @param month the month
+	 * @param day the day
+	 * @return the expection date
+	 */
+	private GeneralDate getExpectionDate(Boolean lastDayOfMonth, int year, int month, int day) {
+		
+		if(month == 0) {
+			month =  12;
+			year = year - 1;
+		}
+		
+		return (lastDayOfMonth || !DateUtil.isDateOfMonth(year, month, day))
+				? DateUtil.getLastDateOfMonth(year, month) : GeneralDate.ymd(year, month, day);
 	}
 }

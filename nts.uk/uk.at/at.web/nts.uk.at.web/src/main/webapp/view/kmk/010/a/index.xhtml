@@ -23,9 +23,9 @@
 			</ui:define>
 	
 			<ui:define name="content">
-				<div id="functions-area" data-bind="visible: true" style="display: none">
+				<div id="functions-area">
 					<button tabindex="1" class="proceed" data-bind="click: saveOutsideOTSetting">#{i18n.getText('KMK010_4')}</button>
-					<button tabindex="2" class="buttonOther" data-bind="click: exportFileExcelOutsideOTSetting">#{i18n.getText('KMK010_5')}</button>
+					<button style="visibility: hidden;" tabindex="2" class="buttonOther" data-bind="click: exportFileExcelOutsideOTSetting">#{i18n.getText('KMK010_5')}</button>
 					<button tabindex="3" class="buttonOther" data-bind="click: openDialogOutsideOTSetting" >#{i18n.getText('KMK010_6')}</button>
 					<button tabindex="4" class="buttonOther" data-bind="click: openDialogOutsideOTBRDItem">#{i18n.getText('KMK010_7')}</button>
 					<div tabindex="5" id="switch-language"></div>
@@ -49,7 +49,7 @@
 						<div class="lableData" data-bind="ntsFormLabel: {required: false, constraint: 'OvertimeNote' }">
 							<label>#{i18n.getText('KMK010_9')}</label>
 						</div>
-						<textarea tabindex="7" class="overtimeNote" data-bind="ntsMultilineEditor: { value: note, constraint: 'OvertimeNote' }" />
+						<textarea tabindex="7" class="overtimeNote" data-bind="ntsMultilineEditor: { value: note, constraint: 'OvertimeNote', name: '#[KMK010_9]' }" />
 					</div>
 					<div class="overtimeSettingDetail">
 						<div class="overtimeDetail">

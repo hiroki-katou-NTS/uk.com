@@ -1,61 +1,61 @@
-module nts.uk.at.view.kal003{
-    import windows  = nts.uk.ui.windows;
-    import getText  = nts.uk.resource.getText;
-    import block    = nts.uk.ui.block;
-    import model    = nts.uk.at.view.kal003.share.model;
+module nts.uk.at.view.kal003.a.tab {
+    import windows = nts.uk.ui.windows;
+    import getText = nts.uk.resource.getText;
+    import block = nts.uk.ui.block;
+    import model = nts.uk.at.view.kal003.share.model;
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
 
     export class CheckConditionTab {
-        listWorkRecordExtractingConditions :    KnockoutObservableArray<model.WorkRecordExtractingCondition> = new ko.observableArray([]);
-        columnsWorkRecordExtractingCondition:   KnockoutObservableArray<NtsGridListColumn>;
-        isAllCheckCondistion :                  KnockoutObservable<boolean> =  ko.observable(false);
-        currentRowSelected  :                   KnockoutObservable<number>  =  ko.observable(0);
-        constructor() {
-            let self = this, 
-            listWorkRecordExtractingConditions = self.listWorkRecordExtractingConditions;
-            
-            
-            self.columnsWorkRecordExtractingCondition = ko.observableArray([
-                { headerText: '', key: 'errorAlarmCheckID', width: 5, hidden: true },
-                { headerText: '<div data-bind="ntsCheckBox: { checked: $parent.isAllCheckCondistion, enable: true }"></div>', key: 'useAtr', width: 15, unbound: true, dataType: "boolean", template: '<div data-bind="ntsCheckBox: { checked: useAtr, enable: true }"></div>'},
-                { headerText: getText('KAL003_A11_5'), key: 'rowId', width: 35},
-                { headerText: getText('KAL003_A11_6'), key: 'nameWKRecord', unbound: true, dataType: "string", width: 230, template:"<input class='nts-input lab_txt_width' data-bind='ntsTextEditor:{value: errorAlamCondition().message,required: false, enable: true}'/>},"
-                },
-                { headerText: getText('KAL003_A11_7'), width: 50, unbound: true, dataType: "string", template: '<button data-bind="click : function() {btnSettingCheckCondition_click(rowId)}, enable: true">#{i18n.getText("KAL003_A11_12")}</button>',
-                },
-                { headerText: getText('KAL003_A11_8'), prop: 'errorAlamCondition().message', width: 230, unbound: true, dataType: "string", template: "<input class='nts-input lab_txt_width' data-bind='ntsTextEditor:{value: errorAlamCondition().message,required: false, enable: true}'/>},"
-                }
-            ]);
-            
+        listWorkRecordExtractingConditions: KnockoutObservableArray<model.WorkRecordExtractingCondition> = ko.observableArray([]);
+        isAllCheckCondistion: KnockoutObservable<boolean> = ko.observable(false);
+        currentRowSelected: KnockoutObservable<number> = ko.observable(0);
 
-            listWorkRecordExtractingConditions.subscribe((data) => {
-                for(var i = 0; i < listWorkRecordExtractingConditions.length; i++) {
-                    listWorkRecordExtractingConditions[i].rowId (i + 1);
+        itemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSchedule4WeekAlarmCheckCondition());
+        schedule4WeekCheckCondition: KnockoutObservable<number> = ko.observable(model.SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY);
+
+        category: KnockoutObservable<number>;
+
+        constructor(category: number, listWorkRecordExtractingConditions?: Array<model.WorkRecordExtractingCondition>, schedule4WeekCheckCondition?: number) {
+            let self = this;
+
+            self.category = ko.observable(category);
+
+            if (listWorkRecordExtractingConditions) {
+                self.listWorkRecordExtractingConditions.removeAll();
+                self.listWorkRecordExtractingConditions(listWorkRecordExtractingConditions);
+                for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
+                    self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
                 }
-            })
+            }
+            
+            if (schedule4WeekCheckCondition) {
+                self.schedule4WeekCheckCondition(schedule4WeekCheckCondition);
+            }
+
+            $("#check-condition-table").ntsFixedTable({ height: 300 });
+
             self.isAllCheckCondistion = ko.pureComputed({
                 read: function () {
-                    return listWorkRecordExtractingConditions.length === listWorkRecordExtractingConditions.filter(
-                            function(item) {return item.useAtr();}).length;
-                },
-                write: function (value) {
-                    for(var i = 0; i < listWorkRecordExtractingConditions.length; i++) {
-                        listWorkRecordExtractingConditions[i].useAtr(value);
+                    let l = self.listWorkRecordExtractingConditions().length;
+                    if (self.listWorkRecordExtractingConditions().filter((x) => {return x.useAtr()}).length == l && l > 0) {
+                        return true;
+                    } else {
+                        return false;
                     }
                 },
-                //owner: this
+                write: function (value) {
+                    for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
+                        self.listWorkRecordExtractingConditions()[i].useAtr(value);
+                    }
+                },
+                owner: self
+            });
+            self.currentRowSelected.subscribe((data) => {
+                $("#check-condition-table tr").removeClass("ui-state-active");
+                $("#check-condition-table tr[data-id='" + data + "']").addClass("ui-state-active");
+                //$("#check-condition-table tr").get(data - 1).scrollIntoView();
             });
             
-        }
-        
-        /**
-         * Init Check Condition Tab
-         * @param listWorkRecordExtractingConditions
-         */
-        initialCheckConditionTab(listWorkRecordExtractingConditions : Array<model.WorkRecordExtractingCondition>) {
-            let self = this;
-            self.listWorkRecordExtractingConditions().removeAll();
-            self.listWorkRecordExtractingConditions.push(listWorkRecordExtractingConditions);
         }
 
         /**
@@ -64,28 +64,33 @@ module nts.uk.at.view.kal003{
         private createNewCheckCondition_click() {
             let self = this;
             if (self.listWorkRecordExtractingConditions == null || self.listWorkRecordExtractingConditions == undefined) {
-                self.listWorkRecordExtractingConditions = ([]);
+                self.listWorkRecordExtractingConditions = ko.observableArray([]);
             }
-            if (self.listWorkRecordExtractingConditions().length > 50) {
+            if (self.listWorkRecordExtractingConditions().length == 50) {
                 return;
             }
-            self.listWorkRecordExtractingConditions.push(shareutils.getDefaultWorkRecordExtractingCondition(0));
-            self.currentRowSelected(self.listWorkRecordExtractingConditions.length);
-            let errorAlamCondition = self.listWorkRecordExtractingConditions[self.currentRowSelected() - 1].errorAlamCondition();
-            self.showDialogKal003B(errorAlamCondition, self.currentRowSelected());
+            let workRecordExtractingCondition = shareutils.getDefaultWorkRecordExtractingCondition(0);
+            workRecordExtractingCondition.rowId(self.listWorkRecordExtractingConditions().length + 1);
+
+            self.listWorkRecordExtractingConditions.push(workRecordExtractingCondition);
+            self.currentRowSelected(self.listWorkRecordExtractingConditions().length);
+            let errorAlarmCondition = self.listWorkRecordExtractingConditions()[self.currentRowSelected() - 1].errorAlarmCondition();
         }
-        
+
         /**
          * Open dialog Kal003 B for setting the Setting Check Condition.
          * @param rowId
          */
-        private btnSettingCheckCondition_click(rowId : number) {
+        private btnSettingCheckCondition_click(rowId) {
             let self = this;
-            if (rowId < 1 || rowId > self.listWorkRecordExtractingConditions.length) {
+            if (rowId() < 1 || rowId() > self.listWorkRecordExtractingConditions().length) {
                 return;
             }
-            let errorAlamCondition = self.listWorkRecordExtractingConditions[rowId - 1].errorAlamCondition();
-            self.showDialogKal003B(errorAlamCondition(), rowId);
+            let WorkRecordExtractingCondition = self.listWorkRecordExtractingConditions()[rowId() - 1];
+            if (WorkRecordExtractingCondition) {
+                let errorAlarmCondition = WorkRecordExtractingCondition.errorAlarmCondition();
+                self.showDialogKal003B(errorAlarmCondition, rowId());
+            }
         }
 
         /**
@@ -93,31 +98,46 @@ module nts.uk.at.view.kal003{
          * @param errorAlamCondition
          * @param rowId
          */
-        private showDialogKal003B(errorAlamCondition : model.IErrorAlamCondition, rowId : number) {
+        private showDialogKal003B(errorAlarmCondition: model.ErrorAlarmCondition, rowId: number) {
             let self = this;
-            windows.setShared('inputKal003b', errorAlamCondition);
-            windows.sub.modal('/view/kal/003/b/index.xhtml', {}).onClosed(function(): any {
-              // get data from share window    
+            windows.setShared('inputKal003b', errorAlarmCondition);
+            windows.sub.modal('/view/kal/003/b/index.xhtml', { height: 500, width: 1020 }).onClosed(function(): any {
+                // get data from share window    
                 let data = windows.getShared('outputKal003b');
                 if (data != null && data != undefined) {
-                    self.listWorkRecordExtractingConditions[rowId].errorAlamCondition(data);
+                    if (rowId > 0 && rowId <= self.listWorkRecordExtractingConditions().length) {
+                        self.listWorkRecordExtractingConditions()[rowId - 1].errorAlarmCondition(data);
+                    }
                 }
                 block.clear();
             });
         }
-        
+
         /**
          * Execute deleting the selected WorkRecordExtractingCondition on screen 
          */
         private deleteCheckCondition_click() {
             let self = this;
-            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listWorkRecordExtractingConditions.length) {
+            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listWorkRecordExtractingConditions().length) {
                 return;
             }
-            self.listWorkRecordExtractingConditions().splice(self.currentRowSelected() - 1, 1);
-            if (self.currentRowSelected() >= self.listWorkRecordExtractingConditions.length) {
-                self.currentRowSelected(self.listWorkRecordExtractingConditions.length);
+            self.listWorkRecordExtractingConditions.remove(function(item) { return item.rowId() == (self.currentRowSelected()); })
+            for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
+                self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
             }
+            if (self.currentRowSelected() >= self.listWorkRecordExtractingConditions().length) {
+                self.currentRowSelected(self.listWorkRecordExtractingConditions().length);
+            }
+            self.currentRowSelected.valueHasMutated();
         }
     }
 }
+
+$(function() {
+    $("#check-condition-table").on("click", "tr", function() {
+        var id = $(this).attr("data-id");
+        nts.uk.ui._viewModel.content.tabCheckCondition.currentRowSelected(id);
+    })
+})
+
+

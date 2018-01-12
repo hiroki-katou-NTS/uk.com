@@ -23,6 +23,7 @@ module a3 {
         isFixedMode: KnockoutObservable<boolean>;
         isLoading: KnockoutObservable<boolean>;
         isDetailMode: KnockoutObservable<boolean>;
+        isUseHalfDay: KnockoutObservable<boolean>;
         dataSourceOnedayFixed: KnockoutObservableArray<any>;
         dataSourceMorningFixed: KnockoutObservableArray<any>;
         dataSourceAfternoonFixed: KnockoutObservableArray<any>;
@@ -35,17 +36,21 @@ module a3 {
         settingEnum: WorkTimeSettingEnumDto;
         mainSettingModel: MainSettingModel;
         lstOvertimeWorkFrame: OvertimeWorkFrameFindDto[];
+        
+        //define for 精算順序 primitive value
+        lstSettlementOrder: any[];
 
         /**
         * Constructor.
         */
         constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, 
-        isLoading: KnockoutObservable<boolean>, isDetailMode: KnockoutObservable<boolean>) {
+        isLoading: KnockoutObservable<boolean>, isDetailMode: KnockoutObservable<boolean>, isUseHalfDay: KnockoutObservable<boolean>) {
             let self = this;
             self.settingEnum = settingEnum;
             self.mainSettingModel = mainSettingModel;
             self.isLoading = isLoading;
             self.isDetailMode = isDetailMode;
+            self.isUseHalfDay = isUseHalfDay;
             self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
             self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
             self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
@@ -54,6 +59,16 @@ module a3 {
                 { code: 1, name: nts.uk.resource.getText("KMK003_143") }
             ]);
             self.lstOvertimeWorkFrame = [];
+            
+            self.lstSettlementOrder = [];
+            //init list order
+            for (let i = 1; i <= 10; i++) {
+                self.lstSettlementOrder.push({
+                    settlementOrder: i,
+                    settlementOrderName: i.toString()
+                });
+            }
+            
             self.dataSourceOvertimeFlow = ko.observableArray([]);
             self.dataSourceOnedayFixed = ko.observableArray([]);
             self.dataSourceMorningFixed = ko.observableArray([]);
@@ -403,8 +418,8 @@ module a3 {
                      key: "roundingTime",
                      dataSource: self.settingEnum.roundingTime,
                      defaultValue: ko.observable(0),
-                     width: 120,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                     width: 80,
+                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
                                     optionsText: 'localizedName',
@@ -417,10 +432,12 @@ module a3 {
                  {
                      headerText: nts.uk.resource.getText("KMK003_57"),
                      key: "rounding",
+                     isRoudingColumn: true,
+                     unitAttrName: 'roundingTime',
                      dataSource: self.settingEnum.rounding,
                      defaultValue: ko.observable(0),
-                     width: 150,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                     width: 180,
+                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 5,
                                     optionsText: 'localizedName',
@@ -434,10 +451,10 @@ module a3 {
                      key: "otFrameNo",
                      dataSource: self.lstOvertimeWorkFrame,
                      defaultValue: ko.observable(1),
-                     width: 120,
-                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                     width: 150,
+                     template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
@@ -450,9 +467,9 @@ module a3 {
                      dataSource: self.lstOvertimeWorkFrame,
                      defaultValue: ko.observable(1),
                      width: 120,
-                     template:  `<div class="column-combo-box" data-bind="ntsComboBox: {
+                     template:  `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
@@ -465,9 +482,9 @@ module a3 {
                      dataSource: self.lstOvertimeWorkFrame,
                      defaultValue: ko.observable(1),
                      width: 100,
-                     template:  `<div class="column-combo-box" data-bind="ntsComboBox: {
+                     template:  `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
@@ -488,10 +505,10 @@ module a3 {
                  key: "legalOTframeNo",
                  dataSource: self.lstOvertimeWorkFrame,
                  defaultValue: ko.observable(1),
-                 width: 75,
-                 template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                 width: 150,
+                 template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
@@ -501,16 +518,16 @@ module a3 {
              arraySettingFlex.push({
                  headerText: nts.uk.resource.getText("KMK003_187"),
                  key: "settlementOrder",
-                 dataSource: self.lstOvertimeWorkFrame,
+                 dataSource: self.lstSettlementOrder,
                  defaultValue: ko.observable(1),
-                 width: 75,
-                 template: `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
-                                    optionsText: 'overtimeWorkFrName',
+                 width: 50,
+                 template: `<div data-key="settlementOrder" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'settlementOrder',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'settlementOrderName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                    columns: [{ prop: 'settlementOrderName', length: 12 }]}">
                                 </div>`
              });
             return arraySettingFlex;
@@ -527,7 +544,7 @@ module a3 {
                     key: "timezone",
                     defaultValue: ko.observable({ startTime: 0, endTime: 0 }), 
                     width: 250, 
-                    template: `<div class= "fixtable" data-bind="ntsTimeRangeEditor: { 
+                    template: `<div data-bind="ntsTimeRangeEditor: { 
                         startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
                         required: true, enable: true, inputFormat: 'time',  startTimeNameId: '#[KMK003_166]', endTimeNameId: '#[KMK003_167]',paramId:'KMK003_89'}"/>`
                 },
@@ -536,8 +553,8 @@ module a3 {
                     key: "roundingTime",
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0),
-                    width: 120,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 80,
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
                                     optionsText: 'localizedName',
@@ -550,10 +567,12 @@ module a3 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_57"),
                     key: "rounding",
+                    isRoudingColumn: true,
+                    unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 150,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 180,
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 5,
                                     optionsText: 'localizedName',
@@ -567,10 +586,10 @@ module a3 {
                     key: "otFrameNo",
                     dataSource: self.lstOvertimeWorkFrame,
                     defaultValue: ko.observable(1),
-                    width: 80,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 150,
+                    template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
+                                    visibleItemsCount: 10,
                                     optionsText: 'overtimeWorkFrName',
                                     editable: false,
                                     enable: true,
@@ -620,7 +639,8 @@ module a3 {
             var mainSettingModel: MainSettingModel = input.mainModel;
             var isLoading:  KnockoutObservable<boolean> = input.isLoading; 
             var isDetailMode:  KnockoutObservable<boolean> = input.isDetailMode;
-            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading, isDetailMode);
+            var useHalfDay:  KnockoutObservable<boolean> = input.useHalfDay;
+            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading, isDetailMode, useHalfDay);
             nts.uk.at.view.kmk003.a3.service.findAllOvertimeWorkFrame().done(function(data) {
                 screenModel.lstOvertimeWorkFrame = data;
                 screenModel.initDataModel();

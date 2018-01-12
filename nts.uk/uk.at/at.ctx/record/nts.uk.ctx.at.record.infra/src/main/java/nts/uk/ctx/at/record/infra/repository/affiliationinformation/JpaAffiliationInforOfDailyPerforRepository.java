@@ -65,8 +65,8 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		entity.krcdtDaiAffiliationInfPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
 		entity.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
 		entity.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode() != null ? affiliationInforOfDailyPerfor.getBonusPaySettingCode().v() : null;
-		entity.classificationCode = affiliationInforOfDailyPerfor.getClsCode().v();
-		entity.employmentCode = affiliationInforOfDailyPerfor.getEmploymentCode().v();
+		entity.classificationCode = affiliationInforOfDailyPerfor.getClsCode() == null ? null : affiliationInforOfDailyPerfor.getClsCode().v();
+		entity.employmentCode = affiliationInforOfDailyPerfor.getEmploymentCode() == null ? null : affiliationInforOfDailyPerfor.getEmploymentCode().v();
 		entity.jobtitleID = affiliationInforOfDailyPerfor.getJobTitleID();
 		entity.workplaceID = affiliationInforOfDailyPerfor.getWplID();
 
@@ -86,19 +86,19 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	}
 
 	@Override
-	public void updateByKey(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor) {
-		Optional<KrcdtDaiAffiliationInf> dataOpt = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiAffiliationInf.class).setParameter("employeeId", affiliationInforOfDailyPerfor.getEmployeeId())
-				.setParameter("ymd", affiliationInforOfDailyPerfor.getYmd()).getSingle();
+	public void updateByKey(AffiliationInforOfDailyPerfor domain) {
+		Optional<KrcdtDaiAffiliationInf> dataOpt = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiAffiliationInf.class)
+				.setParameter("employeeId", domain.getEmployeeId())
+				.setParameter("ymd", domain.getYmd()).getSingle();
 		KrcdtDaiAffiliationInf data = dataOpt.isPresent() ? dataOpt.get() : new KrcdtDaiAffiliationInf();
 		if(!dataOpt.isPresent()){
-			data.krcdtDaiAffiliationInfPK = new KrcdtDaiAffiliationInfPK();
+			data.krcdtDaiAffiliationInfPK = new KrcdtDaiAffiliationInfPK(domain.getEmployeeId(), domain.getYmd());
 		}
-		data.krcdtDaiAffiliationInfPK.employeeId = affiliationInforOfDailyPerfor.getEmployeeId();
-		data.krcdtDaiAffiliationInfPK.ymd = affiliationInforOfDailyPerfor.getYmd();
-		data.bonusPayCode = affiliationInforOfDailyPerfor.getBonusPaySettingCode().v();
-		data.classificationCode = affiliationInforOfDailyPerfor.getClsCode().v();
-		data.employmentCode = affiliationInforOfDailyPerfor.getEmploymentCode().v();
-		data.jobtitleID = affiliationInforOfDailyPerfor.getJobTitleID();
+		data.bonusPayCode = domain.getBonusPaySettingCode() == null ? null : domain.getBonusPaySettingCode().v();
+		data.classificationCode = domain.getClsCode() == null ? null : domain.getClsCode().v();
+		data.employmentCode = domain.getEmploymentCode() == null ? null : domain.getEmploymentCode().v();
+		data.workplaceID = domain.getWplID();
+		data.jobtitleID = domain.getJobTitleID();
 		this.commandProxy().update(data);
 	}
 }

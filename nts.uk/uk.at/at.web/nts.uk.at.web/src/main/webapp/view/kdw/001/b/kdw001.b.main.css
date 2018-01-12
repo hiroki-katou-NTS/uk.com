@@ -1,9 +1,7 @@
 #contents-area{
-	height: 600px !IMPORTANT;
+height: 600px !important;
 }
-
 #button36Area {
-	margin-top: 3px;
 	display: inline-block;
 	float: left;
 }
@@ -23,7 +21,7 @@
 }
 
 #area5 {
-	margin-top: -26px;
+	margin-top: -20px;
 }
 
 #checkBox22 {
@@ -48,8 +46,7 @@
 }
 
 #area3, #area4 {
-	margin-top: 17px;
-	margin-bottom: 35px;
+	margin-bottom: 19px;
 }
 
 .cbElement {
@@ -73,7 +70,7 @@
 	width: 543px;
 	height: 205px;
 	margin-left: 55px;
-	margin-top: 11px;
+	margin-top:11px;
 }
 
 button {

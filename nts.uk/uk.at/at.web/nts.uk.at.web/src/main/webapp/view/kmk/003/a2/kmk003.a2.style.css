@@ -2,14 +2,14 @@
 	margin-top: 20px;
 }
 
-.setting_detail_tab2 {
-	width: 760px;
-}
-
 .column-combo-box {
-	min-width: 100px !important;
+	min-width: 70px !important;
 }
 
 .itemleft {
 	margin-left: 30px;
+}
+
+.table-width {
+	width: 481px;
 }

@@ -50,20 +50,12 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         service.getAllCategory().done(function(data: Array<any>) {
                             if (data.length > 0) {
 
-                                self.categoryList(_.map(data, x => new CategoryInfo({
-                                    id: x.id,
-                                    categoryCode: x.categoryCode,
-                                    categoryName: x.categoryName,
-                                    categoryType: x.categoryType,
-                                    isAbolition: x.isAbolition
-                                })));
+                                self.categoryList(data);
 
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
                                 $('.search-btn').trigger('click');
                             }
                         });
-
-
 
                         $("#category_grid").igGrid("option", "dataSource", self.ctgLstFilter);
                     }
@@ -73,6 +65,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                         $("#category_grid").igGrid("option", "dataSource", _.filter(self.ctgLstFilter, x => { return x.isAbolition == 0 }));
 
                     } else {
+                        let oldlst: Array<any> = _.map(ko.toJS(self.categoryList), x => x);
+
                         self.categoryList.removeAll();
                         service.getAllCategory().done(function(data: Array<any>) {
                             if (data.length > 0) {
@@ -85,7 +79,16 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                 })));
                                 let category = _.find(self.categoryList(), x => { return x.id == self.currentCategory().id() });
                                 if (category === undefined) {
-                                    self.currentCategory().id(self.categoryList()[0].id);
+                                    let oldIndex = oldlst.indexOf(_.find(oldlst, x => { return x.id == self.currentCategory().id() }));
+                                    for (var i = oldIndex; i >= 0; i--) {
+                                        let curCtg = oldlst[i];
+                                        let newctg = _.find(self.categoryList(), x => { return x.id == curCtg.id })
+                                        if (newctg != undefined) {
+                                            self.currentCategory().id(newctg.id);
+                                            break;
+                                        }
+                                    }
+
                                 }
                                 $("#category_grid").igGrid("option", "dataSource", self.categoryList());
                             }
@@ -149,7 +152,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
                     } else {
 
-                        dialog.alert('Msg_291');
+                        dialog.alertError({ messageId: 'Msg_291' });
 
                     }
                     dfd.resolve();
@@ -180,7 +183,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
                     } else {
 
-                        dialog.alert('Msg_291');
+                        dialog.alertError({ messageId: 'Msg_291' });
 
                     }
                     dfd.resolve();
@@ -240,7 +243,16 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     self.start(command.categoryId);
                 });
             }).fail(function(res: any) {
-                dialog.alertError({ messageId: res.messageId });
+                if (res.messageId == "Msg_928") {
+                    dialog.alertError({
+                        messageId: res.messageId,
+                        messageParams: ["個人情報カテゴリ"]
+                    }).then(() => {
+                        $('#ctgName').focus();
+                    })
+                } else {
+                    dialog.alertError({ messageId: res.messageId });
+                }
             });
 
         }

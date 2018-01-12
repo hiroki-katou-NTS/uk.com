@@ -172,7 +172,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
             });
             self.dateRanger({
-                startDate: moment().add(-1, "M").format("YYYY/MM/DD"),
+                startDate: moment().add(-1, "M").add(1 ,"d").format("YYYY/MM/DD"),
                 endDate: moment().format("YYYY/MM/DD")
             });
         }
@@ -367,53 +367,46 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
                 if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
                     if (data.columnKey.indexOf("Name") != -1) {
-                        let value = "";
-                        if (self.checkIsColumn(dataTemp.cellDatas, data.columnKey.substring(4, data.columnKey.length))) {
-                            value = $("#dpGrid").igGrid("getCellValue", data.rowId, "NO" + data.columnKey.substring(4, data.columnKey.length));
-                        }
-                        else {
-                            value = $("#dpGrid").igGrid("getCellValue", data.rowId, "Code" + data.columnKey.substring(4, data.columnKey.length));
-                        }
-                        //get layout , and type
-                        let layoutAndType : any  = _.find(self.itemValueAll(), (item :any) =>{
-                              return item.itemId == data.columnKey.substring(4, data.columnKey.length);
-                            });
-                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(4, data.columnKey.length), value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
-                        dataChangeProcess.push(dataMap);
+                        // todo
                     } else {
                         //get layout , and type
                         let layoutAndType : any  = _.find(self.itemValueAll(), (item :any) =>{
                               return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                             });
-                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), data.value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
+                        let value: any;
+                        value = self.getPrimitiveValue(data.value);
+                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" :layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
                         dataChangeProcess.push(dataMap);
                     }
-                }
-            });
-            _.each(self.itemValueAllTemp(), (data: any) => {
-                if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
-                    let dataTemp = _.find(self.dpData, (item: any) => {
-                        return item.id == data.rowId.substring(1, data.rowId.length);
-                    });
+                }else{
+                    let columnKey: any;
+                    if (data.columnKey.indexOf("Code") != -1) {
+                        columnKey = data.columnKey.substring(4, data.columnKey.length);
+                    } else {
+                        columnKey = data.columnKey.substring(2, data.columnKey.length);
+                    }
+
                     let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-                        return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                        return item.itemId == columnKey;
                     });
-                    let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), data.value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
+                    let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
                     dataChangeProcess.push(dataMap);
                 }
             });
             let param = { itemValues: dataChangeProcess }
-            let dfd = $.Deferred();
-            service.addAndUpdate(dataChangeProcess).done((data) => {
-               // alert("done");
-                dataChange = {};
-                self.btnExtraction_Click();
-                dfd.resolve();
-            }).fail((data) => {
-                alert("fail");
-                dfd.resolve();
-            });
-            dfd.promise();
+            if (dataChangeProcess.length > 0) {
+                let dfd = $.Deferred();
+                service.addAndUpdate(dataChangeProcess).done((data) => {
+                    // alert("done");
+                    dataChange = {};
+                    self.btnExtraction_Click();
+                    dfd.resolve();
+                }).fail((data) => {
+                    alert("fail");
+                    dfd.resolve();
+                });
+                dfd.promise();
+            }
             debugger;
         }
         checkIsColumn(dataCell: any, key: any): boolean {
@@ -425,6 +418,44 @@ module nts.uk.at.view.kdw003.a.viewmodel {
               }
               });
             return check;
+        }
+        
+        getPrimitiveValue(value : any): string{
+            var self = this;
+            let valueResult : string = "";
+            if(String(value).indexOf("日") != -1){
+                //時刻
+                let valueTemp : any;
+                valueTemp = value.split('日')[1];
+                if(String(value).indexOf("当日") != -1){
+                    // same date
+                    valueResult = String(self.getHours(valueTemp));
+                }else if(String(value).indexOf("翌日") != -1){
+                    // 1 date
+                     valueResult = String(24*60 + (self.getHours(valueTemp)));
+                }else if(String(value).indexOf("翌々日") != -1){
+                    // 2 date
+                     valueResult = String(24*60*2 + (self.getHours(valueTemp)));
+                }else{
+                    // -1 date 前日
+                    valueResult = String("-"+self.getHours(valueTemp));
+                }
+                
+            }else if(String(value).indexOf(".") != -1){
+                //Money
+                for(let i = 0; i< value.split(',').length; i++){
+                    valueResult += value.split(',')[i];
+                }
+            }else if(String(value).indexOf(":") != -1){
+                // Time
+                valueResult = String(self.getHours(value));
+            }else{
+                valueResult = value;
+            }
+            return valueResult;
+        }
+        getHours(value: any) : number{
+            return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
         }
         hideComponent() {
             var self = this;
@@ -829,8 +860,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         totalNumber(data) {
             let total = 0;
-            let currentPageIndex = $("#grid2").igGridPaging("option", "currentPageIndex");
-            let pageSize = $("#grid2").igGridPaging("option", "pageSize");
+            let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
             let startIndex: any = currentPageIndex * pageSize;
             let endIndex: any = startIndex + pageSize;
             _.forEach(data, function(d, i) {
@@ -841,8 +872,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return total;
         }
         totalTime(data) {
-            let currentPageIndex = $("#grid2").igGridPaging("option", "currentPageIndex");
-            let pageSize = $("#grid2").igGridPaging("option", "pageSize");
+            let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
             let startIndex: any = currentPageIndex * pageSize;
             let endIndex: any = startIndex + pageSize;
             let total = moment.duration("0");
@@ -1129,23 +1160,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                            // $("#dpGrid").igGridUpdating("setCellValue", ui.rowID, "Name" + ui.columnKey.substring(4, ui.columnKey.length), (data == undefined ? "Not found" : data.name));
                            // nts.uk.ui.block.clear();
                             var object = {};
-                            object["Name" + ui.columnKey.substring(4, ui.columnKey.length)] = (data == undefined ? "なし" : data.name);
+                            object["Name" + ui.columnKey.substring(4, ui.columnKey.length)] = (data == undefined ? nts.uk.resource.getText("KDW003_81") : data.name);
                             $("#dpGrid").ntsGrid("updateRow", ui.rowID, object);
                             dfd.resolve();
                         });
                         dfd.promise();
                     }
-                } else {
-                    let itemTemp = _.find(self.itemValueAllTemp(), item => {
-                        if (item.columnKey == ui.columnKey && item.rowId == ui.rowID) {
-                            item.value = ui.value;
-                            return item.columnKey == ui.columnKey && item.rowId == ui.rowID;
-                        }
-                    })
-                    if (!itemTemp) {
-                        self.itemValueAllTemp().push({ columnKey: ui.columnKey, rowId: ui.rowID, value: ui.value })
-                    }
-                    }
+                } 
             });
         }
         
@@ -1213,6 +1234,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             _.forEach(self.optionalHeader, (header) => {
                 if (header.constraint == null) {
                     delete header.constraint;
+                }else{
+                    header.constraint["cDisplayType"] = header.constraint.cdisplayType;
+                    delete header.constraint.cdisplayType;
                 }
                 if (header.group != undefined) {
                     if (header.group.length > 0) {

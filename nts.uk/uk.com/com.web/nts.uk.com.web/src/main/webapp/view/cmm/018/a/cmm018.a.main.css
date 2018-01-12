@@ -33,9 +33,6 @@ table.contents-header td.button_phase {
      padding: 5px 5px;
 }
 
-table.contents-header td.approver {
-}
-
 table.contents-header td.base-date {
 	width: 150px;
 }
@@ -47,7 +44,6 @@ table.contents-header td.allow-pay {
 table.contents-header thead tr th{
 	text-align: center;
 }
-
 .modeB{
     color: #000;
     font-weight: bold;
@@ -82,4 +78,19 @@ table#fixed-tablePsB tbody td{
 
 .nts-fixed-table .nts-fixed-body-container {
 	overflow-x: hidden !important; 
+}
+.nts-fixed-table table.fixed-table > tbody > tr{
+	max-height: 50px !important;
+}
+table#fixed-tableB tbody tr{
+	max-height: 50px !important;
+}
+table#fixed-tableWpB tbody tr{
+	max-height: 50px !important;
+}
+table#fixed-tablePsB tbody tr{
+	max-height: 50px !important;
+}
+.overflow-visible {
+	overflow: visible !important;
 }

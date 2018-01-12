@@ -56,7 +56,7 @@ public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 	public Integer outActualSourceInfo;
 
 	@Column(name = "OUT_NUMBER_STAMP")
-	public Integer outNumberStamp;
+	public int outNumberStamp;
 
 	@Column(name = "BACK_STAMP_TIME")
 	public Integer backStampTime;
@@ -83,7 +83,7 @@ public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 	public Integer backActualSourceInfo;
 
 	@Column(name = "BACK_NUMBER_STAMP")
-	public Integer backNumberStamp;
+	public int backNumberStamp;
 
 	@Column(name = "OUTING_TIME_CALCULATION")
 	public Integer outingTimeCalculation;
@@ -107,10 +107,8 @@ public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 		WorkStamp outActual = gooutactualStamp == null ? null : gooutactualStamp.getActualStamp();
 		WorkStamp backActual = backactualStamp == null ? null : backactualStamp.getActualStamp();
 		return new KrcdtDaiOutingTime(new KrcdtDaiOutingTimePK(employeeId, date, outingTime.getOutingFrameNo().v()),
-				outStamp == null ? null
-						: outStamp.getTimeWithDay() == null ? null : outStamp.getTimeWithDay().valueAsMinutes(),
-				outStamp == null ? null
-						: outStamp.getAfterRoundingTime() == null ? null
+				outStamp == null ? null : outStamp.getTimeWithDay() == null ? null : outStamp.getTimeWithDay().valueAsMinutes(),
+				outStamp == null ? null : outStamp.getAfterRoundingTime() == null ? null
 								: outStamp.getAfterRoundingTime().valueAsMinutes(),
 				outStamp == null ? null : outStamp.getLocationCode().v(),
 				outStamp == null ? null : outStamp.getStampSourceInfo().value,

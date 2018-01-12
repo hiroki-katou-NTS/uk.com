@@ -83,6 +83,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 appDate: appDate,
                 isStartup: isStartup
             }).done((data)=>{
+                $('#listApproverRootState').ntsError('clear');
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
                 if(isStartup==false){
                     switch(data.errorFlag){

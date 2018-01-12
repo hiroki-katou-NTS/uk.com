@@ -58,14 +58,6 @@ public interface BasicScheduleSetMemento {
 	public void setConfirmedAtr(ConfirmedAtr confirmedAtr);
 	
 	/**
-	 * Sets the work day atr.
-	 *
-	 * @param workDayAtr the new work day atr
-	 */
-	public void setWorkDayAtr(WorkdayDivision workDayAtr);
-	
-	
-	/**
 	 * Sets the work schedule time zones.
 	 *
 	 * @param workScheduleTimeZones the new work schedule time zones

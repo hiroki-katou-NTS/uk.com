@@ -8,12 +8,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<title>#{i18n.getText('CPS005_36')}</title>
 			<com:ValidatorScript>
 				nts.uk.ctx.pereg.dom.person.info.category.CategoryName
 			</com:ValidatorScript>
-
-
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps005.a.main.css" />
 			<com:scriptfile path="cps005.a.start.js" />
@@ -36,7 +33,7 @@
 						<div
 							data-bind="ntsPanel:{width: '300px', height: '530px', direction: 'right', showIcon: false, visible: true}">
 							<div tabindex="3" style="width: 300px"
-								data-bind="ntsSearchBox: {placeHolder:'名称で検索…',searchMode: 'filter',targetKey: 'id', comId: 'category-list-items', 
+								data-bind="ntsSearchBox: {placeHolder:'名称で検索…',searchText: '絞り込み', searchMode: 'filter',targetKey: 'id', comId: 'category-list-items', 
 									items: categoryList, selected: perInfoCtgSelectCode, selectedKey: 'id', fields: ['categoryName'], mode: 'igGrid'}" />
 							<table id="category-list-items"
 								data-bind="ntsGridList: {								
@@ -144,7 +141,7 @@
 								optionsValue: 'value',
 								optionsText: 'name',
 								value: singleMulTypeSelected,
-								enable: true }">
+								enable: isChangeAbleCtgType }">
 									</div>
 									<button tabindex="9"
 										data-bind="ntsHelpButton: {image: '../image/singe_multi.png', position: 'right top', enable: true }">?</button>

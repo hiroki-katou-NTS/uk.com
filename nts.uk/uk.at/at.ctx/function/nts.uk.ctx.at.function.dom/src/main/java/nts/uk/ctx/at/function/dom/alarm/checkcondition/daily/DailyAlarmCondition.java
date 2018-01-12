@@ -1,13 +1,12 @@
 package nts.uk.ctx.at.function.dom.alarm.checkcondition.daily;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.FixedConditionWorkRecord;
 
 /**
  * 日次のアラームチェック条件
@@ -24,17 +23,20 @@ public class DailyAlarmCondition extends ExtractionCondition  {
 	
 	private boolean addApplication;
 	
-	private List<FixedConditionWorkRecord> listFixedConditionWorkRecord = new ArrayList<>();
+	private String errorAlarmID;
+	
+	private List<String > errorAlarmCode = new ArrayList<String>();
 
 	public DailyAlarmCondition(String dailyAlarmConID, ConExtractedDaily conExtractedDaily, boolean addApplication,
-			List<FixedConditionWorkRecord> listFixedConditionWorkRecord) {
+			String errorAlarmID, List<String> errorAlarmCode) {
 		super();
 		this.dailyAlarmConID = dailyAlarmConID;
 		this.conExtractedDaily = conExtractedDaily;
 		this.addApplication = addApplication;
-		this.listFixedConditionWorkRecord = listFixedConditionWorkRecord;
+		this.errorAlarmID = errorAlarmID;
+		this.errorAlarmCode = errorAlarmCode;
 	}
-	
+
 	
 
 }

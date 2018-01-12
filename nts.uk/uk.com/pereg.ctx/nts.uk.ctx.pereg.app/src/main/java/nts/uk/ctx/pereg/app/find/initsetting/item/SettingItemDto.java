@@ -121,8 +121,4 @@ public class SettingItemDto {
 
 	}
 
-	public void setData(GeneralDate value) {
-
-	}
-
 }

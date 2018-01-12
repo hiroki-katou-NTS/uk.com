@@ -33,6 +33,12 @@ public class WorkChangeDetailDto {
 
 	PrelaunchAppSettingDto prelaunchAppSetting;	
 	/**
+	 * 画面モード(表示/編集)
+	 * 0: 表示
+	 * 1: 編集
+	 */
+	int OutMode;
+	/**
 	 * 選択可能な勤務種類コード
 	 */
 	List<String> workTypeCodes;
@@ -46,6 +52,8 @@ public class WorkChangeDetailDto {
 				ApplicationDto_New.fromDomain(domain.getApplication()), 
 				domain.getEmployeeName(), domain.getSID(), 
 				DetailedScreenPreBootModeDto.convertToDto(domain.getDetailedScreenPreBootModeOutput()),
-				PrelaunchAppSettingDto.convertToDto(domain.getPrelaunchAppSetting()), domain.getWorkTypeCodes(), domain.getWorkTimeCodes());
+				PrelaunchAppSettingDto.convertToDto(domain.getPrelaunchAppSetting()),
+				domain.getDetailScreenInitModeOutput().getOutputMode().value,
+				domain.getWorkTypeCodes(), domain.getWorkTimeCodes());
 	}
 }

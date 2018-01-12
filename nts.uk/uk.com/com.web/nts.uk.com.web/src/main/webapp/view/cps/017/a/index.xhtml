@@ -13,7 +13,6 @@
 					height : 750
 				};
 			</script>
-			<title>#{i18n.getText('CPS017_51')}</title>
 			<com:ValidatorScript>
 					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemName
 					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionCodeLength
@@ -51,7 +50,7 @@
 					data-bind="click: openDialogB, enable: revDisSel03" tabindex="5">#{i18n.getText('CPS017_3')}</button>
 
 				<button id="A1_007" tabindex="6"
-					data-bind="click: ReflUnrComp, visible : checkCreate()==false">#{i18n.getText('CPS017_49')}</button>
+					data-bind="click: ReflUnrComp, visible : refecToAll">#{i18n.getText('CPS017_49')}</button>
 
 			</div>
 			<div id="contents-area" class="cf"
@@ -182,7 +181,7 @@
 										value: selectionCD,
 										constraint: 'SelectionCD', 
 										required: true, 
-										enable: $parent.selection().selectionID() == undefined , 
+										enable: $parent.selectionCd, 
 		 								immediate: false									
 										}" />
 								</span>
@@ -193,7 +192,7 @@
 										value: selectionCD,
 										constraint: 'SelectionCD', 
 										required: true, 
-										enable: $parent.selection().selectionID() == undefined , 
+										enable: $parent.selectionCd, 
 		 								immediate: false}" />
 								</span> 
 							</div>

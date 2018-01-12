@@ -43,7 +43,8 @@ module nts.uk.at.view.kmk008.e {
                     selectType: 1,
                     isShowSelectButton: true,
                     isDialog: false,
-                    alreadySettingList: self.alreadySettingList
+                    alreadySettingList: self.alreadySettingList,
+                    systemType:2
                 };
 
                 self.selectedWorkplaceId.subscribe(newValue => {
@@ -115,7 +116,7 @@ module nts.uk.at.view.kmk008.e {
                     new service.Service().updateAgreementTimeOfWorkplace(timeOfWorkPlaceNew).done(listError => {
                         if (listError.length > 0) {
                             let errorCode = _.split(listError[0], ',');
-                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
                             return;
                         }
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
@@ -126,7 +127,7 @@ module nts.uk.at.view.kmk008.e {
                 new service.Service().addAgreementTimeOfWorkPlace(timeOfWorkPlaceNew).done(listError => {
                     if (listError.length > 0) {
                         let errorCode = _.split(listError[0], ',');
-                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
+                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
                         return;
                     }
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" });

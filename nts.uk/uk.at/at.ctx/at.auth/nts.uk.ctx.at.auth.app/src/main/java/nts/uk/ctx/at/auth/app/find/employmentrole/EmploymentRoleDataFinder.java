@@ -30,7 +30,7 @@ public class EmploymentRoleDataFinder {
 	public EmploymentRoleDataDto getEmploymentRoleById( String roleId) {
 		String companyID = AppContexts.user().companyId();
 		Optional<EmploymentRoleDataDto> data = repo.getEmploymentRoleById(companyID, roleId).map(c->EmploymentRoleDataDto.fromDomain(c));
-		if(data != null)
+		if(data.isPresent())
 			return data.get();
 		return null;
 	}

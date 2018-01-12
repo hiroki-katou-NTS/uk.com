@@ -127,3 +127,6 @@ div.form-label.broken {
 	position: relative;
 	z-index: 1;
 }
+.mode-style{
+	display: inline-block;
+}

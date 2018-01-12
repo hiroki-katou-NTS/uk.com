@@ -1,3 +1,7 @@
+.contents-area .container {
+	margin: 25px;
+}
+
 .left-content {
 	display: inline-block;
 	vertical-align: top;
@@ -6,4 +10,32 @@
 .right-content {
 	display: inline-block;
 	vertical-align: top;
+	padding-top: 20px;
+}
+
+div[class^="tab-content"] {
+	/*width: 600px;
+	height: 300px;*/
+}
+
+.tab-content-1 button {
+	width: 80px;
+	margin: 0px 20px;
+}
+
+.tab-content-1 .control-group {
+	margin-top: 25px;
+}
+
+.flabel {
+	display: inline-block;
+	width: 150px;
+}
+
+.ntsRadioBox .label {
+	padding-right: 20px;
+}
+
+#div_table_check_conditions .nts-fixed-table .nts-fixed-body-container {
+	overflow-x: hidden;
 }

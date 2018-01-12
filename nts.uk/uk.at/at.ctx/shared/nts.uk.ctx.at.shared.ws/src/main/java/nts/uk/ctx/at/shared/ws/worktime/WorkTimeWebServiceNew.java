@@ -117,8 +117,7 @@ public class WorkTimeWebServiceNew extends WebService {
 	@POST
 	@Path("findByTime")
 	public List<WorkTimeDto> findByTime(WorkTimeCommandFinder command) {
-		return this.workTimeSetFinder.findByTime(command.codelist, command.startAtr,
-				command.startTime, command.endAtr, command.endTime);
+		return this.workTimeSetFinder.findByTime(command.codelist, command.startTime, command.endTime);
 	}
 
 	/**

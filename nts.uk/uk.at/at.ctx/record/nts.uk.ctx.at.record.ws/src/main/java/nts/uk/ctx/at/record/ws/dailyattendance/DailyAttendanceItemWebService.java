@@ -60,9 +60,9 @@ public class DailyAttendanceItemWebService extends WebService {
     
     @POST
     @Path("getattendcoutinouswork")
-    public List<WorkTypeDto> getDailyAttendanceContinuesWorkBy(List<String> workTypeCodes) {
+    public List<WorkTypeDto> getDailyAttendanceContinuesWorkBy() {
        //check item as time
-        return this.finder.findDailyAttendanceContinousWorkBy(workTypeCodes);
+        return this.finder.findDailyAttendanceContinousWorkType();
     }
     
     @POST

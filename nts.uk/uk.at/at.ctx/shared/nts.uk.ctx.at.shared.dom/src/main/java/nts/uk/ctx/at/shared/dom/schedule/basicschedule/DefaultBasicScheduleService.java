@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -30,9 +29,6 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 
 	@Inject
 	public WorkTypeRepository workTypeRepo;
-
-	@Inject
-	public WorkTimeSetRepository workTimeSetRepo;
 
 	@Override
 	public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -96,7 +92,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		}
 		throw new RuntimeException("NOT FOUND SETUP TYPE");
 	}
-	
+
 	/**
 	 * 入力必須区分チェック
 	 */

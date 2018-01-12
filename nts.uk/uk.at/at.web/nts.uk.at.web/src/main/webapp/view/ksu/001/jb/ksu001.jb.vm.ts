@@ -35,19 +35,19 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                         workTypeCode = null;
                     }
 
-                    let siftCode: string = null;
+                    let workTimeCd: string = null;
                     if (self.selectedWorkTimeCode()) {
-                        siftCode = self.selectedWorkTimeCode().slice(0, 3);
+                        workTimeCd = self.selectedWorkTimeCode().slice(0, 3);
                     } else {
-                        siftCode = self.selectedWorkTimeCode()
+                        workTimeCd = self.selectedWorkTimeCode()
                     }
 
-                    let c = _.find(self.listWorkTime(), ['siftCd', siftCode]);
+                    let c = _.find(self.listWorkTime(), ['workTimeCode', workTimeCd]);
                     if (c) {
                         workTimeName = c.abName;
-                        workTimeCode = (c.siftCd == '000' ? '' : c.siftCd);
-                        startTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.start, true).format() : '';
-                        endTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.end, true).format() : '';
+                        workTimeCode = (c.workTimeCode == '000' ? null : c.workTimeCode);
+                        startTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.startTime, true).format() : '';
+                        endTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.endTime, true).format() : '';
                     } else {
                         workTimeName = null;
                         workTimeCode = null;
@@ -165,12 +165,12 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             self.listWorkTimeComboBox([]);
             _.forEach(self.listWorkTime(), (obj) => {
                 if (self.time1() && self.time2()
-                    && (moment.duration(self.time1()).asMinutes() == obj.start)
-                    && (moment.duration(self.time2()).asMinutes() == obj.end)) {
+                    && (moment.duration(self.time1()).asMinutes() == obj.startTime)
+                    && (moment.duration(self.time2()).asMinutes() == obj.endTime)) {
                     self.listWorkTimeComboBox.push(obj);
-                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() <= obj.start)) {
+                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() <= obj.startTime)) {
                     self.listWorkTimeComboBox.push(obj);
-                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() >= obj.end)) {
+                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() >= obj.endTime)) {
                     self.listWorkTimeComboBox.push(obj);
                 }
             });

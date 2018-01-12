@@ -37,7 +37,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         enableSendMail :KnockoutObservable<boolean> = ko.observable(false); 
         manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);    
         dateFormat: string = 'YYYY/MM/DD';
-        
+        //画面モード(表示/編集)
+        editable: KnockoutObservable<boolean> = ko.observable( true );
         constructor() {
             let self = this,
             application = self.appWorkChange().application();
@@ -121,6 +122,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 self.appWorkChange().workChange().workTypeName(self.appWorkChange().dataWork().selectedWorkTypeName);
                 self.appWorkChange().workChange().workTimeCd(self.appWorkChange().dataWork().selectedWorkTimeCd);
                 self.appWorkChange().workChange().workTimeName(self.appWorkChange().dataWork().selectedWorkTimeName);
+                //Focus process
+                self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });
                 //フォーカス制御
                 self.changeFocus('#inputdatestart'); 
                               

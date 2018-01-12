@@ -75,6 +75,7 @@ module a5 {
         isFixed: KnockoutComputed<boolean>;
         isDiffTime: KnockoutComputed<boolean>;
         isDetailMode: KnockoutObservable<boolean>;
+        useHalfDay: KnockoutObservable<boolean>;
 
         // show/hide
         //isFlexOrFlow: KnockoutComputed<boolean>; // a5_2 flex or a5_4 flow *19
@@ -93,13 +94,10 @@ module a5 {
                 { code: false, name: nts.uk.resource.getText("KMK003_143") }
             ];
 
-            // flag
-            self.flexFixedRestTime = ko.observable(true); // initial value = lead
-            self.flowFixedRestTime = ko.observable(true); // initial value = lead
-
             // load data from main setting model
             self.mainSettingModel = valueAccessor.mainSettingModel;
             self.isDetailMode = valueAccessor.isDetailMode;
+            self.useHalfDay = valueAccessor.useHalfDay;
             self.loadData();
 
             // fix table option
@@ -122,6 +120,10 @@ module a5 {
             let fixedOneday = self.mainSettingModel.fixedWorkSetting.getHDWtzOneday();
             let fixedMorning = self.mainSettingModel.fixedWorkSetting.getHDWtzMorning();
             let fixedAfternoon = self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon();
+
+            // set switch button value
+            self.flexFixedRestTime = flex.fixRestTime;
+            self.flowFixedRestTime = ko.observable(true); // TODO chua lam flow
 
             // set flex timezones
             self.oneDayFlexTimezones = flexOneday.restTimezone.fixedRestTimezone.convertedList;

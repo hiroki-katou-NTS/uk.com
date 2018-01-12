@@ -97,13 +97,14 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button data-bind="enable: !isNewMode(), click: enterNewMode">#{i18n.getText('KMK003_3')}</button>
-				<button class="proceed" data-bind="click: save">#{i18n.getText('KMK003_4')}</button>
-				<button data-bind="enable: isUpdateMode, click: enterCopyMode">
+				<button tabindex="1" data-bind="enable: !isNewMode(), click: enterNewMode">#{i18n.getText('KMK003_3')}</button>
+				<button tabindex="2" class="proceed" data-bind="click: save">#{i18n.getText('KMK003_4')}</button>
+				<button tabindex="3" data-bind="enable: isUpdateMode, click: enterCopyMode">
 					#{i18n.getText('KMK003_5')}</button>
-				<button class="danger" data-bind="enable: isUpdateMode, click: removeWorkTime">
+				<button tabindex="4" class="danger" data-bind="enable: isUpdateMode, click: removeWorkTime">
 					#{i18n.getText('KMK003_6')}</button>
-				<button style="display: none" data-bind="visible: isTestMode, click: testData">Fill test data</button>
+				<button style="display: none" data-bind="visible: isTestMode, click: testFlex">Test flex</button>
+				<button style="display: none" data-bind="visible: isTestMode, click: testFixed">Test fixed</button>
 			</div>
 			<div id="contents-area" style="display: none"
 				data-bind="visible: true">
@@ -115,7 +116,7 @@
 								<com:ko tag="with" bind="workTimeSettingLoader">
 								<div class="control-group">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
-									<div id="combo-box"
+									<div tabindex="5" id="combo-box"
 										data-bind="ntsComboBox: {
 										name: '#[KMK003_7]',
 										options: workTimeAtrEnums,
@@ -131,7 +132,7 @@
 								</div>
 								<div class="control-group">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}</div>
-									<span id="combo-box" 
+									<span tabindex="6" id="combo-box" 
 										data-bind="ntsComboBox: {
 										name: '#[KMK003_8]',
 										options: workTimeMethodEnums,
@@ -145,27 +146,29 @@
 										{ prop: 'localizedName', length: 6 }]}">
 									</span>
 								</div>
-								<div class="checkbox_display"
+								<div class="checkbox_display" tabindex="7"
 									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_9')}
 								</div>
 								</com:ko>
-								<div style="width: 300px"
+								<div style="clear: both">
+									<div style="width: 300px" tabindex="8"
 									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'worktimeCode', 
 									comId: 'single-list', items: workTimeSettings,  selectedKey: 'worktimeCode', 
 									fields: ['workTimeName', 'worktimeCode'], mode: 'igGrid'}">
+									</div>
+									<table id="single-list" tabindex="9"
+										data-bind="ntsGridList: {
+										name: '#[KMK003_86]',
+										height: 320,
+										width: 300,
+										options: workTimeSettings,
+										optionsValue: 'worktimeCode',
+										columns: columnWorktimeSettings,
+										multiple: false,
+										value: selectedWorkTimeCode
+										}">
+									</table>
 								</div>
-								<table id="single-list"
-									data-bind="ntsGridList: {
-									name: '#[KMK003_86]',
-									height: 320,
-									width: 300,
-									options: workTimeSettings,
-									optionsValue: 'worktimeCode',
-									columns: columnWorktimeSettings,
-									multiple: false,
-									value: selectedWorkTimeCode
-									}">
-								</table>
 							</div>
 						</td>
 						<td class="screen-content-right">
@@ -177,7 +180,7 @@
 									#{i18n.getText('KMK003_13')}
 								</div>
 
-								<input id="inp-worktimecode" data-bind="ntsTextEditor: {
+								<input tabindex="10" id="inp-worktimecode" data-bind="ntsTextEditor: {
 								    name: '#[KMK003_10]',
 									value: worktimeCode,
 									constraint: 'WorkTimeCode',
@@ -185,7 +188,7 @@
 									required: true,
 									enable: $parent.isNewOrCopyMode()}">
 								</input> 
-								<input id="inp-worktimename" data-bind="ntsTextEditor: {
+								<input tabindex="11" id="inp-worktimename" data-bind="ntsTextEditor: {
 									name: '#[KMK003_11]',
 									value: workTimeDisplayName.workTimeName,
 									constraint: 'WorkTimeName',
@@ -196,7 +199,7 @@
 								</input>
 								<div class="label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_14')}
 								</div>
-								<input data-bind="ntsTextEditor: {
+								<input tabindex="12" data-bind="ntsTextEditor: {
 									name: '#[KMK003_14]',
 									value: workTimeDisplayName.workTimeAbName,
 									constraint: 'WorkTimeAbName',
@@ -206,7 +209,7 @@
 									}" />
 								<div class="label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_15')}
 								</div>
-								<input data-bind="ntsTextEditor: {
+								<input tabindex="13" data-bind="ntsTextEditor: {
 									name: '#[KMK003_15]',
 									value: workTimeDisplayName.workTimeSymbol,
 									constraint: 'WorkTimeSymbol',
@@ -214,15 +217,15 @@
 									required: false,
 									enable: true
 									}" />
-								<div class="label_header"
+								<div tabindex="14" class="label_header"
 									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_16')}
 								</div>
-								<div id="colorpicker"
+								<div tabindex="15" id="colorpicker"
 									data-bind="ntsColorPicker: {name: '#[KMK003_161]',value: colorCode, enable: true, width: 50}" />
 							</div>
 							<div class="setting_header_br">
 								<div style="width: 135px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
-								<div id="cbb-worktime-atr" style="margin-right: 10px"
+								<div id="cbb-worktime-atr" style="margin-right: 10px" tabindex="16"
 									data-bind="ntsComboBox: {
 									name: '#[KMK003_7]',
 									options: $parent.settingEnum.workTimeDailyAtr,
@@ -237,7 +240,7 @@
 								</div>
 								<div class="label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}
 								</div>
-								<div id="cbb-worktime-method"
+								<div id="cbb-worktime-method" tabindex="17"
 									data-bind="ntsComboBox: {
 									name: '#[KMK003_8]',
 									options: $parent.settingEnum.workTimeMethodSet,
@@ -254,8 +257,8 @@
 								<div class="label_memo"
 									data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_162')}
 								</div>
-								<input class="memo-field"
-									data-bind="ntsTextEditor: {
+								<textarea tabindex="18" class="memo-field"
+									data-bind="ntsMultilineEditor: {
 									name: '#[KMK003_162]',
 									value: note,
 									constraint: 'WorkTimeNote',
@@ -265,8 +268,8 @@
 									}" />
 								<div class="label_memo label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_183')}
 								</div>
-								<input class="memo-field"
-									data-bind="ntsTextEditor: {
+								<textarea tabindex="19" class="memo-field"
+									data-bind="ntsMultilineEditor: {
 									name: '#[KMK003_206]',
 									value: memo,
 									constraint: 'Memo',
@@ -280,7 +283,7 @@
 								
 								<tr style="height: 50px;">
 									<td class="td-cell" width="300px">
-										<div class="cf"
+										<div tabindex="20" class="cf"
 											data-bind="ntsSwitchButton: {
 											name: '#[KMK003_207]',
 											options: tabModeOptions,
@@ -296,7 +299,7 @@
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_48')}</div>
 									</td>
 									<td class="td-cell">
-										<div class="cf"
+										<div class="cf" tabindex="21"
 											data-bind="ntsSwitchButton: {
 											name: '#[KMK003_165]',
 											options: useHalfDayOptions,
@@ -315,14 +318,14 @@
 										<div id="tab-panel"
 											data-bind="ntsTabPanel: {width:250, dataSource: tabs, 
 											active: selectedTab,direction: 'vertical' }">
-											<div class="tab-a1">
+											<div tabindex="22" class="tab-a1">
 												<div data-bind="ntsKMK003A1: {isDetailMode: isDetailMode,
 													useHalfDay: useHalfDay,
 													enum: settingEnum,
 													mainSettingModel: mainSettingModel}">
 												</div>
 											</div>
-											<div class="tab-a2">
+											<div tabindex="45" class="tab-a2">
 												<div data-bind="ntsKMK003A2: {
 													screenMode: screenMode,
 													tabMode: tabMode,
@@ -333,12 +336,12 @@
 													mainModel: mainSettingModel }">
 												</div>
 											</div>
-											<div class="tab-a3">
+											<div tabindex="53" class="tab-a3">
 												<div data-bind="ntsKMK003A3: {enum: settingEnum, isDetailMode: isDetailMode,
-													mainModel: mainSettingModel, isLoading: isLoading}">
+													useHalfDay: useHalfDay, mainModel: mainSettingModel, isLoading: isLoading}">
 												</div>
 											</div>
-											<div class="tab-a4">
+											<div tabindex="60" class="tab-a4">
 												<div data-bind="ntsKMK003A4: { 
 													tabMode: tabMode, 
 													mainSettingModel: mainSettingModel,
@@ -346,17 +349,18 @@
 													saveAction: isClickSave}">
 												</div>
 											</div>
-											<div class="tab-a5">
+											<div tabindex="68" class="tab-a5">
 												<div data-bind="ntsKMK003A5: { isDetailMode: isDetailMode,
+													useHalfDay: useHalfDay,
 													mainSettingModel: mainSettingModel }">
 												</div>
 											</div>
-											<div class="tab-a6">
+											<div tabindex="88" class="tab-a6">
 												<div data-bind="ntsKMK003A6: {enum: settingEnum, 
 													mainModel: mainSettingModel, isLoading: isLoading}">
 												</div>
 											</div>
-											<div class="tab-a7">
+											<div tabindex="91" class="tab-a7">
 												<div data-bind="ntsKMK003A7: {
 													tabMode: tabMode, 
 													mainSettingModel: mainSettingModel,
@@ -366,7 +370,7 @@
 													isClickNew: isNewMode}">
 												</div>
 											</div>
-											<div class="tab-a8">
+											<div tabindex="98" class="tab-a8">
 												<div data-bind="ntsKMK003A8: { 
 													screenMode: tabMode,
 													model: mainSettingModel,
@@ -374,7 +378,7 @@
 												}">
 												</div>
 											</div>
-											<div class="tab-a9">
+											<div tabindex="130" class="tab-a9">
 												<div data-bind="ntsKMK003A9: { 
 													screenMode: tabMode,
 													model: mainSettingModel,
@@ -382,7 +386,7 @@
 												}">
 												</div>
 											</div>
-											<div class="tab-a10">
+											<div tabindex="136" class="tab-a10">
 												<div data-bind="ntsKMK003A10: {
 													screenMode: tabMode,
 													model: mainSettingModel,
@@ -390,7 +394,7 @@
 												}">
 												</div>
 											</div>
-											<div class="tab-a11">
+											<div tabindex="138" class="tab-a11">
 												<div data-bind="ntsKMK003A11: {
 													screenMode: tabMode,
 													model: mainSettingModel,
@@ -398,7 +402,7 @@
 												}">
 												</div>
 											</div>
-											<div class="tab-a12">
+											<div tabindex="149" class="tab-a12">
 												<div data-bind="ntsKMK003A12: { 
 													screenMode: tabMode,
 													model: mainSettingModel,
@@ -406,7 +410,7 @@
 												}">
 												</div>
 											</div>
-											<div class="tab-a13">
+											<div tabindex="152" class="tab-a13">
 												<div data-bind="ntsKMK003A13: { 
 													screenMode: tabMode,
 													model: mainSettingModel,
@@ -414,7 +418,7 @@
 												}">
 												</div>
 											</div>
-											<div class="tab-a14">
+											<div tabindex="155" class="tab-a14">
 												<div data-bind="ntsKMK003A14: {
 													screenMode: tabMode,
 													model: mainSettingModel,
@@ -422,7 +426,7 @@
 												}">
 												</div>
 											</div>
-											<div class="tab-a15">
+											<div tabindex="158" class="tab-a15">
 												<div data-bind="ntsKMK003A15: {
 													screenMode: tabMode,
 													model: mainSettingModel,
@@ -430,7 +434,7 @@
 												}">
 												</div>
 											</div>
-											<div class="tab-a16">
+											<div tabindex="165" class="tab-a16">
 												<div data-bind="ntsKMK003A16: {
 													screenMode: tabMode,
 													model: mainSettingModel,

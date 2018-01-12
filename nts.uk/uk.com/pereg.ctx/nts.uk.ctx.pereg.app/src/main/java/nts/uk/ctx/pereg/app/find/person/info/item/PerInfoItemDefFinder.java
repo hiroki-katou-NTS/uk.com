@@ -168,7 +168,8 @@ public class PerInfoItemDefFinder {
 		return this.pernfoItemDefRep
 				.getPerInfoItemDefByListId(listItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream()
 				.map(item -> {
-					return mappingFromDomaintoDto(item, 0);
+					int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(item.getPerInfoCategoryId(), item.getPerInfoItemDefId());
+					return mappingFromDomaintoDto(item, dispOrder);
 				}).collect(Collectors.toList());
 	};
 

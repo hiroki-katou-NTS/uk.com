@@ -89,9 +89,12 @@ module a10 {
             nts.uk.ui.windows.setShared('KDL007_PARAM', param, true);
             nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml').onClosed(() => {
                 let listResult = nts.uk.ui.windows.getShared('KDL007_VALUES');
-                if (listResult.selecteds[0]) {                    
+                if (listResult && listResult.selecteds && listResult.selecteds[0]) {
                     _self.bonusPaySettingCode(listResult.selecteds[0]);
                     _self.bonusPaySettingName(listResult.selecteds[0]);
+                } else {
+                    _self.bonusPaySettingCode(null);
+                    _self.bonusPaySettingName(null);
                 }
             });
         }

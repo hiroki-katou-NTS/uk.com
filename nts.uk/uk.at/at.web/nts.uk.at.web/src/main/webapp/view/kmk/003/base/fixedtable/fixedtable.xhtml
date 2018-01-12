@@ -16,21 +16,21 @@
 	<div class="ui-iggrid kmk003-table-component" data-bind="attr: {tabindex: tabindex}">
 		<div class="fixed-table-button" data-bind="style: {width: width + 'px', 'margin-bottom': '10px'}" >
 		<com:ko tag="if" bind="isShowButton">
-			<button data-bind="click: addRowItem, enable: isEnaleAddButton"
+			<button data-bind="click: addRowItem, enable: isEnaleAddButton, attr: {tabindex: tabindex}"
 				style="margin-right: 10px;">#{i18n.getText('KMK003_52')}</button>
-			<button data-bind="click: removeItem, enable: isEnaleRemoveButton">#{i18n.getText('KMK003_53')}</button>
+			<button data-bind="click: removeItem, enable: isEnaleRemoveButton, attr: {tabindex: tabindex}">#{i18n.getText('KMK003_53')}</button>
 		</com:ko>
 		<com:ko tag="if" bind="helpImageUrl">
 			<button class="fixed-table-help"
-				data-bind="ntsHelpButton: {image: helpImageUrl, position: 'right top' }">?</button>
+				data-bind="ntsHelpButton: {image: helpImageUrl, position: 'right top', attr: {tabindex: tabindex}}">?</button>
 		</com:ko>
 		</div>
 
 
 		<!-- BEGIN CONTENT AREA -->
-		<div data-bind="style: {}">
+		<div>
 			<!-- BEGIN BINDING HEADER -->
-			<table data-bind="style: {}" id="fixed-table-custom"
+			<table id="fixed-table-custom"
 				class="table-fixed-kmk003">
 				<colgroup>
 					<col width="36"></col>
@@ -39,10 +39,10 @@
 					</com:ko-foreach>
 				</colgroup>
 				<thead>
-					<tr>
+					<tr style="height: 30px;">
 						<com:ko tag="if" bind="isVisibleSelectAll">
 							<th style="text-align: center;" class="ui-widget-header"><div
-									data-bind="ntsCheckBox: { checked: isSelectAll,
+									data-bind="attr: {tabindex: tabindex}, ntsCheckBox: { checked: isSelectAll,
 											enable: true, text:''}"></div>
 							</th>
 						</com:ko>

@@ -23,7 +23,7 @@ module nts.uk.at.view.kmk010.a {
             languageId: string;
             isManage : KnockoutObservable<boolean>;
             static LANGUAGE_ID_JAPAN = 'ja';
-
+            
             constructor() {
                 var self = this;
                 self.calculationMethods = ko.observableArray<EnumConstantDto>([]);
@@ -33,10 +33,10 @@ module nts.uk.at.view.kmk010.a {
                 self.languageId = 'ja';
                 self.isManage = ko.observable(true);
                 self.checkRounding = ko.observable(0);
-                self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number){
-                   self.updateSelectUnitRounding(selectUnit); 
-                });               
-            }
+                self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number) {         
+                        self.updateSelectUnitRounding(selectUnit);
+                });
+            }                   
 
             /**
              * start page data 
@@ -55,13 +55,14 @@ module nts.uk.at.view.kmk010.a {
                 // find all rounding
                 service.findAllOvertimeRounding().done(function(data) {
                     self.lstRounding = data;
-                    self.lstRoundingSet(self.lstRounding);
                 });
                 
                 // find all rounding sub
                 service.findAllOvertimeRoundingSub().done(function(data) {
                     self.lstRoundingSub = data;
                 });
+                
+                self.updateSelectUnitRounding(self.superHD60HConMedModel.roundingTime());
 
                 // check manage call service
                 service.checkManageSixtyHourVacationSetting().done(function(data){
@@ -194,12 +195,12 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 // validate
                 $('.nts-input').trigger("validate");
-                
+          
                 // check exist error
                 if (!nts.uk.ui.errors.hasError()) {
                     nts.uk.ui.block.invisible();
                     var dtoSuper: SuperHD60HConMedDto = self.superHD60HConMedModel.toDto();
-                    dtoSuper.premiumExtra60HRates = self.toArrayRateDto();
+                    dtoSuper.premiumExtra60HRates = self.toArrayRateDto();                                      
                     
                     // check attendance item of breakdown item
                     var setAttendaceIDs = new Set();
@@ -230,7 +231,7 @@ module nts.uk.at.view.kmk010.a {
                     service.saveOutsideOTSettingAndSupperHD60H(self.outsideOTSettingModel.toDto(), dtoSuper).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             self.startPage().done(() => {
-                                service.initTooltip();
+                                service.initTooltip();                               
                                 nts.uk.ui.block.clear();
                             });
                         });
@@ -314,7 +315,11 @@ module nts.uk.at.view.kmk010.a {
              * function on click button export file excel
              */
             private exportFileExcelOutsideOTSetting(): void {
+                
+                
                 var self = this;
+                service.exportOutsideOTSettingExcelMasterList();
+                /*
                 // check manage call service
                 service.checkManageSixtyHourVacationSetting().done(function(data){
                     service.getCid().done(function(data1){
@@ -326,13 +331,14 @@ module nts.uk.at.view.kmk010.a {
                             
                     })
                 });
+                */
             }
             /**
              * function update select unit rounding
              */
             private updateSelectUnitRounding(selectUnit: number){
                 var self = this;
-                //15 , 30
+                // if rounding time is 15 or 30 minute             
                 if (selectUnit == 4 || selectUnit == 6) {
                     self.lstRoundingSet(self.lstRounding);
                 } else {

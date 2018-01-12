@@ -118,7 +118,7 @@ module a2 {
             self.fixTableOptionOneDaySimpleMode = {
                 maxRow: 1,
                 minRow: 1,
-                maxRowDisplay: 2,
+                maxRowDisplay: 1,
                 isShowButton: false,
                 dataSource: self.dataSourceOneDaySimpleMode,
                 isMultipleSelect: false,
@@ -234,14 +234,17 @@ module a2 {
                 }
 
                 //============= Convert =============
-                let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.getTimezoneOne();
-                let timeRange: TimePeriod = {
-                    startTime: item.start(),
-                    endTime: item.end()
-                }
-                self.dataSourceOneDaySimpleMode([]);
-                self.dataSourceOneDaySimpleMode.push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
-                    emTimezone ? emTimezone.timezone.rounding.rounding() : 0));
+                let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne;
+                item.valueChangedNotifier.subscribe(() => {
+                    let timeRange: TimePeriod = {
+                        startTime: item.start(),
+                        endTime: item.end()
+                    }
+                    self.dataSourceOneDaySimpleMode([]);
+                    self.dataSourceOneDaySimpleMode.push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
+                        emTimezone ? emTimezone.timezone.rounding.rounding() : 0));
+                });
+                item.valueChangedNotifier.valueHasMutated();
             }
             // Detail mode
             else {
@@ -500,9 +503,9 @@ module a2 {
                     key: "roundingTime", 
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0), 
-                    width: 150,
+                    width: 70,
                     cssClassName: 'tab2-column2-combo-box',
-                    template: `<div class="column-combo-box unit-combo" data-bind="ntsComboBox: {
+                    template: `<div class="column-combo-box unit-combo" data-key="value" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
                                     optionsText: 'localizedName',
@@ -516,8 +519,8 @@ module a2 {
                     unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0), 
-                    width: 150,
-                    template: `<div class="column-combo-box rouding-combo" data-bind="ntsComboBox: {
+                    width: 200,
+                    template: `<div class="column-combo-box rouding-combo" data-key="value" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
                                     optionsText: 'localizedName',

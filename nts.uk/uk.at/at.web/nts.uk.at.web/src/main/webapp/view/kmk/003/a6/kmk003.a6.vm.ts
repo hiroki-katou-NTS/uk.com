@@ -6,7 +6,7 @@ module a6 {
     import HDWorkTimeSheetSettingDto = nts.uk.at.view.kmk003.a.service.model.common.HDWorkTimeSheetSettingDto;
     import FlWorkHdTimeZoneDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlWorkHdTimeZoneDto;
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
-    import OvertimeWorkFrameFindDto = nts.uk.at.view.kmk003.a6.service.model.OvertimeWorkFrameFindDto;
+    import WorkDayoffFrameFindDto = nts.uk.at.view.kmk003.a6.service.model.WorkDayoffFrameFindDto;
     class ScreenModel {
 
         fixTableOptionFlow: any;
@@ -22,7 +22,10 @@ module a6 {
         dataSourceFixed: KnockoutObservableArray<any>;
         settingEnum: WorkTimeSettingEnumDto;
         mainSettingModel: MainSettingModel;
-        lstOvertimeWorkFrame: OvertimeWorkFrameFindDto[];
+        
+        //update specs 7.6
+//        lstOvertimeWorkFrame: OvertimeWorkFrameFindDto[];
+        lstWorkDayOffFrame: WorkDayoffFrameFindDto[];
 
         /**
         * Constructor.
@@ -39,7 +42,7 @@ module a6 {
             self.dataSourceFlex = ko.observableArray([]);
             self.dataSourceFixed = ko.observableArray([]);
             self.updateDataByUpdateModel();
-            self.lstOvertimeWorkFrame = [];
+            self.lstWorkDayOffFrame = [];
             self.isLoading.subscribe(function(isLoading: boolean){
                self.updateDataByUpdateModel(); 
             });
@@ -244,46 +247,46 @@ module a6 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_77"),
                     key: "inLegalBreakFrameNo",
-                    dataSource: self.lstOvertimeWorkFrame,
+                    dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 120,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
-                                    optionsText: 'overtimeWorkFrName',
+                    width: 150,
+                    template: `<div data-key="workdayoffFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'workdayoffFrNo',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'workdayoffFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                    columns: [{ prop: 'workdayoffFrName', length: 12 }]}">
                                 </div>`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_78"),
                     key: "outLegalBreakFrameNo",
-                    dataSource: self.lstOvertimeWorkFrame,
+                    dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 120,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
-                                    optionsText: 'overtimeWorkFrName',
+                    width: 150,
+                    template: `<div data-key="workdayoffFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'workdayoffFrNo',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'workdayoffFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                    columns: [{ prop: 'workdayoffFrName', length: 12 }]}">
                                 </div>`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_79"),
                     key: "outLegalPubHolFrameNo",
                     defaultValue: ko.observable(1),
-                    dataSource: self.lstOvertimeWorkFrame,
-                    width: 180,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 8,
-                                    optionsText: 'overtimeWorkFrName',
+                    dataSource: self.lstWorkDayOffFrame,
+                    width: 150,
+                    template: `<div data-key="workdayoffFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'workdayoffFrNo',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'workdayoffFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                    columns: [{ prop: 'workdayoffFrName', length: 12 }]}">
                                 </div>`
                 },
                 {
@@ -291,8 +294,8 @@ module a6 {
                     key: "roundingTime",
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0),
-                    width: 120,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 80,
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
                                     optionsText: 'localizedName',
@@ -304,10 +307,12 @@ module a6 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_57"),
                     key: "rounding",
+                    isRoudingColumn: true,
+                    unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 150,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 200,
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 3,
                                     optionsText: 'localizedName',
@@ -335,46 +340,46 @@ module a6 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_77"),
                     key: "inLegalBreakFrameNo",
-                    dataSource: self.lstOvertimeWorkFrame,
+                    dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 120,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 5,
-                                    optionsText: 'overtimeWorkFrName',
+                    width: 150,
+                    template: `<div data-key="workdayoffFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'workdayoffFrNo',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'workdayoffFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                    columns: [{ prop: 'workdayoffFrName', length: 12 }]}">
                                 </div>`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_78"),
                     key: "outLegalBreakFrameNo",
-                    dataSource: self.lstOvertimeWorkFrame,
+                    dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 120,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 5,
-                                    optionsText: 'overtimeWorkFrName',
+                    width: 150,
+                    template: `<div data-key="workdayoffFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'workdayoffFrNo',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'workdayoffFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                    columns: [{ prop: 'workdayoffFrName', length: 12 }]}">
                                 </div>`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_79"),
                     key: "outLegalPubHolFrameNo",
-                    dataSource: self.lstOvertimeWorkFrame,
+                    dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 180,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
-                                    optionsValue: 'overtimeWorkFrNo',
-                                    visibleItemsCount: 5,
-                                    optionsText: 'overtimeWorkFrName',
+                    width: 150,
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'workdayoffFrNo',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'workdayoffFrName',
                                     editable: false,
                                     enable: true,
-                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                    columns: [{ prop: 'workdayoffFrName', length: 12 }]}">
                                 </div>`
                 },
                 {
@@ -382,10 +387,10 @@ module a6 {
                     key: "roundingTime",
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0),
-                    width: 120,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 80,
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
-                                    visibleItemsCount: 5,
+                                    visibleItemsCount: 8,
                                     optionsText: 'localizedName',
                                     editable: false,
                                     enable: true,
@@ -395,10 +400,12 @@ module a6 {
                 {
                     headerText: nts.uk.resource.getText("KMK003_57"),
                     key: "rounding",
+                    isRoudingColumn: true,
+                    unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 150,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 200,
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 3,
                                     optionsText: 'localizedName',
@@ -449,8 +456,8 @@ module a6 {
             var mainSettingModel: MainSettingModel = input.mainModel;
             var isLoading: KnockoutObservable<boolean> = input.isLoading;
             let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading);
-            nts.uk.at.view.kmk003.a6.service.findAllOvertimeWorkFrame().done(function(data){
-                screenModel.lstOvertimeWorkFrame = data;
+            nts.uk.at.view.kmk003.a6.service.findAllWorkDayoffFrame().done(function(data){
+                screenModel.lstWorkDayOffFrame = data;
                 screenModel.initDataModel();
                 $(element).load(webserviceLocator, function() {
                     ko.cleanNode($(element)[0]);

@@ -210,13 +210,8 @@ module nts.fixedtable {
             ]);
 
             
-            self.sortTimeASC();
-            
             // add properties isChecked when multiple select
             self.addCheckBoxItemAtr();
-            
-            // add event callback
-            self.callBackChangeDataSource();
             
             self.isSelectAll = ko.observable(false);
             
@@ -339,64 +334,11 @@ module nts.fixedtable {
                 self.$element.find('.time-range-editor').each((index, element) => {
                     $('#' + element.id).validateTimeRange();
                 });
-            });
-        }
-        
-        /**
-         * CallBack change dataSource when item of table update.
-         */
-        private callBackChangeDataSource() {
-            let self = this;
-            let isSubcriber: boolean = false;
-            _.forEach(self.itemList(), (item: any) => {
-                _.forEach(self.columns, (column: FixColumn, index: number) => {
-                    if (isSubcriber) {
-                        return;
-                    }
-                    item[column.key].subscribe((newValue: any) => {
-                        isSubcriber = true;
-                        self.itemList.valueHasMutated();
-                    });
-                });
-            });
-        }
-        
-        /**
-         * Sort Time editor ASC
-         */
-        private sortTimeASC() {
-            let self = this;
-            let firstColumn: FixColumn = self.columns[0];
-            
-            self.itemList().sort(function(a, b) {
                 
-                // get & unwrap value
-                let rawValue1: any = ko.utils.unwrapObservable(a[firstColumn.key]);
-                if (!rawValue1) {
-                    return;
+                // Focus check box default last item of table after remove.
+                if (self.itemList().length > 0) {
+                    self.$element.find('.column-checkbox-header').last().focus();
                 }
-                if (typeof rawValue1 == 'object') {
-                    rawValue1 = rawValue1.startTime ? rawValue1.startTime : null;
-                }
-                
-                let rawValue2: any = ko.utils.unwrapObservable(b[firstColumn.key]);
-                if (!rawValue2) {
-                    return;
-                }
-                if (typeof rawValue2 == 'object') {
-                    rawValue2 = rawValue2.startTime ? rawValue2.startTime : null;
-                }
-                
-                // convert time to minutes
-                let value1: any = nts.uk.time.parseTime(rawValue1).toValue();
-                let value2: any = nts.uk.time.parseTime(rawValue2).toValue();
-                
-                if (value1 < value2) {
-                    return -1;
-                } else if (value1 > value2) {
-                    return 1;
-                }
-                return 0;
             });
         }
         
@@ -406,7 +348,7 @@ module nts.fixedtable {
         public calStyleTable() {
             let self = this;
             let heigthCell = 33;
-            self.tableStyle.height = heigthCell * self.maxRowDisplay + 29;
+            self.tableStyle.height = heigthCell * self.maxRowDisplay + 31;
             
             self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0) + 30;
         }
@@ -469,7 +411,7 @@ module nts.fixedtable {
             let rowHtml: string = "";
             
             // mode multiple
-            rowHtml += "<td style='text-align: center;'><div data-bind=\"attr: {tabindex: $parent.tabindex}, " 
+            rowHtml += "<td class='check-box-column' style='text-align: center;'><div class='column-checkbox-header' data-bind=\"attr: {tabindex: $parent.tabindex}, " 
                     + "visible: $index() >= $parent.minRow, ntsCheckBox: { checked: isChecked, "
                     + "enable: true, text:''}\"></div></td>";
             
@@ -478,17 +420,14 @@ module nts.fixedtable {
                 
                 // set width fixed control TimeRange
                 if (item.template.indexOf('ntsTimeRangeEditor') != -1) {
-                    item.width = 243;
-                }
-                if (item.template.indexOf('ntsComboBox') != -1) {
-                    item.width = item.width < 105 ? 105 : item.width;
+                    item.width = 173;
                 }
                 if (item.isRoudingColumn) {
                     rowHtml += '<!-- ko if: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
-                                    + self.generateColumnHtml(item, true)
+                                    + self.generateColumnHtml(item, false)
                                     + '<!-- /ko -->'
                                     + '<!-- ko ifnot: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
-                                    + self.generateColumnHtml(item, false)
+                                    + self.generateColumnHtml(item, true)
                                     + '<!-- /ko -->';
                     return;
                 }
@@ -510,11 +449,6 @@ module nts.fixedtable {
                 // if not has property isChecked
                 if (!row.hasOwnProperty('isChecked')) {
                     row.isChecked = ko.observable(false);
-                    
-                    // subscribe
-                    row.isChecked.subscribe(() => {
-                        self.subscribeChangeCheckbox();
-                    });
                 }
             });
         }
@@ -680,15 +614,6 @@ module nts.fixedtable {
             let keyEnable: string = "enable:true";
             let keyDisable: string = "enable:false";
             
-//            if (input.indexOf(keyEnable) != -1) {
-//                input = input.replace(keyEnable, "enable:" + enable);
-//            }
-//            else if (input.indexOf(keyDisable) != -1) {
-//                input = input.replace(keyDisable, "enable:" + enable);
-//            } else {
-//                input += ",enable:" + enable;
-//            }
-            
             return input;
         }
         
@@ -714,7 +639,14 @@ module nts.fixedtable {
             var self = this;
             if (element) {
                 element.delegate('.ui-igcombo-wrapper', "igcomboselectionchanged", function(evt, ui) {
-                    _.defer(() => self.itemList.valueHasMutated());
+                    var key = $(this).data('key');
+                    var newValue = ui.items[0].data[key];
+                    var oldValue = $(this).data('value');
+                    if (!oldValue || oldValue != newValue) {
+                        _.defer(() => self.itemList.valueHasMutated());
+                        $(this).data('value', newValue);
+                        console.log('Test');
+                    }
                 });
             }
         }
@@ -768,10 +700,6 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 // set height table
                 //screenModel.$tableSelector.height(screenModel.tableStyle.height);
 
-                // remove min-width default of ntsComboBox
-                screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
-                    $("." + column.cssClassName).css({ "min-width": "" });
-                });
                 if (document.getElementById($(element)[0].id)) {
                     document.getElementById($(element)[0].id).addEventListener('timerangedatachange', function(event) {
                         screenModel.itemList.valueHasMutated();

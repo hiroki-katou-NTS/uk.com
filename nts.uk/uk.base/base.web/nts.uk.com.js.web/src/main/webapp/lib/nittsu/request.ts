@@ -392,7 +392,11 @@ module nts.uk.request {
             return;
         }
         
-        uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
+        if (data === undefined) {
+            uk.sessionStorage.removeItem(STORAGE_KEY_TRANSFER_DATA)
+        } else {
+            uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
+        }
 
         window.location.href = resolvePath(path);
     }

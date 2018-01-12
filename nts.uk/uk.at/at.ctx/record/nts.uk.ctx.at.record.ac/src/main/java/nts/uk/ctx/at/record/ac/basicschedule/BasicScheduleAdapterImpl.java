@@ -36,7 +36,6 @@ public class BasicScheduleAdapterImpl implements BasicScheduleAdapter {
 				basicScheduleExport.get().getDate(),
 				basicScheduleExport.get().getWorkTypeCode(),
 				basicScheduleExport.get().getWorkTimeCode(),
-				basicScheduleExport.get().getWorkDayAtr(),
 				workScheduleSidImports);
 		return Optional.of(basicScheduleSidDto);
 	}

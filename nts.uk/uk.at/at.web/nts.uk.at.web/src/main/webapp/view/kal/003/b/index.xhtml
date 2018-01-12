@@ -31,7 +31,8 @@
 
         <ui:define name="content">
             <div id="contents-area">
-                <div class="form-group" style="text-align: center;"
+                <!-- <div class="form-group" -->
+                <div id="content" class="cf"
                     data-bind="with: currentErrAlaCheckCondition">
                     <!--  B1 -->
                     <div id="div_common_header">
@@ -75,7 +76,7 @@
                             <colgroup>
                                 <col width="150px" />
                                 <col width="250px" />
-                                <col width="218px" />
+                                <col width="266px" />
                                 <col width="*" />
                             </colgroup>
                             <tr class="row">
@@ -152,7 +153,7 @@
 		                        <colgroup>
 		                            <col width="150px" />
 		                            <col width="250px" />
-		                            <col width="200px" />
+		                            <col width="266px" />
 		                            <col width="50px" />
 		                            <col width="50px" />
 		                        </colgroup>
@@ -269,7 +270,7 @@
 	                        <colgroup>
 	                            <col width="150px" />
 	                            <col width="250px" />
-                                <col width="218px" />
+                                <col width="266px" />
                                 <col width="*" />
 	                        </colgroup>
 	                        <tr class="row">
@@ -321,7 +322,7 @@
 	                            <td></td>
 	                            <td class = "pad_left_5px">
 	                               <div>
-		                                <!-- BA3-2--> <!-- TODO contrain Continuous period chua taoj -> tam thoi dungf CheckedTimesValue -->
+		                                <!-- BA3-2--> <!-- TODO constrain Continuous period chua taoj -> tam thoi dungf CheckedTimesValue -->
 		                                <input class="value-input needcheck" data-bind="ntsNumberEditor: {
 		                                       name: '#[KAL003_61]',
 		                                       value: continuousPeriodInput,
@@ -369,23 +370,28 @@
 			                        </tr>
 			                    </table>
 	                        </div>
+	                        
 	                        <div class = "pad_left_10px">
 	                           <!-- B5_4 -->
-	                            <table id="table-groupcondition" class="fixed-table" >
+	                            <table id="table-group1condition">
 						            <colgroup>
-						                <col width="807px"/>
-						                <col width="*"/>
+						                <col width="200px"/>
+						                <col width="50px"/>
+						                <col width="652px"/>
+						                <col width="52"/>
 						            </colgroup>
 						            <thead>
 						               <tr> 
 						                  <!-- B5_5 -->
-						                   <th class="ui-widget-header" colspan="2" style ="text-align: center;">#{i18n.getText('KAL003_33')}</th>
+						                   <th class="ui-widget-header" colspan="4" style ="text-align: center;">#{i18n.getText('KAL003_33')}</th>
 						               </tr>
 						            </thead>
 						            <tbody data-bind = "foreach: group1Condition().groupListCondition">
 						                <tr>
 						                  <!-- B5_6 -->
-						                    <td class = "pad_left_10px"><div data-bind = "text: itemConditionId + operatorCd + target" class="limited-label description"></div></td>
+						                    <td class = "pad_left_10px"><div data-bind = "text: itemConditionId" class="limited-label description"></div></td>
+						                    <td class = "pad_left_10px"><div data-bind = "text: operatorCd" class="limited-label description"></div></td>
+						                    <td class = "pad_left_10px"><div data-bind = "text: target" class="limited-label description"></div></td>
 						                    <!-- B5_7 -->
 											<td><button id="btnSettingB5_7"  data-bind="click : function() {$parents[1].btnSettingB5_7_click()}, enable: true">#{i18n.getText('KAL003_14')}</button></td>
 						                </tr>
@@ -393,7 +399,7 @@
 						        </table>
 	                        </div>
 	                        <!--  group 2 -->
-	                        <div>
+	                        <div class = "pad_left_10px">
 	                            <table >
 	                                <colgroup>
 	                                    <col width="200px" />
@@ -408,7 +414,6 @@
 	                                    <!-- B6-2:  -->
 	                                    <com:ko-if bind="hasGroup2()">
 		                                    <td class = "pad_left_5px">
-		                                       
 		                                        <div id ="div_b6_2">#{i18n.getText('KAL003_35')}</div>
 		                                    </td>
 		                                    <!-- B6-3:  -->
@@ -428,10 +433,12 @@
 	                        <com:ko-if bind="hasGroup2()">
 		                        <div id ="B16" class = "pad_left_10px cf">
 		                            <!-- B16_1 -->
-	                                <table id="table-groupcondition" class="fixed-table" >
+	                                <table id="table-group2condition" >
 	                                    <colgroup>
-	                                        <col width="807px"/>
-	                                        <col width="*"/>
+                                            <col width="200px"/>
+							                <col width="50px"/>
+							                <col width="652px"/>
+							                <col width="52"/>
 	                                    </colgroup>
 	                                    <thead>
 	                                       <tr> 
@@ -441,8 +448,10 @@
 	                                    </thead>
 	                                    <tbody data-bind = "foreach: group2Condition().groupListCondition">
 	                                        <tr>
-	                                          <!-- B16_3 -->
-	                                            <td class = "pad_left_10px"><div data-bind = "text: itemConditionId + operatorCd + target" class="limited-label description"></div></td>
+		                                        <!-- B16_3 -->
+							                    <td class = "pad_left_10px"><div data-bind = "text: itemConditionId" class="limited-label description"></div></td>
+							                    <td class = "pad_left_10px"><div data-bind = "text: operatorCd" class="limited-label description"></div></td>
+							                    <td class = "pad_left_10px"><div data-bind = "text: target" class="limited-label description"></div></td>
 	                                            <!-- B16_4 -->
 	                                            <td><button id="btnSettingB16_5"  data-bind="click : function() {$parents[1].btnSettingB16_5_click()}, enable: true">#{i18n.getText('KAL003_14')}</button></td>
 	                                        </tr>
@@ -502,8 +511,9 @@
                             </td>
                             <td class = "pad_left_5px">
                                 <!-- B3-2-->
-                                <div id="input-area">
-                                    <TEXTAREA id="input-text" rows="5" cols="54" data-bind="value: message"></TEXTAREA>
+                                <div id="inpMessage">
+                                    <textarea style="width: 462px; height: 90px;" data-name="message" data-bind="ntsMultilineEditor: {name: '#[KAL003_25]',
+                                        value: message, constraint: true, enable: true, readonly: false}" />
                                 </div>
                             </td>
                         </tr>

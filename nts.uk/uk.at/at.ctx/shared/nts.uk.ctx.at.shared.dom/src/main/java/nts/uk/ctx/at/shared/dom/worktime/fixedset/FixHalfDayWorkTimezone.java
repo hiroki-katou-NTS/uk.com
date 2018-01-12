@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
@@ -107,30 +108,9 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 	public void validate() {
 		super.validate();
 
-		// Validate #Msg_755
-		this.restTimezone.getLstTimezone().forEach((timezone) -> {
-			// Is timezone in WorkingTimezone - 就業時間帯.時間帯
-			boolean isHasWorkTime = this.workTimezone.getLstWorkingTimezone().stream()
-					.map(item -> item.getTimezone())
-					.anyMatch((timeZoneRounding) -> {
-						return timezone.getStart().greaterThanOrEqualTo(timeZoneRounding.getStart())
-								&& timezone.getEnd().lessThanOrEqualTo(timeZoneRounding.getEnd());
-					});
-
-			// Is timezone in OTTimezone - 残業時間帯.時間帯
-			boolean isHasOTTTime = this.workTimezone.getLstOTTimezone().stream()
-					.map(item -> item.getTimezone())
-					.anyMatch((timeZoneRounding) -> {
-						return timezone.getStart().greaterThanOrEqualTo(timeZoneRounding.getStart())
-								&& timezone.getEnd().lessThanOrEqualTo(timeZoneRounding.getEnd());
-					});
-
-			// Throw exception if not match any condition
-			//TODO
-//			if (!isHasWorkTime && !isHasOTTTime) {
-//				throw new BusinessException("Msg_755");
-//			}
-		});
+		if (!this.isInFixedWork()) {
+			throw new BusinessException("Msg_755");
+		}
 		
 		//validate Msg_770 for list work
 		this.workTimezone.getLstWorkingTimezone().stream().forEach(item->{
@@ -149,6 +129,16 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 
 		//validate Msg_515 for rest time
 		this.restTimezone.validOverlap("KMK003_20");
+	}
+
+	/**
+	 * Checks if is in fixed work.
+	 *
+	 * @return true, if is in fixed work
+	 */
+	private boolean isInFixedWork() {
+		return this.restTimezone.getLstTimezone().stream().allMatch(
+				dedTime -> this.workTimezone.isInEmTimezone(dedTime) || this.workTimezone.isInOverTimezone(dedTime));
 	}
 
 }
