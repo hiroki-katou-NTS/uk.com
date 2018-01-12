@@ -76,7 +76,7 @@ module nts.uk.ui.koExtentions {
             features.push({
                 name: "RowSelectors",
                 enableCheckBoxes: showCheckBox,
-                rowSelectorColumnWidth: showCheckBox ? 40 : 0,
+                rowSelectorColumnWidth: showCheckBox ? 25 : 0,
                 enableRowNumbering: false,
                 checkBoxMode: "biState"
             })

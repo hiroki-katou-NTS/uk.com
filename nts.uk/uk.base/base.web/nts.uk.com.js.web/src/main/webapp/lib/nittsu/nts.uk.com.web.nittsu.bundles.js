@@ -6821,7 +6821,7 @@ var nts;
                         var HEADER_HEIGHT = 27;
                         var ROW_HEIGHT = 23;
                         var DIFF_NUMBER = 2;
-                        var $grid = $(element);
+                        var $grid = $(element).addClass("nts-gridlist");
                         var gridId = $grid.attr('id');
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             throw new Error('the element NtsGridList must have id attribute.');
@@ -6847,7 +6847,12 @@ var nts;
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         if (data.multiple || showNumbering) {
-                            features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
+                            features.push({
+                                name: 'RowSelectors',
+                                enableCheckBoxes: data.multiple,
+                                enableRowNumbering: false,
+                                rowSelectorColumnWidth: 25
+                            });
                         }
                         var tabIndex = $grid.attr("tabindex");
                         $grid.data("tabindex", nts.uk.util.isNullOrEmpty(tabIndex) ? "0" : tabIndex);
@@ -9229,7 +9234,7 @@ var nts;
                         features.push({
                             name: "RowSelectors",
                             enableCheckBoxes: showCheckBox,
-                            rowSelectorColumnWidth: showCheckBox ? 40 : 0,
+                            rowSelectorColumnWidth: showCheckBox ? 25 : 0,
                             enableRowNumbering: false,
                             checkBoxMode: "biState"
                         });
