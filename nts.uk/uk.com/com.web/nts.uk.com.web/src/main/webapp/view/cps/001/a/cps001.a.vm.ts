@@ -749,14 +749,22 @@ module cps001.a.vm {
                                             self.events.add();
                                             self.gridlist.removeAll();
                                             setShared(REPL_KEY, undefined);
-                                            self.infoId.valueHasMutated();
+                                            if (self.infoId()) {
+                                                self.infoId(undefined);
+                                            } else {
+                                                self.infoId.valueHasMutated();
+                                            }
                                         }
                                         setShared(RELOAD_DT_KEY, undefined);
                                     }).fail(mgs => {
                                         self.gridlist.removeAll();
                                         setShared(REPL_KEY, undefined);
                                         setShared(RELOAD_DT_KEY, undefined);
-                                        self.infoId.valueHasMutated();
+                                        if (self.infoId()) {
+                                            self.infoId(undefined);
+                                        } else {
+                                            self.infoId.valueHasMutated();
+                                        }
                                     });
                                 } else {
                                     self.infoId.valueHasMutated();
@@ -775,27 +783,18 @@ module cps001.a.vm {
 
                 if (id && mode == TABS.CATEGORY) {
                     let catid = self.categoryId(),
-                        query = {
-                            infoId: infoId,
-                            categoryId: catid || id,
-                            personId: self.personId(),
-                            employeeId: self.employeeId(),
-                            standardDate: undefined,
-                            categoryCode: cat.categoryCode()
-                        },
                         rep: number = getShared(REPL_KEY) || REPL_KEYS.NORMAL;
 
                     if ([REPL_KEYS.NORMAL, REPL_KEYS.REPLICATION, REPL_KEYS.ADDNEW].indexOf(rep) > -1) {
                         let catid = self.categoryId(),
                             query = {
-                                infoId: self.infoId(),
+                                infoId: infoId,
                                 categoryId: catid || id,
                                 personId: self.personId(),
                                 employeeId: self.employeeId(),
                                 standardDate: undefined,
                                 categoryCode: cat.categoryCode()
                             };
-
                         service.getCatData(query).done(data => {
                             if (rep == REPL_KEYS.ADDNEW) {
                                 setShared(REPL_KEY, REPL_KEYS.NORMAL);
