@@ -94,6 +94,12 @@ public class Ksu001Webservice extends WebService {
 	public List<StateWorkTypeCodeDto> checkStateWorkTypeCode(List<String> lstWorkTypeCode) {
 		return this.bScheduleScreenProces.checkStateWorkTypeCode(lstWorkTypeCode);
 	}
+	
+	@POST
+	@Path("checkNeededOfWorkTimeSetting")
+	public List<StateWorkTypeCodeDto> checkNeededOfWorkTimeSetting(List<String> lstWorkTypeCode) {
+		return this.bScheduleScreenProces.checkNeededOfWorkTimeSetting(lstWorkTypeCode);
+	}
 
 	@POST
 	@Path("getDataSpecDateAndHoliday")
