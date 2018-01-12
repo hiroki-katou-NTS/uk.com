@@ -224,6 +224,13 @@ module nts.uk.at.view.kmf004.c {
                 var index = 1;
                 
                 $(".nts-input").trigger("validate");
+                
+                if (self.selectedBaseDateId() === 0) {
+                    if (self.standardDate() == null || self.standardDate() == "" || self.standardDate() == undefined) {
+                        $('#standard-date-input').ntsError('set', { messageId:"KMF004_75" });
+                    }
+                }
+                
                 if (nts.uk.ui.errors.hasError()) {
                     return;    
                 }
