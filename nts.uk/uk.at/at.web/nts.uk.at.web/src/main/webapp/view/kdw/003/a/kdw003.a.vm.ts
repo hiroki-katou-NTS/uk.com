@@ -905,14 +905,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
             let startIndex: any = currentPageIndex * pageSize;
             let endIndex: any = startIndex + pageSize;
-            let  valueResult = "";
             _.forEach(data, function(d, i) {
+                 let  valueResult = "";
                 if (i < startIndex || i >= endIndex) return;
-                if (String(data).indexOf(",") != -1) {
-                    for (let i = 0; i < data.split(',').length; i++) {
-                        valueResult += data.split(',')[i];
+                if (String(d).indexOf(",") != -1) {
+                    for (let i = 0; i < String(d).split(',').length; i++) {
+                        valueResult += String(d).split(',')[i];
                     }
-                    let n = parseFloat(d);
+                    let n = parseFloat(valueResult);
                     if (!isNaN(n)) total += n;
                 }else{
                     let n = parseFloat(d);
