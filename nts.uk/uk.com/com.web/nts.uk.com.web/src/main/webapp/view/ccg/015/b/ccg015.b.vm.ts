@@ -127,7 +127,7 @@ module nts.uk.pr.view.ccg015.b {
                                 companyId: "",
                                 partItemCode: item2.itemCode,
                                 partItemName: item2.itemName,
-                                useDivision: item2.useItem(),
+                                useDivision: item2.useItem,
                                 partType: item.partType(),
                                 topPagePartId: item2.topPagePartId
                             }
@@ -181,12 +181,12 @@ module nts.uk.pr.view.ccg015.b {
         export class SettingItemsModel {
             itemCode: string;
             itemName: string;
-            useItem: KnockoutObservable<number>;
+            useItem: number;
             topPagePartId: string;
             constructor(itemCode: string, itemName: string, useItem: number, topPagePartId: string) {
                 this.itemCode = itemCode;
                 this.itemName = itemName;
-                this.useItem = ko.observable(useItem);
+                this.useItem = useItem;
                 this.topPagePartId = topPagePartId;
             }
         }
