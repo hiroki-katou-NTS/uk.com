@@ -59,7 +59,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
 		アルゴリズム「社員所属雇用履歴を取得」を実行する(thực hiện xử lý 「社員所属雇用履歴を取得」)
-		String employeeCD = EmployeeEmploymentHistory.find(employeeID, date); // emloyeeCD <=> 雇用コード
 		*/
 		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, employeeID, date);
 		if(empHistImport==null || empHistImport.getEmploymentCode()==null){
