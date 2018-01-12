@@ -420,7 +420,7 @@ module nts.fixedtable {
                 
                 // set width fixed control TimeRange
                 if (item.template.indexOf('ntsTimeRangeEditor') != -1) {
-                    item.width = 173;
+                    item.width = 203;
                 }
                 if (item.template.indexOf('ntsComboBox') != -1) {
                     item.width = item.width < 70 ? 70 : item.width;
