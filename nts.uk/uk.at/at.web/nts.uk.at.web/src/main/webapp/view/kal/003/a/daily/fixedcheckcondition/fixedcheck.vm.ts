@@ -8,12 +8,13 @@ module nts.uk.at.view.kal003.a.daily.fixedcheckcondition {
             //data
             listFixedConditionWorkRecord: KnockoutObservableArray<model.FixedConditionWorkRecord>;
             listWorkRecordExtraCon: KnockoutObservableArray<model.WorkRecordExtraCon>;
+            listFixedConditionData : KnockoutObservableArray<model.FixedConditionData>;
             //table
             columns: Array<any>;
             items: KnockoutObservableArray<model.Item>;
             currentItem: KnockoutObservable<model.Item>;
             //enum 
-            enumWorkRecordFixedCheckItem: KnockoutObservableArray<any>;
+            enumWorkRecordFixedCheckItem: KnockoutObservableArray<any> ;
             constructor() {
                 let self = this;
                 self.tabs = ko.observableArray([
@@ -26,13 +27,15 @@ module nts.uk.at.view.kal003.a.daily.fixedcheckcondition {
                 //data
                 self.listFixedConditionWorkRecord = ko.observableArray([]);
                 self.listWorkRecordExtraCon = ko.observableArray([]);
+                self.listFixedConditionData = ko.observableArray([]);
                 //table 
                 self.items = ko.observableArray([]);
                 self.currentItem = ko.observable(null);
+                
                 //enum
                 self.enumWorkRecordFixedCheckItem = ko.observableArray(__viewContext.enums.WorkRecordFixedCheckItem);
                 _.each(self.enumWorkRecordFixedCheckItem(), (value) => {
-                    let temp = new model.Item(value.value, value.name, 'message '+value.value);
+                    let temp = new model.Item(value.value, value.name, 'message '+value.value,true);
                     self.items.push(temp);
 
                 });
@@ -57,7 +60,8 @@ module nts.uk.at.view.kal003.a.daily.fixedcheckcondition {
                 let dfd = $.Deferred();
                 let dfdAllFixedConditionWorkRecord = self.getAllFixedConditionWorkRecord();
                 let dfdAllWorkRecordExtraCon = self.getAllWorkRecordExtraCon();
-                $.when(dfdAllFixedConditionWorkRecord, dfdAllWorkRecordExtraCon).done((dfdAllFixedConditionWorkRecordData, dfdAllWorkRecordExtraConData) => {
+                let dfdAllFixedConData = self.getAllFixedConData() ;
+                $.when(dfdAllFixedConditionWorkRecord, dfdAllWorkRecordExtraCon,dfdAllFixedConData).done((dfdAllFixedConditionWorkRecordData, dfdAllWorkRecordExtraConData,dfdAllFixedConDataDone) => {
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -79,6 +83,17 @@ module nts.uk.at.view.kal003.a.daily.fixedcheckcondition {
                 let dfd = $.Deferred();
                 service.getAllWorkRecordExtraCon().done((data) => {
                     self.listWorkRecordExtraCon(data);
+                    dfd.resolve();
+                });
+
+                return dfd.promise();
+            }
+            
+            getAllFixedConData(){
+                 let self = this;
+                let dfd = $.Deferred();
+                service.getAllFixedConData().done((data) => {
+                    self.listFixedConditionData(data);
                     dfd.resolve();
                 });
 
@@ -140,20 +155,40 @@ module nts.uk.at.view.kal003.a.daily.fixedcheckcondition {
                 this.useAtr = data.useAtr;
             }
         }
+        
+         export interface IFixedConditionData {
+            fixConWorkRecordNo: number;
+            fixConWorkRecordName: string;
+            message: string;
+        }
+        
+        export class FixedConditionData {
+            fixConWorkRecordNo: number;
+            fixConWorkRecordName: string;
+            message: string;
+            constructor(data: IFixedConditionData) {
+                this.fixConWorkRecordNo = data.fixConWorkRecordNo;
+                this.fixConWorkRecordName = data.fixConWorkRecordName;
+                this.message = data.message;
+            }
+        }
+        
         export class Item {
             no: number;
             name: string;
             message: string;
+            checked:boolean;
             constructor(no: number,
                 name: string,
-                message: string) {
+                message: string,
+                checked :boolean) {
                 this.no = no;
                 this.name = name;
-                this.message = message;
+                this.message = message; 
+                this.checked = checked;
             }
 
         }
-
 
     }//end module model
 
