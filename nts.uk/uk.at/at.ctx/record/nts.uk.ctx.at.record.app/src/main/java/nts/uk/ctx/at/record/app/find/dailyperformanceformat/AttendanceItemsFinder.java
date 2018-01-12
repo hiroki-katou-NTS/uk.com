@@ -165,7 +165,21 @@ public class AttendanceItemsFinder {
 			attdItems.addAll(filtered);
 		}
 
-		return attdItems;
+		// convert to map
+		Map<Integer, AttdItemDto> attdItemsMap = attdItems.stream()
+				.collect(Collectors.toMap(k -> k.getAttendanceItemId(), vl -> vl));
+
+		// get attd item name list
+		List<DailyAttendanceItemNameAdapterDto> attdItemNames = this.dailyAttendanceItemNameAdapter
+				.getDailyAttendanceItemName(new ArrayList<Integer>(attdItemsMap.keySet()));
+
+		// set attendance item name
+		attdItemNames.forEach(item -> {
+			attdItemsMap.get(item.getAttendanceItemId()).setAttendanceItemName(item.getAttendanceItemName());
+		});
+
+		return attdItemsMap.values().stream().sorted((a, b) -> a.getAttendanceItemId() - b.getAttendanceItemId())
+				.collect(Collectors.toList());
 	}
 
 	/**

@@ -75,6 +75,7 @@ module a5 {
         isFixed: KnockoutComputed<boolean>;
         isDiffTime: KnockoutComputed<boolean>;
         isDetailMode: KnockoutObservable<boolean>;
+        useHalfDay: KnockoutObservable<boolean>;
 
         // show/hide
         //isFlexOrFlow: KnockoutComputed<boolean>; // a5_2 flex or a5_4 flow *19
@@ -96,6 +97,7 @@ module a5 {
             // load data from main setting model
             self.mainSettingModel = valueAccessor.mainSettingModel;
             self.isDetailMode = valueAccessor.isDetailMode;
+            self.useHalfDay = valueAccessor.useHalfDay;
             self.loadData();
 
             // fix table option

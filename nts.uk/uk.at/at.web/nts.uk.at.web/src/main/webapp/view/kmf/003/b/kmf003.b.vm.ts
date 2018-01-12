@@ -10,6 +10,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         payDayCalculate: KnockoutObservable<string>;
         displayDateSelected: KnockoutObservable<boolean>;
         conditionData: any;
+        count: KnockoutObservable<number>;
         
         constructor() {
             var self = this;
@@ -45,6 +46,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             ]);
             
             self.payDayCalculate = ko.observable("");
+            self.count = ko.observable(0);
         }
 
         /**
@@ -55,7 +57,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             var dfd = $.Deferred();
             
             service.findByCode(self.conditionData.conditionNo, self.conditionData.code).done(function(data){
-                self.bindData(data);                
+                let sortedData = _.orderBy(data, ['grantYearHolidayNo'], ['asc']);
+                self.bindData(sortedData);                
                 dfd.resolve();
             }).fail(function(res) {
                 dfd.reject(res);    
@@ -101,7 +104,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                     limitedTimeHdDays: null,
                     limitedHalfHdCnt: null,
                     grantReferenceDate: 0,
-                    grantSimultaneity: false,
+                    grantSimultaneity: data.length > 0 ? data[data.length - 1].grantSimultaneity : false,
                     grantDate: ""
                 };
                 self.items.push(new Item(item));    
@@ -113,6 +116,10 @@ module nts.uk.at.view.kmf003.b.viewmodel {
          */
         calculate() {
             var self = this;
+            
+            if (nts.uk.ui.errors.hasError()) {
+                return;    
+            }
             
             if(self.referenceDate() !== ""){
                 var monthDay = String(self.conditionData.dateSelected); 
@@ -163,6 +170,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
          */
         submit() {
             var self = this;
+            
+            $('#reference-date').ntsError('clear');
             
             if (nts.uk.ui.errors.hasError()) {
                 return;    
@@ -233,22 +242,47 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         //Set check or uncheck checkbox list
         checkAllowPayBelow(index: number, value: boolean): void {
             var self = this;
+            
+            var checkMonths = self.checkTotalMonths(index);
+            if (!checkMonths) {
+                self.count(1);
+                self.items()[index].grantSimultaneity(false);   
+                nts.uk.ui.dialog.alert({ messageId: "Msg_267" });             
+                return;
+            }
+            
             if (value) {
                 for (let i = index; i < self.items().length; i++) {
-                    if(self.items()[i].lengthOfServiceMonths() != null && self.items()[i].lengthOfServiceYears() != null) {
-                        self.items()[i].grantSimultaneity(value);
-                    } else {
-                        self.items()[i].grantSimultaneity(false);
-                    }                    
+                    self.items()[i].grantSimultaneity(value);
                 }
             } else {
                 for (let i = 0; i < index; i++) {
                     self.items()[i].grantSimultaneity(value);
                 }    
             }
+            
             self.items.valueHasMutated();
         }
         
+        //Check the total month and return false if that total < 12
+        checkTotalMonths(index: number): boolean {
+            var self = this;
+            
+            if(self.count() == 1) {
+                self.count(0);
+                return true;
+            }
+            
+            if(self.items()[index].lengthOfServiceYears() != null || self.items()[index].lengthOfServiceMonths() != null) {
+                var totalMonths = Number(self.items()[index].lengthOfServiceMonths()) + Number(self.items()[index].grantDays());
+                
+                if (Number(self.items()[index].lengthOfServiceYears()) == 0 && totalMonths < 12) {            
+                    return false;
+                }
+            }
+            
+            return true;
+        }
     }
     
     export class Item {

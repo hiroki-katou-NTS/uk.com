@@ -315,7 +315,11 @@ module nts.uk.at.view.kmk010.a {
              * function on click button export file excel
              */
             private exportFileExcelOutsideOTSetting(): void {
+                
+                
                 var self = this;
+                service.exportOutsideOTSettingExcelMasterList();
+                /*
                 // check manage call service
                 service.checkManageSixtyHourVacationSetting().done(function(data){
                     service.getCid().done(function(data1){
@@ -327,6 +331,7 @@ module nts.uk.at.view.kmk010.a {
                             
                     })
                 });
+                */
             }
             /**
              * function update select unit rounding

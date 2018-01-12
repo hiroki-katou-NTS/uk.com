@@ -76,6 +76,7 @@ public class DefaultClosureServiceImpl implements ClosureService {
 	 * @return the expection date
 	 */
 	private GeneralDate getExpectionDate(Boolean lastDayOfMonth, int year, int month, int day) {
+		month = (month == 0) ? 12 : month;
 		return (lastDayOfMonth || !DateUtil.isDateOfMonth(year, month, day))
 				? DateUtil.getLastDateOfMonth(year, month) : GeneralDate.ymd(year, month, day);
 	}

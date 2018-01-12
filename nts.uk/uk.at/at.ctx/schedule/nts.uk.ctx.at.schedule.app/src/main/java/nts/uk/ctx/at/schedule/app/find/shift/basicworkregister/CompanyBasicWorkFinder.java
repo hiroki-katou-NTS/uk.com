@@ -15,8 +15,8 @@ import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.BasicWorkSett
 import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.CompanyBasicWorkFindDto;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -39,7 +39,7 @@ public class CompanyBasicWorkFinder {
 
 	/** The worktime repo. */
 	@Inject
-	private WorkTimeRepository worktimeRepo;
+	private WorkTimeSettingRepository worktimeRepo;
 
 	/**
 	 * Find.
@@ -91,7 +91,7 @@ public class CompanyBasicWorkFinder {
 		}).collect(Collectors.toList());
 		
 		// Find WorkTime
-		List<WorkTime> workingList = this.worktimeRepo.findByCodeList(companyId, workingCodeList);
+		List<WorkTimeSetting> workingList = this.worktimeRepo.findByCodes(companyId, workingCodeList);
 
 		basicWorkSettingFindDto.stream().filter(a -> {
 			return a.getWorkTypeCode().length() > 0;
@@ -108,8 +108,8 @@ public class CompanyBasicWorkFinder {
 			}
 
 			// Get WorkTime
-			WorkTime worktime = workingList.stream().filter(wt -> {
-				return wt.getSiftCD().v().equals(item.getWorkingCode());
+			WorkTimeSetting worktime = workingList.stream().filter(wt -> {
+				return wt.getWorktimeCode().v().equals(item.getWorkingCode());
 			}).findFirst().orElse(null);
 
 			// Set WorkingDisplayName

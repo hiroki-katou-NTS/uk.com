@@ -114,16 +114,16 @@ module nts.uk.at.view.kdl003.a {
                 if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workTimeCodes)) {
                     service.findWorkTimeByCodes(self.callerParameter.workTimeCodes)
                         .done(function(data) {
-//                            self.addFirstItem(data);
-                            self.listWorkTime(data);
+                            self.addFirstItem(data);
+//                            self.listWorkTime(data);
                             dfd.resolve();
                         });
                 } else {
                     // Find all work time
                     service.findAllWorkTime()
                         .done(function(data) {
-//                            self.addFirstItem(data);
-                            self.listWorkTime(data);
+                            self.addFirstItem(data);
+//                            self.listWorkTime(data);
                             dfd.resolve();
                         });
                 }

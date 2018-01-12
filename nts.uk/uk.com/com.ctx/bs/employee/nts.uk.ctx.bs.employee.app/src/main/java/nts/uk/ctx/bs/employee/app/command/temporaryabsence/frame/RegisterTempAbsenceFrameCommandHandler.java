@@ -15,6 +15,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.NotUseAtr;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrame;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class RegisterTempAbsenceFrameCommandHandler.
@@ -31,12 +32,15 @@ public class RegisterTempAbsenceFrameCommandHandler extends CommandHandler<Regis
 	protected void handle(CommandHandlerContext<RegisterTempAbsenceFrameCommand> context) {
 		RegisterTempAbsenceFrameCommand command = context.getCommand();
 		
+		//get company id
+		String companyId = AppContexts.user().companyId();
+		
 		// convert to domain
 		List<TempAbsenceFrame> absenceFrame = command.toDomain();
 		
 		// update
 		for (TempAbsenceFrame tempAbsenceFrameClient: absenceFrame) {
-			TempAbsenceFrame tempFromDB = tempAbsenceFrameRepository.findByTempAbsenceFramePk( tempAbsenceFrameClient.getCompanyId(), 
+			TempAbsenceFrame tempFromDB = tempAbsenceFrameRepository.findByTempAbsenceFramePk( companyId, 
 																				tempAbsenceFrameClient.getTempAbsenceFrNo().v().intValue());
 			/* 
 			 * 	update object get from DB when == 0 or object get from Client when == 1\
