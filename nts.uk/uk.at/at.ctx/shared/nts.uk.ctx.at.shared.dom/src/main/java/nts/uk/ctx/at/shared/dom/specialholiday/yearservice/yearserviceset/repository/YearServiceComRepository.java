@@ -47,7 +47,7 @@ public interface YearServiceComRepository {
 	 * @param companyId
 	 * @return
 	 */
-	List<YearServiceCom> findAllCom(String companyId);
+	Optional<YearServiceCom> findAllCom(String companyId, String specialHolidayCode);
 	/**
 	 * update length Service Year Atr
 	 * @param yearServiceCom
