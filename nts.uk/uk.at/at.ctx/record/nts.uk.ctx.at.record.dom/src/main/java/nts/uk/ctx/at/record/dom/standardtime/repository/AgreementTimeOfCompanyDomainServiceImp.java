@@ -32,7 +32,7 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 			/**
 			 * パラメータ parameters {0}：#KMK008_66 {1}：#KMK008_68
 			 */
-			errors.add("Msg_59, #KMK008_66, #KMK008_68");
+			errors.add("Msg_59, KMK008_66, KMK008_68");
 			// throw new BusinessException("Msg_59","#KMK008_66", "#KMK008_68");
 		}
 
@@ -41,7 +41,7 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 			 * パラメータ parameters {0}：#KMK008_67 {1}：#KMK008_66
 			 * 
 			 */
-			errors.add("Msg_59, #KMK008_67, #KMK008_66");
+			errors.add("Msg_59, KMK008_67, KMK008_66");
 		}
 
 		if (errors.isEmpty()) {
@@ -59,7 +59,7 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 			/**
 			 * パラメータ parameters {0}：#KMK008_66 {1}：#KMK008_68
 			 */
-			errors.add("Msg_59, #KMK008_66, #KMK008_68");
+			errors.add("Msg_59, KMK008_66, KMK008_68");
 			// throw new BusinessException("Msg_59","#KMK008_66", "#KMK008_68");
 		}
 
@@ -68,7 +68,7 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 			 * パラメータ parameters {0}：#KMK008_67 {1}：#KMK008_66
 			 * 
 			 */
-			errors.add("Msg_59, #KMK008_67, #KMK008_66");
+			errors.add("Msg_59, KMK008_67, KMK008_66");
 		}
 
 		if (errors.isEmpty()) {
