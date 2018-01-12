@@ -375,19 +375,23 @@
 	                           <!-- B5_4 -->
 	                            <table id="table-group1condition">
 						            <colgroup>
-						                <col width="822px"/>
+						                <col width="200px"/>
+						                <col width="50px"/>
+						                <col width="652px"/>
 						                <col width="52"/>
 						            </colgroup>
 						            <thead>
 						               <tr> 
 						                  <!-- B5_5 -->
-						                   <th class="ui-widget-header" colspan="2" style ="text-align: center;">#{i18n.getText('KAL003_33')}</th>
+						                   <th class="ui-widget-header" colspan="4" style ="text-align: center;">#{i18n.getText('KAL003_33')}</th>
 						               </tr>
 						            </thead>
 						            <tbody data-bind = "foreach: group1Condition().groupListCondition">
 						                <tr>
 						                  <!-- B5_6 -->
-						                    <td class = "pad_left_10px"><div data-bind = "text: itemConditionId + operatorCd + target" class="limited-label description"></div></td>
+						                    <td class = "pad_left_10px"><div data-bind = "text: itemConditionId" class="limited-label description"></div></td>
+						                    <td class = "pad_left_10px"><div data-bind = "text: operatorCd" class="limited-label description"></div></td>
+						                    <td class = "pad_left_10px"><div data-bind = "text: target" class="limited-label description"></div></td>
 						                    <!-- B5_7 -->
 											<td><button id="btnSettingB5_7"  data-bind="click : function() {$parents[1].btnSettingB5_7_click()}, enable: true">#{i18n.getText('KAL003_14')}</button></td>
 						                </tr>
@@ -431,8 +435,10 @@
 		                            <!-- B16_1 -->
 	                                <table id="table-group2condition" >
 	                                    <colgroup>
-                                            <col width="822px"/>
-                                            <col width="52"/>
+                                            <col width="200px"/>
+							                <col width="50px"/>
+							                <col width="652px"/>
+							                <col width="52"/>
 	                                    </colgroup>
 	                                    <thead>
 	                                       <tr> 
@@ -442,8 +448,10 @@
 	                                    </thead>
 	                                    <tbody data-bind = "foreach: group2Condition().groupListCondition">
 	                                        <tr>
-	                                          <!-- B16_3 -->
-	                                            <td class = "pad_left_10px"><div data-bind = "text: itemConditionId + operatorCd + target" class="limited-label description"></div></td>
+		                                        <!-- B16_3 -->
+							                    <td class = "pad_left_10px"><div data-bind = "text: itemConditionId" class="limited-label description"></div></td>
+							                    <td class = "pad_left_10px"><div data-bind = "text: operatorCd" class="limited-label description"></div></td>
+							                    <td class = "pad_left_10px"><div data-bind = "text: target" class="limited-label description"></div></td>
 	                                            <!-- B16_4 -->
 	                                            <td><button id="btnSettingB16_5"  data-bind="click : function() {$parents[1].btnSettingB16_5_click()}, enable: true">#{i18n.getText('KAL003_14')}</button></td>
 	                                        </tr>

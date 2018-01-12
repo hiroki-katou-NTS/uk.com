@@ -22,11 +22,18 @@ module nts.uk.at.view.kal003.share.model {
         ];
     }
 
-    export function getListConditionToExtractDaily(): Array<ItemModel> {
+    export function getConditionToExtractDaily(): Array<ItemModel> {
         return [
             new model.ItemModel(0, '全て'),
             new model.ItemModel(1, '確認済のデータ'),
             new model.ItemModel(2, '未確認のデータ')
+        ];
+    }
+    
+    export function getSchedule4WeekAlarmCheckCondition(): Array<ItemModel> {
+        return [
+            new model.ItemModel(0, '実績のみで4週4休をチェックする'),
+            new model.ItemModel(1, 'スケジュールと実績で4週4休をチェックする')
         ];
     }
 
@@ -41,6 +48,7 @@ module nts.uk.at.view.kal003.share.model {
         targetCondition: KnockoutObservable<AlarmCheckTargetCondition>;
         displayAvailableRoles: KnockoutObservable<string>;
         dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, []));
+        schedule4WeekAlarmCheckCondition: KnockoutObservable<Schedule4WeekAlarmCheckCondition> = ko.observable(new Schedule4WeekAlarmCheckCondition(SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY));
 
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
@@ -185,6 +193,14 @@ module nts.uk.at.view.kal003.share.model {
         } 
     }
 
+    export class Schedule4WeekAlarmCheckCondition {
+        schedule4WeekCheckCondition: KnockoutObservable<number>;
+        
+        constructor(schedule4WeekCheckCondition: number) {
+            this.schedule4WeekCheckCondition = ko.observable(schedule4WeekCheckCondition);
+        } 
+    }
+    
     export enum CATEGORY {
         SCHEDULE_DAILY = 0,
         SCHEDULE_WEEKLY = 1,
@@ -207,11 +223,47 @@ module nts.uk.at.view.kal003.share.model {
         CONFIRMED = 1,
         UNCONFIRMED = 2
     }
+    
+    export enum SCHEDULE_4_WEEK_CHECK_CONDITION {
+        FOR_ACTUAL_RESULTS_ONLY = 0,
+        WITH_SCHEDULE_AND_ACTUAL_RESULTS = 1
+    }
 
     export enum SCREEN_MODE {
         NEW = 0,
         UPDATE = 1
     }
+    
+    export interface IWorkRecordExtractingCondition {
+        errorAlarmCheckID   : string;
+        checkItem           : number;
+        sortOrderBy         : number;
+        useAtr              : boolean;
+        nameWKRecord        : string;
+        errorAlarmCondition  : ErrorAlarmCondition;
+        rowId               : number;
+    }
+
+    export class WorkRecordExtractingCondition {
+        errorAlarmCheckID   : string;
+        checkItem           : KnockoutObservable<number> = ko.observable(0);
+        sortOrderBy         : number;
+        useAtr              : KnockoutObservable<boolean> = ko.observable(false);
+        nameWKRecord        : KnockoutObservable<string>  = ko.observable('');
+        errorAlarmCondition : KnockoutObservable<ErrorAlarmCondition> = ko.observable(null);
+        rowId               : KnockoutObservable<number> = ko.observable(0);
+        constructor(param : IWorkRecordExtractingCondition) {
+            let self = this;
+            self.errorAlarmCheckID   = param.errorAlarmCheckID || '';
+            self.checkItem           (param.checkItem || 0);
+            self.sortOrderBy         = param.sortOrderBy || 0;
+            self.useAtr               (param.useAtr || false);
+            self.nameWKRecord         (param.nameWKRecord || '');
+            self.errorAlarmCondition  (param.errorAlarmCondition); // || kal003utils.getDefaultErrorAlarmCondition());
+            self.rowId                (param.rowId || 0);
+        }
+    }
+    
     //---------------- KAL003 - B begin----------------//
     //Condition of group (C screen)
     export interface ICondition {
@@ -326,34 +378,6 @@ module nts.uk.at.view.kal003.share.model {
             self.compoundCondition(param.compoundCondition);
         }
     }
-    export interface IWorkRecordExtractingCondition {
-        errorAlarmCheckID   : string;
-        checkItem           : number;
-        sortOrderBy         : number;
-        useAtr              : boolean;
-        nameWKRecord        : string;
-        errorAlarmCondition  : ErrorAlarmCondition;
-        rowId               : number;
-    }
-
-    export class WorkRecordExtractingCondition {
-        errorAlarmCheckID   : string;
-        checkItem           : KnockoutObservable<number> = ko.observable(0);
-        sortOrderBy         : number;
-        useAtr              : KnockoutObservable<boolean> = ko.observable(false);
-        nameWKRecord        : KnockoutObservable<string>  = ko.observable('');
-        errorAlarmCondition : KnockoutObservable<ErrorAlarmCondition> = ko.observable(null);
-        rowId               : KnockoutObservable<number> = ko.observable(0);
-        constructor(param : IWorkRecordExtractingCondition) {
-            let self = this;
-            self.errorAlarmCheckID   = param.errorAlarmCheckID || '';
-            self.checkItem           (param.checkItem || 0);
-            self.sortOrderBy         = param.sortOrderBy || 0;
-            self.useAtr               (param.useAtr || false);
-            self.nameWKRecord         (param.nameWKRecord || '');
-            self.errorAlarmCondition  (param.errorAlarmCondition); // || kal003utils.getDefaultErrorAlarmCondition());
-            self.rowId                (param.rowId || 0);
-        }
-    }
+    
     //---------------- KAL003 - B end------------------//
 }

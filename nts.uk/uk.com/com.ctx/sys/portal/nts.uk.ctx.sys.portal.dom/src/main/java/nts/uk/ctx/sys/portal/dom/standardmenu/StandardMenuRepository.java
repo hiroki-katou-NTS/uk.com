@@ -29,16 +29,14 @@ public interface StandardMenuRepository {
 	List<StandardMenu> findBySystemMenuClassification(String companyId, int system, int menu_classification);
 
 	/**
-	 * added by sonnh1
-	 * find by COMPANYID and SYSTEM and MENU_CLASSIFICATION and AFTER_LOGIN_DISPLAY
+	 * find by COMPANYID and MENU_CLASSIFICATION or AFTER_LOGIN_DISPLAY
+	 * 
 	 * @param companyId
 	 * @param afterLoginDisplay
-	 * @param system
 	 * @param menu_classification
 	 * @return
 	 */
-	List<StandardMenu> findDataForAfterLoginDis(String companyId, int afterLoginDisplay, int system,
-			int menu_classification);
+	List<StandardMenu> findDataForAfterLoginDis(String companyId, int afterLoginDisplay, int menu_classification);
 
 	/**
 	 * find by COMPANYID and AFTER_LOGIN_DISPLAY
@@ -88,8 +86,10 @@ public interface StandardMenuRepository {
 	 * @return the list
 	 */
 	List<StandardMenu> findBySystem(String companyId, int system);
+
 	/**
 	 * yennth
+	 * 
 	 * @param companyId
 	 * @param code
 	 * @param system
@@ -101,16 +101,21 @@ public interface StandardMenuRepository {
 
 	/**
 	 * Find all menu with condition=DISPLAY
+	 * 
 	 * @param companyID
 	 * @return
 	 */
 	List<StandardMenu> findAllDisplay(String companyID);
-	
+
 	/**
 	 * Get program.
-	 * @param companyId companyId
-	 * @param programId programId
-	 * @param screenId screenId
+	 * 
+	 * @param companyId
+	 *            companyId
+	 * @param programId
+	 *            programId
+	 * @param screenId
+	 *            screenId
 	 * @return standard menu
 	 */
 	Optional<StandardMenu> getProgram(String companyId, String programId, String screenId);

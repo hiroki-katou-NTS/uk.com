@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -21,7 +21,7 @@ public class AppWorkChangeRecordWorkInfoFinder {
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
 	
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
@@ -36,7 +36,7 @@ public class AppWorkChangeRecordWorkInfoFinder {
 		//(就業.contexts)「勤務実績」 imported (Request list No 05)s
 		RecordWorkInfoImport recordInfo = recordWorkInfoAdapter.getRecordWorkInfo(employeeId, GeneralDate.fromString(appDate, DATE_FORMAT));
 		// Get work type name & work time name
-		Optional<WorkTime> workTime = workTimeRepository.findByCode(companyId, recordInfo.getWorkTypeCode());
+		Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyId, recordInfo.getWorkTypeCode());
 		if (workTime.isPresent()) {
 			workTypeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
 		}
