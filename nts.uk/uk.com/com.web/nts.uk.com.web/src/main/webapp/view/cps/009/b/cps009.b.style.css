@@ -19,25 +19,6 @@
 	background-color: #C7F391;
 }
 
-.ui-iggrid table tr td {
-	
+#registration{
+	margin-top: 10px !important;
 }
-
-#grid_B {
-	height: initial !important;
-	background-color: #F3F3F3;
-	width: 260px;
-}
-
-/* #grid_B_table_itemName {
-	z-index: -10000;
-}
-#grid_B>tbody>tr>th:nth-child(1)>span:nth-child(1){
-	margin-left: -25px !important;
-}
-#grid_B_headers>thead>tr>th:nth-child(1)>span, #grid_B>tbody>tr>th:nth-child(1)>span:nth-child(2){
-	margin-right: 25px;
-}
-#grid_B_headers>thead>tr>th:nth-child(1)>span:after{
-	content: "abcd";
-}  */
