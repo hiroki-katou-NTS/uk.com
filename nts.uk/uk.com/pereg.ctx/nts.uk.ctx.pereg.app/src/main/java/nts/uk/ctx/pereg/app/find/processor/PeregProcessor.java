@@ -305,7 +305,8 @@ public class PeregProcessor {
 	
 	private boolean checkCtgIsViewOnly(PeregDto peregDto, PersonInfoCategory perInfoCtg, String roleId, String infoId, boolean isSelf) {
 		PersonInfoCategoryAuth perInfoCtgAuth = perAuth.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
-		if(perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO) return false;
+		if((perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO && !isSelf)
+				||(perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) return true;
 		DateRangeItem dateRangeItem = perInfoCtgRepositoty
 				.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
 		String eDateId = dateRangeItem.getEndDateItemId();
