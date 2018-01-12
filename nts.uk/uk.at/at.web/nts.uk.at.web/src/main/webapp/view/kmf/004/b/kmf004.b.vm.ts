@@ -205,6 +205,12 @@ module nts.uk.at.view.kmf004 {
             saveData(){
                 var self = this;
                 
+                if (self.selectedId() === 0) {
+                    if (self.value() == null || self.value() == "" || self.value() == undefined) {
+                        $('#month-day-input').ntsError('set', { messageId:"KMF004_75" });
+                    }
+                }
+                
                 if (nts.uk.ui.errors.hasError()) {
                     return;    
                 }
