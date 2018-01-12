@@ -92,6 +92,20 @@ public class BasicScheduleScreenProcessor {
 	}
 
 	/**
+	 * check Needed Of WorkTimeSetting
+	 * 
+	 * @param lstWorkTypeCode
+	 * @return List StateWorkTypeCodeDto
+	 */
+	public List<StateWorkTypeCodeDto> checkNeededOfWorkTimeSetting(List<String> lstWorkTypeCode) {
+		List<StateWorkTypeCodeDto> lstStateWorkTypeCode = lstWorkTypeCode.stream()
+				.map(workTypeCode -> new StateWorkTypeCodeDto(workTypeCode,
+						bScheduleService.checkNeededOfWorkTimeSetting(workTypeCode).value))
+				.collect(Collectors.toList());
+		return lstStateWorkTypeCode;
+	}
+
+	/**
 	 * 
 	 * @param params
 	 * @return WorkEmpCombineDto
