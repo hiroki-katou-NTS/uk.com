@@ -71,100 +71,100 @@ public class GetDataAppCfDetailFinder {
 				EnumAdaptor.valueOf(metaDto.getAppType(), ApplicationType.class),
 				GeneralDate.today()).requestOfEachCommon;
 		List<RequestAppDetailSetting> requestAppDetailSettings = requestOfEachCommon.getRequestAppDetailSettings();
-		try {
-			RequestAppDetailSetting appDetailSetting = requestAppDetailSettings
-					.stream()
-					.filter(x -> x.getAppType().value == metaDto.getAppType()).collect(Collectors.toList()).get(0);
-			/*
-			ドメインモデル「締め」を取得する(lấy thông tin domain「締め」)
-			*/
-			SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, sid, metaDto.getAppDate());
-			if(empHistImport==null || empHistImport.getEmploymentCode()==null){
-				throw new BusinessException("Msg_426");
-			}
-			String employmentCD = empHistImport.getEmploymentCode();
-			Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
-			if(!closureEmployment.isPresent()){
-				throw new RuntimeException("締めがない。");
-			}
-			//closureEmployment.get().getClosureId()
-			Optional<ApplicationDeadline> applicationDeadline = applicationDeadlineRepository.getDeadlineByClosureId(companyID, closureEmployment.get().getClosureId());
-			ApplicationDeadline appDeadline = applicationDeadline.get();
-			//申請種類別設定 - 受付制限設定
-			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepo
-					.getAppTypeDiscreteSettingByAppType(companyID, metaDto.getAppType()).get();
-			//「申請利用設定」．備考に内容なし &&  「申請締切設定」．利用区分が利用しない  &&  「事前の受付制限」．利用区分が利用しない  &&  「事後の受付制限」．未来日許可しないがfalse
-			if(appDetailSetting.getMemo().v().isEmpty()
-					&& appDeadline.getUserAtr() == UseAtr.NOTUSE
-					&& appTypeDiscreteSetting.getRetrictPreUseFlg() == UseAtr.NOTUSE
-					&& appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() != AllowAtr.NOTALLOW) {
-				return new OutputMessageDeadline("", "", false);
-			}
-			//「申請利用設定」．備考に内容あり  ||  「申請締切設定」．利用区分が利用  ||  「事前の受付制限」．利用区分が利用  ||  「事後の受付制限」．未来日許可しないがtrue
-			if(!appDetailSetting.getMemo().v().isEmpty()){
-				message = appDetailSetting.getMemo().v();
-				chkShow = true;
-			}
-			GeneralDate toDateSystem = GeneralDate.today();
-			//ドメインモデル「事前の受付制限」．利用区分が利用する
-			if(appTypeDiscreteSetting.getRetrictPreUseFlg() == UseAtr.USE) {
-				//事前受付日
-				String strDate = "";
-				//「事前の受付制限」．チェック方法が日数
-				if(appTypeDiscreteSetting.getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
-					//　⇒事前受付制限日 = システム日付 + 「事前の受付制限」．日数
-					toDateSystem = toDateSystem.addDays(appTypeDiscreteSetting.getRetrictPreDay().value);
-					strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
-				}
-				//「事前の受付制限」．チェック方法が時刻
-				if(appTypeDiscreteSetting.getRetrictPreMethodFlg() == CheckMethod.TIMECHECK) {					
-					int minuteData = Integer.parseInt(appTypeDiscreteSetting.getRetrictPreTimeDay().v().toString());
-					//　⇒事前受付制限日時 = システム日付 +「事前の受付制限」．時分（分⇒時刻に変換）
-					strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
-				}
-				deadline = strMessageFirst + strDate + strKara;
-				chkShow = true;
-			}
-			//ドメインモデル「事後の受付制限」．未来日許可しないがtrue
-			toDateSystem = GeneralDate.today();
-			if(appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() == AllowAtr.NOTALLOW) {
-				//事後受付日
-				deadline +=  strMessageAfter + toDateSystem.month() + strMonth + toDateSystem.day() + strDay + strBunMade;
-				chkShow = true;
-			}
-			
-			//全部利用する
-			if(!appDetailSetting.getMemo().v().isEmpty()
-					&& appDeadline.getUserAtr() == UseAtr.USE
-					&& appTypeDiscreteSetting.getRetrictPreUseFlg() == UseAtr.USE
-					&& appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() == AllowAtr.NOTALLOW) {
-				message = appDetailSetting.getMemo().v();				
-				//締め切り期限日
-				GeneralDate endDate =  otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyID, sid, metaDto.getAppDate()).getEndDate();
-				//「申請締切設定」．締切基準が暦日
-				if(appDeadline.getDeadlineCriteria() == DeadlineCriteria.CALENDAR_DAY) {
-					//　⇒締め切り期限日 = 申請締め切り日.AddDays(ドメインモデル「申請締切設定」．締切日数)
-					endDate = endDate.addDays(appDeadline.getDeadline().v());
-				}
-				//「申請締切設定」．締切基準が稼働日
-				if(appDeadline.getDeadlineCriteria() == DeadlineCriteria.WORKING_DAY) {
-					//　⇒締め切り期限日 = 申請締め切り日.AddDays(ドメインモデル「申請締切設定」．締切日数（←稼働日）)
-					endDate = endDate.addDays(appDeadline.getDeadline().v());//TODO cần xác nhận lại
-				}
-				deadline += strMessageDay + endDate.month() + strMonth + endDate.day() + strDay + strMade;
-				chkShow = true;
-			}
-			//注意：ドメインモデル「事前の受付制限」．利用区分が利用しない && ドメインモデル「事後の受付制限」．未来日許可しないがfalse && ドメインモデル「申請締切設定」．利用区分が利用しない
-			//          ⇒締め切りエリア全体に非表示
-			if(appTypeDiscreteSetting.getRetrictPreUseFlg() == UseAtr.NOTUSE
-					&& appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() != AllowAtr.NOTALLOW
-					&& appDeadline.getUserAtr() == UseAtr.NOTUSE) {
-				deadline = "";
-			}
-			return new OutputMessageDeadline(message, deadline, chkShow);
-		}catch(Exception ex) {
+		RequestAppDetailSetting appDetailSetting = requestAppDetailSettings
+				.stream()
+				.filter(x -> x.getAppType().value == metaDto.getAppType()).collect(Collectors.toList()).get(0);
+		/*
+		ドメインモデル「締め」を取得する(lấy thông tin domain「締め」)
+		*/
+		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, sid, metaDto.getAppDate());
+		if(empHistImport==null || empHistImport.getEmploymentCode()==null){
+			throw new BusinessException("Msg_426");
+		}
+		String employmentCD = empHistImport.getEmploymentCode();
+		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
+		if(!closureEmployment.isPresent()){
+			throw new RuntimeException("締めがない。");
+		}
+		//closureEmployment.get().getClosureId()
+		Optional<ApplicationDeadline> applicationDeadline = applicationDeadlineRepository.getDeadlineByClosureId(companyID, closureEmployment.get().getClosureId());
+		ApplicationDeadline appDeadline = applicationDeadline.get();
+		//申請種類別設定 - 受付制限設定
+		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepo
+				.getAppTypeDiscreteSettingByAppType(companyID, metaDto.getAppType());
+		if(!appTypeDiscreteSettingOp.isPresent()){
 			throw new BusinessException("申請利用設定がありません。");
 		}
+		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
+		//「申請利用設定」．備考に内容なし &&  「申請締切設定」．利用区分が利用しない  &&  「事前の受付制限」．利用区分が利用しない  &&  「事後の受付制限」．未来日許可しないがfalse
+		if(appDetailSetting.getMemo().v().isEmpty()
+				&& appDeadline.getUserAtr() == UseAtr.NOTUSE
+				&& appTypeDiscreteSetting.getRetrictPreUseFlg() == UseAtr.NOTUSE
+				&& appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() != AllowAtr.NOTALLOW) {
+			return new OutputMessageDeadline("", "", false);
+		}
+		//「申請利用設定」．備考に内容あり  ||  「申請締切設定」．利用区分が利用  ||  「事前の受付制限」．利用区分が利用  ||  「事後の受付制限」．未来日許可しないがtrue
+		if(!appDetailSetting.getMemo().v().isEmpty()){
+			message = appDetailSetting.getMemo().v();
+			chkShow = true;
+		}
+		GeneralDate toDateSystem = GeneralDate.today();
+		//ドメインモデル「事前の受付制限」．利用区分が利用する
+		if(appTypeDiscreteSetting.getRetrictPreUseFlg() == UseAtr.USE) {
+			//事前受付日
+			String strDate = "";
+			//「事前の受付制限」．チェック方法が日数
+			if(appTypeDiscreteSetting.getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
+				//　⇒事前受付制限日 = システム日付 + 「事前の受付制限」．日数
+				toDateSystem = toDateSystem.addDays(appTypeDiscreteSetting.getRetrictPreDay().value);
+				strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
+			}
+			//「事前の受付制限」．チェック方法が時刻
+			if(appTypeDiscreteSetting.getRetrictPreMethodFlg() == CheckMethod.TIMECHECK) {					
+				int minuteData = Integer.parseInt(appTypeDiscreteSetting.getRetrictPreTimeDay().v().toString());
+				//　⇒事前受付制限日時 = システム日付 +「事前の受付制限」．時分（分⇒時刻に変換）
+				strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+			}
+			deadline = strMessageFirst + strDate + strKara;
+			chkShow = true;
+		}
+		//ドメインモデル「事後の受付制限」．未来日許可しないがtrue
+		toDateSystem = GeneralDate.today();
+		if(appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() == AllowAtr.NOTALLOW) {
+			//事後受付日
+			deadline +=  strMessageAfter + toDateSystem.month() + strMonth + toDateSystem.day() + strDay + strBunMade;
+			chkShow = true;
+		}
+		
+		//全部利用する
+		if(!appDetailSetting.getMemo().v().isEmpty()
+				&& appDeadline.getUserAtr() == UseAtr.USE
+				&& appTypeDiscreteSetting.getRetrictPreUseFlg() == UseAtr.USE
+				&& appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() == AllowAtr.NOTALLOW) {
+			message = appDetailSetting.getMemo().v();				
+			//締め切り期限日
+			GeneralDate endDate =  otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyID, sid, metaDto.getAppDate()).getEndDate();
+			//「申請締切設定」．締切基準が暦日
+			if(appDeadline.getDeadlineCriteria() == DeadlineCriteria.CALENDAR_DAY) {
+				//　⇒締め切り期限日 = 申請締め切り日.AddDays(ドメインモデル「申請締切設定」．締切日数)
+				endDate = endDate.addDays(appDeadline.getDeadline().v());
+			}
+			//「申請締切設定」．締切基準が稼働日
+			if(appDeadline.getDeadlineCriteria() == DeadlineCriteria.WORKING_DAY) {
+				//　⇒締め切り期限日 = 申請締め切り日.AddDays(ドメインモデル「申請締切設定」．締切日数（←稼働日）)
+				endDate = endDate.addDays(appDeadline.getDeadline().v());//TODO cần xác nhận lại
+			}
+			deadline += strMessageDay + endDate.month() + strMonth + endDate.day() + strDay + strMade;
+			chkShow = true;
+		}
+		//注意：ドメインモデル「事前の受付制限」．利用区分が利用しない && ドメインモデル「事後の受付制限」．未来日許可しないがfalse && ドメインモデル「申請締切設定」．利用区分が利用しない
+		//          ⇒締め切りエリア全体に非表示
+		if(appTypeDiscreteSetting.getRetrictPreUseFlg() == UseAtr.NOTUSE
+				&& appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() != AllowAtr.NOTALLOW
+				&& appDeadline.getUserAtr() == UseAtr.NOTUSE) {
+			deadline = "";
+		}
+		return new OutputMessageDeadline(message, deadline, chkShow);
 		
 	}
 	
