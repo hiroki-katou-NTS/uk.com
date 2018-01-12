@@ -39,16 +39,16 @@ module nts.uk.at.view.kal004.share.model {
                     strPreviousDay: null,
                     strMakeToDay: null,
                     strDay: null,
-                    strPreviousMonth: 0,
-                    strCurrentMonth: 1,
-                    strMonth: 0,
+                    strPreviousMonth: 1,
+                    strCurrentMonth: 0,
+                    strMonth: 2,
                     endSpecify: 1,
                     endPreviousDay: null,
                     endMakeToDay: null,
                     endDay: null,
-                    endPreviousMonth: 0,
-                    endCurrentMonth: 1,
-                    endMonth: 0
+                    endPreviousMonth: 1,
+                    endCurrentMonth: 0,
+                    endMonth: 1
                 });
             } else {
                 this.extractionDailyDto = new ExtractionDaily(extractionDailyDto);
