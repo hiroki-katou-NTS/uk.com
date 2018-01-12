@@ -103,7 +103,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	public List<StandardMenu> findDataForAfterLoginDis(String companyId, int afterLoginDisplay,
 			int menu_classification) {
 		return this.queryProxy().query(FIND_BY_MENUCLASSIFICATION_OR_AFTER_LOGIN_DIS, CcgstStandardMenu.class)
-				.setParameter("menu_classification", menu_classification)
+				.setParameter("companyId", companyId).setParameter("menu_classification", menu_classification)
 				.setParameter("afterLoginDisplay", afterLoginDisplay).getList(t -> toDomain(t));
 	}
 
