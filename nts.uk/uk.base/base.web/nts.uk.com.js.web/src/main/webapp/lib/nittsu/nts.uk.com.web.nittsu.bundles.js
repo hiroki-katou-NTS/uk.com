@@ -7008,6 +7008,24 @@ var nts;
                         });
                         $grid.setupSearchScroll("igGrid", true);
                         $grid.ntsGridList("setupScrollWhenBinding");
+                        $grid.bind("switchvaluechanged", function (evt, dataX) {
+                            setTimeout(function () {
+                                var source = _.cloneDeep(data.dataSource !== undefined ? data.dataSource() : data.options());
+                                _.forEach(source, function (o) {
+                                    if (o[optionsValue] === dataX.rowKey) {
+                                        o[dataX.columnKey] = dataX.value;
+                                        return true;
+                                    }
+                                });
+                                $grid.data("ui-changed", true);
+                                if (data.dataSource !== undefined) {
+                                    data.dataSource(source);
+                                }
+                                else {
+                                    data.options(source);
+                                }
+                            }, 100);
+                        });
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
@@ -11083,6 +11101,7 @@ var nts;
                                 $parent.attr('data-value', selectedValue);
                                 $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);
                                 $grid.igGrid("commit");
+                                $grid.trigger("switchvaluechanged", { columnKey: columnKey, rowKey: rowKey, value: parseInt(selectedValue) });
                                 if ($grid.igGrid("hasVerticalScrollbar")) {
                                     if (!nts.uk.util.isNullOrUndefined(scrollTop_1) && scrollTop_1 !== 0) {
                                         setTimeout(function () {
@@ -12050,7 +12069,7 @@ var nts;
                             if (column.ntsControl === ntsControls.LABEL) {
                                 ntsControls.drawLabel($(self), column, cellFormatter);
                                 columnControlTypes[column.key] = ntsControls.LABEL;
-                                return cellFormatter.format(column);
+                                return cellFormatter.format(column, true);
                             }
                             var controlDef = _.find(options.ntsControls, function (ctl) {
                                 return ctl.name === column.ntsControl;
@@ -12096,6 +12115,9 @@ var nts;
                                     showHeaderCheckbox: column.showHeaderCheckbox,
                                     enable: isEnable
                                 };
+                                if (!uk.util.isNullOrUndefined(column.tabIndex)) {
+                                    data.tabIndex = column.tabIndex;
+                                }
                                 var back;
                                 if (back = bounceCombos[column.key]) {
                                     data.bounce = back;
@@ -12139,6 +12161,7 @@ var nts;
                         options.columns = columns;
                         updating.addFeature(options);
                         options.autoCommit = true;
+                        options.tabIndex = -1;
                         dist.query(options.ntsFeatures);
                         events.onCellClick($(self));
                         copyPaste.ifOn($(self), options);
@@ -12252,11 +12275,17 @@ var nts;
                         function editStarted(evt, ui) {
                             var $grid = $(ui.owner.element);
                             var valueType = validation.getValueType($grid, ui.columnKey);
-                            if (valueType === "TimeWithDay") {
-                                var timeWithDayAttr_1 = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes);
+                            if (valueType === "TimeWithDay" || valueType === "Clock") {
+                                var formatted_1;
+                                try {
+                                    formatted_1 = uk.time.minutesBased.duration.create(uk.time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes).text;
+                                }
+                                catch (e) {
+                                    return;
+                                }
                                 setTimeout(function () {
                                     var $editor = $(ui.editor.find("input")[0]);
-                                    $editor.val(timeWithDayAttr_1.shortText).select();
+                                    $editor.val(formatted_1).select();
                                 }, 140);
                             }
                             else if (valueType === "Currency") {
@@ -12392,13 +12421,12 @@ var nts;
                             var autoCommit = grid.options.autoCommit;
                             var columnsMap = allColumnsMap || utils.getColumnsMap($grid);
                             var rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
-                            var validators = $grid.data(validation.VALIDATORS);
-                            var fieldValidator = validators[columnKey];
-                            if (fieldValidator) {
-                                var result = fieldValidator.probe(String(cellValue));
-                                if (result.isValid) {
-                                    cellValue = result.parsedValue;
+                            var valueType = validation.getValueType($grid, columnKey);
+                            if (valueType === "TimeWithDay" | valueType === "Clock") {
+                                try {
+                                    cellValue = uk.time.minutesBased.duration.create(uk.time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).text;
                                 }
+                                catch (e) { }
                             }
                             grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                             var isControl = utils.isNtsControl($grid, columnKey);
@@ -13458,7 +13486,8 @@ var nts;
                                         }
                                     },
                                     rendered: function () {
-                                        container.igCombo("option", "tabIndex", -1);
+                                        var tabIndex = !uk.util.isNullOrUndefined(data.tabIndex) ? data.tabIndex : -1;
+                                        container.igCombo("option", "tabIndex", tabIndex);
                                     }
                                 });
                                 container.data(internal.COMBO_SELECTED, data.initValue);
@@ -13901,7 +13930,9 @@ var nts;
                                         }
                                     }
                                     else {
-                                        copiedData = selectedCells[0].element.text();
+                                        var $cell = selectedCells[0].element;
+                                        var origVal = $cell.data(internal.CELL_ORIG_VAL);
+                                        copiedData = !uk.util.isNullOrUndefined(origVal) ? origVal : $cell.text();
                                     }
                                 }
                                 else {
@@ -13920,6 +13951,7 @@ var nts;
                                 var minColumn = 0;
                                 var structure = [];
                                 var structData = "";
+                                var $tdCell, origVal;
                                 var checker = cut ? utils.isCuttableControls : utils.isCopiableControls;
                                 _.forEach(cells, function (cell, index) {
                                     var rowIndex = cell.rowIndex;
@@ -13948,7 +13980,9 @@ var nts;
                                         }
                                     }
                                     else {
-                                        structure[rowIndex][columnIndex] = cell.element.text();
+                                        $tdCell = cell.element;
+                                        origVal = $tdCell.data(internal.CELL_ORIG_VAL);
+                                        structure[rowIndex][columnIndex] = !uk.util.isNullOrUndefined(origVal) ? origVal : $tdCell.text();
                                     }
                                 });
                                 for (var i = minRow; i <= maxRow; i++) {
@@ -14779,7 +14813,7 @@ var nts;
                                     });
                                 });
                             };
-                            CellFormatter.prototype.format = function (column) {
+                            CellFormatter.prototype.format = function (column, notTb) {
                                 var self = this;
                                 if (uk.util.isNullOrUndefined(this.cellStateFeatureDef)
                                     || column.formatter !== undefined)
@@ -14791,9 +14825,44 @@ var nts;
                                 column.formatter = function (value, rowObj) {
                                     if (uk.util.isNullOrUndefined(rowObj))
                                         return value;
+                                    var origValue = value;
+                                    if (!notTb && column.constraint) {
+                                        var constraint = column.constraint;
+                                        var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
+                                            : constraint.cDisplayType;
+                                        if (valueType === "TimeWithDay") {
+                                            if (uk.util.isNullOrUndefined(value))
+                                                return value;
+                                            var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                            var timeOpts = { timeWithDay: true };
+                                            var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
+                                            value = formatter.format(minutes);
+                                        }
+                                        else if (valueType === "Clock") {
+                                            if (uk.util.isNullOrUndefined(value))
+                                                return value;
+                                            var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                            var timeOpts = { timeWithDay: false };
+                                            var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
+                                            value = formatter.format(minutes);
+                                        }
+                                        else if (valueType === "Currency") {
+                                            if (uk.util.isNullOrUndefined(value))
+                                                return value;
+                                            var currencyOpts = new ui.option.CurrencyEditorOption();
+                                            currencyOpts.grouplength = constraint.groupLength | 3;
+                                            currencyOpts.decimallength = constraint.decimalLength | 2;
+                                            currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
+                                            var groupSeparator = constraint.groupSeparator || ",";
+                                            var rawValue = uk.text.replaceAll(value, groupSeparator, "");
+                                            var formatter = new uk.text.NumberFormatter({ option: currencyOpts });
+                                            value = formatter.format(Number(rawValue));
+                                        }
+                                    }
                                     var _self = self;
                                     setTimeout(function () {
                                         var $gridCell = self.$grid.igGrid("cellById", rowObj[self.$grid.igGrid("option", "primaryKey")], column.key);
+                                        $gridCell.data(internal.CELL_ORIG_VAL, origValue);
                                         if (!$gridCell)
                                             return;
                                         var $tr = $gridCell.closest("tr");
@@ -15364,6 +15433,7 @@ var nts;
                         internal.ERRORS_LOG = "ntsErrorsLog";
                         internal.LOADER = "ntsLoader";
                         internal.TXT_RAW = "rawText";
+                        internal.CELL_ORIG_VAL = "_origValue";
                     })(internal || (internal = {}));
                     var utils;
                     (function (utils) {
@@ -15757,6 +15827,7 @@ var nts;
                         }
                         function setChildrenTabIndex($grid, index) {
                             var container = $grid.igGrid("container");
+                            $(container).attr("tabindex", 0);
                             $(container).find("tr, th, td").attr("tabindex", index);
                         }
                         utils.setChildrenTabIndex = setChildrenTabIndex;
