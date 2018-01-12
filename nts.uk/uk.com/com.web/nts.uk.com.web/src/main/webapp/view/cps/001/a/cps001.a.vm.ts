@@ -838,7 +838,7 @@ module cps001.a.vm {
                                 let selEmId: string = self.employeeId(),
                                     logInId: string = __viewContext.user.employeeId;
 
-                                if (perm && !!(selEmId == logInId ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
+                                if (perm && !!(selEmId == logInId ? (perm.selfAllowAddHis && perm.selfFutureHisAuth) : (perm.otherAllowAddHis && perm.otherFutureHisAuth))) {
                                     self.permisions.add(true);
                                     self.permisions.replace(true);
                                 } else {
