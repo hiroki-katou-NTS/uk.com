@@ -503,11 +503,24 @@ module ccg013.a.viewmodel {
 
         openDdialog(titleMenu: TitleMenu): void {
             let self = this;
+            let mang = [];
+            for(let i = 0; i < titleMenu.treeMenu().length; i++){
+                let treeMenus = {
+                    classification: titleMenu.treeMenu()[i].classification(),
+                    code: titleMenu.treeMenu()[i].code(),
+                    displayOrder: titleMenu.treeMenu()[i].displayOrder(),
+                    name: titleMenu.treeMenu()[i].name(),
+                    system: titleMenu.treeMenu()[i].system(),
+                    titleMenuId: titleMenu.treeMenu()[i].titleMenuId(),
+                    treeMenuId: titleMenu.treeMenu()[i].treeMenuId()
+                }
+                mang.push(treeMenus);
+            }
             let titleBar = {
                 name: titleMenu.titleMenuName(),
                 backgroundColor: titleMenu.backgroundColor(),
                 textColor: titleMenu.textColor(),
-                treeMenus: titleMenu.treeMenu()
+                treeMenus: mang
             };
             setShared("titleBar", titleBar);
             modal("/view/ccg/013/d/index.xhtml").onClosed(function() {

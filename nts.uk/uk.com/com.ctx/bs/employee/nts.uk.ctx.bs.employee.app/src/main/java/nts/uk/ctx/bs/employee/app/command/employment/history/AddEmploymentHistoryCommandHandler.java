@@ -67,7 +67,7 @@ public class AddEmploymentHistoryCommandHandler
 		// phải set Segment mặc định là 1 vì Enum value từ 1-> 4
 		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(),
 				command.getEmploymentCode(),
-				command.getSalarySegment() != null ? command.getSalarySegment().intValue() : 1);
+				command.getSalarySegment() != null ? command.getSalarySegment().intValue() :ConstantUtils.ENUM_UNDEFINE_VALUE);
 		employmentHistoryItemRepository.add(histItem);
 
 		return new PeregAddCommandResult(newHistID);

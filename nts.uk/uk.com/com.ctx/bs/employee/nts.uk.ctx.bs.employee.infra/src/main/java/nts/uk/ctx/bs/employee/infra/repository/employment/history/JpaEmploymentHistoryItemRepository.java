@@ -10,6 +10,7 @@ import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 
 @Stateless
 public class JpaEmploymentHistoryItemRepository extends JpaRepository implements EmploymentHistoryItemRepository {
@@ -52,7 +53,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 */
 	private BsymtEmploymentHistItem toEntity(EmploymentHistoryItem domain) {
 		return new BsymtEmploymentHistItem(domain.getHistoryId(), domain.getEmployeeId(),
-				domain.getEmploymentCode().v(), domain.getSalarySegment().value);
+				domain.getEmploymentCode().v(), domain.getSalarySegment() !=null? domain.getSalarySegment().value: 0);
 	}
 
 	private EmploymentInfo toDomainEmployee(Object[] entity) {

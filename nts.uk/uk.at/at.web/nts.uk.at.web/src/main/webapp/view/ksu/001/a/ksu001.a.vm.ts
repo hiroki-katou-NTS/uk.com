@@ -99,6 +99,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workPlaceNameDisplay: KnockoutObservable<string> = ko.observable('');
         dataWScheduleState: KnockoutObservableArray<WorkScheduleState> = ko.observableArray([]);
         listStateWorkTypeCode: KnockoutObservableArray<any> = ko.observableArray([]);
+        listCheckNeededOfWorkTime: KnockoutObservableArray<any> = ko.observableArray([]);
         dataWkpSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataComSpecificDate: KnockoutObservableArray<any> = ko.observableArray([]);
         dataPublicHoliday: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -107,6 +108,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         isInsuranceStatus: boolean = false;
         listColorOfHeader: KnockoutObservableArray<ksu001.common.viewmodel.CellColor> = ko.observableArray([]);
         flag: boolean = true;
+        isClickChangeDisplayMode: boolean = false;
 
         constructor() {
             let self = this;
@@ -149,6 +151,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
 
             self.selectedModeDisplay.subscribe(function(newValue) {
+                nts.uk.ui.block.grayout();
                 // close screen O1 when change mode
                 let currentScreen = __viewContext.viewModel.viewO.currentScreen;
                 if (currentScreen) {
@@ -191,7 +194,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let dataToStick = $("#test2").ntsButtonTable("getSelectedCells")[0].data.data;
                         $("#extable").exTable("stickData", dataToStick);
                     }
-
+                    // jump initScreenQ only once
                     if (self.flag) {
                         //select first link button
                         __viewContext.viewModel.viewQ.initScreenQ();
@@ -200,8 +203,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 if (self.listSid() && self.listSid().length > 0) {
-                    self.updateExTable();
+                    // set isClickChangeDisplayMode = true 
+                    // to don't get data from function setColorForCellHeaderDetailAndHoz()
+                    self.isClickChangeDisplayMode = true;
+                    // update exTable to update color for extable
+                    self.updateDetailAndHorzSum();
                 }
+                nts.uk.ui.block.clear();
             });
 
             self.selectedModeDisplayObject.subscribe((newValue) => {
@@ -237,7 +245,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         startKSU001(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            nts.uk.ui.block.grayout();
             // get data for screen O 
             // getWorkTypeTimeAndStartEndDate: get data workType-workTime for 2 combo-box of screen O
             // and startDate-endDate of screen A
@@ -253,12 +260,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // get data for dialog C
                 self.initShiftCondition();
                 // init and get data for screen A
-                $.when(self.checkStateWorkTypeCode(lstWorkTypeCode), self.getDataWorkEmpCombine()).done(() => {
+                // checkNeededOfWorkTimeSetting(): get list state of workTypeCode relate to need of workTime- get for screen JB
+                $.when(self.checkStateWorkTypeCode(lstWorkTypeCode), self.checkNeededOfWorkTimeSetting(lstWorkTypeCode), self.getDataWorkEmpCombine()).done(() => {
                     self.initCCG001();
                     self.initExTable();
                     dfd.resolve();
-                }).always(() => {
-                    nts.uk.ui.block.clear();
                 });
             });
             return dfd.promise();
@@ -321,7 +327,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.ccgcomponent = {
                 baseDate: ko.observable(new Date()),
                 // Show/hide options 
-                isQuickSearchTab: false,
+                isQuickSearchTab: true,
                 isAdvancedSearchTab: true,
                 isAllReferableEmployee: true,
                 isOnlyMe: true,
@@ -617,6 +623,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateExTable(): void {
             let self = this;
+
             nts.uk.ui.block.grayout();
 
             let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newDetailHeaderDs = [], newObjDetailHeaderDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
@@ -679,7 +686,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         name: "BodyCellStyle",
                         decorator: leftmostContentDeco
                     }]
-                }
+                };
 
                 let updateDetailHeader = {
                     columns: newDetailColumns,
@@ -796,46 +803,46 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             //if haven't data in extable, only update header detail and header horizontal
             if (self.empItems().length == 0) {
-                self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco).done(() => {
-                    let updateDetailHeader = {
-                        columns: newDetailColumns,
-                        dataSource: newDetailHeaderDs,
-                        features: [{
-                            name: "HeaderRowHeight",
-                            rows: { 0: "40px", 1: "20px" }
-                        }, {
-                                name: "HeaderCellStyle",
-                                decorator: detailHeaderDeco
-                            }, {
-                                name: "HeaderPopups",
-                                menu: {
-                                    rows: [0],
-                                    items: [
-                                        { id: "日付別", text: nts.uk.resource.getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
-                                        { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
-                                    ]
-                                },
-                                popup: {
-                                    rows: [1],
-                                    provider: function() { return $("#popup-area8"); }
-                                }
-                            }]
-                    };
-
-                    let updateHorzSumHeader = {
-                        columns: newDetailColumns,
-                        dataSource: newDetailHeaderDs,
-                        features: [{
+                //                self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco).done(() => {
+                let updateDetailHeader = {
+                    columns: newDetailColumns,
+                    dataSource: newDetailHeaderDs,
+                    features: [{
+                        name: "HeaderRowHeight",
+                        rows: { 0: "40px", 1: "20px" }
+                    }, {
                             name: "HeaderCellStyle",
-                            decorator: detailHeaderDeco
+                            //                                decorator: detailHeaderDeco
+                        }, {
+                            name: "HeaderPopups",
+                            menu: {
+                                rows: [0],
+                                items: [
+                                    { id: "日付別", text: nts.uk.resource.getText("KSU001_325"), selectHandler: function(id) { alert('Open KSU003'); } },
+                                    { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert('Open KSC003'); } }
+                                ]
+                            },
+                            popup: {
+                                rows: [1],
+                                provider: function() { return $("#popup-area8"); }
+                            }
                         }]
-                    };
+                };
 
-                    $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
-                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });
+                let updateHorzSumHeader = {
+                    columns: newDetailColumns,
+                    dataSource: newDetailHeaderDs,
+                    features: [{
+                        name: "HeaderCellStyle",
+                        //                            decorator: detailHeaderDeco
+                    }]
+                };
+
+                $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
+                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
+                //                }).always(() => {
+                nts.uk.ui.block.clear();
+                //                });
             } else if (self.selectedModeDisplayObject() == 1) {
                 self.setDatasource().done(() => {
                     self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
@@ -1105,6 +1112,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         /**
          * Check State of list WorkTypeCode
+         * return to type of work of workTypeCode
+         * ONE_DAY_REST = 0 MORNING_WORK = 1 AFTERNOON_WORK = 2 ONE_DAY_WORK = 3
          */
         checkStateWorkTypeCode(lstWorkTypeCode): JQueryPromise<any> {
             let self = this,
@@ -1120,6 +1129,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //            }
             service.checkStateWorkTypeCode(lstWorkTypeCode).done((data) => {
                 self.listStateWorkTypeCode(data);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Check State of list WorkTypeCode
+         * return to the need of workTimeCode
+         * REQUIRED = 0 OPTIONAL = 1, NOT_REQUIRED = 2
+         */
+        checkNeededOfWorkTimeSetting(lstWorkTypeCode): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            service.checkNeededOfWorkTimeSetting(lstWorkTypeCode).done((data) => {
+                self.listCheckNeededOfWorkTime(data);
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -1267,6 +1293,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             nts.uk.ui.block.grayout();
+
             if (self.selectedModeDisplay() == 2) {
                 _.each(arrTmp, (item) => {
                     let arrFilter = _.filter(arrTmp, { 'rowIndex': item.rowIndex, 'columnKey': item.columnKey });
@@ -1305,6 +1332,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             service.registerData(arrObj).done(function(error: any) {
                 //get data and update extable
                 self.setDatasource().done(function() {
+                    self.isDisplayBlock = false;
                     self.updateExTable();
                     if (error.length != 0) {
                         self.addListError(error);
@@ -1472,6 +1500,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         setColorForCellHeaderDetailAndHoz(detailHeaderDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+
+            if (self.isClickChangeDisplayMode) {
+                self.isClickChangeDisplayMode = false;
+                dfd.resolve();
+                return;
+            }
+
             if (self.empItems().length != 0) {
                 // getDataSpecDateAndHoliday always query to server
                 // because date is changed when click nextMonth or backMonth

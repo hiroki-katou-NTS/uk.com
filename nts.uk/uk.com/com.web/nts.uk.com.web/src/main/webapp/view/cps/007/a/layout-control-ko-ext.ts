@@ -1859,6 +1859,10 @@ module nts.custombinding {
                     // change text in add-button to [グループを追加　→]
                     $(ctrls.button).text(text('CPS007_20'));
                     services.getGroups().done((data: Array<IItemGroup>) => {
+                        // prevent if slow networks
+                        if (opts.radios.value() != CAT_OR_GROUP.GROUP) {
+                            return;
+                        }
                         if (data && data.length) {
                             // map Array<IItemGroup> to Array<IItemDefinition>
                             // 「個人情報項目定義」が取得できなかった「項目グループ」以外を、画面項目「グループ一覧」に表示する
@@ -1900,6 +1904,10 @@ module nts.custombinding {
                             case IT_CAT_TYPE.NODUPLICATE:
                                 $(ctrls.button).text(text('CPS007_11'));
                                 services.getItemByCat(item.id).done((data: Array<IItemDefinition>) => {
+                                    // prevent if slow networks
+                                    if (opts.radios.value() != CAT_OR_GROUP.CATEGORY) {
+                                        return;
+                                    }
                                     if (data && data.length) {
                                         // get all item defined in category with abolition = 0
                                         // order by dispOrder asc

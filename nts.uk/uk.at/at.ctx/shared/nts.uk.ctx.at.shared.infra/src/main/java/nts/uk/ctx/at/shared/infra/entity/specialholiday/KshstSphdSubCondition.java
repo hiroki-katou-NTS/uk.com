@@ -107,7 +107,7 @@ public class KshstSphdSubCondition extends UkJpaEntity implements Serializable {
 				domain.getLimitAgeTo() == null ? null : domain.getLimitAgeTo().v(),
 				domain.getAgeCriteriaAtr() == null ? null : domain.getAgeCriteriaAtr().value,
 				domain.getAgeBaseYearAtr() == null ? null : domain.getAgeBaseYearAtr().value,
-				domain.getAgeBaseDates() == null ? null : domain.getAgeBaseDates().v(), 
+				domain.getAgeBaseDates() == null ? 0 : domain.getAgeBaseDates().v(), 
 				employments,
 				classfications);
 		

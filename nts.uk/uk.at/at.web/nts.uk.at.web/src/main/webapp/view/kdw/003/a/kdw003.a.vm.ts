@@ -267,7 +267,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.employmentCode(data.employmentCode);
                 self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                 self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit));
-                self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto.manageAtr, data.substVacationDto.manageAtr, data.compensLeaveComDto.manageAtr, data.com60HVacationDto.manageAtr, self.showButton()));
+                self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto == null ? false : data.yearHolidaySettingDto.manageAtr, data.substVacationDto == null ? false : data.substVacationDto.manageAtr, data.compensLeaveComDto == null ? false : data.compensLeaveComDto.manageAtr, data.com60HVacationDto == null ? false : data.com60HVacationDto.manageAtr, self.showButton()));
                 // Fixed Header
                 self.fixHeaders(data.lstFixedHeader);
                 self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
@@ -314,7 +314,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             self.employmentCode(data.employmentCode);
                             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                             self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit));
-                            self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto.manageAtr, data.substVacationDto.manageAtr, data.compensLeaveComDto.manageAtr, data.com60HVacationDto.manageAtr, self.showButton()));
+                            self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto == null ? false : data.yearHolidaySettingDto.manageAtr, data.substVacationDto == null ? false : data.substVacationDto.manageAtr, data.compensLeaveComDto == null ? false : data.compensLeaveComDto.manageAtr, data.com60HVacationDto == null ? false : data.com60HVacationDto.manageAtr, self.showButton()));
                             // Fixed Header
                             self.fixHeaders(data.lstFixedHeader);
                             self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
@@ -374,7 +374,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                               return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                             });
                         let value: any;
-                        value = self.getPrimitiveValue(data.value);
+                        value = self.getHoursAll(data.value);
                         let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" :layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
                         dataChangeProcess.push(dataMap);
                     }
@@ -454,8 +454,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             return valueResult;
         }
+        
         getHours(value: any) : number{
             return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
+        }
+        
+        getHoursAll(value: any) : number{
+            if (value.indexOf("-")) {
+                let valueTemp = value.split('-')[1];
+                return Number(valueTemp.split(':')[0]) * 60 + Number(valueTemp.split(':')[1]);
+            } else {
+                return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
+            }
         }
         hideComponent() {
             var self = this;
@@ -1207,9 +1217,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                      if (header.constraint == null) {
                         delete header.constraint;
                     }
-//                    if(header.key == "state"){
-//                         header["template"] =  "<img width = '30' height = '30' src = ${state}></img>"
-//                      }
                     tempList.push(header);
                 });
             } else if (mode == 1) {
@@ -1236,6 +1243,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     delete header.constraint;
                 }else{
                     header.constraint["cDisplayType"] = header.constraint.cdisplayType;
+                    if(header.constraint.cdisplayType.indexOf("Currency")){
+                       header["columnCssClass"] =  "currency-symbol";
+                    }
                     delete header.constraint.cdisplayType;
                 }
                 if (header.group != undefined) {
