@@ -79,24 +79,6 @@ public class AttendanceItemUtil {
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
 
-	private static <T extends ConvertibleAttendanceItem> List<T> initNewList(Field f, AttendanceItemLayout layout, List<T> oldList) {
-		if(oldList == null){
-			oldList = new ArrayList<>();
-		}
-		Class<T> listGenericType = getGenericType(f);
-		int start = (oldList == null || oldList.isEmpty()) ? 0 : oldList.size(); 
-		for (int i = start; i < layout.listMaxLength(); i++) {
-			T newValue = ReflectionUtil.newInstance(listGenericType);
-			for(String fieldName : layout.setFieldWithIndex()){
-				if(!fieldName.isEmpty()){
-					ReflectionUtil.setFieldValue(getField(fieldName, listGenericType), newValue, i);
-				}
-			}
-			oldList.add(newValue);
-		}
-		return oldList;
-	}
-
 	public static <T extends ConvertibleAttendanceItem> T toConvertibleAttendanceItem(Class<T> classType,
 			List<ItemValue> attendanceItems) {
 		T newObject = ReflectionUtil.newInstance(classType);
@@ -117,6 +99,23 @@ public class AttendanceItemUtil {
 		}
 
 		return mergeToObject(object, attendanceItems, layoutIdx, 0, rootName, "", false);
+	}
+
+	private static <T extends ConvertibleAttendanceItem> List<T> initNewList(Field f, AttendanceItemLayout layout, List<T> oldList) {
+		if(oldList == null){
+			oldList = new ArrayList<>();
+		}
+		Class<T> listGenericType = getGenericType(f);
+		int start = (oldList == null || oldList.isEmpty()) ? 0 : oldList.size(); 
+		//TODO: xu ly enum field
+		for (int i = start; i < layout.listMaxLength(); i++) {
+			T newValue = ReflectionUtil.newInstance(listGenericType);
+			if(!layout.setFieldWithIndex().isEmpty()) {
+				ReflectionUtil.setFieldValue(getField(layout.setFieldWithIndex(), listGenericType), newValue, i);
+			}
+			oldList.add(newValue);
+		}
+		return oldList;
 	}
 
 	private static <T extends ConvertibleAttendanceItem, R extends ConvertibleAttendanceItem> T processContainer(
@@ -157,6 +156,7 @@ public class AttendanceItemUtil {
 //		if (!listGroup.isEmpty()) {
 		AttendanceItemLayout layout = getLayoutAnnotation(field);
 		List<R> value = ReflectionUtil.getFieldValue(field, object); 
+		// TODO: xu ly for multi index field
 		initNewList(field, layout, value);
 		ReflectionUtil.setFieldValue(field, object, getList(value, listGroup, layout.listMaxLength()));
 //		}
@@ -222,7 +222,7 @@ public class AttendanceItemUtil {
 //		String newPathName = StringUtils.join(pathName, ".", layout.jpPropertyName());
 //		String newExCondition = getExCondition(extraCondition, object, layout);
 //		boolean newNeedCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
-		String idxFieldName = layout.setFieldWithIndex()[0];
+		String idxFieldName = layout.setFieldWithIndex();
 		boolean isIndexField = !idxFieldName.isEmpty();
 		processListToMax(value, layout.listMaxLength(), classType, idxFieldName);
 		Field idxField = isIndexField ? getField(idxFieldName, classType) : null;
@@ -340,26 +340,24 @@ public class AttendanceItemUtil {
 		String newExCondition = getExCondition(extraCondition, attendanceItems, layout);
 		needCheckWithIdx = needCheckWithIdx || layout.needCheckIDWithIndex();
 		if (layout.isList()) {
-			if (value == null) {
-				List<T> values = new ArrayList<>();
+			List<T> values = value == null ? new ArrayList<>() : (List<T>) value;
+			
+			if (values.size() < layout.listMaxLength()) {
 				Class<T> className = getGenericType(field);
-				IntStream.range(0, layout.listMaxLength()).forEach(c -> {
+				Field idxField = layout.setFieldWithIndex().isEmpty() ? null : getField(layout.setFieldWithIndex(), className);
+				IntStream.range(values.size(), layout.listMaxLength()).forEach(c -> {
 					if (!className.equals(Integer.class)) {
 						T newInstance = ReflectionUtil.newInstance(className);
-						for (String fieldName : layout.setFieldWithIndex()) {
-							if(!fieldName.isEmpty()){
-								ReflectionUtil.setFieldValue(getField(fieldName, className), newInstance, c);
-							}
+						if (idxField != null) {
+							ReflectionUtil.setFieldValue(idxField, newInstance, c + 1);
 						}
 						values.add(newInstance);
 					} else {
 						values.add(null);
 					}
 				});
-				return processList(currentLayout, layout.layout(), values, newPathName, newExCondition,
-						needCheckWithIdx, itemIds);
 			}
-			return processList(currentLayout, layout.layout(), (List<T>) value, newPathName, newExCondition,
+			return processList(currentLayout, layout.layout(), values, newPathName, newExCondition,
 					needCheckWithIdx, itemIds);
 		}
 		if (value == null) {

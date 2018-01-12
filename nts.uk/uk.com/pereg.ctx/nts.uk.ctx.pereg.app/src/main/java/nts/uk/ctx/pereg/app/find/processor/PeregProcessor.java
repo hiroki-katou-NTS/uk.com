@@ -184,7 +184,7 @@ public class PeregProcessor {
 			if (perInfoCtg.getIsFixed() == IsFixed.FIXED) {
 				peregDto = layoutingProcessor.findSingle(query);
 			}
-			checkCtgIsViewOnly(peregDto, perInfoCtg, roleId, query.getInfoId(), loginEmpId.equals(query.getEmployeeId()));
+			ctgIsViewOnly = checkCtgIsViewOnly(peregDto, perInfoCtg, roleId, query.getInfoId(), loginEmpId.equals(query.getEmployeeId()));
 		}
 		for (int i = 0; i < lstItemDef.size(); i++) {
 			PerInfoItemDefForLayoutDto perInfoItemDefForLayoutDto = perInfoItemDefForLayoutFinder

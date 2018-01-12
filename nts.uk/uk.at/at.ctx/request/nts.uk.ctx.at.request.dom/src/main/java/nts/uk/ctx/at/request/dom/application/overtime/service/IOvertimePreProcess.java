@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
  * 01_初期データ取得
@@ -141,5 +141,5 @@ public interface IOvertimePreProcess {
 	 * @param workTimeSet
 	 * @return
 	 */
-	public boolean checkTimeDay(String appDate, WorkTimeSet workTimeSet);
+	public boolean checkTimeDay(String appDate, PredetemineTimeSetting workTimeSet);
 }
