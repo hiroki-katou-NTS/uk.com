@@ -15,7 +15,6 @@ import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.BasicWorkSett
 import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.WorkplaceBasicWorkFindDto;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkRepository;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -125,9 +124,9 @@ public class WorkplaceBasicWorkFinder {
 	 * @return the list
 	 */
 	public List<String> findSetting() {
-		List<WorkplaceId> workplaceBWList = this.repository.findSetting();
+		List<String> workplaceBWList = this.repository.findSetting();
 		return workplaceBWList.stream().map(workplaceBW -> {
-			return workplaceBW.v();
+			return workplaceBW;
 		}).collect(Collectors.toList());
 	}
 }
