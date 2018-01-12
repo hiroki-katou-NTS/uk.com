@@ -503,7 +503,7 @@ module a2 {
                     key: "roundingTime", 
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0), 
-                    width: 150,
+                    width: 70,
                     cssClassName: 'tab2-column2-combo-box',
                     template: `<div class="column-combo-box unit-combo" data-key="value" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
@@ -519,7 +519,7 @@ module a2 {
                     unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0), 
-                    width: 150,
+                    width: 200,
                     template: `<div class="column-combo-box rouding-combo" data-key="value" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
