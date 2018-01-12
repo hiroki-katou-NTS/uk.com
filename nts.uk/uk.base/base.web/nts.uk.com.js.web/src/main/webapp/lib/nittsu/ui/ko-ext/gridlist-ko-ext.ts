@@ -183,6 +183,21 @@ module nts.uk.ui.koExtentions {
             
             $grid.setupSearchScroll("igGrid", true);
             $grid.ntsGridList("setupScrollWhenBinding");  
+            
+            $grid.bind("switchvaluechanged", function(evt, dataX){
+                var source = data.dataSource !== undefined ? data.dataSource() : data.options();
+                _.forEach(options, function(o){
+                    if(o[optionsValue] === dataX.rowKey){
+                        o[dataX.columnKey] = dataX.value;
+                        return true;
+                    }
+                })
+                if(data.dataSource !== undefined){
+                   data.dataSource(source);
+                } else {
+                    data.options(source);    
+                }
+            });
         }
 
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
