@@ -20,8 +20,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.adapter.WorkLocationAdapter;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -41,7 +41,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 	private WorkLocationAdapter workLocationAdapter;
 
 	@Inject
-	private WorkTimeRepository workTimeRepo;
+	private WorkTimeSettingRepository workTimeRepo;
 
 	@Inject
 	private WorkTypeRepository workTypeRepo;
@@ -98,7 +98,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 			}
 		}
 		if (!StringUtils.isEmpty(goBackDirect.getSiftCD().v())) {
-			Optional<WorkTime> workTime = workTimeRepo.findByCode(companyID, goBackDirect.getSiftCD().v());
+			Optional<WorkTimeSetting> workTime = workTimeRepo.findByCode(companyID, goBackDirect.getSiftCD().v());
 			if(workTime.isPresent()) {
 				data.workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
 			}

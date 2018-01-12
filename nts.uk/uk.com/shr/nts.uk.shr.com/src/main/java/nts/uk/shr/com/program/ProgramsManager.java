@@ -141,7 +141,7 @@ public class ProgramsManager {
 	/**
 	 * CCG030B
 	 */
-	public static final Program CCG030B = new Program(WebAppId.COM, ProgramIdConsts.CCG030B, "CCG030_2",
+	public static final Program CCG030B = new Program(WebAppId.COM, ProgramIdConsts.CCG030B, "CCG030_4",
 			"/view/ccg/030/b/index.xhtml");
 
 	/**
