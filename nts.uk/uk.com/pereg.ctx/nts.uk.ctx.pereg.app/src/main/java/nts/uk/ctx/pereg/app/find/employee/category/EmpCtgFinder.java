@@ -189,7 +189,7 @@ public class EmpCtgFinder {
 				.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
 
 		infoList.stream().filter(x -> {
-			return checkRole(ctgAuth, roleId, x.getOptionValue(), isSelf, isSameCom);
+			return checkRole(ctgAuth, roleId, query.getCategoryId(), isSelf, isSameCom);
 		}).collect(Collectors.toList());
 		return fiterOfContHist(ctgAuth, infoList, roleId, isSelf);
 	}
@@ -332,11 +332,11 @@ public class EmpCtgFinder {
 	private List<ComboBoxObject> fiterOfContHist(PersonInfoCategoryAuth perInfoCtgAuth, List<ComboBoxObject> infoList,
 			String roleId, boolean isSelf) {
 		GeneralDate today = GeneralDate.today();
-		infoList.stream().filter(x -> {
-			boolean isPast = true;
+		return infoList.stream().filter(x -> {
+			boolean isPast = false;
 			String enddate = x.getOptionText().substring(13);
 			if (!enddate.equals("")) {
-				isPast = today.afterOrEquals(GeneralDate.fromString(enddate, "yyyy/MM/dd"));
+				isPast = today.after(GeneralDate.fromString(enddate, "yyyy/MM/dd"));
 			}
 			if (!isPast) {
 				return isSelf ? perInfoCtgAuth.getSelfFutureHisAuth() != PersonInfoAuthType.HIDE
@@ -346,7 +346,6 @@ public class EmpCtgFinder {
 						: perInfoCtgAuth.getOtherPastHisAuth() != PersonInfoAuthType.HIDE;
 			}
 		}).collect(Collectors.toList());
-		return infoList;
 	}
 
 	private boolean checkRole(PersonInfoCategoryAuth perInfoCtgAuth, String roleId, String categoryId, boolean isSelf,
