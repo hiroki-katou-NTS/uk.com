@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceIt
 @Data
 public class ShortTimeOfDailyDto implements ConvertibleAttendanceItem {
 
-	//TODO: item id not map
+	// TODO: item id not map
 	/** 社員ID: 社員ID */
 	private String employeeId;
 
@@ -20,8 +20,8 @@ public class ShortTimeOfDailyDto implements ConvertibleAttendanceItem {
 	private GeneralDate ymd;
 
 	/** 時間帯: 短時間勤務時間帯 */
-	//TODO: set list max length
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", isList = true, listMaxLength = 2, setFieldWithIndex = {"shortWorkTimeFrameNo", "childCareAttr"})
+	// TODO: set list max length
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", isList = true, listMaxLength = 2, setFieldWithIndex = "shortWorkTimeFrameNo")
 	private List<ShortWorkTimeSheetDto> shortWorkingTimeSheets;
 
 }

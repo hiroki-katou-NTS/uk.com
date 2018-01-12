@@ -1,5 +1,10 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,12 +30,12 @@ public class ShortWorkTimeSheetDto {
 	private Integer childCareAttr;
 
 	/** 開始: 時刻(日区分付き) */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "開始", needCheckIDWithIndex = true, needCheckIDWithMethod = "childCare")
+	@AttendanceItemLayout(layout = "C", jpPropertyName = "開始", needCheckIDWithIndex = true, needCheckIDWithMethod = "childCare", methodForEnumValues = "childCareEnum")
 	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
 	private Integer startTime;
 
 	/** 終了: 時刻(日区分付き) */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "終了", needCheckIDWithIndex = true, needCheckIDWithMethod = "childCare")
+	@AttendanceItemLayout(layout = "D", jpPropertyName = "終了", needCheckIDWithIndex = true, needCheckIDWithMethod = "childCare", methodForEnumValues = "childCareEnum")
 	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
 	private Integer endTime;
 
@@ -49,7 +54,7 @@ public class ShortWorkTimeSheetDto {
 			return "";
 		}
 		
-		switch (childCareAttr) {
+		switch (childCareAttr - 1) {
 		case 0:
 			return "育児";
 		case 1:
@@ -57,5 +62,11 @@ public class ShortWorkTimeSheetDto {
 		default:
 			return "";
 		}
+	}
+	
+	public Map<String, List<Integer>> childCareEnum(){
+		Map<String, List<Integer>> enums = new HashMap<>();
+		enums.put("childCareAttr", Arrays.asList(0, 1));
+		return enums;
 	}
 }
