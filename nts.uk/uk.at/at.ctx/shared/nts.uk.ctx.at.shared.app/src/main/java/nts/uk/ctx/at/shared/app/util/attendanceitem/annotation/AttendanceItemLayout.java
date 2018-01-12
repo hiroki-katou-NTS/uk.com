@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD })
 public @interface AttendanceItemLayout {
+	
+	int index() default -1;
 
 	String layout();
 	
@@ -25,7 +27,9 @@ public @interface AttendanceItemLayout {
 	
 	boolean isOptional() default false;
 	
-	String[] setFieldWithIndex() default "";
+	String setFieldWithIndex() default "";
+	
+	String methodForEnumValues() default "";
 	
 	boolean isUpdate() default false;
 }
