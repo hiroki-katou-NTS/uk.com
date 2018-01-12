@@ -152,7 +152,7 @@ module nts.uk.at.view.kmk007.b.viewmodel {
             this.frameNo = frameNo;
             this.name = name;
             this.abolition = abolition;
-             if (abolition == 0) {
+             if (abolition == 1) {
                 this.icon = "";
             } else {
                 this.icon = '<i class="icon icon-dot"></i>';
