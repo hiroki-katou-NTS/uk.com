@@ -164,7 +164,7 @@
 									<tbody data-bind = "foreach: cpA">
 										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- A3_12: App Name -->
-											<td class="name td-first-bg overflow-visible">
+											<td class="name td-first-bg" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
 													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
@@ -334,8 +334,8 @@
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
 										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- B3_12: App Name -->
-											<td class="name td-first-bg overflow-visible">
-												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
+											<td class="name td-first-bg" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
+												<div data-bind = "text: appTypeName" style="display: inline-block;white-space: nowrap;"></div>
 												<!-- B3_13: -->
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
 													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
@@ -547,7 +547,7 @@
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "foreach: cpA">
 										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- C3_12: App Name -->
-											<td class="name td-first-bg overflow-visible">
+											<td class="name td-first-bg" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
 													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
@@ -716,15 +716,15 @@
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
 										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
-											<!-- B3_12: App Name -->
-											<td class="name td-first-bg overflow-visible">
-												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
+											<!-- D3_12: App Name -->
+											<td class="name td-first-bg" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
+												<div data-bind = "text: appTypeName" style="display: inline-block;white-space: nowrap;"></div>
 												<!-- B3_13: -->
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
 													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
 											</td>
-											<!-- B3_14: -->
+											<!-- D3_14: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/117.png);width:29px; height:31px;" 
 														data-bind="click: function(){$parent.openDialogKB(appPhase1,approvalId,appTypeValue,employRootAtr,1)}"></button>
@@ -926,7 +926,7 @@
 									<tbody style = "height: 200px;" data-bind = "foreach: cpA">
 										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- E3_12: App Name -->
-											<td class="name td-first-bg overflow-visible">
+											<td class="name td-first-bg" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
 													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
@@ -1098,8 +1098,8 @@
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
 										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- F3_12: App Name -->
-											<td class="name td-first-bg overflow-visible">
-												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
+											<td class="name td-first-bg" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
+												<div data-bind = "text: appTypeName" style="display: inline-block; white-space: nowrap;"></div>
 												<!-- B3_13: -->
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
 													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
