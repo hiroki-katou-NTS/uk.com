@@ -1266,7 +1266,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     delete header.constraint;
                 }else{
                     header.constraint["cDisplayType"] = header.constraint.cdisplayType;
-                    if(header.constraint.cdisplayType.indexOf("Currency")){
+                    if(header.constraint.cdisplayType.indexOf("Currency") != -1){
                        header["columnCssClass"] =  "currency-symbol";
                     }
                     delete header.constraint.cdisplayType;
