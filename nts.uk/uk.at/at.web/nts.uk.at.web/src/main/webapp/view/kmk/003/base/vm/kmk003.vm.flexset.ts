@@ -254,7 +254,6 @@ module nts.uk.at.view.kmk003.a {
 
                 public resetData(): void {
                     let self = this;
-                    self.workTimeCode('');
                     self.useHalfDayShift(false);
                     self.coreTimeSetting.resetData();
                     self.restSetting.resetData();
