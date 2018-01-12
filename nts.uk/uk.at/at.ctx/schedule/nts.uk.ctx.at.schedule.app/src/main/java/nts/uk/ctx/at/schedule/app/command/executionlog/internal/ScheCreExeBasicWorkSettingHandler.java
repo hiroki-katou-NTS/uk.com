@@ -173,7 +173,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 	private Optional<BasicWorkSetting> getBasicWorkSettingByWorkdayDivision(BasicWorkSettingGetterCommand command) {
 
 		// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
-		if (command.getReferenceBusinessDayCalendar() == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
+		if (command.getReferenceBasicWork() == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
 
 			// find work place by id
 			Optional<WorkplaceDto> optionalWorkplace = this.scWorkplaceAdapter
@@ -309,7 +309,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 	private Optional<Integer> getBusinessDayCalendar(BasicWorkSettingGetterCommand command) {
 		
 		// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
-		if (command.getReferenceBusinessDayCalendar() == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
+		if (command.getReferenceBasicWork() == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
 
 			// find work place by id
 			Optional<WorkplaceDto> optionalWorkplace = this.scWorkplaceAdapter

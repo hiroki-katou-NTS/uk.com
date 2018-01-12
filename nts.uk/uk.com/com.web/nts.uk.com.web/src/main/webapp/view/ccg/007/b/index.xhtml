@@ -52,14 +52,14 @@
 						<tr>
 							<td><img alt="" src="72.png" /></td>
 							<td><div class="pad_5">
-									<input tabindex="2"
+									<input tabindex="2" id="password-input"
 										data-bind="ntsTextEditor: {
 											name: '#{i18n.getText('CCG007_2')}',
 											value: password,
 											required: false,
 											option: {textmode: 'password',width: '222px'},
 											enable: true,
-											readonly: false}" />
+											readonly: false}, valueUpdate: 'afterkeydown'" />
 								</div></td>
 						</tr>
 						<tr>
@@ -69,7 +69,7 @@
 						</tr>
 						<tr>
 							<td colspan="2" class="align_center"><div class="pad_5">
-									<button tabindex="4" data-bind="click: submitLogin"
+									<button tabindex="4" id="login-btn" data-bind="click: submitLogin"
 										class="full_width proceed large">
 										<span data-bind="text: '#{i18n.getText('CCG007_3')}'"></span>
 									</button>

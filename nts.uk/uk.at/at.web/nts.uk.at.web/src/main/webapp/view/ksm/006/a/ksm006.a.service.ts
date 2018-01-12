@@ -24,7 +24,7 @@ module nts.uk.at.view.ksm006.a {
             findWorktypeCodeList: 'at/share/worktype/findSelectAble',
             
             // Find WorkTimeCode List
-            findWorktimeCodeList: 'at/shared/worktime/findByCompanyID'
+            findWorktimeCodeList: 'at/shared/worktimesetting/findAll'
             
         };
 

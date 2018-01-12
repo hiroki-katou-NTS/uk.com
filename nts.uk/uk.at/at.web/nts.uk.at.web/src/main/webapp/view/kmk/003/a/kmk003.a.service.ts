@@ -5,15 +5,15 @@ module nts.uk.at.view.kmk003.a {
         *  Service paths
         */
         let servicePath: any = {
-            findWithCondition: "at/shared/worktime/findwithcondition",
+            findWithCondition: "at/shared/worktimesetting/findwithcondition",
             findAllWorktime: "at/shared/worktimeset/findAll",
-            findWorktimeSetingInfoByCode: "at/shared/worktime/findInfo",
+            findWorktimeSetingInfoByCode: "at/shared/worktimesetting/findInfo",
             getEnumWorktimeSeting: "at/shared/worktimeset/getenum",
             getPredByWorkTimeCode: "at/shared/pred/findByWorkTimeCode",
             savePred: "at/shared/pred/save",
-            saveFlexWorkSetting: "at/shared/worktime/flexset/save",
-            saveFixedWorkSetting: "at/shared/worktime/fixedset/save",
-            removeWorkTimeByCode: "at/shared/worktime/remove"
+            saveFlexWorkSetting: "at/shared/worktimesetting/flexset/save",
+            saveFixedWorkSetting: "at/shared/worktimesetting/fixedset/save",
+            removeWorkTimeByCode: "at/shared/worktimesetting/remove"
         };
 
         /**

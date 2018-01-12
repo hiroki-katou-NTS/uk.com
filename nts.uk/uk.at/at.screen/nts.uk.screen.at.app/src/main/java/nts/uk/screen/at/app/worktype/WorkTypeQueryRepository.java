@@ -19,4 +19,6 @@ public interface WorkTypeQueryRepository {
 	 * @return
 	 */
 	List<WorkTypeDto> findAllWorkType(String companyId, List<Integer> workTypeAtrList);
+
+	List<WorkTypeDto> findAllWorkTypeSPE(String companyId, int abolishAtr, int oneDayAtr1, int oneDayAtr2);
 }

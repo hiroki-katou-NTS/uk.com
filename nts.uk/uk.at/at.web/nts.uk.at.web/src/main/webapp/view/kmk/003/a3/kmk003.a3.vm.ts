@@ -451,7 +451,7 @@ module a3 {
                      key: "otFrameNo",
                      dataSource: self.lstOvertimeWorkFrame,
                      defaultValue: ko.observable(1),
-                     width: 120,
+                     width: 150,
                      template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,
@@ -505,7 +505,7 @@ module a3 {
                  key: "legalOTframeNo",
                  dataSource: self.lstOvertimeWorkFrame,
                  defaultValue: ko.observable(1),
-                 width: 75,
+                 width: 150,
                  template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,
@@ -520,7 +520,7 @@ module a3 {
                  key: "settlementOrder",
                  dataSource: self.lstSettlementOrder,
                  defaultValue: ko.observable(1),
-                 width: 75,
+                 width: 50,
                  template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'settlementOrder',
                                     visibleItemsCount: 10,
@@ -586,7 +586,7 @@ module a3 {
                     key: "otFrameNo",
                     dataSource: self.lstOvertimeWorkFrame,
                     defaultValue: ko.observable(1),
-                    width: 80,
+                    width: 150,
                     template: `<div class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'overtimeWorkFrNo',
                                     visibleItemsCount: 10,

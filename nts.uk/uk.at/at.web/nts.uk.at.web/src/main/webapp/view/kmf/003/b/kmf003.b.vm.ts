@@ -117,6 +117,10 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         calculate() {
             var self = this;
             
+            if (nts.uk.ui.errors.hasError()) {
+                return;    
+            }
+            
             if(self.referenceDate() !== ""){
                 var monthDay = String(self.conditionData.dateSelected); 
                 monthDay = nts.uk.text.padLeft(monthDay, '0', 4); 

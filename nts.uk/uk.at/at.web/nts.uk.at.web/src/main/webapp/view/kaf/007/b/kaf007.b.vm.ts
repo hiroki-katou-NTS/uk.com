@@ -42,7 +42,9 @@ module nts.uk.at.view.kaf007.b {
             //勤務就業ダイアログ用データ取得
             workTypeCodes:KnockoutObservableArray<string> = ko.observableArray( [] );
             workTimeCodes:KnockoutObservableArray<string> = ko.observableArray( [] );
-        
+            //画面モード(表示/編集)
+            editable: KnockoutObservable<boolean> = ko.observable( true );
+            
             constructor( listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata ) {
                 super( listAppMetadata, currentApp );
                 let self = this;
@@ -108,6 +110,9 @@ module nts.uk.at.view.kaf007.b {
                             self.multilContent( self.appWorkChange().application().applicationReason() );
                             self.workTypeCodes = detailData.workTypeCodes;
                             self.workTimeCodes = detailData.workTimeCodes;
+                            //画面モード(表示/編集)
+                            self.editable = ko.observable(detailData.OutMode == 0 ? true: false);
+                            
                             dfd.resolve();
                             nts.uk.ui.block.clear();
                         } ).fail(( res ) => {

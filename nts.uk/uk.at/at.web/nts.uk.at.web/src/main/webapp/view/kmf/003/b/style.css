@@ -86,6 +86,10 @@ table.contents-header td.allow-pay {
     height: 20px;
 }
 
+.nts-combo-item .nts-column {
+	text-align: left;	
+}
+
 table.contents-data td.numbers {
 	width: 47px;
 }

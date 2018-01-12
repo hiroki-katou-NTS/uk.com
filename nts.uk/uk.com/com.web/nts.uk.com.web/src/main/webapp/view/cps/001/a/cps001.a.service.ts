@@ -14,6 +14,7 @@ module cps001.a.service {
             'getTabsInfo': 'ctx/pereg/layout/find/getctgtab/{0}', //categoryId
             'getHistData': '/ctx/pereg/employee/category/getlistinfocategory',
             'delete': 'facade/pereg/delete',
+            'permision': 'ctx/pereg/roles/auth/category/find/{0}/{1}'
         },
         person: {
             'getPerson': 'bs/employee/person/findByEmployeeId/{0}'
@@ -23,8 +24,7 @@ module cps001.a.service {
             getFile: 'basic/organization/empfilemanagement/find/getAvaOrMap/{0}/{1}',
             permision: 'ctx/pereg/roles/auth/get-self-auth',
         },
-        file: '/shr/infra/file/storage/infor/{0}',
-        saveData: ''
+        file: '/shr/infra/file/storage/infor/{0}'
     };
 
     export function getPerson(id: string) {
@@ -69,6 +69,10 @@ module cps001.a.service {
 
     export function saveCurrentLayout(command: any) {
         return ajax(paths.layout.register, command);
+    }
+
+    export function getPermision4Cat(roleId: string, catId: string) {
+        return ajax(format(paths.category.permision, roleId, catId));
     }
 
     export function removeCurrentCategoryData(command: any) {

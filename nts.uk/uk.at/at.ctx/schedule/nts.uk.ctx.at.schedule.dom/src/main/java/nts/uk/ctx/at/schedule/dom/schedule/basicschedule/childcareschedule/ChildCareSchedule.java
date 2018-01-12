@@ -38,7 +38,7 @@ public class ChildCareSchedule extends DomainObject{
 	 */
 	public ChildCareSchedule(ChildCareScheduleGetMemento memento) {
 		this.childCareNumber = memento.getChildCareNumber();
-		this.childCareScheduleStart = memento.getChildCareScheduleEnd();
+		this.childCareScheduleStart = memento.getChildCareScheduleStart();
 		this.childCareScheduleEnd = memento.getChildCareScheduleEnd();
 		this.childCareAtr = memento.getChildCareAtr();
 	}

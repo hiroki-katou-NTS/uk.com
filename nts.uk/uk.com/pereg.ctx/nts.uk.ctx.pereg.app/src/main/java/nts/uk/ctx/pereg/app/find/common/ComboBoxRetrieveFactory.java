@@ -24,6 +24,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.Child
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
@@ -223,16 +224,16 @@ public class ComboBoxRetrieveFactory {
 			}
 		case "M00008":
 			// 勤務種類マスタ
+			List<WorkType> workTypeList = workTypeRepo.findNotDeprecateByCompanyId(companyId);
 			if (isCps001) {
-				return workTypeRepo.findByCompanyId(companyId).stream()
+				return workTypeList.stream()
 						.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(),
 								workType.getWorkTypeCode().v() + JP_SPACE + workType.getName().v()))
 						.collect(Collectors.toList());
 			} else {
-				return workTypeRepo.findByCompanyId(companyId).stream()
+				return workTypeList.stream()
 						.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(), workType.getName().v()))
 						.collect(Collectors.toList());
-
 			}
 		case "M00009":
 			// 就業時間帯マスタ

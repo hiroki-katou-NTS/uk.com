@@ -2441,16 +2441,21 @@ button.nts-switch-button[disabled]:hover {
   display: block !important;
 }
 /* line 37, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs > .ui-tabs-panel.disappear > div {
+  height: 100% !important;
+  overflow: hidden !important;
+}
+/* line 44, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical {
   display: flex;
 }
-/* line 40, ../sass/components/_tabpanel.scss */
+/* line 47, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical > .ui-tabs-nav {
   float: left;
   padding: .4em 0;
   border-radius: 0;
 }
-/* line 45, ../sass/components/_tabpanel.scss */
+/* line 52, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical > .ui-tabs-nav > li {
   clear: left;
   width: 100%;
@@ -2458,13 +2463,13 @@ button.nts-switch-button[disabled]:hover {
   border-radius: 0;
   border-width: 1px 0;
 }
-/* line 52, ../sass/components/_tabpanel.scss */
+/* line 59, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical > .ui-tabs-nav > li.ui-tabs-active {
   padding: 0;
   margin: 0;
   border-color: #00B050;
 }
-/* line 59, ../sass/components/_tabpanel.scss */
+/* line 66, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical > .ui-tabs-panel {
   width: 100%;
   overflow: hidden;
@@ -3635,29 +3640,31 @@ button.nts-switch-button[disabled]:hover {
   color: gray;
 }
 
+/* line 31, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper td.currency-symbol:before,
 .nts-grid td.currency-symbol:before {
-	content: '\00a5';
-	top: 6px;
-	color: #999;
-	padding-right: 4px;
+  content: '\00a5';
+  top: 6px;
+  color: #999;
+  padding-right: 4px;
 }
 
+/* line 39, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper span.input-currency-symbol:before,
 .nts-grid span.input-currency-symbol:before {
-	position: absolute;
-	content: '\00a5';
-	top: 4px;
-	left: 2px;
-	color: #999;
+  position: absolute;
+  content: '\00a5';
+  top: 4px;
+  left: 2px;
+  color: #999;
 }
 
-/* line 30, ../sass/components/_ntsgrid.scss */
+/* line 48, ../sass/components/_ntsgrid.scss */
 .ui-iggrid .ui-iggrid-tablebody td {
   height: 21px;
 }
 
-/* line 33, ../sass/components/_ntsgrid.scss */
+/* line 51, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-calc,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc,
 .nts-grid-wrapper table tr td.ntsgrid-calc.ntsgrid-disable,
@@ -3673,7 +3680,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: purple;
 }
 
-/* line 48, ../sass/components/_ntsgrid.scss */
+/* line 66, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-reflect,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect,
 .nts-grid-wrapper table tr td.ntsgrid-reflect.ntsgrid-calc,
@@ -3693,7 +3700,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: green;
 }
 
-/* line 67, ../sass/components/_ntsgrid.scss */
+/* line 85, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other.ntsgrid-reflect,
@@ -3717,7 +3724,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: orange;
 }
 
-/* line 90, ../sass/components/_ntsgrid.scss */
+/* line 108, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target.ntsgrid-manual-edit-other,
@@ -3745,7 +3752,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: pink;
 }
 
-/* line 117, ../sass/components/_ntsgrid.scss */
+/* line 135, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-alarm,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm,
 .nts-grid-wrapper table tr td.ntsgrid-alarm.ntsgrid-manual-edit-target,
@@ -3777,7 +3784,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: yellow;
 }
 
-/* line 148, ../sass/components/_ntsgrid.scss */
+/* line 166, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-error,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error,
 .nts-grid-wrapper table tr td.ntsgrid-error.ntsgrid-alarm,
@@ -3813,7 +3820,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: red;
 }
 
-/* line 183, ../sass/components/_ntsgrid.scss */
+/* line 201, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ntsgrid-error,
@@ -3853,30 +3860,30 @@ button.nts-switch-button[disabled]:hover {
   background-color: #007fff;
 }
 
-/* line 222, ../sass/components/_ntsgrid.scss */
+/* line 240, ../sass/components/_ntsgrid.scss */
 .nts-image-container, .nts-fleximage-container {
   height: 100%;
   text-align: center;
 }
 
-/* line 227, ../sass/components/_ntsgrid.scss */
+/* line 245, ../sass/components/_ntsgrid.scss */
 .nts-editor-container {
   height: 100%;
   margin-left: -1px;
 }
 
-/* line 232, ../sass/components/_ntsgrid.scss */
+/* line 250, ../sass/components/_ntsgrid.scss */
 .nts-editor-wrapper {
   width: 100%;
   margin: 1px;
 }
 
-/* line 241, ../sass/components/_ntsgrid.scss */
+/* line 259, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td .nts-grid.control {
   height: 35px;
 }
 
-/* line 249, ../sass/components/_ntsgrid.scss */
+/* line 267, ../sass/components/_ntsgrid.scss */
 .text-limited {
   white-space: nowrap;
 }

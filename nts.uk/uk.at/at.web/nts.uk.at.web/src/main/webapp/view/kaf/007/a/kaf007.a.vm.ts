@@ -37,7 +37,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         enableSendMail :KnockoutObservable<boolean> = ko.observable(false); 
         manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);    
         dateFormat: string = 'YYYY/MM/DD';
-        
+        //画面モード(表示/編集)
+        editable: KnockoutObservable<boolean> = ko.observable( true );
         constructor() {
             let self = this,
             application = self.appWorkChange().application();

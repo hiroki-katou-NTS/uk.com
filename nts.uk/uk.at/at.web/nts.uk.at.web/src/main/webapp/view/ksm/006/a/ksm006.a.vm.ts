@@ -495,6 +495,8 @@ module nts.uk.at.view.ksm006.a {
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
                     });
+                }).then(() => { 
+                    blockUI.clear();
                 });
 
             }
@@ -523,6 +525,8 @@ module nts.uk.at.view.ksm006.a {
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
                     });
+                }).then(() => { 
+                    blockUI.clear();
                 });
             }
 

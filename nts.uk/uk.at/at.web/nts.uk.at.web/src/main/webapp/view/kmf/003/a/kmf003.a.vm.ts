@@ -123,13 +123,13 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                         self.note(data.yearHolidayNote);                    
                         self.conditionValue01(data.grantConditions[0] && (data.grantConditions[0].conditionValue != null ? data.grantConditions[0].conditionValue.toString() : ""));
                         self.useCls02(data.grantConditions[1] && data.grantConditions[1].useConditionAtr == 1 ? true : false);
-                        self.conditionValue02(data.grantConditions[1] && data.grantConditions[1].conditionValue.toString());
+                        self.conditionValue02(data.grantConditions[1] && (data.grantConditions[1].conditionValue != null ? data.grantConditions[1].conditionValue.toString() : ""));
                         self.useCls03(data.grantConditions[2] && data.grantConditions[2].useConditionAtr == 1 ? true : false);
-                        self.conditionValue03(data.grantConditions[2] && data.grantConditions[2].conditionValue.toString());
+                        self.conditionValue03(data.grantConditions[2] && (data.grantConditions[2].conditionValue != null ? data.grantConditions[2].conditionValue.toString() : ""));
                         self.useCls04(data.grantConditions[3] && data.grantConditions[3].useConditionAtr == 1 ? true : false);
-                        self.conditionValue04(data.grantConditions[3] && data.grantConditions[3].conditionValue.toString());
+                        self.conditionValue04(data.grantConditions[3] && (data.grantConditions[3].conditionValue != null ? data.grantConditions[3].conditionValue.toString() : ""));
                         self.useCls05(data.grantConditions[4] && data.grantConditions[4].useConditionAtr == 1 ? true : false);
-                        self.conditionValue05(data.grantConditions[4] && data.grantConditions[4].conditionValue.toString());
+                        self.conditionValue05(data.grantConditions[4] && (data.grantConditions[4].conditionValue != null ? data.grantConditions[4].conditionValue.toString() : ""));
                         self.btnSetting02Enable(data.grantConditions[1] && data.grantConditions[1].useConditionAtr == 1);
                         self.btnSetting03Enable(data.grantConditions[2] && data.grantConditions[2].useConditionAtr == 1);
                         self.btnSetting04Enable(data.grantConditions[3] && data.grantConditions[3].useConditionAtr == 1);
@@ -294,6 +294,11 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.showLblSet04(false);
             self.showLblSet05(false);
             
+            self.useCls02(false);
+            self.useCls03(false);
+            self.useCls04(false);
+            self.useCls05(false);
+            
             //Grid data
             self.singleSelectedCode([]);
             
@@ -326,35 +331,33 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             $(".input-name").trigger("validate");
             $(".a7_7").trigger("validate");
             
-            if(self.A7_4SelectedRuleCode() == 0 && (Number(self.conditionValue01()) > 100 || Number(self.conditionValue01()) < 0)){
-                $('#cond01').ntsError('set', {messageId:"Msg_262"});
-            } else if(self.A7_4SelectedRuleCode() == 1 && (Number(self.conditionValue01()) > 366 || Number(self.conditionValue01()) < 0)){
-                $('#cond01').ntsError('set', {messageId:"Msg_263"});
-            }
-            
-            if(self.A7_4SelectedRuleCode() == 0 && (Number(self.conditionValue02()) > 100 || Number(self.conditionValue02()) < 0)){
-                $('#cond02').ntsError('set', {messageId:"Msg_262"});
-            } else if(self.A7_4SelectedRuleCode() == 1 && (Number(self.conditionValue02()) > 366 || Number(self.conditionValue02()) < 0)){
-                $('#cond02').ntsError('set', {messageId:"Msg_263"});
-            }
-            
-            if(self.A7_4SelectedRuleCode() == 0 && (Number(self.conditionValue03()) > 100 || Number(self.conditionValue03()) < 0)){
-                $('#cond03').ntsError('set', {messageId:"Msg_262"});
-            } else if(self.A7_4SelectedRuleCode() == 1 && (Number(self.conditionValue03()) > 366 || Number(self.conditionValue03()) < 0)){
-                $('#cond03').ntsError('set', {messageId:"Msg_263"});
-            }
-            
-            if(self.A7_4SelectedRuleCode() == 0 && (Number(self.conditionValue04()) > 100 || Number(self.conditionValue04()) < 0)){
-                $('#cond04').ntsError('set', {messageId:"Msg_262"});
-            } else if(self.A7_4SelectedRuleCode() == 1 && (Number(self.conditionValue04()) > 366 || Number(self.conditionValue04()) < 0)){
-                $('#cond04').ntsError('set', {messageId:"Msg_263"});
-            }
-            
-            if(self.A7_4SelectedRuleCode() == 0 && (Number(self.conditionValue05()) > 100 || Number(self.conditionValue05()) < 0)){
-                $('#cond05').ntsError('set', {messageId:"Msg_262"});
-            } else if(self.A7_4SelectedRuleCode() == 1 && (Number(self.conditionValue05()) > 366 || Number(self.conditionValue05()) < 0)){
-                $('#cond05').ntsError('set', {messageId:"Msg_263"});
-            }
+            if(!self.isNewMode()) {
+                if(self.A7_4SelectedRuleCode() == 0) {
+                    if(self.conditionValue01() === "" || Number(self.conditionValue01()) > 100 || Number(self.conditionValue01()) < 0) {
+                        $('#cond01').ntsError('set', {messageId:"Msg_262"});
+                    } else if(self.conditionValue02() === "" || Number(self.conditionValue02()) > 100 || Number(self.conditionValue02()) < 0) {
+                        $('#cond02').ntsError('set', {messageId:"Msg_262"});
+                    } else if(self.conditionValue03() === "" || Number(self.conditionValue03()) > 100 || Number(self.conditionValue03()) < 0) {
+                        $('#cond03').ntsError('set', {messageId:"Msg_262"});
+                    } else if(self.conditionValue04() === "" || Number(self.conditionValue04()) > 100 || Number(self.conditionValue04()) < 0) {
+                        $('#cond04').ntsError('set', {messageId:"Msg_262"});
+                    } else if(self.conditionValue05() === "" || Number(self.conditionValue05()) > 100 || Number(self.conditionValue05()) < 0) {
+                        $('#cond05').ntsError('set', {messageId:"Msg_262"});
+                    }
+                } else {
+                    if(self.conditionValue01() === "" || Number(self.conditionValue01()) > 366 || Number(self.conditionValue01()) < 0) {
+                        $('#cond01').ntsError('set', {messageId:"Msg_263"});
+                    } else if(self.conditionValue02() === "" || Number(self.conditionValue02()) > 366 || Number(self.conditionValue02()) < 0) {
+                        $('#cond02').ntsError('set', {messageId:"Msg_263"});
+                    } else if(self.conditionValue03() === "" || Number(self.conditionValue03()) > 366 || Number(self.conditionValue03()) < 0) {
+                        $('#cond03').ntsError('set', {messageId:"Msg_263"});
+                    } else if(self.conditionValue04() === "" || Number(self.conditionValue04()) > 366 || Number(self.conditionValue04()) < 0) {
+                        $('#cond04').ntsError('set', {messageId:"Msg_263"});
+                    } else if(self.conditionValue05() === "" || Number(self.conditionValue05()) > 366 || Number(self.conditionValue05()) < 0) {
+                        $('#cond05').ntsError('set', {messageId:"Msg_263"});
+                    }
+                }
+            }            
             
             if (nts.uk.ui.errors.hasError()) {
                 return;    
@@ -451,7 +454,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 self.getData();
                 self.singleSelectedCode(data.yearHolidayCode);
             }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
+                $('.input-code').ntsError('set', error);
             }).always(function() {
                 nts.uk.ui.block.clear();      
             });

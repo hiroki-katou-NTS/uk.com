@@ -18,6 +18,7 @@ module nts.uk.at.view.kmk010.a {
             findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
             checkManageSixtyHourVacationSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/com/check/manage",
             exportOutsideOTSettingExcel: "at/shared/outsideot/export/excel",
+            exportOutsideOTSettingExcelMasterList: "/masterlist/report/print",
             getCid: "at/shared/outsideot/export/getCid",
             getNameCompany: "bs/company/findComId"
             
@@ -145,6 +146,11 @@ module nts.uk.at.view.kmk010.a {
             return nts.uk.request.ajax("com",paths.getNameCompany + "/" + cid);
         }
         
+        export function exportOutsideOTSettingExcelMasterList(): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcelMasterList, { domainId: "outsideot", domainType: "時間外超過設定", languageId: 'ja', reportType: 0, data: [] });
+        }
+
+
         /**
          * Init tooltip service.
          */
