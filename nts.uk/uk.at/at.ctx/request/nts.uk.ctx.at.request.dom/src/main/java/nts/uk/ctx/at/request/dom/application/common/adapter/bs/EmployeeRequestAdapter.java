@@ -9,15 +9,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImpor
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 
 public interface EmployeeRequestAdapter {
-	/**
-	 * get employment code by companyID, employeeID and base date
-	 * @param companyId 会社ID
-	 * @param employeeId　社員ID　
-	 * @param baseDate　基準日
-	 * @return　雇用コード
-	 */
-	String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate);
-	
 	
 	/**
 	 * 所属職場を含む上位職場を取得
