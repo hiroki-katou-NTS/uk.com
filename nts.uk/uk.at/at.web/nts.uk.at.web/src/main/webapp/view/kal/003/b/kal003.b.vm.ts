@@ -16,7 +16,6 @@ module nts.uk.at.view.kal003.b.viewmodel{
         listCompareTypes            : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetServiceType_BA1_2         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetSelectionRange_BA1_5         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
-        itemListTargetSelectionRange_BA1_5_target_working_hours : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         listAllWorkType         : Array<string> = ([]);
         listAllAttdItem         : Array<string> = ([]);
         listAllSettingTimeZone  : Array<string> = ([]);
@@ -24,9 +23,10 @@ module nts.uk.at.view.kal003.b.viewmodel{
         displayWorkTypeSelections_BA1_4         : KnockoutObservable<string> = ko.observable('');
         displayWorkTimeItemSelections_BA2_3     : KnockoutObservable<string> = ko.observable('');
         displayWorkingTimeZoneSelections_BA5_3  : KnockoutObservable<string> = ko.observable('');
+        
         targetServiceTypeSelected_BA1_2         : KnockoutObservable<number> = ko.observable(1);
         targetSelectionRangeSelected_BA1_5      : KnockoutObservable<number> = ko.observable(0);
-        targetSelectionRangeSelected_BA1_5_target_working_hours : KnockoutObservable<number> = ko.observable(1);
+        
         private setting : sharemodel.ErrorAlarmCondition;
         swANDOR_B5_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         swANDOR_B6_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
@@ -34,7 +34,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
         enableComparisonMaxValue : KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
-            var option = windows.getShared('inputKal003b');
+            let option = windows.getShared('inputKal003b');
             self.setting = $.extend({}, shareutils.getDefaultErrorAlarmCondition(0), option);
             self.currentErrAlaCheckCondition = ko.observable(self.setting);
             // change select item check
@@ -44,15 +44,10 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     self.initialScreen();
                 }
             });
+
             self.currentErrAlaCheckCondition().comparisonOperator.subscribe((comparisonOperatorId) => {
                 errors.clearAll();
                 self.settingEnableComparisonMaxValueField();
-            });
-
-            self.currentErrAlaCheckCondition().compoundCondition().hasGroup2.subscribe((hsGroup2) => {
-                if (hsGroup2) {
-                    $("#table-group2condition").ntsFixedTable();
-                }
             });
         }
 
@@ -131,7 +126,6 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listTypeCheckWorkRecord));
                     var listTargetRangeWithName = self.getLocalizedNameForEnum(listTargetSelectionRange);
                     self.itemListTargetSelectionRange_BA1_5(listTargetRangeWithName);
-                    self.itemListTargetSelectionRange_BA1_5_target_working_hours(listTargetRangeWithName);
                     self.itemListTargetServiceType_BA1_2(self.getLocalizedNameForEnum(listTargetServiceType));
                     self.buildListCompareTypes();
                     var listANDOR = self.getLocalizedNameForEnum(listLogicalOperator)
@@ -178,14 +172,14 @@ module nts.uk.at.view.kal003.b.viewmodel{
          * Initial Group Condition
          * @param listGroupCondition
          */
-        private initGroupCondition(listGroupCondition : Array<sharemodel.Condition>) : Array<sharemodel.Condition> {
-            let listCondition : Array<sharemodel.Condition> = [];
+        private initGroupCondition(listGroupCondition : Array<sharemodel.ErAlAtdItemCondition>) : Array<sharemodel.ErAlAtdItemCondition> {
+            let listCondition : Array<sharemodel.ErAlAtdItemCondition> = [];
             for(var i = 0; i < listGroupCondition.length && i < 3; i++) {
                 listCondition.push(listGroupCondition[i]);
             }
             if (listCondition.length < 3) {
                 for(var i = listCondition.length; i < 3; i++) {
-                    listCondition.push(shareutils.getDefaultCondition(7));
+                    listCondition.push(shareutils.getDefaultCondition(i-1));
                 }
             }
             return listCondition;
@@ -201,8 +195,6 @@ module nts.uk.at.view.kal003.b.viewmodel{
             compoundCondition.group1Condition().groupListCondition(listGr1);
             let listGr2 = self.initGroupCondition(compoundCondition.group2Condition().groupListCondition());
             compoundCondition.group2Condition().groupListCondition(listGr2);
-            $("#table-group1condition").ntsFixedTable();
-            $("#table-group2condition").ntsFixedTable();
         }
      // ============build enum for combobox BA2-5: end ==============
         // ===========common end =====================
@@ -236,6 +228,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     dfd.resolve();
                     break;
                 default:
+                    
                     dfd.resolve();
                     break;
             }
