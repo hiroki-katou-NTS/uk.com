@@ -112,6 +112,8 @@ module nts.uk.ui {
                         resizable: options.resizable,
                         open: function() {
                             let $dialog = $(this);
+                            $dialog.closest(".ui-dialog").addClass("no-close-btn");
+                            
                             $dialog.dialogPositionControl();
                             
 //                            if ($(this).parent().height() >= $("#contents-area").height()) {

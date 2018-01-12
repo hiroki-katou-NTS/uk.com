@@ -3979,6 +3979,7 @@ var nts;
                                 resizable: options.resizable,
                                 open: function () {
                                     var $dialog = $(this);
+                                    $dialog.closest(".ui-dialog").addClass("no-close-btn");
                                     $dialog.dialogPositionControl();
                                     var $dialogDocument = $(this).parent();
                                     var $dialogContentDoc = $(this.lastElementChild.contentDocument);
