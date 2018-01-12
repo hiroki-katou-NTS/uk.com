@@ -7531,19 +7531,22 @@ var nts;
                         $grid.setupSearchScroll("igGrid", true);
                         $grid.ntsGridList("setupScrollWhenBinding");
                         $grid.bind("switchvaluechanged", function (evt, dataX) {
-                            var source = data.dataSource !== undefined ? data.dataSource() : data.options();
-                            _.forEach(options, function (o) {
-                                if (o[optionsValue] === dataX.rowKey) {
-                                    o[dataX.columnKey] = dataX.value;
-                                    return true;
+                            setTimeout(function () {
+                                var source = _.cloneDeep(data.dataSource !== undefined ? data.dataSource() : data.options());
+                                _.forEach(source, function (o) {
+                                    if (o[optionsValue] === dataX.rowKey) {
+                                        o[dataX.columnKey] = dataX.value;
+                                        return true;
+                                    }
+                                });
+                                $grid.data("ui-changed", true);
+                                if (data.dataSource !== undefined) {
+                                    data.dataSource(source);
                                 }
-                            });
-                            if (data.dataSource !== undefined) {
-                                data.dataSource(source);
-                            }
-                            else {
-                                data.options(source);
-                            }
+                                else {
+                                    data.options(source);
+                                }
+                            }, 100);
                         });
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
