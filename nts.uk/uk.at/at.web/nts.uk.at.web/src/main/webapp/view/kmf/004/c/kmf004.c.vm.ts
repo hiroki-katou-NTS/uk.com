@@ -30,6 +30,7 @@ module nts.uk.at.view.kmf004.c {
             dataItems: KnockoutObservableArray<Item>;
             specialHolidayCode: KnockoutObservable<string>;
             standardDateEnable: KnockoutObservable<boolean>;
+            standardDateReq: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this,
@@ -60,6 +61,8 @@ module nts.uk.at.view.kmf004.c {
                 self.standardDate = ko.observable("");
                 self.standardDateEnable = ko.observable(true);
                 
+                self.standardDateReq = ko.observable(true);
+                
                 self.dataItems = ko.observableArray([]);
                 
                 // Get codes from A screen
@@ -88,8 +91,10 @@ module nts.uk.at.view.kmf004.c {
                 self.selectedBaseDateId.subscribe(function(value) {
                     if(value == 0){
                         self.standardDateEnable(true);
+                        self.standardDateReq(true);
                     } else {
                         self.standardDateEnable(false);
+                        self.standardDateReq(false);
                         self.standardDate("");
                     }
                 }); 
@@ -197,6 +202,7 @@ module nts.uk.at.view.kmf004.c {
                 
                 self.selectedBaseDateId(0); 
                 self.standardDate("");
+                self.standardDateReq(true);
                 
                 self.dataItems.removeAll();
                 
@@ -227,7 +233,7 @@ module nts.uk.at.view.kmf004.c {
                 
                 if (self.selectedBaseDateId() === 0) {
                     if (self.standardDate() == null || self.standardDate() == "" || self.standardDate() == undefined) {
-                        $('#standard-date-input').ntsError('set', { messageId:"KMF004_75" });
+                        self.standardDateReq(true);
                     }
                 }
                 
