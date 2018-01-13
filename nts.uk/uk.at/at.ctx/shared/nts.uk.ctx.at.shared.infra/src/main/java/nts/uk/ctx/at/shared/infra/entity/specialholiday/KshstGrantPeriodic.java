@@ -66,7 +66,7 @@ public class KshstGrantPeriodic extends UkJpaEntity implements Serializable {
 				domain.getGrantPeriodicMethod().value);
 	}
 
-	public KshstGrantPeriodic(KshstGrantPeriodicPK kshstGrantPeriodicPK, int splitAcquisition, int grantDay,
+	public KshstGrantPeriodic(KshstGrantPeriodicPK kshstGrantPeriodicPK, int splitAcquisition, Integer grantDay,
 			int grantPerioricMethod) {
 		super();
 		this.kshstGrantPeriodicPK = kshstGrantPeriodicPK;

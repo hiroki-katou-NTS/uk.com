@@ -300,36 +300,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 specialHoliday.grantPeriodic = null;
                 specialHoliday.sphdLimit = null;
                 specialHoliday.subCondition = null;
+                self.setDefaultValueTab0(specialHoliday);
             } else {
                 self.triggerByGrantMethod();
-                var roundingCarryForward = specialHoliday.sphdLimit.roundingCarryForward;
-                var useGender = specialHoliday.subCondition.useGender;
-                var useEmployee = specialHoliday.subCondition.useEmployee;
-                var useCls = specialHoliday.subCondition.useCls;
-                var useAge = specialHoliday.subCondition.useAge;
 
-                specialHoliday.subCondition.useGender = useGender ? 1 : 0;
-                specialHoliday.subCondition.useEmployee = useEmployee ? 1 : 0;
-                specialHoliday.subCondition.useCls = useCls ? 1 : 0;
-                specialHoliday.subCondition.useAge = useAge ? 1 : 0;
-
-                if (useCls == 0) {
-                    specialHoliday.subCondition.classificationList = [];
-                }
-
-                if (useEmployee == 0) {
-                    specialHoliday.subCondition.employmentList = [];
-                }
-                
-                if (useAge == 0) {
-                    specialHoliday.subCondition.limitAgeTo = null;
-                    specialHoliday.subCondition.limitAgeFrom = null;
-                }
-                
+                /** set default for tab 1 **/
+                self.setDefaultValueTab1(specialHoliday);
                 // set default value for tab 2
                 self.setDefaultValueTab2(specialHoliday);
                 // set default value for tab 3
                 self.setDefaultValueSphdLimit(specialHoliday);
+                /** set default for tab 4 **/
+                self.setDefaultValueTab4(specialHoliday);
                 
                 specialHoliday.grantSingle = null;
                 if (specialHoliday.grantRegular.grantStartDate) {
@@ -398,10 +380,45 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             }
         }
         
+        /** set default for tab 4 **/
+        setDefaultValueTab4(specialHoliday: any) {
+            var self = this;  
+            
+            var roundingCarryForward = specialHoliday.sphdLimit.roundingCarryForward;
+            var useGender = specialHoliday.subCondition.useGender;
+            var useEmployee = specialHoliday.subCondition.useEmployee;
+            var useCls = specialHoliday.subCondition.useCls;
+            var useAge = specialHoliday.subCondition.useAge;
+            
+            specialHoliday.subCondition.useGender = useGender ? model.UseAtr.Use : model.UseAtr.NotUse;
+            specialHoliday.subCondition.useEmployee = useEmployee ? model.UseAtr.Use : model.UseAtr.NotUse;
+            specialHoliday.subCondition.useCls = useCls ? model.UseAtr.Use : model.UseAtr.NotUse;
+            specialHoliday.subCondition.useAge = useAge ? model.UseAtr.Use : model.UseAtr.NotUse;
+
+            if (useCls == model.UseAtr.NotUse) {
+                specialHoliday.subCondition.classificationList = [];
+                self.currentItem().subCondition().classificationList([]);
+            }
+
+            if (useEmployee == model.UseAtr.NotUse) {
+                specialHoliday.subCondition.employmentList = [];
+                self.currentItem().subCondition().employmentList([]);
+            }
+            
+            if (useAge == model.UseAtr.NotUse) {
+                specialHoliday.subCondition.limitAgeTo = null;
+                specialHoliday.subCondition.limitAgeFrom = null;
+                self.currentItem().subCondition().limitAgeTo(null);
+                self.currentItem().subCondition().limitAgeFrom(null);
+            }
+        }
+        
         /** set default for tab 3 **/
         setDefaultValueSphdLimit(specialHoliday: any) {
             var self = this;
             if (specialHoliday.sphdLimit.specialVacationMethod != model.SpecialVacationMethod.AvailableGrantDateDesignate) {
+                specialHoliday.sphdLimit.specialVacationYears = null;
+                specialHoliday.sphdLimit.specialVacationMonths = null;
                 self.currentItem().sphdLimit().specialVacationYears(null);
                 self.currentItem().sphdLimit().specialVacationMonths(null);    
             }
@@ -416,7 +433,31 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         setDefaultValueTab2(specialHoliday: any) {
             var self = this;
             if (specialHoliday.grantPeriodic.grantPeriodicMethod == model.GrantPeriodicMethod.DoNotAllow) {
+                specialHoliday.grantPeriodic.grantDay = null;
                 self.currentItem().grantPeriodic().grantDay(null);        
+            }
+        }
+        
+        /** set default for tab 1 **/
+        setDefaultValueTab1(specialHoliday: any) {
+            var self = this;
+            if (specialHoliday.grantRegular.grantRegularMethod == model.GrantRegularMethod.ReferGrantDateTable) {
+                specialHoliday.grantRegular.grantStartDate = null;
+                specialHoliday.grantRegular.months = null;
+                specialHoliday.grantRegular.years = null;
+                
+                self.currentItem().grantRegular().grantStartDate(null);
+                self.currentItem().grantRegular().months(null);
+                self.currentItem().grantRegular().years(null);     
+            }
+        }
+        
+        /** set default for tab 0 **/
+        setDefaultValueTab0(specialHoliday: any) {
+            var self = this;
+            if (specialHoliday.grantSingle.grantDaySingleType == 1) {
+                specialHoliday.grantSingle.fixNumberDays = null;
+                self.currentItem().grantSingle().fixNumberDays(null);        
             }
         }
 

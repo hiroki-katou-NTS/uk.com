@@ -57,8 +57,8 @@ public class KshstSphdLimit extends UkJpaEntity implements Serializable {
 		return kshstSphdLimitPK;
 	}
 
-	public KshstSphdLimit(KshstSphdLimitPK kshstSphdLimitPK, int specialVacationMonths, int specialVacationYears,
-			int grantCarryForward, int limitCarryoverDays, int specialVacationMethod) {
+	public KshstSphdLimit(KshstSphdLimitPK kshstSphdLimitPK, Integer specialVacationMonths, Integer specialVacationYears,
+			int grantCarryForward, Integer limitCarryoverDays, int specialVacationMethod) {
 		super();
 		this.kshstSphdLimitPK = kshstSphdLimitPK;
 		this.specialVacationMonths = specialVacationMonths;

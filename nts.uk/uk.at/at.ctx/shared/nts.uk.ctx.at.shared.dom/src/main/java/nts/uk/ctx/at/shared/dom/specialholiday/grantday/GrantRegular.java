@@ -64,9 +64,10 @@ public class GrantRegular extends DomainObject {
 	 * @return
 	 */
 	public static GrantRegular createFromJavaType(String companyId, String specialHolidayCode,
-			GeneralDate grantStartDate, int months, int years, int grantRegularMethod) {
+			GeneralDate grantStartDate, Integer months, Integer years, int grantRegularMethod) {
 		return new GrantRegular(companyId, new SpecialHolidayCode(specialHolidayCode), grantStartDate,
-				new Months(months), new Years(years),
+				months != null ? new Months(months) : null, 
+				years != null ?	new Years(years) : null,
 				EnumAdaptor.valueOf(grantRegularMethod, GrantRegularMethod.class));
 	}
 }
