@@ -102,8 +102,7 @@ module nts.uk.ui {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
 
                     let dialogName = this.globalContext.__viewContext["program"]["programName"];
-                    let title = nts.uk.util.isNullOrEmpty(dialogName)　? toBeResource.unset : dialogName;
-//                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName; 
+                    let title = nts.uk.util.isNullOrEmpty(dialogName)　? "" : dialogName;
                 
                     this.$dialog.dialog('option', {
                         width: options.width || this.globalContext.dialogSize.width,
