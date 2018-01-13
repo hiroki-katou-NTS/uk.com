@@ -89,16 +89,17 @@ public class WorkplaceBasicWorkFinder {
 		// Find WorkTime
 		List<WorkTimeSetting> workingList = this.worktimeRepo.findByCodes(companyId, workingCodeList);
 
-		basicWorkSettingFindDto.stream().filter(a -> {
-			return a.getWorkTypeCode().length() > 0;
-		}).forEach(item -> {
+		basicWorkSettingFindDto.stream().forEach(item -> {
 			// Get WorkType
 			WorkType worktype = worktypeList.stream().filter(a -> {
 				return a.getWorkTypeCode().equals(item.getWorkTypeCode());
 			}).findFirst().orElse(null);
+			
 			// Set WorkTypeDisplayName to Dto
-			if (worktype == null) {
+			if (worktype == null && !StringUtil.isNullOrEmpty(item.getWorkTypeCode(), true)) {
 				item.setWorkTypeDisplayName(TextResource.localize("KSM006_13"));
+			} else if (StringUtil.isNullOrEmpty(item.getWorkTypeCode(), true)) {
+				item.setWorkTypeDisplayName("");
 			} else {
 				item.setWorkTypeDisplayName(worktype.getName().v());
 			}
@@ -111,6 +112,8 @@ public class WorkplaceBasicWorkFinder {
 			// Set WorkingDisplayName
 			if (worktime == null && !StringUtil.isNullOrEmpty(item.getWorkingCode(), true)) {
 				item.setWorkingDisplayName(TextResource.localize("KSM006_13"));
+			} else if (StringUtil.isNullOrEmpty(item.getWorkingCode(), true)) {
+				item.setWorkingDisplayName("");
 			} else {
 				item.setWorkingDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 			}
