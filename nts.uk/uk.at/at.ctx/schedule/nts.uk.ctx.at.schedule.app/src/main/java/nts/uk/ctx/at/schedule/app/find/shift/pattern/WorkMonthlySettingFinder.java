@@ -218,6 +218,8 @@ public class WorkMonthlySettingFinder {
 			
 			dto.setYmdK(startMonth);
 			
+			resDataWorkMonthlySetting.add(dto);
+			
 			startMonth = startMonth.addDays(NEXT_DAY);
 		}
 		

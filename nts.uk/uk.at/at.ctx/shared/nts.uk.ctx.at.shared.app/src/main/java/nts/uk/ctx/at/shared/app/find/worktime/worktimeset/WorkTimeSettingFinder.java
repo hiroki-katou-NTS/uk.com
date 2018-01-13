@@ -218,15 +218,15 @@ public class WorkTimeSettingFinder {
 		} else {
 			for (PredetemineTimeSetting item : workTimeSetItems) {
 				WorkTimeSetting currentWorkTime = mapworkTimeItems.get(item.getWorkTimeCode());
+				List<TimezoneUse> useTimezones = item.getPrescribedTimezoneSetting()
+						.getLstTimezone().stream().filter(timezone -> {
+							return timezone.getUseAtr().equals(UseSetting.USE);
+						}).collect(Collectors.toList());
 				// || this.checkNotUse(item)
 				if (currentWorkTime == null
-						|| item.getPrescribedTimezoneSetting().getLstTimezone().isEmpty()) {
+						|| useTimezones.isEmpty()) {
 					continue;
 				} else {
-					List<TimezoneUse> useTimezones = item.getPrescribedTimezoneSetting()
-							.getLstTimezone().stream().filter(timezone -> {
-								return timezone.getUseAtr().equals(UseSetting.USE);
-							}).collect(Collectors.toList());
 					TimezoneUse timezone1 = useTimezones.get(FIRST_ITEM);
 					TimezoneUse timezone2 = null;
 					// if have 2 timezone
