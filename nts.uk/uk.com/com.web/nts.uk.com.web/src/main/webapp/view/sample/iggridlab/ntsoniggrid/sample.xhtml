@@ -40,14 +40,22 @@
 					        ],
 					        rowsRendered: rowsRendered
 						}"></table>-->
-						<div style="width: 300px" data-bind="ntsSearchBox: { targetKey: 'id', mode: 'igGrid', comId: 'grid2', items: items, selectedKey: 'id', fields: ['id']}" />
-						<table id="grid2"></table>
-						<button id="run">Run</button>
-						<button id="update-row">updateRow</button>
-						<button id="enable-ctrl">Enable</button>
-						<button id="disable-ctrl">Disable</button>
-						<button id="disable-all">Disable All</button>
-						<button id="enable-all">Enable All</button>
+						
+						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
+							<div class="tab-content-1">
+								<table id="grid0"></table>
+							</div>
+							<div class="tab-content-2">
+								<div style="width: 300px" data-bind="ntsSearchBox: { targetKey: 'id', mode: 'igGrid', comId: 'grid2', items: items, selectedKey: 'id', fields: ['id']}" />
+								<table id="grid2"></table>
+								<button id="run">Run</button>
+								<button id="update-row">updateRow</button>
+								<button id="enable-ctrl">Enable</button>
+								<button id="disable-ctrl">Disable</button>
+								<button id="disable-all">Disable All</button>
+								<button id="enable-all">Enable All</button>
+							</div>
+						</div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>

@@ -574,6 +574,11 @@ public class DailyPerformanceCorrectionProcessor {
 								int hours = Math.abs(minute / 60); 
 								int minutes =  Math.abs(minute) % 60;
 								value = String.format("%d:%02d", minute >0 ? hours : 0-hours, minutes);
+								cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
+										String.valueOf(item.getAttendanceAtr()), "label"));
+							}else{
+								cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
+										String.valueOf(item.getAttendanceAtr()), "label"));
 							}
 						} else {
 							cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
