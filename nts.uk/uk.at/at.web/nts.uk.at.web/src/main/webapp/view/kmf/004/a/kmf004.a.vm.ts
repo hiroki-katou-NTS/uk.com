@@ -963,8 +963,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             constructor(param: IGrantRegularDto) {
                 this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
                 this.grantStartDate = ko.observable(param.grantStartDate || null); //TODO PENDING KIBAN FIX
-                this.months = ko.observable(param.months || 0);
-                this.years = ko.observable(param.years || 0);
+                this.months = ko.observable(param.months || null);
+                this.years = ko.observable(param.years || null);
                 this.grantRegularMethod = ko.observable(param.grantRegularMethod || 0);
 
 
@@ -1008,8 +1008,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             specialVacationMethod: KnockoutObservable<number>;
             constructor(param: ISphdLimitDto) {
                 this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
-                this.specialVacationMonths = ko.observable(param.specialVacationMonths || 0);
-                this.specialVacationYears = ko.observable(param.specialVacationYears || 0);
+                this.specialVacationMonths = ko.observable(param.specialVacationMonths || null);
+                this.specialVacationYears = ko.observable(param.specialVacationYears || null);
                 this.grantCarryForward = ko.observable(param.grantCarryForward || 0);
                 this.limitCarryoverDays = ko.observable(param.limitCarryoverDays || null);
                 this.specialVacationMethod = ko.observable(param.specialVacationMethod || 0);
@@ -1085,7 +1085,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             constructor(param: IGrantSingleDto) {
                 this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
                 this.grantDaySingleType = ko.observable(param.grantDaySingleType || 0);
-                this.fixNumberDays = ko.observable(param.fixNumberDays || 0);
+                this.fixNumberDays = ko.observable(param.fixNumberDays || null);
                 this.makeInvitation = ko.observable(param.makeInvitation || 0);
                 this.holidayExclusionAtr = ko.observable(param.holidayExclusionAtr || 0);
             };
