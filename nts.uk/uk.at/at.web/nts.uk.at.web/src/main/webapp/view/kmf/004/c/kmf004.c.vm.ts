@@ -226,12 +226,12 @@ module nts.uk.at.view.kmf004.c {
              */
             registerBtn(){
                 var self = this;
-                
+                nts.uk.ui.errors.clearAll();
                 var perSetData = [];
                 var index = 1;
                 
-                $(".nts-input").trigger("validate");
-                
+                $("#input-code").trigger("validate");
+                $("#input-name").trigger("validate");
                 if (self.selectedBaseDateId() === 0) {
                     if (self.standardDate() == null || self.standardDate() == "" || self.standardDate() == undefined) {
                         self.standardDateReq(true);
