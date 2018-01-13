@@ -533,13 +533,20 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 let dataRes: Array<any> = dataRes;
 //                nts.uk.ui.windows.setShared('KDL002_Multiple', false);
                 nts.uk.ui.windows.setShared('AllAttendanceObj', list);
-                nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.attendanceModel.attendanceItemId()], true);
+                if (self.attendanceModel.attendanceItemId() == null) {
+                    nts.uk.ui.windows.setShared('SelectedAttendanceId', [0], true);    
+                } else {
+                    nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.attendanceModel.attendanceItemId()], true);    
+                }
+                
                 nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml', { title: nts.uk.resource.getText('KDL021') }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
                     let atdSelected: Array<any> = nts.uk.ui.windows.getShared('selectedChildAttendace');
                     let dailyAttendanceItem: Array<DailyAttendanceItemDto> = _.filter(dataRes, function(obj){ return obj.attendanceItemId == atdSelected });
                     if (typeof dailyAttendanceItem[0] != 'undefined') {
                         self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);
+                    } else {
+                        self.attendanceModel.update(null, null);
                     }
                 });
             });
@@ -618,7 +625,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             if (self.selectUse() == SelectUseConst.Use && ( self.enableUnder() == true || self.enableUpper() == true) && _.isNumber(self.attendanceModel.attendanceItemId())) {
                 saveData.totalCondition.attendanceItemId(self.attendanceModel.attendanceItemId());
             } else {
-                saveData.totalCondition.attendanceItemId(1);
+                saveData.totalCondition.attendanceItemId(-1);
             }
         }
         
