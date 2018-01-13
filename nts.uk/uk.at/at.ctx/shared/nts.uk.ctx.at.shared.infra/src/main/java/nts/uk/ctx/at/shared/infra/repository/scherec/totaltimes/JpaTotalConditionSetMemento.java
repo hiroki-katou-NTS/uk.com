@@ -94,7 +94,7 @@ public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 	 */
 	@Override
 	public void setAttendanceItemId(Integer attendanceItemId) {
-		if (attendanceItemId.equals(-1)) {
+		if (attendanceItemId == null || attendanceItemId.equals(-1)) {
 			this.entity.setAttendanceItemId(null);
 		} else {
 			this.entity.setAttendanceItemId(attendanceItemId);
