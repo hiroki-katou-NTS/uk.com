@@ -59,6 +59,11 @@ public class TotalCondition {
 				&& thresoldUpperLimit.greaterThanOrEqualTo(thresoldLowerLimit)) {
 			throw new BusinessException("Msg_210");
 		}
+		
+		if (UseAtr.Use.equals(upperLimitSettingAtr) && UseAtr.Use.equals(lowerLimitSettingAtr)
+				&& this.atdItemId.equals(null)) {
+			throw new BusinessException("Msg_29");
+		}
 	}
 
 	/**
