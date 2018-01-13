@@ -5,7 +5,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
-import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -31,7 +31,7 @@ public class GoBackDirectly extends AggregateRoot {
 	/**
 	 * 就業時間帯
 	 */
-	private SiftCode siftCD;
+	private WorkTimeCode siftCD;
 	/**
 	 * 勤務を変更する
 	 */
@@ -83,7 +83,7 @@ public class GoBackDirectly extends AggregateRoot {
 		this.companyID = companyID;
 		this.appID = appID;
 		this.workTypeCD = new WorkTypeCode(workTypeCD);
-		this.siftCD = new SiftCode(siftCD);
+		this.siftCD = new WorkTimeCode(siftCD);
 		this.workChangeAtr = EnumAdaptor.valueOf(workChangeAtr, UseAtr.class);
 		this.goWorkAtr1 = EnumAdaptor.valueOf(goWorkAtr1, UseAtr.class);
 		this.backHomeAtr1 = EnumAdaptor.valueOf(backHomeAtr1, UseAtr.class);

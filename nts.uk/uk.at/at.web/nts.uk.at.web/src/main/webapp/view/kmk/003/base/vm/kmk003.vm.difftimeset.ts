@@ -343,7 +343,6 @@ module nts.uk.at.view.kmk003.a {
                 //TODO chua lam
                 public resetData(): void {
                     let self = this;
-                    self.workTimeCode('');
                     //self.restSet.resetData();
                     //self.dayoffWorkTimezone.resetData();
                     //self.commonSet.resetData();

@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
-import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -59,7 +59,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		appOverTime.setOverTimeAtr(EnumAdaptor.valueOf(command.getOvertimeAtr(), OverTimeAtr.class));
 		appOverTime.setOverTimeInput(overTimeInputs);
 		appOverTime.setOverTimeShiftNight(command.getOverTimeShiftNight());
-		appOverTime.setSiftCode(new SiftCode(command.getSiftTypeCode()));
+		appOverTime.setSiftCode(new WorkTimeCode(command.getSiftTypeCode()));
 		appOverTime.setWorkClockFrom1(command.getWorkClockFrom1());
 		appOverTime.setWorkClockFrom2(command.getWorkClockFrom2());
 		appOverTime.setWorkClockTo1(command.getWorkClockTo1());
