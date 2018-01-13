@@ -26,7 +26,7 @@ module nts.uk.ui.koExtentions {
             var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
             var enable: boolean = ko.unwrap(data.enable);
             var value = ko.unwrap(data.value);
-            var virtualization = false;
+            var virtualization = true;
             
             let rows = ko.unwrap(data.rows);
             $grid.data("init", true);

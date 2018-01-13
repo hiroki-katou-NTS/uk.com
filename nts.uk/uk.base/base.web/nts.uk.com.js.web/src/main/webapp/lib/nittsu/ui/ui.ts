@@ -916,7 +916,7 @@ module nts.uk.ui {
                 export function expose(targetRow: any, $grid: JQuery) {
                     
                     if (targetRow.index === undefined) {
-                        $grid.igGrid("virtualScrollTo", dataSource.getIndexOfKey(targetRow.id, $grid));
+                        $grid.igGrid("virtualScrollTo", dataSource.getIndexOfKey(targetRow.id, $grid) + 1);
                         return;
                     }
                     
@@ -933,7 +933,8 @@ module nts.uk.ui {
                         return;
                     }
                     
-                    $grid.igGrid("virtualScrollTo", targetRow.index);
+                    // when specify 1, top row will be shown.
+                    $grid.igGrid("virtualScrollTo", targetRow.index + 1);
                 }
             }
             

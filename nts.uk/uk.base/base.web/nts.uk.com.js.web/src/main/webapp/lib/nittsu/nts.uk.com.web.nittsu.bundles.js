@@ -4657,7 +4657,7 @@ var nts;
                         virtual.getLastVisibleRow = getLastVisibleRow;
                         function expose(targetRow, $grid) {
                             if (targetRow.index === undefined) {
-                                $grid.igGrid("virtualScrollTo", dataSource.getIndexOfKey(targetRow.id, $grid));
+                                $grid.igGrid("virtualScrollTo", dataSource.getIndexOfKey(targetRow.id, $grid) + 1);
                                 return;
                             }
                             var rowHeight = targetRow.element.outerHeight();
@@ -4670,7 +4670,7 @@ var nts;
                             if (viewTop <= targetTop && targetBottom <= viewBottom) {
                                 return;
                             }
-                            $grid.igGrid("virtualScrollTo", targetRow.index);
+                            $grid.igGrid("virtualScrollTo", targetRow.index + 1);
                         }
                         virtual.expose = expose;
                     })(virtual = grid.virtual || (grid.virtual = {}));
@@ -6904,7 +6904,7 @@ var nts;
                         var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
                         var enable = ko.unwrap(data.enable);
                         var value = ko.unwrap(data.value);
-                        var virtualization = false;
+                        var virtualization = true;
                         var rows = ko.unwrap(data.rows);
                         $grid.data("init", true);
                         if (data.multiple) {
