@@ -61,7 +61,7 @@ public class TotalCondition {
 		}
 		
 		if (UseAtr.Use.equals(upperLimitSettingAtr) && UseAtr.Use.equals(lowerLimitSettingAtr)
-				&& this.atdItemId.equals(null)) {
+				&& this.atdItemId == null) {
 			throw new BusinessException("Msg_29");
 		}
 	}
