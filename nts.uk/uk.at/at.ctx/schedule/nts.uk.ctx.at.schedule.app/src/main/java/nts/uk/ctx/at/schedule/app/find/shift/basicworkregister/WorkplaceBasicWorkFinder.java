@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.BasicWorkSettingFindDto;
 import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.WorkplaceBasicWorkFindDto;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
@@ -108,8 +109,8 @@ public class WorkplaceBasicWorkFinder {
 			}).findFirst().orElse(null);
 
 			// Set WorkingDisplayName
-			if (worktime == null) {
-				item.setWorkTypeDisplayName(TextResource.localize("KSM006_13"));
+			if (worktime == null && !StringUtil.isNullOrEmpty(item.getWorkingCode(), true)) {
+				item.setWorkingDisplayName(TextResource.localize("KSM006_13"));
 			} else {
 				item.setWorkingDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 			}
