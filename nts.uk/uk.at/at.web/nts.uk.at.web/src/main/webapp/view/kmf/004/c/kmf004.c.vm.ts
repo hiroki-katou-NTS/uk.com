@@ -235,6 +235,7 @@ module nts.uk.at.view.kmf004.c {
                     if (self.standardDate() == null || self.standardDate() == "" || self.standardDate() == undefined) {
                         self.standardDateReq(true);
                     }
+                    $("#standard-date-input").trigger("validate");
                 }
                 
                 if (nts.uk.ui.errors.hasError()) {

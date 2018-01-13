@@ -213,8 +213,9 @@ module nts.uk.at.view.kmf004 {
                     if (self.value() == null || self.value() == "" || self.value() == undefined) {
                         self.monthDaysReq(true);
                     }
+                    $("#month-day-input").trigger("validate");
                 }
-                
+                                
                 if (nts.uk.ui.errors.hasError()) {
                     return;    
                 }
