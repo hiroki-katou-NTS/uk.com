@@ -192,7 +192,7 @@ module nts.uk.ui.jqueryExtentions {
                 let menu = _.map(contextMenu, function(m){
                     let action = function (){
                         let element: JQuery = self.container.data("context-opening");
-                        m.action(element).done(function(result){
+                        m.action(element, element.parent().data("cell-data")).done(function(result){
                             element.trigger("contextmenufinished", result);    
                         });
                     }
@@ -271,20 +271,20 @@ module nts.uk.ui.jqueryExtentions {
                     if(!c.data("empty-cell")){
                         if(c.hasClass("ntsButtonCellSelected")){
                             c.removeClass("ntsButtonCellSelected");     
-                            self.container.trigger("cellselectedchanging", {column: -1, row: -1});
+                            self.container.trigger("cellselectedchanging", {column: -1, row: -1, data: c.parent().data("cell-data")});
                         } else {
                             self.container.find(".ntsButtonCellSelected").removeClass("ntsButtonCellSelected");
                             c.addClass("ntsButtonCellSelected");    
                             let oCell = c.parent();
-                            self.container.trigger("cellselectedchanging", {column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx"))}); 
+                            self.container.trigger("cellselectedchanging", {column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")), data: oCell.data("cell-data")}); 
                         }
                     } else{
                         let oldSelected = self.container.find(".ntsButtonCellSelected"); 
                         if(!nts.uk.util.isNullOrEmpty(oldSelected)){
                             let oCell = oldSelected.parent();
-                            self.container.trigger("cellselectedchanging", {column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx"))});    
+                            self.container.trigger("cellselectedchanging", {column: parseInt(oCell.attr("column-idx")), row: parseInt(oCell.attr("row-idx")), data: oCell.data("cell-data")});    
                         } else {
-                            self.container.trigger("cellselectedchanging", {column: -1, row: -1});
+                            self.container.trigger("cellselectedchanging", {column: -1, row: -1, data: null });
                         }
                     }
                 });

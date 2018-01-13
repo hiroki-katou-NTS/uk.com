@@ -13,7 +13,7 @@ __viewContext.ready(function() {
             self.itemList = ko.observableArray([
                 new ItemModel('1', '基本給'),
                 new ItemModel('2', '役職手当'),
-                new ItemModel('3', '基本給')
+                new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
             ]);
 
             self.selectedCode = ko.observable('1');

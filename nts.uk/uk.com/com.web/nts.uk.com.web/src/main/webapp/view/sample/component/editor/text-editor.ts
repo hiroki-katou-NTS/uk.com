@@ -38,6 +38,10 @@ __viewContext.ready(function () {
             var self = this;
             nts.uk.util.value.reset($("#text-1"), self.defaultvalue() !== '' ? self.defaultvalue() : undefined);
         }
+        
+        submit() {
+            nts.uk.ui.dialog.info("submit: " + this.value());
+        }
     }
 
     var viewmodel = new ScreenModel();

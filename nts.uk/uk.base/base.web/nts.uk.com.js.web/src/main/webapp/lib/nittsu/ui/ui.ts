@@ -25,10 +25,7 @@ module nts.uk.ui {
             autoOpen: false,
             draggable: true,
             resizable: false,
-            dialogClass: "no-close",
-            create: function(event) {
-                $(event.target).dialog('widget').css({ position: 'fixed' });
-            }
+            dialogClass: "no-close"
         };
 
 		/**
@@ -105,25 +102,28 @@ module nts.uk.ui {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
 
                     let dialogName = this.globalContext.__viewContext["program"]["programName"];
-                    let title = nts.uk.util.isNullOrEmpty(dialogName)　? toBeResource.unset : dialogName;
-//                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName; 
+                    let title = nts.uk.util.isNullOrEmpty(dialogName)　? "" : dialogName;
                 
                     this.$dialog.dialog('option', {
                         width: options.width || this.globalContext.dialogSize.width,
                         height: options.height || this.globalContext.dialogSize.height,
                         title: title,
                         resizable: options.resizable,
-                        position: {
-                            my: "center",
-                            at: "center",
-                            of: window,
-                            collision: "none"
-                        },
                         open: function() {
-                            if ($(this).parent().height() >= $(window).height()) {
-                                $(this).dialog("option", "position", { my: "center top", at: "center top", of: window, collision: "none" })
-                                $(this).parent().css("position", "absolute");
-                            }
+                            let $dialog = $(this);
+                            $dialog.closest(".ui-dialog").addClass("no-close-btn");
+                            
+                            $dialog.dialogPositionControl();
+                            
+//                            if ($(this).parent().height() >= $("#contents-area").height()) {
+//                                $(this).dialog("option", "position", {
+//                                    my: "center top",
+//                                    at: "center top",
+//                                    of: $("#contents-area"),
+//                                    collision: "none"
+//                                })
+//                                $(this).parent().css("position", "absolute");
+//                            }
 
                             var $dialogDocument = $(this).parent();
                             let $dialogContentDoc = $(this.lastElementChild.contentDocument);
@@ -258,6 +258,21 @@ module nts.uk.ui {
             }
 
             setShared(key: string, data: any, isRoot: boolean, persist?: boolean) {
+                var transferData;
+                
+                // Null or Undefined
+                if (util.isNullOrUndefined(data)) {
+                    transferData = data;
+                }
+                // Data or KO data
+                else if (!_.isFunction(data) || ko.isObservable(data)) {
+                    transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
+                }
+                // Callback function
+                else {
+                    transferData = data;
+                }
+
                 if (persist || isRoot) {
                     this.shared[key] = data;
                 } else {
@@ -421,6 +436,7 @@ module nts.uk.ui {
                         window.parent.$(event.target).remove();
                     }
                 });
+            $this.dialogPositionControl();
             //add header text if it has
             if (header && header.text) {
                 $this.dialog("option", "title", header.text);
@@ -705,7 +721,7 @@ module nts.uk.ui {
                     },
                     close: function(event) {
                     }
-                });
+                }).dialogPositionControl();
             }, 0);
             
             return {

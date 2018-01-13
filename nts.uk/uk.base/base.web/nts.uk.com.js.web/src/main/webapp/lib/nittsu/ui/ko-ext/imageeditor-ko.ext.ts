@@ -196,6 +196,7 @@ module nts.uk.ui.koExtentions {
                     if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
                         self.cropper.destroy();
                     }
+                    self.$root.data("original-img", image.src);
                     let option = {
                         viewMode: 1,
                         guides: false,

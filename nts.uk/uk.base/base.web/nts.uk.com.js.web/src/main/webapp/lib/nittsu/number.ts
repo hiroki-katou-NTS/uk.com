@@ -1,7 +1,7 @@
 ﻿module nts.uk.ntsNumber {
 
     function isInteger(value: any, option?: any) {
-        if (option !== undefined && option.groupseperator() !== undefined) {
+        if (option !== undefined && option.groupseperator !== undefined) {
             value = isInteger(value) ? value : text.replaceAll(value.toString(), option.groupseperator(), '');
         }
         return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));

@@ -150,7 +150,7 @@ module nts.uk.ui.jqueryExtentions {
                 if (column.ntsControl === ntsControls.LABEL) {
                     ntsControls.drawLabel($(self), column, cellFormatter);
                     columnControlTypes[column.key] = ntsControls.LABEL;
-                    return cellFormatter.format(column);
+                    return cellFormatter.format(column, true);
                 }
                 
                 var controlDef = _.find(options.ntsControls, function(ctl: any) {
@@ -198,6 +198,9 @@ module nts.uk.ui.jqueryExtentions {
                         showHeaderCheckbox: column.showHeaderCheckbox,
                         enable: isEnable
                     };
+                    if (!util.isNullOrUndefined(column.tabIndex)) {
+                        data.tabIndex = column.tabIndex;
+                    }
                     
                     let back;
                     if (back = bounceCombos[column.key]) {
@@ -246,6 +249,7 @@ module nts.uk.ui.jqueryExtentions {
             options.columns = columns;
             updating.addFeature(options);
             options.autoCommit = true;
+            options.tabIndex = -1;
             dist.query(options.ntsFeatures);
             // Decorate editor border
             events.onCellClick($(self));
@@ -349,6 +353,7 @@ module nts.uk.ui.jqueryExtentions {
                 if (feature.isEnable(options.ntsFeatures, feature.CELL_EDIT)) {
                     updateFeature.editMode = "cell";
                     updateFeature.editCellStarting = startEditCell;
+                    updateFeature.editCellStarted = editStarted;
                     updateFeature.editCellEnding = beforeFinishEditCell;
                 }
                 return updateFeature;
@@ -367,15 +372,46 @@ module nts.uk.ui.jqueryExtentions {
              * Edit cell
              */
             function startEditCell(evt: any, ui: any) {
+                let selectedCell = selection.getSelectedCell($(evt.target));
                 if (containsNtsControl($(evt.currentTarget)) || utils.isEnterKey(evt) || utils.isTabKey(evt)) {
                     if ($(evt.currentTarget).find("div[class*='nts-editor-container']").length > 0) return false;
-                    let selectedCell = selection.getSelectedCell($(evt.target));
                     if (util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target))) return;
                     $(evt.target).igGridSelection("selectCell", selectedCell.rowIndex, selectedCell.index,
                                     utils.isFixedColumnCell(selectedCell, utils.getVisibleColumnsMap($(evt.target))));
                     return false;
                 } else if (utils.disabled($(evt.currentTarget))) return false;
+                if (util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target))) return;
+                let $cell = $(selectedCell.element);
+                if ($cell.hasClass("currency-symbol")) $cell.removeClass("currency-symbol");
                 return true; 
+            }
+            
+            /**
+             * Edit started.
+             */
+            function editStarted(evt: any, ui: any) {
+                let $grid = $(ui.owner.element);
+                let valueType = validation.getValueType($grid, ui.columnKey);
+                if (valueType === "TimeWithDay" || valueType === "Clock") {
+                    let formatted;
+                    try {
+                        formatted = time.minutesBased.duration.create(
+                        time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes).text;
+                    } catch(e) { return; }
+                    setTimeout(function() {
+                        let $editor = $(ui.editor.find("input")[0]);
+                        $editor.val(formatted).select();
+                    }, 140);
+                } else if (valueType === "Currency") {
+                    let groupSeparator = validation.getGroupSeparator($grid, ui.columnKey) || ",";
+                    let value = text.replaceAll(ui.value, groupSeparator, "");
+                    setTimeout(function() {
+                        ui.editor.addClass("input-currency-symbol");
+                        let $editor = $(ui.editor.find("input")[0]);
+                        let numb = Number(value);
+                        $editor.val(isNaN(numb) ? value : numb).css("text-align", "right").select();
+                    }, 140);
+                }
             }
             
             /**
@@ -422,6 +458,8 @@ module nts.uk.ui.jqueryExtentions {
             function startEdit(evt: any, cell: any) {
                 let $targetGrid = fixedColumns.realGridOf($(evt.currentTarget));
                 if (!utils.updatable($targetGrid)) return;
+                let $cell = $(cell.element);
+                if ($cell.hasClass("currency-symbol")) $cell.removeClass("currency-symbol");
                 utils.startEdit($targetGrid, cell);
                 // Keep text contents if any, otherwise set input value
 //                if ($(cell.element).text().trim() !== "") evt.preventDefault();
@@ -474,7 +512,7 @@ module nts.uk.ui.jqueryExtentions {
                     return false;
                 }
                 
-                if (utils.isEditMode($grid) && (utils.isTabKey(evt) || utils.isEnterKey(evt))) {
+                if (utils.isEditMode($grid) && (utils.isTabKey(evt) || utils.isEnterKey(evt) || evt.keyCode === undefined)) {
                     let gridUpdate: any = $grid.data("igGridUpdating");
                     let origValues = gridUpdate._originalValues;
                     if (!util.isNullOrUndefined(origValues)) {
@@ -495,7 +533,10 @@ module nts.uk.ui.jqueryExtentions {
                 let $editorContainer = $(selectedCell.element).find(errors.EDITOR_SELECTOR);
                 if ($editorContainer.length > 0) $editorContainer.css(errors.NO_ERROR_STL);
                 
-                specialColumn.tryDo($grid, selectedCell, ui.value); 
+                specialColumn.tryDo($grid, selectedCell, ui.value);
+                if (ui.editor.hasClass("input-currency-symbol")) {
+                    $(selectedCell.element).addClass("currency-symbol");
+                }
                 return true;
             }
             
@@ -519,6 +560,14 @@ module nts.uk.ui.jqueryExtentions {
                 let autoCommit = grid.options.autoCommit;
                 let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
+                
+                let valueType = validation.getValueType($grid, columnKey);
+                if (valueType === "TimeWithDay" | valueType === "Clock") {
+                    try {
+                        cellValue = time.minutesBased.duration.create(
+                            time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).text;
+                    } catch(e) {}
+                }
                 grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                 let isControl = utils.isNtsControl($grid, columnKey);
                 if (!isControl || forceRender) renderCell($grid, rId, columnKey);
@@ -1662,7 +1711,8 @@ module nts.uk.ui.jqueryExtentions {
                             }
                         },
                         rendered: function() {
-                            container.igCombo("option", "tabIndex", -1);
+                            let tabIndex = !util.isNullOrUndefined(data.tabIndex) ? data.tabIndex : -1;
+                            container.igCombo("option", "tabIndex", tabIndex);
                         }
                     });
                     // Save init value
@@ -2116,7 +2166,9 @@ module nts.uk.ui.jqueryExtentions {
                                 copiedData = $comboBox.igCombo("text");
                             }
                         } else {
-                            copiedData = selectedCells[0].element.text();
+                            let $cell = selectedCells[0].element;
+                            let origVal = $cell.data(internal.CELL_ORIG_VAL);
+                            copiedData = !util.isNullOrUndefined(origVal) ? origVal : $cell.text();
                         }
                     } else {
                         this.copyMode = CopyMode.MULTIPLE;
@@ -2138,6 +2190,7 @@ module nts.uk.ui.jqueryExtentions {
                     let minColumn = 0;
                     let structure = [];
                     let structData: string = "";
+                    let $tdCell, origVal;
                     let checker = cut ? utils.isCuttableControls : utils.isCopiableControls;
                     _.forEach(cells, function(cell: any, index: number) {
                         let rowIndex = cell.rowIndex;
@@ -2160,7 +2213,9 @@ module nts.uk.ui.jqueryExtentions {
                                 structure[rowIndex][columnIndex] = $comboBox.igCombo("text");
                             }
                         } else {
-                            structure[rowIndex][columnIndex] = cell.element.text();
+                            $tdCell = cell.element;
+                            origVal = $tdCell.data(internal.CELL_ORIG_VAL);
+                            structure[rowIndex][columnIndex] = !util.isNullOrUndefined(origVal) ? origVal : $tdCell.text();
                         }
                     });
                     
@@ -2720,15 +2775,23 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 
                 probe(value: string) {
-                    let constraint = nts.uk.ui.validation.getConstraint(this.primitiveValue);
-                    switch (constraint.valueType) {
+                    let valueType = this.primitiveValue ? ui.validation.getConstraint(this.primitiveValue).valueType
+                                    : this.options.cDisplayType;
+                    switch (valueType) {
                         case "String":
                             return new nts.uk.ui.validation.StringValidator(this.name, this.primitiveValue, this.options)
                                     .validate(value, this.options);
                         case "Integer":
                         case "Decimal":
                         case "HalfInt":
-                            return new nts.uk.ui.validation.NumberValidator(this.name, this.primitiveValue, this.options)
+                            return new NumberValidator(this.name, valueType, this.primitiveValue, this.options) 
+                                   .validate(value);
+                        case "Currency":
+                            let opts: any = new ui.option.CurrencyEditorOption();
+                            opts.grouplength = this.options.groupLength | 3;
+                            opts.decimallength = this.options.decimalLength | 2;
+                            opts.currencyformat = this.options.currencyFormat ? this.options.currencyFormat : "JPY";
+                            return new NumberValidator(this.name, valueType, this.primitiveValue, opts)
                                     .validate(value);
                         case "Time":
                             this.options.mode = "time";
@@ -2738,7 +2801,82 @@ module nts.uk.ui.jqueryExtentions {
                             this.options.outputFormat = "time";
                             return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                     .validate(value);
+                        case "TimeWithDay":
+                            this.options.timeWithDay = true;
+                            let result = new ui.validation.TimeWithDayValidator(this.name, this.primitiveValue, this.options)
+                                            .validate(value);
+                            if (result.isValid) {
+                                let formatter = new text.TimeWithDayFormatter(this.options);
+                                result.parsedValue = formatter.format(result.parsedValue);
+                            }
+                            return result;
                     }
+                }
+            }
+            
+            class NumberValidator {
+                name: string;
+                displayType: string;
+                primitiveValue: string;s
+                options: any;
+                constructor(name: string, displayType: string, primitiveValue?: string, options?: any) {
+                    this.name = name;
+                    this.displayType = displayType;
+                    this.primitiveValue = primitiveValue;
+                    this.options = options;
+                }
+                
+                validate(text: string) {
+                    let self = this;
+                    if (self.primitiveValue) {
+                        return new nts.uk.ui.validation.NumberValidator(self.name, self.primitiveValue, self.options).validate(text);
+                    }
+                    
+                    if (self.displayType === "Currency") {
+                        text = uk.text.replaceAll(text, self.options.groupseperator, "");
+                    }
+                    
+                    let result = new ui.validation.ValidationResult();
+                    if ((util.isNullOrUndefined(text) || text.length === 0)) {
+                        if (self.options && self.options.required) {
+                            result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ self.name ]), 'FND_E_REQ_INPUT');
+                            return result;
+                        }
+                        if (!self.options || (self.options && !self.options.required)) {
+                            result.success(text);
+                            return result;
+                        }
+                    }
+                    let message: any = {};
+                    let isValid;
+                    if (self.displayType === "HalfInt") {
+                         isValid = ntsNumber.isHalfInt(text, message);
+                    } else if (self.displayType === "Integer") {
+                        isValid = ntsNumber.isNumber(text, false, self.options, message);
+                    } else if (self.displayType === "Decimal" || self.displayType === "Currency") {
+                        isValid = ntsNumber.isNumber(text, true, self.options, message);
+                    }
+                    
+                    let min = 0, max = 999999999;
+                    let value = parseFloat(text);
+                    if (!util.isNullOrUndefined(self.options.min)) {
+                        min = self.options.min;
+                        if (value < min) isValid = false;
+                    }
+                    if (!util.isNullOrUndefined(self.options.max)) {
+                        max = self.options.max;
+                        if (value > max) isValid = false;
+                    }
+                    
+                    if (!isValid) {
+                        result.fail(resource.getMessage(message.id, [ self.name, min, max ]), message.id);
+                        return result;
+                    }
+                    
+                    let formatter = new uk.text.NumberFormatter({ option: self.options });
+                    let formatted = formatter.format(text);
+                    result.success(self.displayType === "Currency" ? formatted : value + "");
+                    return result;
                 }
             }
             
@@ -2808,6 +2946,20 @@ module nts.uk.ui.jqueryExtentions {
                 let formatRes = uk.time.applyFormat(format, value, undefined);
                 if (!formatRes) return Result.invalid("NEED_MSG_INVALID_TIME_FORMAT");
                 return Result.OK(formatRes);
+            }
+            
+            export function getValueType($grid: JQuery, columnKey: any) {
+                let validators: any = $grid.data(validation.VALIDATORS);
+                if (!validators || !validators[columnKey]) return;
+                let column = validators[columnKey];
+                return column.primitiveValue ? ui.validation.getConstraint(column.primitiveValue).valueType
+                                    : column.options.cDisplayType
+            }
+            
+            export function getGroupSeparator($grid: JQuery, columnKey: any) {
+                let validators: any = $grid.data(validation.VALIDATORS);
+                if (!validators || !validators[columnKey]) return;
+                return validators[columnKey].options.groupseperator;
             }
         }
         
@@ -3003,7 +3155,7 @@ module nts.uk.ui.jqueryExtentions {
                 /**
                  * Format textbox.
                  */
-                format(column: any) {
+                format(column: any, notTb?: boolean) {
                     var self = this;
                     if (util.isNullOrUndefined(this.cellStateFeatureDef) 
                         || column.formatter !== undefined) return column;
@@ -3013,10 +3165,40 @@ module nts.uk.ui.jqueryExtentions {
                     let statesTable: any = this.cellStateFeatureDef.states;
                     
                     column.formatter = function(value, rowObj) {
-                        if (util.isNullOrUndefined(rowObj)) return value;
+                        if (uk.util.isNullOrUndefined(rowObj)) return value;
+                        let origValue = value;
+                        if (!notTb && column.constraint) {
+                            let constraint = column.constraint;
+                            let valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
+                                        : constraint.cDisplayType;
+                            if (valueType === "TimeWithDay") {
+                                if (uk.util.isNullOrUndefined(value)) return value;
+                                let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                let timeOpts = { timeWithDay: true };
+                                let formatter = new text.TimeWithDayFormatter(timeOpts);
+                                value = formatter.format(minutes);
+                            } else if (valueType === "Clock") {
+                                if (util.isNullOrUndefined(value)) return value;
+                                let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                let timeOpts = { timeWithDay: false };
+                                let formatter = new text.TimeWithDayFormatter(timeOpts);
+                                value = formatter.format(minutes);
+                            } else if (valueType === "Currency") {
+                                if (uk.util.isNullOrUndefined(value)) return value; 
+                                let currencyOpts: any = new ui.option.CurrencyEditorOption();
+                                currencyOpts.grouplength = constraint.groupLength | 3;
+                                currencyOpts.decimallength = constraint.decimalLength | 2;
+                                currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
+                                let groupSeparator = constraint.groupSeparator || ",";
+                                let rawValue = text.replaceAll(value, groupSeparator, "");
+                                let formatter = new uk.text.NumberFormatter({ option: currencyOpts });
+                                value = formatter.format(Number(rawValue));
+                            }
+                        }
                         var _self = self;
                         setTimeout(function() {
                             let $gridCell = self.$grid.igGrid("cellById", rowObj[self.$grid.igGrid("option", "primaryKey")], column.key);
+                            $gridCell.data(internal.CELL_ORIG_VAL, origValue);
                             if (!$gridCell) return;
                             let $tr = $gridCell.closest("tr");
                             let cell = {
@@ -3662,6 +3844,7 @@ module nts.uk.ui.jqueryExtentions {
             export let ERRORS_LOG = "ntsErrorsLog";
             export let LOADER = "ntsLoader";
             export let TXT_RAW = "rawText";
+            export let CELL_ORIG_VAL = "_origValue";
         }
         
         module utils {
@@ -3676,7 +3859,8 @@ module nts.uk.ui.jqueryExtentions {
                 return evt.keyCode === 39;
             }
             export function isAlphaNumeric(evt: any) {
-                return evt.keyCode >= 48 && evt.keyCode <= 90;
+                return (evt.keyCode >= 48 && evt.keyCode <= 90) 
+                        || (evt.keyCode >= 96 && evt.keyCode <= 105);
             }
             export function isTabKey(evt: any) {
                 return evt.keyCode === 9;
@@ -4037,6 +4221,7 @@ module nts.uk.ui.jqueryExtentions {
             
             export function setChildrenTabIndex($grid: JQuery, index: number) {
                 let container = $grid.igGrid("container");
+                $(container).attr("tabindex", 0);
                 $(container).find("tr, th, td").attr("tabindex", index);
             }
         }

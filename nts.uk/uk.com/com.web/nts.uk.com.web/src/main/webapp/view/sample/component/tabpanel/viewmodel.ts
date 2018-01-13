@@ -3,6 +3,8 @@ module nts.uk.ui.tabpanel.viewmodel {
 	export class ScreenModel {
 		tabs: KnockoutObservableArray<NtsTabPanelModel>;
 		selectedTab: KnockoutObservable<string>;
+        tabs2: KnockoutObservableArray<NtsTabPanelModel>;
+        selectedTab2: KnockoutObservable<string>;
 		
 		items: KnockoutObservableArray<ItemModel>;
 		columns: KnockoutObservableArray<NtsGridListColumn>;
@@ -18,6 +20,14 @@ module nts.uk.ui.tabpanel.viewmodel {
 				{id: 'tab-4', title: 'Tab Title 4', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true)}
 			]);
 			self.selectedTab = ko.observable('tab-1');
+            
+            self.tabs2 = ko.observableArray([
+                {id: 'x-tab-1', title: 'Tab Title 1', content: '.x-tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
+                {id: 'x-tab-2', title: 'Tab Title 2', content: '.x-tab-content-2', enable: ko.observable(true), visible: ko.observable(true)},
+                {id: 'x-tab-3', title: 'Tab Title 3', content: '.x-tab-content-3', enable: ko.observable(true), visible: ko.observable(true)},
+                {id: 'x-tab-4', title: 'Tab Title 4', content: '.x-tab-content-4', enable: ko.observable(true), visible: ko.observable(true)}
+            ]);
+            self.selectedTab2 = ko.observable('x-tab-1');
 			
 			self.items = ko.observableArray([]);
 			for(let i = 1; i < 5; i++) {

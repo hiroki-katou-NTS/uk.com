@@ -30,7 +30,7 @@ module nts.uk.ui.errors {
         errors: KnockoutObservableArray<ErrorListItem>;
         gridErrors: KnockoutObservableArray<GridCellError>;
         displayErrors: KnockoutObservableArray<any>;
-        option: any;
+        option: KnockoutObservable<any>;
         occurs: KnockoutComputed<boolean>;
         allResolved: JQueryCallback;
         allCellsResolved: JQueryCallback;
@@ -41,12 +41,12 @@ module nts.uk.ui.errors {
             this.errors.extend({ rateLimit: 1 });
             this.gridErrors = ko.observableArray([]);
             this.displayErrors = !util.isNullOrUndefined(dialogOptions) && dialogOptions.forGrid ? this.gridErrors : this.errors;
-            this.option = ko.mapping.fromJS(new option.ErrorDialogOption(dialogOptions));
+            this.option = ko.observable(ko.mapping.fromJS(new option.ErrorDialogOption(dialogOptions)));
             this.occurs = ko.computed(() => this.errors().length !== 0 || this.gridErrors().length !== 0);
             this.allResolved = $.Callbacks();
             this.allCellsResolved = $.Callbacks();
 
-             this.option.show.extend({notify:"always"});
+             this.option().show.extend({notify:"always"});
             
             this.errors.subscribe(() => {
                 if (this.errors().length === 0) {
@@ -71,15 +71,15 @@ module nts.uk.ui.errors {
         }
         
         closeButtonClicked() {
-             this.option.show(false);
+             this.option().show(false);
         }
 
         open() {
-            this.option.show(true);
+            this.option().show(true);
         }
 
         hide() {
-            this.option.show(false);
+            this.option().show(false);
         }
 
         addError(error: ErrorListItem) {
@@ -164,6 +164,70 @@ module nts.uk.ui.errors {
             if (one.rowId !== other.rowId) return false;
             if (one.columnKey !== other.columnKey) return false;
             return true;
+        }
+        
+        stashMemento(): ErrorViewModelMemento {
+            let memento = new ErrorViewModelMemento();
+            memento.setErrors(ko.unwrap(this.errors));
+            memento.setGridErrors(ko.unwrap(this.gridErrors));
+            memento.option = ko.unwrap(this.option);
+            memento.allResolved = this.allResolved;
+            memento.allCellsResolved = this.allCellsResolved;
+            
+            memento.setErrorElements();
+            
+            this.clearError();
+            
+            return memento;
+        }
+        
+        restoreFrom(memento: ErrorViewModelMemento) {
+            this.errors(memento.errors);
+            this.gridErrors(memento.gridErrors);
+            this.option(memento.option);
+            this.allResolved = memento.allResolved;
+            this.allCellsResolved = memento.allCellsResolved;
+            memento.restoreErrorElements();
+        }
+    }
+    
+    export class ErrorViewModelMemento {
+        
+        errors: ErrorListItem[];
+        gridErrors: GridCellError[];
+        option: any;
+        allResolved: JQueryCallback;
+        allCellsResolved: JQueryCallback;
+        errorElements: JQuery[];
+        
+        setErrors(errors: ErrorListItem[]) {
+            if (!_.isArray(errors)) {
+                return;
+            }
+            
+            this.errors = [];
+            errors.forEach(e => {
+                this.errors.push(e);
+            });
+        }
+        
+        setGridErrors(gridErrors: GridCellError[]) {
+            if (!_.isArray(gridErrors)) {
+                return;
+            }
+            
+            this.gridErrors = [];
+            gridErrors.forEach(e => {
+                this.gridErrors.push(e);
+            });
+        }
+        
+        setErrorElements() {
+            this.errorElements = $(".error").removeClass("error");
+        }
+
+        restoreErrorElements() {
+            this.errorElements.addClass("error");
         }
     }
 

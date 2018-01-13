@@ -37,6 +37,7 @@ module nts.uk.ui.koExtentions {
             
             $(element).bind("cellselectedchanging", function(evt, value){
                 if(!nts.uk.util.isNullOrUndefined(data.selectedCell)){
+                    $(element).data("o-selected", _.cloneDeep(value));
                     data.selectedCell(value);
                 }
             });
@@ -68,9 +69,10 @@ module nts.uk.ui.koExtentions {
             container.ntsButtonTable("column", column);
             
             if(!nts.uk.util.isNullOrUndefined(selectedCell) && !nts.uk.util.isNullOrUndefined(selectedCell.column) 
-                && !nts.uk.util.isNullOrUndefined(selectedCell.row)){
+                && !nts.uk.util.isNullOrUndefined(selectedCell.row) && !_.isEqual(container.data("o-selected"), selectedCell)){
                 container.ntsButtonTable("setSelectedCell", selectedCell.row, selectedCell.column);
             }
+            container.data("o-selected", _.cloneDeep(selectedCell));
         }
     }
     

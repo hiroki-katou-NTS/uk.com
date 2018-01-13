@@ -155,7 +155,7 @@ module nts.uk.request {
     }
 
     export function ajax(path: string, data?: any, options?: any);
-    export function ajax(webAppId: WebAppId, path: string, data?: any, options?: any) {
+    export function ajax(webAppId: WebAppId, path: string, data?: any, options?: any, restoresSession?: boolean) {
 
         if (typeof arguments[1] !== 'string') {
             return ajax.apply(null, _.concat(location.currentAppId, arguments));
@@ -163,6 +163,8 @@ module nts.uk.request {
 
         var dfd = $.Deferred();
         options = options || {};
+        
+        restoresSession = restoresSession !== false;
 
         if (typeof data === 'object') {
             data = JSON.stringify(data);
@@ -172,27 +174,35 @@ module nts.uk.request {
             .mergeRelativePath(WEB_APP_NAME[webAppId] + '/')
             .mergeRelativePath(location.ajaxRootDir)
             .mergeRelativePath(path);
-
-        $.ajax({
-            type: options.method || 'POST',
-            contentType: options.contentType || 'application/json',
-            url: webserviceLocator.serialize(),
-            dataType: options.dataType || 'json',
-            data: data,
-            headers: {
-                'PG-Path': location.current.serialize()
-            }
-        }).done(function(res) {
-            if (nts.uk.util.exception.isErrorToReject(res)) {
-                dfd.reject(res);
-            } else if (res !== undefined && res.commandResult === true) {
-                dfd.resolve(res.value);
-            } else {
-                dfd.resolve(res);
-            }
-        }).fail(function () {
-            specials.errorPages.systemError();
-        });
+        
+        function ajaxFunc() {
+            $.ajax({
+                type: options.method || 'POST',
+                contentType: options.contentType || 'application/json',
+                url: webserviceLocator.serialize(),
+                dataType: options.dataType || 'json',
+                data: data,
+                headers: {
+                    'PG-Path': location.current.serialize()
+                }
+            }).done(function(res) {
+                if (nts.uk.util.exception.isErrorToReject(res)) {
+                    dfd.reject(res);
+                } else if (res !== undefined && res.commandResult === true) {
+                    dfd.resolve(res.value);
+                } else {
+                    dfd.resolve(res);
+                }
+            }).fail(function () {
+                specials.errorPages.systemError();
+            });
+        }
+        
+        if (restoresSession && webAppId != nts.uk.request.location.currentAppId) {
+            doTaskShareingSesion(webAppId, ajaxFunc);
+        } else {
+            ajaxFunc();
+        }
 
         return dfd.promise();
     }
@@ -215,31 +225,49 @@ module nts.uk.request {
             .mergeRelativePath(location.ajaxRootDir)
             .mergeRelativePath(path);
 
-        $.ajax({
-            type: options.method || 'POST',
-            contentType: options.contentType || 'application/json',
-            url: webserviceLocator.serialize(),
-            dataType: options.dataType || 'json',
-            data: data,
-            async: false,
-            headers: {
-                'PG-Path': location.current.serialize()
-            },
-            success: function(res) {
-                if (nts.uk.util.exception.isErrorToReject(res)) {
-                    dfd.reject(res);
-                } else if (res !== undefined && res.commandResult === true) {
-                    dfd.resolve(res.value);
-                } else {
-                    dfd.resolve(res);
+        function ajaxFunc() {
+            $.ajax({
+                type: options.method || 'POST',
+                contentType: options.contentType || 'application/json',
+                url: webserviceLocator.serialize(),
+                dataType: options.dataType || 'json',
+                data: data,
+                async: false,
+                headers: {
+                    'PG-Path': location.current.serialize()
+                },
+                success: function(res) {
+                    if (nts.uk.util.exception.isErrorToReject(res)) {
+                        dfd.reject(res);
+                    } else if (res !== undefined && res.commandResult === true) {
+                        dfd.resolve(res.value);
+                    } else {
+                        dfd.resolve(res);
+                    }
+                },
+                error: function(xhr,status, error) {
+                    specials.errorPages.systemError();
                 }
-            },
-            error: function(xhr,status, error) {
-                specials.errorPages.systemError();
-            }
-        });
+            });
+        }
+        
+        if (webAppId != nts.uk.request.location.currentAppId) {
+            doTaskShareingSesion(webAppId, ajaxFunc);
+        } else {
+            ajaxFunc();
+        }
 
         return dfd.promise();
+    }
+    
+    function doTaskShareingSesion(webAppId: WebAppId, task: () => void) {
+         login.keepSerializedSession()
+            .then(() => {
+                return login.restoreSessionTo(webAppId);
+            })
+            .then(() => {
+                task();
+            });
     }
 	
     export function uploadFile(data: FormData, option?: any): JQueryPromise<any> {
@@ -312,16 +340,12 @@ module nts.uk.request {
             ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId);
         }
     }
-
-    export module specials {
-
-        export function getAsyncTaskInfo(taskId: string) {
-            return asyncTask.getInfo(taskId);
-        }
-
-        export function donwloadFile(fileId: string) {
+    
+    export module file {
+        
+        export function donwload(fileId: string) {
             var dfd = $.Deferred();
-            $.fileDownload(resolvePath('/webapi/shr/infra/file/storage/get/' + fileId), {
+            $.fileDownload(pathToGet(fileId), {
                 successCallback: function(url) {
                     dfd.resolve();
                 },
@@ -331,15 +355,39 @@ module nts.uk.request {
                     dfd.reject(error);
                 }
             });
+            
             return dfd.promise();
         }
         
-        export function deleteFile(fileId: string) {
+        export function remove(fileId: string) {
             return ajax("com", "/shr/infra/file/storage/delete/" + fileId);
         }
         
-        export function isFileExist(fileId: string): boolean {
+        export function isExist(fileId: string): boolean {
             return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
+        }
+        
+        export function pathToGet(fileId: string) {
+            return resolvePath('/webapi/shr/infra/file/storage/get/' + fileId);
+        }
+    }
+
+    export module specials {
+
+        export function getAsyncTaskInfo(taskId: string) {
+            return asyncTask.getInfo(taskId);
+        }
+
+        export function donwloadFile(fileId: string) {
+            return file.donwload(fileId);
+        }
+        
+        export function deleteFile(fileId: string) {
+            return file.remove(fileId);
+        }
+        
+        export function isFileExist(fileId: string): boolean {
+            return file.isExist(fileId);
         }
         
         export module errorPages {
@@ -357,25 +405,55 @@ module nts.uk.request {
 
 
     export function jump(path: string, data?: any);
-    export function jump(webAppId: WebAppId, path: string, data?: any): string {
+    export function jump(webAppId: WebAppId, path: string, data?: any) {
+        
+        uk.ui.block.invisible();
+        
+        // handle overload
         if (typeof arguments[1] !== 'string') {
-            return jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+            jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+            return;
         }
-        if(webAppId==nts.uk.request.location.currentAppId){
-            path = resolvePath(path);
-        }else{
-            path = nts.uk.request.location.siteRoot
-            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-            .mergeRelativePath(path).serialize();
+        
+        if (webAppId != nts.uk.request.location.currentAppId) {
+            jumpToOtherWebApp.apply(this, arguments);
+            return;
         }
-        uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
+        
+        if (data === undefined) {
+            uk.sessionStorage.removeItem(STORAGE_KEY_TRANSFER_DATA)
+        } else {
+            uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
+        }
 
-        window.location.href = path;
+        window.location.href = resolvePath(path);
+    }
+    
+    function jumpToOtherWebApp(webAppId: WebAppId, path: string, data?: any) {
+        
+        let resolvedPath = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                .mergeRelativePath(path).serialize();
+        
+        if (data === undefined) {
+            uk.sessionStorage.removeItem(STORAGE_KEY_TRANSFER_DATA)
+        } else {
+            uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
+        }
+        
+        login.keepSerializedSession()
+            .then(() => {
+                return login.restoreSessionTo(webAppId);
+            })
+            .then(() => {
+                window.location.href = resolvedPath;
+            });
     }
     
     export module login {
         
-        var STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
+        let STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
+        let STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
         
         export function keepUsedLoginPage() {
             uk.sessionStorage.setItem(STORAGE_KEY_USED_LOGIN_PAGE, location.current.serialize());
@@ -385,8 +463,23 @@ module nts.uk.request {
             uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(path => {
                 window.location.href = path;
             }).ifEmpty(() => {
-                request.jump('/view/ccg007/a/index.xhtml');
+                request.jump('/view/ccg/007/b/index.xhtml');
             });
+        }
+        
+        export function keepSerializedSession() {
+            let dfd = $.Deferred();
+            request.ajax("/shr/web/session/serialize").done(res => {
+                uk.sessionStorage.setItem(STORAGE_KEY_SERIALIZED_SESSION, res);
+                dfd.resolve();
+            });
+            
+            return dfd.promise();
+        }
+        
+        export function restoreSessionTo(webAppId: WebAppId) {
+            let serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
+            return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
         }
     }
 

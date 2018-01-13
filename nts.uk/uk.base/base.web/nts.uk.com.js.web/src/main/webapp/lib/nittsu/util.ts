@@ -2,6 +2,7 @@
 
     export module KeyCodes {
         export const Tab = 9;
+        export const Enter = 13;
     }
 
     export module util {
@@ -192,10 +193,10 @@
                     case 'Decimal':
                     case 'Integer':
                     case 'Date':
-                    case 'Duration':
                     case 'Time':
-                    case 'Clock ':
-                    case 'TimePoint ':
+                    case 'Clock':
+                    case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
+                    case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
                         constraintText += (constraintText.length > 0) ? "/" : "";
                         constraintText += constraint.min + "～" + constraint.max; 
                         break;
