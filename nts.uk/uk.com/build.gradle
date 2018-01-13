@@ -875,12 +875,12 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pub', version: '0.4'
 		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pubimp', version: '0.4'
 		
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.ac', version: '0.4.23'
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: '0.4.23'
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: '0.4.23'
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: '0.4.23'
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: '0.4.23'
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: '0.4.23'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.ac', version: '0.4.24'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: '0.4.24'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: '0.4.24'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: '0.4.24'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: '0.4.24'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: '0.4.24'
 		
 		// shr find implement
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'
