@@ -325,7 +325,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     specialHoliday.subCondition.limitAgeTo = null;
                     specialHoliday.subCondition.limitAgeFrom = null;
                 }
-
+                
+                // set default value for tab 2
+                self.setDefaultValueTab2(specialHoliday);
+                // set default value for tab 3
+                self.setDefaultValueSphdLimit(specialHoliday);
+                
                 specialHoliday.grantSingle = null;
                 if (specialHoliday.grantRegular.grantStartDate) {
                     specialHoliday.grantRegular.grantStartDate = new Date(specialHoliday.grantRegular.grantStartDate);
