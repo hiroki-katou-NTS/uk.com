@@ -109,7 +109,7 @@ public class WorkplaceBasicWorkFinder {
 
 			// Set WorkingDisplayName
 			if (worktime == null) {
-				item.setWorkTypeDisplayName(TextResource.localize("KSM006_13"));
+				item.setWorkingDisplayName(TextResource.localize("KSM006_13"));
 			} else {
 				item.setWorkingDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 			}

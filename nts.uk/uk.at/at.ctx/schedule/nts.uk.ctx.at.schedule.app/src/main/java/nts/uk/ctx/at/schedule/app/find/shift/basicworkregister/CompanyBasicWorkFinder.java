@@ -89,12 +89,7 @@ public class CompanyBasicWorkFinder {
 		}).distinct().filter(a -> {
 			return a.length() > 0;
 		}).collect(Collectors.toList());
-		
-		
-		
-		
-		
-		
+
 		// Find WorkTime
 		List<WorkTimeSetting> workingList = this.worktimeRepo.findByCodes(companyId, workingCodeList);
 
