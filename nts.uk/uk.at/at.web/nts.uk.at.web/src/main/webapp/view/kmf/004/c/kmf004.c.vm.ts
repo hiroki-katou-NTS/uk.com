@@ -96,6 +96,7 @@ module nts.uk.at.view.kmf004.c {
                         self.standardDateEnable(false);
                         self.standardDateReq(false);
                         self.standardDate("");
+                        $("#standard-date-input").ntsError("clear");
                     }
                 }); 
                 
