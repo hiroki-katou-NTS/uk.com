@@ -103,6 +103,7 @@ module nts.uk.ui {
 
                     let dialogName = this.globalContext.__viewContext["program"]["programName"];
                     let title = nts.uk.util.isNullOrEmpty(dialogName)　? "" : dialogName;
+                    let showCloseButton = this.globalContext.dialogCloseButton === true;
                 
                     this.$dialog.dialog('option', {
                         width: options.width || this.globalContext.dialogSize.width,
@@ -111,7 +112,9 @@ module nts.uk.ui {
                         resizable: options.resizable,
                         open: function() {
                             let $dialog = $(this);
-                            $dialog.closest(".ui-dialog").addClass("no-close-btn");
+                            if (!showCloseButton) {
+                                $dialog.closest(".ui-dialog").addClass("no-close-btn");
+                            }
                             
                             $dialog.dialogPositionControl();
                             
@@ -289,6 +292,9 @@ module nts.uk.ui {
 
         export var selfId: string;
         export var container: ScreenWindowContainer;
+        export function rgc() {
+            return container.windows[MAIN_WINDOW_ID].globalContext;
+        }
 
         if (util.isInFrame()) {
             var parent: any = window.parent;

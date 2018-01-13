@@ -2890,6 +2890,11 @@ var nts;
                 var errorPages;
                 (function (errorPages) {
                     function systemError() {
+                        if ($(".nts-system-error-dialog").length !== 0) {
+                            return;
+                        }
+                        var sub = uk.ui.windows.sub.modal("com", "/view/common/error/system/index.xhtml");
+                        sub.$dialog.addClass("nts-system-error-dialog");
                     }
                     errorPages.systemError = systemError;
                     function sessionTimeout() {
@@ -3971,7 +3976,8 @@ var nts;
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
                             var dialogName = _this.globalContext.__viewContext["program"]["programName"];
-                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? toBeResource.unset : dialogName;
+                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "" : dialogName;
+                            var showCloseButton = _this.globalContext.dialogCloseButton === true;
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
@@ -3979,7 +3985,9 @@ var nts;
                                 resizable: options.resizable,
                                 open: function () {
                                     var $dialog = $(this);
-                                    $dialog.closest(".ui-dialog").addClass("no-close-btn");
+                                    if (!showCloseButton) {
+                                        $dialog.closest(".ui-dialog").addClass("no-close-btn");
+                                    }
                                     $dialog.dialogPositionControl();
                                     var $dialogDocument = $(this).parent();
                                     var $dialogContentDoc = $(this.lastElementChild.contentDocument);
@@ -4110,6 +4118,10 @@ var nts;
                     return ScreenWindowContainer;
                 }());
                 windows.ScreenWindowContainer = ScreenWindowContainer;
+                function rgc() {
+                    return windows.container.windows[MAIN_WINDOW_ID].globalContext;
+                }
+                windows.rgc = rgc;
                 if (uk.util.isInFrame()) {
                     var parent = window.parent;
                     windows.container = (parent.nts.uk.ui.windows.container);
