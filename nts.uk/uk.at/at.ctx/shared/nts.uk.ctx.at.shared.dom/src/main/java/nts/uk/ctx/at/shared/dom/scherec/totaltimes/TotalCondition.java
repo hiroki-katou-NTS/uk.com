@@ -60,9 +60,9 @@ public class TotalCondition {
 			throw new BusinessException("Msg_210");
 		}
 		
-		if (UseAtr.Use.equals(upperLimitSettingAtr) && UseAtr.Use.equals(lowerLimitSettingAtr)
+		if ((UseAtr.Use.equals(upperLimitSettingAtr) || UseAtr.Use.equals(lowerLimitSettingAtr)) 
 				&& this.atdItemId == null) {
-			throw new BusinessException("Msg_29");
+			throw new BusinessException("Msg_362");
 		}
 	}
 
