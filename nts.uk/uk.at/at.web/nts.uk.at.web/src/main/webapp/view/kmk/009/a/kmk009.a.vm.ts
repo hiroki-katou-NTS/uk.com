@@ -415,7 +415,16 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
             // Get data to save
             self.getSaveData();
-
+            if (!self.itemTotalTimesDetail.workTypeInfo() && self.enableWorkType()) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_10' });
+                nts.uk.ui.block.clear();
+                return;
+            }
+            if (!self.itemTotalTimesDetail.workingInfo() && self.enableWorkTime()) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_29' });
+                nts.uk.ui.block.clear();
+                return;
+            }
             service.saveAllTotalTimes(self.itemTotalTimesDetail.toDto()).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     // Focus grid list

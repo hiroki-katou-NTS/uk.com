@@ -67,7 +67,10 @@ public class TotalTimes extends AggregateRoot {
 		this.totalCondition = memento.getTotalCondition();
 		this.totalSubjects = memento.getTotalSubjects();
 
-		// Validate
+		// Validate.
+		if (this.useAtr == UseAtr.NotUse) {
+			return;
+		}
 		if (CollectionUtil.isEmpty(this.totalSubjects)) {
 			throw new BusinessException("Msg_216", "KMK009_8");
 		} else {

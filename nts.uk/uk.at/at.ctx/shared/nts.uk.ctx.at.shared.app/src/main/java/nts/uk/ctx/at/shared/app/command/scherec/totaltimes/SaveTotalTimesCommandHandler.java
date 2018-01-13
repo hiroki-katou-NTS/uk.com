@@ -84,23 +84,23 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
 	 *            the total time
 	 */
 	private void validTotalSubject(String companyId, TotalTimes totalTime) {
-		totalTime.getTotalSubjects().stream()
-				.filter(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKTYPE))
-				.forEach(item -> {
-					if (!workTypeRepository.findByPK(companyId, item.getWorkTypeCode().v())
-							.isPresent()) {
-						throw new BusinessException("Msg_216", "KMK009_8");
-					}
-				});
-
-		totalTime.getTotalSubjects().stream()
-				.filter(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKINGTIME))
-				.forEach(item -> {
-					if (!workTimeSettingRepository.findByCode(companyId, item.getWorkTypeCode().v())
-							.isPresent()) {
-						throw new BusinessException("Msg_216", "KMK009_9");
-					}
-				});
+//		totalTime.getTotalSubjects().stream()
+//				.filter(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKTYPE))
+//				.forEach(item -> {
+//					if (!workTypeRepository.findByPK(companyId, item.getWorkTypeCode().v())
+//							.isPresent()) {
+//						throw new BusinessException("Msg_216", "KMK009_8");
+//					}
+//				});
+//
+//		totalTime.getTotalSubjects().stream()
+//				.filter(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKINGTIME))
+//				.forEach(item -> {
+//					if (!workTimeSettingRepository.findByCode(companyId, item.getWorkTypeCode().v())
+//							.isPresent()) {
+//						throw new BusinessException("Msg_216", "KMK009_9");
+//					}
+//				});
 	}
 
 	/**
