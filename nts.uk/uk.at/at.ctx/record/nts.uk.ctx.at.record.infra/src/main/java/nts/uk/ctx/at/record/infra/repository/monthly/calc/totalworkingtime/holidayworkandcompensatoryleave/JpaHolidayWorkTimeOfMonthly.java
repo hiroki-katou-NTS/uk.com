@@ -4,10 +4,10 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.HolidayWorkTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.HolidayWorkTimeOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtMonHdwkTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonHdwkTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 
 /**
@@ -43,10 +43,10 @@ public class JpaHolidayWorkTimeOfMonthly extends JpaRepository implements Holida
 		
 		KrcdtMonHdwkTime entity = this.queryProxy().find(key, KrcdtMonHdwkTime.class).get();
 		entity.totalHolidayWorkTime = holidayWorkTimeOfMonthly.getTotalHolidayWorkTime().getTime().v();
-		entity.calcTotalHolidayWorkTime = holidayWorkTimeOfMonthly.getTotalHolidayWorkTime().getCalculationTime().v();
+		entity.calcTotalHolidayWorkTime = holidayWorkTimeOfMonthly.getTotalHolidayWorkTime().getCalcTime().v();
 		entity.beforeHolidayWorkTime = holidayWorkTimeOfMonthly.getBeforeHolidayWorkTime().v();
 		entity.totalTransferTime = holidayWorkTimeOfMonthly.getTotalTransferTime().getTime().v();
-		entity.calcTotalTransferTime = holidayWorkTimeOfMonthly.getTotalTransferTime().getCalculationTime().v();
+		entity.calcTotalTransferTime = holidayWorkTimeOfMonthly.getTotalTransferTime().getCalcTime().v();
 		this.commandProxy().update(entity);
 	}
 	
@@ -73,10 +73,10 @@ public class JpaHolidayWorkTimeOfMonthly extends JpaRepository implements Holida
 		KrcdtMonHdwkTime entity = new KrcdtMonHdwkTime();
 		entity.PK = key;
 		entity.totalHolidayWorkTime = holidayWorkTimeOfMonthly.getTotalHolidayWorkTime().getTime().v();
-		entity.calcTotalHolidayWorkTime = holidayWorkTimeOfMonthly.getTotalHolidayWorkTime().getCalculationTime().v();
+		entity.calcTotalHolidayWorkTime = holidayWorkTimeOfMonthly.getTotalHolidayWorkTime().getCalcTime().v();
 		entity.beforeHolidayWorkTime = holidayWorkTimeOfMonthly.getBeforeHolidayWorkTime().v();
 		entity.totalTransferTime = holidayWorkTimeOfMonthly.getTotalTransferTime().getTime().v();
-		entity.calcTotalTransferTime = holidayWorkTimeOfMonthly.getTotalTransferTime().getCalculationTime().v();
+		entity.calcTotalTransferTime = holidayWorkTimeOfMonthly.getTotalTransferTime().getCalcTime().v();
 		return entity;
 	}
 }

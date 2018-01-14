@@ -4,10 +4,10 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.AggregateHolidayWorkTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.AggregateHolidayWorkTimeRepository;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtMonAggrHdwkTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtMonAggrHdwkTimePK;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTimeRepository;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonAggrHdwkTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonAggrHdwkTimePK;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 
 /**
@@ -51,10 +51,10 @@ public class JpaAggregateHolidayWorkTime extends JpaRepository implements Aggreg
 		
 		KrcdtMonAggrHdwkTime entity = this.queryProxy().find(key, KrcdtMonAggrHdwkTime.class).get();
 		entity.holidayWorkTime = aggregateHolidayWorkTime.getHolidayWorkTime().getTime().v();
-		entity.calcHolidayWorkTime = aggregateHolidayWorkTime.getHolidayWorkTime().getCalculationTime().v();
+		entity.calcHolidayWorkTime = aggregateHolidayWorkTime.getHolidayWorkTime().getCalcTime().v();
 		entity.beforeHolidayWorkTime = aggregateHolidayWorkTime.getBeforeHolidayWorkTime().v();
 		entity.transferTime = aggregateHolidayWorkTime.getTransferTime().getTime().v();
-		entity.calcTransferTime = aggregateHolidayWorkTime.getTransferTime().getCalculationTime().v();
+		entity.calcTransferTime = aggregateHolidayWorkTime.getTransferTime().getCalcTime().v();
 		entity.legalHolidayWorkTime = aggregateHolidayWorkTime.getLegalHolidayWorkTime().v();
 		entity.legalTransferHolidayWorkTime = aggregateHolidayWorkTime.getLegalTransferHolidayWorkTime().v();
 		this.commandProxy().update(entity);
@@ -100,10 +100,10 @@ public class JpaAggregateHolidayWorkTime extends JpaRepository implements Aggreg
 		KrcdtMonAggrHdwkTime entity = new KrcdtMonAggrHdwkTime();
 		entity.PK = key;
 		entity.holidayWorkTime = aggregateHolidayWorkTime.getHolidayWorkTime().getTime().v();
-		entity.calcHolidayWorkTime = aggregateHolidayWorkTime.getHolidayWorkTime().getCalculationTime().v();
+		entity.calcHolidayWorkTime = aggregateHolidayWorkTime.getHolidayWorkTime().getCalcTime().v();
 		entity.beforeHolidayWorkTime = aggregateHolidayWorkTime.getBeforeHolidayWorkTime().v();
 		entity.transferTime = aggregateHolidayWorkTime.getTransferTime().getTime().v();
-		entity.calcTransferTime = aggregateHolidayWorkTime.getTransferTime().getCalculationTime().v();
+		entity.calcTransferTime = aggregateHolidayWorkTime.getTransferTime().getCalcTime().v();
 		entity.legalHolidayWorkTime = aggregateHolidayWorkTime.getLegalHolidayWorkTime().v();
 		entity.legalTransferHolidayWorkTime = aggregateHolidayWorkTime.getLegalTransferHolidayWorkTime().v();
 		return entity;

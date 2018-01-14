@@ -2,101 +2,80 @@ package nts.uk.ctx.at.record.infra.repository.monthly.calc.totalworkingtime.holi
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayusetime.AnnualLeaveUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayusetime.CompensatoryLeaveUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayusetime.HolidayUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayusetime.HolidayUseTimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayusetime.RetentionYearlyUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayusetime.SpecialHolidayUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayusetime.KrcdtMonHldyUseTime;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
 
 /**
  * リポジトリ実装：月別実績の休暇使用時間
  * @author shuichu_ishida
  */
 @Stateless
-public class JpaHolidayUseTimeOfMonthly extends JpaRepository implements HolidayUseTimeOfMonthlyRepository {
+public class JpaHolidayUseTimeOfMonthly extends JpaRepository implements VacationUseTimeOfMonthlyRepository {
 
 	/** 追加 */
 	@Override
 	public void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			HolidayUseTimeOfMonthly holidayUseTimeOfMonthly) {
+			VacationUseTimeOfMonthly holidayUseTimeOfMonthly) {
 		
-		this.commandProxy().insert(toEntity(attendanceTimeOfMonthlyKey, holidayUseTimeOfMonthly));
+		this.commandProxy().insert(toEntity(attendanceTimeOfMonthlyKey, holidayUseTimeOfMonthly, false));
 	}
 
 	/** 更新 */
 	@Override
 	public void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			HolidayUseTimeOfMonthly holidayUseTimeOfMonthly) {
+			VacationUseTimeOfMonthly holidayUseTimeOfMonthly) {
 
-		// 締め日付
-		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
-		
-		// キー
-		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthlyKey.getEmployeeId(),
-				attendanceTimeOfMonthlyKey.getYearMonth().v(),
-				attendanceTimeOfMonthlyKey.getClosureId().value,
-				closureDate.getClosureDay().v(),
-				(closureDate.getLastDayOfMonth() ? 1 : 0));
-
-		// 月別実績の年休使用時間
-		AnnualLeaveUseTimeOfMonthly annualLeaveUseTime = holidayUseTimeOfMonthly.getAnnualLeave();
-		// 月別実績の積立年休使用時間
-		RetentionYearlyUseTimeOfMonthly retentionYearlyUseTime = holidayUseTimeOfMonthly.getRetentionYearly();
-		// 月別実績の特別休暇使用時間
-		SpecialHolidayUseTimeOfMonthly specialHolidayUseTime = holidayUseTimeOfMonthly.getSpecialHoliday();
-		// 月別実績の代休使用時間
-		CompensatoryLeaveUseTimeOfMonthly compensatoryLeaveUseTime = holidayUseTimeOfMonthly.getCompensatoryLeave();
-		
-		KrcdtMonHldyUseTime entity = this.queryProxy().find(key, KrcdtMonHldyUseTime.class).get();
-		entity.annualLeaveUseTime = annualLeaveUseTime.getUseTime().v();
-		entity.retentionYearlyUseTime = retentionYearlyUseTime.getUseTime().v();
-		entity.specialHolidayUseTime = specialHolidayUseTime.getUseTime().v();
-		entity.compensatoryLeaveUseTime = compensatoryLeaveUseTime.getUseTime().v();
-		this.commandProxy().update(entity);
+		this.toEntity(attendanceTimeOfMonthlyKey, holidayUseTimeOfMonthly, true);
 	}
 	
 	/**
 	 * ドメイン→エンティティ
-	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
-	 * @param holidayUseTimeOfMonthly ドメイン：月別実績の休暇使用時間
+	 * @param domainKey キー値：月別実績の勤怠時間
+	 * @param domain ドメイン：月別実績の休暇使用時間
+	 * @param execUpdate 更新を実行する
 	 * @return エンティティ：月別実績の年休使用時間
 	 */
-	private static KrcdtMonHldyUseTime toEntity(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			HolidayUseTimeOfMonthly holidayUseTimeOfMonthly){
+	private KrcdtMonVactUseTime toEntity(AttendanceTimeOfMonthlyKey domainKey,
+			VacationUseTimeOfMonthly domain, boolean execUpdate){
 
 		// 締め日付
-		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
+		val closureDate = domainKey.getClosureDate();
 		
 		// キー
-		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthlyKey.getEmployeeId(),
-				attendanceTimeOfMonthlyKey.getYearMonth().v(),
-				attendanceTimeOfMonthlyKey.getClosureId().value,
+		val key = new KrcdtMonAttendanceTimePK(
+				domainKey.getEmployeeId(),
+				domainKey.getYearMonth().v(),
+				domainKey.getClosureId().value,
 				closureDate.getClosureDay().v(),
 				(closureDate.getLastDayOfMonth() ? 1 : 0));
 
 		// 月別実績の年休使用時間
-		AnnualLeaveUseTimeOfMonthly annualLeaveUseTime = holidayUseTimeOfMonthly.getAnnualLeave();
+		val annualLeaveUseTime = domain.getAnnualLeave();
 		// 月別実績の積立年休使用時間
-		RetentionYearlyUseTimeOfMonthly retentionYearlyUseTime = holidayUseTimeOfMonthly.getRetentionYearly();
+		val retentionYearlyUseTime = domain.getRetentionYearly();
 		// 月別実績の特別休暇使用時間
-		SpecialHolidayUseTimeOfMonthly specialHolidayUseTime = holidayUseTimeOfMonthly.getSpecialHoliday();
+		val specialHolidayUseTime = domain.getSpecialHoliday();
 		// 月別実績の代休使用時間
-		CompensatoryLeaveUseTimeOfMonthly compensatoryLeaveUseTime = holidayUseTimeOfMonthly.getCompensatoryLeave();
+		val compensatoryLeaveUseTime = domain.getCompensatoryLeave();
 		
-		KrcdtMonHldyUseTime entity = new KrcdtMonHldyUseTime();
-		entity.PK = key;
+		KrcdtMonVactUseTime entity;
+		if (execUpdate){
+			entity = this.queryProxy().find(key, KrcdtMonVactUseTime.class).get();
+		}
+		else {
+			entity = new KrcdtMonVactUseTime();
+			entity.PK = key;
+		}
 		entity.annualLeaveUseTime = annualLeaveUseTime.getUseTime().v();
 		entity.retentionYearlyUseTime = retentionYearlyUseTime.getUseTime().v();
 		entity.specialHolidayUseTime = specialHolidayUseTime.getUseTime().v();
 		entity.compensatoryLeaveUseTime = compensatoryLeaveUseTime.getUseTime().v();
+		if (execUpdate) this.commandProxy().update(entity);
 		return entity;
 	}
 }

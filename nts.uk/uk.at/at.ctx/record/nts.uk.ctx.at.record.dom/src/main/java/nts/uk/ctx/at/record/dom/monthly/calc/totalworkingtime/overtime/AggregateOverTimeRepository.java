@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 
 /**
- * 集計残業時間
+ * リポジトリ：集計残業時間
  * @author shuichu_ishida
  */
 public interface AggregateOverTimeRepository {

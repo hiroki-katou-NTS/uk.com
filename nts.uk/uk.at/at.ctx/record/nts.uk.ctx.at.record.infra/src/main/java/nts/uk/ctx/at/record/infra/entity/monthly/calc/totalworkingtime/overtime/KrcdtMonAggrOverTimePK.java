@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -44,5 +45,5 @@ public class KrcdtMonAggrOverTimePK implements Serializable {
 
 	/** 残業枠NO */
 	@Column(name = "OVER_TIME_FRAME_NO")
-	public Integer overTimeFrameNo;
+	public int overTimeFrameNo;
 }
