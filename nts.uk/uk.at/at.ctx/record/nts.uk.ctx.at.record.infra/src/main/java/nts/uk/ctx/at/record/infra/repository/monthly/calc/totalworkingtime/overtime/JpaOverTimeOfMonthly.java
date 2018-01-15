@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.repository.monthly.calc.totalworkingtime.overtimework;
+package nts.uk.ctx.at.record.infra.repository.monthly.calc.totalworkingtime.overtime;
 
 import javax.ejb.Stateless;
 
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.
  * @author shuichu_ishida
  */
 @Stateless
-public class JpaOverTimeWorkOfMonthly extends JpaRepository implements OverTimeOfMonthlyRepository {
+public class JpaOverTimeOfMonthly extends JpaRepository implements OverTimeOfMonthlyRepository {
 
 	/** 追加 */
 	@Override
