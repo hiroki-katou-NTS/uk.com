@@ -215,7 +215,7 @@ module nts.uk.at.view.kmk003.a {
 
                 // call service get data
                 service.findWithCondition(self.workTimeSettingLoader.getCondition()).done(data => {
-                    self.workTimeSettings(data);
+                    self.workTimeSettings(_.sortBy(data, item => item.worktimeCode)); // sort by work time code
 
                     // enter update mode if has data
                     if (data && data.length > 0) {
