@@ -93,7 +93,7 @@ module a6 {
                 dataSource: self.dataSourceFlow,
                 isMultipleSelect: true,
                 columns: self.columnSettingFlow(),
-                tabindex: -1
+                tabindex: 90
             };
             self.fixTableOptionFlex = {
                 maxRow: 10,
@@ -103,7 +103,7 @@ module a6 {
                 dataSource: self.dataSourceFlex,
                 isMultipleSelect: true,
                 columns: self.columnSettingOtherFlow(),
-                tabindex: -1
+                tabindex: 89
             };
             self.fixTableOptionFixed = {
                 maxRow: 10,
@@ -113,7 +113,7 @@ module a6 {
                 dataSource: self.dataSourceFixed,
                 isMultipleSelect: true,
                 columns: self.columnSettingOtherFlow(),
-                tabindex: -1
+                tabindex: 89
             };
         }
         /**
