@@ -864,6 +864,12 @@ module nts.uk.ui {
     export module ig {
 
         export module grid {
+            
+            export function getScrollContainer($grid: JQuery): JQuery {
+                let $scroll: any = $grid.igGrid("scrollContainer");
+                if ($scroll.length === 1) return $scroll;
+                return $("#" + $grid.attr("id") + "_scrollContainer");
+            }
 
             export function getRowIdFrom($anyElementInRow: JQuery): any {
                 return $anyElementInRow.closest('tr').attr('data-id');
@@ -871,6 +877,11 @@ module nts.uk.ui {
 
             export function getRowIndexFrom($anyElementInRow: JQuery): number {
                 return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
+            }
+            
+            export function expose(targetRow: any, $grid: JQuery) {
+                let $scroll: any = getScrollContainer($grid);
+                $scroll.exposeVertically(targetRow.element);
             }
 
             export module virtual {
@@ -900,6 +911,40 @@ module nts.uk.ui {
                     return getVisibleRows(gridId).filter(function() {
                         return this.offsetTop < bottom;
                     }).last();
+                }
+                
+                export function expose(targetRow: any, $grid: JQuery) {
+                    
+                    if (targetRow.index === undefined) {
+                        $grid.igGrid("virtualScrollTo", dataSource.getIndexOfKey(targetRow.id, $grid) + 1);
+                        return;
+                    }
+                    
+                    let rowHeight = targetRow.element.outerHeight();
+                    let targetTop = targetRow.index * rowHeight;
+                    let targetBottom = targetTop + rowHeight;
+                    
+                    let $scroll = getScrollContainer($grid);
+                    let viewHeight = $scroll.height();
+                    let viewTop = $scroll.scrollTop();
+                    let viewBottom = viewTop + viewHeight;
+                    
+                    if (viewTop <= targetTop && targetBottom <= viewBottom) {
+                        return;
+                    }
+                    
+                    // when specify 1, top row will be shown.
+                    $grid.igGrid("virtualScrollTo", targetRow.index + 1);
+                }
+            }
+            
+            export module dataSource {
+                
+                export function getIndexOfKey(targetKey: any, $grid: JQuery) {
+                    let option = $grid.igGrid("option");
+                    return _.findIndex(
+                        option.dataSource,
+                        s => s[option.primaryKey].toString() === targetKey.toString());
                 }
             }
 
