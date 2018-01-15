@@ -7,6 +7,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentCode;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 
 
 /**
@@ -36,7 +37,7 @@ public class EmploymentHistoryItem extends AggregateRoot{
 	private EmploymentCode employmentCode;
 	
 	public static EmploymentHistoryItem createFromJavaType(String histId, String sid, String employmentCD, int salary){
-		return new EmploymentHistoryItem(histId,sid,EnumAdaptor.valueOf(salary, SalarySegment.class),new EmploymentCode(employmentCD));
+		return new EmploymentHistoryItem(histId,sid, (salary != ConstantUtils.ENUM_UNDEFINE_VALUE && salary != 0)  ? EnumAdaptor.valueOf(salary, SalarySegment.class): null,new EmploymentCode(employmentCD));
 	}
 	
 }
