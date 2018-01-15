@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 750,
+					height : 400
+				};
+			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.optitem.calculation.InputValue
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk002.d.style.css" />
+			<com:scriptfile path="../a/kmk002.a.service.js" />
+			<com:scriptfile path="kmk002.d.start.js" />
+			<com:scriptfile path="kmk002.d.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" style="display: none" data-bind="visible: true">
+			<com:ko tag="with" bind="formulaSetting">
+				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_24')}</div>
+				<label data-bind="text: formulaAtr" style="margin-right: 100px"></label>
+				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_34')}</div>
+				<label data-bind="text: formulaName"></label>
+				<hr/>
+				<table id="tbl-formulaSetting">
+					<tbody>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_62')}</div>
+								<hr/>
+							</td>
+							<td></td>
+							<td>
+								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_69')}</div>
+								<hr/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<label id="radio-left-selection" tabindex="1" class="ntsRadioBox">
+										<input type="radio" name="radio-left-item"
+											data-bind="name: '#[KMK002_63]',
+											checkedValue: 0,
+											checked: leftItem.settingMethod,
+											enable: true" />
+										<span class="box"></span>
+										<span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
+									</label>
+									<div tabindex="2" id="cbb-left-item" class="inline-table"
+										data-bind="ntsComboBox: {
+										name: '#[KMK002_66]',
+										options: selectableFormulas,
+										optionsValue: 'formulaId',
+										value: leftItem.formulaItemId,
+										optionsText: 'formulaName',
+										editable: false,
+										enable: isLeftCbbEnable,
+										columns: [
+											{ prop: 'symbolValue', length: 1 },
+											{ prop: 'formulaName', length: 6 },
+										]}">
+									</div>
+								</div>
+							</td>
+							<td rowspan="2">
+								<div tabindex="4" id="cbb-operator"
+									data-bind="ntsComboBox: {
+									name: '#[KMK002_68]',
+									options: operatorDatasource,
+									optionsValue: 'value',
+									value: operator,
+									optionsText: 'localizedName',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'localizedName', length: 1 }
+									]}">
+								</div>
+							</td>
+							<td>
+								<label id="radio-right-selection" tabindex="5" class="ntsRadioBox">
+									<input type="radio" name="radio-right-item"
+									data-bind="name: '#[KMK002_63]',
+									checkedValue: 0,
+									checked: rightItem.settingMethod,
+									enable: true" />
+									<span class="box"></span>
+									<span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
+								</label>
+								<div tabindex="6" id="cbb-right-item" class="inline-table"
+									data-bind="ntsComboBox: {
+									name: '#[KMK002_66]',
+									options: selectableFormulas,
+									optionsValue: 'formulaId',
+									value: rightItem.formulaItemId,
+									optionsText: 'formulaName',
+									editable: false,
+									enable: isRightCbbEnable,
+									columns: [
+										{ prop: 'symbolValue', length: 1 },
+										{ prop: 'formulaName', length: 6 },
+									]}">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div>
+									<label id="radio-left-input" tabindex="1" class="ntsRadioBox">
+										<input type="radio" name="radio-left-item"
+											data-bind="name: '#[KMK002_63]',
+											checkedValue: 1,
+											checked: leftItem.settingMethod,
+											enable: true" />
+										<span class="box"></span>
+										<span class="label" data-bind="text: '#{i18n.getText('KMK002_65')}'"></span>
+									</label>
+									<input tabindex="3" class="inputNumberic"
+										id="inp-left-item"
+										data-bind="ntsNumberEditor: {
+										name: '#[KMK002_67]',
+	                                    value: leftItem.inputValue,
+	                                    constraint: 'InputValue',
+	                                    option: {
+		                                    grouplength: 3,
+		                                    decimallength: 2
+	                                    },
+	                                    enable: leftItem.isInputValue(), 
+	                                    required: true,
+	                                    }"/>
+		                         </div>
+							</td>
+							<td>
+								<div>
+									<label id="radio-right-input" tabindex="5" class="ntsRadioBox">
+										<input type="radio" name="radio-right-item"
+											data-bind="name: '#[KMK002_63]',
+											checkedValue: 1,
+											checked: rightItem.settingMethod,
+											enable: true" />
+										<span class="box"></span>
+										<span class="label" data-bind="text: '#{i18n.getText('KMK002_65')}'"></span>
+									</label>
+									<input tabindex="7" id="inp-right-item" class="inputNumberic"
+										data-bind="ntsNumberEditor: {
+									  	name: '#[KMK002_67]',
+	                                    value: rightItem.inputValue,
+	                                    constraint: 'InputValue',
+	                                    option: {
+		                                    grouplength: 3,
+		                                    decimallength: 2
+	                                    },
+	                                    enable: rightItem.isInputValue(), 
+	                                    required: true}"/>
+                               </div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<hr/>
+								<div tabindex="8"
+									data-bind="ntsCheckBox: {
+									checked: minusSegment,
+									enable: true,
+									text: nts.uk.resource.getText('KMK002_59') }"></div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</com:ko>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="9" class="x-large proceed" data-bind="click: apply">#{i18n.getText('KMK002_60')}</button>
+				<button tabindex="10" data-bind="click: close">#{i18n.getText('KMK002_61')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

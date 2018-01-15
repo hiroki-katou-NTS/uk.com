@@ -1,0 +1,102 @@
+@CHARSET "UTF-8";
+
+.processingDate {
+	margin-top: 20px;
+	min-width: 800px;
+}
+.processingDate .ntsControl{
+	margin-left: 50px;
+}
+
+#lableProcessingDate {
+	margin-top: 6px;
+}
+
+.changeBefore {
+	margin-top: 40px;
+	margin-left: 50px;
+	min-width: 800px;
+}
+
+.lableChangeBefore {
+	width: 70px;
+	float: left;
+}
+
+.valueChangeBefore {
+	width: 100px;
+	float: left;
+}
+
+#endClosureDate {
+	width: 765px;
+	margin-left: 40px;
+	margin-top: 20px;
+}
+
+.beginChange {
+	text-align: center;
+}
+
+#cobxDayOfMonth {
+	max-width: 80px;
+	margin-top: -5px;
+}
+
+.endChangeAfter {
+	margin-top: -20px;
+	float: left;
+}
+
+.lableEndChangeAfter {
+	width: 100px;
+	float: left;
+}
+
+#endChangeAfter {
+	min-width: 800px;
+	margin-top: 40px;
+}
+
+.btnclose {
+	margin-left: 20px;
+}
+
+.bottomChangeAfter {
+	margin-top: 20px;
+	float: left;
+}
+
+.lableBottomChangeAfter {
+	width: 140px;
+	float: left;
+}
+
+.endAction {
+	margin-top: 20px;
+}
+
+.startChangeDate {
+	width: 40px;
+	float: left;
+}
+
+.endChangeDate {
+	width: 100px;
+	float: left;
+}
+
+.lableStartChange {
+	width: 160px;
+	float: left;
+	margin-left: 25px;
+}
+
+.valueStartChange {
+	float: right;
+	margin-right: 30px;
+}
+
+.btnAction{
+	width: 85px;
+}

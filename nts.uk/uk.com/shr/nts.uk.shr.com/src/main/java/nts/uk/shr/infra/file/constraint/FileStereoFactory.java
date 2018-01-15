@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import nts.arc.layer.infra.file.constraint.FileStereo;
+import nts.uk.shr.infra.file.constraint.stereotypes.DocumentFileStereoType;
 import nts.uk.shr.infra.file.constraint.stereotypes.FlowMenuStereoType;
 
 public class FileStereoFactory {
@@ -13,6 +14,7 @@ public class FileStereoFactory {
 	static {
 		fileStereos = new HashMap<>();
 		fileStereos.put("flowmenu", FlowMenuStereoType.class);
+		fileStereos.put("document", DocumentFileStereoType.class);
 	}
 
 	public static Optional<FileStereo> of(String stereoName) {

@@ -1,0 +1,423 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:stylefile path="/view/sample/catalog/catalog.css" of="/nts.uk.com.web"/>
+			    <com:scriptfile path="/view/sample/catalog/catalog.js" of="/nts.uk.com.web"/>
+				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
+				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web"/>
+				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.js" of="/nts.uk.at.web"/>
+				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/calendar-ko-ext.js" of="/nts.uk.at.web"/>
+				<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/locale-all.js" of="/nts.uk.at.web"/>
+				<com:scriptfile path="kcp006.a.vm.js" />
+				<com:scriptfile path="kcp006.a.start.js" />
+				<com:scriptfile path="/view/kcp/006/a/kcp006.a.service.js" of="/nts.uk.at.web"/>
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+				    <div id="side-menu" class="cf"></div>
+				    <div id="content" class="cf">
+				    	<h1>Calendar</h1>
+						<h2>Overview</h2>
+				    	<div class="nts-calendar-container">
+				    		<com:ko-if bind="showCalendarHeader">
+								<div class="nts-calendar-header">
+									<div data-bind="ntsDatePicker: {
+									value: yearMonthPicked, 
+									required: true,
+									dateFormat: 'yearmonth', 
+									valueFormat: 'YYYYMM', 
+									cssRanger: cssRangerYM,
+									defaultClass: 'round-orange',
+									showJumpButtons: true}"></div>
+								</div>
+							</com:ko-if>
+							<div id="calendar" data-bind="ntsCalendar: {
+								optionDates: optionDates, 
+								yearMonth: yearMonthPicked, 
+								firstDay: firstDay, 
+								startDate: startDate, 
+								endDate: endDate,
+								workplaceId: workplaceId,
+								workplaceName: workplaceName,
+								eventDisplay: eventDisplay,
+								eventUpdatable: eventUpdatable,
+								holidayDisplay: holidayDisplay,
+								cellButtonDisplay: cellButtonDisplay}"></div>
+						</div><br/>
+						<div data-bind="ntsCheckBox: { checked: showCalendarHeader }">showCalendarHeader</div><br/>
+						<div data-bind="ntsCheckBox: { checked: eventDisplay }">eventDisplay</div><br/>
+						<div data-bind="ntsCheckBox: { checked: eventUpdatable }">eventUpdatable</div><br/>
+						<div data-bind="ntsCheckBox: { checked: holidayDisplay }"> holidayDisplay</div><br/>
+						<div data-bind="ntsCheckBox: { checked: cellButtonDisplay }"> cellButtonDisplay</div><br/>
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								</ol>
+								<div id="tabs-html" class="cf">
+									<h2>HTML</h2>
+									<p>You must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
+									<pre><![CDATA[<ui:define name="htmlHead">
+	<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
+	<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web"/>
+	<com:scriptfile path="/view/kcp/006/a/kcp006.a.service.js" of="/nts.uk.at.web"/>
+	<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.js" of="/nts.uk.at.web"/>
+	<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/calendar-ko-ext.js" of="/nts.uk.at.web"/>
+	<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/locale-all.js" of="/nts.uk.at.web"/>
+</ui:define>]]></pre>
+<pre><![CDATA[<div class="nts-calendar-container">
+	<com:ko-if bind="showCalendarHeader">
+		<div class="nts-calendar-header">
+			<div data-bind="ntsDatePicker: {
+			value: yearMonthPicked, 
+			required: true,
+			dateFormat: 'yearmonth', 
+			valueFormat: 'YYYYMM', 
+			cssRanger: cssRangerYM,
+			defaultClass: 'round-orange',
+			showJumpButtons: true}"></div>
+		</div>
+	</com:ko-if>
+	<div id="calendar" data-bind="ntsCalendar: {
+		optionDates: optionDates, 
+		yearMonth: yearMonthPicked, 
+		firstDay: firstDay, 
+		startDate: startDate, 
+		endDate: endDate,
+		workplaceId: workplaceId,
+		workplaceName: workplaceName,
+		eventDisplay: eventDisplay,
+		eventUpdatable: eventUpdatable,
+		holidayDisplay: holidayDisplay,
+		cellButtonDisplay: cellButtonDisplay}"></div>
+</div>]]></pre>
+									<h2>Object</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Name</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>DateObject</td>
+												<td>
+													<b>start:</b>The date/time of date. Required.A Moment-ish input, like an ISO8601 string ('YYYY-MM-DD').<br/>
+													<b>textColor:</b>Sets list text's text color. Required, rgb code or color name.<br/>
+													<b>headerBackgroundColor:</b>Sets date's header backgroud color. Required, rgb code or color name.<br/>
+													<b>backgroundColor:</b>Sets date's backgroud color. Required, rgb code or color name.<br/>
+													<b>listText:</b>List text display in the date. Required, array of string.<br/>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<h2>API</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Binding</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>cssRanger(ntsDatePicker)</td>
+												<td>
+													<b>Type:</b>object<br/>
+													CSS ranges for specified months.<br/>
+													Example:<br/>
+													<pre><![CDATA[{ 2000: [{ 1: "round-green" }, { 5: "round-yellow" }],
+  2002: [ 1, { 5: "round-gray" }]}]]></pre>
+												</td>
+											</tr>
+											<tr>
+												<td>defaultClass(ntsDatePicker)</td>
+												<td>
+													<b>Type:</b>string<br/>
+													Default CSS class for dates whose CSS class hasn't been specified in cssRanger.<br/>
+													For the calender component, using: <br/>
+													<pre><![CDATA[defaultClass: 'bg-calendar-ym-set']]></pre>
+												</td>
+											</tr>
+											<tr>
+												<td>optionDates</td>
+												<td>
+													<b>Type:</b>KnockoutObservableArray&lt;DateObject&gt;<br/>
+													List options of specification dates
+												</td>
+											</tr>
+											<tr>
+												<td>yearMonth</td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;number&gt;<br/>
+													The base year month
+												</td>
+											</tr>
+											<tr>
+												<td>firstDay</td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;number&gt;<br/>
+													Start day of week (0: Sunday, 1: Monday, 2: Tuesday...)
+												</td>
+											</tr>
+											<tr>
+												<td>startDate</td>
+												<td>
+													<b>Type:</b> number<br/>
+													Start date of month (1 - 31)
+												</td>
+											</tr>
+											<tr>
+												<td>endDate</td>
+												<td>
+													<b>Type:</b> number<br/>
+													End date of month (1 - 31)
+												</td>
+											</tr>											
+											<tr>
+												<td>workplaceId<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													Id of target workplace<br/>
+													If not use workplace can set value is "0"<br/>
+												</td>
+											</tr>
+											<tr>
+												<td>workplaceName<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													Name of target workplace
+												</td>
+											</tr>
+											<tr>
+												<td>eventDisplay<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt;<br/>
+													<b>Default:</b> true<br/>
+													True is display event icon button<br/>
+													False is not display.
+												</td>
+											</tr>
+											<tr>
+												<td>eventUpdatable<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt;<br/>
+													<b>Default:</b> true<br/>
+													True is clickable button<br/>
+													False is not clickable.
+												</td>
+											</tr>
+											<tr>
+												<td>holidayDisplay<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt;<br/>
+													<b>Default:</b> true<br/>
+													True is display holiday span<br/>
+													False is not display.
+												</td>
+											</tr>
+											<tr>
+												<td>cellButtonDisplay<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt;<br/>
+													<b>Default:</b> true<br/>
+													True is display cell button<br/>
+													False is not display.
+												</td>
+											</tr>
+											<tr>
+												<td>showCalendarHeader</td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt;<br/>
+													True is display header<br/>
+													False is not display.<br/>
+													<b>Example binding:</b> 
+													<pre><![CDATA[<com:ko-if bind="showCalendarHeader">
+	<div class="nts-calendar-header">
+		<div data-bind="ntsDatePicker: {
+		value: yearMonthPicked, 
+		required: true,
+		dateFormat: 'yearmonth', 
+		valueFormat: 'YYYYMM', 
+		cssRanger: cssRangerYM,
+		defaultClass: 'round-orange',
+		showJumpButtons: true}"></div>
+	</div>
+</com:ko-if>]]></pre>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<h2>Method</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Name</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>render</td>
+												<td>
+													<pre><![CDATA[$('#calendar').fullCalendar('render');]]></pre>
+													This method is useful in the scenario where a tab setup might hide/show a calendar.<br/> 
+													Call this method whenever the tabs are shown. Here is an example with the jQuery UI tab plugin:<br/>
+													<pre><![CDATA[$('#my-tabs').tabs({
+    activate: function(event, ui) {
+        $('#calendar').fullCalendar('render');
+    }
+});]]></pre>
+												</td>
+											</tr>
+											<tr>
+												<td>cellClick</td>
+												<td>
+													Triggered when the user clicks on each cell date: <br/>
+													<pre><![CDATA[$("#calendar").ntsCalendar("init", {
+    cellClick: function(date) {
+        alert(date);
+    }
+});]]></pre>
+												</td>
+											</tr>
+											<tr>
+												<td>buttonClick</td>
+												<td>
+													Triggered when the user clicks on each button: <br/>
+													<pre><![CDATA[$("#calendar").ntsCalendar("init", {
+    buttonClick: function(date) {
+        alert(date);
+    }
+});]]></pre>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div id="tabs-viewmodel" class="cf">
+									<h2>TypeScript</h2>
+									<pre><![CDATA[class ScreenModel {
+
+        calendarData: KnockoutObservable<any>;
+        yearMonthPicked: KnockoutObservable<number>;
+        cssRangerYM: any;
+        optionDates: KnockoutObservableArray<any>;
+        firstDay: number;
+        yearMonth: KnockoutObservable<number>;
+        startDate: number;
+        endDate: number;
+        workplaceId: KnockoutObservable<string>;
+        eventDisplay: KnockoutObservable<boolean>;
+        eventUpdatable: KnockoutObservable<boolean>;
+        holidayDisplay: KnockoutObservable<boolean>;
+        cellButtonDisplay: KnockoutObservable<boolean>;
+        showCalendarHeader: KnockoutObservable<boolean>;
+        workplaceName: KnockoutObservable<string>;
+
+        constructor() {
+            var self = this;
+            self.yearMonthPicked = ko.observable(200005);
+            self.cssRangerYM = {
+                2000: [5,10]
+            };
+            self.optionDates = ko.observableArray([
+                {
+                    start: '2000-05-01',
+                    textColor: 'red',
+                    backgroundColor: 'white',
+                    listText: [
+                        "Sleep",
+                        "Study"
+                    ]
+                },
+                {
+                    start: '2000-05-05',
+                    textColor: '#31859C',
+                    backgroundColor: 'white',
+                    listText: [
+                        "Sleepaaaa",
+                        "Study",
+                        "Eating",
+                        "Woman"
+                    ]
+                },
+                {
+                    start: '2000-05-10',
+                    textColor: '#31859C',
+                    backgroundColor: 'white',
+                    listText: [
+                        "Sleep",
+                        "Study"
+                    ]
+                },
+                {
+                    start: '2000-05-20',
+                    textColor: 'blue',
+                    backgroundColor: 'white',
+                    listText: [
+                        "Sleep",
+                        "Study",
+                        "Play"
+                    ]
+                },
+                {
+                    start: '2000-06-20',
+                    textColor: 'blue',
+                    backgroundColor: 'red',
+                    listText: [
+                        "Sleep",
+                        "Study",
+                        "Play"
+                    ]
+                }
+            ]);
+            self.firstDay = ko.observable(0);
+            self.startDate = 1;
+            self.endDate = 31;
+            self.workplaceId = ko.observable("0");
+            self.workplaceName = ko.observable("");
+            self.eventDisplay = ko.observable(true);
+            self.eventUpdatable = ko.observable(true);
+            self.holidayDisplay = ko.observable(true);
+            self.cellButtonDisplay = ko.observable(true);
+            self.showCalendarHeader = ko.observable(true);
+            $("#calendar").ntsCalendar("init", {
+                cellClick: function(date) {
+                    alert(date);
+                }
+            });
+        }
+
+    }]]></pre>
+								</div>
+							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
+						</div>
+				    </div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

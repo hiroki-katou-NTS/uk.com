@@ -1,0 +1,262 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../../ccg/025/component/component.css" />
+			<com:scriptfile
+				path="../../../ccg/025/component/component.service.js" />
+			<com:scriptfile path="../../../ccg/025/component/component.vm.js" />
+			<!-- ccg026 -->
+			<com:stylefile path="../../../ccg/026/component/component.css" />
+			<com:scriptfile path="../../../ccg/026/component/component.service.js" />
+			<com:scriptfile path="../../../ccg/026/component/component.vm.js" />
+			
+			<com:stylefile path="cas005.a.main.css" />
+			<com:scriptfile path="cas005.a.start.js" />
+			<com:scriptfile path="cas005.a.vm.js" />
+			<com:scriptfile path="cas005.a.service.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.auth.dom.role.RoleCode
+				nts.uk.ctx.sys.auth.dom.role.RoleName
+			</com:ValidatorScript>
+			<com:EnumScript>
+				nts.uk.ctx.sys.auth.dom.role.RoleType
+				nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange
+				nts.uk.ctx.at.auth.dom.employmentrole.EmployeeRefRange
+				nts.uk.ctx.at.auth.dom.employmentrole.ScheduleEmployeeRef 
+			</com:EnumScript>
+			<!--EmployeeReferenceRange 6,EmployeeRefRange 2 8,ScheduleEmployeeRef 4 -->
+		</ui:define>
+		
+			<ui:define name="content">
+				<div id="functions-area">
+					<div class="container">
+						<!-- A1_001 -->
+						<button tabindex="1" data-bind="click :createButton ">#{i18n.getText('CAS005_10')}</button>
+						<!-- A1_002 -->
+						<button tabindex="2"  class="proceed"  data-bind="click : registerButton ,enable : isRegister">#{i18n.getText('CAS005_11')}</button>
+						<!-- A1_003 -->
+						<button tabindex="3" class="danger" data-bind="click : deleteButton , enable : isDelete">#{i18n.getText('CAS005_12')}</button>
+						<!-- A1_004 -->
+						<button tabindex="4" data-bind="click : openDialogC ">#{i18n.getText('CAS005_13')}</button>
+						<!-- A1_005 -->
+						<button tabindex="5" data-bind="click : openDialogB , enable : isCopy	 ">#{i18n.getText('CAS005_14')}</button>
+						<!-- A1_006 -->
+						<span style="float: right; margin-top: 7px;">#{i18n.getText('CAS005_15')}</span>
+					</div>
+				</div>
+				<div id="contents-area">
+					<div class="container" style="margin-left: 30px;">
+						<div style="margin-bottom: 20px;">#{i18n.getText('CAS005_20')}</div>
+						<!-- body left  -->
+						<div style="float: left;" data-bind="with: component">
+							<div id="pannel-top" data-bind="ntsPanel:{width: '350px', height: '320px', direction: '', showIcon: true, visible: true}">
+								<ui:include src="../../../ccg/025/component/index.xhtml" />
+							</div>
+						</div>
+						<!-- body right -->
+						<div class=" body-right">
+							<table class="layout-table">
+								<!-- row 1 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px; padding-bottom: 5px;"
+											data-bind="ntsFormLabel: {required: true,constraint:['RoleCode', 'RoleName'] }">#{i18n.getText('CAS005_30')}</div>
+									</td>
+									<td><input id="roleTypeCd" tabindex="7" style="width: 70px;"
+										data-bind="ntsTextEditor: {value: roleCode, name:'#{i18n.getText('CAS005_31')}', constraint: 'RoleCode',required: true, enable : enableRoleCode }" />
+										<input tabindex="8" id="roleNameFocus"
+										style="margin-left: 11px;"
+										data-bind="ntsTextEditor:  {value: roleName, name:'#{i18n.getText('CAS005_32')}', constraint: 'RoleName',required: true}" /></td>
+								</tr>
+								<!-- row 2 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_33')}</div>
+									</td>
+									<td>
+										<div class="cf" tabindex="9"
+											data-bind="ntsSwitchButton: {
+														options: categoryAssign,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: assignAtr,
+														enable: isCategoryAssign }">
+										</div>
+									</td>
+								</tr>
+								<!-- row 3 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_37')}</div>
+									</td>
+									<td>
+										<div id="combo-box" tabindex="10"
+											data-bind="ntsComboBox: {
+														options: listEmployeeReferenceRange,
+														optionsValue: 'value',
+														value: employeeReferenceRange,
+														optionsText: 'name',
+														editable: false,
+														enable: isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}">
+										</div>
+									</td>
+								</tr>
+								<!-- row 4 -->
+								<tr >
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_39')}</div>
+									</td>
+									<td>
+										<div class="cf" tabindex="11"
+											data-bind="ntsSwitchButton: {
+														options: referenceAuthority,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: selectReferenceAuthority ,
+														enable: true }">
+										</div>
+									</td>
+								</tr>
+								<!-- row 5 -->
+								<tr data-bind="css: {disappear: !visibleWebmenu()}">
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_50')}</div>
+									</td>
+									<td>
+										<div id="combo-box" tabindex="12"
+											data-bind="ntsComboBox: {
+														options: listWebMenu,
+														optionsValue: 'webMenuCode',
+														value: selectWebMenu,
+														optionsText: 'webMenuName',
+														editable: false,
+														enable: isEnable,
+														columns: [
+															{ prop: 'webMenuName', length: 10 },
+														]}">
+										</div>
+									</td>
+								</tr>
+								<!-- row 6 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_52')}</div>
+									</td>
+									<td>
+										<div id="combo-box" tabindex="13"
+											data-bind="ntsComboBox: {
+														options: listEmployeeRefRange,
+														optionsValue: 'value',
+														value: bookingScreen,
+														optionsText: 'name',
+														editable: false,
+														enable: enumEmployment,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}">
+										</div>
+									</td>
+								</tr>
+								<!-- row 7 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_54')}</div>
+									</td>
+									<td>
+										<div id="combo-box" tabindex="14"
+											data-bind="ntsComboBox: {
+														options: listScheduleEmployeeRef ,
+														optionsValue: 'value',
+														value: scheduleScreen,
+														optionsText: 'name',
+														editable: false,
+														enable: enumEmployment,
+														columns: [
+															{ prop: 'name', length: 12 },
+														]}">
+										</div>
+									</td>
+								</tr>
+								<!-- row 8 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_56')}</div>
+									</td>
+									<td>
+										<div id="combo-box" tabindex="15"
+											data-bind="ntsComboBox: {
+														options: listEmployeeReferenceRange,
+														optionsValue: 'value',
+														value: registeredInquiries,
+														optionsText: 'name',
+														editable: false,
+														enable: enumEmployment,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}">
+										</div>
+									</td>
+								</tr>
+								<!-- row 9 -->
+								<tr>
+									<td>
+										<div style="padding-right: 20px;" 
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_58')}</div>
+									</td>
+									<td>
+										<div id="combo-box" tabindex="16"
+											data-bind="ntsComboBox: {
+														options: listEmployeeRefRange,
+														optionsValue: 'value',
+														value: specifyingAgent,
+														optionsText: 'name',
+														editable: false,
+														enable: enumEmployment,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}">
+										</div>
+									</td>
+								</tr>
+								<!-- row 10 -->
+								<tr>
+									<td colspan="2">
+										<div style="padding-right: 20px;"
+											data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_70')}</div>
+									</td>
+								</tr>
+								<!-- row 11 -->
+								<tr>
+									<td colspan="2">
+										<div data-bind="with: componentCcg026">
+											<ui:include src="/view/ccg/026/component/index.xhtml" />
+										</div>
+									</td>
+								</tr>
+		
+							</table>
+						</div>
+					</div>
+				</div>
+			</ui:define>
+		
+	</ui:composition>
+</body>
+</html>

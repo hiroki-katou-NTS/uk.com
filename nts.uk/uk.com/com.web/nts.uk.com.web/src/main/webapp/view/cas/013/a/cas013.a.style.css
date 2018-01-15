@@ -1,0 +1,16 @@
+span.caret-bottom.outline{font-size: 6.2rem;margin-left: 74px;width: 2.5em;}
+.caret-bottom.outline:after{border-width: 0.4em 1em;}
+div.form-label.required{margin-left: 20px; margin-right: 10px;}
+div.form-label{margin-left: 20px; margin-right: 10px;}
+span.text{margin-left: 20px; display: inline-block;}
+#combo-box{width: 120px;}
+
+.container{width: 1300px;}
+.cf .pull-left:nth-child(1) {margin-left: 30px;}
+.pull-left .ntsRangeButton_Container{display: none;}
+.pull-left #daterangepicker {height:28px; position: relative; top: 9px;}
+.caret-right.outline{font-size: 74px;margin: 10px 0px;height:4em;}
+.caret-right.outline:after{border-width: 1.4em 0.5em;}
+.pull-left .control-group.button{margin: 30px 0 20px 20px;}
+.pull-left .control-group.button button{margin-right: 10px;}
+.pull-left .control-group.button .ntsControl.limited-label{width: 198px;}

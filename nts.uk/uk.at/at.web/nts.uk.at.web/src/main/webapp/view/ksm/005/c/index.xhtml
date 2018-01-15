@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 1280, height: 780 };</script>
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="ksm005.c.main.css" />
+				<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+				<com:scriptfile path="ksm005.c.start.js" />
+				<com:scriptfile path="ksm005.c.service.js" />
+				<com:scriptfile path="ksm005.c.vm.js" />
+			</ui:define>
+			<ui:define name="content">
+				<div id="functions-area">
+					<a tabindex="-1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
+					
+					<button tabindex="1" class="proceed" data-bind="click: saveMonthlyPatternSetting">#{i18n.getText('KSM005_9')}</button>
+					<button tabindex="3" class="danger" data-bind="click: deleteMonthlyPatternSetting, enable: enableDelete">#{i18n.getText('KSM005_12')}</button>
+				</div>
+				<div class="contents">
+					<div id="ccgcomponent" tabindex="6"></div>
+					<div id="component-items-list" tabindex="7" class="pull-left contentkcp005"></div>
+					<div class="pull-left contentDetail">
+						<div tabindex="-1" class="lableData" data-bind="ntsFormLabel: {}">
+							<label>#{i18n.getText('KSM005_21')}</label>
+						</div>
+						<label tabindex="-1" data-bind="text: employeeName"></label>
+						<br />
+						<br />
+						<div tabindex="-1" class="lableData"
+							data-bind="ntsFormLabel: {}">
+							<label>#{i18n.getText('KSM005_22')}</label>
+						</div>
+						<button tabindex="4" data-bind="click: onpenDialogSystemChange, enable: enableSystemChange">#{i18n.getText('KSM005_23')}</button>
+						<label  data-bind="text: monthlyPatternSetting"></label>
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+	</body>
+</html>

@@ -1,0 +1,67 @@
+#functions-area div.ntsControl:nth-child(1) {
+	margin-left: 70px;
+}
+
+#contents-area {
+	padding: 25px;
+	height: initial !important;
+	height: auto !important;
+}
+
+#contents-area>.left-area, #contents-area>.right-area {
+	float: left;
+}
+
+#contents-area>.left-area {
+	width: 350px;
+}
+
+#contents-area>.right-area {
+	padding-left: 45px;
+}
+
+#contents-area>.left-area>div {
+	padding: 15px;
+}
+
+#contents-area .nts-searchbbox-wrapper {
+	width: 100% !important;
+	box-sizing: border-box;
+}
+
+.nts-searchbbox-wrapper div.input-wrapper {
+	max-width: 175px;
+}
+
+#contents-area .ntsSearchBox.nts-editor {
+	width: 100% !important;
+}
+
+#contents-area .form-group {
+	margin-bottom: 25px;
+}
+
+#contents-area .form-group .form-label {
+	min-width: 160px;
+}
+
+.ui-iggrid .ui-iggrid-tablebody .ui-state-hover, .ui-iggrid .ui-iggrid-tablebody .ui-state-active,
+	.ui-iggrid .ui-iggrid-tablebody td {
+	border-top: none;
+	border-right: none;
+	border-left: none;
+}
+
+.ui-iggrid table tr td, .ui-iggrid table tr td.ui-iggrid-header,
+	.ui-iggrid table tr td.ui-state-hover, .ui-iggrid table tr td.ui-state-active,
+	.ui-iggrid table tr td.ui-state-focus, .ui-iggrid table tr td.ui-state-active.ui-state-focus,
+	.ui-iggrid table tr th, .ui-iggrid table tr th.ui-iggrid-header,
+	.ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active,
+	.ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus
+	{
+	border: none;
+}
+
+.ntsControl .nts-input {
+    width: 110px !important;
+}

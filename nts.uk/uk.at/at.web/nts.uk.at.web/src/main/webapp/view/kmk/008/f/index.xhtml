@@ -1,0 +1,276 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html>
+
+<body>
+	<div class="sidebar-content-header">
+		<span class="title" data-bind="text: textOvertimeName"></span> <a tabindex="2"
+			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
+		<button class="proceed" tabindex="3"
+			data-bind="click: addUpdateDataClassification, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
+		<button tabindex="4">#{i18n.getText('KMK008_15')}</button>
+		<button class="danger" tabindex="5"
+			data-bind="click: removeDataClassification , enable: isRemove">#{i18n.getText('KMK008_16')}</button>
+
+	</div>
+	<div class="contents-area">
+		<div class="tabpanel-1-contents-area-left">
+
+			<div id="empt-list-setting-screen-f"></div>
+
+		</div>
+		<div class="tabpanel-1-contents-area-right">
+			<div class="lbl-title-employeer-name">
+				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17',['#Com_Class'])}</div>
+				<span class="label" data-bind="text: currentClassificationName"></span>
+			</div>
+			<div class="label">#{i18n.getText('KMK008_6')}</div>
+			<HR />
+			<table class="table-basic-setting-list"
+				data-bind="with: timeOfClassification">
+				<tr style="background-color: #E0F59E">
+					<th style="width: 25%">#{i18n.getText('KMK008_18')}</th>
+					<th style="width: 25%">#{i18n.getText('KMK008_19')}</th>
+					<th style="width: 25%">#{i18n.getText('KMK008_20')}</th>
+					<th style="width: 25%">#{i18n.getText('KMK008_21')}</th>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_22')}</td>
+					<td><input class="time-editor-custom-width" tabindex="6"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_22, KMK008_42]',
+						constraint: 'ErrorWeek',
+						value: errorWeek,
+						inputFormat: 'time',
+						mode: 'time',
+						enable: true,
+						readonly: false,
+						required: false }" />
+					</td>
+					<td><input class="time-editor-custom-width" tabindex="7"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_22, KMK008_43]', 
+						constraint: 'AlarmWeek', 
+						value: alarmWeek, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" />
+					</td>
+					<td><input class="time-editor-custom-width" tabindex="8"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_22, KMK008_44]', 
+						constraint: 'LimitWeek', 
+						value: limitWeek, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: false, 
+						readonly: false, 
+						required: false }" />
+					</td>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_23')}</td>
+					<td><input class="time-editor-custom-width" tabindex="9"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_23, KMK008_42]', 
+						constraint: 'ErrorTwoWeeks', 
+						value: errorTwoWeeks, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" />
+					</td>
+					<td><input class="time-editor-custom-width" tabindex="10"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_23, KMK008_43]', 
+						constraint: 'AlarmTwoWeeks', 
+						value: alarmTwoWeeks, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input class="time-editor-custom-width" tabindex="11"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_23, KMK008_44]', 
+						constraint: 'LimitTwoWeeks', 
+						value: limitTwoWeeks, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: false, 
+						readonly: false, 
+						required: false }" /></td>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_24')}</td>
+					<td><input class="time-editor-custom-width" tabindex="12"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_24, KMK008_42]', 
+						constraint: 'ErrorFourWeeks', 
+						value: errorFourWeeks, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input class="time-editor-custom-width" tabindex="13"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_24, KMK008_43]',
+						constraint: 'AlarmFourWeeks', 
+						value: alarmFourWeeks, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input class="time-editor-custom-width" tabindex="14"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_24, KMK008_44]',
+						constraint: 'LimitFourWeeks', 
+						value: limitFourWeeks, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: false, 
+						readonly: false, 
+						required: false }" /></td>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_25')}</td>
+					<td><input class="time-editor-custom-width" tabindex="15"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_25, KMK008_42]',
+						constraint: 'ErrorOneMonth', 
+						value: errorOneMonth, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input class="time-editor-custom-width" tabindex="16"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_25, KMK008_43]', 
+						constraint: 'AlarmOneMonth', 
+						value: alarmOneMonth, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input class="time-editor-custom-width" tabindex="17"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_25, KMK008_44]', 
+						constraint: 'LimitOneMonth', 
+						value: limitOneMonth, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: false, 
+						readonly: false, 
+						required: false }" /></td>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_26')}</td>
+					<td><input class="time-editor-custom-width" tabindex="18"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_26, KMK008_42]', 
+						constraint: 'ErrorTwoMonths', 
+						value: errorTwoMonths, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input class="time-editor-custom-width" tabindex="19"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_26, KMK008_43]',
+						constraint: 'AlarmTwoMonths', 
+						value: alarmTwoMonths, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input class="time-editor-custom-width" tabindex="20"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_26, KMK008_44]', 
+						constraint: 'LimitTwoMonths', 
+						value: limitTwoMonths, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: false, 
+						readonly: false, 
+						required: false }" /></td>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_27')}</td>
+					<td><input class="time-editor-custom-width" tabindex="21"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_27, KMK008_42]', 
+						constraint: 'ErrorThreeMonths', 
+						value: errorThreeMonths, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input class="time-editor-custom-width" tabindex="22"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_27, KMK008_43]',
+						constraint: 'AlarmThreeMonths', 
+						value: alarmThreeMonths, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input class="time-editor-custom-width" tabindex="23"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_27, KMK008_44]',
+						constraint: 'LimitThreeMonths', 
+						value: limitThreeMonths, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: false, 
+						readonly: false, 
+						required: false }" /></td>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_28')}</td>
+					<td><input class="time-editor-custom-width" tabindex="24"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_28, KMK008_42]', 
+						constraint: 'ErrorOneYear', 
+						value: errorOneYear, 
+						inputFormat: 'time', 
+						mode: 'time',
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input class="time-editor-custom-width" tabindex="25"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_28, KMK008_43]',  
+						constraint: 'AlarmOneYear', 
+						value: alarmOneYear, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input class="time-editor-custom-width" tabindex="26"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_28, KMK008_44]',  
+						constraint: 'LimitOneYear', 
+						value: limitOneYear, 
+						inputFormat: 'time', 
+						mode: 'time',
+						enable: false, 
+						readonly: false, 
+						required: false }" /></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</body>
+</html>

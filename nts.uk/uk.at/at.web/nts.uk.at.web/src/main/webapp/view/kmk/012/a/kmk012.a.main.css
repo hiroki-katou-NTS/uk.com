@@ -1,0 +1,49 @@
+#functions-area #button12{
+    margin-left: 561px;
+}
+
+@CHARSET "UTF-8";
+
+.btnSave {
+	width: 80px;
+}
+
+#contents-left, #contents-right {
+	padding: 20px;
+	vertical-align: top !important;
+	min-width: 200px;
+}
+
+.divHeader {
+	margin: 5px;
+	min-width: 1360px;
+}
+
+#contents-right {
+	padding-left: 40px !important;
+}
+
+.contents {
+	margin-top: 20px;
+	margin-left: 20px;
+	min-width: 800px;
+}
+
+.lableData {
+	width: 170px;
+	float: left;
+}
+
+.lableDataEnd {
+	width: 130px;
+	margin-left: 50px;
+	float: left;
+}
+
+.valueData {
+	float: left;
+}
+
+.nts-editor {
+	width: 180px !important;
+}

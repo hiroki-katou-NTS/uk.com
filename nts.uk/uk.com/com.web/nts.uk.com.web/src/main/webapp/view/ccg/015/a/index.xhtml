@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.portal.dom.toppage.TopPageCode
+				nts.uk.ctx.sys.portal.dom.toppage.TopPageName
+  			</com:ValidatorScript>
+			<com:stylefile path="ccg015.a.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="ccg015.a.start.js" />
+			<com:scriptfile path="ccg015.a.service.js" />
+			<com:scriptfile path="ccg015.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area" class="divHeader">
+			<div class="float_left">
+				<button tabindex="5" data-bind="click: newTopPage" id="btn_new"
+					class="btnStyle">#{i18n.getText('CCG015_4')}</button>
+				<button tabindex="6" data-bind="click: saveTopPage ,enable: $root.errors.isEmpty"
+					class="proceed btnStyle" id="btn_save">#{i18n.getText('CCG015_5')}</button>
+				<button tabindex="7"
+					data-bind=" click: copyTopPage ,enable: !isNewMode()"
+					id="btn_printing" class="btnStyle">#{i18n.getText('CCG015_6')}</button>
+				<button tabindex="8" data-bind=" click: openFlowMenuSettingDialog"
+					id="btn_readFromSocialTnsuranceOffice" class="btnStyle2">#{i18n.getText('CCG015_8')}</button>
+				<button tabindex="9" id="btn_masterCorrectionLog"
+					data-bind="click: openMyPageSettingDialog" class="btnStyle2">#{i18n.getText('CCG015_2')}</button>
+				<button tabindex="10"
+					data-bind="click: removeTopPage,enable: !isNewMode()"
+					class="danger btnStyle" id="btn_delete">#{i18n.getText('CCG015_7')}</button>
+					</div>
+				<div class="drop_links" tabindex="11"  data-bind="ntsFunctionPanel: {width: 200, headerText: '#{i18n.getText('CCG015_16')}', dataSource: listLinkScreen}"></div>
+			</div>
+			<div id="contents-area" data-bind="visible: true"
+				style="display: none">
+				<table>
+					<tr>
+						<td id="contents-left"
+							class="bg-green caret-right caret-background"><i
+							class="icon icon-searchbox"></i>
+							<div id="searchTopPage">
+								<div id="box_search" tabindex="12"
+									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'single-list', 
+									items: listTopPage, selected: toppageSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+								<table id="single-list"
+									data-bind="ntsGridList: {
+										height: 430,
+										options: listTopPage,
+										optionsValue: 'code',
+										columns: columns,
+										multiple: false,
+										value: toppageSelectedCode
+									}"></table>
+							</div></td>
+						<td id="contents-right">
+							<table id="tableRight">
+								<tr data-bind="with: topPageModel">
+									<td class="contentsRL">
+										<div id="lbl_code_name"
+											data-bind="ntsFormLabel: {required: true}">
+											<label>言語<br /></label>
+										</div>
+									</td>
+									<td colspan = "2" class="pad_left_20">
+										<div id="combo-box" tabindex="1"
+											data-bind="ntsComboBox: {
+												options: $parent.languageListOption,
+												optionsValue: 'code',
+												value: $parent.languageSelectedCode,
+												optionsText: 'name',
+												enable: true,
+												columns: [
+														{ prop: 'name', length: 10 },
+													]}"></div>
+									</td>
+								</tr>
+								<tr data-bind="with: topPageModel">
+									<td class="contentsRL">
+										<div id="lbl_code_name"
+											data-bind="ntsFormLabel: {constraint : ['TopPageCode','TopPageName'],required: true}">
+											<label>#{i18n.getText('CCG015_13')}<br /></label>
+										</div>
+									</td>
+									<td class="contentsRR pad_left_20"><input tabindex="2" id="inp_code"
+										class="nts-input tr40 save-error"
+										data-bind="ntsTextEditor: {
+											name: '#[CCG015_42]',
+											value: topPageCode,
+											enable: $parent.isNewMode(),
+											required:true,
+											constraint: 'TopPageCode'}" />
+									</td>
+									<td class = "pad_left_20"><input tabindex="3" id="inp_name"
+										class="nts-input tr240 save-error"
+										data-bind="ntsTextEditor: {
+											name: '#[CCG015_43]',
+											value: topPageName,
+											enable: true,
+											required: true,
+											constraint: 'TopPageName'}" />
+									</td>
+								</tr>
+
+								<tr data-bind="with: topPageModel">
+									<td><button tabindex="4"
+											data-bind=" click: $parent.openLayoutSettingDialog.bind($parent) ,enable: !$parent.isNewMode()"
+											class="btn_margin_top x-large">#{i18n.getText('CCG015_14')}</button></td>
+								</tr>
+								<tr>
+									<td colspan="3" data-bind="visible: true">
+										<div class="preview-area">
+											<div class="preview-container">
+												<iframe id="preview-iframe"></iframe>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+
+						</td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -256,7 +256,7 @@ module nts.uk.ui {
                 return subWindow;
             }
 
-            getShared(key: string): any {
+            getShared(key: string): any {               
                 return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
             }
 
@@ -275,11 +275,11 @@ module nts.uk.ui {
                 else {
                     transferData = data;
                 }
-
+				
                 if (persist || isRoot) {
-                    this.shared[key] = data;
+                    this.shared[key] = transferData;
                 } else {
-                    this.localShared[key] = data;
+                    this.localShared[key] = transferData;
                 }
             }
 

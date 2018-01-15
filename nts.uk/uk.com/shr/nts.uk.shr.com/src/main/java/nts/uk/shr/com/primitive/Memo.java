@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * メモ
  */
-@StringMaxLength(1000)
+@StringMaxLength(500)
 public class Memo extends StringPrimitiveValue<Memo> {
 
 	/** serialVersionUID */

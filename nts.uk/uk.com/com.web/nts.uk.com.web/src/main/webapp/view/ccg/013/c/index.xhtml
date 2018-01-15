@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 850, height: 650 };</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.portal.dom.webmenu.TitleBarName
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ccg013.c.style.css" />
+			<com:scriptfile path="/view/ccg/013/base/base.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="ccg013.c.start.js" />
+			<com:scriptfile path="ccg013.c.service.js" />
+			<com:scriptfile path="ccg013.c.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="contents-area">
+				<table class="control">
+					<tr>
+						<td colspan="5" id="description"><span>#{i18n.getText('CCG013_30')}</span></td>
+					</tr>
+					<tr>
+						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_31')}</div></td>
+						<td><input id="nameTitleBar" tabindex="1"
+							data-name="#{i18n.getText('CCG013_50')}"
+							data-bind="ntsTextEditor: {name:'#[CCG013_50]', required: true, value: nameTitleBar, constraint: 'TitleBarName'}, hasFocus: true" /></td>
+						<td><div class="labelRight"
+								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
+						<td><div id="colorpicker1" tabindex="2"
+								data-name="#{i18n.getText('CCG013_19')}"
+								data-bind="ntsColorPicker: {name:'#[CCG013_19]', value: letterColor, enable: true, width: 50, required: true}" /></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_33')}</div></td>
+						<td>
+							<div tabindex="3"
+								data-bind="ntsRadioBoxGroup: {
+										options: itemTitleAtr,
+										optionsValue: 'value',
+										optionsText: 'titleAtrName',
+										value: selectedTitleAtr,	
+										enable: true}">
+							</div>
+						</td>
+						<td>
+							<div class="labelRight"
+								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_23')}</div>
+						</td>
+						<td>
+							<div id="colorpicker2" tabindex="4"
+								data-name="#{i18n.getText('CCG013_19')}"
+								data-bind="ntsColorPicker: {name:'#[CCG013_19]', value: backgroundColor, enable: true, width: 50,required: true}" />
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td colspan="2" rowspan="10">
+							<div id="listTitle">
+								<div id="titleMenu" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_37')}</div>
+								<div id="titleSeach" tabindex="5"
+									style="width: 340px; margin-bottom: 10px;"
+									data-bind="ntsSearchBox: {
+											searchMode: 'filter',
+											targetKey: 'titleCode', 
+											comId: 'multi-list', 
+											items: listTitleMenu, 
+											selected: currentTitleMenu, 
+											selectedKey: 'titleCode', 
+											fields: ['titleName', 'titleCode'], 
+											mode: 'igGrid',
+											enable: enableGrid}" />
+								<table id="multi-list"
+									data-bind="ntsGridList: {
+											height: 230,
+											options: listTitleMenu,
+											optionsValue: 'titleCode',
+											columns: columns,
+											enable: enableGrid,
+											value: currentTitleMenu}">
+								</table>
+							</div>
+						</td>
+						<td style="vertical-align: top;">
+							<div class="labelRight" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_41')}</div>
+						</td>
+						<td colspan="2" style="vertical-align: top;">
+							<div id="file_upload" tabindex="6"
+								data-bind="ntsFileUpload:{
+								filename: filename,
+								accept: accept,
+								text :textId, 
+								onchange: uploadFile.bind($data)}">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td class="col2"><span id="imageName" tabindex="7"
+							data-bind="text:imageName"></span></td>
+						<td class="pull-right" style="vertical-align: top;">
+							<div><button id="delBtn" tabindex="8"
+								class="danger" data-bind="click: deleteFile, enable: isDelete()">#{i18n.getText('CCG030_5')}</button></div>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td style="vertical-align: top;" id="imageSize" colspan="2"><label
+							data-bind="text: imageSize"></label></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td id="liveview" tabindex="9" colspan="2"></td>
+					</tr>
+				</table>
+			</div>
+			<div id="functions-area-bottom">
+				<button class=" x-large proceed" tabindex="10"
+					data-bind="click : submit">#{i18n.getText('CCG013_28')}</button>
+				<button tabindex="11" data-bind="click : cancel_Dialog">#{i18n.getText('CCG013_29')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

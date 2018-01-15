@@ -1,0 +1,48 @@
+body {
+	overflow-x: hidden;
+}
+
+.cell {
+	vertical-align: top;
+}
+.ntsControl {
+	margin-top: 10px;
+	display: block !important;
+}
+.ntsRadioBox:FIRST-CHILD {
+	vertical-align: bottom;
+}
+.ntsRadioBox:LAST-CHILD {
+	margin-top: 10px;
+}
+.label:FIRST-CHILD {
+	margin-left: 15px;
+	margin-top: 5px;
+	font-size: large;
+	width: 300px;
+}
+.table {
+	margin-top: 10px;
+}
+.column1 > div {
+	margin-left: 20px;
+}
+.dateTime-input {
+	display: inline-block;
+}
+.table:NTH-CHILD(2) > .cell:NTH-CHILD(2) > label:NTH-CHILD(2) {
+	margin-left:5px;
+	margin-right:5px;
+}
+#functions-area-bottom > button {
+	margin-right: 10px;
+}
+.datepicker-container.datepicker-dropdown {
+	margin-top: -90px;
+    margin-left: 110px;
+}
+.itemName{
+	width: 150px;
+	float: left;
+	margin-left: 20px;
+}

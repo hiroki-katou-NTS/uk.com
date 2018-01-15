@@ -1,0 +1,28 @@
+#scrC table {
+	border-collapse: collapse;
+}
+
+#scrC table th, #scrC table td{
+	border: 1px solid  black;
+}
+
+#scrC table td > span > input{
+	background-color:transparent;
+    border: 0px solid;
+    text-align: center;
+}
+
+#scrC.contents-area {
+	display: flex;
+	padding-top: 30px;
+}
+
+#scrC #component-items-list {
+	padding-left:120px;
+	padding-right: 120px;
+}
+
+#scrC #includeTableMonthlyDay > div:nth-child(2) {
+	padding-top: 20px;
+	padding-bottom: 20px
+}

@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 810, height: 655 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:stylefile path="kdw001.e.style.css" />
+			<com:scriptfile path="../share/share001.vm.js" />
+			<com:scriptfile path="kdw001.e.start.js" />
+			<com:scriptfile path="kdw001.e.service.js" />
+			<com:scriptfile path="kdw001.e.vm.js" />
+			<com:scriptfile set="IGNITE" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="control-group cf">
+					<table class="info-table">
+						<tr>
+							<td class="fix-width">#{i18n.getText('KDW001_24')}</td>
+							<td><span data-bind="text: startTime"></span></td>
+						</tr>
+						<tr>
+							<td class="fix-width">#{i18n.getText('KDW001_25')}</td>
+							<td><span data-bind="text: endTime"></span></td>
+						</tr>
+						<tr>
+							<td class="fix-width">#{i18n.getText('KDW001_26')}</td>
+							<td><span id="elapseTime"></span></td>
+						</tr>
+						<tr>
+							<td class="fix-width" rowspan="4">#{i18n.getText('KDW001_27')}</td>
+							<td data-bind="css: {disappear: visibleDailiCreate()}" >
+								<span class="process-name">#{i18n.getText('KDW001_9')}</span>
+								<span class="process-count"><span data-bind="text: dailyCreateCount">0</span> / <span data-bind="text: dailyCreateTotal">0</span>人</span>
+								<span class="process-status" data-bind="text: dailyCreateStatus"></span>
+								<span class="process-error" data-bind="text: dailyCreateHasError"></span>
+							</td>
+						</tr>
+						<tr data-bind="css: {disappear: visibleDailiCalculation()}">
+							<td>
+								<span class="process-name">#{i18n.getText('KDW001_10')}</span>
+								<span class="process-count"><span>0</span> / <span>0</span>人</span>
+								<span class="process-status"></span>
+								<span class="process-error"></span>
+							</td>
+						</tr>
+						<tr data-bind="css: {disappear: visibleApproval()}">
+							<td>
+								<span class="process-name">#{i18n.getText('KDW001_11')}</span>
+								<span class="process-count"><span>0</span> / <span>0</span>人</span>
+								<span class="process-status"></span>
+								<span class="process-error"></span>
+							</td>
+						</tr>
+						<tr data-bind="css: {disappear: visibleMonthly()}">
+							<td>
+								<span class="process-name">#{i18n.getText('KDW001_12')}</span>
+								<span class="process-count"><span>0</span> / <span>0</span>人</span>
+								<span class="process-status"></span>
+								<span class="process-error"></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+				
+				<div class="control-group cf">
+				<label class="setting-info">#{i18n.getText('KDW001_29')}</label>
+					<table class="info-table">
+						<tr>
+							<td class="fix-width">#{i18n.getText('KDW001_15')}</td>　
+							<td><span data-bind="text: startPeriod"></span> ～ <span data-bind="text: endPeriod"></span></td>
+						</tr>
+					</table>
+				</div>
+				
+				<div class="log-selection control-group valign-center">
+					<label class="disappear" data-bind="css: {disappear: !isComplete()}">#{i18n.getText('KDW001_30')}</label>
+					<div class="disappear" tabindex="1" id="combo-box"
+						data-bind="css: {disappear: !isComplete()},
+						ntsComboBox: {
+						options: executionContents,
+						optionsValue: 'value',　
+						visibleItemsCount: 5,
+						value: selectedExeContent,
+						optionsText: 'localizedName',
+						enable: true,
+						columns: [
+							{ prop: 'localizedName', length: 4 }
+						]}"></div>
+						
+					<!-- <button class="pull-right disappear" tabindex="2" data-bind="css: {disappear: !isComplete()}, click: exportLog">#{i18n.getText('KDW001_31')}</button> -->
+				</div>
+				<div class="place-holder">
+					<table id="single-list" class="disappear"
+						data-bind="css: {disappear: !isComplete()},
+						ntsGridList: {
+							dataSource: errorMessageInfo,
+							primaryKey: 'GUID',
+							columns: columns,
+							multiple: false,
+							value: currentCode,
+							showNumbering: true,
+							rows: 10
+						}"></table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="3" class="disable-button" data-bind="click: cancelTask,enable : enableCancelTask">#{i18n.getText('KDW001_39')}</button>
+				<button tabindex="4" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

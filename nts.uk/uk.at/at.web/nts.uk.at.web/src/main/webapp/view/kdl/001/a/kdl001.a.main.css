@@ -1,0 +1,67 @@
+.control-group.valign-center > * { vertical-align: middle; }
+.control-group.valign-top > * { vertical-align: top; }
+.control-group.valign-bottom > * { vertical-align: bottom; }
+body {
+	overflow-x: hidden;
+}
+.control-group { 
+	margin: 5px;
+	margin-left: 15px; 
+}
+.label:FIRST-CHILD{
+	font-size: large;
+	margin-bottom: 5px;
+	margin-left: 20px;
+}
+#search-div {
+	padding-left: 213px;
+	margin-bottom: 10px;
+}
+#search-div span:NTH-CHILD(3) {
+/* 	font-size: x-large; */
+	margin-left: 10px;
+	margin-right: 10px;
+}
+.ui-igcombo-wrapper {
+	width: 90px;
+}
+input.ui-igcombo-field {
+	padding-left: 10px;
+}
+div.nts-column{
+	padding-left: 10px;
+}
+#search-div button:NTH-CHILD(6) {
+	margin-left: 20px;
+	width: 60px;
+}
+#search-div button:LAST-CHILD {
+	margin-left: 170px;
+}
+#day-list-div {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+#day-list-div th, #day-list-div td {
+	padding-left: 10px;
+}
+#day-list-tbl > tbody > tr > td:LAST-CHILD {
+    height: 40px;
+}
+#day-list-tbl > tbody > tr > td:LAST-CHILD > span{
+   	display: inline-block;
+}
+#functions-area-bottom > button {
+	margin-right: 10px;
+}
+
+#contents-area{
+	overflow: hidden !important;
+}
+.inputTime{
+	width: 100px;
+    text-align: center !important;
+}
+.label{
+	margin-left: 10px;
+}

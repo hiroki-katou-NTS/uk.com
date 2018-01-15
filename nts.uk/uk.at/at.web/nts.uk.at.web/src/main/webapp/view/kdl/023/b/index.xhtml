@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../base/kdl023.base.index.xhtml">
+		<ui:define name="extended-header">
+			<com:scriptfile path="kdl023.b.vm.js" />
+			<com:scriptfile path="kdl023.b.start.js" />
+		</ui:define>
+		<ui:define name="period-calendar-header">
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_23')}</div>
+			<span style="margin-left: 20px" data-bind="text: calendarStartDate.format('YYYY/MM/DD')"></span>
+			<span>#{i18n.getText('KDL023_24')}</span>
+			<span data-bind="text: calendarEndDate.format('YYYY/MM/DD')"></span>
+		</ui:define>
+		<ui:define name="extended-function">
+			<button tabindex="13" id="btnDecide" class="x-large proceed" data-bind="click: decide">#{i18n.getText('KDL023_21')}</button>
+			<button tabindex="14" id="btnCancel" class="large" data-bind="click: closeDialog">#{i18n.getText('KDL023_22')}</button>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

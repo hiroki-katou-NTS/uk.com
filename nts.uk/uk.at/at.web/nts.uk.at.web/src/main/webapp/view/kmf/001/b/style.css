@@ -1,0 +1,21 @@
+@CHARSET "UTF-8";
+
+#priorityTable  th, td {
+	border: 1px solid #555555;
+	padding-left: 4px;
+	font-size: 20px;
+}
+
+#priorityTable  tr {
+	height: 35px !important;
+}
+
+#priorityTable  th {
+	background-color: #CCFF99;
+}
+
+.inputPriority {
+	padding-left: 0px !important;
+}
+
+

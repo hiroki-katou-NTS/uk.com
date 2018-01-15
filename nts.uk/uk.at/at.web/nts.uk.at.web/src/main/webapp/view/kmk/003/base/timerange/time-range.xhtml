@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	
+	<div class="time-range-editor" style="width: 238px; height: 31px" data-bind="attr:{id: elementId, 'data-start': startInputId, 'data-end': endInputId, 'data-param': paramId}">
+		<div class="time-range-custom"><input id="start-time" data-bind="attr: {tabindex: tabindex}, ntsTimeWithDayEditor: {
+			value: startTime,
+			constraint: 'TimeWithDayAttr',
+			name: startTimeNameId,
+			option: {width: '60', textalign: 'center'},
+			required: required,
+			enable: enable,
+			readonly: false,
+			mode: 'time',
+			inputFormat: inputFormat,
+			immediate: true}" />
+		</div>
+		
+		<div class="time-range-custom" style="margin: 6px 10px;"><span>～</span></div>
+		
+		<div class="time-range-custom"><input id="end-time" data-bind="attr: {tabindex: tabindex}, ntsTimeWithDayEditor: {
+			value: endTime,
+			constraint: 'TimeWithDayAttr',
+			name: endTimeNameId,
+			option: {width: '60', textalign: 'center'},
+			required: required,
+			enable: enable,
+			readonly: false,
+			mode: 'time',
+			inputFormat: inputFormat,
+			immediate: true}" />
+		</div>
+	</div>
+	
+</ui:composition>

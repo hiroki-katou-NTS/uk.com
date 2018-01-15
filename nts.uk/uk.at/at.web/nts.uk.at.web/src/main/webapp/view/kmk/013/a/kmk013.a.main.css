@@ -1,0 +1,62 @@
+#contents-area {
+	width: 1200px !important;
+}
+
+.boder-style {
+	float: left;
+	clear: right;
+	margin-top: 10px;
+}
+
+.contents-area-left {
+	height: 400px;
+	width: 240px;
+	margin-left: 20px;
+}
+
+.contents-area-middle {
+	height: 200px;
+	width: 306px;
+	text-align: center;
+}
+
+.contents-area-right {
+    height: 200px;
+    width: 198px;
+    text-align: center;
+}
+
+.contents-area-caret-right {
+    height: 168px;
+    width: 51px;
+    float: left;
+    clear: right;
+    padding-top: 0px;
+}
+
+.lbl-before-ready {
+	padding: 20px;
+	color: gray;
+	background: #dcf4e7;
+}
+
+.panel-custom-font-size {
+	font-size: 2em;
+}
+
+.lbl-unit-setting-explanation, .lbl-general-labor-explanation {
+	margin-top: 7px;
+}
+
+.btn-area-middle, .btn-deformed-labor {
+	margin-top: 10px;
+	width: 175px;
+}
+
+.contents-area-right-caret {
+	margin-left: 10px;
+}
+
+.lbl-general-labor-explanation-margin-top {
+	margin-top: 30px;
+}

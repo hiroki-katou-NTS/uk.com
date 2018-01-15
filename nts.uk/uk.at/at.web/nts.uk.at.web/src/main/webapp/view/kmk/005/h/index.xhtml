@@ -1,0 +1,20 @@
+<div class="contents-area cf">
+	<div id="tree-grid"></div>
+	<div class="information">
+		<div>#{i18n.getText('KMK005_75',['#Com_Workplace'])}</div>
+		<hr />
+		<div class="controls-group" data-bind="with: model">
+			<div class="form-group">
+				<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK005_76',['#Com_Workplace'])}</div>
+				<label data-bind="text: wname">H1_4</label>
+			</div>
+			<div class="form-group">
+				<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK005_73')}</div>
+				<button
+					data-bind="click: $parent.openBonusPaySettingDialog.bind($parent)">#{i18n.getText('KMK005_74')}</button>
+				<label data-bind="text: id">H1_7</label> <label
+					data-bind="text: name">H1_8</label>
+			</div>
+		</div>
+	</div>
+</div>

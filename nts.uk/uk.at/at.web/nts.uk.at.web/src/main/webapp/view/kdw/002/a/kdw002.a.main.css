@@ -1,0 +1,60 @@
+#functions-area>button {
+	width: 80px;
+}
+
+#functions-area {
+	height: 80px;
+}
+
+.myLinkButton {
+	margin-top: 20px;
+	display: inline-block;
+}
+
+.myLinkButtonIcon {
+	float: left;
+}
+
+.myLinkButtonText {
+	background-color: #E2F79F;
+	width: 130px;
+	margin: 1px 0px 0px 15px;
+	padding: 6px 0px;
+	border: 2px solid #E2F79F;
+	border-radius: 5px;
+}
+
+.myLinkButtonText>a {
+	text-decoration: none;
+	margin-left: 5px;
+	color: black;
+}
+
+.proceed {
+	margin-left: 80px !important;
+}
+
+.mylabel {
+	margin-left: 30px;
+}
+
+.component-area {
+	margin-bottom: 40px;
+	display: block;
+}
+.headerColor {
+	margin-left: 140px;
+}
+
+.unitRounding {
+	margin-left: 142px;
+}
+.leftpanel {
+	float: left;
+}
+.clear-btn {
+	display: none !important;
+}
+table#gridList tbody td:nth-child(1) {
+    text-align: right;
+}

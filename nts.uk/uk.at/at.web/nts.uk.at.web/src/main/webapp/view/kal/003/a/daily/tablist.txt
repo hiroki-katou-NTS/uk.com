@@ -1,0 +1,3 @@
+check conditions (チェック条件)
+daily error alarm (日別実績のエラーアラーム)
+fixed check conditions (固定のチェック条件)

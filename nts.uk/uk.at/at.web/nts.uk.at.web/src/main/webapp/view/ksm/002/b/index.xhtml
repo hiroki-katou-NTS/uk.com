@@ -1,0 +1,54 @@
+
+	<div class="contents-area">
+		<!--LEFT CONTENT -->
+		<div class="left-content">
+			<div id="tree-grid"></div>
+		</div>
+		<!--RIGHT CONTENT -->
+		<div class="right-content">
+			<div>
+				<div class="workplaceInfoB" data-bind="ntsFormLabel: {}"><label data-bind="text: workPlaceText"></label></div>	
+				<label data-bind="text: currentWorkPlace().name"></label>	
+			</div>
+			<hr class="hrInfoB"></hr>
+			<div class="panel panel-frame">
+				<label class="info">#{i18n.getText('KSM002_10')}</label><BR />
+				<div class="multiCheckPanel" data-bind="ntsMultiCheckBox: {
+								options: checkBoxList,
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: selectedIds,
+								enable: true }">
+				</div>
+			</div>
+			<div class="calendarContent">
+				<div class="nts-calendar-container">
+					<div class="nts-calendar-container">
+						<div class="nts-calendar-header">
+							<div data-bind="ntsDatePicker: {
+							value: yearMonthPicked, 
+							dateFormat: 'yearmonth', 
+							valueFormat: 'YYYYMM', 
+							defaultClass: 'round-orange',
+							showJumpButtons: true,
+							required: true}"></div>
+						</div>
+						<div data-bind="with: calendarPanel">
+							<div id="calendar1" data-bind="ntsCalendar: {
+							optionDates: optionDates, 
+							yearMonth: yearMonth,
+							firstDay: firstDay, 
+							startDate: startDate, 
+							endDate: endDate,
+							workplaceId: workplaceId,
+							workplaceName: workplaceName,
+							eventDisplay: eventDisplay,
+							eventUpdatable: eventUpdatable,
+							holidayDisplay: holidayDisplay,
+							cellButtonDisplay: cellButtonDisplay}"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>

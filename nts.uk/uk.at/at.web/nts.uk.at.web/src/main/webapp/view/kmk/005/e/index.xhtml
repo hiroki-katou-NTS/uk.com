@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 1240, height: 750 };</script>
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="kmk005.e.main.css" />
+				<com:scriptfile path="kmk005.e.service.js" />
+				<com:scriptfile path="kmk005.e.vm.js" />
+				<com:scriptfile path="kmk005.e.start.js" />
+				
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+					<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+						<div class="tab-content-1">
+							<div id="gridlist-div">
+								<table id="table-panel-1">
+									<thead>
+										<tr>
+											<th>#{i18n.getText('KMK005_43')}</th>
+											<th>#{i18n.getText('KMK005_44')}</th>
+											<th>#{i18n.getText('KMK005_45')}</th>
+											<th>#{i18n.getText('KMK005_46')}</th>
+										</tr>
+										<tr>
+											<th></th>
+											<th>
+												<p>#{i18n.getText('KMK005_47')}</p>	
+												<p class="textBody explanAutoCalculation"></p>
+												<p>#{i18n.getText('KMK005_49')}</p>
+												<p class="textBody explanNotAutoCalculation"></p>
+											</th>
+											<th colspan="2">
+												<p>#{i18n.getText('KMK005_47')}</p>	
+												<p class="textBody explanAutoCalculation"></p>
+												<p>#{i18n.getText('KMK005_49')}</p>
+												<p class="textBody explanNotAutoCalculationSpec"></p>
+												<p>#{i18n.getText('KMK005_52')}</p>
+												<p class="textBody explanAutoSetOvertime"></p>
+											</th>
+										</tr>
+									</thead>
+									<tbody data-bind="foreach: bonusPayTimeItemSettings">
+										<tr>
+											<td data-bind="text: name"></td>
+											<td>
+												<div class="cf switch-1" data-bind="ntsSwitchButton: {
+														name: '#[KMK005_20]',
+														options: ko.observableArray([
+															{ code: 0, name: '#{i18n.getText('KMK005_54')}' },
+												            { code: 1, name: '#{i18n.getText('KMK005_55')}' }
+												        ]),
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: worktimeCalSettingAtr,
+														enable: true }"></div>	
+											</td>
+											<td>
+												<div class="cf switch-2" data-bind="ntsSwitchButton: {
+														name: '#[KMK005_20]',
+														options: ko.observableArray([
+															{ code: 0, name: '#{i18n.getText('KMK005_54')}' },
+												            { code: 1, name: '#{i18n.getText('KMK005_55')}' },
+												            { code: 2, name: '#{i18n.getText('KMK005_56')}' }
+												        ]),
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: overtimeCalSettingAtr,
+														enable: true }"></div>			
+											</td>
+											<td>
+												<div class="cf switch-3" data-bind="ntsSwitchButton: {
+														name: '#[KMK005_20]',
+														options: ko.observableArray([
+															{ code: 0, name: '#{i18n.getText('KMK005_54')}' },
+												            { code: 1, name: '#{i18n.getText('KMK005_55')}' },
+												            { code: 2, name: '#{i18n.getText('KMK005_57')}' }
+												        ]),
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: holidayCalSettingAtr,
+														enable: true }"></div>				
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="tab-content-2">
+							<div id="gridlist-div">
+								<table id="table-panel-2">
+									<thead>
+										<tr>
+											<th>#{i18n.getText('KMK005_43')}</th>
+											<th>#{i18n.getText('KMK005_44')}</th>
+											<th>#{i18n.getText('KMK005_45')}</th>
+											<th>#{i18n.getText('KMK005_46')}</th>
+										</tr>
+										<tr>
+											<th></th>
+											<th>
+												<p>#{i18n.getText('KMK005_47')}</p>	
+												<p class="textBody explanAutoCalculation"></p>
+												<p>#{i18n.getText('KMK005_49')}</p>
+												<p class="textBody explanNotAutoCalculation"></p>
+											</th>
+											<th colspan="2">
+												<p>#{i18n.getText('KMK005_47')}</p>	
+												<p class="textBody explanAutoCalculation"></p>
+												<p>#{i18n.getText('KMK005_49')}</p>
+												<p class="textBody explanNotAutoCalculationSpec"></p>
+												<p>#{i18n.getText('KMK005_52')}</p>
+												<p class="textBody explanAutoSetOvertime"></p>
+											</th>
+										</tr>
+									</thead>
+									<tbody data-bind="foreach: specBonusPayTimeItemSettings">
+										<tr>
+											<td data-bind="text: name"></td>
+											<td>
+												<div class="cf switch-1" data-bind="ntsSwitchButton: {
+														name: '#[KMK005_20]',
+														options: ko.observableArray([
+															{ code: 0, name: '#{i18n.getText('KMK005_54')}' },
+												            { code: 1, name: '#{i18n.getText('KMK005_55')}' }
+												        ]),
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: worktimeCalSettingAtr,
+														enable: true }"></div>	
+											</td>
+											<td>
+												<div class="cf switch-2" data-bind="ntsSwitchButton: {
+														name: '#[KMK005_20]',
+														options: ko.observableArray([
+															{ code: 0, name: '#{i18n.getText('KMK005_54')}' },
+												            { code: 1, name: '#{i18n.getText('KMK005_55')}' },
+												            { code: 2, name: '#{i18n.getText('KMK005_56')}' }
+												        ]),
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: overtimeCalSettingAtr,
+														enable: true }"></div>			
+											</td>
+											<td>
+												<div class="cf switch-3" data-bind="ntsSwitchButton: {
+														name: '#[KMK005_20]',
+														options: ko.observableArray([
+															{ code: 0, name: '#{i18n.getText('KMK005_54')}' },
+												            { code: 1, name: '#{i18n.getText('KMK005_55')}' },
+												            { code: 2, name: '#{i18n.getText('KMK005_57')}' }
+												        ]),
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: holidayCalSettingAtr,
+														enable: true }"></div>				
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>	
+				</div>
+				<div id="functions-area-bottom">
+					<button class="x-large proceed" data-bind="click: saveData">#{i18n.getText('KMK005_32')}</button>
+					<button data-bind="click: closeDialog">#{i18n.getText('KMK005_33')}</button>	
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="base/kdl023.base.service.js" />
+			<com:scriptfile path="base/kdl023.base.vm.js" />
+			<com:scriptfile path="test.vm.js" />
+			<com:scriptfile path="test.start.js" />
+			<style>
+				#returned-list td {border: solid grey 1px}
+				td {padding: 5px;}
+			</style>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button tabindex="1" id="asdv" class="large"
+					data-bind="click: gotoA">dialog A</button>
+				<button tabindex="2" class="large" data-bind="click: gotoB, enable: enableB">dialog B</button>
+			</div>
+			<div id="contents-area" data-bind="visible: true" style="display: none">
+			<table>
+				<tr>
+					<td>
+						<table>
+							<tbody>
+							<com:ko tag="with" bind="reflectionSetting">
+							<tr>
+								<td>Select pattern:</td>
+								<td><div tabindex="3" id="cbb-daily-pattern-list"
+										data-bind="ntsComboBox: {
+											options: $parent.patternList,
+											optionsValue: 'patternCode',
+											value: selectedPatternCd,
+											optionsText: 'patternName',
+											enable: true,
+											columns: [
+												{ prop: 'patternCode', length: 3 },
+												{ prop: 'patternName', length: 5 }
+											]}"></div>
+								</td>
+							</tr>
+							<tr data-bind="with: statutorySetting">
+								<td>
+									<div tabindex="2" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_6')}:' }"></div>
+								</td>
+								<td>
+									<div tabindex="3" id="cbb-work-type-statutory"
+											data-bind="ntsComboBox: {
+													name: '#[KDL023_17]',
+													options: $parents[1].listWorkType,
+													optionsValue: 'workTypeCode',
+													optionsText: 'name',
+													value: workTypeCode,
+													enable: useClassification,
+													columns: [
+														{ prop: 'workTypeCode', length: 3 },
+														{ prop: 'name', length: 5 },
+													]}">
+									</div>
+								</td>
+							</tr>
+							<tr data-bind="with: nonStatutorySetting">
+								<td>
+									<div tabindex="4" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_7')}:' }"></div>
+								</td>
+								<td>
+									<div tabindex="5" id="cbb-work-type-non-statutory"
+											data-bind="ntsComboBox: {
+													name: '#[KDL023_18]',
+													options: $parents[1].listWorkType,
+													optionsValue: 'workTypeCode',
+													optionsText: 'name',
+													value: workTypeCode,
+													enable: useClassification,
+													columns: [
+														{ prop: 'workTypeCode', length: 3 },
+														{ prop: 'name', length: 5 },
+													]}">
+									</div>
+								</td>
+							</tr>
+							<tr data-bind="with: holidaySetting">
+								<td>
+									<div tabindex="6" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_8')}:' }"></div>
+								</td>
+								<td>
+									<div tabindex="7" id="cbb-work-type-holiday"
+											data-bind="ntsComboBox: {
+													name: '#[KDL023_19]',
+													options: $parents[1].listWorkType,
+													optionsValue: 'workTypeCode',
+													optionsText: 'name',
+													value: workTypeCode,
+													enable: useClassification,
+													columns: [
+														{ prop: 'workTypeCode', length: 3 },
+														{ prop: 'name', length: 5 },
+													]}">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td style="vertical-align: top">
+									#{i18n.getText('KDL023_10')}:
+								</td>
+								<td>
+									<div class="control-group">
+										<label class="ntsRadioBox"><input type="radio"
+											name="textRadio"
+											data-bind="name:'#[KDL023_10]', checkedValue: 0, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+											<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
+										</label>
+									</div>
+									<div class="control-group">
+										<label class="ntsRadioBox"><input type="radio"
+											name="textRadio"
+											data-bind="name:'#[KDL023_10]', checkedValue: 1, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+											<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
+										</label>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>Pattern start date:</td>
+								<td><div data-bind="ntsDatePicker: {value: patternStartDate, dateFormat: 'YYYY-MM-DD'}"></div></td>
+							</tr>
+							<tr>
+								<td>Start date (*):</td>
+								<td><div data-bind="ntsDatePicker: {value: calendarStartDate, dateFormat: 'YYYY-MM-DD'}"></div></td>
+							</tr>
+							<tr>
+								<td>End date (*):</td>
+								<td><div data-bind="ntsDatePicker: {value: calendarEndDate, dateFormat: 'YYYY-MM-DD'}"></div></td>
+							</tr>
+							</com:ko>
+							</tbody>
+						</table>
+						<br/>
+						(*) Required for dialog B.<br/>
+						(*) Start date must be before end date.<br/>
+					</td>
+					<td style="vertical-align: top; padding-left: 40px">
+						<div style="font-weight: bold;">Returned data:</div>
+						<com:ko tag="with" bind="returnedSetting">
+							<table>
+								<tr>
+									<td>Selected code:</td>
+									<td data-bind="text: selectedPatternCd"></td>
+								</tr>
+								<tr>
+									<td>法定内休日:</td>
+									<td data-bind="text: statutorySetting.useClassification"></td>
+									<td data-bind="text: statutorySetting.workTypeCode"></td>
+								</tr>
+								<tr>
+									<td>法定外休日:</td>
+									<td data-bind="text: nonStatutorySetting.useClassification"></td>
+									<td data-bind="text: nonStatutorySetting.workTypeCode"></td>
+								</tr>
+								<tr>
+									<td>祝日:</td>
+									<td data-bind="text: holidaySetting.useClassification"></td>
+									<td data-bind="text: holidaySetting.workTypeCode"></td>
+								</tr>
+								<tr>
+									<td>反映方法:</td>
+									<td data-bind="text: reflectionMethod"></td>
+								</tr>
+								<tr>
+									<td>Pattern start date:</td>
+									<td data-bind="text: patternStartDate"></td>
+								</tr>
+							</table>
+						</com:ko>
+					</td>
+				</tr>
+			</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

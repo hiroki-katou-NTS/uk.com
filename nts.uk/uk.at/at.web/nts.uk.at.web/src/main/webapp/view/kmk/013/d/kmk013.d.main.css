@@ -1,0 +1,55 @@
+.row-1 {
+	margin-top: 15px;
+	margin-left: 27px;
+}
+
+.name-switch {
+	display: inline-block;
+	width: 130px;
+}
+
+.goback {
+	margin-right: 35px;
+}
+
+.cf>button.nts-switch-button {
+	width: 90px;
+}
+
+.d3_name {
+	margin-left: 24px;
+	margin-bottom: -7px;
+	margin-top: 8px;
+}
+
+hr {
+	margin-left: 24px;
+}
+
+#d3_7, #d4_7 {
+	margin-left: 95px;
+}
+
+.ntsRadioBox {
+	margin-left: 52px;
+}
+
+#left-table {
+	/* width: 600px; */
+	width: 400px;
+	vertical-align: top;
+}
+
+#right-table {
+	width: 320px;
+}
+
+#d4_1 {
+	margin-top: 86px;
+}
+
+#d4_1.form-label>label {
+	max-height: 100%;
+	font-size: 14px;
+	line-height: 0px;
+}

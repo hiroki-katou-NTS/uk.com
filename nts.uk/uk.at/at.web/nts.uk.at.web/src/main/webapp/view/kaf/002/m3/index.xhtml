@@ -1,0 +1,42 @@
+<div class="table">
+	<div class="cell m3-column1">
+		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_18')}</div>
+	</div>
+	<div class="cell" id="m3-div">
+		<div id="m3-backgroud"></div>
+		<table id="m3-table">
+			<thead>
+				<tr>
+					<td></td>
+					<td>
+						<span class="label m3-label">#{i18n.getText('KAF002_27')}</span>
+						<button data-bind="ntsHelpButton: {image: '/view/kaf/002/m3/m3-msg.PNG', position: 'right top', enable: true }">?</button>
+					</td>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: appStampList">
+				<tr>
+					<td>
+						<div>
+							<span class="label m3-label">Demo</span>
+						</div>
+					</td>
+					<td>
+						<span class="label m3-label m3-time-detail">Demo</span>
+						<div class="cf m3-switch" data-bind="ntsSwitchButton: {
+							name: '#[KAF002_28]',
+							options: ko.observableArray([
+					            { code: 0, name: '#{i18n.getText('KAF002_36')}' },
+					            { code: 1, name: '#{i18n.getText('KAF002_37')}' }
+					        ]),
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: cancelAtr,
+							enable: true }"></div>
+					</td>
+				</tr>	
+			</tbody>
+		</table>	
+		
+	</div>
+</div>

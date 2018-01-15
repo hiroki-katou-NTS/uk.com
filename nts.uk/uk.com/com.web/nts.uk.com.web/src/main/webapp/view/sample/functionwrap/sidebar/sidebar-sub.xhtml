@@ -21,6 +21,7 @@
 				<li><a data-id="1" href="#tabpanel-2" role="tab-navigator">操作</a></li>
 				<li><a data-id="2" href="#tabpanel-3" role="tab-navigator">切断</a></li>
 				<li><a data-id="3" href="#tabpanel-4" role="tab-navigator">接続</a></li>
+				<li><a data-id="3" href="#tabpanel-5" role="tab-navigator">Tabpanel Bug</a></li>
 				<li><a data-bind="click: testSideMenu" data-id="4">DoSomething</a></li>
 			</ul>
 			<div class="divider"></div>
@@ -110,6 +111,60 @@
 						</div>
 						<div class="tab-content-4">
 							<span>Tab Content 4</span><br/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tabpanel-5" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">接続</span>
+					<button class="proceed">操作</button>
+					<button>の間</button>
+					<button>操作がなかったため</button>
+					<button>接続を切断しました</button>
+				</div>
+				<div class="contents-area">
+					<h4 style="color: red;">Please don't remove until it is fixed</h4>
+					<div id="tab-panel" class="cf"
+						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
+						<div class="tab-content-1">
+							<span>Tab Content 1</span><br />
+						</div>
+						<div class="tab-content-2">
+							<span>Tab Content 2</span><br />
+						</div>
+						<div class="tab-content-3">
+							<span>Tab Content 3</span><br />
+						</div>
+						<div class="tab-content-4">
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+								Phasellus laoreet magna sed massa feugiat, non accumsan nunc
+								sollicitudin. Curabitur ligula nisl, rhoncus vitae feugiat nec,
+								consequat posuere ex. Aenean accumsan a orci non vulputate. Sed
+								fermentum metus vitae ex tristique, id cursus ex vehicula. Donec
+								gravida felis lectus, sed iaculis sapien rutrum eget. Aliquam
+								dui augue, ultricies non consequat ac, commodo vel mauris.
+								Pellentesque molestie placerat justo sed ullamcorper. Quisque at
+								suscipit mi, in mollis erat. Nulla congue ex eu ornare aliquet.
+								Cras laoreet, odio vel tempor interdum, diam mi placerat nisl,
+								in vehicula nisl mauris a sapien. Aenean id ex eros. Maecenas
+								volutpat arcu at dolor mattis tincidunt. Interdum et malesuada
+								fames ac ante ipsum primis in faucibus.</p>
+							<p>Curabitur pulvinar molestie libero, non rutrum quam
+								pharetra sed. Sed vel congue ex. Maecenas interdum lacus enim,
+								in laoreet metus blandit in. Etiam sem elit, ornare nec pulvinar
+								a, pellentesque sed dui. Pellentesque dignissim tortor id erat
+								eleifend congue. Suspendisse vitae dapibus sapien. Suspendisse
+								tristique risus in leo luctus sagittis. Nulla sodales, nisi ut
+								viverra pretium, diam libero pulvinar risus, id gravida orci
+								dolor gravida nisl. Praesent at consequat leo, et mattis ex.</p>
+							<p>Aliquam pharetra tempor neque sed feugiat. Morbi velit
+								quam, porttitor ac metus quis, sodales efficitur dui. Praesent
+								convallis ligula dui. Duis placerat dignissim egestas. Fusce
+								fermentum eleifend risus quis fermentum. Nullam vel dolor arcu.
+								Vivamus id varius arcu. Ut commodo risus erat, quis tincidunt
+								nisl tristique vitae. Maecenas in pulvinar odio. Sed feugiat
+								viverra congue.</p>
 						</div>
 					</div>
 				</div>

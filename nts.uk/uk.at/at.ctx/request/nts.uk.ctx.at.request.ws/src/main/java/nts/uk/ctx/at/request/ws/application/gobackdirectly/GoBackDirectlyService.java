@@ -1,0 +1,107 @@
+package nts.uk.ctx.at.request.ws.application.gobackdirectly;
+
+import javax.inject.Inject;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+
+import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.CheckInsertGoBackCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.CheckUpdateGoBackCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertApplicationGoBackDirectlyCommand;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateApplicationGoBackDirectlyCommand;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommandHandler;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectDetailDto;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectSettingDto;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyDto;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyFinder;
+import nts.uk.shr.com.context.AppContexts;
+
+@Path("at/request/application/gobackdirectly")
+@Produces("application/json")
+public class GoBackDirectlyService extends WebService {
+	@Inject
+	private GoBackDirectlyFinder goBackDirectlyFinder;
+	
+	@Inject 
+	private InsertGoBackDirectlyCommandHandler insertGoBackHandler;
+	
+	@Inject 
+	private CheckInsertGoBackCommandHandler checkInsertGoBackHandler;
+	
+	@Inject
+	private CheckUpdateGoBackCommandHandler checkUpdateGoBackHandler;
+
+	@Inject 
+	private UpdateGoBackDirectlyCommandHandler updateGoBackHandler;
+
+	/**
+	 * 
+	 * @return
+	 */
+	@POST
+	@Path("getGoBackDirectlyByAppID")
+	public GoBackDirectlyDto getGoBackDirectlyByAppID(String appID) {
+		return this.goBackDirectlyFinder.getGoBackDirectlyByAppID(appID);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@POST
+	@Path("getGoBackCommonSetting")
+	public GoBackDirectSettingDto getGoBackCommonSetting() {
+		String SID = AppContexts.user().employeeId();
+		return this.goBackDirectlyFinder.getGoBackDirectCommonSetting(SID);
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	@POST
+	@Path("getGoBackDirectDetail/{appID}")
+	public GoBackDirectDetailDto getGoBackDetailData(@PathParam("appID") String appID) {
+		return this.goBackDirectlyFinder.getGoBackDirectDetailByAppId(appID);
+	}
+	/**
+	 * insert
+	 * @param command
+	 */
+	@POST
+	@Path("insertGoBackDirectly")
+	public void insertGoBackData (InsertApplicationGoBackDirectlyCommand command) {
+		this.insertGoBackHandler.handle(command);
+	}
+	
+	/**
+	 * check before insert OR update
+	 * @param command
+	 */
+	@POST
+	@Path("checkBeforeChangeGoBackDirectly")
+	public void checkBeforeInsertGoBackData (InsertApplicationGoBackDirectlyCommand command) {
+		this.checkInsertGoBackHandler.handle(command);
+	}
+	
+	@POST
+	@Path("checkBeforeUpdateGoBackData")
+	public void checkBeforeUpdateGoBackData (InsertApplicationGoBackDirectlyCommand command) {
+		this.checkUpdateGoBackHandler.handle(command);
+	}
+	
+	
+	/**
+	 * update command
+	 * @param command
+	 */
+	@POST
+	@Path("updateGoBackDirectly")
+	public void updateGoBackData (UpdateApplicationGoBackDirectlyCommand command) {
+		this.updateGoBackHandler.handle(command);
+	}
+		
+}

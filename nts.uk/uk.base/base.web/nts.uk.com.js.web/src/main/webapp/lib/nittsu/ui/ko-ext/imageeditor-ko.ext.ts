@@ -398,7 +398,7 @@ module nts.uk.ui.koExtentions {
             let i = 0, result = originalSize;
             while (result > 5 * this.BYTE_SIZE) {
                 result = result / this.BYTE_SIZE;
-                i++;
+                i++; 
             }
             let idx = i < this.SIZE_UNITS.length ? i : this.SIZE_UNITS.length - 1;
             return ntsNumber.trunc(result) + this.SIZE_UNITS[idx];

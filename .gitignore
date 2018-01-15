@@ -8,8 +8,13 @@ taskArtifacts/
 .settings/
 .sass-cache/
 .metadata/
+.recommenders/
 *.class
 *.js.map
 *.orig
 *.js
 *.launch
+nts.uk/uk.com/gradlew.bat
+nts.uk/uk.com/gradlew
+nts.uk/uk.com/gradle/wrapper/gradle-wrapper.properties
+nts.uk/uk.com/gradle/wrapper/gradle-wrapper.jar

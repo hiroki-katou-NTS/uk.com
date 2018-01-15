@@ -52,12 +52,12 @@ module nts.uk.ui.jqueryExtentions {
                 let cropperData = cropper.getData(true);
                 
                 var formData = {
-                        "fileName": $element.data("file-name"),
+                        "fileName": $element.data("file-name"), 
                         "stereoType": isNotNull(option) ? "image" : option.stereoType,
                         "file": fileData,
                         "format": $element.data("file-type"),
                         "x": cropperData.x,
-                        "y": cropperData.y,
+                        "y": cropperData.y, 
                         "width": cropperData.width,
                         "height": cropperData.height,
                         "crop": isCrop 

@@ -1,0 +1,57 @@
+#button112Area{
+	display: inline-block;
+    float: left;
+}
+
+#button113 {
+	display: inline-block;
+    margin-left: 24px;
+    margin-top: 51px;
+	font-size: 20px;
+	height: 43px;
+	width: 150px;
+}
+
+#button112 {
+	margin-left: 28px;
+    margin-top: 57px;
+	width: 140px;
+}
+
+#label110{
+	display: inline-block;
+    margin-left: 21px;
+}
+
+#label19{
+	margin-left: 22px;
+    margin-top: 10px;
+}
+
+#label16{
+	display: inline-block;
+    margin-left: 21px;
+}
+
+#label15{
+	margin-left: 22px;
+    margin-top: 24px;
+}
+
+#panel13{
+	overflow-y: scroll;
+    margin-left: 129px;
+    margin-top: -15px;
+    width: 269px;
+    height: 134px;
+}
+
+#label12{
+	margin-left: 22px;
+    margin-top: 16px;
+}
+
+#label11{
+	margin-left: 22px;
+    margin-top: 16px;
+}

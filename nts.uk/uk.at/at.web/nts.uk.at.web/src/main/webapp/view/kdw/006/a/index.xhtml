@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 860,
+					height : 630
+				};
+			</script>
+			
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdw006.main.css" />
+			<com:scriptfile path="kdw006.start.js" />
+			<com:scriptfile path="kdw006.vm.js" />
+			<com:scriptfile path="kdw006.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				
+			</div>
+			<div id="contents-area">
+				<button id="button5" class="x-large caret-right" data-bind="click: opendOperationSetting">運用設定</button><br></br>
+				<button id="button1" class="x-large caret-right" data-bind="click: opendScreenA">#{i18n.getText('KDW006_2')}</button><br></br>
+				<button id="button2" class="x-large caret-right" data-bind="click: opendScreenB">#{i18n.getText('KDW006_5')}</button><br></br>
+				<button id="button3" class="x-large caret-right" data-bind="click: opendScreenC">#{i18n.getText('KDW006_3')}</button><br></br>
+				<button id="button4" class="x-large caret-right" data-bind="click: opendScreenD">#{i18n.getText('KDW006_4')}</button><br></br>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="kmk005.a.start.js" />
+				<com:scriptfile path="kmk005.a.vm.js" />
+				<com:scriptfile path="kmk005.a.service.js" />
+				<com:stylefile path="kmk005.a.main.css" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+				</div>
+				<div id="contents-area" class="table">
+					<div>
+					<div class="panel panel-frame contents-area-left boder-style">
+						<div class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK005_1')}</div>
+						<div class="label lbl-unit-setting-explanation">#{i18n.getText('KMK005_4')}</div>
+						<button id="openTimeItemBtn" tabindex="1" class="btn-area-middle" data-bind="click: openTimeItem" >#{i18n.getText('KMK005_5')}</button>
+						<div class="contents-area-right-caret">
+							<span class="caret-bottom outline" style="font-size: 3.5em;"></span>
+						</div>
+						<div class="label" id="lbl-operation-setting-explanation">#{i18n.getText('KMK005_6')}</div>
+						<button tabindex="2" class="btn-area-middle"  data-bind="click: openUnitSetting">#{i18n.getText('KMK005_7')}</button>
+						<div class="contents-area-right-caret">
+							<span class="caret-bottom outline" style="font-size: 3.5em;"></span>
+						</div>
+						<div class="label" id="lbl-operation-setting-explanation">#{i18n.getText('KMK005_10')}</div>
+						<button tabindex="3" class="btn-area-middle"  data-bind="click: openTimeItemSetting">#{i18n.getText('KMK005_11')}</button>
+					</div>
+					<div class="contents-area-caret-right">
+						<span class="caret-right outline" style="font-size: 4.5em;"></span>
+					</div>
+					<div class="panel panel-frame contents-area-middle boder-style">
+						<div class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK005_2')}</div>
+						<div class="label lbl-general-labor-explanation">#{i18n.getText('KMK005_12',['#KMK005_12'])}</div>
+						<button tabindex="4" class="btn-area-middle" data-bind="click: openTimeSheetItem">#{i18n.getText('KMK005_13')}</button><span class="caret-right caret-inline"></span>
+					</div>
+					<div class="contents-area-caret-right">
+						<span class="caret-right outline" style="font-size: 4.5em;"></span>
+					</div>
+					<div class="panel panel-frame contents-area-right boder-style">
+						<div class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK005_3')}</div>
+						<div class="label lbl-general-labor-explanation">#{i18n.getText('KMK005_14')}</div>
+						<button tabindex="5" class="btn-area-middle"  data-bind="click: openBonusPay">#{i18n.getText('KMK005_15')}</button><span class="caret-right caret-inline"></span>
+					</div>
+				</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

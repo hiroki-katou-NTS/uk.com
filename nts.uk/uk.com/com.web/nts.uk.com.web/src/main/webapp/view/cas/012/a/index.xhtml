@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+			</com:ValidatorScript>
+			<com:stylefile path="cas012.a.style.css" />
+			<com:scriptfile path="cas012.a.vm.js" />
+			<com:scriptfile path="cas012.a.service.js" />
+			<com:scriptfile path="cas012.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div class="container">
+					<button tabindex="1" data-bind="click: createBtn">#{i18n.getText('CAS012_4')}</button>
+					<button class="proceed" tabindex="2"
+						data-bind="click : registryBtn ,enable: $root.errors.isEmpty">#{i18n.getText('CAS012_5')}</button>
+					<button class="danger" tabindex="3"
+						data-bind="click: deleteBtn, enable: !isCreate()">#{i18n.getText('CAS012_6')}</button>
+				</div>
+			</div>
+			<div id="contents-area">
+				<div class="container">
+					<div class="cf">
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS012_7')}</div>
+							<div id="combo-box" tabindex="4"
+								data-bind="ntsComboBox: {
+								options: listRoleType,
+								optionsValue: 'value',
+								visibleItemsCount: 5,
+								value: selectedRoleType,
+								optionsText: 'localizedName',
+								columns: [
+									{ prop: 'localizedName', length: 8}
+								]}"></div>
+						</div>
+						<div class="valign-center control-group">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS012_9')}</div>
+							<div id="combo-box" tabindex="5"
+								data-bind="ntsComboBox: {
+									options: listCompany,
+									optionsValue: 'companyId',
+									visibleItemsCount: 5,
+									value: selectedCompany,
+									optionsText: 'companyName',
+									enable: (selectedRoleType() == 1),
+									columns: [
+										{ prop: 'companyName', length: 8 }
+									]}"></div>
+						</div>
+						<span class="caret-bottom"></span>
+					</div>
+					<div class="cf">
+						<div class="left-content">
+							<div class="valign-center control-group">
+								<span class="rolelist-label">#{i18n.getText('CAS012_11')}</span>
+							</div>
+							<table tabindex="6" id="single-list"
+								data-bind="ntsGridList: {								
+								height: 205,
+								dataSource: listRoleIndividual,
+								primaryKey: 'GUID',
+								columns: columns,
+								value: currentCode}"></table>
+						</div>
+						<div class="right-content">
+							<button id="btn-selectuser" tabindex="7" class="x-large"
+								data-bind="click : openCAS012_B, enable: isCreate">#{i18n.getText('CAS012_16')}</button>
+							<label class="username"
+								data-bind="text: selectRoleIndividual().userName"></label>
+							<div class="valign-center control-group">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS012_18')}</div>
+								<div id="daterangepicker" tabindex="8"
+									data-bind="ntsDateRangePicker: { value: datePeriod, maxRange: 'none', required: true, showNextPrevious: false }" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

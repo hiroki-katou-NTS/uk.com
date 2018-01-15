@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 850, height: 430 };</script>
+				<com:stylefile path="kmk012.d.main.css" />
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="kmk012.d.start.js" />
+				<com:scriptfile path="../a/kmk012.a.service.js" />
+				<com:scriptfile path="../a/kmk012.a.vm.js" />
+				<com:scriptfile path="kmk012.d.service.js" />
+				<com:scriptfile path="kmk012.d.vm.js" />
+				<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.workrule.closure.ClosureName
+				</com:ValidatorScript>
+			</ui:define>
+			<ui:define name="content">
+				<div id="content-area">
+				<div class="processingDate">
+					<div id="valueProcessingDate" 
+						class="nts-input"
+						data-name="#{i18n.getText('KMK012_35')}"
+						tabindex="1"  
+						data-bind="ntsDatePicker: 
+						{value: closureDetailModel.month, required: true, dateFormat: 'yearmonth'}">
+					</div>
+					<label id="lableProcessingDate">#{i18n.getText('KMK012_25')}</label>
+				</div>
+				<br />
+				<div class="changeBefore">
+					<div class="lableChangeBefore"><label>#{i18n.getText('KMK012_26')}</label></div>
+					<div class="valueChangeBefore"><label data-bind="text: closureDetailModel.closureName()"></label></div>
+					<div class="lableChangeBefore"><label>#{i18n.getText('KMK012_27')}</label></div>
+					<div class="valueChangeBefore"><label data-bind="text: closureDetailModel.getDayClosureDate()"></label></div>
+					<div class="bottomChangeBefor">
+						<div class="lableStartChange">
+							<label class="valueStartChange">#{i18n.getText('KMK012_28')}</label>
+						</div>
+						<div class="valueChangeBefore">
+							<label data-bind="text: dayMonthModel.beginDay()"></label>
+						</div>
+						<div class="startChangeDate">
+							<label>#{i18n.getText('KMK012_8')}</label>
+						</div>
+						<div class="valueChangeBefore">
+							<label data-bind="text: dayMonthModel.endDay()"></label>
+						</div>
+					</div>
+				</div>
+				<br/>
+				<div id="endClosureDate">
+					<hr/>
+				</div>
+				<br/>
+				<div class="beginChange">
+					<span class="caret-bottom outline"></span>
+				</div>
+				
+				<div class="changeBefore">
+					<div class="lableChangeBefore"><label>#{i18n.getText('KMK012_29')}</label></div>
+					<div class="valueChangeBefore"><label data-bind="text: closureDetailModel.closureName()"></label></div>
+					<div class="lableChangeBefore"><label>#{i18n.getText('KMK012_27')}</label></div>
+					<div class="valueChangeBefore">
+						<div id="cobxDayOfMonth" 
+							tabindex="2"  
+							data-name="#{i18n.getText('KMK012_10')}"
+							data-bind="ntsComboBox: {
+							options: lstDayOfMonth,
+							optionsValue: 'day',
+							value: closureDetailModel.closureDateChange,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 4 }
+							]}"></div>
+					</div>
+				</div>
+				<div class="endChangeAfter">
+					<div class="lableStartChange"><label class="valueStartChange">#{i18n.getText('KMK012_30')}</label></div>
+					<div class="valueChangeBefore"><label data-bind="text: dayMonthChangeModel.beforeClosureDate.beginDay()"></label></div>
+					<div class="startChangeDate"><label class="valueStartChange">#{i18n.getText('KMK012_8')}</label></div>
+					<div class="valueChangeBefore"><label data-bind="text: dayMonthChangeModel.beforeClosureDate.endDay()"></label></div>
+				</div>
+			
+				<div class="bottomChangeAfter">
+					<div class="lableStartChange"><label class="valueStartChange">#{i18n.getText('KMK012_36')}</label></div>
+					<div class="valueChangeBefore"><label data-bind="text: dayMonthChangeModel.afterClosureDate.beginDay()"></label></div>
+					<div class="startChangeDate"><label class="valueStartChange">#{i18n.getText('KMK012_8')}</label></div>
+					<div class="valueChangeBefore"><label data-bind="text: dayMonthChangeModel.afterClosureDate.endDay()"></label></div>
+				</div>
+			
+				<br/>
+				<div id="functions-area-bottom">
+					<button tabindex="3" class="proceed x-large btnAction" data-bind="click: saveChangeClosureDate, enable: $root.errors.isEmpty">#{i18n.getText('KMK012_32')}</button>
+					<button tabindex="4" class="large btnclose btnAction"  data-bind="click: closeWindowns">#{i18n.getText('KMK012_33')}</button>
+				</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+	</body>
+</html>

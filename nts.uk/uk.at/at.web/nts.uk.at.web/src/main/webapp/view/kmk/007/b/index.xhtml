@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.worktype.WorkTypeName
+			</com:ValidatorScript>
+			<script>
+				var dialogSize = {
+					width : 620,
+					height : 470
+				};
+			</script>
+			<com:stylefile path="kmk007.b.style.css" />
+			<com:scriptfile path="kmk007.b.start.js" />
+			<com:scriptfile path="kmk007.b.vm.js" />
+			<com:scriptfile path="kmk007.b.service.js" />
+			<com:scriptfile set="IGNITE" />
+		</ui:define>
+
+		<ui:define name="content">
+		
+			<div id="functions-area">
+				<button id="register-button" class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" >#{i18n.getText('KMK007_46')}</button>
+				<button id="close-button" data-bind="click: close">#{i18n.getText('KMK007_47')}</button>				
+			</div>
+			
+			<div id="contents-area">
+				<div class="left-contents">
+					<table id="multi-list"
+						data-bind="ntsGridList: {
+							width: 250,
+							height: 280,
+							options: items,
+							primaryKey: 'frameNo',
+							columns: columns,
+							multiple: false,
+							value: selectedCode
+						}">
+					</table>
+				</div>
+				
+				<div class="right-contents">
+					<table>
+						<tr>
+							<td>
+							<div data-bind="ntsFormLabel: {constraint: ['WorkTypeName'],required: true}">#{i18n.getText('KMK007_51')} </div></td>
+							<td><input data-bind="ntsTextEditor: {value: frameName, constraint: 'WorkTypeName', required: true, name: '#[KMK007_51]'}, hasfocus: true" /></td>
+						</tr>
+						<tr></tr>
+						<tr>
+							<td>#{i18n.getText('KMK007_53')}</td>
+							<td class="frame-elimination">
+								<div class="cf"
+									data-bind="ntsSwitchButton: {
+									options: frameElimination,
+									optionsValue: 'code',
+									optionsText: 'frameValue',
+									value: frameEliminationSelectedCode,
+									enable: true }"></div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

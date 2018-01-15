@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kmk013.a.start.js" />
+			<com:scriptfile path="kmk013.a.vm.js" />
+			<com:scriptfile path="kmk013.a.service.js" />
+			<com:stylefile path="kmk013.a.main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area"></div>
+			<div id="contents-area" class="table">
+				<div>
+					<div class="panel panel-frame contents-area-middle boder-style">
+						<div class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK013_244')}</div>
+						<button tabindex="1" class="btn-area-middle"  data-bind="click: openDialogB">#{i18n.getText('KMK013_237')}</button>
+						<button tabindex="2" class="btn-area-middle"
+							data-bind="click: openDialogH">#{i18n.getText('KMK013_241')}</button>
+					</div>
+					<div class="contents-area-caret-right">
+						<span class="caret-right outline" style="font-size: 3.4em;"></span>
+					</div>
+					<div class="panel panel-frame contents-area-right boder-style">
+						<div class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK013_245')}</div>
+						<button tabindex="3" class="btn-area-middle" data-bind="click: openDialogC">#{i18n.getText('KMK013_238')}</button>
+						<button tabindex="4" class="btn-area-middle" data-bind="click: openDialogD">#{i18n.getText('KMK013_239')}</button>
+						<button tabindex="5" class="btn-area-middle" data-bind="click: openDialogE">#{i18n.getText('KMK013_240')}</button>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="kdl014.main.start.js" />
+			<com:scriptfile path="kdl014.main.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="container">
+				<div id="screenA" style="float: left; width: 500px;">
+					<div>
+						<table>
+							<tr>
+								<div data-bind="ntsFormLabel: {}">社員別打刻参照</div>
+							</tr>
+							<tr>
+								<td>Start => End</td>
+								<td>
+									<div data-bind="ntsDatePicker: {value: startDateA, dateFormat: 'YYYY/MM/DD',valueFormat:'YYYYMMDD', required: true}"></div>
+									<div data-bind="ntsDatePicker: {value: endDateA, dateFormat: 'YYYY/MM/DD',valueFormat:'YYYYMMDD', required: true}"></div>
+								</td>
+							</tr>
+							<tr>
+								<td>EmployeeCode</td>
+								<td><input id ="empCode" data-bind="ntsTextEditor: {value: employeeCode}" /></td>
+							</tr>
+						</table>
+					</div>
+					<div>
+						<button data-bind="click: openKDL014A">Open A DIALOG 打刻参照</button>
+					</div>
+				</div>
+
+				<div id="screenB" style="margin-left:520px;">
+					<div>
+						<table>
+							<tr>
+								<div data-bind="ntsFormLabel: {}">日付別打刻参照</div>
+							</tr>
+							<tr>
+								<td>Start => End</td>
+								<td>
+									<div data-bind="ntsDatePicker: {value: startDateB, dateFormat: 'YYYY/MM/DD',valueFormat:'YYYYMMDD', required: true}"></div>
+									<div data-bind="ntsDatePicker: {value: endDateB, dateFormat: 'YYYY/MM/DD',valueFormat:'YYYYMMDD', required: true}"></div>
+								</td>
+							</tr>
+							<tr>
+								<td>List Employee</td>
+								<td><input id="lstEmpCode" data-bind="ntsTextEditor: {value: listEmployee}" /></td>
+								<td><label>(eg:00003,0002)</label></td>
+							</tr>
+						</table>
+					</div>
+
+					<div>
+						<button data-bind="click: openKDL014B">Open B DIALOG 打刻参照</button>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

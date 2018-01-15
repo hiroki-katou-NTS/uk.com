@@ -1,0 +1,54 @@
+package nts.uk.ctx.workflow.dom.adapter.bs;
+
+import java.util.List;
+
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
+
+public interface EmployeeAdapter {
+
+	/**
+	 * 「所属職場履歴」をすべて取得する
+	 * get employee information by companyId, workplaceId and base date
+	 * @param companyId　会社ID
+	 * @param workplaceIds　職場IDリスト
+	 * @param baseDate　基準日
+	 * @return 社員情報
+	 */
+	List<EmployeeImport> findByWpkIds(String companyId, List<String> workplaceIds, GeneralDate baseDate);
+	/**
+	 * ドメインモデル「職場別就業承認ルート」を取得する(lấy domain「職場別就業承認ルート」)
+	 * 取得した所属職場ID＋その上位職場ID
+	 * @param companyId
+	 * @param employeeId
+	 * @param date
+	 * @return
+	 */
+	List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date);
+	/**
+	 * 基準日、会社IDに一致するすべての社員を取得する(在職中の社員）
+	 * @param companyId
+	 * @param baseDate
+	 * @return
+	 */
+	List<EmployeeImport> getEmployeesAtWorkByBaseDate(String companyId , GeneralDate baseDate);
+	
+	/**
+	 * Get employee Name
+	 * @param sID
+	 * @return
+	 */
+	String getEmployeeName(String sID);
+	
+	/**
+	 * Gets the concurrent employee.
+	 *
+	 * @param companyId the company id
+	 * @param jobId the job id
+	 * @param baseDate the base date
+	 * @return the concurrent employee
+	 */
+	// RequestList #77
+	List<ConcurrentEmployeeImport> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate);
+}

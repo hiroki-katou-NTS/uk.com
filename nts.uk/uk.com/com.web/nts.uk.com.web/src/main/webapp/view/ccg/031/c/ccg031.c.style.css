@@ -1,0 +1,11 @@
+@CHARSET "UTF-8";
+
+/* Override base */
+#header {display: none;}
+#functions-area-bottom {position:relative; height:45px;}
+
+.placement-container {overflow:auto;}
+.placement-container.overflow-y {overflow-y: auto;}
+.placement-container.overflow-x {overflow-x: auto; height: 485px;}
+
+.btn-close {min-width: 85px;}

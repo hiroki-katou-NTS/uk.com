@@ -1,0 +1,148 @@
+.master-list-select {
+	width: 500px;
+	padding: 40px;
+	height: 1000px;
+	float: left;
+}
+
+.caret-right {
+	width: 580px;
+	border-radius: 10px;
+}
+
+.icon-searchbox {
+	
+}
+
+.table-grid-list {
+	padding-left: 23px;
+	margin-right: 15px;
+	width: 500px;
+	height: 600px;
+}
+
+.reference-date {
+	padding: 28px;
+}
+
+.reference-date .form-label {
+	border-color: #FAC002;
+}
+
+.switch-button {
+	padding-left: 28px;
+	padding-bottom: 28px;
+}
+
+#switch-use {
+	padding-left: 90px;
+}
+
+.nts-switch-button.selected{
+	width: 102px;
+	
+}
+.nts-switch-button{
+	width: 102px;
+}
+
+
+.searchbox {
+	width: 400px;
+	padding-left: 23px;
+}
+.show-text-user-id{
+	width: 700px;
+}
+
+.right-content {
+	margin-left: 100px;
+	float: left;
+	padding-top: 60px;
+}
+
+.right-content .right-content-space {
+	padding-left: 28px;
+}
+.right-content-space-employee-code {
+	padding-left: 14px;
+}
+
+.right-content .right-content-space-login {
+	padding-left: 14px;
+}
+
+/*  b screen mode */
+.screen-b-mode {
+	padding-top: 30px;
+	float: left;
+}
+.screen-b-mode .padding-scr-b{
+	padding-left: 40px;	
+	padding-top: 10px;
+	
+}
+.screen-b-mode .padding-botom-scr-b{
+	padding-bottom: 10px;
+	
+}
+
+.screen-b-mode .padding-checkbox{
+	padding-left: 0px;
+}
+
+
+.screen-c-mode {
+	padding-top: 30px;
+	float: left;
+}
+.screen-c-mode .padding-checkbox{
+	padding-left: 0px;
+}
+
+/* .screen-c-mode tr td div{ */
+/* 	padding-left: 20px; */
+/* } */
+.screen-c-mode .padding-scr-c{
+	padding-left: 40px;	
+	padding-top: 10px;
+}
+
+
+/* /* .ntsSearchBox nts-editor ntsSearchBox_Component{ */
+*
+/
+/* /* 	width:200px; */
+ 
+*
+/
+/* /* } */
+ 
+*
+/
+
+/* #left-content { */
+/*     margin-left: 15px; */
+/*     margin-top: 30px; */
+/*     float: left; */
+/*     min-height: 600px; */
+/* } */
+
+/* #right-content { */
+/*     margin-left: 50px; */
+/*     margin-top: 50px; */
+/*     float: left; */
+/*     min-height: 600px; */
+/* } */
+
+/* .table_content td { */
+/* 	padding-top: 20px; */
+/* } */
+
+/* .label { */
+/* 	padding-left: 10px;	 */
+/* } */
+
+/* .history-button { */
+/* 	margin-bottom: 6px; */
+/* } */

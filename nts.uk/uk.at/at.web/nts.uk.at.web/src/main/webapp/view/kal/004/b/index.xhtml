@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 750, height: 500 };</script>
+			<com:EnumScript>
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth
+			</com:EnumScript>
+			<com:stylefile path="kal004.b.style.css" />
+			<com:scriptfile path="kal004.b.service.js" />
+			<com:scriptfile path="kal004.b.start.js" />
+			<com:scriptfile path="kal004.b.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="contents-area">
+				<div class="header">
+					<span class="label" >Add QA</span>
+				</div>
+				<div class="cf"> 
+					<div class="valign-center control-group start">
+						<span class="label">#{i18n.getText('KAL004_29')}</span>
+						<div class="day">
+							<input type="radio" name="strRadio" data-bind="checkedValue: 0, checked: strSelected, enable: enable" />
+							<span class="label" data-bind="text: txtDay"></span>	
+							<input class="input-box" data-bind="enable: (strSelected() == 0)"/>
+							<span class="label" >#{i18n.getText('KAL004_34')}</span>	
+							<span class="label" >#{i18n.getText('KAL004_35')}</span>								
+						</div>
+						<div class="month">
+							<input type="radio" name="strRadio" data-bind="checkedValue: 1, checked: strSelected,, enable: enable" />
+							<div class="combo-box" tabindex="2"
+								data-bind="ntsComboBox: {
+								options: strListSpecifiedMonth,
+								optionsValue: 'value',
+								value: strMonthSelected,
+								visibleItemsCount: 4,
+								optionsText: 'name',
+								enable: (strSelected() == 1),
+								columns: [
+									{ prop: 'name', length: 5 }
+								]}"></div>
+							<span class="label" data-bind="text: txtMonth"></span>
+						</div>
+					</div>
+					<div class="centerSys">#{i18n.getText('KAL004_30')}</div>
+					<div class="valign-center control-group end">
+						<span class="label">#{i18n.getText('KAL004_31')}</span>
+						<div class="day">
+							<input type="radio" name="endRadio" data-bind="checkedValue: 0, checked: endSelected, enable: enable" />
+							<span class="label" data-bind="text: txtDay"></span>	
+							<input class="input-box" data-bind="enable: (endSelected() == 0)"/>
+							<span class="label" >#{i18n.getText('KAL004_34')}</span>	
+							<span class="label" >#{i18n.getText('KAL004_35')}</span>								
+						</div>
+						<div class="month">
+							<input type="radio" name="endRadio" data-bind="checkedValue: 1, checked: endSelected, enable: strSelected() == 1 " />
+							<div class="combo-box" tabindex="1"
+								data-bind="ntsComboBox: {
+								options: endListSpecifiedMonth,
+								optionsValue: 'value',
+								value: endMonthSelected,
+								optionsText: 'name',
+								visibleItemsCount: 4,
+								enable: (strSelected() == 1 &amp;&amp; endSelected() == 1),
+								columns: [
+									{ prop: 'name', length: 5 }
+								]}"></div>
+							<span class="label" data-bind="text: txtMonth"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button data-bind="">#{i18n.getText('KAL003_45')}</button>
+				<button data-bind="click :cancel_Dialog">#{i18n.getText('KAL003_46')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

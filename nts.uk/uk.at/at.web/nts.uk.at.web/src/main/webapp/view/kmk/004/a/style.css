@@ -1,0 +1,60 @@
+@CHARSET "UTF-8";
+
+.border-all td {
+	border: solid grey 1px;
+	text-align: center;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 10px;
+	padding-left: 10px;
+	min-width: 60px;
+	max-width: 100px;
+}
+
+.border-all input {
+	width: 80px;
+	text-align: center !important;
+}
+
+.contents-area {
+	margin-top: 30px;
+	margin-left: 50px;
+}
+.bg-dark-green {
+	background-color: #C7F391;
+}
+.right-content {
+	margin-left: 50px;
+}
+#list-workplace {
+	width: 480px;
+}
+.action-bar {
+	margin-left: 30px;
+}
+
+#lblEmploymentCode {
+	margin-left: 50px;
+}
+
+#lblEmploymentName {
+	margin-left: 40px;
+}
+#lblWorkplaceCode {
+	margin-left: 50px;
+}
+#lblWorkplaceName {
+	margin-left: 40px;
+}
+.cbb-weekstart {
+	display: inline-flex;
+	margin-left: 20px;
+}
+.tbl-daily {
+	display: inline;
+	margin-left: 75px;
+}
+.tbl-monthly {
+	display: inline;
+	margin-left: 170px;
+}

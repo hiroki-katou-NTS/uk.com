@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<div class="contentC">
+			<div tabindex="-1">
+				<label tabindex="-1">#{i18n.getText('KSC001_2')}</label>
+			</div>
+			
+			<div tabindex="-1" class="labelSchedule">
+				<label tabindex="-1">#{i18n.getText('KSC001_3')}</label>
+				<div id="inputSelectImplementAtr" tabindex="1" class="selectImplementAtr" 
+					data-bind="ntsSwitchButton: {
+					options: selectImplementAtr,
+					optionsValue: 'id',
+					optionsText: 'name',
+					name: '#[KSC001_81]',
+					value: selectedImplementAtrCode,
+					required: true,
+					enable: true }">
+				</div>
+				<button class="helpButton" tabindex="2" 
+					data-bind="ntsHelpButton: {image: '../image/IMG_KSC001_3.png', position: 'right top', enable: true }">?</button>
+			</div>
+			<div class="selectionCase" tabindex="-1">
+				<div class="radioboxCase" >
+					<div tabindex="3" id="inputCheckReCreateBox" 
+						data-bind="ntsRadioButton: {checked: checkReCreateAtrAllCase, 
+						name: '#[KSC001_82]', enable: isReCreate, optionText: '#{i18n.getText('KSC001_4')}' }" />
+				</div>
+				<div class="radioboxCase" >
+					<div tabindex="3" data-bind="ntsRadioButton: {checked: checkReCreateAtrOnlyUnConfirm, name: '#[KSC001_82]', 
+						enable: isReCreate, optionText: '#{i18n.getText('KSC001_5')}' }" />
+				</div>	
+				<div class="radioboxCase"  tabindex="-1">
+					<label>#{i18n.getText('KSC001_6')}</label>
+				</div>
+				<div class="radioboxProcessExecutionAtr"  >
+					<div tabindex="4" data-bind="ntsRadioButton: {checked: checkProcessExecutionAtrRebuild, 
+						name: '#[KSC001_83]', enable: isReCreate, optionText: '#{i18n.getText('KSC001_7')}' }" />
+				</div>
+				<div class="radioboxProcessExecutionAtr" >
+					<div tabindex="4" data-bind="ntsRadioButton: {checked: checkProcessExecutionAtrReconfig, 
+						name: '#[KSC001_83]', enable: isReCreate, optionText: '#{i18n.getText('KSC001_8')}' }" />
+				</div>	
+				
+				<div class="checkboxSetting" tabindex="-1">
+					<div class="checkboxOne" tabindex="5" 
+						data-bind="ntsCheckBox: { checked: resetWorkingHours, 
+						enable: isReSetting }">#{i18n.getText('KSC001_15')}</div>
+					<div tabindex="8" 
+						data-bind="ntsCheckBox: { checked: resetTimeChildCare,
+						enable: isReSetting }">#{i18n.getText('KSC001_13')}</div>
+				</div>
+				<div class="checkboxSetting" tabindex="-1">
+					<div class="checkboxOne" tabindex="6" 
+						data-bind="ntsCheckBox: { checked: resetDirectLineBounce, 
+						enable: isReSetting }">#{i18n.getText('KSC001_11')}</div>
+					<div tabindex="9" 
+						data-bind="ntsCheckBox: { checked: resetAbsentHolidayBusines,
+						enable: isReSetting }">#{i18n.getText('KSC001_14')}</div>
+				</div>
+				<div class="checkboxSetting" tabindex="-1">
+					<div class="checkboxOne" tabindex="7" 
+						data-bind="ntsCheckBox: { checked: resetMasterInfo, 
+						enable: isReSetting }">#{i18n.getText('KSC001_12')}</div>
+					<div tabindex="10" 
+						data-bind="ntsCheckBox: { checked: resetTimeAssignment,
+						enable: isReSetting }">#{i18n.getText('KSC001_16')}</div>
+				</div>
+			</div>
+			<div class="checkboxSettingEnd" tabindex="-1">
+				<div tabindex="11" data-bind="ntsCheckBox: { checked: confirm }">#{i18n.getText('KSC001_17')}</div>
+			</div>
+			<div class="labelSettingEnd" tabindex="-1">
+				<label tabindex="-1">#{i18n.getText('KSC001_18')}</label>
+			</div>
+			<div class="buttonBeginPrevious" tabindex="-1">
+				<button class="large" tabindex="12" 
+					data-bind="click: previousPageC">#{i18n.getText('KSC001_19')}</button>
+			</div>
+			<div class="buttonBeginNext" tabindex="-1">
+				<button tabindex="13" class="proceed x-large" 
+					data-bind="click: nextPageC">#{i18n.getText('KSC001_20')}</button>
+			</div>
+		</div>
+		
+	</ui:composition>
+</body>
+</html>

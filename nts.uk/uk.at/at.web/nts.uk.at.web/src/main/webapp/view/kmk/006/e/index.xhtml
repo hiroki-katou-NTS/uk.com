@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 400,
+					height : 360
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk006.e.main.css" />
+			<com:scriptfile path="../a/kmk006.a.service.js" />
+			<com:scriptfile path="../a/kmk006.a.vm.js" />
+			<com:scriptfile path="kmk006.e.service.js" />
+			<com:scriptfile path="kmk006.e.vm.js" />
+			<com:scriptfile path="kmk006.e.start.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area" data-bind="with: unitAtutoCalSettingModel">
+				<div class="description-top"
+					data-bind="text: nts.uk.resource.getText('KMK006_27')"></div>
+				<img class="imageSettings" src="img001.png"></img>
+				<div class="companyInfo">#{i18n.getText('Com_Company')}</div>
+				<div class="checkSetting">
+					<div id="ckb-employment" tabindex="1"
+						data-bind="ntsCheckBox: { checked: useWkpSet }">#{i18n.getText('Com_Workplace')}</div>
+				</div>
+				<div class="checkSetting">
+					<div tabindex="2" data-bind="ntsCheckBox: { checked: useJobSet }">#{i18n.getText('Com_Jobtitle')}</div>
+				</div>
+				<div class="checkSetting">
+					<div tabindex="2"
+						data-bind="ntsCheckBox: { checked: useJobwkpSet }">#{i18n.getText('KMK006_28')}</div>
+				</div>
+
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="3" class="x-large proceed"
+					data-bind="click: saveUnitAutoCalSettingModel">#{i18n.getText('KSM001_48')}</button>
+				<button tabindex="4" data-bind="click: cancelSaveUsageSettingModel">#{i18n.getText('KSM001_49')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

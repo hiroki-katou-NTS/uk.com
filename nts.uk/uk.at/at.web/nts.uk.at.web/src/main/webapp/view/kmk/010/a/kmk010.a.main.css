@@ -1,0 +1,205 @@
+@CHARSET "UTF-8";
+
+.lableDetail {
+	margin-top: 30px;
+	margin-left: 20px;
+}
+
+.overtimeNote {
+	width: 280px !important;
+}
+
+.methodSelect {
+	vertical-align: -7px;
+}
+
+.buttonOther {
+	margin-left: 50px !important;
+}
+
+.bg-dark-green {
+	background-color: #C7F391;
+}
+
+.overtime-border td {
+	border: solid grey 1px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 5px;
+	padding-left: 5px;
+}
+
+.overtime-border .tdno {
+	text-align: center;
+	width: 25px;
+}
+
+.overtime-border .tdbutton {
+	text-align: center;
+	width: 25px;
+}
+
+.overtime-border .tdname {
+	min-width: 45px;
+	max-width: 100px;
+}
+
+.overtime-border .tdbreakdown {
+	text-align: center;
+	width: 50px;
+}
+
+.overtime-border input {
+	width: 150px;
+}
+
+.overtime-border .overtime {
+	width: 50px;
+}
+
+.overtime-border .rate {
+	width: 35px;
+}
+
+.overtimeSettingDetail {
+	margin-top: 20px;
+}
+
+.overtimeDetail {
+	float: left;
+	margin-left: 20px;
+	max-width: 30%;
+}
+
+.overtimeName {
+	text-align: left;
+}
+
+.sixtySetting {
+	float: left;
+	margin-left: 30px;
+	max-width: 960px;
+}
+
+#contents-left, #contents-right {
+	padding: 20px;
+	vertical-align: top !important;
+	min-width: 200px;
+}
+
+.divHeader {
+	margin: 5px;
+	min-width: 1360px;
+}
+
+#contents-right {
+	padding-left: 40px !important;
+}
+
+.lableData {
+	width: 170px;
+	float: left;
+}
+
+.lableDataEnd {
+	width: 130px;
+	margin-left: 50px;
+	float: left;
+}
+
+.valueData {
+	float: left;
+}
+
+.rateBotton60H {
+	clear: both;
+	height: 20px;
+}
+
+.overtimeRate60H {
+	margin-left: 130px;
+	border-radius: 5px;
+	border-color: #565555;
+	border-width: 1px;
+	border-style: double;
+	width: 970px;
+	min-height: 150px;
+}
+
+.labelOneRate {
+	margin-top: 10px;
+	margin-left: 15px;
+}
+
+.labelTwoRate {
+	margin-top: 10px;
+	margin-left: 35px;
+}
+
+.labelThreeRate {
+	margin-top: 10px;
+	margin-left: 35px;
+}
+
+.lableFourRate {
+	margin-left: 230px;
+	margin-top: 15px;
+}
+
+.selectUnit {
+	width: 70px;
+}
+
+.overtimeSelect {
+	width: 50px;
+}
+
+.selectRounding {
+	margin-left: 20px;
+	width: 170px;
+}
+
+.oneOvertimeRate {
+	float: left;
+	width: 500px;
+}
+
+.overtimeRate60H2 {
+	width: 5%;
+	float: left;
+	margin-top: 50px;
+}
+
+.overtimeRate60H3 {
+	width: 400px;
+	float: left;
+	margin-top: 20px;
+}
+
+.labelFiveRate {
+	margin-top: 10px;
+	margin-left: 80px;
+}
+
+#switch-language {
+	float: right;
+	margin-right: 43%;
+}
+
+.selectionVaction {
+	width: 96px;
+}
+.tooltip-label {
+	width: 100%;
+	display: inline-block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.tooltip-label-view {
+  background: #ffc;
+  border: solid 1px #b85 !important;
+  padding: 5px;
+  z-index: 120100;
+  border-radius: 0px;
+}

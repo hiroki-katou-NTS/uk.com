@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="ccg015.b.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="ccg015.b.start.js" />
+			<com:scriptfile path="ccg015.b.service.js" />
+			<com:scriptfile path="ccg015.b.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div data-bind="with: myPageSettingModel" id="contents-left">
+					<div>#{i18n.getText('CCG015_21')}</div><BR />
+					<div class = "float_left" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+						<label>#{i18n.getText('CCG015_20')}<br /></label>
+					</div>
+					<div tabindex ="1" class="padding_top_3 cf float_left"
+						data-bind="ntsSwitchButton: {
+						options: $parent.useDivisionOptions,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: useMyPage,
+						enable: true }"></div>
+						<BR /><BR /><BR />
+					<div>
+						<div tabindex ="2" id="tab-panel" class="cf"
+							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab, direction: 'vertical' }">
+							<div id="widget" >
+								<com:ko tag="template" bind="{name: 'widget-template', data: topPagePartSettingItems()[0]}"></com:ko>
+							</div>
+							<div id="dash_board" >
+								<com:ko tag="template" bind="{name: 'dashboard-template', data: topPagePartSettingItems()[1]}"></com:ko>
+							</div>
+							<div id="flow_menu">
+								<com:ko tag="template" bind="{name: 'flow-template', data: topPagePartSettingItems()[2]}"></com:ko>
+							</div>	
+							<div id="url" >
+								<com:ko tag="template" bind="{name: 'tab-URL-template', data: topPagePartSettingItems()[3]}"></com:ko>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<span>
+					<button data-bind="click : updateMyPageSetting"
+						class="btn-default proceed x-large">#{i18n.getText('CCG015_30')}</button>
+				</span> <span class = "padding_left_20"><button onclick="nts.uk.ui.windows.close()">#{i18n.getText('CCG015_31')}</button></span>
+			</div>
+			<script type="text/html" id="widget-template">
+					<div class="float_left" id="widget_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+						<label>#{i18n.getText('CCG015_28')}<br /></label>
+					</div>
+					<div tabindex ="3" class="padding_top_3 cf switch_btn_style"
+						data-bind="ntsSwitchButton: {
+						options: $parents[1].useDivisionOptions,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: usePart,
+						enable: true }"></div>
+					<div>
+						<table tabindex ="4" id="widget-list" data-bind="ntsGridList: {	
+								showNumbering: true,							
+								height: 350,
+								dataSource: settingItems,
+								primaryKey: 'itemCode',
+								columns: $parents[1].columns,
+								multiple: false,
+								features: [{name: 'Switch', options: $parents[1].useDivisionOptions, optionsValue: 'code', optionsText: 'name'}],
+								value: $parents[1].currentCode
+							}"
+							class="cf"></table>
+					</div>
+			
+			</script>
+			
+			<script type="text/html" id="dashboard-template">
+					<div class = "float_left" id="dashboard_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+						<label>#{i18n.getText('CCG015_28')}<br /></label>
+					</div>
+					<div tabindex ="5" class="padding_top_3 cf switch_btn_style"
+						data-bind="ntsSwitchButton: {
+						options: $parents[1].useDivisionOptions,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: usePart,
+						enable: true }"></div>
+					<div>
+						<table tabindex ="6" id="dashboard-list" data-bind="ntsGridList: {	
+								showNumbering: true,							
+								height: 350,
+								dataSource: settingItems,
+								primaryKey: 'itemCode',
+								columns: $parents[1].columns,
+								multiple: false,
+								features: [{name: 'Switch', options: $parents[1].useDivisionOptions, optionsValue: 'code', optionsText: 'name'}],
+								value: $parents[1].currentCode
+							}"
+							class="cf"></table>
+					</div>
+			
+			</script>
+			
+			<script type="text/html" id="flow-template">
+					<div class = "float_left" id="flow_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+						<label>#{i18n.getText('CCG015_28')}<br /></label>
+					</div>
+					<div tabindex ="7" class="padding_top_3 cf switch_btn_style"
+						data-bind="ntsSwitchButton: {
+						options: $parents[1].useDivisionOptions,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: usePart,
+						enable: true }"></div>
+					<div>
+						<table tabindex ="8" id="flow-list" data-bind="ntsGridList: {	
+								showNumbering: true,							
+								height: 350,
+								dataSource: settingItems,
+								primaryKey: 'itemCode',
+								columns: $parents[1].columns,
+								multiple: false,
+								features: [{name: 'Switch', options: $parents[1].useDivisionOptions, optionsValue: 'code', optionsText: 'name'}],
+								value: $parents[1].currentCode
+							}"
+							class="cf"></table>
+					</div>
+			
+			</script>
+			
+			<script type="text/html" id="tab-URL-template">
+					<div class = "float_left" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+						<label>#{i18n.getText('CCG015_32')}<br /></label>
+					</div>
+					<div class="padding_top_3 cf switch_btn_style"
+						data-bind="ntsSwitchButton: {
+						options: $parents[1].permissionDivisionOptions,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: usePart,
+						enable: true }"></div>
+			</script>
+			
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

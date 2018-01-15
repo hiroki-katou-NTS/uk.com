@@ -1,0 +1,68 @@
+.goback {
+	margin-right: 35px;
+}
+
+.name-label {
+	margin-left: -15px;
+}
+
+.left-contents {
+	padding-left: 40px;
+	width: 394px;
+	height: 100%;
+	vertical-align: top;
+}
+
+.left-contents .ntsRadioBox {
+	margin-top: 5px;
+	margin-bottom: 6px;
+	margin-left: -18px;
+}
+
+.input-time {
+	width: 45px;
+}
+
+.time {
+	margin-left: 60px;
+	margin-top: 10px;
+}
+
+.right-contents {
+	vertical-align: top;
+	padding-left: 20px;
+	width: 800px;
+}
+
+.mutil-line.form-label>label {
+	line-height: 18px;
+}
+
+.ntsCheckBox {
+	display: block;
+	margin-left: 40px;
+}
+
+.ntsRadioBox {
+	display: block;
+	margin-left: 8px;
+}
+
+#table-b {
+	width: 680px;
+	height: 420px;
+}
+
+.group-label-switch {
+	margin-left: 12px;
+	margin-top: 7px;
+}
+.label-width{
+	width: 160px;
+}
+#c3_1,#c4_1,#c5_1,#c6_1{
+	margin-bottom: -7px;
+}
+.col1{
+	background-color: #CFF1A5;
+}

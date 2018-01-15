@@ -1,0 +1,140 @@
+#contents-area{
+height: 600px !important;
+}
+#button36Area {
+	display: inline-block;
+	float: left;
+}
+
+#button6 {
+	font-size: 20px;
+	height: 43px;
+	width: 111px;
+	margin-left: 20px;
+	margin-top: 40px;
+}
+
+#button36 {
+	width: 140px;
+	margin-left: 433px;
+	margin-top: 50px;
+}
+
+#area5 {
+	margin-top: -20px;
+}
+
+#checkBox22 {
+	margin-left: 100px;
+	margin-top: 10px;
+}
+
+#swButton34 {
+	margin-left: 101px;
+}
+
+#swButton33 {
+	margin-left: 74px;
+}
+
+#swButton32 {
+	margin-left: 102px;
+}
+
+#swButton31 {
+	margin-left: 20px;
+}
+
+#area3, #area4 {
+	margin-bottom: 19px;
+}
+
+.cbElement {
+	margin-bottom: 7px;
+}
+
+#cbArea2 {
+	margin-top: 12px;
+	margin-left: 28px;
+	float: left;
+}
+
+#cbArea1 {
+	margin-left: 34px;
+	margin-top: 12px;
+	display: inline-block;
+	float: left;
+}
+
+#area2 {
+	width: 543px;
+	height: 205px;
+	margin-left: 55px;
+	margin-top:11px;
+}
+
+button {
+	width: 78px;
+}
+
+#radio2 {
+	margin-top: 11px;
+}
+
+#radioArea {
+	margin-left: 5px;
+	margin-top: 2px;
+}
+
+#helpButton {
+	width: 25px;
+	margin-left: 21px;
+}
+
+#checkBox1 {
+	margin-top: 16px;
+	margin-left: 35px;
+}
+#checkBox2 {
+	margin-top: 16px;
+	margin-left: 35px;
+}
+#checkBox3 {
+	margin-top: 16px;
+	margin-left: 35px;
+}
+#checkBox4 {
+	margin-top: 16px;
+	margin-left: 35px;
+}
+
+#label1 {
+	margin-left: 19px;
+}
+
+.ntsRadioBox {
+	display: block;
+	margin-bottom: 10px;
+}
+
+.nts-wizard.vertical>.content {
+	width: 830px;
+	height: 800px;
+	margin: 0 0 0 0;
+	background: none;
+	height: 800px;
+}
+
+.nts-wizard.vertical>.steps {
+	width: 240px;
+	height: 800px;
+}
+
+.nts-wizard {
+	width: 1200px;
+	height: inherit;
+}
+
+#linkButton1 {
+	margin-left: 19px;
+}

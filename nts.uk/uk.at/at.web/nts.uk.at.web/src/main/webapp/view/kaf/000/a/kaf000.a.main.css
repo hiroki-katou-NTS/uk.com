@@ -1,0 +1,33 @@
+#message-area {
+	background-color: #f8efd4;
+	height: 68px;
+	width: 798px;
+}
+
+.message-td {
+	padding-left: 10px;
+	padding-top: 10px;
+}
+
+#table-phase, #table-phase td, #table-phase th {
+	border: 1px solid black;
+	text-align: center;
+	height: 25px;
+}
+
+#table-phase td{
+	height: 25px;
+}
+#label-1{
+	margin-top: 20px;
+    float: left;
+}
+
+#table-1{
+	margin-top: 10px;
+    margin-left: 150px;
+}
+.approverContent {
+	text-align: left !important;
+	padding-left: 5px;
+}

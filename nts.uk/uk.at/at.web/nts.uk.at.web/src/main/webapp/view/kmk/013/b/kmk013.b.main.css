@@ -1,0 +1,91 @@
+.goback {
+	margin-right: 35px;
+}
+
+.name-label {
+	margin-left: -15px;
+}
+
+.left-contents {
+	padding-left: 40px;
+	width: 394px;
+	height: 100%;
+	vertical-align: top;
+}
+
+.left-contents .ntsRadioBox {
+	margin-top: 5px;
+	margin-bottom: 6px;
+	margin-left: 18px;
+}
+
+.input-time {
+	width: 45px;
+}
+
+.time {
+	margin-left: 60px;
+	margin-top: 10px;
+}
+
+.right-contents {
+	vertical-align: top;
+	padding-left: 20px;
+	width: 800px;
+}
+
+.mutil-line.form-label>label {
+	line-height: 18px;
+}
+
+.ntsCheckBox {
+	display: block;
+	margin-left: 40px;
+}
+
+.ntsRadioBox {
+	display: block;
+	margin-left: 8px;
+}
+
+#table-b {
+	width: 680px;
+	height: 420px;
+}
+
+.b5_inner_left {
+	width: 126px;
+	vertical-align: top;
+	background-color: #CFF1A5;
+}
+
+.b5_inner_left>.label {
+	margin-top: 10px;
+}
+
+table.table-right th, table.table-right td {
+	border-right: 1px solid #000 ;
+	border-left: 1px solid #000 ;
+	border-bottom: 1px solid #000 ;
+	border-top: 1px solid #000 ;
+}
+
+#b5_8 {
+	margin-left: 90px;
+}
+
+#b5_9 {
+	margin-left: 100px;
+}
+
+#b6_8, #b6_16 {
+	margin-left: 69px;
+}
+
+.caret-bottom.outline {
+	width: 3em;
+	height: 1em;
+	margin-left: 109px;
+	margin-top: 9px;
+	font-size: 2.3rem;
+}

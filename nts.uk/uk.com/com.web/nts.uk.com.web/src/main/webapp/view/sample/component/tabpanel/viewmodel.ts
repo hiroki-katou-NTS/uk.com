@@ -20,7 +20,6 @@ module nts.uk.ui.tabpanel.viewmodel {
 				{id: 'tab-4', title: 'Tab Title 4', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true)}
 			]);
 			self.selectedTab = ko.observable('tab-1');
-            
             self.tabs2 = ko.observableArray([
                 {id: 'x-tab-1', title: 'Tab Title 1', content: '.x-tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
                 {id: 'x-tab-2', title: 'Tab Title 2', content: '.x-tab-content-2', enable: ko.observable(true), visible: ko.observable(true)},

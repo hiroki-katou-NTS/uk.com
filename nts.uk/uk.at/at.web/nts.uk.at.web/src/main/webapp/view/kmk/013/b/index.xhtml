@@ -1,0 +1,303 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kmk013.b.start.js" />
+			<com:scriptfile path="kmk013.b.vm.js" />
+			<com:scriptfile path="kmk013.b.service.js" />
+			<com:stylefile path="kmk013.b.main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
+					tabindex="1"> #{i18n.getText('KMK013_1')} </a>
+				<button class="proceed save" data-bind="click:save" >#{i18n.getText('KMK013_2')}</button>
+			</div>
+			<div id="contents-area">
+				<table>
+					<tr>
+						<td class="left-contents">
+							<div class="name-label"
+								data-bind="ntsFormLabel: {required: true,inline: inline }">#{i18n.getText('KMK013_3')}</div>
+							<div>
+								<hr />
+							</div>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+										name:'#{i18n.getText('KMK013_4')}',
+										options: itemsB23,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedB23}">
+							</div>
+							<span class="caret-bottom outline"></span>
+							<div class="name-label mutil-line"
+								data-bind="ntsFormLabel: {required: true,inline: inline }">#{i18n.getText('KMK013_7')}</div>
+							<div>
+								<hr />
+							</div>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+										name:'#{i18n.getText('KMK013_8')}',
+										options: itemsB29,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedB29,
+										enable:enableB29}">
+							</div>
+							<span class="caret-bottom outline"></span>
+							<div class="name-label"
+								data-bind="ntsFormLabel: {required: true,inline: inline }">#{i18n.getText('KMK013_11')}</div>
+							<div>
+								<hr />
+							</div>
+							<div
+								data-bind="ntsRadioBoxGroup: {
+										name:'#{i18n.getText('KMK013_12')}',
+										options: itemsB215,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedB215,
+										enable:enableB215}">
+							</div>
+							<div class="time">
+								<span class="label">#{i18n.getText('KMK013_15')}</span> 
+								<input class="input-time" data-bind="ntsTimeEditor: {
+								value: timeB219,
+								constraint: 'SampleTimeDuration',
+								readonly: readonly,
+								immediate: false,
+								enable: enableB217,
+								inputFormat: 'time',
+								mode: 'time'}" />
+							</div>
+							<div class="time">
+								<span class="label">#{i18n.getText('KMK013_17')}</span>
+								<input class="input-time" data-bind="ntsTimeEditor: {
+								value: timeB221,
+								constraint: 'SampleTimeDuration',
+								readonly: readonly,
+								immediate: false,
+								enable: enableB217,
+								inputFormat: 'time',
+								mode: 'time'}" />
+							</div>
+							<div class="time">
+								<span class="label">#{i18n.getText('KMK013_19')}</span>
+								<input class="input-time" data-bind="ntsTimeEditor: {
+								value: timeB223,
+								constraint: 'SampleTimeDuration',
+								readonly: readonly,
+								immediate: false,
+								enable: enableB217,
+								inputFormat: 'time',
+								mode: 'time'}" />
+							</div>
+
+						</td>
+						<td class="right-contents">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK013_21')}</div>
+							<div>
+								<hr />
+							</div>
+							<div data-bind="ntsCheckBox: { checked: checkedB33 }">#{i18n.getText('KMK013_22')}</div>
+							<div data-bind="ntsCheckBox: { checked: checkedB34 }">#{i18n.getText('KMK013_23')}</div>
+							<div data-bind="ntsCheckBox: { checked: checkedB35 }">#{i18n.getText('KMK013_24')}</div>
+							<div id="tab-panel"
+								data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab,width:300}">
+								<div class="tab-content-1">
+									<div data-bind="ntsKMK013B1: {}">
+										<table class="table-right">
+											<tr id="b5_1">
+												<td class="b5_inner_left">
+													<div class="label">#{i18n.getText('KMK013_28')}</div>
+												</td>
+												<td>
+													<label class="ntsRadioBox"> <input type="radio"
+															name="textRadioB54"
+															data-bind="checkedValue: 1, checked: selectedValueB54" />
+															<span class="box"></span><span class="label"
+															data-bind="text: '#{i18n.getText('KMK013_31')}'"></span>
+													</label> 
+													<div data-bind="ntsCheckBox: { checked: checkedB57 , enable:enableB54 }">#{i18n.getText('KMK013_33')}</div>
+													<div id="b5_8" class="label">#{i18n.getText('KMK013_34')}</div>
+													<div id="b5_9" data-bind="ntsRadioBoxGroup: {
+														name:'#{i18n.getText('KMK013_35')}',
+														options: itemListB59,
+														optionsValue: 'id',
+														optionsText: 'name',
+														value: selectedIdB59,
+														enable:enableB59 }"></div>
+													<div data-bind="ntsCheckBox: { checked: checkedB512 , enable:enableB54}">#{i18n.getText('KMK013_38')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB513, enable:enableB54 }">#{i18n.getText('KMK013_39')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB514, enable:enableB54 }">#{i18n.getText('KMK013_40')}</div>
+													<label class="ntsRadioBox"> <input
+															type="radio" name="textRadioB54"
+															data-bind="checkedValue: 0, checked: selectedValueB54" />
+															<span class="box"></span><span class="label"
+															data-bind="text: '#{i18n.getText('KMK013_32')}'"></span>
+													</label>
+													
+												</td>
+											</tr>
+											<tr>
+												<td class="b5_inner_left">
+													<div class="label">#{i18n.getText('KMK013_29')}</div>
+												</td>
+												<td>
+													<label class="ntsRadioBox"> <input type="radio"
+															name="textRadioB515"
+															data-bind="checkedValue: 1, checked: selectedValueB515" />
+															<span class="box"></span><span class="label"
+															data-bind="text: '#{i18n.getText('KMK013_42')}'"></span>
+													</label> 
+													<div data-bind="ntsCheckBox: { checked: checkedB518, enable:enableB515}">#{i18n.getText('KMK013_44')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB519, enable:enableB515 }">#{i18n.getText('KMK013_45')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB520, enable:enableB515 }">#{i18n.getText('KMK013_46')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB521, enable:enableB515 }">#{i18n.getText('KMK013_47')}</div>
+													<label class="ntsRadioBox"> <input
+															type="radio" name="textRadioB515"
+															data-bind="checkedValue: 0, checked: selectedValueB515" />
+															<span class="box"></span><span class="label"
+															data-bind="text: '#{i18n.getText('KMK013_43')}'"></span>
+													</label>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+								<div class="tab-content-2">
+									<div data-bind="ntsKMK013B1: {}">
+										<table class="table-right">
+											<tr id="b5_1">
+												<td class="b5_inner_left">
+													<div class="label">#{i18n.getText('KMK013_48')}</div>
+												</td>
+												<td>
+													<label class="ntsRadioBox"> <input type="radio"
+															name="textRadioB64"
+															data-bind="checkedValue: 1, checked: selectedValueB64" />
+															<span class="box"></span><span class="label"
+															data-bind="text: '#{i18n.getText('KMK013_51')}'"></span>
+													</label> 
+													<div data-bind="ntsCheckBox: { checked: checkedB67 ,enable:enableB64 }">#{i18n.getText('KMK013_53')}</div>
+													<div  id="b6_8" data-bind="ntsCheckBox: { checked: checkedB68 ,enable:enableB68 }">#{i18n.getText('KMK013_54')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB69 ,enable:enableB64 }">#{i18n.getText('KMK013_55')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB610 ,enable:enableB64 }">#{i18n.getText('KMK013_56')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB611 ,enable:enableB64 }">#{i18n.getText('KMK013_40')}</div>
+													<label class="ntsRadioBox"> <input
+															type="radio" name="textRadioB64"
+															data-bind="checkedValue: 0, checked: selectedValueB64" />
+															<span class="box"></span><span class="label"
+															data-bind="text: '#{i18n.getText('KMK013_52')}'"></span>
+													</label>
+													
+												</td>
+											</tr>
+											<tr>
+												<td class="b5_inner_left">
+													<div class="label">#{i18n.getText('KMK013_49')}</div>
+												</td>
+												<td>
+													<label class="ntsRadioBox"> <input type="radio"
+															name="textRadioB612"
+															data-bind="checkedValue: 1, checked: selectedValueB612" />
+															<span class="box"></span><span class="label"
+															data-bind="text: '#{i18n.getText('KMK013_58')}'"></span>
+													</label> 
+													<div data-bind="ntsCheckBox: { checked: checkedB615, enable:enableB612 }">#{i18n.getText('KMK013_60')}</div>
+													<div id="b6_16" data-bind="ntsCheckBox: { checked: checkedB616, enable:enableB616 }">#{i18n.getText('KMK013_61')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB617, enable:enableB612 }">#{i18n.getText('KMK013_62')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB618, enable:enableB612 }">#{i18n.getText('KMK013_63')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB619, enable:enableB612 }">#{i18n.getText('KMK013_64')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB620, enable:enableB612 }">#{i18n.getText('KMK013_65')}</div>
+													<label class="ntsRadioBox"> <input
+															type="radio" name="textRadioB612"
+															data-bind="checkedValue: 0, checked: selectedValueB612" />
+															<span class="box"></span><span class="label"
+															data-bind="text: '#{i18n.getText('KMK013_59')}'"></span>
+													</label>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+								<div class="tab-content-3">
+									<div data-bind="ntsKMK013B1: {}">
+										<table class="table-right">
+											<tr id="b5_1">
+												<td class="b5_inner_left">
+													<div class="label">#{i18n.getText('KMK013_66')}</div>
+												</td>
+												<td>
+													<label class="ntsRadioBox"> <input type="radio"
+															name="textRadioB74"
+															data-bind="checkedValue: 1, checked: selectedValueB74" />
+															<span class="box"></span><span class="label"
+															data-bind="text: '#{i18n.getText('KMK013_69')}'"></span>
+													</label> 
+													<div data-bind="ntsCheckBox: { checked: checkedB77, enable:enableB74 }">#{i18n.getText('KMK013_33')}</div>
+													<div id="b5_8" class="label">#{i18n.getText('KMK013_34')}</div>
+													<div id="b5_9" data-bind="ntsRadioBoxGroup: {
+														name:'#{i18n.getText('KMK013_72')}',
+														options: itemListB79,
+														optionsValue: 'id',
+														optionsText: 'name',
+														value: selectedIdB79,
+														enable:enableB79 }"></div>
+													<div data-bind="ntsCheckBox: { checked: checkedB712, enable:enableB74 }">#{i18n.getText('KMK013_76')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB713, enable:enableB74 }">#{i18n.getText('KMK013_77')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB714, enable:enableB74 }">#{i18n.getText('KMK013_78')}</div>
+													<label class="ntsRadioBox"> <input
+															type="radio" name="textRadioB74"
+															data-bind="checkedValue: 0, checked: selectedValueB74" />
+															<span class="box"></span><span class="label"
+															data-bind="text: '#{i18n.getText('KMK013_70')}'"></span>
+													</label>
+													
+												</td>
+											</tr>
+											<tr>
+												<td class="b5_inner_left">
+													<div class="label">#{i18n.getText('KMK013_67')}</div>
+												</td>
+												<td>
+													<label class="ntsRadioBox"> <input type="radio"
+															name="textRadioB715"
+															data-bind="checkedValue: 1, checked: selectedValueB715" />
+															<span class="box"></span><span class="label"
+															data-bind="text: '#{i18n.getText('KMK013_80')}'"></span>
+													</label> 
+													<div data-bind="ntsCheckBox: { checked: checkedB718, enable:enableB715 }">#{i18n.getText('KMK013_82')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB719, enable:enableB715  }">#{i18n.getText('KMK013_83')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB720, enable:enableB715  }">#{i18n.getText('KMK013_84')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB721, enable:enableB715  }">#{i18n.getText('KMK013_85')}</div>
+													<div data-bind="ntsCheckBox: { checked: checkedB722, enable:enableB715  }">#{i18n.getText('KMK013_86')}</div>
+													<label class="ntsRadioBox"> <input
+															type="radio" name="textRadioB715"
+															data-bind="checkedValue: 0, checked: selectedValueB715" />
+															<span class="box"></span><span class="label"
+															data-bind="text: '#{i18n.getText('KMK013_81')}'"></span>
+													</label>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

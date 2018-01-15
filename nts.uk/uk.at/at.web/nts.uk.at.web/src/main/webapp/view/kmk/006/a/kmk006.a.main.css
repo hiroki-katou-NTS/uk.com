@@ -1,0 +1,130 @@
+@CHARSET "UTF-8";
+.tab-content-1, .tab-content-2, .tab-content-3 {
+	width: 650px;
+	height: 600px;
+}
+.table-label {
+	width: 650px;
+	margin-left: 20px;
+}
+
+.label-checkbox {
+	width: 800px;
+	margin-left: 30px;
+}
+
+.inputDivLabelMain{
+	margin-left: 30px;
+	margin-right: 20px;
+	font-size: 13px;
+}
+
+.inputDivLabel{
+	margin-left: 10px;
+	margin-right: 20px;
+}
+
+.inputCheckBox {
+	margin-left: 80px;
+}
+
+#comboTargetYear {
+	width: 100px;
+	margin-left: 10px;
+}
+
+.lableContent {
+	width: 150px;
+}
+
+.lableContentPersonal {
+	width: 100px;
+	margin-left: 60px;
+}
+
+.helpButton {
+	margin-right: 15px;
+	margin-left: 15px;
+}
+
+.tabPanel {
+	margin-top: 20px;
+	margin-left: 20px;
+}
+
+.lineContent {
+	margin-top: 20px;
+	margin-left: 20px;
+	display: inline-flex;
+}
+
+.content {
+	margin-left: 9px;
+	margin-top: 8px;
+}
+#nts-component-tree {
+    padding: 20px !important; 
+}
+.bg-dark-green {
+	background-color: #C7F391;
+}
+
+.border-all td {
+	border: solid grey 1px;
+	text-align: center;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 5px;
+	padding-left: 5px;
+	min-width: 50px;
+	max-width: 85px;
+}
+
+.border-all input {
+	width: 50px;
+}
+
+.employmentSettingContent {
+	margin-top: 30px;
+	margin-left: 20px;
+}
+
+.person_left {
+	width: 500px;
+}
+
+.person_right {
+	width: 655px;
+}
+
+.employment_left {
+	width: 435px;
+}
+
+.employment_right {
+	width: 720px;
+}
+
+.contentkcp005 {
+	margin-top: 35px;
+	margin-left: 80px;
+}
+
+.personalEstablishment {
+	margin-top: 10px;
+}
+
+.table-label-bottom {
+	margin-bottom: 10px;
+}
+
+.label-middle {
+	padding-top: 7px;
+}
+
+#nts-component-tree{
+	width: 352px !important;
+}
+#single-tree-grid_container{
+	width: 352px !important;
+}

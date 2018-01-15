@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="main.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<label>Start date</label>
+			<div data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD'}"></div><br />
+			<label>End date</label>
+			<div data-bind="ntsDatePicker: {value: endDate, dateFormat: 'YYYY/MM/DD'}"></div><br />
+			<button data-bind="click: openDetailScreen">Detail Screen</button>
+			
+			<div id="contents-area">
+			</div>
+			<div id="functions-area-bottom">
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

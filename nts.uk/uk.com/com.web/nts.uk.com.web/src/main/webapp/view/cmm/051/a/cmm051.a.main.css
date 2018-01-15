@@ -1,0 +1,66 @@
+@CHARSET "UTF-8";
+
+#left-content {
+	width: 386px;
+	float: left;
+	margin: 10px 10px;
+}
+#left-content-top {
+	width: 100%;
+	padding: 10px 15px;
+	margin-bottom: 45px;
+}
+.caret-background.caret-bottom:after {
+	left: 160px !important;
+}
+#left-content-bottom {
+	width: 100%;
+	padding: 15px;
+	border-radius: 5px;
+}
+#right-content {
+	width: 720px;
+	float: left;
+	margin-left: 125px;
+	margin-top: 30px;
+}
+.td-detail {
+	padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#contents-area {
+    overflow-y: unset;
+}
+
+.input-row{
+	display: flex;
+	margin-bottom: 30px;
+}
+
+.label-group{
+	width: 125px;
+}
+
+#grid2_container{
+	margin-top: 10px !important;
+}
+
+#wkp-component{
+	margin-bottom: 15px;
+}
+
+#date-picker-label{
+    margin-top: -20px;
+    margin-bottom: 5px;
+}
+.date-picker-span{
+	width: 125px;
+    display: inline-block;
+}
+
+#employee-selection{
+    display: flex;
+    height: 30px;
+    line-height: 30px;
+}

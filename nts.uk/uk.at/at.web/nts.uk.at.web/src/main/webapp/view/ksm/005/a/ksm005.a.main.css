@@ -1,0 +1,57 @@
+@CHARSET "UTF-8";
+
+.master_setting {
+	width: 220px;
+	height: 180px;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 5px;
+	box-shadow: 0 5px #999;
+}
+
+.master_title_left {
+	margin-top: 10px;
+	margin-left: 10px;
+	width: 190px;
+	height: 80px;
+	background-color: cyan;
+	border-radius: 5px;
+}
+
+.master_title_right {
+	margin-top: 10px;
+	margin-left: 10px;
+	width: 190px;
+	height: 80px;
+	background-color: #EAE0EA;
+	border-radius: 5px;
+}
+
+.label_master {
+	font-size: 20pt;
+	padding-top: 20px;
+	padding-left: 20px;
+	display: block;
+}
+
+.label_tips {
+	font-size: 9pt;
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+.btnconfig {
+	margin-top: 10px;
+	margin-left: 10px;
+}
+
+.btnconfig.caret-right:after {
+	color: darkcyan;
+	margin-left: 4px;
+}
+
+.master_setting_caret.caret-right:after {
+	color: #2ECC71;
+	border-width: 51px 26px;
+	margin-top: -160px;
+}

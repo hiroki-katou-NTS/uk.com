@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 950, height: 540 };</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.relationship.primitives.RelationshipCode
+				nts.uk.ctx.at.shared.dom.relationship.primitives.RelationshipName
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmf004.h.main.css" />
+			<com:scriptfile path="kmf004.h.start.js" />
+			<com:scriptfile path="kmf004.h.vm.js" />
+			<com:scriptfile path="kmf004.h.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area" style="height: 55px">
+				<!-- H1_1: Button New -->
+				<button tabindex="1" id="btn_001"
+					class="button separate-button fix-button"
+					data-bind="click: newMode, enable: !check()">#{i18n.getText('KMF004_1')}</button>
+				<!-- H1_2: Button Registration -->
+				<button tabindex="2" id="btn_002"
+					class="button proceed separate-button fix-button"
+					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
+				<!-- H1_3: Button Delete -->
+				<button tabindex="3" id="btn_003"
+					class="button danger separate-button fix-button"
+					data-bind="enable: checkDelete, click: remove">#{i18n.getText('KMF004_3')}</button>
+				<!-- H1_4: Button close -->
+				<button tabindex="4" id="btn_004"
+					class="button separate-button fix-button" data-bind="click: close">#{i18n.getText('KMF004_4')}</button>
+			</div>
+			<div id="content-area">
+				<div id="left-content" class="bg-green caret-right caret-background">
+					<div style="float: left; margin: 20px">
+						<!-- H2_2: List -->
+						<table id="lstRelationship" tabindex="5"
+								data-bind="ntsGridList: {								
+							height: 362,
+							options: lstRelationship,
+							optionsValue: 'relationshipCode',
+							columns: gridListColumns,
+							multiple: false,
+							value: selectedCode}"></table>
+					</div>
+				</div>
+				<div id="right-content" style="float: left;">
+					<table>
+						<colgroup>
+							<col width="280px" />
+							<col width="*" />
+						</colgroup>
+						<tr class="row">
+							<td>
+								<!-- H3_1: Label -->
+								<div id="label"
+									data-bind="ntsFormLabel: {required: true, constraint:['RelationshipCode','RelationshipName'] }">#{i18n.getText('KMF004_9')}</div>
+							</td>
+							<td>
+								<!-- H3_2: Code --> <input tabindex="6" class="nts-input"
+								id="inpCode"
+								data-bind="ntsTextEditor: { 	value: codeObject,
+									constraint: 'RelationshipCode',
+									required: true,
+									name: '#[KMF004_136]',
+									immediate: true,
+									enable: check}" />
+								<!-- H3_3: Name--> <input tabindex="7" class="nts-input"
+								id="inpPattern"
+								data-bind="ntsTextEditor: { 	value: selectedName,
+									constraint: 'RelationshipName',
+									name: '#[KMF004_8]',
+									required: true,
+									enable: true}" />	
+							</td>
+						</tr>
+					</table>
+
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

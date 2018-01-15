@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/sample/catalog/catalog.css" />
+			<com:scriptfile path="/view/sample/catalog/catalog.js" />
+			<com:scriptfile path="ccg026.start.js" />
+
+			<com:stylefile path="component/component.css" />
+			<com:scriptfile path="component/component.service.js" />
+			<com:scriptfile path="component/component.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="side-menu" class="cf"></div>
+				<div id="content" class="cf">
+					<h2>CCG026 Testing page</h2>
+					<div data-bind="with: componentViewmodel">
+						<h3>roleId: <input class="nts-input" id="inpRoleId" data-bind="ntsTextEditor:{ value: roleId, required: true}" style="width:300px;"/></h3>
+						<div data-bind="with: setting">
+							<h3>classification: <span data-bind="text: ko.toJSON(classification)" /></h3>
+							<h3>maxRow: <span data-bind="text: ko.toJSON(maxRow)" /></h3>
+						</div>
+						<ui:include src="/view/ccg/026/component/index.xhtml" />
+						<div>
+							<b>Count:</b> <span
+								data-bind="text: ko.toJSON(listPermissions.length)"></span>
+						</div>
+						<b>Result:</b>
+						<table id="fixed-table">
+							<colgroup>
+								<col width="80px" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th class="ui-widget-header" style="text-align: center;">#{i18n.getText('CCG026_3')}</th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach: listPermissions">
+								<tr>
+									<td style="text-align: center;"><div
+											data-bind="ntsCheckBox: {checked: availability, enable : false}"></div></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<article class="cf">
+						<div class="tabs">
+							<ol>
+								<li><a href="#tabs-html">Usage</a></li>
+								<li><a href="#tabs-api">API</a></li>
+							</ol>
+							<div id="tabs-html" class="cf">
+								<h2>HTML</h2>
+<pre><![CDATA[// Add Javascript file
+<com:stylefile path="view/ccg/026/component/component.css" />
+<com:scriptfile path="view/ccg/026/component/component.service.js" />
+<com:scriptfile path="view/ccg/026/component/component.vm.js" />
+
+// Use in HTML
+<div bind-data = "with: component">
+<ui:include src="/view/ccg/026/component/index.xhtml" />
+</div>]]></pre>
+								<h2>TypeScript</h2>
+<pre><![CDATA[module nts.uk.com.view.cdl026.a {
+	import getText = nts.uk.resource.getText;
+	import ccg = nts.uk.com.view.ccg026;
+	import model = nts.uk.com.view.ccg026.component.model;
+	
+	export module viewmodel {
+		export class ScreenModel {
+			component: ccg.component.viewmodel.ComponentModel;
+			listPermission: KnockoutObservableArray<model.Role>;
+			constructor() {
+				let self = this;
+				self.component = new ccg.component.viewmodel.ComponentModel({ 
+						roleId: '00000000-0000-0000-0000-000000000001',
+						classification: 1,
+						maxRow: 3
+				});
+				self.listPermission = ko.observableArray([]);
+			}
+
+			/** Start page */
+			startPage(): JQueryPromise<any> {
+				let self = this;
+				let dfd = $.Deferred();
+				self.component.startPage().done(() => {
+					self.listPermission(self.component.listPermissions);
+					dfd.resolve();	
+				});
+				return dfd.promise();
+			}
+			
+		}
+	}
+}]]></pre>
+							</div>
+							<div id="tabs-api" class="cf">
+								<h2>ComponentModel Constructor</h2>
+								<table class="table">
+									<colgroup>
+										<col width="200px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th><h4>Name</h4></th>
+											<th><h4>Description</h4></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>classification<br/><i>(optional)</i></td>
+											<td><b>Type:</b> number<br/>
+												<b>Default:</b> 1<br/>
+												Classification to get data from
+											</td>
+										</tr>
+										<tr>
+											<td>maxRow<br/><i>(optional)</i></td>
+											<td><b>Type:</b> number<br/>
+											<b>Default:</b> 10<br/>
+											Display row</td>
+										</tr>
+										<tr>
+											<td>tabindex<br/><i>(optional)</i></td>
+											<td><b>Type:</b> number<br/>
+											<b>Default:</b> 0<br/>
+											Set tabindex for component</td>
+										</tr>
+									</tbody>
+								</table>
+<pre><![CDATA[// Demo
+self.component = new ccg.component.viewmodel.ComponentModel({ 
+	roleId: '00000000-0000-0000-0000-000000000001',
+	classification: 1,
+	maxRow: 3
+});]]></pre>
+								<h2>ComponentModel Properties</h2>
+								<table class="table">
+									<colgroup>
+										<col width="200px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th><h4>Name</h4></th>
+											<th><h4>Description</h4></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>roleId</td>
+											<td><b>Type:</b> KnockoutObservableArray&lt;string&gt;<br/>
+												Id of current role
+											</td>
+										</tr>
+										<tr>
+											<td>listPermissions</td>
+											<td><b>Type:</b> KnockoutObservableArray&lt;model.FunctionPermission&gt;<br/>
+												List FunctionPermission
+											</td>
+										</tr>
+									</tbody>
+								</table>
+<pre><![CDATA[// Demo
+self.component.roleId(); // Get/Set roleId
+self.component.listPermissions() // Get list permission ]]></pre>
+							</div>
+						</div>
+					</article>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

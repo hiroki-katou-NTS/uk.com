@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="kcp006.b.style.css" />
+			<com:scriptfile path="kcp006.b.start.js" />
+			<com:scriptfile path="kcp006.b.service.js" />
+			<com:scriptfile path="kcp006.b.vm.js" />
+			<com:ValidatorScript>
+					nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.EventName
+				</com:ValidatorScript>
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="normal proceed" data-bind="click: addEvent, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_1')}</button>
+				<button class="normal danger" data-bind="click: removeEvent">#{i18n.getText('KSM004_4')}</button>
+				<button class="normal" data-bind="click: closeDialog">#{i18n.getText('KSM004_59')}</button>
+			</div>
+			<div id="contents-area">
+				<table class="table-container">
+					<col width="150"></col>
+					<col width="100"></col>
+					<tr>
+						<td>
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_17')}</div>
+						</td>
+						<td><span data-bind="text: date"></span></td>
+					</tr>
+					<com:ko-if bind="workplaceId == '0'">
+						<tr>
+							<td>
+								<div
+									data-bind="ntsFormLabel: {required: true, constraint: 'EventName'}">#{i18n.getText('KSM004_18')}</div>
+							</td>
+							<td><input id="companyEvent"
+								data-bind="ntsTextEditor: {
+										name: '#[KSM004_18]',
+										value: companyEvent,
+										constraint: 'EventName',
+										required: true }" />
+							</td>
+						</tr>
+					</com:ko-if>
+					<com:ko-if bind="workplaceId != '0'">
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KCP006_3')}</div>
+							</td>
+							<td><span data-bind="text: companyEvent"></span></td>
+						</tr>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_20')}</div>
+							</td>
+							<td><span data-bind="text: workplaceName"></span></td>
+						</tr>
+						<tr>
+							<td>
+								<div
+									data-bind="ntsFormLabel: {required: true, constraint: 'EventName'}">#{i18n.getText('KSM004_21')}</div>
+							</td>
+							<td><input  id="workplaceEvent"
+								data-bind="ntsTextEditor: {
+										name: 'KSM004_21',
+										value: workplaceEvent,
+										constraint: 'EventName',
+										required: true }" />
+							</td>
+						</tr>
+					</com:ko-if>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

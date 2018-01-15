@@ -1,0 +1,83 @@
+#button36Area {
+	margin-top: 3px;
+	display: inline-block;
+	float: left;
+}
+
+#button6 {
+	font-size: 20px;
+	height: 43px;
+	width: 111px;
+	margin-left: 48px;
+	margin-top: 21px;
+}
+
+#button36 {
+	width: 140px;
+	margin-left: 378px;
+	margin-top: 0px;
+}
+
+#label310Area {
+	display: inline-block;
+	margin-top: 10px;
+}
+
+#label310 {
+	width: 369px;
+	font-size: 11px;
+	background-color: #FEC0AD;
+}
+
+#panel37 {
+	overflow-y: scroll;
+	width: 338px;
+	height: 260px;
+	display: inline-block;
+	float: left;
+}
+
+#label36 {
+	display: inline-block;
+	margin-top: 39px;
+	float: left;
+}
+
+#panel35 {
+	display: inline-block;
+	float: left;
+}
+
+#table32 {
+	margin-top: 11px;
+}
+
+#panel35 {
+	margin-left: 16px;
+	margin-top: 21px;
+}
+
+.nts-wizard.vertical>.content {
+	width: 830px;
+	height: 800px;
+	margin: 0 0 0 0;
+	background: none;
+	height: 800px;
+}
+
+.nts-wizard.vertical>.steps {
+	width: 240px;
+	height: 800px;
+}
+
+.nts-wizard {
+	width: 1200px;
+	height: inherit;
+}
+
+#linkButton1 {
+	margin-left: 19px;
+}
+#label310 {
+	    white-space: pre;
+}

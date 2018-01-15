@@ -1,0 +1,43 @@
+@CHARSET "UTF-8";
+
+.btnSave {
+	width: 90px;
+}
+
+#contents-left, #contents-right {
+	padding: 20px;
+	vertical-align: top !important;
+	min-width: 200px;
+}
+
+#contents-left {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+#contents-right {
+	padding-left: 40px !important;
+}
+
+.contents {
+	margin-top: 20px;
+	margin-left: 20px;
+	min-width: 700px;
+}
+
+
+.valueData {
+	float: left;
+}
+
+.padding-right {
+	padding-right: 15px;
+}
+
+.height-50 {
+	height: 50px;
+}
+
+.help-btn {
+	width: 33px;
+}

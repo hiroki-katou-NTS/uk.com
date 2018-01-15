@@ -1,0 +1,16 @@
+.tab_4_setting_rows {
+	margin-top: 10px;
+	width: 100%;
+	display: flex;
+    align-items: center;
+}
+
+.tab_4_setting_header {
+	width: 180px;
+	margin-left: 20px;
+}
+
+.tab_4_inline_item {
+	padding: 0px 10px 0px 10px;
+	display: inline-block;
+}

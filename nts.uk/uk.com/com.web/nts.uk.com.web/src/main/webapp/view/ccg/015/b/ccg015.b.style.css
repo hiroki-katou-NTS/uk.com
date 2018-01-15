@@ -1,0 +1,17 @@
+#contents-area {
+	padding: 20px !important;
+	width: 800px !important;
+	overflow: hidden;
+}
+#tab_url{
+	height: 350px;
+}
+.float_left{
+	float:left;
+}
+.switch_btn_style {
+	float: left;
+	margin-bottom: 20px;}
+.padding_top_3{
+	padding-top: 3px;
+}

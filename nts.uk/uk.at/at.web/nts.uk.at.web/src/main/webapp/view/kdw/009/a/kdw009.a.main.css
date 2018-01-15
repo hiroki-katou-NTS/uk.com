@@ -1,0 +1,20 @@
+#content-area{
+	width: 1000px;
+}
+
+#left-content{
+	float: left;
+	margin-left: 40px !important;	
+	margin-top: 30px;
+}
+#label{
+	margin-left: 50px;
+	margin-top:30px;
+}
+.nts-input{
+	width: 45px;
+	margin-top: 20px;
+}
+#inpPattern{
+	width: 170px;
+}

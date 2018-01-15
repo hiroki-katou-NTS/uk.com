@@ -1,0 +1,54 @@
+@CHARSET "UTF-8";
+
+/* .nts-switch-button {
+	min-width: 80px;
+	font-size: 13px !important;
+	height: 30px !important;
+	padding: 3px 7px !important;
+	margin-bottom: 3px !important;
+} */
+/* 
+#functions-area {
+	margin-top: 5px;
+	padding: 0;
+}
+
+#contents-area {
+	margin-top: 10px;
+	margin-left: 50px;
+	min-width: 560px;
+} */
+
+.label-link-button {
+	margin-left: 20px;
+}
+#table {
+	margin-top: 30px;
+	margin-left: 50px;
+	margin-bottom: 50px;
+}
+table#table tr td {
+	padding-top: 15px;
+	margin-left: 10px;
+}
+table#table tr td label.content-label {
+	padding-left: 50px;
+	padding-right: 10px;
+}
+.hr_width {
+	width: 760px;
+}
+table#table tr td.title {
+	padding-bottom: 35px;
+}
+.holiday-grant-table-link-button {
+    display: inline !important;
+}
+#combo-box-time-unit {
+	width: 83px;
+	min-width: 0px !important
+}
+#combo-box-preem-permit {
+	width: 170px;
+	min-width: 0px !important
+}

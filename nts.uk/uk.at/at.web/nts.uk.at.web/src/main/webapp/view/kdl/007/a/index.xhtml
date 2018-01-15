@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdl007.a.main.css" />
+			<com:scriptfile path="kdl007.a.start.js" />
+			<com:scriptfile path="kdl007.a.service.js" />
+			<com:scriptfile path="kdl007.a.vm.js" />
+			<script>var dialogSize = { width: 350 , height: 580};</script>
+		</ui:define>
+		<ui:define name="content">
+			<div id="total">
+				<div id="label">
+					<label style="margin-left: 25px">#{i18n.getText('KDL007_1')}</label>
+				</div>
+				<div style="margin-bottom: 20px">
+					<div style="margin-left: 25px">
+						<table id="multi-list" tabindex="1"
+							data-bind="ntsGridList: {
+										height: 410,
+										width: 305,
+										options: dataSources,
+										optionsValue: 'code',
+										columns: [
+							                { headerText: '#{i18n.getText('KDL007_2')}', prop: 'code', width: 50 },
+							                { headerText: '#{i18n.getText('KDL007_3')}', prop: 'name', width: 200, formatter: _.escape }
+							            ],
+										multiple: isMulti,
+										value: currentCodeList}">
+						</table>
+					</div>
+				</div>
+				<div id="functions-area-bottom">
+					<div id="process">
+						<button id="btnSetting" class="x-large proceed"
+							data-bind="click: register" tabindex="2">#{i18n.getText('KDL007_4')}</button>
+						<button id="btnCancel" class="large" data-bind="click: close"
+							tabindex="3">#{i18n.getText('KDL007_5')}</button>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

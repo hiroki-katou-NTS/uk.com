@@ -1,0 +1,30 @@
+.tab_8_setting_rows {
+	margin-top: 20px;
+	width: 100%;
+	display: flex;
+    align-items: center;
+}
+
+.tab_8_setting_header {
+	width: 180px;
+	margin-left: 20px;
+}
+
+.tab_8_inline_item {
+	padding: 0px 10px 0px 10px;
+	display: inline-block;
+}
+
+.tab_8_round_setting {
+	width: 300px;
+	display: inline-block;
+	overflow: hidden;
+}
+
+.tab_8_radio_setting {
+    margin-top: 10px;
+}
+
+.tab_8_radio_cell {
+	width: 200px;
+}

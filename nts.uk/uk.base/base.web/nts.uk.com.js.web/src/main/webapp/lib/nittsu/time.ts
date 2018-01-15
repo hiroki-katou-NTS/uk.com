@@ -209,6 +209,17 @@ module nts.uk.time {
         return result;
     }
 
+    /**
+    * Format MonthDay
+    * @param  {any} [monthDay]  Input MonthDay
+    * @return {string}          Formatted MonthDay
+    */
+    export function formatMonthDayLocalized(monthDay: any) {
+        monthDay = String(monthDay);
+        monthDay = text.padLeft(monthDay, '0', 4);
+        return moment.utc(monthDay, "MMDD").format("MMMDo");
+    }
+    
 	/**
 	* Format by pattern
 	* @param  {Date}   [date]		 Input date

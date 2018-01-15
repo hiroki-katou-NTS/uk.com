@@ -1,0 +1,45 @@
+#register-team {
+	float: right;
+	margin-right: 20px
+}
+
+#single-list_container {
+	padding: 15px !important;
+}
+
+#content-bot-left {
+	float: left;
+	width: 290px;
+	height: 285px;
+}
+
+#content-bot-right {
+	float: left;
+	margin-left: 35px
+}
+
+.formlabel-class {
+	margin-top: 2px
+}
+
+#check-box {
+	margin-left: -7px
+}
+
+#content-bot-right-bot, .code {
+	margin-left: 35px
+}
+
+#content-bot-right-bot-left {
+	float: left;
+	margin-bottom: 10px
+}
+
+#content-bot-right-bot-right {
+	float: left;
+	margin-left: 95px;
+}
+
+#contents-area {
+	margin-left: 10px;
+}

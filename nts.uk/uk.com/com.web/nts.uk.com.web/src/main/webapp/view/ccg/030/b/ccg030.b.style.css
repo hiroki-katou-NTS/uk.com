@@ -1,0 +1,9 @@
+@CHARSET "UTF-8";
+
+.preview {
+	position: relative;
+	height: 470px;
+	overflow: auto;
+}
+#functions-area-bottom{height: 45px;}
+button.large {min-width: 85px;}

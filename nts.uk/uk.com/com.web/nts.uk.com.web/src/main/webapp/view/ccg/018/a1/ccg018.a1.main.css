@@ -1,0 +1,116 @@
+@CHARSET "UTF-8";
+
+#link-icon {
+	width: 30px;
+	vertical-align: middle;
+}
+
+#A1-5 {
+	margin-top: 3px;
+}
+
+#A1-6 {
+	margin-left: 2px;
+	vertical-align: middle;
+}
+
+.sidebar-content-header button {
+	width: 90px;
+}
+
+#A1-4 {
+	margin: 0 20px 0 50px;
+}
+
+#A1-6 {
+	margin-left: 420px;
+}
+
+#A2-1 {
+	margin: 25px 60px 0px 50px;
+}
+
+#A2-3 {
+	margin-left: 30px;
+	width: 90px;
+}
+
+#A2-4 {
+	margin: 15px 0 0 50px !important;
+}
+
+.nts-switch-button {
+	width: 90px
+}
+
+.ui-igcombo-button {
+	background-color: white;
+	border: none !important;
+}
+
+th {
+	border: 1px solid #999999;
+	background-color: #E0F59E;
+	height: 25px;
+}
+
+td {
+	border: 1px solid #999999;
+	border-top: 0px
+}
+
+.table1 {
+	width: 842px
+}
+
+.table1 thead tr, .table1 tbody {
+	display: block;
+}
+
+.table1 tbody {
+	height: 480px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+/* for IE browser */
+*::-ms-backdrop, .table1 tbody {
+	height: 300px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+/* for EDGE browser */
+@supports (-ms-ime-align:auto ) { .table1 tbody {
+	height: 495px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+}
+.table1 thead tr th:first-child, .table1 tbody tr td:first-child {
+	width: 50px
+}
+
+.table1 thead tr th:nth-child(2), .table1 tbody tr td:nth-child(2) {
+	width: 180px
+}
+
+.table1 thead tr th, .table1 tbody tr td:nth-child(3), .table1 tbody tr td:nth-child(4)
+	{
+	width: 204px
+}
+
+.table1 thead tr th:nth-child(5), .table1 tbody tr td:nth-child(5) {
+	width: 180px
+}
+
+.ui-igcombo-wrapper {
+	height: 27px;
+	padding-top: 2px;
+	padding-left: 2px;
+}
+
+.width-tbody {
+	width: 638px;
+}

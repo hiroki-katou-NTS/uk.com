@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			<com:stylefile path="cmm008.a.main.css" />
+			<com:scriptfile path="cmm008.a.service.js" />
+			<com:scriptfile path="cmm008.a.vm.js" />
+			<com:scriptfile path="cmm008.a.start.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.bs.employee.dom.employment.EmploymentCode
+				nts.uk.ctx.bs.employee.dom.employment.EmploymentName
+				nts.uk.ctx.bs.employee.dom.employment.EmpExternalCode
+				nts.uk.shr.com.primitive.Memo
+			</com:ValidatorScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button data-bind="click: clearData" tabindex="1">#{i18n.getText('CMM008_1')}</button>
+				<button class="proceed" data-bind="click: createEmployment, enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('CMM008_2')}</button>
+				<button class="danger" id="btnDelete" data-bind = "click: deleteEmployment, enable: enableDelete()" tabindex="4">#{i18n.getText('CMM008_4')}</button>
+			</div>
+			<div id="contents-area">
+				<table>
+					<tr>
+						<td id="left-content">
+							<div id="emp-component" tabindex="-1"></div>
+						</td>
+						<td id="right-contents" data-bind="with: employmentModel">
+							<table>
+								<tr>
+									<td>
+										<div class="td-width" data-bind="ntsFormLabel: {required: true, constraint: ['EmploymentCode', 'EmploymentName']}"><label>#{i18n.getText('CMM008_6')}</label></div>
+									</td>
+									<td>
+										<div
+											style="display: inline-block; padding-left: 10px; padding-bottom: 10px">
+											<input id="empCode"
+												data-bind="ntsTextEditor: {
+														name: '#[CMM008_7]',
+														value: employmentCode, 
+														constraint: 'EmploymentCode', 
+														option: { width: '35px' },
+														required: true, 
+														enable: isEnableCode()}"
+												tabindex="7" /> <input id="empName"
+												data-bind="ntsTextEditor: {
+														name: '#[CMM008_8]',
+														value: employmentName, 
+														constraint: 'EmploymentName',
+														option: { width: '150px' },
+														required: true,
+														enable: true}"
+												tabindex="8" />
+										</div>
+									</td>
+								</tr>
+							</table>
+							
+							
+							<hr id="ruled-line"></hr>
+							<div>
+								<table>
+								<tr class="tr-height">
+									<td class="td-width">
+										<div data-bind="ntsFormLabel: {constraint: ['EmpExternalCode']}">
+											<label>#{i18n.getText('CMM008_9')}</label>
+										</div>
+									</td>
+									<td class="padding-left">
+										<input id="extCode" data-bind="ntsTextEditor: {
+														name: '#[CMM008_9]',
+														value: empExternalCode, 
+														constraint: 'EmpExternalCode',
+														option: { width: '86px' },
+														enable: true}" tabindex="9"/>
+									</td>
+								</tr>
+								<tr class="tr-height">
+									<td class="td-width">
+										<div data-bind="ntsFormLabel: {constraint: ['Memo']}">
+											<label>#{i18n.getText('CMM008_10')}</label>
+										</div>
+									</td>
+									<td class="padding-left">
+										<div>
+											<textarea id="memo" tabindex="10" data-bind="ntsMultilineEditor: { value: memo, name: '#[CMM008_10]', constraint: 'Memo', option: { width: '290px', height: '150px'}}" />
+										</div>
+									</td>
+								</tr>
+							</table>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

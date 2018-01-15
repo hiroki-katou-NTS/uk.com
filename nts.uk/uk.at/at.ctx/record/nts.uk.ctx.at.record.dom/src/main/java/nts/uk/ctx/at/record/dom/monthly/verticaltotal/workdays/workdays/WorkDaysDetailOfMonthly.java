@@ -1,0 +1,36 @@
+package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
+
+import lombok.Getter;
+import lombok.val;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+
+/**
+ * 月別実績の勤務日数　（詳細）
+ * @author shuichu_ishida
+ */
+@Getter
+public class WorkDaysDetailOfMonthly {
+
+	/** 日数 */
+	private AttendanceDaysMonth days;
+	
+	/**
+	 * コンストラクタ
+	 */
+	public WorkDaysDetailOfMonthly(){
+		
+		this.days = new AttendanceDaysMonth(0.0);
+	}
+	
+	/**
+	 * ファクトリー
+	 * @param days 日数
+	 * @return 月別実績の勤務日数
+	 */
+	public static WorkDaysDetailOfMonthly of(AttendanceDaysMonth days){
+		
+		val domain = new WorkDaysDetailOfMonthly();
+		domain.days = days;
+		return domain;
+	}
+}

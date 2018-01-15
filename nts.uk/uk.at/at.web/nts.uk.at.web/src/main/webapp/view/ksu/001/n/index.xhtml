@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 700, height: 525 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksu001.n.main.css" />
+			<com:scriptfile path="ksu001.n.service.js" />
+			<com:scriptfile path="ksu001.n.vm.js" />
+			<com:scriptfile path="ksu001.n.start.js" />
+
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" data-bind="click: addRankSetting , enable: listEmployee.length >0 ">#{i18n.getText('KSU001_1301')}</button>
+				<button id="close-dialog" data-bind="click: closeDialog">#{i18n.getText('KSU001_1302')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="content-top">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Workplace')}</div>
+					<span class="workPlaceCode" data-bind="text :workPlaceCode"></span>  
+					<span class="workPlaceName" data-bind="text:workPlaceDisplayName"></span>
+					<hr />
+				</div>
+				<div id="content-bot">
+					<div style="width: 300px"
+						data-bind="ntsSearchBox: {
+							targetKey: 'employeeCode',
+						 	mode:'igGrid', 
+						 	comId:'grid2', 
+						 	items: listRank, 
+						    selected: singleSelectedCode, 
+						    selectedKey: 'employeeCode', 
+						    childField: 'childs',
+						    searchMode: 'highlight', 
+						    fields: ['rankName', 'employeeCode']}" />
+					<table id="grid2"></table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

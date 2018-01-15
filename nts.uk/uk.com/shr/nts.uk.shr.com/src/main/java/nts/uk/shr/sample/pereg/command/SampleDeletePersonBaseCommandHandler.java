@@ -19,7 +19,7 @@ public class SampleDeletePersonBaseCommandHandler extends CommandHandler<SampleD
 	}
 
 	@Override
-	public String targetCategoryId() {
+	public String targetCategoryCd() {
 		return "CS00001";
 	}
 

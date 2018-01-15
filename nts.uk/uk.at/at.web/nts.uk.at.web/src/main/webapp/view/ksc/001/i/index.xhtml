@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 650
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksc001.i.main.css" />
+			<com:scriptfile path="ksc001.i.vm.js" />
+			<com:scriptfile path="ksc001.i.start.js" />
+			<com:scriptfile path="ksc001.i.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="lable-line">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
+					<label data-bind="text: targetRange()"></label>
+				</div>
+				<div class="lable-line">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_32')}</div>
+					<label data-bind="text: executionNumber()"></label>
+				</div>
+				<div>
+					<table id="single-list"
+						data-bind="ntsGridList: {								
+							height: 400,
+							dataSource: items,
+							primaryKey: 'code',
+							columns: columns,
+							multiple: false,
+							value: currentCode,
+							rows: 10}">
+					</table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button id="btn-close" class="large" data-bind="click: closeDialog">#{i18n.getText('KSC001_61')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,33 @@
+@CHARSET "UTF-8";
+
+#contents-area{
+	display: inline-block;
+	padding: 20px;
+	height: 320px !important;
+}
+
+.left-contents{
+	float: left;
+}
+
+.right-contents{
+	float: left;
+	padding: 50px 20px;
+}
+
+tr {
+	height: 20px;
+}
+
+.frame-elimination{
+	float: right;
+}
+
+#multi-list>tbody>tr>td:last-child {
+	text-align: center;
+}
+
+#single-list .icon icon-dot {
+	vertical-align: middle;
+	font-size: 0px;
+}

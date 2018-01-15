@@ -24,6 +24,10 @@
 .halign-left { text-align: left; }
 .halign-right { text-align: right; }
 .halign-center { text-align: center; }
+.bg-green { background-color: $green_background_color; }
+.bg-yellow { background-color: $yellow_background_color; }
+.color-proceed { color:$activated_color; }
+.color-danger { color:$red_warning_color; }
 .container {
 	width: 1200px;
 	&:before, &:after {content: " "; display: table;}

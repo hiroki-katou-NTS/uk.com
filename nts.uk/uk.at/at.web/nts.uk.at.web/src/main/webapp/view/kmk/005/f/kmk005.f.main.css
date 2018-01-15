@@ -1,0 +1,121 @@
+.control-group.valign-center > * { vertical-align: middle; }
+.control-group.valign-top > * { vertical-align: top; }
+.control-group.valign-bottom > * { vertical-align: bottom; }
+
+#functions-area > button { width: 80px; }
+.myLinkButton { display: inline-block; }
+.myLinkButtonIcon { float: left; }
+.myLinkButtonText {
+	background-color: #E2F79F;
+	width: 130px;
+	margin: 1px 0px 0px 15px;
+	padding: 6px 0px;
+	border: 2px solid #E2F79F;
+	border-radius: 5px;
+}
+.myLinkButtonText > a { 
+	text-decoration: none;
+	margin-left: 5px;
+	color: black;
+}
+#functions-area > button:NTH-CHILD(2) { margin-left: 100px; }
+#functions-area > button:NTH-CHILD(3) { margin-left: 10px; }
+#functions-area > button:NTH-CHILD(4) { margin-left: 200px; }
+#functions-area > div:NTH-CHILD(5) { margin-left: 300px; }
+#functions-area > div:NTH-CHILD(5) > div:NTH-CHILD(2) { width: 160px; }
+#functions-area > div:NTH-CHILD(5) > div:NTH-CHILD(2) > a { 
+	text-decoration: underline;
+	color: blue; 
+}
+
+.leftContent { 
+	padding-left: 15px; 
+	padding-top: 10px;
+	float: left;
+}
+.rightContent {
+	vertical-align: top;
+	padding-top: 20px;
+	float: left;
+	width: 800px;
+}
+.column1 { width: 200px; }
+.column2 { width: 75px; }
+#tab-panel { margin-top: 20px; }
+.tab-content-1, .tab-content-2 {
+	width: 870px;
+	height: 450px;
+}
+.ui-tabs-tab {
+	text-align: center;
+    width: 130px;
+}
+table, tr, th, td {
+	border: 1px solid #999999;
+}
+button.nts-switch-button {
+	width: 85px;
+}
+.combo-box1 {
+	width: 150px;
+}
+.combo-box2 {
+	width: 75px;
+}
+.combo-box3 {
+	width: 125px;
+}
+.combo-box4 {
+	width: 135px;
+}
+#table-panel-1 > thead > tr > th {
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 30px;
+	background-color: #C7F391;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(1) {
+	padding: 3px;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(2) {
+	padding: 3px;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(3) {
+	padding: 3px;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(4) {
+	padding: 3px;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(5) {
+	padding: 3px;
+}
+#table-panel-2 > thead > tr > th {
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 30px;
+	background-color: #C7F391;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(1) {
+	padding: 3px;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(2) {
+	padding: 3px;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(3) {
+	padding: 3px;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(4) {
+	padding: 3px;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(5) {
+	padding: 3px;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(6) {
+	padding: 3px;
+}
+
+#tab-2 {
+	width: 900px;
+}
+
+

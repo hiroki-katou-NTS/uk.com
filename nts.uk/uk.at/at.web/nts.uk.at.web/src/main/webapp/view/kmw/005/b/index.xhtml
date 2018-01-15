@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 882,
+					height : 500
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmw005.b.main.css" />
+			<com:scriptfile path="kmw005.b.start.js" />
+			<com:scriptfile path="kmw005.b.service.js" />
+			<com:scriptfile path="kmw005.b.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				
+				<!-- <div id="detail-content"> -->
+					<table>
+						<tr>
+							<td class="contents-left"></td>
+							<td id="target-YM">
+								<div id="targetYM" tabindex="1"
+									data-bind="ntsDatePicker: { value: yearMonth, name: '#[KMW005_25]', dateFormat: 'yearmonth', showJumpButtons: true, valueFormat: 'YYYYMM'}">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="contents-left">
+								<div id="closure-content" class="bg-green caret-background">
+									<table id="closure-list"
+									data-bind="ntsGridList: {
+												name: '#[KMW005_17]',
+												height: 235,
+												options: closureList,
+												optionsValue: 'closureId',
+												columns: closureColumn,
+												multiple: false,
+												value: selectedClosure,
+												rows: 5
+											}"></table>
+								</div>
+								
+							</td>
+
+							<td class="contents-right caret-background">
+
+								<table id="history-list" 
+									data-bind="ntsGridList: {
+												name: '#[KMW005_19]',
+												options: lockHistList,
+												optionsValue: 'lockDateTime',
+												columns: lockHistColumn,
+												multiple: false,
+												enable: true,
+												value: lockHist.lockDateTime,
+												rows: 10
+											}"></table>
+							</td>
+						</tr>
+					</table>
+				<!-- </div> -->
+			</div>
+			<div id="ruled-line" style="border: 1px solid;"></div>
+			<div id="functions-area-bottom">
+				<button class="x-large" data-bind="click: closeDialog" tabindex="2">#{i18n.getText('KMW005_24')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,11 @@
+#contents-area .rowFirst{margin: 35px 0 40px 0;}
+#contents-area #combo-box{width: 100px; margin: 0 55px 0 45px;}
+#contents-area #radio-box .ntsRadioBox{margin: 0 17px 0 15px}
+#contents-area #radio-box .ntsRadioBox .box{border-color: #000; width: 13px; height: 13px;}
+#contents-area #radio-box .ntsRadioBox .box:AFTER {background: #000;width: 13px;height: 13px;top: -2px;left: -2px;}
+#contents-area .rowSecond button{box-shadow: none;border-radius: 0;margin: 0;background: #2f2b2b3b;}
+#contents-area .rowSecond .input-box{width: 110px;margin-left: -6px;border-radius: 0;height: 18px;margin-top: -1px;}
+#contents-area #combo-box2{margin: 0 20px;}
+#contents-area .ui-state-default{border-color:#999999;}
+#functions-area-bottom button{left:-204px;top:10px}
+#functions-area-bottom button:nth-child(2){left:-140px;}

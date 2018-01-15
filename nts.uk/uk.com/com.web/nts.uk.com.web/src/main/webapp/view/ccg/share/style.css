@@ -1,0 +1,259 @@
+@CHARSET "UTF-8";
+
+.controlSetting.caret-right:after {
+	cursor: pointer;
+	color: #2ECC71;
+	border-width: 19px 10px;
+	margin-top: -10px;
+}
+
+.controlSettingBg.caret-right:after {
+	cursor: pointer;
+	color: #2ECC71;
+	border-width: 30px 14px;
+	margin-top: -10px;
+}
+
+.contentkcp {
+	min-height: 350px;
+	padding-top: 8px !important;
+	padding-left: 10px !important;
+}
+
+.contentkcpWorkplace {
+	min-height: 475px;
+	padding-top: 8px !important;
+	padding-left: 10px !important;
+}
+
+#nts-component-tree {
+	padding: 0 !important;
+}
+
+.accordion {
+	width: 380px;
+}
+
+.accordion label {
+	cursor: pointer;
+}
+
+.btn-quick-search {
+	cursor: pointer;
+}
+
+.btn_big {
+	width: 370px;
+	background-color: #2ECC71;
+	padding-top: 9px;
+	padding-bottom: 19px;
+	margin-top: 5px;
+	padding-left: 8px;
+	margin-bottom: 10px;
+	color: white;
+	border-radius: 5px;
+	display: inline-block;
+}
+
+.btn_big:hover {
+	background-color: #2BBF6A;
+}
+
+.btn_small {
+	width: 370px;
+	background-color: #2ECC71;
+	padding-bottom: 10px;
+	margin-top: 5px;
+	padding-left: 8px;
+	margin-bottom: 10px;
+	color: white;
+	border-radius: 5px;
+	display: inline-block;
+}
+
+.btn_small:hover {
+	background-color: #2BBF6A;
+}
+
+.btn_apply {
+	width: 100%;
+	height: 25px;
+	text-align: center;
+	background-color: #2ECC71;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	color: white;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.btn_apply:hover {
+	background-color: #2BBF6A;
+}
+
+.caret-background.caret-bottom:after {
+	left: 36%;
+	color: #AEEE60;
+	border-width: 18px 52px;
+	margin-top: 4px;
+}
+
+#btn_apply {
+	margin-left: 15px;
+	width: 70px;
+}
+
+#workplaceList {
+	float: left;
+}
+
+#btnDetailWorkplace {
+	margin-top: 30px;
+}
+
+.icon-28-allemployee {
+	background: url('icon/28_AllEmployee.png');
+	width: 44px;
+	height: 35px;
+	background-size: 45px 42px;
+}
+
+.icon-26-onlyemployee {
+	background: url('icon/26_OnlyMe.png');
+	width: 44px;
+	height: 35px;
+	background-size: 45px 42px;
+}
+
+.icon-48-ofworkplace {
+	background: url(icon/48_OfWorkplace.png);
+	width: 25px;
+	height: 25px;
+	background-size: 25px 25px;
+	margin-top: 5px;
+}
+
+.icon-49-workplacechild {
+	background: url(icon/49_WorkplaceChild.png);
+	width: 25px;
+	height: 25px;
+	background-size: 25px 25px;
+	margin-top: 5px;
+}
+
+.labelBigButton {
+	cursor: pointer;
+	font-size: 14pt;
+	vertical-align: super;
+}
+
+.labelSmallButton {
+	cursor: pointer;
+	font-size: 10pt;
+	vertical-align: super;
+	margin-left: 20px;
+}
+
+.ccg_tab_content_2 {
+	overflow-y: scroll;
+	height: 600px;
+}
+
+.ccg_tab_content_1 {
+	height: 600px;
+}
+
+.ccg-tabpanel #tab-1 {
+	background-color: white;
+}
+
+.ccg-tabpanel #tab-2 {
+	background-color: white;
+	padding-right: 5px;
+}
+
+#ccg-component {
+	z-index: 999;
+	position: absolute;
+}
+
+#hor-scroll-button-show {
+	margin-top: 180px;
+}
+
+#hor-scroll-button-hide {
+	z-index: 998;
+	position: absolute;
+	margin-top: 180px;
+}
+
+.icon-01-searchmode {
+	margin-left: 8px;
+	background: url(icon/01_ShowHideSearch.png);
+	width: 25px;
+	height: 25px;
+	background-size: 25px 25px;
+	margin-top: 110px;
+	cursor: pointer;
+}
+
+.btn_apply .icon-01-searchmode {
+	background: url(icon/01_ShowHideSearch.png);
+	width: 25px;
+	height: 25px;
+	background-size: 25px 25px;
+	margin-top: 0px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+.labelShowHideButton {
+	cursor: pointer;
+	font-size: 16pt;
+	vertical-align: super;
+	line-height: 38px;
+	writing-mode: vertical-lr;
+	-ms-writing-mode: tb-lr;
+	text-orientation: upright;
+}
+
+.controlSettingShowHide.caret-right:after {
+	cursor: pointer;
+	color: #AEEE60;
+	border-width: 50px 15px;
+	margin-bottom: 90px;
+}
+
+.btn_showhide {
+	width: 50px;
+	background-color: #2ECC71;
+	padding-left: 8px;
+	color: white;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	display: inline-block;
+	height: 370px;
+	cursor: pointer;
+}
+
+.lbl-apply {
+	font-size: 16px;
+	margin-top: 1px;
+	cursor: pointer;
+	vertical-align: super;
+}
+
+.ccg-tabpanel #nts-component-list {
+	padding: 0px !important;
+}
+
+#employeeinfo {
+	margin-top: 30px;
+}
+
+.ccg-tabpanel {
+	background-color: #F2F2F2;
+	border-radius: 5px;
+}

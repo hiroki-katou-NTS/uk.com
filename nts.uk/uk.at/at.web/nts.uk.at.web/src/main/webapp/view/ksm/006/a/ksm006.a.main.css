@@ -1,0 +1,39 @@
+@CHARSET "UTF-8";
+
+#companyWide-content {
+	height: 500px;;
+	width: 85%;
+}
+
+#companyWide-content-detail {
+	width: 90%;
+	margin: 40px 25px 20px 40px;
+}
+
+#ruledLine1 {
+	margin-top: 2px;
+	height: 1px;
+	background-color: #7f7f7f;
+	width: 50%;
+}
+
+.ruledLine2 {
+	margin-top: 15px;
+	height: 1px;
+	background-color: #7f7f7f;
+	
+}
+
+.td-width-100 {
+	width: 100px;
+}
+.tr-heigh {
+	height: 50px;
+}
+
+.right-content {
+    padding-left: 30px;
+    padding-top: 15px;
+    width: 600px;
+    vertical-align: top;
+}

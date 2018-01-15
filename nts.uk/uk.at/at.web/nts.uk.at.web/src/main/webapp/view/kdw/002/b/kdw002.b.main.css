@@ -1,0 +1,88 @@
+#contents-area {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+#functions-area {
+	height: 80px;
+}
+
+#myLinkButton {
+	margin-top: 20px;
+	display: inline-block;
+}
+
+.myLinkButtonIcon {
+	float: left;
+}
+
+#grid_container {
+	width: 1034px !important;
+}
+
+.proceed {
+	margin-left: 80px !important;
+}
+
+.mylabel {
+	margin-top: 56px;
+	float: right;
+	margin-right: 70px;
+}
+
+td:nth-child(3), td:nth-child(4), td:nth-child(5) {
+	text-align: center
+}
+
+.readOnlyColor {
+	background-color: #BFBFBF;
+}
+
+.readOnlyCheckBox {
+	pointer-events: none;
+}
+
+.readOnlyColorIsUse {
+	background-color: #BFBFBF;
+	pointer-events: none;
+}
+
+.searchText {
+	box-sizing: border-box;
+	border: 1px solid #999;
+	border-radius: 3px;
+	font-size: 14px;
+	padding: 6px 30px 6px 15px;
+	vertical-align: top;
+	transition: width 0.4s ease-in-out;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.searchButton {
+	vertical-align: top;
+	margin-left: 20px;
+	min-width: 65px;
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+
+.searchButton:hover {
+	background-color: #f2f2f2;
+}
+
+.leftpanel {
+	float: left;
+}
+
+.leftLabel {
+	
+}
+
+.copy {
+	margin-left: 540px !important;
+}
+
+table#grid tbody td:nth-child(1) {
+    text-align: right;
+}

@@ -1,0 +1,84 @@
+@CHARSET "UTF-8";
+
+#contents-area {
+    padding: 19px 10px 0 20px;
+}
+
+.grid-area, .input-form, .a4_2, .a5_1 {
+	float: left;
+}
+
+.a5, .a5_2 {
+	float: right;
+}
+
+.input-code {
+	width: 18px;
+}
+
+.input-name {
+	width: 200px;
+}
+
+.a4_2 {
+	padding-top: 5px;
+	padding-right: 65px;
+}
+
+.a5_1 {
+	padding-top: 5px;
+}
+
+.a5_2 {
+	margin-left: 5px;
+	margin-top: -10px;
+}
+
+.inline-display {
+	display: inline-block;
+	float: left;
+}
+
+.a9_6 {
+	margin-left: 15px;
+}
+
+.a5 {
+	padding-top: 2px;
+}
+
+.bottom-form {
+	margin-top: 20px;
+}
+
+.a7_7, .a7_11, .a7_15, .a7_19, .a7_23 {
+	text-align: right;
+	width: 60px !important;
+	margin-right: 10px;
+}
+
+#a7_9, #a7_13, #a7_17, #a7_21, #a7_25 {
+	width: 80px;
+}
+
+.note-input {
+	width: 480px;
+	height: 100px;
+}
+
+button.nts-switch-button {
+	width: 100px;
+}
+
+table#tbl-condition tr, table#tbl-grant-hd-set tr {
+    height: 20px;
+}
+
+.panel.ntsPanel.direction-right {
+    margin-right: 35px !important;
+}
+
+.input-form hr {
+	width: 90%;
+    float: left;
+}

@@ -1,0 +1,71 @@
+#error-status table, #error-status th, #error-status td,
+	#processing-state table, #processing-state th, #processing-state td {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+}
+
+#error-status th, #error-status td, #processing-state th,
+	#processing-state td {
+	padding: 2px;
+	text-align: left;
+}
+
+#error-status th, #processing-state th {
+	background-color: #D1F2A6
+}
+
+#processing-state {
+	margin: 20px 0px;
+}
+
+#processing-state th {
+	width: 150px
+}
+
+#processing-state td {
+	width: 270px
+}
+
+#error-status th, #error-status td {
+	width: 110px
+}
+
+#error-status th:last-child, #error-status td:last-child {
+	width: 230px
+}
+
+#error-status tbody, #error-status thead {
+	display: block;	
+}
+#error-status tbody {
+	height: 478px;
+	overflow: scroll;
+}
+
+#error-status, #processing-state {
+	margin-left: 20px;
+	float: left;
+}
+
+#error-output {
+	margin-top: 60px;
+	margin-left: 300px;
+}
+ul.countdown {
+	list-style: none;
+	display: block;
+	margin-left: 20px;
+}
+
+ul.countdown li {
+	display: inline-block;
+}
+#state{
+	margin-left: 20px;
+}
+#number-error{
+	margin-left: 20px;
+}
+#processingState{
+	margin-left:20px
+}

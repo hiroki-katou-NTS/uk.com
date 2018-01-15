@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.shr.com.primitive.PersonId
+				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.request.dom.application.AppReason
+				nts.uk.ctx.at.request.dom.application.ApproverReason
+				nts.uk.ctx.at.request.dom.application.stamp.TimeDayClock
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../shr/kaf000.shr.vm.js"/>
+			<com:stylefile path="../../002/cm/kaf002.cm.main.css" />
+			<com:stylefile path="../../002/m1/kaf002.m1.main.css" />
+			<com:stylefile path="../../002/m2/kaf002.m2.main.css" />
+			<com:stylefile path="../../002/m3/kaf002.m3.main.css" />
+			<com:stylefile path="../../002/m4/kaf002.m4.main.css" />
+			<com:stylefile path="../../002/m5/kaf002.m5.main.css" />
+			<com:stylefile path="../../009/share/kaf009.share.style.css" />
+			<com:stylefile path="../../007/share/kaf007.share.style.css" />
+			<com:stylefile path="../../005/cm/kaf005.cm.main.css" />
+			<com:scriptfile path="../../002/shr/kaf002.shr.service.js" />
+			<com:scriptfile path="../../002/shr/kaf002.shr.vm.js" />
+			<com:scriptfile path="../../002/m1/kaf002.m1.vm.js" />
+			<com:scriptfile path="../../002/m2/kaf002.m2.vm.js" />
+			<com:scriptfile path="../../002/m3/kaf002.m3.vm.js" />
+			<com:scriptfile path="../../002/m4/kaf002.m4.vm.js" />
+			<com:scriptfile path="../../002/m5/kaf002.m5.vm.js" />
+			<com:scriptfile path="../../005/shr/kaf005.shr.service.js" />
+			<com:scriptfile path="kaf000.b.service.js" />
+			<com:stylefile path="kaf000.b.main.css" />
+			<com:scriptfile path="kaf000.b.vm.js" />
+			<com:scriptfile path="../../004/b/kaf004.b.service.js" />
+			<com:scriptfile path="../../004/e/kaf004.e.vm.js" />
+			<com:scriptfile path="../../009/share/kaf009.share.vm.js" />
+			<com:scriptfile path="../../009/b/kaf009.b.service.js" />
+			<com:scriptfile path="../../009/b/kaf009.b.vm.js" />
+			<com:scriptfile path="../../002/cm/kaf002.cm.vm.js" />
+			<com:scriptfile path="../../002/c/kaf002.c.vm.js" />
+			<com:scriptfile path="../../005/shr/kaf005.shr.vm.js" />
+			<com:scriptfile path="../../005/b/kaf005.b.vm.js" />
+			<com:scriptfile path="../../007/share/kaf007.share.vm.js" />
+			<com:scriptfile path="../../007/share/kaf007.share.service.js" />
+			<com:scriptfile path="../../007/b/kaf007.b.vm.js" />
+			<com:scriptfile path="kaf000.b.start.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+					<!-- B1_1 -->
+					<a class="goback" data-bind="ntsLinkButton: { jump: '../test/index.xhtml' }">#{i18n.getText('KAF000_14')}</a>
+					<!-- B1_2 -->
+					<button data-bind="click: btnBefore, enable: enableBefore" ><i class="icon icon-button-arrow-left"></i></button>
+					<!-- B1_3 -->
+					<button data-bind="click: btnAfter, enable: enableAfter"><i class="icon icon-button-arrow-right"></i></button>
+					<!-- B1_4 -->
+					<button class="proceed" data-bind="click: btnApprove, 
+													enable: displayButtonControl().enableApproval() &amp; $root.errors.isEmpty(),
+													visible: !displayButtonControl().displayApproval()">#{i18n.getText('KAF000_15')}</button>
+					<!-- B1_14 -->
+					<div class="comment" data-bind="visible: !displayButtonControl().displayApprovalLabel()">
+						<label>【承認】</label>
+					</div>
+					<!-- B1_5 -->
+					<button data-bind="click: btnDeny, 
+									enable: displayButtonControl().enableDeny() &amp; $root.errors.isEmpty(),
+									visible: !displayButtonControl().displayDeny()" >#{i18n.getText('KAF000_16')}</button>
+					<!-- B1_15 -->
+					<div class="comment" data-bind="visible: !displayButtonControl().displayDenyLabel()">
+						<label>【否認】</label>
+					</div>
+					<!-- B1_6 -->
+					<button data-bind="enable: displayButtonControl().enableRemand() &amp; $root.errors.isEmpty(),
+									   visible: !displayButtonControl().displayRemand()">#{i18n.getText('KAF000_17')}</button>
+					<!-- B1_7 -->
+					<button data-bind="click: btnRelease, 
+									enable: displayButtonControl().enableRelease() &amp; $root.errors.isEmpty(),
+									visible: !displayButtonControl().displayRelease()" >#{i18n.getText('KAF000_18')}</button>
+					
+					<!-- B1_8 -->
+					<button class="proceed" data-bind="click: update,
+													enable : displayButtonControl().enableUpdate() &amp; $root.errors.isEmpty(), 
+-													visible: !displayButtonControl().displayUpdate()">#{i18n.getText('KAF000_19')}</button>	
+
+					<!-- B1_9 -->
+					<button >#{i18n.getText('KAF000_20')}</button>
+					<!-- B1_10 -->
+					<button data-bind="click: btnReferences" >#{i18n.getText('KAF000_21')}</button>
+					<!-- B1_11 -->
+					<button data-bind="click: btnSendEmail" >#{i18n.getText('KAF000_22')}</button>
+					
+					<!-- B1_12 -->
+					<button  class="danger" data-bind="click: btnDelete,
+													enable : displayButtonControl().enableDelete() &amp; $root.errors.isEmpty(),
+-													visible: !displayButtonControl().displayDelete()" >#{i18n.getText('KAF000_23')}</button>
+					
+					<!-- B1_13 -->
+					<button  class="danger" data-bind="click: btnCancel , 
+													enable : displayButtonControl().enableCancel() &amp; $root.errors.isEmpty(),
+													visible: !displayButtonControl().displayCancel()">#{i18n.getText('KAF000_24')}</button>
+					<br></br>
+				</div>
+			
+			<div id="contents-area">
+				<!-- row1 -->
+				<div id="message-area" data-bind =  "visible: !displayButtonControl().displayMessageArea()"> 
+					<table >
+						<tr >
+							<!-- A1_1 -->
+							<!-- A1_2 -->
+							<td class="message-td"><div data-bind="text:messageDeadlineTop" ></div></td>
+						</tr >
+						<tr>
+							<!-- A1_3 -->
+							<!-- A1_4 -->
+							<td class="message-td"><div data-bind="text:messageDeadlineBottom, enable: displayButtonControl().enableMessageComment()" ></div></td>
+						</tr>
+					</table>
+				</div>
+				<!-- row2 -->
+				<div id="message-area" style="margin-top: 16px;" data-bind="visible: !displayButtonControl().displayReturnReasonPanel()">
+					<!-- B3_1 -->
+					<div class="message-td" data-bind="text : reasonApp, visible: !displayButtonControl().displayReturnReasonPanel()"></div>
+				</div>
+				<!-- row 2 B4_1-->
+				<div style=" margin-top: 16px;float: left;margin-right: 47px" data-bind="visible: !displayButtonControl().displayReturnReason() ">
+					<div  data-bind="ntsFormLabel: {constraint: 'ApproverReason'}">#{i18n.getText('KAF000_28')}</div>
+				</div>
+				<!-- row 2 B4_2-->
+				<div style=" margin-top: 16px;">
+					<textarea style="width: 628px;height: 50px" data-bind="ntsMultilineEditor: { value: reasonToApprover, 
+																								constraint: 'ApproverReason',
+																								enable: displayButtonControl().enableReturnReason},
+																								visible: !displayButtonControl().displayReturnReason() " />
+					
+				</div>
+				
+				<!-- Body -->
+				<com:ko-if bind="appType() == 7">
+					<ui:include src="../../002/c/index.xhtml" />
+				</com:ko-if>
+				<com:ko-if bind="appType() == 9">
+					<ui:include src="../../004/e/index.xhtml" />
+				</com:ko-if>
+				<com:ko-if bind="appType() == 4">
+					<ui:include src="../../009/b/index.xhtml" />
+				</com:ko-if>
+				<com:ko-if bind="appType() == 0">
+					<ui:include src="../../005/b/index.xhtml" />
+				</com:ko-if>
+				<com:ko-if bind="appType() == 2">
+					<ui:include src="../../007/b/index.xhtml" />
+				</com:ko-if>
+				
+				<!-- Footer -->
+				<div style="clear:both"></div>
+				<div>
+					<ui:include src="../../000/b/index1.xhtml" />	
+				</div>
+				
+				<!-- end footer -->
+			</div>
+			
+			
+		</ui:define>
+		
+	</ui:composition>
+</body>
+</html>

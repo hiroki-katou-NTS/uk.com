@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../../sample/catalog/catalog.css" />
+			<com:scriptfile path="../../../sample/catalog/catalog.js" />
+			<com:scriptfile path="demo.a.vm.js" />
+			<com:scriptfile path="demo.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+			<div id="side-menu" class="cf"></div>
+				<div id="content">
+					<div id="function-area" style="margin: 40px; margin-bottom: 10px">
+						<h1>Demo Main SCR to test -> CDL002 - 雇用選択ダイアログ</h1>
+						<h2>(Launch Employment selection dialog)</h2>
+
+						<div style="margin-left: 10px; padding-top: 10px">
+							<p><b>Single/Multiple Selection</b></p><br></br>
+							<div class="cf" data-bind="ntsSwitchButton: {
+														options: selectionOption,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: selectedOption,
+														enable: true }"></div><br></br><br></br>
+							<p><b>Unselection Item</b></p>
+							<div data-bind="ntsCheckBox:{checked: isDisplayUnselect}">Show/Hide</div>
+
+							<div><br></br>
+								<p>
+									<b>Selected Code(s):</b>
+								</p>
+								<p data-bind="text: selectedItem()"></p>
+								<br></br>
+							</div>
+							<br></br>
+
+							<p>
+								<b>Click Button to Open Dialog</b>
+							</p>
+							<br></br>
+							<BUTTON data-bind="click: openDialog"
+								style="margin-right: 10px">Open Dialog</BUTTON>
+							<br></br>
+							
+							
+						</div>
+						<hr></hr>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,23 @@
+.screen-k .panel.ntsPanel {
+	padding: 20px;
+	margin-right: 30px;
+	display: inline-block;
+}
+
+.screen-k .information {
+	vertical-align: top;
+	display: inline-block;
+}
+
+.screen-k .form-group {
+	margin-bottom: 10px;
+}
+
+.screen-k .form-group.filter-group>* {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.screen-k .form-group.filter-group>.ui-igcombo-wrapper {
+	width: 110px;
+}

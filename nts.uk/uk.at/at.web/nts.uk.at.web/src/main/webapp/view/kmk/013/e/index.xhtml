@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kmk013.e.start.js" />
+			<com:scriptfile path="kmk013.e.vm.js" />
+			<com:scriptfile path="kmk013.e.service.js" />
+			<com:stylefile path="kmk013.e.main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
+					tabindex="1"> #{i18n.getText('KMK013_224')} </a>
+				<button class="proceed save" data-bind="click:saveData">#{i18n.getText('KMK013_225')}</button>
+			</div>
+			<div id="contents-area">
+				<div class="panel panel-gray-bg">
+					<div class="label">#{i18n.getText('KMK013_200')}</div>
+					<hr />
+					<table id="fixed-table" >
+						<colgroup>
+							<col width="200px" />
+							<col width="100px" />
+							<col width="160px" />
+							<col width="180px" />
+						</colgroup>
+						<tbody data-bind="foreach: listData">
+							<tr>
+								<td><span class="label" data-bind="text:attendanceItemName"></span></td>
+								<td><div id="unit-combo-box"
+										data-bind="ntsComboBox: {
+								    name:'#{i18n.getText('KMK013_201')}',
+								    width: 100,
+									options: $parent.itemListUnit,
+									optionsValue: 'code',
+									value: unit,
+									optionsText: 'code',
+									editable: $parent.isEditable,
+									enable: $parent.isEnable,
+									columns: [
+										{ prop: 'name', length: 2 }
+									]}"></div>
+								</td>
+								<td><div class="label">#{i18n.getText('KMK013_202')}</div></td>
+								<td>
+									<div data-bind="if:unit() == 30 || unit()==15">
+										<div id="rounding-combo-box"
+											data-bind="ntsComboBox: {
+									name:'#{i18n.getText('KMK013_203')}',
+									options: $parent.itemListRoundingFull,
+									optionsValue: 'code',
+									value: rounding,
+									optionsText: 'code',
+									editable: $parent.isEditable,
+									enable: $parent.isEnable,
+									columns: [
+										{ prop: 'name', length : 10 }
+									]}"></div>
+									</div>
+									<div data-bind="ifnot: unit() == 30 || unit() == 15">
+										<div id="rounding-combo-box"
+											data-bind="ntsComboBox: {
+									name:'#{i18n.getText('KMK013_203')}',
+									options: $parent.itemListRounding,
+									optionsValue: 'code',
+									value: rounding,
+									optionsText: 'code',
+									editable: $parent.isEditable,
+									enable: $parent.isEnable,
+									columns: [
+										{ prop: 'name', length : 10 }
+									]}"></div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

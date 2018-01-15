@@ -23,7 +23,7 @@ public class NullLoginUserContext implements LoginUserContext, Serializable {
 
 	@Override
 	public String userId() {
-		return null;
+		return "699d110f-ea20-4200-901c-08fcecd36551";
 	}
 
 	@Override

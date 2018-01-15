@@ -1,0 +1,101 @@
+#functions-area button ~ .ntsControl {
+	margin-left: 15px;
+}
+
+#functions-area button+.ntsControl {
+	margin-left: 645px;
+}
+
+#functions-area, #contents-area {
+	min-width: 1260px;
+}
+
+@media ( min-width : 1260px) {
+	#functions-area, #contents-area {}
+}
+
+#contents-area {
+	overflow-x: auto;
+	overflow-y: auto;
+}
+
+.valign-center {
+	vertical-align: middle !important;
+}
+
+.divHeader {
+	margin: 5px;
+}
+
+#A_BTN_DELETE {
+	margin-left: 45px !important;
+}
+
+#left-content {
+	margin-left: 10px;
+	margin-top: 12px;
+	padding: 20px;
+	float: left;
+	min-height: 585px;
+	width: 20%;
+}
+
+button.search-btn {
+	/* margin: 5px; */
+	margin-left: 23px;
+	width: 77px;
+}
+
+#right-content {
+	margin-left: 30px;
+	margin-top: 14px;
+	float: left;
+	min-height: 600px;
+	width: 65%;
+}
+
+.input_002 {
+	display: inline-block;
+}
+
+.table_content td {
+	border: 10px solid transparent;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+}
+
+.sub_table {
+	width: 97px;
+	height: 376px;
+	background: #F3F3F3;
+	margin-top: 62px;
+	border: 5px solid white;
+	border-left: none;
+}
+
+.clear-btn {
+	visibility: hidden;
+}
+
+div#left-content.relative.bg-green.caret-right.caret-background {
+	width: 300px;
+}
+
+i.icon.icon-searchbox {
+	top: 8px;
+}
+
+.layout-control .drag-panel {
+	height: 500px !important;
+}
+
+.nosetarea {
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	width: 810px;
+	height: 500px;
+	padding: 10px;
+	padding-top: 10px;
+	box-sizing: border-box;
+}

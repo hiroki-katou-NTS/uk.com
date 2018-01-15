@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<div id="ccgcomponent"></div>
+		<div class="contentB" tabindex="-1">
+			<div class="periodCovered" tabindex="-1">
+				<div class="labelRangeDate" tabindex="-1" 
+					data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
+				<div tabindex="3" id="dateRangePickerPeriod"
+					data-bind="ntsDateRangePicker: { 
+					    required: true,
+						showNextPrevious: false, 
+						value: periodDate,
+						maxRange: 'oneMonth',
+						startName:'#{i18n.getText('KSC001_72')}',
+				        endName:'#{i18n.getText('KSC001_73')}',
+				        name:'#{i18n.getText('KSC001_31')}',}"></div>
+			</div>
+			
+			<div class ="selectionEmployee" tabindex="-1">
+				<div id="employeeSearch"></div>
+			</div>
+			
+			<div class="buttonNext" tabindex="-1">
+				<button class="proceed x-large"  tabindex="6"  
+					data-bind="click: nextPageEmployee">#{i18n.getText('KSC001_20')}</button>
+			</div>
+			
+		</div>
+		
+	</ui:composition>
+</body>
+</html>

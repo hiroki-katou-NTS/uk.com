@@ -24,23 +24,42 @@
 						<h1>Month Days Picker</h1>
 						<h2>Overview</h2>
 						<span tabindex="1" data-bind="ntsCheckBox: { checked: enable }">Enable</span>
-						
-					
 						<div id="monthdays" tabindex="2" data-bind="ntsMonthDays: {value: value, enable: enable}"/>
 						<input tabindex="3" data-bind="ntsNumberEditor: {value: value}"/>
+						<div>
+							<b>Localized:</b> <span data-bind="text: text"></span>
+						</div>
 						<br />					
 						<article class="cf">
 							<div class="tabs">
 								<ol>
-									<li><a href="#tabs-html">HTML Binding</a></li>
-									<li><a href="#tabs-viewmodel">ViewModel</a></li>
-									<li><a href="#tabs-methods">Methods</a></li>
+									<li><a href="#tabs-usage">Usage</a></li>
+									<li><a href="#tabs-api">API</a></li>
 								</ol>
-								<div id="tabs-html" class="cf">
+								<div id="tabs-usage" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div id="monthdays" data-bind="ntsMonthDays: {value: value, enable: enable}"/>]]></pre>
+									<pre><![CDATA[<div id="monthdays" data-bind="ntsMonthDays: {value: value, enable: enable}"/>]]></pre>
+									<h2>TypeScript</h2>
+<pre><![CDATA[class ScreenModel {
+    value: KnockoutObservable<string>;
+    text: KnockoutObservable<string>;
+    enable: KnockoutObservable<boolean>;
+    
+    constructor() {
+        var self = this;
+        
+        self.value = ko.observable('');
+        self.text = ko.observable('');
+        self.value.subscribe((newValue) => {
+            self.text(nts.uk.time.formatMonthDayLocalized(newValue));
+        });
+        self.enable = ko.observable(true);
+    }
+}]]></pre>
+								</div>
+								<div id="tabs-api" class="cf">
 									<h2>API</h2>
-									<table>
+									<table class="table">
 										<colgroup>
 											<col width="200px" />
 										</colgroup>
@@ -54,45 +73,18 @@
 											<tr>
 												<td>value</td>
 												<td>
-													<b>Type:</b> int<br/>
-													value like month*100 + days (example: 101)
+													<b>Type:</b> KnockoutObservable&lt;int&gt; | int<br/>
+													Value like month*100 + days (example: 101)
 												</td>
 											</tr>
 											<tr>
 												<td>enable</td>
 												<td>
-													<b>Type:</b> boolean<br/>
-													enable for component
+													<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
+													Enable/disable component
 												</td>
 											</tr>
 										</tbody>
-									</table>
-								</div>
-								<div id="tabs-viewmodel" class="cf">
-									<h2>TypeScript</h2>
-<pre><![CDATA[class ScreenModel {
-        value: KnockoutObservable<string>;
-        enable: KnockoutObservable<boolean>;
-        
-        constructor() {
-            var self = this;
-            
-            self.value = ko.observable('');
-            self.enable = ko.observable(true);
-        }
-    }]]></pre>
-								</div>
-								<div id="tabs-methods" class="cf">
-									<table>
-										<colgroup>
-											<col width="350px" />
-										</colgroup>
-										<thead>
-											<tr>
-												<th><h4>Methods</h4></th>
-												<th><h4>Description</h4></th>
-											</tr>
-										</thead>
 									</table>
 								</div>
 							</div>

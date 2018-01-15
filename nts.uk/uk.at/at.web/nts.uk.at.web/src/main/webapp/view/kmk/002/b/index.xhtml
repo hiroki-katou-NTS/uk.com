@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 377,
+					height : 522
+				};
+			</script>
+			<com:stylefile path="kmk002.b.style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="kmk002.b.start.js" />
+			<com:scriptfile path="kmk002.b.vm.js" />
+			<com:scriptfile path="kmk002.b.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="btn-apply" tabindex="1" data-bind="click: save" class="proceed">#{i18n.getText('KMK002_1')}</button>
+				<button id="btn-close" tabindex="2" data-bind="click: close">#{i18n.getText('KMK002_44')}</button>
+			</div>
+			<div id="contents-area" style="display: none; padding-top: 10px; padding-left: 20px" data-bind="visible: true">
+				<div id="lbl-desc">#{i18n.getText('KMK002_45')}</div>
+				<button tabindex="3" data-bind="click: applyAll" id="func-apply-all">#{i18n.getText('KMK002_46')}</button>
+				<button tabindex="4" data-bind="click: notApplyAll">#{i18n.getText('KMK002_47')}</button>
+				<table data-bind="name: '#[KMK002_48]'" id="grid-emp-condition"></table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

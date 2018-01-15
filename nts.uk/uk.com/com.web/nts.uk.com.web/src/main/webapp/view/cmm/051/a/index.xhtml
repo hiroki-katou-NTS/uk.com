@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.sys.auth.dom.wkpmanager.EmployeeCode
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cmm051.a.main.css" />
+			<com:stylefile path="/view/ccg/026/component/component.css"  of="/nts.uk.com.web"/>
+			<com:stylefile path="/view/kcp/010/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/010/kcp010.js" of="/nts.uk.com.web" />
+<!-- 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/> -->
+			<com:scriptfile path="../_base/cmm051.base.js" />
+			
+			<com:scriptfile path="/view/ccg/026/component/component.service.js"  of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/ccg/026/component/component.vm.js"  of="/nts.uk.com.web"/>
+			
+			<com:scriptfile path="cmm051.a.start.js" />
+			<com:scriptfile path="cmm051.a.service.js" />
+			<com:scriptfile path="cmm051.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="add" data-bind="click: createWkpManager" tabindex="1">#{i18n.getText('CMM044_2')}</button>
+				<button class="proceed"
+					data-bind="click: saveWkpManager" tabindex="2">#{i18n.getText('CMM044_3')}</button>
+				<button class="danger"
+					data-bind="click: delWkpManager, enable: !isNewMode()" tabindex="3">#{i18n.getText('CMM044_6')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="wkp-component"></div>
+				<div id="left-content">
+					<div id="left-content-bottom" class="caret-right caret-background bg-green">
+						<table id="treegrid2" tabindex="0"
+								data-bind="ntsTreeGridView:{
+									width: 385,
+									height: 504,
+									dataSource: wkpManagerTree,
+									value: selectedCode,
+									primaryKey: 'wkpManagerId',
+									childDataKey: 'childs',
+									primaryText: 'nodeText',
+									multiple: false,
+									enable: true,
+									showCheckBox: false}"></table>
+ 					</div>
+				</div>
+
+				<div id="right-content">
+					<div class="input-row control-group">
+						<div class="label-group" id="label-a3-001" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM051_9')}</div>
+						<div>
+							<div id="date-picker-label">
+								<span class="date-picker-span">#{i18n.getText('CMM051_10')}</span>
+								<span class="date-picker-span">#{i18n.getText('CMM051_11')}</span>
+							</div>
+							<div id="daterangepicker" data-bind="ntsDateRangePicker: { 
+														enable: true, 
+														value: dateValue, 
+														maxRange: 'none',
+														required: true}" />
+						</div>
+					</div>
+					<div class="input-row control-group">
+						<div class="label-group" data-bind="ntsFormLabel: { required: true, constraint: 'EmployeeCode' }">#{i18n.getText('CMM051_14')}</div>
+						<div id="employee-selection">
+							<button id="B5_1_1" style="margin-right: 40px;"
+								data-bind="click: openDialogCDL009">#{i18n.getText('CMM044_15')}</button>
+							<input id='selectionItemName' style="width: 320px; "
+								data-bind="ntsTextEditor: {
+									name: '#[CMM051_16]',
+									value: selectedWkpManager().employeeInfo().employeeCode,
+									constraint: 'EmployeeCode',
+									option: '',
+									required: true,
+									enable: true,
+									readonly: true}" />
+							<label data-bind="text : selectedWkpManager().employeeInfo().namePerson" style="padding-left: 15px"></label>
+						</div>
+					</div>
+					<div class="control-group">
+						<div class="label-group" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM051_22')}</div>
+						<div data-bind="with: component">
+							<ui:include src="/view/ccg/026/component/index.xhtml" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

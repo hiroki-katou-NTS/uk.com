@@ -1,0 +1,16 @@
+package nts.uk.ctx.at.shared.app.util.attendanceitem;
+
+import java.util.Collections;
+import java.util.List;
+
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+
+public abstract class FinderFacade {
+
+	public abstract <T extends ConvertibleAttendanceItem> T find(String employeeId, GeneralDate baseDate);
+	
+	public <T extends ConvertibleAttendanceItem> List<T> finds(String employeeId, GeneralDate baseDate){
+		return Collections.emptyList();
+	}
+}

@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="/master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="ksm002.a.start.js" />
+			<com:scriptfile path="ksm002.a.service.js" />
+			<com:scriptfile path="ksm002.a.vm.js" />
+			<com:stylefile path="ksm002.a.main.css" />
+			<com:scriptfile path="../b/ksm002.b.service.js" />
+			<com:scriptfile path="../b/ksm002.b.vm.js" />
+			<!--Calendar -->
+			<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web" />
+			<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web" />
+			<com:scriptfile path="/view/kcp/006/a/kcp006.a.service.js" of="/nts.uk.at.web" />
+			<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.js" of="/nts.uk.at.web" />
+			<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/calendar-ko-ext.js" of="/nts.uk.at.web" />
+			<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/locale-all.js" of="/nts.uk.at.web" />
+			<!--WorkPlace List  -->
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+		</ui:define>
+
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<li><a href="#tabpanel-1" role="tab-navigator" class="active" tabindex="1">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" tabindex="2">#{i18n.getText('Com_Workplace')}</a></li>
+			</ul>
+		</ui:define>
+
+		<ui:define name="sidebar-content">
+			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~TAB PANEL 1 SCREEN A ~~~~~~~~~会社~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+			<div id="tabpanel-1" role="tabpanel" data-bind="with: viewModelA">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Company')}</span>
+					<button class="proceed" data-bind="click: Register" tabindex="3" id = 'btnRegistry'>#{i18n.getText('KSM002_6')}</button>
+					<button id="btnSpecSetting" data-bind="click: openKsm002CDialog" tabindex="4">#{i18n.getText('KSM002_7')}</button>
+					<button data-bind="click: openKsm002DDialog" tabindex="5">#{i18n.getText('KSM002_8')}</button>
+					<button class="danger" data-bind="click : DeleteOneMonth, disable : isNew" tabindex="6">#{i18n.getText('KSM002_9')}</button>
+				</div>
+				<div id="screenA" class="contents-area">
+					<div class="panel panel-frame">
+						<label class="info">#{i18n.getText('KSM002_10')}</label><BR />
+						<div class="chkBox"
+							data-bind="ntsMultiCheckBox: {
+							options: boxItemList,
+							optionsValue: 'id',
+							optionsText: 'name',
+							value: selectedIds,	
+							enable: enable}">
+						</div>
+					</div>
+					<div class="calendarContent">
+						<div class="nts-calendar-container">
+							<div class="nts-calendar-header">
+								<div
+									data-bind="ntsDatePicker: {
+									value: yearMonthPicked, 
+									dateFormat: 'yearmonth', 
+									valueFormat: 'YYYYMM', 
+									cssRanger: cssRangerYM,
+									defaultClass: 'round-orange',
+									showJumpButtons: true}"></div>
+							</div>
+							<div id="calendar"
+								data-bind="ntsCalendar: {
+									optionDates: optionDates, 
+									yearMonth: yearMonthPicked, 
+									firstDay: firstDay, 
+									startDate: startDate, 
+									endDate: endDate,
+									workplaceId: workplaceId,
+									workplaceName: workplaceName,
+									eventDisplay: eventDisplay,
+									eventUpdatable: eventUpdatable,
+									holidayDisplay: holidayDisplay,
+									cellButtonDisplay: cellButtonDisplay}">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~TAB PANEL 2 SCREEN B ~~~~~~~~~職場~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: viewModelB">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Workplace')}</span>
+					<button class="proceed" data-bind="click: submitEventHandler, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_6')}</button>
+					<button data-bind="click: openDialogC, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_7')}</button>
+					<button data-bind="click: openDialogD, enable: $root.errors.isEmpty">#{i18n.getText('KSM002_8')}</button>
+					<button class="danger" data-bind="click: removeEventHandler, enable: Boolean(isUpdate()&#38;$root.errors.isEmpty())">#{i18n.getText('KSM002_9')}</button>
+				</div>
+				<div id="screenB" class="contents-area">
+					<ui:include src="../b/index.xhtml" />
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,9 @@
+#contents-area {
+	height: auto !important;
+}
+
+.image-preview {
+	border: 1px solid #ccc !important;
+	width: 100%;
+	height: 100%;
+}

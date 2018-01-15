@@ -1,0 +1,384 @@
+#contents-area {
+	width: 1290px;
+	height: 100%;
+	/* overflow-y: hidden !important; */
+	overflow-y: inherit !important;
+}
+
+.float-right {
+	float: right !important;
+}
+
+#content-left {
+	width: 288px !important;
+	height: 407px !important;
+	margin-left: 10px !important;
+	float: left;
+}
+
+.requiredCell {
+	background-color: #FFC000;
+}
+
+.notrequiredCell {
+	background-color: #C7F391;
+}
+
+
+.input-units {
+	width: 209px !important;
+}
+
+.sub-input-units {
+	width: 150px !important;
+	margin-left: 1px !important;
+	margin-right: 3px !important;
+	border: 0px !important;
+	text-align: right !important;
+}
+
+.nts-datepicker-wrapper .ntsDatepicker {
+	width: 161px !important;
+}
+#datey.nts-input{
+	padding: 3px 10px !important;
+}
+#date {
+	border: 0px solid #999999 !important;
+	width: 200px !important;
+}
+
+#datey {
+	border: 0px solid #999999 !important;
+	width: 192px !important;
+	padding-left: 2px;
+}
+
+#timeItem {
+	width: 200px !important;
+}
+
+#timePoint {
+	width: 200px !important;
+}
+
+#number {
+	width: 200px !important;
+}
+
+#string {
+	width: 200px !important;
+}
+
+#content-right {
+	float: left;
+	width: 940px;
+}
+
+#category_grid_container {
+	margin-left: -3px !important;
+}
+
+#item_grid_container {
+	margin-top: 10px !important;
+	width: 250px;
+}
+
+.distane {
+	margin-bottom: 5px;
+}
+
+#ctgName {
+	width: 200px;
+}
+
+#ctgCode {
+	width: 80px;
+}
+
+button.search-btn, button.clear-btn {
+	width: 40px;
+}
+/* 
+.nts-searchbbox-wrapper button.search-btn {
+	vertical-align: top;
+	margin-left: 5px;
+	min-width: 67px;
+	margin-bottom: 0px !important;
+}
+
+.nts-searchbbox-wrapper button.clear-btn {
+	vertical-align: top;
+	margin-left: 5px;
+	min-width: 50px;
+}
+
+.nts-searchbbox-wrapper {
+	margin-bottom: 0px !important;
+} */
+input.ntsSearchBox {
+	width: 150px !important;
+}
+
+#sub-content-right {
+	margin-top: 10px;
+}
+
+#sub-left {
+	width: 265px;
+	/* height: 590px; */
+	float: left;
+	margin-top: -10px;
+}
+
+#sub-right {
+	float: left;
+	width: 634px;
+	margin-left: 30px;
+}
+#sub-right>table>tbody, #sub-right>table>thead{
+	display: block;
+}
+#sub-right>table>tbody{
+    max-height: 510px;       /* Just for the demo          */
+    overflow-y: scroll;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
+    width: 634px;
+}
+
+#search_his {
+	margin-top: 38px;
+	margin-bottom: 5px;
+}
+
+#history {
+	float: left;
+	margin-left: 200px;
+}
+
+.contents-header {
+	width: 100%;
+	heigth: 650px !important;
+}
+
+.contents-data {
+	width: 100%;
+	height: 400px !important;
+}
+
+.contents-data  td {
+	border: 1px solid #CCC;
+	text-align: left;
+}
+
+
+table.contents-data thead, table.contents-data tbody {
+	display: block !important;
+}
+    
+table.contents-data tbody {
+	overflow-y: auto;
+	overflow-x: hidden;
+	border: 1px solid #CCC;
+}
+
+thead {
+	background-color: #CFF1A5;
+	/* 	height: 35px !important; */
+}
+
+
+table tr td, table tr th {
+	font-size: 14px;
+	font-family: "DroidSansMono", "Meiryo";
+}
+
+.ui-igcombo-wrapper {
+	display: block;
+	width: initial;
+	width: auto;
+}
+
+.value {
+	width: 200px !important;
+}
+
+/* #combox1 {
+	min-width: 210px !important;
+	max-width: 210px !important;
+} */
+
+.contents-header thead td {
+	border: 1px solid #CCC;
+	text-align: left;
+	padding: 0px 0px;
+	font-weight: bold;
+}
+
+.contents-header thead{
+	width: 634px;
+}
+
+#COL_1 {
+	width: 200px !important;
+}
+
+#COL_2 {
+	width: 190px !important;
+}
+
+#COL_3 {
+	width: 240px !important;
+}
+
+#A2_012 {
+	margin-left: 15px;
+	width: 97px;
+	height: 30px;
+	padding: 0px 0px !important;
+}
+
+#help {
+	width: 30px;
+	height: 30px;
+	margin-left: 5px;
+	padding: 0px 0px !important;
+}
+
+#combo-box {
+/* 	margin-left: 9px; */
+	min-width: 100px !important;
+}
+
+.input-units-1 {
+	min-width: 200px;
+	max-width: 200px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.input-units-2 {
+	min-width: 190px;
+	max-width: 190px;
+}
+
+.input-units-3 {
+	width: 240px !important;
+}
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .ntsControl .nts-input{
+		padding: 3px 10px !important;
+	}
+	.ntsControl .nts-input:focus{
+		padding: 5px 10px !important;
+	}
+}
+
+
+#notdata {
+	min-width: 240px !important;
+	max-width: 240px !important;
+}
+
+#sub-center {
+	width: 25px !important;
+	float: left;
+}
+
+span.caret-background.caret-right.direction-right {
+	position: fixed !important;
+	margin-top: 50px !important;
+	margin-left: 2px !important;
+}
+
+.table-container {
+	color: #000;
+	/* 	position: relative; */
+	border: 1px solid #ccc;
+}
+
+.table-container>div {
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: 355px !important;
+	border-top: 1px solid #ccc;
+}
+
+.table-container>div table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th>div {
+	top: 0;
+	padding: 3px;
+	color: #000;
+	position: absolute;
+	border-left: 1px solid #ccc;
+	background-color: #CFF1A5 !important;
+}
+
+th {
+	height: 0;
+	line-height: 0;
+	padding: 0;
+	border: none;
+	white-space: nowrap;
+	font-weight: bold;
+	background-color: #CFF1A5 !important;
+}
+
+th:first-child div {
+	border: none;
+	background-color: #CFF1A5 !important;
+}
+
+td {
+	padding: 0px !important;
+	border: 1px solid #ccc;
+}
+
+tbody tr:first-child td {
+	border-top: none;
+}
+
+label[for] {
+	line-height: 20px !important;
+	right: -3px !important;
+	margin-top: 1.5px;
+}
+
+#date1 {
+	width: 85px !important;
+	margin-left: 5px !important;
+}
+
+#A3_13 {
+	width: 22px !important;
+	margin-left: 5px !important;
+	height: 27px !important;
+}
+
+#A3_15 {
+	margin-left: 5px !important;
+}
+
+.ui-dialog ui-corner-all ui-widget ui-widget-content ui-front no-close ui-dialog-buttons ui-draggable ui-resizable
+	{
+	top: 578.5px !important;
+}
+
+/* div[role]{
+	top: 578.5px !important;
+} */
+.caret-background caret-right direction-right {
+	margin-top: 90px !important;
+}
+.ui-state-default{
+	border: 1px solid #c5c5c500 !important;;
+}
+
+abbr[title]{
+	text-decoration: none;
+}

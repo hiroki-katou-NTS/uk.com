@@ -1,0 +1,29 @@
+
+.from-label{
+	margin-left: 20px;
+    margin-bottom: 12px;
+}
+.text{
+	margin-top: 10px;
+	float:left;
+    margin-left: 20px;
+}
+
+#table-infor {
+	table-layout: fixed;
+	width: 100%;
+}
+
+#table-infor th,#table-infor td{
+	 border: 1px solid black;
+}
+
+#table-infor th,#table-label th{
+	height: 40px;
+	padding-left: 5px;
+}
+#table-infor td,#table-label td{
+	padding: 5px 10px;
+	
+}
+

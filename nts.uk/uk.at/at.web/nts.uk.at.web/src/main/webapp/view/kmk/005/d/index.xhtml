@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="kmk005.d.start.js" />
+				<com:scriptfile path="kmk005.d.vm.js" />
+				<com:scriptfile path="kmk005.d.service.js" />
+				<com:stylefile path="kmk005.d.main.css" />
+				<script>var dialogSize = { width: 450, height: 460 };</script>
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+					<div id="dialogLabel">
+						<label>#{i18n.getText('KMK005_40')}</label>
+					</div>
+					<div class="table">
+						<div class="cell column1">
+							<div><span>#{i18n.getText('Com_Company')}</span></div>
+							<div data-bind="ntsCheckBox: { checked: useWorkPlace }">#{i18n.getText('Com_Workplace')}</div>
+							<div data-bind="ntsCheckBox: { checked: usePerson }">#{i18n.getText('Com_Person')}</div>
+							<div data-bind="ntsCheckBox: { checked: useWorkTimeSheet }">#{i18n.getText('KMK005_44')}</div>
+						</div>
+						<div class="cell column2">
+							<img src="data:image/png;base64,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" />
+						</div>
+						<div class="cell column3">
+							<div><span>#{i18n.getText('KMK005_41')}</span></div>
+							<div><span>#{i18n.getText('KMK005_42')}</span></div>
+						</div>
+					</div>
+					
+				</div>
+				<div id="functions-area-bottom">
+					<button class="x-large proceed" data-bind="click: submitAndCloseDialog" >#{i18n.getText('KMK005_32')}</button>
+					<button data-bind="click: closeDialog">#{i18n.getText('KMK005_33')}</button>		
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

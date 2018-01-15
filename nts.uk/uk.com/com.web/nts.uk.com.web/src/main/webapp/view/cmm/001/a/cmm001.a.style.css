@@ -1,0 +1,319 @@
+@CHARSET "UTF-8";
+#contents-area{
+	width: 1340px !important;
+}
+.outer {
+	outline: 1px solid #FF6138;
+}
+
+#functions-area {
+	height: 50px !important;
+}
+
+#reset {
+	width: 100px;
+}
+
+#register {
+	width: 100px;
+}
+
+#setting {
+	width: 200px;
+}
+
+#masterLog {
+	width: 150px;
+}
+
+#companyCode {
+	width: 50px;
+}
+
+#combo-box {
+	width: 70px;
+}
+
+.nts-left-content {
+	margin-top: 10px;
+	width: 410px;
+	margin-left: 15px;
+}
+
+#ntsleft {
+	float: left;
+	width: 370px;
+	height: 500px;
+	margin-top: 2px;
+}
+
+.group-button-1 {
+	margin-left: 30px;
+	margin-top: 10px;
+}
+
+.div-table {
+	margin-top: 15px;
+	margin-left: 20px;
+}
+
+.ntsCheckbox-left {
+	margin-left: 225px;
+	margin-top: 10px;
+}
+
+.bg-yellow {
+	width: 200px;
+	height: 28px;
+	margin-top: 4px;
+}
+
+.nts-right-content {
+	float: left;
+	padding: 0 20px 0px 20px;
+	width: 700px;
+	margin-left: 15px;
+}
+
+.div-left-content {
+	margin-top: 20px;
+}
+
+.div-right-content {
+	float: left;
+	padding: 20px;
+	width: 650px;
+}
+
+.form-label {
+	margin-bottom: 5px;
+}
+
+.ntsCheckBox-right {
+	margin-left: 5px;
+}
+
+.flex {
+	margin-left: 0px;
+	margin-top: 5px;
+}
+
+.fixed-button-checkbox {
+	width: 25px;
+	height: 25px;
+	margin-left: 20px;
+}
+
+.th-col2 {
+	width: 400px;
+	border: none;
+	height: 30px;
+}
+
+.th-col1 {
+	width: 200px;
+	border: none;
+	height: 30px;
+}
+
+.th-col-sub {
+	width: 150px;
+}
+
+.bg-yellow {
+	margin-left: 250px
+}
+
+ui-widget-header {
+	margin-top: 30px;
+}
+
+input.ntsSearchBox {
+	width: 165px;
+}
+
+/* button.search-btn {
+	width: 90px;
+} */
+.flex-box {
+	display: flex;
+	align-items: center;
+}
+
+#codeName {
+	width: 200px;
+}
+
+#companyCode {
+	margin-left: -26px !important;
+	margin-bottom: 0px !important;
+}
+
+#companyName {
+	width: 360px !important;
+	margin-left: -50px !important;
+}
+
+#companyNameKana {
+	width: 450px !important;
+	margin-bottom: 10px;
+	margin-left: -50px !important;
+}
+
+#companyNameAbb {
+	/* width: 360px !important; */
+	margin-top: -20px;
+	margin-left: -50px !important;
+}
+
+#presidentName {
+	width: 250px;
+}
+
+#presidentJobTitle {
+	width: 250px;
+}
+
+.input-table {
+	height: 30px;
+	border-radius: 3px;
+	border: 1px solid #cdd0c9;
+}
+
+#postal {
+	width: 70px;
+}
+
+#address1 {
+	width: 310px !important;
+	margin-bottom: 10px !important;
+}
+
+#address2 {
+	width: 310px !important;
+	margin-bottom: 10px !important;
+}
+
+#addressKana1 {
+	width: 310px !important;
+	margin-bottom: 10px !important;
+}
+
+#addressKana2 {
+	width: 310px !important;
+	margin-bottom: 10px !important;
+}
+
+#LBLAddress1 {
+	height: 40px;
+	line-height: 30px;
+}
+
+#LBLAddress2 {
+	height: 40px;
+	line-height: 30px;
+}
+
+#LBLAddressKana1 {
+	line-height: 30px;
+	height: 40px;
+}
+
+#LBLAddressKana2 {
+	height: 40px;
+	line-height: 30px;
+}
+
+#help {
+	margin-left: 10px;
+	margin-top: 6px;
+	height: 25px;
+}
+
+body>div:nth-child(4) {
+	height: 0px;
+	top: 0px;
+	left: 0px;
+	width: 0px;
+}
+
+#termBeginMon {
+	width: 80px !important;
+	margin-top: 5px !important;
+	margin-left: -70px;
+}
+
+#contents-area>div.nts-right-content>div.table.fixed-height {
+	margin-top: 0px !important;
+}
+
+.labelRed {
+	font-weight: bold !important;
+	color: red !important;
+}
+
+.border_none {
+	border: none !important;
+}
+
+.left20 {
+	margin-left: 20px;
+	margin-top: -12px;
+}
+
+#colum1 {
+	width: 120px;
+	margin-left: -50px;
+}
+
+#searchZipCode {
+	margin-left: -80px;
+}
+
+#checkbtn {
+	height: 25px;
+}
+
+#corporateMyNumber {
+	margin-left: -40px;
+	width: 115px;
+}
+
+#presidentName {
+	margin-left: -40px;
+}
+
+#presidentJobTitle {
+	margin-left: -40px;
+}
+
+#codeNameLb {
+	margin-top: -8px;
+}
+
+.ntsCheckBox-label {
+	width: 130px;
+}
+
+#faxNo {
+	margin-left: -50px;
+}
+
+.cf1 {
+	margin-left: -70px;
+}
+
+#switchhelpbtn {
+	margin-left: 10px;
+	height: 27px;
+	z-index: 100px !important;
+}
+
+#tab-1, #tab-2, #tab-3 {
+	height: 370px;
+	overflow: visible !important;
+}
+
+#tab-1.disappear, #tab-2.disappear, #tab-3.disappear {
+	overflow: hidden !important;
+}

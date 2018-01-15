@@ -1,0 +1,249 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/sample/catalog/catalog.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/sample/catalog/catalog.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kmk/003/base/fixedtable/fixedtable.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="kmk003.sample.start.js" />
+			<com:scriptfile path="kmk003.sample.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+			
+				<div id="side-menu" class="cf"></div>
+				
+				<div style="margin-left: 30px" id="content" class="cf">
+					<h1>Table1</h1>
+					<div data-bind="ntsCheckBox:{checked: isEnableAllControl}">Disable/Enable All</div>
+					<button style="margin-bottom: 10px;" data-bind="click: testDataSource">Test datasource</button>
+					<div id="fixed-table" data-bind="ntsFixTableCustom: {option: fixTableOption1, isEnableAllControl: isEnableAllControl}"></div>
+					
+					<h1>Table2</h1>
+					<div data-bind="ntsFixTableCustom: {option: fixTableOption2}"></div>
+					
+					<h2>Guide</h2>
+					<article class="cf" style="margin-top: 10px;">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								</ol>
+								<!-- BEGIN TAB HTML -->
+								<div id="tabs-html" class="cf">
+									<h2>HTML</h2>
+									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
+									<pre><![CDATA[<ui:define name="htmlHead">
+		<com:scriptfile set="IGNITE" />
+		<com:scriptfile path="/view/kmk/003/base/fixedtable/fixedtable.js" of="/nts.uk.at.web"/>
+		<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
+</ui:define>]]></pre>
+									<p>Create a div tag to bind table</p>
+									<pre><![CDATA[<div id="nts-fix-table" data-bind="ntsFixTableCustom: {option: fixTableOption}"></div>]]></pre>
+								</div><!-- END TAB HTML -->
+								
+								<!-- BEGIN TABS VIEWMODEL -->
+								<div id="tabs-viewmodel" class="cf">
+									<h2>TypeScript</h2>
+									<h3>ViewModel</h3>
+									<pre><![CDATA[<!--MULTIPLE CHOICE-->
+export class ScreenModel {
+    
+    selectionOption: KnockoutObservableArray<any>;
+    selectedType: KnockoutObservable<number>;
+    enable: KnockoutObservable<boolean>;
+    fixTableOption: any;
+    itemList: KnockoutObservableArray<any>;
+    dataSource: KnockoutObservableArray<any>;
+    
+    constructor() {
+        let self = this;
+        
+        self.selectionOption = ko.observableArray([
+            { code: 0, name: 'Single Selection' },
+            { code: 1, name: 'Multiple Selection' },
+        ]);
+        self.selectedType = ko.observable(1);
+        
+        self.enable = ko.observable(true);
+        
+        self.itemList = ko.observableArray([
+            {code: 1, name: '基本給1'},
+            {code: 2, name: '役職手当2'},
+            {code: 3, name: '基本給3'}
+        ]);
+        
+        self.dataSource = ko.observableArray([]);
+        
+        self.fixTableOption = {
+            maxRow: 7,
+            minRow: 0,
+            maxRowDisplay: 5,
+            isShowButton: true,
+            dataSource: self.dataSource,
+            isMultipleSelect: self.enable(),
+            columns: self.columnSetting(),
+            tabindex: 10
+        }
+        
+        self.selectedType.subscribe(function(newValue) {
+            self.enable(newValue == 1);
+            self.fixTableOption.isMultipleSelect = self.enable();
+            $('#nts-fix-table').ntsFixTableCustom(self.fixTableOption);
+        });
+    }
+              
+    /**
+     * Start page
+     */
+    public startPage(): JQueryPromise<any> {
+        let self = this;
+        let dfd = $.Deferred<any>();
+
+        dfd.resolve();
+        return dfd.promise();
+    }
+    
+    /**
+     * columnSetting
+     */
+    private columnSetting(): Array<any> {
+        let self = this;
+        return [
+            {headerText: "カラム1", key: "column1", defaultValue: ko.observable("12:00"), width: 107, template: `<input data-bind="ntsTimeEditor: {
+                inputFormat: 'time'}" />`, cssClassName: 'column-time-editor'},
+            {headerText: "カラム2", key: "column2", defaultValue: ko.observable(true), width: 60, template: `<div data-bind="ntsCheckBox: {
+                enable: true}"></div>`},
+            {headerText: "カラム3", key: "column3", defaultValue: ko.observable({startTime: "10:00", endTime: "12:00"}), width: 243, template: `<div data-bind="ntsTimeRangeEditor: {
+                required: true, enable: true}"/>`},
+            {headerText: "カラム4", key: "column4", defaultValue: ko.observable(1), width: 300, dataSource: self.itemList(), template: `<div data-bind="ntsComboBox: {
+                                    optionsValue: 'code',
+                                    visibleItemsCount: 5,
+                                    optionsText: 'name',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [
+                                        { prop: 'code', length: 4 },
+                                        { prop: 'name', length: 10 },
+                                    ]}"></div>`, cssClassName: 'column-combo-box'}
+        ];
+    }
+}
+								]]></pre>
+								<pre><![CDATA[<!--It is called after apply binding done. This return JQueryPromise<void>-->
+$('#nts-fix-table').ntsFixTableCustom(screenModel.fixTableOption);
+									]]></pre>
+									<h2>API</h2>
+									<table style="width: 700px">
+										<thead>
+											<td style="text-align: center;"><h4>Method</h4></td>
+											<td style="text-align: center;"><h4>Description</h4></td>
+										</thead>
+										<tr>
+											<td>dataSource</td>
+											<td>
+												<b>Type:</b> KnockoutObservableArray<br/>
+												<label><i>Description:</i>Data source of table.</label>
+											</td>
+										</tr>
+										<tr>
+											<td>isMultipleSelect</td>
+											<td>
+												<b>Type:</b> boolean<br/>
+												<label><i>Description:</i>multiple/single selection</label>
+											</td>
+										</tr>
+										<tr>
+											<td>maxRow</td>
+											<td>
+												<b>Type:</b> boolean<br/>
+												<label><i>Description:</i>Maximum row of table</label>
+											</td>
+										</tr>
+										<tr>
+											<td>minRow</td>
+											<td>
+												<b>Type:</b> boolean<br/>
+												<label><i>Description:</i>Minimum row of table</label>
+											</td>
+										</tr>
+										<tr>
+											<td>isShowButton</td>
+											<td>
+												<b>Type:</b> boolean<br/>
+												<label><i>Description:</i>Show/hide addItem and removeItem button</label>
+											</td>
+										</tr>
+										<tr>
+											<td>columns</td>
+											<td>
+												<b>Type:</b> Array[FixColumn]<br/>
+												<div><i>Description:</i> Column setting.</div>
+												<pre><![CDATA[FixColumn {
+	// Header text of column
+	headerText: string;
+	
+	// Primary key column
+	key: string;
+	
+	// default value
+	defaultValue: any;
+	
+	// width column
+	width: number;
+	
+	// Control type (control of Kiban team)
+	controlType: number;
+	
+	// dataSource control if has. Ex: option comboBox, ...
+	dataSource: Array<any>;
+	
+	// temple html
+	template: string;
+	
+	// class JQuery
+	cssClassName?: string;
+}]]></pre>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<lable>maxRowDisplay</lable> <br/>
+												<lable><i>(optinal)</i></lable>
+											</td>
+											<td>
+												<b>Type:</b> number<br/>
+												<b>Default:</b><i>12</i><br/>
+												<label><i>Description:</i>Display max row in tree grid.</label>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<lable>tabindex</lable> <br/>
+												<lable><i>(optional)</i></lable>
+											</td>
+											<td>
+												<b>Type:</b> number<br/>
+												<b>Default:</b><i>Set tabindex for table.</i><br/>
+											</td>
+											
+										</tr>
+									</table>
+								</div><!-- END TABS VIEWMODEL -->
+							</div>
+						</article><!-- END DESCRIPTION -->
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

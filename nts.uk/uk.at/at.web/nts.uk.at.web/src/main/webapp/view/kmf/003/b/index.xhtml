@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 900,
+					height : 600
+				};
+			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceYears
+				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceMonths
+				nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays
+				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays
+				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="kmf003.b.vm.js" />
+			<com:scriptfile path="kmf003.b.start.js" />
+			<com:scriptfile path="kmf003.b.service.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+		
+			<!-- BEGIN CONTENT AREA-->
+			<div id="contents-area">
+				<table>
+					<tr>
+						<td width="170"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF003_10')}</div></td>
+						<td width="40"><span data-bind="text: code"></span></td>
+						<td width="150"><span data-bind="text: name"></span></td>
+					</tr>
+					<tr></tr>
+					<tr>
+						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF003_19')}</div></td>
+						<td colspan="2"><span data-bind="text: conditionValue"></span></td>
+					</tr>
+				</table>
+				
+				<div class="panel panel-frame cf">
+					<table class="cal-panel">
+						<tr>
+							<td width="90"></td>
+							<td width="135">#{i18n.getText('KMF003_50')}</td>
+							<td width="80"></td>
+						</tr>
+						<tr></tr>
+						<tr>
+							<td>#{i18n.getText('KMF003_46')}</td>
+							<td style="text-align: right">
+								<div id="reference-date" class="cal-value" data-bind="ntsDatePicker: {value: referenceDate, dateFormat: 'YYYY/MM/DD'}, hasfocus: true"></div>
+							</td>
+							<td></td>
+						</tr>
+						<tr></tr>
+						<tr>
+							<td><span data-bind="visible: displayDateSelected">#{i18n.getText('KMF003_53')}</span></td>
+							<td style="text-align: center;"><span data-bind="text: dateSelected"></span></td>
+							<td><button class="caret-bottom btn-cal" data-bind="click: calculate">#{i18n.getText('KMF003_54')}</button></td>
+						</tr>
+					</table>
+				</div>
+				
+				<div class="bound"></div>
+				
+				<table class="contents-header">
+					<thead>
+						<tr>
+							<td rowspan="2" class="numbers">#{i18n.getText('KMF003_38')}</td>
+							<td colspan="2">#{i18n.getText('KMF003_40')}</td>
+							<td rowspan="2" class="input-units">#{i18n.getText('KMF003_43')}</td>
+							<td rowspan="2" class="input-units">#{i18n.getText('KMF003_44')}</td>
+							<td rowspan="2" class="input-units">#{i18n.getText('KMF003_45')}</td>
+							<td rowspan="2" class="base-date">#{i18n.getText('KMF003_46')}</td>
+							<td rowspan="2" class="allow-pay">#{i18n.getText('KMF003_39')}</td>
+							<td rowspan="2" class="pay-day-cal">#{i18n.getText('KMF003_47')}</td>
+						</tr>
+						<tr>
+							<td class="input-units">#{i18n.getText('KMF003_41')}</td>
+							<td class="input-units">#{i18n.getText('KMF003_42')}</td>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				
+				<table class="contents-data">
+					<thead></thead>
+					<tbody data-bind="foreach: items">
+						<tr>
+							<td data-bind="text: $index() + 1" class="numbers"></td>
+							<td class="input-units"><input class="year-input" data-bind="ntsNumberEditor: {
+										value: lengthOfServiceYears, 
+										constraint: 'LengthOfServiceYears',
+										name: '#[KMF003_48]',
+										option: ko.mapping.fromJS({
+											unitID: 'YEARS',
+											width: '50'
+										})}" /></td>
+							<td class="input-units"><input class="months-input" data-bind="ntsNumberEditor: {
+										value: lengthOfServiceMonths, 
+										constraint: 'LengthOfServiceMonths',
+										name: '#[KMF003_49]',
+										option: ko.mapping.fromJS({
+											unitID: 'MONTHS',
+											width: '60'
+										})}" /></td>
+							<td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
+										value: grantDays, 
+										constraint: 'GrantDays',
+										name: '#[KMF003_43]',
+										option: ko.mapping.fromJS({
+											unitID: 'DAYS',
+											width: '50'
+										})}" /></td>
+							<td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
+										value: limitedTimeHdDays, 
+										constraint: 'LimitedTimeHdDays',
+										name: '#[KMF003_44]',
+										option: ko.mapping.fromJS({
+											unitID: 'DAYS',
+											width: '50'
+										})}" /></td>										
+							<td class="input-units"><input class="times-input" data-bind="ntsNumberEditor: {
+										value: limitedHalfHdCnt, 
+										constraint: 'LimitedHalfHdCnt',
+										name: '#[KMF003_45]',
+										option: ko.mapping.fromJS({
+											unitID: 'TIMES',
+											width: '50'
+										})}" /></td>
+							<td class="base-date"><div class="base-date-options" id="combo-box" data-bind="ntsComboBox: {
+ 										options: $parent.grantReferenceDateOptions,
+ 										optionsValue: 'code',
+ 										value: $data.grantReferenceDate,
+ 										optionsText: 'name',
+ 										columns: [
+ 											{ prop: 'name', length: 10 }
+ 										],
+ 										enable: true}"></div></td>
+							<td class="allow-pay"><div data-bind="ntsCheckBox: { checked: grantSimultaneity }"></div></td>
+							<td class="pay-day-cal"><span data-bind="text: grantDate"></span></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- END CONTENT AREA-->
+			
+			<!-- BEGIN FUNCTION AREA-->
+			<div id="functions-area-bottom">
+				<button id="A_BTN_002" class="x-large proceed"
+					data-bind="click: submit">#{i18n.getText('KMF003_4')}</button>
+				<button id="A_BTN_003" data-bind="click: cancel"
+					class="large">#{i18n.getText('KMF003_56')}</button>
+			</div>
+			<!-- END FUNCTION AREA-->
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

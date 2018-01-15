@@ -1,0 +1,53 @@
+div[class^=screen-i] {
+	padding-top: 30px;
+	padding-left: 30px;
+}
+
+.screen-i .panel.ntsPanel {
+	margin-right: 35px;
+}
+
+.screen-i .infomation, .screen-i .panel.ntsPanel {
+	float: left;
+	display: block;
+}
+
+.screen-i .controls-group {
+	padding-left: 30px;
+}
+
+.screen-i .form-group {
+	margin-bottom: 10px;
+}
+
+.screen-i #ccgcomponent {
+	background-color: #fff;
+	margin: -30px 0 0 -30px;
+	padding: 30px 0 30px 30px;
+}
+
+.screen-i #kcpcomponent>div {
+	padding: 20px !important;
+}
+
+.screen-i .right-content {
+	padding-left: 120px;
+	
+}
+
+.screen-i .right-content:after{
+	display: block;
+	clear: both;
+	content: '';
+}
+
+.screen-i #kcpcomponent,
+.screen-i .information {
+	float: left;
+}
+
+.screen-i .information {
+	padding-top: 0;
+	padding-left: 30px;
+	min-width: 400px;
+}

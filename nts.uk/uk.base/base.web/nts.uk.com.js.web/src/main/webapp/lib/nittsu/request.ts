@@ -455,6 +455,27 @@ module nts.uk.request {
             });
     }
     
+    export function jumpToMenu(path: string) {
+        let end = path.charAt(0) === '/' ? path.indexOf("/", 1) : path.indexOf("/");
+        let appName = path.substring(0, end);
+        let appId;
+        switch(appName) {
+            case WEB_APP_NAME.com:
+            case "/" + WEB_APP_NAME.com:
+                appId = "com";
+                break;
+            case WEB_APP_NAME.pr:
+            case "/" + WEB_APP_NAME.pr:
+                appId = "pr";
+                break;
+            case WEB_APP_NAME.at:
+            case "/" + WEB_APP_NAME.at:
+                appId = "at";
+                break;
+        }
+        jump(appId, path.substr(end));
+    }
+    
     export module login {
         
         let STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
@@ -468,6 +489,7 @@ module nts.uk.request {
             uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(path => {
                 window.location.href = path;
             }).ifEmpty(() => {
+                //request.jump('/view/ccg/007/a/index.xhtml');
                 request.jump('/view/ccg/007/b/index.xhtml');
             });
         }
@@ -486,6 +508,10 @@ module nts.uk.request {
             let serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
             return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
         }
+    }
+    
+    export function jumpToTopPage() {
+        jumpToMenu('nts.uk.com.web/view/ccg/008/a/index.xhtml');
     }
 
     export function resolvePath(path: string) {

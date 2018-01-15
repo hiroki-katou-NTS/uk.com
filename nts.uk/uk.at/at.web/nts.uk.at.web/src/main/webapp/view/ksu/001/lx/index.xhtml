@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 700, height: 420 };</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.shift.team.TeamName
+				nts.uk.ctx.at.schedule.dom.shift.team.TeamCode
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksu001.lx.main.css" />
+			<com:scriptfile path="ksu001.lx.vm.js" />
+			<com:scriptfile path="ksu001.lx.service.js" />
+			<com:scriptfile path="ksu001.lx.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button data-bind="click : cleanForm,enable : isEnable">#{i18n.getText('KSU001_1130')}</button>
+				<button class="proceed"
+					data-bind="click : saveData, enable: $root.errors.isEmpty">#{i18n.getText('KSU001_1131')}</button>
+				<button class="danger"
+					data-bind="click: removeData, enable:!isCreated()">#{i18n.getText('KSU001_1132')}</button>
+				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_1133')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="content-left" class="bg-green caret-right caret-background">
+					<table id="single-list"
+						data-bind="ntsGridList: {								
+								height: 255,
+								dataSource: listTeam,
+								primaryKey: 'code'	,
+								columns: columnsTeam,
+								multiple: false,
+								value: selectedTeam,
+							}"></table>
+				</div>
+				<div id="content-right">
+					<div data-bind="ntsFormLabel: {constraint:['TeamCode','TeamName'],required: true, immediate: true, option: {autofill:true, filldirection:'left'}}">#{i18n.getText('KSU001_1137')}</div>
+					<input id="input-teamCode" data-bind="ntsTextEditor: {value: teamCode, enable: enableCode, constraint:'TeamCode',required: true, name: '#[KSU001_1138]'}" />
+					<input id="input-teamName" data-bind="ntsTextEditor: {value: teamName, constraint:'TeamName',required: true, name: '#[KSU001_1139]'}" />
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

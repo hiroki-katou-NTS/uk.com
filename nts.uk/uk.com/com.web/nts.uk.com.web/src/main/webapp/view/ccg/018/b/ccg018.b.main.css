@@ -1,0 +1,59 @@
+@CHARSET "UTF-8";
+
+#part-1, #part-2, #part-3 {
+	float: left;
+}
+
+#ccgcomponent {
+	z-index: 1000 !important
+}
+
+#part-2 {
+	margin: 50px 0 0 85px;
+}
+
+#part-3 {
+	margin: 52px 0 0 22px;
+}
+
+#table-1 {
+	margin-top: 20px;
+	border-spacing: 15px;
+}
+
+#table-1 tbody tr td #combo-box {
+	padding: 2px 2px 0 2px;
+	height: 25px;
+	min-width: 150px !important;
+	width: 150px !important
+}
+
+.ui-igcombo-button {
+	background-color: white;
+	border: none !important;
+}
+
+#B1_4 {
+	margin: 0 20px 0 50px;
+}
+
+#B1_5 {
+	margin-top: 3px;
+}
+
+#B1_6 {
+	margin-left: 270px;
+	margin-right: 55px
+}
+
+#B3_13 {
+	margin: 0px 20px;
+}
+
+.screen-b .nts-searchbbox-wrapper {
+	min-width: 100%;
+}
+
+#hor-scroll-button-hide, #hor-scroll-button-show {
+    margin-top: 62px !important;
+}

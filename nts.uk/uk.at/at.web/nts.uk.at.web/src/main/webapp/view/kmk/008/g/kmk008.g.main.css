@@ -1,0 +1,28 @@
+#settingButton {
+	margin-left: 85%;
+	margin-bottom: 10px;
+}
+
+.lbl-title-employeer-name{
+	margin-bottom: 30px !important;
+}
+
+.tabpanel-1-contents-area-right {
+	width: 400px;
+	margin-top: 20px;
+	float: left;
+	clean: right;
+}
+
+#component-items-list{
+	float: left; 
+	margin-left: 90px;
+}
+
+.ui-tabs-panel > div {
+    height: 350px;
+}
+
+#main{
+	margin-top: 20px;
+}

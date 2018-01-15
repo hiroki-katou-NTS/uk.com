@@ -1,0 +1,24 @@
+.distane {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+#itemLst {
+	margin-left: 65px !important;
+}
+
+#B_010 {
+	margin-left: 80px;
+}
+
+.requiredCell {
+	background-color: #FFC000;
+}
+
+.notrequiredCell {
+	background-color: #C7F391;
+}
+
+#registration{
+	margin-top: 10px !important;
+}

@@ -1,0 +1,62 @@
+@CHARSET "UTF-8";
+/* #master-content {
+	min-width: 900px;
+}
+#header {
+    overflow: hidden;
+    position: fixed; Set the navbar to fixed position
+    top: 0; Position the navbar at the top of the page
+    width: 100%;
+    z-index: 999;
+}
+.fix-on-top {
+        overflow: hidden;
+    position: fixed; Set the navbar to fixed position
+    top: 50px; Position the navbar at the top of the page
+    width: 100%;
+    z-index: 900;
+    background: white;
+}
+#contents-area {
+	margin-top: 90px;
+	z-index: 5;
+} */
+.btn-default {
+	margin-left: 20px;
+}
+#table {
+	margin-top: 30px;
+	margin-left: 50px;
+	margin-bottom: 50px;
+}
+table#table tr td {
+	padding-top: 10px;
+	padding-left: 50px;
+	min-width: 200px;
+}
+td.target-child div {
+	padding-top: 10px;
+}
+table#table tr td.target-child {
+	min-width: 300px !important;
+}
+.hr_width {
+	width: 760px;
+}
+table#table tr td.title {
+	padding-bottom: 35px;
+}
+#manage-nursing, #child-manage-nursing {
+	display: inline-block !important;;
+}
+.td-combo-box {
+	padding-left: 4px;
+}
+#combo-box-time-unit {
+	width: 83px;
+	min-width: 0px !important
+}
+#combo-box-preem-permit {
+	width: 170px;
+	min-width: 0px !important
+}

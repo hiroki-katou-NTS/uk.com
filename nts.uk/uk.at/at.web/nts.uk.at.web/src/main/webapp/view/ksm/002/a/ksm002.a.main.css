@@ -1,0 +1,48 @@
+.panel.panel-frame {
+	width: 570px;
+	margin: 20px;
+}
+
+.info {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.ntsCheckBox {
+	margin-right: 20px;
+}
+
+.calendarContent {
+	margin: 20px;
+}
+
+.left-content {
+	margin: 20px;
+	float: left;
+}
+
+.right-content {
+	float: left;
+}
+
+.fc-title {
+	font-size: 0.7rem !important;
+}
+
+.workplaceInfoB {
+	margin-top: 20px;
+	margin-left: 15px;
+}
+
+.hrInfoB {
+	margin-left: 15px;
+}
+.chkBox{
+	margin-top:10px;
+}
+.contents-area {
+	width: 1150px;
+}
+#sidebar-area {
+	min-width: 60px;
+}

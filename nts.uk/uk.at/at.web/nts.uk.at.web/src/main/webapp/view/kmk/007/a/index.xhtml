@@ -1,0 +1,548 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeName
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeAbbreviationName
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeSymbolicName
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeMemo
+			</com:ValidatorScript>
+			<com:stylefile path="kmk007.a.style.css" />
+			<com:scriptfile path="kmk007.a.start.js" />
+			<com:scriptfile path="kmk007.a.vm.js" />
+			<com:scriptfile path="kmk007.a.service.js" />
+			<com:scriptfile
+				path="/view/language/select/languagemasterselect-jquery-ext.js"
+				of="nts.uk.com.web" />
+			<com:stylefile path="/view/language/select/languagemasterselect.css"
+				of="nts.uk.com.web" />
+			<com:scriptfile set="IGNITE" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div class="container">
+					<button id="clear-button"
+						data-bind="click: cleanForm, enable: isEnable">#{i18n.getText('KMK007_1')}</button>
+					<button id="register-button" class="proceed"
+						data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('KMK007_2')}</button>
+					<button id="orderby-button" data-bind="click: openDiablogC, enable: isEnable">#{i18n.getText('KMK007_3')}</button>
+					<button id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>
+					<div id="switch-language"></div>
+					<button id="remove-button" class="danger"
+						data-bind="click: removeWorkType, enable: !isCreated()">#{i18n.getText('KMK007_5')}</button>
+				</div>
+			</div>
+			<div id="contents-area">
+				<div id="left-content"
+					class="bg-green caret-right caret-background cf"
+					style="width: 320px; height: 530px;">
+					<div id="LST_001" style="margin-left: 10px; padding: 10px;">
+						<div
+							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'workTypeCode',comId: 'single-list', 
+	                              items: listWorkType, selected: currentCode, selectedKey: 'workTypeCode', fields: ['workTypeCode', 'name'], mode: 'igGrid'}" />
+						<table id="single-list"
+							data-bind="ntsGridList: {	
+								width: 280,  
+								height: 450,
+								dataSource: listWorkType,
+								primaryKey: 'workTypeCode',
+								columns: columns,
+								multiple: false,								
+								value: currentCode
+						}"></table>
+					</div>
+				</div>
+				<div class="right-content">
+					<div class="control-group" data-bind="with: currentWorkType">
+						<div style="vertical-align: middle"
+							data-bind="ntsFormLabel: {constraint: ['WorkTypeCode','WorkTypeName'],required: true}">#{i18n.getText('KMK007_11')}</div>
+						<input id="input-workTypeCode"
+							data-bind="ntsTextEditor: {value: workTypeCode,name: '#[KMK007_12]', constraint: 'WorkTypeCode', required: true, option: {autofill:true, filldirection:'left'}, enable: $parent.checkDisabled}" />
+						<input id="input-workTypeName"
+							data-bind="ntsTextEditor: {value: dispName,name: '#[KMK007_13]', constraint: 'WorkTypeName', required: true}" />
+						<div style="margin-left: 20px;"
+							data-bind="ntsCheckBox: { checked: abolishAtr, enable: $parent.isEnable }">#{i18n.getText('KMK007_14')}</div>
+						<div>
+							<div style="margin-top: 10px"
+								data-bind="ntsFormLabel: {constraint: 'WorkTypeAbbreviationName',required: true}">#{i18n.getText('KMK007_15')}</div>
+							<input id="abbreviation-name-input"
+								data-bind="ntsTextEditor: {value: dispAbName,name: '#[KMK007_15]', constraint: 'WorkTypeAbbreviationName', required: true}" />
+							<div style="margin-top: 10px; margin-left: 25px;"
+								data-bind="ntsFormLabel: {constraint: 'WorkTypeSymbolicName',required: true}">#{i18n.getText('KMK007_16')}</div>
+							<input id="symbolic-name-input"
+								data-bind="ntsTextEditor: {value: symbolicName,name: '#[KMK007_16]', constraint: 'WorkTypeSymbolicName', required: true, enable: $parent.isEnable}" />
+						</div>
+						<div>
+							<div style="margin-top: 10px;"
+								data-bind="ntsFormLabel: {constraint: 'WorkTypeMemo'}">#{i18n.getText('KMK007_17')}</div>
+							<input id="memo-input"
+								data-bind="ntsTextEditor: {value: memo, name: '#[KMK007_17]', enable: $parent.isEnable, constraint: 'WorkTypeMemo'}" />
+						</div>
+
+
+						<div style="margin-top: 10px; margin-left: 10px;" class="cf"
+							data-bind="ntsSwitchButton: {
+													options: $parent.roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: workAtr,
+													enable: $parent.isEnable }"></div>
+					</div>
+					<div data-bind="if: currentWorkType().workAtr() == '0'">
+						<div id="duty-type-set-oneday">
+							<div
+								style="margin-top: 20px; margin-left: 40px; display: inline-block;">
+								<label>#{i18n.getText('KMK007_21')}</label>
+							</div>
+							<div style="vertical-align: middle; margin-left: 90px"
+								id="combo-box"
+								data-bind="ntsComboBox: {
+														options: itemListOneDay,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: currentWorkType().oneDayCls,
+														optionsText: 'name',
+														editable: false,
+														enable: isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}"></div>
+
+							<div id="oneday-set-1"
+								data-bind="if: currentWorkType().oneDayCls() == '0'">
+								<div data-bind="with: currentWorkType().oneDay">
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk , enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: attendanceTime, enable: $parent.isEnable }">#{i18n.getText('KMK007_24')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: timeLeaveWork, enable: $parent.isEnable }">#{i18n.getText('KMK007_25')}</div>
+									</div>
+								</div>
+							</div>
+							<div id="oneday-set-2"
+								data-bind="if: currentWorkType().oneDayCls() == '5'">
+								<div data-bind="with: currentWorkType().oneDay">
+									<div
+										style="margin-top: 20px; margin-left: 210px; display: inline-block;">
+										<label>#{i18n.getText('KMK007_31')}</label>
+									</div>
+									<div class="combo-box-focus" style="vertical-align: middle; margin-left: 30px"
+										id="combo-box"
+										data-bind="ntsComboBox: {
+														options: $parent.listAbsenceFrame,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: sumAbsenseNo, 
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}"></div>
+									<button style="margin-left: 20px;"
+										data-bind="click: $parent.openBDialog.bind($parent, 5), enable: $parent.isEnable">#{i18n.getText('KMK007_33')}</button>
+								</div>
+							</div>
+							<div id="oneday-set-3"
+								data-bind="if: currentWorkType().oneDayCls() == '4'">
+								<div data-bind="with: currentWorkType().oneDay">
+									<div
+										style="margin-top: 20px; margin-left: 210px; display: inline-block;">
+										<label>#{i18n.getText('KMK007_31')}</label>
+									</div>
+									<div class="combo-box-focus" style="vertical-align: middle; margin-left: 30px"
+										id="combo-box"
+										data-bind="ntsComboBox: {
+														options: $parent.listSpecialHlFrame,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: sumSpHodidayNo,
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}"></div>
+									<button style="margin-left: 20px;"
+										data-bind="click: $parent.openBDialog.bind($parent, 4)">#{i18n.getText('KMK007_35')}</button>
+								</div>
+							</div>
+							<div id="oneday-set-4"
+								data-bind="if: currentWorkType().oneDayCls() == '11'">
+								<div data-bind="with: currentWorkType().oneDay">
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: genSubHodiday, enable: $parent.isEnable }">#{i18n.getText('KMK007_26')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_24')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: timeLeaveWork, enable: $parent.isEnable }">#{i18n.getText('KMK007_25')}</div>
+									</div>
+									<div
+										style="margin-left: 20px; margin-top: 10px; display: inline-block; vertical-align: middle;"
+										id="combo-box"
+										data-bind="ntsComboBox: {
+														options: $parent.itemHodidayAtr,
+														optionsValue: 'code',
+														visibleItemsCount: 3,
+														value: holidayAtr,
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}"></div>
+									<div
+										style="display: inline-block; margin-top: 10px; vertical-align: middle; margin-left: 20px;">#{i18n.getText('KMK007_29')}</div>
+								</div>
+							</div>
+							<div id="oneday-set-6"
+								data-bind="if: currentWorkType().oneDayCls() == '7'">
+								<div data-bind="with: currentWorkType().oneDay">
+									<div style="margin-left: 20px;"
+										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: attendanceTime, enable: $parent.isEnable }">#{i18n.getText('KMK007_24')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: timeLeaveWork, enable: $parent.isEnable }">#{i18n.getText('KMK007_25')}</div>
+									</div>
+								</div>
+							</div>
+							<div id="oneday-set-7"
+								data-bind="if: currentWorkType().oneDayCls() == '8' || currentWorkType().oneDayCls() == '1'">
+								<div data-bind="with: currentWorkType().oneDay">
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
+									</div>
+									<div
+										style="margin-left: 20px; margin-top: 10px; display: inline-block; vertical-align: middle;"
+										id="combo-box"
+										data-bind="ntsComboBox: {
+														options: $parent.itemHodidayAtr,
+														optionsValue: 'code',
+														visibleItemsCount: 3,
+														value: holidayAtr,
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}"></div>
+									<div
+										style="display: inline-block; margin-top: 10px; vertical-align: middle; margin-left: 20px;">#{i18n.getText('KMK007_29')}</div>
+								</div>
+							</div>
+							<div id="oneday-set-9"
+								data-bind="if: currentWorkType().oneDayCls() == '13'">
+								<div data-bind="with: currentWorkType().oneDay">
+									<div
+										style="margin-top: 20px; margin-left: 40px; display: inline-block;">
+										<label>#{i18n.getText('KMK007_36')}</label>
+									</div>
+									<div style="vertical-align: middle; margin-left: 100px"
+										id="combo-box"
+										data-bind="ntsComboBox: {
+														options: $parent.itemCloseAtr,
+														optionsValue: 'code',
+														visibleItemsCount: 4,
+														value: closeAtr,
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="duty-type-set-halfday"
+						data-bind="if: currentWorkType().workAtr() == '1'">
+						<div id="morning">
+							<div style="margin-top: 20px; margin-left: 40px;">
+								<label>#{i18n.getText('KMK007_40')}</label>
+							</div>
+							<div
+								style="vertical-align: middle; margin-left: 90px; margin-top: 5px;"
+								id="combo-box"
+								data-bind="ntsComboBox: {
+															options: itemListHaftDay,
+															optionsValue: 'code',
+															visibleItemsCount: 4,
+															value: currentWorkType().morningCls,
+															optionsText: 'name',
+															editable: false,
+															enable: isEnable,
+															columns: [
+																{ prop: 'name', length: 10 },
+															]}"></div>
+							<div id="morning-set-1"
+								data-bind="if: currentWorkType().morningCls() == '0'">
+								<div data-bind="with: currentWorkType().morning">
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: attendanceTime, enable: $parent.isEnable }">#{i18n.getText('KMK007_24')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: timeLeaveWork, enable: $parent.isEnable }">#{i18n.getText('KMK007_25')}</div>
+									</div>
+								</div>
+							</div>
+							<div id="morning-set-2"
+								data-bind="if: currentWorkType().morningCls() == '5'">
+								<div data-bind="with: currentWorkType().morning">
+									<div
+										style="margin-top: 20px; margin-left: 40px; display: inline-block;">
+										<label>#{i18n.getText('KMK007_31')}</label>
+									</div>
+									<div class="haftday-combo-box combo-box-focus" id="combo-box"
+										data-bind="ntsComboBox: {
+														options: $parent.listAbsenceFrame,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: sumAbsenseNo,
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}"></div>
+									<button style="margin-left: 20px;"
+										data-bind="click: $parent.openBDialog.bind($parent, 5)">#{i18n.getText('KMK007_33')}</button>
+								</div>
+							</div>
+							<div id="morning-set-3"
+								data-bind="if: currentWorkType().morningCls() == '4'">
+								<div data-bind="with: currentWorkType().morning">
+									<div
+										style="margin-top: 20px; margin-left: 40px; display: inline-block">
+										<label>#{i18n.getText('KMK007_31')}</label>
+									</div>
+									<div class="haftday-combo-box combo-box-focus" id="combo-box"
+										data-bind="ntsComboBox: {
+														options: $parent.listSpecialHlFrame,
+														optionsValue: 'code',
+														visibleItemsCount: 4,
+														value: sumSpHodidayNo,
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}"></div>
+									<button style="margin-left: 20px;"
+										data-bind="click: $parent.openBDialog.bind($parent, 4)">#{i18n.getText('KMK007_35')}</button>
+								</div>
+							</div>
+							<div id="morning-set-5"
+								data-bind="if: currentWorkType().morningCls() == '8'">
+								<div data-bind="with: currentWorkType().morning">
+									<div style="margin-left: 20px;"
+										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
+								</div>
+							</div>
+							<div id="morning-set-6"
+								data-bind="if: currentWorkType().morningCls() == '7'">
+								<div data-bind="with: currentWorkType().morning">
+									<div style="margin-left: 20px;"
+										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: attendanceTime, enable: $parent.isEnable }">#{i18n.getText('KMK007_24')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: timeLeaveWork, enable: $parent.isEnable }">#{i18n.getText('KMK007_25')}</div>
+									</div>
+								</div>
+							</div>
+							<div id="morning-set-8"
+								data-bind="if: currentWorkType().morningCls() == '1'">
+								<div data-bind="with: currentWorkType().morning">
+									<div style="margin-left: 20px;"
+										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: countHodiday, enable: $parent.isEnable }">#{i18n.getText('KMK007_30')}</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+						<div id="afternoon">
+							<div style="margin-top: 20px; margin-left: 40px;">
+								<label>#{i18n.getText('KMK007_43')}</label>
+							</div>
+							<div
+								style="vertical-align: middle; margin-left: 90px; margin-top: 5px;"
+								id="combo-box"
+								data-bind="ntsComboBox: {
+															options: itemListHaftDay,
+															optionsValue: 'code',
+															visibleItemsCount: 4,
+															value: currentWorkType().afternoonCls,
+															optionsText: 'name',
+															editable: false,
+															enable: isEnable,
+															columns: [
+																{ prop: 'name', length: 10 },
+															]}"></div>
+							<div id="afternoon-set-1"
+								data-bind="if: currentWorkType().afternoonCls() == '0'">
+								<div data-bind="with: currentWorkType().afternoon">
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: attendanceTime, enable: $parent.isEnable }">#{i18n.getText('KMK007_24')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: timeLeaveWork, enable: $parent.isEnable }">#{i18n.getText('KMK007_25')}</div>
+									</div>
+								</div>
+							</div>
+							<div id="afternoon-set-2"
+								data-bind="if: currentWorkType().afternoonCls() == '5'">
+								<div data-bind="with: currentWorkType().afternoon">
+									<div
+										style="margin-top: 20px; margin-left: 40px; display: inline-block;">
+										<label>#{i18n.getText('KMK007_31')}</label>
+									</div>
+									<div class="haftday-combo-box combo-box-focus" id="combo-box"
+										data-bind="ntsComboBox: {
+														options: $parent.listAbsenceFrame,
+														optionsValue: 'code',
+														visibleItemsCount: 5,
+														value: sumAbsenseNo,
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}"></div>
+									<button style="margin-left: 20px;"
+										data-bind="click: $parent.openBDialog.bind($parent, 5)">#{i18n.getText('KMK007_33')}</button>
+								</div>
+							</div>
+							<div id="afternoon-set-3"
+								data-bind="if: currentWorkType().afternoonCls() == '4'">
+								<div data-bind="with: currentWorkType().afternoon">
+									<div
+										style="margin-top: 20px; margin-left: 40px; display: inline-block">
+										<label>#{i18n.getText('KMK007_31')}</label>
+									</div>
+									<div class="haftday-combo-box combo-box-focus" id="combo-box"
+										data-bind="ntsComboBox: {
+														options: $parent.listSpecialHlFrame,
+														optionsValue: 'code',
+														visibleItemsCount: 4,
+														value: sumSpHodidayNo,
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}"></div>
+									<button style="margin-left: 20px;"
+										data-bind="click: $parent.openBDialog.bind($parent, 4)">#{i18n.getText('KMK007_35')}</button>
+								</div>
+							</div>
+							<div id="afternoon-set-5"
+								data-bind="if: currentWorkType().afternoonCls() == '8'">
+								<div data-bind="with: currentWorkType().afternoon">
+									<div style="margin-left: 20px;"
+										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
+								</div>
+							</div>
+							<div id="afternoon-set-6"
+								data-bind="if: currentWorkType().afternoonCls() == '7'">
+								<div data-bind="with: currentWorkType().afternoon">
+									<div style="margin-left: 20px;"
+										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: attendanceTime, enable: $parent.isEnable }">#{i18n.getText('KMK007_24')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: timeLeaveWork, enable: $parent.isEnable }">#{i18n.getText('KMK007_25')}</div>
+									</div>
+								</div>
+							</div>
+							<div id="afternoon-set-8"
+								data-bind="if: currentWorkType().afternoonCls() == '1'">
+								<div data-bind="with: currentWorkType().afternoon">
+									<div style="margin-left: 20px;"
+										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: countHodiday, enable: $parent.isEnable }">#{i18n.getText('KMK007_30')}</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					<div class="control-group" data-bind="with: currentWorkType">
+						<div style="margin-top: 30px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK007_44')}</div>
+						<div class="calulator-method-combo-box" id="combo-box"
+							data-bind="ntsComboBox: {
+														options: $parent.itemCalculatorMethod,
+														optionsValue: 'code',
+														visibleItemsCount: 4,
+														value: calculatorMethod,
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.enableMethod,
+														columns: [
+															{ prop: 'name', length: 18 },
+														]}"></div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

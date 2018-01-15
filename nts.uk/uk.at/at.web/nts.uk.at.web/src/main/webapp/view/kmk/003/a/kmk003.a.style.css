@@ -1,0 +1,62 @@
+.caret-left-width {
+	padding: 20px;
+}
+
+.checkbox_display {
+	float: right;
+	margin-bottom: 10px;
+}
+
+.screen-content-left {
+	width: 280px;
+	padding: 10px;
+	vertical-align: top;
+}
+
+.screen-content-right {
+	width: 920px;
+	padding: 10px;
+}
+
+.td-cell {
+	padding: 5px;
+}
+
+.memo-field {
+	height: 50px;
+}
+
+.label_header {
+	margin-left: 10px;
+}
+
+.label_memo {
+	height: 60px !important;
+}
+
+.setting_header {
+	margin-left: 10px;
+}
+
+.setting_header_br {
+	margin-left: 10px;
+	margin-top: 15px;
+	display: inline-flex;
+}
+.icon-x {
+	background: url("img/x.png");
+	width: 10px;
+	height: 10px;
+	background-size: 10px 10px;
+}
+
+.cf .nts-switch-button {
+	min-width: 80px;
+} 
+
+.control-group {
+	display: inline-flex;
+} 
+.center-align {
+	text-align: center;
+}

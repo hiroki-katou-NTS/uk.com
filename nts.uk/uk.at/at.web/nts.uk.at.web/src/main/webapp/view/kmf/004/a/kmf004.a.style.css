@@ -1,0 +1,61 @@
+@CHARSET "UTF-8";
+
+#contents-area {
+	display: table;
+}
+
+.right-content {
+	width: 75%;
+	padding-left: 50px;
+	display: table-cell;
+}
+
+#tab-panel {
+	margin-top: 40px;
+}
+
+.ui-tabs .ui-tabs-panel {
+	display: block;
+	border-width: 0;
+	padding: 1em 1.4em;
+	background: none;
+	height: 280px;
+	width: 683px;
+}
+
+button.nts-switch-button {
+	min-width: 60px;
+}
+#sw1{
+	margin-left: 40px!important;
+}
+#combo-box {
+	min-width: 44px !important;
+	width: 76px;
+	margin-left: 20px;
+	vertical-align: middle;
+}
+
+#code-sphd {
+	vertical-align: middle;
+}
+
+#input-code-sphd {
+	width: 40px;
+	margin-left: 45px;
+}
+
+#radio-tab2-1, #radio-tab2-2 {
+	margin-top: 10px;
+}
+
+div#memo .nts-editor-wrapped {
+	position: absolute;
+}
+.label1{
+	margin-left: 137px;
+}
+
+.disabled {
+   color: darkgrey;
+}

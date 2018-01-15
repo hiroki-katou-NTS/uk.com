@@ -1,0 +1,30 @@
+.navigation-label {
+	vertical-align: 30px;
+}
+
+.ksc001-panel {
+	margin-left: 14px;
+}
+
+.label-ksc001-63, .date-range-ksc001, .search-btn-ksc001 {
+	float: left;
+}
+
+.search-btn-ksc001 {
+	margin-left: 10px;
+}
+
+.explanation-lb {
+	margin-left: 6px;
+	vertical-align: 12px;
+}
+/* remove close button */
+.ui-dialog-titlebar-close{
+	display: none !important;
+}
+.caret-right:after{
+	border-left: none !important; 
+}
+.align_detail_btn {
+	text-align: center;
+}

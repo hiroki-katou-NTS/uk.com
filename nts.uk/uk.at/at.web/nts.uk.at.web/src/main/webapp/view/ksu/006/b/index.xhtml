@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 482,
+					height : 320
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="ksu006.b.service.js" />
+			<com:scriptfile path="ksu006.b.vm.js" />
+			<com:scriptfile path="ksu006.b.start.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+			<div id="contents-area">
+				<div style="margin-left: 20px;">
+					<div style="margin: 10px 0px;">#{i18n.getText('KSU006_201')}</div>
+					<table id="infor-base">
+						<col width="150"></col>
+						<col width="350"></col>
+						<tr>
+							<td class="bgIgCol">#{i18n.getText('KSU006_202')}</td>
+							<td>
+								<!-- <div data-bind="text: time"></div> -->
+								<center>
+									<ul class="countdown">
+										<!-- <li><span class="days">00</span>
+											<p class="days_ref">days</p></li>
+										<li class="seperator">.</li> -->
+										<li><span class="hours">00</span>
+											<!-- <p class="hours_ref">hours</p> --></li>
+										<li class="seperator">:</li>
+										<li><span class="minutes">00</span>
+											<!-- <p class="minutes_ref">minutes</p> --></li>
+										<li class="seperator">:</li>
+										<li><span class="seconds">00</span>
+											<!-- <p class="seconds_ref">seconds</p> --></li>
+									</ul>
+								</center>
+							</td>
+						</tr>
+						<tr>
+							<td class="bgIgCol">#{i18n.getText('KSU006_203')}</td>
+							<td class="pull-right-col"><div data-bind="text: status"></div></td>
+						</tr>
+						<tr>
+							<td class="bgIgCol">#{i18n.getText('KSU006_204')}</td>
+							<td class="pull-right-col">
+								<span data-bind="text: totalRecordDisplay" style="margin-right: 23px;"></span>
+								<span data-bind="text: numberSuccessDisplay" style="margin-right: 20px;"></span>
+								<span data-bind="text: numberFailDisplay"></span>
+							</td>
+						</tr>
+					</table>
+					
+					<div style="display: none;" data-bind="visible: true">
+						<com:ko tag="if" bind="hasError()">
+							<button id="donwloadError" class="large pull-right" tabindex="2" style="margin-right: 40px; margin-bottom: 10px;"
+							data-bind="click: downloadDetailError">#{i18n.getText('KSU006_205')}</button>
+						</com:ko>
+					</div>
+					<com:ko tag="if" bind="hasError()">
+						<table id="single-list"
+							data-bind="ntsGridList: {
+								dataSource: dataError,
+								primaryKey: 'order',
+								columns: listColumn,
+								multiple: false,
+								value: rowSelected,
+								rows: 10}"></table>
+						<com:ko tag="if" bind="isGreaterThanTenError()">
+							<div
+								style="margin-top: 30px; color: red; margin-top: 65px; display: none"
+								data-bind="style: {display: hasError() ? 'block' : 'none'}">#{i18n.getText('KSU006_213')}</div>
+						</com:ko>
+					</com:ko>
+				</div>
+			</div>
+			<div id="functions-area-bottom" >
+					<div id="process" style="display: none;" data-bind="visible: true">
+						<com:ko tag="if" bind="!isDone()">
+							<button id="stopExecute" class="large" tabindex="1" data-bind="click: stopImporting">#{i18n.getText('KSU006_214')}</button>
+						</com:ko>
+						<com:ko tag="if" bind="isDone()">
+							<button id="closeDialog" class="large" tabindex="3"
+								data-bind="click: closeDialog">#{i18n.getText('KSU006_215')}</button>
+						</com:ko>
+				</div>
+				</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

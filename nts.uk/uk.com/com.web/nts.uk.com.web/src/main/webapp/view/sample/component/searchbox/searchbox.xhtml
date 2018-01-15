@@ -46,6 +46,7 @@
 							<hr/>
 							<h2>GridList</h2>
 							<h3>Search mode: filter</h3>
+							<button data-bind="click:rebind"> rebind</button>
 							<div style="width: 852px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
 								items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />																																														
 							<table id="multi-list" data-bind="ntsGridList: {

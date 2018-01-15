@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.pereg.dom.person.layout.LayoutCode
+					nts.uk.ctx.pereg.dom.person.layout.LayoutName
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
+			<com:stylefile path="cps008.a.style.css" />
+			<com:scriptfile path="cps008.a.service.js" />
+			<com:scriptfile path="cps008.a.vm.js" />
+			<com:scriptfile path="cps008.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="A_BTN_NEW" data-bind="click : createNewLayout">#{i18n.getText('CPS008_3')}</button>
+				<button id="A_BTN_REGISTER" class="proceed"
+					data-bind="click: saveDataLayout">#{i18n.getText('CPS008_4')}</button>
+				<button id="A_BTN_COPPY"
+					data-bind="click: copyDataLayout, enable: layout().id() != undefined">#{i18n.getText('CPS008_5')}</button>
+				<button id="A_BTN_DELETE" class="danger"
+					data-bind="click: removeDataLayout, enable: layout().id() != undefined">#{i18n.getText('CPS008_6')}</button>
+				<a class="goout" id="A_BTN_JUMP"
+					data-bind="ntsLinkButton:  { jump: '../../007/a/index.xhtml' }">#{i18n.getText('CPS008_7')}</a>
+			</div>
+			<div id="contents-area">
+				<div id="left-content"
+					class="relative bg-green caret-right caret-background">
+					<i class="icon icon-searchbox"></i>
+					<div class="cf">
+						<div style="float: left">
+							<div style="width: 300px"
+								data-bind="ntsSearchBox: {
+									searchMode :'highlight',
+									targetKey: 'id', 
+									mode: 'igGrid',
+									comId: 'multi-list',
+									items: layouts, 
+									selected: 'id',
+									selectedKey: 'id', 
+									fields: ['name', 'code'] }" />
+							<table id="multi-list"
+								data-bind="ntsGridList: {
+									height: 535,
+									options: layouts,
+									optionsValue: 'id',
+									columns: [
+						                { headerText: '', key: 'id', width: 0, hidden: true },
+						                { headerText: '#{i18n.getText('CPS008_9')}', key: 'code', width: 60, hidden: false },
+						                { headerText: '#{i18n.getText('CPS008_10')}', key: 'name', width: 220, hidden: false }
+						            ],
+									multiple: false,
+									value: layout().id}">
+							</table>
+						</div>
+					</div>
+				</div>
+				<div id="right-content" data-bind="with: layout">
+					<div id="right-content"
+						data-bind="let: { LAYOUT_ACTION: {
+						        INSERT: 0,
+						        UPDATE: 1,
+						        COPY: 2,
+						        OVERRIDE: 3,
+						        REMOVE: 4
+						    } }">
+						<table class="table_content">
+							<colgroup>
+								<col width="220px" />
+								<col width="*" />
+							</colgroup>
+							<tr>
+								<td class="row_1">
+									<div
+										data-bind="ntsFormLabel: { constraint: ['LayoutCode','LayoutName'] , required: true }">
+										#{i18n.getText('CPS008_11')}</div>
+								</td>
+								<td class="valign-center">
+									<div>
+										<div class="input_002 input_code">
+											<input id="A_INP_CODE" style="width: 80px"
+												data-bind="ntsTextEditor: {
+															value: code,
+															constraint: 'LayoutCode',
+															required:true,
+															enable: $parent.layout().id() == undefined }" />
+										</div>
+
+										<div class="input_002 input_name">
+											<input id="A_INP_NAME" style="width: 180px"
+												data-bind="ntsTextEditor: {
+															value: name,
+															constraint: 'LayoutName',
+															required:true,
+															enable: true
+											}" />
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+						<div>
+							<button class="x-large"
+								data-bind="click: $parent.showDialogB.bind($parent) , enable: $parent.layout().id() != undefined">#{i18n.getText('CPS008_42')}</button>
+						</div>
+						<div data-bind="if: action() != LAYOUT_ACTION.INSERT">
+							<div style="padding-top: 10px"
+								data-bind="ntsLayoutControl: { 
+								data: classifications,
+								editAble: false }"></div>
+						</div>
+						<div style="padding-top: 10px"
+							data-bind="if: action() == LAYOUT_ACTION.INSERT">
+							<div class="nosetarea"
+								style="display: flex; align-items: center; justify-content: center;">#{i18n.getText('CPS008_44')}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

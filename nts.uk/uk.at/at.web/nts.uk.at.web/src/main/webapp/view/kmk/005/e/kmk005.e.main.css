@@ -1,0 +1,111 @@
+.control-group.valign-center > * { vertical-align: middle; }
+.control-group.valign-top > * { vertical-align: top; }
+.control-group.valign-bottom > * { vertical-align: bottom; }
+
+#tab-1, #tab-2 {
+    width: 1170px;
+}
+#tab-1.disappear, #tab-2.disappear {
+	padding:0;
+}
+.ui-tabs-tab {
+	text-align: center;
+    width: 130px;
+}
+table, tr, th, td {
+	border: 1px solid #999999;
+}
+.switch-1 {
+	
+}
+.switch-2 {
+	
+}
+.switch-3 {
+	
+}
+.textBody {
+	margin-left: 15px;
+}
+#table-panel-1 > thead > tr > th:NTH-CHILD(1) {
+	width: 70px;
+}
+#table-panel-1 > thead > tr > th:NTH-CHILD(2) {
+	width: 205px;
+}
+#table-panel-1 > thead > tr > th:NTH-CHILD(3) {
+	width: 408px;
+}
+#table-panel-1 > thead > tr > th:NTH-CHILD(4) {
+	width: 408px;
+}
+#table-panel-1 > thead > tr:NTH-CHILD(1) > th {
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 30px;
+	background-color: #C7F391;
+}
+#table-panel-1 > thead > tr:NTH-CHILD(2) > th {
+	vertical-align: top;
+	padding: 2px;
+	background: #F8ECD1;
+}
+#table-panel-1 > thead > tr:NTH-CHILD(2) > th:NTH-CHILD(1) {
+	background: white;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(1) {
+	padding: 3px;
+	background-color: #EDFAC2;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(2) {
+	padding: 2px;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(3) {
+	padding: 2px;
+}
+#table-panel-1 > tbody > tr > td:NTH-CHILD(4) {
+	padding: 2px;
+}
+#table-panel-2 > thead > tr > th:NTH-CHILD(1) {
+	width: 70px;
+}
+#table-panel-2 > thead > tr > th:NTH-CHILD(2) {
+	width: 205px;
+}
+#table-panel-2 > thead > tr > th:NTH-CHILD(3) {
+	width: 408px;
+}
+#table-panel-2 > thead > tr > th:NTH-CHILD(4) {
+	width: 408px;
+}
+#table-panel-2 > thead > tr:NTH-CHILD(1) > th {
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 30px;
+	background-color: #C7F391;
+}
+#table-panel-2 > thead > tr:NTH-CHILD(2) > th {
+	vertical-align: top;
+	padding: 2px;
+	background: #F8ECD1;
+}
+#table-panel-2 > thead > tr:NTH-CHILD(2) > th:NTH-CHILD(1) {
+	background: white;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(1) {
+	padding: 3px;
+	background-color: #EDFAC2;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(2) {
+	padding: 2px;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(3) {
+	padding: 2px;
+}
+#table-panel-2 > tbody > tr > td:NTH-CHILD(4) {
+	padding: 2px;
+}
+#functions-area-bottom > button {
+	margin-right: 10px;
+}
+

@@ -1,0 +1,28 @@
+@CHARSET "UTF-8";
+
+.contents-left, .contents-right {
+	padding: 20px;
+	vertical-align: top !important;
+	min-width: 100px;
+}
+
+.contents-left {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.contents-right {
+	padding-left: 20px !important;
+	width: 300px;
+}
+
+#target-YM {
+	padding-left: 20px !important;
+}
+
+#closure-content {
+	padding-top: 20px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-bottom: 30px;
+}

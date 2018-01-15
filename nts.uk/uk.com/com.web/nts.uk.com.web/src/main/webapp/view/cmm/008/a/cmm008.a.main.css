@@ -1,0 +1,27 @@
+#ruled-line {
+	background-color: #7f7f7f;
+	margin-top: 25px;
+}
+
+#right-contents {
+	padding-left: 30px;
+	padding-top: 20px;
+	vertical-align: top;
+}
+#left-content {
+	padding: 20px;
+}
+
+.tr-height {
+	height: 70px;
+}
+#right-contents div table {
+	margin-right: 40px;
+}
+.td-width {
+	width: 200px;
+}
+
+.padding-left {
+	padding-left: 12px;
+}

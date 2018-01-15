@@ -1,0 +1,16 @@
+.from-label{
+	margin-left: 50px;
+    margin-bottom: 12px;
+}
+.table-infor td,#table-label td{
+	padding: 5px 10px;
+	
+}
+#button-left{
+	margin-left: 506px;
+    margin-bottom: 14px;
+    height: 27px;
+}
+#single-list_horizontalScrollContainer{
+	    overflow: hidden !important;
+}

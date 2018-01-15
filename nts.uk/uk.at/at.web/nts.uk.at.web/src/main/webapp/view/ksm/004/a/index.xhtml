@@ -1,0 +1,205 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
+			<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web"/>
+			<com:scriptfile path="/view/kcp/006/a/kcp006.a.service.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/calendar-ko-ext.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/locale-all.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:stylefile path="ksm004.a.main.css" />
+			<com:scriptfile path="ksm004.a.service.js" />
+			<com:scriptfile path="ksm004.a.vm.js" />
+			<com:scriptfile path="ksm004.a.start.js" />
+		</ui:define>
+
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<li><a href="#tabpanel-1" role="tab-navigator">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Class')}</a></li>
+			</ul>
+		</ui:define>
+
+		<ui:define name="sidebar-content">
+			<div id="tabpanel-1" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Company')}</span>
+					<button class="proceed" data-bind="click: function(){submitCalendar(0)}, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_1')}</button>
+					<button data-bind="click: function(){openDialogD(0)}, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_2')}</button>
+					<button data-bind="click: openDialogC, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_3')}</button>
+					<button class="danger" data-bind="click: function(){removeCalendar(0)}, enable: Boolean(isUpdate()&#38;$root.errors.isEmpty())">#{i18n.getText('KSM004_4')}</button>
+				</div>
+				<div class="contents-area">
+					<div class="rightExtend">
+						<div class="noteTable">
+							<div class="titleTable">
+								<label>#{i18n.getText('KSM004_5')}</label>
+							</div>
+							<hr/>
+							<div class="infoTable panel panel-frame">
+								<div><span>#{i18n.getText('KSM004_9')}</span></div>
+								<div>
+									<div class="labelSqr labelSqr1 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>稼働日</span></div>
+									<div class="labelSqr labelSqr2 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法内）</span></div>
+									<div class="labelSqr labelSqr3 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(3)}"><span>非稼働日（法外）</span></div>
+								</div>
+							</div>
+						</div>
+						<div class="nts-calendar-container">
+							<div class="nts-calendar-header">
+								<div class="yearMonthPicker" id="yearMonthPicker1" data-bind="ntsDatePicker: {
+								name: '#[KCP006_1]',
+								value: yearMonthPicked, 
+								dateFormat: 'yearmonth',
+								cssRanger: cssRangerYM, 
+								valueFormat: 'YYYY/MM', 
+								defaultClass: 'round-green',
+								showJumpButtons: true, 
+								required: true }"></div>
+							</div>
+							<div data-bind="with: calendarPanel">
+								<div id="calendar" data-bind="ntsCalendar: {
+								optionDates: optionDates, 
+								yearMonth: yearMonth,
+								firstDay: firstDay, 
+								startDate: startDate, 
+								endDate: endDate,
+								workplaceId: workplaceId,
+								workplaceName: workplaceName,
+								eventDisplay: eventDisplay,
+								eventUpdatable: eventUpdatable,
+								holidayDisplay: holidayDisplay,
+								cellButtonDisplay: cellButtonDisplay}"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tabpanel-2" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Workplace')}</span>
+					<button class="proceed" data-bind="click: function(){submitCalendar(1)}">#{i18n.getText('KSM004_1')}</button>
+					<button data-bind="click: function(){openDialogD(1)}">#{i18n.getText('KSM004_2')}</button>
+					<button class="danger" data-bind="click: function(){removeCalendar(1)}, enable: isUpdate">#{i18n.getText('KSM004_4')}</button>
+				</div>
+				<div class="contents-area">
+					<div class="leftExtend">
+						<div id="tree-grid"></div>	
+					</div>
+					<div class="rightExtend">
+						<div class="noteTable">
+							<div class="titleTable">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_12')}</div>
+								<label data-bind="text: currentCalendarWorkPlace().name"></label>
+							</div>
+							<hr/>
+							<div class="infoTable panel panel-frame">
+								<div><span>#{i18n.getText('KSM004_9')}</span></div>
+								<div>
+									<div class="labelSqr labelSqr1 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>稼働日</span></div>
+									<div class="labelSqr labelSqr2 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法内）</span></div>
+									<div class="labelSqr labelSqr3 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(3)}"><span>非稼働日（法外）</span></div>
+								</div>
+							</div>
+						</div>
+						<div class="nts-calendar-container">
+							<div class="nts-calendar-header">
+								<div class="yearMonthPicker" id="yearMonthPicker2" data-bind="ntsDatePicker: {
+								name: '#[KCP006_1]',
+								value: yearMonthPicked1, 
+								dateFormat: 'yearmonth', 
+								cssRanger: cssRangerYM1,
+								valueFormat: 'YYYY/MM', 
+								defaultClass: 'round-green',
+								showJumpButtons: true,
+								required: true }"></div>
+							</div>
+							<div data-bind="with: calendarPanel1">
+								<div id="calendar1" data-bind="ntsCalendar: {
+								optionDates: optionDates, 
+								yearMonth: yearMonth, 
+								firstDay: firstDay, 
+								startDate: startDate, 
+								endDate: endDate,
+								workplaceId: workplaceId,
+								workplaceName: workplaceName,
+								eventDisplay: eventDisplay,
+								eventUpdatable: eventUpdatable,
+								holidayDisplay: holidayDisplay,
+								cellButtonDisplay: cellButtonDisplay}"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tabpanel-3" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Class')}</span>
+					<button class="proceed" data-bind="click: function(){submitCalendar(2)}">#{i18n.getText('KSM004_1')}</button>
+					<button data-bind="click: function(){openDialogD(2)}">#{i18n.getText('KSM004_2')}</button>
+					<button class="danger" data-bind="click: function(){removeCalendar(2)}, enable: isUpdate">#{i18n.getText('KSM004_4')}</button>
+				</div>
+				<div class="contents-area">
+					<div class="leftExtend">
+						<div id="classification-list-setting"></div>
+					</div>
+					<div class="rightExtend">
+						<div class="noteTable">
+							<div class="titleTable">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSM004_10')}</div>
+								<label data-bind="text: currentCalendarClass().name"></label>
+							</div>
+							<hr/>
+							<div class="infoTable panel panel-frame">
+								<div><span>#{i18n.getText('KSM004_9')}</span></div>
+								<div>
+									<div class="labelSqr labelSqr1 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(1)}"><span>稼働日</span></div>
+									<div class="labelSqr labelSqr2 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(2)}"><span>非稼働日（法内）</span></div>
+									<div class="labelSqr labelSqr3 panel panel-frame" data-bind="click: function(){changeWorkingDayAtr(3)}"><span>非稼働日（法外）</span></div>
+								</div>
+							</div>
+						</div>
+						<div class="nts-calendar-container">
+							<div class="nts-calendar-header">
+								<div class="yearMonthPicker" id="yearMonthPicker3" data-bind="ntsDatePicker: {
+								name: '#[KCP006_1]',
+								value: yearMonthPicked2, 
+								dateFormat: 'yearmonth',
+								cssRanger: cssRangerYM2, 
+								valueFormat: 'YYYY/MM', 
+								defaultClass: 'round-green',
+								showJumpButtons: true,
+								required: true }"></div>
+							</div>
+							<div data-bind="with: calendarPanel2">
+								<div id="calendar2" data-bind="ntsCalendar: {
+								optionDates: optionDates, 
+								yearMonth: yearMonth, 
+								firstDay: firstDay, 
+								startDate: startDate, 
+								endDate: endDate,
+								workplaceId: workplaceId,
+								workplaceName: workplaceName,
+								eventDisplay: eventDisplay,
+								eventUpdatable: eventUpdatable,
+								holidayDisplay: holidayDisplay,
+								cellButtonDisplay: cellButtonDisplay}"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdw002.b.main.css" />
+			<com:scriptfile path="kdw002.b.start.js" />
+			<com:scriptfile path="kdw002.b.vm.js" />
+			<com:scriptfile path="kdw002.b.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				 <a id="myLinkButton" class="goback" data-bind="ntsLinkButton: {}, click: navigateView">
+				#{i18n.getText('KDW002_8')}</a>
+				 
+				 
+				<button tabindex="2" class="proceed" data-bind="click: submitData">#{i18n.getText('KDW002_2')}</button>
+				<button tabindex="3" class="copy"  data-bind="click: copy">#{i18n.getText('KDW002_14')}</button>
+				<!--  <label class="mylabel">#{i18n.getText('KDW002_1')}</label> -->
+			</div>
+			<div id="contents-area">
+				<!-- <div class="container">  -->
+					<div class="leftpanel"
+						data-bind="ntsPanel:{ direction: 'right', visible: true}">
+						<label class="leftLabel">#{i18n.getText('KDW002_9')}</label>
+						<table id="leftGrid"
+							data-bind="ntsGridList: {								
+								height: 200,
+								dataSource: bussinessCodeItems,
+								primaryKey: 'businessTypeCode',
+								columns: bussinessColumn,
+								multiple: false,
+								enable: true,
+								showCheckBox: false,	
+								value: bussinessCurrentCode
+							}"></table>
+					</div>
+					<input type="text" class="searchText" placeholder="コード／名称で検索"
+						data-bind="value: txtSearch" />
+					<button class="searchButton" data-bind="click: searchData">検索</button>
+					<table id="grid"></table>
+				<!-- </div> -->
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/sample/catalog/catalog.css" />
+			<com:scriptfile path="/view/sample/catalog/catalog.js" />
+			<com:scriptfile path="ccg025.a.start.js" />
+			
+			<com:stylefile path="component/component.css" />
+			<com:scriptfile path="component/component.service.js" />
+			<com:scriptfile path="component/component.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="side-menu" class="cf"></div>
+				<div id="content" class="cf">
+					<h2>CCG025 Testing page</h2>
+					<h3>roleType: 1, multiple: false</h3><br/>
+					<div data-bind="with: componentViewmodel">
+						<div id="pannel-top" data-bind="ntsPanel:{width: '350px', height: '320px', direction: '', showIcon: true, visible: true}">
+							<ui:include src="component/index.xhtml" />
+						</div>
+						<div><b>CurrentCode:</b> <span data-bind="text: ko.toJSON(currentCode)"></span></div>
+					</div>
+					<article class="cf">
+						<div class="tabs">
+							<ol>
+								<li><a href="#tabs-html">Usage</a></li>
+								<li><a href="#tabs-api">API</a></li>
+							</ol>
+							<div id="tabs-html" class="cf">
+								<h2>HTML</h2>
+<pre><![CDATA[// Add Javascript file
+<com:stylefile path="view/ccg/025/component/component.css" />
+<com:scriptfile path="view/ccg/025/component/component.service.js" />
+<com:scriptfile path="view/ccg/025/component/component.vm.js" />
+
+// Use in HTML
+<div id="pannel-top" data-bind="ntsPanel:{width: '350px', height: '370px', direction: '', showIcon: true, visible: true}">
+	<ui:include src="/view/ccg/025/component/index.xhtml" />
+</div>]]></pre>
+								<h2>TypeScript</h2>
+<pre><![CDATA[module nts.uk.com.view.cdl025.a {
+    import getText = nts.uk.resource.getText;
+    import ccg = nts.uk.com.view.ccg025.a;
+    import model = nts.uk.com.view.ccg025.a.component.model;
+    
+    export module viewmodel {
+        export class ScreenModel {
+            component: ccg.component.viewmodel.ComponentModel;
+            listRole : KnockoutObservableArray<model.Role>;
+            constructor() {
+                let self = this;
+                self.component = new ccg.component.viewmodel.ComponentModel({ 
+                    roleType: 1,
+                    multiple: true
+                });
+                self.listRole = ko.observableArray([]);
+            }
+
+            /** Start page */
+            startPage(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                self.component.startPage().done(() => {
+                    self.listRole(self.component.listRole());
+                    dfd.resolve();    
+                });
+                return dfd.promise();
+            }
+            
+        }
+    }
+}]]></pre>
+							</div>
+							<div id="tabs-api" class="cf">
+								<h2>ComponentModel Constructor</h2>
+								<table class="table">
+									<colgroup>
+										<col width="200px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th><h4>Name</h4></th>
+											<th><h4>Description</h4></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>roleType<br /></td>
+											<td><b>Type:</b> number<br /> role type (1 -> 9)</td>
+										</tr>
+										<tr>
+											<td>multiple<br/><i>(optional)</i></td>
+											<td><b>Type:</b> boolean<br/>
+											<b>Default:</b> false<br/>
+											Multiple or Single mode</td>
+										</tr>
+										<tr>
+											<td>currentCode<br/><i>(optional)</i></td>
+											<td><b>Type:</b> KnockoutObservable&lt;string&gt; | KnockoutObservableArray&lt;string&gt;<br/>
+											<b>Default:</b> Null<br/>
+											Set selected item when init. If <i>Null</i> select first item</td>
+										</tr>
+										<tr>
+											<td>tabindex<br/><i>(optional)</i></td>
+											<td><b>Type:</b> number<br/>
+											<b>Default:</b> 0<br/>
+											Set tabindex for component</td>
+										</tr>
+									</tbody>
+								</table>
+<pre><![CDATA[// Demo
+self.component = new ccg.component.viewmodel.ComponentModel({ 
+    roleType: 1,
+    multiple: true
+});]]></pre>
+								<h2>ComponentModel Properties</h2>
+								<table class="table">
+									<colgroup>
+										<col width="200px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th><h4>Name</h4></th>
+											<th><h4>Description</h4></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>listRole</td>
+											<td><b>Type:</b> KnockoutObservableArray&lt;model.Role&gt;<br/>
+												List Role find by roleType
+											</td>
+										</tr>
+										<tr>
+											<td>currentCode</td>
+											<td><b>Type:</b> KnockoutObservable&lt;string&gt; | KnockoutObservableArray&lt;string&gt;<br/>
+											Current selected code or list current selected code</td>
+										</tr>
+									</tbody>
+								</table>
+<pre><![CDATA[// Demo
+self.component.listRole(); // Get list Role
+self.component.currentCode(); // Get single/list selected Role]]></pre>
+							</div>
+						</div>
+					</article>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

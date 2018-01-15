@@ -41,6 +41,25 @@ public interface LoginUserContextManager {
 			String employeeCode);
 	
 	/**
+	 * Change company.
+	 * @param userId
+	 * @param personId
+	 * @param contractCode
+	 * @param companyId
+	 * @param companyCode
+	 * @param employeeId
+	 * @param employeeCode
+	 */
+	void changeCompany(
+			String userId,
+			String personId,
+			String contractCode,
+			String companyId,
+			String companyCode,
+			String employeeId,
+			String employeeCode);
+	
+	/**
 	 * Returns RoleIdSetter to set role IDs of the user.
 	 * @return RoleIdSetter
 	 */

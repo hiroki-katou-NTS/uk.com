@@ -8,7 +8,7 @@ import nts.arc.layer.infra.file.constraint.FileStereo;
 
 @Getter
 public class ExampleStereoType implements FileStereo {
-	private long limitedSize = 500000;
+	private long limitedSize = 6164480;
 	private List<String> supportedExtension = new ArrayList<>();
 	private List<String> downloadRights = new ArrayList<>();
 	private List<String> uploadRights = new ArrayList<>();

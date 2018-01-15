@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.at.request.dom.application.AppReason
+					nts.uk.shr.com.time.TimeWithDayAttr
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+<!-- 			<com:stylefile path="kaf009.a.style.css" /> -->
+			<com:stylefile path="../../009/share/kaf009.share.style.css" />
+			<com:stylefile path="../../000/a/kaf000.a.main.css" />
+			<com:scriptfile path="../../000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="../../009/share/kaf009.share.vm.js" />
+			<com:scriptfile path="kaf009.a.start.js" />
+			<com:scriptfile path="kaf009.a.service.js" />
+			<com:scriptfile path="../../000/a/kaf000.a.service.js" />
+			<com:scriptfile path="../../000/a/kaf000.a.vm.js" />
+			<com:scriptfile path="kaf009.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area" data-bind="">
+				<div style ="display: flex;">
+					<button class="proceed" data-bind="click: insert,enable: $root.errors.isEmpty">#{i18n.getText('KAF009_3')}</button>
+					<button id="btnSpecSetting" data-bind="">#{i18n.getText('KAF009_4')}</button>
+					<button id="btnOpenCmm018" data-bind="click: openCMM018">#{i18n.getText('KAF009_5')}</button>
+					<div class="btnSendMail"
+						data-bind="visible: enableSendMail, ntsCheckBox: { checked: true, enable: true, text: '#{i18n.getText('KAF009_6')}' }">
+					</div>
+				</div>
+			</div>
+			<div id="contents-area" class=""> 
+					<!-- Message area -->
+					<div data-bind="with: kaf000_a" class="">
+						<ui:include src="../../000/a/index1.xhtml" />
+					</div>
+					<!-- Main -->
+					<div class="mainScreen cf" data-bind="">
+						<ui:include src="../share/index.xhtml"></ui:include>
+					</div><br/>
+					<!-- Footer -->
+					<div class="lstApprover" data-bind="with: kaf000_a">
+						<ui:include src="../../000/a/index2_new.xhtml" />
+					</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,23 @@
+.navigation-label {
+	margin-left: 20px;
+	vertical-align: 12px;
+}
+
+.create-creation {
+	background-image: url(../image/IMG_KSC001_1.png);
+	background-size: 100%;
+	height: 109px;
+	width: 327px;
+	background-repeat: no-repeat;
+	margin-left: 20px;
+}
+
+.history-reference {
+	background-image: url(../image/IMG_KSC001_2.png);
+	background-size: 100%;
+	height: 109px;
+	width: 327px;
+	background-repeat: no-repeat;
+	margin-left: 60px;
+}
+

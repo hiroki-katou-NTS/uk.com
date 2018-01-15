@@ -1,0 +1,218 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition
+		template="../../../../master/sidebar.xhtml">
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
+			<!-- <com:scriptfile path="../../../../../nts.uk.com.web/view/kcp/share/list.js" /> -->
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="kmf001.d.service.js" />
+			<com:scriptfile path="kmf001.d.vm.js" />
+			<com:scriptfile path="kmf001.d.start.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention
+				nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearsAmount
+			</com:ValidatorScript>
+		</ui:define>
+		<ui:define name="sidebar" id="left-sidebar">
+			<ul class="navigator" tabindex="1">
+				<li><a href="#whole-company-tab" role="tab-navigator" tabindex="-1" class="active" data-bind="click: switchToCompanyTab">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#by-employment-tab" role="tab-navigator" tabindex="-1" data-bind="click: switchToEmploymentTab">#{i18n.getText('Com_Employment')}</a></li>
+			</ul>
+		</ui:define>
+
+		<ui:define name="sidebar-content">
+			<div id="whole-company-tab" role="tabpanel" data-bind="if: !isShowEmployment()">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Company')}</span>
+					<button  data-bind="click: backToHistorySelection" tabindex="2">#{i18n.getText('KMF001_27')}</button>
+					<button class="proceed" data-bind="click: registerWholeCompany, enable: isManaged" tabindex="3">#{i18n.getText('KMF001_28')}</button>
+					<!-- <div class="register-annual-holiday-table"><a href="#register-annual-holiday-table" tabindex="4">#{i18n.getText('KMF001_29')}</a></div> -->
+				</div>
+				<div class="ruledLine"></div>
+				
+				<div id="whole-company-content">
+					<div id="whole-company-content-detail">
+						<div class="label warning" id="label-warning"
+							data-bind="style: {display: !isManaged()? 'inlineBlock': 'none'}">#{i18n.getText('KMF001_136')}</div>
+						<div id="form-lbl" data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_58')}</div>
+						<div id="ruledLine1"></div>
+						<table id="whole-company-tbl">
+							<TBODY>
+								<tr>
+									<td class="td-style">
+										<div class="margin-bottom">
+											<span>#{i18n.getText('KMF001_60')}</span>
+										</div>
+									</td>
+									<td>
+										<div class="margin-bottom">
+											<input id="year-amount-company"
+												data-bind="ntsNumberEditor: {
+												value: retentionYearsAmount,
+												name: '#[KMF001_60]',
+												constraint: 'RetentionYearsAmount',
+												option: {
+										width: '50px',
+										unitID: 'YEARS',
+										textalign: 'center'
+									},
+												required: true,
+												enable: isManaged,
+												readonly: false}"
+												tabindex="5" />
+										</div>
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="td-style">
+										<div class="margin-bottom">
+											<span>#{i18n.getText('KMF001_61')}</span>
+										</div>
+									</td>
+									<td>
+										<div class="margin-bottom">
+											<input id="max-days-company"
+												data-bind="ntsNumberEditor: {
+												value: maxDaysCumulation,
+												name: '#[KMF001_61]',
+												constraint: 'MaxDaysRetention',
+												option: {
+										width: '50px',
+										unitID: 'DAYS',
+										textalign: 'center'
+									},
+												required: true,
+												enable: isManaged,
+												readonly: false}"
+												tabindex="6" />
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td class="td-style">
+										<div>
+											<span>#{i18n.getText('KMF001_33')}</span>
+										</div>
+									</td>
+									<td>
+										<div id="company-switch-btn" class="cf" tabindex="7"
+											data-bind="ntsSwitchButton: {
+												options: leaveAsWorkDaysOpt,
+												optionsValue: 'value',
+												optionsText: 'name',
+												value: leaveAsWorkDays,
+												enable: isManaged}"
+											></div>
+									</td>
+								</tr>
+							</TBODY>
+						</table>
+					</div>
+				</div>
+			</div>
+			
+			<div id="by-employment-tab" role="tabpanel" data-bind="if: isShowEmployment()">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Employment')}</span>
+					<button data-bind="click: backToHistorySelection">#{i18n.getText('KMF001_27')}</button>
+					<button class="proceed" data-bind="click: registerByEmployment, enable: enableRegister">#{i18n.getText('KMF001_28')}</button>
+					<!-- <div class="register-annual-holiday-table"><a href="#register-annual-holiday-table">#{i18n.getText('KMF001_29')}</a></div> -->
+					
+				</div>
+				<div class="ruledLine"></div>
+				<div id="by-employment-content">
+					<table style="margin: 50px">
+						<tr>
+							<td>
+								<div id="left-content" tabindex="1"></div>
+							</td>
+
+							<td id="right-content">
+								<div id="form-lbl" data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_71')}</div>
+								<div id="ruledLine2"></div>
+								<table id="right-table">
+									<tr>
+										<td class="td-style">
+											<div>
+												<span>#{i18n.getText('KMF001_72')}</span>
+											</div>
+										</td>
+										<td>
+											<div id="switch-btn" class="cf" data-bind="ntsSwitchButton: {
+												options: managementOption,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedManagement,
+												enable: hasSelectedEmp}" tabindex="2"></div>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="td-style">
+											<div>
+												<span>#{i18n.getText('KMF001_73')}</span>
+											</div>
+											
+										</td>
+										<td class="padding-left-5px">
+											<div>
+												<input id='year-amount-emp' data-bind="ntsNumberEditor: {
+													value: yearsAmountByEmp,
+													name: '#[KMF001_73]',
+													constraint: 'RetentionYearsAmount',
+													constraint: 'RetentionYearsAmount',
+												option: {
+										width: '50px',
+										unitID: 'YEARS',
+										textalign: 'center'
+									},
+													required: true,
+													enable: hasSelectedEmp,
+													readonly: false}" tabindex="3"/>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="td-style">
+											<div>
+												<span>#{i18n.getText('KMF001_74')}</span>
+											</div>
+										</td>
+										<td class="padding-left-5px">
+											<div>
+												<input id='max-days-emp' data-bind="ntsNumberEditor: {
+													value: maxDaysCumulationByEmp,
+													name: '#[KMF001_74]',
+													constraint: 'MaxDaysRetention',
+													option: {
+										width: '50px',
+										unitID: 'DAYS',
+										textalign: 'center'
+									},
+													required: true,
+													enable: hasSelectedEmp,
+													readonly: false}" tabindex="4"/>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

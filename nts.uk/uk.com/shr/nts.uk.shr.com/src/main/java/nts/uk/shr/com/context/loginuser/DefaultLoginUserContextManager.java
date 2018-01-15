@@ -40,6 +40,26 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 		
 		this.sessionLowLayer.loggedIn();
 	}
+	
+	@Override
+	public void changeCompany(
+			String userId,
+			String personId,
+			String contractCode,
+			String companyId,
+			String companyCode,
+			String employeeId,
+			String employeeCode) {
+		
+		val context = new DefaultLoginUserContext(userId, true);
+		context.setPersonId(personId);
+		context.setContractCode(contractCode);
+		context.setCompanyId(companyId);
+		context.setCompanyCode(companyCode);
+		context.setEmployeeId(employeeId);
+		context.setEmployeeCode(employeeCode);
+		SessionContextProvider.get().put(LoginUserContext.KEY_SESSION_SCOPED, context);
+	}
 
 	@Override
 	public RoleIdSetter roleIdSetter() {

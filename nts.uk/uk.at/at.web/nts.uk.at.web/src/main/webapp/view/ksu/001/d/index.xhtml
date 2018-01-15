@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 900, height: 700 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksu001.d.main.css" />
+			<com:scriptfile path="ksu001.d.vm.js" />
+			<com:scriptfile path="ksu001.d.start.js" />
+			<com:scriptfile path="ksu001.d.service.js" />
+
+			<com:scriptfile path="../common/ksu001.js" />
+			<!-- KCP005 -->
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<!-- ExCalendar -->
+			<com:stylefile path="/view/ksu/001/ntsExCalendar/nts-exCalendar.css"
+				of="/nts.uk.at.web" />
+			<com:stylefile
+				path="/view/ksu/001/ntsExCalendar/fullcalendar.min.css"
+				of="/nts.uk.at.web" />
+			<com:scriptfile
+				path="/view/ksu/001/ntsExCalendar/fullcalendar.min.js"
+				of="/nts.uk.at.web" />
+			<com:scriptfile path="/view/ksu/001/ntsExCalendar/locale-all.js"
+				of="/nts.uk.at.web" />
+			<com:scriptfile
+				path="/view/ksu/001/ntsExCalendar/exCalendar-ko-ext.js"
+				of="/nts.uk.at.web" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="component-items-list"></div>
+				<div id="content-right">
+					<div id="content-right-top">
+						<div id="calendar"
+							data-bind="ntsExCalendar:{startDate: startDate, endDate: endDate, value: selectedIds, colors: listColorOfHeader}"></div>
+					</div>
+					<div>
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_78')}</div>
+						<br />
+						<div id="group-radio"
+							data-bind="ntsRadioBoxGroup: {
+								options: itemList,
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: selectedId,
+								enable: true}"></div>
+						<br />
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_81')}</div>
+						<br />
+						<div id="check-box"
+							data-bind="ntsCheckBox: { checked: permissionHandCorrection, enable: true, text: text}"></div>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed x-large" data-bind="click: decision">#{i18n.getText('KSU001_83')}</button>
+				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_84')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

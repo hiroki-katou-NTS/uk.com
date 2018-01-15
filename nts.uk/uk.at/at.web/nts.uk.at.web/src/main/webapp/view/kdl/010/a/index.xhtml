@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 440, height: 600 };</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.at.record.dom.worklocation.Latitude
+					nts.uk.ctx.at.record.dom.worklocation.Longitude
+					nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD
+					nts.uk.ctx.at.record.dom.worklocation.WorkLocationName
+				</com:ValidatorScript>
+			<com:stylefile path="kdl010.a.style.css" />
+			<com:scriptfile path="kdl010.a.service.js" />
+			<com:scriptfile path="kdl010.a.start.js" />
+			<com:scriptfile path="kdl010.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<label>#{i18n.getText('KDL010_1')}</label>
+				<div style="width: 370px" tabindex="2"
+							data-bind="ntsSearchBox: {
+						searchMode: 'filter',
+						targetKey: 'workLocationCD',
+			   		    comId: 'multi-list', 
+						items: workLocationList,
+			    	    selected: selectCode, 
+			    	    selectedKey: 'workLocationCD',
+			    	    fields: ['workLocationCD', 'workLocationName'], 
+			    	    mode: 'igGrid'}" />
+				<table id="multi-list" tabindex="3"
+					data-bind="ntsGridList: {
+						height: 340,
+						options: workLocationList,
+						optionsValue: 'workLocationCD',
+						value: selectCode,
+						columns: columns,
+					}"></table>
+				
+
+			</div>
+			<div id= "functions-area-bottom">
+					<button class="proceed x-large" id="save" data-bind = "click : submit" tabindex="4">#{i18n.getText('KDL010_3')}</button>
+					<button id="cancel" data-bind = "click: cancel_Dialog" tabindex="5">#{i18n.getText('KDL010_4')}</button>
+				</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

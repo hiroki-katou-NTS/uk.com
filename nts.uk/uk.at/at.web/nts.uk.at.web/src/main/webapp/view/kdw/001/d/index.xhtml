@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition>
+	
+		<div id="label11" class="label">#{i18n.getText('KDW001_17')}</div>
+		
+		<div id="label12" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_18')}</div>
+		
+		<div id="panel13" class="panel panel-gray-bg">
+		<!-- B3_2 -->
+			<div class="label" data-bind= "html: dailyCreated, visible: dailyCreatedVisible " ></div>
+			
+<!-- 			<div class="label" data-bind= "text: calDivision" ></div> -->
+<!-- 			<div class="label" data-bind= "text: dateDivision" ></div> -->
+<!-- 			<div class="label" data-bind= "text: reflectEmbossing" ></div> -->
+<!-- 			<div class="label" data-bind= "text: masterInfor" ></div> -->
+<!-- 			<div class="label" data-bind= "text: childCare" ></div> -->
+<!-- 			<div class="label" data-bind= "text: closedReset" ></div> -->
+<!-- 			<div class="label" data-bind= "text: workingTime" ></div> -->
+<!-- 			<div class="label" data-bind= "text: transferTime" ></div> -->
+			
+		<!-- B3_3 -->	
+			<div class="label" data-bind= "text: dailyCal, visible: dailyCalVisible">#{i18n.getText('KDW001_17')}</div>
+			
+		<!-- B3_4 -->		
+			<div class="label" data-bind= "text: approvalResult , visible: approvalVisible">#{i18n.getText('KDW001_17')}</div>
+			
+		<!-- B3_5 -->		
+			<div class="label" data-bind= "text: monthCount, enable: monthCountVisible"></div>
+			
+		</div>
+		
+		<div id="label15" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_15')}</div>
+		
+		<div id="label16">
+			<div class="label" data-bind= "text: periodDate" ></div>
+		</div><br></br>
+		<div id="label19" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_20')}</div>
+		
+		<div id="label110">
+			<div class="label" data-bind= "text: numberEmployee"></div>
+		</div><br></br>
+		
+		<div id="button112Area">
+			<button id="button112" data-bind="click: opendScreenBorJ">#{i18n.getText('KDW001_93')}</button>
+		</div>
+		
+		<div id="button113Area">
+			<button id="button113" class="proceed" data-bind="click: opendScreenE">#{i18n.getText('KDW001_23')}</button>
+		</div>
+
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:stylefile path="kmw005.a.main.css" />
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="kmw005.a.start.js" />
+				<com:scriptfile path="kmw005.a.service.js" />
+				<com:scriptfile path="kmw005.a.vm.js" />
+			</ui:define>
+	
+			<ui:define name="content">
+				<div id="functions-area">
+					<button tabindex="1" class="proceed large btnSave" id="btn_save" 
+						data-bind="click: saveActualLock, enable: $root.errors.isEmpty">#{i18n.getText('KMW005_1')}</button>
+						
+					<button class="large" data-bind="click: openDialog, enable: true" tabindex="2">#{i18n.getText('KMW005_8')}</button>
+				</div>
+				
+				<div id="contents-area">
+					<table>
+						<tr>
+							<td id="contents-left"
+								class="bg-green caret-right caret-background">
+								
+								<table id="actualLock-list" tabindex="3" style="border: 1px"
+										data-bind="ntsGridList: {
+													name: '#[KMW005_2]',
+													height: 150,
+													options: actualLockList,
+													optionsValue: 'closureId',
+													columns: actualLockColumn,
+													multiple: false,
+													value: actualLock.closureId,
+													rows: 5
+												}"></table>
+							</td>
+							<td id="contents-right">
+	
+								<div class="contents" >
+									<table>
+										<tr class="height-50">
+											<td colspan="3"><div data-bind="ntsFormLabel: {}"><label data-bind="text: selectedClosureText()"></label></div></td>
+										</tr>
+										<tr class="height-50">
+											<td class="padding-right height-50">
+												<div data-bind="ntsFormLabel: {}">
+													<label>#{i18n.getText('KMW005_9')}</label>
+												</div>
+											</td>
+											
+											<td class="padding-right">
+												<div class="valueData">
+													<div class="cf" tabindex="4" id="dailyActualLock"
+														data-bind="ntsSwitchButton: {
+														name: '#[KMW005_10]',
+														options: dailyActualLockOpt,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: actualLock.dailyLockState,
+														enable: true }">
+													</div>
+												</div>
+											</td>
+											
+											<td>
+												<button class="help-btn" tabindex="-1" data-bind="ntsHelpButton: {image: 'images/IMG_KWM005_1.png', position: 'right top', enable: true }">?</button>
+											</td>
+										</tr>
+										<tr class="height-50">
+											<td class="padding-right">
+												<div data-bind="ntsFormLabel: {}">
+													<label>#{i18n.getText('KMW005_13')}</label>
+												</div>
+											</td>
+											
+											<td class="padding-right">
+												<div>
+													<div class="cf" tabindex="5" id="monthlyActualLock"
+														data-bind="ntsSwitchButton: {
+														name: '#[KMW005_14]',
+														options: monthlyActualLockOpt,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: actualLock.monthlyLockState,
+														enable: true }">
+													</div>
+												</div>
+											</td>
+											
+											<td>
+												<button class="help-btn" tabindex="-1" data-bind="ntsHelpButton: {image: 'images/IMG_KWM005_2.png', position: 'right top', enable: true }">?</button>
+											</td>
+										</tr>
+										
+									</table>
+									
+								</div>
+								
+								
+							</td>
+						</tr>
+					</table>
+				</div>
+				
+			</ui:define>
+		</ui:composition>
+	</body>
+</html>

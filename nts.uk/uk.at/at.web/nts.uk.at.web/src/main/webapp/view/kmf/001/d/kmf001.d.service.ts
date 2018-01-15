@@ -1,0 +1,81 @@
+module nts.uk.pr.view.kmf001.d {
+    export module service {
+        /**
+         *  Service paths
+         */
+        var paths: any = {
+            findRetentionYearlyByCompany: 'ctx/at/shared/vacation/setting/retentionyearly/find',
+            saveRetentionYearly: 'ctx/at/shared/vacation/setting/retentionyearly/save',
+            findByEmployment: 'ctx/at/shared/vacation/setting/employmentsetting/find',
+            saveByEmployment: 'ctx/at/shared/vacation/setting/employmentsetting/save',
+            findIsManaged: 'ctx/at/share/vacation/setting/annualpaidleave/find/setting',
+            findAllByEmployment: 'ctx/at/shared/vacation/setting/employmentsetting/findAll'
+        };
+
+        
+        export function findRetentionYearly(): JQueryPromise<model.RetentionYearlyFindDto> {
+            return nts.uk.request.ajax(paths.findRetentionYearlyByCompany);
+        }
+        
+        export function saveRetentionYearly(retentionYearly: model.RetentionYearlyDto):  JQueryPromise<void> {
+            var data = {retentionYearly: retentionYearly};
+            return nts.uk.request.ajax(paths.saveRetentionYearly, data);
+        }
+        
+        export function findByEmployment(empCode: string): JQueryPromise<model.EmploymentSettingFindDto> {
+            return nts.uk.request.ajax(paths.findByEmployment + "/" + empCode);
+        }
+        
+        export function saveByEmployment(employmentSetting: model.EmploymentSettingDto):  JQueryPromise<void> {
+            var data = {employmentSetting: employmentSetting};
+            return nts.uk.request.ajax(paths.saveByEmployment, data);
+        }
+        
+        export function findIsManaged(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findIsManaged);
+        }
+        
+        export function findAllByEmployment(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findAllByEmployment);
+        }
+        
+
+        /**
+        * Model namespace.
+        */
+        export module model {
+            
+            export class UpperLimitSettingFindDto{
+                retentionYearsAmount: number;
+                maxDaysCumulation: number; 
+            }
+            
+            export class RetentionYearlyFindDto {
+                upperLimitSetting: UpperLimitSettingFindDto;
+                leaveAsWorkDays: boolean;
+            }
+            
+            export class UpperLimitSettingDto {
+                retentionYearsAmount: number;
+                maxDaysCumulation: number;
+            }
+            
+            export class RetentionYearlyDto {
+                upperLimitSettingDto: UpperLimitSettingDto;
+                leaveAsWorkDays: boolean;
+            }
+            
+            export class EmploymentSettingDto {
+                upperLimitSetting: UpperLimitSettingDto;
+                employmentCode: string;
+                managementCategory: number;
+            }
+            
+            export class EmploymentSettingFindDto {
+                upperLimitSetting: UpperLimitSettingDto;
+                employmentCode: string;
+                managementCategory: number;
+            }
+        }
+    }
+}

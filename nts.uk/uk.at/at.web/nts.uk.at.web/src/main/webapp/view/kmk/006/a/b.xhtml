@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="base.xhtml">
+		<ui:define name="title">
+			<span class="title">#{i18n.getText('Com_Company')}</span>
+		</ui:define>
+		<ui:define name="extended-action-bar">
+			<button tabindex="1" class="proceed"
+				data-bind="click: saveCompanyAutoCal">#{i18n.getText('KMK006_9')}</button>
+			<button tabindex="4" data-bind="click: openDialogUsageSettingModel">#{i18n.getText('KMK006_11')}</button>
+		</ui:define>
+	
+		<ui:define name="extended-222">
+			<div class="personalEstablishment">
+				<table class="table-label">
+					<tr>
+						<td class="pull-left">
+							<div style="margin-left: 20px;">
+								<label>#{i18n.getText('KMK006_13')}</label>
+							</div>
+						</td>
+						<td class="pull-right" style="margin-bottom: 5px;">
+							<div class="pull-left label-middle">
+								<label>#{i18n.getText('KMK006_7')}</label>
+							</div>
+							<div tabindex="-1" class="pull-left helpButton">
+								<button tabindex="-1"
+									data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_2.png', position: 'left top', enable: true }">?</button>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="pull-left"></td>
+						<td class="pull-right">
+							<div class="pull-left label-middle">
+								<label>#{i18n.getText('KMK006_8')}</label>
+							</div>
+							<div tabindex="-1" class="pull-left helpButton">
+								<button tabindex="-1"
+									data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_3.png', position: 'left top', enable: true }">?</button>
+							</div>
+						</td>
+					</tr>
+				</table>
+
+				<div data-bind="ifnot: $parent.isLoading">
+					<ui:include src="data-table.xhtml" />
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

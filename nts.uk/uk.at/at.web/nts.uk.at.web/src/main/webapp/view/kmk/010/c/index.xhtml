@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 550, height: 600 };</script>
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="kmk010.c.main.css" />
+				<com:scriptfile path="kmk010.c.start.js" />
+				<com:scriptfile path="../a/kmk010.a.service.js" />
+				<com:scriptfile path="../a/kmk010.a.vm.js" />
+				<com:scriptfile path="kmk010.c.service.js" />
+				<com:scriptfile path="kmk010.c.vm.js" />
+				<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName
+				</com:ValidatorScript>
+			</ui:define>
+			<ui:define name="content">
+				<div id="functions-area">
+					<button tabindex="4" class="proceed" data-bind="click: saveOutsideOTBRDItem" >#{i18n.getText('KMK010_47')}</button>
+					<button tabindex="5" class="buttonOther" data-bind="click: closeSaveOutsideOTBRDItem" >#{i18n.getText('KMK010_48')}</button>
+				</div>
+				
+				<div class="contentDialog">
+					<label>#{i18n.getText('KMK010_42')}</label>
+					<div tabindex="-1" class="tbOvertime">
+						<table tabindex="-1" class="overtime-border" >
+							<tr tabindex="-1" class="bg-dark-green">
+								<td class="tdcenter" tabindex="-1">#{i18n.getText('KMK010_43')}</td>
+								<td class="tdcenter" tabindex="-1">#{i18n.getText('KMK010_44')}</td>
+								<td class="tdcenter" tabindex="-1" data-bind="text: textOvertimeName"></td>
+								<td class="tdcenter" tabindex="-1">#{i18n.getText('KMK010_65')}</td>
+							</tr>
+							<com:ko tag="foreach" bind="lstOutsideOTBRDItemModel">
+								<tr tabindex="-1">
+									<td class="tdcenter">
+										<div tabindex="1" data-bind="ntsCheckBox: { checked: useClassification , enable: $parent.enableCheckbox }"></div>
+									</td>
+									<td>
+										<div class="tdcenter" tabindex="-1" data-bind="text: breakdownItemNo"></div>
+									</td>
+									<td>
+										<input tabindex="2"  data-bind="attr: {'id': 'breakdownItemNo_'+breakdownItemNo()}, ntsTextEditor: {value: name, constraint: 'BreakdownItemName', required: requiredText, name: $parent.switchNameResource()}"/>
+									</td>
+									<td>
+										<div tabindex="3" class="selectProductNumber" data-bind="ntsComboBox: {
+											options: $parent.lstProductNumber,
+											optionsValue: 'value',
+											visibleItemsCount: 10,
+											value: productNumber,
+											optionsText: 'localizedName',
+											editable: false,
+											enable: $parent.enableCheckbox ,
+											columns: [
+												{ prop: 'value', length: 2 },
+											]}"></div>
+									</td>
+								</tr>
+							</com:ko>
+						</table>
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+	</body>
+</html>
