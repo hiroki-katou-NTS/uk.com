@@ -58,6 +58,8 @@ public class I18NResourcesForUK implements I18NResources {
 			languageId = AppContexts.user().language().basicLanguageId();
 			String companyId = AppContexts.user().companyId();
 			
+			this.refreshIfRequired(languageId, companyId);
+			
 			val customizedOptional = this.customizedResources.getContent(companyId, languageId, resourceId);
 			if (customizedOptional.isPresent()) {
 				return customizedOptional;
@@ -89,6 +91,9 @@ public class I18NResourcesForUK implements I18NResources {
 	public Map<String, String> loadForUserByClassId(String languageId, String classId, String companyId) {
 		
 		val toMerge = this.defaultResources.createContentsMapByClassId(languageId, classId);
+		
+		this.refreshIfRequired(languageId, companyId);
+		
 		val customizedMap = this.customizedResources.createContentsMapByClassId(languageId, classId, companyId);
 		
 		customizedMap.forEach((resourceId, contents) -> {
@@ -114,6 +119,9 @@ public class I18NResourcesForUK implements I18NResources {
 	public Map<String, String> loadForUserByResourceType(String languageId, String companyId, I18NResourceType resourceType) {
 		
 		val toMerge = this.defaultResources.createContentsMapByResourceType(languageId, resourceType);
+
+		this.refreshIfRequired(languageId, companyId);
+		
 		val customizedMap = this.customizedResources.createContentsMapByResourceType(languageId, companyId, resourceType);
 		
 		customizedMap.forEach((resourceId, contents) -> {
@@ -123,4 +131,23 @@ public class I18NResourcesForUK implements I18NResources {
 		return toMerge;
 	}
 	
+	public void refreshDefaultResource() {
+
+		this.languageRepository.getSystemLanguages().stream()
+				.map(l -> l.getLanguageId())
+				.forEach(languageId -> {
+					this.defaultResources.put(
+							languageId, this.resourcesRepository.loadResourcesDefault(languageId));
+				});
+	}
+
+	private void refreshIfRequired(String languageId, String companyId) {
+		
+		this.resourcesRepository.getLastUpdatedDateTime(companyId, languageId).ifPresent(datetimeOfDataSource -> {
+			if (this.customizedResources.requiresToUpdate(companyId, languageId, datetimeOfDataSource)) {
+				val newContainer = this.resourcesRepository.loadResourcesOfCompany(companyId, languageId);
+				this.customizedResources.update(languageId, companyId, newContainer);
+			}
+		});
+	}
 }
