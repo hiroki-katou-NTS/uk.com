@@ -4618,6 +4618,13 @@ var nts;
             (function (ig) {
                 var grid;
                 (function (grid) {
+                    function getScrollContainer($grid) {
+                        var $scroll = $grid.igGrid("scrollContainer");
+                        if ($scroll.length === 1)
+                            return $scroll;
+                        return $("#" + $grid.attr("id") + "_scrollContainer");
+                    }
+                    grid.getScrollContainer = getScrollContainer;
                     function getRowIdFrom($anyElementInRow) {
                         return $anyElementInRow.closest('tr').attr('data-id');
                     }
@@ -4626,6 +4633,11 @@ var nts;
                         return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
                     }
                     grid.getRowIndexFrom = getRowIndexFrom;
+                    function expose(targetRow, $grid) {
+                        var $scroll = getScrollContainer($grid);
+                        $scroll.exposeVertically(targetRow.element);
+                    }
+                    grid.expose = expose;
                     var virtual;
                     (function (virtual) {
                         function getDisplayContainer(gridId) {
@@ -4655,7 +4667,33 @@ var nts;
                             }).last();
                         }
                         virtual.getLastVisibleRow = getLastVisibleRow;
+                        function expose(targetRow, $grid) {
+                            if (targetRow.index === undefined) {
+                                $grid.igGrid("virtualScrollTo", dataSource.getIndexOfKey(targetRow.id, $grid) + 1);
+                                return;
+                            }
+                            var rowHeight = targetRow.element.outerHeight();
+                            var targetTop = targetRow.index * rowHeight;
+                            var targetBottom = targetTop + rowHeight;
+                            var $scroll = getScrollContainer($grid);
+                            var viewHeight = $scroll.height();
+                            var viewTop = $scroll.scrollTop();
+                            var viewBottom = viewTop + viewHeight;
+                            if (viewTop <= targetTop && targetBottom <= viewBottom) {
+                                return;
+                            }
+                            $grid.igGrid("virtualScrollTo", targetRow.index + 1);
+                        }
+                        virtual.expose = expose;
                     })(virtual = grid.virtual || (grid.virtual = {}));
+                    var dataSource;
+                    (function (dataSource) {
+                        function getIndexOfKey(targetKey, $grid) {
+                            var option = $grid.igGrid("option");
+                            return _.findIndex(option.dataSource, function (s) { return s[option.primaryKey].toString() === targetKey.toString(); });
+                        }
+                        dataSource.getIndexOfKey = getIndexOfKey;
+                    })(dataSource = grid.dataSource || (grid.dataSource = {}));
                     var header;
                     (function (header) {
                         function getCell(gridId, columnKey) {
@@ -6878,6 +6916,7 @@ var nts;
                         var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
                         var enable = ko.unwrap(data.enable);
                         var value = ko.unwrap(data.value);
+                        var virtualization = true;
                         var rows = ko.unwrap(data.rows);
                         $grid.data("init", true);
                         if (data.multiple) {
@@ -6973,7 +7012,7 @@ var nts;
                             height: height,
                             primaryKey: optionsValue,
                             columns: iggridColumns,
-                            virtualization: true,
+                            virtualization: virtualization,
                             virtualizationMode: 'continuous',
                             features: features,
                             tabIndex: -1
@@ -7018,7 +7057,7 @@ var nts;
                                 }
                             }
                         });
-                        $grid.setupSearchScroll("igGrid", true);
+                        $grid.setupSearchScroll("igGrid", virtualization);
                         $grid.ntsGridList("setupScrollWhenBinding");
                         $grid.bind("switchvaluechanged", function (evt, dataX) {
                             setTimeout(function () {
@@ -11867,13 +11906,7 @@ var nts;
                                     row = $grid.igGrid("selectedRow");
                                 }
                                 if (row) {
-                                    var rowScrollTop = row.index * row.element.height();
-                                    var scrollContainer = $($grid.igGrid("container")).find("#" + $grid.igGrid("id") + "_scrollContainer");
-                                    if (isNaN(rowScrollTop)
-                                        || rowScrollTop < scrollContainer.scrollTop()
-                                        || rowScrollTop > scrollContainer.scrollTop() + scrollContainer.height() - row.element.height()) {
-                                        $grid.igGrid("virtualScrollTo", row.index === undefined ? getSelectRowIndex($grid, row.id) : row.index);
-                                    }
+                                    ui.ig.grid.virtual.expose(row, $grid);
                                 }
                             });
                         }
@@ -11888,10 +11921,7 @@ var nts;
                                     row = $grid.igGrid("selectedRow");
                                 }
                                 if (row) {
-                                    var index = row.index;
-                                    var height = row.element[0].scrollHeight;
-                                    var gridId = $grid.attr('id');
-                                    $("#" + gridId + "_scrollContainer").scrollTop(index * height);
+                                    ui.ig.grid.expose(row, $grid);
                                 }
                             });
                         }
