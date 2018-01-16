@@ -29,6 +29,7 @@ import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrant
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleTypeDto;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRoleFinder;
 import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
+import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 
 @Path("ctx/sys/auth/grant/roleindividual")
 @Produces("application/json")
@@ -98,6 +99,12 @@ public class RoleIndividualWebService extends WebService {
 	@Path("getRoles/{roleType}")
 	public List<RoleDto> GetRoleByRoleType(@PathParam("roleType") int roleType){
 		return this.personInforRoleFinder.getListRoleByRoleType(roleType);
+	}
+	
+	@POST
+	@Path("getRoles/incharge/{roleType}")
+	public List<RoleDto> GetRoleByRoleTypeIncharge(@PathParam("roleType") int roleType){
+		return this.personInforRoleFinder.getListRoleByRoleTypeAtr(roleType,RoleAtr.INCHARGE.value);
 	}
 	
 	@POST

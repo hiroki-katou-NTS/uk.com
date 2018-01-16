@@ -49,6 +49,7 @@ module nts.uk.at.view.kal003.share.model {
         displayAvailableRoles: KnockoutObservable<string>;
         dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, []));
         schedule4WeekAlarmCheckCondition: KnockoutObservable<Schedule4WeekAlarmCheckCondition> = ko.observable(new Schedule4WeekAlarmCheckCondition(SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY));
+        action: KnockoutObservable<number> = ko.observable(0);
 
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
@@ -265,71 +266,288 @@ module nts.uk.at.view.kal003.share.model {
     }
     
     //---------------- KAL003 - B begin----------------//
-    //Condition of group (C screen)
-    export interface ICondition {
-        itemCheck: number;
-        target: number;
-        operatorCd: string;
-        comparisonOperatorId: number;
-        itemConditionId: string;
-
+    //Condition of group (C screen) ErAlAtdItemCondition
+    export interface IErAlAtdItemCondition {
+        targetNO: number;
+        conditionAtr: number;
+        useAtr: boolean;
+        uncountableAtdItem: number;
+        countableAddAtdItems: number;
+        countableSubAtdItems: number;
+        conditionType: number;
+        compareOperator: number;
+        singleAtdItem: number;
+        compareStartValue: number;
+        compareEndValue: number;
+        
+        displayLeftCompare: string;
+        displayLeftOperator: string;
+        displayTarget: string;
+        displayRightCompare: string;
+        displayRightOperator: string;
     }
-    export class Condition {
-        itemCheck: number;
-        target: number;
-        operatorCd: string;
-        comparisonOperatorId: number;
-        itemConditionId: string;
-        constructor(param: ICondition) {
+
+    export class ErAlAtdItemCondition {
+
+        targetNO: KnockoutObservable<number>;
+        conditionAtr: KnockoutObservable<number>;
+        useAtr: KnockoutObservable<boolean>;
+        uncountableAtdItem: KnockoutObservable<number>;
+        countableAddAtdItems: KnockoutObservableArray<number>;
+        countableSubAtdItems: KnockoutObservableArray<number>;
+        conditionType: KnockoutObservable<number>;
+        compareOperator: KnockoutObservable<number>;
+        singleAtdItem: KnockoutObservable<number>;
+        compareStartValue: KnockoutObservable<number>;
+        compareEndValue: KnockoutObservable<number>;
+
+        displayLeftCompare: KnockoutObservable<string>;
+        displayLeftOperator: KnockoutObservable<string>;
+        displayTarget: KnockoutObservable<string>;
+        displayRightCompare: KnockoutObservable<string>;
+        displayRightOperator: KnockoutObservable<string>;
+
+        constructor(NO, param) {
             let self = this;
-            self.itemCheck = param.itemCheck || 0;
-            self.target = param.target || 0;
-            self.operatorCd = param.operatorCd || '';
-            self.comparisonOperatorId = param.comparisonOperatorId || 0;
-            self.itemConditionId = param.itemConditionId || '';
+            self.targetNO = ko.observable(NO);
+            self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(0);
+            self.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
+            self.uncountableAtdItem = param ? ko.observable(param.uncountableAtdItem) : ko.observable(null);
+            self.countableAddAtdItems = param && param.countableAddAtdItems ? ko.observableArray(param.countableAddAtdItems) : ko.observableArray([]);
+            self.countableSubAtdItems = param && param.countableSubAtdItems ? ko.observableArray(param.countableSubAtdItems) : ko.observableArray([]);
+            self.conditionType = param ? ko.observable(param.conditionType) : ko.observable(0);
+            self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
+            self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(0);
+            self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(0);
+            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
+            self.displayLeftCompare = ko.observable("");
+            self.displayLeftOperator = ko.observable("");
+            self.displayTarget = ko.observable("");
+            self.displayRightCompare = ko.observable("");
+            self.displayRightOperator = ko.observable("");
+            self.setTextDisplay();
+        }
+
+        setTextDisplay() {
+            let self = this;
+            if (self.useAtr()) {
+                self.setDisplayTarget();
+                self.setDisplayOperator();
+                self.setDisplayCompare();
+            } else {
+                self.displayLeftCompare("");
+                self.displayLeftOperator("");
+                self.displayTarget("");
+                self.displayRightCompare("");
+                self.displayRightOperator("");
+            }
+        }
+
+        setDisplayOperator() {
+            let self = this;
+            self.displayLeftOperator("");
+            self.displayRightOperator("");
+            switch (self.compareOperator()) {
+                case 0:
+                    self.displayLeftOperator("＝");
+                    break;
+                case 1:
+                    self.displayLeftOperator("≠");
+                    break;
+                case 2:
+                    self.displayLeftOperator("＞");
+                    break;
+                case 3:
+                    self.displayLeftOperator("≧");
+                    break;
+                case 4:
+                    self.displayLeftOperator("＜");
+                    break;
+                case 5:
+                    self.displayLeftOperator("≦");
+                    break;
+                case 6:
+                    self.displayLeftOperator("＜");
+                    self.displayRightOperator("＜");
+                    break;
+                case 7:
+                    self.displayLeftOperator("≦");
+                    self.displayRightOperator("≦");
+                    break;
+                case 8:
+                    self.displayLeftOperator("＜");
+                    self.displayRightOperator("＜");
+                    break;
+                case 9:
+                    self.displayLeftOperator("≦");
+                    self.displayRightOperator("≦");
+                    break;
+            }
+        }
+
+        setDisplayCompare() {
+            let self = this;
+            let conditionAtr = self.conditionAtr();
+            if (self.compareOperator() > 5) {
+                // Compare with a range
+                let rawStartValue = self.compareStartValue();
+                let rawEndValue = self.compareEndValue();
+                let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawStartValue : nts.uk.time.parseTime(parseInt(rawStartValue), true).format();
+                let textDisplayRightCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawEndValue : nts.uk.time.parseTime(parseInt(rawEndValue), true).format();
+                self.displayLeftCompare(textDisplayLeftCompare);
+                self.displayRightCompare(textDisplayRightCompare);
+            } else {
+                // Compare with single value
+                if (self.conditionType() === 0) {
+                    // If is compare with a fixed value
+                    let rawValue = self.compareStartValue();
+                    let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawValue : nts.uk.time.parseTime(parseInt(rawValue), true).format();
+                    self.displayLeftCompare(textDisplayLeftCompare);
+                    self.displayRightCompare("");
+                } else {
+                    // If is compare with a attendance item
+                    if (self.singleAtdItem()) {
+                        nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes([self.singleAtdItem()]).done((lstItems) => {
+                            if (lstItems && lstItems.length > 0) {
+                                self.displayLeftCompare(lstItems[0].attendanceItemName);
+                                self.displayRightCompare("");
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+        setDisplayTarget() {
+            let self = this;
+            self.displayTarget("");
+            if (self.conditionAtr() === 2) {
+                if (self.uncountableAtdItem()) {
+                    nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
+                        if (lstItems && lstItems.length > 0) {
+                            self.displayTarget(lstItems[0].attendanceItemName);
+                        }
+                    });
+                }
+            } else {
+                if (self.countableAddAtdItems().length > 0) {
+                    nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableAddAtdItems()).done((lstItems) => {
+                        if (lstItems && lstItems.length > 0) {
+                            for (let i = 0; i < lstItems.length; i++) {
+                                let operator = (i === (lstItems.length - 1)) ? "" : " + ";
+                                self.displayTarget(self.displayTarget() + lstItems[i].attendanceItemName + operator);
+                            }
+                        }
+                    }).then(() => {
+                        if (self.countableSubAtdItems().length > 0) {
+                            nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                                if (lstItems && lstItems.length > 0) {
+                                    for (let i = 0; i < lstItems.length; i++) {
+                                        let operator = (i === (lstItems.length - 1)) ? "" : " - ";
+                                        let beforeOperator = (i === 0) ? " - " : "";
+                                        self.displayTarget(self.displayTarget() + beforeOperator + lstItems[i].attendanceItemName + operator);
+                                    }
+                                }
+                            })
+                        }
+                    });
+                } else if (self.countableSubAtdItems().length > 0) {
+                    nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                        if (lstItems && lstItems.length > 0) {
+                            for (let i = 0; i < lstItems.length; i++) {
+                                let operator = (i === (lstItems.length - 1)) ? "" : " - ";
+                                let beforeOperator = (i === 0) ? " - " : "";
+                                self.displayTarget(self.displayTarget() + beforeOperator + lstItems[i].attendanceItemName + operator);
+                            }
+                        }
+                    })
+                }
+
+            }
+        }
+
+        openAtdItemConditionDialog() {
+            let self = this;
+            let param = ko.mapping.toJS(self);
+            nts.uk.ui.windows.setShared("KAL003CParams", param, true);
+            nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c/index.xhtml", {}).onClosed(() => {
+                let output = getShared("KAL003CResult");
+                if (output) {
+                    self.targetNO(output.targetNO);
+                    self.conditionAtr(output.conditionAtr);
+                    self.useAtr(true);
+                    self.uncountableAtdItem(output.uncountableAtdItem);
+                    self.countableAddAtdItems(output.countableAddAtdItems);
+                    self.countableSubAtdItems(output.countableSubAtdItems);
+                    self.conditionType(output.conditionType);
+                    self.singleAtdItem(output.singleAtdItem);
+                    self.compareStartValue(output.compareStartValue);
+                    self.compareEndValue(output.compareEndValue);
+                    self.compareOperator(output.compareOperator);
+                }
+                self.setTextDisplay();
+            });
+        }
+
+        setData(NO, param) {
+            let self = this;
+            self.targetNO(NO);
+            self.conditionAtr(param ? param.conditionAtr : 0);
+            self.useAtr(param ? param.useAtr : false);
+            self.uncountableAtdItem(param ? param.uncountableAtdItem : null);
+            self.countableAddAtdItems(param && param.countableAddAtdItems ? param.countableAddAtdItems : []);
+            self.countableSubAtdItems(param && param.countableSubAtdItems ? param.countableSubAtdItems : []);
+            self.conditionType(param ? param.conditionType : 0);
+            self.singleAtdItem(param ? param.singleAtdItem : null);
+            self.compareStartValue(param && param.compareStartValue ? param.compareStartValue : 0);
+            self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : 0);
+            self.compareOperator(param ? param.compareOperator : 0);
+            self.setTextDisplay();
         }
     }
     // group condition
-    export interface IGroupCondition {
-        groupOperator: number; //0: OR|1: AND
-        groupListCondition: Array<Condition>;// max 3
+    export interface IErAlConditionsAttendanceItem {
+        atdItemConGroupId: string;
+        conditionOperator: number; //0: OR|1: AND
+        lstErAlAtdItemCon: Array<ErAlAtdItemCondition>;// max 3
     }
 
-    export class GroupCondition {
-        groupOperator: KnockoutObservable<number>; //OR|AND B15-3, B17-3
-        groupListCondition: KnockoutObservableArray<Condition>;// max 3 item, B16-1 -> B16-4
-        constructor(param: IGroupCondition) {
+    export class ErAlConditionsAttendanceItem {
+        atdItemConGroupId: KnockoutObservable<string>;
+        conditionOperator: KnockoutObservable<number>; //OR|AND B15-3, B17-3
+        lstErAlAtdItemCon: KnockoutObservableArray<ErAlAtdItemCondition>;// max 3 item, B16-1 -> B16-4
+        constructor(param: IErAlConditionsAttendanceItem) {
             let self = this;
-            self.groupOperator = ko.observable(param.groupOperator || 0);
-            self.groupListCondition = ko.observableArray(param.groupListCondition || []);
+            self.atdItemConGroupId = ko.observable(param.atdItemConGroupId || '');
+            self.conditionOperator = ko.observable(param.conditionOperator || 0);
+            self.lstErAlAtdItemCon = ko.observableArray(param.lstErAlAtdItemCon || []);
         }
     }
 
-    export interface ICompoundCondition {
-        group1Condition: GroupCondition;
-        hasGroup2: boolean; // B17-1
-        group2Condition: GroupCondition;
-        operatorBetweenG1AndG2: number; // B18-2: 0: OR, 1: AND
+    export interface IAttendanceItemCondition {
+        group1:         ErAlConditionsAttendanceItem;
+        group2UseAtr:   boolean; // B17-1
+        group2:         ErAlConditionsAttendanceItem;
+        operatorBetweenGroups: number; // B18-2: 0: OR, 1: AND
     }
-    export class CompoundCondition {
-        group1Condition:    KnockoutObservable<GroupCondition> = ko.observable(null);
-        hasGroup2:          KnockoutObservable<boolean> = ko.observable(false);
-        group2Condition:    KnockoutObservable<GroupCondition> = ko.observable(null);
-        operatorBetweenG1AndG2: KnockoutObservable<number> = ko.observable(0);
-        constructor(param: ICompoundCondition) {
+    export class AttendanceItemCondition {
+        group1:         KnockoutObservable<ErAlConditionsAttendanceItem>    = ko.observable(null);
+        group2UseAtr:   KnockoutObservable<boolean>                         = ko.observable(false);
+        group2:         KnockoutObservable<ErAlConditionsAttendanceItem>    = ko.observable(null);
+        operatorBetweenGroups: KnockoutObservable<number>                   = ko.observable(0);
+        constructor(param: IAttendanceItemCondition) {
             let self = this;
-            self.group1Condition(param.group1Condition);
-            self.hasGroup2 (param.hasGroup2 || false);
-            self.group2Condition(param.group2Condition);
-            self.operatorBetweenG1AndG2(param.operatorBetweenG1AndG2);
+            self.group1(param.group1);
+            self.group2UseAtr(param.group2UseAtr || false);
+            self.group2(param.group2);
+            self.operatorBetweenGroups(param.operatorBetweenGroups);
         }
     }
 
-    export interface IErrorAlarmCondition {
+    export interface IErrorAlarmCondition { 
         category: number;
         erAlCheckId: string;
         checkItem: number;
-        workTypeRange: string;
         workTypeSelections: Array<string>;
         workTimeItemSelections: Array<string>;
         comparisonOperator: number;
@@ -340,14 +558,15 @@ module nts.uk.at.view.kal003.share.model {
         color: string;
         message: string;
         isBold: boolean;
-        compoundCondition: CompoundCondition;
+        workTypeCondition: number;
+        workTimeCondition: number;
+        atdItemCondition: AttendanceItemCondition;
     }
 
     export class ErrorAlarmCondition {
         category:               number;
         erAlCheckId:            string;
         checkItem:              KnockoutObservable<number> = ko.observable(0);
-        workTypeRange:          KnockoutObservable<string> = ko.observable('');
         workTypeSelections:     KnockoutObservableArray<string> = ko.observableArray([]);
         workTimeItemSelections: KnockoutObservableArray<string> = ko.observableArray([]);
         comparisonOperator:     KnockoutObservable<number> = ko.observable(0);
@@ -358,13 +577,17 @@ module nts.uk.at.view.kal003.share.model {
         color:                  KnockoutObservable<string> = ko.observable('');
         message:                KnockoutObservable<string> = ko.observable('');
         isBold:                 KnockoutObservable<boolean> = ko.observable(false);
-        compoundCondition :     KnockoutObservable<CompoundCondition> = ko.observable(null);
+        
+        workTypeCondition :     KnockoutObservable<number> = ko.observable(1);
+        workTimeCondition:      KnockoutObservable<number> = ko.observable(0);
+        
+        atdItemCondition :     KnockoutObservable<AttendanceItemCondition> = ko.observable(null);
         constructor(param : IErrorAlarmCondition) {
             let self = this;
             self.category               = param.category || 0;
             self.erAlCheckId            = param.erAlCheckId || '';
             self.checkItem(param.checkItem || 0);
-            self.workTypeRange(param.workTypeRange || '');
+
             self.workTypeSelections(param.workTypeSelections || []);
             self.workTimeItemSelections(param.workTimeItemSelections || []);
             self.comparisonOperator( param.comparisonOperator || 0);
@@ -375,9 +598,62 @@ module nts.uk.at.view.kal003.share.model {
             self.color(param.color || '');
             self.message(param.message || '');
             self.isBold(param.isBold || false);
-            self.compoundCondition(param.compoundCondition);
+            self.workTypeCondition(param.workTypeCondition || 1);
+            self.workTimeCondition(param.workTimeCondition || 0);
+            self.atdItemCondition(param.atdItemCondition);
         }
     }
     
     //---------------- KAL003 - B end------------------//
+    //interface WorkRecordExtraCon
+        export interface IWorkRecordExtraCon {
+            errorAlarmCheckID: string;
+            checkItem: number;
+            messageBold: boolean;
+            messageColor: string;
+            sortOrderBy: number;
+            useAtr?: boolean;
+            nameWKRecord: string;
+        }
+    
+    //class WorkRecordExtraCon
+    export class WorkRecordExtraCon {
+        errorAlarmCheckID: string;
+        checkItem: number;
+        messageBold: boolean;
+        messageColor: string;
+        sortOrderBy: number;
+        useAtr: KnockoutObservable<boolean>;
+        nameWKRecord: string;
+        constructor(data: IWorkRecordExtraCon) {
+            this.errorAlarmCheckID = data.errorAlarmCheckID;
+            this.checkItem = data.checkItem;
+            this.messageBold = data.messageBold;
+            this.messageColor = data.messageColor;
+            this.sortOrderBy = data.sortOrderBy;
+            this.useAtr = ko.observable(data.useAtr);
+            this.nameWKRecord = data.nameWKRecord;
+        }
+    }//end class WorkRecordExtraCon
+    
+    //interface FixedConditionWorkRecord
+    export interface IFixedConditionWorkRecord {
+        errorAlarmCode: string;
+        fixConWorkRecordNo: number;
+        message: string;
+        useAtr?: boolean;
+    }
+    //class FixedConditionWorkRecord
+    export class FixedConditionWorkRecord {
+        errorAlarmCode: string;
+        fixConWorkRecordNo: number;
+        message: string;
+        useAtr: KnockoutObservable<boolean>;
+        constructor(data: IFixedConditionWorkRecord) {
+            this.errorAlarmCode = data.errorAlarmCode;
+            this.fixConWorkRecordNo = data.fixConWorkRecordNo;
+            this.message = data.message;
+            this.useAtr = ko.observable(data.useAtr);
+        }
+    }
 }

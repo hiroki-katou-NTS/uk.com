@@ -31,7 +31,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
 		AlarmCheckConditionByCategoryCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		if (conditionRepo.isCodeExist(companyId, command.getCategory(), command.getCode())) {
+		if (command.getAction() == 0 && conditionRepo.isCodeExist(companyId, command.getCategory(), command.getCode())) {
 			throw new BusinessException("Msg_3");
 		}
 
