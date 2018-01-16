@@ -24,15 +24,14 @@ module nts.uk.at.view.kal003.b.viewmodel{
         displayWorkTimeItemSelections_BA2_3     : KnockoutObservable<string> = ko.observable('');
         displayWorkingTimeZoneSelections_BA5_3  : KnockoutObservable<string> = ko.observable('');
         
-        targetServiceTypeSelected_BA1_2         : KnockoutObservable<number> = ko.observable(1);
-        targetSelectionRangeSelected_BA1_5      : KnockoutObservable<number> = ko.observable(0);
+        //targetServiceTypeSelected_BA1_2         : KnockoutObservable<number> = ko.observable(1);
+        //targetSelectionRangeSelected_BA1_5      : KnockoutObservable<number> = ko.observable(0);
         
         private setting : sharemodel.ErrorAlarmCondition;
         swANDOR_B5_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         swANDOR_B6_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         swANDOR_B7_2 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         enableComparisonMaxValue : KnockoutObservable<boolean> = ko.observable(false);
-        option: nts.uk.ui.option.NumberEditorOption;
         constructor() {
             let self = this;
             let option = windows.getShared('inputKal003b');
@@ -175,11 +174,14 @@ module nts.uk.at.view.kal003.b.viewmodel{
          */
         private initGroupCondition(listGroupCondition : Array<sharemodel.ErAlAtdItemCondition>) : Array<sharemodel.ErAlAtdItemCondition> {
             let listCondition : Array<sharemodel.ErAlAtdItemCondition> = [];
-            for(var i = 0; i < listGroupCondition.length && i < 3; i++) {
-                listCondition.push(listGroupCondition[i]);
+            let maxRow = 3;
+            if (listGroupCondition && listGroupCondition != undefined) {
+                for(var i = 0; i < listGroupCondition.length && i < maxRow; i++) {
+                    listCondition.push(listGroupCondition[i]);
+                }
             }
-            if (listCondition.length < 3) {
-                for(var i = listCondition.length; i < 3; i++) {
+            if (listCondition.length < maxRow) {
+                for(var i = listCondition.length; i < maxRow; i++) {
                     listCondition.push(shareutils.getDefaultCondition(i-1));
                 }
             }
@@ -191,11 +193,15 @@ module nts.uk.at.view.kal003.b.viewmodel{
          */
         private initCompoundGroupCondition() {
             let self = this, currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
-            let compoundCondition = currentErrAlaCheckCondition.compoundCondition();
-            let listGr1 = self.initGroupCondition(compoundCondition.group1Condition().groupListCondition());
-            compoundCondition.group1Condition().groupListCondition(listGr1);
-            let listGr2 = self.initGroupCondition(compoundCondition.group2Condition().groupListCondition());
-            compoundCondition.group2Condition().groupListCondition(listGr2);
+            let compoundCondition = currentErrAlaCheckCondition.atdItemCondition();
+            if (!compoundCondition || compoundCondition == undefined) {
+                compoundCondition = shareutils.getDefaultAtdItemCondition();
+                currentErrAlaCheckCondition.atdItemCondition(compoundCondition);
+            }
+            let listGr1 = self.initGroupCondition(compoundCondition.group1().lstErAlAtdItemCon());
+            compoundCondition.group1().lstErAlAtdItemCon(listGr1);
+            let listGr2 = self.initGroupCondition(compoundCondition.group2().lstErAlAtdItemCon());
+            compoundCondition.group2().lstErAlAtdItemCon(listGr2);
         }
      // ============build enum for combobox BA2-5: end ==============
         // ===========common end =====================
