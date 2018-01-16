@@ -446,6 +446,7 @@ module cps001.a.vm {
                     };
 
                 setShared(RELOAD_DT_KEY, saveData);
+                setShared(REPL_KEY, REPL_KEYS.NORMAL);
 
                 info({ messageId: "Msg_15" }).then(function() {
                     unblock();
