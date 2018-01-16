@@ -62,9 +62,9 @@ module nts.uk.at.view.kal004.share.model {
         checkConditionName: string;
         listRoleId: Array<string>;
     }
-    
-    
-    
+
+
+
     export class ModelCheckConditonCode {
         GUID: string;
         category: number;
@@ -139,50 +139,50 @@ module nts.uk.at.view.kal004.share.model {
             self.endMonth = ko.observable(dto.endMonth);
         }
     }
-    
-    
-        
-//Command
-    export class AddAlarmPatternSettingCommand{        
+
+
+
+    //Command
+    export class AddAlarmPatternSettingCommand {
         alarmPatternCD: string;
         alarmPatterName: string;
         alarmPerSet: AlarmPermissionSettingCommand;
         checkConditonList: Array<CheckConditionCommand>;
-        
-        constructor(alarmPatternCD: string, alarmPatterName: string, alarmPerSet: AlarmPermissionSettingCommand, checkConditonList: Array<CheckConditionCommand>){
+
+        constructor(alarmPatternCD: string, alarmPatterName: string, alarmPerSet: AlarmPermissionSettingCommand, checkConditonList: Array<CheckConditionCommand>) {
             this.alarmPatternCD = alarmPatternCD;
             this.alarmPatterName = alarmPatterName;
             this.alarmPerSet = alarmPerSet;
             this.checkConditonList = checkConditonList;
         }
     }
-    
-    export class AlarmPermissionSettingCommand{
+
+    export class AlarmPermissionSettingCommand {
         authSetting: boolean;
         roleIds: Array<string>;
-        constructor(authSetting: boolean, roleIds: Array<string>){
+        constructor(authSetting: boolean, roleIds: Array<string>) {
             this.authSetting = authSetting;
             this.roleIds = roleIds;
         }
-        
+
     }
-    export class CheckConditionCommand{
-         alarmCategory: number;
-         extractPeriod: ExtractionPeriodDailyCommand;
+    export class CheckConditionCommand {
+        alarmCategory: number;
+        extractPeriod: ExtractionPeriodDailyCommand;
         checkConditionCodes: Array<string>;
-        
-        constructor(alarmCategory: number, checkConditionCodes: Array<string>){
+
+        constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractPeriod: ExtractionPeriodDailyCommand) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
-            this.extractPeriod =null;
+            this.extractPeriod = extractPeriod;
         }
-    
+
         setExtractPeriod(extractPeriod: ExtractionPeriodDailyCommand) {
-            this.extractPeriod =  extractPeriod;
+            this.extractPeriod = extractPeriod;
         }
     }
-    
-    export class ExtractionPeriodDailyCommand{
+
+    export class ExtractionPeriodDailyCommand {
         extractionId: string;
         extractionRange: number;
         strSpecify: number;
@@ -199,8 +199,8 @@ module nts.uk.at.view.kal004.share.model {
         endPreviousMonth: number;
         endCurrentMonth: number;
         endMonth: number;
-        
-        constructor(extractionDailyDto: ExtractionDailyDto){
+
+        constructor(extractionDailyDto: ExtractionDailyDto) {
             this.extractionId = extractionDailyDto.extractionId;
             this.extractionRange = extractionDailyDto.extractionRange;
             this.strSpecify = extractionDailyDto.strSpecify;

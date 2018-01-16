@@ -27,7 +27,7 @@ module nts.uk.at.view.kal004.a.model {
         currentCodeListSwap: KnockoutObservableArray<share.ModelCheckConditonCode>;
 
         // Tab 2: Period setting
-        //periodSetting: any = new nts.uk.at.view.kal004.tab2.viewModel.ScreenModel();
+        periodSetting: any = new nts.uk.at.view.kal004.tab2.viewModel.ScreenModel();
           
         // Tab 3: SetPermission
         setPermissionModel: any = new nts.uk.at.view.kal004.tab3.viewmodel.ScreenModel();
@@ -115,10 +115,16 @@ module nts.uk.at.view.kal004.a.model {
                     
                     let checkConditionCodes =[];
                     listCode.forEach((code) =>{ if(code.category==category) {checkConditionCodes.push(code.checkConditonCode);} });
-                    shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes));    
+                    
+                    let categoryInputed = _.find(self.currentAlarm.checkConList, (checkCon) =>{return checkCon.alarmCategory==category } );
+                    if(categoryInputed){
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDailyDto)));
+                    }else{
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null));                             
+                    } 
+                     
                 });
-                console.log(shareTab2);
-                //self.periodSetting.listCheckConditionCode(listCode);
+                self.periodSetting.listCheckConditionCode(listCode);
                
             });
         }
