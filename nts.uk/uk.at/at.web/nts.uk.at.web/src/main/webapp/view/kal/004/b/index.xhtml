@@ -33,7 +33,7 @@
 						<div class="day">
 							<input type="radio" name="strRadio" data-bind="checkedValue: 0, checked: strSelected, enable: enable" />
 							<span class="label" data-bind="text: txtDay "></span> 
-							<input class="input-box input-str" data-bind="ntsTextEditor: {value:strDay, constraint:'Day', required: true, enable: (strSelected() == 0)}" />
+							<input class="input-box input-str" data-bind="ntsNumberEditor: {value:strDay, constraint:'Day', required: true, enable: (strSelected() == 0)}" />
 							<span class="label">#{i18n.getText('KAL004_34')}</span> 
 							<span class="label">#{i18n.getText('KAL004_35')}</span>
 						</div>
@@ -59,7 +59,7 @@
 						<div class="day">
 							<input type="radio" name="endRadio" data-bind="checkedValue: 0, checked: endSelected, enable: enable" />
 							<span class="label" data-bind="text: txtDay"></span> 
-							<input class="input-box input-end" data-bind="ntsTextEditor: {value:endDay, constraint:'Day', required: true, enable: (endSelected() == 0)}" />
+							<input class="input-box input-end" data-bind="ntsNumberEditor: {value:endDay, constraint:'Day', required: true, enable: (endSelected() == 0)}" />
 							<span class="label">#{i18n.getText('KAL004_34')}</span> 
 							<span class="label">#{i18n.getText('KAL004_35')}</span>
 						</div>

@@ -3,8 +3,8 @@ module nts.uk.at.view.kal004.tab2.viewModel {
     import share = nts.uk.at.view.kal004.share.model;
 
     export class ScreenModel {
-        listCheckConditionCode: KnockoutObservableArray<share.ModelCheckConditonCode> = ko.observableArray([]);
-        listCheckCondition: KnockoutObservableArray<share.CheckCondition> = ko.observableArray([]);
+        listCheckConditionCode: KnockoutObservableArray<share.CheckConditionCommand> = ko.observableArray([]);
+        listCheckCondition: KnockoutObservableArray<share.CheckConditionCommand> = ko.observableArray([]);
         ListView: KnockoutObservableArray<ModelCheckConditonCode>;
         
         constructor() {
@@ -17,9 +17,32 @@ module nts.uk.at.view.kal004.tab2.viewModel {
           
         }
 
-        private changeCheckCondition(listCheckCode: Array<share.ModelCheckConditonCode>): void {
+        private changeCheckCondition(listCheckCode: Array<share.CheckConditionCommand>): void {
             var self = this;
-            var uniqueCategory: Array<share.ModelCheckConditonCode> = _.uniqBy(listCheckCode, "category");
+            var listConver = [];
+            var listCheckCondition = [];
+            if(self.listCheckCondition.length == 0){
+                _.forEach(listCheckCode, (category: share.CheckConditionCommand) =>{
+                    listCheckCondition.push(category);
+                    listConver.push(new ModelCheckConditonCode(category));
+                });
+            }else{
+                _.forEach(listCheckCode, (category: share.CheckConditionCommand) =>{
+                    var check = _.find(self.listCheckCondition, ['alarmCategory', category.alarmCategory]);
+                    if(nts.uk.util.isNullOrUndefined(check)){
+                        listCheckCondition.push(category);    
+                        listConver.push(new ModelCheckConditonCode(category));
+                    }else{
+                        listCheckCondition.push(check);    
+                        listConver.push(new ModelCheckConditonCode(check));   
+                    }
+                });        
+            }
+            self.listCheckCondition(listCheckCondition);
+            self.ListView(listConver);
+            
+            
+            var uniqueCategory: Array<share.CheckConditionCommand> = _.uniqBy(listCheckCode, "category");
             var listCurrentCheckCondition: Array<share.CheckConditionDto> = __viewContext["viewmodel"].currentAlarm.checkConList;
             
             var listConver: Array<ModelCheckConditonCode> = [];
@@ -30,17 +53,17 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 });
                 if(nts.uk.util.isNullOrUndefined(matchCheckCondition)){
                     matchCheckCondition = { alarmCategory: 0, checkConditionCodes: '', extractionDailyDto: null};    
-                }
-                let checkCondition = new share.CheckCondition(category.category, category.categoryName, matchCheckCondition.extractionDailyDto);
-                listCheckCondition.push(checkCondition);
-                listConver.push(new ModelCheckConditonCode(checkCondition));
-                
+                }  
+                    let checkCondition = new share.CheckCondition(category.category, category.categoryName, matchCheckCondition.extractionDailyDto);
+                    listCheckCondition.push(checkCondition);
+                    listConver.push(new ModelCheckConditonCode(checkCondition));
             });
             self.listCheckCondition(listCheckCondition);
             self.ListView(listConver);
         }
 
         private openDialog(ModelCheckConditonCode): void {
+            var self = this;
             console.log(ModelCheckConditonCode.extractionDailyDto);
             if(ModelCheckConditonCode.extractionDailyDto.extractionRange() == 0){
                 var param = ModelCheckConditonCode.extractionDailyDto;
@@ -65,7 +88,11 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 
                 nts.uk.ui.windows.setShared("extractionDailyDto", ExtractionDailyDto);
                 nts.uk.ui.windows.sub.modal("../b/index.xhtml").onClosed(() => {
-                    console.log("success!");
+                    let data = nts.uk.ui.windows.getShared("extractionDaily");
+                    
+                    console.log(self.listCheckCondition());
+                    
+                    console.log(data);
                 });
             }
         }
@@ -75,13 +102,14 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         categoryId: number;
         categoryName: string;
         extractionPeriod: string;
-        ListSpecifiedMonth:Array<any>;
+        ListSpecifiedMonth:Array<any> = __viewContext.enums.SpecifiedMonth;
+        ListAlarmCategory:Array<any> = __viewContext.enums.AlarmCategory;
+        
         extractionDailyDto:any;
         constructor(CheckCondition: any) {
             var self =  this;
-            self.ListSpecifiedMonth = __viewContext.enums.SpecifiedMonth;
             this.categoryId = CheckCondition.alarmCategory;
-            this.categoryName = CheckCondition.categoryName;
+            this.categoryName = _.find(self.ListAlarmCategory, ['value', CheckCondition.alarmCategory]);
             var str, end;
             if(CheckCondition.extractionDailyDto.strSpecify() == 0){ 
                 str = CheckCondition.extractionDailyDto.strDay() + getText('KAL004_34') + getText('KAL004_35');
