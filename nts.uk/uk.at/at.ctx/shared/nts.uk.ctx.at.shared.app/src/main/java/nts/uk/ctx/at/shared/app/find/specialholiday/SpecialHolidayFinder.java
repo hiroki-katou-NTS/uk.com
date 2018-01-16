@@ -157,7 +157,7 @@ public class SpecialHolidayFinder {
 			sphdLimitDto.setSpecialVacationYears(sphdLimit.getSpecialVacationYears().v());
 		}
 		sphdLimitDto.setGrantCarryForward(sphdLimit.getGrantCarryForward().value);
-		sphdLimitDto.setLimitCarryoverDays(sphdLimit.getLimitCarryoverDays().v());
+		sphdLimitDto.setLimitCarryoverDays(sphdLimit.getLimitCarryoverDays() != null ? sphdLimit.getLimitCarryoverDays().v() : null);
 		sphdLimitDto.setSpecialVacationMethod(sphdLimit.getSpecialVacationMethod().value);
 		return sphdLimitDto;
 	}
