@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.app.command.workrecord.erroralarm.FixedConditionWork
 import nts.uk.ctx.at.record.app.command.workrecord.erroralarm.UpdateFixedConWorkRecordCmdHandler;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.FixedConditionWorkRecordDto;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.FixedConditionWorkRecordFinder;
-import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.InputParamGetFixedCon;
 
 @Path("at/record/erroralarm")
 @Produces(MediaType.APPLICATION_JSON)
@@ -42,18 +41,12 @@ public class FixedConWorkRecordWS {
 	}
 	
 	@POST
-	@Path("getallfixedconwrbyalarmid/{errorAlarmID}")
-	public List<FixedConditionWorkRecordDto> getAllFixedConWRByAlarmID(@PathParam("errorAlarmID") String errorAlarmID){
-		List<FixedConditionWorkRecordDto> data = finder.getAllFixedConWRByAlarmID(errorAlarmID);
+	@Path("getallfixedconwrbycode/{errorAlarmID}")
+	public FixedConditionWorkRecordDto getFixedConWRByCode(@PathParam("errorAlarmID") String errorAlarmID){
+		FixedConditionWorkRecordDto data = finder.getFixedConWRByCode(errorAlarmID);
 		return data;
 	}
 	
-	@POST
-	@Path("getallfixedconwrbycode")
-	public FixedConditionWorkRecordDto getFixedConWRByCode(InputParamGetFixedCon inputParamGetFixedCon){
-		FixedConditionWorkRecordDto data = finder.getFixedConWRByCode(inputParamGetFixedCon);
-		return data;
-	}
 	//command
 	@POST
 	@Path("addfixedconwr")

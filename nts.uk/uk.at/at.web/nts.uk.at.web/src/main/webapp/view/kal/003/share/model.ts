@@ -265,39 +265,254 @@ module nts.uk.at.view.kal003.share.model {
     }
     
     //---------------- KAL003 - B begin----------------//
-    //Condition of group (C screen)
-    export interface ICondition {
-        itemCheck: number;
-        target: number;
-        operatorCd: string;
-        comparisonOperatorId: number;
-        itemConditionId: string;
-
+    //Condition of group (C screen) ErAlAtdItemCondition
+    export interface IErAlAtdItemCondition {
+        targetNO: number;
+        conditionAtr: number;
+        useAtr: boolean;
+        uncountableAtdItem: number;
+        countableAddAtdItems: number;
+        countableSubAtdItems: number;
+        conditionType: number;
+        compareOperator: number;
+        singleAtdItem: number;
+        compareStartValue: number;
+        compareEndValue: number;
+        
+        displayLeftCompare: string;
+        displayLeftOperator: string;
+        displayTarget: string;
+        displayRightCompare: string;
+        displayRightOperator: string;
     }
-    export class Condition {
-        itemCheck: number;
-        target: number;
-        operatorCd: string;
-        comparisonOperatorId: number;
-        itemConditionId: string;
-        constructor(param: ICondition) {
+
+    export class ErAlAtdItemCondition {
+
+        targetNO: KnockoutObservable<number>;
+        conditionAtr: KnockoutObservable<number>;
+        useAtr: KnockoutObservable<boolean>;
+        uncountableAtdItem: KnockoutObservable<number>;
+        countableAddAtdItems: KnockoutObservableArray<number>;
+        countableSubAtdItems: KnockoutObservableArray<number>;
+        conditionType: KnockoutObservable<number>;
+        compareOperator: KnockoutObservable<number>;
+        singleAtdItem: KnockoutObservable<number>;
+        compareStartValue: KnockoutObservable<number>;
+        compareEndValue: KnockoutObservable<number>;
+
+        displayLeftCompare: KnockoutObservable<string>;
+        displayLeftOperator: KnockoutObservable<string>;
+        displayTarget: KnockoutObservable<string>;
+        displayRightCompare: KnockoutObservable<string>;
+        displayRightOperator: KnockoutObservable<string>;
+
+        constructor(NO, param) {
             let self = this;
-            self.itemCheck = param.itemCheck || 0;
-            self.target = param.target || 0;
-            self.operatorCd = param.operatorCd || '';
-            self.comparisonOperatorId = param.comparisonOperatorId || 0;
-            self.itemConditionId = param.itemConditionId || '';
+            self.targetNO = ko.observable(NO);
+            self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(0);
+            self.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
+            self.uncountableAtdItem = param ? ko.observable(param.uncountableAtdItem) : ko.observable(null);
+            self.countableAddAtdItems = param && param.countableAddAtdItems ? ko.observableArray(param.countableAddAtdItems) : ko.observableArray([]);
+            self.countableSubAtdItems = param && param.countableSubAtdItems ? ko.observableArray(param.countableSubAtdItems) : ko.observableArray([]);
+            self.conditionType = param ? ko.observable(param.conditionType) : ko.observable(0);
+            self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
+            self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(0);
+            self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(0);
+            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
+            self.displayLeftCompare = ko.observable("");
+            self.displayLeftOperator = ko.observable("");
+            self.displayTarget = ko.observable("");
+            self.displayRightCompare = ko.observable("");
+            self.displayRightOperator = ko.observable("");
+            self.setTextDisplay();
+        }
+
+        setTextDisplay() {
+            let self = this;
+            if (self.useAtr()) {
+                self.setDisplayTarget();
+                self.setDisplayOperator();
+                self.setDisplayCompare();
+            } else {
+                self.displayLeftCompare("");
+                self.displayLeftOperator("");
+                self.displayTarget("");
+                self.displayRightCompare("");
+                self.displayRightOperator("");
+            }
+        }
+
+        setDisplayOperator() {
+            let self = this;
+            self.displayLeftOperator("");
+            self.displayRightOperator("");
+            switch (self.compareOperator()) {
+                case 0:
+                    self.displayLeftOperator("＝");
+                    break;
+                case 1:
+                    self.displayLeftOperator("≠");
+                    break;
+                case 2:
+                    self.displayLeftOperator("＞");
+                    break;
+                case 3:
+                    self.displayLeftOperator("≧");
+                    break;
+                case 4:
+                    self.displayLeftOperator("＜");
+                    break;
+                case 5:
+                    self.displayLeftOperator("≦");
+                    break;
+                case 6:
+                    self.displayLeftOperator("＜");
+                    self.displayRightOperator("＜");
+                    break;
+                case 7:
+                    self.displayLeftOperator("≦");
+                    self.displayRightOperator("≦");
+                    break;
+                case 8:
+                    self.displayLeftOperator("＜");
+                    self.displayRightOperator("＜");
+                    break;
+                case 9:
+                    self.displayLeftOperator("≦");
+                    self.displayRightOperator("≦");
+                    break;
+            }
+        }
+
+        setDisplayCompare() {
+            let self = this;
+            let conditionAtr = self.conditionAtr();
+            if (self.compareOperator() > 5) {
+                // Compare with a range
+                let rawStartValue = self.compareStartValue();
+                let rawEndValue = self.compareEndValue();
+                let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawStartValue : nts.uk.time.parseTime(parseInt(rawStartValue), true).format();
+                let textDisplayRightCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawEndValue : nts.uk.time.parseTime(parseInt(rawEndValue), true).format();
+                self.displayLeftCompare(textDisplayLeftCompare);
+                self.displayRightCompare(textDisplayRightCompare);
+            } else {
+                // Compare with single value
+                if (self.conditionType() === 0) {
+                    // If is compare with a fixed value
+                    let rawValue = self.compareStartValue();
+                    let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3) ? rawValue : nts.uk.time.parseTime(parseInt(rawValue), true).format();
+                    self.displayLeftCompare(textDisplayLeftCompare);
+                    self.displayRightCompare("");
+                } else {
+                    // If is compare with a attendance item
+                    if (self.singleAtdItem()) {
+                        nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes([self.singleAtdItem()]).done((lstItems) => {
+                            if (lstItems && lstItems.length > 0) {
+                                self.displayLeftCompare(lstItems[0].attendanceItemName);
+                                self.displayRightCompare("");
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+        setDisplayTarget() {
+            let self = this;
+            self.displayTarget("");
+            if (self.conditionAtr() === 2) {
+                if (self.uncountableAtdItem()) {
+                    nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
+                        if (lstItems && lstItems.length > 0) {
+                            self.displayTarget(lstItems[0].attendanceItemName);
+                        }
+                    });
+                }
+            } else {
+                if (self.countableAddAtdItems().length > 0) {
+                    nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableAddAtdItems()).done((lstItems) => {
+                        if (lstItems && lstItems.length > 0) {
+                            for (let i = 0; i < lstItems.length; i++) {
+                                let operator = (i === (lstItems.length - 1)) ? "" : " + ";
+                                self.displayTarget(self.displayTarget() + lstItems[i].attendanceItemName + operator);
+                            }
+                        }
+                    }).then(() => {
+                        if (self.countableSubAtdItems().length > 0) {
+                            nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                                if (lstItems && lstItems.length > 0) {
+                                    for (let i = 0; i < lstItems.length; i++) {
+                                        let operator = (i === (lstItems.length - 1)) ? "" : " - ";
+                                        let beforeOperator = (i === 0) ? " - " : "";
+                                        self.displayTarget(self.displayTarget() + beforeOperator + lstItems[i].attendanceItemName + operator);
+                                    }
+                                }
+                            })
+                        }
+                    });
+                } else if (self.countableSubAtdItems().length > 0) {
+                    nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                        if (lstItems && lstItems.length > 0) {
+                            for (let i = 0; i < lstItems.length; i++) {
+                                let operator = (i === (lstItems.length - 1)) ? "" : " - ";
+                                let beforeOperator = (i === 0) ? " - " : "";
+                                self.displayTarget(self.displayTarget() + beforeOperator + lstItems[i].attendanceItemName + operator);
+                            }
+                        }
+                    })
+                }
+
+            }
+        }
+
+        openAtdItemConditionDialog() {
+            let self = this;
+            let param = ko.mapping.toJS(self);
+            nts.uk.ui.windows.setShared("KAL003CParams", param, true);
+            nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c/index.xhtml", {}).onClosed(() => {
+                let output = getShared("KAL003CResult");
+                if (output) {
+                    self.targetNO(output.targetNO);
+                    self.conditionAtr(output.conditionAtr);
+                    self.useAtr(true);
+                    self.uncountableAtdItem(output.uncountableAtdItem);
+                    self.countableAddAtdItems(output.countableAddAtdItems);
+                    self.countableSubAtdItems(output.countableSubAtdItems);
+                    self.conditionType(output.conditionType);
+                    self.singleAtdItem(output.singleAtdItem);
+                    self.compareStartValue(output.compareStartValue);
+                    self.compareEndValue(output.compareEndValue);
+                    self.compareOperator(output.compareOperator);
+                }
+                self.setTextDisplay();
+            });
+        }
+
+        setData(NO, param) {
+            let self = this;
+            self.targetNO(NO);
+            self.conditionAtr(param ? param.conditionAtr : 0);
+            self.useAtr(param ? param.useAtr : false);
+            self.uncountableAtdItem(param ? param.uncountableAtdItem : null);
+            self.countableAddAtdItems(param && param.countableAddAtdItems ? param.countableAddAtdItems : []);
+            self.countableSubAtdItems(param && param.countableSubAtdItems ? param.countableSubAtdItems : []);
+            self.conditionType(param ? param.conditionType : 0);
+            self.singleAtdItem(param ? param.singleAtdItem : null);
+            self.compareStartValue(param && param.compareStartValue ? param.compareStartValue : 0);
+            self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : 0);
+            self.compareOperator(param ? param.compareOperator : 0);
+            self.setTextDisplay();
         }
     }
     // group condition
     export interface IGroupCondition {
         groupOperator: number; //0: OR|1: AND
-        groupListCondition: Array<Condition>;// max 3
+        groupListCondition: Array<ErAlAtdItemCondition>;// max 3
     }
 
     export class GroupCondition {
         groupOperator: KnockoutObservable<number>; //OR|AND B15-3, B17-3
-        groupListCondition: KnockoutObservableArray<Condition>;// max 3 item, B16-1 -> B16-4
+        groupListCondition: KnockoutObservableArray<ErAlAtdItemCondition>;// max 3 item, B16-1 -> B16-4
         constructor(param: IGroupCondition) {
             let self = this;
             self.groupOperator = ko.observable(param.groupOperator || 0);
@@ -325,7 +540,7 @@ module nts.uk.at.view.kal003.share.model {
         }
     }
 
-    export interface IErrorAlarmCondition {
+    export interface IErrorAlarmCondition { 
         category: number;
         erAlCheckId: string;
         checkItem: number;

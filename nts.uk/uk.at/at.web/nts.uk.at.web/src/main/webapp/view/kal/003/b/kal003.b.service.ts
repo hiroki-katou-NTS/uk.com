@@ -10,6 +10,7 @@ module nts.uk.at.view.kal003.b.service {
             getAttendCompound:              "at/record/attendanceitem/daily/getattendcompound/{0}",
             getAttendNameByIds:             "at/record/attendanceitem/daily/getattendnamebyids",
             getErrorAlarmCondition:         "at/record/attendanceitem/daily/geterroralarmcondition/{0}",
+            getAttendanceItemByCodes:       "at/record/divergencetime/AttendanceDivergenceName",
 
             getEnumSingleValueCompareTypse: "/at/function/alarm/checkcondition/kal003b/getEnumSingleValueCompareTypse",
             getEnumRangeCompareType:        "/at/function/alarm/checkcondition/kal003b/getEnumRangeCompareType",
@@ -54,6 +55,10 @@ module nts.uk.at.view.kal003.b.service {
         return ajax(format(paths.getErrorAlarmCondition, erAlCheckId));
     }
 
+    //the same kdw007
+    export function getAttendanceItemByCodes(codes) {
+        return nts.uk.request.ajax("at", paths.getAttendanceItemByCodes, codes);
+    }
     
     // get all Enums:
     export function getEnumSingleValueCompareTypse() : JQueryPromise<any> {
