@@ -112,7 +112,7 @@ public class BasicScheduleScreenProcessor {
 	 */
 	public List<WorkEmpCombineScreenDto> getListWorkEmpCombine(ScheduleScreenSymbolParams params) {
 		String companyId = AppContexts.user().companyId();
-		return this.bScheduleScreenRepo.getListWorkEmpCobine(companyId, params.lstWorkTypeCode, params.lstWorkTypeCode);
+		return this.bScheduleScreenRepo.getListWorkEmpCobine(companyId, params.getLstWorkTypeCode(), params.getLstWorkTimeCode());
 	}
 
 	/**

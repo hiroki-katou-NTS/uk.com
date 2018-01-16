@@ -18,7 +18,10 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         startDateScreenA: any = null;
         endDateScreenA: any = null;
         isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
-
+        checkStateWorkTypeCode: any = null;  
+        checkNeededOfWorkTimeSetting: any = null;
+        workEmpCombines: any = null;
+        
         constructor() {
             let self = this;
             self.listWorkType = ko.observableArray([]);
@@ -162,6 +165,10 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 self.endDateScreenA = data.endDate;
                 //set data for listWorkType
                 self.listWorkType(data.listWorkType);
+                //
+                self.checkStateWorkTypeCode = data.checkStateWorkTypeCode;
+                self.checkNeededOfWorkTimeSetting = data.checkNeededOfWorkTimeSetting;
+                self.workEmpCombines = data.workEmpCombines;
                 //set data for listWorkTime
                 self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                     workTimeCode: '000',
