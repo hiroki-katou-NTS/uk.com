@@ -44,8 +44,8 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfExce
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfStatutoryHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfWeekDay;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworkime.DailyCalculationPersonalInformation;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworkime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.commonsetting.BreakSetOfCommon;
 import nts.uk.ctx.at.shared.dom.worktime.commonsetting.CalcMethodIfLeaveWorkDuringBreakTime;
 import nts.uk.ctx.at.shared.dom.worktime.commonsetting.childfamilycareset.ShortTimeWorkSetOfWorkTime;

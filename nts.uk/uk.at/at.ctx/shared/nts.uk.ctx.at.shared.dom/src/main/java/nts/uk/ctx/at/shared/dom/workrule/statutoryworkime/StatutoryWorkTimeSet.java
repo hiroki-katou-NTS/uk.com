@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workrule.statutoryworktime;
+package nts.uk.ctx.at.shared.dom.workrule.statutoryworkime;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.company.CompanyWtSetting;

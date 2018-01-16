@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workrule.statutoryworktime;
+package nts.uk.ctx.at.shared.dom.workrule.statutoryworkime;
 
 import java.util.Optional;
 
