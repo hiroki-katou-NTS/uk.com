@@ -72,11 +72,7 @@ module cps008.b.vm {
             if (cls && cls.length) {
                 layout.itemsClassification.removeAll();
                 _.each(cls, x => layout.itemsClassification.push(_.omit(x, ["items"])));
-            } else if (dto.isNewLayout) {
-                service.getData().done((x: ILayout) => {
-                    layout.itemsClassification(initData(x.itemsClassification));
-                });
-            }else{
+            } else{
                  layout.itemsClassification([]);
             }
         }
