@@ -368,8 +368,10 @@ public class EmpCtgFinder {
 				return false;*/
 			if (perInfoCtgAuth.getAllowOtherRef() == PersonInfoPermissionType.YES) {
 				List<PersonInfoItemAuth> lstItemAuths = itemAuth.getAllItemAuth(roleId, categoryId);
-				return lstItemAuths.stream().filter(item -> item.getOtherAuth().value == 1).collect(Collectors.toList())
-						.size() != lstItemAuths.size();
+				int hiddenItemsSize =  lstItemAuths.stream().filter(item -> item.getOtherAuth().value == 1).collect(Collectors.toList())
+						.size();
+				int itemSize = lstItemAuths.size();
+				return hiddenItemsSize != itemSize;
 			} else
 				return false;
 		}

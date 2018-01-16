@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.reflection.AnnotationUtil;
+import nts.gul.reflection.FieldsWorkerStream;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
@@ -316,10 +317,16 @@ public class PeregProcessor {
 		if(perInfoCtg.getIsFixed() == IsFixed.FIXED) {
 			String endDateItemCode = perItemRepo.getPerInfoItemDefById(eDateId, AppContexts.user().contractCode()).get().getItemCode().v();
 			Object value = null;
-			Optional<Field> field = AnnotationUtil.getStreamOfFieldsAnnotated(peregDto.getDtoClass(), PeregItem.class)
-			.filter(f -> {
-				return f.getAnnotation(PeregItem.class).value().equals(endDateItemCode);
-			}).findFirst();
+			FieldsWorkerStream fields =  AnnotationUtil.getStreamOfFieldsAnnotated(peregDto.getDtoClass(), PeregItem.class);
+			Optional<Field> field = null;
+			if(perInfoCtg.getCategoryCode().v().equals("CS000003")) {
+				field = Optional.of(fields.collect(Collectors.toList()).get(1));
+			}else {
+				field= fields.filter(f -> {
+					return f.getAnnotation(PeregItem.class).value().equals(endDateItemCode);
+				}).findFirst();
+				
+			}
 			if(field.isPresent()) {
 				value = ReflectionUtil.getFieldValue(field.get(), peregDto.getDomainDto());
 			}
