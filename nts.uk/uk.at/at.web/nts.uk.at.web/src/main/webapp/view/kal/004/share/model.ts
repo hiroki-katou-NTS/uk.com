@@ -174,6 +174,7 @@ module nts.uk.at.view.kal004.share.model {
         constructor(alarmCategory: number, checkConditionCodes: Array<string>){
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
+            this.extractPeriod =null;
         }
     
         setExtractPeriod(extractPeriod: ExtractionPeriodDailyCommand) {

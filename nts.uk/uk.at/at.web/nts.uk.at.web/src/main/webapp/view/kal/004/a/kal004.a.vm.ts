@@ -27,7 +27,7 @@ module nts.uk.at.view.kal004.a.model {
         currentCodeListSwap: KnockoutObservableArray<share.ModelCheckConditonCode>;
 
         // Tab 2: Period setting
-        periodSetting: any = new nts.uk.at.view.kal004.tab2.viewModel.ScreenModel();
+        //periodSetting: any = new nts.uk.at.view.kal004.tab2.viewModel.ScreenModel();
           
         // Tab 3: SetPermission
         setPermissionModel: any = new nts.uk.at.view.kal004.tab3.viewmodel.ScreenModel();
@@ -70,7 +70,7 @@ module nts.uk.at.view.kal004.a.model {
             
             service.getCheckConditionCode().done((res) => {
                 self.checkSource = _.cloneDeep(res);                
-                self.getAlarmPattern();
+                self.getAlarmPattern().done(() =>{dfd.resolve()});                
             }).fail((error) => {
                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
                 dfd.resolve();
@@ -110,15 +110,15 @@ module nts.uk.at.view.kal004.a.model {
             self.currentCodeListSwap.subscribe((listCode) => {
                 
                 let categories = _.uniq( _.map(listCode, (code) =>{return code.category}));
-                let shareTab2 =[];
+                let shareTab2 : Array<share.CheckConditionCommand>=[];
                 categories.forEach((category)=>{
                     
                     let checkConditionCodes =[];
                     listCode.forEach((code) =>{ if(code.category==category) {checkConditionCodes.push(code.checkConditonCode);} });
                     shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes));    
                 });
-                
-                self.periodSetting.listCheckConditionCode(listCode);
+                console.log(shareTab2);
+                //self.periodSetting.listCheckConditionCode(listCode);
                
             });
         }
@@ -155,7 +155,7 @@ module nts.uk.at.view.kal004.a.model {
                 self.currentCodeListSwap( _.sortBy(currentCodeListSwap, ['category', 'checkConditonCode']));
                                 
                 // Tab 3: Permission Setting
-                self.setPermissionModel.listAlarmID(self.currentAlarm.alarmPerSet.AlarmIds);
+                self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
                 self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting);
             }
 
