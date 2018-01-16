@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workrule.statutoryworkime;
+package nts.uk.ctx.at.shared.dom.workrule.statutoryworktime;
 
 import java.util.Optional;
 
@@ -17,8 +17,8 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.employment.EmploymentWtSettin
 import nts.uk.ctx.at.shared.dom.statutory.worktime.employment.EmploymentWtSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplace.WorkPlaceWtSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.workplace.WorkPlaceWtSettingRepository;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworkime.DailyCalculationPersonalInformation;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworkime.StatutoryWorkTimeSet;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.StatutoryWorkTimeSet;
 
 /**
  * 法定労働時間の取得
