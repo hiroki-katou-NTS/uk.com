@@ -2312,16 +2312,20 @@ module nts.uk.com.view.cmm018.a {
                     let day =  __viewContext.viewModel.viewmodelA.checkDate(startDate.getDate());
                     let endDateNew = startDate.getFullYear() + '/' + month +  '/' + day;
                     let appTypeValue = data.lstAppType[0].value;
-                        let employRootAtr = data.lstAppType[0].employRootAtr;
-                        if(!data.copyDataFlag){//create new
-                            let app = vmbase.ProcessHandler.findAppbyValue(appTypeValue,employRootAtr,self.lstNameAppType());
-                                let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
-                                self.comRoot(new vmbase.CompanyAppRootADto(false, employRootAtr, 
-                                    appTypeValue, app == undefined ? '共通ルート' : app.localizedName, '-1', '',
-                                    '',b,b,b,b,b));
-                        }else{
-                            self.findHistoryLastofApp(appTypeValue,employRootAtr); //list right
-                        }
+                    let employRootAtr = data.lstAppType[0].employRootAtr;
+                    if(!data.copyDataFlag){//create new
+                        let app = vmbase.ProcessHandler.findAppbyValue(appTypeValue,employRootAtr,self.lstNameAppType());
+                            let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
+                            self.comRoot(new vmbase.CompanyAppRootADto(false, employRootAtr, 
+                                appTypeValue, app == undefined ? '共通ルート' : app.localizedName, '-1', '',
+                                '',b,b,b,b,b));
+                    }else{
+                        self.findHistoryLastofApp(appTypeValue,employRootAtr); //list right
+                    }
+                    let histLast = self.findHistBestNew(appTypeValue, employRootAtr, self.tabSelectedB());
+                    if(histLast != null){
+                        singleSelectedCodeOld = histLast.approvalId;
+                    }
                     if(self.tabSelectedB() == 0){//company
                         let a = null;
                         _.each(self.lstCompany(), function(item){
