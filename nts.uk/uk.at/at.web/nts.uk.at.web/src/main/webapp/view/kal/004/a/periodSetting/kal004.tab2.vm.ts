@@ -19,29 +19,29 @@ module nts.uk.at.view.kal004.tab2.viewModel {
 
         private changeCheckCondition(listCheckCode: Array<share.CheckConditionCommand>): void {
             var self = this;
-            var listConver = [];
+            var listConverToview = [];
             var listCheckCondition = [];
             if(self.listCheckCondition.length == 0){
                 _.forEach(listCheckCode, (category: share.CheckConditionCommand) =>{
                     let checkCondition = new share.CheckCondition(category.alarmCategory, category.checkConditionCodes, category.extractPeriod);
                     listCheckCondition.push(category);
-                    listConver.push(new ModelCheckConditonCode(category));
+                    listConverToview.push(new ModelCheckConditonCode(category));
                 });
             }else{
                 _.forEach(listCheckCode, (category: share.CheckConditionCommand) =>{
                     var check = _.find(self.listCheckCondition, ['alarmCategory', category.alarmCategory]);
                     if(nts.uk.util.isNullOrUndefined(check)){
                         listCheckCondition.push(category);    
-                        listConver.push(new ModelCheckConditonCode(category));
+                        listConverToview.push(new ModelCheckConditonCode(category));
                     }else{
-                        listCheckCondition.push(check);    
-                        listConver.push(new ModelCheckConditonCode(check));   
+                        listCheckCondition.push(new share.CheckCondition(category.alarmCategory, category.checkConditionCodes, check.extractPeriod));    
+                        listConverToview.push(new ModelCheckConditonCode(check));   
                     }
                 });        
             }
             
             self.listCheckCondition(listCheckCondition);
-            self.ListView(listConver);
+            self.ListView(listConverToview);
             
             
             var uniqueCategory: Array<share.CheckConditionCommand> = _.uniqBy(listCheckCode, "category");

@@ -62,6 +62,7 @@ module nts.uk.at.view.kal004.a.model {
 
             self.currentCodeListSwap = ko.observableArray([]);
             self.currentCode = ko.observable('');
+            self.currentAlarm=null;
         }
 
         public startPage(): JQueryPromise<any> {
@@ -116,7 +117,7 @@ module nts.uk.at.view.kal004.a.model {
                     let checkConditionCodes =[];
                     listCode.forEach((code) =>{ if(code.category==category) {checkConditionCodes.push(code.checkConditonCode);} });
                     
-                    let categoryInputed = _.find(self.currentAlarm.checkConList, (checkCon) =>{return checkCon.alarmCategory==category } );
+                    let categoryInputed = self.currentAlarm ==null? null: _.find(self.currentAlarm.checkConList, (checkCon) =>{return checkCon.alarmCategory==category } );
                     if(categoryInputed){
                         shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDailyDto)));
                     }else{
