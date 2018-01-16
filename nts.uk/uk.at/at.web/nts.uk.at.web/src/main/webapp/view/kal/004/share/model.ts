@@ -217,8 +217,8 @@ module nts.uk.at.view.kal004.share.model {
         
     }
     export class CheckConditionCommand{
-        private alarmCategory: number;
-        private extractPeriod: ExtractionPeriodDailyCommand;
+         alarmCategory: number;
+         extractPeriod: ExtractionPeriodDailyCommand;
         checkConditionCodes: Array<string>;
         
         constructor(alarmCategory: number, checkConditionCodes: Array<string>){
