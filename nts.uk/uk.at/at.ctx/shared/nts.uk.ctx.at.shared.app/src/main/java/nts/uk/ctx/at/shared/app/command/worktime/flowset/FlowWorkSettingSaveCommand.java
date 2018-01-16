@@ -13,7 +13,6 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 /**
  * The Class FlowWorkSettingSaveCommand.
  */
-
 @Getter
 @Setter
 public class FlowWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
@@ -21,6 +20,9 @@ public class FlowWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
 	/** The flow work setting. */
 	private FlWorkSettingDto flowWorkSetting;
 
+	/** The screen mode. */
+	private Integer screenMode;
+	
 	/**
 	 * To domain flow work setting.
 	 *
