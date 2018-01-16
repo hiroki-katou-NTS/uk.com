@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,7 +75,7 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 	
 	
 	public KrcmtDailyAlarmCondition(String dailyAlarmConID, String companyId, String code, int category,
-			int conExtractedDaily, int addApplication, KfnmtAlarmCheckConditionCategory condition,
+			int conExtractedDaily, int addApplication,
 			List<KrcmtDailyErrorCode> dailyErrorCode, List<KrcmtDailyFixExtra> dailyFixExtra,
 			List<KrcmtDailyWkRecord> dailyWkRecord) {
 		super();
@@ -84,7 +85,6 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 		this.category = category;
 		this.conExtractedDaily = conExtractedDaily;
 		this.addApplication = addApplication;
-		this.condition = condition;
 		this.dailyErrorCode = dailyErrorCode;
 		this.dailyFixExtra = dailyFixExtra;
 		this.dailyWkRecord = dailyWkRecord;
@@ -105,23 +105,22 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 					category.value,
 					domain.getConExtractedDaily().value,
 					domain.isAddApplication()?1:0,
-					null,
-					null,
-					null,
-					null
+					KrcmtDailyErrorCode.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()),
+					KrcmtDailyFixExtra.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()),
+					KrcmtDailyWkRecord.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode())
 				);
 	}
-	
 	public DailyAlarmCondition toDomain() {
 		return new DailyAlarmCondition(
 				this.dailyAlarmConID,
 				EnumAdaptor.valueOf(this.conExtractedDaily, ConExtractedDaily.class) ,
 				this.addApplication == 1?true:false,
-				null,
-				null,
-				null
+				this.dailyErrorCode.stream().map(c -> c.krcmtDailyErrorCodePK.errorAlarmID).collect(Collectors.toList()),
+				this.dailyFixExtra.stream().map(c -> c.krcmtDailyFixExtraPK.errorAlarmID).collect(Collectors.toList()),
+				this.dailyWkRecord.stream().map(c -> c.krcmtDailyWkRecordPK.errorAlarmID).collect(Collectors.toList())
 				);
 	}
+	
 
 
 }

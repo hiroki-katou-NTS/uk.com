@@ -99,7 +99,7 @@
 	                                        options: $parent.itemListTargetServiceType_BA1_2,
 	                                        optionsValue: 'value',
 	                                        optionsText: 'localizedName',
-	                                        value: $parent.targetServiceTypeSelected_BA1_2,
+	                                        value: workTypeCondition,
 	                                        enable: true}">
 	                                     </div>
                                      </com:ko-if>
@@ -108,7 +108,7 @@
 	                                        options: $parent.itemListTargetSelectionRange_BA1_5,
 	                                        optionsValue: 'value',
 	                                        optionsText: 'localizedName',
-	                                        value: $parent.targetSelectionRangeSelected_BA1_5,
+	                                        value: workTimeCondition,
 	                                        enable: true}">
 	                                     </div>
 	                                 </com:ko-if>
@@ -122,7 +122,7 @@
                                         || checkItem() == 3
                                         || checkItem() == 4
                                         || checkItem() == 6">
-                                            <button id="btnSettingBA1_3"  data-bind="click : function() {$parent.btnSettingBA1_3_click()}, enable: $parent.targetServiceTypeSelected_BA1_2() > 0">#{i18n.getText('KAL003_57')}</button>
+                                            <button id="btnSettingBA1_3"  data-bind="click : function() {$parent.btnSettingBA1_3_click()}, enable: workTypeCondition() > 0">#{i18n.getText('KAL003_57')}</button>
                                             <!-- BA1-4 -->
                                             <input data-bind="ntsTextEditor: {
                                               value: $parent.displayWorkTypeSelections_BA1_4,
@@ -285,7 +285,7 @@
 	                                        options: $parent.itemListTargetSelectionRange_BA1_5,
 	                                        optionsValue: 'value',
 	                                        optionsText: 'localizedName',
-	                                        value: $parent.targetSelectionRangeSelected_BA1_5,
+	                                        value: workTimeCondition,
 	                                        enable: true}">
 	                                     </div>
 	                            </td>
@@ -342,7 +342,7 @@
 	                </com:ko-if>
 
                     <!-- Compound Condition: checkItem() == 7 -->
-                    <div id='div_compound_condition' data-bind="with: compoundCondition, visible : checkItem() == 7">
+                    <div id='div_compound_condition' data-bind="with: atdItemCondition, visible : checkItem() == 7">
                         <!--  group 1 -->
                         <div>
                             <table >
@@ -367,7 +367,7 @@
 										    options: $parents[1].swANDOR_B5_3,
 										    optionsValue: 'value',
 										    optionsText: 'localizedName',
-										    value: group1Condition().groupOperator,
+										    value: group1().conditionOperator,
 										    enable: true }"></div>
                                     </td>
 		                        </tr>
@@ -391,7 +391,7 @@
 					                   <th class="ui-widget-header" colspan="6" style ="text-align: center;">#{i18n.getText('KAL003_33')}</th>
 					               </tr>
 					            </thead>
-					            <tbody data-bind = "foreach: group1Condition().groupListCondition">
+					            <tbody data-bind = "foreach: group1().lstErAlAtdItemCon">
 					                <tr>
 					                  <!-- B5_6 -->
 					                    <com:ko-if bind="$data.compareOperator() == 6 || $data.compareOperator() == 7">
@@ -432,10 +432,10 @@
                                 <tr class="row">
                                     <!-- B6-1:  -->
                                     <td>
-                                        <div data-bind="ntsCheckBox: { checked: hasGroup2, enable: true}">#{i18n.getText('KAL003_34')}</div>
+                                        <div data-bind="ntsCheckBox: { checked: group2UseAtr, enable: true}">#{i18n.getText('KAL003_34')}</div>
                                     </td>
                                     <!-- B6-2:  -->
-                                    <com:ko-if bind="hasGroup2()">
+                                    <com:ko-if bind="group2UseAtr()">
 	                                    <td class = "pad_left_5px">
 	                                        <div id ="div_b6_2">#{i18n.getText('KAL003_35')}</div>
 	                                    </td>
@@ -446,14 +446,14 @@
 	                                            options: $parents[1].swANDOR_B6_3,
 	                                            optionsValue: 'value',
 	                                            optionsText: 'localizedName',
-	                                            value: group2Condition().groupOperator,
+	                                            value: group2().conditionOperator,
 	                                            enable: true }"></div>
 	                                    </td>
                                     </com:ko-if>
                                     </tr>
                             </table>
                         </div>
-                        <div id ="div_B16" class = "pad_left_10px cf" data-bind="visible : hasGroup2()">
+                        <div id ="div_B16" class = "pad_left_10px cf" data-bind="visible : group2UseAtr()">
                             <!-- B16_1 -->
                                <table id="table-group2condition" >
                                    <colgroup>
@@ -470,7 +470,7 @@
                                           <th class="ui-widget-header"  colspan="6" style ="text-align: center;">#{i18n.getText('KAL003_33')}</th>
                                       </tr>
                                    </thead>
-                                   <tbody data-bind = "foreach: group2Condition().groupListCondition">
+                                   <tbody data-bind = "foreach: group2().lstErAlAtdItemCon">
                                        <tr>
                                         <!-- B16_3 -->
 						                    <com:ko-if bind="$data.compareOperator() &gt; 5">
@@ -491,7 +491,7 @@
                                    </tbody>
                                </table>
                         </div>
-                        <div id = "div_b7" data-bind="visible : hasGroup2()">
+                        <div id = "div_b7" data-bind="visible : group2UseAtr()">
                             <table >
                                 <colgroup>
                                     <col width="300px" />
@@ -510,7 +510,7 @@
                                             options: $parents[1].swANDOR_B7_2,
                                             optionsValue: 'value',
                                             optionsText: 'localizedName',
-                                            value: operatorBetweenG1AndG2,
+                                            value: operatorBetweenGroups,
                                             enable: true }"></div>
                                     </td>
                                     

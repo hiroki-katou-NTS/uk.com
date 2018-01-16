@@ -22,5 +22,7 @@ public class AlarmCheckConditionByCategoryCommand {
 	private AlarmCheckTargetConditionCommand targetCondition;
 
 	private List<String> availableRoles;
+	
+	private int action;
 
 }

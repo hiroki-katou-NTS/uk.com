@@ -16,10 +16,11 @@ module nts.uk.at.view.kal003.share {
          * initial default value for GroupConditio Object
          * @param conditions
          */
-        export function getDefaultGroupCondition(conditions : Array<model.ErAlAtdItemCondition>) : model.GroupCondition {
-            return new model.GroupCondition({
-                groupOperator: 0
-                , groupListCondition: conditions || ([])
+        export function getDefaultGroupCondition(conditions : Array<model.ErAlAtdItemCondition>) : model.ErAlConditionsAttendanceItem {
+            return new model.ErAlConditionsAttendanceItem({
+                atdItemConGroupId: ''
+                ,conditionOperator: 0
+                , lstErAlAtdItemCon: conditions || ([])
             });
         }
     
@@ -27,13 +28,13 @@ module nts.uk.at.view.kal003.share {
          * initial default value for CompoundConditio Object
          * @param itemcheck
          */
-        export function getDefaultCompoundCondition() : model.CompoundCondition {
+        export function getDefaultAtdItemCondition() : model.AttendanceItemCondition {
             let conditions : Array<model.ErAlAtdItemCondition> = [getDefaultCondition(0), getDefaultCondition(1), getDefaultCondition(2)];
-            return new model.CompoundCondition({
-                group1Condition: getDefaultGroupCondition(conditions)
-                , hasGroup2: false
-                , group2Condition: getDefaultGroupCondition(conditions)
-                , operatorBetweenG1AndG2: 0
+            return new model.AttendanceItemCondition({
+                group1: getDefaultGroupCondition(conditions)
+                , group2UseAtr: false
+                , group2: getDefaultGroupCondition(conditions)
+                , operatorBetweenGroups: 0
             });
         }
 
@@ -43,12 +44,11 @@ module nts.uk.at.view.kal003.share {
          */
         export function getDefaultErrorAlarmCondition(checkItem : number) : model.ErrorAlarmCondition {
             let self = this;
-            let defaultCompoundCondition = getDefaultCompoundCondition(checkItem);
+            let defaultAtdItemCondition = getDefaultAtdItemCondition();
             let errorAlarmCondition = new model.ErrorAlarmCondition({
                 category:                   0
                 , erAlCheckId:              ''
                 , checkItem:                checkItem || 0
-                , workTypeRange:            ''
                 , workTypeSelections:       []
                 , workTimeItemSelections:   []
                 , comparisonOperator:       0
@@ -59,7 +59,9 @@ module nts.uk.at.view.kal003.share {
                 , color:                    ''
                 , message:                  ''
                 , isBold:                   false
-                , compoundCondition:        defaultCompoundCondition
+                , workTypeCondition:        1
+                , workTimeCondition:        0
+                , atdItemCondition:         defaultAtdItemCondition
             });
             return errorAlarmCondition;
         }
@@ -70,13 +72,13 @@ module nts.uk.at.view.kal003.share {
          */
         export function getDefaultWorkRecordExtractingCondition(checkItem : number) : model.WorkRecordExtractingCondition {
             let workRecordExtractingCondition = new model.WorkRecordExtractingCondition({
-                errorAlarmCheckID   : ''
-                , checkItem           : checkItem || 0
-                , sortOrderBy         : 0
-                , useAtr              : false
-                , nameWKRecord        : ''
-                , errorAlarmCondition  : getDefaultErrorAlarmCondition(checkItem)
-                , rowId               : 0
+                errorAlarmCheckID       : ''
+                , checkItem             : checkItem || 0
+                , sortOrderBy           : 0
+                , useAtr                : false
+                , nameWKRecord          : ''
+                , errorAlarmCondition   : getDefaultErrorAlarmCondition(checkItem)
+                , rowId                 : 0
             });
             return workRecordExtractingCondition;
         }

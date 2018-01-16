@@ -49,6 +49,7 @@ module nts.uk.at.view.kal003.share.model {
         displayAvailableRoles: KnockoutObservable<string>;
         dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, []));
         schedule4WeekAlarmCheckCondition: KnockoutObservable<Schedule4WeekAlarmCheckCondition> = ko.observable(new Schedule4WeekAlarmCheckCondition(SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY));
+        action: KnockoutObservable<number> = ko.observable(0);
 
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
@@ -505,38 +506,41 @@ module nts.uk.at.view.kal003.share.model {
         }
     }
     // group condition
-    export interface IGroupCondition {
-        groupOperator: number; //0: OR|1: AND
-        groupListCondition: Array<ErAlAtdItemCondition>;// max 3
+    export interface IErAlConditionsAttendanceItem {
+        atdItemConGroupId: string;
+        conditionOperator: number; //0: OR|1: AND
+        lstErAlAtdItemCon: Array<ErAlAtdItemCondition>;// max 3
     }
 
-    export class GroupCondition {
-        groupOperator: KnockoutObservable<number>; //OR|AND B15-3, B17-3
-        groupListCondition: KnockoutObservableArray<ErAlAtdItemCondition>;// max 3 item, B16-1 -> B16-4
-        constructor(param: IGroupCondition) {
+    export class ErAlConditionsAttendanceItem {
+        atdItemConGroupId: KnockoutObservable<string>;
+        conditionOperator: KnockoutObservable<number>; //OR|AND B15-3, B17-3
+        lstErAlAtdItemCon: KnockoutObservableArray<ErAlAtdItemCondition>;// max 3 item, B16-1 -> B16-4
+        constructor(param: IErAlConditionsAttendanceItem) {
             let self = this;
-            self.groupOperator = ko.observable(param.groupOperator || 0);
-            self.groupListCondition = ko.observableArray(param.groupListCondition || []);
+            self.atdItemConGroupId = ko.observable(param.atdItemConGroupId || '');
+            self.conditionOperator = ko.observable(param.conditionOperator || 0);
+            self.lstErAlAtdItemCon = ko.observableArray(param.lstErAlAtdItemCon || []);
         }
     }
 
-    export interface ICompoundCondition {
-        group1Condition: GroupCondition;
-        hasGroup2: boolean; // B17-1
-        group2Condition: GroupCondition;
-        operatorBetweenG1AndG2: number; // B18-2: 0: OR, 1: AND
+    export interface IAttendanceItemCondition {
+        group1:         ErAlConditionsAttendanceItem;
+        group2UseAtr:   boolean; // B17-1
+        group2:         ErAlConditionsAttendanceItem;
+        operatorBetweenGroups: number; // B18-2: 0: OR, 1: AND
     }
-    export class CompoundCondition {
-        group1Condition:    KnockoutObservable<GroupCondition> = ko.observable(null);
-        hasGroup2:          KnockoutObservable<boolean> = ko.observable(false);
-        group2Condition:    KnockoutObservable<GroupCondition> = ko.observable(null);
-        operatorBetweenG1AndG2: KnockoutObservable<number> = ko.observable(0);
-        constructor(param: ICompoundCondition) {
+    export class AttendanceItemCondition {
+        group1:         KnockoutObservable<ErAlConditionsAttendanceItem>    = ko.observable(null);
+        group2UseAtr:   KnockoutObservable<boolean>                         = ko.observable(false);
+        group2:         KnockoutObservable<ErAlConditionsAttendanceItem>    = ko.observable(null);
+        operatorBetweenGroups: KnockoutObservable<number>                   = ko.observable(0);
+        constructor(param: IAttendanceItemCondition) {
             let self = this;
-            self.group1Condition(param.group1Condition);
-            self.hasGroup2 (param.hasGroup2 || false);
-            self.group2Condition(param.group2Condition);
-            self.operatorBetweenG1AndG2(param.operatorBetweenG1AndG2);
+            self.group1(param.group1);
+            self.group2UseAtr(param.group2UseAtr || false);
+            self.group2(param.group2);
+            self.operatorBetweenGroups(param.operatorBetweenGroups);
         }
     }
 
@@ -544,7 +548,6 @@ module nts.uk.at.view.kal003.share.model {
         category: number;
         erAlCheckId: string;
         checkItem: number;
-        workTypeRange: string;
         workTypeSelections: Array<string>;
         workTimeItemSelections: Array<string>;
         comparisonOperator: number;
@@ -555,14 +558,15 @@ module nts.uk.at.view.kal003.share.model {
         color: string;
         message: string;
         isBold: boolean;
-        compoundCondition: CompoundCondition;
+        workTypeCondition: number;
+        workTimeCondition: number;
+        atdItemCondition: AttendanceItemCondition;
     }
 
     export class ErrorAlarmCondition {
         category:               number;
         erAlCheckId:            string;
         checkItem:              KnockoutObservable<number> = ko.observable(0);
-        workTypeRange:          KnockoutObservable<string> = ko.observable('');
         workTypeSelections:     KnockoutObservableArray<string> = ko.observableArray([]);
         workTimeItemSelections: KnockoutObservableArray<string> = ko.observableArray([]);
         comparisonOperator:     KnockoutObservable<number> = ko.observable(0);
@@ -573,13 +577,17 @@ module nts.uk.at.view.kal003.share.model {
         color:                  KnockoutObservable<string> = ko.observable('');
         message:                KnockoutObservable<string> = ko.observable('');
         isBold:                 KnockoutObservable<boolean> = ko.observable(false);
-        compoundCondition :     KnockoutObservable<CompoundCondition> = ko.observable(null);
+        
+        workTypeCondition :     KnockoutObservable<number> = ko.observable(1);
+        workTimeCondition:      KnockoutObservable<number> = ko.observable(0);
+        
+        atdItemCondition :     KnockoutObservable<AttendanceItemCondition> = ko.observable(null);
         constructor(param : IErrorAlarmCondition) {
             let self = this;
             self.category               = param.category || 0;
             self.erAlCheckId            = param.erAlCheckId || '';
             self.checkItem(param.checkItem || 0);
-            self.workTypeRange(param.workTypeRange || '');
+
             self.workTypeSelections(param.workTypeSelections || []);
             self.workTimeItemSelections(param.workTimeItemSelections || []);
             self.comparisonOperator( param.comparisonOperator || 0);
@@ -590,7 +598,9 @@ module nts.uk.at.view.kal003.share.model {
             self.color(param.color || '');
             self.message(param.message || '');
             self.isBold(param.isBold || false);
-            self.compoundCondition(param.compoundCondition);
+            self.workTypeCondition(param.workTypeCondition || 1);
+            self.workTimeCondition(param.workTimeCondition || 0);
+            self.atdItemCondition(param.atdItemCondition);
         }
     }
     
