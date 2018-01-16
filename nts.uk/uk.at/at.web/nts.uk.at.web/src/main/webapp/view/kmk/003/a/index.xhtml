@@ -51,6 +51,7 @@
 			<com:stylefile path="../a9/kmk003.a9.style.css" /><!-- End tab 09 -->
 			
 			<!-- Begin tab 10 -->
+			<com:scriptfile path="../a10/kmk003.a10.service.js" />
 			<com:scriptfile path="../a10/kmk003.a10.vm.js" />
 			<com:stylefile path="../a10/kmk003.a10.style.css" /><!-- End tab 10 -->
 			
@@ -174,9 +175,8 @@
 						<td class="screen-content-right">
 						<com:ko tag="with" bind="mainSettingModel.workTimeSetting">
 							<div class="setting_header">
-								<div style="width: 130px;"
-									data-bind="ntsFormLabel: {required:true, 
-									constraint: 'WorkTimeCode'}">
+								<div data-bind="ntsFormLabel: {required:true, 
+									constraint: ['WorkTimeCode','WorkTimeName']}">
 									#{i18n.getText('KMK003_13')}
 								</div>
 
@@ -197,7 +197,7 @@
 									enable: true
 									}">
 								</input>
-								<div class="label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_14')}
+								<div class="label_header" data-bind="ntsFormLabel: {constraint: 'WorkTimeAbName'}">#{i18n.getText('KMK003_14')}
 								</div>
 								<input tabindex="12" data-bind="ntsTextEditor: {
 									name: '#[KMK003_14]',
@@ -207,7 +207,7 @@
 									required: false,
 									enable: true
 									}" />
-								<div class="label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_15')}
+								<div class="label_header" data-bind="ntsFormLabel: {constraint: 'WorkTimeSymbol'}">#{i18n.getText('KMK003_15')}
 								</div>
 								<input tabindex="13" data-bind="ntsTextEditor: {
 									name: '#[KMK003_15]',
@@ -224,7 +224,7 @@
 									data-bind="ntsColorPicker: {name: '#[KMK003_161]',value: colorCode, enable: true, width: 50}" />
 							</div>
 							<div class="setting_header_br">
-								<div style="width: 135px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
+								<div style="width: 190px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
 								<div id="cbb-worktime-atr" style="margin-right: 10px" tabindex="16"
 									data-bind="ntsComboBox: {
 									name: '#[KMK003_7]',
@@ -255,7 +255,7 @@
 							</div>
 							<div class="setting_header_br">
 								<div class="label_memo"
-									data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_162')}
+									data-bind="ntsFormLabel: {constraint: 'WorkTimeNote'}">#{i18n.getText('KMK003_162')}
 								</div>
 								<textarea tabindex="18" class="memo-field"
 									data-bind="ntsMultilineEditor: {
@@ -266,7 +266,7 @@
 									required: false,
 									enable: true
 									}" />
-								<div class="label_memo label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_183')}
+								<div class="label_memo label_header" data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KMK003_183')}
 								</div>
 								<textarea tabindex="19" class="memo-field"
 									data-bind="ntsMultilineEditor: {

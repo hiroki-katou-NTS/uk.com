@@ -2,14 +2,13 @@ package nts.uk.ctx.at.record.infra.repository.monthly.calc.actualworkingtime;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtMonRegIrregTime;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 
 /**
  * リポジトリ実装：月別実績の通常変形時間
@@ -23,7 +22,7 @@ public class JpaRegularAndIrregularTimeOfMonthly extends JpaRepository implement
 	public void insert(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			RegularAndIrregularTimeOfMonthly regularAndIrregularTimeOfMonthly) {
 		
-		this.commandProxy().insert(toEntity(attendanceTimeOfMonthlyKey, regularAndIrregularTimeOfMonthly));
+		this.commandProxy().insert(toEntity(attendanceTimeOfMonthlyKey, regularAndIrregularTimeOfMonthly, false));
 	}
 
 	/** 更新 */
@@ -31,63 +30,49 @@ public class JpaRegularAndIrregularTimeOfMonthly extends JpaRepository implement
 	public void update(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
 			RegularAndIrregularTimeOfMonthly regularAndIrregularTimeOfMonthly) {
 		
-		// 締め日付
-		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
-		
-		// キー
-		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthlyKey.getEmployeeId(),
-				attendanceTimeOfMonthlyKey.getYearMonth().v(),
-				attendanceTimeOfMonthlyKey.getClosureId().value,
-				closureDate.getClosureDay().v(),
-				(closureDate.getLastDayOfMonth() ? 1 : 0));
-		
-		// 月別実績の変形労働時間
-		IrregularWorkingTimeOfMonthly irregularWorkingTime = regularAndIrregularTimeOfMonthly.getIrregularWorkingTime();
-		
-		KrcdtMonRegIrregTime entity = this.queryProxy().find(key, KrcdtMonRegIrregTime.class).get();
-		entity.weeklyTotalPremiumTime = regularAndIrregularTimeOfMonthly.getWeeklyTotalPremiumTime().v();
-		entity.monthlyTotalPremiumTime = regularAndIrregularTimeOfMonthly.getMonthlyTotalPremiumTime().v();
-		entity.multiMonthIrregularMiddleTime = irregularWorkingTime.getMultiMonthIrregularMiddleTime().v();
-		entity.irregularPeriodCarryforwardTime = irregularWorkingTime.getIrregularPeriodCarryforwardTime().v();
-		entity.irregularWorkingShortageTime = irregularWorkingTime.getIrregularWorkingShortageTime().v();
-		entity.irregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getTime().v();
-		entity.calcIrregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getCalculationTime().v();
-		this.commandProxy().update(entity);
+		this.toEntity(attendanceTimeOfMonthlyKey, regularAndIrregularTimeOfMonthly, true);
 	}
 	
 	/**
 	 * ドメイン→エンティティ
-	 * @param attendanceTimeOfMonthlyKey キー値：月別実績の勤怠時間
-	 * @param regularAndIrregularTimeOfMonthly ドメイン：月別実績の通常変形時間
+	 * @param domainKey キー値：月別実績の勤怠時間
+	 * @param domain ドメイン：月別実績の通常変形時間
+	 * @param execUpdate 更新を実行する
 	 * @return エンティティ：月別実績の通常変形時間
 	 */
-	private static KrcdtMonRegIrregTime toEntity(AttendanceTimeOfMonthlyKey attendanceTimeOfMonthlyKey,
-			RegularAndIrregularTimeOfMonthly regularAndIrregularTimeOfMonthly){
+	private KrcdtMonRegIrregTime toEntity(AttendanceTimeOfMonthlyKey domainKey,
+			RegularAndIrregularTimeOfMonthly domain, boolean execUpdate){
 
 		// 締め日付
-		ClosureDate closureDate = attendanceTimeOfMonthlyKey.getClosureDate();
+		val closureDate = domainKey.getClosureDate();
 		
 		// キー
-		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthlyKey.getEmployeeId(),
-				attendanceTimeOfMonthlyKey.getYearMonth().v(),
-				attendanceTimeOfMonthlyKey.getClosureId().value,
+		val key = new KrcdtMonAttendanceTimePK(
+				domainKey.getEmployeeId(),
+				domainKey.getYearMonth().v(),
+				domainKey.getClosureId().value,
 				closureDate.getClosureDay().v(),
 				(closureDate.getLastDayOfMonth() ? 1 : 0));
 		
 		// 月別実績の変形労働時間
-		IrregularWorkingTimeOfMonthly irregularWorkingTime = regularAndIrregularTimeOfMonthly.getIrregularWorkingTime();
+		val irregularWorkingTime = domain.getIrregularWorkingTime();
 		
-		KrcdtMonRegIrregTime entity = new KrcdtMonRegIrregTime();
-		entity.PK = key;
-		entity.weeklyTotalPremiumTime = regularAndIrregularTimeOfMonthly.getWeeklyTotalPremiumTime().v();
-		entity.monthlyTotalPremiumTime = regularAndIrregularTimeOfMonthly.getMonthlyTotalPremiumTime().v();
+		KrcdtMonRegIrregTime entity;
+		if (execUpdate){
+			entity = this.queryProxy().find(key, KrcdtMonRegIrregTime.class).get();
+		}
+		else {
+			entity = new KrcdtMonRegIrregTime();
+			entity.PK = key;
+		}
+		entity.weeklyTotalPremiumTime = domain.getWeeklyTotalPremiumTime().v();
+		entity.monthlyTotalPremiumTime = domain.getMonthlyTotalPremiumTime().v();
 		entity.multiMonthIrregularMiddleTime = irregularWorkingTime.getMultiMonthIrregularMiddleTime().v();
 		entity.irregularPeriodCarryforwardTime = irregularWorkingTime.getIrregularPeriodCarryforwardTime().v();
 		entity.irregularWorkingShortageTime = irregularWorkingTime.getIrregularWorkingShortageTime().v();
 		entity.irregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getTime().v();
-		entity.calcIrregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getCalculationTime().v();
+		entity.calcIrregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getCalcTime().v();
+		if (execUpdate) this.commandProxy().update(entity);
 		return entity;
 	}
 }

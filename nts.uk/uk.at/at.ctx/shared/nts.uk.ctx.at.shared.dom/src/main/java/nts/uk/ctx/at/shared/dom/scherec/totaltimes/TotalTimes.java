@@ -67,24 +67,21 @@ public class TotalTimes extends AggregateRoot {
 		this.totalCondition = memento.getTotalCondition();
 		this.totalSubjects = memento.getTotalSubjects();
 
-		// Validate
+		// Validate.
+		if (this.useAtr == UseAtr.NotUse) {
+			return;
+		}
 		if (CollectionUtil.isEmpty(this.totalSubjects)) {
 			throw new BusinessException("Msg_216", "KMK009_8");
 		} else {
-			// 回数集計区分 = 勤務種類 or 組合せ の場合
-			// 未登録の勤務種類が選択されている
-			// #Msg_216 , #KMK009_8
 			if ((this.summaryAtr.equals(SummaryAtr.DUTYTYPE) || this.summaryAtr.equals(SummaryAtr.COMBINATION)) &&  !this.totalSubjects.stream()
 					.anyMatch(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKTYPE))) {
-				throw new BusinessException("Msg_216", "KMK009_8");
+				throw new BusinessException("Msg_10");
 			}
 
-			// 回数集計区分 = 就業時間帯 or 組合せ の場合
-			// 未登録の就業時間帯が選択されている
-			// #Msg_216 , #KMK009_9
 			if ((this.summaryAtr.equals(SummaryAtr.WORKINGTIME) || this.summaryAtr.equals(SummaryAtr.COMBINATION)) && !this.totalSubjects.stream()
 					.anyMatch(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKINGTIME))) {
-				throw new BusinessException("Msg_216", "KMK009_9");
+				throw new BusinessException("Msg_29");
 			}
 		}
 	}

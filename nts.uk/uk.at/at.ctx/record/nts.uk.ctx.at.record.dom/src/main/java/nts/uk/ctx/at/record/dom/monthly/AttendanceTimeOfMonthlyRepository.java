@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /*
- * 月別実績の勤怠時間
+ * リポジトリ：月別実績の勤怠時間
  * @author shuichi_ishida
  */
 public interface AttendanceTimeOfMonthlyRepository {
