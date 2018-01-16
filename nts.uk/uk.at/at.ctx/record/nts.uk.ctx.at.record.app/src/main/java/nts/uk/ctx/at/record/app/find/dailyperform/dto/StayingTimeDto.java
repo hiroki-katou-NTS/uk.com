@@ -17,27 +17,27 @@ public class StayingTimeDto {
 
 	/** 滞在時間 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "滞在時間")
-	@AttendanceItemValue(itemId = 553, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer stayingTime;
 
 	/** 出勤前時間 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "出勤前時間")
-	@AttendanceItemValue(itemId = 741, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer beforeWoringTime;
 
 	/** 退勤後時間 */
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "退勤後時間")
-	@AttendanceItemValue(itemId = 742, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer afterLeaveTime;
 
 	/** PCログオン前時間 */
 	@AttendanceItemLayout(layout = "D", jpPropertyName = "PCログオン前時間")
-	@AttendanceItemValue(itemId = 743, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer beforePCLogOnTime;
 
 	/** PCログオフ後時間 */
 	@AttendanceItemLayout(layout = "E", jpPropertyName = "PCログオフ後時間")
-	@AttendanceItemValue(itemId = 744, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer afterPCLogOffTime;
 
 	public static StayingTimeDto fromStayingTime(StayingTimeOfDaily domain) {
