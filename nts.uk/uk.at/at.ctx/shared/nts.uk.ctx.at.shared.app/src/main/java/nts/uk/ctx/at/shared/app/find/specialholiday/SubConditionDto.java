@@ -27,10 +27,10 @@ public class SubConditionDto {
 	private int genderAtr;
 	
 	/**年齢上限*/
-	private int limitAgeFrom;
+	private Integer limitAgeFrom;
 	
 	/**年齢下限*/
-	private int limitAgeTo;
+	private Integer limitAgeTo;
 	
 	/**年齢基準区分*/
 	private int ageCriteriaAtr;

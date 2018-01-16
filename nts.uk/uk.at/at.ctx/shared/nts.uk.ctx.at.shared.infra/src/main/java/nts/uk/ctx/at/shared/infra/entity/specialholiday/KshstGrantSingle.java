@@ -73,6 +73,8 @@ public class KshstGrantSingle extends UkJpaEntity implements Serializable {
 	
 	public static KshstGrantSingle toEntity(GrantSingle domain){
 		return new KshstGrantSingle(new KshstGrantSinglePK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()),
-				domain.getGrantDaySingleType().value, domain.getFixNumberDays().v(), domain.getMakeInvitation().value, domain.getHolidayExclusionAtr().value);
+				domain.getGrantDaySingleType().value, 
+				domain.getFixNumberDays() != null ? domain.getFixNumberDays().v() : null, 
+				domain.getMakeInvitation().value, domain.getHolidayExclusionAtr().value);
 	}
 }
