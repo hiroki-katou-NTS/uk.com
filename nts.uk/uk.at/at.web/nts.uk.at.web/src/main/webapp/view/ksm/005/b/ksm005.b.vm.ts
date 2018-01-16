@@ -87,7 +87,11 @@ module nts.uk.at.view.ksm005.b {
                 self.holidayDisplay = ko.observable(true);
                 self.cellButtonDisplay = ko.observable(true);
                 
-                
+                var self = this;
+                service.getItemOfMonth(self.selectMonthlyPattern(), self.getMonth()).done(function(data) {
+                    self.updateWorkMothlySetting(data);
+                    self.lstWorkMonthlySetting(data);
+                });
             }
             /**
              * get month now

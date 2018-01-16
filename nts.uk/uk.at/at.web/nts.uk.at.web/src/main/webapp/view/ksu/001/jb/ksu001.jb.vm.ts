@@ -10,38 +10,61 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         time1: KnockoutObservable<string> = ko.observable('');
         time2: KnockoutObservable<string> = ko.observable('');
         isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
+        isEnableButton: KnockoutObservable<boolean> = ko.observable(false);
         nameWorkTimeType: KnockoutComputed<any>;
         textName: KnockoutObservable<string> = ko.observable(getShared('dataForJB').text || null);
         arrTooltip: any[] = getShared('dataForJB').tooltip ? getShared('dataForJB').tooltip.match(/[^[\]]+(?=])/g) : [];
         source: KnockoutObservableArray<any> = ko.observableArray(getShared('dataForJB').data || []);
         dataSource: KnockoutObservableArray<any> = ko.observableArray([]);
         textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJB').textDecision);
+        listCheckNeededOfWorkTime: any[] = getShared('dataForJB').listCheckNeededOfWorkTime;
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
 
         constructor() {
             let self = this;
             self.listWorkTimeComboBox = ko.observableArray(self.listWorkTime());
+
+            self.selectedWorkTypeCode.subscribe((newValue) => {
+                let stateWorkTypeCode = _.find(self.listCheckNeededOfWorkTime, ['workTypeCode', newValue]);
+                // if workTypeCode is not required( = 2) worktime is needless, something relate to workTime will be disable
+                if (stateWorkTypeCode && stateWorkTypeCode.state == 2) {
+                    self.isEnableButton(false);
+                    self.isEnableClearSearchButton(false);
+                } else {
+                    self.isEnableButton(true);
+                }
+            });
+
             //get workTypeCode, workTimeCode, workTypeName, workTimeName, startTime, endTime, symbolName
             self.nameWorkTimeType = ko.pureComputed(() => {
                 let workTypeName, workTypeCode, workTimeName, workTimeCode: string;
                 let startTime, endTime: any;
-                if (self.listWorkType().length > 0 || self.listWorkTime().length > 0) {
-                    let d = _.find(self.listWorkType(), ['workTypeCode', self.selectedWorkTypeCode()]);
-                    if (d) {
-                        workTypeName = d.abbreviationName;
-                        workTypeCode = d.workTypeCode;
-                    } else {
-                        workTypeName = null;
-                        workTypeCode = null;
-                    }
 
-                    let workTimeCd: string = null;
-                    if (self.selectedWorkTimeCode()) {
-                        workTimeCd = self.selectedWorkTimeCode().slice(0, 3);
-                    } else {
-                        workTimeCd = self.selectedWorkTimeCode()
-                    }
+                let d = _.find(self.listWorkType(), ['workTypeCode', self.selectedWorkTypeCode()]);
+                if (d) {
+                    workTypeName = d.abbreviationName;
+                    workTypeCode = d.workTypeCode;
+                } else {
+                    workTypeName = null;
+                    workTypeCode = null;
+                }
 
+                let workTimeCd: string = null;
+                if (self.selectedWorkTimeCode()) {
+                    workTimeCd = self.selectedWorkTimeCode().slice(0, 3);
+                } else {
+                    workTimeCd = self.selectedWorkTimeCode()
+                }
+
+                // if workTypeCode is not required( = 2) worktime is needless, something relate to workTime will be disable
+                // workTimeName, workTimeCode is null, startTime,endTime is ''
+                let stateWorkTypeCd = _.find(self.listCheckNeededOfWorkTime, ['workTypeCode', self.selectedWorkTypeCode()]);
+                if (stateWorkTypeCd && stateWorkTypeCd.state == 2) {
+                    workTimeName = null;
+                    workTimeCode = null;
+                    startTime = '';
+                    endTime = '';
+                } else {
                     let c = _.find(self.listWorkTime(), ['workTimeCode', workTimeCd]);
                     if (c) {
                         workTimeName = c.abName;
@@ -55,6 +78,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                         endTime = '';
                     }
                 }
+
                 return {
                     workTypeCode: workTypeCode,
                     workTypeName: workTypeName,
@@ -158,9 +182,12 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             self.isEnableClearSearchButton(true);
             if (!self.time1() && !self.time2()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
+                self.isEnableClearSearchButton(false);
+                return;
             }
             if (self.time1() && self.time2() && moment(self.time1(), 'HH:mm').isSameOrAfter(moment(self.time2(), 'HH:mm'))) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_54" });
+                return;
             }
             self.listWorkTimeComboBox([]);
             _.forEach(self.listWorkTime(), (obj) => {

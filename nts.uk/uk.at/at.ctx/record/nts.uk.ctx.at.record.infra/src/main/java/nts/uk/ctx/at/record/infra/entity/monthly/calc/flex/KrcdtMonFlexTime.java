@@ -45,11 +45,11 @@ public class KrcdtMonFlexTime extends UkJpaEntity implements Serializable {
 	public int beforeFlexTime; 
 	
 	/** 法定内フレックス時間 */
-	@Column(name = "LEGAL_FLEX_TM")
+	@Column(name = "LEGAL_FLEX_TIME")
 	public int legalFlexTime; 
 	
 	/** 法定外フレックス時間 */
-	@Column(name = "ILLEGAL_FLEX_TM")
+	@Column(name = "ILLEGAL_FLEX_TIME")
 	public int illegalFlexTime; 
 	
 	/** フレックス超過時間 */
@@ -69,7 +69,7 @@ public class KrcdtMonFlexTime extends UkJpaEntity implements Serializable {
 	public int flexCarryforwardWorkTime; 
 	
 	/** フレックス繰越不足時間 */
-	@Column(name = "FLEX_CRYFWD_SHT_TM")
+	@Column(name = "FLEX_CRYFWD_SHT_TIME")
 	public int flexCarryforwardShortageTime; 
 	
 	/** 超過フレ区分 */

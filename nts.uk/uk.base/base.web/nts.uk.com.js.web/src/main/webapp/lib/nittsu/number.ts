@@ -28,7 +28,7 @@
     export function isHalfInt(value: any, message?: any) {
         var val = parseFloat(value);
         if (message !== undefined) message.id = 'FND_E_HALFINT';
-        if (val !== NaN && ((Math.ceil(val) - val) === 0.5) && (val * 2) % 1 === 0) return true;
+        if (val !== NaN && (val * 2) % 1 === 0) return true;
         return false;
     }
 

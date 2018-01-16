@@ -1,0 +1,49 @@
+package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
+
+import lombok.Getter;
+import lombok.val;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+
+/**
+ * 月別実績の所定日数
+ * @author shuichu_ishida
+ */
+@Getter
+public class PredeterminedDaysOfMonthly {
+
+	/** 所定日数 */
+	private AttendanceDaysMonth predeterminedDays;
+	/** 所定日数付与前 */
+	private AttendanceDaysMonth predeterminedDaysBeforeGrant;
+	/** 所定日数付与後 */
+	private AttendanceDaysMonth predeterminedDaysAfterGrant;
+	
+	/**
+	 * コンストラクタ
+	 */
+	public PredeterminedDaysOfMonthly(){
+		
+		this.predeterminedDays = new AttendanceDaysMonth(0.0);
+		this.predeterminedDaysBeforeGrant = new AttendanceDaysMonth(0.0);
+		this.predeterminedDaysAfterGrant = new AttendanceDaysMonth(0.0);
+	}
+
+	/**
+	 * ファクトリー
+	 * @param predeterminedDays 所定日数
+	 * @param predeterminedDaysBeforeGrant 所定日数付与前
+	 * @param predeterminedDaysAfterGrant 所定日数付与後
+	 * @return 月別実績の所定日数
+	 */
+	public static PredeterminedDaysOfMonthly of(
+			AttendanceDaysMonth predeterminedDays,
+			AttendanceDaysMonth predeterminedDaysBeforeGrant,
+			AttendanceDaysMonth predeterminedDaysAfterGrant){
+		
+		val domain = new PredeterminedDaysOfMonthly();
+		domain.predeterminedDays = predeterminedDays;
+		domain.predeterminedDaysBeforeGrant = predeterminedDaysBeforeGrant;
+		domain.predeterminedDaysAfterGrant = predeterminedDaysAfterGrant;
+		return domain;
+	}
+}

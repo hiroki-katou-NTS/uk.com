@@ -8,33 +8,30 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        
         <com:stylefile set="BASIC" />
-        
         <com:viewcontext />
-        
         <com:scriptfile set="BASIC" />
-        
-
         <ui:insert name="htmlHead" />
     </h:head>
 
     <h:body>
     	<div id="master-wrapper" data-bind="with: content">
     		<ui:insert name="base-content" >
-	    		<div id="header">
-	    			<div id="menu-header">
-	    				<div id="logo-area" class="cf">
-	    					<div id="logo">勤次郎</div>
-	    					<div id="user-info" class="cf">
-	    						<div id="company" class="cf"></div>
-	    						<div id="user" class="cf"></div>
-	    					</div>
-	    				</div>
-	    				<div id="nav-area" class="cf" />
-	    				<div id="pg-area" class="cf" />
-	    			</div>
-	    		</div>
+    			<ui:insert name="header-content" >
+		    		<div id="header">
+		    			<div id="menu-header">
+		    				<div id="logo-area" class="cf">
+		    					<div id="logo">勤次郎</div>
+		    					<div id="user-info" class="cf">
+		    						<div id="company" class="cf"></div>
+		    						<div id="user" class="cf"></div>
+		    					</div>
+		    				</div>
+		    				<div id="nav-area" class="cf" />
+		    				<div id="pg-area" class="cf" />
+		    			</div>
+		    		</div>
+	    		</ui:insert>
 		        <div id="master-content">
 		        	<ui:insert name="content" />
 		        </div>

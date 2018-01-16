@@ -86,8 +86,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             ]);
 
             self.roundingCarryForward = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText('KMF004_51') },
-                { code: 1, name: nts.uk.resource.getText('KMF004_52') }
+                { code: model.UseAtr.Use, name: nts.uk.resource.getText('KMF004_51') },
+                { code: model.UseAtr.NotUse, name: nts.uk.resource.getText('KMF004_52') }
             ]);
 
             self.roundingGenderAtr = ko.observableArray([
@@ -136,11 +136,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     nts.uk.ui.errors.clearAll();
                     $("#code-text").focus();
                     self.hiddenSingle();
-                    
+
                 }
             })
-            
-           
+
+
 
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: nts.uk.resource.getText('KMF004_17'), content: '.tab-content-1', enable: ko.observable(true), visible: self.visibleGrantSingle },
@@ -172,7 +172,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             }).fail(function() {
                 dfd.reject();
             });
-            
+
             return dfd.promise();
         }
 
@@ -238,8 +238,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             subCondition.useEmployee = Number(subCondition.useEmployee) == 1;
             subCondition.useCls = Number(subCondition.useCls) == 1;
             subCondition.useAge = Number(subCondition.useAge) == 1;
-                subCondition.employmentList = subCondition.employmentList;
-                subCondition.classificationList = subCondition.classificationList;
+            subCondition.employmentList = subCondition.employmentList;
+            subCondition.classificationList = subCondition.classificationList;
             return subCondition;
         }
 
@@ -266,6 +266,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             if (model.SpecialVacationMethod.AvailableGrantDateDesignate == self.currentItem().sphdLimit().specialVacationMethod()) {
                 $("#specialVacationMonths").trigger("validate");
                 $("#specialVacationYears").trigger("validate");
+                $("#limitCarryoverDays").trigger("validate");
+            }
+            if (model.UseAtr.Use == self.currentItem().sphdLimit().grantCarryForward()){
+                $("#limitCarryover").trigger("validate");
             }
             var useAge = self.currentItem().subCondition().useAge() ? 1 : 0;
             var useCls = self.currentItem().subCondition().useCls() ? 1 : 0;
@@ -274,14 +278,14 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 $("#limitAgeFrom").trigger("validate");
                 $("#limitAgeTo").trigger("validate");
             }
-            if (useCls == 1){
+            if (useCls == 1) {
                 $(".className").trigger("validate");
             }
-            
-            if (useEmp == 1){
+
+            if (useEmp == 1) {
                 $(".emplName").trigger("validate");
             }
-            
+
         }
 
         addSpecialHoliday(): JQueryPromise<any> {
@@ -298,7 +302,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 specialHoliday.subCondition = null;
             } else {
                 self.triggerByGrantMethod();
-
+                var roundingCarryForward = specialHoliday.sphdLimit.roundingCarryForward;
                 var useGender = specialHoliday.subCondition.useGender;
                 var useEmployee = specialHoliday.subCondition.useEmployee;
                 var useCls = specialHoliday.subCondition.useCls;
@@ -308,20 +312,30 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 specialHoliday.subCondition.useEmployee = useEmployee ? 1 : 0;
                 specialHoliday.subCondition.useCls = useCls ? 1 : 0;
                 specialHoliday.subCondition.useAge = useAge ? 1 : 0;
-                
-                if(useCls == 0){
+
+                if (useCls == 0) {
                     specialHoliday.subCondition.classificationList = [];
                 }
-                
-                if(useEmployee == 0){
-                    specialHoliday.subCondition.employmentList = [];    
+
+                if (useEmployee == 0) {
+                    specialHoliday.subCondition.employmentList = [];
                 }
                 
+                if (useAge == 0) {
+                    specialHoliday.subCondition.limitAgeTo = null;
+                    specialHoliday.subCondition.limitAgeFrom = null;
+                }
+
                 specialHoliday.grantSingle = null;
                 if (specialHoliday.grantRegular.grantStartDate) {
                     specialHoliday.grantRegular.grantStartDate = new Date(specialHoliday.grantRegular.grantStartDate);
                 } else {
                     specialHoliday.grantRegular.grantStartDate = null;
+                }
+                if (self.inp_grantMethod() == 1) {
+                    if (self.currentItem().subCondition().employmentList.length == 0) {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_105" });
+                    }
                 }
             }
             specialHoliday.grantMethod = self.inp_grantMethod();
@@ -376,6 +390,28 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 })
+            }
+        }
+        
+        /** set default for tab 3 **/
+        setDefaultValueSphdLimit(specialHoliday: any) {
+            var self = this;
+            if (specialHoliday.sphdLimit.specialVacationMethod != model.SpecialVacationMethod.AvailableGrantDateDesignate) {
+                self.currentItem().sphdLimit().specialVacationYears(null);
+                self.currentItem().sphdLimit().specialVacationMonths(null);    
+            }
+            
+            if (specialHoliday.sphdLimit.grantCarryForward == model.UseAtr.NotUse){
+                specialHoliday.sphdLimit.limitCarryoverDays = null;
+                self.currentItem().sphdLimit().limitCarryoverDays(null);
+            }    
+        }
+        
+        /** set default for tab 2 **/
+        setDefaultValueTab2(specialHoliday: any) {
+            var self = this;
+            if (specialHoliday.grantPeriodic.grantPeriodicMethod == model.GrantPeriodicMethod.DoNotAllow) {
+                self.currentItem().grantPeriodic().grantDay(null);        
             }
         }
 
@@ -618,8 +654,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     codes.push(item);
                 });
                 self.employmentNames(name.join(" + "));
-                    self.currentItem().subCondition().employmentList(codes);
-                
+                self.currentItem().subCondition().employmentList(codes);
+
             });
         }
 
@@ -1033,8 +1069,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         }
 
         export enum UseAtr {
-            NotUse = 0,
-            Use
+            NotUse = 0, //しない
+            Use //する
         }
     }
 }

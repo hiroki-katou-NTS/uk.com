@@ -218,19 +218,20 @@ public class WorkTimeSettingFinder {
 		} else {
 			for (PredetemineTimeSetting item : workTimeSetItems) {
 				WorkTimeSetting currentWorkTime = mapworkTimeItems.get(item.getWorkTimeCode());
+				List<TimezoneUse> useTimezones = item.getPrescribedTimezoneSetting()
+						.getLstTimezone().stream().filter(timezone -> {
+							return timezone.getUseAtr().equals(UseSetting.USE);
+						}).collect(Collectors.toList());
 				// || this.checkNotUse(item)
 				if (currentWorkTime == null
-						|| item.getPrescribedTimezoneSetting().getLstTimezone().isEmpty()) {
+						|| useTimezones.isEmpty()) {
 					continue;
 				} else {
-					TimezoneUse timezone1 = item.getPrescribedTimezoneSetting().getLstTimezone()
-							.get(FIRST_ITEM);
+					TimezoneUse timezone1 = useTimezones.get(FIRST_ITEM);
 					TimezoneUse timezone2 = null;
 					// if have 2 timezone
-					if (item.getPrescribedTimezoneSetting().getLstTimezone()
-							.size() >= TWO_TIMEZONE) {
-						timezone2 = item.getPrescribedTimezoneSetting().getLstTimezone()
-								.get(TWO_ITEM);
+					if (useTimezones.size() >= TWO_TIMEZONE) {
+						timezone2 = useTimezones.get(TWO_ITEM);
 					}
 					workTimeDtos
 							.add(new WorkTimeDto(currentWorkTime.getWorktimeCode().v(),
@@ -279,11 +280,12 @@ public class WorkTimeSettingFinder {
 	 */
 	private String createWorkTimeField(UseSetting useAtr, TimeWithDayAttr start,
 			TimeWithDayAttr end) {
-		if (useAtr.equals(UseSetting.USE)) {
-			return start.dayAttr().description + start.getRawTimeWithFormat() + " ~ "
-					+ end.dayAttr().description + end.getRawTimeWithFormat();
-		} else
-			return null;
+		TimeWithDayAttr startNew = new TimeWithDayAttr(
+				start.v() < 0 ? 60 * 24 + start.v() : start.v());
+		TimeWithDayAttr endNew = new TimeWithDayAttr(end.v() < 0 ? 60 * 24 + end.v() : end.v());
+
+		return start.dayAttr().description + startNew.getRawTimeWithFormat() + " ~ "
+				+ end.dayAttr().description + endNew.getRawTimeWithFormat();
 	}
 
 	/**

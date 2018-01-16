@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.command.outsideot.setting;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,6 +18,9 @@ import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumExtra60HRate;
 import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMed;
 import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMedRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -33,6 +37,9 @@ public class OutsideOTSettingSaveCommandHandler extends CommandHandler<OutsideOT
 	/** The super HD 60 H con med repository. */
 	@Inject
 	private SuperHD60HConMedRepository superHD60HConMedRepository;
+	
+	@Inject
+	private Com60HourVacationRepository com60HourVacationRepository;
 	
 	/** The Constant BEGIN_RATE_ZERO. */
 	public static final int BEGIN_RATE_ZERO = 0;
@@ -60,8 +67,13 @@ public class OutsideOTSettingSaveCommandHandler extends CommandHandler<OutsideOT
 		OutsideOTSetting domainSetting = command.toDomainSetting(companyId);
 		SuperHD60HConMed domainSupper = command.toDomainSuper(companyId);
 		
-		// check domain setting and supper
-		this.checkDomainSettingAndSuper(domainSetting, domainSupper);
+		Optional<Com60HourVacation> optionalCom60Hour = this.com60HourVacationRepository.findById(companyId);
+		if(optionalCom60Hour.isPresent()){
+			if(optionalCom60Hour.get().getSetting().getIsManage().equals(ManageDistinct.YES)){
+				// check domain setting and supper
+				this.checkDomainSettingAndSuper(domainSetting, domainSupper);
+			}
+		}
 		
 		// save domain
 		this.outsideOTSettingRepository.save(domainSetting);

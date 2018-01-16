@@ -31,7 +31,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ "AND s.ccgmtStandardMenuPK.classification = :menu_classification ORDER BY s.ccgmtStandardMenuPK.code ASC";
 	private final String FIND_BY_MENUCLASSIFICATION_OR_AFTER_LOGIN_DIS = SEL
 			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
-			+ "AND s.ccgmtStandardMenuPK.classification = :menu_classification OR s.afterLoginDisplay = :afterLoginDisplay "
+			+ "AND (s.ccgmtStandardMenuPK.classification = :menu_classification OR s.afterLoginDisplay = :afterLoginDisplay) "
 			+ "ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";
 
 	private final String GET_ALL_STANDARD_MENU_BY_ATR = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "

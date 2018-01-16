@@ -249,8 +249,6 @@ module nts.uk.at.view.kcp006.a {
 
         loadDataFromDB(lstDate, lstHoliday, lstEvent, workplaceId): JQueryPromise<any> {
             let dfdLoadDB = $.Deferred<any>();
-            lstHoliday = [];
-            lstEvent = [];
             // list holiday received from server
             let dfdGetHoliday = $.Deferred<any>();
             service.getPublicHoliday(lstDate)

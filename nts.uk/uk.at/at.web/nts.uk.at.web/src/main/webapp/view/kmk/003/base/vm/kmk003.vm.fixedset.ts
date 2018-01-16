@@ -240,7 +240,6 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData(){
-                    this.workTimeCode('');
                     this.offdayWorkTimezone.resetData();
                     this.commonSetting.resetData();
                     this.useHalfDayShift(false);

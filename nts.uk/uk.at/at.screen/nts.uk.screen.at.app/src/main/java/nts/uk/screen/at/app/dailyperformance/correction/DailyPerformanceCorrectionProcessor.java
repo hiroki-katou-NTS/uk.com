@@ -355,7 +355,7 @@ public class DailyPerformanceCorrectionProcessor {
 			dailyPerformans = repo.findDailyAuthority(roleId);
 		}
 		if (dailyPerformans.isEmpty()) {
-			throw new BusinessException("Msg_671");
+			 throw new BusinessException("Msg_671");
 		} else {
 			// NO.15
 			screenDto.setAuthorityDto(dailyPerformans);
@@ -556,11 +556,6 @@ public class DailyPerformanceCorrectionProcessor {
 								screenDto.setLock(data.getId(), "NO" + String.valueOf(item.getId()));
 								screenDto.setLock(data.getId(), "Name" + String.valueOf(item.getId()));
 							}
-							System.out.print("gia tri:"+ value);
-							if(item.getId() == 615) 
-							{
-								System.out.print("gia tri:"+ value);
-							}
 							cellDatas.add(new DPCellDataDto("NO" + String.valueOf(item.getId()), value ,
 									String.valueOf(item.getAttendanceAtr()), "label"));
 							cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()),
@@ -568,11 +563,27 @@ public class DailyPerformanceCorrectionProcessor {
 						}
 						
 					} else {
-						if(lock){
+						if (lock) {
 							screenDto.setLock(data.getId(), "A" + String.valueOf(item.getId()));
 						}
-						cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
-								String.valueOf(item.getAttendanceAtr()), "label"));
+						if (attendanceAtr == DailyAttendanceAtr.Time.value
+								|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
+							if (!value.equals("")) {
+								// convert HH:mm
+								int minute = Integer.parseInt(value);
+								int hours = Math.abs(minute / 60); 
+								int minutes =  Math.abs(minute) % 60;
+								value = String.format("%d:%02d", minute >0 ? hours : 0-hours, minutes);
+								cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
+										String.valueOf(item.getAttendanceAtr()), "label"));
+							}else{
+								cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
+										String.valueOf(item.getAttendanceAtr()), "label"));
+							}
+						} else {
+							cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
+									String.valueOf(item.getAttendanceAtr()), "label"));
+						}
 					}
 				};
 			}
