@@ -329,7 +329,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		entity = optionalEntity.get();
 		domain.saveToMemento(new JpaBasicScheduleSetMemento(entity));
 		entity.workTimeCode = StringUtil.isNullOrEmpty(domain.getWorkTimeCode(), true)
-				|| ("000").equals(domain.getWorkTimeCode()) ? "   " : domain.getWorkTimeCode();
+				|| ("000").equals(domain.getWorkTimeCode()) ? null : domain.getWorkTimeCode();
 
 		return entity;
 	}

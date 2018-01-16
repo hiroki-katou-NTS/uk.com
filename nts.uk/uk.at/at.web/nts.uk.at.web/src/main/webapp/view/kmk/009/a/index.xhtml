@@ -37,7 +37,7 @@
 								data-bind="ntsGridList:{
 									name: '#[KMK009_3]',
 									width: 450,
-									height: 368,
+									height: 380,
 									options: itemTotalTimes,								
 									optionsValue: 'totalCountNo',
 									primaryKey: 'totalCountNo',
@@ -231,7 +231,7 @@
 						<tr class="row">
 							<td>
 								<!-- A3_27 -->
-								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_23')}</div>
+								<div id="targetItemLb" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('KMK009_23')}</div>
 							</td>
 							<td>
 								<!-- A3_28 Open dialog KDL002-->
