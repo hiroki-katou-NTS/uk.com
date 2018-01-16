@@ -814,7 +814,7 @@ module nts.uk.com.view.cmm018.a {
                     self.lstAppType = data.lstAppType;
                     self.checkAddHistory(true);
                     let add: vmbase.ListHistory = new vmbase.ListHistory(-1, 
-                        data.startDate + '~' + self.ENDDATE_LATEST, data.startDate,self.ENDDATE_LATEST,'');
+                        data.startDate + '～' + self.ENDDATE_LATEST, data.startDate,self.ENDDATE_LATEST,'');
                     self.historyStr(add.dateRange);
                     let lstRoot: Array<vmbase.DataRootCheck> = [];
                      //display history new in screen main
@@ -838,7 +838,7 @@ module nts.uk.com.view.cmm018.a {
                         let day =  self.checkDate(startDate.getDate());
                         let endDateNew = startDate.getFullYear() + '/' + month +  '/' + day;
                         let old: vmbase.ListHistory = new vmbase.ListHistory(itemCurrent.id, 
-                            itemCurrent.startDate + '~' + endDateNew, itemCurrent.startDate, endDateNew, itemCurrent.overLap);
+                            itemCurrent.startDate + '～' + endDateNew, itemCurrent.startDate, endDateNew, itemCurrent.overLap);
                         if(checkReload){
                             _.each(self.listHistory(), function(item){
                                 if(item.id != self.idOld()){
@@ -1350,7 +1350,7 @@ module nts.uk.com.view.cmm018.a {
                     let sDate = itemHist.lstCompanyRoot[0].company.startDate;
                     let eDate = itemHist.lstCompanyRoot[0].company.endDate;
                     let overLap = itemHist.overLap;
-                    lstHist.push(new vmbase.ListHistory(itemHist.id, sDate + '~' + eDate, sDate, eDate, overLap == true ? '※' : '' ));
+                    lstHist.push(new vmbase.ListHistory(itemHist.id, sDate + '～' + eDate, sDate, eDate, overLap == true ? '※' : '' ));
                 });
                  let a: Array<vmbase.ListHistory> =  _.orderBy(lstHist, ["dateRange"], ["desc"]);
                 self.listHistory(a);
@@ -1368,7 +1368,7 @@ module nts.uk.com.view.cmm018.a {
                     let sDate = itemHist.lstWorkplaceRoot[0].workplace.startDate;
                     let eDate = itemHist.lstWorkplaceRoot[0].workplace.endDate;
                     let overLap = itemHist.overLap;
-                    lstHist.push(new vmbase.ListHistory(itemHist.id, sDate + '~' + eDate, sDate, eDate, overLap == true ? '※' : '' ));
+                    lstHist.push(new vmbase.ListHistory(itemHist.id, sDate + '～' + eDate, sDate, eDate, overLap == true ? '※' : '' ));
                 });
                  let a: Array<vmbase.ListHistory> =  _.orderBy(lstHist, ["dateRange"], ["desc"]);
                 self.listHistory(a);
@@ -1386,7 +1386,7 @@ module nts.uk.com.view.cmm018.a {
                     let sDate = itemHist.lstPersonRoot[0].person.startDate;
                     let eDate = itemHist.lstPersonRoot[0].person.endDate;
                     let overLap = itemHist.overLap;
-                    lstHist.push(new vmbase.ListHistory(itemHist.id, sDate + '~' + eDate, sDate, eDate, overLap == true ? '※' : '' ));
+                    lstHist.push(new vmbase.ListHistory(itemHist.id, sDate + '～' + eDate, sDate, eDate, overLap == true ? '※' : '' ));
                 });
                 let a: Array<vmbase.ListHistory> =  _.orderBy(lstHist, ["dateRange"], ["desc"]);
                 self.listHistory(a);
@@ -1643,7 +1643,7 @@ module nts.uk.com.view.cmm018.a {
                         let com = self.findRootComB(codeChanged);
                         //TH: item data
                         if(com != null && com !== undefined){
-                            self.historyStr(com.company.startDate + '~' + com.company.endDate);
+                            self.historyStr(com.company.startDate + '～' + com.company.endDate);
                             let name = self.findNameApp(com.company.employmentRootAtr == 2 ? com.company.confirmationRootType : com.company.applicationType, com.company.employmentRootAtr);
                             let appPhase = __viewContext.viewModel.viewmodelA.checklist(com.lstAppPhase);
                             let color: boolean = com.lstAppPhase.length > 0 ? true : false;
@@ -1665,7 +1665,7 @@ module nts.uk.com.view.cmm018.a {
                         }
                         let wp = self.findRootWpD(codeChanged);
                         if(wp != null && wp !== undefined){
-                            self.historyStr(wp.workplace.startDate + '~' + wp.workplace.endDate);
+                            self.historyStr(wp.workplace.startDate + '～' + wp.workplace.endDate);
                             let name = self.findNameApp(wp.workplace.employmentRootAtr == 2 ? wp.workplace.confirmationRootType : wp.workplace.applicationType, wp.workplace.employmentRootAtr);
                             let appPhase = __viewContext.viewModel.viewmodelA.checklist(wp.lstAppPhase);
                             let color: boolean = wp.lstAppPhase.length > 0 ? true : false;
@@ -1688,7 +1688,7 @@ module nts.uk.com.view.cmm018.a {
                         }
                         let ps = self.findRootPsF(codeChanged);
                         if(ps != null && ps !== undefined){
-                            self.historyStr(ps.person.startDate + '~' + ps.person.endDate);
+                            self.historyStr(ps.person.startDate + '～' + ps.person.endDate);
                             let name = self.findNameApp(ps.person.employmentRootAtr == 2 ? ps.person.confirmationRootType : ps.person.applicationType, ps.person.employmentRootAtr);
                             let appPhase = __viewContext.viewModel.viewmodelA.checklist(ps.lstAppPhase);
                             let color: boolean = ps.lstAppPhase.length > 0 ? true : false;
@@ -2028,7 +2028,7 @@ module nts.uk.com.view.cmm018.a {
                 //lay history cua common
                 _.each(root, function(itemRoot){
                     if(itemRoot.applicationType == null && itemRoot.employmentRootAtr ==0){
-                        appCommon.push(new vmbase.DataTree(itemRoot.approvalId, itemRoot.startDate + '~' + itemRoot.endDate,itemRoot.employmentRootAtr, []));
+                        appCommon.push(new vmbase.DataTree(itemRoot.approvalId, itemRoot.startDate + '～' + itemRoot.endDate,itemRoot.employmentRootAtr, []));
                     }
                 });
                 aa.push(new vmbase.DataTreeB('共通ルート',appCommon.length > 0 ? '●共通ルート' : '共通ルート', _.orderBy(appCommon, ["nameAppType"], ["desc"])));  
@@ -2037,7 +2037,7 @@ module nts.uk.com.view.cmm018.a {
                     let lstbyApp: Array<vmbase.Com> = [];
                     _.each(root, function(itemRoot){
                         if(item.value != 14 && item.value == itemRoot.applicationType && item.employRootAtr == itemRoot.employmentRootAtr){
-                            lstbyApp.push(new vmbase.Com(itemRoot.approvalId, itemRoot.startDate + '~' + itemRoot.endDate, itemRoot.employmentRootAtr));
+                            lstbyApp.push(new vmbase.Com(itemRoot.approvalId, itemRoot.startDate + '～' + itemRoot.endDate, itemRoot.employmentRootAtr));
                         }
                     });
                     if(item.value != 14){
@@ -2304,7 +2304,7 @@ module nts.uk.com.view.cmm018.a {
                     self.dataIB(data);
                     let lst = data.lstAppType;
                     let data2 = [];
-                    let rangeDate = data.startDate + '~' + self.ENDDATE_LATEST;
+                    let rangeDate = data.startDate + '～' + self.ENDDATE_LATEST;
                     self.historyStr(rangeDate);
                     let startDate = moment(data.startDate,'YYYY/MM/DD').toDate();
                     startDate.setDate(startDate.getDate() - 1);
