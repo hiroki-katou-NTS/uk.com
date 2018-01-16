@@ -71,6 +71,7 @@ module nts.uk.at.view.kal004.a.model {
             service.getCheckConditionCode().done((res) => {
                 self.checkSource = _.cloneDeep(res);                
                 self.getAlarmPattern();
+                dfd.resolve();
             }).fail((error) => {
                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
                 dfd.resolve();
