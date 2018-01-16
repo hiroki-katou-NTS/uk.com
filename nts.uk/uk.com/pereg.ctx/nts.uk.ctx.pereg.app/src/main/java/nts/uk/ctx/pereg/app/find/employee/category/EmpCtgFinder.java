@@ -360,10 +360,12 @@ public class EmpCtgFinder {
 			} else
 				return false;
 		} else {
-			if (!isSameCom)
-				return false;
+			if (!isSameCom) {
+				if(perInfoCtgAuth.getAllowOtherCompanyRef() == PersonInfoPermissionType.NO) return false;
+			}
+			/*
 			if (!(perInfoCtgAuth.getAllowOtherCompanyRef() == PersonInfoPermissionType.NO))
-				return false;
+				return false;*/
 			if (perInfoCtgAuth.getAllowOtherRef() == PersonInfoPermissionType.YES) {
 				List<PersonInfoItemAuth> lstItemAuths = itemAuth.getAllItemAuth(roleId, categoryId);
 				return lstItemAuths.stream().filter(item -> item.getOtherAuth().value == 1).collect(Collectors.toList())
