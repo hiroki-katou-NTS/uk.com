@@ -220,8 +220,8 @@
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_11')}</td>
 											<td>
 												<div class="info">
-													<span data-bind="text: _emp.employeeCode"></span> 
-													<span data-bind="text:  _emp.employeeName"></span>
+													<span data-bind="text: _emp.employeeCode, attr: { title: _emp.employeeCode }"></span> 
+													<span data-bind="text:  _emp.employeeName, attr: { title: _emp.employeeName }"></span>
 													<span data-bind="text:  _pers.gender() ? ('(' + _pers.gender() + ')') : ''"></span>
 												</div>
 											</td>

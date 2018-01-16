@@ -183,6 +183,20 @@
 	overflow: hidden;
 }
 
+.person-info td>div.info>* {
+	display: inline-block;
+	max-width: 215px;
+	text-overflow: ellipsis;
+	height: 30px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.person-info td>div.info>*:first-child {
+	min-width: 95px;
+	max-width: 95px;
+}
+
 .person-info td>div.info.first {
 	min-width: 95px;
 	max-width: 95px;

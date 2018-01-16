@@ -157,7 +157,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                         }
                         setShared('CPS017_PARAMS', params);
 
-                        modal('/view/cps/017/a/index.xhtml', { title: '', height:900, width: 1500 }).onClosed(function(): any {
+                        modal('/view/cps/017/a/index.xhtml', { title: '', height: 900, width: 1500 }).onClosed(function(): any {
                         });
                     }).ifNo(() => {
                         self.listItems.valueHasMutated();
@@ -182,24 +182,25 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 formatSelection = currentItem.formatSelection(),
                 listItems: Array<SelectionItem> = self.listItems(),
                 _selectionItemName = _.find(listItems, x => x.selectionItemName == currentItem.selectionItemName()),
-                
+
                 command = ko.toJS(currentItem);
 
             //「個人情報の選択項目」を更新する
             service.updateDataSelectionItem(command).done(function() {
-                self.listItems.removeAll();
-                //画面項目「選択項目名称一覧：選択項目名称一覧」を更新する
-                service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
-                    if (itemList && itemList.length) {
-                        itemList.forEach(x => self.listItems.push(x));
-                    }
-                    let oldIndex = _.findIndex(itemList, x => x.selectionItemId == currentItem.selectionItemId());
-                    let newItem = itemList[oldIndex];
-                    currentItem.selectionItemId(newItem.selectionItemId);
-                    $("#selectionItemName").focus();
+
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    self.listItems.removeAll();
+                    //画面項目「選択項目名称一覧：選択項目名称一覧」を更新する
+                    service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                        if (itemList && itemList.length) {
+                            itemList.forEach(x => self.listItems.push(x));
+                        }
+                        let oldIndex = _.findIndex(itemList, x => x.selectionItemId == currentItem.selectionItemId());
+                        let newItem = itemList[oldIndex];
+                        currentItem.selectionItemId(newItem.selectionItemId);
+                        $("#selectionItemName").focus();
+                    });
                 });
-                
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.listItems.valueHasMutated();
 
             }).fail(error => {
@@ -239,9 +240,11 @@ module nts.uk.com.view.cps016.a.viewmodel {
                                         self.registerDataSelectioItem();
                                     }
                                 });
-                                $("#selectionItemName").focus();
+
                                 self.listItems.valueHasMutated();
-                                nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                                    $("#selectionItemName").focus();
+                                });
                             });
 
                         }
@@ -265,7 +268,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 params = {
                     isDialog: true,
                     selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId)
-                        
+
                 }
             setShared('CPS017_PARAMS', params);
 

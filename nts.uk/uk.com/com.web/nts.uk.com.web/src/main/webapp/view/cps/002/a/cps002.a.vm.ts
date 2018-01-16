@@ -534,6 +534,11 @@ module cps002.a.vm {
                         } else {
                             self.initSettingSelectedCode(result[0].settingCode);
                         }
+                    } else {
+                        if (!_.find(result, ctg => { return self.initSettingSelectedCode() == ctg.settingCode; })) {
+                            self.initSettingSelectedCode(result[0].settingCode);
+                        }
+
                     }
                     self.initSettingSelectedCode.valueHasMutated();
                     $("#initSearchBox input").focus();
