@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_REG_IRREG_TIME_MON")
+@Table(name = "KRCDT_MON_REG_IRREG_TIME")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcdtMonRegIrregTime extends UkJpaEntity implements Serializable {

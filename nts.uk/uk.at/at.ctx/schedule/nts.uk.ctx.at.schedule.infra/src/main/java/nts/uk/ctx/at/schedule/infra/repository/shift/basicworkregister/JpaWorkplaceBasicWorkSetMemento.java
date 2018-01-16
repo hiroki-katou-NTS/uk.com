@@ -9,7 +9,6 @@ import java.util.List;
 
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkSetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtWorkplaceWorkSet;
 
 /**
@@ -42,9 +41,9 @@ public class JpaWorkplaceBasicWorkSetMemento implements WorkplaceBasicWorkSetMem
 	 * shift.basicworkregister.WorkplaceId)
 	 */
 	@Override
-	public void setWorkPlaceId(WorkplaceId workplaceId) {
+	public void setWorkPlaceId(String workplaceId) {
 		this.typeValue.stream().forEach(item -> {
-			item.getKscmtWorkplaceWorkSetPK().setWorkplaceId(workplaceId.v());
+			item.getKscmtWorkplaceWorkSetPK().setWorkplaceId(workplaceId);
 		});
 	}
 

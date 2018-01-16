@@ -220,10 +220,6 @@ module nts.uk.at.view.kmk010.a {
                     });
                     
                     if (!stopLoop) {
-                        self.startPage().done(() => {
-                            service.initTooltip();
-                            nts.uk.ui.block.clear();
-                        });
                         return;    
                     }
                     

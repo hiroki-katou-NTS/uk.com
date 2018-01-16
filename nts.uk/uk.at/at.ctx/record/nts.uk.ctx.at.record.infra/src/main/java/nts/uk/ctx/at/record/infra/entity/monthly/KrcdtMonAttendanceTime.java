@@ -17,11 +17,11 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAggrTotalSpt;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtMonRegIrregTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.flex.KrcdtMonFlexTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.KrcdtMonAggrTotalWrk;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayusetime.KrcdtMonHldyUseTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtMonAggrHdwkTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtMonHdwkTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonAggrHdwkTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonHdwkTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonAggrOverTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonOverTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -50,10 +50,10 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 
 	/** 集計日数 */
 	@Column(name = "AGGREGATE_DAYS")
-	public double aggregateDays;
+	public Double aggregateDays;
 	
 	/** 法定労働時間 */
-	@Column(name = "LEGAL_WORKING_TIME")
+	@Column(name = "STAT_WORKING_TIME")
 	public int statutoryWorkingTime;
 
     /** 実働時間：月別実績の通常変形時間 */
@@ -66,7 +66,7 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 
 	/** 総労働時間：月別実績の休暇使用時間 */
     @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)
-    public KrcdtMonHldyUseTime krcdtMonHldyUseTime;
+    public KrcdtMonVactUseTime krcdtMonVactUseTime;
 
 	/** 総労働時間：集計総労働時間 */
     @OneToOne(cascade = CascadeType.ALL, mappedBy="krcdtMonAttendanceTime", orphanRemoval = true)

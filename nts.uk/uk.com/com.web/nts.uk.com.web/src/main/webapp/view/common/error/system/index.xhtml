@@ -5,9 +5,13 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="/master/noheader.xhtml">
+	<ui:composition template="/master/freelayout.xhtml">
 		<ui:define name="htmlHead">
 			<title></title>
+			<script>
+				var dialogSize = { width: 800, height: 300 };
+				var dialogCloseButton = true;
+			</script>
 			<com:scriptfile set="IGNITE" />
 
 			<com:stylefile path="../common.error.style.css" />
