@@ -711,7 +711,6 @@ module nts.custombinding {
                         <div class="timepoint">
                             <input data-bind="ntsTimeWithDayEditor: { 
                                         name: itemName,
-                                        name: nameid,
                                         constraint: nameid,
                                         value: value,
                                         enable: editable, 
