@@ -12,12 +12,21 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureCdNameDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureEmployDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryHeaderDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.EmpCdNameDto;
+import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -30,8 +39,10 @@ public class ClosureHistoryFinder {
 	/** The repository. */
 	@Inject
 	private ClosureRepository repository;
-
-
+	@Inject
+	private ShareEmploymentAdapter shareEmploymentAdapter;
+	@Inject
+	private ClosureEmploymentRepository closureEmpRepo;
 	/**
 	 * Find all.
 	 *
@@ -92,5 +103,38 @@ public class ClosureHistoryFinder {
 		}
 		return dto;
 	}
+	
+	/**
+	 * 締め日の割付を起動する
+	 * 
+	 * @param referDate
+	 */
+	public ClosureEmployDto getClosureEmploy() {
+		// Get companyID.
+		LoginUserContext loginUserContext = AppContexts.user();
+		String companyId = loginUserContext.companyId();
+
+		//Get List Employment Dto by companyId. 雇用を取得する 
+		List<EmpCdNameImport> data = shareEmploymentAdapter.findAll(companyId);
+		List<EmpCdNameDto> empCdNameDtoList = data.stream().map(x -> {
+			return new EmpCdNameDto(x.getCode(), x.getName(), null);
+		}).collect(Collectors.toList());
+		// Get List Closure Dom by company Id and UseAtr = 1. 就業の締めを取得する
+		List<ClosureHistoryFindDto> findAllClosure = this.findAll().stream()
+				.filter(x -> this.repository.findById(companyId, x.getId()).get().getUseClassification() == UseClassification.UseClass_Use).collect(Collectors.toList());
+		
+		// Map list Employment Dto and list EmployClosure Dom. 取得した雇用コードをもとにドメイン「雇用に紐づく就業締め」を取得する
+		empCdNameDtoList.stream().forEach(x->{
+			Optional<ClosureEmployment> closureEmp = closureEmpRepo.findByEmploymentCD(companyId, x.getCode());
+			if(!closureEmp.isPresent()){
+				x.setClosureId(null);
+			}else{
+				x.setClosureId(closureEmp.get().getClosureId());
+			}
+		});
+		
+		return new ClosureEmployDto(empCdNameDtoList, findAllClosure);
+	}
+	
 
 }

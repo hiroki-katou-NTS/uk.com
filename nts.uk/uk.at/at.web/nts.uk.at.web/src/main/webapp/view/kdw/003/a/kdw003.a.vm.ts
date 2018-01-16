@@ -245,6 +245,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     endDate: moment(self.dateRanger().endDate).utc().toISOString()
                 },
                 displayFormat : 0,
+                initScreen: 0,
                 lstEmployee: [],
                 formatCodes: self.formatCodes()
             };
@@ -508,10 +509,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 let param = {
                     dateRange: {
-                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                        startDate:  self.displayFormat() === 1 ?  moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                        endDate:  self.displayFormat() === 1 ?  moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
                     },
-                    displayFormat : 1,
+                    displayFormat : self.displayFormat(),
+                    initScreen: 1,
                     lstEmployee: lstEmployee,
                     formatCodes: self.formatCodes()
                 };
@@ -575,10 +577,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (errorCodes != undefined) {
                         let param = {
                             dateRange: {
-                                startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                                endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                                startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                                endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
                             },
                             lstEmployee: lstEmployee,
+                            displayFormat : self.displayFormat(),
                             errorCodes: errorCodes,
                             formatCodes: self.formatCodes()
                         };
@@ -620,11 +623,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             lstEmployee = self.lstEmployee();
                         }
                         let param = {
-                            dateRange: {
-                                startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                                endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                           dateRange: {
+                                startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                                endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
                             },
                             lstEmployee: lstEmployee,
+                            displayFormat : self.displayFormat(),
                             formatCodes: data
                         };
                         nts.uk.ui.block.invisible();
@@ -1127,9 +1131,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     },
                     { name: 'TextEditorNumberSeparated', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } },
                     { name: 'TextEditorTimeShortHM', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } },
-                    { name: 'ComboboxCalc', options: self.comboItemsCalc(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
-                    { name: 'ComboboxReason', options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
-                    { name: 'ComboboxDoWork', options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
+                    { name: 'ComboboxCalc', options: self.comboItemsCalc(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                    { name: 'ComboboxReason', options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                    { name: 'ComboboxDoWork', options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                     {
                         name: 'FlexImage', source: 'ui-icon ui-icon-locked', click: function(key, rowId, evt) {
                             let data = $("#dpGrid").igGrid("getCellValue", rowId, key);

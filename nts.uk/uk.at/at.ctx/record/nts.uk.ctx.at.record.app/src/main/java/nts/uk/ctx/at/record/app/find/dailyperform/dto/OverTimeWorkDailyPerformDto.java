@@ -30,7 +30,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class OverTimeWorkDailyPerformDto {
 
 	/** 残業枠時間: 残業枠時間 */
-	@AttendanceItemLayout(layout = "A", isList = true, jpPropertyName="残業枠時間", listMaxLength = 10, setFieldWithIndex = "overtimeFrameNo")
+	@AttendanceItemLayout(layout = "A", jpPropertyName="残業枠時間", listMaxLength = 10, indexField = "overtimeFrameNo")
 	private List<OverTimeFrameTimeDto> overTimeFrameTime;
 
 	/** 残業枠時間帯: 残業枠時間帯 */
@@ -43,12 +43,12 @@ public class OverTimeWorkDailyPerformDto {
 
 	/** 残業拘束時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "D", jpPropertyName="残業拘束時間")
-	@AttendanceItemValue(itemId =745, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer overTimeSpentAtWork;
 
 	/** 変形法定内残業: 勤怠時間 */
 	@AttendanceItemLayout(layout = "E", jpPropertyName="変形法定内残業")
-	@AttendanceItemValue(itemId = 551, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer irregularWithinPrescribedOverTimeWork;
 
 	/** フレックス時間: フレックス時間 */

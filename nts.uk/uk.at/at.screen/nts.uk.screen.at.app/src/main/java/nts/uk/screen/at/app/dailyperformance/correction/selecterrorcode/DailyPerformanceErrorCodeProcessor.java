@@ -85,7 +85,7 @@ public class DailyPerformanceErrorCodeProcessor {
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
-			List<DailyPerformanceEmployeeDto> lstEmployee, int displayFormat, CorrectionOfDailyPerformance correct,
+			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer displayFormat, CorrectionOfDailyPerformance correct,
 			List<String> errorCodes, List<String> formatCodes) {
 		String sId = AppContexts.user().employeeId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
@@ -139,12 +139,6 @@ public class DailyPerformanceErrorCodeProcessor {
 		// date + Acquire personalized information + Acquire error alarm
 		// information
 		screenDto.setLstData(getListData(screenDto.getLstEmployee(), dateRange));
-		/// 対応する「日別実績」をすべて取得する-- lay tat ca thanh tich theo ngay tuong ung
-		//// 日別実績の勤務情報
-//		List<DailyModifyResult> results = dailyModifyQueryProcessor
-//				.initScreens(new DailyModifyQuery(listEmployeeId, dateRange.toListDate()));
-//		Map<String, DailyModifyResult> resultDailyMap = results.stream()
-//				.collect(Collectors.toMap((x) -> x.getEmployId() + "|" + x.getDate(), Function.identity()));
 		/// アルゴリズム「対象日に対応する社員の実績の編集状態を取得する」を実行する | Execute "Acquire edit status
 		/// of employee's record corresponding to target date"| lay ve trang
 		/// thai sua cua thanh tich nhan vien tuong ung
@@ -206,6 +200,13 @@ public class DailyPerformanceErrorCodeProcessor {
 		screenDto.getLstFixedHeader().forEach(column ->{
 			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
 		});
+		if (displayFormat == 2) {
+			// only filter data error
+			Map<String, String> listEmployeeError = lstError.stream()
+					.collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getEmployeeId()));
+			listEmployeeId = listEmployeeId.stream().filter(x -> listEmployeeError.containsKey(x))
+					.collect(Collectors.toList());
+		}
 		/// 対応する「日別実績」をすべて取得する-- lay tat ca thanh tich theo ngay tuong ung
 		//// 日別実績の勤務情報
 		List<DailyModifyResult> results = new ArrayList<>();

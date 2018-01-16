@@ -20,7 +20,7 @@ public class UpdateFixedConWorkRecordCmdHandler extends CommandHandler<FixedCond
 		FixedConditionWorkRecordCmd fixedConditionWorkRecordCmd = context.getCommand();
 		FixedConditionWorkRecord fixedConditionWorkRecord =fixedConditionWorkRecordCmd.fromDomain();
 		Optional<FixedConditionWorkRecord> checkData = repo.getFixedConWRByCode(
-				fixedConditionWorkRecord.getErrorAlarmID(), fixedConditionWorkRecord.getFixConWorkRecordNo().value);
+				fixedConditionWorkRecord.getErrorAlarmID());
 		if(checkData.isPresent()) {
 			repo.updateFixedConWorkRecord(fixedConditionWorkRecord);
 		} else {

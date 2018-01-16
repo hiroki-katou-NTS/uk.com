@@ -80,7 +80,7 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 					.find(new PpemtSelItemOrderPK(selItemOrder.getSelectionID()), PpemtSelItemOrder.class).get();
 			selOrder.setDispOrder(selOrderUi.dispOrder);
 			selOrder.setInitSelection(selOrderUi.initSelection);
-			lstEntity.add(toEntity(selItemOrder));
+			lstEntity.add(selOrder);
 		}
 		this.commandProxy().updateAll(lstEntity);
 	}

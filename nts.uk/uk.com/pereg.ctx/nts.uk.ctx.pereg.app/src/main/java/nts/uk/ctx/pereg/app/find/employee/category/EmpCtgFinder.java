@@ -179,10 +179,12 @@ public class EmpCtgFinder {
 			return infoList;
 		query.setCtgType(perInfoCtg.getCategoryType().value);
 		// get combobox object
-		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED)
+		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED) {
 			infoList = getInfoListOfOptionalCtg(perInfoCtg, query);
-		query.setCategoryCode(perInfoCtg.getCategoryCode().v());
-		infoList = layoutingProcessor.getListFirstItems(query);
+		} else {
+			query.setCategoryCode(perInfoCtg.getCategoryCode().v());
+			infoList = layoutingProcessor.getListFirstItems(query);
+		}
 
 		boolean isSelf = query.getEmployeeId().equals(empIdCurrentLogin);
 		PersonInfoCategoryAuth ctgAuth = personInfoCategoryAuthRepository
@@ -360,14 +362,18 @@ public class EmpCtgFinder {
 			} else
 				return false;
 		} else {
-			if (!isSameCom)
-				return false;
+			if (!isSameCom) {
+				if(perInfoCtgAuth.getAllowOtherCompanyRef() == PersonInfoPermissionType.NO) return false;
+			}
+			/*
 			if (!(perInfoCtgAuth.getAllowOtherCompanyRef() == PersonInfoPermissionType.NO))
-				return false;
+				return false;*/
 			if (perInfoCtgAuth.getAllowOtherRef() == PersonInfoPermissionType.YES) {
 				List<PersonInfoItemAuth> lstItemAuths = itemAuth.getAllItemAuth(roleId, categoryId);
-				return lstItemAuths.stream().filter(item -> item.getOtherAuth().value == 1).collect(Collectors.toList())
-						.size() != lstItemAuths.size();
+				int hiddenItemsSize =  lstItemAuths.stream().filter(item -> item.getOtherAuth().value == 1).collect(Collectors.toList())
+						.size();
+				int itemSize = lstItemAuths.size();
+				return hiddenItemsSize != itemSize;
 			} else
 				return false;
 		}

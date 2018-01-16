@@ -83,7 +83,7 @@ module ccg014.a.viewmodel {
                  block.invisible();
                 if (self.isCreate() === true) {
                     service.createTitleMenu(titleMenu).done((data) => {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         self.reloadData().done(() => {
                             self.selectTitleMenuByCode(titleMenuCD);
                         });
@@ -95,7 +95,7 @@ module ccg014.a.viewmodel {
                 }
                 else {
                     service.updateTitleMenu(titleMenu).done((data) => {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        nts.uk.ui.dialog.infot({ messageId: "Msg_15" });
                         console.log(data);
                         self.reloadData();
                     }).always(() => {
