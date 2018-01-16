@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave;
 
+import javax.ejb.Stateless;
+
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSetting;
@@ -12,6 +15,8 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.Kocm
 /**
  * The Class JpaCompensOccurrenceSettingGetMemento.
  */
+@Stateless
+@NoArgsConstructor
 public class JpaCompensOccurrenceSettingGetMemento implements CompensatoryOccurrenceSettingGetMemento {
     
     /** The entity. */

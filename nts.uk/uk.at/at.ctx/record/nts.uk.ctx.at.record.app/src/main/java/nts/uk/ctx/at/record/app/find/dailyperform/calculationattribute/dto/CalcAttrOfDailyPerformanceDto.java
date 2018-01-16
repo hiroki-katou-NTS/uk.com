@@ -40,6 +40,6 @@ public class CalcAttrOfDailyPerformanceDto implements ConvertibleAttendanceItem 
 
 	/** 乖離時間: 乖離時間の自動計算設定 */
 	@AttendanceItemLayout(layout = "F", jpPropertyName = "乖離時間")
-	@AttendanceItemValue(itemId = 640, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private int divergenceTime;
 }

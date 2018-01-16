@@ -11,23 +11,23 @@ public class HolidayDailyPerformDto {
 
 	/** 年休: 日別実績の年休 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "年休")
-	private AnnualLeaveDailyPerformDto annualLeave;
+	private HolidayUseTimeDto annualLeave;
 
 	/** 特別休暇: 日別実績の特別休暇 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "特別休暇")
-	private SpecialHolidayDailyPerformDto specialHoliday;
+	private HolidayUseTimeDto specialHoliday;
 
 	/** 超過有休: 日別実績の超過有休 */
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "超過有休")
-	private ExcessSalariesDailyPerformDto excessSalaries;
+	private HolidayUseTimeDto excessSalaries;
 
 	/** 代休: 日別実績の代休 */
 	@AttendanceItemLayout(layout = "D", jpPropertyName = "代休")
-	private CompensatoryLeaveDailyPerformDto compensatoryLeave;
+	private HolidayUseTimeDto compensatoryLeave;
 
 	/** 積立年休: 日別実績の積立年休 */
 	@AttendanceItemLayout(layout = "E", jpPropertyName = "積立年休")
-	@AttendanceItemValue(itemId = 547, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer retentionYearly;
 
 	/** 時間消化休暇: 日別実績の時間消化休暇 */
@@ -36,6 +36,6 @@ public class HolidayDailyPerformDto {
 
 	/** 欠勤: 日別実績の欠勤 */
 	@AttendanceItemLayout(layout = "G", jpPropertyName = "欠勤")
-	@AttendanceItemValue(itemId = 548, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer absence;
 }
