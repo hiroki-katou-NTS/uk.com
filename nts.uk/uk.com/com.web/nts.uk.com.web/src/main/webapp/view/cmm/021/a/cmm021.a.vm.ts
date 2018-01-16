@@ -268,10 +268,10 @@ module nts.uk.com.view.cmm021.a {
 
                 this.columns = ko.observableArray([
                     { headerText: '', key: 'employeeId', width: 150, hidden: true },
-                    { headerText: nts.uk.resource.getText('CMM021_13'), key: 'loginId', width: 150 },
-                    { headerText: nts.uk.resource.getText('CMM021_14'), key: 'employeeCode', width: 150 },
-                    { headerText: nts.uk.resource.getText('CMM021_15'), key: 'personName', width: 150 },
-                    { headerText: nts.uk.resource.getText('CMM021_17'), key: 'other', width: 70, formatter: lockIcon }
+                    { headerText: nts.uk.resource.getText('CMM021_13'), key: 'loginId', width: 135 },
+                    { headerText: nts.uk.resource.getText('CMM021_14'), key: 'employeeCode', width: 135 },
+                    { headerText: nts.uk.resource.getText('CMM021_15'), key: 'personName', width: 135 },
+                    { headerText: nts.uk.resource.getText('CMM021_17'), key: 'other', width: 60, formatter: lockIcon }
                 ]);
             }
 

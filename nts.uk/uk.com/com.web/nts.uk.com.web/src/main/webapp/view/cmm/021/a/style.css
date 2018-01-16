@@ -1,12 +1,12 @@
 .master-list-select {
 	width: 500px;
-	padding: 40px;
+	padding: 30px;
 	height: 1000px;
 	float: left;
 }
 
 .caret-right {
-	width: 580px;
+	width: 520px;
 	border-radius: 10px;
 }
 
@@ -52,11 +52,12 @@
 	padding-left: 23px;
 }
 .show-text-user-id{
-	width: 700px;
+	width: 470px;
+	padding-left: 28px;
 }
 
 .right-content {
-	margin-left: 100px;
+	margin-left: 20px;
 	float: left;
 	padding-top: 60px;
 }
@@ -93,9 +94,14 @@
 
 
 .screen-c-mode {
+	width: 520px;
 	padding-top: 30px;
 	float: left;
 }
+.ntsCheckBox-label{
+	width: 180px;
+}
+
 .screen-c-mode .padding-checkbox{
 	padding-left: 0px;
 }
