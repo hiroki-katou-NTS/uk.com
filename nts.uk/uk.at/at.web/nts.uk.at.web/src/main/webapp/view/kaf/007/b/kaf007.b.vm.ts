@@ -111,7 +111,23 @@ module nts.uk.at.view.kaf007.b {
                             self.workTypeCodes = detailData.workTypeCodes;
                             self.workTimeCodes = detailData.workTimeCodes;
                             //画面モード(表示/編集)
-                            self.editable = ko.observable(detailData.OutMode == 0 ? true: false);
+                            //self.editable = ko.observable(detailData.OutMode == 0 ? true: false);                            
+                            
+                            //実績の内容
+                            service.getRecordWorkInfoByDate(moment(self.appWorkChange().application().applicationDate()).format(self.dateFormat)).done((recordWorkInfo) => {
+                                //Binding data
+                                ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
+                                 //Focus process
+                                self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });
+                                //フォーカス制御
+                                self.changeFocus('#inpStartTime1'); 
+                                
+                                dfd.resolve();
+                            }).fail((res) => {
+                                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                                nts.uk.ui.block.clear();
+                                dfd.reject();
+                            });
                             
                             dfd.resolve();
                             nts.uk.ui.block.clear();
@@ -122,16 +138,7 @@ module nts.uk.at.view.kaf007.b {
                             } );
                             dfd.reject();
                         } );
-                        //実績の内容
-                        service.getRecordWorkInfoByDate(moment(self.appWorkChange().application().applicationDate()).format(self.dateFormat)).done((recordWorkInfo) => {
-                            //Binding data
-                            ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
-                            dfd.resolve();
-                        }).fail((res) => {
-                            dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                            nts.uk.ui.block.clear();
-                            dfd.reject();
-                        });
+                        
                         dfd.resolve();
                     }
                 } );
