@@ -17,6 +17,9 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.function.control.Ksf
 
 @Stateless
 public class JpaScheFuncControlRepository extends JpaRepository implements FunctionControlRepository {	
+	/**
+	 * Get Schedule Function Control data
+	 */
 	@Override
 	public ScheFuncControl getScheFuncControl(String companyId) {
 		KsfstScheFuncControlPK primaryKey = new KsfstScheFuncControlPK(companyId);
@@ -24,6 +27,9 @@ public class JpaScheFuncControlRepository extends JpaRepository implements Funct
 		return this.queryProxy().find(primaryKey, KsfstScheFuncControl.class).map(x -> toDomain(x)).get();
 	}
 
+	/**
+	 * Update Schedule Function Control data
+	 */
 	@Override
 	public void updateScheFuncControl(ScheFuncControl scheFuncControl) {
 		KsfstScheFuncControlPK primaryKey = new KsfstScheFuncControlPK(scheFuncControl.getCompanyId());		
@@ -71,6 +77,11 @@ public class JpaScheFuncControlRepository extends JpaRepository implements Funct
 		this.commandProxy().update(ksfstScheFuncControl);
 	}
 	
+	/**
+	 * To domain
+	 * @param entity
+	 * @return
+	 */
 	private static ScheFuncControl toDomain(KsfstScheFuncControl entity) {
 		if (entity == null) {
 			return null;
@@ -94,9 +105,15 @@ public class JpaScheFuncControlRepository extends JpaRepository implements Funct
 		return domain;
 	}
 	
+	/**
+	 * To domain for conditions
+	 * @param entity
+	 * @return
+	 */
 	private static ScheFuncCond toDomainScheFuncCond(KsfstScheFuncCondition entity) {
 		ScheFuncCond domain = ScheFuncCond.createFromJavaType(entity.ksfstScheFuncConditionPK.companyId,
 				entity.ksfstScheFuncConditionPK.conditionNo);
+		
 		return domain;
 	}
 }
