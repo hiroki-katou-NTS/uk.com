@@ -97,11 +97,13 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             //subscribe upper Limit
             self.selectUppper.subscribe(function(isUpper) {
                 self.loadBySelectUse(self.checkSelectUse(), self.selectUnder(), isUpper);
+                self.setRequiredTargetItem();
             });
 
             //subscribe under Limit
             self.selectUnder.subscribe(function(isUnder) {
                 self.loadBySelectUse(self.checkSelectUse(), isUnder, self.selectUppper());
+                self.setRequiredTargetItem();
             });
             
             self.checkedCountAtr = ko.observable();
@@ -120,10 +122,23 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         }
 
         /**
+         * set required text editor
+         */
+        private setRequiredTargetItem(): void {
+            let self = this;
+            // set label is optional
+            if (self.selectUppper() == 0 && self.selectUnder() == 0) { 
+                $('#targetItemLb').css("border-color", "#97D155");
+            } 
+            // set label is required
+            else {
+                $('#targetItemLb').css("border-color", "#FAC002");
+            }    
+        }
+        
+        /**
          * check select use by use
          */
-
-
         private checkSelectUse(): boolean {
             var self = this;
             return ((self.selectUse() === "1") || self.selectUse() === 1);
@@ -280,7 +295,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                         self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail.summaryAtr()].value);
                                     } 
                                     if (_.isUndefined(self.attendanceModel.attendanceItemId())) {
-                                        self.attendanceModel.update(0, null);
+                                        self.attendanceModel.update(null, "選択なし");
                                         nts.uk.ui.windows.setShared('SelectedAttendanceId', "", true);        
                                     } else {
                                         let selectID: Array<any> = _.filter(dataRes, function (item) {
@@ -542,8 +557,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     if (typeof dailyAttendanceItem[0] != 'undefined') {
                         self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);
                     } 
-                    else if (typeof atdSelected != 'undefined'){
-                        self.attendanceModel.update(null, null);
+                    else if (_.isEmpty(atdSelected) && !_.isUndefined(atdSelected)){
+                        self.attendanceModel.update(null, "選択なし");
                     }
                 });
             });
