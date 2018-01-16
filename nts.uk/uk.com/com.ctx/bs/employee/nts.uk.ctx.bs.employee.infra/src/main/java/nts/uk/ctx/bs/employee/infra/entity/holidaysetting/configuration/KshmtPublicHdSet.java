@@ -43,18 +43,6 @@ public class KshmtPublicHdSet extends UkJpaEntity implements Serializable {
     /** The is manage com public hd. */
     @Column(name = "IS_MANAGE_COM_PUBLIC_HD")
     private int isManageComPublicHd;
-    
-    /** The is manage S pub hd. */
-    @Column(name = "IS_MANAGE_S_PUB_HD")
-    private int isManageSPubHd;
-   
-    /** The is manage wkp pub hd. */
-    @Column(name = "IS_MANAGE_WKP_PUB_HD")
-    private int isManageWkpPubHd;
-   
-    /** The is manage emp pub hd. */
-    @Column(name = "IS_MANAGE_EMP_PUB_HD")
-    private int isManageEmpPubHd;
    
     /** The public hd manage atr. */
     @Column(name = "PUBLIC_HD_MANAGE_ATR")

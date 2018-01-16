@@ -9,17 +9,14 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(KshmtPublicHdSet.class)
 public class KshmtPublicHdSet_ { 
 
-    public static volatile SingularAttribute<KshmtPublicHdSet, Integer> isManageSPubHd;
     public static volatile SingularAttribute<KshmtPublicHdSet, Integer> period;
     public static volatile SingularAttribute<KshmtPublicHdSet, Date> fullDate;
     public static volatile SingularAttribute<KshmtPublicHdSet, Integer> isManageComPublicHd;
     public static volatile SingularAttribute<KshmtPublicHdSet, Integer> publicHdManageAtr;
     public static volatile SingularAttribute<KshmtPublicHdSet, Integer> determineStartD;
     public static volatile SingularAttribute<KshmtPublicHdSet, Integer> dayMonth;
-    public static volatile SingularAttribute<KshmtPublicHdSet, Integer> isManageWkpPubHd;
     public static volatile SingularAttribute<KshmtPublicHdSet, Integer> isWeeklyHdCheck;
     public static volatile SingularAttribute<KshmtPublicHdSet, Integer> exclusVer;
-    public static volatile SingularAttribute<KshmtPublicHdSet, Integer> isManageEmpPubHd;
     public static volatile SingularAttribute<KshmtPublicHdSet, String> cid;
 
 }
