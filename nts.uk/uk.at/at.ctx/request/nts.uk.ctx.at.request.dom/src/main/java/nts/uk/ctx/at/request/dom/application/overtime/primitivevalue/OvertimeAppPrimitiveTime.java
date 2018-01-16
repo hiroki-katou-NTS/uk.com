@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.TimeRange;
  * @author loivt
  * 残業申請時間
  */
-@TimeRange(min = "-0:01", max = "48:00")
+@TimeRange(min = "00:00", max = "48:00")
 public class OvertimeAppPrimitiveTime extends TimeDurationPrimitiveValue<OvertimeAppPrimitiveTime> {
 
 	
@@ -14,7 +14,6 @@ public class OvertimeAppPrimitiveTime extends TimeDurationPrimitiveValue<Overtim
 
 	public OvertimeAppPrimitiveTime(Integer rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 }
