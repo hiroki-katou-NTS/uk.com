@@ -37,6 +37,7 @@ module a2 {
         
         dataSourceOneDaySimpleMode: KnockoutObservableArray<TimeZoneModel>;
         fixTableOptionOneDaySimpleMode: any;
+        isEnableTimeRangeOneDaySimpleMode: KnockoutObservable<boolean>;
         
         // Defined variable flow mode
         roundingProcsses: KnockoutObservableArray<any>;
@@ -53,7 +54,6 @@ module a2 {
         workTimeDailyAtr: KnockoutObservable<number>
         tabMode: KnockoutObservable<number>
         isSimpleMode: KnockoutObservable<boolean>;
-        isDetailMode: KnockoutObservable<boolean>;
         isFlowMode: KnockoutObservable<boolean>;
         isUseHalfDay: KnockoutObservable<boolean>;
 
@@ -72,7 +72,6 @@ module a2 {
             self.isSimpleMode = ko.computed(() => {
                 return self.tabMode() == TabMode.SIMPLE;
             });
-            self.isDetailMode = ko.observable(self.isSimpleMode());
             self.isFlowMode = self.parentModel.workTimeSetting.isFlow;
             self.isUseHalfDay = input.useHalfDay; 
             
@@ -113,6 +112,10 @@ module a2 {
                 columns: self.columnSetting(),
                 tabindex: 48
             };
+            self.isEnableTimeRangeOneDaySimpleMode = ko.computed(() => {
+                return self.isSimpleMode() && (self.parentModel.workTimeSetting.isFlex()
+                    || self.parentModel.workTimeSetting.isFlow());
+            });;
             
             self.dataSourceOneDaySimpleMode = ko.observableArray([]);
             self.fixTableOptionOneDaySimpleMode = {
@@ -142,7 +145,12 @@ module a2 {
             self.selectedCodeSetting = ko.observable(0);
             
             // ====================================== SUBSCRIBER ======================================
-            
+            self.parentModel.workTimeSetting.isFlex.subscribe(newValue => {
+                if (newValue) {
+                    self.dataSourceOneDaySimpleMode([]);
+                }
+                self.bindDataToScreen();
+            });
             self.parentModel.isChangeItemTable.subscribe(newValue => {
                 self.bindDataToScreen();
             });
@@ -164,10 +172,17 @@ module a2 {
                 self.bindDataToScreen();
             });
             self.isSimpleMode.subscribe(newValue => {
-                self.isDetailMode(!newValue);
+                
+                if (newValue) {
+                    self.dataSourceOneDaySimpleMode([]);
+                }
+                
                 self.bindDataToScreen();
             });
             self.isFlowMode.subscribe(newValue => {
+                if (newValue) {
+                    self.dataSourceOneDaySimpleMode([]);
+                }
                 self.bindDataToScreen();
             });
             self.isUseHalfDay.subscribe(newValue => {
@@ -211,7 +226,7 @@ module a2 {
             
             // Simple mode
             if (self.isSimpleMode()) {
-
+                
                 let emTimezone: EmTimeZoneSetModel;
                 
                 let empTimeFrameNo: number = 1;
@@ -221,6 +236,7 @@ module a2 {
                     emTimezone = self.parentModel.fixedWorkSetting.getHDWtzOneday()
                         .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(empTimeFrameNo);
                 }
+                //============= Flex Mode =============
                 else if (self.parentModel.workTimeSetting.isFlex()) {
                     // all day
                     emTimezone = self.parentModel.flexWorkSetting.getHDWtzOneday()
@@ -235,7 +251,23 @@ module a2 {
 
                 //============= Convert =============
                 let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne;
+                   // ============= Flex Mode =============
+                    
+                let timeRange: TimePeriod = {
+                    startTime: item.start(),
+                    endTime: item.end()
+                }
+                if (self.dataSourceOneDaySimpleMode().length <= 0) {
+                    timeRange.startTime = 0;
+                    timeRange.endTime = 0;
+                    self.dataSourceOneDaySimpleMode.push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
+                        emTimezone ? emTimezone.timezone.rounding.rounding() : 0));
+                }
                 item.valueChangedNotifier.subscribe(() => {
+                    if (self.isSimpleMode() && (self.parentModel.workTimeSetting.isFlex()
+                        || self.parentModel.workTimeSetting.isFlow())) {
+                        return;
+                    }
                     let timeRange: TimePeriod = {
                         startTime: item.start(),
                         endTime: item.end()
@@ -347,6 +379,10 @@ module a2 {
             // empty list
             dataSource([]);
             
+            if (!dataSourceModel) {
+                return;
+            }
+                    
             // fill data
             _.forEach(dataSourceModel(), (item: EmTimeZoneSetModel) => {
                 let timeRange: TimePeriod = {
