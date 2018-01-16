@@ -420,7 +420,10 @@ module nts.fixedtable {
                 
                 // set width fixed control TimeRange
                 if (item.template.indexOf('ntsTimeRangeEditor') != -1) {
-                    item.width = 173;
+                    item.width = 203;
+                }
+                if (item.template.indexOf('ntsComboBox') != -1) {
+                    item.width = item.width < 70 ? 70 : item.width;
                 }
                 if (item.isRoudingColumn) {
                     rowHtml += '<!-- ko if: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
@@ -537,9 +540,9 @@ module nts.fixedtable {
                 cssClassName = columnSetting.cssClassName;
             }
             if (template.indexOf('ntsCheckBox') > -1) {
-                cssClassName += ' check-box-column';
+                cssClassName += 'center-align check-box-column';
             }
-            return "<td style='text-align: center;' class='" + cssClassName + "'>" + template + "</td>";
+            return "<td class='" + cssClassName + "'>" + template + "</td>";
         }
         
         /**
@@ -710,6 +713,12 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
                 screenModel.$element.on('click', '.check-box-column > div', function(event){
                     _.defer(() => screenModel.itemList.valueHasMutated());
+                })
+                screenModel.$element.on('keypress', '.check-box-column > div', function(event){
+                    if (event.keyCode === 0 || event.keyCode === 32) {
+                        event.preventDefault();
+                        _.defer(() => screenModel.itemList.valueHasMutated());
+                    }
                 })
                 
                 screenModel.$element.on('change', '.time-edior-column', function(event){

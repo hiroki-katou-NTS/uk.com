@@ -15,16 +15,6 @@ import nts.arc.time.GeneralDate;
 public interface SyEmploymentPub {
 
 	/**
-	 * Gets the employment code.
-	 *
-	 * @param companyId the company id
-	 * @param employeeId the employee id
-	 * @param baseDate the base date
-	 * @return the employment code
-	 */
-	String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate);
-
-	/**
 	 * Find S job hist by sid.
 	 *
 	 * @param employeeId the employee id

@@ -102,8 +102,8 @@ module nts.uk.ui {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
 
                     let dialogName = this.globalContext.__viewContext["program"]["programName"];
-                    let title = nts.uk.util.isNullOrEmpty(dialogName)　? toBeResource.unset : dialogName;
-//                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName; 
+                    let title = nts.uk.util.isNullOrEmpty(dialogName)　? "" : dialogName;
+                    let showCloseButton = this.globalContext.dialogCloseButton === true;
                 
                     this.$dialog.dialog('option', {
                         width: options.width || this.globalContext.dialogSize.width,
@@ -112,6 +112,10 @@ module nts.uk.ui {
                         resizable: options.resizable,
                         open: function() {
                             let $dialog = $(this);
+                            if (!showCloseButton) {
+                                $dialog.closest(".ui-dialog").addClass("no-close-btn");
+                            }
+                            
                             $dialog.dialogPositionControl();
                             
 //                            if ($(this).parent().height() >= $("#contents-area").height()) {
@@ -288,6 +292,9 @@ module nts.uk.ui {
 
         export var selfId: string;
         export var container: ScreenWindowContainer;
+        export function rgc() {
+            return container.windows[MAIN_WINDOW_ID].globalContext;
+        }
 
         if (util.isInFrame()) {
             var parent: any = window.parent;
@@ -863,6 +870,12 @@ module nts.uk.ui {
     export module ig {
 
         export module grid {
+            
+            export function getScrollContainer($grid: JQuery): JQuery {
+                let $scroll: any = $grid.igGrid("scrollContainer");
+                if ($scroll.length === 1) return $scroll;
+                return $("#" + $grid.attr("id") + "_scrollContainer");
+            }
 
             export function getRowIdFrom($anyElementInRow: JQuery): any {
                 return $anyElementInRow.closest('tr').attr('data-id');
@@ -870,6 +883,11 @@ module nts.uk.ui {
 
             export function getRowIndexFrom($anyElementInRow: JQuery): number {
                 return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
+            }
+            
+            export function expose(targetRow: any, $grid: JQuery) {
+                let $scroll: any = getScrollContainer($grid);
+                $scroll.exposeVertically(targetRow.element);
             }
 
             export module virtual {
@@ -899,6 +917,40 @@ module nts.uk.ui {
                     return getVisibleRows(gridId).filter(function() {
                         return this.offsetTop < bottom;
                     }).last();
+                }
+                
+                export function expose(targetRow: any, $grid: JQuery) {
+                    
+                    if (targetRow.index === undefined) {
+                        $grid.igGrid("virtualScrollTo", dataSource.getIndexOfKey(targetRow.id, $grid) + 1);
+                        return;
+                    }
+                    
+                    let rowHeight = targetRow.element.outerHeight();
+                    let targetTop = targetRow.index * rowHeight;
+                    let targetBottom = targetTop + rowHeight;
+                    
+                    let $scroll = getScrollContainer($grid);
+                    let viewHeight = $scroll.height();
+                    let viewTop = $scroll.scrollTop();
+                    let viewBottom = viewTop + viewHeight;
+                    
+                    if (viewTop <= targetTop && targetBottom <= viewBottom) {
+                        return;
+                    }
+                    
+                    // when specify 1, top row will be shown.
+                    $grid.igGrid("virtualScrollTo", targetRow.index + 1);
+                }
+            }
+            
+            export module dataSource {
+                
+                export function getIndexOfKey(targetKey: any, $grid: JQuery) {
+                    let option = $grid.igGrid("option");
+                    return _.findIndex(
+                        option.dataSource,
+                        s => s[option.primaryKey].toString() === targetKey.toString());
                 }
             }
 

@@ -57,3 +57,7 @@
 .control-group {
 	display: inline-flex;
 } 
+.center-align {
+	text-align: center;
+}
+

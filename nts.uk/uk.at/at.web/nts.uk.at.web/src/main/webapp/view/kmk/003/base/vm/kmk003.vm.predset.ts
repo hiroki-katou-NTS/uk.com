@@ -225,7 +225,6 @@ module nts.uk.at.view.kmk003.a {
                 
                 resetData() {
                     this.rangeTimeDay(PredetemineTimeSettingModel.ONE_DAY);
-                    this.workTimeCode('');
                     this.predTime.resetData();
                     this.nightShift(0);  
                     this.prescribedTimezoneSetting.resetData();

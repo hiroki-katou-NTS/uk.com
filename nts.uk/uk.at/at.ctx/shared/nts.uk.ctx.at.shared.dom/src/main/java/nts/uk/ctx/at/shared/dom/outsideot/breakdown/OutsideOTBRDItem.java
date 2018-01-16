@@ -91,6 +91,14 @@ public class OutsideOTBRDItem extends DomainObject{
 	}
 	
 	/**
+	 * Checks if is use class.
+	 *
+	 * @return the boolean
+	 */
+	public Boolean isUseClass() {
+		return this.useClassification == UseClassification.UseClass_Use;
+	}
+	/**
 	 * Save to memento.
 	 *
 	 * @param memento the memento

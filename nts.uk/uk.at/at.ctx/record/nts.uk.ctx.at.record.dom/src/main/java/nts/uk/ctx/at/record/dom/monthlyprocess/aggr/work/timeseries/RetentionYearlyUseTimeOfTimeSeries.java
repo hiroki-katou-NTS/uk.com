@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -30,7 +31,7 @@ public class RetentionYearlyUseTimeOfTimeSeries {
 	 */
 	public static RetentionYearlyUseTimeOfTimeSeries of(GeneralDate ymd){
 		
-		RetentionYearlyUseTimeOfTimeSeries domain = new RetentionYearlyUseTimeOfTimeSeries();
+		val domain = new RetentionYearlyUseTimeOfTimeSeries();
 		domain.ymd = ymd;
 		return domain;
 	}

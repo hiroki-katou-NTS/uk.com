@@ -8,7 +8,7 @@ module common.error.system {
     class ScreenModel {
         
         gotoLogin() {
-            nts.uk.request.login.jumpToUsedLoginPage();
+            nts.uk.ui.windows.rgc().nts.uk.request.login.jumpToUsedLoginPage();
         }
     }
 }
