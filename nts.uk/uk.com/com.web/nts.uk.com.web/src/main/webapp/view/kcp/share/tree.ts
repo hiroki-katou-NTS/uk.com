@@ -270,11 +270,12 @@ module kcp.share.tree {
                     self.itemList(res);
                     self.backupItemList(res);
                 }
+                // Set default value when initial component.
+                self.initSelectedValue(res);
+                
                 self.loadTreeGrid().done(function() {
                     // Special command -> remove unuse.
                     $input.find('#multiple-tree-grid_tooltips_ruler').remove();
-                    // Set default value when initial component.
-                    self.initSelectedValue(res);
 
                     dfd.resolve();
                 })
