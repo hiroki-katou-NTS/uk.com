@@ -136,7 +136,7 @@ public class AppOvertimeFinder {
 		//アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
 		//startApprovalRootService.getApprovalRootPattern(companyID, employeeID, 1, ApplicationType.OVER_TIME_APPLICATION.value, null);
 		//アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する 
-		startCheckErrorService.checkError(ApplicationType.OVER_TIME_APPLICATION.value);
+		// startCheckErrorService.checkError(ApplicationType.OVER_TIME_APPLICATION.value);
 		// 02_残業区分チェック : check loai lam them
 		int overtimeAtr = overtimeService.checkOvertime(url);
 		result.setOvertimeAtr(overtimeAtr);

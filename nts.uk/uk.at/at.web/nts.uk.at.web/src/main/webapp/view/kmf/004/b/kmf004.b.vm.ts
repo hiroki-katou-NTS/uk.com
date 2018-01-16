@@ -104,6 +104,7 @@ module nts.uk.at.view.kmf004 {
             enable: KnockoutObservable<boolean>;
             items: KnockoutObservableArray<Item>;
             specialHolidayCode: KnockoutObservable<string>;
+            monthDaysReq: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
@@ -115,15 +116,19 @@ module nts.uk.at.view.kmf004 {
 
                 self.value = ko.observable('');
                 self.enable = ko.observable(true);
+                self.monthDaysReq = ko.observable(true);
                 self.selectedId = ko.observable(0);
                 self.items = ko.observableArray([]);
                 
                 self.selectedId.subscribe(function(value) {
                     if(value == 0){
                         self.enable(true);
+                        self.monthDaysReq(true);
                     } else {
                         self.enable(false);
+                        self.monthDaysReq(false);
                         self.value("");
+                        $("#month-day-input").ntsError("clear");
                     }
                 }); 
                 
@@ -205,6 +210,13 @@ module nts.uk.at.view.kmf004 {
             saveData(){
                 var self = this;
                 
+                if (self.selectedId() === 0) {
+                    if (self.value() == null || self.value() == "" || self.value() == undefined) {
+                        self.monthDaysReq(true);
+                    }
+                    $("#month-day-input").trigger("validate");
+                }
+                                
                 if (nts.uk.ui.errors.hasError()) {
                     return;    
                 }

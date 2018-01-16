@@ -61,6 +61,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerfo
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -360,6 +361,7 @@ public class DailyPerformanceSelectItemProcessor {
 
 		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
 		//dailyPerformanceDto.setSettingUnit(SettingUnit.BUSINESS_TYPE);
+		//dailyPerformanceDto.setSettingUnit(SettingUnit.BUSINESS_TYPE);
 		screenDto.setComment(dailyPerformanceDto != null && dailyPerformanceDto.getComment() != null
 				? dailyPerformanceDto.getComment() : null);
 		DPControlDisplayItem dPControlDisplayItem = getControlDisplayItems(listEmployeeId, screenDto.getDateRange(),
@@ -372,15 +374,15 @@ public class DailyPerformanceSelectItemProcessor {
 		//// 日別実績の勤務情報
 		List<DailyModifyResult> results = new ArrayList<>();
 		if(!dPControlDisplayItem.getItemIds().isEmpty()){
-		for (int i = 0; i < listEmployeeId.size(); i++) {
-			for (int j = 0; j < dateRange.toListDate().size(); j++) {
-				DailyModifyResult result = dailyModifyQueryProcessor.initScreen(
-						new DailyModifyQuery(listEmployeeId.get(i), dateRange.toListDate().get(j), null),
-						dPControlDisplayItem.getItemIds());
-				if (result != null)
-					results.add(result);
+			for (int i = 0; i < listEmployeeId.size(); i++) {
+				for (int j = 0; j < dateRange.toListDate().size(); j++) {
+					DailyModifyResult result = dailyModifyQueryProcessor.initScreen(
+							new DailyModifyQuery(listEmployeeId.get(i), dateRange.toListDate().get(j), null),
+							dPControlDisplayItem.getItemIds());
+					if (result != null)
+						results.add(result);
+				}
 			}
-		}
 		}
 		Map<String, DailyModifyResult> resultDailyMap = results.stream()
 				.collect(Collectors.toMap((x) -> x.getEmployeeId() + "|" + x.getDate(), Function.identity()));
@@ -445,7 +447,7 @@ public class DailyPerformanceSelectItemProcessor {
 					//int a = 1;
 					int attendanceAtr = mapDP.get(item.getId()).getAttendanceAtr();
 					String key = item.getId()+"|"+data.getEmployeeId()+"|"+data.getDate();
-					String value = itemValueMap.get(key) == null ? "" : itemValueMap.get(key).value().toString();
+					String value = (itemValueMap.containsKey(key) && itemValueMap.get(key).value() != null) ? itemValueMap.get(key).value().toString() : "";
 					if (attendanceAtr == DailyAttendanceAtr.Code.value
 							|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
 						if(attendanceAtr == DailyAttendanceAtr.Code.value){
@@ -456,11 +458,11 @@ public class DailyPerformanceSelectItemProcessor {
 							cellDatas.add(new DPCellDataDto("Code" + String.valueOf(item.getId()), value ,
 									String.valueOf(item.getAttendanceAtr()), "label"));
 							if(value.equals("")){
-								value = "なし";
+								value = TextResource.localize("KDW003_82");
 							}else{
 								CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(TypeLink.valueOf(item.getTypeGroup()).value, new ParamDialog("", screenDto.getEmploymentCode(), data.getWorkplaceId(), data.getDate(), value));
 								//CodeName codeName = null;
-								value = (codeName == null) ? "なし" : codeName.getName();
+								value = (codeName == null) ? TextResource.localize("KDW003_81") : codeName.getName();
 							}
 							cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()),
 									value , String.valueOf(item.getAttendanceAtr()), "Link2"));
@@ -470,11 +472,6 @@ public class DailyPerformanceSelectItemProcessor {
 								screenDto.setLock(data.getId(), "NO" + String.valueOf(item.getId()));
 								screenDto.setLock(data.getId(), "Name" + String.valueOf(item.getId()));
 							}
-							System.out.print("gia tri:"+ value);
-							if(item.getId() == 615) 
-							{
-								System.out.print("gia tri:"+ value);
-							}
 							cellDatas.add(new DPCellDataDto("NO" + String.valueOf(item.getId()), value ,
 									String.valueOf(item.getAttendanceAtr()), "label"));
 							cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()),
@@ -482,11 +479,27 @@ public class DailyPerformanceSelectItemProcessor {
 						}
 						
 					} else {
-						if(lock){
+						if (lock) {
 							screenDto.setLock(data.getId(), "A" + String.valueOf(item.getId()));
 						}
-						cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
-								String.valueOf(item.getAttendanceAtr()), "label"));
+						if (attendanceAtr == DailyAttendanceAtr.Time.value
+								|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
+							if (!value.equals("")) {
+								// convert HH:mm
+								int minute = Integer.parseInt(value);
+								int hours = Math.abs(minute / 60);
+								int minutes = Math.abs(minute) % 60;
+								value = String.format("%d:%02d", minute > 0 ? hours : 0 - hours, minutes);
+								cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
+										String.valueOf(item.getAttendanceAtr()), "label"));
+							} else {
+								cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
+										String.valueOf(item.getAttendanceAtr()), "label"));
+							}
+						} else {
+							cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
+									String.valueOf(item.getAttendanceAtr()), "label"));
+						}
 					}
 				};
 			}

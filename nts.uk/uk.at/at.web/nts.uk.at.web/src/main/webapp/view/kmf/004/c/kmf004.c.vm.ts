@@ -30,6 +30,7 @@ module nts.uk.at.view.kmf004.c {
             dataItems: KnockoutObservableArray<Item>;
             specialHolidayCode: KnockoutObservable<string>;
             standardDateEnable: KnockoutObservable<boolean>;
+            standardDateReq: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this,
@@ -60,6 +61,8 @@ module nts.uk.at.view.kmf004.c {
                 self.standardDate = ko.observable("");
                 self.standardDateEnable = ko.observable(true);
                 
+                self.standardDateReq = ko.observable(true);
+                
                 self.dataItems = ko.observableArray([]);
                 
                 // Get codes from A screen
@@ -88,9 +91,12 @@ module nts.uk.at.view.kmf004.c {
                 self.selectedBaseDateId.subscribe(function(value) {
                     if(value == 0){
                         self.standardDateEnable(true);
+                        self.standardDateReq(true);
                     } else {
                         self.standardDateEnable(false);
+                        self.standardDateReq(false);
                         self.standardDate("");
+                        $("#standard-date-input").ntsError("clear");
                     }
                 }); 
                 
@@ -197,6 +203,7 @@ module nts.uk.at.view.kmf004.c {
                 
                 self.selectedBaseDateId(0); 
                 self.standardDate("");
+                self.standardDateReq(true);
                 
                 self.dataItems.removeAll();
                 
@@ -219,11 +226,19 @@ module nts.uk.at.view.kmf004.c {
              */
             registerBtn(){
                 var self = this;
-                
+                nts.uk.ui.errors.clearAll();
                 var perSetData = [];
                 var index = 1;
                 
-                $(".nts-input").trigger("validate");
+                $("#input-code").trigger("validate");
+                $("#input-name").trigger("validate");
+                if (self.selectedBaseDateId() === 0) {
+                    if (self.standardDate() == null || self.standardDate() == "" || self.standardDate() == undefined) {
+                        self.standardDateReq(true);
+                    }
+                    $("#standard-date-input").trigger("validate");
+                }
+                
                 if (nts.uk.ui.errors.hasError()) {
                     return;    
                 }

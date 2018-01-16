@@ -35,6 +35,9 @@ public class TotalCondition {
 	/** The atd item id. */
 	// 勤怠項目ID
 	private Integer atdItemId;
+	
+	/** Constant when no select. */
+	private static int NO_SELECT = -1;
 
 	/**
 	 * Instantiates a new total condition.
@@ -59,6 +62,11 @@ public class TotalCondition {
 				&& thresoldUpperLimit.greaterThanOrEqualTo(thresoldLowerLimit)) {
 			throw new BusinessException("Msg_210");
 		}
+		
+		if ((UseAtr.Use.equals(upperLimitSettingAtr) || UseAtr.Use.equals(lowerLimitSettingAtr)) 
+				&& this.atdItemId != null && this.atdItemId == NO_SELECT) {
+			throw new BusinessException("Msg_362");
+		}
 	}
 
 	/**
@@ -74,5 +82,4 @@ public class TotalCondition {
 		memento.setUpperLimitSettingAtr(this.upperLimitSettingAtr);
 		memento.setAttendanceItemId(this.atdItemId);
 	}
-
 }

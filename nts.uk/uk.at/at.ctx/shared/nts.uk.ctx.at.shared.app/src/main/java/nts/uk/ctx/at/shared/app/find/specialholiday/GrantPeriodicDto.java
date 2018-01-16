@@ -8,7 +8,7 @@ public class GrantPeriodicDto {
 	private String specialHolidayCode;
 	
 	/* 付与日数定期 */
-	private int grantDay;
+	private Integer grantDay;
 	
 	/* 固定付与日数 */
 	private int splitAcquisition;

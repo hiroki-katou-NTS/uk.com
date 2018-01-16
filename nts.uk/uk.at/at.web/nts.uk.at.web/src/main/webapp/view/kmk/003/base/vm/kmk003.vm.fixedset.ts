@@ -22,17 +22,20 @@ module nts.uk.at.view.kmk003.a {
     import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
     import TimeRangeModelConverter = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModelConverter;
     import FixedWorkTimezoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkTimezoneSetModel;
+    import OtherFlowColumnSetting = nts.uk.at.view.kmk003.a.viewmodel.common.OtherFlowColumnSetting;
+    import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
     
     export module viewmodel {
         export module fixedset {
             
-            export class FixOffdayWorkTimezoneModel {
+            export class FixOffdayWorkTimezoneModel extends OffdayWorkTimeConverter {
                 restTimezone: FixRestTimezoneSetModel;
                 lstWorkTimezone: KnockoutObservableArray<HDWorkTimeSheetSettingModel>;
                 
                 constructor() {
+                    super();
                     this.restTimezone = new FixRestTimezoneSetModel();
-                    this.lstWorkTimezone = ko.observableArray([]);
+                    this.lstWorkTimezone = this.originalList;
                 }
                 
                 updateData(data: FixOffdayWorkTimezoneDto) {
@@ -64,8 +67,9 @@ module nts.uk.at.view.kmk003.a {
                     this.restTimezone.resetData();
                     this.lstWorkTimezone([]);
                 }
+
             }
-            
+
             export class FixHalfDayWorkTimezoneModel {
                 restTimezone: FixRestTimezoneSetModel;
                 workTimezone: FixedWorkTimezoneSetModel;

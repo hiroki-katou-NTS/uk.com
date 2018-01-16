@@ -12,16 +12,16 @@ public class SphdLimitDto {
 	private String specialHolidayCode;
 	
 	/*月数*/
-	private int specialVacationMonths;
+	private Integer specialVacationMonths;
 	
 	/*年数*/
-	private int specialVacationYears;
+	private Integer specialVacationYears;
 	
 	/*付与日数を繰り越す*/
 	private int grantCarryForward;
 	
 	/*繰越上限日数*/
-	private int limitCarryoverDays;
+	private Integer limitCarryoverDays;
 	
 	/*特別休暇の期限方法*/
 	private int specialVacationMethod; 

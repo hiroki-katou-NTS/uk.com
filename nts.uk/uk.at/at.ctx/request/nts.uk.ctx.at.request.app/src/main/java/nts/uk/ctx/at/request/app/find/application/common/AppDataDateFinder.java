@@ -102,7 +102,7 @@ public class AppDataDateFinder {
 					true);
 		}
 		if(isStartUp.equals(Boolean.TRUE)){
-			startupErrorCheckService.startupErrorCheck(appGeneralDate, approvalRootPattern.getApprovalRootContentImport());
+			startupErrorCheckService.startupErrorCheck(appGeneralDate, appTypeValue, approvalRootPattern.getApprovalRootContentImport());
 		}
 		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appGeneralDate);
 		return new AppDateDataDto(
@@ -185,14 +185,14 @@ class RecordWorkDto_New {
 	private String workTimeCode;
 	
 	// 開始時刻1
-	private int attendanceStampTimeFirst;
+	private Integer attendanceStampTimeFirst;
 	
 	// 終了時刻1
-	private int leaveStampTimeFirst;
+	private Integer leaveStampTimeFirst;
 	
 	// 開始時刻2
-	private int attendanceStampTimeSecond;
+	private Integer attendanceStampTimeSecond;
 	
 	// 終了時刻2
-	private int leaveStampTimeSecond;
+	private Integer leaveStampTimeSecond;
 }
