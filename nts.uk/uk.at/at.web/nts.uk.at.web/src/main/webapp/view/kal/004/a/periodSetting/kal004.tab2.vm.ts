@@ -21,7 +21,11 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             var self = this;
             var listConverToview = [];
             var listCheckCondition = [];
-            if(self.listCheckCondition.length == 0){
+            if(listCheckCode.length==0){
+                self.listCheckCondition.removeAll();
+                self.ListView.removeAll();
+                return;
+            }else if(self.listCheckCondition.length == 0){
                 _.forEach(listCheckCode, (category: share.CheckConditionCommand) =>{
                     let checkCondition = new share.CheckCondition(category.alarmCategory, category.checkConditionCodes, category.extractPeriod);
                     listCheckCondition.push(category);
@@ -31,8 +35,8 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 _.forEach(listCheckCode, (category: share.CheckConditionCommand) =>{
                     var check = _.find(self.listCheckCondition, ['alarmCategory', category.alarmCategory]);
                     if(nts.uk.util.isNullOrUndefined(check)){
-                        listCheckCondition.push(category);    
-                        listConverToview.push(new ModelCheckConditonCode(category));
+                        listCheckCondition.push(category); 
+                        listConverToview.push(new ModelCheckConditonCode(new share.CheckCondition(category.alarmCategory, category.checkConditionCodes, category.extractPeriod)));
                     }else{
                         listCheckCondition.push(new share.CheckCondition(category.alarmCategory, category.checkConditionCodes, check.extractPeriod));    
                         listConverToview.push(new ModelCheckConditonCode(check));   
@@ -44,24 +48,24 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             self.ListView(listConverToview);
             
             
-            var uniqueCategory: Array<share.CheckConditionCommand> = _.uniqBy(listCheckCode, "category");
-            var listCurrentCheckCondition: Array<share.CheckConditionDto> = __viewContext["viewmodel"].currentAlarm.checkConList;
-            
-            var listConver: Array<ModelCheckConditonCode> = [];
-            var listCheckCondition = [];
-            _.forEach(uniqueCategory, (category: share.ModelCheckConditonCode) => {
-                let matchCheckCondition = _.find(listCurrentCheckCondition, (item) => {
-                    return item.alarmCategory == category.category;
-                });
-                if(nts.uk.util.isNullOrUndefined(matchCheckCondition)){
-                    matchCheckCondition = { alarmCategory: 0, checkConditionCodes: '', extractionDailyDto: null};    
-                }  
-                    let checkCondition = new share.CheckCondition(category.category, category.categoryName, matchCheckCondition.extractionDailyDto);
-                    listCheckCondition.push(checkCondition);
-                    //listConver.push(new ModelCheckConditonCode(checkCondition));
-            });
-            self.listCheckCondition(listCheckCondition);
-            self.ListView(listConver);
+//            var uniqueCategory: Array<share.CheckConditionCommand> = _.uniqBy(listCheckCode, "category");
+//            var listCurrentCheckCondition: Array<share.CheckConditionDto> = __viewContext["viewmodel"].currentAlarm.checkConList;
+//            
+//            var listConver: Array<ModelCheckConditonCode> = [];
+//            var listCheckCondition = [];
+//            _.forEach(uniqueCategory, (category: share.ModelCheckConditonCode) => {
+//                let matchCheckCondition = _.find(listCurrentCheckCondition, (item) => {
+//                    return item.alarmCategory == category.category;
+//                });
+//                if(nts.uk.util.isNullOrUndefined(matchCheckCondition)){
+//                    matchCheckCondition = { alarmCategory: 0, checkConditionCodes: '', extractionDailyDto: null};    
+//                }  
+//                    let checkCondition = new share.CheckCondition(category.category, category.categoryName, matchCheckCondition.extractionDailyDto);
+//                    listCheckCondition.push(checkCondition);
+//                    //listConver.push(new ModelCheckConditonCode(checkCondition));
+//            });
+//            self.listCheckCondition(listCheckCondition);
+//            self.ListView(listConver);
         }
 
         private openDialog(ModelCheckConditonCode): void {
@@ -107,26 +111,26 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         ListSpecifiedMonth:Array<any> = __viewContext.enums.SpecifiedMonth;
         ListAlarmCategory:Array<any> = __viewContext.enums.AlarmCategory;
         
-        extractionDailyDto:any;
+        extractionPeriodDaily:any;
         constructor(CheckCondition: any) {
             var self =  this;
             this.categoryId = CheckCondition.alarmCategory;
-            this.categoryName = _.find(self.ListAlarmCategory, ['value', CheckCondition.alarmCategory]);
+            this.categoryName = _.find(self.ListAlarmCategory, ['value', CheckCondition.alarmCategory]).name;
             var str, end;
-            if(CheckCondition.extractionDailyDto.strSpecify() == 0){ 
-                str = CheckCondition.extractionDailyDto.strDay() + getText('KAL004_34') + getText('KAL004_35');
+            if(CheckCondition.extractionPeriodDaily.strSpecify == 0){ 
+                str = CheckCondition.extractionPeriodDaily.strDay + getText('KAL004_34') + getText('KAL004_35');
             }else{
-                let strMonth = _.find(self.ListSpecifiedMonth, ['value' , CheckCondition.extractionDailyDto.strMonth()]);
+                let strMonth = _.find(self.ListSpecifiedMonth, ['value' , CheckCondition.extractionPeriodDaily.strMonth]);
                 str = strMonth.name + getText('KAL004_37');
             }
-            if(CheckCondition.extractionDailyDto.endSpecify() == 0){ 
-                end = CheckCondition.extractionDailyDto.endDay() + getText('KAL004_34') + getText('KAL004_35');
+            if(CheckCondition.extractionPeriodDaily.endSpecify == 0){ 
+                end = CheckCondition.extractionPeriodDaily.endDay + getText('KAL004_34') + getText('KAL004_35');
             }else{
-                let endMonth = _.find(self.ListSpecifiedMonth, ['value' , CheckCondition.extractionDailyDto.endMonth()]);
+                let endMonth = _.find(self.ListSpecifiedMonth, ['value' , CheckCondition.extractionPeriodDaily.endMonth]);
                 end = endMonth.name + getText('KAL004_43');
             }  
             this.extractionPeriod = str + ' ' + getText('KAL004_30') +  ' ' +end;
-            this.extractionDailyDto = CheckCondition.extractionDailyDto;
+            this.extractionPeriodDaily = CheckCondition.extractionPeriodDaily;
         }
     }
 }

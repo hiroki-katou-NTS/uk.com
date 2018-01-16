@@ -168,17 +168,17 @@ module nts.uk.at.view.kal004.share.model {
     }
     export class CheckConditionCommand {
         alarmCategory: number;
-        extractPeriod: ExtractionPeriodDailyCommand;
+        extractionPeriodDaily: ExtractionPeriodDailyCommand;
         checkConditionCodes: Array<string>;
 
-        constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractPeriod: ExtractionPeriodDailyCommand) {
+        constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
-            this.extractPeriod = extractPeriod;
+            this.extractionPeriodDaily = extractionPeriodDaily;
         }
 
-        setExtractPeriod(extractPeriod: ExtractionPeriodDailyCommand) {
-            this.extractPeriod = extractPeriod;
+        setExtractPeriod(extractionPeriodDaily: ExtractionPeriodDailyCommand) {
+            this.extractionPeriodDaily = extractionPeriodDaily;
         }
     }
 

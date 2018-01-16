@@ -125,7 +125,7 @@ module nts.uk.at.view.kal004.a.model {
                     } 
                      
                 });
-                self.periodSetting.listCheckConditionCode(listCode);
+                self.periodSetting.listCheckConditionCode(shareTab2);
                
             });
         }
