@@ -198,7 +198,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     currentItem.selectionItemId(newItem.selectionItemId);
                     $("#selectionItemName").focus();
                 });
-                
+                $("#selectionItemName").focus();
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.listItems.valueHasMutated();
 
