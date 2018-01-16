@@ -19,5 +19,42 @@ public class TimeMonthWithCalculationAndMinus {
 	/** 時間 */
 	private AttendanceTimeMonthWithMinus time;
 	/** 計算期間 */
-	private AttendanceTimeMonthWithMinus calculationTime;
+	private AttendanceTimeMonthWithMinus calcTime;
+
+	/**
+	 * 時間と計算時間を同じ時間で作成
+	 * @param minutes 時間（分）
+	 * @return 計算付き月間時間
+	 */
+	public static TimeMonthWithCalculationAndMinus ofSameTime(int minutes){
+		return new TimeMonthWithCalculationAndMinus(
+				new AttendanceTimeMonthWithMinus(minutes),
+				new AttendanceTimeMonthWithMinus(minutes)
+			);
+	}
+
+	/**
+	 * 時間と計算時間に同じ時間を加算する
+	 * @param minutes 加算する時間（分）
+	 * @return 計算付き月間時間
+	 */
+	public TimeMonthWithCalculationAndMinus addSameTime(int minutes){
+		return new TimeMonthWithCalculationAndMinus(
+				this.time.addMinutes(minutes),
+				this.calcTime.addMinutes(minutes)
+			);
+	}
+	
+	/**
+	 * 分を加算する
+	 * @param minutes 時間（分）
+	 * @param calcMinutes 計算時間（分）
+	 * @return 計算付き月間時間
+	 */
+	public TimeMonthWithCalculationAndMinus addMinutes(int minutes, int calcMinutes){
+		return new TimeMonthWithCalculationAndMinus(
+				this.time.addMinutes(minutes),
+				this.calcTime.addMinutes(calcMinutes)
+			);
+	}
 }

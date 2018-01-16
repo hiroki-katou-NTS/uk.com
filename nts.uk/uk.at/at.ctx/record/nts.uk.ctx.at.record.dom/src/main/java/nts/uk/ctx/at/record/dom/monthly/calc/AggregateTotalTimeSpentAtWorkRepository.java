@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.calc;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 
 /**
- * 集計総拘束時間
+ * リポジトリ：集計総拘束時間
  * @author shuichu_ishida
  */
 public interface AggregateTotalTimeSpentAtWorkRepository {

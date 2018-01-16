@@ -3113,7 +3113,11 @@ var nts;
                 var errorPages;
                 (function (errorPages) {
                     function systemError() {
-                        //jump('com', '/view/common/error/system/index.xhtml');
+                        if ($(".nts-system-error-dialog").length !== 0) {
+                            return;
+                        }
+                        var sub = uk.ui.windows.sub.modal("com", "/view/common/error/system/index.xhtml");
+                        sub.$dialog.addClass("nts-system-error-dialog");
                     }
                     errorPages.systemError = systemError;
                     function sessionTimeout() {
@@ -4610,8 +4614,8 @@ var nts;
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
                             var dialogName = _this.globalContext.__viewContext["program"]["programName"];
-                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? toBeResource.unset : dialogName;
-                            //                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName; 
+                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "" : dialogName;
+                            var showCloseButton = _this.globalContext.dialogCloseButton === true;
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
@@ -4619,7 +4623,9 @@ var nts;
                                 resizable: options.resizable,
                                 open: function () {
                                     var $dialog = $(this);
-                                    $dialog.closest(".ui-dialog").addClass("no-close-btn");
+                                    if (!showCloseButton) {
+                                        $dialog.closest(".ui-dialog").addClass("no-close-btn");
+                                    }
                                     $dialog.dialogPositionControl();
                                     //                            if ($(this).parent().height() >= $("#contents-area").height()) {
                                     //                                $(this).dialog("option", "position", {
@@ -4774,6 +4780,10 @@ var nts;
                     return ScreenWindowContainer;
                 }());
                 windows.ScreenWindowContainer = ScreenWindowContainer;
+                function rgc() {
+                    return windows.container.windows[MAIN_WINDOW_ID].globalContext;
+                }
+                windows.rgc = rgc;
                 if (uk.util.isInFrame()) {
                     var parent = window.parent;
                     windows.container = (parent.nts.uk.ui.windows.container);
@@ -5309,6 +5319,13 @@ var nts;
             (function (ig) {
                 var grid;
                 (function (grid) {
+                    function getScrollContainer($grid) {
+                        var $scroll = $grid.igGrid("scrollContainer");
+                        if ($scroll.length === 1)
+                            return $scroll;
+                        return $("#" + $grid.attr("id") + "_scrollContainer");
+                    }
+                    grid.getScrollContainer = getScrollContainer;
                     function getRowIdFrom($anyElementInRow) {
                         return $anyElementInRow.closest('tr').attr('data-id');
                     }
@@ -5317,6 +5334,11 @@ var nts;
                         return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
                     }
                     grid.getRowIndexFrom = getRowIndexFrom;
+                    function expose(targetRow, $grid) {
+                        var $scroll = getScrollContainer($grid);
+                        $scroll.exposeVertically(targetRow.element);
+                    }
+                    grid.expose = expose;
                     var virtual;
                     (function (virtual) {
                         function getDisplayContainer(gridId) {
@@ -5346,7 +5368,34 @@ var nts;
                             }).last();
                         }
                         virtual.getLastVisibleRow = getLastVisibleRow;
+                        function expose(targetRow, $grid) {
+                            if (targetRow.index === undefined) {
+                                $grid.igGrid("virtualScrollTo", dataSource.getIndexOfKey(targetRow.id, $grid) + 1);
+                                return;
+                            }
+                            var rowHeight = targetRow.element.outerHeight();
+                            var targetTop = targetRow.index * rowHeight;
+                            var targetBottom = targetTop + rowHeight;
+                            var $scroll = getScrollContainer($grid);
+                            var viewHeight = $scroll.height();
+                            var viewTop = $scroll.scrollTop();
+                            var viewBottom = viewTop + viewHeight;
+                            if (viewTop <= targetTop && targetBottom <= viewBottom) {
+                                return;
+                            }
+                            // when specify 1, top row will be shown.
+                            $grid.igGrid("virtualScrollTo", targetRow.index + 1);
+                        }
+                        virtual.expose = expose;
                     })(virtual = grid.virtual || (grid.virtual = {}));
+                    var dataSource;
+                    (function (dataSource) {
+                        function getIndexOfKey(targetKey, $grid) {
+                            var option = $grid.igGrid("option");
+                            return _.findIndex(option.dataSource, function (s) { return s[option.primaryKey].toString() === targetKey.toString(); });
+                        }
+                        dataSource.getIndexOfKey = getIndexOfKey;
+                    })(dataSource = grid.dataSource || (grid.dataSource = {}));
                     var header;
                     (function (header) {
                         function getCell(gridId, columnKey) {
@@ -7975,6 +8024,7 @@ var nts;
                         var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
                         var enable = ko.unwrap(data.enable);
                         var value = ko.unwrap(data.value);
+                        var virtualization = true;
                         var rows = ko.unwrap(data.rows);
                         $grid.data("init", true);
                         if (data.multiple) {
@@ -8072,7 +8122,7 @@ var nts;
                             height: height,
                             primaryKey: optionsValue,
                             columns: iggridColumns,
-                            virtualization: true,
+                            virtualization: virtualization,
                             virtualizationMode: 'continuous',
                             features: features,
                             tabIndex: -1
@@ -8117,8 +8167,26 @@ var nts;
                                 }
                             }
                         });
-                        $grid.setupSearchScroll("igGrid", true);
+                        $grid.setupSearchScroll("igGrid", virtualization);
                         $grid.ntsGridList("setupScrollWhenBinding");
+                        $grid.bind("switchvaluechanged", function (evt, dataX) {
+                            setTimeout(function () {
+                                var source = _.cloneDeep(data.dataSource !== undefined ? data.dataSource() : data.options());
+                                _.forEach(source, function (o) {
+                                    if (o[optionsValue] === dataX.rowKey) {
+                                        o[dataX.columnKey] = dataX.value;
+                                        return true;
+                                    }
+                                });
+                                $grid.data("ui-changed", true);
+                                if (data.dataSource !== undefined) {
+                                    data.dataSource(source);
+                                }
+                                else {
+                                    data.options(source);
+                                }
+                            }, 100);
+                        });
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
@@ -12168,6 +12236,7 @@ var nts;
                                 $parent.attr('data-value', selectedValue);
                                 $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);
                                 $grid.igGrid("commit");
+                                $grid.trigger("switchvaluechanged", { columnKey: columnKey, rowKey: rowKey, value: parseInt(selectedValue) });
                                 if ($grid.igGrid("hasVerticalScrollbar")) {
                                     //                        let current = $grid.ntsGridList("getSelected");
                                     //                        if(current !== undefined){
@@ -14703,13 +14772,7 @@ var nts;
                                     row = $grid.igGrid("selectedRow");
                                 }
                                 if (row) {
-                                    var rowScrollTop = row.index * row.element.height();
-                                    var scrollContainer = $($grid.igGrid("container")).find("#" + $grid.igGrid("id") + "_scrollContainer");
-                                    if (isNaN(rowScrollTop) // In case virtualization not render row 
-                                        || rowScrollTop < scrollContainer.scrollTop()
-                                        || rowScrollTop > scrollContainer.scrollTop() + scrollContainer.height() - row.element.height()) {
-                                        $grid.igGrid("virtualScrollTo", row.index === undefined ? getSelectRowIndex($grid, row.id) : row.index);
-                                    }
+                                    ui.ig.grid.virtual.expose(row, $grid);
                                 }
                             });
                         }
@@ -14724,10 +14787,7 @@ var nts;
                                     row = $grid.igGrid("selectedRow");
                                 }
                                 if (row) {
-                                    var index = row.index;
-                                    var height = row.element[0].scrollHeight;
-                                    var gridId = $grid.attr('id');
-                                    $("#" + gridId + "_scrollContainer").scrollTop(index * height);
+                                    ui.ig.grid.expose(row, $grid);
                                 }
                             });
                         }
@@ -14937,7 +14997,7 @@ var nts;
                             if (column.ntsControl === ntsControls.LABEL) {
                                 ntsControls.drawLabel($(self), column, cellFormatter);
                                 columnControlTypes[column.key] = ntsControls.LABEL;
-                                return cellFormatter.format(column);
+                                return cellFormatter.format(column, true);
                             }
                             var controlDef = _.find(options.ntsControls, function (ctl) {
                                 return ctl.name === column.ntsControl;
@@ -14987,6 +15047,9 @@ var nts;
                                     showHeaderCheckbox: column.showHeaderCheckbox,
                                     enable: isEnable
                                 };
+                                if (!uk.util.isNullOrUndefined(column.tabIndex)) {
+                                    data.tabIndex = column.tabIndex;
+                                }
                                 var back;
                                 if (back = bounceCombos[column.key]) {
                                     data.bounce = back;
@@ -15032,6 +15095,7 @@ var nts;
                         options.columns = columns;
                         updating.addFeature(options);
                         options.autoCommit = true;
+                        options.tabIndex = -1;
                         dist.query(options.ntsFeatures);
                         // Decorate editor border
                         events.onCellClick($(self));
@@ -15176,11 +15240,17 @@ var nts;
                         function editStarted(evt, ui) {
                             var $grid = $(ui.owner.element);
                             var valueType = validation.getValueType($grid, ui.columnKey);
-                            if (valueType === "TimeWithDay") {
-                                var timeWithDayAttr_1 = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes);
+                            if (valueType === "TimeWithDay" || valueType === "Clock") {
+                                var formatted_1;
+                                try {
+                                    formatted_1 = uk.time.minutesBased.duration.create(uk.time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes).text;
+                                }
+                                catch (e) {
+                                    return;
+                                }
                                 setTimeout(function () {
                                     var $editor = $(ui.editor.find("input")[0]);
-                                    $editor.val(timeWithDayAttr_1.shortText).select();
+                                    $editor.val(formatted_1).select();
                                 }, 140);
                             }
                             else if (valueType === "Currency") {
@@ -15340,13 +15410,12 @@ var nts;
                             var autoCommit = grid.options.autoCommit;
                             var columnsMap = allColumnsMap || utils.getColumnsMap($grid);
                             var rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
-                            var validators = $grid.data(validation.VALIDATORS);
-                            var fieldValidator = validators[columnKey];
-                            if (fieldValidator) {
-                                var result = fieldValidator.probe(String(cellValue));
-                                if (result.isValid) {
-                                    cellValue = result.parsedValue;
+                            var valueType = validation.getValueType($grid, columnKey);
+                            if (valueType === "TimeWithDay" | valueType === "Clock") {
+                                try {
+                                    cellValue = uk.time.minutesBased.duration.create(uk.time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).text;
                                 }
+                                catch (e) { }
                             }
                             grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                             var isControl = utils.isNtsControl($grid, columnKey);
@@ -16523,7 +16592,8 @@ var nts;
                                         }
                                     },
                                     rendered: function () {
-                                        container.igCombo("option", "tabIndex", -1);
+                                        var tabIndex = !uk.util.isNullOrUndefined(data.tabIndex) ? data.tabIndex : -1;
+                                        container.igCombo("option", "tabIndex", tabIndex);
                                     }
                                 });
                                 // Save init value
@@ -16980,7 +17050,9 @@ var nts;
                                         }
                                     }
                                     else {
-                                        copiedData = selectedCells[0].element.text();
+                                        var $cell = selectedCells[0].element;
+                                        var origVal = $cell.data(internal.CELL_ORIG_VAL);
+                                        copiedData = !uk.util.isNullOrUndefined(origVal) ? origVal : $cell.text();
                                     }
                                 }
                                 else {
@@ -17002,6 +17074,7 @@ var nts;
                                 var minColumn = 0;
                                 var structure = [];
                                 var structData = "";
+                                var $tdCell, origVal;
                                 var checker = cut ? utils.isCuttableControls : utils.isCopiableControls;
                                 _.forEach(cells, function (cell, index) {
                                     var rowIndex = cell.rowIndex;
@@ -17030,7 +17103,9 @@ var nts;
                                         }
                                     }
                                     else {
-                                        structure[rowIndex][columnIndex] = cell.element.text();
+                                        $tdCell = cell.element;
+                                        origVal = $tdCell.data(internal.CELL_ORIG_VAL);
+                                        structure[rowIndex][columnIndex] = !uk.util.isNullOrUndefined(origVal) ? origVal : $tdCell.text();
                                     }
                                 });
                                 for (var i = minRow; i <= maxRow; i++) {
@@ -17947,7 +18022,7 @@ var nts;
                             /**
                              * Format textbox.
                              */
-                            CellFormatter.prototype.format = function (column) {
+                            CellFormatter.prototype.format = function (column, notTb) {
                                 var self = this;
                                 if (uk.util.isNullOrUndefined(this.cellStateFeatureDef)
                                     || column.formatter !== undefined)
@@ -17959,9 +18034,44 @@ var nts;
                                 column.formatter = function (value, rowObj) {
                                     if (uk.util.isNullOrUndefined(rowObj))
                                         return value;
+                                    var origValue = value;
+                                    if (!notTb && column.constraint) {
+                                        var constraint = column.constraint;
+                                        var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
+                                            : constraint.cDisplayType;
+                                        if (valueType === "TimeWithDay") {
+                                            if (uk.util.isNullOrUndefined(value))
+                                                return value;
+                                            var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                            var timeOpts = { timeWithDay: true };
+                                            var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
+                                            value = formatter.format(minutes);
+                                        }
+                                        else if (valueType === "Clock") {
+                                            if (uk.util.isNullOrUndefined(value))
+                                                return value;
+                                            var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                            var timeOpts = { timeWithDay: false };
+                                            var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
+                                            value = formatter.format(minutes);
+                                        }
+                                        else if (valueType === "Currency") {
+                                            if (uk.util.isNullOrUndefined(value))
+                                                return value;
+                                            var currencyOpts = new ui.option.CurrencyEditorOption();
+                                            currencyOpts.grouplength = constraint.groupLength | 3;
+                                            currencyOpts.decimallength = constraint.decimalLength | 2;
+                                            currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
+                                            var groupSeparator = constraint.groupSeparator || ",";
+                                            var rawValue = uk.text.replaceAll(value, groupSeparator, "");
+                                            var formatter = new uk.text.NumberFormatter({ option: currencyOpts });
+                                            value = formatter.format(Number(rawValue));
+                                        }
+                                    }
                                     var _self = self;
                                     setTimeout(function () {
                                         var $gridCell = self.$grid.igGrid("cellById", rowObj[self.$grid.igGrid("option", "primaryKey")], column.key);
+                                        $gridCell.data(internal.CELL_ORIG_VAL, origValue);
                                         if (!$gridCell)
                                             return;
                                         var $tr = $gridCell.closest("tr");
@@ -18615,6 +18725,7 @@ var nts;
                         internal.ERRORS_LOG = "ntsErrorsLog";
                         internal.LOADER = "ntsLoader";
                         internal.TXT_RAW = "rawText";
+                        internal.CELL_ORIG_VAL = "_origValue";
                     })(internal || (internal = {}));
                     var utils;
                     (function (utils) {
@@ -19032,6 +19143,7 @@ var nts;
                         }
                         function setChildrenTabIndex($grid, index) {
                             var container = $grid.igGrid("container");
+                            $(container).attr("tabindex", 0);
                             $(container).find("tr, th, td").attr("tabindex", index);
                         }
                         utils.setChildrenTabIndex = setChildrenTabIndex;

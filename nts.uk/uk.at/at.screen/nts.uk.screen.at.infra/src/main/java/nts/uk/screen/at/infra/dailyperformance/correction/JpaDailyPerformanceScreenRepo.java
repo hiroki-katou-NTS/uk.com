@@ -492,6 +492,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<WorkInfoOfDailyPerformanceDto> getListWorkInfoOfDailyPerformance(List<String> lstEmployee,
 			DateRange dateRange) {
+		if(lstEmployee.isEmpty()) return new ArrayList<>();
 		return this.queryProxy().query(SEL_DAILY_WORK_INFO, KrcdtDaiPerWorkInfo.class)
 				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee).getList(e -> {
 					return new WorkInfoOfDailyPerformanceDto(e.krcdtDaiPerWorkInfoPK.employeeId, e.calculationState,

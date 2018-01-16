@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.calc.flex;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 
 /**
- * 月別実績のフレックス時間
+ * リポジトリ：月別実績のフレックス時間
  * @author shuichu_ishida
  */
 public interface FlexTimeOfMonthlyRepository {

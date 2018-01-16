@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 
 /**
- * 月別実績の通常変形時間
+ * リポジトリ：月別実績の通常変形時間
  * @author shuichu_ishida
  */
 public interface RegularAndIrregularTimeOfMonthlyRepository {

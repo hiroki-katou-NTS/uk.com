@@ -393,7 +393,12 @@ module nts.uk.request {
         export module errorPages {
             
             export function systemError() {
-                //jump('com', '/view/common/error/system/index.xhtml');
+                if ($(".nts-system-error-dialog").length !== 0) {
+                    return;
+                }
+                
+                let sub = ui.windows.sub.modal("com", "/view/common/error/system/index.xhtml");
+                sub.$dialog.addClass("nts-system-error-dialog");
             }
             
             export function sessionTimeout() {
