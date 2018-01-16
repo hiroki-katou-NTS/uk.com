@@ -23,12 +23,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSFST_SCHE_FUNC_CONTROL")
-public class KsfstScheFuncControl extends UkJpaEntity implements Serializable {
+@Table(name = "KSCST_SCHE_FUNC_CONTROL")
+public class KscstScheFuncControl extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KsfstScheFuncControlPK ksfstScheFuncControlPK;
+	public KscstScheFuncControlPK kscstScheFuncControlPK;
 	
 	/** アラームチェック使用区分 */
 	@Column(name = "ALARM_CHECK_USE_CLS")
@@ -155,11 +155,11 @@ public class KsfstScheFuncControl extends UkJpaEntity implements Serializable {
 	public int searchMethodDispCls;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="scheFuncControl", orphanRemoval = true)
-	public List<KsfstScheFuncCondition> scheFuncConditions;
+	public List<KscstScheFuncCondition> scheFuncConditions;
 	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return ksfstScheFuncControlPK;
+		return kscstScheFuncControlPK;
 	}
 }

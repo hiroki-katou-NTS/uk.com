@@ -22,32 +22,32 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSFST_SCHE_FUNC_COND")
-public class KsfstScheFuncCondition extends UkJpaEntity implements Serializable {
+@Table(name = "KSCST_SCHE_FUNC_COND")
+public class KscstScheFuncCondition extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KsfstScheFuncConditionPK ksfstScheFuncConditionPK;
+	public KscstScheFuncConditionPK kscstScheFuncConditionPK;
 	
 	@ManyToOne
 	@JoinColumns( {
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
     })
-	public KsfstScheFuncControl scheFuncControl;
+	public KscstScheFuncControl scheFuncControl;
 
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return ksfstScheFuncConditionPK;
+		return kscstScheFuncConditionPK;
 	}
 
 	/**
 	 * 
-	 * @param ksfstScheFuncConditionPK
+	 * @param kscstScheFuncConditionPK
 	 */
-	public KsfstScheFuncCondition(KsfstScheFuncConditionPK ksfstScheFuncConditionPK) {
+	public KscstScheFuncCondition(KscstScheFuncConditionPK kscstScheFuncConditionPK) {
 		
-		this.ksfstScheFuncConditionPK = ksfstScheFuncConditionPK;
+		this.kscstScheFuncConditionPK = kscstScheFuncConditionPK;
 	}
 }

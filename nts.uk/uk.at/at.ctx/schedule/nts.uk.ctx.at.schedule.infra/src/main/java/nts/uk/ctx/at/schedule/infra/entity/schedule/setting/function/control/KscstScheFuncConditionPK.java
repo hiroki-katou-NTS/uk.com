@@ -16,12 +16,15 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KsfstScheFuncControlPK implements Serializable {
+public class KscstScheFuncConditionPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	/** 会社ID */
 	@Column(name = "CID")
 	public String companyId;
-
+	
+	/** 条件NO */
+	@Column(name = "CONDITION_NO")
+	public int conditionNo;
 }

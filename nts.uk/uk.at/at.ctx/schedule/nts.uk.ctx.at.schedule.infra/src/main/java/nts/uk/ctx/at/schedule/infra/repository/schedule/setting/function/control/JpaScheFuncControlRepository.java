@@ -10,10 +10,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.function.control.FunctionControlRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.function.control.ScheFuncCond;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.function.control.ScheFuncControl;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.function.control.KsfstScheFuncCondition;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.function.control.KsfstScheFuncConditionPK;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.function.control.KsfstScheFuncControl;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.function.control.KsfstScheFuncControlPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.function.control.KscstScheFuncCondition;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.function.control.KscstScheFuncConditionPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.function.control.KscstScheFuncControl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.function.control.KscstScheFuncControlPK;
 
 @Stateless
 public class JpaScheFuncControlRepository extends JpaRepository implements FunctionControlRepository {	
@@ -22,9 +22,9 @@ public class JpaScheFuncControlRepository extends JpaRepository implements Funct
 	 */
 	@Override
 	public ScheFuncControl getScheFuncControl(String companyId) {
-		KsfstScheFuncControlPK primaryKey = new KsfstScheFuncControlPK(companyId);
+		KscstScheFuncControlPK primaryKey = new KscstScheFuncControlPK(companyId);
 
-		return this.queryProxy().find(primaryKey, KsfstScheFuncControl.class).map(x -> toDomain(x)).get();
+		return this.queryProxy().find(primaryKey, KscstScheFuncControl.class).map(x -> toDomain(x)).get();
 	}
 
 	/**
@@ -32,49 +32,49 @@ public class JpaScheFuncControlRepository extends JpaRepository implements Funct
 	 */
 	@Override
 	public void updateScheFuncControl(ScheFuncControl scheFuncControl) {
-		KsfstScheFuncControlPK primaryKey = new KsfstScheFuncControlPK(scheFuncControl.getCompanyId());		
-		KsfstScheFuncControl ksfstScheFuncControl = this.queryProxy().find(primaryKey, KsfstScheFuncControl.class).get();
+		KscstScheFuncControlPK primaryKey = new KscstScheFuncControlPK(scheFuncControl.getCompanyId());		
+		KscstScheFuncControl kscstScheFuncControl = this.queryProxy().find(primaryKey, KscstScheFuncControl.class).get();
 		
-		ksfstScheFuncControl.alarmCheckUseCls = scheFuncControl.getAlarmCheckUseCls().value;
-		ksfstScheFuncControl.confirmedCls = scheFuncControl.getConfirmedCls().value;
-		ksfstScheFuncControl.publicCls = scheFuncControl.getPublicCls().value;
-		ksfstScheFuncControl.outputCls = scheFuncControl.getOutputCls().value;
-		ksfstScheFuncControl.workDormitionCls = scheFuncControl.getWorkDormitionCls().value;
-		ksfstScheFuncControl.teamCls = scheFuncControl.getTeamCls().value;
-		ksfstScheFuncControl.rankCls = scheFuncControl.getRankCls().value;
-		ksfstScheFuncControl.startDateInWeek = scheFuncControl.getStartDateInWeek().value;
-		ksfstScheFuncControl.shortNameDisp = scheFuncControl.getShortNameDisp().value;
-		ksfstScheFuncControl.timeDisp = scheFuncControl.getTimeDisp().value;
-		ksfstScheFuncControl.symbolDisp = scheFuncControl.getSymbolDisp().value;
-		ksfstScheFuncControl.twentyEightDaysCycle = scheFuncControl.getTwentyEightDaysCycle().value;
-		ksfstScheFuncControl.lastDayDisp = scheFuncControl.getLastDayDisp().value;
-		ksfstScheFuncControl.individualDisp = scheFuncControl.getIndividualDisp().value;
-		ksfstScheFuncControl.dispByDate = scheFuncControl.getDispByDate().value;
-		ksfstScheFuncControl.indicationByShift = scheFuncControl.getIndicationByShift().value;
-		ksfstScheFuncControl.regularWork = scheFuncControl.getRegularWork().value;
-		ksfstScheFuncControl.fluidWork = scheFuncControl.getFluidWork().value;
-		ksfstScheFuncControl.workingForFlex = scheFuncControl.getWorkingForFlex().value;
-		ksfstScheFuncControl.overtimeWork = scheFuncControl.getOvertimeWork().value;
-		ksfstScheFuncControl.normalCreation = scheFuncControl.getNormalCreation().value;
-		ksfstScheFuncControl.simulationCls = scheFuncControl.getSimulationCls().value;
-		ksfstScheFuncControl.captureUsageCls = scheFuncControl.getCaptureUsageCls().value;
-		ksfstScheFuncControl.completedFuncCls = scheFuncControl.getCompletedFuncCls().value;
-		ksfstScheFuncControl.howToComplete = scheFuncControl.getHowToComplete().value;
-		ksfstScheFuncControl.alarmCheckCls = scheFuncControl.getAlarmCheckCls().value;
-		ksfstScheFuncControl.executionMethod = scheFuncControl.getExecutionMethod().value;
-		ksfstScheFuncControl.handleRepairAtr = scheFuncControl.getHandleRepairAtr().value;
-		ksfstScheFuncControl.confirm = scheFuncControl.getConfirm().value;
-		ksfstScheFuncControl.searchMethod = scheFuncControl.getSearchMethod().value;
-		ksfstScheFuncControl.searchMethodDispCls = scheFuncControl.getSearchMethodDispCls().value;
+		kscstScheFuncControl.alarmCheckUseCls = scheFuncControl.getAlarmCheckUseCls().value;
+		kscstScheFuncControl.confirmedCls = scheFuncControl.getConfirmedCls().value;
+		kscstScheFuncControl.publicCls = scheFuncControl.getPublicCls().value;
+		kscstScheFuncControl.outputCls = scheFuncControl.getOutputCls().value;
+		kscstScheFuncControl.workDormitionCls = scheFuncControl.getWorkDormitionCls().value;
+		kscstScheFuncControl.teamCls = scheFuncControl.getTeamCls().value;
+		kscstScheFuncControl.rankCls = scheFuncControl.getRankCls().value;
+		kscstScheFuncControl.startDateInWeek = scheFuncControl.getStartDateInWeek().value;
+		kscstScheFuncControl.shortNameDisp = scheFuncControl.getShortNameDisp().value;
+		kscstScheFuncControl.timeDisp = scheFuncControl.getTimeDisp().value;
+		kscstScheFuncControl.symbolDisp = scheFuncControl.getSymbolDisp().value;
+		kscstScheFuncControl.twentyEightDaysCycle = scheFuncControl.getTwentyEightDaysCycle().value;
+		kscstScheFuncControl.lastDayDisp = scheFuncControl.getLastDayDisp().value;
+		kscstScheFuncControl.individualDisp = scheFuncControl.getIndividualDisp().value;
+		kscstScheFuncControl.dispByDate = scheFuncControl.getDispByDate().value;
+		kscstScheFuncControl.indicationByShift = scheFuncControl.getIndicationByShift().value;
+		kscstScheFuncControl.regularWork = scheFuncControl.getRegularWork().value;
+		kscstScheFuncControl.fluidWork = scheFuncControl.getFluidWork().value;
+		kscstScheFuncControl.workingForFlex = scheFuncControl.getWorkingForFlex().value;
+		kscstScheFuncControl.overtimeWork = scheFuncControl.getOvertimeWork().value;
+		kscstScheFuncControl.normalCreation = scheFuncControl.getNormalCreation().value;
+		kscstScheFuncControl.simulationCls = scheFuncControl.getSimulationCls().value;
+		kscstScheFuncControl.captureUsageCls = scheFuncControl.getCaptureUsageCls().value;
+		kscstScheFuncControl.completedFuncCls = scheFuncControl.getCompletedFuncCls().value;
+		kscstScheFuncControl.howToComplete = scheFuncControl.getHowToComplete().value;
+		kscstScheFuncControl.alarmCheckCls = scheFuncControl.getAlarmCheckCls().value;
+		kscstScheFuncControl.executionMethod = scheFuncControl.getExecutionMethod().value;
+		kscstScheFuncControl.handleRepairAtr = scheFuncControl.getHandleRepairAtr().value;
+		kscstScheFuncControl.confirm = scheFuncControl.getConfirm().value;
+		kscstScheFuncControl.searchMethod = scheFuncControl.getSearchMethod().value;
+		kscstScheFuncControl.searchMethodDispCls = scheFuncControl.getSearchMethodDispCls().value;
 		
-		List<KsfstScheFuncCondition> conditions = scheFuncControl.getScheFuncCond().stream().map(x -> {
-			KsfstScheFuncConditionPK key = new KsfstScheFuncConditionPK(scheFuncControl.getCompanyId(), x.getConditionNo());
-			return new KsfstScheFuncCondition(key);
+		List<KscstScheFuncCondition> conditions = scheFuncControl.getScheFuncCond().stream().map(x -> {
+			KscstScheFuncConditionPK key = new KscstScheFuncConditionPK(scheFuncControl.getCompanyId(), x.getConditionNo());
+			return new KscstScheFuncCondition(key);
 		}).collect(Collectors.toList());
 		
-		ksfstScheFuncControl.scheFuncConditions = conditions;
+		kscstScheFuncControl.scheFuncConditions = conditions;
 		
-		this.commandProxy().update(ksfstScheFuncControl);
+		this.commandProxy().update(kscstScheFuncControl);
 	}
 	
 	/**
@@ -82,17 +82,17 @@ public class JpaScheFuncControlRepository extends JpaRepository implements Funct
 	 * @param entity
 	 * @return
 	 */
-	private static ScheFuncControl toDomain(KsfstScheFuncControl entity) {
+	private static ScheFuncControl toDomain(KscstScheFuncControl entity) {
 		if (entity == null) {
 			return null;
 		}
 
 		List<ScheFuncCond> lst = new ArrayList<>();
-		for (KsfstScheFuncCondition obj : entity.scheFuncConditions) {
+		for (KscstScheFuncCondition obj : entity.scheFuncConditions) {
 			lst.add(toDomainScheFuncCond(obj));
 		}
 		
-		ScheFuncControl domain = ScheFuncControl.createFromJavaType(entity.ksfstScheFuncControlPK.companyId,
+		ScheFuncControl domain = ScheFuncControl.createFromJavaType(entity.kscstScheFuncControlPK.companyId,
 				entity.alarmCheckUseCls, entity.confirmedCls, entity.publicCls,
 				entity.outputCls, entity.workDormitionCls, entity.teamCls, entity.rankCls, entity.startDateInWeek,
 				entity.shortNameDisp, entity.timeDisp, entity.symbolDisp, entity.twentyEightDaysCycle, entity.lastDayDisp,
@@ -110,9 +110,9 @@ public class JpaScheFuncControlRepository extends JpaRepository implements Funct
 	 * @param entity
 	 * @return
 	 */
-	private static ScheFuncCond toDomainScheFuncCond(KsfstScheFuncCondition entity) {
-		ScheFuncCond domain = ScheFuncCond.createFromJavaType(entity.ksfstScheFuncConditionPK.companyId,
-				entity.ksfstScheFuncConditionPK.conditionNo);
+	private static ScheFuncCond toDomainScheFuncCond(KscstScheFuncCondition entity) {
+		ScheFuncCond domain = ScheFuncCond.createFromJavaType(entity.kscstScheFuncConditionPK.companyId,
+				entity.kscstScheFuncConditionPK.conditionNo);
 		
 		return domain;
 	}
