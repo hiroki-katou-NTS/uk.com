@@ -275,6 +275,7 @@ module nts.uk.com.view.cmm018.a {
                 self.selectedItem.subscribe(function(codeChanged){
                     //TH: mode A: まとめて登録モード
                     if(self.selectedModeCode()==0){
+                        self.enableCreatNew(true);
                         self.getDataPerson(1);
                     }
                     //TH: mode B: 申請個別登録モード
@@ -401,6 +402,7 @@ module nts.uk.com.view.cmm018.a {
                     }
                     self.workplaceId(data);
                     if(self.selectedModeCode() == 0){
+                        self.enableCreatNew(true);
                         self.getDataWorkplace(1);
                     }else{
                         __viewContext.viewModel.viewmodelB.checkTabSelectedB(vmbase.RootType.WORKPLACE,data);
@@ -1783,7 +1785,7 @@ module nts.uk.com.view.cmm018.a {
                         self.historyStr('');
                         self.dataSourceB();
                         self.cpA([]);
-                        self.singleSelectedCode(null);
+//                        self.singleSelectedCode(null);
                         self.lstWorkplace([]);
                         self.dataDisplay(self.convert(lstRoot));
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
@@ -1814,6 +1816,8 @@ module nts.uk.com.view.cmm018.a {
                     self.dataIB(null);
                     block.clear();
                     dfd.resolve();
+                }).always(()=>{
+                    block.clear();    
                 });
                 return dfd.promise();
             }
@@ -1833,7 +1837,7 @@ module nts.uk.com.view.cmm018.a {
                         self.historyStr('');
                         self.dataSourceB();
                         self.cpA([]);
-                        self.singleSelectedCode(null);
+//                        self.singleSelectedCode(null);
                         self.lstPerson([]);
                         self.dataDisplay(self.convert(lstRoot));
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
