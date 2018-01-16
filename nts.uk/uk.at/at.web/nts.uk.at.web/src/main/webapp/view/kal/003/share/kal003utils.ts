@@ -8,21 +8,15 @@ module nts.uk.at.view.kal003.share {
          * initial default value for Condition Object
          * @param itemcheck
          */
-        export function getDefaultCondition(itemcheck : number) : model.Condition {
-            return new model.Condition({
-            itemCheck:              itemcheck || 0,
-            target:                 0,
-            operatorCd:             '',
-            comparisonOperatorId:   null,
-            itemConditionId:        ''
-            });
+        export function getDefaultCondition(No) : model.ErAlAtdItemCondition {
+            return new model.ErAlAtdItemCondition(No, null);
         }
         
         /**
          * initial default value for GroupConditio Object
          * @param conditions
          */
-        export function getDefaultGroupCondition(conditions : Array<model.Condition>) : model.GroupCondition {
+        export function getDefaultGroupCondition(conditions : Array<model.ErAlAtdItemCondition>) : model.GroupCondition {
             return new model.GroupCondition({
                 groupOperator: 0
                 , groupListCondition: conditions || ([])
@@ -33,8 +27,8 @@ module nts.uk.at.view.kal003.share {
          * initial default value for CompoundConditio Object
          * @param itemcheck
          */
-        export function getDefaultCompoundCondition(itemcheck : number) : model.CompoundCondition {
-            let conditions : Array<model.Condition> = [getDefaultCondition(itemcheck), getDefaultCondition(itemcheck), getDefaultCondition(itemcheck)];
+        export function getDefaultCompoundCondition() : model.CompoundCondition {
+            let conditions : Array<model.ErAlAtdItemCondition> = [getDefaultCondition(0), getDefaultCondition(1), getDefaultCondition(2)];
             return new model.CompoundCondition({
                 group1Condition: getDefaultGroupCondition(conditions)
                 , hasGroup2: false
@@ -77,7 +71,7 @@ module nts.uk.at.view.kal003.share {
         export function getDefaultWorkRecordExtractingCondition(checkItem : number) : model.WorkRecordExtractingCondition {
             let workRecordExtractingCondition = new model.WorkRecordExtractingCondition({
                 errorAlarmCheckID   : ''
-                , checkItem           : checkItem || 7
+                , checkItem           : checkItem || 0
                 , sortOrderBy         : 0
                 , useAtr              : false
                 , nameWKRecord        : ''
