@@ -19,17 +19,17 @@ public class WithinStatutoryTimeDailyPerformDto {
 
 	/** 就業時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "就業時間")
-	@AttendanceItemValue(itemId = 532, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer workTime;
 
 	/** 実働就業時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "就業時間（休暇加算時間含む）")
-	@AttendanceItemValue(itemId = 533, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer workTimeIncludeVacationTime;
 
 	/** 所定内割増時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "所定内割増時間")
-	@AttendanceItemValue(itemId = 558, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer withinPrescribedPremiumTime;
 
 	/** 所定内深夜時間: 所定内深夜時間 */
