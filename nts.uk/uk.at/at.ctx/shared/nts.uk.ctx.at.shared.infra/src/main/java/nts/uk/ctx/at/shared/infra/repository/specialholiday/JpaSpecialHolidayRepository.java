@@ -200,7 +200,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			updateEntity.specialVacationYears = sphdLimit.getSpecialVacationYears().v();
 		}
 		updateEntity.grantCarryForward = sphdLimit.getGrantCarryForward().value;
-		updateEntity.limitCarryoverDays = sphdLimit.getLimitCarryoverDays().v();
+		updateEntity.limitCarryoverDays = sphdLimit.getLimitCarryoverDays() != null ? sphdLimit.getLimitCarryoverDays().v() : null;
 		updateEntity.specialVacationMethod = sphdLimit.getSpecialVacationMethod().value;
 		updateEntity.kshstSphdLimitPK = kshstSphdLimitPK;
 		return updateEntity;
