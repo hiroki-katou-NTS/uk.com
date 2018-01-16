@@ -374,8 +374,8 @@ module nts.uk.at.view.ksm011 {
                 self.selectedCompFunc = ko.observable(0);
                 
                 self.optionComplete = ko.observableArray([
-                    { id: 0, name: nts.uk.resource.getText("KSM011_42") },
-                    { id: 1, name: nts.uk.resource.getText("KSM011_43") }
+                    { id: 0, name: nts.uk.resource.getText("KSM011_41") },
+                    { id: 1, name: nts.uk.resource.getText("KSM011_42") }
                 ]);
     
                 self.selectedOptionComp = ko.observable(0);
