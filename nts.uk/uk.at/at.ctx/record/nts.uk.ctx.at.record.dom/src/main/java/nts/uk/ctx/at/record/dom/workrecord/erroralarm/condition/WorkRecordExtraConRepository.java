@@ -12,6 +12,8 @@ public interface WorkRecordExtraConRepository {
 	
 	List<WorkRecordExtractingCondition> getAllWorkRecordExtraCon();
 	
+	List<WorkRecordExtractingCondition> getAllWorkRecordExtraConByListID(List<String> listErrorAlarmID );
+	
 	Optional<WorkRecordExtractingCondition> getWorkRecordExtraConById(String errorAlarmCheckID);
 	
 	void addWorkRecordExtraCon(WorkRecordExtractingCondition workRecordExtractingCondition);
