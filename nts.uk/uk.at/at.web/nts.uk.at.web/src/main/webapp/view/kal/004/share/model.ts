@@ -140,57 +140,7 @@ module nts.uk.at.view.kal004.share.model {
         }
     }
     
-    //interface WorkRecordExtraCon
-        export interface IWorkRecordExtraCon {
-            errorAlarmCheckID: string;
-            checkItem: number;
-            messageBold: boolean;
-            messageColor: string;
-            sortOrderBy: number;
-            useAtr?: KnockoutObservable<boolean>;
-            nameWKRecord: string;
-        }
     
-    //class WorkRecordExtraCon
-    export class WorkRecordExtraCon {
-        errorAlarmCheckID: string;
-        checkItem: number;
-        messageBold: boolean;
-        messageColor: string;
-        sortOrderBy: number;
-        useAtr: boolean;
-        nameWKRecord: string;
-        constructor(data: IWorkRecordExtraCon) {
-            this.errorAlarmCheckID = data.errorAlarmCheckID;
-            this.checkItem = data.checkItem;
-            this.messageBold = data.messageBold;
-            this.messageColor = data.messageColor;
-            this.sortOrderBy = data.sortOrderBy;
-            this.useAtr = ko.observable(data.useAtr);
-            this.nameWKRecord = data.nameWKRecord;
-        }
-    }//end class WorkRecordExtraCon
-    
-    //interface FixedConditionWorkRecord
-    export interface IFixedConditionWorkRecord {
-        errorAlarmCode: string;
-        fixConWorkRecordNo: number;
-        message: string;
-        useAtr?: boolean;
-    }
-    //class FixedConditionWorkRecord
-    export class FixedConditionWorkRecord {
-        errorAlarmCode: string;
-        fixConWorkRecordNo: number;
-        message: string;
-        useAtr: KnockoutObservable<boolean>;
-        constructor(data: IFixedConditionWorkRecord) {
-            this.errorAlarmCode = data.errorAlarmCode;
-            this.fixConWorkRecordNo = data.fixConWorkRecordNo;
-            this.message = data.message;
-            this.useAtr = ko.observable(data.useAtr);
-        }
-    }
         
 //Command
     export class AddAlarmPatternSettingCommand{        
