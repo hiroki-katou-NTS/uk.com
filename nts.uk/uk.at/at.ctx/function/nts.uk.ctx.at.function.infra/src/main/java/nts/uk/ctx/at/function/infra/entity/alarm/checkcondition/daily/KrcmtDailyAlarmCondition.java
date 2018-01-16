@@ -45,9 +45,6 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 	@Column(name = "CATEGORY")
 	public int category;
 
-	@Column(name = "ERROR_ALARM_CHECK_ID")
-	public String errorAlarmID;
-
 	@Column(name = "CON_EXTRACTED_DAILY")
 	public int conExtractedDaily;
 	
@@ -61,18 +58,39 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 			@JoinColumn(name = "CATEGORY_CODE", referencedColumnName = "CD", insertable = false, updatable = false)
 	})
 	public KfnmtAlarmCheckConditionCategory condition;
-
+	
+	@OneToMany(mappedBy="errorcode", cascade = CascadeType.ALL)
+	@JoinTable(name = "KRCMT_DAILY_ERROR_CODE_PK")
+	public List<KrcmtDailyErrorCode> dailyErrorCode;
+	
+	
+	@OneToMany(mappedBy="fixextra", cascade = CascadeType.ALL)
+	@JoinTable(name = "KRCMT_DAILY_FIX_EXTRA_PK")
+	public List<KrcmtDailyFixExtra> dailyFixExtra;
+	
+	@OneToMany(mappedBy="wkrecord", cascade = CascadeType.ALL)
+	@JoinTable(name = "KRCMT_DAILY_WK_RECORD_PK")
+	public List<KrcmtDailyWkRecord> dailyWkRecord;
+	
+	
 	public KrcmtDailyAlarmCondition(String dailyAlarmConID, String companyId, String code, int category,
-			String errorAlarmID, int conExtractedDaily, int addApplication) {
+			int conExtractedDaily, int addApplication, KfnmtAlarmCheckConditionCategory condition,
+			List<KrcmtDailyErrorCode> dailyErrorCode, List<KrcmtDailyFixExtra> dailyFixExtra,
+			List<KrcmtDailyWkRecord> dailyWkRecord) {
 		super();
 		this.dailyAlarmConID = dailyAlarmConID;
 		this.companyId = companyId;
 		this.code = code;
 		this.category = category;
-		this.errorAlarmID = errorAlarmID;
 		this.conExtractedDaily = conExtractedDaily;
 		this.addApplication = addApplication;
+		this.condition = condition;
+		this.dailyErrorCode = dailyErrorCode;
+		this.dailyFixExtra = dailyFixExtra;
+		this.dailyWkRecord = dailyWkRecord;
 	}
+
+	
 	
 	@Override
 	protected Object getKey() {
@@ -85,9 +103,12 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 					companyId,
 					code.v(),
 					category.value,
-					domain.getErrorAlarmID(),
 					domain.getConExtractedDaily().value,
-					domain.isAddApplication()?1:0
+					domain.isAddApplication()?1:0,
+					null,
+					null,
+					null,
+					null
 				);
 	}
 	
@@ -96,9 +117,11 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 				this.dailyAlarmConID,
 				EnumAdaptor.valueOf(this.conExtractedDaily, ConExtractedDaily.class) ,
 				this.addApplication == 1?true:false,
-				this.errorAlarmID,
+				null,
+				null,
 				null
 				);
 	}
+
 
 }
