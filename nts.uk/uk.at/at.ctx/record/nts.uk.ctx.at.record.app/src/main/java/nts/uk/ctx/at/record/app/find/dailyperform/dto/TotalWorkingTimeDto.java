@@ -30,17 +30,17 @@ public class TotalWorkingTimeDto {
 
 	/** 総労働時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "総労働時間")
-	@AttendanceItemValue(itemId = 559, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer totalWorkingTime;
 
 	/** 総計算時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "総計算時間")
-	@AttendanceItemValue(itemId = 560, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer totalCalcTime;
 
 	/** 実働時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "実働時間")
-	@AttendanceItemValue(itemId = 579, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer actualTime;
 
 	/** 所定内時間: 日別実績の所定内時間 */
@@ -52,41 +52,40 @@ public class TotalWorkingTimeDto {
 	private ExcessOfStatutoryTimeDailyPerformDto excessOfStatutoryTime;
 
 	/** 臨時時間: 日別実績の臨時時間 */
-	@AttendanceItemLayout(layout = "F", isList = true, jpPropertyName = "臨時時間", listMaxLength = 3, setFieldWithIndex = "workNo")
+	@AttendanceItemLayout(layout = "F", jpPropertyName = "臨時時間", listMaxLength = 3, indexField = "workNo")
 	private List<TemporaryTimeFrameDto> temporaryTime;
 
 	/** 遅刻時間: 日別実績の遅刻時間 */
-	@AttendanceItemLayout(layout = "G", isList = true, jpPropertyName = "遅刻時間", listMaxLength = 2, setFieldWithIndex = "workNo")
+	@AttendanceItemLayout(layout = "G", jpPropertyName = "遅刻時間", listMaxLength = 2, indexField = "workNo")
 	private List<LateTimeDto> lateTime;
 
 	/** 早退時間: 日別実績の早退時間 */
-	@AttendanceItemLayout(layout = "H", isList = true, jpPropertyName = "早退時間", listMaxLength = 2, setFieldWithIndex = "workNo")
+	@AttendanceItemLayout(layout = "H", jpPropertyName = "早退時間", listMaxLength = 2, indexField = "workNo")
 	private List<LeaveEarlyTimeDailyPerformDto> leaveEarlyTime;
 
 	/** 休憩時間: 日別実績の休憩時間 */
-	// @AttendanceItemLayout(layout = "I")
+	@AttendanceItemLayout(layout = "I", jpPropertyName = "休憩時間帯")
 	private BreakTimeSheetDailyPerformDto breakTimeSheet;
 
 	/** 外出時間: 日別実績の外出時間 */
-	//TODO:
-	// @AttendanceItemLayout(layout = "J", isList = true, listMaxLength = ?)
+	 @AttendanceItemLayout(layout = "J", listMaxLength = 4, jpPropertyName = "外出時間帯", enumField = "goOutReason", listNoIndex = true)
 	private List<GoOutTimeSheetDailyPerformDto> goOutTimeSheet;
 
 	/** 短時間勤務時間: 日別実績の短時間勤務時間 */
-	// @AttendanceItemLayout(layout = "K", jpPropertyName = "短時間勤務時間")
+	 @AttendanceItemLayout(layout = "K", jpPropertyName = "短時間勤務時間", enumField = "childCareAndFamilyCareAtr")
 	private ShortWorkTimeDto shortWorkTimeSheet;
 
 	/** 加給時間: 日別実績の加給時間 */
-	// @AttendanceItemLayout(layout = "L", jpPropertyName = "加給時間")
+	 @AttendanceItemLayout(layout = "L", jpPropertyName = "加給時間")
 	private RaisingSalaryTimeDailyPerformDto raisingSalaryTime;
 
 	/** 休暇時間: 日別実績の休暇 */
-	// @AttendanceItemLayout(layout = "M", jpPropertyName = "休暇時間")
+	 @AttendanceItemLayout(layout = "M", jpPropertyName = "休暇時間")
 	private HolidayDailyPerformDto dailyOfHoliday;
 
 	/** 勤務回数: 勤務回数 */
 	// @AttendanceItemLayout(layout = "N")
-	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	// @AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer workTimes;
 	
 
@@ -106,22 +105,14 @@ public class TotalWorkingTimeDto {
 					new LateTimeDto(
 						getCalcTime(c.getLateTime()), 
 						getCalcTime(c.getLateDeductionTime()), 
-						new HolidayUseDto(
-								getAttendanceTime(c.getTimePaidUseTime().getTimeAnnualLeaveUseTime()),
-								getAttendanceTime(c.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime()),
-								getAttendanceTime(c.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime()),
-								getAttendanceTime(c.getTimePaidUseTime().getTimeSpecialHolidayUseTime())),
+						getValicationUseDto(c.getTimePaidUseTime()),
 						getAttendanceTime(c.getExemptionTime().getExemptionTime()), 
 						c.getWorkNo().v())), 
 				ConvertHelper.mapTo(domain.getLeaveEarlyTimeOfDaily(), (c) -> 
 					new LeaveEarlyTimeDailyPerformDto(
 						getCalcTime(c.getLeaveEarlyTime()), 
 						getCalcTime(c.getLeaveEarlyDeductionTime()), 
-						new ValicationUseDto(
-								getAttendanceTime(c.getTimePaidUseTime().getTimeAnnualLeaveUseTime()),
-								getAttendanceTime(c.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime()),
-								getAttendanceTime(c.getTimePaidUseTime().getTimeSpecialHolidayUseTime()),
-								getAttendanceTime(c.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime())),
+						getValicationUseDto(c.getTimePaidUseTime()),
 						getAttendanceTime(c.getIntervalTime().getExemptionTime()), 
 						c.getWorkNo().v())), 
 				BreakTimeSheetDailyPerformDto.fromBreakTimeOfDaily(domain.getBreakTimeOfDaily()), 
@@ -131,6 +122,14 @@ public class TotalWorkingTimeDto {
 				null, 
 				null, 
 				domain.getWorkTimes().v());
+	}
+
+	private static ValicationUseDto getValicationUseDto(TimevacationUseTimeOfDaily c) {
+		return c == null ? null : new ValicationUseDto(
+				getAttendanceTime(c.getTimeAnnualLeaveUseTime()),
+				getAttendanceTime(c.getSixtyHourExcessHolidayUseTime()),
+				getAttendanceTime(c.getTimeSpecialHolidayUseTime()),
+				getAttendanceTime(c.getTimeCompensatoryLeaveUseTime()));
 	}
 	
 	private static Integer getAttendanceTime(AttendanceTime domain) {
@@ -169,14 +168,6 @@ public class TotalWorkingTimeDto {
 
 	private AttendanceTime toAttendanceTime(Integer time) {
 		return time == null ? null : new AttendanceTime(time);
-	}
-
-	private TimevacationUseTimeOfDaily createTimeValication(HolidayUseDto c) {
-		return c == null ? null : new TimevacationUseTimeOfDaily(
-					toAttendanceTime(c.getTimeAnnualLeaveUseTime()),
-					toAttendanceTime(c.getTimeCompensatoryLeaveUseTime()),
-					toAttendanceTime(c.getExcessHolidayUseTime()),
-					toAttendanceTime(c.getTimeSpecialHolidayUseTime()));
 	}
 	
 	private TimevacationUseTimeOfDaily createTimeValication(ValicationUseDto c) {

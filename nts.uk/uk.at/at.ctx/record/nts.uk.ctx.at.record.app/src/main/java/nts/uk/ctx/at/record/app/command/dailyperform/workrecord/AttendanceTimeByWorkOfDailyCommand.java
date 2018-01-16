@@ -53,6 +53,6 @@ public class AttendanceTimeByWorkOfDailyCommand extends DailyWorkCommonCommand {
 								: new TimeWithDayAttr(stamp.getAfterRoundingTimesOfDay()),
 						stamp.getTimesOfDay() == null ? null : new TimeWithDayAttr(stamp.getTimesOfDay()),
 						new WorkLocationCD(stamp.getPlaceCode()),
-						ConvertHelper.getEnum(stamp.getStampSourceInfo(), StampSourceInfo.class));
+						stamp.getStampSourceInfo() == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : ConvertHelper.getEnum(stamp.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

@@ -21,7 +21,7 @@ public class LateTimeDto {
 
 	/** 休暇使用時間/休憩使用時間: 日別実績の時間年休使用時間 */
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "時間休暇使用時間")
-	private HolidayUseDto breakUse;
+	private ValicationUseDto breakUse;
 
 	/** インターバル免除時間/インターバル時間: インターバル免除時間 */
 //	@AttendanceItemLayout(layout = "D")

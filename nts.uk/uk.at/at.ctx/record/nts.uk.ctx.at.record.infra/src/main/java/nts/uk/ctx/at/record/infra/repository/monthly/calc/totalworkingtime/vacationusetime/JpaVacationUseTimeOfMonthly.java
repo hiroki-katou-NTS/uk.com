@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.repository.monthly.calc.totalworkingtime.holidayusetime;
+package nts.uk.ctx.at.record.infra.repository.monthly.calc.totalworkingtime.vacationusetime;
 
 import javax.ejb.Stateless;
 
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationu
  * @author shuichu_ishida
  */
 @Stateless
-public class JpaHolidayUseTimeOfMonthly extends JpaRepository implements VacationUseTimeOfMonthlyRepository {
+public class JpaVacationUseTimeOfMonthly extends JpaRepository implements VacationUseTimeOfMonthlyRepository {
 
 	/** 追加 */
 	@Override

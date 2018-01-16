@@ -19,6 +19,6 @@ public class FlexTimeDto {
 
 	/** 事前申請時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "事前申請時間")
-	@AttendanceItemValue(itemId = 555, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer beforeApplicationTime;
 }

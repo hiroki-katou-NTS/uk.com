@@ -32,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistoryAdopter;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSet;
@@ -70,7 +69,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
-public class CalculateDailyRecord {
+public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordService {
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
@@ -95,27 +94,28 @@ public class CalculateDailyRecord {
 	
 	@Inject
 	private FixedWorkSettingRepository fixedWorkSettingRepository;
+	
 	/**
-	 * アルゴリズム(日別計算処理の窓口)
-	 * @param companyId
-	 * @param placeId
-	 * @param employmentCd
-	 * @param employeeId
-	 * @param targetDate
-	 * @param integrationOfDaily
-	 * @return
+	 * 勤務情報を取得して計算
+	 * @param companyId 会社ID
+	 * @param placeId 職場ID
+	 * @param employmentCd 雇用コード
+	 * @param employeeId 社員ID
+	 * @param targetDate 対象年月日
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @return 日別実績(Work)
 	 */
+	@Override
 	public IntegrationOfDaily calculate(String companyId,String placeId, String employmentCd, String employeeId, GeneralDate targetDate, IntegrationOfDaily integrationOfDaily) {
 		/*日別実績(Work)の退避*/
 		val copyIntegrationOfDaily = integrationOfDaily;
 		// 実績データの計算
 		return this.calculateRecord(companyId,placeId, employmentCd, employeeId, targetDate, integrationOfDaily);
 	}
-	
 
 	/**
 	 * 実績データの計算
-	 * @param companyId 会社コード
+	 * @param companyId 会社ID
 	 * @param employeeId 社員コード
 	 * @param targetDate 対象日
 	 * @param integrationOfDaily 
@@ -268,8 +268,8 @@ public class CalculateDailyRecord {
 	 * @param companyId 会社コード
 	 * @param employeeId 社員ID
 	 * @param targetDate 対象日
-	 * @param integrationOfDaily 
-	 * @return
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @return 1日の計算範囲
 	 */
 	private CalculationRangeOfOneDay createOneDayRange(String companyId, String employeeId, GeneralDate targetDate,IntegrationOfDaily integrationOfDaily) {
 		

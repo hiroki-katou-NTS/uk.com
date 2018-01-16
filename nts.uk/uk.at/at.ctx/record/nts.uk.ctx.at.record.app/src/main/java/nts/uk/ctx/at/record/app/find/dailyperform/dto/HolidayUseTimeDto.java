@@ -5,17 +5,17 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLay
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 
-/** 日別実績の年休 */
+/** 日別実績の特別休暇 / 日別実績の年休 / 日別実績の超過有休 / 日別実績の代休*/
 @Data
-public class AnnualLeaveDailyPerformDto {
+public class HolidayUseTimeDto {
 
 	/** 時間消化休暇使用時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "間消化休暇使用時間")
-	@AttendanceItemValue(itemId = 540, type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間消化休暇使用時間")
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer timeDigestionVacationUseTime;
 
 	/** 使用時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "使用時間")
-	@AttendanceItemValue(itemId = 539, type = ValueType.INTEGER)
-	private Integer annualLeaveUseTime;
+	@AttendanceItemValue(type = ValueType.INTEGER)
+	private Integer useTime;
 }

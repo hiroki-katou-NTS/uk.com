@@ -16,7 +16,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 public class DPParams {
 	public DateRange dateRange;
 	public List<DailyPerformanceEmployeeDto> lstEmployee;
-	public int displayFormat;
+	public Integer displayFormat;
+	public Integer initScreen;
 	public CorrectionOfDailyPerformance correctionOfDaily;
 	// only use when click button A2_3
 	public List<String> errorCodes;
