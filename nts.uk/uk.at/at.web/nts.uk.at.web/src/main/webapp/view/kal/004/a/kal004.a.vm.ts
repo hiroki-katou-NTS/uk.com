@@ -108,6 +108,16 @@ module nts.uk.at.view.kal004.a.model {
             
             // Tab 2: Period Setting
             self.currentCodeListSwap.subscribe((listCode) => {
+                
+                let categories = _.uniq( _.map(listCode, (code) =>{return code.category}));
+                let shareTab2 =[];
+                categories.forEach((category)=>{
+                    
+                    let checkConditionCodes =[];
+                    listCode.forEach((code) =>{ if(code.category==category) {checkConditionCodes.push(code.checkConditonCode);} });
+                    shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes));    
+                });
+                
                 self.periodSetting.listCheckConditionCode(listCode);
                
             });

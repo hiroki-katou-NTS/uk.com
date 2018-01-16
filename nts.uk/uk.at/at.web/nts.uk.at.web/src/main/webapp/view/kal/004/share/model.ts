@@ -217,8 +217,8 @@ module nts.uk.at.view.kal004.share.model {
         
     }
     export class CheckConditionCommand{
-        private alarmCategory: number;
-        private extractPeriod: ExtractionPeriodDailyCommand;
+         alarmCategory: number;
+         extractPeriod: ExtractionPeriodDailyCommand;
         checkConditionCodes: Array<string>;
         
         constructor(alarmCategory: number, checkConditionCodes: Array<string>){
@@ -232,6 +232,40 @@ module nts.uk.at.view.kal004.share.model {
     }
     
     export class ExtractionPeriodDailyCommand{
+        extractionId: string;
+        extractionRange: number;
+        strSpecify: number;
+        strPreviousDay: number;
+        strMakeToDay: number;
+        strDay: number;
+        strPreviousMonth: number;
+        strCurrentMonth: number;
+        strMonth: number;
+        endSpecify: number;
+        endPreviousDay: number;
+        endMakeToDay: number;
+        endDay: number;
+        endPreviousMonth: number;
+        endCurrentMonth: number;
+        endMonth: number;
         
+        constructor(extractionDailyDto: ExtractionDailyDto){
+            this.extractionId = extractionDailyDto.extractionId;
+            this.extractionRange = extractionDailyDto.extractionRange;
+            this.strSpecify = extractionDailyDto.strSpecify;
+            this.strPreviousDay = extractionDailyDto.strPreviousDay;
+            this.strMakeToDay = extractionDailyDto.strMakeToDay;
+            this.strDay = extractionDailyDto.strDay;
+            this.strPreviousMonth = extractionDailyDto.strPreviousMonth;
+            this.strCurrentMonth = extractionDailyDto.strCurrentMonth;
+            this.strMonth = extractionDailyDto.strMonth;
+            this.endSpecify = extractionDailyDto.endSpecify;
+            this.endPreviousDay = extractionDailyDto.endPreviousDay;
+            this.endMakeToDay = extractionDailyDto.endMakeToDay;
+            this.endDay = extractionDailyDto.endDay;
+            this.endPreviousMonth = extractionDailyDto.endPreviousMonth;
+            this.endCurrentMonth = extractionDailyDto.endCurrentMonth;
+            this.endMonth = extractionDailyDto.endMonth;
+        }
     }
 }

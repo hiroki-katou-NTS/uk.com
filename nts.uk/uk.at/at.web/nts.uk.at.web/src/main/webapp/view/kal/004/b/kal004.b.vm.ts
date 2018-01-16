@@ -52,12 +52,88 @@ module nts.uk.com.view.kal004.b.viewmodel {
             }
             if($(".nts-input").ntsError("hasError")){
                 return;    
-            }else if(self.check()){
-                console.log('ss');
+            }else if(self.checkPeriod()){
+                let dataSetShare = self.getData();
+                nts.uk.ui.windows.setShared("extractionDaily", dataSetShare);
+                self.cancel_Dialog();
+            }
+        }
+        
+        getData(): any{
+            var self = this;
+            var extractionId = self.getParam.extractionId;
+            var extractionRange = self.getParam.extractionRange;
+            var strSpecify = self.strSelected(); 
+            var strPreviousDay = null;
+            var strMakeToDay = null;
+            var strDay = null;
+            var strPreviousMonth = null ;
+            var strCurrentMonth = null;
+            var strMonth = null;
+            var endSpecify = self.endSelected();
+            var endPreviousDay = null;
+            var endMakeToDay = null;
+            var endDay = null;
+            var endPreviousMonth = null;
+            var endCurrentMonth = null;
+            var endMonth = null;
+            
+            //start
+            if(self.strSelected()==0){
+                strPreviousDay = 0;
+                strDay = self.strDay();
+                if(strDay==0){
+                    strMakeToDay = 1;
+                }else{
+                    strMakeToDay = 0;
+                }  
+            }else{
+                strPreviousMonth = 0 ;
+                strMonth = self.strMonth();
+                if(strMonth == 0){
+                    strCurrentMonth = 1;
+                }else{
+                    strCurrentMonth = 0;
+                } 
+            }
+            //end
+            if(self.endSelected()==0){
+                endPreviousDay = 0;
+                endDay = self.endDay();
+                if(endDay==0){
+                    endMakeToDay = 1;
+                }else{
+                    endMakeToDay = 0;
+                }  
+            }else{
+                endPreviousMonth = 0 ;
+                endMonth = self.endMonth();
+                if(endMonth == 0){
+                    endCurrentMonth = 1;
+                }else{
+                    endCurrentMonth = 0;
+                } 
             }
             
+            return {extractionId: extractionId,
+                extractionRange: extractionRange,
+                strSpecify: strSpecify,
+                strPreviousDay: strPreviousDay,
+                strMakeToDay: strMakeToDay,
+                strDay: strDay,
+                strPreviousMonth: strPreviousMonth,
+                strCurrentMonth: strCurrentMonth,
+                strMonth: strMonth,
+                endSpecify: endSpecify,
+                endPreviousDay: endPreviousDay,
+                endMakeToDay: endMakeToDay,
+                endDay: endDay,
+                endPreviousMonth: endPreviousMonth,
+                endCurrentMonth: endCurrentMonth,
+                endMonth: endMonth
+            };
         }
-        check(): boolean {
+        checkPeriod(): boolean {
             var self = this;
             if(self.strSelected()==0 && self.endSelected()==1){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_815"});
@@ -72,12 +148,10 @@ module nts.uk.com.view.kal004.b.viewmodel {
                 return true;    
             }
         }
-        
+       
         cancel_Dialog(): any {
             nts.uk.ui.windows.close();
         }
-        
-
     }
    export interface ExtractionDailyDto {
         extractionId: string;
@@ -98,6 +172,7 @@ module nts.uk.com.view.kal004.b.viewmodel {
         endMonth?: number;
     }
 }
+
 
 class items {
     value: string;
