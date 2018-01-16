@@ -23,6 +23,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             var listCheckCondition = [];
             if(self.listCheckCondition.length == 0){
                 _.forEach(listCheckCode, (category: share.CheckConditionCommand) =>{
+                    let checkCondition = new share.CheckCondition(category.alarmCategory, category.checkConditionCodes, category.extractPeriod);
                     listCheckCondition.push(category);
                     listConver.push(new ModelCheckConditonCode(category));
                 });
@@ -38,6 +39,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     }
                 });        
             }
+            
             self.listCheckCondition(listCheckCondition);
             self.ListView(listConver);
             
@@ -56,7 +58,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 }  
                     let checkCondition = new share.CheckCondition(category.category, category.categoryName, matchCheckCondition.extractionDailyDto);
                     listCheckCondition.push(checkCondition);
-                    listConver.push(new ModelCheckConditonCode(checkCondition));
+                    //listConver.push(new ModelCheckConditonCode(checkCondition));
             });
             self.listCheckCondition(listCheckCondition);
             self.ListView(listConver);

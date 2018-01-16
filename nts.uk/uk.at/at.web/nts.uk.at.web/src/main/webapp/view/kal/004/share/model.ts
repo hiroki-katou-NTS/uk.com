@@ -26,9 +26,9 @@ module nts.uk.at.view.kal004.share.model {
     export class CheckCondition {
         GUID: string;
         alarmCategory: number;
-        categoryName: string;
+        categoryName: Array<string>;
         extractionDailyDto: ExtractionDaily;
-        constructor(alarmCategory: number, categoryName: string, extractionDailyDto?: ExtractionDailyDto) {
+        constructor(alarmCategory: number, categoryName: Array<string>, extractionDailyDto?: ExtractionDailyDto) {
             this.alarmCategory = alarmCategory;
             this.categoryName = categoryName
             if (nts.uk.util.isNullOrUndefined(extractionDailyDto)) {
