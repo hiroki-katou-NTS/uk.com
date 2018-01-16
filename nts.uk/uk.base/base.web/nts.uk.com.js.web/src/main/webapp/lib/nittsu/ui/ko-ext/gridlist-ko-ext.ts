@@ -26,6 +26,7 @@ module nts.uk.ui.koExtentions {
             var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
             var enable: boolean = ko.unwrap(data.enable);
             var value = ko.unwrap(data.value);
+            var virtualization = true;
             
             let rows = ko.unwrap(data.rows);
             $grid.data("init", true);
@@ -133,7 +134,7 @@ module nts.uk.ui.koExtentions {
                 height: height,
                 primaryKey: optionsValue,
                 columns: iggridColumns,
-                virtualization: true,
+                virtualization: virtualization,
                 virtualizationMode: 'continuous',
                 features: features,
                 tabIndex: -1
@@ -181,8 +182,26 @@ module nts.uk.ui.koExtentions {
                 }
             });
             
-            $grid.setupSearchScroll("igGrid", true);
+            $grid.setupSearchScroll("igGrid", virtualization);
             $grid.ntsGridList("setupScrollWhenBinding");  
+            
+            $grid.bind("switchvaluechanged", function(evt, dataX){
+                setTimeout(function(){
+                    var source = _.cloneDeep(data.dataSource !== undefined ? data.dataSource() : data.options());
+                    _.forEach(source, function(o){
+                        if(o[optionsValue] === dataX.rowKey){
+                            o[dataX.columnKey] = dataX.value;
+                            return true;
+                        }
+                    })
+                    $grid.data("ui-changed", true);
+                    if(data.dataSource !== undefined){
+                       data.dataSource(source);
+                    } else {
+                        data.options(source);    
+                    }    
+                }, 100);
+            });
         }
 
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {

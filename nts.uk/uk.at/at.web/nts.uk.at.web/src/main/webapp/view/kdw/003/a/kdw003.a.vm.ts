@@ -227,7 +227,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         item['summaryOperands'] = [{
                             rowDisplayLabel: "合計",
                             type: "custom",
-                            summaryCalculator: $.proxy(self.totalNumber, this),
+                            summaryCalculator: $.proxy(self.totalMoney, this),
                             order: 0
                         }]
                     }
@@ -374,7 +374,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                               return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                             });
                         let value: any;
-                        value = self.getHoursAll(data.value);
+                        value = self.getPrimitiveValue(data.value);
                         let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" :layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
                         dataChangeProcess.push(dataMap);
                     }
@@ -459,12 +459,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
         }
         
-        getHoursAll(value: any) : number{
-            if (value.indexOf("-")) {
-                let valueTemp = value.split('-')[1];
-                return Number(valueTemp.split(':')[0]) * 60 + Number(valueTemp.split(':')[1]);
-            } else {
-                return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
+        getHoursAll(value: any) : string{
+            if (value.indexOf(":") != -1) {
+                if (value.indexOf("-") != -1) {
+                    let valueTemp = value.split('-')[1];
+                    return String(Number(valueTemp.split(':')[0]) * 60 + Number(valueTemp.split(':')[1]));
+                } else {
+                    return String(Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]));
+                }
+            }else{
+               return value;
             }
         }
         hideComponent() {
@@ -898,6 +902,29 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let minuteStr = roundMin < 10 ? ("0" + roundMin) : String(roundMin);
             return hour + ":" + minuteStr;
         }
+        
+         totalMoney(data) {
+            let total = 0;
+            let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
+            let startIndex: any = currentPageIndex * pageSize;
+            let endIndex: any = startIndex + pageSize;
+            _.forEach(data, function(d, i) {
+                 let  valueResult = "";
+                if (i < startIndex || i >= endIndex) return;
+                if (String(d).indexOf(",") != -1) {
+                    for (let i = 0; i < String(d).split(',').length; i++) {
+                        valueResult += String(d).split(',')[i];
+                    }
+                    let n = parseFloat(valueResult);
+                    if (!isNaN(n)) total += n;
+                }else{
+                    let n = parseFloat(d);
+                    if (!isNaN(n)) total += n;
+                }
+            });
+            return total;
+        }
         //load kcp009 component: employee picker
         loadKcp009() {
             let self = this;
@@ -1243,7 +1270,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     delete header.constraint;
                 }else{
                     header.constraint["cDisplayType"] = header.constraint.cdisplayType;
-                    if(header.constraint.cdisplayType.indexOf("Currency")){
+                    if(header.constraint.cdisplayType.indexOf("Currency") != -1){
                        header["columnCssClass"] =  "currency-symbol";
                     }
                     delete header.constraint.cdisplayType;

@@ -115,6 +115,10 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 				.collect(Collectors.toList());
 		
 		// validate
-		lstFixHalfDay.forEach(workTimezone -> this.emTzPolicy.validate(predetemineTimeSet, workTimezone));
+		lstFixHalfDay.forEach(workTimezone -> {
+			this.emTzPolicy.validate(predetemineTimeSet, workTimezone);
+			this.emTzPolicy.validateTimezone(predetemineTimeSet.getPrescribedTimezoneSetting(),
+					workTimezone.getTimezone());
+		});
 	}
 }

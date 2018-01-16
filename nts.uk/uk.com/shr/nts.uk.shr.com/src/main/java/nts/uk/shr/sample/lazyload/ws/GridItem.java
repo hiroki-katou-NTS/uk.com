@@ -38,7 +38,7 @@ public class GridItem {
         this.flag = index % 2 == 0;
         this.ruleCode = index;
         this.time = "13:36";
-        this.addressCode1 = "001";
+        this.addressCode1 = "100";
         this.addressCode2 = "002";
         this.address1 = "HN";
         this.address2 = "愛知県日本";

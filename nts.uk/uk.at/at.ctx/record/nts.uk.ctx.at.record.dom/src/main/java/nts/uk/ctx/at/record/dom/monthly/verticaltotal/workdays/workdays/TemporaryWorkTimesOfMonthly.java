@@ -1,0 +1,36 @@
+package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
+
+import lombok.Getter;
+import lombok.val;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
+
+/**
+ * 月別実績の臨時勤務回数
+ * @author shuichu_ishida
+ */
+@Getter
+public class TemporaryWorkTimesOfMonthly {
+
+	/** 回数 */
+	private AttendanceTimesMonth times;
+	
+	/**
+	 * コンストラクタ
+	 */
+	public TemporaryWorkTimesOfMonthly(){
+		
+		this.times = new AttendanceTimesMonth(0);
+	}
+	
+	/**
+	 * ファクトリー
+	 * @param times 回数
+	 * @return 月別実績の臨時勤務回数
+	 */
+	public static TemporaryWorkTimesOfMonthly of(AttendanceTimesMonth times){
+		
+		val domain = new TemporaryWorkTimesOfMonthly();
+		domain.times = times;
+		return domain;
+	}
+}
