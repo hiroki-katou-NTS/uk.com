@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.repository.monthly.calc.totalworkingtime.overtimework;
+package nts.uk.ctx.at.record.infra.repository.monthly.calc.totalworkingtime.overtime;
 
 import javax.ejb.Stateless;
 
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.
  * @author shuichu_ishida
  */
 @Stateless
-public class JpaAggregateOverTimeWork extends JpaRepository implements AggregateOverTimeRepository {
+public class JpaAggregateOverTime extends JpaRepository implements AggregateOverTimeRepository {
 
 	private static final String DELETE_BY_PARENT_PK = "DELETE FROM KrcdtMonAggrOverTime a "
 			+ "WHERE a.PK.employeeID = :employeeID "

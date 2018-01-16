@@ -279,18 +279,15 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                     if (self.totalClsEnums.length > 0) {
                                         self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail.summaryAtr()].value);
                                     } 
-                                    
-//                                    let list: Array<string> = dataRes.map(item => item.attendanceItemId);
-                                    let selectID: Array<any> = _.filter(dataRes, function (item) {
-                                        return item.attendanceItemId == self.attendanceModel.attendanceItemId();
-                                    })
-                                    
-                                    if (selectID.length > 0) {
+                                    if (_.isUndefined(self.attendanceModel.attendanceItemId())) {
+                                        self.attendanceModel.update(0, null);
+                                        nts.uk.ui.windows.setShared('SelectedAttendanceId', "", true);        
+                                    } else {
+                                        let selectID: Array<any> = _.filter(dataRes, function (item) {
+                                            return item.attendanceItemId == self.attendanceModel.attendanceItemId();
+                                        })
                                         self.attendanceModel.update(selectID[0].attendanceItemId, selectID[0].attendanceItemName);
                                         nts.uk.ui.windows.setShared('SelectedAttendanceId', selectID[0].attendanceItemId, true);
-                                    } else {
-                                        self.attendanceModel.update(0, null);
-                                        nts.uk.ui.windows.setShared('SelectedAttendanceId', 1, true);
                                     }
                                 });
                                 
@@ -525,16 +522,6 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         public openKDL002Dialog_A3_28() {
             var self = this;
             nts.uk.ui.block.invisible();
-            // check worktype or worktime send to KDL002Dialog
-//            var listWorkType = [];
-//            var listWorkCode = [];
-//            for (let i = 0; i < self.itemTotalTimesDetail.listTotalSubjects().length; i++) {
-//                if (self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeAtr() == 0) {
-//                    listWorkType[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
-//                } else {
-//                    listWorkCode[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
-//                }
-//            }
 
             service.findAllDailyAttendanceItem().done(function(dataRes: Array<DailyAttendanceItemDto>) {
                 //list All workType
@@ -542,8 +529,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 let dataRes: Array<any> = dataRes;
 //                nts.uk.ui.windows.setShared('KDL002_Multiple', false);
                 nts.uk.ui.windows.setShared('AllAttendanceObj', list);
-                if (self.attendanceModel.attendanceItemId() == null) {
-                    nts.uk.ui.windows.setShared('SelectedAttendanceId', [0], true);    
+                if (self.attendanceModel.attendanceItemId() == 0) {
+                    nts.uk.ui.windows.setShared('SelectedAttendanceId', "", true);    
                 } else {
                     nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.attendanceModel.attendanceItemId()], true);    
                 }
@@ -554,7 +541,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     let dailyAttendanceItem: Array<DailyAttendanceItemDto> = _.filter(dataRes, function(obj){ return obj.attendanceItemId == atdSelected });
                     if (typeof dailyAttendanceItem[0] != 'undefined') {
                         self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);
-                    } else {
+                    } 
+                    else if (typeof atdSelected != 'undefined'){
                         self.attendanceModel.update(null, null);
                     }
                 });

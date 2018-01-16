@@ -33,20 +33,22 @@
 			<table id="fixed-table-custom"
 				class="table-fixed-kmk003">
 				<colgroup>
-					<col width="36"></col>
+					<com:ko tag="if" bind="isVisibleSelectAll &amp;&amp; isMultipleSelect">
+						<col width="36"></col>
+					</com:ko>
 					<com:ko-foreach bind="columns">
 						<col data-bind="attr: {width: width}"></col>
 					</com:ko-foreach>
 				</colgroup>
 				<thead>
 					<tr style="height: 30px;">
-						<com:ko tag="if" bind="isVisibleSelectAll">
+						<com:ko tag="if" bind="isVisibleSelectAll &amp;&amp; isMultipleSelect">
 							<th style="text-align: center;" class="ui-widget-header"><div
 									data-bind="attr: {tabindex: tabindex}, ntsCheckBox: { checked: isSelectAll,
 											enable: true, text:''}"></div>
 							</th>
 						</com:ko>
-						<com:ko tag="if" bind="!isVisibleSelectAll()">
+						<com:ko tag="if" bind="!isVisibleSelectAll() &amp;&amp; !isMultipleSelect">
 							<th style="text-align: center;" class="ui-widget-header"><div></div></th>
 						</com:ko>
 
