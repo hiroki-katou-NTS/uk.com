@@ -23,6 +23,10 @@ public class AlarmCheckConditionByCategoryCommand {
 
 	private List<String> availableRoles;
 	
+	private DailyAlarmCheckConditionCommand dailyAlarmCheckCondition;
+	
+	private Schedule4WeekAlarmCheckConditionCommand schedule4WeekAlarmCheckCondition;
+	
 	private int action;
 
 }

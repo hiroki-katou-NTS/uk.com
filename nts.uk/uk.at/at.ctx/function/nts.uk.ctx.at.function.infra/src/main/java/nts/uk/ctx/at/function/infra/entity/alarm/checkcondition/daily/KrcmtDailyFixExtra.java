@@ -24,7 +24,7 @@ public class KrcmtDailyFixExtra extends UkJpaEntity implements Serializable  {
 	
 	@ManyToOne
 	@JoinColumn(name="DAILY_ALARM_CON_ID", referencedColumnName="DAILY_ALARM_CON_ID", insertable = false, updatable = false)
-	public KrcmtDailyAlarmCondition fixextra;
+	public KrcmtDailyAlarmCondition dailyAlarmCondition;
 	
 	@Override
 	protected Object getKey() {
