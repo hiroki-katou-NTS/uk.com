@@ -47,7 +47,6 @@ module cps008.a.viewmodel {
 
                             layout.classifications(data.listItemClsDto || []);
                             layout.action(LAYOUT_ACTION.UPDATE);
-                            layout.isNewLayout(data.newLayout);
                             $("#A_INP_NAME").focus();
                         }
                     });
@@ -312,7 +311,6 @@ module cps008.a.viewmodel {
         personInfoCategoryID?: string;
         layoutItemType: IT_CLA_TYPE;
         listItemDf: Array<IItemDefinition>;
-        isNewLayout: boolean;
     }
 
     interface IItemDefinition {
@@ -338,7 +336,6 @@ module cps008.a.viewmodel {
         name: KnockoutObservable<string> = ko.observable('');
         classifications: KnockoutObservableArray<any> = ko.observableArray([]);
         action: KnockoutObservable<LAYOUT_ACTION> = ko.observable(LAYOUT_ACTION.INSERT);
-        isNewLayout: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(param: ILayout) {
             let self = this;
