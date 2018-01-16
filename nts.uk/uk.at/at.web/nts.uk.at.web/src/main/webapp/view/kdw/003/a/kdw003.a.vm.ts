@@ -374,7 +374,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                               return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                             });
                         let value: any;
-                        value = self.getHoursAll(data.value);
+                        value = self.getPrimitiveValue(data.value);
                         let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" :layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
                         dataChangeProcess.push(dataMap);
                     }
@@ -459,12 +459,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
         }
         
-        getHoursAll(value: any) : number{
-            if (value.indexOf("-")) {
-                let valueTemp = value.split('-')[1];
-                return Number(valueTemp.split(':')[0]) * 60 + Number(valueTemp.split(':')[1]);
-            } else {
-                return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
+        getHoursAll(value: any) : string{
+            if (value.indexOf(":") != -1) {
+                if (value.indexOf("-") != -1) {
+                    let valueTemp = value.split('-')[1];
+                    return String(Number(valueTemp.split(':')[0]) * 60 + Number(valueTemp.split(':')[1]));
+                } else {
+                    return String(Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]));
+                }
+            }else{
+               return value;
             }
         }
         hideComponent() {

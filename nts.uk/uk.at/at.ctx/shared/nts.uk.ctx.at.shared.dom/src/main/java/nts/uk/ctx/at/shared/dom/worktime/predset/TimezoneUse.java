@@ -74,6 +74,11 @@ public class TimezoneUse extends TimeZone {
 		this.workNo = memento.getWorkNo();
 		this.start = memento.getStart();
 		this.end = memento.getEnd();
+		
+		// If Work No is 1, useAtr allway is USE.
+		if (this.workNo == SHIFT_ONE) {
+			this.useAtr = UseSetting.USE;
+		}
 	}
 	
 	/**

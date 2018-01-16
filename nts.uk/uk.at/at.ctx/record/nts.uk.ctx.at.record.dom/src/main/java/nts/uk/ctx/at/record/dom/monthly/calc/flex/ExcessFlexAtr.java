@@ -6,16 +6,16 @@ package nts.uk.ctx.at.record.dom.monthly.calc.flex;
  */
 public enum ExcessFlexAtr {
 	/** 原則 */
-	Principle(0),
+	PRINCIPLE(0),
 	/** 便宜上 */
-	ForConvenience(1);
+	FOR_CONVENIENCE(1);
 
 	/**
 	 * 原則か判定する
 	 * @return true：原則、false：原則でない
 	 */
 	public boolean isPrinciple(){
-		return this.equals(Principle);
+		return this.equals(PRINCIPLE);
 	}
 	
 	/**
@@ -23,7 +23,7 @@ public enum ExcessFlexAtr {
 	 * @return true：便宜上、false：便宜上でない
 	 */
 	public boolean isForConvenience(){
-		return this.equals(ForConvenience);
+		return this.equals(FOR_CONVENIENCE);
 	}
 	
 	public int value;

@@ -21,6 +21,7 @@ module nts.uk.at.view.kmk003.a {
     import FlowWorkRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowWorkRestSettingModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
     import FixedWorkTimezoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkTimezoneSetModel;
+    import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
 
     export module viewmodel {
         export module flexset {
@@ -165,12 +166,13 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class FlexOffdayWorkTimeModel {
+            export class FlexOffdayWorkTimeModel extends OffdayWorkTimeConverter {
                 lstWorkTimezone: KnockoutObservableArray<HDWorkTimeSheetSettingModel>;
                 restTimezone: FlowWorkRestTimezoneModel;
 
                 constructor() {
-                    this.lstWorkTimezone = ko.observableArray([]);
+                    super();
+                    this.lstWorkTimezone = this.originalList;
                     this.restTimezone = new FlowWorkRestTimezoneModel();
                 }
 
