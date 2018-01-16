@@ -163,13 +163,16 @@ module nts.uk.at.view.kal004.share.model {
         
     }
     export class CheckConditionCommand{
-        alarmCategory: number;
+        private alarmCategory: number;
+        private extractPeriod: ExtractionPeriodDailyCommand;
         checkConditionCodes: Array<string>;
-        extractPeriod: ExtractionPeriodDailyCommand;
         
-        constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractPeriod: ExtractionPeriodDailyCommand){
+        constructor(alarmCategory: number, checkConditionCodes: Array<string>){
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
+        }
+    
+        setExtractPeriod(extractPeriod: ExtractionPeriodDailyCommand) {
             this.extractPeriod =  extractPeriod;
         }
     }

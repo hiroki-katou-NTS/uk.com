@@ -135,7 +135,7 @@ module nts.uk.at.view.kal004.a.service {
         
 
         /** add Alarm pattern setting */
-        export function addAlarmPattern(alarm: any): JQueryPromise<void> {
+        export function addAlarmPattern(alarm: share.AddAlarmPatternSettingCommand): JQueryPromise<void> {
             return nts.uk.request.ajax("at", paths.addAlarmPattern, alarm);
         }
     
@@ -145,7 +145,7 @@ module nts.uk.at.view.kal004.a.service {
         }
         
         /** Update Alarm pattern setting */
-        export function updateAlarmPattern(alarm: any): JQueryPromise<void> {
+        export function updateAlarmPattern(alarm: share.AddAlarmPatternSettingCommand): JQueryPromise<void> {
             return nts.uk.request.ajax("at", paths.updateAlarmPattern, alarm );
         }
  
