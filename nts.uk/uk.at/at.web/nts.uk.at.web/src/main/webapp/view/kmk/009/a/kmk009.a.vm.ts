@@ -97,11 +97,13 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             //subscribe upper Limit
             self.selectUppper.subscribe(function(isUpper) {
                 self.loadBySelectUse(self.checkSelectUse(), self.selectUnder(), isUpper);
+                self.setRequiredTargetItem();
             });
 
             //subscribe under Limit
             self.selectUnder.subscribe(function(isUnder) {
                 self.loadBySelectUse(self.checkSelectUse(), isUnder, self.selectUppper());
+                self.setRequiredTargetItem();
             });
             
             self.checkedCountAtr = ko.observable();
@@ -120,10 +122,23 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         }
 
         /**
+         * set required text editor
+         */
+        private setRequiredTargetItem(): void {
+            let self = this;
+            // set label is optional
+            if (self.selectUppper() == 0 && self.selectUnder() == 0) { 
+                $('#targetItemLb').css("border-color", "#97D155");
+            } 
+            // set label is required
+            else {
+                $('#targetItemLb').css("border-color", "#FAC002");
+            }    
+        }
+        
+        /**
          * check select use by use
          */
-
-
         private checkSelectUse(): boolean {
             var self = this;
             return ((self.selectUse() === "1") || self.selectUse() === 1);
@@ -279,18 +294,17 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                     if (self.totalClsEnums.length > 0) {
                                         self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail.summaryAtr()].value);
                                     } 
-                                    
-//                                    let list: Array<string> = dataRes.map(item => item.attendanceItemId);
-                                    let selectID: Array<any> = _.filter(dataRes, function (item) {
-                                        return item.attendanceItemId == self.attendanceModel.attendanceItemId();
-                                    })
-                                    
-                                    if (selectID.length > 0) {
-                                        self.attendanceModel.update(selectID[0].attendanceItemId, selectID[0].attendanceItemName);
-                                        nts.uk.ui.windows.setShared('SelectedAttendanceId', selectID[0].attendanceItemId, true);
+                                    if (_.isUndefined(self.attendanceModel.attendanceItemId())) {
+                                        self.attendanceModel.update(null, "選択なし");
+                                        nts.uk.ui.windows.setShared('SelectedAttendanceId', "", true);        
                                     } else {
-                                        self.attendanceModel.update(0, null);
-                                        nts.uk.ui.windows.setShared('SelectedAttendanceId', 1, true);
+                                        let selectID: Array<any> = _.filter(dataRes, function (item) {
+                                            return item.attendanceItemId == self.attendanceModel.attendanceItemId();
+                                        })
+                                        if(!_.isEmpty(selectID)) {
+                                            self.attendanceModel.update(selectID[0].attendanceItemId, selectID[0].attendanceItemName);
+                                            nts.uk.ui.windows.setShared('SelectedAttendanceId', selectID[0].attendanceItemId, true);    
+                                        }
                                     }
                                 });
                                 
@@ -525,16 +539,6 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         public openKDL002Dialog_A3_28() {
             var self = this;
             nts.uk.ui.block.invisible();
-            // check worktype or worktime send to KDL002Dialog
-//            var listWorkType = [];
-//            var listWorkCode = [];
-//            for (let i = 0; i < self.itemTotalTimesDetail.listTotalSubjects().length; i++) {
-//                if (self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeAtr() == 0) {
-//                    listWorkType[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
-//                } else {
-//                    listWorkCode[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
-//                }
-//            }
 
             service.findAllDailyAttendanceItem().done(function(dataRes: Array<DailyAttendanceItemDto>) {
                 //list All workType
@@ -542,8 +546,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 let dataRes: Array<any> = dataRes;
 //                nts.uk.ui.windows.setShared('KDL002_Multiple', false);
                 nts.uk.ui.windows.setShared('AllAttendanceObj', list);
-                if (self.attendanceModel.attendanceItemId() == null) {
-                    nts.uk.ui.windows.setShared('SelectedAttendanceId', [0], true);    
+                if (self.attendanceModel.attendanceItemId() == 0) {
+                    nts.uk.ui.windows.setShared('SelectedAttendanceId', "", true);    
                 } else {
                     nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.attendanceModel.attendanceItemId()], true);    
                 }
@@ -554,8 +558,9 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     let dailyAttendanceItem: Array<DailyAttendanceItemDto> = _.filter(dataRes, function(obj){ return obj.attendanceItemId == atdSelected });
                     if (typeof dailyAttendanceItem[0] != 'undefined') {
                         self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);
-                    } else {
-                        self.attendanceModel.update(null, null);
+                    } 
+                    else if (_.isEmpty(atdSelected) && !_.isUndefined(atdSelected)){
+                        self.attendanceModel.update(null, "選択なし");
                     }
                 });
             });
