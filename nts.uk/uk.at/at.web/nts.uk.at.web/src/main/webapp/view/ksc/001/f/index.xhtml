@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 610,
+					width : 700,
 					height : 400
 				};
 			</script>
@@ -21,7 +21,7 @@
 			<com:scriptfile path="ksc001.f.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area" tabindex="-1">
+			<div id="contents-area" >
 				<div class="contentSchedule" tabindex="-1">
 					<label tabindex="-1" class="labelFirstBold">#{i18n.getText('KSC001_48')}</label>
 					
@@ -69,10 +69,10 @@
 					</div>
 					<com:ko tag="if" bind="isError()">
 						<div class="buttonErrorOutput cf">
-							<button data-bind ="click: exportFileError">#{i18n.getText('KSC001_54')}</button>
+							<button tabindex="1" id="exportButton" data-bind ="click: exportFileError">#{i18n.getText('KSC001_54')}</button>
 						</div>
-						<div class="tableErrorLog cf">
-							<table id="tableShowError" data-bind="ntsGridList: {								
+						<div tabindex="-1" class="tableErrorLog cf">
+							<table  tabindex="-1" id="tableShowError" data-bind="ntsGridList: {								
 								height: 350,
 								dataSource: errorLogs,
 								primaryKey: 'noID',
@@ -90,11 +90,11 @@
 			</div>
 			<div id="functions-area-bottom">
 				<com:ko tag="if" bind="isFinish()">
-					<button tabindex="17" class="large"
+					<button tabindex="2" class="large"
 						data-bind="click: cancelSaveCommonGuidelineSetting">#{i18n.getText('KSC001_61')}</button>
 				</com:ko>
 				<com:ko tag="if" bind="!isFinish()">
-					<button tabindex="17" class="large"
+					<button tabindex="2" class="large"
 						data-bind="click: stopExecution">#{i18n.getText('KSC001_60')}</button>
 				</com:ko>
 			</div>
