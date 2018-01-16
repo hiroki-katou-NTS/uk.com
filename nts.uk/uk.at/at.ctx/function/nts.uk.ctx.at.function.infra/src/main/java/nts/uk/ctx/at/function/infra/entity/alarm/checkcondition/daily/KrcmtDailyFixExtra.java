@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -32,6 +34,18 @@ public class KrcmtDailyFixExtra extends UkJpaEntity implements Serializable  {
 	public KrcmtDailyFixExtra(KrcmtDailyFixExtraPK krcmtDailyFixExtraPK) {
 		super();
 		this.krcmtDailyFixExtraPK = krcmtDailyFixExtraPK;
+	}
+	
+	public static KrcmtDailyFixExtra toEntity(String dailyAlarmConID, String errorAlarmID) {
+		return new KrcmtDailyFixExtra(new KrcmtDailyFixExtraPK(dailyAlarmConID, errorAlarmID));
+	}
+	
+	public static List<KrcmtDailyFixExtra> toEntity(String dailyAlarmConID, List<String> errorAlarmCode) {
+		List<KrcmtDailyFixExtra> data = new ArrayList<>();
+		for(String errorAlarmID : errorAlarmCode ) {
+			data.add(KrcmtDailyFixExtra.toEntity(dailyAlarmConID, errorAlarmID));
+		}
+		return data;
 	}
 
 }
