@@ -257,6 +257,7 @@ module cps001.a.vm {
 
             if (reload) {
                 let single = self.employees().length == 1;
+                self.employees.removeAll();
                 $('.btn-quick-search[tabindex=3]').click();
                 $.when((() => {
                     let def = $.Deferred(),
