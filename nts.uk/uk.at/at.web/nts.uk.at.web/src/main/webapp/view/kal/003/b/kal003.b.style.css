@@ -46,3 +46,9 @@
 .div_radiobox_right {
 	float: right;
 }
+.ntsControl.symbol:after {
+  position: absolute;
+  content: attr(data-content);
+  top: 0px;
+  color: #999;
+}

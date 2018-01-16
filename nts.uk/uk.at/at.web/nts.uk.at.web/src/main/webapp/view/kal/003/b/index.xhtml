@@ -322,14 +322,18 @@
 	                            <td></td>
 	                            <td class = "pad_left_5px">
 	                               <div>
-		                                <!-- BA3-2--> <!-- TODO constrain Continuous period chua taoj -> tam thoi dungf CheckedTimesValue -->
+		                                <!-- BA3-2--> <!-- TODO constrain Continuous period CheckedTimesValue -->
 		                                <input class="value-input needcheck" data-bind="ntsNumberEditor: {
 		                                       name: '#[KAL003_61]',
 		                                       value: continuousPeriodInput,
 		                                       required: true,
 		                                       constraint: 'CheckedTimesValue',
-		                                       enable: true}" />
-	                                           #{i18n.getText('日')}</div>
+		                                       enable: true,
+		                                       option: new nts.uk.ui.option.NumberEditorOption({
+													unitID: 'DAYS'
+													})
+											}" />
+	                                           </div>
 	                                            
 	                            </td>
 	                        </tr>

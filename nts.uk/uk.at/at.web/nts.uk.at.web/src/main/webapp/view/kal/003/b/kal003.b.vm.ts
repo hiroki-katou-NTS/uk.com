@@ -32,6 +32,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
         swANDOR_B6_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         swANDOR_B7_2 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         enableComparisonMaxValue : KnockoutObservable<boolean> = ko.observable(false);
+        option: nts.uk.ui.option.NumberEditorOption;
         constructor() {
             let self = this;
             let option = windows.getShared('inputKal003b');
@@ -372,18 +373,27 @@ module nts.uk.at.view.kal003.b.viewmodel{
          * 
          */
         private initialWorkTypes() : void {
-            let self =this;
+            let self =this,
+                currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
             self.listAllWorkType = [];
+            // get all Work type
             service.getAttendCoutinousWork().done((workTypes) => {
                 if (workTypes && workTypes != undefined) {
                     for(var i = 0; i < workTypes.length; i++) {
                         self.listAllWorkType.push(workTypes[i].workTypeCode);
                     }
-                    self.displayWorkTypeSelections_BA1_4(self.buildItemName(workTypes));
-                } else {
-                    self.displayWorkTypeSelections_BA1_4('');
                 }
             });
+            // get Name of selected work type.
+            let wkTypeSelected = currentErrAlaCheckCondition.workTypeSelections();
+            if (wkTypeSelected && wkTypeSelected.length > 0) {
+                service.findWorkTypeByCodes(currentErrAlaCheckCondition.workTypeSelections()).done((listWrkTypes) => {
+                    let names : string = self.buildItemName(listWrkTypes);
+                    self.displayWorkTypeSelections_BA1_4(names);
+                });
+            } else {
+                self.displayWorkTypeSelections_BA1_4("");
+            }
         }
         
         /**
@@ -458,6 +468,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 if (listItems != null && listItems != undefined) {
                     let listCodes : Array<string> = self.getListCode(listItems);
                     currentErrAlaCheckCondition.workTypeSelections(listCodes);
+                    // get name
                     let names : string = self.buildItemName(listItems);
                     self.displayWorkTypeSelections_BA1_4(names);
                     
@@ -485,10 +496,11 @@ module nts.uk.at.view.kal003.b.viewmodel{
               //get data from share window
                 let listItems : Array<any> = windows.getShared("kml001selectedCodeList");
                 if (listItems != null && listItems != undefined) {
-                    let listCodes : Array<string> = self.getListCode(listItems);
-                    currentErrAlaCheckCondition.workingTimeZoneSelections(listCodes);
-                    let names : string = self.buildItemName(listItems);
-                    self.displayWorkingTimeZoneSelections_BA5_3(names);
+                    currentErrAlaCheckCondition.workingTimeZoneSelections(listItems);
+                    //get name
+                    self.generateNameCorrespondingToAttendanceItem(listItems).done((data) => {
+                        self.displayWorkingTimeZoneSelections_BA5_3(data);
+                    });
                 }
                 block.clear();
             });
@@ -513,15 +525,11 @@ module nts.uk.at.view.kal003.b.viewmodel{
               //get data from share window
                 let listItems = windows.getShared('selectedChildAttendace');
                 if (listItems != null && listItems != undefined) {
-                    let listCodes : Array<string> = self.getListCode(listItems);
-                    currentErrAlaCheckCondition.workTimeItemSelections(listCodes);
-                    /*
-                    self.generateNameCorrespondingToAttendanceItem(listAttendenceItemCode).done((data) => {
+                    currentErrAlaCheckCondition.workTimeItemSelections(listItems);
+                    // get name
+                    self.generateNameCorrespondingToAttendanceItem(listItems).done((data) => {
                         self.displayWorkTimeItemSelections_BA2_3(data);
                     });
-                    */
-                    let names = self.buildItemName(listItems);
-                    self.displayWorkTimeItemSelections_BA2_3(names);
                 }
                 block.clear();
             });

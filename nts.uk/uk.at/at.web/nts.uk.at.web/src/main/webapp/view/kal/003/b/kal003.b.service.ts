@@ -11,6 +11,7 @@ module nts.uk.at.view.kal003.b.service {
             getAttendNameByIds:             "at/record/attendanceitem/daily/getattendnamebyids",
             getErrorAlarmCondition:         "at/record/attendanceitem/daily/geterroralarmcondition/{0}",
             getAttendanceItemByCodes:       "at/record/divergencetime/AttendanceDivergenceName",
+            findWorkTypeByCodes:            "at/share/worktype/findNotDeprecatedByListCode",
 
             getEnumSingleValueCompareTypse: "/at/function/alarm/checkcondition/kal003b/getEnumSingleValueCompareTypse",
             getEnumRangeCompareType:        "/at/function/alarm/checkcondition/kal003b/getEnumRangeCompareType",
@@ -59,7 +60,12 @@ module nts.uk.at.view.kal003.b.service {
     export function getAttendanceItemByCodes(codes) {
         return nts.uk.request.ajax("at", paths.getAttendanceItemByCodes, codes);
     }
-    
+    /**
+     * Find work type by list codes.
+     */
+    export function findWorkTypeByCodes(command: Array<string>): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.findWorkTypeByCodes, command);
+    }
     // get all Enums:
     export function getEnumSingleValueCompareTypse() : JQueryPromise<any> {
         return ajax(paths.getEnumSingleValueCompareTypse);
