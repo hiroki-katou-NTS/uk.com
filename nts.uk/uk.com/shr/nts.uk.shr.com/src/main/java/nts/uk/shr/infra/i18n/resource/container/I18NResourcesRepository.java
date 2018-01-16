@@ -15,4 +15,6 @@ public interface I18NResourcesRepository {
 	Optional<GeneralDateTime> getLastUpdatedDateTime(String companyId, String languageId);
 	
 	void refreshResource(String companyId, String languageId, GeneralDateTime datetime);
+	
+	void replaceSystemClass(String companyId, String languageId, String systemId, String resourceId, String newContent);
 }

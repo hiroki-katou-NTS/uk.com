@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.infra.i18n.resource.I18NResourceType;
 import nts.uk.shr.infra.i18n.resource.container.CustomizedI18NResourceContainers;
 import nts.uk.shr.infra.i18n.resource.container.I18NResourceContainer;
 import nts.uk.shr.infra.i18n.resource.container.I18NResourceItem;
@@ -94,6 +95,29 @@ public class JpaI18NResourcesRepository extends JpaRepository implements I18NRes
 			entity.lastUpdatedAt = datetime;
 			this.commandProxy().insert(entity);
 		}
+	}
+
+	@Override
+	public void replaceSystemClass(
+			String companyId,
+			String languageId,
+			String systemId,
+			String resourceId,
+			String newContent) {
+		
+		val pk = CismtI18NResourceCusPK.createForAllPrograms(companyId, languageId, systemId, resourceId);
+		val entityOpt = this.queryProxy().find(pk, CismtI18NResourceCus.class);
+		
+		if (entityOpt.isPresent()) {
+			entityOpt.get().content = newContent;
+			this.commandProxy().update(entityOpt.get());
+		} else {
+			val entity = new CismtI18NResourceCus();
+			entity.pk = pk;
+			entity.content = newContent;
+			entity.resourceType = I18NResourceType.ITEM_NAME.value;
+		}
+		
 	}
 
 }

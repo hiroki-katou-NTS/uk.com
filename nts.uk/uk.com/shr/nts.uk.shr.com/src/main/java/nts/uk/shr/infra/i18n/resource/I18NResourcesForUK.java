@@ -8,18 +8,21 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.i18n.I18NResources;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.constants.DefaultSettingKeys;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.LanguageConsts;
+import nts.uk.shr.com.i18n.resource.I18NResourceCustomizer;
 import nts.uk.shr.infra.i18n.loading.LanguageMasterRepository;
 import nts.uk.shr.infra.i18n.resource.container.I18NResourcesRepository;
 
 @ApplicationScoped
 @Slf4j
-public class I18NResourcesForUK implements I18NResources {
+public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer {
 
 	@Inject
 	private I18NResourcesRepository resourcesRepository;
@@ -74,18 +77,25 @@ public class I18NResourcesForUK implements I18NResources {
 		return this.getRawContent(resourceId)
 				.map(content -> this.contentProcessor.process(LanguageConsts.DEFAULT_LANGUAGE_ID, content, params));
 	}
+
+	@Override
+	public void replaceSystemClass(String resourceId, String newContent) {
+		
+		val context = CompanyAndLanguage.createAsLogin();
+		
+		this.resourcesRepository.replaceSystemClass(
+				context.companyId,
+				context.languageId,
+				"K", resourceId, newContent);
+		
+		this.resourcesRepository.refreshResource(context.companyId, context.languageId, GeneralDateTime.now());
+	}
 	
 	public Map<String, String> loadForUserByClassId(String classId) {
 		
-		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
-		String companyId = DefaultSettingKeys.COMPANY_ID;
+		val context = CompanyAndLanguage.createAsLogin();
 		
-		if (AppContexts.user().hasLoggedIn()) {
-			languageId = AppContexts.user().language().basicLanguageId();
-			companyId = AppContexts.user().companyId();
-		}
-		
-		return this.loadForUserByClassId(languageId, classId, companyId);
+		return this.loadForUserByClassId(context.languageId, classId, context.companyId);
 	}
 	
 	public Map<String, String> loadForUserByClassId(String languageId, String classId, String companyId) {
@@ -105,15 +115,9 @@ public class I18NResourcesForUK implements I18NResources {
 	
 	public Map<String, String> loadForUserByResourceType(I18NResourceType resourceType) {
 
-		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
-		String companyId = DefaultSettingKeys.COMPANY_ID;
+		val context = CompanyAndLanguage.createAsLogin();
 		
-		if (AppContexts.user().hasLoggedIn()) {
-			languageId = AppContexts.user().language().basicLanguageId();
-			companyId = AppContexts.user().companyId();
-		}
-		
-		return this.loadForUserByResourceType(languageId, companyId, resourceType);
+		return this.loadForUserByResourceType(context.languageId, context.companyId, resourceType);
 	}
 	
 	public Map<String, String> loadForUserByResourceType(String languageId, String companyId, I18NResourceType resourceType) {
@@ -149,5 +153,24 @@ public class I18NResourcesForUK implements I18NResources {
 				this.customizedResources.update(languageId, companyId, newContainer);
 			}
 		});
+	}
+	
+	@RequiredArgsConstructor
+	private static class CompanyAndLanguage {
+		
+		public final String companyId;
+		public final String languageId;
+		
+		public static CompanyAndLanguage createAsLogin() {
+			String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
+			String companyId = DefaultSettingKeys.COMPANY_ID;
+			
+			if (AppContexts.user().hasLoggedIn()) {
+				languageId = AppContexts.user().language().basicLanguageId();
+				companyId = AppContexts.user().companyId();
+			}
+			
+			return new CompanyAndLanguage(companyId, languageId);
+		}
 	}
 }
