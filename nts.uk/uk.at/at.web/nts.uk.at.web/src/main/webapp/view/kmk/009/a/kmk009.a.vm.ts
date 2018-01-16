@@ -301,8 +301,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                         let selectID: Array<any> = _.filter(dataRes, function (item) {
                                             return item.attendanceItemId == self.attendanceModel.attendanceItemId();
                                         })
-                                        self.attendanceModel.update(selectID[0].attendanceItemId, selectID[0].attendanceItemName);
-                                        nts.uk.ui.windows.setShared('SelectedAttendanceId', selectID[0].attendanceItemId, true);
+                                        if(!_.isEmpty(selectID)) {
+                                            self.attendanceModel.update(selectID[0].attendanceItemId, selectID[0].attendanceItemName);
+                                            nts.uk.ui.windows.setShared('SelectedAttendanceId', selectID[0].attendanceItemId, true);    
+                                        }
                                     }
                                 });
                                 
