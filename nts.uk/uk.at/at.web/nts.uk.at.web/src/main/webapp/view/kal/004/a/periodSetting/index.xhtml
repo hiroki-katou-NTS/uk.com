@@ -17,7 +17,7 @@
 		            <tr>
 		                <td data-bind="text: categoryName"></td>
 		                <td data-bind="text: extractionPeriod"></td>
-		                <td><button data-bind="click: $parent.openDialog" >#{i18n.getText('KAL004_23')}</button></td>
+		                <td><button data-bind="click: $parent.openDialog.bind($parent)" >#{i18n.getText('KAL004_23')}</button></td>
 		            </tr>
 		        </tbody>
 		    </table>
