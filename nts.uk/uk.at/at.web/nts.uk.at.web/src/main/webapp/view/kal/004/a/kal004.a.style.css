@@ -10,16 +10,13 @@
 }
 
 #right-content {
-	margin-left: 40px;
+	margin-left: 28px;
 	float: left;
 	margin-top: 13px;
 }
-.container{
-	width: 1320px !important;
-	
-}
+
 #check-condition-text{
-	width: 890px;
+	width: 855px;
 	margin-bottom: 10px;
 	display: inline-block;
 }
@@ -27,13 +24,13 @@
 #select-text{
 	float: left;
     border-bottom: 1px solid;
-    width: 390px;
+    width: 380px;
     padding-bottom: 3px;
 }
 #selected-text{
 	float: right;
-    margin-right: 15px;
+    margin-right: 0px;
     border-bottom: 1px solid;
-    width: 390px;
+    width: 380px;
     padding-bottom: 3px;
 }
