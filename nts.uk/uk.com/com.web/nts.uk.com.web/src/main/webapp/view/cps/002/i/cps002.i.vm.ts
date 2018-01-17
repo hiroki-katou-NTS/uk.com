@@ -9,7 +9,7 @@ module cps002.i.vm {
 
 
     export class ViewModel {
-        imageId: KnockoutObservable<string> = ko.observable("");
+        imageId: KnockoutObservable<IImageId> = ko.observable(<IImageId>{});
         isChange: KnockoutObservable<boolean> = ko.observable(false);
         isInit = true;
         constructor() {
@@ -17,8 +17,10 @@ module cps002.i.vm {
         }
         start() {
             let self = this;
-            self.imageId(getShared("imageId"));
-            if (self.imageId() != "" && self.imageId() != undefined) {
+            let dImageId = getShared("imageId");
+            
+            if (dImageId != "" && dImageId != undefined) {
+                self.imageId().defaultImgId = dImageId;
                 self.getImage();
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     if (!self.isInit) {
@@ -43,17 +45,22 @@ module cps002.i.vm {
             if (isImageLoaded.imgOnView) {
                 if (self.isChange()) {
                     $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
-                        self.imageId(data.id);
-                        nts.uk.ui.block.clear();
-                        setShared("imageId", self.imageId());
-                        self.close();
+                        self.imageId().cropImgId = data.id;
+                         $("#test").ntsImageEditor("uploadOriginal", { stereoType: "original-img" }).done(function(data2) {
+                             self.imageId().defaultImgId = data2.id;
+                             nts.uk.ui.block.clear();
+                                setShared("imageId", self.imageId());
+                                self.close();
+                        });
+
+                       
                     });
                 } else self.close();
             } else self.close();
         }
         getImage() {
             let self = this;
-            let id = self.imageId();
+            let id = self.imageId().defaultImgId;
             $("#test").ntsImageEditor("selectByFileId", id);
         }
         close() {
@@ -61,5 +68,10 @@ module cps002.i.vm {
             close();
         }
 
+    }
+    
+    export interface IImageId{
+        defaultImgId: string;
+        cropImgId: string;
     }
 }
