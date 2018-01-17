@@ -26,19 +26,19 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 return;
             }else if(self.listCheckCondition().length == 0){
                 _.forEach(listCheckCode, (category: share.CheckConditionCommand) =>{
-                    let checkCondition = new share.CheckCondition(category.alarmCategory, category.checkConditionCodes, category.extractionPeriodDaily);
+                    let checkCondition = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, category.extractionPeriodDaily);
                     listCheckConditionDto.push(checkCondition);
                     listConverToview.push(new ModelCheckConditonCode(checkCondition));
                 });
             }else{
                 _.forEach(listCheckCode, (category: share.CheckConditionCommand) =>{
-                    let checkCondition = new share.CheckCondition(category.alarmCategory, category.checkConditionCodes, category.extractionPeriodDaily);
+                    let checkCondition = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, category.extractionPeriodDaily);
                     var check = _.find(self.listCheckCondition(), ['alarmCategory', category.alarmCategory]);
                     if(nts.uk.util.isNullOrUndefined(check)){
                         listCheckConditionDto.push(checkCondition); 
                         listConverToview.push(new ModelCheckConditonCode(checkCondition));
                     }else{
-                        let checkConditionUpDate = new share.CheckCondition(category.alarmCategory, category.checkConditionCodes, check.extractionPeriodDaily);
+                        let checkConditionUpDate = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, check.extractionPeriodDaily);
                         listCheckConditionDto.push(checkConditionUpDate);    
                         listConverToview.push(new ModelCheckConditonCode(checkConditionUpDate));   
                     }
@@ -104,9 +104,14 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         }
         private changeExtractionDaily(extractionDailyDto: share.ExtractionDailyDto, categoryId: number): void {
             var self = this;
-            console.log(extractionDailyDto);
-            console.log(categoryId);
-            
+            var listCheckConditionDto: Array<share.CheckConditionCommand> = [];
+            _.forEach(self.listCheckCondition(), (category: share.CheckConditionCommand) =>{
+                if(category.alarmCategory == categoryId){
+                    category.setExtractPeriod(new share.ExtractionPeriodDailyCommand(extractionDailyDto));
+                } 
+                listCheckConditionDto.push(category);   
+            });
+            self.changeCheckCondition(listCheckConditionDto);
         }
         
         
@@ -118,8 +123,8 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         ListSpecifiedMonth:Array<any> = __viewContext.enums.SpecifiedMonth;
         ListAlarmCategory:Array<any> = __viewContext.enums.AlarmCategory;
         
-        extractionPeriodDaily:any;
-        constructor(CheckCondition: share.CheckCondition) {
+        extractionPeriodDaily: share.ExtractionPeriodDailyCommand;
+        constructor(CheckCondition: share.CheckConditionCommand) {
             var self =  this;
             this.categoryId = CheckCondition.alarmCategory;
             this.categoryName = _.find(self.ListAlarmCategory, ['value', CheckCondition.alarmCategory]).name;
