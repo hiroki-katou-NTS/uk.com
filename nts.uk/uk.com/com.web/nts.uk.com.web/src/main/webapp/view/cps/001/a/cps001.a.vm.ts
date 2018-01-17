@@ -422,12 +422,8 @@ module cps001.a.vm {
                 };
 
             // trigger change of all control in layout
-            _.each(__viewContext.primitiveValueConstraints, x => {
-                if (_.has(x, "itemCode")) {
-                    $('#' + x.itemCode).trigger('change');
-                }
-            })
-
+            $('.drag-panel .nts-input').trigger('change');
+            
             if (hasError()) {
                 $('#func-notifier-errors').trigger('click');
                 return;
