@@ -12,6 +12,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pereg.app.command.person.info.category.CheckNameSpace;
 import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -40,7 +41,8 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 		String perInfoItemId = null;
 		AddItemCommand addItemCommand = context.getCommand();
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
-		if (addItemCommand.getItemName().trim().equals("")) {
+		String itemName = addItemCommand.getItemName();
+		if (CheckNameSpace.checkName(itemName)) {
 			throw new BusinessException(new RawErrorMessage("Msg_928"));
 		}
 		if (addItemCommand.getSingleItem().getDataType() == 6) {
