@@ -12,8 +12,21 @@ module cps002.i.vm {
         imageId: KnockoutObservable<IImageId> = ko.observable(<IImageId>{});
         isChange: KnockoutObservable<boolean> = ko.observable(false);
         isInit = true;
+        isEdit: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
+
+            self.imageId.subscribe((newId) => {
+                if (newId) {
+                    $(".checkbox-holder").show();
+                } else {
+                    $(".checkbox-holder").hide();
+                }
+            });
+
+            $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
+                $(".checkbox-holder").show();
+            });
         }
         start() {
             let self = this;
