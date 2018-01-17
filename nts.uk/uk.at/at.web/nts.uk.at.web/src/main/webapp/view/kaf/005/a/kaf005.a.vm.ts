@@ -158,20 +158,23 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.appDate.subscribe(function(value){
                     var dfd = $.Deferred();
                     if(!nts.uk.util.isNullOrEmpty(value)){
-                            service.findByChangeAppDate({
-                                appDate: nts.uk.util.isNullOrEmpty(value) ? null :moment(value).format(self.DATE_FORMAT),
-                                prePostAtr: self.prePostSelected(),
-                                siftCD: self.siftCD(),
-                                overtimeHours: ko.toJS(self.overtimeHours)    
-                            }).done((data) =>{
-                                self.findBychangeAppDateData(data);
-                                self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false);
-                                self.convertAppOvertimeReferDto(data);
-                                self.preAppPanelFlg(data.preAppPanelFlg);
-                                dfd.resolve(data);
-                            }).fail((res) =>{
-                                dfd.reject(res);
-                            });
+                        nts.uk.ui.block.invisible();
+                        service.findByChangeAppDate({
+                            appDate: moment(value).format(self.DATE_FORMAT),
+                            prePostAtr: self.prePostSelected(),
+                            siftCD: self.siftCD(),
+                            overtimeHours: ko.toJS(self.overtimeHours)    
+                        }).done((data) =>{
+                            self.findBychangeAppDateData(data);
+                            self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false);
+                            self.convertAppOvertimeReferDto(data);
+                            self.preAppPanelFlg(data.preAppPanelFlg);
+                            nts.uk.ui.block.clear(); 
+                            dfd.resolve(data);
+                        }).fail((res) =>{
+                            nts.uk.ui.block.clear(); 
+                            dfd.reject(res);
+                        });
                         //Check calculate times
                         if(!nts.uk.util.isNullOrEmpty(self.preWorkContent)){
                             if(self.preWorkContent.applicationDate != value){
@@ -180,7 +183,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             }
                         }
                     }
-                        return dfd.promise();
+                    return dfd.promise();
                     });
                 self.prePostSelected.subscribe(function(value){
                     let dfd =$.Deferred();
@@ -702,10 +705,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.siftCodePre(data.preAppOvertimeDto.siftTypePre.siftCode);
                 self.siftNamePre(data.preAppOvertimeDto.siftTypePre.siftName);
             }
-            if(data.preAppOvertimeDto.workClockFrom1Pre != -1 || data.preAppOvertimeDto.workClockTo1Pre!= -1){
+            if(nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockFrom1Pre) || nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockTo1Pre)){
                  self.workClockFrom1To1Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom1Pre) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.preAppOvertimeDto.workClockTo1Pre));
             }
-            if(data.preAppOvertimeDto.workClockFrom2Pre != -1 || data.preAppOvertimeDto.workClockTo2Pre!= -1){
+            if(nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockFrom2Pre) || nts.uk.util.isNullOrEmpty(data.preAppOvertimeDto.workClockTo2Pre)){
                 self.workClockFrom2To2Pre(self.convertIntToTime(data.preAppOvertimeDto.workClockFrom2Pre) +" "+ nts.uk.resource.getText("KAF005_126") +" "+ self.convertIntToTime(data.preAppOvertimeDto.workClockTo2Pre));
             }
             if(self.workClockFrom2To2Pre () == null){
@@ -777,7 +780,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         
         convertIntToTime(data : any) : string{
             let hourMinute : string = "";
-            if(data == -1 || data === ""){
+            if(nts.uk.util.isNullOrEmpty(data)){
                 return null;
             }else if (data == 0) {
                 hourMinute = "00:00";

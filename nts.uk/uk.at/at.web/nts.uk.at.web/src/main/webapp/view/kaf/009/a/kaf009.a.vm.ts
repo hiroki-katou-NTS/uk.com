@@ -95,7 +95,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     nts.uk.ui.block.clear();
                     self.appDate.subscribe(value => {
                         if(!nts.uk.util.isNullOrEmpty(value)){
-                            self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false);
+                            nts.uk.ui.block.invisible();
+                            self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false)
+                            .done(()=>{
+                                nts.uk.ui.block.clear();         
+                            }).fail(()=>{
+                                nts.uk.ui.block.clear();    
+                            });
                         }
                     });
                     //フォーカス制御=>申請日付

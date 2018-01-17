@@ -278,7 +278,13 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         private checkChangeAppDate(date: string){
             let self = this;
             date = moment(date).format(self.dateFormat);
-            self.kaf000_a.getAppDataDate(2, date, false);
+            nts.uk.ui.block.invisible();
+            self.kaf000_a.getAppDataDate(2, date, false)
+            .done(()=>{
+                nts.uk.ui.block.clear();         
+            }).fail(()=>{
+                nts.uk.ui.block.clear();    
+            });
         }
         /**
          * フォーカス制御

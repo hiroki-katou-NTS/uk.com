@@ -348,7 +348,7 @@ module nts.uk.at.view.kaf009.b {
             getCommand() {
                 let self = this; 
                 let goBackCommand: common.GoBackCommand = new common.GoBackCommand();
-                goBackCommand.version = self.version;
+                goBackCommand.version = self.inputCommandEvent().version;
                 goBackCommand.appID = self.appID();
                 goBackCommand.workTypeCD = self.workTypeCd();
                 goBackCommand.siftCD = self.siftCD();
