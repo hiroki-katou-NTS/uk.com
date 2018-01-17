@@ -49,11 +49,11 @@ public class PersonCategoryItemData {
 		//IO00001, IO00001
 		ReferenceStateData referenceData = new ReferenceStateData();
 		
-		referenceData.setConstraint("PersonName");
+		referenceData.setConstraint("EmployeeCode");
 		itemData.put("IS00001", referenceData);
 		
 		referenceData = new ReferenceStateData();
-		referenceData.setConstraint("PersonNameKana");
+		referenceData.setConstraint("ExternalCode");
 		itemData.put("IS00002", referenceData);
 		
 		referenceData = new ReferenceStateData();
@@ -65,11 +65,11 @@ public class PersonCategoryItemData {
 		itemData.put("IS00004", referenceData);
 		
 		referenceData = new ReferenceStateData();
-		referenceData.setConstraint("BusinessName");
+		referenceData.setConstraint("FullName");
 		itemData.put("IS00005", referenceData);
 		
 		referenceData = new ReferenceStateData();
-		referenceData.setConstraint("BusinessEnglishName");
+		referenceData.setConstraint("FullNameKana");
 		itemData.put("IS00006", referenceData);
 		
 		referenceData = new ReferenceStateData();

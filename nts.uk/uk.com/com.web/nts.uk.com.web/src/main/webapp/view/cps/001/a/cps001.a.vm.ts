@@ -631,6 +631,9 @@ module cps001.a.vm {
 
             self.id.subscribe(id => {
                 let mode: TABS = self.mode();
+
+                setShared(REPL_KEY, REPL_KEYS.NORMAL);
+
                 if (id) {
                     if (mode == TABS.CATEGORY) {
                         let option = _.find(self.combobox(), x => x.optionValue == id);
