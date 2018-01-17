@@ -318,6 +318,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             //return if has error
             if (nts.uk.ui.errors.hasError()){return;}   
             if(!self.validate()){return;}
+            
             //block screen
             nts.uk.ui.block.invisible();
             let appReason: string,
@@ -334,6 +335,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    
                 return;    
             }
+            if(!appcommon.CommonProcess.checklenghtReason(appReason,"#appReason")){
+                return;
+            }
             divergenceReason = self.getReason(
                 self.displayDivergenceReasonForm(),
                 self.selectedReason2(),
@@ -341,6 +345,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.displayDivergenceReasonInput(),
                 self.multilContent2()
             );
+            if(!appcommon.CommonProcess.checklenghtReason(divergenceReason,"#divergenceReason")){
+                return;
+            }
             let overTimeShiftNightTmp: number = null;
             let flexExessTimeTmp: number = null;
             for (let i = 0; i < self.overtimeHours().length; i++) {
@@ -492,8 +499,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 };
             }         
             let param : any ={
-                overtimeHours: ko.toJS(self.overtimeHours()),
-                bonusTimes: ko.toJS(self.bonusTimes()),
+                overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
+                 bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),
                 prePostAtr : self.prePostSelected(),
                 appDate : nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
                 siftCD: self.siftCD()
@@ -815,6 +822,20 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             return _.isEmpty(_.filter(OverTimeInputs, x => !nts.uk.util.isNullOrEmpty(x.applicationTime)));
         }
         
+        private initCalculateData(item: any): any{
+            return data ={companyID: item.companyID,
+                            appID: item.appID,
+                            attendanceID: item.attendanceID,
+                            attendanceName: item.attendanceName,
+                            frameNo: item.frameNo,
+                            timeItemTypeAtr: item.timeItemTypeAtr,
+                            frameName: item.frameName,
+                            applicationTime: item.applicationTime,
+                            preAppTime: null,
+                            caculationTime: null,
+                            nameID: item.nameID, 
+                            itemName:item.itemName};
+        }
         private checkWorkContentChanged(){
             let self = this;
             //Check calculate times

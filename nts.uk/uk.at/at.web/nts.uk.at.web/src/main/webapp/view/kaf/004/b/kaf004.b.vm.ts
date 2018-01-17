@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf004.b.viewmodel {
     import kaf002 = nts.uk.at.view.kaf002;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     
     const employmentRootAtr: number = 1; // EmploymentRootAtr: Application
     const applicationType: number = 9; // Application Type: Stamp Application
@@ -131,7 +132,9 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         let reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
                         txtReasonTmp = reasonText.reasonTemp;
                     }
-                    
+                    if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(txtReasonTmp) ? txtReasonTmp + "\n" + self.appreason() : self.appreason(),"#appReason")){
+                        return;
+                    }
                     let lateOrLeaveEarly: LateOrLeaveEarly = {
                         prePostAtr: prePostAtr, 
                         applicationDate: self.date(),
