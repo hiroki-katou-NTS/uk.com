@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         workState: KnockoutObservable<boolean> = ko.observable(true);;
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
-        appDate: KnockoutObservable<string> = ko.observable(moment().format(this.DATE_FORMAT));
+        appDate: KnockoutObservable<string> = ko.observable('');
         //TIME LINE 1
         timeStart1: KnockoutObservable<number> = ko.observable(null);
         timeEnd1: KnockoutObservable<number> = ko.observable(null);
@@ -149,7 +149,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             nts.uk.ui.block.invisible();
             service.getOvertimeByUI({
                 url: urlParam,
-                appDate: moment(new Date()).format(self.DATE_FORMAT),
+                appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
                 uiType: 0
             }).done((data) => {
                 self.initData(data);
@@ -159,7 +159,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     var dfd = $.Deferred();
                     if(!nts.uk.util.isNullOrEmpty(value)){
                             service.findByChangeAppDate({
-                                appDate: moment(value).format(self.DATE_FORMAT),
+                                appDate: nts.uk.util.isNullOrEmpty(value) ? null :moment(value).format(self.DATE_FORMAT),
                                 prePostAtr: self.prePostSelected(),
                                 siftCD: self.siftCD(),
                                 overtimeHours: ko.toJS(self.overtimeHours)    
@@ -187,7 +187,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     if(!nts.uk.util.isNullOrEmpty(self.appDate()){
                             service.checkConvertPrePost({
                                 prePostAtr: value,
-                                appDate: moment(self.appDate()).format(self.DATE_FORMAT),
+                                appDate:  nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
                                 siftCD: self.siftCD(),
                                 overtimeHours: ko.toJS(self.overtimeHours) 
                             }).done((data) =>{
@@ -474,12 +474,28 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         }
         CaculationTime(){
             let self = this;
-            let dfd = $.Deferred();           
+            let dfd = $.Deferred();
+            if(nts.uk.util.isNullOrEmpty(self.appDate())){
+                dialog.alertError({messageId : "Msg_959"});
+                return;    
+            }
+            $("#inpStartTime1").trigger("validate");
+            $("#inpEndTime1").trigger("validate");
+            //return if has error
+            if (nts.uk.ui.errors.hasError()){return;}
+            if(!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')){
+                return;    
+            }
+            if ( !nts.uk.util.isNullOrEmpty(self.timeStart2())) {
+                if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
+                    return;
+                };
+            }         
             let param : any ={
                 overtimeHours: ko.toJS(self.overtimeHours()),
                 bonusTimes: ko.toJS(self.bonusTimes()),
                 prePostAtr : self.prePostSelected(),
-                appDate : moment(self.appDate()).format(self.DATE_FORMAT),
+                appDate : nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
                 siftCD: self.siftCD()
             }
             //setting work content
@@ -617,7 +633,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.manualSendMailAtr(overtimeDto.manualSendMailAtr);
             self.prePostSelected(overtimeDto.application.prePostAtr);
             self.displayCaculationTime(overtimeDto.displayCaculationTime);
-            self.restTimeDisFlg(overtimeDto.displayRestTime);
+            self.restTimeDisFlg(self.restTimeDisFlg());
             self.employeeName(overtimeDto.employeeName);
             if (overtimeDto.siftType != null) {
                 self.siftCD(overtimeDto.siftType.siftCode);
