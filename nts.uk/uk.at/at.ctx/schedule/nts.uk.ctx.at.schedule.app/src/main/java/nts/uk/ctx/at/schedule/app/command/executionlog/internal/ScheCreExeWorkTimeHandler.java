@@ -137,7 +137,8 @@ public class ScheCreExeWorkTimeHandler {
 		if (optionalBasicWorkSetting.isPresent()) {
 			WorkTimeZoneGetterCommand commandGetter = command.toWorkTimeZone();
 			commandGetter.setWorkTypeCode(optionalBasicWorkSetting.get().getWorktypeCode().v());
-			commandGetter.setWorkingCode(optionalBasicWorkSetting.get().getWorkingCode().v());
+			commandGetter.setWorkingCode(optionalBasicWorkSetting.get().getWorkingCode() == null ? null
+					: optionalBasicWorkSetting.get().getWorkingCode().v());
 			return this.getWorkingTimeZoneCode(commandGetter);
 		}
 		return Optional.empty();
@@ -788,7 +789,7 @@ public class ScheCreExeWorkTimeHandler {
 
 		// check work time code null
 		if(worktimeCode == null){
-			return Optional.of("");
+			return null;
 		}
 		
 		// check not exist data work
