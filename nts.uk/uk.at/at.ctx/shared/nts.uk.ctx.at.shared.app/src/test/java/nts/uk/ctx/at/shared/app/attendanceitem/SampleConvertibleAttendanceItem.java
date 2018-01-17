@@ -18,10 +18,10 @@ public class SampleConvertibleAttendanceItem implements ConvertibleAttendanceIte
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "A")
 	private SampleObject attendanceItem;
 
-	@AttendanceItemLayout(layout = "B", isList = true, jpPropertyName = "B", listMaxLength = 2)
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "B", listMaxLength = 2)
 	private List<SampleConvertibleAttendanceItem> attendanceItems;
 
-	@AttendanceItemValue(type = ValueType.INTEGER, itemId = {2, 2, 2})
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "C")
 	private String attendanceItemB;
 }

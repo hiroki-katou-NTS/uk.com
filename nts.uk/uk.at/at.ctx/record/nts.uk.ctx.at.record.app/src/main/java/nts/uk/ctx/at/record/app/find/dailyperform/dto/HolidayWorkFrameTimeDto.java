@@ -23,7 +23,7 @@ public class HolidayWorkFrameTimeDto {
 
 	/** 事前申請時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "事前申請時間")
-	@AttendanceItemValue(itemId = { 270, 275, 280, 285, 290, 295, 300, 305, 310, 315 }, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer beforeApplicationTime;
 
 	/** 休出枠NO: 休出枠NO */

@@ -18,10 +18,10 @@ public class TimeLeavingOfDailyPerformanceDto implements ConvertibleAttendanceIt
 	
 	private GeneralDate ymd;
 	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "出退勤", isList = true, listMaxLength = 2, setFieldWithIndex = "workNo")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "出退勤", listMaxLength = 2, indexField = "workNo")
 	private List<WorkLeaveTimeDto> workAndLeave;
 
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "勤務回数")
-	@AttendanceItemValue(itemId = 461, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer workTimes;
 }

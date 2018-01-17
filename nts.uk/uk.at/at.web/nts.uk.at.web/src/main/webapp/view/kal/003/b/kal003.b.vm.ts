@@ -16,7 +16,6 @@ module nts.uk.at.view.kal003.b.viewmodel{
         listCompareTypes            : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetServiceType_BA1_2         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetSelectionRange_BA1_5         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
-        itemListTargetSelectionRange_BA1_5_target_working_hours : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         listAllWorkType         : Array<string> = ([]);
         listAllAttdItem         : Array<string> = ([]);
         listAllSettingTimeZone  : Array<string> = ([]);
@@ -24,9 +23,10 @@ module nts.uk.at.view.kal003.b.viewmodel{
         displayWorkTypeSelections_BA1_4         : KnockoutObservable<string> = ko.observable('');
         displayWorkTimeItemSelections_BA2_3     : KnockoutObservable<string> = ko.observable('');
         displayWorkingTimeZoneSelections_BA5_3  : KnockoutObservable<string> = ko.observable('');
-        targetServiceTypeSelected_BA1_2         : KnockoutObservable<number> = ko.observable(1);
-        targetSelectionRangeSelected_BA1_5      : KnockoutObservable<number> = ko.observable(0);
-        targetSelectionRangeSelected_BA1_5_target_working_hours : KnockoutObservable<number> = ko.observable(1);
+        
+        //targetServiceTypeSelected_BA1_2         : KnockoutObservable<number> = ko.observable(1);
+        //targetSelectionRangeSelected_BA1_5      : KnockoutObservable<number> = ko.observable(0);
+        
         private setting : sharemodel.ErrorAlarmCondition;
         swANDOR_B5_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         swANDOR_B6_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
@@ -34,7 +34,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
         enableComparisonMaxValue : KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
-            var option = windows.getShared('inputKal003b');
+            let option = windows.getShared('inputKal003b');
             self.setting = $.extend({}, shareutils.getDefaultErrorAlarmCondition(0), option);
             self.currentErrAlaCheckCondition = ko.observable(self.setting);
             // change select item check
@@ -44,15 +44,10 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     self.initialScreen();
                 }
             });
+
             self.currentErrAlaCheckCondition().comparisonOperator.subscribe((comparisonOperatorId) => {
                 errors.clearAll();
                 self.settingEnableComparisonMaxValueField();
-            });
-
-            self.currentErrAlaCheckCondition().compoundCondition().hasGroup2.subscribe((hsGroup2) => {
-                if (hsGroup2) {
-                    $("#table-group2condition").ntsFixedTable();
-                }
             });
         }
 
@@ -131,7 +126,6 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listTypeCheckWorkRecord));
                     var listTargetRangeWithName = self.getLocalizedNameForEnum(listTargetSelectionRange);
                     self.itemListTargetSelectionRange_BA1_5(listTargetRangeWithName);
-                    self.itemListTargetSelectionRange_BA1_5_target_working_hours(listTargetRangeWithName);
                     self.itemListTargetServiceType_BA1_2(self.getLocalizedNameForEnum(listTargetServiceType));
                     self.buildListCompareTypes();
                     var listANDOR = self.getLocalizedNameForEnum(listLogicalOperator)
@@ -178,14 +172,17 @@ module nts.uk.at.view.kal003.b.viewmodel{
          * Initial Group Condition
          * @param listGroupCondition
          */
-        private initGroupCondition(listGroupCondition : Array<sharemodel.Condition>) : Array<sharemodel.Condition> {
-            let listCondition : Array<sharemodel.Condition> = [];
-            for(var i = 0; i < listGroupCondition.length && i < 3; i++) {
-                listCondition.push(listGroupCondition[i]);
+        private initGroupCondition(listGroupCondition : Array<sharemodel.ErAlAtdItemCondition>) : Array<sharemodel.ErAlAtdItemCondition> {
+            let listCondition : Array<sharemodel.ErAlAtdItemCondition> = [];
+            let maxRow = 3;
+            if (listGroupCondition && listGroupCondition != undefined) {
+                for(var i = 0; i < listGroupCondition.length && i < maxRow; i++) {
+                    listCondition.push(listGroupCondition[i]);
+                }
             }
-            if (listCondition.length < 3) {
-                for(var i = listCondition.length; i < 3; i++) {
-                    listCondition.push(shareutils.getDefaultCondition(7));
+            if (listCondition.length < maxRow) {
+                for(var i = listCondition.length; i < maxRow; i++) {
+                    listCondition.push(shareutils.getDefaultCondition(i-1));
                 }
             }
             return listCondition;
@@ -196,13 +193,15 @@ module nts.uk.at.view.kal003.b.viewmodel{
          */
         private initCompoundGroupCondition() {
             let self = this, currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
-            let compoundCondition = currentErrAlaCheckCondition.compoundCondition();
-            let listGr1 = self.initGroupCondition(compoundCondition.group1Condition().groupListCondition());
-            compoundCondition.group1Condition().groupListCondition(listGr1);
-            let listGr2 = self.initGroupCondition(compoundCondition.group2Condition().groupListCondition());
-            compoundCondition.group2Condition().groupListCondition(listGr2);
-            $("#table-group1condition").ntsFixedTable();
-            $("#table-group2condition").ntsFixedTable();
+            let compoundCondition = currentErrAlaCheckCondition.atdItemCondition();
+            if (!compoundCondition || compoundCondition == undefined) {
+                compoundCondition = shareutils.getDefaultAtdItemCondition();
+                currentErrAlaCheckCondition.atdItemCondition(compoundCondition);
+            }
+            let listGr1 = self.initGroupCondition(compoundCondition.group1().lstErAlAtdItemCon());
+            compoundCondition.group1().lstErAlAtdItemCon(listGr1);
+            let listGr2 = self.initGroupCondition(compoundCondition.group2().lstErAlAtdItemCon());
+            compoundCondition.group2().lstErAlAtdItemCon(listGr2);
         }
      // ============build enum for combobox BA2-5: end ==============
         // ===========common end =====================
@@ -236,6 +235,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     dfd.resolve();
                     break;
                 default:
+                    
                     dfd.resolve();
                     break;
             }
@@ -379,18 +379,27 @@ module nts.uk.at.view.kal003.b.viewmodel{
          * 
          */
         private initialWorkTypes() : void {
-            let self =this;
+            let self =this,
+                currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
             self.listAllWorkType = [];
+            // get all Work type
             service.getAttendCoutinousWork().done((workTypes) => {
                 if (workTypes && workTypes != undefined) {
                     for(var i = 0; i < workTypes.length; i++) {
                         self.listAllWorkType.push(workTypes[i].workTypeCode);
                     }
-                    self.displayWorkTypeSelections_BA1_4(self.buildItemName(workTypes));
-                } else {
-                    self.displayWorkTypeSelections_BA1_4('');
                 }
             });
+            // get Name of selected work type.
+            let wkTypeSelected = currentErrAlaCheckCondition.workTypeSelections();
+            if (wkTypeSelected && wkTypeSelected.length > 0) {
+                service.findWorkTypeByCodes(currentErrAlaCheckCondition.workTypeSelections()).done((listWrkTypes) => {
+                    let names : string = self.buildItemName(listWrkTypes);
+                    self.displayWorkTypeSelections_BA1_4(names);
+                });
+            } else {
+                self.displayWorkTypeSelections_BA1_4("");
+            }
         }
         
         /**
@@ -465,6 +474,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 if (listItems != null && listItems != undefined) {
                     let listCodes : Array<string> = self.getListCode(listItems);
                     currentErrAlaCheckCondition.workTypeSelections(listCodes);
+                    // get name
                     let names : string = self.buildItemName(listItems);
                     self.displayWorkTypeSelections_BA1_4(names);
                     
@@ -492,10 +502,11 @@ module nts.uk.at.view.kal003.b.viewmodel{
               //get data from share window
                 let listItems : Array<any> = windows.getShared("kml001selectedCodeList");
                 if (listItems != null && listItems != undefined) {
-                    let listCodes : Array<string> = self.getListCode(listItems);
-                    currentErrAlaCheckCondition.workingTimeZoneSelections(listCodes);
-                    let names : string = self.buildItemName(listItems);
-                    self.displayWorkingTimeZoneSelections_BA5_3(names);
+                    currentErrAlaCheckCondition.workingTimeZoneSelections(listItems);
+                    //get name
+                    self.generateNameCorrespondingToAttendanceItem(listItems).done((data) => {
+                        self.displayWorkingTimeZoneSelections_BA5_3(data);
+                    });
                 }
                 block.clear();
             });
@@ -520,15 +531,11 @@ module nts.uk.at.view.kal003.b.viewmodel{
               //get data from share window
                 let listItems = windows.getShared('selectedChildAttendace');
                 if (listItems != null && listItems != undefined) {
-                    let listCodes : Array<string> = self.getListCode(listItems);
-                    currentErrAlaCheckCondition.workTimeItemSelections(listCodes);
-                    /*
-                    self.generateNameCorrespondingToAttendanceItem(listAttendenceItemCode).done((data) => {
+                    currentErrAlaCheckCondition.workTimeItemSelections(listItems);
+                    // get name
+                    self.generateNameCorrespondingToAttendanceItem(listItems).done((data) => {
                         self.displayWorkTimeItemSelections_BA2_3(data);
                     });
-                    */
-                    let names = self.buildItemName(listItems);
-                    self.displayWorkTimeItemSelections_BA2_3(names);
                 }
                 block.clear();
             });

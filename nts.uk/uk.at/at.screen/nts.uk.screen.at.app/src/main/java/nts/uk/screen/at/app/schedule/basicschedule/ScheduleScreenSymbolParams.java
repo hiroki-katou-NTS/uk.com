@@ -2,15 +2,15 @@ package nts.uk.screen.at.app.schedule.basicschedule;
 
 import java.util.List;
 
-import lombok.Data;
+import lombok.Value;
 
 /**
  * 
  * @author sonnh1
  *
  */
-@Data
+@Value
 public class ScheduleScreenSymbolParams {
-	public List<String> lstWorkTypeCode;
-	public List<String> lstWorkTimeCode;
+	List<String> lstWorkTypeCode;
+	List<String> lstWorkTimeCode;
 }

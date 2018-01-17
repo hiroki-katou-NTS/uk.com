@@ -492,6 +492,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<WorkInfoOfDailyPerformanceDto> getListWorkInfoOfDailyPerformance(List<String> lstEmployee,
 			DateRange dateRange) {
+		if(lstEmployee.isEmpty()) return new ArrayList<>();
 		return this.queryProxy().query(SEL_DAILY_WORK_INFO, KrcdtDaiPerWorkInfo.class)
 				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee).getList(e -> {
 					return new WorkInfoOfDailyPerformanceDto(e.krcdtDaiPerWorkInfoPK.employeeId, e.calculationState,
@@ -619,7 +620,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 							s.kwrmtErAlWorkRecordPK.errorAlarmCode, s.errorAlarmName,
 							s.fixedAtr.intValue() == 1 ? true : false, s.useAtr.intValue() == 1 ? true : false,
 							s.typeAtr.intValue(), "", s.boldAtr.intValue() == 1 ? true : false, s.messageColor,
-							s.cancelableAtr.intValue() == 1 ? true : false, s.errorDisplayItem.intValue());
+							s.cancelableAtr.intValue() == 1 ? true : false, s.errorDisplayItem == null ? null : s.errorDisplayItem.intValue());
 				}).collect(Collectors.toList());
 	}
 

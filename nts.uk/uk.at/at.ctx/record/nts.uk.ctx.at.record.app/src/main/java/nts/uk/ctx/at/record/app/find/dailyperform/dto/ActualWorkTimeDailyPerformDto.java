@@ -24,12 +24,12 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 public class ActualWorkTimeDailyPerformDto {
 
 	/** 割増時間: 日別実績の割増時間 */
-	@AttendanceItemLayout(layout = "A", isList = true, jpPropertyName = "割増時間",listMaxLength = 10, setFieldWithIndex = "premiumTimeNo")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "割増時間",listMaxLength = 10, indexField = "premiumTimeNo")
 	private List<PremiumTimeDto> premiumTimes;
 
 	/** 拘束差異時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "拘束差異時間")
-	@AttendanceItemValue(itemId = 747, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer constraintDifferenceTime;
 
 	/** 拘束時間: 総拘束時間 */
@@ -38,7 +38,7 @@ public class ActualWorkTimeDailyPerformDto {
 
 	/** 時差勤務時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "D", jpPropertyName = "時差勤務時間")
-	@AttendanceItemValue(itemId = 575, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer timeDifferenceWorkingHours;
 
 	/** 総労働時間: 日別実績の総労働時間 */
@@ -46,7 +46,7 @@ public class ActualWorkTimeDailyPerformDto {
 	private TotalWorkingTimeDto totalWorkingTime;
 
 	/** 乖離時間: 日別実績の乖離時間 */
-	@AttendanceItemLayout(layout = "F", isList = true, jpPropertyName = "乖離時間", listMaxLength = 5, setFieldWithIndex = "divergenceTimeNo")
+	@AttendanceItemLayout(layout = "F", jpPropertyName = "乖離時間", listMaxLength = 5, indexField = "divergenceTimeNo")
 	private List<DivergenceTimeDto> divergenceTime;
 
 	public static ActualWorkTimeDailyPerformDto toActualWorkTime(ActualWorkingTimeOfDaily domain) {

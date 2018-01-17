@@ -714,6 +714,104 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
+            export class OffdayWorkTimeConverter extends FixedTableDataConverter<OtherFlowColumnSetting, HDWorkTimeSheetSettingModel> {
+                constructor() {
+                    super();
+                }
+
+                toConvertedListTemp(list: Array<OtherFlowColumnSetting>): Array<HDWorkTimeSheetSettingDto> {
+                    let self = this;
+                    return _.map(list, item => self.toOriginalDto(item));
+                }
+
+                /**
+                 * To original list temp
+                 */
+                toOriginalListTemp(list: Array<HDWorkTimeSheetSettingModel>): Array<HDWorkTimeSheetSettingDto> {
+                    return _.map(list, item => {
+                        return item.toDto();
+                    });
+                }
+
+                /**
+                 * Convert to list time range
+                 */
+                toConvertedList(): Array<OtherFlowColumnSetting> {
+                    let self = this;
+                    return _.map(self.originalList(), wtz => new OtherFlowColumnSetting(wtz));
+                }
+
+                /**
+                 * Revert to original list
+                 */
+                fromConvertedList(newList: Array<OtherFlowColumnSetting>): Array<HDWorkTimeSheetSettingModel> {
+                    let self = this;
+                    self.setWorkTimeNo(newList);
+                    return _.map(newList, newVl => {
+                        let vl = new HDWorkTimeSheetSettingModel();
+                        vl.updateData(self.toOriginalDto(newVl));
+                        return vl;
+                    });
+                }
+
+                setWorkTimeNo(list: Array<OtherFlowColumnSetting>): void {
+                    let count = 0;
+                    _.forEach(list, item => item.workTimeNo = ++count);
+                }
+
+                toOriginalDto(convertedModel: OtherFlowColumnSetting): HDWorkTimeSheetSettingDto {
+                    return {
+                        workTimeNo: 0, // set workTimeNo later.
+                        timezone: {
+                            rounding: {
+                                rounding: convertedModel.rounding(),
+                                roundingTime: convertedModel.roundingTime(),
+                            },
+                            start: convertedModel.timezone().startTime,
+                            end: convertedModel.timezone().endTime
+                        },
+                        isLegalHolidayConstraintTime: false, //TODO khong su dung?
+                        inLegalBreakFrameNo: convertedModel.inLegalBreakFrameNo(),
+                        isNonStatutoryDayoffConstraintTime: false, //TODO khong su dung?
+                        outLegalBreakFrameNo: convertedModel.outLegalBreakFrameNo(),
+                        isNonStatutoryHolidayConstraintTime: false, //TODO khong su dung?
+                        outLegalPubHDFrameNo: convertedModel.outLegalPubHolFrameNo()
+                    }
+                }
+
+            }
+
+            export class OtherFlowColumnSetting {
+                workTimeNo: number;
+                timezone: KnockoutObservable<any>;
+                rounding: KnockoutObservable<number>;
+                roundingTime: KnockoutObservable<number>;
+                //isLegalHolidayConstraintTime: KnockoutObservable<boolean>; //TODO hien tai khong su dung
+                inLegalBreakFrameNo: KnockoutObservable<number>;
+                //isNonStatutoryDayoffConstraintTime: KnockoutObservable<boolean>;
+                outLegalBreakFrameNo: KnockoutObservable<number>;
+                //isNonStatutoryHolidayConstraintTime: KnockoutObservable<boolean>;
+                outLegalPubHolFrameNo: KnockoutObservable<number>;
+
+                constructor(hdwtssModel: HDWorkTimeSheetSettingModel) {
+                    let self = this;
+                    self.workTimeNo = 0;
+                    self.timezone = ko.observable({
+                        startTime: hdwtssModel.timezone.start(),
+                        endTime: hdwtssModel.timezone.end()
+                    });
+                    self.rounding = ko.observable(hdwtssModel.timezone.rounding.rounding());
+                    self.roundingTime = ko.observable(hdwtssModel.timezone.rounding.roundingTime());
+                    //self.isLegalHolidayConstraintTime = ko.observable(hdwtssModel.isLegalHolidayConstraintTime());
+                    self.inLegalBreakFrameNo = ko.observable(hdwtssModel.inLegalBreakFrameNo());
+                    //self.isNonStatutoryDayoffConstraintTime = ko.observable(hdwtssModel.isNonStatutoryDayoffConstraintTime());
+                    self.outLegalBreakFrameNo = ko.observable(hdwtssModel.outLegalBreakFrameNo());
+                    //self.isNonStatutoryHolidayConstraintTime = ko.observable(hdwtssModel.isNonStatutoryHolidayConstraintTime());
+                    self.outLegalPubHolFrameNo = ko.observable(hdwtssModel.outLegalPubHDFrameNo());
+                }
+
+            }
+
             export abstract class TimeRangeModelConverter<T> extends FixedTableDataConverter<TimeRangeModel, T> {
 
                 toConvertedListTemp(list: Array<TimeRangeModel>): any {

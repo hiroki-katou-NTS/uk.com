@@ -35,16 +35,16 @@ public class AttendanceTimeDailyPerformDto implements ConvertibleAttendanceItem 
 	private StayingTimeDto stayingTime;
 
 	/** 医療時間: 日別実績の医療時間 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "医療時間")
+	@AttendanceItemLayout(layout = "D", jpPropertyName = "医療時間", enumField = "dayNightAtr")
 	private MedicalTimeDailyPerformDto medicalTime;
 
 	/** 予実差異時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "E", jpPropertyName = "予実差異時間")
-	@AttendanceItemValue(itemId = 552, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer budgetTimeVariance;
 
 	/** 不就労時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "F", jpPropertyName = "不就労時間")
-	@AttendanceItemValue(itemId = 554, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer unemployedTime;
 }

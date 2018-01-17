@@ -34,8 +34,8 @@
 				<span class="title">#{i18n.getText('CMM021_3')}</span> <span
 					class="action-bar">
 					<!-- BEGIN A2_1 & A2_2 -->
-					<button tabindex="1" class="proceed" data-bind="click: saveAccount, enable: enable_A2_1"  >#{i18n.getText('CMM021_5')}</button>
-					<button tabindex="2" class="danger" data-bind="click: deleteAccount, enable: enable_A2_2"  >#{i18n.getText('CMM021_6')}</button>
+					<button tabindex="1" class="proceed" data-bind="click: saveAccount, enable: enable_Save"  >#{i18n.getText('CMM021_5')}</button>
+					<button tabindex="2" class="danger" data-bind="click: deleteAccount, enable: enable_Delete"  >#{i18n.getText('CMM021_6')}</button>
 					<!-- END A2_1 & A2_2 -->
 				</span>
 			</div>
@@ -127,26 +127,21 @@
 						<span data-bind="text: loginId"></span>
 					</div>
 				</div>
-				<div class="show-tab-panel">
-				
+				<div class="show-tab-panel">				
 					<div id="tabpanel-1" role="tabpanel" >
 						<com:ko tag="if" bind="isScreenBSelected" >
 							<ui:include src="b.xhtml" />
 						</com:ko>
-					</div>
-					
-					<div id="tabpanel-2" role="tabpanel" >
-
+					</div>					
+					<div id="tabpanel-2" role="tabpanel" data-bind="visible: isScreenCSelected" style="display: none;">
 						<com:ko tag="if" bind="isScreenCSelected">
 							<ui:include src="c.xhtml" />
-						</com:ko>
-						
+						</com:ko>					
 					</div>
 				</div>
-			</div>
+			</div>			
 			<!-- end-right-content -->
 		</ui:define>
-
 	</ui:composition>
 </body>
 </html>

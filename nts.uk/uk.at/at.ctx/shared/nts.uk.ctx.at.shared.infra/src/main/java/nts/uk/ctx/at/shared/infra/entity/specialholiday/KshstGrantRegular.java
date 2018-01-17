@@ -33,11 +33,11 @@ public class KshstGrantRegular extends UkJpaEntity implements Serializable {
 
 	/* 月数 */
 	@Column(name = "MONTHS")
-	public int months;
+	public Integer months;
 
 	/* 年数 */
 	@Column(name = "YEARS")
-	public int years;
+	public Integer years;
 
 	/* 付与日定期方法 */
 	@Column(name = "GRANT_REGULAR_METHOD")
@@ -62,7 +62,7 @@ public class KshstGrantRegular extends UkJpaEntity implements Serializable {
 		return kshstGrantRegularPK;
 	}
 
-	public KshstGrantRegular(KshstGrantRegularPK kshstGrantRegularPK, GeneralDate grantStartDate, int months, int years,
+	public KshstGrantRegular(KshstGrantRegularPK kshstGrantRegularPK, GeneralDate grantStartDate, Integer months, Integer years,
 			int grantRegularMethod) {
 		super();
 		this.kshstGrantRegularPK = kshstGrantRegularPK;
@@ -73,7 +73,9 @@ public class KshstGrantRegular extends UkJpaEntity implements Serializable {
 	}
 	
 	public static KshstGrantRegular toEntity(GrantRegular domain){
-		return new KshstGrantRegular(new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), domain.getGrantStartDate(), domain.getMonths().v(), 
-				domain.getYears().v(), domain.getGrantRegularMethod().value);
+		return new KshstGrantRegular(new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), domain.getGrantStartDate(), 
+				domain.getMonths() != null ? domain.getMonths().v() : null, 
+				domain.getYears() != null ? domain.getYears().v() : null, 
+				domain.getGrantRegularMethod().value);
 	}
 }

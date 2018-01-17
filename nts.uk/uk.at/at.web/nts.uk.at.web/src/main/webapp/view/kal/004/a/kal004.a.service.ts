@@ -16,17 +16,38 @@ module nts.uk.at.view.kal004.a.service {
                 authSetting: true,
                 roleIds: ['0001', '0002']    
             }
+            let extractionDailyDto= {
+                extractionId: "",
+                extractionRange: 0,
+                strSpecify: 1,
+                strPreviousDay: null,
+                strMakeToDay: null,
+                strDay: null,
+                strPreviousMonth: 1,
+                strCurrentMonth: 0,
+                strMonth: 2,
+                endSpecify: 1,
+                endPreviousDay: null,
+                endMakeToDay: null,
+                endDay: null,
+                endPreviousMonth: 1,
+                endCurrentMonth: 0,
+                endMonth: 1
+            }
             let checkConditionDto1={
                 alarmCategory: 1, 
-                checkConditionCodes: ['001', '002']    
+                checkConditionCodes: ['001', '002'],
+                extractionDailyDto:    extractionDailyDto 
             }
             let checkConditionDto2={
                 alarmCategory: 2, 
-                checkConditionCodes: ['003', '004', '005']    
+                checkConditionCodes: ['003', '004', '005'],
+                 extractionDailyDto:    extractionDailyDto     
             }
             let checkConditionDto3={
                 alarmCategory: 3, 
-                checkConditionCodes: ['006', '007', '008']    
+                checkConditionCodes: ['006', '007', '008'] ,
+                extractionDailyDto:    extractionDailyDto    
             }                          
             let alarmPatternSettingDto1 ={
                 alarmPatternCD : '01',
@@ -135,7 +156,7 @@ module nts.uk.at.view.kal004.a.service {
         
 
         /** add Alarm pattern setting */
-        export function addAlarmPattern(alarm: any): JQueryPromise<void> {
+        export function addAlarmPattern(alarm: share.AddAlarmPatternSettingCommand): JQueryPromise<void> {
             return nts.uk.request.ajax("at", paths.addAlarmPattern, alarm);
         }
     
@@ -145,7 +166,7 @@ module nts.uk.at.view.kal004.a.service {
         }
         
         /** Update Alarm pattern setting */
-        export function updateAlarmPattern(alarm: any): JQueryPromise<void> {
+        export function updateAlarmPattern(alarm: share.AddAlarmPatternSettingCommand): JQueryPromise<void> {
             return nts.uk.request.ajax("at", paths.updateAlarmPattern, alarm );
         }
  

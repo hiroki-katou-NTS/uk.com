@@ -1,6 +1,7 @@
 package nts.uk.screen.at.ws.schedule.basicschedule;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -15,6 +16,8 @@ import nts.uk.screen.at.app.schedule.basicschedule.ScheduleDisplayControlScreenD
 import nts.uk.screen.at.app.schedule.basicschedule.ScheduleScreenSymbolParams;
 import nts.uk.screen.at.app.schedule.basicschedule.StateWorkTypeCodeDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkEmpCombineScreenDto;
+import nts.uk.screen.at.app.schedule.basicschedule.WorkTimeScreenDto;
+import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenDto;
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenParams;
 import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenProcessor;
@@ -57,9 +60,21 @@ public class Ksu001Webservice extends WebService {
 	@POST
 	public DataInitScreenDto init() {
 		PresentClosingPeriodExport obj = this.bScheduleScreenProces.getPresentClosingPeriodExport();
-		DataInitScreenDto result = new DataInitScreenDto(this.bScheduleScreenProces.findByCIdAndDeprecateCls(),
-				this.bScheduleScreenProces.getListWorkTime(), obj.getClosureStartDate(), obj.getClosureEndDate());
-		return result;
+		// get work type
+		List<WorkTypeScreenDto> workTypeList = this.bScheduleScreenProces.findByCIdAndDeprecateCls();
+		List<String> workTypeCodeList = workTypeList.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList());
+		// get work time
+		List<WorkTimeScreenDto> workTimeList = this.bScheduleScreenProces.getListWorkTime();
+		List<String> workTimeCodeList = workTimeList.stream().map(x -> x.getWorkTimeCode()).collect(Collectors.toList());
+		
+		return new DataInitScreenDto(
+				workTypeList,
+				workTimeList, 
+				obj.getClosureStartDate(), 
+				obj.getClosureEndDate(),
+				this.bScheduleScreenProces.checkStateWorkTypeCode(workTypeCodeList),
+				this.bScheduleScreenProces.checkNeededOfWorkTimeSetting(workTypeCodeList),
+				this.bScheduleScreenProces.getListWorkEmpCombine(new ScheduleScreenSymbolParams(workTypeCodeList, workTimeCodeList)));
 	}
 
 	@POST

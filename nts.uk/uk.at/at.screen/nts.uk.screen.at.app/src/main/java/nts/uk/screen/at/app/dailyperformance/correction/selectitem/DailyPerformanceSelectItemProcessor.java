@@ -252,7 +252,7 @@ public class DailyPerformanceSelectItemProcessor {
 	}
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
-			List<DailyPerformanceEmployeeDto> lstEmployee, int displayFormat, CorrectionOfDailyPerformance correct,
+			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer displayFormat, CorrectionOfDailyPerformance correct,
 			List<String> formatCodes) {
 		String sId = AppContexts.user().employeeId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
@@ -293,7 +293,7 @@ public class DailyPerformanceSelectItemProcessor {
 			screenDto.setLstEmployee(getListEmployee(sId, screenDto.getDateRange()));
 		}
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = new ArrayList<>();
-		if(displayFormat == 0){
+		if(initScreen != null && initScreen == 0){
 			lstEmployeeData = screenDto.getLstEmployee().stream().filter(x-> x.getId().equals(sId)).collect(Collectors.toList());
 		}else{
 			lstEmployeeData = screenDto.getLstEmployee();
@@ -315,13 +315,14 @@ public class DailyPerformanceSelectItemProcessor {
 		// --List<DailyRecEditSetDto> dailyRecEditSets =
 		/// repo.getDailyRecEditSet(listEmployeeId, dateRange);
 		/// アルゴリズム「実績エラーをすべて取得する」を実行する | Execute "Acquire all actual errors"
+		List<DPErrorDto> lstError = new ArrayList<>();
 		if (screenDto.getLstEmployee().size() > 0) {
 			/// ドメインモデル「社員の日別実績エラー一覧」をすべて取得する +
 			/// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
 			/// Acquire all domain model "employee's daily performance error
 			/// list" + "work error error alarm" | lay loi thanh tich trong
 			/// khoang thoi gian
-			List<DPErrorDto> lstError = this.repo.getListDPError(screenDto.getDateRange(), listEmployeeId);
+			lstError = this.repo.getListDPError(screenDto.getDateRange(), listEmployeeId);
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
@@ -370,6 +371,13 @@ public class DailyPerformanceSelectItemProcessor {
 		screenDto.getLstFixedHeader().forEach(column ->{
 			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
 		});
+		if (displayFormat == 2) {
+			// only filter data error
+			Map<String, String> listEmployeeError = lstError.stream()
+					.collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getEmployeeId()));
+			listEmployeeId = listEmployeeId.stream().filter(x -> listEmployeeError.containsKey(x))
+					.collect(Collectors.toList());
+		}
 		/// 対応する「日別実績」をすべて取得する-- lay tat ca thanh tich theo ngay tuong ung
 		//// 日別実績の勤務情報
 		List<DailyModifyResult> results = new ArrayList<>();
