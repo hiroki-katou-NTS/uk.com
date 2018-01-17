@@ -309,7 +309,9 @@ public class EmpCtgFinder {
 	}
 
 	private String dateToString(String dateValue, PeregQuery query) {
-		return GeneralDate.max().equals(GeneralDate.fromString(dateValue, "yyyy/MM/dd")) && query.getCtgType() == 3 ? ""
+		/*return GeneralDate.max().equals(GeneralDate.fromString(dateValue, "yyyy/MM/dd")) && query.getCtgType() == 3 ? ""
+				: dateValue;*/
+		return GeneralDate.max().equals(GeneralDate.fromString(dateValue, "yyyy/MM/dd"))? ""
 				: dateValue;
 	}
 
