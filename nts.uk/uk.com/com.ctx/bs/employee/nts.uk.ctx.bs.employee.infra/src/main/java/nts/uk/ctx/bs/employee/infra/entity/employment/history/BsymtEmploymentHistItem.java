@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.entity.employment.history;
@@ -10,16 +10,17 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class BsymtEmploymentHistItem.
  */
 @Entity
-@AllArgsConstructor
 @Table(name = "BSYMT_EMPLOYMENT_HIS_ITEM")
 public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable {
 
@@ -50,7 +51,29 @@ public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable
 	@Basic(optional = false)
 	@Column(name = "SALARY_SEGMENT")
 	public int salarySegment;
+	
+	/** The bsymt aff class history. */
+	// Add by ThanhNC
+	@OneToOne
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
+	public BsymtEmploymentHist bsymtEmploymentHist;
 
+	/**
+	 * Instantiates a new bsymt employment hist item.
+	 *
+	 * @param hisId the his id
+	 * @param sid the sid
+	 * @param empCode the emp code
+	 * @param salarySegment the salary segment
+	 */
+	public BsymtEmploymentHistItem(String hisId, String sid, String empCode, int salarySegment) {
+		super();
+		this.hisId = hisId;
+		this.sid = sid;
+		this.empCode = empCode;
+		this.salarySegment = salarySegment;
+	}
+	
 	/**
 	 * Instantiates a new cempt employment.
 	 */
@@ -67,8 +90,5 @@ public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable
 	protected Object getKey() {
 		return this.hisId;
 	}
-
-	
-
 
 }
