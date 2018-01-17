@@ -202,7 +202,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	 */
 	@Override
 	public Optional<StandardMenu> getProgram(String companyId, String programId, String screenId) {
-		return this.queryProxy().query(GET_PG, CcgstStandardMenu.class).setParameter("companyId", companyId)
-				.setParameter("programId", programId).setParameter("screenId", screenId).getSingle(m -> toDomain(m));
+		List<CcgstStandardMenu> menus = this.queryProxy().query(GET_PG, CcgstStandardMenu.class).setParameter("companyId", companyId)
+				.setParameter("programId", programId).setParameter("screenId", screenId).getList();
+		if (menus.isEmpty() || menus.size() > 1) return Optional.empty();
+		return Optional.ofNullable(toDomain(menus.get(0)));
 	}
 }
