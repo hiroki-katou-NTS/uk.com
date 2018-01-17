@@ -32,7 +32,7 @@ public class JpaFlowHalfDayWorkTimezoneGetMemento implements FlHalfDayWtzGetMeme
 	 */
 	@Override
 	public FlowWorkRestTimezone getRestTimezone() {
-		return new FlowWorkRestTimezone(new JpaFlowWorkRestTimezoneGetMemento(this.entity));
+		return new FlowWorkRestTimezone(new JpaFlowWorkRestTimezoneGetMemento(this.entity.getFlowHalfDayWorkRtSet()));
 	}
 
 	/* (non-Javadoc)
