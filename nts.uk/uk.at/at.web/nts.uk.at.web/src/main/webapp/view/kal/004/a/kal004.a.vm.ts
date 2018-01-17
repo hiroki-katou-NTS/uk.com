@@ -126,7 +126,7 @@ module nts.uk.at.view.kal004.a.model {
                     
                     let categoryInputed = self.currentAlarm ==null? null: _.find(self.currentAlarm.checkConList, (checkCon) =>{return checkCon.alarmCategory==category } );
                     if(categoryInputed){
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDailyDto)));
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily)));
                     }else{
                         shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null));                             
                     } 

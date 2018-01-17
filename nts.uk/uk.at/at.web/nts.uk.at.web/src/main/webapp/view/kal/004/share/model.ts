@@ -20,7 +20,7 @@ module nts.uk.at.view.kal004.share.model {
     export interface CheckConditionDto {
         alarmCategory: number;
         checkConditionCodes: Array<string>;
-        extractionDailyDto?: ExtractionDailyDto;
+        extractionDaily?: ExtractionDailyDto;
     }
 
    
