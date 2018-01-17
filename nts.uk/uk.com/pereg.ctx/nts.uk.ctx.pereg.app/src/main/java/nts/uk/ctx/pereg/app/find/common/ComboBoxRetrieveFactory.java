@@ -4,6 +4,7 @@
 package nts.uk.ctx.pereg.app.find.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -119,23 +120,22 @@ public class ComboBoxRetrieveFactory {
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
 			GeneralDate standardDate, boolean isCps001) {
-
+		List<ComboBoxObject> resultLst = new ArrayList<>(Arrays.asList(new ComboBoxObject("", "")));
 		switch (selectionItemDto.getReferenceType()) {
 		case ENUM:
 			EnumRefConditionDto enumTypeDto = (EnumRefConditionDto) selectionItemDto;
-			return getEnumComboBox(enumTypeDto.getEnumName());
-
+			resultLst.addAll(getEnumComboBox(enumTypeDto.getEnumName()));
+			break;
 		case CODE_NAME:
 			CodeNameRefTypeDto codeNameTypeDto = (CodeNameRefTypeDto) selectionItemDto;
-
-			return getCodeNameComboBox(codeNameTypeDto.getTypeCode(), standardDate);
+			resultLst.addAll(getCodeNameComboBox(codeNameTypeDto.getTypeCode(), standardDate));
+			break;
 		case DESIGNATED_MASTER:
 			MasterRefConditionDto masterRefTypeDto = (MasterRefConditionDto) selectionItemDto;
-
-			return getMasterComboBox(masterRefTypeDto.getMasterType(), employeeId, standardDate, isCps001);
-
+			resultLst.addAll(getMasterComboBox(masterRefTypeDto.getMasterType(), employeeId, standardDate, isCps001));
+			break;
 		}
-		return new ArrayList<>();
+		return resultLst;
 	}
 
 	private List<ComboBoxObject> getMasterComboBox(String masterType, String employeeId, GeneralDate standardDate,
@@ -275,16 +275,19 @@ public class ComboBoxRetrieveFactory {
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes RefType, String RefCd,
 			GeneralDate standardDate, String employeeId) {
+		List<ComboBoxObject> resultLst = new ArrayList<>(Arrays.asList(new ComboBoxObject("", "")));
 		switch (RefType) {
 		case ENUM:
-			return getEnumComboBox(RefCd);
+			resultLst.addAll(getEnumComboBox(RefCd));
+			break;
 		case CODE_NAME:
-			return getCodeNameComboBox(RefCd, standardDate);
+			resultLst.addAll(getCodeNameComboBox(RefCd, standardDate));
+			break;
 		case DESIGNATED_MASTER:
-			return getMasterComboBox(RefCd, employeeId, standardDate, false);
-
+			resultLst.addAll(getMasterComboBox(RefCd, employeeId, standardDate, false));
+			break;
 		}
-		return new ArrayList<>();
+		return resultLst;
 	}
 
 	private List<ComboBoxObject> getEmploymentList(String companyId) {
