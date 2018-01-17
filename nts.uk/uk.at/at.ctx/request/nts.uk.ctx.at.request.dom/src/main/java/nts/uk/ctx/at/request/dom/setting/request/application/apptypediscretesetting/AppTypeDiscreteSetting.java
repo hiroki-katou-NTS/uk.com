@@ -67,11 +67,11 @@ public class AppTypeDiscreteSetting {
 	 */
 	private RetrictDay retrictPreDay;
 	/**
-	 * 時刻
+	 * 事前の受付制限: 時刻
 	 */
 	private RetrictPreTimeDay retrictPreTimeDay;
 	/**
-	 * 受付可能か
+	 * 事前の受付制限: 受付可能か
 	 */
 	private PossibleAtr retrictPreCanAceeptFlg;
 	/**
