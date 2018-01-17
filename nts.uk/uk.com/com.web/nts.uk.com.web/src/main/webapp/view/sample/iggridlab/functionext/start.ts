@@ -74,8 +74,8 @@ module nts.uk.ui.gridlist {
         var comboItems = [ new ItemModel('1', '基本給'),
                             new ItemModel('2', '役職手当'),
                             new ItemModel('3', '基本給2') ];
-        var comboColumns = [{ prop: 'code', length: 4 },
-                            { prop: 'name', length: 8 }];
+        var comboColumns = [{ prop: 'code', length: 1 },
+                            { prop: 'name', length: 4 }];
         var comboItems2 = [ new ItemModel('4', '基本給'),
                             new ItemModel('5', '役職手当'),
                             new ItemModel('6', '基本給2') ];
@@ -361,7 +361,7 @@ module nts.uk.ui.gridlist {
                                             }
                                          ],
                             ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                                            { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
+                                            { name: 'Combobox', width: '70px', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                                             { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true },
                                             { name: 'Button', controlType: 'Button', text: 'Warn me', enable: true, click: function() { alert("Oops!!"); } },
                                             { name: 'Combobox2', options: comboItems2, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'name', controlType: 'ComboBox', enable: true },
