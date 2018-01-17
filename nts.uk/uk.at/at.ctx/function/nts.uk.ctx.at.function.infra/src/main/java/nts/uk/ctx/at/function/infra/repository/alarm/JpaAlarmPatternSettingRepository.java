@@ -24,7 +24,7 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 	
 	private final String SELECT_BY_COMPANY = "SELECT a FROM KfnmtAlarmPatternSet a WHERE a.pk.companyID = :companyId";
 	
-	private final String SELECT_BY_ALARM_PATTERN_CD = "SELECT a FROM KfnmtAlarmPatternSet a WHERE  a.pk.companyID = : companyId  AND a.pk.alarmPatternCD = :alarmPatternCode";
+	private final String SELECT_BY_ALARM_PATTERN_CD = "SELECT a FROM KfnmtAlarmPatternSet a WHERE  a.pk.companyID = :companyId  AND a.pk.alarmPatternCD = :alarmPatternCode";
 	
 	
 	@Override
