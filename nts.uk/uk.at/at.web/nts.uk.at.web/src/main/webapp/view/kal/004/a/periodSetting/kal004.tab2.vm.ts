@@ -5,6 +5,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
     export class ScreenModel {
         listCheckConditionCode: KnockoutObservableArray<share.CheckConditionCommand> = ko.observableArray([]);
         listCheckCondition: KnockoutObservableArray<share.CheckConditionCommand> = ko.observableArray([]);
+        listStorageCheckCondition: KnockoutObservableArray<share.CheckConditionCommand> = ko.observableArray([]);
         ListView: KnockoutObservableArray<ModelCheckConditonCode>;
         
         constructor() {
@@ -24,19 +25,21 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             if(listCheckCode.length==0){
                 self.ListView.removeAll();
                 return;
-            }else if(self.listCheckCondition().length == 0){
+            }else if(self.listStorageCheckCondition().length == 0){
                 _.forEach(listCheckCode, (category: share.CheckConditionCommand) =>{
                     let checkCondition = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, category.extractionPeriodDaily);
                     listCheckConditionDto.push(checkCondition);
                     listConverToview.push(new ModelCheckConditonCode(checkCondition));
+                    self.listStorageCheckCondition.push(category);
                 });
             }else{
                 _.forEach(listCheckCode, (category: share.CheckConditionCommand) =>{
                     let checkCondition = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, category.extractionPeriodDaily);
-                    var check = _.find(self.listCheckCondition(), ['alarmCategory', category.alarmCategory]);
+                    var check = _.find(self.listStorageCheckCondition(), ['alarmCategory', category.alarmCategory]);
                     if(nts.uk.util.isNullOrUndefined(check)){
                         listCheckConditionDto.push(checkCondition); 
                         listConverToview.push(new ModelCheckConditonCode(checkCondition));
+                        self.listStorageCheckCondition.push(category);
                     }else{
                         let checkConditionUpDate = new share.CheckConditionCommand(category.alarmCategory, category.checkConditionCodes, check.extractionPeriodDaily);
                         listCheckConditionDto.push(checkConditionUpDate);    
@@ -104,6 +107,9 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         }
         private changeExtractionDaily(extractionDailyDto: share.ExtractionDailyDto, categoryId: number): void {
             var self = this;
+            var oldItem = _.find(self.listStorageCheckCondition(), ['alarmCategory', categoryId]);
+            var newItem = oldItem.setExtractPeriod(new share.ExtractionPeriodDailyCommand(extractionDailyDto));
+            self.listStorageCheckCondition.replace(oldItem,newItem);
             var listCheckConditionDto: Array<share.CheckConditionCommand> = [];
             _.forEach(self.listCheckCondition(), (category: share.CheckConditionCommand) =>{
                 if(category.alarmCategory == categoryId){
