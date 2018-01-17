@@ -56,7 +56,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     workTimeCd = self.selectedWorkTimeCode()
                 }
 
-                // if workTypeCode is not required( = 2) worktime is needless, something relate to workTime will be disable
+                // if workTypeCode is not required( state = 2) worktime is needless, something relate to workTime will be disable
                 // workTimeName, workTimeCode is null, startTime,endTime is ''
                 let stateWorkTypeCd = _.find(self.listCheckNeededOfWorkTime, ['workTypeCode', self.selectedWorkTypeCode()]);
                 if (stateWorkTypeCd && stateWorkTypeCd.state == 2) {
