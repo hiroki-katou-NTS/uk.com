@@ -3,15 +3,23 @@ module nts.uk.at.view.ksm011.a.service {
      *  Service paths
      */
     var paths: any = {
-        findScheFuncControl: "ctx/at/schedule/setting/functioncontrol/findScheFuncControl"
+        findScheFuncControl: "ctx/at/schedule/setting/functioncontrol/findScheFuncControl",
+        saveScheFuncControl: "ctx/at/schedule/setting/functioncontrol/saveScheFuncControl"
     }
     
     /**
-     *  Find all data
+     *  Get Schedule Function Control
      */
     export function findScheFuncControl(): JQueryPromise<ScheFuncControlDto> {
         return nts.uk.request.ajax("at", paths.findScheFuncControl);
     }
+    
+    /**
+     *  Save Schedule Function Control
+     */
+    export function saveScheFuncControl(data: ScheFuncControlDto): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.saveScheFuncControl, data);
+    } 
     
     export interface ScheFuncControlDto {
         alarmCheckUseCls: number,

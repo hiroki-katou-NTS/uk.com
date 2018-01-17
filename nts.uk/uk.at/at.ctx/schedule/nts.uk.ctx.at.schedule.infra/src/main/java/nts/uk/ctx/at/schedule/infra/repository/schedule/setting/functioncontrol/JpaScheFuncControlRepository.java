@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.infra.repository.schedule.setting.functioncontrol
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -21,10 +22,10 @@ public class JpaScheFuncControlRepository extends JpaRepository implements Funct
 	 * Get Schedule Function Control data
 	 */
 	@Override
-	public ScheFuncControl getScheFuncControl(String companyId) {
+	public Optional<ScheFuncControl> getScheFuncControl(String companyId) {
 		KscstScheFuncControlPK primaryKey = new KscstScheFuncControlPK(companyId);
 
-		return this.queryProxy().find(primaryKey, KscstScheFuncControl.class).map(x -> toDomain(x)).get();
+		return this.queryProxy().find(primaryKey, KscstScheFuncControl.class).map(x -> toDomain(x));
 	}
 	
 	/**
