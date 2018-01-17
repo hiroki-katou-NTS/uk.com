@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.premiumtime;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
@@ -10,6 +12,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  *
  */
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PremiumTimeOfDailyPerformance {
 	
 	//割増時間NO - primitive value
