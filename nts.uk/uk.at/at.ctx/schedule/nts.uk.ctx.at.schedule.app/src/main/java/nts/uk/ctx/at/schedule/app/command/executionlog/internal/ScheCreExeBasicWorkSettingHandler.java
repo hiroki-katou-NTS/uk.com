@@ -184,7 +184,6 @@ public class ScheCreExeBasicWorkSettingHandler {
 				WorkplaceDto workplaceDto = optionalWorkplace.get();
 
 				// find by level work place
-				//List<String> workplaceIds = this.findLevelWorkplace(command.getBaseGetter(), workplaceDto.getWorkplaceCode()); // FIXBUG #87217
 				List<String> workplaceIds = this.findWpkIdsBySid(command.getBaseGetter(), command.getEmployeeId());
 
 				BasicWorkSettingByWorkplaceGetterCommand commandGetter = command.toBasicWorkplace();
@@ -224,17 +223,13 @@ public class ScheCreExeBasicWorkSettingHandler {
 	}
 
 	/**
-	 * Find level work place.
+	 * Find wpk ids by sid.
 	 *
 	 * @param command the command
-	 * @param workplaceCode the work place code
+	 * @param employeeId the employee id
 	 * @return the list
 	 */
 	// 所属職場を含む上位職場を取得
-	private List<String> findLevelWorkplace(ScheduleErrorLogGeterCommand command, String workplaceCode) {
-		return this.scWorkplaceAdapter.findWpkIdList(command.getCompanyId(), workplaceCode, command.getToDate().date());
-	}
-	
 	private List<String> findWpkIdsBySid(ScheduleErrorLogGeterCommand command, String employeeId) {
 		return this.scWorkplaceAdapter.findWpkIdsBySid(command.getCompanyId(), employeeId , command.getToDate());
 	}
