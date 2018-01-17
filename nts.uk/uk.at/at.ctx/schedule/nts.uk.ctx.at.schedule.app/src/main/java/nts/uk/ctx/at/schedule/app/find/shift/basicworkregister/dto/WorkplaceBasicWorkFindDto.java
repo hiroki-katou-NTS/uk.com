@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkSetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
 
 
 /**
@@ -35,8 +34,8 @@ public class WorkplaceBasicWorkFindDto implements WorkplaceBasicWorkSetMemento {
 	 * shift.basicworkregister.WorkplaceId)
 	 */
 	@Override
-	public void setWorkPlaceId(WorkplaceId workplaceId) {
-		this.workplaceId = workplaceId.v();
+	public void setWorkPlaceId(String workplaceId) {
+		this.workplaceId = workplaceId;
 	}
 
 	/*

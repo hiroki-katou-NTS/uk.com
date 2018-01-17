@@ -90,7 +90,7 @@
                 if (titleBar.treeMenus) {
                     _.forEach(titleBar.treeMenus, function(item: any) {
                         var standardMenu = _.find(self.allItems(), function(standardMenuItem) {
-                            return standardMenuItem.code == item.code() && standardMenuItem.system == item.system() && standardMenuItem.menu_cls == item.classification();
+                            return standardMenuItem.code == item.code && standardMenuItem.system == item.system && standardMenuItem.menu_cls == item.classification;
                         }); 
                         if (standardMenu) {
                             var order = self.newItems().length + 1;
@@ -214,7 +214,11 @@
          */
         submit() {
             var self = this;
-                        
+            let index = 1;
+            _.each(self.newItems(), (item) =>{
+                item.order = index;
+                index ++;
+            });
             nts.uk.ui.windows.setShared("CCG013D_MENUS", self.newItems());
             
             nts.uk.ui.windows.close();

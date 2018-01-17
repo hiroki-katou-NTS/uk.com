@@ -150,7 +150,7 @@ module nts.uk.ui.jqueryExtentions {
                 if (column.ntsControl === ntsControls.LABEL) {
                     ntsControls.drawLabel($(self), column, cellFormatter);
                     columnControlTypes[column.key] = ntsControls.LABEL;
-                    return cellFormatter.format(column);
+                    return cellFormatter.format(column, true);
                 }
                 
                 var controlDef = _.find(options.ntsControls, function(ctl: any) {
@@ -198,6 +198,9 @@ module nts.uk.ui.jqueryExtentions {
                         showHeaderCheckbox: column.showHeaderCheckbox,
                         enable: isEnable
                     };
+                    if (!util.isNullOrUndefined(column.tabIndex)) {
+                        data.tabIndex = column.tabIndex;
+                    }
                     
                     let back;
                     if (back = bounceCombos[column.key]) {
@@ -246,6 +249,7 @@ module nts.uk.ui.jqueryExtentions {
             options.columns = columns;
             updating.addFeature(options);
             options.autoCommit = true;
+            options.tabIndex = -1;
             dist.query(options.ntsFeatures);
             // Decorate editor border
             events.onCellClick($(self));
@@ -388,22 +392,31 @@ module nts.uk.ui.jqueryExtentions {
             function editStarted(evt: any, ui: any) {
                 let $grid = $(ui.owner.element);
                 let valueType = validation.getValueType($grid, ui.columnKey);
-                if (valueType === "TimeWithDay") {
-                    let timeWithDayAttr = time.minutesBased.clock.dayattr.create(
-                        time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes);
-                    setTimeout(function() {
-                        let $editor = $(ui.editor.find("input")[0]);
-                        $editor.val(timeWithDayAttr.shortText).select();
-                    }, 140);
+                if (!util.isNullOrUndefined(ui.value) && !_.isEmpty(ui.value)) {
+                    if (valueType === "TimeWithDay" || valueType === "Clock") {
+                        let formatted;
+                        try {
+                            formatted = time.minutesBased.clock.dayattr.create(
+                            time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes).shortText;
+                        } catch(e) { return; }
+                        setTimeout(function() {
+                            let $editor = $(ui.editor.find("input")[0]);
+                            $editor.val(formatted).select();
+                        }, 140);
+                    } else if (valueType === "Currency") {
+                        let groupSeparator = validation.getGroupSeparator($grid, ui.columnKey) || ",";
+                        let value = text.replaceAll(ui.value, groupSeparator, "");
+                        setTimeout(function() {
+                            ui.editor.addClass("input-currency-symbol");
+                            let $editor = $(ui.editor.find("input")[0]);
+                            let numb = Number(value);
+                            $editor.val(isNaN(numb) ? value : numb).css("text-align", "right").select();
+                        }, 140);
+                    }
                 } else if (valueType === "Currency") {
-                    let groupSeparator = validation.getGroupSeparator($grid, ui.columnKey) || ",";
-                    let value = text.replaceAll(ui.value, groupSeparator, "");
-                    setTimeout(function() {
-                        ui.editor.addClass("input-currency-symbol");
-                        let $editor = $(ui.editor.find("input")[0]);
-                        let numb = Number(value);
-                        $editor.val(isNaN(numb) ? value : numb).css("text-align", "right").select();
-                    }, 140);
+                    ui.editor.addClass("input-currency-symbol");
+                    let $editor = $(ui.editor.find("input")[0]);
+                    $editor.css("text-align", "right");
                 }
             }
             
@@ -554,13 +567,13 @@ module nts.uk.ui.jqueryExtentions {
                 let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
                 
-                let validators = $grid.data(validation.VALIDATORS);
-                let fieldValidator = validators[columnKey];
-                if (fieldValidator) {
-                    let result = fieldValidator.probe(String(cellValue));
-                    if (result.isValid) {
-                        cellValue = result.parsedValue; 
-                    }
+                let valueType = validation.getValueType($grid, columnKey);
+                if (!util.isNullOrUndefined(cellValue) && !_.isEmpty(cellValue) 
+                    && (valueType === "TimeWithDay" || valueType === "Clock")) {
+                    try {
+                        cellValue = time.minutesBased.clock.dayattr.create(
+                            time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).shortText;
+                    } catch(e) {}
                 }
                 grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                 let isControl = utils.isNtsControl($grid, columnKey);
@@ -1606,7 +1619,7 @@ module nts.uk.ui.jqueryExtentions {
                 draw(data: any): JQuery {
                     var self = this;
                     // Default values.
-                    var distanceColumns = '     ';
+                    var distanceColumns = data.controlDef.spaceSize === "small" ? '  ' : '     ';
                     // Character used fill to the columns.
                     var fillCharacter = ' ';
                     var maxWidthCharacter = 15;
@@ -1705,7 +1718,8 @@ module nts.uk.ui.jqueryExtentions {
                             }
                         },
                         rendered: function() {
-                            container.igCombo("option", "tabIndex", -1);
+                            let tabIndex = !util.isNullOrUndefined(data.tabIndex) ? data.tabIndex : -1;
+                            container.igCombo("option", "tabIndex", tabIndex);
                         }
                     });
                     // Save init value
@@ -1728,6 +1742,9 @@ module nts.uk.ui.jqueryExtentions {
                         container.css({ 'min-width': totalWidth });
                     }
     
+                    if (!util.isNullOrUndefined(data.controlDef.width)) {
+                        container.igCombo("option", "width", data.controlDef.width);
+                    }
                     container.data("columns", columns);
                     container.data("comboMode", comboMode);
                     return container;
@@ -2159,7 +2176,9 @@ module nts.uk.ui.jqueryExtentions {
                                 copiedData = $comboBox.igCombo("text");
                             }
                         } else {
-                            copiedData = selectedCells[0].element.text();
+                            let $cell = selectedCells[0].element;
+                            let origVal = $cell.data(internal.CELL_ORIG_VAL);
+                            copiedData = !util.isNullOrUndefined(origVal) ? origVal : $cell.text();
                         }
                     } else {
                         this.copyMode = CopyMode.MULTIPLE;
@@ -2181,6 +2200,7 @@ module nts.uk.ui.jqueryExtentions {
                     let minColumn = 0;
                     let structure = [];
                     let structData: string = "";
+                    let $tdCell, origVal;
                     let checker = cut ? utils.isCuttableControls : utils.isCopiableControls;
                     _.forEach(cells, function(cell: any, index: number) {
                         let rowIndex = cell.rowIndex;
@@ -2203,7 +2223,9 @@ module nts.uk.ui.jqueryExtentions {
                                 structure[rowIndex][columnIndex] = $comboBox.igCombo("text");
                             }
                         } else {
-                            structure[rowIndex][columnIndex] = cell.element.text();
+                            $tdCell = cell.element;
+                            origVal = $tdCell.data(internal.CELL_ORIG_VAL);
+                            structure[rowIndex][columnIndex] = !util.isNullOrUndefined(origVal) ? origVal : $tdCell.text();
                         }
                     });
                     
@@ -2994,7 +3016,7 @@ module nts.uk.ui.jqueryExtentions {
                     message: message
                 };
                 // Error column headers
-                let headers = ko.toJS(ui.errors.errorsViewModel().option.headers);
+                let headers = ko.toJS(ui.errors.errorsViewModel().option().headers());
                 _.forEach(headers, function(header: any) {
                     if (util.isNullOrUndefined(record[header.name]) 
                         || !util.isNullOrUndefined(error[header.name])) return;
@@ -3143,7 +3165,7 @@ module nts.uk.ui.jqueryExtentions {
                 /**
                  * Format textbox.
                  */
-                format(column: any) {
+                format(column: any, notTb?: boolean) {
                     var self = this;
                     if (util.isNullOrUndefined(this.cellStateFeatureDef) 
                         || column.formatter !== undefined) return column;
@@ -3153,10 +3175,39 @@ module nts.uk.ui.jqueryExtentions {
                     let statesTable: any = this.cellStateFeatureDef.states;
                     
                     column.formatter = function(value, rowObj) {
-                        if (util.isNullOrUndefined(rowObj)) return value;
+                        if (uk.util.isNullOrUndefined(rowObj)) return value;
+                        let origValue = value;
+                        if (!notTb && column.constraint) {
+                            let constraint = column.constraint;
+                            let valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
+                                        : constraint.cDisplayType;
+                            if (!uk.util.isNullOrUndefined(value) && !_.isEmpty(value)) {
+                                if (valueType === "TimeWithDay") {
+                                    let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                    let timeOpts = { timeWithDay: true };
+                                    let formatter = new text.TimeWithDayFormatter(timeOpts);
+                                    value = formatter.format(minutes);
+                                } else if (valueType === "Clock") {
+                                    let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                    let timeOpts = { timeWithDay: false };
+                                    let formatter = new text.TimeWithDayFormatter(timeOpts);
+                                    value = formatter.format(minutes);
+                                } else if (valueType === "Currency") { 
+                                    let currencyOpts: any = new ui.option.CurrencyEditorOption();
+                                    currencyOpts.grouplength = constraint.groupLength | 3;
+                                    currencyOpts.decimallength = constraint.decimalLength | 2;
+                                    currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
+                                    let groupSeparator = constraint.groupSeparator || ",";
+                                    let rawValue = text.replaceAll(value, groupSeparator, "");
+                                    let formatter = new uk.text.NumberFormatter({ option: currencyOpts });
+                                    value = formatter.format(Number(rawValue));
+                                }
+                            }
+                        }
                         var _self = self;
                         setTimeout(function() {
                             let $gridCell = self.$grid.igGrid("cellById", rowObj[self.$grid.igGrid("option", "primaryKey")], column.key);
+                            $gridCell.data(internal.CELL_ORIG_VAL, origValue);
                             if (!$gridCell) return;
                             let $tr = $gridCell.closest("tr");
                             let cell = {
@@ -3802,6 +3853,7 @@ module nts.uk.ui.jqueryExtentions {
             export let ERRORS_LOG = "ntsErrorsLog";
             export let LOADER = "ntsLoader";
             export let TXT_RAW = "rawText";
+            export let CELL_ORIG_VAL = "_origValue";
         }
         
         module utils {
@@ -4178,6 +4230,7 @@ module nts.uk.ui.jqueryExtentions {
             
             export function setChildrenTabIndex($grid: JQuery, index: number) {
                 let container = $grid.igGrid("container");
+                $(container).attr("tabindex", 0);
                 $(container).find("tr, th, td").attr("tabindex", index);
             }
         }

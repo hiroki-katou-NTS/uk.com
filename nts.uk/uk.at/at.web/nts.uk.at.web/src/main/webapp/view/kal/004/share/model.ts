@@ -26,9 +26,9 @@ module nts.uk.at.view.kal004.share.model {
     export class CheckCondition {
         GUID: string;
         alarmCategory: number;
-        categoryName: string;
+        categoryName: Array<string>;
         extractionDailyDto: ExtractionDaily;
-        constructor(alarmCategory: number, categoryName: string, extractionDailyDto?: ExtractionDailyDto) {
+        constructor(alarmCategory: number, categoryName: Array<string>, extractionDailyDto?: ExtractionDailyDto) {
             this.alarmCategory = alarmCategory;
             this.categoryName = categoryName
             if (nts.uk.util.isNullOrUndefined(extractionDailyDto)) {
@@ -39,16 +39,16 @@ module nts.uk.at.view.kal004.share.model {
                     strPreviousDay: null,
                     strMakeToDay: null,
                     strDay: null,
-                    strPreviousMonth: 0,
-                    strCurrentMonth: 1,
-                    strMonth: 0,
+                    strPreviousMonth: 1,
+                    strCurrentMonth: 0,
+                    strMonth: 2,
                     endSpecify: 1,
                     endPreviousDay: null,
                     endMakeToDay: null,
                     endDay: null,
-                    endPreviousMonth: 0,
-                    endCurrentMonth: 1,
-                    endMonth: 0
+                    endPreviousMonth: 1,
+                    endCurrentMonth: 0,
+                    endMonth: 1
                 });
             } else {
                 this.extractionDailyDto = new ExtractionDaily(extractionDailyDto);
@@ -62,6 +62,9 @@ module nts.uk.at.view.kal004.share.model {
         checkConditionName: string;
         listRoleId: Array<string>;
     }
+
+
+
     export class ModelCheckConditonCode {
         GUID: string;
         category: number;
@@ -137,44 +140,83 @@ module nts.uk.at.view.kal004.share.model {
         }
     }
 
-        
-//Command
-    export class AddAlarmPatternSettingCommand{        
+
+
+    //Command
+    export class AddAlarmPatternSettingCommand {
         alarmPatternCD: string;
         alarmPatterName: string;
         alarmPerSet: AlarmPermissionSettingCommand;
         checkConditonList: Array<CheckConditionCommand>;
-        
-        constructor(alarmPatternCD: string, alarmPatterName: string, alarmPerSet: AlarmPermissionSettingCommand, checkConditonList: Array<CheckConditionCommand>){
+
+        constructor(alarmPatternCD: string, alarmPatterName: string, alarmPerSet: AlarmPermissionSettingCommand, checkConditonList: Array<CheckConditionCommand>) {
             this.alarmPatternCD = alarmPatternCD;
             this.alarmPatterName = alarmPatterName;
             this.alarmPerSet = alarmPerSet;
             this.checkConditonList = checkConditonList;
         }
     }
-    
-    export class AlarmPermissionSettingCommand{
+
+    export class AlarmPermissionSettingCommand {
         authSetting: boolean;
         roleIds: Array<string>;
-        constructor(authSetting: boolean, roleIds: Array<string>){
+        constructor(authSetting: boolean, roleIds: Array<string>) {
             this.authSetting = authSetting;
             this.roleIds = roleIds;
         }
-        
+
     }
-    export class CheckConditionCommand{
+    export class CheckConditionCommand {
         alarmCategory: number;
+        extractionPeriodDaily: ExtractionPeriodDailyCommand;
         checkConditionCodes: Array<string>;
-        extractPeriod: ExtractionPeriodDailyCommand;
-        
-        constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractPeriod: ExtractionPeriodDailyCommand){
+
+        constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
-            this.extractPeriod =  extractPeriod;
+            this.extractionPeriodDaily = extractionPeriodDaily;
+        }
+
+        setExtractPeriod(extractionPeriodDaily: ExtractionPeriodDailyCommand) {
+            this.extractionPeriodDaily = extractionPeriodDaily;
         }
     }
-    
-    export class ExtractionPeriodDailyCommand{
-        
+
+    export class ExtractionPeriodDailyCommand {
+        extractionId: string;
+        extractionRange: number;
+        strSpecify: number;
+        strPreviousDay: number;
+        strMakeToDay: number;
+        strDay: number;
+        strPreviousMonth: number;
+        strCurrentMonth: number;
+        strMonth: number;
+        endSpecify: number;
+        endPreviousDay: number;
+        endMakeToDay: number;
+        endDay: number;
+        endPreviousMonth: number;
+        endCurrentMonth: number;
+        endMonth: number;
+
+        constructor(extractionDailyDto: ExtractionDailyDto) {
+            this.extractionId = extractionDailyDto.extractionId;
+            this.extractionRange = extractionDailyDto.extractionRange;
+            this.strSpecify = extractionDailyDto.strSpecify;
+            this.strPreviousDay = extractionDailyDto.strPreviousDay;
+            this.strMakeToDay = extractionDailyDto.strMakeToDay;
+            this.strDay = extractionDailyDto.strDay;
+            this.strPreviousMonth = extractionDailyDto.strPreviousMonth;
+            this.strCurrentMonth = extractionDailyDto.strCurrentMonth;
+            this.strMonth = extractionDailyDto.strMonth;
+            this.endSpecify = extractionDailyDto.endSpecify;
+            this.endPreviousDay = extractionDailyDto.endPreviousDay;
+            this.endMakeToDay = extractionDailyDto.endMakeToDay;
+            this.endDay = extractionDailyDto.endDay;
+            this.endPreviousMonth = extractionDailyDto.endPreviousMonth;
+            this.endCurrentMonth = extractionDailyDto.endCurrentMonth;
+            this.endMonth = extractionDailyDto.endMonth;
+        }
     }
 }

@@ -14,7 +14,6 @@ import nts.uk.ctx.at.record.app.command.workrecord.erroralarm.condition.DeleteWo
 import nts.uk.ctx.at.record.app.command.workrecord.erroralarm.condition.DeleteWorkRecordExtraConCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.erroralarm.condition.UpdateWorkRecordExtraConCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.erroralarm.condition.WorkRecordExtraConCommand;
-import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.InputWorkRecordExtraCon;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkRecordExtraConDto;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkRecordExtraConFinder;
 
@@ -43,9 +42,9 @@ public class WorkRecordExtraConWS {
 	}
 	
 	@POST
-	@Path("getworkRecordextraconbyid")
-	public WorkRecordExtraConDto getWorkRecordExtraConByID(InputWorkRecordExtraCon inputWorkRecordExtraCon){
-		WorkRecordExtraConDto data = finder.getWorkRecordExtraConById(inputWorkRecordExtraCon);
+	@Path("getworkRecordextraconbyid/{errorAlarmCheckID}")
+	public WorkRecordExtraConDto getWorkRecordExtraConByID(@PathParam("errorAlarmCheckID") String errorAlarmCheckID){
+		WorkRecordExtraConDto data = finder.getWorkRecordExtraConById(errorAlarmCheckID);
 		return data;
 	}
 	

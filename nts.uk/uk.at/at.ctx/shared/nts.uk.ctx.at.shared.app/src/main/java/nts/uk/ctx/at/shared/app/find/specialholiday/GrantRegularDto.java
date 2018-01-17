@@ -13,9 +13,9 @@ public class GrantRegularDto {
 	
 	private GeneralDate grantStartDate;
 	
-	private int months;
+	private Integer months;
 	
-	private int years;
+	private Integer years;
 	
 	private int grantRegularMethod;
 	

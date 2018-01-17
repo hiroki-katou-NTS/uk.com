@@ -50,11 +50,11 @@
 							<tr>
 								<td>
 									<!-- A1_9: Label -->
-									<div style = "width: 160px; margin-left: 20px;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_19')}</div>
+									<div style = "width: 100px; margin-left: 20px;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_19')}</div>
 								</td>
 								<td>
 									<!-- A1_10: 会社名 -->
-									<div style = "width: 700px" data-bind = "text: nameCompany"></div>
+									<div style = "width: 760px" data-bind = "text: nameCompany"></div>
 								</td>
 								<td>
 									<!-- A1_11: Label モード切替： -->
@@ -165,7 +165,9 @@
 										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- A3_12: App Name -->
 											<td class="name td-first-bg" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
-												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
+												<div style="display: inline-block;">
+													<div class = "limited-label" data-bind = "text: appTypeName"></div>
+												</div>
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
 													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
@@ -179,7 +181,7 @@
 											<!-- A3_16: -->
 											<td class="approver"><div>
 												<div data-bind="foreach: appPhase1.approver">
-													<div data-bind="text: name + confirmName"><br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"></div><br />
 												</div>
 											</div></td>
 											<!-- A3_17: -->
@@ -191,7 +193,7 @@
 											<!-- A3_19: -->
 											<td class="approver">
 												<div data-bind="foreach: appPhase2.approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- A3_20: -->
@@ -203,7 +205,7 @@
 											<!-- A3_22: -->										
 											<td class="approver">
 												<div data-bind="foreach: appPhase3.approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div></td>
 											<!-- A3_23: -->
 											<td class="button_phase">
@@ -214,7 +216,7 @@
 											<!-- A3_25: -->
 											<td class="approver">
 												<div data-bind="foreach: appPhase4.approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"></div><br />
 												</div>
 											</td>
 											<!-- A3_26: -->
@@ -226,7 +228,7 @@
 											<!-- A3_28: -->
 											<td class="approver">
 												<div data-bind="foreach: appPhase5.approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- A3_29: Button delete -->
@@ -334,8 +336,10 @@
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
 										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- B3_12: App Name -->
-											<td class="name td-first-bg" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
-												<div data-bind = "text: appTypeName" style="display: inline-block;white-space: nowrap;"></div>
+											<td class="name td-first-bg control-group" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
+												<div style="display: inline-block;">
+													<div class = "limited-label" data-bind = "text: appTypeName"></div>
+												</div>
 												<!-- B3_13: -->
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
 													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
@@ -350,7 +354,7 @@
 											<!-- B3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</div></td>
 											<!-- B3_17: -->
@@ -362,7 +366,7 @@
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- B3_20: -->
@@ -374,7 +378,7 @@
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div></td>
 											<!-- B3_23: -->
 											<td class="button_phase">
@@ -385,7 +389,7 @@
 											<!-- B3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- B3_26: -->
@@ -397,7 +401,7 @@
 											<!-- B3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 										</tr>
@@ -548,7 +552,9 @@
 										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- C3_12: App Name -->
 											<td class="name td-first-bg" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
-												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
+												<div style="display: inline-block;">
+													<div class = "limited-label" data-bind = "text: appTypeName"></div>
+												</div>
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
 													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
@@ -562,7 +568,7 @@
 											<!-- C3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</div></td>
 											<!-- C3_17: -->
@@ -574,7 +580,7 @@
 											<!-- C3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- C3_20: -->
@@ -586,7 +592,7 @@
 											<!-- C3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div></td>
 											<!-- C3_23: -->
 											<td class="button_phase">
@@ -597,7 +603,7 @@
 											<!-- C3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- C3_26: -->
@@ -609,7 +615,7 @@
 											<!-- C3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- C3_29: Button delete -->
@@ -704,13 +710,13 @@
 											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
 											<!-- D3_11 -->
 											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- B3_10 -->
+											<!-- D3_10 -->
 											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- B3_11 -->
+											<!-- D3_11 -->
 											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
-											<!-- B3_10 -->
+											<!-- D3_10 -->
 											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_28')}</th>
-											<!-- B3_11 -->
+											<!-- D3_11 -->
 											<th class="modeB" style ="text-align: center;">#{i18n.getText('CMM018_29')}</th>
 										</tr>
 									</thead>
@@ -718,8 +724,10 @@
 										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- D3_12: App Name -->
 											<td class="name td-first-bg" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
-												<div data-bind = "text: appTypeName" style="display: inline-block;white-space: nowrap;"></div>
-												<!-- B3_13: -->
+												<div style="display: inline-block;">
+													<div class = "limited-label" data-bind = "text: appTypeName"></div>
+												</div>
+												<!-- D3_13: -->
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
 													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
@@ -733,7 +741,7 @@
 											<!-- D3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</div></td>
 											<!-- D3_17: -->
@@ -745,7 +753,7 @@
 											<!-- D3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- D3_20: -->
@@ -757,7 +765,7 @@
 											<!-- D3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div></td>
 											<!-- D3_23: -->
 											<td class="button_phase">
@@ -768,7 +776,7 @@
 											<!-- D3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- D3_26: -->
@@ -780,7 +788,7 @@
 											<!-- D3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 										</tr>
@@ -927,7 +935,9 @@
 										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- E3_12: App Name -->
 											<td class="name td-first-bg" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
-												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
+												<div style="display: inline-block;">
+													<div class = "limited-label" data-bind = "text: appTypeName"></div>
+												</div>
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
 													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
@@ -941,7 +951,7 @@
 											<!-- E3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</div></td>
 											<!-- E3_17: -->
@@ -953,7 +963,7 @@
 											<!-- E3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- E3_20: -->
@@ -965,7 +975,7 @@
 											<!-- E3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div></td>
 											<!-- E3_23: -->
 											<td class="button_phase">
@@ -976,7 +986,7 @@
 											<!-- E3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- E3_26: -->
@@ -988,7 +998,7 @@
 											<!-- E3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: name + confirmName"> <br /></div>
+													<div class = "limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- E3_29: Button delete -->
@@ -1099,8 +1109,10 @@
 										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- F3_12: App Name -->
 											<td class="name td-first-bg" data-bind="style: { overflow: employRootAtr ? 'hidden' : 'visible' }">
-												<div data-bind = "text: appTypeName" style="display: inline-block; white-space: nowrap;"></div>
-												<!-- B3_13: -->
+												<div style="display: inline-block;">
+													<div class = "limited-label" data-bind = "text: appTypeName"></div>
+												</div>
+												<!-- F3_13: -->
 												<div style="display: inline-block;" data-bind="if: employRootAtr == 0">
 													<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
@@ -1114,7 +1126,7 @@
 											<!-- F3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</div></td>
 											<!-- F3_17: -->
@@ -1126,7 +1138,7 @@
 											<!-- F3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- F3_20: -->
@@ -1138,7 +1150,7 @@
 											<!-- F3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div></td>
 											<!-- F3_23: -->
 											<td class="button_phase">
@@ -1149,7 +1161,7 @@
 											<!-- F3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 											<!-- F3_26: -->
@@ -1161,7 +1173,7 @@
 											<!-- F3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div class = "fixName" data-bind="text: name + confirmName"> <br /></div>
+													<div class = "fixName limited-label" data-bind="text: name + confirmName"> </div><br />
 												</div>
 											</td>
 										</tr>

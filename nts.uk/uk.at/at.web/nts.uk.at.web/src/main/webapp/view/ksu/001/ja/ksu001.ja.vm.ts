@@ -197,7 +197,8 @@ module nts.uk.at.view.ksu001.ja.viewmodel {
                 text: self.textName(),
                 tooltip: self.tooltip(),
                 data: data ? data.data : null,
-                textDecision: nts.uk.resource.getText("KSU001_923")
+                textDecision: nts.uk.resource.getText("KSU001_923"),
+                listCheckNeededOfWorkTime: getShared("dataForJA").listCheckNeededOfWorkTime
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/jb/index.xhtml").onClosed(() => {
                 let dataFromJB = getShared("dataFromJB");

@@ -1,0 +1,155 @@
+package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries;
+
+import lombok.Getter;
+import lombok.Setter;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+
+/**
+ * 時系列の残業時間
+ * @author shuichi_ishida
+ */
+@Getter
+public class OverTimeOfTimeSeries {
+
+	/** 年月日 */
+	private final GeneralDate ymd;
+	
+	/** 残業時間 */
+	@Setter
+	private OverTimeFrameTime overTime;
+	/** 法定内残業時間 */
+	@Setter
+	private OverTimeFrameTime legalOverTime;
+	
+	/**
+	 * コンストラクタ
+	 * @param ymd 年月日
+	 */
+	public OverTimeOfTimeSeries(GeneralDate ymd, OverTimeFrameNo overTimeFrameNo){
+		
+		this.ymd = ymd;
+		this.overTime = new OverTimeFrameTime(
+				new OverTimeFrameNo(overTimeFrameNo.v()),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				new AttendanceTime(0),
+				new AttendanceTime(0));
+		this.legalOverTime = new OverTimeFrameTime(
+				new OverTimeFrameNo(overTimeFrameNo.v()),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				new AttendanceTime(0),
+				new AttendanceTime(0));
+	}
+	
+	/**
+	 * 残業時間に残業枠時間を加算する
+	 * @param addTime 加算時間　（残業枠時間）
+	 */
+	public void addOverTime(OverTimeFrameTime addTime){
+		this.overTime = this.addOverTimeFrameTime(this.overTime, addTime);
+	}
+	
+	/**
+	 * 法定内残業時間に残業枠時間を加算する
+	 * @param addTime 加算時間　（残業枠時間）
+	 */
+	public void addLegalOverTime(OverTimeFrameTime addTime){
+		this.legalOverTime = this.addOverTimeFrameTime(this.legalOverTime, addTime);
+	}
+	
+	/**
+	 * 残業時間：残業時間を加算する
+	 * @param overTime 残業時間　（計算付き時間）
+	 */
+	public void addOverTimeInOverTime(TimeWithCalculation overTime){
+		this.overTime = this.addOverTimeOnly(this.overTime, overTime);
+	}
+	
+	/**
+	 * 法定内残業時間：残業時間を加算する
+	 * @param overTime 残業時間　（計算付き時間）
+	 */
+	public void addOverTimeInLegalOverTime(TimeWithCalculation overTime){
+		this.legalOverTime = this.addOverTimeOnly(this.legalOverTime, overTime);
+	}
+	
+	/**
+	 * 残業時間：振替時間を加算する
+	 * @param transferTime 残業時間　（計算付き時間）
+	 */
+	public void addTransferTimeInOverTime(TimeWithCalculation transferTime){
+		this.overTime = this.addTransferTimeOnly(this.overTime, transferTime);
+	}
+	
+	/**
+	 * 法定内残業時間：振替時間を加算する
+	 * @param transferTime 残業時間　（計算付き時間）
+	 */
+	public void addTransferTimeInLegalOverTime(TimeWithCalculation transferTime){
+		this.legalOverTime = this.addTransferTimeOnly(this.legalOverTime, transferTime);
+	}
+	
+	/**
+	 * 残業枠時間を加算する
+	 * @param target 加算先残業枠時間
+	 * @param addTime 加算時間　（残業枠時間）
+	 * @return 加算後残業枠時間
+	 */
+	private OverTimeFrameTime addOverTimeFrameTime(OverTimeFrameTime target, OverTimeFrameTime addTime){
+		
+		return new OverTimeFrameTime(
+				new OverTimeFrameNo(target.getOverWorkFrameNo().v()),
+				target.getOverTimeWork().addMinutes(
+						addTime.getOverTimeWork().getTime(),
+						addTime.getOverTimeWork().getCalcTime()),
+				target.getTransferTime().addMinutes(
+						addTime.getTransferTime().getTime(),
+						addTime.getTransferTime().getCalcTime()),
+				target.getBeforeApplicationTime().addMinutes(addTime.getBeforeApplicationTime().v()),
+				target.getOrderTime().addMinutes(addTime.getOrderTime().v())
+			);
+	}
+	
+	/**
+	 * 残業時間のみ加算する
+	 * @param target 残業枠時間　（設定先）
+	 * @param overTime 残業時間　（計算付き時間）
+	 */
+	private OverTimeFrameTime addOverTimeOnly(OverTimeFrameTime target, TimeWithCalculation overTime){
+		
+		return new OverTimeFrameTime(
+				new OverTimeFrameNo(target.getOverWorkFrameNo().v()),
+				target.getOverTimeWork().addMinutes(
+						overTime.getTime(),
+						overTime.getCalcTime()),
+				TimeWithCalculation.createTimeWithCalculation(
+						new AttendanceTime(target.getTransferTime().getTime().v()),
+						new AttendanceTime(target.getTransferTime().getCalcTime().v())),
+				new AttendanceTime(target.getBeforeApplicationTime().v()),
+				new AttendanceTime(target.getOrderTime().v()));
+	}
+	
+	/**
+	 * 振替時間のみ加算する
+	 * @param target 残業枠時間　（設定先）
+	 * @param transferTime 振替時間　（計算付き時間）
+	 */
+	private OverTimeFrameTime addTransferTimeOnly(OverTimeFrameTime target, TimeWithCalculation transferTime){
+		
+		return new OverTimeFrameTime(
+				new OverTimeFrameNo(target.getOverWorkFrameNo().v()),
+				TimeWithCalculation.createTimeWithCalculation(
+						new AttendanceTime(target.getOverTimeWork().getTime().v()),
+						new AttendanceTime(target.getOverTimeWork().getCalcTime().v())),
+				target.getTransferTime().addMinutes(
+						transferTime.getTime(),
+						transferTime.getCalcTime()),
+				new AttendanceTime(target.getBeforeApplicationTime().v()),
+				new AttendanceTime(target.getOrderTime().v()));
+	}
+}

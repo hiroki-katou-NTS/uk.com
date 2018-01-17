@@ -5,7 +5,9 @@ module nts.uk.at.view.ksu001.a.service {
         registerData: "at/schedule/basicschedule/register",
         getShiftCondition: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftCondition",
         getShiftConditionCategory: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftConCategory",
+        buildTreeShiftCondition: "at/schedule/shift/shiftCondition/shiftCondition/buildTreeShiftCondition",
         checkStateWorkTypeCode: "screen/at/schedule/basicschedule/checkStateWorkTypeCode",
+        checkNeededOfWorkTimeSetting: "screen/at/schedule/basicschedule/checkNeededOfWorkTimeSetting",
         getDataScheduleDisplayControl: "screen/at/schedule/basicschedule/getScheduleDisplayControl",
         getDataWorkEmpCombine: "screen/at/schedule/basicschedule/getWorkEmpCombine",
         getDataSpecDateAndHoliday: "screen/at/schedule/basicschedule/getDataSpecDateAndHoliday",
@@ -29,6 +31,10 @@ module nts.uk.at.view.ksu001.a.service {
     export function getShiftConditionCategory(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getShiftConditionCategory);
     }
+    
+    export function buildTreeShiftCondition(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.buildTreeShiftCondition);
+    }
 
     export function getDataWorkScheduleState(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataWorkScheduleState, obj);
@@ -36,6 +42,10 @@ module nts.uk.at.view.ksu001.a.service {
 
     export function checkStateWorkTypeCode(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.checkStateWorkTypeCode, obj);
+    }
+    
+    export function checkNeededOfWorkTimeSetting(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.checkNeededOfWorkTimeSetting, obj);
     }
 
     export function getDataScheduleDisplayControl(): JQueryPromise<any> {

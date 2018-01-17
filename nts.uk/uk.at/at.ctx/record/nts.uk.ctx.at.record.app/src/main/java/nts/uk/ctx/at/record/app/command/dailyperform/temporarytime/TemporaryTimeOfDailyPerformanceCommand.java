@@ -33,7 +33,8 @@ public class TemporaryTimeOfDailyPerformanceCommand extends DailyWorkCommonComma
 
 	@Override
 	public TemporaryTimeOfDailyPerformance toDomain() {
-		return !data.isPresent() ? null : new TemporaryTimeOfDailyPerformance(getEmployeeId(), new WorkTimes(data.get().getWorkTimes()),
+		return !data.isPresent() ? null : new TemporaryTimeOfDailyPerformance(getEmployeeId(), 
+				data.get().getWorkTimes() == null ? null : new WorkTimes(data.get().getWorkTimes()),
 				data.get().getWorkLeaveTime() == null ? new ArrayList<>() : ConvertHelper.mapTo(data.get().getWorkLeaveTime(), (c) -> toTimeLeaveWork(c)), getWorkDate());
 	}
 
@@ -56,7 +57,7 @@ public class TemporaryTimeOfDailyPerformanceCommand extends DailyWorkCommonComma
 					createAttendanceTime(c.getAfterRoundingTimesOfDay()),
 					createAttendanceTime(c.getTimesOfDay()), 
 					c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
-					ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
+					c.getStampSourceInfo() == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
 	}
 
 	private TimeWithDayAttr createAttendanceTime(Integer c) {

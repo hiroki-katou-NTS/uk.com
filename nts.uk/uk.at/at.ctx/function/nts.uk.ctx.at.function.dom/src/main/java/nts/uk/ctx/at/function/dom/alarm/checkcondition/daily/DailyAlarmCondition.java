@@ -23,19 +23,24 @@ public class DailyAlarmCondition extends ExtractionCondition  {
 	
 	private boolean addApplication;
 	
-	private String errorAlarmID;
+	private List<String> errorAlarmWk = new ArrayList<String>();
+	
+	private List<String> errorAlarmFixed = new ArrayList<String>();
 	
 	private List<String > errorAlarmCode = new ArrayList<String>();
 
 	public DailyAlarmCondition(String dailyAlarmConID, ConExtractedDaily conExtractedDaily, boolean addApplication,
-			String errorAlarmID, List<String> errorAlarmCode) {
+			List<String> errorAlarmWk, List<String> errorAlarmFixed, List<String> errorAlarmCode) {
 		super();
 		this.dailyAlarmConID = dailyAlarmConID;
 		this.conExtractedDaily = conExtractedDaily;
 		this.addApplication = addApplication;
-		this.errorAlarmID = errorAlarmID;
+		this.errorAlarmWk = errorAlarmWk;
+		this.errorAlarmFixed = errorAlarmFixed;
 		this.errorAlarmCode = errorAlarmCode;
 	}
+
+
 
 	
 

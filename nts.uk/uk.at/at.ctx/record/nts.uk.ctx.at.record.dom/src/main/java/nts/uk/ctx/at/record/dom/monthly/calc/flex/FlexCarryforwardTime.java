@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.flex;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -11,11 +13,24 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class FlexCarryforwardTime {
 
 	/** フレックス繰越時間 */
+	@Setter
 	private AttendanceTimeMonth flexCarryforwardTime;
 	/** フレックス繰越勤務時間 */
+	@Setter
 	private AttendanceTimeMonth flexCarryforwardWorkTime;
 	/** フレックス繰越不足時間 */
+	@Setter
 	private AttendanceTimeMonth flexCarryforwardShortageTime;
+	
+	/**
+	 * コンストラクタ
+	 */
+	public FlexCarryforwardTime(){
+		
+		this.flexCarryforwardTime = new AttendanceTimeMonth(0);
+		this.flexCarryforwardWorkTime = new AttendanceTimeMonth(0);
+		this.flexCarryforwardShortageTime = new AttendanceTimeMonth(0);
+	}
 	
 	/**
 	 * ファクトリー
@@ -29,7 +44,7 @@ public class FlexCarryforwardTime {
 			AttendanceTimeMonth flexCarryforwardWorkTime,
 			AttendanceTimeMonth flexCarryforwardShortageTime){
 
-		FlexCarryforwardTime domain = new FlexCarryforwardTime();
+		val domain = new FlexCarryforwardTime();
 		domain.flexCarryforwardTime = flexCarryforwardTime;
 		domain.flexCarryforwardWorkTime = flexCarryforwardWorkTime;
 		domain.flexCarryforwardShortageTime = flexCarryforwardShortageTime;

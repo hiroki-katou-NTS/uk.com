@@ -174,7 +174,7 @@ module nts.uk.at.view.kaf009.b {
                         self.selectedBack2.subscribe(value => { $("#inpEndTime2").ntsError("clear"); });
                         
                         //画面モード(表示/編集)
-                        self.editable = ko.observable(detailData.outMode == 0 ? true: false);
+                        //self.editable = ko.observable(detailData.outMode == 0 ? true: false);
                         //Focus process
                         self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });
                         //フォーカス制御 => 勤務時間直行

@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.reflection.AnnotationUtil;
+import nts.gul.reflection.FieldsWorkerStream;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
@@ -179,11 +181,11 @@ public class PeregProcessor {
 		PeregDto peregDto = null;
 		
 		boolean ctgIsViewOnly = false;
-		if (perInfoCtg.getIsFixed() == IsFixed.FIXED && query.getInfoId() != null) {
+		if ((perInfoCtg.getIsFixed() == IsFixed.FIXED && query.getInfoId() != null)
+				||(query.getInfoId() == null && perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO)) {
 			peregDto = layoutingProcessor.findSingle(query);
 		}
-		if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO
-				&& query.getInfoId() != null) {
+		if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO) {
 			ctgIsViewOnly = checkCtgIsViewOnly(peregDto, perInfoCtg, roleId, query.getInfoId(), loginEmpId.equals(query.getEmployeeId()));
 		}
 		for (int i = 0; i < lstItemDef.size(); i++) {
@@ -305,50 +307,86 @@ public class PeregProcessor {
 	
 	private boolean checkCtgIsViewOnly(PeregDto peregDto, PersonInfoCategory perInfoCtg, String roleId, String infoId, boolean isSelf) {
 		PersonInfoCategoryAuth perInfoCtgAuth = perAuth.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
+		String exceptionItemCode = "CS00003";
+		if(infoId == null) {
 		if((perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO && !isSelf)
-				||(perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) return true;
-		DateRangeItem dateRangeItem = perInfoCtgRepositoty
-				.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
-		String eDateId = dateRangeItem.getEndDateItemId();
-		
-		boolean isFuture = true;
-		if(perInfoCtg.getIsFixed() == IsFixed.FIXED) {
-			String endDateItemCode = perItemRepo.getPerInfoItemDefById(eDateId, AppContexts.user().contractCode()).get().getItemCode().v();
-			Object value = null;
-			Optional<Field> field = AnnotationUtil.getStreamOfFieldsAnnotated(peregDto.getDtoClass(), PeregItem.class)
-			.filter(f -> {
-				return f.getAnnotation(PeregItem.class).value().equals(endDateItemCode);
-			}).findFirst();
-			if(field.isPresent()) {
-				value = ReflectionUtil.getFieldValue(field.get(), peregDto.getDomainDto());
-			}
-			if(value != null) {
-				GeneralDate endDate = GeneralDate.fromString(value.toString(), "yyyy/MM/dd");
-				if(endDate.before(GeneralDate.today())) isFuture = false;
-			}
+				||(perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) 
+				 return true;
 		}else {
-			if(perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
-				Optional<EmpInfoItemData> dateForEndate = empInfoItemDataRepository.getInfoItemByItemDefIdAndRecordId(eDateId, infoId);
-				if(dateForEndate.isPresent()) {
-					GeneralDate endDate = dateForEndate.get().getDataState().getDateValue();
-					if(endDate != null)
-						if(endDate.before(GeneralDate.today())) isFuture = false;
-				}
-				
-			}else {
-				Optional<PersonInfoItemData> dateForEndate = perInfoItemDataRepository.getPerInfoItemDataByItemDefIdAndRecordId(eDateId, infoId);
-				if(dateForEndate.isPresent()) {
-					GeneralDate endDate = dateForEndate.get().getDataState().getDateValue();
-					if(endDate != null)
-						if(endDate.before(GeneralDate.today())) isFuture = false;
-				}
+			String sDateId = "";	
+			String eDateId = "";	
+			if(!perInfoCtg.getCategoryCode().v().equals(exceptionItemCode)) {
+				DateRangeItem dateRangeItem = perInfoCtgRepositoty
+						.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
+				eDateId = dateRangeItem.getEndDateItemId();
+				sDateId = dateRangeItem.getStartDateItemId();
 			}
 			
+			Object sValue = null;
+			Object eValue = null;
+			if(perInfoCtg.getIsFixed() == IsFixed.FIXED) {			
+				List<Field> fields =  AnnotationUtil.getStreamOfFieldsAnnotated(peregDto.getDtoClass(), PeregItem.class).collect(Collectors.toList());
+				sValue = getDateValueOfFixedCtg(peregDto, perInfoCtg.getCategoryCode().v(), exceptionItemCode, fields, sDateId, true);
+				eValue = getDateValueOfFixedCtg(peregDto, perInfoCtg.getCategoryCode().v(), exceptionItemCode, fields, eDateId, false);
+			}else {
+				if(perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
+					Optional<EmpInfoItemData> dateForStartDate = empInfoItemDataRepository.getInfoItemByItemDefIdAndRecordId(sDateId, infoId);
+					Optional<EmpInfoItemData> dateForEndDate = empInfoItemDataRepository.getInfoItemByItemDefIdAndRecordId(eDateId, infoId);
+					sValue = dateForStartDate.isPresent() ? dateForStartDate.get().getDataState().getDateValue() : null;
+					eValue = dateForEndDate.isPresent() ? dateForEndDate.get().getDataState().getDateValue() : null;
+					
+				}else {
+					Optional<PersonInfoItemData> dateForStartDate = perInfoItemDataRepository.getPerInfoItemDataByItemDefIdAndRecordId(sDateId, infoId);
+					Optional<PersonInfoItemData> dateForEndDate = perInfoItemDataRepository.getPerInfoItemDataByItemDefIdAndRecordId(eDateId, infoId);
+					sValue = dateForStartDate.isPresent() ? dateForStartDate.get().getDataState().getDateValue() : null;
+					eValue = dateForEndDate.isPresent() ? dateForEndDate.get().getDataState().getDateValue() : null;
+				}			
+			}
+			Period period = getPeriod(sValue, eValue);
+			if(period == Period.PRESENT) return false;
+			if(period == Period.FUTURE) {
+				return isSelf?perInfoCtgAuth.getSelfFutureHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherFutureHisAuth() == PersonInfoAuthType.REFERENCE;
+			}else {
+				return isSelf?perInfoCtgAuth.getSelfPastHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherPastHisAuth() == PersonInfoAuthType.REFERENCE;
+			}
 		}
-		if(isFuture) {
-			return isSelf?perInfoCtgAuth.getSelfFutureHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherFutureHisAuth() == PersonInfoAuthType.REFERENCE;
+		return false;
+	}
+	private Object getDateValueOfFixedCtg(PeregDto peregDto, String ctgCode, String exceptionItemCode, List<Field> fields, String dateId, boolean isStart) {
+		Optional<Field> field = Optional.empty();
+		if(ctgCode.equals(exceptionItemCode)) {
+			if(!isStart)
+				field = Optional.of(fields.get(1));
+			else field = Optional.of(fields.get(0));
 		}else {
-			return isSelf?perInfoCtgAuth.getSelfPastHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherPastHisAuth() == PersonInfoAuthType.REFERENCE;
+			String dateItemCode = perItemRepo.getPerInfoItemDefById(dateId, AppContexts.user().contractCode()).get().getItemCode().v();
+			List<Field> filterFields= fields.stream().filter(f -> {
+				return f.getAnnotation(PeregItem.class).value().equals(dateItemCode);
+			}).collect(Collectors.toList());
+			if(filterFields.size() > 0)
+				field = filterFields.stream().findFirst();
+			else return null;
+			
 		}
+		if(field.isPresent()) {
+			return ReflectionUtil.getFieldValue(field.get(), peregDto.getDomainDto());
+		}else return null;
+	}
+	
+	private Period getPeriod(Object sValue, Object eValue) {
+		GeneralDate sDate = GeneralDate.fromString(sValue.toString(), "yyyy/MM/dd");
+		GeneralDate today = GeneralDate.today();
+		if(eValue == null) {
+			return sDate.beforeOrEquals(today) ? Period.PRESENT : Period.FUTURE;
+		}else {
+			GeneralDate eDate = GeneralDate.fromString(eValue.toString(), "yyyy/MM/dd");
+			return today.after(eDate)?Period.PAST: (today.afterOrEquals(sDate)?Period.PRESENT: Period.FUTURE);
+		}
+	}
+	private enum Period{
+		PAST(1),
+		PRESENT(2),
+		FUTURE(3);
+		Period(int a) {}
 	}
 }

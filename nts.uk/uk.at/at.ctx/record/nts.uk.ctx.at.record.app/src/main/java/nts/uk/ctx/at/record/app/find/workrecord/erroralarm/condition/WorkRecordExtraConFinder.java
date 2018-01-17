@@ -28,8 +28,8 @@ public class WorkRecordExtraConFinder {
 	/**
 	 * get All Work record extracing condition by errorAlarmCheckID
 	 */
-	public WorkRecordExtraConDto getWorkRecordExtraConById(InputWorkRecordExtraCon inputWorkRecordExtraCon) {
-		Optional<WorkRecordExtraConDto> data = repo.getWorkRecordExtraConById(inputWorkRecordExtraCon.getErrorAlarmCheckID(),inputWorkRecordExtraCon.getCheckItem())
+	public WorkRecordExtraConDto getWorkRecordExtraConById(String errorAlarmCheckID) {
+		Optional<WorkRecordExtraConDto> data = repo.getWorkRecordExtraConById(errorAlarmCheckID)
 				.map(c->WorkRecordExtraConDto.fromDomain(c));
 		if(data.isPresent())
 			return data.get();

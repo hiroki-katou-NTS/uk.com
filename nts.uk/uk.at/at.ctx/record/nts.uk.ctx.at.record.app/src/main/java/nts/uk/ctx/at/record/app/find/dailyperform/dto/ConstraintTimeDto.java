@@ -15,11 +15,11 @@ public class ConstraintTimeDto {
 
 	/** 総拘束時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "総拘束時間")
-	@AttendanceItemValue(itemId = 749, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer totalConstraintTime;
 
 	/** 深夜拘束時間 : 勤怠時間 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "深夜拘束時間")
-	@AttendanceItemValue(itemId = 748, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer lateNightConstraintTime;
 }

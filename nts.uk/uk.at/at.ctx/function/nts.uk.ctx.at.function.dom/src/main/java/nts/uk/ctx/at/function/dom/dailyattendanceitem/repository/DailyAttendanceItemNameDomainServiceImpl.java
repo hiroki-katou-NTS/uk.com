@@ -58,6 +58,9 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 	private BPTimeItemRepository bPTimeItemRepository;
 
 	@Inject
+	private OvertimeWorkFrameRepository overtimeFrameRepository;
+
+	@Inject
 	private OptionalItemAdapter optionalItemAdapter;
 
 	@Inject
@@ -65,9 +68,6 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 
 	@Inject
 	private SpecificDateAdapter specificDateAdapter;
-
-	@Inject
-	private OvertimeWorkFrameRepository overtimeWorkFrameRepository;
 
 	@Override
 	public List<DailyAttendanceItem> getNameOfDailyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
@@ -149,7 +149,7 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 			}).collect(Collectors.toList());
 		}
 		
-		List<OvertimeWorkFrame> overtimeWorkFrames = this.overtimeWorkFrameRepository
+		List<OvertimeWorkFrame> overtimeWorkFrames = this.overtimeFrameRepository
 				.getOvertimeWorkFrameByFrameNos(companyId, frameNos);
 		Function<OvertimeWorkFrame, Integer> function = overTime -> overTime.getOvertimeWorkFrNo().v().intValue();
 		// 残業 0 + 残業振替 1

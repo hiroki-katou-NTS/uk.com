@@ -38,7 +38,7 @@ public class JpaEmpCopySettingItemRepository extends JpaRepository implements Em
 			+ " INNER JOIN PpemtPerInfoItemCm ic"
 			+ " ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd AND c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " LEFT JOIN PpestEmployeeCopySettingItem ci ON i.ppemtPerInfoItemPK.perInfoItemDefId = ci.ppestEmployeeCopySettingItemPk.perInfoItemDefId"
-			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId ORDER BY io.displayOrder ASC";
+			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0 ORDER BY io.displayOrder ASC";
 
 	@Override
 	public List<EmpCopySettingItem> getAllItemFromCategoryCd(String categoryCd, String companyId, boolean isSelf) {

@@ -17,6 +17,10 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
         startDateScreenA: any = null;
         endDateScreenA: any = null;
+        isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
+        checkStateWorkTypeCode: any = null;
+        checkNeededOfWorkTimeSetting: any = null;
+        workEmpCombines: any = null;
 
         constructor() {
             let self = this;
@@ -111,11 +115,20 @@ module nts.uk.at.view.ksu001.o.viewmodel {
          */
         search(): void {
             let self = this;
+            self.isEnableClearSearchButton(true);
             if (!self.time1() && !self.time2()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
+                self.isEnableClearSearchButton(false);
+                self.clear();
+                return;
             }
             if (self.time1() && self.time2() && moment(self.time1(), 'HH:mm').isSameOrAfter(moment(self.time2(), 'HH:mm'))) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_54" });
+                self.clear();
+                return;
+            }
+            if (nts.uk.ui.errors.hasError()) {
+                return;
             }
             self.listWorkTimeComboBox([]);
             _.forEach(self.listWorkTime(), (obj) => {
@@ -138,6 +151,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
          */
         clear(): void {
             let self = this;
+            self.isEnableClearSearchButton(false);
             self.listWorkTimeComboBox([]);
             self.listWorkTimeComboBox(self.listWorkTime());
         }
@@ -156,6 +170,10 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 self.endDateScreenA = data.endDate;
                 //set data for listWorkType
                 self.listWorkType(data.listWorkType);
+                //
+                self.checkStateWorkTypeCode = data.checkStateWorkTypeCode;
+                self.checkNeededOfWorkTimeSetting = data.checkNeededOfWorkTimeSetting;
+                self.workEmpCombines = data.workEmpCombines;
                 //set data for listWorkTime
                 self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                     workTimeCode: '000',

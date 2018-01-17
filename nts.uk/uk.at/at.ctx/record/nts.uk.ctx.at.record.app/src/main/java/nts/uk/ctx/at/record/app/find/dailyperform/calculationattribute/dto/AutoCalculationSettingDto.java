@@ -15,7 +15,7 @@ public class AutoCalculationSettingDto {
 
 	/** 計算区分: 時間外の自動計算区分 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "計算区分")
-	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private int calculationAttr;
 
 	/** 上限の設定: 時間外の上限設定 */

@@ -22,7 +22,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkRepository;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtWorkplaceWorkSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtWorkplaceWorkSetPK_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtWorkplaceWorkSet_;
@@ -130,7 +129,7 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkRepository#findAlreadySet()
 	 */
 	@Override
-	public List<WorkplaceId> findSetting() {
+	public List<String> findSetting() {
 		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
@@ -142,9 +141,7 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 		cq.select(root.get(KscmtWorkplaceWorkSet_.kscmtWorkplaceWorkSetPK).get(KscmtWorkplaceWorkSetPK_.workplaceId)).distinct(true);
 		TypedQuery<String> query = em.createQuery(cq);
 		
-		return query.getResultList().stream().map(item -> {
-			return new WorkplaceId(item);
-		}).collect(Collectors.toList());
+		return query.getResultList();
 	}
 
 	/**
@@ -167,7 +164,7 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 		return domain.getBasicWorkSetting().stream().map(basic -> {
 			KscmtWorkplaceWorkSet entity = new KscmtWorkplaceWorkSet();
 			basic.saveToMemento(new JpaBWSettingWorkplaceSetMemento(entity));
-			entity.getKscmtWorkplaceWorkSetPK().setWorkplaceId(domain.getWorkplaceId().v());
+			entity.getKscmtWorkplaceWorkSetPK().setWorkplaceId(domain.getWorkplaceId());
 			return entity;
 		}).collect(Collectors.toList());
 	}

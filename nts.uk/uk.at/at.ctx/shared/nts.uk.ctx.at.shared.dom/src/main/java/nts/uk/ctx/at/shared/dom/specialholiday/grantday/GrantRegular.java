@@ -48,10 +48,6 @@ public class GrantRegular extends DomainObject {
 			return;
 		}
 		
-		if (this.grantStartDate == null) {
-			throw new BusinessException("Msg_94");
-		}
-		
 		if ((this.months.v() == 0 && this.months.v() < 0) || (this.years.v() == 0 && this.years.v() < 0)) {
 			throw new BusinessException("Msg_95");
 		}
@@ -68,9 +64,10 @@ public class GrantRegular extends DomainObject {
 	 * @return
 	 */
 	public static GrantRegular createFromJavaType(String companyId, String specialHolidayCode,
-			GeneralDate grantStartDate, int months, int years, int grantRegularMethod) {
+			GeneralDate grantStartDate, Integer months, Integer years, int grantRegularMethod) {
 		return new GrantRegular(companyId, new SpecialHolidayCode(specialHolidayCode), grantStartDate,
-				new Months(months), new Years(years),
+				months != null ? new Months(months) : null, 
+				years != null ?	new Years(years) : null,
 				EnumAdaptor.valueOf(grantRegularMethod, GrantRegularMethod.class));
 	}
 }

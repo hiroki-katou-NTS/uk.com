@@ -269,17 +269,17 @@
 									</div>
 									<div style="margin-top: 10px;">
 										<span style="vertical-align: middle; margin-left: 50px;">#{i18n.getText('KMF004_53')}</span>
-										<input style="width: 40px; margin-left: 140px;" tabindex="25"
+										<input id= "limitCarryover" style="width: 40px; margin-left: 140px;" tabindex="25"
 											data-bind="ntsNumberEditor: {
 												value: limitCarryoverDays,
 												option: ko.mapping.fromJS({
 												unitID: 'DAYS',
 												width: '60'}),
-												required: $parent.inp_grantMethod() == 0,
+												required: ko.computed(function(){ return grantCarryForward()==1 &amp;&amp; $parent.inp_grantMethod() == 0; }),
 												enable: true,
 												name: '#[KMF004_53]',
 												constraint: 'LimitCarryoverDays',
-												enable: grantCarryForward() ==0}" />
+												enable: grantCarryForward() ==1}" />
 									</div>
 								</div>
 							</div>
@@ -381,8 +381,8 @@
 												width: '60'}),
 												required: ko.computed(function(){ return grantDaySingleType()==0 &amp;&amp; $parent.inp_grantMethod() == 1; }),
 												enable: grantDaySingleType()==0,
-												name: '#[KMF004_31]'},
-												constraint:'FixNumberDays'" />
+												name: '#[KMF004_31]',
+												constraint:'FixNumberDays'}" />
 										</div>
 									</div>
 									<div>

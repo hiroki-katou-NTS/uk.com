@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
-import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -28,7 +28,7 @@ public class CheckValidOutput {
 	/**
 	 * 就業時間帯
 	 */
-	SiftCode siftCd;
+	WorkTimeCode siftCd;
 	// GoBackDirectly goBackDirectly;
 	/**
 	 * チェック対象

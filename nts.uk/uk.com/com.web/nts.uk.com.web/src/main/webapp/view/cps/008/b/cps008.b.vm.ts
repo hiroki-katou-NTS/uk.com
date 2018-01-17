@@ -24,18 +24,18 @@ module cps008.b.vm {
         resizedw() {
             let self = this,
                 currentDialog = nts.uk.ui.windows.getSelf();
-            $(currentDialog.parent.globalContext).css("overflow", "hidden");
+           // $(currentDialog.parent.globalContext).css("overflow", "hidden");
 
-            if (currentDialog.parent.globalContext.innerWidth <= 1270) {
-                currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 30);
+            if (currentDialog.parent.globalContext.innerWidth <= 1250) {
+                currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 50);
             } else {
-                currentDialog.setWidth(1260);
+                currentDialog.setWidth(1280);
             }
 
-            if (currentDialog.parent.globalContext.innerHeight <= 775) {
-                currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 30);
+            if (currentDialog.parent.globalContext.innerHeight <= 630) {
+                currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 100);
             } else {
-                currentDialog.setHeight(650);
+                currentDialog.setHeight(660);
             }
         }
 
@@ -72,11 +72,7 @@ module cps008.b.vm {
             if (cls && cls.length) {
                 layout.itemsClassification.removeAll();
                 _.each(cls, x => layout.itemsClassification.push(_.omit(x, ["items"])));
-            } else if (dto.isNewLayout) {
-                service.getData().done((x: ILayout) => {
-                    layout.itemsClassification(initData(x.itemsClassification));
-                });
-            }else{
+            } else{
                  layout.itemsClassification([]);
             }
         }

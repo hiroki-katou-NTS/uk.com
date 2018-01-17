@@ -34,8 +34,8 @@ public class KshstGrantPeriodic extends UkJpaEntity implements Serializable {
 	public int splitAcquisition;
 
 	/* 固定付与日数 */
-	@Column(name = "GRANT_DAY")
-	public int grantDay;
+	@Column(name = "GRANT_DAY", nullable=true)
+	public Integer grantDay;
 
 	/* 付与日数定期方法 */
 	@Column(name = "GRANT_PERIODIC_METHOD")
@@ -61,10 +61,12 @@ public class KshstGrantPeriodic extends UkJpaEntity implements Serializable {
 	public static KshstGrantPeriodic toEntity(GrantPeriodic domain) {
 		return new KshstGrantPeriodic(
 				new KshstGrantPeriodicPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()),
-				domain.getSplitAcquisition().value, domain.getGrantDay().v(), domain.getGrantPeriodicMethod().value);
+				domain.getSplitAcquisition().value, 
+				domain.getGrantDay() != null ? domain.getGrantDay().v(): null, 
+				domain.getGrantPeriodicMethod().value);
 	}
 
-	public KshstGrantPeriodic(KshstGrantPeriodicPK kshstGrantPeriodicPK, int splitAcquisition, int grantDay,
+	public KshstGrantPeriodic(KshstGrantPeriodicPK kshstGrantPeriodicPK, int splitAcquisition, Integer grantDay,
 			int grantPerioricMethod) {
 		super();
 		this.kshstGrantPeriodicPK = kshstGrantPeriodicPK;

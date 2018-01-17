@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
@@ -12,12 +14,16 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class IrregularWorkingTimeOfMonthly {
 
 	/** 複数月変形途中時間 */
+	@Setter
 	private AttendanceTimeMonth multiMonthIrregularMiddleTime;
 	/** 変形期間繰越時間 */
+	@Setter
 	private AttendanceTimeMonth irregularPeriodCarryforwardTime;
 	/** 変形労働不足時間 */
+	@Setter
 	private AttendanceTimeMonth irregularWorkingShortageTime;
 	/** 変形法定内残業時間 */
+	@Setter
 	private TimeMonthWithCalculation irregularLegalOverTime;
 
 	/**
@@ -25,7 +31,10 @@ public class IrregularWorkingTimeOfMonthly {
 	 */
 	public IrregularWorkingTimeOfMonthly(){
 		
-		this.irregularLegalOverTime = new TimeMonthWithCalculation();
+		this.multiMonthIrregularMiddleTime = new AttendanceTimeMonth(0);
+		this.irregularPeriodCarryforwardTime = new AttendanceTimeMonth(0);
+		this.irregularWorkingShortageTime = new AttendanceTimeMonth(0);
+		this.irregularLegalOverTime = TimeMonthWithCalculation.ofSameTime(0);
 	}
 
 	/**
@@ -42,7 +51,7 @@ public class IrregularWorkingTimeOfMonthly {
 			AttendanceTimeMonth irregularWorkingShortageTime,
 			TimeMonthWithCalculation irregularLegalOverTime){
 
-		IrregularWorkingTimeOfMonthly domain = new IrregularWorkingTimeOfMonthly();
+		val domain = new IrregularWorkingTimeOfMonthly();
 		domain.multiMonthIrregularMiddleTime = multiMonthIrregularMiddleTime;
 		domain.irregularPeriodCarryforwardTime = irregularPeriodCarryforwardTime;
 		domain.irregularWorkingShortageTime = irregularWorkingShortageTime;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 
 /*
@@ -15,20 +16,16 @@ public class AggregateMonthlyRecordValue {
 	/** 月別実績の勤怠時間 */
 	private List<AttendanceTimeOfMonthly> attendanceTimes;
 
+	/** エラー有無 */
+	@Setter
+	private boolean error;
+	
 	/*
 	 * コンストラクタ
 	 */
 	public AggregateMonthlyRecordValue(){
 		
 		this.attendanceTimes = new ArrayList<>();
-	}
-	
-	/**
-	 * リスト：月別実績の勤怠時間　データ追加
-	 * @param attendanceTime 月別実績の勤怠時間
-	 */
-	public void addAttendanceTime(AttendanceTimeOfMonthly attendanceTime){
-		
-		this.attendanceTimes.add(attendanceTime);
+		this.error = false;
 	}
 }

@@ -7,6 +7,8 @@ module nts.uk.at.view.kmf022.a.service {
         findAll: "at/request/application/requestofearch/getrequestofearch",
         // A4_6
         find: "at/request/application/getalldatabyclosureId",
+        updateClosure: "at/request/application/update",
+        addClosure: "at/request/application/add",
         // A14_3
         findJobAssign: "job/assign/setting/getjob",
         //A15_4
@@ -14,10 +16,17 @@ module nts.uk.at.view.kmf022.a.service {
         // A17_5
         findAppro: "approval/setting/approval",
         // A17_4
-        findAppSet: "at/request/application/setting"
+        findAppSet: "at/request/application/setting/appset",
+        //A9_5
+        findAppSetting: "at/request/application/setting/appset"
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
     }
+    
+    export function findAppSetting() {
+        return nts.uk.request.ajax("at", paths.findAppSetting); 
+    }
+    
     export function findAll() {
         return nts.uk.request.ajax("at", paths.findAll); 
     }
@@ -40,6 +49,14 @@ module nts.uk.at.view.kmf022.a.service {
     
     export function findAppSet() {
         return nts.uk.request.ajax("at", paths.findAppSet); 
+    }
+    
+    export function updateClosure(command: any): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.updateClosure, command);    
+    }
+    
+    export function addClosure(command: any): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.addClosure, command);    
     }
 //    export function add(command: Array<d.viewmodel.Item>): JQueryPromise<void>{
 //        return ajax("at", paths.add, command);

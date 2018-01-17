@@ -64,7 +64,7 @@ public class UpdateEmploymentHistoryCommandHandler extends CommandHandler<Update
 		// Update detail table
 		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(command.getHistoryId(),
 				command.getEmployeeId(), command.getEmploymentCode(),
-				command.getSalarySegment() != null ? command.getSalarySegment().intValue() : 0);
+				command.getSalarySegment() != null ? command.getSalarySegment().intValue() : ConstantUtils.ENUM_UNDEFINE_VALUE);
 		employmentHistoryItemRepository.update(histItem);
 	}
 
