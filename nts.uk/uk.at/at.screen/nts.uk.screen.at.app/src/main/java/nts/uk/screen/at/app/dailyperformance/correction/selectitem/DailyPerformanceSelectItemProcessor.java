@@ -293,7 +293,7 @@ public class DailyPerformanceSelectItemProcessor {
 			screenDto.setLstEmployee(getListEmployee(sId, screenDto.getDateRange()));
 		}
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = new ArrayList<>();
-		if(initScreen == 0){
+		if(initScreen != null && initScreen == 0){
 			lstEmployeeData = screenDto.getLstEmployee().stream().filter(x-> x.getId().equals(sId)).collect(Collectors.toList());
 		}else{
 			lstEmployeeData = screenDto.getLstEmployee();

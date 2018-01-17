@@ -711,7 +711,6 @@ module nts.custombinding {
                         <div class="timepoint">
                             <input data-bind="ntsTimeWithDayEditor: { 
                                         name: itemName,
-                                        name: nameid,
                                         constraint: nameid,
                                         value: value,
                                         enable: editable, 
@@ -1629,7 +1628,7 @@ module nts.custombinding {
                                             }
 
                                             if (def.index == 1) {
-                                                let next = x.items()[2] || { value: () => ko.observable() };
+                                                let next = x.items()[2] || { item: {}, value: () => ko.observable() };
                                                 if (next.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE
                                                     && _.has(next, "value")
                                                     && ko.isObservable(next.value)) {

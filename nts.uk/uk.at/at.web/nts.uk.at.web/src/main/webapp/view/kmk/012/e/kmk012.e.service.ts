@@ -1,8 +1,8 @@
 module nts.uk.at.view.kmk012.e {
     export module service {
         var paths = {
-            insertDelArray: 'ctx/at/shared/workrule/closure/addClousureEmp',
-            getClosureEmploy: 'ctx/at/shared/workrule/closure/getClosureEmploy'
+            insertDelArray: 'ctx/at/shared/workrule/closure/history/addClousureEmp',
+            getClosureEmploy: 'ctx/at/shared/workrule/closure/history/getClosureEmploy'
         }
 
         /**

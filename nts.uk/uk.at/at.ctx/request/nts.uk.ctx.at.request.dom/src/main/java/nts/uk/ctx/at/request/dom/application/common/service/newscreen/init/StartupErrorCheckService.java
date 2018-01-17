@@ -10,6 +10,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
  */
 public interface StartupErrorCheckService {
 	
-	public void startupErrorCheck(GeneralDate baseDate, ApprovalRootContentImport_New approvalRootContentImport);
+	public void startupErrorCheck(GeneralDate baseDate, int appType, ApprovalRootContentImport_New approvalRootContentImport);
 	
 }

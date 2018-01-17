@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordRepository;
 
 @Stateless
@@ -26,20 +24,11 @@ public class FixedConditionWorkRecordFinder {
 		return data;
 	}
 	
-	public List<FixedConditionWorkRecordDto> getAllFixedConWRByAlarmID(String errorAlarmCode){
-		List<FixedConditionWorkRecordDto> data = repo.getAllFixedConWRByAlarmID(errorAlarmCode).stream()
-				.map(c->FixedConditionWorkRecordDto.fromDomain(c)).collect(Collectors.toList());
-		if(data.isEmpty())
-			return Collections.emptyList();
-		return data;
-	}
-	
-	public FixedConditionWorkRecordDto getFixedConWRByCode(InputParamGetFixedCon inputParamGetFixedCon){
-		Optional<FixedConditionWorkRecordDto> data = repo.getFixedConWRByCode(inputParamGetFixedCon.getErrorAlarmCode(), inputParamGetFixedCon.getFixConWorkRecordNo())
+	public FixedConditionWorkRecordDto getFixedConWRByCode(String errorAlarmCode){
+		Optional<FixedConditionWorkRecordDto> data = repo.getFixedConWRByCode(errorAlarmCode)
 				.map(c->FixedConditionWorkRecordDto.fromDomain(c));
 		if(data.isPresent())
 			return data.get();
 		return null;
 	}
-	
 }

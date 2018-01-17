@@ -271,7 +271,7 @@
 										<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_40')}</div>
 									</div>
 									<div class="div_line">
-										<div style="width: 190px" id="initSearchBox"
+										<div style="width: 260px" id="initSearchBox"
 											data-bind="ntsSearchBox: {
 															targetKey: 'itemCode',
 															mode:'igGrid', 
@@ -291,8 +291,8 @@
 															dataSource: initValueList ,
 															primaryKey: 'itemCode',
 															columns:[
-																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'itemCode', width: 40},
-															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'itemName', width: 130 } ]  ,
+																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'itemCode', width: 80},
+															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'itemName', width: 160 } ]  ,
 															multiple: false,
 															value: initSettingSelectedCode ,
 															rows:15
