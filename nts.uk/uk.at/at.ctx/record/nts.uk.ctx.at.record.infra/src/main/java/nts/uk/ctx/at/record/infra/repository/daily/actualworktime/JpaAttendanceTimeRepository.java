@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWor
 import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWorkTs;
 import nts.uk.ctx.at.record.infra.entity.daily.holidayworktime.KrcdtDayHolidyWorkTsPK;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
+import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTime;
 import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.legalworktime.KrcdtDayPrsIncldTime;
@@ -155,7 +156,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 			for (LateTimeOfDaily lateTime : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
 					.getLateTimeOfDaily()) {
 				KrcdtDayLateTime krcdtDayLateTime = this
-						.queryProxy().find(new KrcdtDayLeaveEarlyTimePK(attendanceTime.getEmployeeId(),
+						.queryProxy().find(new KrcdtDayLateTimePK(attendanceTime.getEmployeeId(),
 								attendanceTime.getYmd(), lateTime.getWorkNo().v()), KrcdtDayLateTime.class)
 						.orElse(null);
 				/* 遅刻時間 */
