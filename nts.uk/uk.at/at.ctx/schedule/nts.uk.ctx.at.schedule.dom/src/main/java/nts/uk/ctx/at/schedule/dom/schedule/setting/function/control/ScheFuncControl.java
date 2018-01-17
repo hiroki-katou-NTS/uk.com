@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.schedule.setting.function.control;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -109,6 +111,8 @@ public class ScheFuncControl extends AggregateRoot {
 
 	/** 検索方法選択表示区分 */
 	private SearchMethod searchMethodDispCls;
+	
+	private List<ScheFuncCond> scheFuncCond;
 
 	/**
 	 * Create From Java Type
@@ -145,6 +149,7 @@ public class ScheFuncControl extends AggregateRoot {
 	 * @param confirm
 	 * @param searchMethod
 	 * @param searchMethodDispCls
+	 * @param scheFuncCond
 	 * @return
 	 */
 	public static ScheFuncControl createFromJavaType(String companyId, int alarmCheckUseCls, int confirmedCls, int publicCls,
@@ -154,7 +159,7 @@ public class ScheFuncControl extends AggregateRoot {
 			int workingForFlex, int overtimeWork, int normalCreation, int simulationCls,
 			int captureUsageCls, int completedFuncCls, int howToComplete, int alarmCheckCls,
 			int executionMethod, int handleRepairAtr, int confirm, int searchMethod,
-			int searchMethodDispCls) {
+			int searchMethodDispCls, List<ScheFuncCond> scheFuncCond) {
 		
 		return new ScheFuncControl(companyId, EnumAdaptor.valueOf(alarmCheckUseCls, UseAtr.class), EnumAdaptor.valueOf(confirmedCls, UseAtr.class), EnumAdaptor.valueOf(publicCls, UseAtr.class),
 				EnumAdaptor.valueOf(outputCls, UseAtr.class), EnumAdaptor.valueOf(workDormitionCls, UseAtr.class), EnumAdaptor.valueOf(teamCls, UseAtr.class), 
@@ -166,6 +171,6 @@ public class ScheFuncControl extends AggregateRoot {
 				EnumAdaptor.valueOf(simulationCls, UseAtr.class), EnumAdaptor.valueOf(captureUsageCls, UseAtr.class), EnumAdaptor.valueOf(completedFuncCls, UseAtr.class), 
 				EnumAdaptor.valueOf(howToComplete, ExecutionMethod.class), EnumAdaptor.valueOf(alarmCheckCls, UseAtr.class), EnumAdaptor.valueOf(executionMethod, ExecutionMethod.class), 
 				EnumAdaptor.valueOf(handleRepairAtr, UseAtr.class), EnumAdaptor.valueOf(confirm, UseAtr.class), EnumAdaptor.valueOf(searchMethod, UseAtr.class),
-				EnumAdaptor.valueOf(searchMethodDispCls, SearchMethod.class));
+				EnumAdaptor.valueOf(searchMethodDispCls, SearchMethod.class), scheFuncCond);
 	}
 }

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KsfstScheFuncControlPK implements Serializable {
+public class KscstScheFuncControlPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -10,7 +10,7 @@ import lombok.Getter;
  * @domain お気に入り
  */
 @Getter
-public class Favarite {
+public class Favorite {
 	
 	/**
 	 * お気に入りID
