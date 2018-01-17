@@ -34,15 +34,14 @@
 			<div id="contents-area" class="cf">
 				<div id="content_main">
 					<div id="content-left"
-						data-bind="ntsPanel:{width: '260px', height: '490px', direction: 'right', showIcon: true, visible: true}">
+						data-bind="ntsPanel:{width: '260px', height: '485px', direction: 'right', showIcon: true, visible: true}">
 
-						<div class="div_line">
-							<div data-bind="ntsCheckBox: { checked: ckbDisplayAbolition }">#{i18n.getText('CPS006_22')}</div>
+						<div >
+							<div id="checked" data-bind="ntsCheckBox: { checked: ckbDisplayAbolition }">#{i18n.getText('CPS006_22')}</div>
 						</div>
 
-						<div class="div_line">
-							<div style="width: 250px"
-								data-bind="ntsSearchBox: {
+						<div>
+							<div data-bind="ntsSearchBox: {
 							searchMode: 'filter',
 							targetKey: 'id', 
 							comId: 'B1_3', 
@@ -55,7 +54,7 @@
 							mode: 'igGrid'}" />
 						</div>
 
-						<div class="div_line">
+						<div class="div_grid">
 							<table id="B1_3"
 								data-bind="ntsGridList: {
 							rows : 15,
