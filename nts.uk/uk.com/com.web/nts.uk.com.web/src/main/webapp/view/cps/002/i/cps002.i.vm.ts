@@ -12,13 +12,28 @@ module cps002.i.vm {
         imageId: KnockoutObservable<IImageId> = ko.observable(<IImageId>{});
         isChange: KnockoutObservable<boolean> = ko.observable(false);
         isInit = true;
+        isEdit: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
+
+            $(".checkbox-holder").hide();
+
+            self.imageId.subscribe((newId) => {
+                if (newId) {
+                    $(".checkbox-holder").show();
+                } else {
+                    $(".checkbox-holder").hide();
+                }
+            });
+
+            $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
+                $(".checkbox-holder").show();
+            });
         }
         start() {
             let self = this;
             let dImageId = getShared("imageId");
-            
+
             if (dImageId != "" && dImageId != undefined) {
                 self.imageId().defaultImgId = dImageId;
                 self.getImage();
@@ -46,14 +61,14 @@ module cps002.i.vm {
                 if (self.isChange()) {
                     $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
                         self.imageId().cropImgId = data.id;
-                         $("#test").ntsImageEditor("uploadOriginal", { stereoType: "original-img" }).done(function(data2) {
-                             self.imageId().defaultImgId = data2.id;
-                             nts.uk.ui.block.clear();
-                                setShared("imageId", self.imageId());
-                                self.close();
+                        $("#test").ntsImageEditor("uploadOriginal", { stereoType: "original-img" }).done(function(data2) {
+                            self.imageId().defaultImgId = data2.id;
+                            nts.uk.ui.block.clear();
+
+                            self.close();
                         });
 
-                       
+
                     });
                 } else self.close();
             } else self.close();
@@ -65,12 +80,13 @@ module cps002.i.vm {
         }
         close() {
             nts.uk.ui.block.clear();
+            setShared("imageId", self.imageId());
             close();
         }
 
     }
-    
-    export interface IImageId{
+
+    export interface IImageId {
         defaultImgId: string;
         cropImgId: string;
     }

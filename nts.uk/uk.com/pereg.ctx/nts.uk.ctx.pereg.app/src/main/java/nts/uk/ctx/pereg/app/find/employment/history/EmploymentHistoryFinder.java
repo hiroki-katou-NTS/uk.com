@@ -83,7 +83,9 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 		if (optHis.isPresent()) {
 			return optHis.get().getHistoryItems().stream()
 					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), 
-							x.end().equals(GeneralDate.max()) && query.getCtgType() == 3 ? "" : x.end().toString()))
+							x.end().equals(GeneralDate.max()) 
+							//&& query.getCtgType() == 3 
+							? "" : x.end().toString()))
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();
