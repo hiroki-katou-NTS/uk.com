@@ -16,22 +16,22 @@ public class AffiliationInforOfDailyPerforDto implements ConvertibleAttendanceIt
 	private GeneralDate baseDate; 
 	
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "雇用コード")
-	@AttendanceItemValue(itemId = 626)
+	@AttendanceItemValue
 	private String employmentCode;
 
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "職位ID")
-	@AttendanceItemValue(itemId = 625)
+	@AttendanceItemValue
 	private String jobId;
 
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "職場ID")
-	@AttendanceItemValue(itemId = 623)
+	@AttendanceItemValue
 	private String workplaceID;
 
 	@AttendanceItemLayout(layout = "D", jpPropertyName = "分類コード")
-	@AttendanceItemValue(itemId = 624)
+	@AttendanceItemValue
 	private String classificationCode;
 
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "加給コード")
-	@AttendanceItemValue
+//	@AttendanceItemLayout(layout = "E", jpPropertyName = "加給コード")
+//	@AttendanceItemValue
 	private String subscriptionCode;
 }

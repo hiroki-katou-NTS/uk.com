@@ -212,10 +212,10 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, String appDate,
 			RequestAppDetailSetting requestAppDetailSetting, String siftCD) {
 		UseAtr recordWorkDisplay = UseAtr.NOTUSE;
-		Integer startTime1 = -1;
-		Integer endTime1 = -1;
-		Integer startTime2 = -1;
-		Integer endTime2 = -1;
+		Integer startTime1 = null;
+		Integer endTime1 = null;
+		Integer startTime2 = null;
+		Integer endTime2 = null;
 		if (requestAppDetailSetting.timeCalUseAtr.equals(UseAtr.NOTUSE)) {
 			return new RecordWorkOutput(recordWorkDisplay, startTime1, endTime1, startTime2, endTime2);
 		}

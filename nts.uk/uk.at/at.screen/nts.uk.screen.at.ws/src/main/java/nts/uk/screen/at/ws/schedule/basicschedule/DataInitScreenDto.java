@@ -4,6 +4,8 @@ import java.util.List;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.screen.at.app.schedule.basicschedule.StateWorkTypeCodeDto;
+import nts.uk.screen.at.app.schedule.basicschedule.WorkEmpCombineScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTimeScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
 
@@ -14,8 +16,11 @@ import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
  */
 @Value
 public class DataInitScreenDto {
-	private List<WorkTypeScreenDto> listWorkType;
-	private List<WorkTimeScreenDto> listWorkTime;
-	private GeneralDate startDate;
-	private GeneralDate endDate;
+	List<WorkTypeScreenDto> listWorkType;
+	List<WorkTimeScreenDto> listWorkTime;
+	GeneralDate startDate;
+	GeneralDate endDate;
+	List<StateWorkTypeCodeDto> checkStateWorkTypeCode;
+	List<StateWorkTypeCodeDto> checkNeededOfWorkTimeSetting;
+	List<WorkEmpCombineScreenDto> workEmpCombines;
 }

@@ -21,7 +21,7 @@ public class ShortTimeOfDailyDto implements ConvertibleAttendanceItem {
 
 	/** 時間帯: 短時間勤務時間帯 */
 	// TODO: set list max length
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", isList = true, listMaxLength = 2, setFieldWithIndex = "shortWorkTimeFrameNo")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", listMaxLength = 2, indexField = "shortWorkTimeFrameNo", enumField = "childCareAttr")
 	private List<ShortWorkTimeSheetDto> shortWorkingTimeSheets;
 
 }

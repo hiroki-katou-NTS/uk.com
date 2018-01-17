@@ -14,7 +14,7 @@ module nts.uk.at.view.kmk012.e {
             var closureCdNameDto = new viewmodel.ClosureCdNameDto(-1, '');
             comboItems.unshift(closureCdNameDto);
             var comboColumns = [
-                { prop: 'closureName', length: 8 }
+                { prop: 'name', length: 8 }
             ];
 
             //View list data on grid.
@@ -36,7 +36,7 @@ module nts.uk.at.view.kmk012.e {
 
                 //Defind combobox and other control
                 ntsControls: [
-                    { name: 'Combobox', options: comboItems, optionsValue: 'closureIdMain', optionsText: 'closureName', columns: comboColumns, controlType: 'ComboBox', enable: true }]
+                    { name: 'Combobox', options: comboItems, optionsValue: 'id', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true }]
             });
             $("#gridData > tbody > tr > td:NTH-CHILD(1) > div.ui-igcombo ui-widget ui-state-default ui-corner-all ui-unselectable ui-igcombo-mode-dropdown").each(function (i) { $(this).attr('tabindex', i * 2 + 1); });
         });

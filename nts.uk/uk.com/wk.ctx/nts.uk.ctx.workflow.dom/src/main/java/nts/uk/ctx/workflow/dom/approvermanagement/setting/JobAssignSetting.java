@@ -15,4 +15,11 @@ public class JobAssignSetting extends AggregateRoot{
 	 * 兼務者を含める
 	 */
 	private Boolean isConcurrently;
+	/**
+	 * create from java type
+	 * @author yennth
+	 */
+	public static JobAssignSetting createFromJavaType(String companyId, Boolean isConcurrently){
+		return new JobAssignSetting(companyId, isConcurrently);
+	}
 }

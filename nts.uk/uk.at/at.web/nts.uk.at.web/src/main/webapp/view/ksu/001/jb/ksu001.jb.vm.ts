@@ -183,10 +183,15 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             if (!self.time1() && !self.time2()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
                 self.isEnableClearSearchButton(false);
+                self.clearSearch();
                 return;
             }
             if (self.time1() && self.time2() && moment(self.time1(), 'HH:mm').isSameOrAfter(moment(self.time2(), 'HH:mm'))) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_54" });
+                self.clearSearch();
+                return;
+            }
+            if (nts.uk.ui.errors.hasError()) {
                 return;
             }
             self.listWorkTimeComboBox([]);
