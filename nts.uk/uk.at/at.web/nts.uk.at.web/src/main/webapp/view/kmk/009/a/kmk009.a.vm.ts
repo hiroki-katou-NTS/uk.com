@@ -295,7 +295,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                         self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail.summaryAtr()].value);
                                     } 
                                     if (_.isUndefined(self.attendanceModel.attendanceItemId())) {
-                                        self.attendanceModel.update(null, "選択なし");
+                                        self.attendanceModel.update(null, null);
                                         nts.uk.ui.windows.setShared('SelectedAttendanceId', "", true);        
                                     } else {
                                         let selectID: Array<any> = _.filter(dataRes, function (item) {
@@ -560,7 +560,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                         self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);
                     } 
                     else if (_.isEmpty(atdSelected) && !_.isUndefined(atdSelected)){
-                        self.attendanceModel.update(null, "選択なし");
+                        self.attendanceModel.update(null, null);
                     }
                 });
             });
