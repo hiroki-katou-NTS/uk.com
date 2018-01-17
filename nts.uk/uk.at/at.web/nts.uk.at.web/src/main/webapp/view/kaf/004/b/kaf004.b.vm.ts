@@ -61,7 +61,13 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     });
             });
             self.date.subscribe(value => {
-                self.kaf000_a2.getAppDataDate(9, moment(value).format(self.dateType), false);
+                nts.uk.ui.block.invisible();
+                self.kaf000_a2.getAppDataDate(9, moment(value).format(self.dateType), false)
+                .done(()=>{
+                    nts.uk.ui.block.clear();         
+                }).fail(()=>{
+                    nts.uk.ui.block.clear();    
+                });
             });
         }
 
