@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -85,5 +86,17 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
                 .setParameter("eralCheckId", eralCheckId).getSingle();
                 return Optional.ofNullable(entity.isPresent() ? KwrmtErAlWorkRecord.toDomain(entity.get()) : null);
     }
+
+	@Override
+	public List<ErrorAlarmWorkRecord> findByListErrorAlamCheckId(List<String> listEralCheckId) {
+		List<ErrorAlarmWorkRecord> data = new ArrayList<>();
+		for(String eralCheckId : listEralCheckId ) {
+			Optional<ErrorAlarmWorkRecord> errorAlarmWorkRecord = this.findByErrorAlamCheckId(eralCheckId);
+			if(errorAlarmWorkRecord.isPresent()) {
+				data.add(errorAlarmWorkRecord.get());
+			}
+		}
+		return data;
+	}
 
 }

@@ -17,16 +17,28 @@
 			<div id="contents-area">
 				<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab,direction:'horizontal' }">
 					<div class="tab-content-1">
-						<span>Tab Content 1</span><br/>
-					</div>
-					<div class="tab-content-2">
-						<span>Tab Content 2</span><br/>
-					</div>
-					<div class="tab-content-3">
-						<span>Tab Content 3</span><br/>
-					</div>
-					<div class="tab-content-4">
-						<span>Tab Content 4</span><br/>
+						<table id="table-fixed">
+					            <thead>
+					            <tr class="bg-green">
+					                <th style="width: 55px;text-align: center;"><div data-bind="ntsCheckBox: { checked: isAllDailyPerfor}"></div></th>
+					                <th style="width: 100px;">#{i18n.getText('KDW001_25')}</th>
+					                <th style="width: 155px; text-align: center;">#{i18n.getText('KDW001_26')}</th>
+					                <th style="width: 200px;">#{i18n.getText('KDW001_80')}</th>
+					            </tr>
+					        </thead>
+					        <tbody>
+					            <com:ko-foreach bind="listWorkRecordExtraCon">
+					                <tr>
+					                    <td style="text-align: center;">
+					                        <div data-bind="ntsCheckBox: { checked: $data.useAtr }"></div>
+					                    </td>
+					                    <td><span data-bind="text: $data.no"></span> </td>
+					                    <td> <span data-bind="text: $data.name"></span></td>
+					                    <td> <input data-bind="ntsTextEditor: {value: $data.name}" /></td>
+					                </tr>
+					            </com:ko-foreach>
+					        </tbody>
+				        </table>
 					</div>
 				</div>
 			</div>

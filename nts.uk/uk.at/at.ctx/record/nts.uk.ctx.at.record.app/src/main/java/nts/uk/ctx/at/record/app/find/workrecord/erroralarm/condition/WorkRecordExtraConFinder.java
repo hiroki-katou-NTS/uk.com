@@ -35,5 +35,16 @@ public class WorkRecordExtraConFinder {
 			return data.get();
 		return null;
 	}
+	
+	/**
+	 * get All Work record extracing condition by list error alarm ID
+	 */
+	public List<WorkRecordExtraConDto> getAllWorkRecordExtraConByListID(List<String> listErrorAlarmID){
+		List<WorkRecordExtraConDto> data = repo.getAllWorkRecordExtraConByListID(listErrorAlarmID).stream()
+				.map(c->WorkRecordExtraConDto.fromDomain(c)).collect(Collectors.toList());
+		if(data.isEmpty())
+			return Collections.emptyList();
+		return data;
+	}
 
 }
