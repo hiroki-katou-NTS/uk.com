@@ -1,0 +1,59 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowTimeZone;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
+
+/**
+ * The Class JpaFlowWorkTimezoneSettingGetMemento.
+ */
+public class JpaFlowWorkTimezoneSettingGetMemento implements FlWtzSettingGetMemento {
+	
+	/** The entity. */
+	private KshmtFlowWorkSet entity;
+	
+	/**
+	 * Instantiates a new jpa flow work timezone setting get memento.
+	 *
+	 * @param entity the entity
+	 */
+	public JpaFlowWorkTimezoneSettingGetMemento(KshmtFlowWorkSet entity) {
+		super();
+		this.entity = entity;	
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtOtTimeZone())) {
+			this.entity.setLstKshmtOtTimeZone(new ArrayList<>());
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSettingGetMemento#getWorkTimeRounding()
+	 */
+	@Override
+	public TimeRoundingSetting getWorkTimeRounding() {
+		KshmtFlowTimeZone kshmtFlowTimeZone = this.entity.getKshmtFlowTimeZone();
+		return new TimeRoundingSetting(kshmtFlowTimeZone.getUnit(), kshmtFlowTimeZone.getRounding());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSettingGetMemento#getLstOTTimezone()
+	 */
+	@Override
+	public List<FlowOTTimezone> getLstOTTimezone() {
+		return this.entity.getLstKshmtOtTimeZone().stream()
+				.map(entity -> new FlowOTTimezone(new JpaFlowOTTimezoneGetMemento(entity)))
+				.sorted((item1, item2) -> item1.getWorktimeNo().compareTo(item2.getWorktimeNo()))
+				.collect(Collectors.toList());
+	}
+
+}
