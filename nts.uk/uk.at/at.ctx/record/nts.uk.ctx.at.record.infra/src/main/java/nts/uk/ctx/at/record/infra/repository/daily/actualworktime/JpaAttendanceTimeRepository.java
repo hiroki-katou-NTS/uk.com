@@ -73,7 +73,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 			this.commandProxy()
 					.insert(KrcdtDayHolidyWorkTs.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
 							attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
-									.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get()));
+								.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTimeSheet()));
 		}
 		for (LateTimeOfDaily lateTime : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
 				.getLateTimeOfDaily()) {
@@ -150,7 +150,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 							KrcdtDayHolidyWorkTs.class)
 					.get();
 			krcdtDayHolidyWorkTs.setData(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
-					.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get());
+					.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTimeSheet());
 			this.commandProxy().update(krcdtDayHolidyWorkTs);
 			for (LateTimeOfDaily lateTime : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
 					.getLateTimeOfDaily()) {

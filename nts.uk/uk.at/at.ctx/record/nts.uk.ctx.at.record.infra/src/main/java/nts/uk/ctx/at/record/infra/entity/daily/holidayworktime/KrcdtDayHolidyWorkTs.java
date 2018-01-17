@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -97,7 +96,7 @@ public class KrcdtDayHolidyWorkTs extends UkJpaEntity implements Serializable{
 		return this.krcdtDayHolidyWorkTsPK;
 	}
 
-	public static KrcdtDayHolidyWorkTs create(String employeeId, GeneralDate date, HolidayWorkTimeOfDaily domain) {
+	public static KrcdtDayHolidyWorkTs create(String employeeId, GeneralDate date, List<HolidayWorkFrameTimeSheet> domain) {
 		val entity = new KrcdtDayHolidyWorkTs();
 		/*主キー*/
 		entity.krcdtDayHolidyWorkTsPK = new KrcdtDayHolidyWorkTsPK(employeeId,date);
@@ -106,61 +105,82 @@ public class KrcdtDayHolidyWorkTs extends UkJpaEntity implements Serializable{
 		return entity;
 	}
 
-	public void setData(HolidayWorkTimeOfDaily domain) {
-		TimeSpanForCalc sheet1 = getTimeSheet(domain, 1);
-		TimeSpanForCalc sheet2 = getTimeSheet(domain, 2);
-		TimeSpanForCalc sheet3 = getTimeSheet(domain, 3);
-		TimeSpanForCalc sheet4 = getTimeSheet(domain, 4);
-		TimeSpanForCalc sheet5 = getTimeSheet(domain, 5);
-		TimeSpanForCalc sheet6 = getTimeSheet(domain, 6);
-		TimeSpanForCalc sheet7 = getTimeSheet(domain, 7);
-		TimeSpanForCalc sheet8 = getTimeSheet(domain, 8);
-		TimeSpanForCalc sheet9 = getTimeSheet(domain, 9);
-		TimeSpanForCalc sheet10 = getTimeSheet(domain, 10);
-		/*休日出勤1開始時刻*/
-		this.holiWork1StrClc = sheet1.getStart().valueAsMinutes();
-		/*休日出勤1終了時刻*/
-		this.holiWork1EndClc = sheet1.getEnd().valueAsMinutes();
-		/*休日出勤2開始時刻*/
-		this.holiWork2StrClc = sheet2.getStart().valueAsMinutes();
-		/*休日出勤2終了時刻*/
-		this.holiWork2EndClc = sheet2.getEnd().valueAsMinutes();
-		/*休日出勤3開始時刻*/
-		this.holiWork3StrClc = sheet3.getStart().valueAsMinutes();
-		/*休日出勤3終了時刻*/
-		this.holiWork3EndClc = sheet3.getEnd().valueAsMinutes();
-		/*休日出勤4開始時刻*/
-		this.holiWork4StrClc = sheet4.getStart().valueAsMinutes();
-		/*休日出勤4終了時刻*/
-		this.holiWork4EndClc = sheet4.getEnd().valueAsMinutes();
-		/*休日出勤5開始時刻*/
-		this.holiWork5StrClc = sheet5.getStart().valueAsMinutes();
-		/*休日出勤5終了時刻*/
-		this.holiWork5EndClc = sheet5.getEnd().valueAsMinutes();
-		/*休日出勤6開始時刻*/
-		this.holiWork6StrClc = sheet6.getStart().valueAsMinutes();
-		/*休日出勤6終了時刻*/
-		this.holiWork6EndClc = sheet6.getEnd().valueAsMinutes();
-		/*休日出勤7開始時刻*/
-		this.holiWork7StrClc = sheet7.getStart().valueAsMinutes();
-		/*休日出勤7終了時刻*/
-		this.holiWork7EndClc = sheet7.getEnd().valueAsMinutes();
-		/*休日出勤8開始時刻*/
-		this.holiWork8StrClc = sheet8.getStart().valueAsMinutes();
-		/*休日出勤8終了時刻*/
-		this.holiWork8EndClc = sheet8.getEnd().valueAsMinutes();
-		/*休日出勤9開始時刻*/
-		this.holiWork9StrClc = sheet9.getStart().valueAsMinutes();
-		/*休日出勤9終了時刻*/
-		this.holiWork9EndClc = sheet9.getEnd().valueAsMinutes();
-		/*休日出勤10開始時刻*/
-		this.holiWork10StrClc = sheet10.getStart().valueAsMinutes();
-		/*休日出勤10終了時刻*/
-		this.holiWork10EndClc = sheet10.getEnd().valueAsMinutes();
+	public void setData(List<HolidayWorkFrameTimeSheet> domain) {
+		TimeSpanForCalc sheet;
+		if(domain.size() >= 1){
+			sheet = getTimeSheet(domain, 1);
+			/*休日出勤1開始時刻*/
+			this.holiWork1StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤1終了時刻*/
+			this.holiWork1EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 2){
+			sheet = getTimeSheet(domain, 2);
+			/*休日出勤2開始時刻*/
+			this.holiWork2StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤2終了時刻*/
+			this.holiWork2EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 3){
+			sheet = getTimeSheet(domain, 3);
+			/*休日出勤3開始時刻*/
+			this.holiWork3StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤3終了時刻*/
+			this.holiWork3EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 4){
+			sheet = getTimeSheet(domain, 4);
+			/*休日出勤4開始時刻*/
+			this.holiWork4StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤4終了時刻*/
+			this.holiWork4EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 5){
+			sheet = getTimeSheet(domain, 5);
+			/*休日出勤5開始時刻*/
+			this.holiWork5StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤5終了時刻*/
+			this.holiWork5EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 6){
+			sheet = getTimeSheet(domain, 6);
+			/*休日出勤6開始時刻*/
+			this.holiWork6StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤6終了時刻*/
+			this.holiWork6EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 7){
+			sheet = getTimeSheet(domain, 7);
+			/*休日出勤7開始時刻*/
+			this.holiWork7StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤7終了時刻*/
+			this.holiWork7EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 8){
+			sheet = getTimeSheet(domain, 8);
+			/*休日出勤8開始時刻*/
+			this.holiWork8StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤8終了時刻*/
+			this.holiWork8EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 9){
+			sheet = getTimeSheet(domain, 9);
+			/*休日出勤9開始時刻*/
+			this.holiWork9StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤9終了時刻*/
+			this.holiWork9EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 10){
+			sheet = getTimeSheet(domain, 10);
+			/*休日出勤10開始時刻*/
+			this.holiWork10StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤10終了時刻*/
+			this.holiWork10EndClc = sheet.getEnd().valueAsMinutes();
+		}
 	}
 
-	private TimeSpanForCalc getTimeSheet(HolidayWorkTimeOfDaily domain, int sheetNo) {
-		return domain.getHolidayWorkFrameTimeSheet().stream().filter(tc -> tc.getHolidayWorkTimeSheetNo().v() == sheetNo).findFirst().get().getTimeSheet();
+	private TimeSpanForCalc getTimeSheet(List<HolidayWorkFrameTimeSheet> domain, int sheetNo) {
+		return domain.stream().filter(tc -> tc.getHolidayWorkTimeSheetNo().v() == sheetNo).findFirst().get().getTimeSheet();
 	}
 	
 	
