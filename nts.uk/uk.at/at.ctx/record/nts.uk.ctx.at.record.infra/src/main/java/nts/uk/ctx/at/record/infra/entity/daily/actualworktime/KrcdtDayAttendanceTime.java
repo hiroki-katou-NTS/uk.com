@@ -177,40 +177,53 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 		TotalWorkingTime totalWork = actualWork.getTotalWorkingTime();
 		ConstraintTime constraintTime = actualWork.getConstraintTime();
 		ExcessOfStatutoryMidNightTime excessStt = totalWork.getExcessOfStatutoryTimeOfDaily().getExcessOfStatutoryMidNightTime();
-		/* 総労働時間 */
-		this.totalAttTime = totalWork.getTotalTime().valueAsMinutes();
-		/* 総計算時間 */
-		this.totalCalcTime = totalWork.getTotalCalcTime().valueAsMinutes();
-		/* 実働時間 */
-		this.actWorkTime = totalWork.getTotalCalcTime().valueAsMinutes();
-		/* 勤務回数 */
-		this.workTimes = totalWork.getWorkTimes().v();
-		/* 総拘束時間 */
-		this.totalBindTime = constraintTime.getTotalConstraintTime().valueAsMinutes();
-		/* 深夜拘束時間 */
-		this.midnBindTime = constraintTime.getLateNightConstraintTime().valueAsMinutes();
-		/* 拘束差異時間 */
-		this.bindDiffTime = actualWork.getConstraintDifferenceTime().valueAsMinutes();
-		/* 時差勤務時間 */
-		this.diffTimeWorkTime = actualWork.getTimeDifferenceWorkingHours().valueAsMinutes();
-		/* 所定外深夜時間 */
-		this.outPrsMidnTime = excessStt.getTime().getCalcTime().valueAsMinutes();
-		/* 事前所定外深夜時間 */
-		this.preOutPrsMidnTime = excessStt.getBeforeApplicationTime().valueAsMinutes();
+		StayingTimeOfDaily staying = attendanceTime.getStayingTime();
+		if(totalWork != null){
+			/* 総労働時間 */
+			this.totalAttTime = totalWork.getTotalTime() == null ? 0 : totalWork.getTotalTime().valueAsMinutes();
+			/* 総計算時間 */
+			this.totalCalcTime = totalWork.getTotalCalcTime() == null ? 0 : totalWork.getTotalCalcTime().valueAsMinutes();
+			/* 実働時間 */
+			this.actWorkTime = totalWork.getTotalCalcTime() == null ? 0 : totalWork.getTotalCalcTime().valueAsMinutes();
+			/* 勤務回数 */
+			this.workTimes = totalWork.getWorkTimes() == null ? 0 : totalWork.getWorkTimes().v();
+		}
+		if(constraintTime != null){
+			/* 総拘束時間 */
+			this.totalBindTime = constraintTime.getTotalConstraintTime() == null ? 0 : constraintTime.getTotalConstraintTime().valueAsMinutes();
+			/* 深夜拘束時間 */
+			this.midnBindTime = constraintTime.getLateNightConstraintTime() == null ? 0 : constraintTime.getLateNightConstraintTime().valueAsMinutes();
+		}
+		if(actualWork != null){
+			/* 拘束差異時間 */
+			this.bindDiffTime = actualWork.getConstraintDifferenceTime() == null ? 0 : actualWork.getConstraintDifferenceTime().valueAsMinutes();
+			/* 時差勤務時間 */
+			this.diffTimeWorkTime = actualWork.getTimeDifferenceWorkingHours() == null ? 0 : actualWork.getTimeDifferenceWorkingHours().valueAsMinutes();
+		}
+		if(excessStt != null){
+			/* 所定外深夜時間 */
+			this.outPrsMidnTime = excessStt.getTime() == null | excessStt.getTime().getCalcTime() == null ? 0 : excessStt.getTime().getCalcTime().valueAsMinutes();
+			/* 事前所定外深夜時間 */
+			this.preOutPrsMidnTime = excessStt.getBeforeApplicationTime() == null ? 0 : excessStt.getBeforeApplicationTime().valueAsMinutes();
+		}
+		
 		/* 予実差異時間 */
-		this.budgetTimeVariance = attendanceTime.getBudgetTimeVariance().valueAsMinutes();
+		this.budgetTimeVariance = attendanceTime.getBudgetTimeVariance() == null ? 0 : attendanceTime.getBudgetTimeVariance().valueAsMinutes();
 		/* 不就労時間 */
-		this.unemployedTime = attendanceTime.getUnEmployedTime().valueAsMinutes();
-		/* 滞在時間 */
-		this.stayingTime = attendanceTime.getStayingTime().getStayingTime().valueAsMinutes();
-		/* 出勤前時間 */
-		this.bfrWorkTime = attendanceTime.getStayingTime().getBeforeWoringTime().valueAsMinutes();
-		/* 退勤後時間 */
-		this.aftLeaveTime = attendanceTime.getStayingTime().getAfterLeaveTime().valueAsMinutes();
-		/* PCログオン前時間 */
-		this.bfrPcLogonTime = attendanceTime.getStayingTime().getBeforePCLogOnTime().valueAsMinutes();
-		/* PCログオフ後時間 */
-		this.aftPcLogoffTime = attendanceTime.getStayingTime().getAfterPCLogOffTime().valueAsMinutes();
+		this.unemployedTime = attendanceTime.getUnEmployedTime() == null ? 0 : attendanceTime.getUnEmployedTime().valueAsMinutes();
+		
+		if(staying != null){
+			/* 滞在時間 */
+			this.stayingTime = staying.getStayingTime() == null ? 0 : staying.getStayingTime().valueAsMinutes();
+			/* 出勤前時間 */
+			this.bfrWorkTime = staying.getBeforeWoringTime() == null ? 0 : staying.getBeforeWoringTime().valueAsMinutes();
+			/* 退勤後時間 */
+			this.aftLeaveTime = staying.getAfterLeaveTime() == null ? 0 : staying.getAfterLeaveTime().valueAsMinutes();
+			/* PCログオン前時間 */
+			this.bfrPcLogonTime = staying.getBeforePCLogOnTime() == null ? 0 : staying.getBeforePCLogOnTime().valueAsMinutes();
+			/* PCログオフ後時間 */
+			this.aftPcLogoffTime = staying.getAfterPCLogOffTime() == null ? 0 : staying.getAfterPCLogOffTime().valueAsMinutes();
+		}
 	}
 
 	/**

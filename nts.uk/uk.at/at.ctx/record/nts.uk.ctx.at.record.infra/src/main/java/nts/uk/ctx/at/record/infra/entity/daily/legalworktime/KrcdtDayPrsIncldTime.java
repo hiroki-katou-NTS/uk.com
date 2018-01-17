@@ -54,17 +54,25 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 		val entity = new KrcdtDayPrsIncldTime();
 		/*主キー*/
 		entity.krcdtDayPrsIncldTimePK = new KrcdtDayPrsIncldTimePK();
-		/*就業時間*/
-		entity.workTime = domain.getWorkTime().valueAsMinutes();
-		/*実働就業時間*/
-		entity.actWorkTime = domain.getWorkTimeIncludeVacationTime().valueAsMinutes();
-		/*所定内割増時間*/
-		entity.prsIncldPrmimTime = domain.getWithinPrescribedPremiumTime().valueAsMinutes();
-		/*所定内深夜時間*/
-		entity.prsIncldMidnTime = domain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes();
-		/*休暇加算時間*/
-		entity.vactnAddTime = domain.getVacationAddTime().valueAsMinutes();
+		entity.setData(domain);
 		return entity;
+	}
+	
+	public void setData(WithinStatutoryTimeOfDaily domain){
+		/*就業時間*/
+		this.workTime = domain.getWorkTime() == null ? 0 : domain.getWorkTime().valueAsMinutes();
+		/*実働就業時間*/
+		this.actWorkTime = domain.getWorkTimeIncludeVacationTime() == null ? 0 : domain.getWorkTimeIncludeVacationTime().valueAsMinutes();
+		/*所定内割増時間*/
+		this.prsIncldPrmimTime = domain.getWithinPrescribedPremiumTime() == null ? 0 : domain.getWithinPrescribedPremiumTime().valueAsMinutes();
+		if(domain.getWithinStatutoryMidNightTime() != null){
+			TimeWithCalculation winthinTime = domain.getWithinStatutoryMidNightTime().getTime();
+			/*所定内深夜時間*/
+			this.prsIncldMidnTime = winthinTime == null || winthinTime.getCalcTime() == null ? 0 
+					: domain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes();	
+		}
+		/*休暇加算時間*/
+		this.vactnAddTime = domain.getVacationAddTime() == null ? 0 : domain.getVacationAddTime().valueAsMinutes();
 	}
 	
 	public WithinStatutoryTimeOfDaily toDomain() {

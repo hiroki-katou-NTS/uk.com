@@ -109,50 +109,61 @@ public class KrcdtDayOvertimeworkTs extends UkJpaEntity implements Serializable{
 	public static KrcdtDayOvertimeworkTs create(String employeeId, GeneralDate generalDate, List<OverTimeFrameTimeSheet> overTimeSheet) {
 		val entity = new  KrcdtDayOvertimeworkTs();
 		entity.krcdtDayOvertimeworkTsPK = new KrcdtDayOvertimeworkTsPK(employeeId,generalDate);
-		
+		entity.setData(overTimeSheet);
 		return entity;
 	}
 	
 	public void setData(List<OverTimeFrameTimeSheet> overTimeSheet){
+		TimeSpanForCalc span;
 		if(overTimeSheet.size() > 0) {
-			this.overTime1StrClc = getTimeSpan(overTimeSheet, 0).startValue();
-			this.overTime1EndClc = getTimeSpan(overTimeSheet, 0).endValue();
+			span = getTimeSpan(overTimeSheet, 0);
+			this.overTime1StrClc = span == null ? 0 : span.startValue();
+			this.overTime1EndClc = span == null ? 0: span.endValue();
 		}
 		if(overTimeSheet.size() > 1) {
-			this.overTime1StrClc = getTimeSpan(overTimeSheet, 1).startValue();
-			this.overTime1EndClc = getTimeSpan(overTimeSheet, 1).endValue();
+			span = getTimeSpan(overTimeSheet, 1);
+			this.overTime2StrClc = span == null ? 0 : span.startValue();
+			this.overTime2EndClc = span == null ? 0 : span.endValue();
 		}
 		if(overTimeSheet.size() > 2) {
-			this.overTime1StrClc = getTimeSpan(overTimeSheet, 2).startValue();
-			this.overTime1EndClc = getTimeSpan(overTimeSheet, 2).endValue();
+			span = getTimeSpan(overTimeSheet, 2);
+			this.overTime3StrClc = span == null ? 0 : span.startValue();
+			this.overTime3EndClc = span == null ? 0 : span.endValue();
 		}
 		if(overTimeSheet.size() > 3) {
-			this.overTime1StrClc = getTimeSpan(overTimeSheet, 3).startValue();
-			this.overTime1EndClc = getTimeSpan(overTimeSheet, 3).endValue();
+			span = getTimeSpan(overTimeSheet, 3);
+			this.overTime4StrClc = span == null ? 0 : span.startValue();
+			this.overTime4EndClc = span == null ? 0 : span.endValue();
 		}
 		if(overTimeSheet.size() > 4) {
-			this.overTime1StrClc = getTimeSpan(overTimeSheet, 4).startValue();
-			this.overTime1EndClc = getTimeSpan(overTimeSheet, 4).endValue();
+			span = getTimeSpan(overTimeSheet, 4);
+			this.overTime5StrClc = span == null ? 0 : span.startValue();
+			this.overTime5EndClc = span == null ? 0 : span.endValue();
 		}
 		if(overTimeSheet.size() > 5) {
-			this.overTime1StrClc = getTimeSpan(overTimeSheet, 5).startValue();
-			this.overTime1EndClc = getTimeSpan(overTimeSheet, 5).endValue();
+			span = getTimeSpan(overTimeSheet, 5);
+			this.overTime6StrClc = span == null ? 0 : span.startValue();
+			this.overTime6EndClc = span == null ? 0 : span.endValue();
 		}
 		if(overTimeSheet.size() > 6) {
-			this.overTime1StrClc = getTimeSpan(overTimeSheet, 6).startValue();
-			this.overTime1EndClc = getTimeSpan(overTimeSheet, 6).endValue();
+			span = getTimeSpan(overTimeSheet, 6);
+			this.overTime7StrClc = span == null ? 0 : span.startValue();
+			this.overTime7EndClc = span == null ? 0 : span.endValue();
 		}
 		if(overTimeSheet.size() > 7) {
-			this.overTime1StrClc = getTimeSpan(overTimeSheet, 7).startValue();
-			this.overTime1EndClc = getTimeSpan(overTimeSheet, 7).endValue();
+			span = getTimeSpan(overTimeSheet, 7);
+			this.overTime8StrClc = span == null ? 0 : span.startValue();
+			this.overTime8EndClc = span == null ? 0 : span.endValue();
 		}
 		if(overTimeSheet.size() > 8) {
-			this.overTime1StrClc = getTimeSpan(overTimeSheet, 8).startValue();
-			this.overTime1EndClc = getTimeSpan(overTimeSheet, 8).endValue();
+			span = getTimeSpan(overTimeSheet, 8);
+			this.overTime9StrClc = span == null ? 0 : span.startValue();
+			this.overTime9EndClc = span == null ? 0 : span.endValue();
 		}
 		if(overTimeSheet.size() > 9) {
-			this.overTime1StrClc = getTimeSpan(overTimeSheet, 9).startValue();
-			this.overTime1EndClc = getTimeSpan(overTimeSheet, 9).endValue();
+			span = getTimeSpan(overTimeSheet, 9);
+			this.overTime10StrClc = span == null ? 0 : span.startValue();
+			this.overTime10EndClc = span == null ? 0 : span.endValue();
 		}
 	}
 

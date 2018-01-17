@@ -240,68 +240,72 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 		OverTimeFrameTime frame10 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 10);
 		
 		//残業時間
-		this.overTime1  = frame1.getOverTimeWork().getTime().valueAsMinutes();
-		this.overTime2  = frame2.getOverTimeWork().getTime().valueAsMinutes();
-		this.overTime3  = frame3.getOverTimeWork().getTime().valueAsMinutes();
-		this.overTime4  = frame4.getOverTimeWork().getTime().valueAsMinutes();
-		this.overTime5  = frame5.getOverTimeWork().getTime().valueAsMinutes();
-		this.overTime6  = frame6.getOverTimeWork().getTime().valueAsMinutes();
-		this.overTime7  = frame7.getOverTimeWork().getTime().valueAsMinutes();
-		this.overTime8  = frame8.getOverTimeWork().getTime().valueAsMinutes();
-		this.overTime9  = frame9.getOverTimeWork().getTime().valueAsMinutes();
-		this.overTime10 = frame10.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime1  = frame1.getOverTimeWork().getTime() == null ? 0 : frame1.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime2  = frame2.getOverTimeWork().getTime() == null ? 0 : frame2.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime3  = frame3.getOverTimeWork().getTime() == null ? 0 : frame3.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime4  = frame4.getOverTimeWork().getTime() == null ? 0 : frame4.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime5  = frame5.getOverTimeWork().getTime() == null ? 0 : frame5.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime6  = frame6.getOverTimeWork().getTime() == null ? 0 : frame6.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime7  = frame7.getOverTimeWork().getTime() == null ? 0 : frame7.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime8  = frame8.getOverTimeWork().getTime() == null ? 0 : frame8.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime9  = frame9.getOverTimeWork().getTime() == null ? 0 : frame9.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime10 = frame10.getOverTimeWork().getTime() == null ? 0 : frame10.getOverTimeWork().getTime().valueAsMinutes();
 		//振替時間
-		this.transTime1 = frame1.getTransferTime().getTime().valueAsMinutes();
-		this.transTime2 = frame2.getTransferTime().getTime().valueAsMinutes();
-		this.transTime3 = frame3.getTransferTime().getTime().valueAsMinutes();
-		this.transTime4 = frame4.getTransferTime().getTime().valueAsMinutes();
-		this.transTime5 = frame5.getTransferTime().getTime().valueAsMinutes();
-		this.transTime6 = frame6.getTransferTime().getTime().valueAsMinutes();
-		this.transTime7 = frame7.getTransferTime().getTime().valueAsMinutes();
-		this.transTime8 = frame8.getTransferTime().getTime().valueAsMinutes();
-		this.transTime9 = frame9.getTransferTime().getTime().valueAsMinutes();
-		this.transTime10= frame10.getTransferTime().getTime().valueAsMinutes();
+		this.transTime1 = frame1.getTransferTime().getTime() == null ? 0 : frame1.getTransferTime().getTime().valueAsMinutes();
+		this.transTime2 = frame2.getTransferTime().getTime() == null ? 0 : frame2.getTransferTime().getTime().valueAsMinutes();
+		this.transTime3 = frame3.getTransferTime().getTime() == null ? 0 : frame3.getTransferTime().getTime().valueAsMinutes();
+		this.transTime4 = frame4.getTransferTime().getTime() == null ? 0 : frame4.getTransferTime().getTime().valueAsMinutes();
+		this.transTime5 = frame5.getTransferTime().getTime() == null ? 0 : frame5.getTransferTime().getTime().valueAsMinutes();
+		this.transTime6 = frame6.getTransferTime().getTime() == null ? 0 : frame6.getTransferTime().getTime().valueAsMinutes();
+		this.transTime7 = frame7.getTransferTime().getTime() == null ? 0 : frame7.getTransferTime().getTime().valueAsMinutes();
+		this.transTime8 = frame8.getTransferTime().getTime() == null ? 0 : frame8.getTransferTime().getTime().valueAsMinutes();
+		this.transTime9 = frame9.getTransferTime().getTime() == null ? 0 : frame9.getTransferTime().getTime().valueAsMinutes();
+		this.transTime10= frame10.getTransferTime().getTime() == null ? 0 : frame10.getTransferTime().getTime().valueAsMinutes();
 		//計算残業時間
-		this.calcOverTime1 = frame1.getOverTimeWork().getCalcTime().valueAsMinutes();
-		this.calcOverTime2 = frame2.getOverTimeWork().getCalcTime().valueAsMinutes();
-		this.calcOverTime3 = frame3.getOverTimeWork().getCalcTime().valueAsMinutes();
-		this.calcOverTime4 = frame4.getOverTimeWork().getCalcTime().valueAsMinutes();
-		this.calcOverTime5 = frame5.getOverTimeWork().getCalcTime().valueAsMinutes();
-		this.calcOverTime6 = frame6.getOverTimeWork().getCalcTime().valueAsMinutes();
-		this.calcOverTime7 = frame7.getOverTimeWork().getCalcTime().valueAsMinutes();
-		this.calcOverTime8 = frame8.getOverTimeWork().getCalcTime().valueAsMinutes();
-		this.calcOverTime9 = frame9.getOverTimeWork().getCalcTime().valueAsMinutes();
-		this.calcOverTime10= frame10.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime1 = frame1.getOverTimeWork().getCalcTime() == null ? 0 : frame1.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime2 = frame2.getOverTimeWork().getCalcTime() == null ? 0 : frame2.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime3 = frame3.getOverTimeWork().getCalcTime() == null ? 0 : frame3.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime4 = frame4.getOverTimeWork().getCalcTime() == null ? 0 : frame4.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime5 = frame5.getOverTimeWork().getCalcTime() == null ? 0 : frame5.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime6 = frame6.getOverTimeWork().getCalcTime() == null ? 0 : frame6.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime7 = frame7.getOverTimeWork().getCalcTime() == null ? 0 : frame7.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime8 = frame8.getOverTimeWork().getCalcTime() == null ? 0 : frame8.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime9 = frame9.getOverTimeWork().getCalcTime() == null ? 0 : frame9.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime10= frame10.getOverTimeWork().getCalcTime() == null ? 0 : frame10.getOverTimeWork().getCalcTime().valueAsMinutes();
 		//計算振替時間
-		this.calcTransTime1 = frame1.getTransferTime().getCalcTime().valueAsMinutes();
-		this.calcTransTime2 = frame2.getTransferTime().getCalcTime().valueAsMinutes();
-		this.calcTransTime3 = frame3.getTransferTime().getCalcTime().valueAsMinutes();
-		this.calcTransTime4 = frame4.getTransferTime().getCalcTime().valueAsMinutes();
-		this.calcTransTime5 = frame5.getTransferTime().getCalcTime().valueAsMinutes();
-		this.calcTransTime6 = frame6.getTransferTime().getCalcTime().valueAsMinutes();
-		this.calcTransTime7 = frame7.getTransferTime().getCalcTime().valueAsMinutes();
-		this.calcTransTime8 = frame8.getTransferTime().getCalcTime().valueAsMinutes();
-		this.calcTransTime9 = frame9.getTransferTime().getCalcTime().valueAsMinutes();
-		this.calcTransTime10= frame10.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime1 = frame1.getTransferTime().getCalcTime() == null ? 0 : frame1.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime2 = frame2.getTransferTime().getCalcTime() == null ? 0 : frame2.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime3 = frame3.getTransferTime().getCalcTime() == null ? 0 : frame3.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime4 = frame4.getTransferTime().getCalcTime() == null ? 0 : frame4.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime5 = frame5.getTransferTime().getCalcTime() == null ? 0 : frame5.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime6 = frame6.getTransferTime().getCalcTime() == null ? 0 : frame6.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime7 = frame7.getTransferTime().getCalcTime() == null ? 0 : frame7.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime8 = frame8.getTransferTime().getCalcTime() == null ? 0 : frame8.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime9 = frame9.getTransferTime().getCalcTime() == null ? 0 : frame9.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime10= frame10.getTransferTime().getCalcTime() == null ? 0 : frame10.getTransferTime().getCalcTime().valueAsMinutes();
 		//事前残業申請
-		this.preOverTimeAppTime1 = frame1.getBeforeApplicationTime().valueAsMinutes();
-		this.preOverTimeAppTime2 = frame2.getBeforeApplicationTime().valueAsMinutes();
-		this.preOverTimeAppTime3 = frame3.getBeforeApplicationTime().valueAsMinutes();
-		this.preOverTimeAppTime4 = frame4.getBeforeApplicationTime().valueAsMinutes();
-		this.preOverTimeAppTime5 = frame5.getBeforeApplicationTime().valueAsMinutes();
-		this.preOverTimeAppTime6 = frame6.getBeforeApplicationTime().valueAsMinutes();
-		this.preOverTimeAppTime7 = frame7.getBeforeApplicationTime().valueAsMinutes();
-		this.preOverTimeAppTime8 = frame8.getBeforeApplicationTime().valueAsMinutes();
-		this.preOverTimeAppTime9 = frame9.getBeforeApplicationTime().valueAsMinutes();
-		this.preOverTimeAppTime10 = frame10.getBeforeApplicationTime().valueAsMinutes();
-		//法定外
-		this.ileglMidntOverTime = overTimeOfDaily.getExcessOverTimeWorkMidNightTime().get().getTime().getTime().valueAsMinutes();
-		//計算法定外
-		this.calcIleglMidNOverTime = overTimeOfDaily.getExcessOverTimeWorkMidNightTime().get().getTime().getCalcTime().valueAsMinutes();
+		this.preOverTimeAppTime1 = frame1.getBeforeApplicationTime() == null ? 0 : frame1.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime2 = frame2.getBeforeApplicationTime() == null ? 0 : frame2.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime3 = frame3.getBeforeApplicationTime() == null ? 0 : frame3.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime4 = frame4.getBeforeApplicationTime() == null ? 0 : frame4.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime5 = frame5.getBeforeApplicationTime() == null ? 0 : frame5.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime6 = frame6.getBeforeApplicationTime() == null ? 0 : frame6.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime7 = frame7.getBeforeApplicationTime() == null ? 0 : frame7.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime8 = frame8.getBeforeApplicationTime() == null ? 0 : frame8.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime9 = frame9.getBeforeApplicationTime() == null ? 0 : frame9.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime10 = frame10.getBeforeApplicationTime() == null ? 0 : frame10.getBeforeApplicationTime().valueAsMinutes();
+		
+		ExcessOverTimeWorkMidNightTime excessOver = overTimeOfDaily.getExcessOverTimeWorkMidNightTime().get();
+		if(excessOver.getTime() != null){
+			//法定外
+			this.ileglMidntOverTime = excessOver.getTime().getTime() == null ? 0 : excessOver.getTime().getTime().valueAsMinutes();
+			//計算法定外
+			this.calcIleglMidNOverTime = excessOver.getTime().getCalcTime() == null ? 0 : excessOver.getTime().getCalcTime().valueAsMinutes();
+		}
 		//拘束時間
-		this.overTimeBindTime = overTimeOfDaily.getOverTimeWorkSpentAtWork().valueAsMinutes();
+		this.overTimeBindTime = overTimeOfDaily.getOverTimeWorkSpentAtWork() == null ? 0 : overTimeOfDaily.getOverTimeWorkSpentAtWork().valueAsMinutes();
 		//変形法定内残業
-		this.deformLeglOverTime = overTimeOfDaily.getIrregularWithinPrescribedOverTimeWork().valueAsMinutes();
+		this.deformLeglOverTime = overTimeOfDaily.getIrregularWithinPrescribedOverTimeWork() == null ? 0 : overTimeOfDaily.getIrregularWithinPrescribedOverTimeWork().valueAsMinutes();
 		//フレックス時間
 		this.flexTime = overTimeOfDaily.getFlexTime().getFlexTime().getTime().valueAsMinutes();
 		//計算フレックス時間
