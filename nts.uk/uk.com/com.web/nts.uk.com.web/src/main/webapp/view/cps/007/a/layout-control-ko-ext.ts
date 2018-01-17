@@ -1817,14 +1817,14 @@ module nts.custombinding {
                                 } else {
                                     // show message if hasn't any category
                                     if (ko.toJS(opts.sortable.isEnabled)) {
-                                        alert(text('Msg_288')).then(opts.callback);
+                                        alert({ messageId: 'Msg_288' }).then(opts.callback);
                                     }
                                 }
                             });
                         } else {
                             // show message if hasn't any category
                             if (ko.toJS(opts.sortable.isEnabled)) {
-                                alert(text('Msg_288')).then(opts.callback);
+                                alert({ messageId: 'Msg_288' }).then(opts.callback);
                             }
                         }
                     });
