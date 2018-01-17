@@ -53,7 +53,7 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 	public static KrcdtDayPrsIncldTime create(String employeeId, GeneralDate date, WithinStatutoryTimeOfDaily domain) {
 		val entity = new KrcdtDayPrsIncldTime();
 		/*主キー*/
-		entity.krcdtDayPrsIncldTimePK = new KrcdtDayPrsIncldTimePK();
+		entity.krcdtDayPrsIncldTimePK = new KrcdtDayPrsIncldTimePK(employeeId, date);
 		entity.setData(domain);
 		return entity;
 	}
