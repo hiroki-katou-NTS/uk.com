@@ -695,7 +695,7 @@ module cps002.a.vm {
             let self = this,
                 avatarId = self.defaultImgId();
             if (avatarId != "") {
-                setShared("imageId", avatarId);
+                setShared("CPS002A", avatarId);
             }
             if (self.isAllowAvatarUpload()) {
 
