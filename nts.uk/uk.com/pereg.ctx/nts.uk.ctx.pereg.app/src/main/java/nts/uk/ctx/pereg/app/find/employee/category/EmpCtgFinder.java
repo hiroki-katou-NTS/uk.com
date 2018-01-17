@@ -179,10 +179,12 @@ public class EmpCtgFinder {
 			return infoList;
 		query.setCtgType(perInfoCtg.getCategoryType().value);
 		// get combobox object
-		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED)
+		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED) {
 			infoList = getInfoListOfOptionalCtg(perInfoCtg, query);
-		query.setCategoryCode(perInfoCtg.getCategoryCode().v());
-		infoList = layoutingProcessor.getListFirstItems(query);
+		} else {
+			query.setCategoryCode(perInfoCtg.getCategoryCode().v());
+			infoList = layoutingProcessor.getListFirstItems(query);
+		}
 
 		boolean isSelf = query.getEmployeeId().equals(empIdCurrentLogin);
 		PersonInfoCategoryAuth ctgAuth = personInfoCategoryAuthRepository
