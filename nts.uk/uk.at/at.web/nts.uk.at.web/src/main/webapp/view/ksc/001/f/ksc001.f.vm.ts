@@ -29,10 +29,10 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 self.errorLogs = ko.observableArray([]);
 
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KSC001_55"), key: 'noID', width: 80},
                     { headerText: nts.uk.resource.getText("KSC001_56"), key: 'employeeCode', width: 150 },
                     { headerText: nts.uk.resource.getText("KSC001_57"), key: 'employeeName', width: 150 },
-                    { headerText: nts.uk.resource.getText("KSC001_58"), key: 'date', width: 150 }
+                    { headerText: nts.uk.resource.getText("KSC001_58"), key: 'date', width: 120 },
+                    { headerText: nts.uk.resource.getText("KSC001_59"), key: 'errorContent', width: 250 },
                 ]);
 
                 self.currentCode = ko.observable();
@@ -116,9 +116,10 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                             // resize windows
                             var windowSize = nts.uk.ui.windows.getSelf();
                             windowSize.$dialog.dialog('option', {
-                                width: 650,
+                                width: 750,
                                 height: 700
                             });
+                            $("#exportButton").focus();
                             windowSize.$dialog.resize();
                             // update error to view
                             let order = _.orderBy(errorLogs,[self.compareCode,self.compareDate],['asc','asc']);

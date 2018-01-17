@@ -50,6 +50,6 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 				d.getAfterRoundingTimesOfDay() == null ? null : new TimeWithDayAttr(d.getAfterRoundingTimesOfDay()),
 				d.getTimesOfDay() == null ? null : new TimeWithDayAttr(d.getTimesOfDay()),
 				d.getPlaceCode() == null ? null : new WorkLocationCD(d.getPlaceCode()),
-				d.getStampSourceInfo() == null ? null : EnumAdaptor.valueOf(d.getStampSourceInfo(), StampSourceInfo.class));
+				d.getStampSourceInfo() == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : EnumAdaptor.valueOf(d.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

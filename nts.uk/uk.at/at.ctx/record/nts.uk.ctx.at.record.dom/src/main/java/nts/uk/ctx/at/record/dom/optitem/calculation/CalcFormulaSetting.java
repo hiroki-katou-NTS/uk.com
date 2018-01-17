@@ -14,6 +14,10 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class CalcFormulaSetting extends DomainObject {
 
+	/** The CalculatoinAtr. */
+	//計算区分
+	private CalculationAtr calculationAtr;
+	
 	// ===================== Optional ======================= //
 	/** The formula setting. */
 	// 計算式設定

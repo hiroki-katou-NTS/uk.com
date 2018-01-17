@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.reflection.AnnotationUtil;
+import nts.gul.reflection.FieldsWorkerStream;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
@@ -183,8 +184,7 @@ public class PeregProcessor {
 				||(query.getInfoId() == null && perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO)) {
 			peregDto = layoutingProcessor.findSingle(query);
 		}
-		if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO
-				&& query.getInfoId() != null) {
+		if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO) {
 			ctgIsViewOnly = checkCtgIsViewOnly(peregDto, perInfoCtg, roleId, query.getInfoId(), loginEmpId.equals(query.getEmployeeId()));
 		}
 		for (int i = 0; i < lstItemDef.size(); i++) {
@@ -306,50 +306,66 @@ public class PeregProcessor {
 	
 	private boolean checkCtgIsViewOnly(PeregDto peregDto, PersonInfoCategory perInfoCtg, String roleId, String infoId, boolean isSelf) {
 		PersonInfoCategoryAuth perInfoCtgAuth = perAuth.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
+		String exceptionItemCode = "CS00003";
+		if(infoId == null) {
 		if((perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO && !isSelf)
-				||(perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) return true;
-		DateRangeItem dateRangeItem = perInfoCtgRepositoty
-				.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
-		String eDateId = dateRangeItem.getEndDateItemId();
-		
-		boolean isFuture = true;
-		if(perInfoCtg.getIsFixed() == IsFixed.FIXED) {
-			String endDateItemCode = perItemRepo.getPerInfoItemDefById(eDateId, AppContexts.user().contractCode()).get().getItemCode().v();
-			Object value = null;
-			Optional<Field> field = AnnotationUtil.getStreamOfFieldsAnnotated(peregDto.getDtoClass(), PeregItem.class)
-			.filter(f -> {
-				return f.getAnnotation(PeregItem.class).value().equals(endDateItemCode);
-			}).findFirst();
-			if(field.isPresent()) {
-				value = ReflectionUtil.getFieldValue(field.get(), peregDto.getDomainDto());
-			}
-			if(value != null) {
-				GeneralDate endDate = GeneralDate.fromString(value.toString(), "yyyy/MM/dd");
-				if(endDate.before(GeneralDate.today())) isFuture = false;
-			}
+				||(perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) 
+				 return true;
 		}else {
-			if(perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
-				Optional<EmpInfoItemData> dateForEndate = empInfoItemDataRepository.getInfoItemByItemDefIdAndRecordId(eDateId, infoId);
-				if(dateForEndate.isPresent()) {
-					GeneralDate endDate = dateForEndate.get().getDataState().getDateValue();
-					if(endDate != null)
-						if(endDate.before(GeneralDate.today())) isFuture = false;
-				}
-				
-			}else {
-				Optional<PersonInfoItemData> dateForEndate = perInfoItemDataRepository.getPerInfoItemDataByItemDefIdAndRecordId(eDateId, infoId);
-				if(dateForEndate.isPresent()) {
-					GeneralDate endDate = dateForEndate.get().getDataState().getDateValue();
-					if(endDate != null)
-						if(endDate.before(GeneralDate.today())) isFuture = false;
-				}
+			String eDateId = "";	
+			if(!perInfoCtg.getCategoryCode().v().equals(exceptionItemCode)) {
+				DateRangeItem dateRangeItem = perInfoCtgRepositoty
+						.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
+				eDateId = dateRangeItem.getEndDateItemId();
 			}
 			
+			boolean isFuture = true;
+			if(perInfoCtg.getIsFixed() == IsFixed.FIXED) {
+				
+				Object value = null;
+				FieldsWorkerStream fields =  AnnotationUtil.getStreamOfFieldsAnnotated(peregDto.getDtoClass(), PeregItem.class);
+				Optional<Field> field = null;
+				if(perInfoCtg.getCategoryCode().v().equals(exceptionItemCode)) {
+					field = Optional.of(fields.collect(Collectors.toList()).get(1));
+				}else {
+					String endDateItemCode = perItemRepo.getPerInfoItemDefById(eDateId, AppContexts.user().contractCode()).get().getItemCode().v();
+					field= fields.filter(f -> {
+						return f.getAnnotation(PeregItem.class).value().equals(endDateItemCode);
+					}).findFirst();
+					
+				}
+				if(field.isPresent()) {
+					value = ReflectionUtil.getFieldValue(field.get(), peregDto.getDomainDto());
+				}
+				if(value != null) {
+					GeneralDate endDate = GeneralDate.fromString(value.toString(), "yyyy/MM/dd");
+					if(endDate.before(GeneralDate.today())) isFuture = false;
+				}
+			}else {
+				if(perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
+					Optional<EmpInfoItemData> dateForEndate = empInfoItemDataRepository.getInfoItemByItemDefIdAndRecordId(eDateId, infoId);
+					if(dateForEndate.isPresent()) {
+						GeneralDate endDate = dateForEndate.get().getDataState().getDateValue();
+						if(endDate != null)
+							if(endDate.before(GeneralDate.today())) isFuture = false;
+					}
+					
+				}else {
+					Optional<PersonInfoItemData> dateForEndate = perInfoItemDataRepository.getPerInfoItemDataByItemDefIdAndRecordId(eDateId, infoId);
+					if(dateForEndate.isPresent()) {
+						GeneralDate endDate = dateForEndate.get().getDataState().getDateValue();
+						if(endDate != null)
+							if(endDate.before(GeneralDate.today())) isFuture = false;
+					}
+				}
+				
+			}
+			if(isFuture) {
+				return isSelf?perInfoCtgAuth.getSelfFutureHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherFutureHisAuth() == PersonInfoAuthType.REFERENCE;
+			}else {
+				return isSelf?perInfoCtgAuth.getSelfPastHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherPastHisAuth() == PersonInfoAuthType.REFERENCE;
+			}
 		}
-		if(isFuture) {
-			return isSelf?perInfoCtgAuth.getSelfFutureHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherFutureHisAuth() == PersonInfoAuthType.REFERENCE;
-		}else {
-			return isSelf?perInfoCtgAuth.getSelfPastHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherPastHisAuth() == PersonInfoAuthType.REFERENCE;
-		}
+		return false;
 	}
 }

@@ -40,6 +40,6 @@ public class AttendanceLeavingGateOfDailyCommand extends DailyWorkCommonCommand 
 		return c == null ? null : new WorkStamp(new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
 				new TimeWithDayAttr(c.getTimesOfDay()),
 				new WorkLocationCD(c.getPlaceCode()),
-				EnumAdaptor.valueOf(c.getStampSourceInfo(), StampSourceInfo.class));
+				c == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : EnumAdaptor.valueOf(c.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

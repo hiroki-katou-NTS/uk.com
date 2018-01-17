@@ -37,8 +37,6 @@ public class MaintenanceLayoutFinder {
 		// get detail maintenanceLayout By Id
 		MaintenanceLayoutDto dto = this.layoutRepo.getById(companyId, layoutId).map(c -> MaintenanceLayoutDto.fromDomain(c)).get();
 
-		dto.setNewLayout(layoutRepo.isNewLayout(companyId, layoutId));
-
 		// Get list Classification Item by layoutID
 		List<LayoutPersonInfoClsDto> listItemCls = this.ClsFinder.getListClsDto(layoutId);
 

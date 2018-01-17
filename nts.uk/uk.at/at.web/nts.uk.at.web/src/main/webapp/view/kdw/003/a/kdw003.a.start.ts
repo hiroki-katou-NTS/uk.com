@@ -6,7 +6,8 @@ module nts.uk.at.view.kdw003.a {
             let dialogOptions: any = {
                 forGrid: true,
                 headers: [
-                    new nts.uk.ui.errors.ErrorHeader("rowId", "コード", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("message", "エラー内容", "auto", true),
+                    new nts.uk.ui.errors.ErrorHeader("errorCode", "エラーコード", "auto", true)
 //                    new nts.uk.ui.errors.ErrorHeader("employeeCode", nts.uk.resource.getText("KDW003_32"), "auto", true),
 //                    new nts.uk.ui.errors.ErrorHeader("employeeName", nts.uk.resource.getText("KDW003_33"), "auto", true),
 //                    new nts.uk.ui.errors.ErrorHeader("date",nts.uk.resource.getText('KDW003_34'), "auto", true),

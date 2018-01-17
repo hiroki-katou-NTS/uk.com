@@ -9,19 +9,14 @@ public interface FixedConditionWorkRecordRepository {
 	 * @return
 	 */
 	List<FixedConditionWorkRecord> getAllFixedConditionWorkRecord();
-	/**
-	 * get all fixed condition work record by daily alarm condition code
-	 * @param errorAlarmID
-	 * @return
-	 */
-	List<FixedConditionWorkRecord> getAllFixedConWRByAlarmID(String errorAlarmID);
+
 	/**
 	 * get fixed condition work record by dailyAlarmConID and fixConWorkRecordNo
 	 * @param errorAlarmID
 	 * @param fixConWorkRecordNo
 	 * @return
 	 */
-	Optional<FixedConditionWorkRecord> getFixedConWRByCode(String errorAlarmID,int fixConWorkRecordNo);
+	Optional<FixedConditionWorkRecord> getFixedConWRByCode(String errorAlarmID);
 	/**
 	 * add fixed Condition Work Record
 	 * @param fixedConditionWorkRecord
@@ -38,6 +33,6 @@ public interface FixedConditionWorkRecordRepository {
 	 * @param dailyAlarmConID
 	 * @param fixConWorkRecordNo
 	 */
-	void deleteFixedConWorkRecord (String errorAlarmCode,int fixConWorkRecordNo);
+	void deleteFixedConWorkRecord (String errorAlarmCode);
 	
 }
