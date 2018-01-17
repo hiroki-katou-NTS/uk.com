@@ -181,8 +181,6 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 			// check exist data work place
 			if (optionalWorkplace.isPresent()) {
-				WorkplaceDto workplaceDto = optionalWorkplace.get();
-
 				// find by level work place
 				List<String> workplaceIds = this.findWpkIdsBySid(command.getBaseGetter(), command.getEmployeeId());
 
@@ -312,7 +310,6 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 			// check exist data work place
 			if (optionalWorkplace.isPresent()) {
-				WorkplaceDto workplaceDto = optionalWorkplace.get();
 				//List<String> workplaceIds = this.findLevelWorkplace(command.getBaseGetter(), workplaceDto.getWorkplaceCode()); FIXBUG #87217
 				List<String> workplaceIds = this.findWpkIdsBySid(command.getBaseGetter(), command.getEmployeeId());
 				

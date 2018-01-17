@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 
 import java.time.DayOfWeek;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -25,10 +24,9 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
@@ -60,6 +58,10 @@ public class ScheCreExeWorkTimeHandler {
 	/** The work time repository. */
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
+
+	/** The pred time repository. */
+	@Inject
+	private PredetemineTimeSettingRepository predTimeRepository;
 	
 	/** The sche cre exe error log handler. */
 	@Inject
@@ -68,10 +70,6 @@ public class ScheCreExeWorkTimeHandler {
 	/** The basic schedule service. */
 	@Inject
 	private BasicScheduleService basicScheduleService;
-	
-	/** The work time set repository. */
-	@Inject
-	private WorkTimeSetRepository workTimeSetRepository;
 	
 	/** The working condition item repository. */
 	@Inject
@@ -590,148 +588,28 @@ public class ScheCreExeWorkTimeHandler {
 	}
 
 	/**
-	 * Checks if is use second work.
-	 *
-	 * @param workTimeSet the work time set
-	 * @return true, if is use second work
-	 */
-	private boolean isUseSecondWork(WorkTimeSet workTimeSet) {
-		// get time zone
-		List<Timezone> timezones = workTimeSet.getPrescribedTimezoneSetting().getTimezone();
-		
-		// check time shift 2
-		for (Timezone item : timezones) {
-			if (item.getWorkNo() == SHIFT2) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * Check end in shift 2.
-	 *
-	 * @param workTimeSet the work time set
-	 * @return true, if successful
-	 */
-	private boolean checkEndInShift2(WorkTimeSet workTimeSet) {
-		
-		// get time morning end
-		int morningEndTime = workTimeSet.getPrescribedTimezoneSetting().getMorningEndTime().getDayTime();
-		
-		// get shift2
-		Timezone shift2 = workTimeSet.getPrescribedTimezoneSetting().getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT2).findFirst().get();
-		
-		// get time start shift 2
-		int startTimeShift2 = shift2.getStart().getDayTime();
-		
-		if (morningEndTime <= startTimeShift2) {
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * Update time morning.
-	 *
-	 * @param workTimeSet the work time set
-	 * @return the work time set
-	 */
-	private WorkTimeSet updateTimeMorning(WorkTimeSet workTimeSet) {
-		
-		// work time set update morning
-		if (this.checkEndInShift2(workTimeSet)) {
-			
-			// update end time shift 1 and remove shift 2
-			workTimeSet.updateEndTimeShift1(workTimeSet.getPrescribedTimezoneSetting().getMorningEndTime());
-			workTimeSet.removeShift2();
-		} else {
-			
-			// update end time shift 2
-			workTimeSet.updateEndTimeShift2(workTimeSet.getPrescribedTimezoneSetting().getMorningEndTime());
-		}
-		return workTimeSet;
-	}
-	
-	/**
-	 * Check start in shift 1.
-	 *
-	 * @param workTimeSet the work time set
-	 * @return true, if successful
-	 */
-	private boolean checkStartInShift1(WorkTimeSet workTimeSet) {
-		
-		// get afternoon start time
-		int afternoonStartTime = workTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime().getDayTime();
-		
-		// get time shift 1
-		Timezone shift1 = workTimeSet.getPrescribedTimezoneSetting().getTimezone().stream()
-				.filter(timezone -> timezone.getWorkNo() == SHIFT1).findFirst().get();
-		
-		// get end time shift 1
-		int endTimeShift1 = shift1.getEnd().getDayTime();
-		
-		// check afternoon start time <= end time shift 1
-		if (afternoonStartTime <= endTimeShift1) {
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * Update time afternoon.
-	 *
-	 * @param workTimeSet the work time set
-	 * @return the work time set
-	 */
-	private WorkTimeSet updateTimeAfternoon(WorkTimeSet workTimeSet) {
-		
-		// check start in shift 1
-		if (this.checkStartInShift1(workTimeSet)) {
-			
-			// update start time shift 1
-			workTimeSet.updateStartTimeShift1(workTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime());
-		} else {
-			
-			// update start time shift 2 and remove shift 1
-			workTimeSet.updateStartTimeShift2(workTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime());
-			workTimeSet.removeShift1();
-		}
-		return workTimeSet;
-	}
-	
-	/**
 	 * Gets the time zone.
 	 *
 	 * @param command the command
 	 * @return the time zone
 	 */
 	// 変換した時間帯を返す
-	private Optional<WorkTimeSet> getTimeZone(WorkTimeSetGetterCommand command) {
+	private PrescribedTimezoneSetting getTimeZone(WorkTimeSetGetterCommand command) {
 
 		// 所定時間帯を取得する
-		WorkTimeSet workTimeSet = this.workTimeSetRepository
-				.findByCode(command.getCompanyId(), command.getWorkingCode()).get();
+		PrescribedTimezoneSetting prescribedTzs = this.predTimeRepository
+				.findByWorkTimeCode(command.getCompanyId(), command.getWorkingCode()).get()
+				.getPrescribedTimezoneSetting();
+
 		// 出勤休日区分を判断
 		WorkStyle workStyle = this.basicScheduleService.checkWorkDay(command.getWorktypeCode());
 		// check work style
 		if (workStyle.equals(WorkStyle.MORNING_WORK)) {
-			if (this.isUseSecondWork(workTimeSet)) {
-				workTimeSet = this.updateTimeMorning(workTimeSet);
-			} else {
-				// update time shift 1 to end time morning
-				workTimeSet.updateEndTimeShift1(workTimeSet.getPrescribedTimezoneSetting().getMorningEndTime());
-				workTimeSet.removeShift2();
-			}
+			prescribedTzs.setMorningWork();
 		} else {// if AFTERNOON_WORK
-			if (this.isUseSecondWork(workTimeSet)) {
-				workTimeSet = this.updateTimeAfternoon(workTimeSet);
-			} else {
-				// update time shift 1 and remove shift 2
-				workTimeSet.updateStartTimeShift1(workTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime());
-				workTimeSet.removeShift2();
-			}
+			prescribedTzs.setAfternoonWork();
 		}
-		return Optional.of(workTimeSet);
+		return prescribedTzs;
 	}
 	
 	/**
@@ -741,25 +619,20 @@ public class ScheCreExeWorkTimeHandler {
 	 * @return the schedule work hour
 	 */
 	// 勤務予定時間帯を取得する
-	public Optional<WorkTimeSet> getScheduleWorkHour(WorkTimeSetGetterCommand command) {
-
+	public Optional<PrescribedTimezoneSetting> getScheduleWorkHour(WorkTimeSetGetterCommand command) {
 		// call service check work day
 		WorkStyle workStyle = this.basicScheduleService.checkWorkDay(command.getWorktypeCode());
 		switch (workStyle) {
-			case ONE_DAY_REST :
-				break;
-			case ONE_DAY_WORK :
-				Optional<WorkTimeSet> optionalWorkTimeSet = this.workTimeSetRepository
-						.findByCode(command.getCompanyId(), command.getWorkingCode());
-				if (optionalWorkTimeSet.isPresent()) {
-					return Optional.of(optionalWorkTimeSet.get());
-				}
-				break;
-			default :
-				// morning or afternoon
-				return this.getTimeZone(command);
+		case ONE_DAY_REST:
+			return Optional.empty();
+		case ONE_DAY_WORK:
+			return Optional
+					.of(this.predTimeRepository.findByWorkTimeCode(command.getCompanyId(), command.getWorkingCode())
+							.get().getPrescribedTimezoneSetting());
+		default:
+			// morning or afternoon
+			return Optional.of(this.getTimeZone(command));
 		}
-		return Optional.empty();
 	}
 
 	/**
