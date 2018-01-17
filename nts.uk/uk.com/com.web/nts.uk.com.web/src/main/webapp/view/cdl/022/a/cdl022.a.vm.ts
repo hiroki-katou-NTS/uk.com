@@ -7,7 +7,6 @@ module cdl022.a.vm {
     let __viewContext: any = window['__viewContext'] || {};
 
     export class ViewModel {
-        items: Array<IModel> = [];
         sorts: KnockoutObservableArray<IModel> = ko.observableArray([]);
 
         constructor() {
@@ -18,13 +17,12 @@ module cdl022.a.vm {
                 self.close();
             }
 
-            self.items = params;
             self.sorts(params);
         }
 
         pushData = () => {
             let self = this,
-                sorts: Array<IModel> = ko.unwrap(self.items);
+                sorts: Array<IModel> = _.map(ko.unwrap(self.sorts), (x: IModel) => x);
 
             setShared('CDL020_VALUES', sorts);
             close();

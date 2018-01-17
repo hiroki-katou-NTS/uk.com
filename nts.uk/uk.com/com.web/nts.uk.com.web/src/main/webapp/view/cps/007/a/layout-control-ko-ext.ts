@@ -481,27 +481,27 @@ module nts.custombinding {
                                         constraint: _constraint.length && _constraint || undefined  }"></div>
                                     <!-- ko if: (_item || {}).type == CTRL_TYPE.SET -->
                                     <div class="set-items">
-                                        <div data-bind="foreach: { data: _items, as: 'set'}" class="set-item-list">
-                                            <div class="set-item set-item-sperator" data-bind="css: { 'hidden': !$index() }">
-                                                <!-- ko if: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(set.item.dataTypeValue) > -1 -->
-                                                    <span data-bind="text: text('CPS001_89')"></span>
-                                                <!-- /ko -->
-                                            </div>
-                                            <div data-bind="template: {
-                                                    data: set,
-                                                    name: 'ctr_template'
-                                                }" class="set-item"></div>
+                                        <!-- ko foreach: { data: _items, as: 'set'} -->
+                                        <div class="set-item set-item-sperator" data-bind="css: { 'hidden': !$index() }">
+                                            <!-- ko if: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(set.item.dataTypeValue) > -1 -->
+                                                <span data-bind="text: text('CPS001_89')"></span>
+                                            <!-- /ko -->
                                         </div>
+                                        <div data-bind="template: {
+                                                data: set,
+                                                name: 'ctr_template'
+                                            }" class="set-item"></div>
+                                        <!-- /ko -->
                                     </div>
                                     <!-- /ko -->
                                     <!-- ko if: (_item || {}).type == CTRL_TYPE.SINGLE -->
                                     <div class="single-items">
-                                        <div data-bind="foreach: {data: __items, as: 'single'}" class="single-item-list">
-                                            <div data-bind="template: { 
-                                                    data: single,
-                                                    name: 'ctr_template'
-                                                }" class="single-item"></div>
-                                        </div>            
+                                        <!-- ko foreach: {data: __items, as: 'single'}>
+                                        <div data-bind="template: { 
+                                                data: single,
+                                                name: 'ctr_template'
+                                            }" class="single-item"></div>
+                                        <!-- /ko -->
                                     </div>
                                     <!-- /ko -->
                                 </div>
@@ -522,12 +522,12 @@ module nts.custombinding {
                                                             target = $(event.target),
                                                             table = target.closest('table'),
                                                             closest = target.closest('.table-scroll');
-                                                            /* scroll left */
                                                     }
                                                 }">
                                             <table>
                                                 <thead>
-                                                    <tr data-bind="foreach: { data: _item, as: 'header' }">
+                                                    <tr>
+                                                        <!-- ko foreach: { data: _item, as: 'header' } -->
                                                         <th data-bind="template: { afterRender: function(childs, data) { let div = $(childs[1]); setInterval(function() { div.css('width', (div.parent().width() - 3) + 'px') }, 0); } }">
                                                             <div data-bind="ntsFormLabel: { 
                                                                 constraint: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION].indexOf((header.item||{}).dataTypeValue) == -1 ? header.itemDefId.replace(/[-_]/g, '') : undefined,
@@ -535,16 +535,19 @@ module nts.custombinding {
                                                                 text: header.itemName || '',
                                                                 inline: true }"></div>
                                                         </th>
+                                                        <!-- /ko -->
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <!-- ko foreach: { data: __items, as: '_row' } -->
-                                                    <tr data-bind="foreach: { data: _row, as: '_column' }">
+                                                    <tr>
+                                                        <!-- ko foreach: { data: _row, as: '_column' } -->
                                                         <td data-bind="template: { 
                                                                 data: _column,
                                                                 name: 'ctr_template'
                                                             }, click: function(data, event) { $(event.target).find('input').focus(); }">
                                                         </td>
+                                                        <!-- /ko -->
                                                     </tr>
                                                     <!-- /ko -->
                                                 </tbody>
@@ -685,7 +688,6 @@ module nts.custombinding {
                                             title: itemName
                                         }"></div>
                                 <!-- /ko -->
-                            <!-- /ko -->
                             <!-- /ko -->
                         </div>
                         <!-- /ko -->
