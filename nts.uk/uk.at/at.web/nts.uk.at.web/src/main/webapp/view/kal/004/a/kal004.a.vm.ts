@@ -9,6 +9,7 @@ module nts.uk.at.view.kal004.a.model {
     import block = nts.uk.ui.block;
     import share = nts.uk.at.view.kal004.share.model;
     import service = nts.uk.at.view.kal004.a.service;
+    import errors = nts.uk.ui.errors;
     export class ScreenModel {
         alarmSource: KnockoutObservableArray<share.AlarmPatternSettingDto>;
         currentAlarm: share.AlarmPatternSettingDto;
@@ -48,7 +49,7 @@ module nts.uk.at.view.kal004.a.model {
             ]);
             self.alarmCode = ko.observable('');
             self.alarmName = ko.observable('');
-            self.createMode = ko.observable(false);
+            self.createMode = ko.observable(true);
 
             self.checkConditionList = ko.observableArray([]);
             self.checkSource = [];
@@ -70,7 +71,9 @@ module nts.uk.at.view.kal004.a.model {
             let dfd = $.Deferred<any>();
             
             service.getCheckConditionCode().done((res) => {
-                self.checkSource = _.cloneDeep(res);                
+                let resolve = _.map(res, (x) =>{return new share.ModelCheckConditonCode(x) });
+                self.checkSource = _.cloneDeep(resolve);    
+                          
                 self.getAlarmPattern().done(() =>{dfd.resolve()});                
             }).fail((error) => {
                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
@@ -85,11 +88,15 @@ module nts.uk.at.view.kal004.a.model {
             let dfd = $.Deferred<any>();
             
             service.getAlarmPattern().done((res) => {
-                self.alarmSource(res);
+                let alarmResolve = _.sortBy(res, [function(o) { return o.alarmPatternCD; }]);
+                self.alarmSource(alarmResolve);
+
                 self.initSubscribe();
                 
-                if (res.length > 0) {
-                    self.currentCode(res[0].alarmPatternCD);
+                if (alarmResolve.length > 0) {
+                    self.currentCode(alarmResolve[0].alarmPatternCD);
+                }{
+                    self.checkConditionList(self.checkSource);                       
                 }
             }).fail((error) => {
                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
@@ -132,7 +139,15 @@ module nts.uk.at.view.kal004.a.model {
 
         public alarmCodeChange(newV): any {
             let self = this;
-            if (newV == '') self.createMode(true);
+            if (newV == ''){                 
+                self.createMode(true);
+                self.alarmCode('');
+                self.alarmName('');
+                errors.clearAll();    
+                self.currentCode('');
+                self.currentCodeListSwap([]);
+                self.checkConditionList( _.sortBy(self.checkSource, ['category', 'checkConditonCode']));              
+            }
             else {
                 self.createMode(false);
                 self.currentAlarm = _.find(self.alarmSource(), function(a) { return a.alarmPatternCD == newV });
@@ -163,36 +178,44 @@ module nts.uk.at.view.kal004.a.model {
                                 
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
-                self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting);
+                self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting==true? 0: 1);
             }
 
         }
         
-        public insertAlarm() : void{
+        public updateAlarm() : void{
             let self = this;
             
             // Validate input
             $(".nts-input").trigger("validate");
             if($(".nts-input").ntsError("hasError")) return ;
-            
+            $('#alarmCode').focus();
             // Create command
-                        
+            let alarmPerSet : share.AlarmPermissionSettingCommand = new share.AlarmPermissionSettingCommand(self.setPermissionModel.selectedRuleCode()==1? false: true, self.setPermissionModel.listRoleID());
+            let checkConditonList: Array<share.CheckConditionCommand> = self.periodSetting.listCheckCondition();
+            let command = new share.AddAlarmPatternSettingCommand(self.alarmCode(), self.alarmName(), alarmPerSet, checkConditonList);
+            block.invisible();
+            service.addAlarmPattern(command).done(()=>{
+                
+                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                          
+                self.getAlarmPattern().done(function(){
+                                               
+                }).always(() =>{
+                     block.clear();    
+                });    
+            }).fail((error) => {
+                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                 block.clear();
+            });           
             // Call service
-            block.invisible();
-            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+
                        
-            block.clear();
+
         }
-        public updateAlarm() : void{
-            let self = this;
-            $(".nts-input").trigger("validate");
-            if($(".nts-input").ntsError("hasError")) return ;
-            
-            
-            share.AlarmPermissionSettingCommand
-            
-            block.invisible();
-            block.clear();            
+        public insertAlarm() : void{
+            let self = this;    
+            self.currentCode('');  
         }
         public removeAlarm() : void{
             let self = this;

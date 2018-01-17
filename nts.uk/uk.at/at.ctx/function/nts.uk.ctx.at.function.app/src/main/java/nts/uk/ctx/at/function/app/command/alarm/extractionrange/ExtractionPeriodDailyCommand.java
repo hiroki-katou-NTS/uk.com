@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.command.alarm.extractionrange;
 
+import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.EndDate;
@@ -9,7 +10,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
-
+@Data
 public class ExtractionPeriodDailyCommand {
 	
 	private String extractionId;
