@@ -46,13 +46,18 @@ public class KrcdtDayWorkScheTime  extends UkJpaEntity implements Serializable{
 		val entity = new KrcdtDayWorkScheTime();
 		/*主キー*/
 		entity.krcdtDayWorkScheTimePK = new KrcdtDayWorkScheTimePK(employeeId,date);
-		/*勤務予定時間*/
-		entity.workScheduleTime = domain.getWorkScheduleTime().getTotal().valueAsMinutes();
-		/*計画所定労働時間*/
-		entity.schedulePreLaborTime = domain.getSchedulePrescribedLaborTime().valueAsMinutes();
-		/*実績所定労働時間*/
-		entity.recorePreLaborTime = domain.getRecordPrescribedLaborTime().valueAsMinutes();
+		entity.setData(domain);
 		return entity;
+	}
+
+	public void setData(WorkScheduleTimeOfDaily domain) {
+		/*勤務予定時間*/
+		this.workScheduleTime = domain.getWorkScheduleTime() == null || domain.getWorkScheduleTime().getTotal() == null ? 0 
+				: domain.getWorkScheduleTime().getTotal().valueAsMinutes();
+		/*計画所定労働時間*/
+		this.schedulePreLaborTime = domain.getSchedulePrescribedLaborTime() == null ? 0 : domain.getSchedulePrescribedLaborTime().valueAsMinutes();
+		/*実績所定労働時間*/
+		this.recorePreLaborTime = domain.getRecordPrescribedLaborTime() == null ? 0 : domain.getRecordPrescribedLaborTime().valueAsMinutes();
 	}
 	
 	public WorkScheduleTimeOfDaily toDomain() {
