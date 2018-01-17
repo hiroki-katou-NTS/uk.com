@@ -20511,8 +20511,9 @@ var nts;
                             var column = self.columnsMap[key];
                             if (uk.util.isNullOrUndefined(column))
                                 return;
+                            var ws = column.css && column.css.whiteSpace ? column.css.whiteSpace : "nowrap";
                             var $td = $("<td/>").data(internal.VIEW, rowIdx + "-" + key)
-                                .css({ borderWidth: "1px", overflow: "hidden", whiteSpace: "nowrap", position: "relative" });
+                                .css({ borderWidth: "1px", overflow: "hidden", whiteSpace: ws, position: "relative" });
                             self.highlight($td);
                             if (!self.visibleColumnsMap[key])
                                 $td.hide();
