@@ -21,7 +21,8 @@ public class UpdatePerInfoCtgCommandHandler extends CommandHandler<UpdatePerInfo
 	protected void handle(CommandHandlerContext<UpdatePerInfoCtgCommand> context) {
 
 		UpdatePerInfoCtgCommand perInfoCtgCommand = context.getCommand();
-		if (perInfoCtgCommand.getCategoryName().trim().equals("")) {
+		String ctgName = perInfoCtgCommand.getCategoryName();
+		if (CheckNameSpace.checkName(ctgName)) {
 			throw new BusinessException(new RawErrorMessage("Msg_928"));
 		}
 		if (!this.perInfoCtgRep.checkCtgNameIsUnique(PersonInfoCategory.ROOT_COMPANY_ID,
