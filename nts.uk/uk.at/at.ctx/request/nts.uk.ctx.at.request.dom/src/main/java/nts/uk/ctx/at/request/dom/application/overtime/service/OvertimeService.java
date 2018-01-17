@@ -34,7 +34,7 @@ public interface OvertimeService {
 	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public List<SiftType> getSiftType(String companyID,String employeeID,RequestAppDetailSetting requestAppDetailSetting);
+	public List<SiftType> getSiftType(String companyID,String employeeID,RequestAppDetailSetting requestAppDetailSetting,GeneralDate baseDate);
 	
 	/**
 	 * 09_勤務種類就業時間帯の初期選択をセットする
