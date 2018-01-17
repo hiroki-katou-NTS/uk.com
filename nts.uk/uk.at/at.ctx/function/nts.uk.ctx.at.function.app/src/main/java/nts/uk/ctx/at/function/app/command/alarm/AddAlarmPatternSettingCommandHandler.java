@@ -55,7 +55,7 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 				repo.create(domain);
 			}
 			
-		}{
+		}else{
 			throw new BusinessException("Msg_3");
 		}
 	}
