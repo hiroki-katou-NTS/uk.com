@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.setting.function.control;
+package nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol;
 
 /**
  * 
@@ -12,6 +12,12 @@ public interface FunctionControlRepository {
 	 * @return
 	 */
 	ScheFuncControl getScheFuncControl(String companyId);
+	
+	/**
+	 * Add Schedule Function Control
+	 * @param scheFuncControl
+	 */
+	void addScheFuncControl(ScheFuncControl scheFuncControl);
 	
 	/**
 	 * Update Schedule Function Control

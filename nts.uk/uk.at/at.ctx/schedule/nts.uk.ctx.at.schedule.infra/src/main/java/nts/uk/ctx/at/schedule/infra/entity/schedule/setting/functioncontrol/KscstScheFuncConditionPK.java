@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.setting.function.control;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.setting.functioncontrol;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.setting.function.control;
+package nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
