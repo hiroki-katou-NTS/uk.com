@@ -1,5 +1,6 @@
 module nts.uk.at.view.ksu001.a.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
+    import alertError = nts.uk.ui.dialog.alertError;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     import blockUI = nts.uk.ui.block;
@@ -270,7 +271,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // get data for dialog C
                 self.initShiftCondition();
                 // init and get data for screen A
-                // checkNeededOfWorkTimeSetting(): get list state of workTypeCode relate to need of workTime- get for screen JB
+                // checkNeededOfWorkTimeSetting(): get list state of workTypeCode relate to need of workTime
                 self.listStateWorkTypeCode(__viewContext.viewModel.viewO.checkStateWorkTypeCode);
                 self.listCheckNeededOfWorkTime(__viewContext.viewModel.viewO.checkNeededOfWorkTimeSetting);
                 self.dataWorkEmpCombine(__viewContext.viewModel.viewO.workEmpCombines);
@@ -628,11 +629,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
              * validate when stick data in cell
              */
             $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
-                if (rowIdx > 6) {
+                let stateWorkTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
+                // if workTypeCode is not required( state = 2) worktime is needless
+                if (stateWorkTypeCd && stateWorkTypeCd.state == 2 && (data.workTimeCode !== null || data.workTimeCode !== '000') {
                     return function() {
-                        alert("error");
+                        alertError({ messageId: 'Msg_434' });
                     };
                 }
+                // if workTypeCode is required( state = 0) worktime is need
+                if (stateWorkTypeCd && stateWorkTypeCd.state == 0 && (data.workTimeCode === null || data.workTimeCode === '000')) {
+                    return function() {
+                        alertError({ messageId: 'Msg_435' });
+                    };
+                }
+
                 return true;
             });
         }
@@ -1351,7 +1361,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                 });
             }).fail(function(error: any) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                alertError({ messageId: error.messageId });
             }).always(() => {
                 self.stopRequest(true);
             });
