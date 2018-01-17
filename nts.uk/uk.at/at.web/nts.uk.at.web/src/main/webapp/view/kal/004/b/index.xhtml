@@ -78,7 +78,7 @@
 						<div class="month">
 							<span class="ntsControl">
 								<label class="ntsRadioBox">
-									<input type="radio" name="endRadio" data-bind="checkedValue: 1, checked: endSelected, enable: enable" />
+									<input type="radio" name="endRadio" data-bind="checkedValue: 1, checked: endSelected, enable: strSelected() == 1 " />
 									<span class="box"></span><span class="label" data-bind=""></span>
 									<div class="combo-box" tabindex="1"
 										data-bind="ntsComboBox: {
