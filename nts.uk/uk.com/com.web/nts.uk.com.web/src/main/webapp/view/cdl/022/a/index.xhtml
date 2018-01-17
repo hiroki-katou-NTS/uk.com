@@ -25,10 +25,9 @@
 				<div>#{i18n.getText('CDL022_6')}</div>
 				<table id="sortable-list"
 					data-bind="ntsSortList: {
-							rows: 15,
-							options: items,
-							optionsSorted: sorts, 
+							rows: 15, 
 							optionsValue: 'id',
+							options: sorts,
 							columns: [{ headerText: 'コード', key: 'id', width: 0, hidden: true },
 					                { headerText: '名称', key: 'name', width: 280 }]
 						}"></table>
