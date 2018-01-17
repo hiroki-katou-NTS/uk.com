@@ -333,11 +333,7 @@ module cps002.a.vm {
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
-                _.each(__viewContext.primitiveValueConstraints, x => {
-                    if (_.has(x, "itemCode")) {
-                        $('#' + x.itemCode).trigger('change');
-                    }
-                })
+                $('.drag-panel .nts-input').trigger('change');
             } else {
                 $(".form_step1").trigger("validate");
 
