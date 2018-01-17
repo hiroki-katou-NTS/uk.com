@@ -16,7 +16,7 @@ module cps002.i.vm {
         constructor() {
             let self = this;
 
-            $(".checkbox-holder").hide();
+
 
             self.imageId.subscribe((newId) => {
                 if (newId) {
@@ -79,6 +79,7 @@ module cps002.i.vm {
             $("#test").ntsImageEditor("selectByFileId", id);
         }
         close() {
+            let self = this;
             nts.uk.ui.block.clear();
             setShared("imageId", self.imageId());
             close();
