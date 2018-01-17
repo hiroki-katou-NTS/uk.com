@@ -11,12 +11,16 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshmtOtTimeZone.
  */
 @Entity
+@Getter
+@Setter
 @Table(name = "KSHMT_OT_TIME_ZONE")
 public class KshmtOtTimeZone extends UkJpaEntity implements Serializable {
 
