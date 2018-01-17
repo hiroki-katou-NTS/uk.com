@@ -443,7 +443,7 @@ module nts.uk.com.view.cps005.b {
                         }
                         writeConstraint("NumericItemMax", {
                             mantissaMaxLength: x,
-                            min: x ? x : self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                            min: x ? parseInt(x.toString()) : self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
                             max: maxValue
                         });
                         $('#numericItemMax').trigger('change');
