@@ -21,7 +21,6 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService {
@@ -82,7 +81,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	 * アルゴリズム「直行直帰更新」を実行する
 	 */
 	@Override
-	public void updateGoBackDirectly(GoBackDirectly goBackDirectly, Application_New application) {
+	public void updateGoBackDirectly(GoBackDirectly goBackDirectly, Application_New application, Long version) {
 		// ドメインモデル「直行直帰申請」の更新する
 		this.goBackDirectlyRepo.update(goBackDirectly);
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
@@ -93,7 +92,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 				&& Strings.isBlank(application.getAppReason().v())) {
 			throw new BusinessException("Msg_115");
 		}
-		application.setVersion(goBackDirectly.getVersion());
+		application.setVersion(version);
 		appRepo.updateWithVersion(application);
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
 		this.detailAfterUpdate.processAfterDetailScreenRegistration(application);

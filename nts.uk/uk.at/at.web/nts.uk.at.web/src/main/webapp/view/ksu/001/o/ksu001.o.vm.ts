@@ -161,6 +161,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
          * get startDate, endDate give to A1_1(CCG001) 
          * becasue CCG001 is not available startDate and endDate
          * so get startDate, endDate for screen A
+         * checkNeededOfWorkTimeSetting(): get list state of workTypeCode relate to need of workTime
          */
         getWorkTypeTimeAndStartEndDate(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();

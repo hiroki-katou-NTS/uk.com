@@ -17,6 +17,6 @@ public class AttendanceLeavingGateOfDailyDto implements ConvertibleAttendanceIte
 	
 	private GeneralDate ymd;
 	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "入退門時刻", isList = true, listMaxLength = 3, setFieldWithIndex = "timeSheetNo")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "入退門時刻", listMaxLength = 3, indexField = "timeSheetNo")
 	private List<TimeSheetDto> attendanceLeavingGateTime;
 }

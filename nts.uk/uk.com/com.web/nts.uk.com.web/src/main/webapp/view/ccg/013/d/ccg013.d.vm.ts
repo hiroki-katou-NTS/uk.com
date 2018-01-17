@@ -214,7 +214,11 @@
          */
         submit() {
             var self = this;
-                        
+            let index = 1;
+            _.each(self.newItems(), (item) =>{
+                item.order = index;
+                index ++;
+            });
             nts.uk.ui.windows.setShared("CCG013D_MENUS", self.newItems());
             
             nts.uk.ui.windows.close();

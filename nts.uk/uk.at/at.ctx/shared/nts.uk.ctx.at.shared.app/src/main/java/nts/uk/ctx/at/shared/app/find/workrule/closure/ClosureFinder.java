@@ -11,20 +11,13 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureCdNameDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
-import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureEmployDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryMasterDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureIdNameDto;
-import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.EmpCdNameDto;
-import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -32,7 +25,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -56,75 +48,6 @@ public class ClosureFinder {
 	@Inject
 	ClosureEmploymentRepository closureEmpRepo;
 	
-	/**
-	 * 締め日の割付を起動する
-	 * 
-	 * @param referDate
-	 */
-	public ClosureEmployDto getClosureEmploy() {
-		// Get companyID.
-		LoginUserContext loginUserContext = AppContexts.user();
-		String companyId = loginUserContext.companyId();
-
-		//Get List Employment Dto by companyId. 雇用を取得する 
-		List<EmpCdNameImport> data = shareEmploymentAdapter.findAll(companyId);
-		List<EmpCdNameDto> empCdNameDtoList = data.stream().map(x -> {
-			return new EmpCdNameDto(x.getCode(), x.getName(), null);
-		}).collect(Collectors.toList());
-
-		// Get List Closure Dom by company Id and UseAtr = 1. 就業の締めを取得する
-		List<Closure> listClosure = repository.findAllActive(companyId, UseClassification.UseClass_Use);
-		// Get List ClosureHistory Dom by companyID, closureID, startDay.
-		List<ClosureCdNameDto> lstClosureCdName = new ArrayList<>();
-		listClosure.stream().forEach(x -> {
-			//取得したドメインモデル「締め」の基準日時点のドメインモデル「締め変更履歴」を取得する
-			//vi du
-			//期間：2018/02～2019/03
-			//締日：20
-			//2018/02/21～2019/03/20
-			//thi so sanh voi 2018/02/21<= 基準日 <= 2019/03/20
-			Optional<ClosureHistory> optClosureInf = repository.findBySelectedYearMonth(companyId, x.getClosureId().value, GeneralDate.today().yearMonth().v());
-			String formatDate = "yyyyMMdd";
-			if(optClosureInf.isPresent()) {
-				ClosureHistory closureInf = optClosureInf.get();
-				lstClosureCdName.add(ClosureCdNameDto.fromDomain(closureInf));
-				/*if(closureInf.getClosureDate().getLastDayOfMonth()) {
-					GeneralDate startDateTmp = GeneralDate.fromString(closureInf.getStartYearMonth().toString() + "01", formatDate);
-					GeneralDate startDate = startDateTmp.addMonths(1);
-					GeneralDate endDate = GeneralDate.today();
-					if(closureInf.getEndYearMonth().toString() == "999912") {
-						endDate = GeneralDate.fromString("99991231", formatDate);
-					}else {
-						endDate = GeneralDate.fromString(closureInf.getEndYearMonth().toString() + "01", formatDate).addMonths(1).addDays(-1);
-					}
-					if(startDate.addDays(1).before(GeneralDate.today()) && endDate.after(GeneralDate.today())) {
-						lstClosureCdName.add(ClosureCdNameDto.fromDomain(closureInf));
-					}
-					
-				}else {
-					String strClosureDay = StringUtils.leftPad(closureInf.getClosureDate().getClosureDay().toString(), 2, "0");
-					String strStartDate = closureInf.getStartYearMonth().v().toString().concat(strClosureDay);
-					GeneralDate startDate = GeneralDate.fromString(strStartDate, formatDate);
-					String strEndDate = closureInf.getEndYearMonth().v().toString().concat(strClosureDay);
-					GeneralDate endDate = GeneralDate.fromString(strEndDate, formatDate);
-					if(startDate.addDays(1).before(GeneralDate.today()) && endDate.after(GeneralDate.today())) {
-						lstClosureCdName.add(ClosureCdNameDto.fromDomain(closureInf));
-					}
-				}*/
-			}
-		});
-		// Map list Employment Dto and list EmployClosure Dom. 取得した雇用コードをもとにドメイン「雇用に紐づく就業締め」を取得する
-		empCdNameDtoList.stream().forEach(x->{
-			Optional<ClosureEmployment> closureEmp = closureEmpRepo.findByEmploymentCD(companyId, x.getCode());
-			if(!closureEmp.isPresent()){
-				x.setClosureId(null);
-			}else{
-				x.setClosureId(closureEmp.get().getClosureId());
-			}
-		});
-		
-		return new ClosureEmployDto(empCdNameDtoList, lstClosureCdName);
-	}
 	
 	/**
 	 * Gets the closure id name.

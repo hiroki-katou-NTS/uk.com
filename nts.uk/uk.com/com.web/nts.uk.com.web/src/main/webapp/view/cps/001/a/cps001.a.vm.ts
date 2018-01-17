@@ -253,16 +253,12 @@ module cps001.a.vm {
                 reload = getShared(RELOAD_KEY),
                 reloadData = getShared(RELOAD_DT_KEY),
                 employee = self.employee(),
-                employees = ko.toJS(self.employees),
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             if (reload) {
-                if (employees.length == 1) {
-                    $('.btn-quick-search[tabindex=4]').click();
-                } else {
-                    $('.btn-quick-search[tabindex=3]').click();
-                }
-
+                let single = self.employees().length == 1;
+                self.employees.removeAll();
+                $('.btn-quick-search[tabindex=3]').click();
                 $.when((() => {
                     let def = $.Deferred(),
                         int = setInterval(() => {
@@ -272,7 +268,10 @@ module cps001.a.vm {
                             }
                         }, 0);
                     return def.promise();
-                })()).done(x => {
+                })()).done((employees: Array<IEmployee>) => {
+                    if (single) {
+                        self.employees(_.filter(employees, m => m.employeeId == employee.employeeId()));
+                    }
                     employee.employeeId.valueHasMutated();
                 });
             } else {
@@ -294,10 +293,9 @@ module cps001.a.vm {
                         return def.promise();
                     })()).done((employees: Array<IEmployee>) => {
                         if (params && params.employeeId) {
-                            employees = _.filter(employees, m => m.employeeId == params.employeeId);
-                            self.employees(employees);
+                            self.employees(_.filter(employees, m => m.employeeId == params.employeeId));
                         }
-                        employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                        employee.employeeId(self.employees()[0] ? self.employees()[0].employeeId : undefined);
                         setShared(RELOAD_KEY, true);
                     });
                 });
@@ -446,6 +444,7 @@ module cps001.a.vm {
                     };
 
                 setShared(RELOAD_DT_KEY, saveData);
+                setShared(REPL_KEY, REPL_KEYS.NORMAL);
 
                 info({ messageId: "Msg_15" }).then(function() {
                     unblock();

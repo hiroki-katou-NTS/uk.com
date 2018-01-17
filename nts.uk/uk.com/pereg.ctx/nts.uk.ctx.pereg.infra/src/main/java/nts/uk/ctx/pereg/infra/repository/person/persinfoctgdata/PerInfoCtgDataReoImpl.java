@@ -55,7 +55,10 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 	 */
 	@Override
 	public void addCategoryData(PerInfoCtgData data) {
-		this.commandProxy().insert(toEntity(data));
+		Optional<PpemtPerInfoCtgData> existItem = this.queryProxy().find(data.getRecordId(), PpemtPerInfoCtgData.class);
+		if (!existItem.isPresent()){
+			this.commandProxy().insert(toEntity(data));
+		}
 	}
 	/**
 	 * Update person info category data ドメインモデル「個人情報カテゴリデータ」を更新する

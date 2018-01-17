@@ -87,11 +87,11 @@ public class SettingItemDtoMapping {
 		for (SettingItemDto childItem : childItems) {
 
 			if (!StringUtils.isEmpty(childItem.getSaveData().getValue().toString())) {
-				if (itemValue == "") {
+				if (itemValue.equals("")) {
 
 					itemValue = childItem.getSaveData().getValue().toString();
 				} else {
-					itemValue = String.join(getBetweenChar(childItem.getDataType()), itemValue, itemValue);
+					itemValue = String.join(getBetweenChar(childItem.getDataType()), itemValue, childItem.getSaveData().getValue().toString());
 				}
 			}
 		}

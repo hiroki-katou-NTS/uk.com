@@ -177,11 +177,12 @@ module nts.fixedtable {
         isSelectSpecialUnit: KnockoutObservable<boolean>;
         specialRoudingDataSource: KnockoutObservableArray<any>;
         helpImageUrl: string;
-        
+        isMultipleSelect: boolean;
         tableId: string;
         
         constructor(data: FixTableOption, isDisableAll?: any) {
             let self = this;
+            self.isMultipleSelect = data.isMultipleSelect ? data.isMultipleSelect : false;
             
             // set data parameter
             self.isShowButton = data.isShowButton;
@@ -411,9 +412,11 @@ module nts.fixedtable {
             let rowHtml: string = "";
             
             // mode multiple
-            rowHtml += "<td class='check-box-column' style='text-align: center;'><div class='column-checkbox-header' data-bind=\"attr: {tabindex: $parent.tabindex}, " 
+            if (self.isMultipleSelect) {
+                rowHtml += "<td class='check-box-column' style='text-align: center;'><div class='column-checkbox-header' data-bind=\"attr: {tabindex: $parent.tabindex}, "
                     + "visible: $index() >= $parent.minRow, ntsCheckBox: { checked: isChecked, "
                     + "enable: true, text:''}\"></div></td>";
+            }
             
             // add html column base setting
             _.forEach(self.columns, (item: FixColumn) => {
@@ -648,7 +651,6 @@ module nts.fixedtable {
                     if (!oldValue || oldValue != newValue) {
                         _.defer(() => self.itemList.valueHasMutated());
                         $(this).data('value', newValue);
-                        console.log('Test');
                     }
                 });
             }

@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -37,7 +38,7 @@ public class KrcdtDaiTemporaryTime extends UkJpaEntity implements Serializable {
 
 	public Integer workTimes;
 
-	@OneToMany(mappedBy = "daiTemporaryTime", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "daiTemporaryTime", cascade = CascadeType.ALL, fetch= FetchType.EAGER)
 	public List<KrcdtTimeLeavingWork> timeLeavingWorks;
 
 	@Override

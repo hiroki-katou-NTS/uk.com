@@ -15,7 +15,7 @@ public class PremiumTimeDto {
 
 	/** 割増時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "割増時間")
-	@AttendanceItemValue(itemId = { 426, 427, 428, 429, 430, 431, 432, 433, 434, 435 }, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer premitumTime;
 
 	/** 割増時間NO: 割増時間NO */

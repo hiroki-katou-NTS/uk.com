@@ -181,6 +181,19 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 				.getList().stream().map(x ->new Role (new JpaRoleGetMemento(x))).findFirst();
 	}
 
+	@Override
+	public List<Role> findByTypeAtr(String companyId, int roleType, int RoleAtr) {
+		List<Role> result = new ArrayList<>();
+		
+		String query ="SELECT e FROM SacmtRole e WHERE e.cid = :companyId AND e.roleType = :roleType AND e.assignAtr = :assignAtr ORDER BY e.assignAtr ASC, e.code ASC ";
+		List<SacmtRole> entities = this.queryProxy().query(query, SacmtRole.class)
+				.setParameter("companyId", companyId).setParameter("roleType", roleType).setParameter("assignAtr", RoleAtr).getList();
+		if (entities != null && entities.size() !=0) {
+			return entities.stream().map(x->new Role(new JpaRoleGetMemento(x))).collect(Collectors.toList());
+		}
+		return result;
+	}
+
 
 
 }

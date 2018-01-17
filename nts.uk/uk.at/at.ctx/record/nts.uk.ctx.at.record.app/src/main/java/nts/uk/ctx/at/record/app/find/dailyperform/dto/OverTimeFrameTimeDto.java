@@ -23,7 +23,7 @@ public class OverTimeFrameTimeDto {
 
 	/** 事前申請時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "事前申請時間")
-	@AttendanceItemValue(itemId = { 220, 225, 230, 235, 240, 245, 250, 255, 260, 265 }, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer beforeApplicationTime;
 
 	/** 指示時間: 勤怠時間 */

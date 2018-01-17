@@ -15,7 +15,7 @@ public class WorkScheduleTimeDto {
 
 	/** 合計時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "予定時間")
-	@AttendanceItemValue(itemId = 27, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer total;
 	
 	/** 所定外時間: 勤怠時間 */

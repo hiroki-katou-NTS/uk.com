@@ -15,11 +15,11 @@ public class CalcAttachTimeDto {
 
 	/** 計算時間 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName="計算時間")
-	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer calcTime;
 
 	/** 時間 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName="時間")
-	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer time;
 }

@@ -6,8 +6,8 @@ module nts.uk.com.view.csa005.c {
         }
         
         /** Get PermissionSettingMenu */
-        export function getPerMissingMenu(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", paths.getPerMissingMenu +'/8');
+        export function getPerMissingMenu(): JQueryPromise<any> { 
+            return nts.uk.request.ajax("com", paths.getPerMissingMenu +'/3');
         }
         
     }

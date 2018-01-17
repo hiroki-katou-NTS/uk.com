@@ -293,4 +293,8 @@ module nts.uk.ui.errors {
     export function gridHasError(): boolean {
         return errorsViewModel().gridHasError();
     }
+    
+    export function getErrorList() {
+        return errorsViewModel().displayErrors();
+    }
 }

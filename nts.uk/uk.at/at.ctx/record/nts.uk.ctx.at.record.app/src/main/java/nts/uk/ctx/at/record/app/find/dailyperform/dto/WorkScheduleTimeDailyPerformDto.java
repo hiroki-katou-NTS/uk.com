@@ -26,12 +26,12 @@ public class WorkScheduleTimeDailyPerformDto {
 
 	/** 実績所定労働時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "実績所定労働時間")
-	@AttendanceItemValue(itemId = 531, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer recordPrescribedLaborTime;
 
 	/** 計画所定労働時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "計画所定労働時間")
-	@AttendanceItemValue(itemId = 530, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer schedulePrescribedLaborTime;
 
 	public static WorkScheduleTimeDailyPerformDto fromWorkScheduleTime(WorkScheduleTimeOfDaily domain) {

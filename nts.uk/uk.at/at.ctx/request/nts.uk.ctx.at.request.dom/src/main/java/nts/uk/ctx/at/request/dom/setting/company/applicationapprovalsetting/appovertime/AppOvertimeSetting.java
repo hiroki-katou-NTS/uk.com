@@ -60,11 +60,11 @@ public class AppOvertimeSetting extends AggregateRoot{
 	private UseAtr instructExcessOTAtr;
 	
 	/**
-	 * 実績超過打刻優先設定
+	 * 実績超過打刻優先設定  
 	 */
 	private PriorityStampSetAtr priorityStampSetAtr;
 	/**
-	 * 申請時間指定単位
+	 * 残業時間単位制御区分
 	 */
 	private UnitAssignmentOvertime unitAssignmentOvertime;
 	/**

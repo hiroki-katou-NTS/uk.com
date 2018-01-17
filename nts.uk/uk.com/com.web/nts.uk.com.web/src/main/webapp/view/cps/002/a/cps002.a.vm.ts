@@ -124,6 +124,7 @@ module cps002.a.vm {
                             self.categoryList(_.map(result, item => {
                                 return new CategoryItem(item);
                             }));
+                            self.categorySelectedCode.valueWillMutate();
                             if (currentCtgCode === "") {
                                 self.categorySelectedCode(result[0].categoryCd);
                             } else {
@@ -137,8 +138,6 @@ module cps002.a.vm {
                                     self.categorySelectedCode(result[0].categoryCd);
                                 }
                             }
-                            self.categorySelectedCode.valueHasMutated();
-
 
                         } else {
                             self.categoryList.removeAll();
@@ -232,6 +231,7 @@ module cps002.a.vm {
             self.currentEmployee().employeeCode("");
             self.currentEmployee().loginId("");
             self.currentEmployee().password("");
+            self.currentEmployee().avatarId("");
         }
 
         start() {
@@ -400,7 +400,6 @@ module cps002.a.vm {
             let self = this,
                 command = ko.toJS(self.currentEmployee()),
                 layout = self.layout();
-            self.currentEmployee().avatarId("");
             self.currentStep(2);
 
             //add atr
@@ -528,14 +527,20 @@ module cps002.a.vm {
                         return new InitSetting(item);
                     }));
 
+                    self.initSettingSelectedCode.valueWillMutate();
                     if (self.initSettingSelectedCode() == '') {
                         if (self.employeeBasicInfo() && _.find(result, ['settingCode', self.employeeBasicInfo().initialValueCode])) {
                             self.initSettingSelectedCode(self.employeeBasicInfo().initialValueCode);
                         } else {
                             self.initSettingSelectedCode(result[0].settingCode);
                         }
+                    } else {
+                        if (!_.find(result, ctg => { return self.initSettingSelectedCode() == ctg.settingCode; })) {
+                            self.initSettingSelectedCode(result[0].settingCode);
+                        }
+
                     }
-                    self.initSettingSelectedCode.valueHasMutated();
+
                     $("#initSearchBox input").focus();
                 }
             }).fail((error) => {
