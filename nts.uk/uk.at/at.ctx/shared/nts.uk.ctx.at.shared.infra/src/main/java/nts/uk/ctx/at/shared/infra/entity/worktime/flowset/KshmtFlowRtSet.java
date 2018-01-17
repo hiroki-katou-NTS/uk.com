@@ -5,10 +5,16 @@
 package nts.uk.ctx.at.shared.infra.entity.worktime.flowset;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -50,6 +56,24 @@ public class KshmtFlowRtSet extends UkJpaEntity implements Serializable {
 	/** The after passage time. */
 	@Column(name = "AFTER_PASSAGE_TIME")
 	private int afterPassageTime;
+	
+	/** The lst kshmt flow flow rt set PK. */
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false),
+		@JoinColumn(name = "RESTTIME_ATR", referencedColumnName = "RESTTIME_ATR", insertable = false, updatable = false)
+	})
+	private List<KshmtFlowFlowRtSet> lstKshmtFlowFlowRtSet;
+	
+	/** The lst kshmt flow fixed rt set PK. */
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false),
+		@JoinColumn(name = "RESTTIME_ATR", referencedColumnName = "RESTTIME_ATR", insertable = false, updatable = false)
+	})
+	private List<KshmtFlowFixedRtSet> lstKshmtFlowFixedRtSet;
 
 	/**
 	 * Instantiates a new kshmt flow rt set.

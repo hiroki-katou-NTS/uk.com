@@ -32,6 +32,17 @@ public class FlowRestSetting extends DomainObject {
 		this.flowRestTime = memento.getFlowRestTime();
 		this.flowPassageTime = memento.getFlowPassageTime();
 	}
+	
+	/**
+	 * Instantiates a new flow rest setting.
+	 *
+	 * @param restTime the rest time
+	 * @param passageTime the passage time
+	 */
+	public FlowRestSetting(int restTime, int passageTime) {
+		this.flowRestTime = new AttendanceTime(restTime);
+		this.flowPassageTime = new AttendanceTime(passageTime);
+	}
 
 	/**
 	 * Save to memento.
