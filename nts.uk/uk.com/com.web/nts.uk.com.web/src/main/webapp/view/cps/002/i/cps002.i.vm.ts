@@ -32,7 +32,7 @@ module cps002.i.vm {
         }
         start() {
             let self = this;
-            let dImageId = getShared("imageId");
+            let dImageId = getShared("CPS002A");
 
             if (dImageId != "" && dImageId != undefined) {
                 self.imageId().defaultImgId = dImageId;
@@ -81,7 +81,9 @@ module cps002.i.vm {
         close() {
             let self = this;
             nts.uk.ui.block.clear();
-            setShared("imageId", self.imageId());
+            let result = self.imageId().cropImgId ? self.imageId() : undefined;
+
+            setShared("imageId", result);
             close();
         }
 
