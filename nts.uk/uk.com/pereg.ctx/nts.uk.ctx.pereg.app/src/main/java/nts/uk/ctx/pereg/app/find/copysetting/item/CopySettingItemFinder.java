@@ -51,14 +51,15 @@ public class CopySettingItemFinder {
 		List<EmpCopySettingItem> itemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId,
 				isSelf);
 
-		if (CollectionUtil.isEmpty(itemList)) {
-			boolean isPersonnelRepresentative = true;
+		if (isSetText && CollectionUtil.isEmpty(itemList)) {
 
+			boolean isPersonnelRepresentative = true;
 			if (isPersonnelRepresentative) {
 				throw new BusinessException(new RawErrorMessage("Msg_347"));
 			} else {
 				throw new BusinessException(new RawErrorMessage("Msg_348"));
 			}
+
 		}
 
 		itemList.forEach(x -> {
