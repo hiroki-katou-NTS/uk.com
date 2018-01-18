@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol;
 
+import java.util.Optional;
+
 /**
  * 
  * @author TanLV
@@ -11,7 +13,7 @@ public interface FunctionControlRepository {
 	 * @param companyId
 	 * @return
 	 */
-	ScheFuncControl getScheFuncControl(String companyId);
+	Optional<ScheFuncControl> getScheFuncControl(String companyId);
 	
 	/**
 	 * Add Schedule Function Control

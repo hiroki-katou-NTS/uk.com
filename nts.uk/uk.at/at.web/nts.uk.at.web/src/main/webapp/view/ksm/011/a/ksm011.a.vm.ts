@@ -109,7 +109,7 @@ module nts.uk.at.view.ksm011 {
 
     export module a.viewmodel {
         export class ScreenModel {
-            dataModel: KnockoutObservable<ScheFuncControl>;
+            dataModel: KnockoutObservable<ScheFuncControlDto>;
             alarmCheckAtr: KnockoutObservableArray<any>;
             selectedAlarm: KnockoutObservable<number>;
             confirmedAtr: KnockoutObservableArray<any>;
@@ -482,30 +482,17 @@ module nts.uk.at.view.ksm011 {
                 var self = this;
                 var dfd = $.Deferred();
                 
-                $.when(self.getData()).done(function() {
+               service.findScheFuncControl().done(function(data) {
                     
-                    dfd.resolve();
-                }).fail(function(res) {
-                    dfd.reject(res);    
-                });
-
-                return dfd.promise();
-            }
-            
-            /**
-             * Get data from db.
-             */
-            getData(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
-
-                service.findScheFuncControl().done(function(data) {
+                    if(data != null) {
+                        
+                    }
                     
                     dfd.resolve(data);
                 }).fail(function(res) {
                     dfd.reject(res);    
                 });
-                
+
                 return dfd.promise();
             }
             
@@ -515,6 +502,55 @@ module nts.uk.at.view.ksm011 {
             registration() {
                 var self = this;
                 
+                // clear all error
+                nts.uk.ui.errors.clearAll();
+                
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
+                
+                //var conditions = new ScheFuncCondDto();
+                
+                var data = new ScheFuncControlDto({
+                                alarmCheckUseCls: self.selectedAlarm(), 
+                                confirmedCls: self.selectedConfirmed(), 
+                                publicCls: self.selectedPublic(), 
+                                outputCls: self.selectedOutput(), 
+                                workDormitionCls: self.selectedWorkDivision(), 
+                                teamCls: self.selectedTeamDivision(), 
+                                rankCls: self.selectedRank(), 
+                                startDateInWeek: self.selectedDay(), 
+                                shortNameDisp: self.selectedShortName(), 
+                                timeDisp: self.selectedTime(), 
+                                symbolDisp: self.selectedSymbol(), 
+                                twentyEightDaysCycle: self.selectedDispOn28th(), 
+                                lastDayDisp: self.selectedIndication(), 
+                                individualDisp: self.selectedIndividual(), 
+                                dispByDate: self.selectedDate(), 
+                                indicationByShift: self.selectedIndicationByShift(),
+                                regularWork: self.selectedRegular(), 
+                                fluidWork: self.selectedFluid(), 
+                                workingForFlex: self.selectedFlex(), 
+                                overtimeWork: self.selectedOvertime(), 
+                                normalCreation: self.selectedGeneral(), 
+                                simulationCls: self.selectedSimulation(), 
+                                captureUsageCls: self.selectedCapture(), 
+                                completedFuncCls: self.selectedCompFunc(), 
+                                howToComplete: self.selectedOptionComp(), 
+                                alarmCheckCls: self.selectedAlarmCheck(), 
+                                executionMethod: self.selectedAlarmMethod(), 
+                                handleRepairAtr: self.selectedUnhooking(), 
+                                confirm: self.selectedConfirm(), 
+                                searchMethod: self.selectedSearchMethod(), 
+                                searchMethodDispCls: self.selectedRetrieval(),
+                                scheFuncCond: null
+                });
+                
+                service.saveScheFuncControl(data).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId, messageParams: error.parameterIds });
+                });
             }
             
             /**
@@ -527,7 +563,7 @@ module nts.uk.at.view.ksm011 {
             }
         }
         
-        class ScheFuncControl {
+        class ScheFuncControlDto {
             alarmCheckUseCls: number;
             confirmedCls: number;
             publicCls: number;
@@ -559,9 +595,9 @@ module nts.uk.at.view.ksm011 {
             confirm: number;
             searchMethod: number;
             searchMethodDispCls: number;
-            scheFuncCond: Array<ScheFuncCond>;
+            scheFuncCond: Array<ScheFuncCondDto>;
             
-            constructor(param: IScheFuncControl) {
+            constructor(param: IScheFuncControlDto) {
                 this.alarmCheckUseCls = param.alarmCheckUseCls;
                 this.confirmedCls = param.confirmedCls;
                 this.publicCls = param.publicCls;
@@ -597,7 +633,7 @@ module nts.uk.at.view.ksm011 {
             }
         }
         
-        interface IScheFuncControl {
+        interface IScheFuncControlDto {
             alarmCheckUseCls: number;
             confirmedCls: number;
             publicCls: number;
@@ -629,11 +665,19 @@ module nts.uk.at.view.ksm011 {
             confirm: number;
             searchMethod: number;
             searchMethodDispCls: number;
-            scheFuncCond: Array<ScheFuncCond>;    
+            scheFuncCond: Array<ScheFuncCondDto>;    
         }
         
-        class ScheFuncCond {
+        class ScheFuncCondDto {
             conditionNo: number;
+            
+            constructor(param: IScheFuncCondDto) {
+                this.conditionNo = param.conditionNo;
+            }
+        }
+        
+        interface IScheFuncCondDto {
+            conditionNo: number;  
         }
     }
 }

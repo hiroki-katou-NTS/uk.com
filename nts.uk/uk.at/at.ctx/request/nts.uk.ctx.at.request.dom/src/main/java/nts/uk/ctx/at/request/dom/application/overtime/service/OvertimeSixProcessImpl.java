@@ -268,7 +268,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 			RequestAppDetailSetting requestAppDetailSetting, String siftCD, List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport) {
 		List<CaculationTime> result = new ArrayList<>();
 		List<OvertimeInputCaculation> overtimeInputCaculations = initOvertimeInputCaculation();
-		if(recordWorkInfoImport.getLeaveStampTimeFirst() == -1){
+		if(recordWorkInfoImport.getLeaveStampTimeFirst() == null){
 			// 退勤打刻なし
 			result = printColor(overtimeHours, overtimeInputCaculations);
 		}else{

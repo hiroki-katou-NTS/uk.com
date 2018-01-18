@@ -63,7 +63,7 @@ public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWi
 					command.getUserID(),
 					companyManagerRole.get(0).getRoleId(),
 					command.getDecisionCompanyID(),
-					command.getRoleType(),
+					RoleType.COMPANY_MANAGER.value,
 					command.getStartValidPeriod(),
 					command.getEndValidPeriod());
 			// ドメインモデル「ロール個人別付与」を新規登録する | Register a domain model "Role individual grant"

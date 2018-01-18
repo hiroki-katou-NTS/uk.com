@@ -27,14 +27,12 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.TimeItemTypeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
@@ -57,7 +55,6 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
@@ -74,9 +71,6 @@ public class AppOvertimeFinder {
 	
 	@Inject
 	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
-	
-	@Inject
-	private  StartCheckErrorService  startCheckErrorService;
 	
 	@Inject
 	private OvertimeService overtimeService;
@@ -107,9 +101,6 @@ public class AppOvertimeFinder {
 	
 	@Inject
 	private OvertimeSixProcess overtimeSixProcess;
-	
-	@Inject
-	private BPTimeItemRepository bPTimeItemRepository;
 	
 	/**
 	 * @param url
@@ -776,81 +767,81 @@ public class AppOvertimeFinder {
 		result.setPreAppOvertimeDto(preAppOvertimeDto);
 	}
 
-	private List<OvertimeInputDto> convertOverTimeInputDto(List<OverTimeInput> overtimeInputs,String companyID){
-		List<OvertimeInputDto> overTimeInputDtos = new ArrayList<>();
-		List<Integer> frameOverTimeNo = new ArrayList<>();
-		List<Integer> frameBonusTimeNo = new ArrayList<>();
-		List<Integer> frameBonusSpecTimeNo = new ArrayList<>();
-		for(OverTimeInput overTimeInput : overtimeInputs){
-			OvertimeInputDto overtimeInputDto = new OvertimeInputDto(overTimeInput.getCompanyID(),
-					overTimeInput.getAppID(),
-					overTimeInput.getAttendanceID().value,
-					overTimeInput.getFrameNo(),
-					overTimeInput.getTimeItemTypeAtr().value, 
-					"", 
-					overTimeInput.getStartTime().v(),
-					overTimeInput.getEndTime().v(),
-					overTimeInput.getApplicationTime().v());
-			
-			overTimeInputDtos.add(overtimeInputDto);
-			
-			if(overTimeInput.getAttendanceID().value == AttendanceID.NORMALOVERTIME.value){
-				frameOverTimeNo.add(overTimeInput.getFrameNo());
-			}
-			if(overTimeInput.getAttendanceID().value == AttendanceID.BONUSPAYTIME.value){
-				if(overTimeInput.getTimeItemTypeAtr().value == TimeItemTypeAtr.NORMAL_TYPE.value){
-					frameBonusTimeNo.add(overTimeInput.getFrameNo());
-				}else{
-					frameBonusSpecTimeNo.add(overTimeInput.getFrameNo());
-				}
-			}
-			
-		}
-		List<OvertimeWorkFrame> overtimeFrames = new ArrayList<>();
-		if(frameOverTimeNo != null && frameOverTimeNo.size() > 0){
-			overtimeFrames = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameNos(companyID,frameOverTimeNo);
-		}
-		List<BonusPayTimeItem> bonusPayTimeItems = new ArrayList<>();
-		if(frameBonusTimeNo != null && frameBonusTimeNo.size() > 0){
-			bonusPayTimeItems = bPTimeItemRepository.getListBonusPayTimeItemName(companyID, frameBonusTimeNo);
-		}
-		List<BonusPayTimeItem> specBonusPayTimeItems = new ArrayList<>();
-		if(frameBonusSpecTimeNo != null &&  frameBonusSpecTimeNo.size() > 0){
-			specBonusPayTimeItems  = bPTimeItemRepository.getListSpecialBonusPayTimeItemName(companyID, frameBonusSpecTimeNo);
-		}
-		for(OvertimeInputDto dto : overTimeInputDtos){
-			// get frameName of Overtime
-			if(dto.getAttendanceID() == AttendanceID.NORMALOVERTIME.value){
-				for(OvertimeWorkFrame overtimFrame :overtimeFrames){
-					if(dto.getFrameNo() == overtimFrame.getOvertimeWorkFrNo().v().intValueExact()){
-						dto.setFrameName(overtimFrame.getOvertimeWorkFrName().toString());
-						break;
-					}
-				}
-			}
-			//get BonusTimeFrame
-			if(dto.getAttendanceID() == AttendanceID.BONUSPAYTIME.value){
-				if(dto.getTimeItemTypeAtr() == TimeItemTypeAtr.NORMAL_TYPE.value){
-					for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
-						if(dto.getFrameNo() == bonusPayTimeItem.getId()){
-							dto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
-							break;
-						}
-					}
-				}else{
-					for(BonusPayTimeItem bonusPayTimeItem : specBonusPayTimeItems){
-						if(dto.getFrameNo() == bonusPayTimeItem.getId()){
-							dto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
-							break;
-						}
-					}
-				}
-			}
-		}
-		
-		return overTimeInputDtos;
-		
-	}
+//	private List<OvertimeInputDto> convertOverTimeInputDto(List<OverTimeInput> overtimeInputs,String companyID){
+//		List<OvertimeInputDto> overTimeInputDtos = new ArrayList<>();
+//		List<Integer> frameOverTimeNo = new ArrayList<>();
+//		List<Integer> frameBonusTimeNo = new ArrayList<>();
+//		List<Integer> frameBonusSpecTimeNo = new ArrayList<>();
+//		for(OverTimeInput overTimeInput : overtimeInputs){
+//			OvertimeInputDto overtimeInputDto = new OvertimeInputDto(overTimeInput.getCompanyID(),
+//					overTimeInput.getAppID(),
+//					overTimeInput.getAttendanceID().value,
+//					overTimeInput.getFrameNo(),
+//					overTimeInput.getTimeItemTypeAtr().value, 
+//					"", 
+//					overTimeInput.getStartTime().v(),
+//					overTimeInput.getEndTime().v(),
+//					overTimeInput.getApplicationTime().v());
+//			
+//			overTimeInputDtos.add(overtimeInputDto);
+//			
+//			if(overTimeInput.getAttendanceID().value == AttendanceID.NORMALOVERTIME.value){
+//				frameOverTimeNo.add(overTimeInput.getFrameNo());
+//			}
+//			if(overTimeInput.getAttendanceID().value == AttendanceID.BONUSPAYTIME.value){
+//				if(overTimeInput.getTimeItemTypeAtr().value == TimeItemTypeAtr.NORMAL_TYPE.value){
+//					frameBonusTimeNo.add(overTimeInput.getFrameNo());
+//				}else{
+//					frameBonusSpecTimeNo.add(overTimeInput.getFrameNo());
+//				}
+//			}
+//			
+//		}
+//		List<OvertimeWorkFrame> overtimeFrames = new ArrayList<>();
+//		if(frameOverTimeNo != null && frameOverTimeNo.size() > 0){
+//			overtimeFrames = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameNos(companyID,frameOverTimeNo);
+//		}
+//		List<BonusPayTimeItem> bonusPayTimeItems = new ArrayList<>();
+//		if(frameBonusTimeNo != null && frameBonusTimeNo.size() > 0){
+//			bonusPayTimeItems = bPTimeItemRepository.getListBonusPayTimeItemName(companyID, frameBonusTimeNo);
+//		}
+//		List<BonusPayTimeItem> specBonusPayTimeItems = new ArrayList<>();
+//		if(frameBonusSpecTimeNo != null &&  frameBonusSpecTimeNo.size() > 0){
+//			specBonusPayTimeItems  = bPTimeItemRepository.getListSpecialBonusPayTimeItemName(companyID, frameBonusSpecTimeNo);
+//		}
+//		for(OvertimeInputDto dto : overTimeInputDtos){
+//			// get frameName of Overtime
+//			if(dto.getAttendanceID() == AttendanceID.NORMALOVERTIME.value){
+//				for(OvertimeWorkFrame overtimFrame :overtimeFrames){
+//					if(dto.getFrameNo() == overtimFrame.getOvertimeWorkFrNo().v().intValueExact()){
+//						dto.setFrameName(overtimFrame.getOvertimeWorkFrName().toString());
+//						break;
+//					}
+//				}
+//			}
+//			//get BonusTimeFrame
+//			if(dto.getAttendanceID() == AttendanceID.BONUSPAYTIME.value){
+//				if(dto.getTimeItemTypeAtr() == TimeItemTypeAtr.NORMAL_TYPE.value){
+//					for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
+//						if(dto.getFrameNo() == bonusPayTimeItem.getId()){
+//							dto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
+//							break;
+//						}
+//					}
+//				}else{
+//					for(BonusPayTimeItem bonusPayTimeItem : specBonusPayTimeItems){
+//						if(dto.getFrameNo() == bonusPayTimeItem.getId()){
+//							dto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
+//							break;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		
+//		return overTimeInputDtos;
+//		
+//	}
 	
 	/**
 	 * 01-14_勤務時間取得

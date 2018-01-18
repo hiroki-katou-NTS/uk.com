@@ -1356,8 +1356,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.updateExTable();
                     if (error.length != 0) {
                         self.addListError(error);
-                    } else {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }
                 });
             }).fail(function(error: any) {

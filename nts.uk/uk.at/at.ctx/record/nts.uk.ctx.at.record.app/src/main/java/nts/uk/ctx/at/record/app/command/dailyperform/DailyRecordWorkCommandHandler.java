@@ -10,8 +10,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.Affiliatio
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandUpdateHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AddAttendanceTimeOfDailyPerformCommandAddHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AddAttendanceTimeOfDailyPerformCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandAddHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceCommandAddHandler;
@@ -95,10 +95,10 @@ public class DailyRecordWorkCommandHandler {
 	/** 勤怠時間: 日別実績の勤怠時間 */
 	@Inject
 	@AttendanceItemLayout(layout = "G", jpPropertyName = "", index = 7)
-	private AddAttendanceTimeOfDailyPerformCommandAddHandler attendanceTimeAddHandler;
+	private AttendanceTimeOfDailyPerformCommandAddHandler attendanceTimeAddHandler;
 	@Inject
 	@AttendanceItemLayout(layout = "G", jpPropertyName = "", index = 7)
-	private AddAttendanceTimeOfDailyPerformCommandUpdateHandler attendanceTimeUpdateHandler;
+	private AttendanceTimeOfDailyPerformCommandUpdateHandler attendanceTimeUpdateHandler;
 
 	/** 作業別勤怠時間: 日別実績の作業別勤怠時間 */
 	@Inject

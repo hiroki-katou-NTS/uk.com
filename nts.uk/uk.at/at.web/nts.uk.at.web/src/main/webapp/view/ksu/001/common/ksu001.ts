@@ -41,7 +41,8 @@ module nts.uk.at.view.ksu001.common.viewmodel {
         note: string,
         startTime: number,
         endTime: number,
-        workNo: number
+        workNo: number,
+        useAtr: number
     }
 
     export class WorkTime {
@@ -58,6 +59,7 @@ module nts.uk.at.view.ksu001.common.viewmodel {
         startTime: number;
         endTime: number;
         workNo: number;
+        useAtr: number;
         timeZone1: string;
         timeZone2: string;
 
@@ -74,8 +76,11 @@ module nts.uk.at.view.ksu001.common.viewmodel {
             this.startTime = params.startTime;
             this.endTime = params.endTime;
             this.workNo = params.workNo;
-            this.timeZone1 = this.workNo == 1 ? nts.uk.time.parseTime(this.startTime, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.endTime, true).format() : '';
-            this.timeZone2 = this.workNo == 2 ? nts.uk.time.parseTime(this.startTime, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.endTime, true).format() : '';
+            this.useAtr = params.useAtr;
+            this.timeZone1 = this.workNo == 1 ? nts.uk.time.parseTime(this.startTime, true).format()
+                + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.endTime, true).format() : '';
+            this.timeZone2 = this.useAtr == 1 ? (this.workNo == 2 ? nts.uk.time.parseTime(this.startTime, true).format()
+                + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.endTime, true).format() : '') : '';
         }
     }
 

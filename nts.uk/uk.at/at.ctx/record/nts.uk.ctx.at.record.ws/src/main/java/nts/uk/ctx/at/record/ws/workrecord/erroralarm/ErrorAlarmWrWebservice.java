@@ -46,12 +46,6 @@ public class ErrorAlarmWrWebservice {
 	}
 
 	@POST
-	@Path("findByCode")
-	public ErrorAlarmWorkRecordDto findByCode(String code) {
-		return this.finder.findByCode(code);
-	}
-
-	@POST
 	@Path("update")
 	public void update(UpdateErrorAlarmWrCommand command) {
 		this.updateCommandHandler.handle(command);

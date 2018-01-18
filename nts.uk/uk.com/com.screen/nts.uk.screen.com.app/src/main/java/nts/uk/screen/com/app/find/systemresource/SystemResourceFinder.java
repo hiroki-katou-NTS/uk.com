@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import nts.uk.screen.com.app.repository.systemresource.SystemResourceData;
 import nts.uk.screen.com.app.repository.systemresource.SystemResourceQueryRepository;
 import nts.uk.screen.com.app.systemresource.dto.SystemResourceDto;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SystemResourceFinder.
@@ -32,7 +33,10 @@ public class SystemResourceFinder {
 	 * @return the list
 	 */
 	public List<SystemResourceDto> findList(){
-		List<SystemResourceData> result = this.repository.findListResource();
+		
+		String companyId = AppContexts.user().companyId();
+		
+		List<SystemResourceData> result = this.repository.findListResource(companyId);
 		
 		List<SystemResourceDto> listDto = result.stream().map(e -> new SystemResourceDto(e.getResourceId(), e.getResourceContent())).collect(Collectors.toList());
 		
