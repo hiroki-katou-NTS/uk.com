@@ -43,16 +43,16 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 		if (command.getWinAcc1() == null && command.getWinAcc2() == null && command.getWinAcc3() == null
 				&& command.getWinAcc4() == null && command.getWinAcc5() == null) {
 			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getUserId());
-
-			for (WindowAccount wd : listWindowAcc) {
-				windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
+			if (!listWindowAcc.isEmpty()) {
+				listWindowAcc.stream().forEach(wd -> {
+					windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
+				});
 			}
 
 		} else {
 
 			List<WindowAccountDto> listWinAccDto = new ArrayList<>();
-			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getWinAcc1().getUserId());
-			
+						
 			// TODO: need refactor
 			if (command.getWinAcc1() != null) {
 				if (command.getWinAcc1().getIsChange()) {
@@ -90,10 +90,14 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 				listWinAccDto.add(command.getWinAcc5());
 			}
 			
-			// remove old domain 
-			for (WindowAccount windowAcc : listWindowAcc) {
-				windowAccountRepository.remove(windowAcc.getUserId(), windowAcc.getUserName(), windowAcc.getHostName());
-			}			
+			// remove old domain
+			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getUserId());
+			
+			if (!listWindowAcc.isEmpty()) {
+				listWindowAcc.stream().forEach(wd -> {
+					windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
+				});
+			}
 
 			// Save new domain
 			listWinAccDto.forEach(winAcc -> this.windowAccountRepository.add(new WindowAccount(winAcc)));

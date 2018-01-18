@@ -206,7 +206,7 @@ module nts.uk.com.view.cmm021.a {
                 _self.userId = ko.observable("");
                 _self.userIdBeChoosen = ko.observable("");
                 _self.userId.subscribe((newValue) => {
-                    
+                    $('.nts-input').ntsError('clear');
                     if (!newValue) {
                         return;
                     }
@@ -425,7 +425,7 @@ module nts.uk.com.view.cmm021.a {
 
                 let saveCommand = new SaveWindowAccountCommand();
 
-                if (_self.enable_WinAcc1()) {
+                if (_self.enable_WinAcc1() == true && _self.hostName1() != "" && _self.userName1() != "") {
                     win1.userId = _self.userId();
                     win1.hostName = _self.hostName1();
                     win1.userName = _self.userName1();
@@ -433,8 +433,16 @@ module nts.uk.com.view.cmm021.a {
                     win1.useAtr = 1;
                     saveCommand.winAcc1 = win1;
                 }
+//                    else if(_self.enable_WinAcc1() == false){
+//                    win1.userId = _self.userId();
+//                    win1.hostName = _self.hostName1();
+//                    win1.userName = _self.userName1();
+//                    win1.no = 1;
+//                    win1.useAtr = 0;
+//                    saveCommand.winAcc1 = win1;    
+//                }
 
-                if (_self.enable_WinAcc2()) {
+                if (_self.enable_WinAcc2() == true && _self.hostName2() != "" && _self.userName2() != "") {
                     win2.userId = _self.userId();
                     win2.hostName = _self.hostName2();
                     win2.userName = _self.userName2();
@@ -442,8 +450,17 @@ module nts.uk.com.view.cmm021.a {
                     win2.useAtr = 1;
                     saveCommand.winAcc2 = win2;
                 }
+//                    else if(_self.enable_WinAcc1() == false){
+//                    win2.userId = _self.userId();
+//                    win2.hostName = _self.hostName1();
+//                    win2.userName = _self.userName1();
+//                    win2.no = 1;
+//                    win2.useAtr = 0;
+//                    saveCommand.winAcc1 = win1;    
+//                }
+                    
 
-                if (_self.enable_WinAcc3()) {
+                if (_self.enable_WinAcc3() == true && _self.hostName1() != "" && _self.userName1() != "") {
                     win3.userId = _self.userId();
                     win3.hostName = _self.hostName3();
                     win3.userName = _self.userName3();
@@ -451,8 +468,16 @@ module nts.uk.com.view.cmm021.a {
                     win3.useAtr = 1;
                     saveCommand.winAcc3 = win3;
                 }
+//                    else if(_self.enable_WinAcc1() == false){
+//                    win3.userId = _self.userId();
+//                    win3.hostName = _self.hostName1();
+//                    win3.userName = _self.userName1();
+//                    win3.no = 1;
+//                    win3.useAtr = 0;
+//                    saveCommand.winAcc1 = win1;    
+//                }
 
-                if (_self.enable_WinAcc4()) {
+                if (_self.enable_WinAcc4() == true && _self.hostName4() != "" && _self.userName4() != "") {
                     win4.userId = _self.userId();
                     win4.hostName = _self.hostName4();
                     win4.userName = _self.userName4();
@@ -460,8 +485,16 @@ module nts.uk.com.view.cmm021.a {
                     win4.useAtr = 1;
                     saveCommand.winAcc4 = win4;
                 }
+//                    else if(_self.enable_WinAcc1() == false){
+//                    win4.userId = _self.userId();
+//                    win4.hostName = _self.hostName1();
+//                    win4.userName = _self.userName1();
+//                    win4.no = 1;
+//                    win4.useAtr = 0;
+//                    saveCommand.winAcc1 = win1;    
+//                }
 
-                if (_self.enable_WinAcc5()) {
+                if (_self.enable_WinAcc5() == true && _self.hostName5() != "" && _self.userName5() != "") {
                     win5.userId = _self.userId();
                     win5.hostName = _self.hostName5();
                     win5.userName = _self.userName5();
@@ -469,20 +502,32 @@ module nts.uk.com.view.cmm021.a {
                     win5.useAtr = 1;
                     saveCommand.winAcc5 = win5;
                 }
+//                    else if(_self.enable_WinAcc1() == false){
+//                    win5.userId = _self.userId();
+//                    win5.hostName = _self.hostName1();
+//                    win5.userName = _self.userName1();
+//                    win5.no = 1;
+//                    win5.useAtr = 0;
+//                    saveCommand.winAcc1 = win1;    
+//                }
 
                 saveCommand.userId = _self.userId();
-                service.saveWindowAccount(saveCommand)
-                    .done((data: any) => {
-                        _self.loadUserInfo();
-                        _self.updateMode();                                    
-                        $('#focus-hostName1').focus();
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        dfd.resolve();
-                    }).fail(function(res: any) {
-                        nts.uk.ui.dialog.bundledErrors(res);
-                        dfd.reject(); 
-                    });
-                 return dfd.promise();
+                if (saveCommand.winAcc1 != null || saveCommand.winAcc2 != null || saveCommand.winAcc3 != null || saveCommand.winAcc4 != null || saveCommand.winAcc5 != null) {
+                    service.saveWindowAccount(saveCommand)
+                        .done((data: any) => {
+                            _self.loadUserInfo();
+                            _self.updateMode();
+                            $('#focus-hostName1').focus();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            dfd.resolve();
+                        }).fail(function(res: any) {
+                            nts.uk.ui.dialog.bundledErrors(res);
+                            dfd.reject();
+                        });
+                    return dfd.promise();
+
+                }
+                
             }
 
             // common function load list user info
@@ -632,9 +677,9 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
 
                 if (_self.isScreenBSelected()) {
-                    _self.deleteWindowAccount();
+                    _self.deleteWindowAccount();             
                 } else if (_self.isScreenCSelected()) {
-                    _self.deleteOtherAcc();
+                    _self.deleteOtherAcc();                    
                 }
             }
 
@@ -652,27 +697,23 @@ module nts.uk.com.view.cmm021.a {
             private deleteWindowAccount() {
                 let _self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    // nts.uk.ui.dialog.info({ messageId: "Msg_35" }).then(() => {
                     service.removeWindowAccount(_self.userIdBeChoosen()).done((data: any) => {
                         _self.loadUserInfo();
                         _self.newMode();
                         _self.hostName1("");
                         _self.userName1("");
                         _self.enable_WinAcc1(true);
-                        $('#focus-hostName1').focus();
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                    });
-                    //});
+                        $('#focus-hostName1').focus();                   
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => $('.nts-input').ntsError('clear'));                                                  
+                    });                                                                                   
                 }).ifNo(() => {
-                    //nts.uk.ui.dialog.info({ messageId: "Msg_36" });
                     // cancel button delete
                     _self.loadUserInfo();
                     $('#focus-hostName1').focus();
                     return;
-                });
-
+                });                       
             }
-
+            
 
             public onSelectScreenB() {
                 let _self = this;
@@ -714,26 +755,6 @@ module nts.uk.com.view.cmm021.a {
                 return dfd.promise();
             }
 
-
-//            private findOtherAccByUserId() {
-//                let _self = this;
-//                let dfd = $.Deferred<any>();
-//
-//                service.findOtherSysAccByUserId(_self.userIdBeChoosen()).done((data: any) => {
-//                    if (data) {
-//                        _self.companyCode6(data.companyCode);
-//                        _self.userName6(data.userName);
-//                        _self.enable_otherAcc(true);
-//                    }
-//                    dfd.resolve();
-//                })
-//                    .fail((res: any) => {
-//                        dfd.reject(res);
-//                    });
-//                return dfd.promise();
-//
-//            }
-
             private SaveOtherAcc(): JQueryPromise<any> {
                 let _self = this;
                 let otherAcc: SaveOtherSysAccountCommand = new SaveOtherSysAccountCommand(
@@ -743,19 +764,23 @@ module nts.uk.com.view.cmm021.a {
                     1);
 
                 let dfd = $.Deferred<any>();
-                service.saveOtherSysAccount(otherAcc)
-                    .done((data: any) => {
-                        _self.loadUserInfo();
-                        _self.updateMode();
-                        $('#focus-CompanyCode').focus();
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                         dfd.resolve();
-                    })
-                    .fail((res: any) => {                                              
-                       nts.uk.ui.dialog.bundledErrors(res);      
-                       dfd.reject();          
-                    });
-                return dfd.promise();
+                
+                if (otherAcc.companyCode != "" && otherAcc.userName != "") {
+                    service.saveOtherSysAccount(otherAcc)
+                        .done((data: any) => {
+                            _self.loadUserInfo();
+                            _self.updateMode();
+                            $('#focus-CompanyCode').focus();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            dfd.resolve();
+                        })
+                        .fail((res: any) => {
+                            nts.uk.ui.dialog.bundledErrors(res);
+                            dfd.reject();
+                        });
+                    return dfd.promise();
+                }
+                
             }
 
 
@@ -769,8 +794,7 @@ module nts.uk.com.view.cmm021.a {
                             _self.userName6("");
                             _self.enable_otherAcc(true);
                             $('#focus-CompanyCode').focus();
-                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                       
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => $('.nts-input').ntsError('clear'));                     
                     });
                 }).ifNo(() => {
                     _self.loadUserInfo();
