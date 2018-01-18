@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
@@ -23,7 +25,8 @@ public class JpaFlexHATzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 	/** The entitys. */
 	private KshmtFlexHaRtSet entity;
 	
-	private int periodNo = 0;
+	/** The period no. */
+	private int periodNo = 1;
 
 
 	/**
@@ -44,20 +47,51 @@ public class JpaFlexHATzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 	 */
 	@Override
 	public void setTimezones(List<DeductionTime> timzones) {
+		
+		// check list entity get empty
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHaFixRests())) {
+			this.entity.setKshmtFlexHaFixRests(new ArrayList<>());
+		}
+		
+		// check input empty
 		if (CollectionUtil.isEmpty(timzones)) {
 			this.entity.setKshmtFlexHaFixRests(new ArrayList<>());
-		} else {
-			periodNo = 0;
-			this.entity.setKshmtFlexHaFixRests(timzones.stream().map(domain -> {
-				periodNo++;
-				KshmtFlexHaFixRest entity = new KshmtFlexHaFixRest(
-						new KshmtFlexHaFixRestPK(this.entity.getKshmtFlexHaRtSetPK().getCid(),
-								this.entity.getKshmtFlexHaRtSetPK().getWorktimeCd(),
-								this.entity.getKshmtFlexHaRtSetPK().getAmPmAtr(), periodNo));
-				domain.saveToMemento(new JpaFlexHADeductionTimeSetMemento(entity));
-				return entity;
-			}).collect(Collectors.toList()));
+			return;
 		}
+		
+		// convert map entity
+		Map<KshmtFlexHaFixRestPK, KshmtFlexHaFixRest> mapEntity = this.entity.getKshmtFlexHaFixRests().stream()
+				.collect(Collectors.toMap(entity -> ((KshmtFlexHaFixRest) entity).getKshmtFlexHaFixRestPK(),
+						Function.identity()));
+		
+		String companyId = this.entity.getKshmtFlexHaRtSetPK().getCid();
+		String workTimeCd = this.entity.getKshmtFlexHaRtSetPK().getWorktimeCd();
+		Integer amPmAtr = this.entity.getKshmtFlexHaRtSetPK().getAmPmAtr();
+		
+		// set list entity
+		this.entity.setKshmtFlexHaFixRests(timzones.stream().map(domain -> {
+			
+			// newPk
+			KshmtFlexHaFixRestPK pk = new KshmtFlexHaFixRestPK();
+			pk.setCid(companyId);
+			pk.setWorktimeCd(workTimeCd);
+			pk.setAmPmAtr(amPmAtr);
+			pk.setPeriodNo(periodNo);
+			
+			// find entity existed if not have, new entity
+			KshmtFlexHaFixRest entity = mapEntity.get(pk);
+			if (entity == null) {
+				entity = new KshmtFlexHaFixRest(pk);
+			}
+			
+			// save to memento
+			domain.saveToMemento(new JpaFlexHADeductionTimeSetMemento(entity));
+			
+			// increase period no
+			periodNo++;
+			
+			return entity;
+		}).collect(Collectors.toList()));
 	}
 
 }
