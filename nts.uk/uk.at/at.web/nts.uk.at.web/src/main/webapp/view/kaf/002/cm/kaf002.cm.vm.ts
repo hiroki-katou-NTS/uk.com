@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf002.cm {
         import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
         import service = nts.uk.at.view.kaf002.shr.service;
         import kaf002 = nts.uk.at.view.kaf002;
+        import appcommon = nts.uk.at.view.kaf000.shr.model;
         export class ScreenModel {
             m1: kaf002.m1.viewmodel.ScreenModel;
             m2: kaf002.m2.viewmodel.ScreenModel;
@@ -95,6 +96,9 @@ module nts.uk.at.view.kaf002.cm {
                     }else{
                         self.application().titleReason("");
                     }
+                    if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.application().titleReason()) ? self.application().titleReason() + "\n" + self.application().contentReason() : self.application().contentReason(),"#appReason")){
+                        return;
+                    }
                     switch(self.stampRequestMode()){
                         case 0: self.m1.register(self.application());break;    
                         case 1: self.m2.register(self.application());break;  
@@ -114,7 +118,9 @@ module nts.uk.at.view.kaf002.cm {
                 }else{
                     self.application().titleReason("");
                 }
-                           
+                 if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.application().titleReason()) ? self.application().titleReason() + "\n" + self.application().contentReason() : self.application().contentReason(),"#appReason")){
+                        return;
+                    }          
                 switch(self.stampRequestMode()){
                     case 0: self.m1.update(self.application());break;    
                     case 1: self.m2.update(self.application());break;  

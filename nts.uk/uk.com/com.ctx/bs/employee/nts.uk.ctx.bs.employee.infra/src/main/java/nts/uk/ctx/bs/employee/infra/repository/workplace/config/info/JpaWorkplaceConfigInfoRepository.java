@@ -211,7 +211,14 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 	@Override
 	public Optional<WorkplaceConfigInfo> findAllByParentWkpId(String companyId,
 			GeneralDate baseDate, String parentWkpId) {
-		WorkplaceConfigInfo parentWkpConfigInfo = this.find(companyId, baseDate, parentWkpId).get();
+		Optional<WorkplaceConfigInfo> optParentWkpConfigInfo = this.find(companyId, baseDate, parentWkpId);
+		
+		// check empty
+		if (!optParentWkpConfigInfo.isPresent()) {
+			return Optional.empty();
+		}
+
+		WorkplaceConfigInfo parentWkpConfigInfo = optParentWkpConfigInfo.get();
 
 		String prHierarchyCode = parentWkpConfigInfo.getLstWkpHierarchy().get(FIRST_ITEM_INDEX)
 				.getHierarchyCode().v();
