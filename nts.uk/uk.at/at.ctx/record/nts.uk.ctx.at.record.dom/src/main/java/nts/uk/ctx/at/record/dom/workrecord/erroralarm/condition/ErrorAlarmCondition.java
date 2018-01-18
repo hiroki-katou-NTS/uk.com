@@ -26,6 +26,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMess
 // 勤務実績のエラーアラームチェック
 @Getter
 public class ErrorAlarmCondition extends AggregateRoot {
+	
+	// Check ID
+	private String errorAlarmCheckID;
 
 	/* 表示メッセージ */
 	private DisplayMessage displayMessage;
@@ -221,6 +224,10 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		group.addAtdItemConditions(conditions);
 		this.atdItemCondition.setGroup2(group);
 		return this;
+	}
+	
+	public void setCheckId(String errorAlarmCheckID) {
+		this.errorAlarmCheckID = errorAlarmCheckID;
 	}
 
 	public void setGroupId1(String groupId) {
