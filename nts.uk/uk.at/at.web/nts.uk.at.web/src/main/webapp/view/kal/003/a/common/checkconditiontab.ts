@@ -7,7 +7,7 @@ module nts.uk.at.view.kal003.a.tab {
 
     export class CheckConditionTab {
         listWorkRecordExtractingConditions: KnockoutObservableArray<model.WorkRecordExtractingCondition> = ko.observableArray([]);
-        isAllCheckCondistion: KnockoutObservable<boolean> = ko.observable(false);
+        isAllCheckCondition: KnockoutObservable<boolean> = ko.observable(false);
         currentRowSelected: KnockoutObservable<number> = ko.observable(0);
 
         itemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSchedule4WeekAlarmCheckCondition());
@@ -34,7 +34,7 @@ module nts.uk.at.view.kal003.a.tab {
 
             $("#check-condition-table").ntsFixedTable({ height: 300 });
 
-            self.isAllCheckCondistion = ko.pureComputed({
+            self.isAllCheckCondition = ko.pureComputed({
                 read: function () {
                     let l = self.listWorkRecordExtractingConditions().length;
                     if (self.listWorkRecordExtractingConditions().filter((x) => {return x.useAtr()}).length == l && l > 0) {

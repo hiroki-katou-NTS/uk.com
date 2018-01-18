@@ -2,31 +2,32 @@ module nts.uk.at.view.kal003.share.model {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import modal = nts.uk.ui.windows.sub.modal;
+    import getText = nts.uk.resource.getText;
 
     export function getListCategory(): Array<ItemModel> {
         return [
-            new ItemModel(0, 'スケジュール日次'),
-            new ItemModel(1, 'スケジュール週次'),
-            new ItemModel(2, 'スケジュール4週'),
-            new ItemModel(3, 'スケジュール月次'),
-            new ItemModel(4, 'スケジュール年間'),
-            new ItemModel(5, '日次'),
-            new ItemModel(6, '週次'),
-            new ItemModel(7, '月次'),
-            new ItemModel(8, '申請承認'),
-            new ItemModel(9, '複数月'),
-            new ItemModel(10, '任意期間'),
-            new ItemModel(11, '年休付与用出勤率'),
-            new ItemModel(12, '３６協定'),
-            new ItemModel(13, '工数チェック')
+            new ItemModel(0, getText('Enum_AlarmCategory_SCHEDULE_DAILY')),
+            new ItemModel(1, getText('Enum_AlarmCategory_SCHEDULE_WEEKLY')),
+            new ItemModel(2, getText('Enum_AlarmCategory_SCHEDULE_4WEEK')),
+            new ItemModel(3, getText('Enum_AlarmCategory_SCHEDULE_MONTHLY')),
+            new ItemModel(4, getText('Enum_AlarmCategory_SCHEDULE_YEAR')),
+            new ItemModel(5, getText('Enum_AlarmCategory_DAILY')),
+            new ItemModel(6, getText('Enum_AlarmCategory_WEEKLY')),
+            new ItemModel(7, getText('Enum_AlarmCategory_MONTHLY')),
+            new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
+            new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')),
+            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
+            new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
+            new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
+            new ItemModel(13, getText('Enum_AlarmCategory_MAN_HOUR_CHECK'))
         ];
     }
 
     export function getConditionToExtractDaily(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, '全て'),
-            new model.ItemModel(1, '確認済のデータ'),
-            new model.ItemModel(2, '未確認のデータ')
+            new model.ItemModel(0, getText('Enum_ConExtractedDaily_ALL')),
+            new model.ItemModel(1, getText('Enum_ConExtractedDaily_CONFIRMED_DATA')),
+            new model.ItemModel(2, getText('Enum_ConExtractedDaily_UNCONFIRMER_DATA'))
         ];
     }
     
@@ -185,12 +186,18 @@ module nts.uk.at.view.kal003.share.model {
     }
     
     export class DailyAlarmCheckCondition {
-        conditionToExtractDaily: KnockoutObservable<number>;
-        listWorkRecordExtractingConditions: KnockoutObservableArray<WorkRecordExtractingCondition>;
+        conditionToExtractDaily: KnockoutObservable<number>;//main screen
+        addApplication: KnockoutObservable<boolean>;//tab daily
+        listErrorAlarmCode: KnockoutObservableArray<ErrorAlarmCondition>;//tab daily
+        listExtractConditionWorkRecork: KnockoutObservableArray<WorkRecordExtractingCondition>;//tab check condition
+        listFixedExtractConditionWorkRecord: KnockoutObservableArray<FixedConditionWorkRecord>;//tab  fixed
         
-        constructor(conditionToExtractDaily: number, listWorkRecordExtractingConditions: Array<WorkRecordExtractingCondition>) {
+        constructor(conditionToExtractDaily: number, addApplication: boolean, listErrorAlarmCondition: Array<ErrorAlarmCondition>, listWorkRecordExtractingConditions: Array<WorkRecordExtractingCondition>, listFixedConditionWorkRecord: Array<FixedConditionWorkRecord>) {
             this.conditionToExtractDaily = ko.observable(conditionToExtractDaily);
-            this.listWorkRecordExtractingConditions = ko.observableArray(listWorkRecordExtractingConditions);
+            this.addApplication = ko.observable(addApplication);
+            this.listErrorAlarmCode = ko.observableArray(listErrorAlarmCondition);
+            this.listExtractConditionWorkRecork = ko.observableArray(listWorkRecordExtractingConditions);
+            this.listFixedExtractConditionWorkRecord = ko.observableArray(listFixedConditionWorkRecord);
         } 
     }
 
@@ -707,22 +714,25 @@ module nts.uk.at.view.kal003.share.model {
     
     //interface FixedConditionWorkRecord
     export interface IFixedConditionWorkRecord {
-        errorAlarmCode: string;
+        errorAlarmId: string;
+        checkName: string;
         fixConWorkRecordNo: number;
         message: string;
-        useAtr?: boolean;
+        useAtr: boolean;
     }
     //class FixedConditionWorkRecord
     export class FixedConditionWorkRecord {
-        errorAlarmCode: string;
-        fixConWorkRecordNo: number;
-        message: string;
+        errorAlarmId: string;
+        fixConWorkRecordNo: KnockoutObservable<number>;
+        checkName: string;
+        message: KnockoutObservable<string>;
         useAtr: KnockoutObservable<boolean>;
         constructor(data: IFixedConditionWorkRecord) {
-            this.errorAlarmCode = data.errorAlarmCode;
-            this.fixConWorkRecordNo = data.fixConWorkRecordNo;
-            this.message = data.message;
+            this.errorAlarmId = data.errorAlarmId;
+            this.fixConWorkRecordNo = ko.observable(data.fixConWorkRecordNo);
+            this.message = ko.observable(data.message);
             this.useAtr = ko.observable(data.useAtr);
+            this.checkName = data.checkName;
         }
     }
 }
