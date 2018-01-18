@@ -7,7 +7,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         // Time data
         isComplete: KnockoutObservable<boolean> = ko.observable(false);
         taskId: KnockoutObservable<string> = ko.observable("");
-        startTime: KnockoutObservable<string> = ko.observable(moment.utc().format("YYYY/MM/DD HH:mm:ss"));
+        startTime: KnockoutObservable<string> = ko.observable(moment().format("YYYY/MM/DD HH:mm:ss"));
         endTime: KnockoutObservable<string> = ko.observable("");
         elapseTime: kibanTimer = new kibanTimer('elapseTime');
         empCalAndSumExecLogID: KnockoutObservable<string> = ko.observable("");
@@ -143,7 +143,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             
                             // End Time
                             self.elapseTime.end();
-                            self.endTime(moment.utc().format("YYYY/MM/DD HH:mm:ss"));
+                            self.endTime(moment().format("YYYY/MM/DD HH:mm:ss"));
                             
                             // DailyCreate
                             self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
