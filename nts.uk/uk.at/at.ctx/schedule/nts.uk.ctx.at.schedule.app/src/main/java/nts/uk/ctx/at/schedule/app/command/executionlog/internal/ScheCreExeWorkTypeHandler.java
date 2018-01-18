@@ -96,10 +96,11 @@ public class ScheCreExeWorkTypeHandler {
 			commandWorkTimeGetter.setWorkTypeCode(optWorktype.get().getWorktypeCode());	
 			Optional<String> optionalWorkTime = this.scheCreExeWorkTimeHandler.getWorktime(commandWorkTimeGetter);
 
-			if (optionalWorkTime.isPresent()) {
+			if (optionalWorkTime == null || optionalWorkTime.isPresent()) {
 				// update all basic schedule
 				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
-						workingConditionItem.getEmployeeId(), optWorktype.get(), optionalWorkTime.get());
+						workingConditionItem.getEmployeeId(), optWorktype.get(),
+						optionalWorkTime == null ? null : optionalWorkTime.get());
 			}
 
 		}
@@ -275,7 +276,8 @@ public class ScheCreExeWorkTypeHandler {
 			BasicWorkSetting basicWorkSetting = optionalBasicWorkSetting.get();
 			
 			// set working code to command
-			commandWorkTypeEmploymentStatus.setWorkingCode(basicWorkSetting.getWorkingCode().v());
+			commandWorkTypeEmploymentStatus.setWorkingCode(
+					basicWorkSetting.getWorkingCode() == null ? null : basicWorkSetting.getWorkingCode().v());
 			
 			// set work type code to command
 			commandWorkTypeEmploymentStatus.setWorkTypeCode(basicWorkSetting.getWorktypeCode().v());
