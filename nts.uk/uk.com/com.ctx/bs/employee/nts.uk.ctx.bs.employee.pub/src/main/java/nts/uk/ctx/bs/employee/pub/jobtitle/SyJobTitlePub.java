@@ -74,5 +74,15 @@ public interface SyJobTitlePub {
 	 */
 	// RequestList #158
 	List<SimpleJobTitleExport> findByIds(String companyId,List<String> jobIds, GeneralDate baseDate);
+	
+	/**
+	 * Find job title by sid.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	// RequestList From  LamDT
+	Optional<AffJobTitleHistory_ver1Export> gerBySidAndBaseDate(String employeeId, GeneralDate baseDate);
 
 }
