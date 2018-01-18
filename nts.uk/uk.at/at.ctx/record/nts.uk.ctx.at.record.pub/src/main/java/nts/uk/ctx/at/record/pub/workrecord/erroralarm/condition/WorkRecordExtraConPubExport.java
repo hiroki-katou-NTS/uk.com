@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.ErrorAlarmConditionPubExport;
 
 @Getter
 @NoArgsConstructor
@@ -19,6 +20,9 @@ public class WorkRecordExtraConPubExport {
 	private boolean useAtr;
 	//NameWKRecord
 	private String nameWKRecord;
+	
+	private ErrorAlarmConditionPubExport errorAlarmCondition;
+	
 	public WorkRecordExtraConPubExport(String errorAlarmCheckID, int checkItem, boolean messageBold,
 			String messageColor, int sortOrderBy, boolean useAtr, String nameWKRecord) {
 		super();

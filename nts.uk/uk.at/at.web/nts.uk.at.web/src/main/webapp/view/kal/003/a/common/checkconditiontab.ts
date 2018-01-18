@@ -74,7 +74,7 @@ module nts.uk.at.view.kal003.a.tab {
 
             self.listWorkRecordExtractingConditions.push(workRecordExtractingCondition);
             self.currentRowSelected(self.listWorkRecordExtractingConditions().length);
-            let errorAlarmCondition = self.listWorkRecordExtractingConditions()[self.currentRowSelected() - 1].errorAlarmCondition();
+            //let errorAlarmCondition = self.listWorkRecordExtractingConditions()[self.currentRowSelected() - 1].errorAlarmCondition();
         }
 
         /**
@@ -86,10 +86,9 @@ module nts.uk.at.view.kal003.a.tab {
             if (rowId() < 1 || rowId() > self.listWorkRecordExtractingConditions().length) {
                 return;
             }
-            let WorkRecordExtractingCondition = self.listWorkRecordExtractingConditions()[rowId() - 1];
-            if (WorkRecordExtractingCondition) {
-                let errorAlarmCondition = WorkRecordExtractingCondition.errorAlarmCondition();
-                self.showDialogKal003B(errorAlarmCondition, rowId());
+            let workRecordExtractingCondition = self.listWorkRecordExtractingConditions()[rowId() - 1];
+            if (workRecordExtractingCondition) {
+                self.showDialogKal003B(workRecordExtractingCondition(), rowId());
             }
         }
 
@@ -98,15 +97,16 @@ module nts.uk.at.view.kal003.a.tab {
          * @param errorAlamCondition
          * @param rowId
          */
-        private showDialogKal003B(errorAlarmCondition: model.ErrorAlarmCondition, rowId: number) {
+        private showDialogKal003B(workRecordExtractingCondition, rowId) {
             let self = this;
-            windows.setShared('inputKal003b', errorAlarmCondition);
+            windows.setShared('inputKal003b', workRecordExtractingCondition);
             windows.sub.modal('/view/kal/003/b/index.xhtml', { height: 500, width: 1020 }).onClosed(function(): any {
                 // get data from share window    
                 let data = windows.getShared('outputKal003b');
                 if (data != null && data != undefined) {
                     if (rowId > 0 && rowId <= self.listWorkRecordExtractingConditions().length) {
-                        self.listWorkRecordExtractingConditions()[rowId - 1].errorAlarmCondition(data);
+                        let workRecordExtractingCondition = self.listWorkRecordExtractingConditions()[rowId - 1];
+                        workRecordExtractingCondition(data);
                     }
                 }
                 block.clear();
