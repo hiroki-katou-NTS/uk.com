@@ -14,6 +14,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -82,7 +83,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class OvertimePreProcessImpl implements IOvertimePreProcess {
 
-	final String DATE_FORMAT = "yyyy/MM/dd";
+	final static String DATE_FORMAT = "yyyy/MM/dd";
+	final static String ZEZO_TIME = "00:00";
+	final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
+	final static String SPACE = " ";
 	@Inject
 	private OvertimeInstructRepository overtimeInstructRepository;
 	@Inject
@@ -444,8 +448,8 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		List<CaculationTime> caculationTimes = new ArrayList<>();
 		if (PrePostAtr.POSTERIOR.value == prePostAtr) {
 			//Imported(申請承認)「勤務実績」を取得する
-			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
-			if (recordWorkInfoImport.getWorkTypeCode() != null) {
+			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
+			if (StringUtil.isNullOrEmpty(recordWorkInfoImport.getWorkTypeCode(), false)) {
 				WorkTypeOvertime workTypeOvertime = new WorkTypeOvertime();
 				workTypeOvertime.setWorkTypeCode(recordWorkInfoImport.getWorkTypeCode().toString());
 				Optional<WorkType> workType = workTypeRepository.findByPK(companyID,
@@ -455,7 +459,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 				}
 				result.setWorkTypeRefer(workTypeOvertime);
 			}
-			if (recordWorkInfoImport.getWorkTimeCode() != null) {
+			if (StringUtil.isNullOrEmpty(recordWorkInfoImport.getWorkTimeCode(), false)) {
 				SiftType siftType = new SiftType();
 
 				siftType.setSiftCode(recordWorkInfoImport.getWorkTimeCode());
@@ -493,11 +497,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 
 	private String convert(int minute) {
-		String hourminute = "";
+		String hourminute = Strings.EMPTY;
 		if (minute == -1) {
 			return null;
 		} else if (minute == 0) {
-			hourminute = "00:00";
+			hourminute = ZEZO_TIME;
 		} else {
 			int hour = minute / 60;
 			int hourInDay = hour % 24;
@@ -513,8 +517,8 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	 * @return
 	 */
 	public boolean checkTimeDay(String appDate, PredetemineTimeSetting workTimeSet) {
-		GeneralDateTime appDateGeneralstart = GeneralDateTime.fromString(appDate + " 00:00", "yyyy/MM/dd HH:mm");
-		GeneralDateTime appDateGeneralEnd = GeneralDateTime.fromString(appDate + " 00:00", "yyyy/MM/dd HH:mm");
+		GeneralDateTime appDateGeneralstart = GeneralDateTime.fromString(appDate + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
+		GeneralDateTime appDateGeneralEnd = GeneralDateTime.fromString(appDate + SPACE + ZEZO_TIME, DATE_TIME_FORMAT);
 
 		if (workTimeSet.getPrescribedTimezoneSetting() != null) {
 			if (workTimeSet.getPrescribedTimezoneSetting().getLstTimezone() != null) {
@@ -522,7 +526,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 				appDateGeneralstart = appDateGeneralstart.addMinutes(workTimeSet.getPrescribedTimezoneSetting().getLstTimezone().get(0).getStart().minute());
 				appDateGeneralEnd = appDateGeneralEnd.addHours(workTimeSet.getPrescribedTimezoneSetting().getLstTimezone().get(0).getEnd().hour());
 				appDateGeneralEnd = appDateGeneralEnd.addMinutes(workTimeSet.getPrescribedTimezoneSetting().getLstTimezone().get(0).getEnd().minute());
-				GeneralDateTime appDateGeneralSystem = GeneralDateTime.fromString(GeneralDateTime.now().toString("yyyy/MM/dd HH:mm"), "yyyy/MM/dd HH:mm");
+				GeneralDateTime appDateGeneralSystem = GeneralDateTime.fromString(GeneralDateTime.now().toString(DATE_TIME_FORMAT), DATE_TIME_FORMAT);
 				if(appDateGeneralSystem.after(appDateGeneralstart) && appDateGeneralSystem.before(appDateGeneralEnd)){
 					return true;
 				}
