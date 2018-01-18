@@ -35,5 +35,8 @@ public class WorkRecordExtraConPubExport {
 		this.nameWKRecord = nameWKRecord;
 	}
 	
+	public void setErrorAlarmCondition(ErrorAlarmConditionPubExport errorAlarmCondition) {
+		this.errorAlarmCondition = errorAlarmCondition;
+	}
 	
 }

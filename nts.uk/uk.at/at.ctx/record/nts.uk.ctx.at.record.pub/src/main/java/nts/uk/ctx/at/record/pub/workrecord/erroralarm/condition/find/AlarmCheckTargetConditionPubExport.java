@@ -2,13 +2,13 @@ package nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find;
 
 import java.util.List;
 
-import lombok.Value;
+import lombok.Getter;
 
 /**
  * @author hieunv
  *
  */
-@Value
+@Getter
 public class AlarmCheckTargetConditionPubExport {
 	/* 勤務種別でしぼり込む */
 	private boolean filterByBusinessType;
@@ -26,4 +26,23 @@ public class AlarmCheckTargetConditionPubExport {
 	private List<String> lstEmployment;
 	/* 対象分類 */
 	private List<String> lstClassification;
+	
+	public AlarmCheckTargetConditionPubExport(
+			boolean filterByBusinessType,
+			boolean filterByJobTitle,
+			boolean filterByEmployment,
+			boolean filterByClassification,
+			List<String> lstBusinessType,
+			List<String> lstJobTitle,
+			List<String> lstEmployment,
+			List<String> lstClassification) {
+		this.filterByJobTitle = filterByJobTitle;
+		this.filterByEmployment = filterByEmployment;
+		this.filterByClassification = filterByClassification;
+		this.lstBusinessType = lstBusinessType;
+		this.lstJobTitle = lstJobTitle;
+		this.lstEmployment = lstEmployment;
+		this.lstClassification = lstClassification;
+	}
+	
 }

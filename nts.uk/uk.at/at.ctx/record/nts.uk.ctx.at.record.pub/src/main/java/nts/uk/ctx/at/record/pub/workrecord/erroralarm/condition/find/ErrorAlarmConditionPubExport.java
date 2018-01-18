@@ -21,6 +21,23 @@ public class ErrorAlarmConditionPubExport {
 	private String displayMessage;
 
 	/* 連続期間 */
-	private int ContinuousPeriod;
+	private int continuousPeriod;
+	
+	public ErrorAlarmConditionPubExport(String errorAlarmCheckID,
+			AlarmCheckTargetConditionPubExport alarmCheckTargetCondition,
+			WorkTypeConditionPubExport workTypeCondition, 
+			AttendanceItemConditionPubExport attendanceItemCondition,
+			WorkTimeConditionPubExport workTimeCondition,
+			String displayMessage,
+			int continuousPeriod
+			) {
+		this.errorAlarmCheckID = errorAlarmCheckID;
+		this.alarmCheckTargetCondition = alarmCheckTargetCondition;
+		this.workTypeCondition = workTypeCondition;
+		this.attendanceItemCondition = attendanceItemCondition;
+		this.workTimeCondition = workTimeCondition;
+		this.displayMessage = displayMessage;
+		this.continuousPeriod = continuousPeriod;
+	}
 	
 }
