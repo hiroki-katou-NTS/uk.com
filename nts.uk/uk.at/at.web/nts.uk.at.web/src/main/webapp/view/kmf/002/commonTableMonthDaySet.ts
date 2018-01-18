@@ -4,6 +4,10 @@ module nts.uk.at.view.kmf002 {
     
     export module viewmodel {
         export class CommonTableMonthDaySet { 
+        
+            cssRangerY: any;
+            cssRangerYM: any;
+            cssRangerYMD: any;
 
             inLegalHoliday: KnockoutObservable<number>;
             publicHDManageYear: KnockoutObservable<number>;
@@ -33,7 +37,12 @@ module nts.uk.at.view.kmf002 {
                 _self.arrMonth = ko.observableArray([]);
                 for (let i=1; i<=12; i++) {
                     _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(''), 'enable': ko.observable(true)});
-                } 
+                }
+                
+                // Define styles
+               _self.cssRangerY = [];
+               _self.cssRangerYM = {};
+               _self.cssRangerYMD = {};
                 
                 _.forEach(_self.arrMonth(), function(newValue) {
                     newValue.day.subscribe(function(newValue) {
