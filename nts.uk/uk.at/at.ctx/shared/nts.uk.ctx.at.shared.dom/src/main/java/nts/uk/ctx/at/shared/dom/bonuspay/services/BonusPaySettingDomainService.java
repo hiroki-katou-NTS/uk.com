@@ -27,11 +27,17 @@ public class BonusPaySettingDomainService implements BonusPaySettingService {
 
 	@Override
 	public void addBonusPaySetting(BonusPaySetting domain) {
+		String code = domain.getCode().v();
+		if(code.length()==1){
+			code = "00"+code;
+		}else if(code.length()==2){
+			code = "0"+code;
+		}
 		bpTimesheetRepository.addListTimesheet(domain.getCompanyId().toString(),
-				new BonusPaySettingCode(domain.getCode().toString()), domain.getLstBonusPayTimesheet());
+				new BonusPaySettingCode(code), domain.getLstBonusPayTimesheet());
 		specBPTimesheetRepository.addListTimesheet(domain.getCompanyId().toString(),
-				new BonusPaySettingCode(domain.getCode().toString()), domain.getLstSpecBonusPayTimesheet());
-		bpSettingRepository.addBonusPaySetting(domain);
+				new BonusPaySettingCode(code), domain.getLstSpecBonusPayTimesheet());
+		bpSettingRepository.addBonusPaySetting(BonusPaySetting.createFromJavaType(domain.getCompanyId().toString(), code, domain.getName().v(), domain.getLstBonusPayTimesheet(), domain.getLstSpecBonusPayTimesheet()));
 	}
 
 	@Override
