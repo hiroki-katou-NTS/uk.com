@@ -311,16 +311,20 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		// TODO Auto-generated method stub
 		Optional<AffJobTitleHistory_ver1> optAffJobtitle = affJobTitleHisRepo_ver1.getByEmpIdAndStandardDate(employeeId,
 				baseDate);
-		if (optAffJobtitle.isPresent()) {
-			AffJobTitleHistory_ver1Export result = new AffJobTitleHistory_ver1Export();
-			AffJobTitleHistory_ver1 affJob = optAffJobtitle.get();
-			result.setCompanyId(affJob.getCompanyId());
-			result.setEmployeeId(affJob.getEmployeeId());
-			result.setHistoryItems(affJob.getHistoryItems());
-			return Optional.of(result);
-		} else {
+		if (!optAffJobtitle.isPresent())
 			return Optional.empty();
-		}
+
+		AffJobTitleHistory_ver1 affJob = optAffJobtitle.get();
+
+		if (affJob.getHistoryItems().isEmpty())
+			return Optional.empty();
+
+		String hisId = affJob.getHistoryItems().get(0).identifier();
+
+		AffJobTitleHistoryItem_ver1 optAffJobtitleItem = affJobTitleHisItemRepo_ver1.findByHitoryId(hisId).get();
+
+		return Optional.of(new AffJobTitleHistory_ver1Export(affJob.getCompanyId(), affJob.getEmployeeId(), optAffJobtitleItem.getJobTitleId(), affJob.getHistoryItems()));
+
 	}
 
 }
