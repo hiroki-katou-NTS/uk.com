@@ -43,6 +43,13 @@ public class TimezoneUse extends TimeZone {
 		this.end = end;
 	}
 
+	/**
+	 * Disable.
+	 */
+	public void disable() {
+		this.useAtr = UseSetting.NOT_USE;
+	}
+
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TimeZone#validate()
 	 */
@@ -74,6 +81,11 @@ public class TimezoneUse extends TimeZone {
 		this.workNo = memento.getWorkNo();
 		this.start = memento.getStart();
 		this.end = memento.getEnd();
+		
+		// If Work No is 1, useAtr allway is USE.
+		if (this.workNo == SHIFT_ONE) {
+			this.useAtr = UseSetting.USE;
+		}
 	}
 	
 	/**

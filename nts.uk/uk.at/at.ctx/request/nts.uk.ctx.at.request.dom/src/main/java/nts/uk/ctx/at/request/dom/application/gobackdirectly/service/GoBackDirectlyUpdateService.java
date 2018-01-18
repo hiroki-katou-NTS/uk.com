@@ -14,5 +14,5 @@ public interface GoBackDirectlyUpdateService {
 	 * アルゴリズム「直行直帰更新」を実行する
 	 * @param goBackDirectly
 	 */
-	public void updateGoBackDirectly(GoBackDirectly goBackDirectly, Application_New application);
+	public void updateGoBackDirectly(GoBackDirectly goBackDirectly, Application_New application, Long version);
 }

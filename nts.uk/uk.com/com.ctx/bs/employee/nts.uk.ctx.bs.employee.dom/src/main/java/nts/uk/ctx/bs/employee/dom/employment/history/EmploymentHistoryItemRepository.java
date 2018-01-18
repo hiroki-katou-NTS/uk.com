@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.employment.history;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -35,5 +36,34 @@ public interface EmploymentHistoryItemRepository {
 	 */
 	void delete(String histId);
 	
-	
+	/**
+	 * Search employee.
+	 *
+	 * @param baseDate the base date
+	 * @param employmentCodes the employment codes
+	 * @return the list
+	 */
+	List<EmploymentHistoryItem> searchEmployee(GeneralDate baseDate, List<String> employmentCodes );
+
+	/**
+	 * Search employee.
+	 *
+	 * @param employeeIds the employee ids
+	 * @param baseDate the base date
+	 * @param employmentCodes the employment codes
+	 * @return the list
+	 */
+	List<EmploymentHistoryItem> searchEmployee(List<String> employeeIds, 
+			GeneralDate baseDate, List<String> employmentCodes );
+
+	/**
+	 * Search employment of sids.
+	 *
+	 * @param employeeIds the employee ids
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	List<EmploymentHistoryItem> searchEmploymentOfSids(List<String> employeeIds,
+			GeneralDate baseDate);
+
 }

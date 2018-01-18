@@ -179,17 +179,19 @@ public class EmpCtgFinder {
 			return infoList;
 		query.setCtgType(perInfoCtg.getCategoryType().value);
 		// get combobox object
-		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED)
+		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED) {
 			infoList = getInfoListOfOptionalCtg(perInfoCtg, query);
-		query.setCategoryCode(perInfoCtg.getCategoryCode().v());
-		infoList = layoutingProcessor.getListFirstItems(query);
+		} else {
+			query.setCategoryCode(perInfoCtg.getCategoryCode().v());
+			infoList = layoutingProcessor.getListFirstItems(query);
+		}
 
 		boolean isSelf = query.getEmployeeId().equals(empIdCurrentLogin);
 		PersonInfoCategoryAuth ctgAuth = personInfoCategoryAuthRepository
 				.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
 
 		infoList.stream().filter(x -> {
-			return checkRole(ctgAuth, roleId, x.getOptionValue(), isSelf, isSameCom);
+			return checkRole(ctgAuth, roleId, query.getCategoryId(), isSelf, isSameCom);
 		}).collect(Collectors.toList());
 		return fiterOfContHist(ctgAuth, infoList, roleId, isSelf);
 	}
@@ -307,7 +309,9 @@ public class EmpCtgFinder {
 	}
 
 	private String dateToString(String dateValue, PeregQuery query) {
-		return GeneralDate.max().equals(GeneralDate.fromString(dateValue, "yyyy/MM/dd")) && query.getCtgType() == 3 ? ""
+		/*return GeneralDate.max().equals(GeneralDate.fromString(dateValue, "yyyy/MM/dd")) && query.getCtgType() == 3 ? ""
+				: dateValue;*/
+		return GeneralDate.max().equals(GeneralDate.fromString(dateValue, "yyyy/MM/dd"))? ""
 				: dateValue;
 	}
 
@@ -332,11 +336,11 @@ public class EmpCtgFinder {
 	private List<ComboBoxObject> fiterOfContHist(PersonInfoCategoryAuth perInfoCtgAuth, List<ComboBoxObject> infoList,
 			String roleId, boolean isSelf) {
 		GeneralDate today = GeneralDate.today();
-		infoList.stream().filter(x -> {
-			boolean isPast = true;
+		return infoList.stream().filter(x -> {
+			boolean isPast = false;
 			String enddate = x.getOptionText().substring(13);
 			if (!enddate.equals("")) {
-				isPast = today.afterOrEquals(GeneralDate.fromString(enddate, "yyyy/MM/dd"));
+				isPast = today.after(GeneralDate.fromString(enddate, "yyyy/MM/dd"));
 			}
 			if (!isPast) {
 				return isSelf ? perInfoCtgAuth.getSelfFutureHisAuth() != PersonInfoAuthType.HIDE
@@ -346,7 +350,6 @@ public class EmpCtgFinder {
 						: perInfoCtgAuth.getOtherPastHisAuth() != PersonInfoAuthType.HIDE;
 			}
 		}).collect(Collectors.toList());
-		return infoList;
 	}
 
 	private boolean checkRole(PersonInfoCategoryAuth perInfoCtgAuth, String roleId, String categoryId, boolean isSelf,
@@ -361,14 +364,18 @@ public class EmpCtgFinder {
 			} else
 				return false;
 		} else {
-			if (!isSameCom)
-				return false;
+			if (!isSameCom) {
+				if(perInfoCtgAuth.getAllowOtherCompanyRef() == PersonInfoPermissionType.NO) return false;
+			}
+			/*
 			if (!(perInfoCtgAuth.getAllowOtherCompanyRef() == PersonInfoPermissionType.NO))
-				return false;
+				return false;*/
 			if (perInfoCtgAuth.getAllowOtherRef() == PersonInfoPermissionType.YES) {
 				List<PersonInfoItemAuth> lstItemAuths = itemAuth.getAllItemAuth(roleId, categoryId);
-				return lstItemAuths.stream().filter(item -> item.getOtherAuth().value == 1).collect(Collectors.toList())
-						.size() != lstItemAuths.size();
+				int hiddenItemsSize =  lstItemAuths.stream().filter(item -> item.getOtherAuth().value == 1).collect(Collectors.toList())
+						.size();
+				int itemSize = lstItemAuths.size();
+				return hiddenItemsSize != itemSize;
 			} else
 				return false;
 		}

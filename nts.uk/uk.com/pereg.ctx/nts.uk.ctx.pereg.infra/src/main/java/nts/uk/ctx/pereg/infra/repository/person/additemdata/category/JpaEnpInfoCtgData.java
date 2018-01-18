@@ -48,7 +48,12 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 
 	@Override
 	public void addCategoryData(EmpInfoCtgData domain) {
-		this.commandProxy().insert(toEntity(domain));
+		Optional<PpemtEmpInfoCtgData> existItem = this.queryProxy().find(domain.getRecordId(),
+				PpemtEmpInfoCtgData.class);
+		if (!existItem.isPresent()) {
+			this.commandProxy().insert(toEntity(domain));
+		}
+		
 
 	}
 

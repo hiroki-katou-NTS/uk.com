@@ -105,7 +105,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             new ItemModel('2', '役職手当'),
             new ItemModel('3', '基本給2')]);
 
-        comboColumns: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 4 },
+        comboColumns: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 1 },
+            { prop: 'name', length: 2 }]);
+        comboColumnsCalc: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 1 },
             { prop: 'name', length: 8 }]);
          comboItemsDoWork : KnockoutObservable<any> = ko.observableArray([]);
          comboItemsReason : KnockoutObservable<any> = ko.observableArray([]);
@@ -227,7 +229,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         item['summaryOperands'] = [{
                             rowDisplayLabel: "合計",
                             type: "custom",
-                            summaryCalculator: $.proxy(self.totalNumber, this),
+                            summaryCalculator: $.proxy(self.totalMoney, this),
                             order: 0
                         }]
                     }
@@ -245,6 +247,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     endDate: moment(self.dateRanger().endDate).utc().toISOString()
                 },
                 displayFormat : 0,
+                initScreen: 0,
                 lstEmployee: [],
                 formatCodes: self.formatCodes()
             };
@@ -267,7 +270,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.employmentCode(data.employmentCode);
                 self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                 self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit));
-                self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto.manageAtr, data.substVacationDto.manageAtr, data.compensLeaveComDto.manageAtr, data.com60HVacationDto.manageAtr, self.showButton()));
+                self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto == null ? false : data.yearHolidaySettingDto.manageAtr, data.substVacationDto == null ? false : data.substVacationDto.manageAtr, data.compensLeaveComDto == null ? false : data.compensLeaveComDto.manageAtr, data.com60HVacationDto == null ? false : data.com60HVacationDto.manageAtr, self.showButton()));
                 // Fixed Header
                 self.fixHeaders(data.lstFixedHeader);
                 self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
@@ -314,7 +317,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             self.employmentCode(data.employmentCode);
                             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                             self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit));
-                            self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto.manageAtr, data.substVacationDto.manageAtr, data.compensLeaveComDto.manageAtr, data.com60HVacationDto.manageAtr, self.showButton()));
+                            self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto == null ? false : data.yearHolidaySettingDto.manageAtr, data.substVacationDto == null ? false : data.substVacationDto.manageAtr, data.compensLeaveComDto == null ? false : data.compensLeaveComDto.manageAtr, data.com60HVacationDto == null ? false : data.com60HVacationDto.manageAtr, self.showButton()));
                             // Fixed Header
                             self.fixHeaders(data.lstFixedHeader);
                             self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
@@ -367,19 +370,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
                 if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
                     if (data.columnKey.indexOf("Name") != -1) {
-//                        let value = "";
-//                        if (self.checkIsColumn(dataTemp.cellDatas, data.columnKey.substring(4, data.columnKey.length))) {
-//                            value = $("#dpGrid").igGrid("getCellValue", data.rowId, "NO" + data.columnKey.substring(4, data.columnKey.length));
-//                        }
-//                        else {
-//                            value = $("#dpGrid").igGrid("getCellValue", data.rowId, "Code" + data.columnKey.substring(4, data.columnKey.length));
-//                        }
-//                        //get layout , and type
-//                        let layoutAndType : any  = _.find(self.itemValueAll(), (item :any) =>{
-//                              return item.itemId == data.columnKey.substring(4, data.columnKey.length);
-//                            });
-//                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(4, data.columnKey.length), value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
-//                        dataChangeProcess.push(dataMap);
+                        // todo
                     } else {
                         //get layout , and type
                         let layoutAndType : any  = _.find(self.itemValueAll(), (item :any) =>{
@@ -405,25 +396,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dataChangeProcess.push(dataMap);
                 }
             });
-//            _.each(self.itemValueAllTemp(), (data: any) => {
-//                if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
-//                    let dataTemp = _.find(self.dpData, (item: any) => {
-//                        return item.id == data.rowId.substring(1, data.rowId.length);
-//                    });
-//                    let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-//                        return item.itemId == data.columnKey.substring(1, data.columnKey.length);
-//                    });
-//                    let value: any;
-//                    if (String(data.value).indexOf(':') !== -1) {
-//                        value = Number(data.value.split(':')[0]) * 60 + Number(data.value.split(':')[1]);
-//                    }
-//                    else {
-//                        value = data.value;
-//                    }
-//                    let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString());
-//                    dataChangeProcess.push(dataMap);
-//                }
-//            });
             let param = { itemValues: dataChangeProcess }
             if (dataChangeProcess.length > 0) {
                 let dfd = $.Deferred();
@@ -485,8 +457,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             return valueResult;
         }
+        
         getHours(value: any) : number{
             return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
+        }
+        
+        getHoursAll(value: any) : string{
+            if (value.indexOf(":") != -1) {
+                if (value.indexOf("-") != -1) {
+                    let valueTemp = value.split('-')[1];
+                    return String(Number(valueTemp.split(':')[0]) * 60 + Number(valueTemp.split(':')[1]));
+                } else {
+                    return String(Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]));
+                }
+            }else{
+               return value;
+            }
         }
         hideComponent() {
             var self = this;
@@ -525,10 +511,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 let param = {
                     dateRange: {
-                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                        startDate:  self.displayFormat() === 1 ?  moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                        endDate:  self.displayFormat() === 1 ?  moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
                     },
-                    displayFormat : 1,
+                    displayFormat : self.displayFormat(),
+                    initScreen: 1,
                     lstEmployee: lstEmployee,
                     formatCodes: self.formatCodes()
                 };
@@ -555,6 +542,42 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         showErrorDialog() {
             var self = this;
             let lstEmployee = [];
+            let uiErrors = nts.uk.ui.errors.getErrorList();
+            let errorValidateScreeen : any = [];
+            if (self.displayFormat() === 0) {
+                _.each(uiErrors, value => {
+                    let dateCon = _.find(self.dpData, (item: any) => {
+                        return item.id == value.rowId.substring(1, value.rowId.length);
+                    });
+
+                    let object = { date: dateCon.date , employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: value.message, itemName: "", columnKey: value.columnKey };
+                    let item = _.find(self.lstAttendanceItem(), (data) => {
+                        return String(data.id) === value.columnKey.substring(1, value.columnKey.length);
+                    })
+                    object.itemName = (item == undefined) ? "" : item.name; 
+                    errorValidateScreeen.push(object);
+                });
+            } else {
+                _.each(uiErrors, value => {
+                    let dateCon = _.find(self.dpData, (item: any) => {
+                        return item.id == value.rowId.substring(1, value.rowId.length);
+                    });
+
+                    let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: value.message, itemName: "", columnKey: value.columnKey };
+                    let item = _.find(self.lstAttendanceItem(), (data) => {
+                        return String(data.id) === value.columnKey.substring(1, value.columnKey.length);
+                    })
+                    object.itemName = (item == undefined) ? "" : item.name;
+                    errorValidateScreeen.push(object);
+                });
+            };
+//            errorValidateScreeen = [{ date: moment(self.dateRanger().startDate, "YYYY/MM/DD"), employeeCode: "00000001", employeeName: "AAA", message: "Loi gi", itemName: "AAAA", columnKey:"A312" }];
+//            _.each(errorValidateScreeen, value =>{
+//                let item = _.find(self.lstAttendanceItem(), (data) => {
+//                    return String(data.id) === value.columnKey.substring(1, value.columnKey.length);
+//                })
+//                value.itemName = (item == undefined) ? "" : item.name; 
+//            })
             if (self.displayFormat() === 0) {
                 lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
@@ -570,6 +593,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 lstEmployee: lstEmployee
             };
             nts.uk.ui.windows.setShared("paramToGetError", param);
+            nts.uk.ui.windows.setShared("errorValidate", errorValidateScreeen);
             nts.uk.ui.windows.sub.modal("/view/kdw/003/b/index.xhtml").onClosed(() => {
             });
         }
@@ -592,10 +616,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (errorCodes != undefined) {
                         let param = {
                             dateRange: {
-                                startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                                endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                                startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                                endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
                             },
                             lstEmployee: lstEmployee,
+                            displayFormat : self.displayFormat(),
                             errorCodes: errorCodes,
                             formatCodes: self.formatCodes()
                         };
@@ -637,11 +662,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             lstEmployee = self.lstEmployee();
                         }
                         let param = {
-                            dateRange: {
-                                startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                                endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                           dateRange: {
+                                startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                                endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
                             },
                             lstEmployee: lstEmployee,
+                            displayFormat : self.displayFormat(),
                             formatCodes: data
                         };
                         nts.uk.ui.block.invisible();
@@ -891,8 +917,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         
         totalNumber(data) {
             let total = 0;
-            let currentPageIndex = $("#grid2").igGridPaging("option", "currentPageIndex");
-            let pageSize = $("#grid2").igGridPaging("option", "pageSize");
+            let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
             let startIndex: any = currentPageIndex * pageSize;
             let endIndex: any = startIndex + pageSize;
             _.forEach(data, function(d, i) {
@@ -903,8 +929,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return total;
         }
         totalTime(data) {
-            let currentPageIndex = $("#grid2").igGridPaging("option", "currentPageIndex");
-            let pageSize = $("#grid2").igGridPaging("option", "pageSize");
+            let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
             let startIndex: any = currentPageIndex * pageSize;
             let endIndex: any = startIndex + pageSize;
             let total = moment.duration("0");
@@ -918,6 +944,29 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let roundMin = Math.round(minute);
             let minuteStr = roundMin < 10 ? ("0" + roundMin) : String(roundMin);
             return hour + ":" + minuteStr;
+        }
+        
+         totalMoney(data) {
+            let total = 0;
+            let currentPageIndex = $("#dpGrid").igGridPaging("option", "currentPageIndex");
+            let pageSize = $("#dpGrid").igGridPaging("option", "pageSize");
+            let startIndex: any = currentPageIndex * pageSize;
+            let endIndex: any = startIndex + pageSize;
+            _.forEach(data, function(d, i) {
+                 let  valueResult = "";
+                if (i < startIndex || i >= endIndex) return;
+                if (String(d).indexOf(",") != -1) {
+                    for (let i = 0; i < String(d).split(',').length; i++) {
+                        valueResult += String(d).split(',')[i];
+                    }
+                    let n = parseFloat(valueResult);
+                    if (!isNaN(n)) total += n;
+                }else{
+                    let n = parseFloat(d);
+                    if (!isNaN(n)) total += n;
+                }
+            });
+            return total;
         }
         //load kcp009 component: employee picker
         loadKcp009() {
@@ -1121,9 +1170,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     },
                     { name: 'TextEditorNumberSeparated', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } },
                     { name: 'TextEditorTimeShortHM', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } },
-                    { name: 'ComboboxCalc', options: self.comboItemsCalc(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
-                    { name: 'ComboboxReason', options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
-                    { name: 'ComboboxDoWork', options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
+                    { name: 'ComboboxCalc',  width: '250px', options: self.comboItemsCalc(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumnsCalc(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                    { name: 'ComboboxReason',  width: '120px',  options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                    { name: 'ComboboxDoWork',  width: '120px', options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                     {
                         name: 'FlexImage', source: 'ui-icon ui-icon-locked', click: function(key, rowId, evt) {
                             let data = $("#dpGrid").igGrid("getCellValue", rowId, key);
@@ -1191,23 +1240,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                            // $("#dpGrid").igGridUpdating("setCellValue", ui.rowID, "Name" + ui.columnKey.substring(4, ui.columnKey.length), (data == undefined ? "Not found" : data.name));
                            // nts.uk.ui.block.clear();
                             var object = {};
-                            object["Name" + ui.columnKey.substring(4, ui.columnKey.length)] = (data == undefined ? "なし" : data.name);
+                            object["Name" + ui.columnKey.substring(4, ui.columnKey.length)] = (data == undefined ? nts.uk.resource.getText("KDW003_81") : data.name);
                             $("#dpGrid").ntsGrid("updateRow", ui.rowID, object);
                             dfd.resolve();
                         });
                         dfd.promise();
                     }
-                } else {
-                    let itemTemp = _.find(self.itemValueAllTemp(), item => {
-                        if (item.columnKey == ui.columnKey && item.rowId == ui.rowID) {
-                            item.value = ui.value;
-                            return item.columnKey == ui.columnKey && item.rowId == ui.rowID;
-                        }
-                    })
-                    if (!itemTemp) {
-                        self.itemValueAllTemp().push({ columnKey: ui.columnKey, rowId: ui.rowID, value: ui.value })
-                    }
-                    }
+                } 
             });
         }
         
@@ -1248,9 +1287,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                      if (header.constraint == null) {
                         delete header.constraint;
                     }
-//                    if(header.key == "state"){
-//                         header["template"] =  "<img width = '30' height = '30' src = ${state}></img>"
-//                      }
                     tempList.push(header);
                 });
             } else if (mode == 1) {
@@ -1277,6 +1313,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     delete header.constraint;
                 }else{
                     header.constraint["cDisplayType"] = header.constraint.cdisplayType;
+                    if(header.constraint.cdisplayType.indexOf("Currency") != -1){
+                       header["columnCssClass"] =  "currency-symbol";
+                    }
                     delete header.constraint.cdisplayType;
                 }
                 if (header.group != undefined) {

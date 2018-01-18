@@ -11,11 +11,11 @@ public class TimeDigestionVacationDailyPerformDto {
 
 	/** 不足時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "不足時間")
-	@AttendanceItemValue(itemId = 549, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer shortageTime;
 
 	/** 使用時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "使用時間")
-	@AttendanceItemValue(itemId = 550, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer useTime;
 }

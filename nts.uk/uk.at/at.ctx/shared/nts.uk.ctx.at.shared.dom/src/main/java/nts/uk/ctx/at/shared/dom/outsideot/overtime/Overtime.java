@@ -59,6 +59,15 @@ public class Overtime extends DomainObject{
 		memento.setOvertime(this.overtime);
 		memento.setOvertimeNo(this.overtimeNo);
 	}
+	
+	/**
+	 * Checks if is use class.
+	 *
+	 * @return the boolean
+	 */
+	public Boolean isUseClass() {
+		return this.useClassification == UseClassification.UseClass_Use;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

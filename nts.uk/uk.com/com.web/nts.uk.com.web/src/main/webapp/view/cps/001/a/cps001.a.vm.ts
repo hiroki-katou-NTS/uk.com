@@ -253,16 +253,12 @@ module cps001.a.vm {
                 reload = getShared(RELOAD_KEY),
                 reloadData = getShared(RELOAD_DT_KEY),
                 employee = self.employee(),
-                employees = ko.toJS(self.employees),
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             if (reload) {
-                if (employees.length == 1) {
-                    $('.btn-quick-search[tabindex=4]').click();
-                } else {
-                    $('.btn-quick-search[tabindex=3]').click();
-                }
-
+                let single = self.employees().length == 1;
+                self.employees.removeAll();
+                $('.btn-quick-search[tabindex=3]').click();
                 $.when((() => {
                     let def = $.Deferred(),
                         int = setInterval(() => {
@@ -272,7 +268,10 @@ module cps001.a.vm {
                             }
                         }, 0);
                     return def.promise();
-                })()).done(x => {
+                })()).done((employees: Array<IEmployee>) => {
+                    if (single) {
+                        self.employees(_.filter(employees, m => m.employeeId == employee.employeeId()));
+                    }
                     employee.employeeId.valueHasMutated();
                 });
             } else {
@@ -294,10 +293,9 @@ module cps001.a.vm {
                         return def.promise();
                     })()).done((employees: Array<IEmployee>) => {
                         if (params && params.employeeId) {
-                            employees = _.filter(employees, m => m.employeeId == params.employeeId);
-                            self.employees(employees);
+                            self.employees(_.filter(employees, m => m.employeeId == params.employeeId));
                         }
-                        employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                        employee.employeeId(self.employees()[0] ? self.employees()[0].employeeId : undefined);
                         setShared(RELOAD_KEY, true);
                     });
                 });
@@ -424,12 +422,8 @@ module cps001.a.vm {
                 };
 
             // trigger change of all control in layout
-            _.each(__viewContext.primitiveValueConstraints, x => {
-                if (_.has(x, "itemCode")) {
-                    $('#' + x.itemCode).trigger('change');
-                }
-            })
-
+            $('.drag-panel .nts-input').trigger('change');
+            
             if (hasError()) {
                 $('#func-notifier-errors').trigger('click');
                 return;
@@ -446,6 +440,7 @@ module cps001.a.vm {
                     };
 
                 setShared(RELOAD_DT_KEY, saveData);
+                setShared(REPL_KEY, REPL_KEYS.NORMAL);
 
                 info({ messageId: "Msg_15" }).then(function() {
                     unblock();
@@ -539,7 +534,7 @@ module cps001.a.vm {
 
                 permision4Cat(roleId, catId).done((perm: ICatAuth) => {
                     if (perm && !!(selEmId == logInId ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
-                        self.changTitle(ATCS.ADD);
+                        self.changeTitle(ATCS.ADD);
                         setShared(REPL_KEY, REPL_KEYS.ADDNEW);
 
                         self.infoId(undefined);
@@ -592,7 +587,7 @@ module cps001.a.vm {
 
                 permision4Cat(roleId, catId).done((perm: ICatAuth) => {
                     if (perm && !!(selEmId == logInId ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
-                        self.changTitle(ATCS.COPY);
+                        self.changeTitle(ATCS.COPY);
                         setShared(REPL_KEY, REPL_KEYS.REPLICATION);
                         self.infoId.valueHasMutated();
                         //self.id.valueHasMutated();
@@ -632,6 +627,9 @@ module cps001.a.vm {
 
             self.id.subscribe(id => {
                 let mode: TABS = self.mode();
+
+                setShared(REPL_KEY, REPL_KEYS.NORMAL);
+
                 if (id) {
                     if (mode == TABS.CATEGORY) {
                         let option = _.find(self.combobox(), x => x.optionValue == id);
@@ -705,7 +703,7 @@ module cps001.a.vm {
                             case IT_CAT_TYPE.SINGLE:
                                 self.infoId(undefined);
 
-                                self.changTitle(ATCS.UPDATE);
+                                self.changeTitle(ATCS.UPDATE);
 
                                 service.getCatData(query).done(data => {
                                     if (data) {
@@ -732,6 +730,8 @@ module cps001.a.vm {
                                     service.getHistData(query).done((data: Array<any>) => {
                                         if (data && data.length) {
                                             self.gridlist(data);
+                                            self.changeTitle(ATCS.UPDATE);
+
                                             if (!loadData || !loadData.infoId) {
                                                 if (self.infoId() != data[0].optionValue) {
                                                     self.infoId(data[0].optionValue);
@@ -748,15 +748,27 @@ module cps001.a.vm {
                                         } else {
                                             self.events.add();
                                             self.gridlist.removeAll();
+                                            self.changeTitle(ATCS.ADD);
                                             setShared(REPL_KEY, undefined);
-                                            self.infoId.valueHasMutated();
+
+                                            if (self.infoId()) {
+                                                self.infoId(undefined);
+                                            } else {
+                                                self.infoId.valueHasMutated();
+                                            }
                                         }
                                         setShared(RELOAD_DT_KEY, undefined);
                                     }).fail(mgs => {
                                         self.gridlist.removeAll();
+                                        self.changeTitle(ATCS.ADD);
                                         setShared(REPL_KEY, undefined);
                                         setShared(RELOAD_DT_KEY, undefined);
-                                        self.infoId.valueHasMutated();
+
+                                        if (self.infoId()) {
+                                            self.infoId(undefined);
+                                        } else {
+                                            self.infoId.valueHasMutated();
+                                        }
                                     });
                                 } else {
                                     self.infoId.valueHasMutated();
@@ -775,27 +787,18 @@ module cps001.a.vm {
 
                 if (id && mode == TABS.CATEGORY) {
                     let catid = self.categoryId(),
-                        query = {
-                            infoId: infoId,
-                            categoryId: catid || id,
-                            personId: self.personId(),
-                            employeeId: self.employeeId(),
-                            standardDate: undefined,
-                            categoryCode: cat.categoryCode()
-                        },
                         rep: number = getShared(REPL_KEY) || REPL_KEYS.NORMAL;
 
                     if ([REPL_KEYS.NORMAL, REPL_KEYS.REPLICATION, REPL_KEYS.ADDNEW].indexOf(rep) > -1) {
                         let catid = self.categoryId(),
                             query = {
-                                infoId: self.infoId(),
+                                infoId: infoId,
                                 categoryId: catid || id,
                                 personId: self.personId(),
                                 employeeId: self.employeeId(),
                                 standardDate: undefined,
                                 categoryCode: cat.categoryCode()
                             };
-
                         service.getCatData(query).done(data => {
                             if (rep == REPL_KEYS.ADDNEW) {
                                 setShared(REPL_KEY, REPL_KEYS.NORMAL);
@@ -822,7 +825,7 @@ module cps001.a.vm {
                                     }
                                 });
                             } else if (self.infoId()) {
-                                self.changTitle(ATCS.UPDATE);
+                                self.changeTitle(ATCS.UPDATE);
                             }
                             layout.listItemCls(data.classificationItems);
 
@@ -833,7 +836,7 @@ module cps001.a.vm {
                                 let selEmId: string = self.employeeId(),
                                     logInId: string = __viewContext.user.employeeId;
 
-                                if (perm && !!(selEmId == logInId ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
+                                if (perm && !!(selEmId == logInId ? (perm.selfAllowAddHis && perm.selfFutureHisAuth == 3) : (perm.otherAllowAddHis && perm.otherFutureHisAuth == 3))) {
                                     self.permisions.add(true);
                                     self.permisions.replace(true);
                                 } else {
@@ -855,7 +858,7 @@ module cps001.a.vm {
             });
         }
 
-        changTitle = (action: ATCS) => {
+        changeTitle = (action: ATCS) => {
             let self = this,
                 title = self.title,
                 category = self.category(),

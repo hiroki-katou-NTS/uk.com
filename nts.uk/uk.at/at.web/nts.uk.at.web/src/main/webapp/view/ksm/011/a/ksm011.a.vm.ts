@@ -109,6 +109,7 @@ module nts.uk.at.view.ksm011 {
 
     export module a.viewmodel {
         export class ScreenModel {
+            dataModel: KnockoutObservable<ScheFuncControlDto>;
             alarmCheckAtr: KnockoutObservableArray<any>;
             selectedAlarm: KnockoutObservable<number>;
             confirmedAtr: KnockoutObservableArray<any>;
@@ -199,14 +200,14 @@ module nts.uk.at.view.ksm011 {
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
     
-                self.selectedAlarm = ko.observable(0);
+                self.selectedAlarm = ko.observable(1);
                 
                 self.confirmedAtr = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
     
-                self.selectedConfirmed = ko.observable(0);
+                self.selectedConfirmed = ko.observable(1);
                 
                 self.publicAtr = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
@@ -220,7 +221,7 @@ module nts.uk.at.view.ksm011 {
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
     
-                self.selectedOutput = ko.observable(0);
+                self.selectedOutput = ko.observable(1);
                 
                 self.workDevision = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
@@ -261,14 +262,14 @@ module nts.uk.at.view.ksm011 {
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
     
-                self.selectedShortName = ko.observable(0);
+                self.selectedShortName = ko.observable(1);
                 
                 self.timeDisp = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_9") }
                 ]);
     
-                self.selectedTime = ko.observable(0);
+                self.selectedTime = ko.observable(1);
                 
                 self.symbols = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_8") },
@@ -320,28 +321,28 @@ module nts.uk.at.view.ksm011 {
                     { code: 1, name: nts.uk.resource.getText("KSM011_30") }
                 ]);
     
-                self.selectedRegular = ko.observable(0);
+                self.selectedRegular = ko.observable(1);
                 
                 self.fluidWork = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_29") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_30") }
                 ]);
     
-                self.selectedFluid = ko.observable(0);
+                self.selectedFluid = ko.observable(1);
                 
                 self.workForFlex = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_29") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_30") }
                 ]);
     
-                self.selectedFlex = ko.observable(0);
+                self.selectedFlex = ko.observable(1);
                 
                 self.overtime = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KSM011_29") },
                     { code: 1, name: nts.uk.resource.getText("KSM011_30") }
                 ]);
     
-                self.selectedOvertime = ko.observable(0);
+                self.selectedOvertime = ko.observable(1);
                 
                 //Block 6
                 self.generalCreated = ko.observableArray([
@@ -374,8 +375,8 @@ module nts.uk.at.view.ksm011 {
                 self.selectedCompFunc = ko.observable(0);
                 
                 self.optionComplete = ko.observableArray([
-                    { id: 0, name: nts.uk.resource.getText("KSM011_42") },
-                    { id: 1, name: nts.uk.resource.getText("KSM011_43") }
+                    { id: 0, name: nts.uk.resource.getText("KSM011_41") },
+                    { id: 1, name: nts.uk.resource.getText("KSM011_42") }
                 ]);
     
                 self.selectedOptionComp = ko.observable(0);
@@ -424,7 +425,7 @@ module nts.uk.at.view.ksm011 {
                     { id: 1, name: nts.uk.resource.getText("KSM011_52") }
                 ]);
     
-                self.selectedRetrieval = ko.observable(0);
+                self.selectedRetrieval = ko.observable(1);
                 
                 //Subscribes
                 self.selectedCompFunc.subscribe(function(value) {
@@ -481,9 +482,16 @@ module nts.uk.at.view.ksm011 {
                 var self = this;
                 var dfd = $.Deferred();
                 
-                
-                
-                dfd.resolve();
+               service.findScheFuncControl().done(function(data) {
+                    
+                    if(data != null) {
+                        
+                    }
+                    
+                    dfd.resolve(data);
+                }).fail(function(res) {
+                    dfd.reject(res);    
+                });
 
                 return dfd.promise();
             }
@@ -494,6 +502,55 @@ module nts.uk.at.view.ksm011 {
             registration() {
                 var self = this;
                 
+                // clear all error
+                nts.uk.ui.errors.clearAll();
+                
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
+                
+                //var conditions = new ScheFuncCondDto();
+                
+                var data = new ScheFuncControlDto({
+                                alarmCheckUseCls: self.selectedAlarm(), 
+                                confirmedCls: self.selectedConfirmed(), 
+                                publicCls: self.selectedPublic(), 
+                                outputCls: self.selectedOutput(), 
+                                workDormitionCls: self.selectedWorkDivision(), 
+                                teamCls: self.selectedTeamDivision(), 
+                                rankCls: self.selectedRank(), 
+                                startDateInWeek: self.selectedDay(), 
+                                shortNameDisp: self.selectedShortName(), 
+                                timeDisp: self.selectedTime(), 
+                                symbolDisp: self.selectedSymbol(), 
+                                twentyEightDaysCycle: self.selectedDispOn28th(), 
+                                lastDayDisp: self.selectedIndication(), 
+                                individualDisp: self.selectedIndividual(), 
+                                dispByDate: self.selectedDate(), 
+                                indicationByShift: self.selectedIndicationByShift(),
+                                regularWork: self.selectedRegular(), 
+                                fluidWork: self.selectedFluid(), 
+                                workingForFlex: self.selectedFlex(), 
+                                overtimeWork: self.selectedOvertime(), 
+                                normalCreation: self.selectedGeneral(), 
+                                simulationCls: self.selectedSimulation(), 
+                                captureUsageCls: self.selectedCapture(), 
+                                completedFuncCls: self.selectedCompFunc(), 
+                                howToComplete: self.selectedOptionComp(), 
+                                alarmCheckCls: self.selectedAlarmCheck(), 
+                                executionMethod: self.selectedAlarmMethod(), 
+                                handleRepairAtr: self.selectedUnhooking(), 
+                                confirm: self.selectedConfirm(), 
+                                searchMethod: self.selectedSearchMethod(), 
+                                searchMethodDispCls: self.selectedRetrieval(),
+                                scheFuncCond: null
+                });
+                
+                service.saveScheFuncControl(data).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId, messageParams: error.parameterIds });
+                });
             }
             
             /**
@@ -504,6 +561,123 @@ module nts.uk.at.view.ksm011 {
                     
                 });
             }
+        }
+        
+        class ScheFuncControlDto {
+            alarmCheckUseCls: number;
+            confirmedCls: number;
+            publicCls: number;
+            outputCls: number;
+            workDormitionCls: number;
+            teamCls: number;
+            rankCls: number;
+            startDateInWeek: number;
+            shortNameDisp: number;
+            timeDisp: number;
+            symbolDisp: number;
+            twentyEightDaysCycle: number;
+            lastDayDisp: number;
+            individualDisp: number;
+            dispByDate: number;
+            indicationByShift: number;
+            regularWork: number;
+            fluidWork: number;
+            workingForFlex: number;
+            overtimeWork: number;
+            normalCreation: number;
+            simulationCls: number;
+            captureUsageCls: number;
+            completedFuncCls: number;
+            howToComplete: number;
+            alarmCheckCls: number;
+            executionMethod: number;
+            handleRepairAtr: number;
+            confirm: number;
+            searchMethod: number;
+            searchMethodDispCls: number;
+            scheFuncCond: Array<ScheFuncCondDto>;
+            
+            constructor(param: IScheFuncControlDto) {
+                this.alarmCheckUseCls = param.alarmCheckUseCls;
+                this.confirmedCls = param.confirmedCls;
+                this.publicCls = param.publicCls;
+                this.outputCls = param.outputCls;
+                this.workDormitionCls = param.workDormitionCls;
+                this.teamCls = param.teamCls;
+                this.rankCls = param.rankCls;
+                this.startDateInWeek = param.startDateInWeek;
+                this.shortNameDisp = param.shortNameDisp;
+                this.timeDisp = param.timeDisp;
+                this.symbolDisp = param.symbolDisp;
+                this.twentyEightDaysCycle = param.twentyEightDaysCycle;
+                this.lastDayDisp = param.lastDayDisp;
+                this.individualDisp = param.individualDisp;
+                this.dispByDate = param.dispByDate;
+                this.indicationByShift = param.indicationByShift;
+                this.regularWork = param.regularWork;
+                this.fluidWork = param.fluidWork;
+                this.workingForFlex = param.workingForFlex;
+                this.overtimeWork = param.overtimeWork;
+                this.normalCreation = param.normalCreation;
+                this.simulationCls = param.simulationCls;
+                this.captureUsageCls = param.captureUsageCls;
+                this.completedFuncCls = param.completedFuncCls;
+                this.howToComplete = param.howToComplete;
+                this.alarmCheckCls = param.alarmCheckCls;
+                this.executionMethod = param.executionMethod;
+                this.handleRepairAtr = param.handleRepairAtr;
+                this.confirm = param.confirm;
+                this.searchMethod = param.searchMethod;
+                this.searchMethodDispCls = param.searchMethodDispCls;
+                this.scheFuncCond = param.scheFuncCond;
+            }
+        }
+        
+        interface IScheFuncControlDto {
+            alarmCheckUseCls: number;
+            confirmedCls: number;
+            publicCls: number;
+            outputCls: number;
+            workDormitionCls: number;
+            teamCls: number;
+            rankCls: number;
+            startDateInWeek: number;
+            shortNameDisp: number;
+            timeDisp: number;
+            symbolDisp: number;
+            twentyEightDaysCycle: number;
+            lastDayDisp: number;
+            individualDisp: number;
+            dispByDate: number;
+            indicationByShift: number;
+            regularWork: number;
+            fluidWork: number;
+            workingForFlex: number;
+            overtimeWork: number;
+            normalCreation: number;
+            simulationCls: number;
+            captureUsageCls: number;
+            completedFuncCls: number;
+            howToComplete: number;
+            alarmCheckCls: number;
+            executionMethod: number;
+            handleRepairAtr: number;
+            confirm: number;
+            searchMethod: number;
+            searchMethodDispCls: number;
+            scheFuncCond: Array<ScheFuncCondDto>;    
+        }
+        
+        class ScheFuncCondDto {
+            conditionNo: number;
+            
+            constructor(param: IScheFuncCondDto) {
+                this.conditionNo = param.conditionNo;
+            }
+        }
+        
+        interface IScheFuncCondDto {
+            conditionNo: number;  
         }
     }
 }

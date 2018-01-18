@@ -22,12 +22,12 @@ public class SettingItemDtoMapping {
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxFac;
 
-	public void setTextForItem(List<SettingItemDto> result, String employeeId) {
-		setTextForSelectionItem(result, employeeId);
+	public void setTextForItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate) {
+		setTextForSelectionItem(result, employeeId, baseDate);
 		setTextForSetItem(result);
 	}
 
-	public void setTextForSelectionItem(List<SettingItemDto> result, String employeeId) {
+	public void setTextForSelectionItem(List<SettingItemDto> result, String employeeId, GeneralDate baseDate) {
 
 		List<SettingItemDto> SelectionItemLst = result.stream()
 				.filter(x -> x.getDataType().equals(DataTypeValue.SELECTION)).collect(Collectors.toList());
@@ -36,7 +36,7 @@ public class SettingItemDtoMapping {
 			SelectionItemLst.forEach(item -> {
 
 				List<ComboBoxObject> comboxList = this.comboBoxFac.getComboBox(item.getSelectionItemRefType(),
-						item.getSelectionItemRefCd(), GeneralDate.today(), employeeId);
+						item.getSelectionItemRefCd(), baseDate, employeeId);
 
 				comboxList.forEach(cbItem -> {
 					if (cbItem.getOptionValue().equals(item.getSaveData().getValue())) {
@@ -87,11 +87,12 @@ public class SettingItemDtoMapping {
 		for (SettingItemDto childItem : childItems) {
 
 			if (!StringUtils.isEmpty(childItem.getSaveData().getValue().toString())) {
-				if (itemValue == "") {
+				if (itemValue.equals("")) {
 
 					itemValue = childItem.getSaveData().getValue().toString();
 				} else {
-					itemValue = String.join(getBetweenChar(childItem.getDataType()), itemValue, itemValue);
+					itemValue = String.join(getBetweenChar(childItem.getDataType()), itemValue,
+							childItem.getSaveData().getValue().toString());
 				}
 			}
 		}

@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto;
 
+import java.util.Arrays;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,13 +28,13 @@ public class ShortWorkTimeSheetDto {
 	private Integer childCareAttr;
 
 	/** 開始: 時刻(日区分付き) */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "開始", needCheckIDWithIndex = true, needCheckIDWithMethod = "childCare")
-	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
+	@AttendanceItemLayout(layout = "C", jpPropertyName = "開始", needCheckIDWithIndex = true, needCheckIDWithMethod = "childCare", methodForEnumValues = "childCareEnum")
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer startTime;
 
 	/** 終了: 時刻(日区分付き) */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "終了", needCheckIDWithIndex = true, needCheckIDWithMethod = "childCare")
-	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
+	@AttendanceItemLayout(layout = "D", jpPropertyName = "終了", needCheckIDWithIndex = true, needCheckIDWithMethod = "childCare", methodForEnumValues = "childCareEnum")
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer endTime;
 
 	/** 控除時間: 勤怠時間 */
@@ -49,7 +52,7 @@ public class ShortWorkTimeSheetDto {
 			return "";
 		}
 		
-		switch (childCareAttr) {
+		switch (childCareAttr - 1) {
 		case 0:
 			return "育児";
 		case 1:
@@ -57,5 +60,19 @@ public class ShortWorkTimeSheetDto {
 		default:
 			return "";
 		}
+	}
+	
+	public void childCare(String text){
+		if(childCareAttr == null){
+			if(text.contains("育児")){
+				this.childCareAttr = 0;
+			} else if (text.contains("介護")){
+				this.childCareAttr = 1;
+			}
+		}
+	}
+	
+	public List<String> childCareEnum(){
+		return Arrays.asList("育児", "介護");
 	}
 }

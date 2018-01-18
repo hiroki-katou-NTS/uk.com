@@ -267,7 +267,9 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 workplaceId: self.selectedTab() === 'company' ? null : __viewContext.viewModel.viewA.workplaceId,
                 listWorkType: __viewContext.viewModel.viewO.listWorkType(),
                 listWorkTime: __viewContext.viewModel.viewO.listWorkTime(),
-                selectedLinkButton: self.selectedTab() === 'company' ? self.selectedLinkButtonCom() : self.selectedLinkButtonWkp()
+                selectedLinkButton: self.selectedTab() === 'company' ? self.selectedLinkButtonCom() : self.selectedLinkButtonWkp(),
+                // listCheckNeededOfWorkTime for JA to JA send to JB
+                listCheckNeededOfWorkTime: __viewContext.viewModel.viewA.listCheckNeededOfWorkTime()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/ja/index.xhtml").onClosed(() => {
                 let selectedLB: any = ko.observable(getShared("dataFromJA").selectedLinkButton);
@@ -297,6 +299,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 text: self.textName(),
                 tooltip: self.tooltip(),
                 textDecision: nts.uk.resource.getText("KSU001_924"),
+                listCheckNeededOfWorkTime: __viewContext.viewModel.viewA.listCheckNeededOfWorkTime()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/jb/index.xhtml").onClosed(() => {
                 let data = getShared("dataFromJB");

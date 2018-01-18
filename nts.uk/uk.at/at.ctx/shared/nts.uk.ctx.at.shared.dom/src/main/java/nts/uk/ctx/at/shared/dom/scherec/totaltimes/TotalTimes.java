@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 /**
  * The Class TotalTimes.
  */
+// 回数集計
 @Getter
 public class TotalTimes extends AggregateRoot {
 
@@ -66,18 +67,21 @@ public class TotalTimes extends AggregateRoot {
 		this.totalCondition = memento.getTotalCondition();
 		this.totalSubjects = memento.getTotalSubjects();
 
-		// Validate
+		// Validate.
+		if (this.useAtr == UseAtr.NotUse) {
+			return;
+		}
 		if (CollectionUtil.isEmpty(this.totalSubjects)) {
 			throw new BusinessException("Msg_216", "KMK009_8");
 		} else {
-			if (!this.totalSubjects.stream()
+			if ((this.summaryAtr.equals(SummaryAtr.DUTYTYPE) || this.summaryAtr.equals(SummaryAtr.COMBINATION)) &&  !this.totalSubjects.stream()
 					.anyMatch(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKTYPE))) {
-				throw new BusinessException("Msg_216", "KMK009_8");
+				throw new BusinessException("Msg_10");
 			}
 
-			if (!this.totalSubjects.stream()
+			if ((this.summaryAtr.equals(SummaryAtr.WORKINGTIME) || this.summaryAtr.equals(SummaryAtr.COMBINATION)) && !this.totalSubjects.stream()
 					.anyMatch(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKINGTIME))) {
-				throw new BusinessException("Msg_216", "KMK009_9");
+				throw new BusinessException("Msg_29");
 			}
 		}
 	}

@@ -16,7 +16,6 @@ module a6 {
         isFlowMode: KnockoutObservable<boolean>;
         isFlexMode: KnockoutObservable<boolean>;
         isFixedMode: KnockoutObservable<boolean>;
-        isLoading: KnockoutObservable<boolean>;
         dataSourceFlow: KnockoutObservableArray<any>;
         dataSourceFlex: KnockoutObservableArray<any>;
         dataSourceFixed: KnockoutObservableArray<any>;
@@ -30,53 +29,12 @@ module a6 {
         /**
         * Constructor.
         */
-        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isLoading: KnockoutObservable<boolean>) {
+        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel) {
             let self = this;
             self.settingEnum = settingEnum;
             self.mainSettingModel = mainSettingModel;
-            self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
-            self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
-            self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
-            self.isLoading = isLoading;
-            self.dataSourceFlow = ko.observableArray([]);
-            self.dataSourceFlex = ko.observableArray([]);
-            self.dataSourceFixed = ko.observableArray([]);
+
             self.updateDataByUpdateModel();
-            self.lstWorkDayOffFrame = [];
-            self.isLoading.subscribe(function(isLoading: boolean){
-               self.updateDataByUpdateModel(); 
-            });
-            
-
-            self.dataSourceFlow.subscribe(function(dataFlow: any[]) {
-                var lstWorkTimezone: FlWorkHdTimeZoneDto[] = [];
-                var workTimezoneNo: number = 0;
-                for (var dataModel of dataFlow) {
-                    workTimezoneNo++;
-                    lstWorkTimezone.push(self.toModelFlowDto(dataModel, workTimezoneNo));
-                }
-                self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.updateHDTimezone(lstWorkTimezone);
-            });
-
-            self.dataSourceFlex.subscribe(function(dataFlex: any[]) {
-                var lstWorkTimezone: HDWorkTimeSheetSettingDto[] = [];
-                var workTimezoneNo: number = 0;
-                for (var dataModel of dataFlex) {
-                    workTimezoneNo++;
-                    lstWorkTimezone.push(self.toModelOtherFlowDto(dataModel, workTimezoneNo));
-                }
-                self.mainSettingModel.flexWorkSetting.offdayWorkTime.updateHDTimezone(lstWorkTimezone);
-            });
-
-            self.dataSourceFixed.subscribe(function(dataFixed: any[]) {
-                var lstWorkTimezone: HDWorkTimeSheetSettingDto[] = [];
-                var workTimezoneNo: number = 0;
-                for (var dataModel of dataFixed) {
-                    workTimezoneNo++;
-                    lstWorkTimezone.push(self.toModelOtherFlowDto(dataModel, workTimezoneNo));
-                }
-                self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.updateHDTimezone(lstWorkTimezone);
-            });
 
         }
 
@@ -93,7 +51,7 @@ module a6 {
                 dataSource: self.dataSourceFlow,
                 isMultipleSelect: true,
                 columns: self.columnSettingFlow(),
-                tabindex: -1
+                tabindex: 90
             };
             self.fixTableOptionFlex = {
                 maxRow: 10,
@@ -103,7 +61,7 @@ module a6 {
                 dataSource: self.dataSourceFlex,
                 isMultipleSelect: true,
                 columns: self.columnSettingOtherFlow(),
-                tabindex: -1
+                tabindex: 89
             };
             self.fixTableOptionFixed = {
                 maxRow: 10,
@@ -113,7 +71,7 @@ module a6 {
                 dataSource: self.dataSourceFixed,
                 isMultipleSelect: true,
                 columns: self.columnSettingOtherFlow(),
-                tabindex: -1
+                tabindex: 89
             };
         }
         /**
@@ -121,33 +79,13 @@ module a6 {
          */
         private updateDataByUpdateModel(): void {
             var self = this;
-            
-            // mode flow
-            if (self.isFlowMode()) {
-                var dataFlow: any[] = [];
-                for (var dataModelFlow of self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.lstWorkTimezone) {
-                    dataFlow.push(self.toModelFlowColumnSetting(dataModelFlow.toDto()));
-                }
-                self.dataSourceFlow(dataFlow);
-            }
-            
-            // mode flex
-            if (self.isFlexMode()) {
-                var dataFlex: any[] = [];
-                for (var dataModelFlex of self.mainSettingModel.flexWorkSetting.offdayWorkTime.lstWorkTimezone()) {
-                    dataFlex.push(self.toModelOtherFlowColumnSetting(dataModelFlex.toDto()));
-                }
-                self.dataSourceFlex(dataFlex);
-            }
-            
-            // mode fixed
-            if (self.isFixedMode()) {
-                var dataFixed: any[] = [];
-                for (var dataModelFixed of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.lstWorkTimezone()) {
-                    dataFixed.push(self.toModelOtherFlowColumnSetting(dataModelFixed.toDto()));
-                }
-                self.dataSourceFixed(dataFixed);
-            }
+            self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
+            self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
+            self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
+            //TODO chua lam flow
+
+            self.dataSourceFlex = self.mainSettingModel.flexWorkSetting.offdayWorkTime.convertedList;
+            self.dataSourceFixed = self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.convertedList;
         }
         /**
          * function convert dto to model
@@ -187,46 +125,6 @@ module a6 {
             };
             return dataDTO;
         }
-        /**
-         * function convert dto to model
-         */
-        private toModelOtherFlowColumnSetting(dataDTO: HDWorkTimeSheetSettingDto): any {
-            return {
-                timezone: ko.observable({ startTime: dataDTO.timezone.start, endTime: dataDTO.timezone.end }),
-                rounding: ko.observable(dataDTO.timezone.rounding.rounding),
-                roundingTime: ko.observable(dataDTO.timezone.rounding.roundingTime),
-                inLegalBreakFrameNo: ko.observable(dataDTO.inLegalBreakFrameNo),
-                outLegalBreakFrameNo: ko.observable(dataDTO.outLegalBreakFrameNo),
-                outLegalPubHolFrameNo: ko.observable(dataDTO.outLegalPubHDFrameNo)
-            }
-        }
-
-        /**
-         * function convert data model of client to parent
-         */
-        private toModelOtherFlowDto(dataModel: any, worktimeNo: number): HDWorkTimeSheetSettingDto {
-            var rounding: TimeRoundingSettingDto = {
-                roundingTime: dataModel.roundingTime(),
-                rounding: dataModel.rounding(),
-            };
-            var timezone: TimeZoneRoundingDto = {
-                rounding: rounding,
-                start: dataModel.timezone().startTime,
-                end: dataModel.timezone().endTime,
-            };
-            var dataDTO: HDWorkTimeSheetSettingDto = {
-                workTimeNo: worktimeNo,
-                timezone: timezone,
-                isLegalHolidayConstraintTime: false,
-                inLegalBreakFrameNo: dataModel.inLegalBreakFrameNo(),
-                isNonStatutoryDayoffConstraintTime: false,
-                isNonStatutoryHolidayConstraintTime: false,
-                outLegalBreakFrameNo: dataModel.outLegalBreakFrameNo(),
-                outLegalPubHDFrameNo: dataModel.outLegalPubHolFrameNo()
-            };
-            return dataDTO;
-        }
-
 
         /**
         * init array setting column option leave time mode
@@ -249,8 +147,8 @@ module a6 {
                     key: "inLegalBreakFrameNo",
                     dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 150,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 130,
+                    template: `<div data-key="workdayoffFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'workdayoffFrName',
@@ -264,8 +162,8 @@ module a6 {
                     key: "outLegalBreakFrameNo",
                     dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 150,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 130,
+                    template: `<div data-key="workdayoffFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'workdayoffFrName',
@@ -279,8 +177,8 @@ module a6 {
                     key: "outLegalPubHolFrameNo",
                     defaultValue: ko.observable(1),
                     dataSource: self.lstWorkDayOffFrame,
-                    width: 150,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 130,
+                    template: `<div data-key="workdayoffFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'workdayoffFrName',
@@ -295,7 +193,7 @@ module a6 {
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0),
                     width: 80,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
                                     optionsText: 'localizedName',
@@ -311,8 +209,8 @@ module a6 {
                     unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 200,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 170,
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 3,
                                     optionsText: 'localizedName',
@@ -342,8 +240,8 @@ module a6 {
                     key: "inLegalBreakFrameNo",
                     dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 150,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 130,
+                    template: `<div data-key="workdayoffFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'workdayoffFrName',
@@ -357,8 +255,8 @@ module a6 {
                     key: "outLegalBreakFrameNo",
                     dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 150,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 130,
+                    template: `<div data-key="workdayoffFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'workdayoffFrName',
@@ -372,8 +270,8 @@ module a6 {
                     key: "outLegalPubHolFrameNo",
                     dataSource: self.lstWorkDayOffFrame,
                     defaultValue: ko.observable(1),
-                    width: 150,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 130,
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
                                     optionsText: 'workdayoffFrName',
@@ -388,7 +286,7 @@ module a6 {
                     dataSource: self.settingEnum.roundingTime,
                     defaultValue: ko.observable(0),
                     width: 80,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 8,
                                     optionsText: 'localizedName',
@@ -404,8 +302,8 @@ module a6 {
                     unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 200,
-                    template: `<div class="column-combo-box" data-bind="ntsComboBox: {
+                    width: 170,
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 3,
                                     optionsText: 'localizedName',
@@ -435,18 +333,7 @@ module a6 {
         /**
          * Init.
          */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-        }
-
-        private getData() {
-            let self = this;
-            // service.findWorkTimeSetByCode()
-        }
-
-        /**
-         * Update
-         */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        init(element: any, valueAccessor: () => any): void {
             var webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                 .mergeRelativePath('/view/kmk/003/a6/index.xhtml').serialize();
@@ -454,17 +341,17 @@ module a6 {
             let input = valueAccessor();
             var settingEnum: WorkTimeSettingEnumDto = input.enum;
             var mainSettingModel: MainSettingModel = input.mainModel;
-            var isLoading: KnockoutObservable<boolean> = input.isLoading;
-            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading);
-            nts.uk.at.view.kmk003.a6.service.findAllWorkDayoffFrame().done(function(data){
+            nts.uk.at.view.kmk003.a6.service.findAllWorkDayoffFrame().done(function(data) {
+                let screenModel = new ScreenModel(settingEnum, mainSettingModel);
                 screenModel.lstWorkDayOffFrame = data;
                 screenModel.initDataModel();
-                $(element).load(webserviceLocator, function() {
-                    ko.cleanNode($(element)[0]);
-                    ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                _.defer(() => {
+                    $(element).load(webserviceLocator, function() {
+                        ko.cleanNode($(element)[0]);
+                        ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                    });
                 });
             });
-            
         }
 
     }

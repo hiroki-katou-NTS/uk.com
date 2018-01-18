@@ -14,7 +14,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         columns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', prop: 'id', width: 100, hidden: true },
-            { headerText: getText('CPS006_16'), prop: 'itemName', width: 185 },
+            { headerText: getText('CPS006_16'), prop: 'itemName', width: 250 },
             { headerText: getText('CPS006_17'), prop: 'isAbolition', width: 50, formatter: makeIcon },
         ]);
 

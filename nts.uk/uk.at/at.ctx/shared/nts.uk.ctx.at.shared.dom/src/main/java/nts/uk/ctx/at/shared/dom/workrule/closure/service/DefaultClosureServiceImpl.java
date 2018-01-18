@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workrule.closure.service;
 
+import java.util.Calendar;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -27,6 +28,12 @@ public class DefaultClosureServiceImpl implements ClosureService {
 	/** The closure repository. */
 	@Inject
 	private ClosureRepository closureRepository;
+	
+	/** The Constant FIRST_DAY_OF_MONTH. */
+	private final static int FIRST_DAY_OF_MONTH = 1; 
+	
+	/** The Constant MONTH_OF_YEAR. */
+	private final static int MONTH_OF_YEAR = 12;
 
 	/*
 	 * (non-Javadoc)
@@ -58,10 +65,11 @@ public class DefaultClosureServiceImpl implements ClosureService {
 		Boolean isLastDayOfMonth = closureHistory.getClosureDate().getLastDayOfMonth();
 
 		GeneralDate startDate = this.getExpectionDate(isLastDayOfMonth, processingYm.year(),
-				processingYm.month() - 1, closureDay.v() + 1);
+				isLastDayOfMonth ? processingYm.month() : processingYm.month() - 1,
+				isLastDayOfMonth ? FIRST_DAY_OF_MONTH : closureDay.v() + 1, true);
 
 		GeneralDate endDate = this.getExpectionDate(isLastDayOfMonth, processingYm.year(),
-				processingYm.month(), closureDay.v());
+				processingYm.month(), closureDay.v(), false);
 
 		return new DatePeriod(startDate, endDate);
 	}
@@ -75,9 +83,43 @@ public class DefaultClosureServiceImpl implements ClosureService {
 	 * @param day the day
 	 * @return the expection date
 	 */
-	private GeneralDate getExpectionDate(Boolean lastDayOfMonth, int year, int month, int day) {
-		month = (month == 0) ? 12 : month;
-		return (lastDayOfMonth || !DateUtil.isDateOfMonth(year, month, day))
-				? DateUtil.getLastDateOfMonth(year, month) : GeneralDate.ymd(year, month, day);
+	private GeneralDate getExpectionDate(Boolean lastDayOfMonth, int year, int month, int day, Boolean isStartDate) {
+		
+		if(month == 0) {
+			month =  MONTH_OF_YEAR;
+			year = year - 1;
+		}
+	
+		if(lastDayOfMonth && isStartDate) {
+			return GeneralDate.ymd(year, month, day);
+		}
+		
+		return  (lastDayOfMonth || !this.isDateOfMonth(year, month, day))
+				? this.getLastDateOfMonth(year, month) : GeneralDate.ymd(year, month, day);
+	}
+	
+	/**
+	 * Gets the last date of month.
+	 *
+	 * @param year the year
+	 * @param month the month
+	 * @return the last date of month
+	 */
+	private GeneralDate getLastDateOfMonth(int year, int month) {
+		GeneralDate baseDate = GeneralDate.ymd(year, month, 1);
+		Calendar c = Calendar.getInstance();
+		c.setTime(baseDate.date());
+		c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+		return GeneralDate.legacyDate(c.getTime());
+	}
+
+	/**
+	 * Checks if is date of month.
+	 *
+	 * @return true, if is date of month
+	 */
+	private boolean isDateOfMonth(int year, int month, int dayOfMonth) {
+		GeneralDate baseDate = this.getLastDateOfMonth(year, month);
+		return dayOfMonth <= baseDate.day();
 	}
 }

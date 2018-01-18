@@ -45,6 +45,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.WorkStampOutPu
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleAdapter;
 import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleSidImport;
+import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
@@ -163,6 +164,9 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
+	
+	@Inject
+	private StampRepository stampRepository;
 
 	@Override
 	public void reflectWorkInformation(String companyId, String employeeId, GeneralDate day,
@@ -346,7 +350,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							}
 
 							ScheduleTimeSheet scheduleTimeSheet = new ScheduleTimeSheet(items.getScheduleCnt(),
-									items.getScheduleStartClock(), items.getScheduleStartClock());
+									items.getScheduleStartClock(), items.getScheduleEndClock());
 							scheduleTimeSheets.add(scheduleTimeSheet);
 						});
 
@@ -642,6 +646,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					this.timeLeavingOfDailyPerformanceRepository.insert(stampOutput.getTimeLeavingOfDailyPerformance());
 				}
 			}
+			if(stampOutput.getLstStamp() != null && !stampOutput.getLstStamp().isEmpty()){
+				stampOutput.getLstStamp().forEach(stampItem -> {
+					this.stampRepository.updateStampItem(stampItem);
+				});				
+			}
 		}
 
 	}
@@ -723,11 +732,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 						// ドメインモデル「所属職場履歴」を取得する
 						attendanceStampTemp.setStamp(new WorkStampOutPut(new TimeWithDayAttr(sheet.getAttendance().v()),
-								sheet.getAttendance(), new WorkLocationCD(workPlaceHasData.get().getWorkplaceCode()),
+								sheet.getAttendance(), null,
 								automaticStampSetDetailDto.getAttendanceStamp()));
 						leaveStampTemp.setStamp(
 								new WorkStampOutPut(new TimeWithDayAttr(sheet.getLeaveWork().v()), sheet.getLeaveWork(),
-										new WorkLocationCD(workPlaceHasData.get().getWorkplaceCode()), automaticStampSetDetailDto.getLeavingStamp()));
+										null, automaticStampSetDetailDto.getLeavingStamp()));
 						timeLeavingWorkOutput.setAttendanceStamp(attendanceStampTemp);
 						timeLeavingWorkOutput.setLeaveStamp(leaveStampTemp);
 						timeLeavingWorkTemps.add(timeLeavingWorkOutput);
@@ -878,7 +887,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode(),
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getStampSourceInfo());
-							attendanceStamp = new TimeActualStamp(stamp, null, timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp());
+							attendanceStamp = new TimeActualStamp(null, stamp, timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp());
 
 						}
 					}
@@ -904,7 +913,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay(),
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getLocationCode(),
 									timeLeavingWork.getLeaveStamp().get().getStamp().get().getStampSourceInfo());
-							leaveStamp = new TimeActualStamp(stamp, null, timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp());
+							leaveStamp = new TimeActualStamp(null, stamp, timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp());
 							
 						}
 					}

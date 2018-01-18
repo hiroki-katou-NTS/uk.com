@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.record.dom.monthly;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -30,7 +32,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	/** 月の計算 */
 	private MonthlyCalculation monthlyCalculation;
 	/** 集計日数 */
-	private AttendanceDaysMonthly aggregateDays;
+	private AttendanceDaysMonth aggregateDays;
 	/** 回数集計 */
 	//aggregateTimes
 	/** 休暇 */
@@ -48,15 +50,19 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	 * @param yearMonth 年月
 	 * @param closureId 締めID
 	 * @param closureDate 締め日付
+	 * @param datePeriod 期間
 	 */
-	public AttendanceTimeOfMonthly(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate){
+	public AttendanceTimeOfMonthly(String employeeId, YearMonth yearMonth,
+			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod){
 		
 		super();
 		this.employeeId = employeeId;
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;
 		this.closureDate = closureDate;
+		this.datePeriod = datePeriod;
 		this.monthlyCalculation = new MonthlyCalculation();
+		this.aggregateDays = new AttendanceDaysMonth(0.0);
 	}
 	
 	/**
@@ -77,10 +83,9 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 			ClosureDate closureDate,
 			DatePeriod datePeriod,
 			MonthlyCalculation monthlyCalculation,
-			AttendanceDaysMonthly aggregateDays){
+			AttendanceDaysMonth aggregateDays){
 		
-		AttendanceTimeOfMonthly domain = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate);
-		domain.datePeriod = datePeriod;
+		val domain = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate, datePeriod);
 		domain.monthlyCalculation = monthlyCalculation;
 		domain.aggregateDays = aggregateDays;
 		return domain;
@@ -90,9 +95,12 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	 * 履歴ごとに月別実績を集計する
 	 * @param companyId 会社ID
 	 * @param workingSystem 労働制
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregate(String companyId, WorkingSystem workingSystem){
+	public void aggregate(String companyId, WorkingSystem workingSystem,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
-		this.monthlyCalculation.aggregate(companyId, this.employeeId, this.datePeriod, workingSystem);
+		this.monthlyCalculation.aggregate(companyId, this.employeeId, this.yearMonth,
+				this.closureId, this.closureDate, this.datePeriod, workingSystem, repositories);
 	}
 }

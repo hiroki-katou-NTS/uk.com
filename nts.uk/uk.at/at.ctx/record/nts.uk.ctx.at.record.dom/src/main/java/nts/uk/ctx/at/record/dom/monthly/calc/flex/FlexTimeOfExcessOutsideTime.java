@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.flex;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
@@ -13,18 +15,22 @@ public class FlexTimeOfExcessOutsideTime {
 	/** 超過フレ区分 */
 	private ExcessFlexAtr excessFlexAtr;
 	/** 原則時間 */
+	@Setter
 	private AttendanceTimeMonth principleTime;
 	/** 便宜上時間 */
+	@Setter
 	private AttendanceTimeMonth forConvenienceTime;
-	
+
 	/**
 	 * コンストラクタ
 	 */
 	public FlexTimeOfExcessOutsideTime(){
 		
-		this.excessFlexAtr = ExcessFlexAtr.Principle;
+		this.excessFlexAtr = ExcessFlexAtr.PRINCIPLE;
+		this.principleTime = new AttendanceTimeMonth(0);
+		this.forConvenienceTime = new AttendanceTimeMonth(0);
 	}
-
+	
 	/**
 	 * ファクトリー
 	 * @param excessFlexAtr 超過フレ区分
@@ -37,7 +43,7 @@ public class FlexTimeOfExcessOutsideTime {
 			AttendanceTimeMonth principleTime,
 			AttendanceTimeMonth forConvenienceTime){
 
-		FlexTimeOfExcessOutsideTime domain = new FlexTimeOfExcessOutsideTime();
+		val domain = new FlexTimeOfExcessOutsideTime();
 		domain.excessFlexAtr = excessFlexAtr;
 		domain.principleTime = principleTime;
 		domain.forConvenienceTime = forConvenienceTime;

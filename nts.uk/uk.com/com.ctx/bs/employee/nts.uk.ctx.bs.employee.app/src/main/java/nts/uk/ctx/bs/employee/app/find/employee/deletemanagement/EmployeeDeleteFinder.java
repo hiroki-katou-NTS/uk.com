@@ -43,7 +43,7 @@ public class EmployeeDeleteFinder {
 			for (EmployeeDataMngInfo employeeDataMngInfo : listEmpData) {
 				Person person = personRepo.getByPersonId(employeeDataMngInfo.getPersonId()).get();
 				listResult.add(EmployeeToDeleteDto.fromDomain(employeeDataMngInfo.getEmployeeCode().v(), "",
-						person.getPersonNameGroup().getBusinessName().v().trim(),
+						person.getPersonNameGroup().getPersonName().getFullName().v().trim(),
 						employeeDataMngInfo.getEmployeeId().toString()));
 			}
 		} else {
@@ -62,7 +62,7 @@ public class EmployeeDeleteFinder {
 			
 			return EmployeeToDeleteDetailDto.fromDomain(
 					empInfo.getEmployeeCode().v(),
-					person.getPersonNameGroup().getBusinessName().v(), 
+					person.getPersonNameGroup().getPersonName().getFullName().v(), 
 					empInfo.getRemoveReason().v(),
 					empInfo.getDeleteDateTemporary().toString("yyyy/MM/dd HH:mm:ss"));
 		} else {

@@ -13,11 +13,11 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemVal
 @NoArgsConstructor
 public class SampleObject {
 
-	@AttendanceItemValue(itemId = {1, 1, 1})
+	@AttendanceItemValue()
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "A")
 	private String attendanceItem;
 
-	@AttendanceItemValue(itemId = {3, 3, 3})
+	@AttendanceItemValue()
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "AffiliationInfor")
 	private String attendanceItem2;
 }

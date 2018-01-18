@@ -177,11 +177,12 @@ module nts.fixedtable {
         isSelectSpecialUnit: KnockoutObservable<boolean>;
         specialRoudingDataSource: KnockoutObservableArray<any>;
         helpImageUrl: string;
-        
+        isMultipleSelect: boolean;
         tableId: string;
         
         constructor(data: FixTableOption, isDisableAll?: any) {
             let self = this;
+            self.isMultipleSelect = data.isMultipleSelect ? data.isMultipleSelect : false;
             
             // set data parameter
             self.isShowButton = data.isShowButton;
@@ -351,9 +352,6 @@ module nts.fixedtable {
             self.tableStyle.height = heigthCell * self.maxRowDisplay + 31;
             
             self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0) + 30;
-            if (self.tableStyle.width > 630) {
-                self.tableStyle.width = 630
-            }
         }
         
         /**
@@ -414,19 +412,21 @@ module nts.fixedtable {
             let rowHtml: string = "";
             
             // mode multiple
-            rowHtml += "<td class='check-box-column' style='text-align: center;'><div class='column-checkbox-header' data-bind=\"attr: {tabindex: $parent.tabindex}, " 
+            if (self.isMultipleSelect) {
+                rowHtml += "<td class='check-box-column' style='text-align: center;'><div class='column-checkbox-header' data-bind=\"attr: {tabindex: $parent.tabindex}, "
                     + "visible: $index() >= $parent.minRow, ntsCheckBox: { checked: isChecked, "
                     + "enable: true, text:''}\"></div></td>";
+            }
             
             // add html column base setting
             _.forEach(self.columns, (item: FixColumn) => {
                 
                 // set width fixed control TimeRange
                 if (item.template.indexOf('ntsTimeRangeEditor') != -1) {
-                    item.width = 243;
+                    item.width = 203;
                 }
                 if (item.template.indexOf('ntsComboBox') != -1) {
-                    item.width = item.width < 105 ? 105 : item.width;
+                    item.width = item.width < 70 ? 70 : item.width;
                 }
                 if (item.isRoudingColumn) {
                     rowHtml += '<!-- ko if: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
@@ -543,9 +543,9 @@ module nts.fixedtable {
                 cssClassName = columnSetting.cssClassName;
             }
             if (template.indexOf('ntsCheckBox') > -1) {
-                cssClassName += ' check-box-column';
+                cssClassName += 'center-align check-box-column';
             }
-            return "<td style='text-align: center;' class='" + cssClassName + "'>" + template + "</td>";
+            return "<td class='" + cssClassName + "'>" + template + "</td>";
         }
         
         /**
@@ -651,7 +651,6 @@ module nts.fixedtable {
                     if (!oldValue || oldValue != newValue) {
                         _.defer(() => self.itemList.valueHasMutated());
                         $(this).data('value', newValue);
-                        console.log('Test');
                     }
                 });
             }
@@ -706,20 +705,22 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 // set height table
                 //screenModel.$tableSelector.height(screenModel.tableStyle.height);
 
-                // remove min-width default of ntsComboBox
-                screenModel.columns.filter(item => item.template.indexOf('ntsComboBox') != -1).forEach((column) => {
-                    $("." + column.cssClassName).css({ "min-width": "" });
-                });
                 if (document.getElementById($(element)[0].id)) {
                     document.getElementById($(element)[0].id).addEventListener('timerangedatachange', function(event) {
                         screenModel.itemList.valueHasMutated();
                     });
                 }
                 screenModel.initEventChangeComboBox($(element));
-                screenModel.$element.find('.table-fixed-kmk003').ntsFixedTable({width: 630, height: screenModel.tableStyle.height})
+                screenModel.$element.find('.table-fixed-kmk003').ntsFixedTable({height: screenModel.tableStyle.height})
                 //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
                 screenModel.$element.on('click', '.check-box-column > div', function(event){
                     _.defer(() => screenModel.itemList.valueHasMutated());
+                })
+                screenModel.$element.on('keypress', '.check-box-column > div', function(event){
+                    if (event.keyCode === 0 || event.keyCode === 32) {
+                        event.preventDefault();
+                        _.defer(() => screenModel.itemList.valueHasMutated());
+                    }
                 })
                 
                 screenModel.$element.on('change', '.time-edior-column', function(event){

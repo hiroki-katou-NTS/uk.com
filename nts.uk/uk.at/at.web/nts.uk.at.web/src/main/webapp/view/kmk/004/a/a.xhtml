@@ -41,7 +41,11 @@
 												optionsValue: 'code',
 												value: weekStart,
 												optionsText: 'name',
-												enable: true}"></div>
+												visibleItemsCount: 25,
+												enable: true,
+												columns: [
+													{ prop: 'name', length: 10 }
+												]}"></div>
 						</div>
 							<com:ko tag="with" bind="statutorySetting">
 								<div class="control-group">

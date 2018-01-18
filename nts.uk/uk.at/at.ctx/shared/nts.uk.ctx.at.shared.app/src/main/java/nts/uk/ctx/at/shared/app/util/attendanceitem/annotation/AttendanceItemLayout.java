@@ -8,24 +8,30 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD })
 public @interface AttendanceItemLayout {
+	
+	int index() default -1;
 
 	String layout();
 	
 	String jpPropertyName();
 	
-	String needCheckIDWithField() default "";
+//	String needCheckIDWithField() default "";
 	
 	String needCheckIDWithMethod() default "";
 	
 	boolean needCheckIDWithIndex() default false;
 	
-	boolean isList() default false;
+//	boolean isList() default false;
+	
+	boolean listNoIndex() default false;
 	
 	int listMaxLength() default -1;
 	
 	boolean isOptional() default false;
 	
-	String[] setFieldWithIndex() default "";
+	String indexField() default "";
 	
-	boolean isUpdate() default false;
+	String methodForEnumValues() default "";
+	
+	String enumField() default "";
 }

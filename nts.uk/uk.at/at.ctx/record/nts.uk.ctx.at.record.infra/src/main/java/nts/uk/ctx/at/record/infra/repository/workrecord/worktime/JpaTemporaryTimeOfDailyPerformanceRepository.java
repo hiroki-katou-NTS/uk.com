@@ -139,6 +139,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  				krcdtTimeLeavingWork.leaveWorkNumberStamp = leaveStamp.getNumberOfReflectionStamp();
  			}
  			krcdtTimeLeavingWork.daiTemporaryTime = krcdtDaiTemporaryTime;
+ 			krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK.timeLeavingType = 1;
  			if(isNew){
  				timeWorks.add(krcdtTimeLeavingWork);
  			}

@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.employee.app.command.workplace.workplacedifferinfor;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInfor;
 
 @Data
 @AllArgsConstructor

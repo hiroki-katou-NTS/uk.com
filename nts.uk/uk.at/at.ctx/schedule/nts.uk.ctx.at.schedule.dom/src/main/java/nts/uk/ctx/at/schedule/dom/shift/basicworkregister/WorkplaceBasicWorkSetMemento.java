@@ -16,7 +16,7 @@ public interface WorkplaceBasicWorkSetMemento {
 	 *
 	 * @param workplaceId the new work place id
 	 */
-	void setWorkPlaceId(WorkplaceId workplaceId);
+	void setWorkPlaceId(String workplaceId);
 	
 	/**
 	 * Sets the basic work setting.

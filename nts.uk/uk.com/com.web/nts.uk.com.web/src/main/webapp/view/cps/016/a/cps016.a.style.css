@@ -86,7 +86,7 @@ div#left-content.relative.bg-green.caret-right.caret-background {
 }
 
 input.ntsSearchBox.nts-editor.ntsSearchBox_Component {
-	width: 278px	 !important;
+	width: 208px !important;
 }
 
 i.icon.icon-searchbox {
@@ -100,6 +100,7 @@ i.icon.icon-searchbox {
 #contents-area {
 	/*width: 1380px;
 	height: 800px;*/
+	
 }
 
 #contents-area-left {

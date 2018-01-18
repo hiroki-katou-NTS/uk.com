@@ -36,11 +36,11 @@ public class WorkHolidayTimeDailyPerformDto {
 
 	/** 休出拘束時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "C", jpPropertyName="休出拘束時間")
-	@AttendanceItemValue(itemId = 746, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer holidayTimeSpentAtWork;
 
 	/** 休出枠時間: 休出枠時間 */
-	@AttendanceItemLayout(layout = "D", isList = true, jpPropertyName="休出枠時間", listMaxLength = 10, setFieldWithIndex = "holidayFrameNo", needCheckIDWithIndex = true)
+	@AttendanceItemLayout(layout = "D", jpPropertyName="休出枠時間", listMaxLength = 10, indexField = "holidayFrameNo", needCheckIDWithIndex = true)
 	private List<HolidayWorkFrameTimeDto> holidayWorkFrameTime;
 	
 	public static WorkHolidayTimeDailyPerformDto fromOverTimeWorkDailyPerform(HolidayWorkTimeOfDaily domain){

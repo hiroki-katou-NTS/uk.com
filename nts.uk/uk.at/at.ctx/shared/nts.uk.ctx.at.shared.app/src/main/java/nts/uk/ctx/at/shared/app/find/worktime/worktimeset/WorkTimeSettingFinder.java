@@ -7,7 +7,9 @@ package nts.uk.ctx.at.shared.app.find.worktime.worktimeset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -20,6 +22,7 @@ import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSett
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -208,24 +211,27 @@ public class WorkTimeSettingFinder {
 	private List<WorkTimeDto> getWorkTimeDtos(List<WorkTimeSetting> workTimeItems,
 			List<PredetemineTimeSetting> workTimeSetItems) {
 		List<WorkTimeDto> workTimeDtos = new ArrayList<>();
+		Map<WorkTimeCode, WorkTimeSetting> mapworkTimeItems = workTimeItems.stream()
+				.collect(Collectors.toMap(WorkTimeSetting::getWorktimeCode, Function.identity()));
 		if (workTimeItems.isEmpty() || workTimeSetItems.isEmpty()) {
 			workTimeDtos = Collections.emptyList();
 		} else {
 			for (PredetemineTimeSetting item : workTimeSetItems) {
-				WorkTimeSetting currentWorkTime = workTimeItems.stream()
-						.filter(x -> x.getWorktimeCode().equals(item.getWorkTimeCode())).findAny()
-						.get();
-				if (item.getPrescribedTimezoneSetting().getLstTimezone().isEmpty() || this.checkNotUse(item)) {
+				WorkTimeSetting currentWorkTime = mapworkTimeItems.get(item.getWorkTimeCode());
+				List<TimezoneUse> useTimezones = item.getPrescribedTimezoneSetting()
+						.getLstTimezone().stream().filter(timezone -> {
+							return timezone.getUseAtr().equals(UseSetting.USE);
+						}).collect(Collectors.toList());
+				// || this.checkNotUse(item)
+				if (currentWorkTime == null
+						|| useTimezones.isEmpty()) {
 					continue;
 				} else {
-					TimezoneUse timezone1 = item.getPrescribedTimezoneSetting().getLstTimezone()
-							.get(FIRST_ITEM);
+					TimezoneUse timezone1 = useTimezones.get(FIRST_ITEM);
 					TimezoneUse timezone2 = null;
 					// if have 2 timezone
-					if (item.getPrescribedTimezoneSetting().getLstTimezone()
-							.size() >= TWO_TIMEZONE) {
-						timezone2 = item.getPrescribedTimezoneSetting().getLstTimezone()
-								.get(TWO_ITEM);
+					if (useTimezones.size() >= TWO_TIMEZONE) {
+						timezone2 = useTimezones.get(TWO_ITEM);
 					}
 					workTimeDtos
 							.add(new WorkTimeDto(currentWorkTime.getWorktimeCode().v(),
@@ -254,7 +260,8 @@ public class WorkTimeSettingFinder {
 	 */
 	private boolean checkNotUse(PredetemineTimeSetting workTimeSet) {
 		for (TimezoneUse timezone : workTimeSet.getPrescribedTimezoneSetting().getLstTimezone()) {
-			if (timezone.getUseAtr().equals(UseSetting.NOT_USE) && timezone.getWorkNo() == TimezoneUse.SHIFT_ONE)
+			if (timezone.getUseAtr().equals(UseSetting.NOT_USE)
+					&& timezone.getWorkNo() == TimezoneUse.SHIFT_ONE)
 				return true;
 		}
 		return false;
@@ -273,11 +280,12 @@ public class WorkTimeSettingFinder {
 	 */
 	private String createWorkTimeField(UseSetting useAtr, TimeWithDayAttr start,
 			TimeWithDayAttr end) {
-		if (useAtr.equals(UseSetting.USE)) {
-			return start.dayAttr().description + start.getRawTimeWithFormat() + " ~ "
-					+ end.dayAttr().description + end.getRawTimeWithFormat();
-		} else
-			return null;
+		TimeWithDayAttr startNew = new TimeWithDayAttr(
+				start.v() < 0 ? 60 * 24 + start.v() : start.v());
+		TimeWithDayAttr endNew = new TimeWithDayAttr(end.v() < 0 ? 60 * 24 + end.v() : end.v());
+
+		return start.dayAttr().description + startNew.getRawTimeWithFormat() + " ~ "
+				+ end.dayAttr().description + endNew.getRawTimeWithFormat();
 	}
 
 	/**

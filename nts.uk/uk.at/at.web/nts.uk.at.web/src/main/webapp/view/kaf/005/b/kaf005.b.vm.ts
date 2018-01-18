@@ -351,6 +351,9 @@ module nts.uk.at.view.kaf005.b {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    
                     return;    
                 }
+                if(!appcommon.CommonProcess.checklenghtReason(appReason,"#appReason")){
+                    return;
+                }
                 divergenceReason = self.getReason(
                     self.displayDivergenceReasonForm(),
                     self.selectedReason2(),
@@ -358,6 +361,9 @@ module nts.uk.at.view.kaf005.b {
                     self.displayDivergenceReasonInput(),
                     self.multilContent2()
                 );
+                if(!appcommon.CommonProcess.checklenghtReason(divergenceReason,"#divergenceReason")){
+                    return;
+                }
                 let overTimeShiftNightTmp: number = 0;
                 let flexExessTimeTmp: number = 0;
                 for (let i = 0; i < self.overtimeHours().length; i++) {

@@ -46,7 +46,7 @@ public class CopySettingItemFinder {
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
 
 		// check empployeeId
-		boolean isSelf = employeeId == AppContexts.user().employeeId() ? true : false;
+		boolean isSelf = AppContexts.user().employeeId().equals(employeeId) ? true : false;
 
 		List<EmpCopySettingItem> itemList = this.empCopyItemRepo.getAllItemFromCategoryCd(categoryCd, companyId,
 				isSelf);
@@ -91,7 +91,7 @@ public class CopySettingItemFinder {
 
 		if (isSetText) {
 
-			this.settingItemMap.setTextForItem(result, employeeId);
+			this.settingItemMap.setTextForItem(result, employeeId, baseDate);
 
 			return result.stream().filter(item -> StringUtils.isEmpty(item.getItemParentCd()))
 					.collect(Collectors.toList());

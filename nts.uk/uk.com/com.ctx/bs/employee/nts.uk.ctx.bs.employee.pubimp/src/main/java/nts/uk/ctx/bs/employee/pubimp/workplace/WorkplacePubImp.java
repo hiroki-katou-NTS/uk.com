@@ -200,7 +200,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 			lstWpkIds.add(item.getWorkplaceId());
 		});
 
-		return lstWpkIds.stream().distinct().collect(Collectors.toList());
+		return lstWpkIds.stream().distinct().sorted((first,second) -> second.compareTo(first)).collect(Collectors.toList());
 	}
 
 	/*

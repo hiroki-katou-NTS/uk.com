@@ -17,6 +17,9 @@ import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCom
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDelete;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDenyHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationReleaseHandler;
+import nts.uk.ctx.at.request.app.command.setting.request.AddApplicationDeadlineCommandHandler;
+import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
+import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
 import nts.uk.ctx.at.request.app.find.application.common.AppDateDataDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
@@ -66,7 +69,10 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject
 	private AppDataDateFinder appDataDateFinder;
-	
+	@Inject
+	private UpdateApplicationDeadlineCommandHandler update;
+	@Inject
+	private AddApplicationDeadlineCommandHandler add;
 	
 	
 	/**
@@ -174,6 +180,25 @@ public class ApplicationWebservice extends WebService {
     public ApplicationDeadlineDto getDeadlineByClosureId(@PathParam("closureId") int closureId){
         return this.getDataAppCfDetailFinder.findByClosureId(closureId);
     }
+	/**
+	 * update application deadline
+	 * @param command
+	 * @author yennth
+	 */
+	@POST
+	@Path("update")
+	public void update(ApplicationDeadlineCommand command){
+		this.update.handle(command);
+	}
+	/**
+	 * insert application dead line
+	 * @param command
+	 */
+	@POST
+	@Path("add")
+	public void insert(ApplicationDeadlineCommand command){
+		this.add.handle(command);
+	}
 }
 
 @Value

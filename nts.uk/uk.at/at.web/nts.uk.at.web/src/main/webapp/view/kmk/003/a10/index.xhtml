@@ -7,7 +7,8 @@
 	<div class="tab_10_setting_rows">
 		<div class="tab_10_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_24')}</div>		
 		<button tabindex="137" data-bind="click: openReferralDialog">#{i18n.getText('KMK003_103')}</button>
-		<span class="label" style="margin-left: 20px;" data-bind="text: bonusPaySettingCode"></span>
+		<span class="label" style="margin-left: 20px;" data-bind="text: bonusPaySettingCode()"></span>
+		<span class="label" style="margin-left: 20px;" data-bind="text: bonusPaySettingName()"></span>
 	</div>
 	
 </ui:composition>

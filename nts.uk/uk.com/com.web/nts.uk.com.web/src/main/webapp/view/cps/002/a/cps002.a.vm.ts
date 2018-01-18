@@ -52,6 +52,8 @@ module cps002.a.vm {
 
         layoutData: KnockoutObservableArray<any> = ko.observableArray([]);
 
+        defaultImgId: KnockoutObservable<string> = ko.observable("");
+
         ccgcomponent: any = {
             baseDate: ko.observable(moment().toDate()),
             isQuickSearchTab: true,
@@ -124,6 +126,7 @@ module cps002.a.vm {
                             self.categoryList(_.map(result, item => {
                                 return new CategoryItem(item);
                             }));
+                            self.categorySelectedCode.valueWillMutate();
                             if (currentCtgCode === "") {
                                 self.categorySelectedCode(result[0].categoryCd);
                             } else {
@@ -137,8 +140,6 @@ module cps002.a.vm {
                                     self.categorySelectedCode(result[0].categoryCd);
                                 }
                             }
-                            self.categorySelectedCode.valueHasMutated();
-
 
                         } else {
                             self.categoryList.removeAll();
@@ -232,6 +233,7 @@ module cps002.a.vm {
             self.currentEmployee().employeeCode("");
             self.currentEmployee().loginId("");
             self.currentEmployee().password("");
+            self.currentEmployee().avatarId("");
         }
 
         start() {
@@ -333,11 +335,7 @@ module cps002.a.vm {
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
-                _.each(__viewContext.primitiveValueConstraints, x => {
-                    if (_.has(x, "itemCode")) {
-                        $('#' + x.itemCode).trigger('change');
-                    }
-                })
+                $('.drag-panel .nts-input').trigger('change');
             } else {
                 $(".form_step1").trigger("validate");
 
@@ -400,7 +398,6 @@ module cps002.a.vm {
             let self = this,
                 command = ko.toJS(self.currentEmployee()),
                 layout = self.layout();
-            self.currentEmployee().avatarId("");
             self.currentStep(2);
 
             //add atr
@@ -528,14 +525,20 @@ module cps002.a.vm {
                         return new InitSetting(item);
                     }));
 
+                    self.initSettingSelectedCode.valueWillMutate();
                     if (self.initSettingSelectedCode() == '') {
                         if (self.employeeBasicInfo() && _.find(result, ['settingCode', self.employeeBasicInfo().initialValueCode])) {
                             self.initSettingSelectedCode(self.employeeBasicInfo().initialValueCode);
                         } else {
                             self.initSettingSelectedCode(result[0].settingCode);
                         }
+                    } else {
+                        if (!_.find(result, ctg => { return self.initSettingSelectedCode() == ctg.settingCode; })) {
+                            self.initSettingSelectedCode(result[0].settingCode);
+                        }
+
                     }
-                    self.initSettingSelectedCode.valueHasMutated();
+
                     $("#initSearchBox input").focus();
                 }
             }).fail((error) => {
@@ -687,10 +690,12 @@ module cps002.a.vm {
         }
 
         openIModal() {
+
+
             let self = this,
-                avatarId = self.currentEmployee().avatarId();
+                avatarId = self.defaultImgId();
             if (avatarId != "") {
-                setShared("imageId", avatarId);
+                setShared("CPS002A", avatarId);
             }
             if (self.isAllowAvatarUpload()) {
 
@@ -698,11 +703,15 @@ module cps002.a.vm {
 
                     let imageResult = getShared("imageId");
 
-                    if (imageResult) {
-                        self.currentEmployee().avatarId(imageResult);
-                    }
 
-                });
+
+                    if (imageResult) {
+                        self.currentEmployee().avatarId(imageResult.cropImgId)
+                        self.defaultImgId(imageResult.defaultImgId);
+
+
+
+                    });
 
             }
         }
