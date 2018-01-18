@@ -117,12 +117,12 @@ module nts.custombinding {
                         overflow: hidden;
                     }
 
-                    .layout-control .item-classification div.set-item-list div.set-item,
-                    .layout-control .item-classification div.item-control .single-item-list>div {
+                    .layout-control .item-classification div.set-item,
+                    .layout-control .item-classification div.item-control>div {
                         display: inline-block;
                     }
 
-                    .layout-control .item-classification div.set-item-list div.set-item.set-item-sperator {
+                    .layout-control .item-classificatio div.set-item.set-item-sperator {
                         width: 37px;
                         text-align: center;
                     }
@@ -361,18 +361,6 @@ module nts.custombinding {
                         user-select: none;
                     }
 
-                    .layout-control .item-classification th.index div,
-                    .layout-control .item-classification td.index div {
-                        width:30px;
-                        cursor: pointer;
-                        font-weight:bold;
-                    }
-
-                    .layout-control .item-classification th.index div:hover,
-                    .layout-control .item-classification td.index div:hover {
-                        color: #f00;
-                    }
-
                     .layout-control.dragable .add-rows,
                     .layout-control.dragable .add-rows button,
                     .layout-control.inputable .add-rows,
@@ -386,10 +374,6 @@ module nts.custombinding {
                     .layout-control.readonly:not(.inputable) .color-operation-case-character {
                         color: #000 !important;
                     }
-                    
-                    .layout-control .item-classification tbody tr td.index>div {
-                        line-height: 27px;
-                    }    
                 </style>`;
 
         private tmp = `<div class="left-area">
@@ -481,27 +465,27 @@ module nts.custombinding {
                                         constraint: _constraint.length && _constraint || undefined  }"></div>
                                     <!-- ko if: (_item || {}).type == CTRL_TYPE.SET -->
                                     <div class="set-items">
-                                        <div data-bind="foreach: { data: _items, as: 'set'}" class="set-item-list">
-                                            <div class="set-item set-item-sperator" data-bind="css: { 'hidden': !$index() }">
-                                                <!-- ko if: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(set.item.dataTypeValue) > -1 -->
-                                                    <span data-bind="text: text('CPS001_89')"></span>
-                                                <!-- /ko -->
-                                            </div>
-                                            <div data-bind="template: {
-                                                    data: set,
-                                                    name: 'ctr_template'
-                                                }" class="set-item"></div>
+                                        <!-- ko foreach: { data: _items, as: 'set'} -->
+                                        <div class="set-item set-item-sperator" data-bind="css: { 'hidden': !$index() }">
+                                            <!-- ko if: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(set.item.dataTypeValue) > -1 -->
+                                                <span data-bind="text: text('CPS001_89')"></span>
+                                            <!-- /ko -->
                                         </div>
+                                        <div data-bind="template: {
+                                                data: set,
+                                                name: 'ctr_template'
+                                            }" class="set-item"></div>
+                                        <!-- /ko -->
                                     </div>
                                     <!-- /ko -->
                                     <!-- ko if: (_item || {}).type == CTRL_TYPE.SINGLE -->
                                     <div class="single-items">
-                                        <div data-bind="foreach: {data: __items, as: 'single'}" class="single-item-list">
-                                            <div data-bind="template: { 
-                                                    data: single,
-                                                    name: 'ctr_template'
-                                                }" class="single-item"></div>
-                                        </div>            
+                                        <!-- ko foreach: {data: __items, as: 'single'} -->
+                                        <div data-bind="template: { 
+                                                data: single,
+                                                name: 'ctr_template'
+                                            }" class="single-item"></div>
+                                        <!-- /ko -->
                                     </div>
                                     <!-- /ko -->
                                 </div>
@@ -522,12 +506,12 @@ module nts.custombinding {
                                                             target = $(event.target),
                                                             table = target.closest('table'),
                                                             closest = target.closest('.table-scroll');
-                                                            /* scroll left */
                                                     }
                                                 }">
                                             <table>
                                                 <thead>
-                                                    <tr data-bind="foreach: { data: _item, as: 'header' }">
+                                                    <tr>
+                                                        <!-- ko foreach: { data: _item, as: 'header' } -->
                                                         <th data-bind="template: { afterRender: function(childs, data) { let div = $(childs[1]); setInterval(function() { div.css('width', (div.parent().width() - 3) + 'px') }, 0); } }">
                                                             <div data-bind="ntsFormLabel: { 
                                                                 constraint: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION].indexOf((header.item||{}).dataTypeValue) == -1 ? header.itemDefId.replace(/[-_]/g, '') : undefined,
@@ -535,16 +519,19 @@ module nts.custombinding {
                                                                 text: header.itemName || '',
                                                                 inline: true }"></div>
                                                         </th>
+                                                        <!-- /ko -->
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <!-- ko foreach: { data: __items, as: '_row' } -->
-                                                    <tr data-bind="foreach: { data: _row, as: '_column' }">
+                                                    <tr>
+                                                        <!-- ko foreach: { data: _row, as: '_column' } -->
                                                         <td data-bind="template: { 
                                                                 data: _column,
                                                                 name: 'ctr_template'
                                                             }, click: function(data, event) { $(event.target).find('input').focus(); }">
                                                         </td>
+                                                        <!-- /ko -->
                                                     </tr>
                                                     <!-- /ko -->
                                                 </tbody>
@@ -569,69 +556,85 @@ module nts.custombinding {
                             nameid : itemDefId.replace(/[-_]/g, '')
                         }">
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.STRING -->
-                        <div class="string">
-                            <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
-                            <input data-bind=" ntsTextEditor: {
+                        <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
+                        <input data-bind=" ntsTextEditor: {
+                                name: itemName,
+                                value: value,
+                                constraint: nameid,
+                                required: required,
+                                option: {
+                                    textmode: 'text'
+                                },
+                                enable: editable,
+                                readonly: readonly,
+                                immediate: false
+                            },  attr: {
+                                id: nameid,
+                                nameid: nameid,
+                                title: itemName
+                            }," />
+                        <!-- /ko -->
+                        <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
+                        <textarea data-bind="ntsMultilineEditor: {
+                                name: itemName,
+                                value: value,
+                                constraint: nameid,
+                                required: required,
+                                option: {
+                                    textmode: 'text'
+                                },
+                                enable: editable,
+                                readonly: readonly,
+                                immediate: false 
+                            }, attr: { 
+                                id: nameid, 
+                                nameid: nameid,
+                                title: itemName
+                            }" />
+                        <!-- /ko -->
+                        <!-- /ko -->
+                        <!-- ko if: item.dataTypeValue == ITEM_TYPE.NUMERIC -->
+                        <input data-bind="ntsNumberEditor: { 
                                     name: itemName,
                                     value: value,
                                     constraint: nameid,
                                     required: required,
                                     option: {
-                                        textmode: 'text'
+                                        grouplength: 3,
+                                        decimallength: 2,
+                                        textalign: 'left'
                                     },
                                     enable: editable,
-                                    readonly: readonly,
-                                    immediate: false
-                                },  attr: {
-                                    id: nameid,
-                                    nameid: nameid,
-                                    title: itemName
-                                }," />
-                            <!-- /ko -->
-                            <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
-                            <textarea data-bind="ntsMultilineEditor: {
-                                    name: itemName,
-                                    value: value,
-                                    constraint: nameid,
-                                    required: required,
-                                    option: {
-                                        textmode: 'text'
-                                    },
-                                    enable: editable,
-                                    readonly: readonly,
-                                    immediate: false 
-                                }, attr: { 
+                                    readonly: readonly
+                                }, attr: {
                                     id: nameid, 
                                     nameid: nameid,
                                     title: itemName
                                 }" />
-                            <!-- /ko -->
-                        </div>
-                        <!-- /ko -->
-                        <!-- ko if: item.dataTypeValue == ITEM_TYPE.NUMERIC -->
-                        <div class="number">
-                            <input data-bind="ntsNumberEditor: { 
-                                        name: itemName,
-                                        value: value,
-                                        constraint: nameid,
-                                        required: required,
-                                        option: {
-                                            grouplength: 3,
-                                            decimallength: 2,
-                                            textalign: 'left'
-                                        },
-                                        enable: editable,
-                                        readonly: readonly
-                                    }, attr: {
-                                        id: nameid, 
-                                        nameid: nameid,
-                                        title: itemName
-                                    }" />
-                        </div>
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.DATE -->
-                        <div class="date">
-                            <!-- ko if: index <= 1 -->
+                        <!-- ko if: index <= 1 -->
+                        <div data-bind="ntsDatePicker: {
+                                name: itemName,
+                                value: value,
+                                startDate: startDate,
+                                endDate: endDate,
+                                constraint: nameid,
+                                dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
+                                enable: editable,
+                                readonly: readonly
+                            }, attr: { 
+                                id: nameid, 
+                                nameid: nameid,
+                                title: itemName
+                            }"></div>
+                        <!-- /ko -->
+                        <!-- ko if: index == 2 -->
+                        <!-- ko if: typeof ctgType !== 'undefined' -->
+                            <!-- ko if: [CAT_TYPE.CONTI].indexOf(ctgType) > -1 -->
+                            <div data-bind="text: value, attr: { title: itemName}"></div>
+                            <!-- /ko -->
+                            <!-- ko if: [CAT_TYPE.CONTI].indexOf(ctgType) == -1 -->
                             <div data-bind="ntsDatePicker: {
                                     name: itemName,
                                     value: value,
@@ -647,100 +650,71 @@ module nts.custombinding {
                                     title: itemName
                                 }"></div>
                             <!-- /ko -->
-                            <!-- ko if: index == 2 -->
-                                <!-- ko if: typeof ctgType !== 'undefined' -->
-                                    <!-- ko if: [CAT_TYPE.CONTI].indexOf(ctgType) > -1 -->
-                                    <div data-bind="text: value, attr: { title: itemName}"></div>
-                                    <!-- /ko -->
-                                    <!-- ko if: [CAT_TYPE.CONTI].indexOf(ctgType) == -1 -->
-                                    <div data-bind="ntsDatePicker: {
-                                            name: itemName,
-                                            value: value,
-                                            startDate: startDate,
-                                            endDate: endDate,
-                                            constraint: nameid,
-                                            dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
-                                            enable: editable,
-                                            readonly: readonly
-                                        }, attr: { 
-                                            id: nameid, 
-                                            nameid: nameid,
-                                            title: itemName
-                                        }"></div>
-                                    <!-- /ko -->
-                                <!-- /ko -->
-                                <!-- ko if: typeof ctgType === 'undefined' -->
-                                    <div data-bind="ntsDatePicker: {
-                                            name: itemName,
-                                            value: value,
-                                            startDate: startDate,
-                                            endDate: endDate,
-                                            constraint: nameid,
-                                            dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
-                                            enable: editable,
-                                            readonly: readonly
-                                        }, attr: { 
-                                            id: nameid, 
-                                            nameid: nameid,
-                                            title: itemName
-                                        }"></div>
-                                <!-- /ko -->
-                            <!-- /ko -->
-                            <!-- /ko -->
-                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: typeof ctgType === 'undefined' -->
+                            <div data-bind="ntsDatePicker: {
+                                    name: itemName,
+                                    value: value,
+                                    startDate: startDate,
+                                    endDate: endDate,
+                                    constraint: nameid,
+                                    dateFormat: item.dateItemType == DATE_TYPE.YYYYMMDD ? 'YYYY/MM/DD' : (item.dateItemType == DATE_TYPE.YYYYMM ? 'YYYY/MM' : 'YYYY'),
+                                    enable: editable,
+                                    readonly: readonly
+                                }, attr: { 
+                                    id: nameid, 
+                                    nameid: nameid,
+                                    title: itemName
+                                }"></div>
+                        <!-- /ko -->
+                        <!-- /ko -->
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.TIME -->
-                        <div class="time">
-                            <input data-bind="ntsTimeEditor: {
-                                        name: itemName,
-                                        value: value,
-                                        constraint: nameid,
-                                        required: required,
-                                        inputFormat: 'time',
-                                        enable: editable,
-                                        mode: 'time',
-                                        readonly: readonly
-                                    }, attr: {
-                                        id: nameid, 
-                                        nameid: nameid,
-                                        title: itemName
-                                    }" />
-                        </div>
+                        <input data-bind="ntsTimeEditor: {
+                                    name: itemName,
+                                    value: value,
+                                    constraint: nameid,
+                                    required: required,
+                                    inputFormat: 'time',
+                                    enable: editable,
+                                    mode: 'time',
+                                    readonly: readonly
+                                }, attr: {
+                                    id: nameid, 
+                                    nameid: nameid,
+                                    title: itemName
+                                }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT -->
-                        <div class="timepoint">
-                            <input data-bind="ntsTimeWithDayEditor: { 
-                                        name: itemName,
-                                        constraint: nameid,
-                                        value: value,
-                                        enable: editable, 
-                                        readonly: readonly,
-                                        required: required
-                                    }, attr: {
-                                        id: nameid, 
-                                        nameid: nameid,
-                                        title: itemName
-                                    }" />
-                        </div>
+                        <input data-bind="ntsTimeWithDayEditor: { 
+                                    name: itemName,
+                                    constraint: nameid,
+                                    value: value,
+                                    enable: editable, 
+                                    readonly: readonly,
+                                    required: required
+                                }, attr: {
+                                    id: nameid, 
+                                    nameid: nameid,
+                                    title: itemName
+                                }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SELECTION -->
-                        <div class="selection">
-                            <div data-bind="ntsComboBox: {
-                                        name: itemName,
-                                        value: value,
-                                        options: ko.observableArray(lstComboBoxValue || []),
-                                        optionsText: 'optionText',
-                                        optionsValue: 'optionValue',
-                                        enable: editable,
-                                        visibleItemsCount: 5,
-                                        dropDownAttachedToBody: true,
-                                        columns: [{ prop: 'optionText', length: 10 }]
-                                    }, attr: {
-                                        id: nameid,
-                                        nameid: nameid,
-                                        title: itemName
-                                    }"></div>
-                        </div>
+                        <div data-bind="ntsComboBox: {
+                                    name: itemName,
+                                    value: value,
+                                    options: ko.observableArray(lstComboBoxValue || []),
+                                    optionsText: 'optionText',
+                                    optionsValue: 'optionValue',
+                                    enable: editable,
+                                    visibleItemsCount: 5,
+                                    dropDownAttachedToBody: true,
+                                    columns: [{ prop: 'optionText', length: 10 }]
+                                }, attr: {
+                                    id: nameid,
+                                    nameid: nameid,
+                                    title: itemName
+                                }"></div>
                         <!-- /ko -->
                     </div>
                 </script>`;
@@ -1628,7 +1602,7 @@ module nts.custombinding {
                                             }
 
                                             if (def.index == 1) {
-                                                let next = x.items()[2] || { value: () => ko.observable() };
+                                                let next = x.items()[2] || { item: {}, value: () => ko.observable() };
                                                 if (next.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE
                                                     && _.has(next, "value")
                                                     && ko.isObservable(next.value)) {
@@ -1843,14 +1817,14 @@ module nts.custombinding {
                                 } else {
                                     // show message if hasn't any category
                                     if (ko.toJS(opts.sortable.isEnabled)) {
-                                        alert(text('Msg_288')).then(opts.callback);
+                                        alert({ messageId: 'Msg_288' }).then(opts.callback);
                                     }
                                 }
                             });
                         } else {
                             // show message if hasn't any category
                             if (ko.toJS(opts.sortable.isEnabled)) {
-                                alert(text('Msg_288')).then(opts.callback);
+                                alert({ messageId: 'Msg_288' }).then(opts.callback);
                             }
                         }
                     });

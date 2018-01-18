@@ -50,7 +50,13 @@ module nts.uk.at.view.kaf002.b {
                     });
                 }); 
                 self.cm.application().appDate.subscribe(value => {
-                    self.kaf000_a2.getAppDataDate(7, value, false);
+                    nts.uk.ui.block.invisible();
+                    self.kaf000_a2.getAppDataDate(7, value, false)
+                    .done(()=>{
+                        nts.uk.ui.block.clear();         
+                    }).fail(()=>{
+                        nts.uk.ui.block.clear();    
+                    });
                 });
             }
             

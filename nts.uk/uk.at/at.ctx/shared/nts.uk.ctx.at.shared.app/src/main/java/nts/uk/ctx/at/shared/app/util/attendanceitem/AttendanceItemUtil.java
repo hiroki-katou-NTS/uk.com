@@ -85,12 +85,13 @@ public class AttendanceItemUtil {
 				String currentLayout = mergeLayout(layoutCode, layout.layout());
 				if(isList){
 					List<T> list = ReflectionUtil.getFieldValue(field, attendanceItems);
-					value = list == null || list.size() <= index ? null : list.get(index);
+//					value = list == null || list.size() <= index ? null : list.get(index);
 					className = getGenericType(field);
 					ids.stream().collect(Collectors.groupingBy(x -> getIndexFromString(x.getKey()))).entrySet().stream().forEach(idx -> {
 						Map<String, List<Entry<String, Integer>>> subGroups = idx.getValue().stream().collect(Collectors.groupingBy(
 								id -> getCurrentPath(layoutIdx + 1, id.getKey(), false)));
-						items.addAll(getItemValues(value == null ? ReflectionUtil.newInstance(className) : value, subGroups, layoutIdx + 1, 
+						T idxValue = list == null || list.size() < idx.getKey() ? null : list.get(idx.getKey() - 1);
+						items.addAll(getItemValues(idxValue == null ? ReflectionUtil.newInstance(className) : idxValue, subGroups, layoutIdx + 1, 
 								layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(), pathName, extraCondition, idx.getKey()));
 					});
 				} else {
@@ -149,7 +150,7 @@ public class AttendanceItemUtil {
 					Field idxField = layout.indexField().isEmpty() ? null : getField(layout.indexField(), className);
 					Map<Integer, List<ItemValue>> itemsForIdx = ids.stream().collect(Collectors.groupingBy(item -> getIndexFromString(item.path())));
 					list.stream().forEach(listValue -> {
-						Integer idx = idxField == null ? null : ReflectionUtil.getFieldValue(idxField, listValue);
+						Integer idx = idxField == null ? 1 : ReflectionUtil.getFieldValue(idxField, listValue);
 						List<ItemValue> subList = layout.listNoIndex() ? ids : itemsForIdx.get(idx);
 						if(subList != null){
 							Map<String, List<ItemValue>> subGroups = subList.stream().collect(Collectors.groupingBy(
@@ -464,9 +465,7 @@ public class AttendanceItemUtil {
 
 	private static <T> List<T> processListToMax(List<T> list, int max, Class<T> targetClass, String idxFieldName) {
 		// TODO: check result list
-		if(list == null){
-			list = new ArrayList<>();
-		}
+		list = list == null ? new ArrayList<>() : new ArrayList<>(list);
 		if (!idxFieldName.isEmpty()) {
 			Field idxField = getField(idxFieldName, targetClass);
 			for (int x = 0; x < max; x++) {

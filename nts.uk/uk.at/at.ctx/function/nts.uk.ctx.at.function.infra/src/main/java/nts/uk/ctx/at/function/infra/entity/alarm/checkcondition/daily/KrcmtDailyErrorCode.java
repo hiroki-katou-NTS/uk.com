@@ -25,7 +25,7 @@ public class KrcmtDailyErrorCode extends UkJpaEntity implements Serializable  {
 	
 	@ManyToOne
 	@JoinColumn(name="DAILY_ALARM_CON_ID", referencedColumnName="DAILY_ALARM_CON_ID", insertable = false, updatable = false)
-	public KrcmtDailyAlarmCondition errorcode;
+	public KrcmtDailyAlarmCondition dailyAlarmCondition;
 	
 	@Override
 	protected Object getKey() {
@@ -37,14 +37,14 @@ public class KrcmtDailyErrorCode extends UkJpaEntity implements Serializable  {
 		this.krcmtDailyErrorCodePK = krcmtDailyErrorCodePK;
 	}
 	
-	public static KrcmtDailyErrorCode toEntity(String dailyAlarmConID, String errorAlarmID) {
-		return new KrcmtDailyErrorCode(new KrcmtDailyErrorCodePK(dailyAlarmConID, errorAlarmID));
+	public static KrcmtDailyErrorCode toEntity(String dailyAlarmConID, String errorAlarmCode) {
+		return new KrcmtDailyErrorCode(new KrcmtDailyErrorCodePK(dailyAlarmConID, errorAlarmCode));
 	}
 	
-	public static List<KrcmtDailyErrorCode> toEntity(String dailyAlarmConID, List<String> errorAlarmCode) {
+	public static List<KrcmtDailyErrorCode> toEntity(String dailyAlarmConID, List<String> listErrorAlarmCode) {
 		List<KrcmtDailyErrorCode> data = new ArrayList<>();
-		for(String errorAlarmID : errorAlarmCode ) {
-			data.add(KrcmtDailyErrorCode.toEntity(dailyAlarmConID, errorAlarmID));
+		for(String errorAlarmCode : listErrorAlarmCode ) {
+			data.add(KrcmtDailyErrorCode.toEntity(dailyAlarmConID, errorAlarmCode));
 		}
 		return data;
 	}

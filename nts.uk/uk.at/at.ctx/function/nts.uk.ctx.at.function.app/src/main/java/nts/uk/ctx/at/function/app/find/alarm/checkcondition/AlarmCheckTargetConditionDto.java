@@ -15,8 +15,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class AlarmCheckTargetConditionDto {
 	
-	private String targetConditionId;
-	
 	private boolean filterByEmployment;
 
 	private boolean filterByClassification;

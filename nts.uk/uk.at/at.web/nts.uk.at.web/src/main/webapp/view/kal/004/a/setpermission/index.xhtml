@@ -6,19 +6,20 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<div class="valign-center control-group" style = "margin-top: 40px;">
+		<div class="valign-center control-group" style="margin-top: 40px;">
 			<label>#{i18n.getText('KAL004_111')}</label>
-			<div class="cf" style ="margin-left: 20px;"
+			<div class="cf" style="margin-left: 20px;"
 				data-bind="ntsSwitchButton: {
 					options: roundingRules,
 					optionsValue: 'code',
 					optionsText: 'name',
 					value: selectedRuleCode}"></div>
 		</div>
-		<div class="valign-center control-group" style = "margin-top: 40px;">
-			<label>#{i18n.getText('KAL004_114')}</label> 
-			<input style ="margin-left: 59px;" data-bind="ntsTextEditor: {value : executionAuthor}" />
-			<button data-bind ="click : openCDL025">#{i18n.getText('KAL004_115')}</button>
+		<div class="valign-center control-group" style="margin-top: 40px;">
+			<label>#{i18n.getText('KAL004_114')}</label> <input
+				style="margin-left: 59px;"
+				data-bind="ntsTextEditor: {value : executionAuthor}" />
+			<button data-bind="click : openCDL025">#{i18n.getText('KAL004_115')}</button>
 		</div>
 	</ui:composition>
 </body>

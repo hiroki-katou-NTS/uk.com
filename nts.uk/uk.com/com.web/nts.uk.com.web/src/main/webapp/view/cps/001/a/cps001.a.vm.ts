@@ -422,12 +422,8 @@ module cps001.a.vm {
                 };
 
             // trigger change of all control in layout
-            _.each(__viewContext.primitiveValueConstraints, x => {
-                if (_.has(x, "itemCode")) {
-                    $('#' + x.itemCode).trigger('change');
-                }
-            })
-
+            $('.drag-panel .nts-input').trigger('change');
+            
             if (hasError()) {
                 $('#func-notifier-errors').trigger('click');
                 return;
@@ -631,6 +627,9 @@ module cps001.a.vm {
 
             self.id.subscribe(id => {
                 let mode: TABS = self.mode();
+
+                setShared(REPL_KEY, REPL_KEYS.NORMAL);
+
                 if (id) {
                     if (mode == TABS.CATEGORY) {
                         let option = _.find(self.combobox(), x => x.optionValue == id);

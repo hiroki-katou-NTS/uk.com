@@ -66,10 +66,10 @@ public class DefaultClosureServiceImpl implements ClosureService {
 
 		GeneralDate startDate = this.getExpectionDate(isLastDayOfMonth, processingYm.year(),
 				isLastDayOfMonth ? processingYm.month() : processingYm.month() - 1,
-				isLastDayOfMonth ? FIRST_DAY_OF_MONTH : closureDay.v() + 1);
+				isLastDayOfMonth ? FIRST_DAY_OF_MONTH : closureDay.v() + 1, true);
 
 		GeneralDate endDate = this.getExpectionDate(isLastDayOfMonth, processingYm.year(),
-				processingYm.month(), closureDay.v());
+				processingYm.month(), closureDay.v(), false);
 
 		return new DatePeriod(startDate, endDate);
 	}
@@ -83,14 +83,18 @@ public class DefaultClosureServiceImpl implements ClosureService {
 	 * @param day the day
 	 * @return the expection date
 	 */
-	private GeneralDate getExpectionDate(Boolean lastDayOfMonth, int year, int month, int day) {
+	private GeneralDate getExpectionDate(Boolean lastDayOfMonth, int year, int month, int day, Boolean isStartDate) {
 		
 		if(month == 0) {
 			month =  MONTH_OF_YEAR;
 			year = year - 1;
 		}
+	
+		if(lastDayOfMonth && isStartDate) {
+			return GeneralDate.ymd(year, month, day);
+		}
 		
-		return (lastDayOfMonth || !this.isDateOfMonth(year, month, day))
+		return  (lastDayOfMonth || !this.isDateOfMonth(year, month, day))
 				? this.getLastDateOfMonth(year, month) : GeneralDate.ymd(year, month, day);
 	}
 	

@@ -131,7 +131,7 @@ public class AppOvertimeFinder {
 		//1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
 				employeeID,
-				rootAtr, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
+				rootAtr, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class),appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
 		result.setManualSendMailAtr(appCommonSettingOutput.applicationSetting.getManualSendMailAtr().value  ==1 ?true : false);
 		//アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
 		//startApprovalRootService.getApprovalRootPattern(companyID, employeeID, 1, ApplicationType.OVER_TIME_APPLICATION.value, null);
@@ -170,7 +170,7 @@ public class AppOvertimeFinder {
 		//1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
 						employeeID,
-						rootAtr, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
+						rootAtr, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
 		
 		/*
 		 * 06_計算処理
@@ -185,7 +185,7 @@ public class AppOvertimeFinder {
 						overtimeInputCaculations,
 						prePostAtr,
 						inputDate,
-						GeneralDate.fromString(appDate, DATE_FORMAT),
+						appDate == null ? null :GeneralDate.fromString(appDate, DATE_FORMAT),
 						ApplicationType.OVER_TIME_APPLICATION.value,
 						employeeID, 
 						companyID, 
@@ -249,7 +249,7 @@ public class AppOvertimeFinder {
 					overTimeDto.setWorkTypes(workTypeCodes);
 					
 					// 08_就業時間帯取得(lay loai gio lam viec) 
-					List<SiftType> siftTypes = overtimeService.getSiftType(companyID, appOverTime.getApplication().getEmployeeID(), requestAppDetailSetting.get(0));
+					List<SiftType> siftTypes = overtimeService.getSiftType(companyID, appOverTime.getApplication().getEmployeeID(), requestAppDetailSetting.get(0),appOverTime.getApplication().getAppDate());
 					List<String> siftCodes = new ArrayList<>();
 					for(SiftType siftType : siftTypes){
 						siftCodes.add(siftType.getSiftCode());
@@ -469,9 +469,8 @@ public class AppOvertimeFinder {
 							workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
 						}
 						result.setWorkTypes(workTypeCodes);
-						
 						// 08_就業時間帯取得(lay loai gio lam viec) 
-						List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0));
+						List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0),GeneralDate.fromString(appDate, "yyyy/MM/dd"));
 						List<String> siftCodes = new ArrayList<>();
 						for(SiftType siftType : siftTypes){
 							siftCodes.add(siftType.getSiftCode());
@@ -563,9 +562,9 @@ public class AppOvertimeFinder {
 						workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
 					}
 					result.setWorkTypes(workTypeCodes);
-					
+					GeneralDate baseDate = appCommonSettingOutput.generalDate;
 					// 08_就業時間帯取得(lay loai gio lam viec) 
-					List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0));
+					List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0),baseDate);
 					List<String> siftCodes = new ArrayList<>();
 					for(SiftType siftType : siftTypes){
 						siftCodes.add(siftType.getSiftCode());
@@ -573,7 +572,7 @@ public class AppOvertimeFinder {
 					result.setSiftTypes(siftCodes);
 					
 					// 09_勤務種類就業時間帯の初期選択をセットする
-					WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, GeneralDate.fromString(appDate, DATE_FORMAT), workTypeOvertimes, siftTypes);
+					WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, baseDate, workTypeOvertimes, siftTypes);
 					result.setWorkType(workTypeAndSiftType.getWorkType());
 					result.setSiftType(workTypeAndSiftType.getSiftType());
 					// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.condition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,6 +57,18 @@ public class JpaWorkRecorExtraConRepository extends JpaRepository implements Wor
 	public void deleteWorkRecordExtraCon(String errorAlarmCheckID) {
 		this.commandProxy().remove(KrcmtWorkRecordExtraCon.class,errorAlarmCheckID);
 		
+	}
+
+	@Override
+	public List<WorkRecordExtractingCondition> getAllWorkRecordExtraConByListID(List<String> listErrorAlarmID) {
+		List<WorkRecordExtractingCondition> data = new  ArrayList<>();
+		for(String errorAlarmID : listErrorAlarmID) {
+			Optional<WorkRecordExtractingCondition> workRecordExtractingCondition =  getWorkRecordExtraConById(errorAlarmID);
+			if(workRecordExtractingCondition.isPresent()) {
+				data.add(workRecordExtractingCondition.get());
+			}
+		}
+		return data;
 	}
 
 }

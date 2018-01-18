@@ -50,7 +50,7 @@ public class RoleSetGrantedJobTitleFinder {
 		if (listJobSimple.isEmpty()) {
 			throw new BusinessException("Msg_712");
 		}
-		listJobSimple.sort((s1, s2) -> s1.getDisporder().compareTo(s2.getDisporder()));
+		listJobSimple.sort((s1, s2) -> s1.getJobTitleCode().compareTo(s2.getJobTitleCode()));
 		List<JobTitleDto> listJobTitle = listJobSimple.stream().map(item -> new JobTitleDto(item.getJobTitleId(), item.getJobTitleCode(), item.getJobTitleName())).collect(Collectors.toList());
         
 		// get Role Set by companyId, sort ASC
