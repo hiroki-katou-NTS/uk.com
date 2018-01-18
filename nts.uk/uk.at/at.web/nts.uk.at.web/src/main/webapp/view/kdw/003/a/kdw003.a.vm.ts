@@ -105,7 +105,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             new ItemModel('2', '役職手当'),
             new ItemModel('3', '基本給2')]);
 
-        comboColumns: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 4 },
+        comboColumns: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 1 },
+            { prop: 'name', length: 2 }]);
+        comboColumnsCalc: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 1 },
             { prop: 'name', length: 8 }]);
          comboItemsDoWork : KnockoutObservable<any> = ko.observableArray([]);
          comboItemsReason : KnockoutObservable<any> = ko.observableArray([]);
@@ -540,6 +542,42 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         showErrorDialog() {
             var self = this;
             let lstEmployee = [];
+            let uiErrors = nts.uk.ui.errors.getErrorList();
+            let errorValidateScreeen : any = [];
+            if (self.displayFormat() === 0) {
+                _.each(uiErrors, value => {
+                    let dateCon = _.find(self.dpData, (item: any) => {
+                        return item.id == value.rowId.substring(1, value.rowId.length);
+                    });
+
+                    let object = { date: dateCon.date , employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: value.message, itemName: "", columnKey: value.columnKey };
+                    let item = _.find(self.lstAttendanceItem(), (data) => {
+                        return String(data.id) === value.columnKey.substring(1, value.columnKey.length);
+                    })
+                    object.itemName = (item == undefined) ? "" : item.name; 
+                    errorValidateScreeen.push(object);
+                });
+            } else {
+                _.each(uiErrors, value => {
+                    let dateCon = _.find(self.dpData, (item: any) => {
+                        return item.id == value.rowId.substring(1, value.rowId.length);
+                    });
+
+                    let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: value.message, itemName: "", columnKey: value.columnKey };
+                    let item = _.find(self.lstAttendanceItem(), (data) => {
+                        return String(data.id) === value.columnKey.substring(1, value.columnKey.length);
+                    })
+                    object.itemName = (item == undefined) ? "" : item.name;
+                    errorValidateScreeen.push(object);
+                });
+            };
+//            errorValidateScreeen = [{ date: moment(self.dateRanger().startDate, "YYYY/MM/DD"), employeeCode: "00000001", employeeName: "AAA", message: "Loi gi", itemName: "AAAA", columnKey:"A312" }];
+//            _.each(errorValidateScreeen, value =>{
+//                let item = _.find(self.lstAttendanceItem(), (data) => {
+//                    return String(data.id) === value.columnKey.substring(1, value.columnKey.length);
+//                })
+//                value.itemName = (item == undefined) ? "" : item.name; 
+//            })
             if (self.displayFormat() === 0) {
                 lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
@@ -555,6 +593,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 lstEmployee: lstEmployee
             };
             nts.uk.ui.windows.setShared("paramToGetError", param);
+            nts.uk.ui.windows.setShared("errorValidate", errorValidateScreeen);
             nts.uk.ui.windows.sub.modal("/view/kdw/003/b/index.xhtml").onClosed(() => {
             });
         }
@@ -1131,9 +1170,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     },
                     { name: 'TextEditorNumberSeparated', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } },
                     { name: 'TextEditorTimeShortHM', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } },
-                    { name: 'ComboboxCalc', options: self.comboItemsCalc(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
-                    { name: 'ComboboxReason', options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
-                    { name: 'ComboboxDoWork', options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                    { name: 'ComboboxCalc',  width: '250px', options: self.comboItemsCalc(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumnsCalc(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                    { name: 'ComboboxReason',  width: '120px',  options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                    { name: 'ComboboxDoWork',  width: '120px', options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                     {
                         name: 'FlexImage', source: 'ui-icon ui-icon-locked', click: function(key, rowId, evt) {
                             let data = $("#dpGrid").igGrid("getCellValue", rowId, key);

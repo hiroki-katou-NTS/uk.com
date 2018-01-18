@@ -82,6 +82,6 @@ public class ActualWorkTimeDailyPerformDto {
 
 	public ActualWorkingTimeOfDaily toDomain() {
 		return ActualWorkingTimeOfDaily.of(totalWorkingTime.toDomain(), constraintTime.getLateNightConstraintTime(),
-				constraintTime.getTotalConstraintTime(), constraintDifferenceTime, timeDifferenceWorkingHours);
+				constraintTime.getTotalConstraintTime(), constraintDifferenceTime == null ? 0 : constraintDifferenceTime, timeDifferenceWorkingHours);
 	}
 }

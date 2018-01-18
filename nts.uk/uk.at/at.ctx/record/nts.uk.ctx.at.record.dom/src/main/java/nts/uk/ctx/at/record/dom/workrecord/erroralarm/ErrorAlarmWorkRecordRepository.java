@@ -17,6 +17,9 @@ public interface ErrorAlarmWorkRecordRepository {
 
 	//get error by eralCheckId
 	Optional<ErrorAlarmWorkRecord> findByErrorAlamCheckId(String eralCheckId);
+	
+	//get error by list eralCheckId
+	List<ErrorAlarmWorkRecord> findByListErrorAlamCheckId(List<String> listEralCheckId);
 
 	// get all errors and alarms's settings of login company
 	List<ErrorAlarmWorkRecord> getListErrorAlarmWorkRecord(String companyId);

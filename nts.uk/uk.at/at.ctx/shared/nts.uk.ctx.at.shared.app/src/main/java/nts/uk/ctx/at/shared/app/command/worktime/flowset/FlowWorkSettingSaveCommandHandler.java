@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.flowset;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -14,6 +16,8 @@ import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveComman
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class FlowWorkSettingSaveCommandHandler.
@@ -29,6 +33,7 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 	@Inject
 	private WorkTimeCommonSaveCommandHandler commonHandler;
 
+	/** The flow policy. */
 	@Inject
 	private FlWorkSettingPolicy flowPolicy;
 
@@ -42,6 +47,9 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<FlowWorkSettingSaveCommand> context) {
+		
+		String companyId = AppContexts.user().companyId();
+		
 		// get command
 		FlowWorkSettingSaveCommand command = context.getCommand();
 
@@ -55,7 +63,18 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 		this.commonHandler.handle(command);
 
 		// call repository save flow work setting
-		this.flowRepo.save(flowWorkSetting);
+		if (command.isAddMode()) {
+			//TODOflowWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			this.flowRepo.add(flowWorkSetting);
+		} else {
+			Optional<FlowWorkSetting> opFlowWorkSetting = this.flowRepo.find(companyId,
+					command.getWorktimeSetting().worktimeCode);
+			if (opFlowWorkSetting.isPresent()) {
+				flowWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
+						command.getWorktimeSetting().getWorkTimeDivision(), opFlowWorkSetting.get());
+				this.flowRepo.update(flowWorkSetting);
+			}
+		}
 	}
 
 }

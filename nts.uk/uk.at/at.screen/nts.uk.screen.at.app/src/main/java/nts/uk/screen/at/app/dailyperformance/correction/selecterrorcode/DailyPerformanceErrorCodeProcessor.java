@@ -202,8 +202,10 @@ public class DailyPerformanceErrorCodeProcessor {
 		});
 		if (displayFormat == 2) {
 			// only filter data error
-			Map<String, String> listEmployeeError = lstError.stream()
-					.collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getEmployeeId()));
+			Map<String, String> listEmployeeError = new HashMap<>();
+			for(DPErrorDto dto: lstError){
+				listEmployeeError.put(dto.getEmployeeId(), "");
+			}
 			listEmployeeId = listEmployeeId.stream().filter(x -> listEmployeeError.containsKey(x))
 					.collect(Collectors.toList());
 		}

@@ -1,0 +1,104 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFlowRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFlowRtSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
+
+/**
+ * The Class JpaFlowRestTimezoneSetMemento.
+ */
+public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento {
+
+	/** The entity. */
+	private KshmtFlowRtSet entity;
+	
+	/** The company id. */
+	private String companyId;
+	
+	/** The work time cd. */
+	private String workTimeCd;
+	
+	/** The work time cd. */
+	private int resttimeAtr;	
+	
+	/**
+	 * Instantiates a new jpa flow rest timezone set memento.
+	 *
+	 * @param entity the entity
+	 */
+	public JpaFlowRestTimezoneSetMemento(KshmtFlowRtSet entity) {
+		super();
+		this.entity = entity;
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowFlowRtSet())) {
+			this.entity.setLstKshmtFlowFlowRtSet(new ArrayList<>());
+		}
+		this.companyId = this.entity.getKshmtFlowRtSetPK().getCid();
+		this.workTimeCd = this.entity.getKshmtFlowRtSetPK().getWorktimeCd();
+		this.resttimeAtr = this.entity.getKshmtFlowRtSetPK().getResttimeAtr();
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneSetMemento#setFlowRestSet(java.util.List)
+	 */
+	@Override
+	public void setFlowRestSet(List<FlowRestSetting> set) {
+		if (CollectionUtil.isEmpty(set)) {
+			this.entity.setLstKshmtFlowFlowRtSet(new ArrayList<>());
+			return;
+		}		
+		
+		List<KshmtFlowFlowRtSet> lstEntity = this.entity.getLstKshmtFlowFlowRtSet();
+        if (CollectionUtil.isEmpty(lstEntity)) {
+            lstEntity = new ArrayList<>();
+        }
+		
+        // set list entity
+        List<KshmtFlowFlowRtSet> newListEntity = new ArrayList<>();
+        int periodNo = 1;
+        for (FlowRestSetting domain : set) {
+        	KshmtFlowFlowRtSetPK pk = new KshmtFlowFlowRtSetPK();
+            pk.setCid(companyId);
+            pk.setWorktimeCd(workTimeCd);
+            pk.setResttimeAtr(resttimeAtr);
+            pk.setPeriodNo(periodNo);
+            
+            KshmtFlowFlowRtSet entity = new KshmtFlowFlowRtSet();
+            entity.setKshmtFlowFlowRtSetPK(pk);	                
+            
+            // save to memento
+            domain.saveToMemento(new JpaFlowRestSettingSetMemento(entity));
+            periodNo++;
+            newListEntity.add(entity);
+        }
+        this.entity.setLstKshmtFlowFlowRtSet(newListEntity);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneSetMemento#setUseHereAfterRestSet(boolean)
+	 */
+	@Override
+	public void setUseHereAfterRestSet(boolean val) {
+		this.entity.setUseRestAfterSet(BooleanGetAtr.getAtrByBoolean(val));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneSetMemento#setHereAfterRestSet(nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetting)
+	 */
+	@Override
+	public void setHereAfterRestSet(FlowRestSetting set) {
+		this.entity.setAfterRestTime(set.getFlowRestTime().valueAsMinutes());
+		this.entity.setAfterPassageTime(set.getFlowPassageTime().valueAsMinutes());
+	}
+
+}

@@ -67,7 +67,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
         }
 
-        startPage(): JQueryPromise<any> {
+        startPage(code?: string): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
@@ -76,10 +76,17 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 if (data && data.length) {
                     let _accList: Array<model.AlarmCheckConditionByCategory> = _.map(data, acc => {
                         let category = _.find(ko.toJS(self.cbbItemList), (x: model.ItemModel) => x.code == acc.category);
-                        return new model.AlarmCheckConditionByCategory(acc.code, acc.name, category, acc.availableRoles, new model.AlarmCheckTargetCondition(acc.targetCondition.filterByEmployment, acc.targetCondition.filterByClassification, acc.targetCondition.filterByJobTitle, acc.targetCondition.filterByBusinessType, acc.targetCondition.targetEmployment, acc.targetCondition.targetClassification, acc.targetCondition.targetJobTitle, acc.targetCondition.targetBusinessType));
+                        let item = new model.AlarmCheckConditionByCategory(acc.code, acc.name, category, acc.availableRoles, new model.AlarmCheckTargetCondition(acc.targetCondition.filterByEmployment, acc.targetCondition.filterByClassification, acc.targetCondition.filterByJobTitle, acc.targetCondition.filterByBusinessType, acc.targetCondition.targetEmployment, acc.targetCondition.targetClassification, acc.targetCondition.targetJobTitle, acc.targetCondition.targetBusinessType));
+                        item.dailyAlarmCheckCondition(new model.DailyAlarmCheckCondition(acc.dailyAlarmCheckCondition.conditionToExtractDaily, []));
+                        item.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(acc.schedule4WeekCondition);
+                        return item;
                     });
                     _.each(_accList, acc => self.listAlarmCheckCondition.push(acc));
-                    self.selectedAlarmCheckConditionCode(self.listAlarmCheckCondition()[0].code());
+                    if (code) {
+                        self.selectedAlarmCheckConditionCode(code);
+                    } else {
+                        self.selectedAlarmCheckConditionCode(self.listAlarmCheckCondition()[0].code());
+                    }
                     self.selectedAlarmCheckConditionCode.valueHasMutated();
                     self.screenMode(model.SCREEN_MODE.UPDATE);
                 } else {
@@ -128,7 +135,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
                 service.registerData(command).done(function() {
-                    self.startPage().done(() => {
+                    self.startPage(data.code()).done(() => {
                         info({ messageId: "Msg_15" }).then(() => {
                         });
                     });
