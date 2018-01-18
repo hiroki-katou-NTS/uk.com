@@ -69,8 +69,10 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 
 	@Override
 	public void setPublicHolidayManagementStartDate(PublicHolidayManagementStartDate publicHolidayManagementStartDate) {
-		// TODO Auto-generated method stub
-		
+		this.kshmtPublicHdSet.setPeriod(0);
+		this.kshmtPublicHdSet.setDayMonth(0);
+		this.kshmtPublicHdSet.setFullDate(null);
+		this.kshmtPublicHdSet.setDetermineStartD(0);
 	}
 
 }

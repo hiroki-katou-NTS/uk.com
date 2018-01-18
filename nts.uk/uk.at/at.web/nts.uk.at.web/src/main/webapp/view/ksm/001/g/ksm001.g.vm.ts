@@ -23,34 +23,17 @@ module nts.uk.at.view.ksm001.g {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-//                service.findCommonGuidelineSetting().done(function(data){
-//                    if(data){
-//                        self.commonGuidelineSettingModel.updateData(data);    
-//                    }
-//                    dfd.resolve();
-//                });
+
                 return dfd.promise();
             }
             
             /**
              * function on click save CommonGuidelineSetting
              */
-            public saveComparTargetSetting(): void {
+            public save(): void {
                 var self = this;
 
                 nts.uk.ui.block.invisible();
-
-//                service.saveCommonGuidelineSetting(self.commonGuidelineSettingModel.toDto()).done(function() {
-//                    // show message 15
-//                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-//                        // close windows
-//                        nts.uk.ui.windows.close();
-//                    });
-//                }).fail(function(error) {
-//                    nts.uk.ui.dialog.alertError(error);
-//                }).always(function() {
-//                    nts.uk.ui.block.clear();
-//                });
             }
 
             /**
