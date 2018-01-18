@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecordPK;
 import nts.uk.shr.com.context.AppContexts;
@@ -42,21 +43,21 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public void addErrorAlarmWorkRecord(ErrorAlarmWorkRecord domain) {
-		this.commandProxy().insert(KwrmtErAlWorkRecord.fromDomain(domain));
+	public void addErrorAlarmWorkRecord(ErrorAlarmWorkRecord domain, ErrorAlarmCondition conditionDomain) {
+		this.commandProxy().insert(KwrmtErAlWorkRecord.fromDomain(domain, conditionDomain));
 	}
 
 	@Override
-	public void updateErrorAlarmWorkRecord(ErrorAlarmWorkRecord domain) {
+	public void updateErrorAlarmWorkRecord(ErrorAlarmWorkRecord domain, ErrorAlarmCondition conditionDomain) {
 		KwrmtErAlWorkRecord targetEntity = this.queryProxy()
 				.find(new KwrmtErAlWorkRecordPK(domain.getCompanyId(), domain.getCode().v()), KwrmtErAlWorkRecord.class)
 				.get();
 		domain.setCheckId(targetEntity.eralCheckId);
 		if (!domain.getFixedAtr()) {
-			domain.setGroupId1(targetEntity.krcmtErAlCondition.atdItemConditionGroup1);
-			domain.setGroupId2(targetEntity.krcmtErAlCondition.atdItemConditionGroup2);
+			conditionDomain.setGroupId1(targetEntity.krcmtErAlCondition.atdItemConditionGroup1);
+			conditionDomain.setGroupId2(targetEntity.krcmtErAlCondition.atdItemConditionGroup2);
 		}
-		KwrmtErAlWorkRecord domainAfterConvert = KwrmtErAlWorkRecord.fromDomain(domain);
+		KwrmtErAlWorkRecord domainAfterConvert = KwrmtErAlWorkRecord.fromDomain(domain, conditionDomain);
 		targetEntity.eralCheckId = domainAfterConvert.eralCheckId;
 		targetEntity.boldAtr = domainAfterConvert.boldAtr;
 		targetEntity.cancelableAtr = domainAfterConvert.cancelableAtr;
@@ -97,6 +98,33 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 			}
 		}
 		return data;
+	}
+	
+	@Override
+    public Optional<ErrorAlarmCondition> findConditionByErrorAlamCheckId(String eralCheckId) {
+        Optional<KwrmtErAlWorkRecord> entity = this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_ID, KwrmtErAlWorkRecord.class)
+                .setParameter("companyId", AppContexts.user().companyId())
+                .setParameter("eralCheckId", eralCheckId).getSingle();
+                return Optional.ofNullable(entity.isPresent() ? KwrmtErAlWorkRecord.toConditionDomain(entity.get()) : null);
+    }
+
+	@Override
+	public List<ErrorAlarmCondition> findConditionByListErrorAlamCheckId(List<String> listEralCheckId) {
+		List<ErrorAlarmCondition> data = new ArrayList<>();
+		for(String eralCheckId : listEralCheckId ) {
+			Optional<ErrorAlarmCondition> errorAlarmWorkRecord = this.findConditionByErrorAlamCheckId(eralCheckId);
+			if(errorAlarmWorkRecord.isPresent()) {
+				data.add(errorAlarmWorkRecord.get());
+			}
+		}
+		return data;
+	}
+	
+	@Override
+	public List<ErrorAlarmCondition> getListErrorAlarmCondition(String companyId) {
+		List<KwrmtErAlWorkRecord> lstData = this.queryProxy().query(FIND_BY_COMPANY, KwrmtErAlWorkRecord.class)
+				.setParameter("companyId", companyId).getList();
+		return lstData.stream().map(entity -> KwrmtErAlWorkRecord.toConditionDomain(entity)).collect(Collectors.toList());
 	}
 
 }

@@ -16,10 +16,12 @@ module nts.custombinding {
 
             $(element)
                 .on("iggriddatarendered", (evt, ui) => {
-                    let rows = $(element).find('tbody.ui-iggrid-tablebody tr');
-                    _.each(rows, (element, i) => {
-                        $(element).data("item", ko.unwrap(data.options)[i]);
-                    });
+                    setTimeout(() => {
+                        let rows = $(element).find('tbody.ui-iggrid-tablebody tr');
+                        _.each(rows, (element, i) => {
+                            $(element).data("item", ko.unwrap(data.options)[i]);
+                        });
+                    }, 0);
                 })
                 .find('tbody.ui-iggrid-tablebody')
                 .sortable({
