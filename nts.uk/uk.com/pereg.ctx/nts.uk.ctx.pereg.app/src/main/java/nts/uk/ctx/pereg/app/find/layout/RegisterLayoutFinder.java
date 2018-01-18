@@ -179,7 +179,7 @@ public class RegisterLayoutFinder {
 			if (dataTypeValue == 6) {
 				SelectionItemDto selectionItemDto = (SelectionItemDto) dataObject.getItem();
 				List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
-						AppContexts.user().employeeId(), command.getHireDate(), false);
+						AppContexts.user().employeeId(), command.getHireDate(), true);
 				dataObject.setLstComboBoxValue(lstComboBox);
 			}
 		}
