@@ -98,11 +98,6 @@ public class RegisterLayoutFinder {
 
 		if (command.getCreateType() != 3) {
 			dataServer = this.getAllSettingItemList(command);
-
-			if (CollectionUtil.isEmpty(dataServer)) {
-
-				return null;
-			}
 		}
 		setData(dataServer, listItemCls, command);
 
