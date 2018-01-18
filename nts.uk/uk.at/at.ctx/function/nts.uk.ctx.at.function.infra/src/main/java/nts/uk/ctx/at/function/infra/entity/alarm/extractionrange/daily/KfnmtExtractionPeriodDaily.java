@@ -131,7 +131,6 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 		// set end date
 		EndSpecify endPrev = EnumAdaptor.valueOf(endDate.getEndSpecify().value, EndSpecify.class);
 		this.endSpecify = endDate.getEndSpecify().value;
-		this.endPreviousDay = endDate.getEndSpecify().value;
 		if (endPrev == EndSpecify.DAYS) {
 			this.endPreviousDay = endDate.getEndDays().get().getDayPrevious().value;
 			this.endMakeToDay = endDate.getEndDays().get().isMakeToDay() == true ? 1 : 0;
