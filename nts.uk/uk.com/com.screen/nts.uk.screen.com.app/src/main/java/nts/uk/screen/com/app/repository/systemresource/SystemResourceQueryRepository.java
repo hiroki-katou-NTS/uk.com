@@ -7,7 +7,7 @@ package nts.uk.screen.com.app.repository.systemresource;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.shr.infra.i18n.resource.data.CisctI18NResource;
+import nts.uk.shr.infra.i18n.resource.data.CismtI18NResourceCus;
 
 /**
  * The Interface SystemResourceQueryRepository.
@@ -19,7 +19,7 @@ public interface SystemResourceQueryRepository {
 	 *
 	 * @return the list
 	 */
-	List<SystemResourceData> findListResource();
+	List<SystemResourceData> findListResource(String companyId);
 	
 	
 	/**
@@ -28,7 +28,7 @@ public interface SystemResourceQueryRepository {
 	 * @param resourceId the resource id
 	 * @return the optional
 	 */
-	Optional<CisctI18NResource> findByResourceId(String resourceId);
+	Optional<CismtI18NResourceCus> findByResourceId(String companyId, String resourceId);
 	
 	
 	/**
@@ -36,5 +36,5 @@ public interface SystemResourceQueryRepository {
 	 *
 	 * @param systemResource the system resource
 	 */
-	void update(CisctI18NResource entity);
+	void update(CismtI18NResourceCus entity);
 }
