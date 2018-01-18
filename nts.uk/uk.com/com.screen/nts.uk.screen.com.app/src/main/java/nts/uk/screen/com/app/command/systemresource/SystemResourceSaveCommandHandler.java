@@ -13,7 +13,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.screen.com.app.repository.systemresource.SystemResourceQueryRepository;
 import nts.uk.screen.com.app.systemresource.dto.SystemResourceDto;
-import nts.uk.shr.infra.i18n.resource.data.CisctI18NResource;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.i18n.resource.data.CismtI18NResourceCus;
 
 /**
  * The Class SystemResourceSaveCommandHandler.
@@ -31,15 +32,18 @@ public class SystemResourceSaveCommandHandler extends CommandHandler<SystemResou
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<SystemResourceSaveCommand> context) {
+		
+		String companyId = AppContexts.user().companyId();
+		
 		// Get command
 		SystemResourceSaveCommand command = context.getCommand();
 		
 		for (SystemResourceDto item : command.getListData()) {
 			
-			Optional<CisctI18NResource> optSysresoucre = this.systemResourceRepository.findByResourceId(item.getResourceId());
+			Optional<CismtI18NResourceCus> optSysresoucre = this.systemResourceRepository.findByResourceId(companyId, item.getResourceId());
 			
 			if(optSysresoucre.isPresent()){
-				CisctI18NResource entity = optSysresoucre.get();
+				CismtI18NResourceCus entity = optSysresoucre.get();
 				entity.setContent(item.getResourceContent());
 				this.systemResourceRepository.update(entity);
 			}

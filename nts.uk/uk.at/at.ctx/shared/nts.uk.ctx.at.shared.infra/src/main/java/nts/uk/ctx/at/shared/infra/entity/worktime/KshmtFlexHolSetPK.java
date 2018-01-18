@@ -47,11 +47,13 @@ public class KshmtFlexHolSetPK implements Serializable {
 	 *
 	 * @param cid the cid
 	 * @param worktimeCd the worktime cd
+	 * @param worktimeNo the worktime no
 	 */
-	public KshmtFlexHolSetPK(String cid, String worktimeCd) {
+	public KshmtFlexHolSetPK(String cid, String worktimeCd,int worktimeNo) {
 		super();
 		this.cid = cid;
 		this.worktimeCd = worktimeCd;
+		this.worktimeNo = worktimeNo;
 	}
 
 	/*

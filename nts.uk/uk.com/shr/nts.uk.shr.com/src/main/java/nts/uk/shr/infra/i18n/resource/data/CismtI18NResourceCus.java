@@ -5,12 +5,16 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.uk.shr.infra.i18n.resource.I18NResourceType;
 import nts.uk.shr.infra.i18n.resource.container.I18NResourceItem;
 import nts.uk.shr.infra.i18n.resource.container.MessageResourceItem;
 import nts.uk.shr.infra.i18n.resource.container.ProgramResourceItem;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "CISMT_I18N_RESOURCE_CUS")
 public class CismtI18NResourceCus {
