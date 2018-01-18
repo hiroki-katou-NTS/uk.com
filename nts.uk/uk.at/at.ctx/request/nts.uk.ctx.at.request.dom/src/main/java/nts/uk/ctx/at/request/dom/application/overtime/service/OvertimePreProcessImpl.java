@@ -449,7 +449,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		if (PrePostAtr.POSTERIOR.value == prePostAtr) {
 			//Imported(申請承認)「勤務実績」を取得する
 			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
-			if (StringUtil.isNullOrEmpty(recordWorkInfoImport.getWorkTypeCode(), false)) {
+			if (!StringUtil.isNullOrEmpty(recordWorkInfoImport.getWorkTypeCode(), false)) {
 				WorkTypeOvertime workTypeOvertime = new WorkTypeOvertime();
 				workTypeOvertime.setWorkTypeCode(recordWorkInfoImport.getWorkTypeCode().toString());
 				Optional<WorkType> workType = workTypeRepository.findByPK(companyID,
@@ -459,7 +459,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 				}
 				result.setWorkTypeRefer(workTypeOvertime);
 			}
-			if (StringUtil.isNullOrEmpty(recordWorkInfoImport.getWorkTimeCode(), false)) {
+			if (!StringUtil.isNullOrEmpty(recordWorkInfoImport.getWorkTimeCode(), false)) {
 				SiftType siftType = new SiftType();
 
 				siftType.setSiftCode(recordWorkInfoImport.getWorkTimeCode());
