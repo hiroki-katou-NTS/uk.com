@@ -49,6 +49,7 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 		KfnmtAlarmPatternSet updateEntity = this.queryProxy().query(SELECT_BY_ALARM_PATTERN_CD, KfnmtAlarmPatternSet.class)
 				.setParameter("companyId", domain.getCompanyID())
 				.setParameter("alarmPatternCode", domain.getAlarmPatternCD().v()).getSingle().get();
+		
 		updateEntity.checkConList = newEntity.checkConList;
 		updateEntity.alarmPerSet = newEntity.alarmPerSet;
 		updateEntity.alarmPatternName = newEntity.alarmPatternName;

@@ -217,19 +217,19 @@ module nts.uk.at.view.kal004.a.model {
                  block.clear();
             });                           
             }else{
-            service.updateAlarmPattern(command).done(()=>{
-                
-                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                          
-                self.getAlarmPattern().done(function(){
-                     self.currentCode(self.alarmCode());                          
-                }).always(() =>{
-                     block.clear();    
-                });    
-            }).fail((error) => {
-                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
-                 block.clear();
-            });                 
+//                service.updateAlarmPattern(command).done(()=>{
+//                    
+//                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+//                              
+//                    self.getAlarmPattern().done(function(){
+//                         self.currentCode(self.alarmCode());                          
+//                    }).always(() =>{
+//                         block.clear();    
+//                    });    
+//                }).fail((error) => {
+//                     nts.uk.ui.dialog.alert({ messageId: error.messageId });
+//                     block.clear();
+//                });                 
             
             }           
             // Call service
@@ -247,7 +247,7 @@ module nts.uk.at.view.kal004.a.model {
                    nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                        // Call service  alarmPatternCD
                        block.invisible();                       
-                       service.removeAlarmPattern({alarmPatternCD: self.alarmCode}).done(()=>{
+                       service.removeAlarmPattern({alarmPatternCD: self.alarmCode()}).done(()=>{
                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                            
                             let index = _.findIndex(self.alarmSource(), ['alarmPatternCD', self.alarmCode()]);

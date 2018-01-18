@@ -43,7 +43,7 @@ module nts.uk.at.view.kal004.share.model {
         listRoleId: Array<string>;
         constructor(dto: AlarmCheckConditonCodeDto) {
             this.category = dto.category.value;
-            this.categoryName = dto.category.fieldName;
+            this.categoryName = dto.category.localizedName;
             this.checkConditonCode = dto.checkConditonCode;
             this.checkConditionName = dto.checkConditionName;
             this.listRoleId = dto.listRoleId;
