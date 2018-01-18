@@ -95,7 +95,7 @@ module nts.uk.at.view.kal004.a.model {
                 
                 if (alarmResolve.length > 0) {
                     self.currentCode(alarmResolve[0].alarmPatternCD);
-                }{
+                }else{
                     self.checkConditionList(self.checkSource);                       
                 }
             }).fail((error) => {
