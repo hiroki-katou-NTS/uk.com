@@ -74,7 +74,15 @@ module nts.uk.at.view.kal004.a.model {
                 let resolve = _.map(res, (x) =>{return new share.ModelCheckConditonCode(x) });
                 self.checkSource = _.cloneDeep(resolve);    
                           
-                self.getAlarmPattern().done(() =>{dfd.resolve()});                
+                self.getAlarmPattern().done(() =>{
+                
+                    if (self.alarmSource().length > 0) {
+                        self.currentCode(self.alarmSource()[0].alarmPatternCD);
+                    }else{
+                        self.checkConditionList(self.checkSource);                       
+                    }                                        
+                    dfd.resolve();
+                });                
             }).fail((error) => {
                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
                 dfd.resolve();
@@ -92,12 +100,7 @@ module nts.uk.at.view.kal004.a.model {
                 self.alarmSource(alarmResolve);
 
                 self.initSubscribe();
-                
-                if (alarmResolve.length > 0) {
-                    self.currentCode(alarmResolve[0].alarmPatternCD);
-                }else{
-                    self.checkConditionList(self.checkSource);                       
-                }
+
             }).fail((error) => {
                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
             }).always(()=>{
@@ -135,6 +138,9 @@ module nts.uk.at.view.kal004.a.model {
                 self.periodSetting.listCheckConditionCode(shareTab2);
                
             });
+            self.createMode.subscribe((isCreate)=>{
+                if(isCreate)  self.periodSetting.listStorageCheckCondition.removeAll();            
+            });
         }
 
         public alarmCodeChange(newV): any {
@@ -146,7 +152,8 @@ module nts.uk.at.view.kal004.a.model {
                 errors.clearAll();    
                 self.currentCode('');
                 self.currentCodeListSwap([]);
-                self.checkConditionList( _.sortBy(self.checkSource, ['category', 'checkConditonCode']));              
+                self.checkConditionList( _.sortBy(self.checkSource, ['category', 'checkConditonCode']));
+                self.currentAlarm=null;              
             }
             else {
                 self.createMode(false);
@@ -183,7 +190,7 @@ module nts.uk.at.view.kal004.a.model {
 
         }
         
-        public updateAlarm() : void{
+        public saveAlarm() : void{
             let self = this;
             
             // Validate input
@@ -195,25 +202,42 @@ module nts.uk.at.view.kal004.a.model {
             let checkConditonList: Array<share.CheckConditionCommand> = self.periodSetting.listCheckCondition();
             let command = new share.AddAlarmPatternSettingCommand(self.alarmCode(), self.alarmName(), alarmPerSet, checkConditonList);
             block.invisible();
+            if(self.createMode()){
             service.addAlarmPattern(command).done(()=>{
                 
                 nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                           
                 self.getAlarmPattern().done(function(){
-                                               
+                     self.currentCode(self.alarmCode());                          
                 }).always(() =>{
                      block.clear();    
                 });    
             }).fail((error) => {
                  nts.uk.ui.dialog.alert({ messageId: error.messageId });
                  block.clear();
-            });           
+            });                           
+            }else{
+            service.updateAlarmPattern(command).done(()=>{
+                
+                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                          
+                self.getAlarmPattern().done(function(){
+                     self.currentCode(self.alarmCode());                          
+                }).always(() =>{
+                     block.clear();    
+                });    
+            }).fail((error) => {
+                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                 block.clear();
+            });                 
+            
+            }           
             // Call service
 
                        
 
         }
-        public insertAlarm() : void{
+        public createAlarm() : void{
             let self = this;    
             self.currentCode('');  
         }
