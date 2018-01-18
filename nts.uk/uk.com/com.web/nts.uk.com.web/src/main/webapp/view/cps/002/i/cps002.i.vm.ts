@@ -16,10 +16,10 @@ module cps002.i.vm {
         constructor() {
             let self = this;
 
-            $(".checkbox-holder").hide();
 
-            self.imageId.subscribe((newId) => {
-                if (newId) {
+
+            self.imageId.subscribe((oldId) => {
+                if (oldId) {
                     $(".checkbox-holder").show();
                 } else {
                     $(".checkbox-holder").hide();
@@ -29,13 +29,17 @@ module cps002.i.vm {
             $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                 $(".checkbox-holder").show();
             });
+
+
         }
         start() {
             let self = this;
-            let dImageId = getShared("imageId");
+            let dImageId = getShared("CPS002A");
 
             if (dImageId != "" && dImageId != undefined) {
                 self.imageId().defaultImgId = dImageId;
+                $(".ntsCheckBox-label input:checkbox").prop('checked', false);
+                $(".ntsCheckBox-label input:checkbox").trigger("change");
                 self.getImage();
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     if (!self.isInit) {
@@ -79,8 +83,11 @@ module cps002.i.vm {
             $("#test").ntsImageEditor("selectByFileId", id);
         }
         close() {
+            let self = this;
             nts.uk.ui.block.clear();
-            setShared("imageId", self.imageId());
+            let result = self.imageId().cropImgId ? self.imageId() : undefined;
+
+            setShared("imageId", result);
             close();
         }
 
