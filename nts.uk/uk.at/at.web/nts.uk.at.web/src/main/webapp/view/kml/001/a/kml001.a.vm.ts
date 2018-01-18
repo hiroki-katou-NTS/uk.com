@@ -12,6 +12,7 @@ module nts.uk.at.view.kml001.a {
             isInsert: KnockoutObservable<Boolean>;
             newStartDate: KnockoutObservable<string>;
             viewAttendanceItems: KnockoutObservableArray<KnockoutObservable<string>>;
+            textKML001_40 = nts.uk.resource.getText("KML001_40");
             constructor() {
                 $('#formula-child-1').html(nts.uk.resource.getText('KML001_7').replace(/\n/g,'<br/>'));
                 var self = this;
@@ -118,9 +119,9 @@ module nts.uk.at.view.kml001.a {
                 
                 // set data to grid list
                 let a = [];
-                self.personCostList().forEach(function(item) { a.push(new vmbase.GridPersonCostCalculation(item.startDate() + " ~ " + item.endDate())) });
+                self.personCostList().forEach(function(item) { a.push(new vmbase.GridPersonCostCalculation(item.startDate() + self.textKML001_40 + item.endDate())) });
                 self.gridPersonCostList(a);
-                self.currentGridPersonCost(self.currentPersonCost().startDate() + " ~ " + self.currentPersonCost().endDate());
+                self.currentGridPersonCost(self.currentPersonCost().startDate() + self.textKML001_40 + self.currentPersonCost().endDate());
                 ko.utils.arrayForEach(self.currentPersonCost().premiumSets(), function(premiumSet, i) {
                     let iDList = [];
                     self.currentPersonCost().premiumSets()[i].attendanceItems().forEach(function(item) {
