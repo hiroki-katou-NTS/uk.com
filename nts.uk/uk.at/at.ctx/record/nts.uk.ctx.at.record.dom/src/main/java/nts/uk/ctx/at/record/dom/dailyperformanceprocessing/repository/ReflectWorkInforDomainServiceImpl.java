@@ -350,7 +350,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							}
 
 							ScheduleTimeSheet scheduleTimeSheet = new ScheduleTimeSheet(items.getScheduleCnt(),
-									items.getScheduleStartClock(), items.getScheduleStartClock());
+									items.getScheduleStartClock(), items.getScheduleEndClock());
 							scheduleTimeSheets.add(scheduleTimeSheet);
 						});
 

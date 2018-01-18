@@ -38,6 +38,12 @@ public class ErrorAlarmWrWebservice {
 	public List<ErrorAlarmWorkRecordDto> getAll() {
 		return this.finder.getListErrorAlarmWorkRecord();
 	}
+	
+	@POST
+	@Path("findbylistalarmcheckid")
+	public List<ErrorAlarmWorkRecordDto> findByListErrorAlamCheckId(List<String> listEralCheckId) {
+		return this.finder.findByListErrorAlamCheckId(listEralCheckId);
+	}
 
 	@POST
 	@Path("findByCode")

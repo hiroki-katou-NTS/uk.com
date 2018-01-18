@@ -1,5 +1,6 @@
 module nts.uk.at.view.kaf009.a.viewmodel {
     import common = nts.uk.at.view.kaf009.share.common;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export class ScreenModel {
         dateType: string = 'YYYY/MM/DD';
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
@@ -95,7 +96,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     nts.uk.ui.block.clear();
                     self.appDate.subscribe(value => {
                         if(!nts.uk.util.isNullOrEmpty(value)){
-                            self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false);
+                            nts.uk.ui.block.invisible();
+                            self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false)
+                            .done(()=>{
+                                nts.uk.ui.block.clear();         
+                            }).fail(()=>{
+                                nts.uk.ui.block.clear();    
+                            });
                         }
                     });
                     //フォーカス制御=>申請日付
@@ -210,6 +217,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let self = this;            
             //直行直帰登録前チェック (Kiểm tra trước khi đăng ký)
             //直行直帰するチェック
+            if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.getCommand().appCommand.appReasonID) ? self.getCommand().appCommand.appReasonID + "\n" + self.multilContent() : self.multilContent(),"#inpReasonTextarea")){
+                        return;
+            }
             self.checkBeforeInsert();     
             
         }

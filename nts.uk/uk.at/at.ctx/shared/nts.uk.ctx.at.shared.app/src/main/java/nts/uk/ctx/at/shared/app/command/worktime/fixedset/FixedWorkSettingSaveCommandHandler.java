@@ -56,7 +56,7 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 		// common handler
 		this.commonHandler.handle(command);
 
-		// call repository save flex work setting
+		// call repository save fixed work setting
 		if (command.isAddMode()) {
 			fixedWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			this.fixedWorkSettingRepository.add(fixedWorkSetting);

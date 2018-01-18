@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flexset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
@@ -167,18 +169,46 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 	 * setLstHalfDayWorkTimezone(java.util.List)
 	 */
 	@Override
-	public void setLstHalfDayWorkTimezone(List<FlexHalfDayWorkTime> halfDayWorkTimezone) {
-		if (CollectionUtil.isEmpty(halfDayWorkTimezone)) {
-			this.entity.setKshmtFlexHaRtSets(new ArrayList<>());
-		}else {
-			this.entity.setKshmtFlexHaRtSets(halfDayWorkTimezone.stream().map(domain -> {
-				KshmtFlexHaRtSet entity = new KshmtFlexHaRtSet(
-						new KshmtFlexHaRtSetPK(this.entity.getKshmtFlexWorkSetPK().getCid(),
-								this.entity.getKshmtFlexWorkSetPK().getWorktimeCd()));
-				domain.saveToMemento(new JpaFlexHAWorkTimeSetMemento(entity));
-				return entity;
-			}).collect(Collectors.toList()));
+	public void setLstHalfDayWorkTimezone(List<FlexHalfDayWorkTime> lstHalfDayWorkTimezone) {
+		
+		// check input empty
+		if (CollectionUtil.isEmpty(lstHalfDayWorkTimezone)) {
+			lstHalfDayWorkTimezone = new ArrayList<>();
 		}
+		
+		// check list entity empty
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHaRtSets())) {
+			this.entity.setKshmtFlexHaRtSets(new ArrayList<>());
+		}
+		
+		// convert map entity
+		Map<KshmtFlexHaRtSetPK, KshmtFlexHaRtSet> mapEntity = this.entity.getKshmtFlexHaRtSets().stream()
+				.collect(Collectors.toMap(item -> ((KshmtFlexHaRtSet) item).getKshmtFlexHaRtSetPK(), Function.identity()));
+		
+		String companyId = this.entity.getKshmtFlexWorkSetPK().getCid();
+		String workTimeCd = this.entity.getKshmtFlexWorkSetPK().getWorktimeCd();
+		
+		this.entity.setKshmtFlexHaRtSets(lstHalfDayWorkTimezone.stream()
+			.map(domain -> {
+				
+				// newPK
+				KshmtFlexHaRtSetPK pk = new KshmtFlexHaRtSetPK();
+				pk.setCid(companyId);
+				pk.setWorktimeCd(workTimeCd);
+				pk.setAmPmAtr(domain.getAmpmAtr().value);
+				
+				// find entity existed, if not new entity
+				KshmtFlexHaRtSet entity = mapEntity.get(pk);
+				if (entity == null) {
+					entity = new KshmtFlexHaRtSet(pk);
+				}
+				
+				// save to memento
+				domain.saveToMemento(new JpaFlexHAWorkTimeSetMemento(entity));
+				
+				return entity;
+			})
+			.collect(Collectors.toList()));
 	}
 
 	/*

@@ -42,6 +42,13 @@ public class WorkRecordExtraConWS {
 	}
 	
 	@POST
+	@Path("getallworkRecordextraconbylistid")
+	public List<WorkRecordExtraConDto> getAllWorkRecordExtraCon(List<String> listErrorAlarmID){
+		List<WorkRecordExtraConDto> data = finder.getAllWorkRecordExtraConByListID(listErrorAlarmID);
+		return data;
+	}
+	
+	@POST
 	@Path("getworkRecordextraconbyid/{errorAlarmCheckID}")
 	public WorkRecordExtraConDto getWorkRecordExtraConByID(@PathParam("errorAlarmCheckID") String errorAlarmCheckID){
 		WorkRecordExtraConDto data = finder.getWorkRecordExtraConById(errorAlarmCheckID);

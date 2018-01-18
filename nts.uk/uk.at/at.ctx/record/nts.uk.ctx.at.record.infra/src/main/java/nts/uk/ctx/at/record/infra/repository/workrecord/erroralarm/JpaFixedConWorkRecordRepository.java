@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +59,21 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 		this.commandProxy().remove(KrcmtFixedConditionWorkRecord.class,
 				errorAlarmID);
 		
+	}
+
+
+
+	@Override
+	public List<FixedConditionWorkRecord> getAllFixedConWorkRecordByListID(List<String> listErrorAlarmID) {
+		List<FixedConditionWorkRecord> data = new ArrayList<>();
+		for(String errorAlarmID : listErrorAlarmID) {
+			Optional<FixedConditionWorkRecord> fixedConditionWorkRecord = getFixedConWRByCode(errorAlarmID);
+			if(fixedConditionWorkRecord.isPresent()) {
+				data.add(fixedConditionWorkRecord.get());
+				
+			}
+		}
+		return data;
 	}
 
 }

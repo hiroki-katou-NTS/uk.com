@@ -23,38 +23,7 @@ module nts.uk.at.view.kal004.share.model {
         extractionDailyDto?: ExtractionDailyDto;
     }
 
-    export class CheckCondition {
-        GUID: string;
-        alarmCategory: number;
-        categoryName: Array<string>;
-        extractionDailyDto: ExtractionDaily;
-        constructor(alarmCategory: number, categoryName: Array<string>, extractionDailyDto?: ExtractionDailyDto) {
-            this.alarmCategory = alarmCategory;
-            this.categoryName = categoryName
-            if (nts.uk.util.isNullOrUndefined(extractionDailyDto)) {
-                this.extractionDailyDto = new ExtractionDaily({
-                    extractionId: "",
-                    extractionRange: 0,
-                    strSpecify: 1,
-                    strPreviousDay: null,
-                    strMakeToDay: null,
-                    strDay: null,
-                    strPreviousMonth: 1,
-                    strCurrentMonth: 0,
-                    strMonth: 2,
-                    endSpecify: 1,
-                    endPreviousDay: null,
-                    endMakeToDay: null,
-                    endDay: null,
-                    endPreviousMonth: 1,
-                    endCurrentMonth: 0,
-                    endMonth: 1
-                });
-            } else {
-                this.extractionDailyDto = new ExtractionDaily(extractionDailyDto);
-            }
-        }
-    }
+   
 
     export interface AlarmCheckConditonCodeDto {
         category: EnumConstantDto;
@@ -174,7 +143,28 @@ module nts.uk.at.view.kal004.share.model {
         constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
-            this.extractionPeriodDaily = extractionPeriodDaily;
+            if (nts.uk.util.isNullOrUndefined(extractionPeriodDaily)) {
+                this.extractionPeriodDaily = new ExtractionPeriodDailyCommand({
+                    extractionId: "",
+                    extractionRange: 0,
+                    strSpecify: 1,
+                    strPreviousDay: null,
+                    strMakeToDay: null,
+                    strDay: null,
+                    strPreviousMonth: 0,
+                    strCurrentMonth: 0,
+                    strMonth: 2,
+                    endSpecify: 1,
+                    endPreviousDay: null,
+                    endMakeToDay: null,
+                    endDay: null,
+                    endPreviousMonth: 0,
+                    endCurrentMonth: 0,
+                    endMonth: 1
+                });
+            } else {
+                this.extractionPeriodDaily = extractionPeriodDaily;
+            }
         }
 
         setExtractPeriod(extractionPeriodDaily: ExtractionPeriodDailyCommand) {

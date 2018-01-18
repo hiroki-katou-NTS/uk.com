@@ -202,7 +202,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 				result.setDisplayPrePostFlg(AppDisplayAtr.NOTDISPLAY.value);
 				result.setPrePostAtr(this.otherCommonAlgorithm.preliminaryJudgmentProcessing(
 						EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class),
-						GeneralDate.fromString(appDate, DATE_FORMAT)).value);
+						appDate == null ? GeneralDate.today() :GeneralDate.fromString(appDate, DATE_FORMAT)).value);
 			}
 		}
 		return result;
@@ -335,11 +335,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		if (overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value) {
 			// アルゴリズム「社員所属職場履歴を取得」を実行する
 			SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(employeeID,
-					GeneralDate.fromString(appDate, DATE_FORMAT));
+					appDate == null? GeneralDate.today() : GeneralDate.fromString(appDate, DATE_FORMAT));
 			// アルゴリズム「職場の特定日設定を取得する」を実行する
 			if (sWkpHistImport != null) {
 				wpSpecificDateSettingImport = this.wpSpecificDateSettingAdapter.workplaceSpecificDateSettingService(
-						companyID, sWkpHistImport.getWorkplaceId(), GeneralDate.fromString(appDate, DATE_FORMAT));
+						companyID, sWkpHistImport.getWorkplaceId(), appDate == null? GeneralDate.today() : GeneralDate.fromString(appDate, DATE_FORMAT));
 			}
 
 			List<BonusPayTimeItem> bonusPayTimeItems = this.bPTimeItemRepository
@@ -402,10 +402,10 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		AppOverTime result = new AppOverTime();
 		if (prePostAtr == InitValueAtr.POST.value) {
 			Application_New applicationOvertime = Application_New.firstCreate(companyID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
-					GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, employeeId, new AppReason(Strings.EMPTY));
+					appDate == null ? null :GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, employeeId, new AppReason(Strings.EMPTY));
 			if (overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value) {
 				List<Application_New> application = this.applicationRepository.getApp(employeeId,
-						GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value,
+						appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value,
 						ApplicationType.OVER_TIME_APPLICATION.value);
 				if (application!= null && application.size() > 0) {
 					applicationOvertime.setAppDate(application.get(0).getAppDate());

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 
@@ -24,7 +25,7 @@ public class StampDto {
 	private String workLocationName;
 	private int stampReason;
 	private String stampReasonName;
-	private GeneralDate date;
+	private GeneralDateTime date;
 	private String employeeId;
 	private String employeeCode;
 	private String pName;

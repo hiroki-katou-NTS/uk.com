@@ -51,11 +51,13 @@ public class TemporaryTimeOfDailyPerformanceFinder extends FinderFacade {
 	}
 
 	private TimeStampDto newTimeStamp(WorkStamp c) {
-		return c == null ? null
-				: new TimeStampDto(c.getTimeWithDay() == null ? null : c.getTimeWithDay().valueAsMinutes(),
-						c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
-						c.getLocationCode() == null ? null : c.getLocationCode().v(),
-						c.getStampSourceInfo() == null ? null : c.getStampSourceInfo().value);
+
+		return c == null ? null : new TimeStampDto(
+					c.getTimeWithDay() == null ? null : c.getTimeWithDay().valueAsMinutes(),
+					c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
+					c.getLocationCode() == null ? null : c.getLocationCode().v(),
+					c.getStampSourceInfo() == null ? null : c.getStampSourceInfo().value);
+
 	}
 
 }
