@@ -375,8 +375,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 overtimeHours: ko.toJS(self.overtimeHours()),
                 breakTimes: ko.toJS(self.breakTimes()),
                 restTime: ko.toJS(self.restTime()),
-                overTimeShiftNight: ko.toJS(overTimeShiftNightTmp() == null ? -1 : overTimeShiftNightTmp),
-                flexExessTime: ko.toJS(flexExessTimeTmp() == null ? -1 : flexExessTimeTmp),
+                overTimeShiftNight: ko.toJS(overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp),
+                flexExessTime: ko.toJS(flexExessTimeTmp == null ? -1 : flexExessTimeTmp),
                 divergenceReasonContent: divergenceReason,
                 sendMail: self.manualSendMailAtr(),
                 calculateFlag: self.calculateFlag()
@@ -790,11 +790,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if(nts.uk.util.isNullOrEmpty(data)){
                 return null;
             }else if (data == 0) {
-                hourMinute = "00:00";
+                hourMinute = "0:00";
             }else if(data != null){
                 let hour = Math.floor(data/60);
                 let minutes = Math.floor(data%60);
-                hourMinute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
+                hourMinute = hour + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
             }
             return hourMinute;
         } 

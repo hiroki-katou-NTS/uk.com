@@ -676,14 +676,14 @@ module nts.uk.at.view.kaf005.b {
             }
             convertIntToTime(data : number) : string{
                 let hourMinute : string = "";
-                if(data == -1 || data === ""){
+                if(nts.uk.util.isNullOrEmpty(data)){
                     return null;
                 }else if (data == 0) {
-                    hourMinute = "00:00";
+                    hourMinute = "0:00";
                 }else if(data != null){
                     let hour = Math.floor(data/60);
                     let minutes = Math.floor(data%60);
-                    hourMinute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
+                    hourMinute =  hour + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
                 }
                 return hourMinute;
             }
