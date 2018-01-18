@@ -13,7 +13,8 @@ module nts.uk.at.view.kmk009.a {
             findByIdlistWorkTimes: "at/shared/worktimesetting/findByCodes",
             findAlldWorkType: "at/share/worktype/findAll",
             findAllWorkTime: "at/shared/worktimesetting/findAll",
-            findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems"
+            findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
+            findAllAttendanceItem: "at/function/employmentfunction/findAll"
         }
 
         /**
@@ -90,6 +91,13 @@ module nts.uk.at.view.kmk009.a {
          */
         export function findAllDailyAttendanceItem(): JQueryPromise<model.DailyAttendanceItemDto[]> {
             return nts.uk.request.ajax('at', paths.findAllDailyAttendanceItem);
+        }
+        
+        /**
+         * call service find all daily attendance item
+         */
+        export function findAllAttendanceItem(): JQueryPromise<model.DailyAttendanceItemDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllAttendanceItem);
         }
 
 
