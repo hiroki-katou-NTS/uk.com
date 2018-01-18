@@ -296,7 +296,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                     if (self.totalClsEnums.length > 0) {
                                         self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail.summaryAtr()].value);
                                     } 
-                                    if (_.isUndefined(self.attendanceModel.attendanceItemId())) {
+                                    if (_.isUndefined(self.attendanceModel.attendanceItemId()) 
+                                            || _.isNull(self.attendanceModel.attendanceItemId())) {
                                         self.attendanceModel.update(null, null);
                                         nts.uk.ui.windows.setShared('SelectedAttendanceId', "", true);        
                                     } else {
@@ -639,7 +640,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             if (self.selectUse() == SelectUseConst.Use && ( self.enableUnder() == true || self.enableUpper() == true) && _.isNumber(self.attendanceModel.attendanceItemId())) {
                 saveData.totalCondition.attendanceItemId(self.attendanceModel.attendanceItemId());
             } else {
-                saveData.totalCondition.attendanceItemId(-1);
+                saveData.totalCondition.attendanceItemId(SelectUseConst.NO_SELECT);
             }
         }
         
@@ -832,9 +833,6 @@ module nts.uk.at.view.kmk009.a.viewmodel {
     export enum SelectUseConst {
         Use = "1",
         NoUse = "0",
-    }
-
-    export class Constant {
-        public static readonly NO_SELECT = -1;
+        NO_SELECT = -1,
     }
 }
