@@ -53,13 +53,13 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 				stampRequestSetting.getResultDisp(), 
 				stampRequestSetting.getSupFrameDispNO(), 
 				stampRequestSetting.getStampPlaceDisp(), 
-				stampRequestSetting.getStampAtr_Work_Disp(), 
-				stampRequestSetting.getStampAtr_GoOut_Disp(), 
-				stampRequestSetting.getStampAtr_Care_Disp(), 
-				stampRequestSetting.getStampAtr_Sup_Disp(), 
-				stampRequestSetting.getStampGoOutAtr_Private_Disp(), 
-				stampRequestSetting.getStampGoOutAtr_Public_Disp(), 
-				stampRequestSetting.getStampGoOutAtr_Compensation_Disp(), 
-				stampRequestSetting.getStampGoOutAtr_Union_Disp());
+				stampRequestSetting.getStampAtrWorkDisp(), 
+				stampRequestSetting.getStampAtrGoOutDisp(), 
+				stampRequestSetting.getStampAtrCareDisp(), 
+				stampRequestSetting.getStampAtrSupDisp(), 
+				stampRequestSetting.getStampGoOutAtrPrivateDisp(), 
+				stampRequestSetting.getStampGoOutAtrPublicDisp(), 
+				stampRequestSetting.getStampGoOutAtrCompensationDisp(), 
+				stampRequestSetting.getStampGoOutAtrUnionDisp());
 	}
 }

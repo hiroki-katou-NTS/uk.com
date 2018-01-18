@@ -20,46 +20,69 @@ public class StampRequestSetting extends AggregateRoot {
 	
 	private String companyID;
 	
+	// 上部コメント
+	// 申請コメント設定.コメント
 	private String topComment;
 	
+	// 上部コメント
+	// 申請コメント設定.文字色
 	private String topCommentFontColor;
 	
+	// 上部コメント
+	// 申請コメント設定.太字
 	private String topCommentFontWeight;
 	
+	// 下部コメント
+	// 申請コメント設定.コメント
 	private String bottomComment;
 	
+	// 下部コメント
+	// 申請コメント設定.文字色
 	private String bottomCommentFontColor;
 	
+	// 下部コメント
+	// 申請コメント設定.太字
 	private String bottomCommentFontWeight;
 	
+	// 実績を表示する
 	private int resultDisp;
 	
+	// 応援枠の表示件数
 	private int supFrameDispNO;
 	
+	// 打刻場所を表示する
 	private int stampPlaceDisp;
 
-	private int stampAtr_Work_Disp;
+	// 打刻区分の表示制御.出勤／退勤
+	private int stampAtrWorkDisp;
 	
-	private int stampAtr_GoOut_Disp;
+	// 打刻区分の表示制御.外出/戻り
+	private int stampAtrGoOutDisp;
 	
-	private int stampAtr_Care_Disp;
+	// 打刻区分の表示制御.介護外出/介護戻り
+	private int stampAtrCareDisp;
 	
-	private int stampAtr_Sup_Disp;
+	// 打刻区分の表示制御.応援入/応援出
+	private int stampAtrSupDisp;
 	
-	private int stampGoOutAtr_Private_Disp;
+	// 外出種類の表示制御.私用
+	private int stampGoOutAtrPrivateDisp;
 	
-	private int stampGoOutAtr_Public_Disp;
+	// 外出種類の表示制御.公用
+	private int stampGoOutAtrPublicDisp;
 	
-	private int stampGoOutAtr_Compensation_Disp;
+	// 外出種類の表示制御.有償
+	private int stampGoOutAtrCompensationDisp;
 	
-	private int stampGoOutAtr_Union_Disp;
+	// 外出種類の表示制御.組合
+	private int stampGoOutAtrUnionDisp;
 
 	public StampRequestSetting(String companyID, String topComment, String topCommentFontColor,
 			String topCommentFontWeight, String bottomComment, String bottomCommentFontColor,
 			String bottomCommentFontWeight, int resultDisp, int supFrameDispNO, int stampPlaceDisp,
-			int stampAtr_Work_Disp, int stampAtr_GoOut_Disp, int stampAtr_Care_Disp, int stampAtr_Sup_Disp,
-			int stampGoOutAtr_Private_Disp, int stampGoOutAtr_Public_Disp, int stampGoOutAtr_Compensation_Disp,
-			int stampGoOutAtr_Union_Disp) {
+			int stampAtrWorkDisp, int stampAtrGoOutDisp, int stampAtrCareDisp, int stampAtrSupDisp,
+			int stampGoOutAtrPrivateDisp, int stampGoOutAtrPublicDisp, int stampGoOutAtrCompensationDisp,
+			int stampGoOutAtrUnionDisp) {
 		super();
 		this.companyID = companyID;
 		this.topComment = topComment;
@@ -71,13 +94,13 @@ public class StampRequestSetting extends AggregateRoot {
 		this.resultDisp = resultDisp;
 		this.supFrameDispNO = supFrameDispNO;
 		this.stampPlaceDisp = stampPlaceDisp;
-		this.stampAtr_Work_Disp = stampAtr_Work_Disp;
-		this.stampAtr_GoOut_Disp = stampAtr_GoOut_Disp;
-		this.stampAtr_Care_Disp = stampAtr_Care_Disp;
-		this.stampAtr_Sup_Disp = stampAtr_Sup_Disp;
-		this.stampGoOutAtr_Private_Disp = stampGoOutAtr_Private_Disp;
-		this.stampGoOutAtr_Public_Disp = stampGoOutAtr_Public_Disp;
-		this.stampGoOutAtr_Compensation_Disp = stampGoOutAtr_Compensation_Disp;
-		this.stampGoOutAtr_Union_Disp = stampGoOutAtr_Union_Disp;
+		this.stampAtrWorkDisp = stampAtrWorkDisp;
+		this.stampAtrGoOutDisp = stampAtrGoOutDisp;
+		this.stampAtrCareDisp = stampAtrCareDisp;
+		this.stampAtrSupDisp = stampAtrSupDisp;
+		this.stampGoOutAtrPrivateDisp = stampGoOutAtrPrivateDisp;
+		this.stampGoOutAtrPublicDisp = stampGoOutAtrPublicDisp;
+		this.stampGoOutAtrCompensationDisp = stampGoOutAtrCompensationDisp;
+		this.stampGoOutAtrUnionDisp = stampGoOutAtrUnionDisp;
 	}
 }
