@@ -24,6 +24,7 @@ import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
+import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
@@ -117,7 +118,7 @@ public class EmpCtgFinder {
 
 			String ctgId = x.getPersonInfoCategoryId();
 			PersonInfoCategoryAuth ctgAuth = mapCategoryAuth.get(ctgId);
-			return checkRole(ctgAuth, roleIdOfLogin, ctgId, isSelf, isSameCom);
+			return checkRole(ctgAuth, roleIdOfLogin, ctgId, isSelf, isSameCom) && x.getIsAbolition() == IsAbolition.NOT_ABOLITION;
 		}).collect(Collectors.toList());
 
 		List<PerInfoCtgFullDto> returnDtoList = returnList.stream()
