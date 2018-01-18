@@ -9,16 +9,33 @@ module cps002.i.vm {
 
 
     export class ViewModel {
-        imageId: KnockoutObservable<string> = ko.observable("");
+        imageId: KnockoutObservable<IImageId> = ko.observable(<IImageId>{});
         isChange: KnockoutObservable<boolean> = ko.observable(false);
         isInit = true;
+        isEdit: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
+
+
+
+            self.imageId.subscribe((newId) => {
+                if (newId) {
+                    $(".checkbox-holder").show();
+                } else {
+                    $(".checkbox-holder").hide();
+                }
+            });
+
+            $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
+                $(".checkbox-holder").show();
+            });
         }
         start() {
             let self = this;
-            self.imageId(getShared("imageId"));
-            if (self.imageId() != "" && self.imageId() != undefined) {
+            let dImageId = getShared("CPS002A");
+
+            if (dImageId != "" && dImageId != undefined) {
+                self.imageId().defaultImgId = dImageId;
                 self.getImage();
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     if (!self.isInit) {
@@ -43,23 +60,37 @@ module cps002.i.vm {
             if (isImageLoaded.imgOnView) {
                 if (self.isChange()) {
                     $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data) {
-                        self.imageId(data.id);
-                        nts.uk.ui.block.clear();
-                        setShared("imageId", self.imageId());
-                        self.close();
+                        self.imageId().cropImgId = data.id;
+                        $("#test").ntsImageEditor("uploadOriginal", { stereoType: "original-img" }).done(function(data2) {
+                            self.imageId().defaultImgId = data2.id;
+                            nts.uk.ui.block.clear();
+
+                            self.close();
+                        });
+
+
                     });
                 } else self.close();
             } else self.close();
         }
         getImage() {
             let self = this;
-            let id = self.imageId();
+            let id = self.imageId().defaultImgId;
             $("#test").ntsImageEditor("selectByFileId", id);
         }
         close() {
+            let self = this;
             nts.uk.ui.block.clear();
+            let result = self.imageId().cropImgId ? self.imageId() : undefined;
+
+            setShared("imageId", result);
             close();
         }
 
+    }
+
+    export interface IImageId {
+        defaultImgId: string;
+        cropImgId: string;
     }
 }

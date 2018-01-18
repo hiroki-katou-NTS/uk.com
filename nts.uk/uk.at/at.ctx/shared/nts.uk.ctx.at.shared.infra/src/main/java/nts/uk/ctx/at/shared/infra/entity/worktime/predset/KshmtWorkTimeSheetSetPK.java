@@ -33,7 +33,7 @@ public class KshmtWorkTimeSheetSetPK implements Serializable {
 
 	/** The work no. */
 	@Column(name = "WORK_NO")
-	private int workNo;
+	private Integer workNo;
 
 	/**
 	 * Instantiates a new kshmt work time sheet set PK.
@@ -48,11 +48,13 @@ public class KshmtWorkTimeSheetSetPK implements Serializable {
 	 *
 	 * @param cid the cid
 	 * @param worktimeCd the worktime cd
+	 * @param workNo the work no
 	 */
-	public KshmtWorkTimeSheetSetPK(String cid, String worktimeCd) {
+	public KshmtWorkTimeSheetSetPK(String cid, String worktimeCd, Integer workNo) {
 		super();
 		this.cid = cid;
 		this.worktimeCd = worktimeCd;
+		this.workNo = workNo;
 	}
 
 	/*

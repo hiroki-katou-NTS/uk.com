@@ -23,8 +23,8 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
@@ -76,7 +76,7 @@ public class ScheCreExeBasicScheduleHandler {
 		commandSave.setEmployeeId(employeeId);
 		commandSave.setWorktimeCode(workTimeCode);
 		commandSave.setYmd(command.getToDate());
-		
+
 		if (optionalShortTime.isPresent()) {
 			commandSave
 					.setChildCareSchedules(
@@ -86,7 +86,7 @@ public class ScheCreExeBasicScheduleHandler {
 									.collect(Collectors.toList()));
 		}
 
-		// check not exist error 
+		// check not exist error
 		if (!this.scheCreExeErrorLogHandler.checkExistError(command.toBaseCommand(), employeeId)) {
 
 			WorkTimeSetGetterCommand commandGetter = new WorkTimeSetGetterCommand();
@@ -94,17 +94,15 @@ public class ScheCreExeBasicScheduleHandler {
 			commandGetter.setCompanyId(command.getCompanyId());
 			commandGetter.setWorkingCode(workTimeCode);
 
-			Optional<WorkTimeSet> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
+			Optional<PrescribedTimezoneSetting> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
 					.getScheduleWorkHour(commandGetter);
 			if (optionalWorkTimeSet.isPresent()) {
-				WorkTimeSet workTimeSet = optionalWorkTimeSet.get();
-				commandSave.setWorkScheduleTimeZones(
-						workTimeSet.getPrescribedTimezoneSetting().getTimezone().stream().map(timezone -> {
-							WorkScheduleTimeZoneSaveCommand commandWorkTime = this
-									.convertTimeZoneToScheduleTimeZone(timezone);
-							commandWorkTime.setBounceAtr(this.getBounceAtr(worktypeDto.getWorktypeSet()).value);
-							return commandWorkTime;
-						}).collect(Collectors.toList()));
+				PrescribedTimezoneSetting workTimeSet = optionalWorkTimeSet.get();
+				commandSave.setWorkScheduleTimeZones(workTimeSet.getLstTimezone().stream().map(timezone -> {
+					WorkScheduleTimeZoneSaveCommand commandWorkTime = this.convertTimeZoneToScheduleTimeZone(timezone);
+					commandWorkTime.setBounceAtr(this.getBounceAtr(worktypeDto.getWorktypeSet()).value);
+					return commandWorkTime;
+				}).collect(Collectors.toList()));
 			}
 		}
 		// update is confirm
@@ -206,7 +204,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @return the work schedule time zone save command
 	 */
 	// 勤務予定時間帯
-	private WorkScheduleTimeZoneSaveCommand convertTimeZoneToScheduleTimeZone(Timezone timezone) {
+	private WorkScheduleTimeZoneSaveCommand convertTimeZoneToScheduleTimeZone(TimezoneUse timezone) {
 		WorkScheduleTimeZoneSaveCommand command = new WorkScheduleTimeZoneSaveCommand();
 		
 		// 予定勤務回数 = 取得した勤務予定時間帯. 勤務NO
@@ -331,11 +329,11 @@ public class ScheCreExeBasicScheduleHandler {
 			commandGetter.setWorktypeCode(command.getWorkTypeCode());
 			commandGetter.setCompanyId(command.getCompanyId());
 			commandGetter.setWorkingCode(command.getWorkingCode());
-			Optional<WorkTimeSet> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
+			Optional<PrescribedTimezoneSetting> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
 					.getScheduleWorkHour(commandGetter);
 			if (optionalWorkTimeSet.isPresent()) {
-				WorkTimeSet workTimeSet = optionalWorkTimeSet.get();
-				commandSave.setWorkScheduleTimeZones(workTimeSet.getPrescribedTimezoneSetting().getTimezone().stream()
+				PrescribedTimezoneSetting workTimeSet = optionalWorkTimeSet.get();
+				commandSave.setWorkScheduleTimeZones(workTimeSet.getLstTimezone().stream()
 						.map(timezone -> this.convertTimeZoneToScheduleTimeZone(timezone))
 						.collect(Collectors.toList()));
 			}

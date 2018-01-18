@@ -55,9 +55,9 @@ module nts.uk.at.view.kal004.a.model {
 
             self.checkHeader = ko.observableArray([
                 { headerText: getText('KAL004_21'), key: 'GUID', width: 10, hidden: true },
-                { headerText: getText('KAL004_21'), key: 'categoryName', width: 130 },
-                { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 50 },
-                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 150 }
+                { headerText: getText('KAL004_21'), key: 'categoryName', width: 120 },
+                { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 40 },
+                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 160 }
             ]);
 
             self.currentCodeListSwap = ko.observableArray([]);

@@ -73,7 +73,7 @@ public class PersonInfoItemGroupFinder {
 
 			return items.stream().map(m -> {
 				PerInfoCtgFullDto cat = categoryFinder.getPerInfoCtg(m.getPerInfoCtgId());
-				if (cat.getIsAbolition() == 0) {
+				if (cat.getIsAbolition() == 0 && m.getIsAbolition() == 0) {
 					return m;
 				}
 				return null;

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,17 +86,17 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 
 	public static AlarmCheckConditionByCategory toDomain(KfnmtAlarmCheckConditionCategory entity) {
 		ExtractionCondition extractionCondition = null;
-//		AlarmCategory category = AlarmCategory.values()[entity.pk.category];
-//		switch (category) {
-//		case DAILY:
-//			extractionCondition = entity.dailyAlarmCondition.toDomain();
-//			break;
-//		case SCHEDULE_4WEEK:
-//			extractionCondition = entity.schedule4W4DAlarmCondition.toDomain();
-//			break;
-//		default:
-//			break;
-//		}
+		AlarmCategory category = AlarmCategory.values()[entity.pk.category];
+		switch (category) {
+		case DAILY:
+			extractionCondition = entity.dailyAlarmCondition == null ? null : entity.dailyAlarmCondition.toDomain();
+			break;
+		case SCHEDULE_4WEEK:
+			extractionCondition = entity.schedule4W4DAlarmCondition == null ? null : entity.schedule4W4DAlarmCondition.toDomain();
+			break;
+		default:
+			break;
+		}
 		return new AlarmCheckConditionByCategory(entity.pk.companyId, entity.pk.category, entity.pk.code, entity.name,
 				new AlarmCheckTargetCondition(entity.targetConditionId,
 						entity.targetCondition.filterByBusinessType == 1 ? true : false,
@@ -144,8 +143,13 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 						.map(item -> new KfnmtAlarmCheckConditionCategoryRole(domain.getCompanyId(),
 								domain.getCategory().value, domain.getCode().v(), item))
 						.collect(Collectors.toList()),
-				null,
-				null);
+				domain.getCategory() == AlarmCategory.DAILY ? KrcmtDailyAlarmCondition.toEntity(domain.getCompanyId(),
+						domain.getCode(), domain.getCategory(), (DailyAlarmCondition) domain.getExtractionCondition())
+						: null,
+				domain.getCategory() == AlarmCategory.SCHEDULE_4WEEK
+						? KfnmtAlarmCheck4W4D.toEntity((AlarmCheckCondition4W4D) domain.getExtractionCondition(),
+								domain.getCompanyId(), domain.getCategory(), domain.getCode())
+						: null);
 	}
 
 }
