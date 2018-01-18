@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.predset;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSettingSetMemento;
@@ -69,19 +68,37 @@ public class JpaPrescribedTimezoneSettingSetMemento implements PrescribedTimezon
 		
 		if(CollectionUtil.isEmpty(lstTimezone)){
 			this.entity.setKshmtWorkTimeSheetSets(new ArrayList<>());
+			return;
 		}
-		else {
-			this.entity.setKshmtWorkTimeSheetSets(lstTimezone.stream().map(domain -> {
-				KshmtWorkTimeSheetSet entity = new KshmtWorkTimeSheetSet(
-						new KshmtWorkTimeSheetSetPK(this.entity.getKshmtPredTimeSetPK().getCid(),
-								this.entity.getKshmtPredTimeSetPK().getWorktimeCd()));
-				domain.saveToMemento(new JpaTimezoneSetMemento(entity));
-				return entity;
-			}).collect(Collectors.toList()));
+		String companyId = this.entity.getKshmtPredTimeSetPK().getCid();
+		String workTimeCd = this.entity.getKshmtPredTimeSetPK().getWorktimeCd();
+
+		List<KshmtWorkTimeSheetSet> lstEnttiy = this.entity.getKshmtWorkTimeSheetSets();
+		if(CollectionUtil.isEmpty(lstEnttiy)){
+			lstEnttiy = new ArrayList<>();
 		}
-
-
 		
+		List<KshmtWorkTimeSheetSet> newListEntity = new ArrayList<>();
+		
+		for(TimezoneUse domain : lstTimezone) {
+			// newPK
+			KshmtWorkTimeSheetSetPK pk = new KshmtWorkTimeSheetSetPK(companyId, workTimeCd, domain.getWorkNo());
+			
+			// find entity if existed, else new entity
+			KshmtWorkTimeSheetSet entity = lstEnttiy.stream()
+					.filter(item -> item.getKshmtWorkTimeSheetSetPK().equals(pk))
+					.findFirst()
+					.orElse(new KshmtWorkTimeSheetSet(pk));
+			
+			// save to memento
+			domain.saveToMemento(new JpaTimezoneSetMemento(entity));
+			
+			// add entity
+			newListEntity.add(entity);
+		}
+		
+		// set list KshmtWorkTimeSheetSets
+		this.entity.setKshmtWorkTimeSheetSets(newListEntity);
 	}
 
 }

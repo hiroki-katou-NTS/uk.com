@@ -237,6 +237,14 @@ module nts.uk.at.view.kaf000.shr{
                 return true;
         
             }
+            public static checklenghtReason(reason :string,elementID : string) : boolean{
+                if(nts.uk.text.countHalf(reason.replace(":","\n")) > 400){
+                   nts.uk.ui.dialog.alertError({messageId : 'Msg_960'});
+                   $(elementID).focus();
+                   return false;
+                }
+               return true;
+            }
         }
         
     }

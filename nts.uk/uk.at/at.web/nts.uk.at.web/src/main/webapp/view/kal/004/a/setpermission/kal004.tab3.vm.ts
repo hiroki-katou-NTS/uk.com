@@ -1,9 +1,11 @@
 module nts.uk.at.view.kal004.tab3.viewmodel {
+    import share = nts.uk.at.view.kal004.share.model;
+
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         executionAuthor: KnockoutObservable<string>;
-        listRoleID : KnockoutObservableArray<any>;
+        listRoleID: KnockoutObservableArray<share.AlarmPermissionSettingDto> = ko.observableArray([]);
         constructor() {
             var self = this;
             self.roundingRules = ko.observableArray([
@@ -12,8 +14,16 @@ module nts.uk.at.view.kal004.tab3.viewmodel {
             ]);
             self.selectedRuleCode = ko.observable(1);
             self.executionAuthor = ko.observable("");
-            self.listRoleID = ko.observableArray([]);
+            self.listRoleID.subscribe((newListRoleID) => {
+                self.changeItem(newListRoleID);
+            });
         }
+
+        private changeItem(listRoleID: Array<share.AlarmPermissionSettingDto>): void {
+            let self = this;
+
+        }
+
 
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -24,11 +34,26 @@ module nts.uk.at.view.kal004.tab3.viewmodel {
 
             return dfd.promise();
         }
-        
-        
+
+
         openCDL025() {
-            var currentScreen = nts.uk.ui.windows.sub.modal("com","/view/cdl/025/index.xhtml");
+            let self = this;
+            let param = {
+                currentCode: self.listRoleID(),
+                roleType: 3,
+                multiple: true
+            };
+            nts.uk.ui.windows.setShared("paramCdl025", param);
+            nts.uk.ui.windows.sub.modal("com", "/view/cdl/025/index.xhtml").onClosed(() => {
+                let data: KnockoutObservable<string> = nts.uk.ui.windows.getShared("dataCdl025");
+                if (!nts.uk.util.isNullOrUndefined(data))
+                    self.listRoleID(data);
+                service.getListRoleName(data).done(function() {
+                  
+                });
+            });
         }
+
 
     }
 }

@@ -85,13 +85,12 @@
 								]}"></div>
 			</div>
 			<div class="valign-center control-group">
-				<div data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF004_18')}</div>
+				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_18')}</div>
 				<div id="multiline" style="margin-left: 25px;">
 					<textarea
 						data-bind="ntsMultilineEditor: {
 								name: '#[KAF004_18]',
 								value: appreason,
-								constraint: 'AppReason',
 								option: {
 									resizeable: false,
 			                    	width: '500'

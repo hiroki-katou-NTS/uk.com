@@ -62,16 +62,16 @@ module nts.uk.at.view.kmk008.b {
                 service.getData().done(function(item) {
                     if (item) {
                         if (item.employmentUseAtr == 0) {
-                            $("#sidebar").ntsSideBar("disable", 1);
+                            $("#sidebar").ntsSideBar("hide", 1);
                         }
 
                         if (item.workPlaceUseAtr == 0) {
-                            $("#sidebar").ntsSideBar("disable", 2);
+                            $("#sidebar").ntsSideBar("hide", 2);
                         }
 
                         if (item.classificationUseAtr == 0) {
                             
-                            $("#sidebar").ntsSideBar("disable", 3);
+                            $("#sidebar").ntsSideBar("hide", 3);
                         }
                     } else {
                         self.useEmployment(true);

@@ -49,10 +49,16 @@ public class HolidayMidnightWorkDto {
 	}
 	
 	public HolidayMidnightWork toDomain() {
-		return withinPrescribedHolidayWork == null ? null : new HolidayMidnightWork(Arrays.asList(new HolidayWorkMidNightTime(
-				TimeWithCalculation.createTimeWithCalculation(toAttendanceTime(withinPrescribedHolidayWork.getTime()),
-						toAttendanceTime(withinPrescribedHolidayWork.getCalcTime())),
-				StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork)));
+		return withinPrescribedHolidayWork == null ? null : new HolidayMidnightWork(Arrays.asList(
+				newMidNightTime(withinPrescribedHolidayWork, StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork),
+				newMidNightTime(excessOfStatutoryHolidayWork, StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork),
+				newMidNightTime(publicHolidayWork, StaturoryAtrOfHolidayWork.PublicHolidayWork)));
+	}
+
+	public HolidayWorkMidNightTime newMidNightTime(CalcAttachTimeDto time, StaturoryAtrOfHolidayWork attr) {
+		return new HolidayWorkMidNightTime(TimeWithCalculation.createTimeWithCalculation(toAttendanceTime(time.getTime()),
+				toAttendanceTime(time.getCalcTime())),
+		attr);
 	}
 	
 	private AttendanceTime toAttendanceTime(Integer time) {

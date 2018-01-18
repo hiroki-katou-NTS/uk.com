@@ -10,6 +10,7 @@ module nts.uk.com.view.cmm011.b {
             workplaceHistory: KnockoutObservable<WorkplaceHistoryModel>;
             startDate: KnockoutObservable<string>;
             endDate: KnockoutObservable<string>;
+            enable: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
@@ -17,6 +18,7 @@ module nts.uk.com.view.cmm011.b {
                 self.workplaceHistory = ko.observable(new WorkplaceHistoryModel(self));
                 self.startDate = ko.observable('');
                 self.endDate = ko.observable(nts.uk.resource.getText("CMM011_27"));
+                self.enable = ko.observable(true);
             }
             
             /**
@@ -234,6 +236,13 @@ module nts.uk.com.view.cmm011.b {
                         self.screenMode(ScreenMode.SelectionMode);
                     }
                 });
+                self.screenMode.subscribe(function(newValue) {
+                    if (newValue == ScreenMode.SelectionMode) {
+                        self.parentModel.enable(false);
+                    } else {
+                        self.parentModel.enable(true);
+                    }
+                });
             }
             
             /**
@@ -281,7 +290,7 @@ module nts.uk.com.view.cmm011.b {
                         self.init(data.wkpConfigHistory);
                     } else {
                         self.screenMode(ScreenMode.NewMode);
-                        self.parentModel.endDate("9999/12/31");//(nts.uk.resource.getText("CMM011_27"));
+                        self.parentModel.endDate(nts.uk.resource.getText("CMM011_27"));
                     }
                     dfd.resolve();
                 }).fail((res: any) => {

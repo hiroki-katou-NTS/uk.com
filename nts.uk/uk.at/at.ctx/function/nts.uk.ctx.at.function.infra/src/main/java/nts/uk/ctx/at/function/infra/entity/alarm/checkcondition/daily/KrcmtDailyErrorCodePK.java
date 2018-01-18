@@ -19,5 +19,5 @@ public class KrcmtDailyErrorCodePK implements Serializable {
 	public String dailyAlarmConID;
 	
 	@Column(name = "ERROR_ALARM_CHECK_ID")
-	public String errorAlarmID;
+	public String errorAlarmCode;
 }

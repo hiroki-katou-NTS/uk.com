@@ -31,4 +31,12 @@ public class FixedConditionWorkRecordFinder {
 			return data.get();
 		return null;
 	}
+	
+	public List<FixedConditionWorkRecordDto> getAllFixedConWorkRecordByListID(List<String> listErrorAlarmID){
+		List<FixedConditionWorkRecordDto> data = repo.getAllFixedConWorkRecordByListID(listErrorAlarmID).stream()
+				.map(c->FixedConditionWorkRecordDto.fromDomain(c)).collect(Collectors.toList());
+		if(data.isEmpty())
+			return Collections.emptyList();
+		return data;
+	} 
 }
