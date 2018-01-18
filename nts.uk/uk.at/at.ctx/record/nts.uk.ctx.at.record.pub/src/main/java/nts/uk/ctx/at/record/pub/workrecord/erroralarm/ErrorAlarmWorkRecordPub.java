@@ -9,4 +9,10 @@ public interface ErrorAlarmWorkRecordPub {
 		
 		//get error by list eralCheckId
 		List<ErrorAlarmWorkRecordPubExport> findByListErrorAlamCheckId(List<String> listEralCheckId);
+		
+		void addErrorAlarmWorkRecordPub(ErrorAlarmWorkRecordPubExport errorAlarmWorkRecordPubExport);
+		
+		void updateErrorAlarmWorkRecordPub(ErrorAlarmWorkRecordPubExport errorAlarmWorkRecordPubExport);
+		
+		void deleteErrorAlarmWorkRecordPub(List<String>  listEralCheckId);
 }
