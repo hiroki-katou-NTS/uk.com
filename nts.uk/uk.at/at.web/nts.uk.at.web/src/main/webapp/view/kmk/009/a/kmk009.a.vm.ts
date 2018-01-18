@@ -639,7 +639,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             if (self.selectUse() == SelectUseConst.Use && ( self.enableUnder() == true || self.enableUpper() == true) && _.isNumber(self.attendanceModel.attendanceItemId())) {
                 saveData.totalCondition.attendanceItemId(self.attendanceModel.attendanceItemId());
             } else {
-                saveData.totalCondition.attendanceItemId(Constant.NO_SELECT);
+                saveData.totalCondition.attendanceItemId(-1);
             }
         }
         
