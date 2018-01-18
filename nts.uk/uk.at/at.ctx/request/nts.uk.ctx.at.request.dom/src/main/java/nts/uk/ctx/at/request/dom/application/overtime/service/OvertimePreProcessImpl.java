@@ -401,33 +401,35 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate, int prePostAtr) {
 		AppOverTime result = new AppOverTime();
 		if (prePostAtr == InitValueAtr.POST.value) {
-			Application_New applicationOvertime = Application_New.firstCreate(companyID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
-					appDate == null ? null :GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, employeeId, new AppReason(Strings.EMPTY));
-			if (overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value) {
-				List<Application_New> application = this.applicationRepository.getApp(employeeId,
-						appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value,
-						ApplicationType.OVER_TIME_APPLICATION.value);
-				if (application!= null && application.size() > 0) {
-					applicationOvertime.setAppDate(application.get(0).getAppDate());
-					Optional<AppOverTime> appOvertime = this.overtimeRepository
-							.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppDate().toString(DATE_FORMAT));
-					if (appOvertime.isPresent()) {
-						result.setWorkTypeCode(appOvertime.get().getWorkTypeCode());
-						result.setSiftCode(appOvertime.get().getSiftCode());
-						result.setWorkClockFrom1(appOvertime.get().getWorkClockFrom1());
-						result.setWorkClockTo1(appOvertime.get().getWorkClockTo1());
-						result.setWorkClockFrom2(appOvertime.get().getWorkClockFrom2());
-						result.setWorkClockTo2(appOvertime.get().getWorkClockTo2());
+			if(appDate != null){
+				Application_New applicationOvertime = Application_New.firstCreate(companyID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
+						appDate == null ? null :GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, employeeId, new AppReason(Strings.EMPTY));
+				if (overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value) {
+					List<Application_New> application = this.applicationRepository.getApp(employeeId,
+							appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value,
+							ApplicationType.OVER_TIME_APPLICATION.value);
+					if (application!= null && application.size() > 0) {
+						applicationOvertime.setAppDate(application.get(0).getAppDate());
+						Optional<AppOverTime> appOvertime = this.overtimeRepository
+								.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppDate().toString(DATE_FORMAT));
+						if (appOvertime.isPresent()) {
+							result.setWorkTypeCode(appOvertime.get().getWorkTypeCode());
+							result.setSiftCode(appOvertime.get().getSiftCode());
+							result.setWorkClockFrom1(appOvertime.get().getWorkClockFrom1());
+							result.setWorkClockTo1(appOvertime.get().getWorkClockTo1());
+							result.setWorkClockFrom2(appOvertime.get().getWorkClockFrom2());
+							result.setWorkClockTo2(appOvertime.get().getWorkClockTo2());
 
-						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(
-								appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),
-								AttendanceID.NORMALOVERTIME.value);
-						result.setOverTimeInput(overtimeInputs);
-						result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
-						result.setFlexExessTime(appOvertime.get().getFlexExessTime());
-						result.setApplication(applicationOvertime);
-						result.setAppID(appOvertime.get().getAppID());
-						return result;
+							List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(
+									appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),
+									AttendanceID.NORMALOVERTIME.value);
+							result.setOverTimeInput(overtimeInputs);
+							result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
+							result.setFlexExessTime(appOvertime.get().getFlexExessTime());
+							result.setApplication(applicationOvertime);
+							result.setAppID(appOvertime.get().getAppID());
+							return result;
+						}
 					}
 				}
 			}
