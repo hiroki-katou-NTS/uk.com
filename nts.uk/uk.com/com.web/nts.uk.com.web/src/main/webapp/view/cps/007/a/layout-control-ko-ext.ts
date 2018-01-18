@@ -304,6 +304,10 @@ module nts.custombinding {
                         position: absolute;
                     }
 
+                    .layout-control .item-classification .item-controls .ntsControl.nts-datepicker-wrapper>label {
+                        right: 0 !important;
+                    }
+
                     .layout-control .item-classification .ui-igcombo-wrapper {
                         width: auto;
                         width: initial;                            
