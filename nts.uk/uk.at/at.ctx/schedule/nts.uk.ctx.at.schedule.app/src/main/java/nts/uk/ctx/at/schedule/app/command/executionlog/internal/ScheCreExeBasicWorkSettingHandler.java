@@ -172,8 +172,8 @@ public class ScheCreExeBasicWorkSettingHandler {
 	// 「稼働日区分」に対応する「基本勤務設定」を取得する
 	private Optional<BasicWorkSetting> getBasicWorkSettingByWorkdayDivision(BasicWorkSettingGetterCommand command) {
 
-		// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
-		if (command.getReferenceBusinessDayCalendar() == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
+		// check 基本勤務の参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
+		if (command.getReferenceBasicWork() == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
 
 			// find work place by id
 			Optional<WorkplaceDto> optionalWorkplace = this.scWorkplaceAdapter
