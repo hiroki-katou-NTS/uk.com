@@ -59,25 +59,25 @@ public class ErrorAlarmWorkRecordPubImpl implements ErrorAlarmWorkRecordPub {
 				);
 	}
 	
-	private ErrorAlarmWorkRecord convertToDomain(ErrorAlarmWorkRecordPubExport dto) {
-		return new ErrorAlarmWorkRecord(
-				dto.getCompanyId(),
-				new ErrorAlarmWorkRecordCode(dto.getCode()),
-				new ErrorAlarmWorkRecordName(dto.getName()),
-				dto.getFixedAtr()==1?true:false,
-				dto.getUseAtr()==1?true:false,
-				EnumAdaptor.valueOf(dto.getTypeAtr(),ErrorAlarmClassification.class),
-				new ErrorAlarmMessage(
-						dto.getBoldAtr()==1?true:false,
-						new ColorCode(dto.getMessageColor())
-						),
-				dto.getCancelableAtr()==1?true:false,
-				BigDecimal.valueOf(dto.getErrorDisplayItem()).movePointLeft(2),
-				dto.getCancelRoleId(),
-				null,
-				dto.getErrorAlarmCheckID()
-				);
-	}
+//	private ErrorAlarmWorkRecord convertToDomain(ErrorAlarmWorkRecordPubExport dto) {
+//		return new ErrorAlarmWorkRecord(
+//				dto.getCompanyId(),
+//				new ErrorAlarmWorkRecordCode(dto.getCode()),
+//				new ErrorAlarmWorkRecordName(dto.getName()),
+//				dto.getFixedAtr()==1?true:false,
+//				dto.getUseAtr()==1?true:false,
+//				EnumAdaptor.valueOf(dto.getTypeAtr(),ErrorAlarmClassification.class),
+//				new ErrorAlarmMessage(
+//						dto.getBoldAtr()==1?true:false,
+//						new ColorCode(dto.getMessageColor())
+//						),
+//				dto.getCancelableAtr()==1?true:false,
+//				BigDecimal.valueOf(dto.getErrorDisplayItem()).movePointLeft(2),
+//				dto.getCancelRoleId(),
+//				null,
+//				dto.getErrorAlarmCheckID()
+//				);
+//	}
 
 	@Override
 	public void addErrorAlarmWorkRecordPub(ErrorAlarmWorkRecordPubExport errorAlarmWorkRecordPubExport) {
