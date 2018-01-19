@@ -66,4 +66,11 @@ public enum FixedRestCalculateMethod {
 		return null;
 	}
 
+	/**
+	 * マスタを参照するであるか判定する
+	 * @return　マスタ参照である
+	 */
+	public boolean isReferToMaster() {
+		return this.equals(MASTER_REF);
+	}
 }

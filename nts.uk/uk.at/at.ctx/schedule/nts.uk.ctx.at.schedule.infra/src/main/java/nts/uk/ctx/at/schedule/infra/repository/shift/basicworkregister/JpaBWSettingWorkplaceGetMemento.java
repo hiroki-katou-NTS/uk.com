@@ -52,7 +52,7 @@ public class JpaBWSettingWorkplaceGetMemento implements BasicWorkSettingGetMemen
 	 */
 	@Override
 	public WorkingCode getSiftCode() {
-		return new WorkingCode(this.typeValue.getWorkingCode());
+		return this.typeValue.getWorkingCode() == null ? null : new WorkingCode(this.typeValue.getWorkingCode());
 	}
 
 	/*

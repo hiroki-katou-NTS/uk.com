@@ -215,7 +215,8 @@ module nts.uk.at.view.kmk003.a {
 
                 // call service get data
                 service.findWithCondition(self.workTimeSettingLoader.getCondition()).done(data => {
-                    self.workTimeSettings(_.sortBy(data, item => item.worktimeCode)); // sort by work time code
+                    data = _.sortBy(data, item => item.worktimeCode);
+                    self.workTimeSettings(data); // sort by work time code
 
                     // enter update mode if has data
                     if (data && data.length > 0) {
@@ -277,7 +278,6 @@ module nts.uk.at.view.kmk003.a {
                 let dfd = $.Deferred<void>();
                 service.getEnumWorktimeSeting().done(function(setting: any) {
                     self.settingEnum = setting;
-                    self.settingEnum.workTimeMethodSet = self.settingEnum.workTimeMethodSet.slice(0,1);
                     self.workTimeSettingLoader.setEnums(setting);
                     dfd.resolve();
                 });

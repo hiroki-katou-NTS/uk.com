@@ -82,7 +82,9 @@ public class AffDeptHistFinder implements PeregFinder<AffDeptHistDto>{
 			return affDeptHist.get().getHistoryItems().stream()
 					.filter(x -> affDeptHistItemRepo.getByHistId(x.identifier()).isPresent())
 					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), 
-							x.end().equals(GeneralDate.max()) && query.getCtgType() == 3 ? "" : x.end().toString()))
+							x.end().equals(GeneralDate.max()) 
+							//&& query.getCtgType() == 3 
+							? "" : x.end().toString()))
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();

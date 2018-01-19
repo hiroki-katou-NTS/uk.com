@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf004.e.viewmodel {
     import model = nts.uk.at.view.kaf000.b.viewmodel.model;
     import service = nts.uk.at.view.kaf004.b.service;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
         // applicantName
         applicantName: KnockoutObservable<string> = ko.observable("");
@@ -117,6 +118,9 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     let reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
                     txtReasonTmp = reasonText.reasonTemp;
                 }
+                 if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(txtReasonTmp) ? txtReasonTmp + "\n" + self.appreason() : self.appreason(),"#appReason")){
+                        return;
+                 }
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
                     version: self.version,
                     appID: self.appID(),

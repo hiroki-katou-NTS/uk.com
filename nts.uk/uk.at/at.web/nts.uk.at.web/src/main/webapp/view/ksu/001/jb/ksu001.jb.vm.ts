@@ -56,7 +56,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     workTimeCd = self.selectedWorkTimeCode()
                 }
 
-                // if workTypeCode is not required( = 2) worktime is needless, something relate to workTime will be disable
+                // if workTypeCode is not required( state = 2) worktime is needless, something relate to workTime will be disable
                 // workTimeName, workTimeCode is null, startTime,endTime is ''
                 let stateWorkTypeCd = _.find(self.listCheckNeededOfWorkTime, ['workTypeCode', self.selectedWorkTypeCode()]);
                 if (stateWorkTypeCd && stateWorkTypeCd.state == 2) {
@@ -68,9 +68,9 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     let c = _.find(self.listWorkTime(), ['workTimeCode', workTimeCd]);
                     if (c) {
                         workTimeName = c.abName;
-                        workTimeCode = (c.workTimeCode == '000' ? null : c.workTimeCode);
-                        startTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.startTime, true).format() : '';
-                        endTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.endTime, true).format() : '';
+                        workTimeCode = c.workTimeCode == '000' ? null : c.workTimeCode;
+                        startTime = nts.uk.time.parseTime(c.startTime, true).format();
+                        endTime = nts.uk.time.parseTime(c.endTime, true).format();
                     } else {
                         workTimeName = null;
                         workTimeCode = null;

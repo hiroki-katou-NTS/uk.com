@@ -11,5 +11,6 @@ public class KshmtFlowFixedRtSetPK_ {
     public static volatile SingularAttribute<KshmtFlowFixedRtSetPK, String> worktimeCd;
     public static volatile SingularAttribute<KshmtFlowFixedRtSetPK, Integer> resttimeAtr;
     public static volatile SingularAttribute<KshmtFlowFixedRtSetPK, String> cid;
+    public static volatile SingularAttribute<KshmtFlowFixedRtSetPK, Integer> periodNo;
 
 }

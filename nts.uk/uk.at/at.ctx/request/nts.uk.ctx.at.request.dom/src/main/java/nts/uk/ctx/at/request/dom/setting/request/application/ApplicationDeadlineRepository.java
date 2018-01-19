@@ -18,5 +18,18 @@ public interface ApplicationDeadlineRepository {
 	 * @return
 	 */
 	List<ApplicationDeadline> getDeadlineByAppType(String companyId, int appType);
-
+	/**
+	 * update by closureId
+	 * @param companyId
+	 * @param closureId
+	 * @author yennth
+	 */
+	public void update(ApplicationDeadline appDeadline);
+	/**
+	 * insert by closureId
+	 * @param companyId
+	 * @param closureId
+	 * @author yennth
+	 */
+	public void insert(ApplicationDeadline appDeadline);
 }

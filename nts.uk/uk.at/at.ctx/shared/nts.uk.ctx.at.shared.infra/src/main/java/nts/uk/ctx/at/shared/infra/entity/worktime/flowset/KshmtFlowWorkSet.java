@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
+import nts.uk.ctx.at.shared.infra.repository.worktime.flowset.ResttimeAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -79,7 +80,15 @@ public class KshmtFlowWorkSet extends UkJpaEntity implements Serializable {
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
 	private KshmtFstampReflectTime kshmtFstampReflectTime;
-
+	
+	/** The lst kshmt flow rt set. */
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false)
+	})
+	private List<KshmtFlowRtSet> lstKshmtFlowRtSet;
+	
 	/** The lst kshmt ot time zone. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({
@@ -134,12 +143,42 @@ public class KshmtFlowWorkSet extends UkJpaEntity implements Serializable {
 				.filter(entityCommon -> {
 					KshmtWorktimeCommonSetPK pk = entityCommon.getKshmtWorktimeCommonSetPK();
 					return pk.getWorkFormAtr() == WorkTimeDailyAtr.REGULAR_WORK.value
-							&& pk.getWorktimeSetMethod() == WorkTimeMethodSet.FIXED_WORK.value;
+							&& pk.getWorktimeSetMethod() == WorkTimeMethodSet.FLOW_WORK.value;
 				})
 				.findFirst()
 				.orElse(null);
 	}
+	
+	/**
+	 * Gets the flow off day work rt set.
+	 *
+	 * @return the flow off day work rt set
+	 */
+	public KshmtFlowRtSet getFlowOffDayWorkRtSet() {
+		if (CollectionUtil.isEmpty(this.lstKshmtFlowRtSet)) {
+			this.lstKshmtFlowRtSet = new ArrayList<KshmtFlowRtSet>();
+		}		
+		return this.lstKshmtFlowRtSet.stream()
+				.filter(entity -> entity.getKshmtFlowRtSetPK().getResttimeAtr() == ResttimeAtr.OFF_DAY.value)
+				.findFirst()
+				.orElse(null);
+	}
 
+	/**
+	 * Gets the flow half day work rt set.
+	 *
+	 * @return the flow half day work rt set
+	 */
+	public KshmtFlowRtSet getFlowHalfDayWorkRtSet() {
+		if (CollectionUtil.isEmpty(this.lstKshmtFlowRtSet)) {
+			this.lstKshmtFlowRtSet = new ArrayList<KshmtFlowRtSet>();
+		}		
+		return this.lstKshmtFlowRtSet.stream()
+				.filter(entity -> entity.getKshmtFlowRtSetPK().getResttimeAtr() == ResttimeAtr.HALF_DAY.value)
+				.findFirst()
+				.orElse(null);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

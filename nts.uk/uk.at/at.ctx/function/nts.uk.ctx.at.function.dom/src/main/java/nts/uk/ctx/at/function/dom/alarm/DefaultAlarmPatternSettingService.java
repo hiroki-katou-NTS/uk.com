@@ -13,9 +13,9 @@ public class DefaultAlarmPatternSettingService implements AlarmPatternSettingSer
 	@Override
 	public boolean checkDuplicateCode(String alarmPatternCode) {		
 		if(repo.findByAlarmPatternCode(AppContexts.user().companyId(), alarmPatternCode).isPresent()) {
-			throw new BusinessException("Msg_3");
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	

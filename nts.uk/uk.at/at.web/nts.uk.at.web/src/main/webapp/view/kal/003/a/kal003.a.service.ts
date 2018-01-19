@@ -5,7 +5,9 @@ module nts.uk.at.view.kal003.a.service {
     var paths = {
         getAllData: "at/function/alarm/checkcondition/findAll/{0}",
         registerData: "at/function/alarm/checkcondition/register",
-        deleteData: "at/function/alarm/checkcondition/delete"
+        deleteData: "at/function/alarm/checkcondition/delete",
+        getAllFixedConData : "at/record/erroralarm/fixeddata/getallfixedcondata",
+        getFixedConWRByCode :  "at/record/erroralarm/getallfixedconwrbycode"
     }
 
     export function getAllData(category: number): JQueryPromise<any> {
@@ -19,6 +21,20 @@ module nts.uk.at.view.kal003.a.service {
 
     export function deleteData(data: any): JQueryPromise<any> {
         return ajax("at", paths.deleteData, data);
+    }
+    
+    /**
+     * get All Fixed Condition WorkRecord data
+     */
+    export function getAllFixedConData() : JQueryPromise<Array<any>>{
+        return nts.uk.request.ajax("at",paths.getAllFixedConData);
+    }
+    /**
+     * get Fixed Condition WorkRecord  By errorAlarmCheckID
+     * 
+     */
+    export function getFixedConWRByCode(errorAlarmCheckID : string ) : JQueryPromise<any>{
+        return nts.uk.request.ajax("at",paths.getFixedConWRByCode+"/"+errorAlarmCheckID);
     }
 
 }

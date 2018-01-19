@@ -26,4 +26,15 @@ public class DivergenceTime {
 	
 	//乖離理由コード
 	private DiverdenceReasonCode divResonCode;
+
+	public DivergenceTime(AttendanceTime divTimeAfterDeduction, AttendanceTime deductionTime, AttendanceTime divTime,
+			int divTimeId, DivergenceReasonContent divReason, DiverdenceReasonCode divResonCode) {
+		super();
+		this.divTimeAfterDeduction = divTimeAfterDeduction;
+		this.deductionTime = deductionTime;
+		this.divTime = divTime;
+		this.divTimeId = divTimeId;
+		this.divReason = divReason;
+		this.divResonCode = divResonCode;
+	}
 }

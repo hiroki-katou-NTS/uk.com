@@ -40,7 +40,7 @@ public class JpaFlowOffdayWorkTimezoneGetMemento implements FlOffdayWtzGetMement
 	 */
 	@Override
 	public FlowWorkRestTimezone getRestTimeZone() {
-		return new FlowWorkRestTimezone(new JpaFlowWorkRestTimezoneGetMemento(this.entity.getKshmtFlowRestSet()));
+		return new FlowWorkRestTimezone(new JpaFlowWorkRestTimezoneGetMemento(this.entity.getFlowOffDayWorkRtSet()));
 	}
 
 	/* (non-Javadoc)

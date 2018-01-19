@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 
 /**
  * The Class OverTimeOfTimeZoneSetPolicyImpl.
@@ -46,6 +47,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 
 		// validate msg_519
 		if (!predTime.isPredetermine() && predTime.getPrescribedTimezoneSetting().getLstTimezone().stream()
+				.filter(shift -> shift.getUseAtr().equals(UseSetting.USE))
 				.anyMatch(shift -> otTimezone.isOverlap(shift))) {
 			throw new BusinessException("Msg_519","KMK003_89");
 		}

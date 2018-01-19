@@ -136,8 +136,10 @@ module kmk003.base.timerange {
             if (!$('#' + id).ntsError('hasError')) {
                 var time: string = $('#' + id).val();
                 var timeArray = time.split(":");
+                var hours = parseInt(timeArray[0]) >= 0 ? parseInt(timeArray[0])
+                    : - (24 + parseInt(timeArray[0]));
                 
-                return parseInt(timeArray[0]) * 60 + parseInt(timeArray[1]);
+                return hours * 60 + parseInt(timeArray[1]);
             }
             return 0;
         }

@@ -34,6 +34,10 @@ public class KshmtFlowFlowRtSetPK implements Serializable {
 	/** The resttime atr. */
 	@Column(name = "RESTTIME_ATR")
 	private int resttimeAtr;
+	
+	/** The period no. */
+	@Column(name = "PERIOD_NO")
+	private int periodNo;
 
 	/**
 	 * Instantiates a new kshmt flow flow rt set PK.
@@ -42,42 +46,40 @@ public class KshmtFlowFlowRtSetPK implements Serializable {
 		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		int hash = 0;
-		hash += (cid != null ? cid.hashCode() : 0);
-		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-		hash += (int) resttimeAtr;
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + periodNo;
+		result = prime * result + resttimeAtr;
+		result = prime * result + ((worktimeCd == null) ? 0 : worktimeCd.hashCode());
+		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof KshmtFlowFlowRtSetPK)) {
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		KshmtFlowFlowRtSetPK other = (KshmtFlowFlowRtSetPK) object;
-		if ((this.cid == null && other.cid != null)
-				|| (this.cid != null && !this.cid.equals(other.cid))) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		if ((this.worktimeCd == null && other.worktimeCd != null)
-				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
+		KshmtFlowFlowRtSetPK other = (KshmtFlowFlowRtSetPK) obj;
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
 			return false;
-		}
-		if (this.resttimeAtr != other.resttimeAtr) {
+		if (periodNo != other.periodNo)
 			return false;
-		}
+		if (resttimeAtr != other.resttimeAtr)
+			return false;
+		if (worktimeCd == null) {
+			if (other.worktimeCd != null)
+				return false;
+		} else if (!worktimeCd.equals(other.worktimeCd))
+			return false;
 		return true;
 	}
 

@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshmtFlexWorkTimeSet.
@@ -21,7 +22,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "KSHMT_FLEX_WORK_TIME_SET")
-public class KshmtFlexWorkTimeSet implements Serializable {
+public class KshmtFlexWorkTimeSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -96,6 +97,11 @@ public class KshmtFlexWorkTimeSet implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	protected Object getKey() {
+		return this.kshmtFlexWorkTimeSetPK;
 	}
 
 
