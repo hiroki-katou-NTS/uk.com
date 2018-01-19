@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.shared.app.util.attendanceitem;
+package nts.uk.ctx.at.shared.dom.attendanceitem.util;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -810,31 +810,34 @@ public class AttendanceItemIdContainer {
 		return ENUM_CONTAINER.get(key);
 	}
 
-	public static List<Entry<String, Integer>> getIds(List<Integer> values) {
-		return getIdMapStream(values).collect(Collectors.toList());
-	}
+//	public static List<Entry<String, Integer>> getIds(List<Integer> values) {
+//		return getIdMapStream(values).collect(Collectors.toList());
+//	}
 	
-	public static List<Entry<String, Integer>> getIds(Set<Integer> values) {
+	public static List<Entry<String, Integer>> getIds(Collection<Integer> values) {
 		return getIdMapStream(values).collect(Collectors.toList());
 	}
+//	public static List<Entry<String, Integer>> getIds(Set<Integer> values) {
+//		return getIdMapStream(values).collect(Collectors.toList());
+//	}
 
 	public static List<Entry<String, Integer>> getIds() {
 		return getIdMapStream().collect(Collectors.toList());
 	}
 
-	public static Stream<Entry<String, Integer>> getIdMapStream(List<Integer> values) {
+	public static Stream<Entry<String, Integer>> getIdMapStream(Collection<Integer> values) {
 		if (values == null || values.isEmpty()) {
 			return getIdMapStream();
 		}
-		return ITEM_ID_CONTAINER.entrySet().stream().filter(c -> values.contains(c.getValue()));
+		return getIdMapStream().filter(c -> values.contains(c.getValue()));
 	}
 	
-	public static Stream<Entry<String, Integer>> getIdMapStream(Set<Integer> values) {
-		if (values == null || values.isEmpty()) {
-			return getIdMapStream();
-		}
-		return ITEM_ID_CONTAINER.entrySet().stream().filter(c -> values.contains(c.getValue()));
-	}
+//	public static Stream<Entry<String, Integer>> getIdMapStream(Set<Integer> values) {
+//		if (values == null || values.isEmpty()) {
+//			return getIdMapStream();
+//		}
+//		return getIdMapStream().filter(c -> values.contains(c.getValue()));
+//	}
 
 	public static Stream<Entry<String, Integer>> getIdMapStream() {
 		return ITEM_ID_CONTAINER.entrySet().stream();

@@ -5,8 +5,8 @@ import java.util.List;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeSheetDto;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ConvertibleAttendanceItem;
 
 @AttendanceItemRoot(rootName="日別実績のPCログオン情報")
 @Data

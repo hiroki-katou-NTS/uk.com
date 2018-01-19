@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ItemValue;
 
 @Data
 @AllArgsConstructor

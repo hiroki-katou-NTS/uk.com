@@ -22,7 +22,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
@@ -447,7 +447,7 @@ public class DailyPerformanceSelectItemProcessor {
 					attendanceTimes.add(x);
 				});
 				screenDto.getItemValues().addAll(attendanceTimes);
-				itemValueMap = attendanceTimes.isEmpty()? Collections.emptyMap(): attendanceTimes.stream().collect(Collectors.toMap(x -> x.getItemId()+"|"+data.getEmployeeId()+"|"+data.getDate(), x -> x));
+				itemValueMap = attendanceTimes.isEmpty()? Collections.emptyMap(): attendanceTimes.stream().collect(Collectors.toMap(x -> x.itemId()+"|"+data.getEmployeeId()+"|"+data.getDate(), x -> x));
 			}
 			List<DPCellDataDto> cellDatas = new ArrayList<>();
 			if (dPControlDisplayItem.getLstAttendanceItem() != null) {
@@ -524,7 +524,7 @@ public class DailyPerformanceSelectItemProcessor {
 		}
 		Set<ItemValue> set = screenDto.getItemValues().stream()
 	            .collect(Collectors.toCollection(() -> 
-	                 new TreeSet<>(Comparator.comparing(ItemValue::getItemId))));
+	                 new TreeSet<>(Comparator.comparing(ItemValue::itemId))));
 		screenDto.getItemValues().clear();
 		screenDto.getItemValues().addAll(set);
 		// screenDto.setLstData(lstData);

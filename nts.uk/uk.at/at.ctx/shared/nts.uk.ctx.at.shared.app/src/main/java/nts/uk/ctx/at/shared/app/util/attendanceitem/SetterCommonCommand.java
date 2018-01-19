@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.app.util.attendanceitem;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ConvertibleAttendanceItem;
 
 public interface SetterCommonCommand {
 

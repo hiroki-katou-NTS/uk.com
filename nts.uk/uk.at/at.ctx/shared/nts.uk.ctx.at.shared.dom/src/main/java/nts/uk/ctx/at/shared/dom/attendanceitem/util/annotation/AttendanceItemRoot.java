@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.util.attendanceitem.annotation;
+package nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

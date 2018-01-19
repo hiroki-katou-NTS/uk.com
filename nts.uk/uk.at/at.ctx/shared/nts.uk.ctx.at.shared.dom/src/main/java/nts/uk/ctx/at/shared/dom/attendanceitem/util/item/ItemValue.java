@@ -1,9 +1,8 @@
-package nts.uk.ctx.at.shared.app.util.attendanceitem.type;
+package nts.uk.ctx.at.shared.dom.attendanceitem.util.item;
 
 import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDate;
 
@@ -13,14 +12,11 @@ public class ItemValue {
 
 	private String value;
 
-	@Getter
-	private final ValueType valueType;
+	private ValueType valueType;
 
-	@Getter
-	private final String layoutCode;
+	private String layoutCode;
 	
-	@Getter
-	private final Integer itemId;
+	private int itemId;
 	
 	private String pathLink;
 	
@@ -29,10 +25,10 @@ public class ItemValue {
 	}
 	
 	public ItemValue(ValueType valueType, String layoutCode, Integer itemId, Object value){
-		value(value);
 		this.valueType = valueType;
 		this.layoutCode = layoutCode;
 		this.itemId = itemId;
+		value(value);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -54,15 +50,49 @@ public class ItemValue {
 		}
 	}
 	
-	public void value(Object value){
+	public ItemValue value(Object value){
 		this.value = value == null ? null : value.toString();
+		return this;
 	}
 	
-	public void withPath(String path){
+	public ItemValue withPath(String path){
 		this.pathLink = path;
+		return this;
+	}
+	
+	public ItemValue valueType(ValueType type){
+		this.valueType = type;
+		return this;
+	}
+	public ItemValue layout(String layoutCode){
+		this.layoutCode = layoutCode;
+		return this;
+	}
+	
+	public ItemValue itemId(int itemId){
+		this.itemId = itemId;
+		return this;
+	}
+	
+	public ItemValue completed(){
+		return this;
+	}
+	
+	public int itemId(){
+		return this.itemId;
+	}
+	
+	public String layoutCode(){
+		return this.layoutCode;
 	}
 	
 	public String path(){
 		return this.pathLink;
 	}
+	
+	public static ItemValue builder(){
+		return new ItemValue();
+	}
+	
+	
 }

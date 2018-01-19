@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTimeOfDaily;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の滞在時間 */

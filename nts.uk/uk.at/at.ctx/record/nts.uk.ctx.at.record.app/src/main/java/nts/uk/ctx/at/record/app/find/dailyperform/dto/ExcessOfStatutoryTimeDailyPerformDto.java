@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の所定外時間 */

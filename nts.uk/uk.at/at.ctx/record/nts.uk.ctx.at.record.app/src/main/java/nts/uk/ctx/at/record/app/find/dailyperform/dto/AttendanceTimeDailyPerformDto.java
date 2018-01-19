@@ -3,11 +3,12 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ValueType;
 
 /** 日別実績の勤怠時間 */
 @Getter
@@ -47,4 +48,21 @@ public class AttendanceTimeDailyPerformDto implements ConvertibleAttendanceItem 
 	@AttendanceItemLayout(layout = "F", jpPropertyName = "不就労時間")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer unemployedTime;
+	
+	public static AttendanceTimeDailyPerformDto getDto(AttendanceTimeOfDailyPerformance domain) {
+		AttendanceTimeDailyPerformDto items = new AttendanceTimeDailyPerformDto();
+		if(domain != null){
+			items.setEmployeeID(domain.getEmployeeId());
+			items.setDate(domain.getYmd());
+			items.setActualWorkTime(ActualWorkTimeDailyPerformDto.toActualWorkTime(domain.getActualWorkingTimeOfDaily()));
+			items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
+			items.setDate(domain.getYmd());
+			items.setEmployeeID(domain.getEmployeeId());
+			items.setMedicalTime(MedicalTimeDailyPerformDto.fromMedicalCareTime(domain.getMedicalCareTime()));
+			items.setScheduleTime(WorkScheduleTimeDailyPerformDto.fromWorkScheduleTime(domain.getWorkScheduleTimeOfDaily()));
+			items.setStayingTime(StayingTimeDto.fromStayingTime(domain.getStayingTime()));
+			items.setUnemployedTime(domain.getUnEmployedTime().valueAsMinutes());
+		}
+		return items;
+	}
 }
