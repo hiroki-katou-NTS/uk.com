@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.find.worktime_old.dto;
+package nts.uk.ctx.at.shared.app.find.worktime.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Setter;
