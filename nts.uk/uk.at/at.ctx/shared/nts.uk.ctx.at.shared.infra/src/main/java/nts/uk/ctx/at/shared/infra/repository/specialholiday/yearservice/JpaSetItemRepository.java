@@ -24,7 +24,7 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 	private final String SELECT_YEAR = SELECT_ITEM + " AND c.year = :year";
 	private final String SELECT_ITEM_SPHC = SELECT_ITEM + " AND c.kshstYearServiceSetPK.specialHolidayCode = :specialHolidayCode";
 	private final String SELECT_NO_WHERE_COM = "SELECT c FROM KshstYearServiceCom c ";
-	private final String SELECT_ITEM_COM = SELECT_NO_WHERE_COM + "WHERE c.kshstYearServiceComPk.companyId = :companyId";
+	private final String SELECT_ITEM_COM = SELECT_NO_WHERE_COM + "WHERE c.kshstYearServiceComPK.companyId = :companyId AND c.kshstYearServiceComPK.specialHolidayCode = :specialHolidayCode";
 	/**
 	 * change entity to domain
 	 * @param entity
@@ -147,8 +147,9 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 				.getList(c->toDomainSet(c));
 	}
 	@Override
-	public List<YearServiceCom> findAllCom(String companyId) {
-		return this.queryProxy().query(SELECT_ITEM_COM, KshstYearServiceCom.class).setParameter("companyId", companyId).getList(c->toDomainCom(c));
+	public Optional<YearServiceCom> findAllCom(String companyId, String specialHolidayCode) {
+		KshstYearServiceComPK key = new KshstYearServiceComPK(companyId, specialHolidayCode);
+		return this.queryProxy().find(key, KshstYearServiceCom.class).map(c -> toDomainCom(c));
 	}
 	@Override
 	public void updateCom(YearServiceCom yearServiceCom) {

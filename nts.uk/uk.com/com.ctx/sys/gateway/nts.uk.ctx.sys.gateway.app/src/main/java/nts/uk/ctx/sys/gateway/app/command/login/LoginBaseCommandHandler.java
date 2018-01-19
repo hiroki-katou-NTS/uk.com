@@ -23,12 +23,12 @@ import nts.uk.ctx.sys.gateway.dom.login.SystemConfig;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.ListCompanyAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 /**
@@ -46,10 +46,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	/** The company information adapter. */
 	@Inject
 	private CompanyInformationAdapter companyInformationAdapter;
-	
-	/** The role individual grant adapter. */
-	@Inject
-	private RoleIndividualGrantAdapter roleIndividualGrantAdapter;
 
 	/** The list company adapter. */
 	@Inject
@@ -66,6 +62,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	/** The contract repository. */
 	@Inject
 	private ContractRepository contractRepository;
+	
+	/** The role from user id adapter. */
+	@Inject
+	private RoleFromUserIdAdapter roleFromUserIdAdapter;
 	
 	/** The Constant FIST_COMPANY. */
 	private static final Integer FIST_COMPANY = 0;
@@ -235,11 +235,11 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 * @return the role id
 	 */
 	protected String getRoleId(String userId, RoleType roleType) {
-		RoleIndividualGrantImport roleImport = roleIndividualGrantAdapter.getByUserAndRole(userId, roleType);
-		if (roleImport == null) {
+		String roleId = roleFromUserIdAdapter.getRoleFromUser(userId, roleType.value, GeneralDate.today());
+		if (roleId == null || roleId.isEmpty()) {
 			return null;
 		}
-		return roleImport.getRoleId();
+		return roleId;
 	}
 	
 	/**

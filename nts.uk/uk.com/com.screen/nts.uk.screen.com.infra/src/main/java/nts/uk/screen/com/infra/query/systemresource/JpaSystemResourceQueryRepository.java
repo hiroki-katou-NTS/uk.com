@@ -14,8 +14,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.screen.com.app.repository.systemresource.SystemResourceData;
 import nts.uk.screen.com.app.repository.systemresource.SystemResourceQueryRepository;
-import nts.uk.shr.infra.i18n.resource.data.CisctI18NResource;
-import nts.uk.shr.infra.i18n.resource.data.CisctI18NResourcePK;
+import nts.uk.shr.infra.i18n.resource.data.CismtI18NResourceCus;
+import nts.uk.shr.infra.i18n.resource.data.CismtI18NResourceCusPK;
 
 
 /**
@@ -25,14 +25,14 @@ import nts.uk.shr.infra.i18n.resource.data.CisctI18NResourcePK;
 public class JpaSystemResourceQueryRepository extends JpaRepository implements SystemResourceQueryRepository {
 	
 	/** The Constant QUERY_STRING. */
-	private static final String QUERY_STRING = "SELECT rs From CisctI18NResource rs "
-			                                   + "WHERE rs.pk.resourceId IN :resourceIdList";
+	private static final String QUERY_STRING = "SELECT rs From CismtI18NResourceCus rs "
+			                                   + "WHERE rs.pk.companyId = :companyid AND rs.pk.resourceId IN :resourceIdList";
 
 	/* (non-Javadoc)
 	 * @see nts.uk.screen.com.app.repository.systemresource.SystemResourceQueryRepository#findListResource()
 	 */
 	@Override
-	public List<SystemResourceData> findListResource() {
+	public List<SystemResourceData> findListResource(String companyId) {
 		
 		List<String> list = Arrays.asList("Com_Person", "Com_Employment", "Com_Class", "Com_Jobtitle",
 										  "Com_Department", "Com_Workplace", "Com_Office", "Com_Company",
@@ -41,10 +41,11 @@ public class JpaSystemResourceQueryRepository extends JpaRepository implements S
 										  "Com_FundedPaidHoliday", "Com_SubstituteWork", "Com_CompensationHoliday", "Com_ExsessHoliday",
 										  "Com_PlanedPaidHoliday","Com_SubstituteHoliday");
 		
-		List<CisctI18NResource> ab = this.queryProxy().query(QUERY_STRING, CisctI18NResource.class)
+		List<CismtI18NResourceCus> ab = this.queryProxy().query(QUERY_STRING, CismtI18NResourceCus.class)
+										.setParameter("companyid", companyId)
 										.setParameter("resourceIdList", list).getList();
 		
-		List<SystemResourceData> result =  ab.stream().map(e -> this.toData(e)).collect(Collectors.toList());
+		List<SystemResourceData> result =  ab.stream().map(e -> this.toDataCus(e)).collect(Collectors.toList());
 		
 		return result;
 	}
@@ -53,7 +54,7 @@ public class JpaSystemResourceQueryRepository extends JpaRepository implements S
 	 * @see nts.uk.screen.com.app.repository.systemresource.SystemResourceQueryRepository#update(nts.uk.screen.com.app.systemresource.dto.SystemResourceDto)
 	 */
 	@Override
-	public void update(CisctI18NResource entity){
+	public void update(CismtI18NResourceCus entity){
 		this.commandProxy().update(entity);
 	}
 
@@ -61,21 +62,21 @@ public class JpaSystemResourceQueryRepository extends JpaRepository implements S
 	 * @see nts.uk.screen.com.app.repository.systemresource.SystemResourceQueryRepository#findByResourceId(java.lang.String)
 	 */
 	@Override
-	public Optional<CisctI18NResource> findByResourceId(String resourceId) {
-		return this.queryProxy().find(CisctI18NResourcePK.createForAllPrograms("ja" , "C" , resourceId), CisctI18NResource.class);
+	public Optional<CismtI18NResourceCus> findByResourceId(String companyId, String resourceId) {
+		return this.queryProxy().find(CismtI18NResourceCusPK.createForAllPrograms(companyId,"ja" , "C" , resourceId), CismtI18NResourceCus.class);
 	}
 	
 	/**
-	 * To data.
+	 * To data cus.
 	 *
 	 * @param entity the entity
 	 * @return the system resource data
 	 */
-	private SystemResourceData toData(CisctI18NResource entity){
+	private SystemResourceData toDataCus(CismtI18NResourceCus entity){
 		SystemResourceData data = SystemResourceData.builder()
 			.resourceContent(entity.content)
 			.resourceId(entity.pk.resourceId).build();
 		
 		return data;
-	}
+	} 
 }

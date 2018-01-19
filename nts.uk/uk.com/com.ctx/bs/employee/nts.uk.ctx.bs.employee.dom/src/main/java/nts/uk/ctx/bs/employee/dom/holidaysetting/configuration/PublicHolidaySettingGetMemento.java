@@ -31,11 +31,16 @@ public interface PublicHolidaySettingGetMemento {
 	PublicHolidayManagementClassification getPublicHdManagementClassification();
 	
 	/**
-	 * Gets the public hd management usage unit.
+	 * Gets the checks if is weekly hd check.
 	 *
-	 * @return the public hd management usage unit
+	 * @return the checks if is weekly hd check
 	 */
-	PublicHolidayManagementUsageUnit getPublicHdManagementUsageUnit();
-	
 	boolean getIsWeeklyHdCheck();
+	
+	/**
+	 * Gets the public holiday management start date.
+	 *
+	 * @return the public holiday management start date
+	 */
+	PublicHolidayManagementStartDate getPublicHolidayManagementStartDate();
 }

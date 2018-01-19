@@ -9,14 +9,14 @@ import java.math.BigDecimal;
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTTimezoneGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
 
 /**
  * The Class FlOTTimezoneDto.
  */
 @Value
-public class FlOTTimezoneDto implements FlOTTimezoneGetMemento {
+public class FlOTTimezoneDto implements FlowOTTimezoneGetMemento {
 
 	/** The worktime no. */
 	private Integer worktimeNo;

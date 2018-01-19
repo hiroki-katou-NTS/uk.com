@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +10,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcmtFixedConditionWorkRecord;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcmtFixedConditionWorkRecordPK;
 
 @Stateless
 public class JpaFixedConWorkRecordRepository extends JpaRepository implements  FixedConditionWorkRecordRepository {
@@ -17,10 +17,7 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 	private final String SELECT_FROM_FIXED_CON = " SELECT c FROM KrcmtFixedConditionWorkRecord c ";
 	
 	private final String SELECT_FIXED_CON_BY_ALARM_ID =SELECT_FROM_FIXED_CON 
-			+ " WHERE c.krcmtFixedConditionWorkRecordPK.errorAlarmCode = :errorAlarmCode ";
-	
-	private final String SELECT_FIXED_CON_BY_CODE = SELECT_FIXED_CON_BY_ALARM_ID
-			+" AND c.krcmtFixedConditionWorkRecordPK.fixConWorkRecordNo = :fixConWorkRecordNo ";
+			+ " WHERE c.errorAlarmID = :errorAlarmID ";
 	
 	@Override
 	public List<FixedConditionWorkRecord> getAllFixedConditionWorkRecord() {
@@ -29,19 +26,12 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 		return data;
 	}
 
-	@Override
-	public List<FixedConditionWorkRecord> getAllFixedConWRByAlarmID(String errorAlarmCode) {
-		List<FixedConditionWorkRecord> data = this.queryProxy().query(SELECT_FIXED_CON_BY_ALARM_ID,KrcmtFixedConditionWorkRecord.class)
-				.setParameter("errorAlarmCode", errorAlarmCode)
-				.getList(c->c.toDomain());
-		return data;
-	}
+
 
 	@Override
-	public Optional<FixedConditionWorkRecord> getFixedConWRByCode(String errorAlarmCode, int fixConWorkRecordNo) {
-		Optional<FixedConditionWorkRecord> data = this.queryProxy().query(SELECT_FIXED_CON_BY_CODE,KrcmtFixedConditionWorkRecord.class)
-				.setParameter("errorAlarmCode", errorAlarmCode)
-				.setParameter("fixConWorkRecordNo", fixConWorkRecordNo)
+	public Optional<FixedConditionWorkRecord> getFixedConWRByCode(String errorAlarmID) {
+		Optional<FixedConditionWorkRecord> data = this.queryProxy().query(SELECT_FIXED_CON_BY_ALARM_ID,KrcmtFixedConditionWorkRecord.class)
+				.setParameter("errorAlarmID", errorAlarmID)
 				.getSingle(c->c.toDomain());
 		return data;
 	}
@@ -57,9 +47,7 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 	public void updateFixedConWorkRecord(FixedConditionWorkRecord fixedConditionWorkRecord) {
 		KrcmtFixedConditionWorkRecord newEntity = KrcmtFixedConditionWorkRecord.toEntity(fixedConditionWorkRecord);
 		KrcmtFixedConditionWorkRecord updateEntity = this.queryProxy().find(
-				new KrcmtFixedConditionWorkRecordPK(
-				newEntity.krcmtFixedConditionWorkRecordPK.errorAlarmCode,
-				newEntity.krcmtFixedConditionWorkRecordPK.fixConWorkRecordNo),
+				newEntity.errorAlarmID,
 				KrcmtFixedConditionWorkRecord.class).get();
 		updateEntity.message = newEntity.message;
 		updateEntity.useAtr = newEntity.useAtr;
@@ -67,10 +55,25 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 	}
 
 	@Override
-	public void deleteFixedConWorkRecord(String errorAlarmCode, int fixConWorkRecordNo) {
-		this.commandProxy().remove(KrcmtFixedConditionWorkRecord.class,new KrcmtFixedConditionWorkRecordPK(
-				errorAlarmCode,fixConWorkRecordNo));
+	public void deleteFixedConWorkRecord(String errorAlarmID) {
+		this.commandProxy().remove(KrcmtFixedConditionWorkRecord.class,
+				errorAlarmID);
 		
+	}
+
+
+
+	@Override
+	public List<FixedConditionWorkRecord> getAllFixedConWorkRecordByListID(List<String> listErrorAlarmID) {
+		List<FixedConditionWorkRecord> data = new ArrayList<>();
+		for(String errorAlarmID : listErrorAlarmID) {
+			Optional<FixedConditionWorkRecord> fixedConditionWorkRecord = getFixedConWRByCode(errorAlarmID);
+			if(fixedConditionWorkRecord.isPresent()) {
+				data.add(fixedConditionWorkRecord.get());
+				
+			}
+		}
+		return data;
 	}
 
 }

@@ -52,6 +52,8 @@ module cps002.a.vm {
 
         layoutData: KnockoutObservableArray<any> = ko.observableArray([]);
 
+        defaultImgId: KnockoutObservable<string> = ko.observable("");
+
         ccgcomponent: any = {
             baseDate: ko.observable(moment().toDate()),
             isQuickSearchTab: true,
@@ -116,14 +118,29 @@ module cps002.a.vm {
                     return item.itemCode == initCode;
                 });
                 if (InitSetting) {
+
+                    let currentCtgCode = self.categorySelectedCode();
                     service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
-                        self.categorySelectedCode("");
+
                         if (result.length) {
                             self.categoryList(_.map(result, item => {
                                 return new CategoryItem(item);
                             }));
+                            self.categorySelectedCode.valueWillMutate();
+                            if (currentCtgCode === "") {
+                                self.categorySelectedCode(result[0].categoryCd);
+                            } else {
 
-                            self.categorySelectedCode(result[0].categoryCd);
+                                let currentCtg = _.find(result, item => {
+                                    return item.categoryCd == currentCtgCode;
+                                });
+                                if (currentCtg) {
+                                    self.categorySelectedCode(currentCtgCode);
+                                } else {
+                                    self.categorySelectedCode(result[0].categoryCd);
+                                }
+                            }
+
                         } else {
                             self.categoryList.removeAll();
                         }
@@ -216,6 +233,7 @@ module cps002.a.vm {
             self.currentEmployee().employeeCode("");
             self.currentEmployee().loginId("");
             self.currentEmployee().password("");
+            self.currentEmployee().avatarId("");
         }
 
         start() {
@@ -317,11 +335,7 @@ module cps002.a.vm {
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
-                _.each(__viewContext.primitiveValueConstraints, x => {
-                    if (_.has(x, "itemCode")) {
-                        $('#' + x.itemCode).trigger('change');
-                    }
-                })
+                $('.drag-panel .nts-input').trigger('change');
             } else {
                 $(".form_step1").trigger("validate");
 
@@ -384,7 +398,6 @@ module cps002.a.vm {
             let self = this,
                 command = ko.toJS(self.currentEmployee()),
                 layout = self.layout();
-            self.currentEmployee().avatarId("");
             self.currentStep(2);
 
             //add atr
@@ -512,13 +525,20 @@ module cps002.a.vm {
                         return new InitSetting(item);
                     }));
 
+                    self.initSettingSelectedCode.valueWillMutate();
                     if (self.initSettingSelectedCode() == '') {
                         if (self.employeeBasicInfo() && _.find(result, ['settingCode', self.employeeBasicInfo().initialValueCode])) {
                             self.initSettingSelectedCode(self.employeeBasicInfo().initialValueCode);
                         } else {
                             self.initSettingSelectedCode(result[0].settingCode);
                         }
+                    } else {
+                        if (!_.find(result, ctg => { return self.initSettingSelectedCode() == ctg.settingCode; })) {
+                            self.initSettingSelectedCode(result[0].settingCode);
+                        }
+
                     }
+
                     $("#initSearchBox input").focus();
                 }
             }).fail((error) => {
@@ -534,15 +554,19 @@ module cps002.a.vm {
 
         prev() {
             let self = this;
+            if (self.currentStep() === 1) {
+                $('#emp_reg_info_wizard').ntsWizard("prev");
+            }
             if (self.currentStep() === 2) {
-                //self.layout(new Layout({ id: '', code: '', name: '' }));
+                self.gotoStep2();
                 nts.uk.ui.errors.clearAll();
             }
             if (self.createTypeId() === 3) {
                 $('#emp_reg_info_wizard').ntsWizard("goto", 0);
                 return;
             }
-            $('#emp_reg_info_wizard').ntsWizard("prev");
+
+
 
 
         }
@@ -591,7 +615,7 @@ module cps002.a.vm {
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
 
-                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "no-close", title: '' }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "finish", title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
 
                             self.backtoStep1();
@@ -666,10 +690,12 @@ module cps002.a.vm {
         }
 
         openIModal() {
+
+
             let self = this,
-                avatarId = self.currentEmployee().avatarId();
+                avatarId = self.defaultImgId();
             if (avatarId != "") {
-                setShared("imageId", avatarId);
+                setShared("CPS002A", avatarId);
             }
             if (self.isAllowAvatarUpload()) {
 
@@ -677,11 +703,15 @@ module cps002.a.vm {
 
                     let imageResult = getShared("imageId");
 
-                    if (imageResult) {
-                        self.currentEmployee().avatarId(imageResult);
-                    }
 
-                });
+
+                    if (imageResult) {
+                        self.currentEmployee().avatarId(imageResult.cropImgId)
+                        self.defaultImgId(imageResult.defaultImgId);
+
+
+
+                    });
 
             }
         }

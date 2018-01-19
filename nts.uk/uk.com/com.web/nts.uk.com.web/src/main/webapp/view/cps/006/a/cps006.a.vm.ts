@@ -152,7 +152,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
                     } else {
 
-                        dialog.alert('Msg_291');
+                        dialog.alertError({ messageId: 'Msg_291' });
 
                     }
                     dfd.resolve();
@@ -183,7 +183,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
                     } else {
 
-                        dialog.alert('Msg_291');
+                        dialog.alertError({ messageId: 'Msg_291' });
 
                     }
                     dfd.resolve();
@@ -243,7 +243,16 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     self.start(command.categoryId);
                 });
             }).fail(function(res: any) {
-                dialog.alertError({ messageId: res.messageId });
+                if (res.messageId == "Msg_928") {
+                    dialog.alertError({
+                        messageId: res.messageId,
+                        messageParams: ["個人情報カテゴリ"]
+                    }).then(() => {
+                        $('#ctgName').focus();
+                    })
+                } else {
+                    dialog.alertError({ messageId: res.messageId });
+                }
             });
 
         }

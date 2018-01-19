@@ -42,15 +42,17 @@
 					data-bind="click : addData, enable: revDisSel01">#{i18n.getText('CPS017_2')}</button>
 				<button id="A1_005" class="danger" tabindex="3"
 					data-bind="click : remove, enable: revDisSel02 ">#{i18n.getText('CPS017_4')}</button>
-				<com:ko-if bind="(isDialog() === true)">
-					<button id="A1_008" tabindex="5" style="display: none"
-						data-bind="visible: closeUp, click: close">#{i18n.getText('CPS017_50')}</button>
-				</com:ko-if>
+				
 				<button id="A1_003"
 					data-bind="click: openDialogB, enable: revDisSel03" tabindex="5">#{i18n.getText('CPS017_3')}</button>
 
 				<button id="A1_007" tabindex="6"
-					data-bind="click: ReflUnrComp, visible : checkCreate()==false">#{i18n.getText('CPS017_49')}</button>
+					data-bind="click: ReflUnrComp, visible : refecToAll">#{i18n.getText('CPS017_49')}</button>
+
+				<com:ko-if bind="(isDialog() === true)">
+					<button id="A1_008" tabindex="5" style="display: none"
+						data-bind="visible: closeUp, click: close">#{i18n.getText('CPS017_50')}</button>
+				</com:ko-if>
 
 			</div>
 			<div id="contents-area" class="cf"
@@ -69,7 +71,7 @@
 							<!-- thanh tìm kiếm  -->
 						<div tabindex="7"
 							data-bind="ntsSearchBox: {
-								searchMode: 'highlight',
+								searchMode: 'filter',
 								targetKey: 'selectionItemId',
 								mode: 'igGrid', 
 								comId: 'sel_item_grid',
@@ -181,7 +183,7 @@
 										value: selectionCD,
 										constraint: 'SelectionCD', 
 										required: true, 
-										enable: $parent.selection().selectionID() == undefined , 
+										enable: $parent.selectionCd, 
 		 								immediate: false									
 										}" />
 								</span>
@@ -192,7 +194,7 @@
 										value: selectionCD,
 										constraint: 'SelectionCD', 
 										required: true, 
-										enable: $parent.selection().selectionID() == undefined , 
+										enable: $parent.selectionCd, 
 		 								immediate: false}" />
 								</span> 
 							</div>

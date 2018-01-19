@@ -8,6 +8,6 @@ import nts.uk.ctx.at.function.app.command.alarm.extractionrange.ExtractionPeriod
 public class CheckConditionCommand {
 	private int alarmCategory;
 	private List<String> checkConditionCodes;	
-	private ExtractionPeriodDailyCommand extractPeriod;
+	private ExtractionPeriodDailyCommand extractionPeriodDaily;
 	
 }

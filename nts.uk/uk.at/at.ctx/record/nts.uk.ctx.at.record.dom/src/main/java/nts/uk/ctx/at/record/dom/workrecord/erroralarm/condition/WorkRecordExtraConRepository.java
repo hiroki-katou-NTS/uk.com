@@ -12,12 +12,14 @@ public interface WorkRecordExtraConRepository {
 	
 	List<WorkRecordExtractingCondition> getAllWorkRecordExtraCon();
 	
-	Optional<WorkRecordExtractingCondition> getWorkRecordExtraConById(String errorAlarmCheckID,int checkItem);
+	List<WorkRecordExtractingCondition> getAllWorkRecordExtraConByListID(List<String> listErrorAlarmID );
+	
+	Optional<WorkRecordExtractingCondition> getWorkRecordExtraConById(String errorAlarmCheckID);
 	
 	void addWorkRecordExtraCon(WorkRecordExtractingCondition workRecordExtractingCondition);
 	
 	void updateWorkRecordExtraCon(WorkRecordExtractingCondition workRecordExtractingCondition);
 	
-	void deleteWorkRecordExtraCon(String errorAlarmCheckID,int checkItem);
+	void deleteWorkRecordExtraCon(String errorAlarmCheckID);
 	
 }

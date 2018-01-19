@@ -11,6 +11,7 @@ module cps001.a.vm {
     import clearError = nts.uk.ui.errors.clearAll;
     import liveView = nts.uk.request.liveView;
     import permision = service.getCurrentEmpPermision;
+    import permision4Cat = service.getPermision4Cat;
     import format = nts.uk.text.format;
 
     const REPL_KEY = '__REPLACE',
@@ -76,6 +77,8 @@ module cps001.a.vm {
         // output data on category changed
         multipleData: KnockoutObservableArray<MultiData> = ko.observableArray([new MultiData()]);
 
+        saveAble: KnockoutObservable<boolean> = ko.observable(false);
+
         categories: KnockoutComputed<Array<IListData>> = ko.computed(() => {
             let self = this,
                 categories = self.multipleData().map(x => x.categories());
@@ -95,10 +98,12 @@ module cps001.a.vm {
 
             permision().done((data: IPersonAuth) => {
                 if (data) {
+                    auth.roleId(data.roleId);
                     auth.allowDocRef(!!data.allowDocRef);
                     auth.allowAvatarRef(!!data.allowAvatarRef);
                     auth.allowMapBrowse(!!data.allowMapBrowse);
                 } else {
+                    auth.roleId(undefined);
                     auth.allowDocRef(false);
                     auth.allowAvatarRef(false);
                     auth.allowMapBrowse(false);
@@ -150,6 +155,7 @@ module cps001.a.vm {
                     }
 
                     layoutData.mode(tab);
+                    layoutData.roleId(self.auth().roleId());
 
                     switch (tab) {
                         default:
@@ -224,6 +230,22 @@ module cps001.a.vm {
             });
 
             self.start();
+
+            setInterval(() => {
+                let aut = _(self.multipleData())
+                    .map(m => m.layout())
+                    .map(m => m.listItemCls())
+                    .flatten() // get item of all layout
+                    .map((m: any) => _.has(m, 'items') && ko.isObservable(m.items) ? ko.toJS(m.items) : undefined)
+                    .filter(x => !!x)
+                    .flatten() // flat set item
+                    .flatten() // flat list item
+                    .map((m: any) => !ko.toJS(m.readonly))
+                    .filter(x => !!x)
+                    .value();
+
+                self.saveAble(!!aut.length);
+            }, 0);
         }
 
         start() {
@@ -231,16 +253,12 @@ module cps001.a.vm {
                 reload = getShared(RELOAD_KEY),
                 reloadData = getShared(RELOAD_DT_KEY),
                 employee = self.employee(),
-                employees = ko.toJS(self.employees),
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             if (reload) {
-                if (employees.length == 1) {
-                    $('.btn-quick-search[tabindex=4]').click();
-                } else {
-                    $('.btn-quick-search[tabindex=3]').click();
-                }
-
+                let single = self.employees().length == 1;
+                self.employees.removeAll();
+                $('.btn-quick-search[tabindex=3]').click();
                 $.when((() => {
                     let def = $.Deferred(),
                         int = setInterval(() => {
@@ -250,7 +268,10 @@ module cps001.a.vm {
                             }
                         }, 0);
                     return def.promise();
-                })()).done(x => {
+                })()).done((employees: Array<IEmployee>) => {
+                    if (single) {
+                        self.employees(_.filter(employees, m => m.employeeId == employee.employeeId()));
+                    }
                     employee.employeeId.valueHasMutated();
                 });
             } else {
@@ -272,10 +293,9 @@ module cps001.a.vm {
                         return def.promise();
                     })()).done((employees: Array<IEmployee>) => {
                         if (params && params.employeeId) {
-                            employees = _.filter(employees, m => m.employeeId == params.employeeId);
-                            self.employees(employees);
+                            self.employees(_.filter(employees, m => m.employeeId == params.employeeId));
                         }
-                        employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                        employee.employeeId(self.employees()[0] ? self.employees()[0].employeeId : undefined);
                         setShared(RELOAD_KEY, true);
                     });
                 });
@@ -328,35 +348,7 @@ module cps001.a.vm {
                 iemp: IEmployee = ko.toJS(employee);
 
             modal('../c/index.xhtml').onClosed(() => {
-                let params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined, showAll: false };
-
-                $('.btn-quick-search[tabindex=3]').click();
-                $.when((() => {
-                    let def = $.Deferred(),
-                        int = setInterval(() => {
-                            if (self.employees().length) {
-                                clearInterval(int);
-                                def.resolve(self.employees());
-                            }
-                        }, 0);
-                    return def.promise();
-                })()).done((employees: Array<IEmployee>) => {
-                    if (!employee.employeeId()) {
-                        let employees = _.filter(self.employees(), m => m.employeeId == params.employeeId);
-                        if (!params.showAll) {
-                            self.employees(employees);
-                        }
-                        if (employees[0]) {
-                            if (employees[0].employeeId == employee.employeeId()) {
-                                employee.employeeId();
-                            } else {
-                                employee.employeeId(employees[0].employeeId);
-                            }
-                        } else {
-                            employee.employeeId(undefined);
-                        }
-                    }
-                });
+                self.start();
             });
         }
 
@@ -402,11 +394,7 @@ module cps001.a.vm {
                 };
 
             // trigger change of all control in layout
-            _.each(__viewContext.primitiveValueConstraints, x => {
-                if (_.has(x, "itemCode")) {
-                    $('#' + x.itemCode).trigger('change');
-                }
-            })
+            $('.drag-panel .nts-input').trigger('change');
 
             if (hasError()) {
                 $('#func-notifier-errors').trigger('click');
@@ -424,6 +412,7 @@ module cps001.a.vm {
                     };
 
                 setShared(RELOAD_DT_KEY, saveData);
+                setShared(REPL_KEY, REPL_KEYS.NORMAL);
 
                 info({ messageId: "Msg_15" }).then(function() {
                     unblock();
@@ -446,6 +435,12 @@ module cps001.a.vm {
         add: (callback?: void) => void;
         remove: (callback?: void) => void;
         replace: (callback?: void) => void;
+    }
+
+    interface Permisions {
+        add: KnockoutObservable<boolean>;
+        remove: KnockoutObservable<boolean>;
+        replace: KnockoutObservable<boolean>;
     }
 
     class Layout {
@@ -485,6 +480,7 @@ module cps001.a.vm {
     class MultiData {
         title: KnockoutObservable<string> = undefined;
         mode: KnockoutObservable<TABS> = ko.observable(undefined);
+        roleId: KnockoutObservable<string> = ko.observable(undefined);
 
         // selected value on list data
         id: KnockoutObservable<string> = ko.observable(undefined);
@@ -502,55 +498,85 @@ module cps001.a.vm {
         // event action
         events: Events = {
             add: (callback?: any) => {
-                let self = this;
+                let self = this,
+                    catId: string = ko.toJS(self.id),
+                    roleId: string = ko.toJS(self.roleId),
+                    selEmId: string = self.employeeId(),
+                    logInId: string = __viewContext.user.employeeId;
 
-                self.changTitle(ATCS.ADD);
-                setShared(REPL_KEY, REPL_KEYS.ADDNEW);
+                permision4Cat(roleId, catId).done((perm: ICatAuth) => {
+                    if (perm && !!(selEmId == logInId ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
+                        self.changeTitle(ATCS.ADD);
+                        setShared(REPL_KEY, REPL_KEYS.ADDNEW);
 
-                self.infoId(undefined);
-                //self.id.valueHasMutated();
+                        self.infoId(undefined);
+                        //self.id.valueHasMutated();
 
-                if (callback && _.isFunction(callback)) {
-                    callback();
-                }
+                        if (callback && _.isFunction(callback)) {
+                            callback();
+                        }
+                    }
+                });
             },
             remove: (callback?: any) => {
                 let self = this,
-                    category = self.category();
+                    category = self.category(),
+                    catId: string = ko.toJS(self.id),
+                    roleId: string = ko.toJS(self.roleId),
+                    selEmId: string = self.employeeId(),
+                    logInId: string = __viewContext.user.employeeId;
 
-                confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    let query = {
-                        recordId: self.infoId(),
-                        personId: self.personId(),
-                        employeeId: self.employeeId(),
-                        categoryId: category.categoryCode()
-                    };
+                permision4Cat(roleId, catId).done((perm: ICatAuth) => {
+                    if (perm && !!(selEmId == logInId ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
+                        confirm({ messageId: "Msg_18" }).ifYes(() => {
+                            let query = {
+                                recordId: self.infoId(),
+                                personId: self.personId(),
+                                employeeId: self.employeeId(),
+                                categoryId: category.categoryCode()
+                            };
 
-                    service.removeCurrentCategoryData(query).done(x => {
-                        info({ messageId: "Msg_16" }).then(() => {
-                            self.infoId(undefined);
-                            self.id.valueHasMutated();
+                            service.removeCurrentCategoryData(query).done(x => {
+                                info({ messageId: "Msg_16" }).then(() => {
+                                    self.infoId(undefined);
+                                    self.id.valueHasMutated();
 
-                            if (callback && _.isFunction(callback)) {
-                                callback();
-                            }
+                                    if (callback && _.isFunction(callback)) {
+                                        callback();
+                                    }
+                                });
+                            });
                         });
-                    });
+                    }
                 });
             },
             replace: (callback?: any) => {
-                let self = this;
+                let self = this,
+                    catId: string = ko.toJS(self.id),
+                    roleId: string = ko.toJS(self.roleId),
+                    selEmId: string = self.employeeId(),
+                    logInId: string = __viewContext.user.employeeId;
 
-                self.changTitle(ATCS.COPY);
-                setShared(REPL_KEY, REPL_KEYS.REPLICATION);
-                self.infoId.valueHasMutated();
-                //self.id.valueHasMutated();
+                permision4Cat(roleId, catId).done((perm: ICatAuth) => {
+                    if (perm && !!(selEmId == logInId ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
+                        self.changeTitle(ATCS.COPY);
+                        setShared(REPL_KEY, REPL_KEYS.REPLICATION);
+                        self.infoId.valueHasMutated();
+                        //self.id.valueHasMutated();
 
-                if (callback && _.isFunction(callback)) {
-                    callback();
-                }
+                        if (callback && _.isFunction(callback)) {
+                            callback();
+                        }
+                    }
+                });
             }
         }
+
+        permisions: Permisions = {
+            add: ko.observable(false),
+            remove: ko.observable(false),
+            replace: ko.observable(false)
+        };
 
         combobox: KnockoutObservableArray<IListData> = ko.observableArray([]);
         gridlist: KnockoutObservableArray<IListData> = ko.observableArray([]);
@@ -573,6 +599,9 @@ module cps001.a.vm {
 
             self.id.subscribe(id => {
                 let mode: TABS = self.mode();
+
+                setShared(REPL_KEY, REPL_KEYS.NORMAL);
+
                 if (id) {
                     if (mode == TABS.CATEGORY) {
                         let option = _.find(self.combobox(), x => x.optionValue == id);
@@ -646,7 +675,7 @@ module cps001.a.vm {
                             case IT_CAT_TYPE.SINGLE:
                                 self.infoId(undefined);
 
-                                self.changTitle(ATCS.UPDATE);
+                                self.changeTitle(ATCS.UPDATE);
 
                                 service.getCatData(query).done(data => {
                                     if (data) {
@@ -673,6 +702,8 @@ module cps001.a.vm {
                                     service.getHistData(query).done((data: Array<any>) => {
                                         if (data && data.length) {
                                             self.gridlist(data);
+                                            self.changeTitle(ATCS.UPDATE);
+
                                             if (!loadData || !loadData.infoId) {
                                                 if (self.infoId() != data[0].optionValue) {
                                                     self.infoId(data[0].optionValue);
@@ -689,15 +720,27 @@ module cps001.a.vm {
                                         } else {
                                             self.events.add();
                                             self.gridlist.removeAll();
+                                            self.changeTitle(ATCS.ADD);
                                             setShared(REPL_KEY, undefined);
-                                            self.infoId.valueHasMutated();
+
+                                            if (self.infoId()) {
+                                                self.infoId(undefined);
+                                            } else {
+                                                self.infoId.valueHasMutated();
+                                            }
                                         }
                                         setShared(RELOAD_DT_KEY, undefined);
                                     }).fail(mgs => {
                                         self.gridlist.removeAll();
+                                        self.changeTitle(ATCS.ADD);
                                         setShared(REPL_KEY, undefined);
                                         setShared(RELOAD_DT_KEY, undefined);
-                                        self.infoId.valueHasMutated();
+
+                                        if (self.infoId()) {
+                                            self.infoId(undefined);
+                                        } else {
+                                            self.infoId.valueHasMutated();
+                                        }
                                     });
                                 } else {
                                     self.infoId.valueHasMutated();
@@ -716,27 +759,18 @@ module cps001.a.vm {
 
                 if (id && mode == TABS.CATEGORY) {
                     let catid = self.categoryId(),
-                        query = {
-                            infoId: infoId,
-                            categoryId: catid || id,
-                            personId: self.personId(),
-                            employeeId: self.employeeId(),
-                            standardDate: undefined,
-                            categoryCode: cat.categoryCode()
-                        },
                         rep: number = getShared(REPL_KEY) || REPL_KEYS.NORMAL;
 
                     if ([REPL_KEYS.NORMAL, REPL_KEYS.REPLICATION, REPL_KEYS.ADDNEW].indexOf(rep) > -1) {
                         let catid = self.categoryId(),
                             query = {
-                                infoId: self.infoId(),
+                                infoId: infoId,
                                 categoryId: catid || id,
                                 personId: self.personId(),
                                 employeeId: self.employeeId(),
                                 standardDate: undefined,
                                 categoryCode: cat.categoryCode()
                             };
-
                         service.getCatData(query).done(data => {
                             if (rep == REPL_KEYS.ADDNEW) {
                                 setShared(REPL_KEY, REPL_KEYS.NORMAL);
@@ -763,9 +797,31 @@ module cps001.a.vm {
                                     }
                                 });
                             } else if (self.infoId()) {
-                                self.changTitle(ATCS.UPDATE);
+                                self.changeTitle(ATCS.UPDATE);
                             }
                             layout.listItemCls(data.classificationItems);
+
+                            let roleId = self.roleId(),
+                                catId = self.categoryId() || self.id();
+
+                            permision4Cat(roleId, catId).done((perm: ICatAuth) => {
+                                let selEmId: string = self.employeeId(),
+                                    logInId: string = __viewContext.user.employeeId;
+
+                                if (perm && !!(selEmId == logInId ? (perm.selfAllowAddHis && perm.selfFutureHisAuth == 3) : (perm.otherAllowAddHis && perm.otherFutureHisAuth == 3))) {
+                                    self.permisions.add(true);
+                                    self.permisions.replace(true);
+                                } else {
+                                    self.permisions.add(false);
+                                    self.permisions.replace(false);
+                                }
+
+                                if (perm && !!(selEmId == logInId ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
+                                    self.permisions.remove(true);
+                                } else {
+                                    self.permisions.remove(false);
+                                }
+                            });
                         });
                     } else {
                         setShared(REPL_KEY, REPL_KEYS.NORMAL);
@@ -774,7 +830,7 @@ module cps001.a.vm {
             });
         }
 
-        changTitle = (action: ATCS) => {
+        changeTitle = (action: ATCS) => {
             let self = this,
                 title = self.title,
                 category = self.category(),
@@ -994,13 +1050,12 @@ module cps001.a.vm {
 
         age: KnockoutComputed<string> = ko.computed(() => {
             let self = this,
+                now = moment.utc(),
                 birthDay = self.birthDate(),
-                duration = moment.duration(moment.utc().diff(moment.utc(birthDay))),
-                years = duration.years(),
-                months = duration.months(),
-                days = duration.days();
+                birth = moment.utc(birthDay),
+                duration = moment.duration(now.diff(birth));
 
-            return (years + Number(!!(months || days))) + text('CPS001_66');
+            return duration.years() + text('CPS001_66');
         });
     }
 
@@ -1015,6 +1070,7 @@ module cps001.a.vm {
     }
 
     class PersonAuth {
+        roleId: KnockoutObservable<string> = ko.observable('');
         allowAvatarRef: KnockoutObservable<boolean> = ko.observable(false);
         allowDocRef: KnockoutObservable<boolean> = ko.observable(false);
         allowMapBrowse: KnockoutObservable<boolean> = ko.observable(false);
@@ -1022,11 +1078,36 @@ module cps001.a.vm {
         constructor(param?: IPersonAuth) {
             let self = this;
             if (param) {
+                self.roleId(param.roleId);
                 self.allowAvatarRef(!!param.allowAvatarRef);
                 self.allowDocRef(!!param.allowDocRef);
                 self.allowMapBrowse(!!param.allowMapBrowse);
             }
         }
+    }
+
+    interface ICatAuth {
+        roleId: string;
+        personInfoCategoryAuthId: string;
+        allowPersonRef: number;
+        allowOtherRef: number;
+        allowOtherCompanyRef: number;
+        selfPastHisAuth: number;
+        selfFutureHisAuth: number;
+        selfAllowAddHis: number;
+        selfAllowDelHis: number;
+        otherPastHisAuth: number;
+        otherFutureHisAuth: number;
+        otherAllowAddHis: number;
+        otherAllowDelHis: number;
+        selfAllowAddMulti: number;
+        selfAllowDelMulti: number;
+        otherAllowAddMulti: number;
+        otherAllowDelMulti: number;
+    }
+
+    class CatAuth {
+
     }
 
     enum ATCS {

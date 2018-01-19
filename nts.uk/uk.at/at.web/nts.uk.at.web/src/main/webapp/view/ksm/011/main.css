@@ -47,7 +47,7 @@ hr {
 }
 
 .sub-label-title {
-	margin-left: -2px;
+	margin-left: -2px; 
 }
 
 table.basic-items, table.type-items, table.period-items, table.activation-items, 
@@ -187,4 +187,9 @@ table.symbol-control td {
 
 button.nts-switch-button {
 	width: 95px;
+}
+
+.items-tree {
+	float: left;
+	margin: 10px 8px;
 }

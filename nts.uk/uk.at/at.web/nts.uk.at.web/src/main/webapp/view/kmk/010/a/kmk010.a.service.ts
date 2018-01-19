@@ -17,10 +17,7 @@ module nts.uk.at.view.kmk010.a {
             findAllOutsideOTBRDItem : "ctx/at/shared/outsideot/breakdown/findAll",
             findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
             checkManageSixtyHourVacationSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/com/check/manage",
-            exportOutsideOTSettingExcel: "at/shared/outsideot/export/excel",
-            getCid: "at/shared/outsideot/export/getCid",
-            getNameCompany: "bs/company/findComId"
-            
+            exportOutsideOTSettingExcelMasterList: "/masterlist/report/print"
         }
 
         /**
@@ -118,13 +115,6 @@ module nts.uk.at.view.kmk010.a {
         }
         
         /**
-         * export file excel outside overtime setting
-         */
-        export function exportOutsideOTSettingExcel(languageId: string, manage: boolean, data: string): JQueryPromise<any> {
-            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcel, { languageId: languageId, manage: manage, nameCompany: data.companyName });
-        }
-        
-        /**
          * call service find all attendance item overtime
          */
         export function findAllAttendanceItemOvertime(): JQueryPromise<number[]> {
@@ -132,19 +122,14 @@ module nts.uk.at.view.kmk010.a {
         }
         
         /**
-         * get Cid
+         * function call service export
          */
-        export function getCid(): JQueryPromise<number[]> {
-            return nts.uk.request.ajax(paths.getCid);
-        }
         
-        /**
-         * get Cid
-         */
-        export function getCompanyName(cid: string): JQueryPromise<string> {
-            return nts.uk.request.ajax("com",paths.getNameCompany + "/" + cid);
+        export function exportOutsideOTSettingExcelMasterList(languageId: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcelMasterList, { domainId: "outsideot", domainType: "時間外超過設定", languageId: languageId, reportType: 0, data: [] });
         }
-        
+
+
         /**
          * Init tooltip service.
          */

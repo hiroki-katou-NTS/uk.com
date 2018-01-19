@@ -47,9 +47,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Produces("application/json")
 public class ClosureWs {
 	
-	@Inject
-	private ClosureEmpAddCommandHandler closureEmpAdd;
-
 	/** The finder. */
 	@Inject
 	private ClosureFinder finder;
@@ -78,17 +75,7 @@ public class ClosureWs {
 	/** The Constant FULL_CLOSURE_ID. */
 	public static final int FULL_CLOSURE_ID = 0;
 
-	@POST
-	@Path("addClousureEmp")
-	public void addClousureEmp(ClousureEmpAddCommand command) {
-		this.closureEmpAdd.handle(command);
-	}
-	
-	@POST
-	@Path("getClosureEmploy")
-	public ClosureEmployDto getClosureEmploy() {
-		return this.finder.getClosureEmploy();
-	}
+
 	
 	/**
 	 * Find all.

@@ -16,11 +16,11 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.stamp.StampRequestSetting;
-import nts.uk.ctx.at.request.dom.setting.stamp.StampRequestSettingRepository;
 
 /**
  * 
@@ -55,7 +55,7 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 
 	@Override
 	public AppStampSetOutput appStampSet(String companyID) {
-		StampRequestSetting stampRequestSetting = this.stampRequestSettingRepository.findByCompanyID(companyID);
+		StampRequestSetting stampRequestSetting = this.stampRequestSettingRepository.findByCompanyID(companyID).get();
 		List<ApplicationReason> applicationReasons = this.applicationReasonRepository.getReasonByAppType(companyID, ApplicationType.STAMP_APPLICATION.value);
 		return new AppStampSetOutput(stampRequestSetting, applicationReasons);
 	}

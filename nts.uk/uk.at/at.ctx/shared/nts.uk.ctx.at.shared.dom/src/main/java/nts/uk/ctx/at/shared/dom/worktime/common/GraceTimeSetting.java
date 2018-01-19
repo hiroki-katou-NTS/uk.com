@@ -5,7 +5,10 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 
 /**
  * The Class GraceTimeSetting.
@@ -64,6 +67,30 @@ public class GraceTimeSetting extends DomainObject {
 	 */
 	public boolean isZero() {
 		return this.graceTime.v() == 0;
+	}
+	
+	/**
+	 * 遅刻猶予時間帯を作成する
+	 * @param baseTimeSheet
+	 * @return
+	 */
+	public TimeSpanForCalc createLateGraceTimeSheet(TimezoneUse baseTimeSheet) {
+		//猶予時間帯の終了時刻の作成
+		val correctedEndTime = baseTimeSheet.getStart().forwardByMinutes(this.graceTime.minute());
+		//猶予時間帯の作成
+		return new TimeSpanForCalc(baseTimeSheet.getStart(), correctedEndTime);
+	}
+	
+	/**
+	 * 早退猶予時間帯を作成する
+	 * @param baseTimeSheet
+	 * @return
+	 */
+	public TimeSpanForCalc createLeaveEarlyGraceTimeSheet(TimezoneUse baseTimeSheet) {
+		//猶予時間帯の開始時刻の作成
+		val correctedStartTime = baseTimeSheet.getEnd().backByMinutes(this.graceTime.minute());
+		//猶予時間帯の作成
+		return new TimeSpanForCalc(correctedStartTime, baseTimeSheet.getEnd());
 	}
 
 }

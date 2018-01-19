@@ -16,7 +16,7 @@ public interface WorkplaceBasicWorkGetMemento {
 	 *
 	 * @return the work place id
 	 */
-	WorkplaceId getWorkPlaceId();
+	String getWorkPlaceId();
 	
 	/**
 	 * Gets the basic work setting.

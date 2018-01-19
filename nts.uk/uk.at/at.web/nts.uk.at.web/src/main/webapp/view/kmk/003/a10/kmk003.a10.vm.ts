@@ -26,14 +26,16 @@ module a10 {
         bonusPaySettingCode: KnockoutObservable<string>;
         bonusPaySettingName: KnockoutObservable<string>;
         
+        lstBonusPaysetting: KnockoutObservableArray<any>;
         // Simple mode - Data  
         
         /**
          * Constructor
          */
-        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
+        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto,lstPaySetting:any) {
             let _self = this;
             
+            _self.lstBonusPaysetting = ko.observableArray(lstPaySetting);
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
                 // Stop rendering page
@@ -44,9 +46,11 @@ module a10 {
             _self.model = model; 
             _self.settingEnum = settingEnum;
             _self.bindingData();
+                        
+            _self.bonusPaySettingName = ko.observable("");                                 
             
-            // Init all data            
-            _self.bonusPaySettingName = ko.observable(_self.bonusPaySettingCode());                                 
+            //subscribe not run here=> add control to bind name to screen
+            _self.bindingNameByCode(_self.bonusPaySettingCode());
             
              // Detail mode and simple mode is same
             _self.isDetailMode = ko.observable(null);
@@ -56,6 +60,9 @@ module a10 {
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
                 value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            });
+            _self.bonusPaySettingCode.subscribe((v)=>{
+                _self.bindingNameByCode(v);
             });
         }
                 
@@ -75,6 +82,17 @@ module a10 {
             _self.bonusPaySettingCode = _self.model.commonSetting.raisingSalarySet;
         }             
         
+        private bindingNameByCode(code: string) {
+            let _self = this;
+            if (code && code != "") {
+                //filter to get name by code
+                let itemPaySetting: any = _.filter(_self.lstBonusPaysetting(), item => item.code == code);
+                _self.bonusPaySettingName(itemPaySetting[0].name);
+            }
+            else {
+                _self.bonusPaySettingName("");
+            }
+        }
         /**
          * UI handler: open referral dialog
          */
@@ -89,9 +107,12 @@ module a10 {
             nts.uk.ui.windows.setShared('KDL007_PARAM', param, true);
             nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml').onClosed(() => {
                 let listResult = nts.uk.ui.windows.getShared('KDL007_VALUES');
-                if (listResult.selecteds[0]) {                    
+                if (listResult && listResult.selecteds && !nts.uk.util.isNullOrEmpty(listResult.selecteds[0])) {
                     _self.bonusPaySettingCode(listResult.selecteds[0]);
-                    _self.bonusPaySettingName(listResult.selecteds[0]);
+//                    _self.bonusPaySettingName(listResult.selecteds[0]);
+                } else {
+                    _self.bonusPaySettingCode(null);
+                    _self.bonusPaySettingName(null);
                 }
             });
         }
@@ -125,11 +146,15 @@ module a10 {
             let model = input.model;
             let settingEnum = input.enum;
 
-            let screenModel = new ScreenModel(screenMode, model, settingEnum);
-            $(element).load(webserviceLocator, () => {
-                ko.cleanNode($(element)[0]);
-                ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                screenModel.startTab(screenMode);
+            nts.uk.at.view.kmk003.a10.service.findAllBonusPaySetting().done(function(lstPaySetting:any) {
+                let screenModel = new ScreenModel(screenMode, model, settingEnum,lstPaySetting);
+
+                $(element).load(webserviceLocator, () => {
+                    ko.cleanNode($(element)[0]);
+                    ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                    screenModel.startTab(screenMode);
+                });
+
             });
         }
     }

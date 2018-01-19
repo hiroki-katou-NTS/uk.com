@@ -13,6 +13,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
         nameWorkTimeType: KnockoutComputed<ksu001.common.viewmodel.ExCell>;
         columnsWorkTime: KnockoutObservableArray<NtsGridListColumn>;
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
+        isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
 
 
         constructor() {
@@ -59,9 +60,9 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                     let c = _.find(self.listWorkTime(), ['workTimeCode', workTimeCd]);
                     if (c) {
                         workTimeName = c.abName;
-                        workTimeCode = (c.workTimeCode == '000' ? null : c.workTimeCode);
-                        startTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.startTime, true).format() : '';
-                        endTime = c.timeNumberCnt == 1 ? nts.uk.time.parseTime(c.endTime, true).format() : '';
+                        workTimeCode = (c.workTimeCode == '000') ? null : c.workTimeCode;
+                        startTime = nts.uk.time.parseTime(c.startTime, true).format();
+                        endTime = nts.uk.time.parseTime(c.endTime, true).format();
                     } else {
                         workTimeName = null;
                         workTimeCode = null;
@@ -121,11 +122,20 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
          */
         search(): void {
             let self = this;
+            self.isEnableClearSearchButton(true);
             if (!self.time1() && !self.time2()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
+                self.isEnableClearSearchButton(false);
+                self.clear();
+                return;
             }
             if (self.time1() && self.time2() && moment(self.time1(), 'HH:mm').isSameOrAfter(moment(self.time2(), 'HH:mm'))) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_54" });
+                self.clear();
+                return;
+            }
+            if (nts.uk.ui.errors.hasError()) {
+                return;
             }
             self.listWorkTimeComboBox([]);
             _.forEach(self.listWorkTime(), (obj) => {
@@ -147,6 +157,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
          */
         clear(): void {
             let self = this;
+            self.isEnableClearSearchButton(false);
             self.listWorkTimeComboBox([]);
             self.listWorkTimeComboBox(self.listWorkTime());
         }

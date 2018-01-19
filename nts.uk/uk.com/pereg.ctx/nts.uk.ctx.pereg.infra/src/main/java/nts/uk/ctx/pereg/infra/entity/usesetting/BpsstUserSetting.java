@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pereg.dom.usesetting.UserSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -45,6 +46,15 @@ public class BpsstUserSetting extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return BpsstUserSettingPk;
+	}
+
+	public void updateFromDomain(UserSetting domain) {
+		this.employeeCodeType = domain.getEmpCodeValType().value;
+		this.cardNumberType = domain.getCardNoValType().value;
+		this.recentRegistrationType = domain.getRecentRegType().value;
+		this.employeeCodeLetter = domain.getEmpCodeLetter().v();
+		this.cardNumberLetter = domain.getCardNoLetter().v();
+
 	}
 
 }

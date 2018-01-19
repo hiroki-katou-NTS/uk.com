@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.monthlyattditem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,6 +20,8 @@ import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.record.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -35,6 +38,10 @@ public class MonthlyAttendanceItemFinder {
 	/** The monthly repo. */
 	@Inject
 	private MonthlyAttendanceItemRepository monthlyRepo;
+
+	/** The attd item name adapter. */
+	@Inject
+	private DailyAttendanceItemNameAdapter attdItemNameAdapter;
 
 	/**
 	 * Find by any item.
@@ -59,7 +66,26 @@ public class MonthlyAttendanceItemFinder {
 			attdItems.addAll(filtered);
 		}
 
-		return attdItems;
+		if (attdItems.isEmpty()) {
+			return attdItems;
+		}
+
+		// convert to map
+		Map<Integer, AttdItemDto> attdItemsMap = attdItems.stream()
+				.collect(Collectors.toMap(k -> k.getAttendanceItemId(), vl -> vl));
+
+		// get attd item name list
+		List<DailyAttendanceItemNameAdapterDto> attdItemNames = this.attdItemNameAdapter
+				.getDailyAttendanceItemName(new ArrayList<Integer>(attdItemsMap.keySet()));
+
+		// set attendance item name
+		attdItemNames.forEach(item -> {
+			attdItemsMap.get(item.getAttendanceItemId()).setAttendanceItemName(item.getAttendanceItemName());
+		});
+
+		return attdItemsMap.values().stream().sorted((a, b) -> a.getAttendanceItemId() - b.getAttendanceItemId())
+				.collect(Collectors.toList());
+
 	}
 
 	/**

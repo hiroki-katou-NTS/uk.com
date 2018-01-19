@@ -131,7 +131,7 @@ public class AddEmployeeCommandHelper {
 		}
 		// add system data
 		this.empDataRepo.add(EmployeeDataMngInfo.createFromJavaType(companyId, personId, employeeId,
-				command.getEmployeeCode(), EmployeeDeletionAttr.NOTDELETED.value, GeneralDateTime.min(), "", ""));
+				command.getEmployeeCode(), EmployeeDeletionAttr.NOTDELETED.value, null, "", ""));
 
 	}
 
@@ -173,8 +173,8 @@ public class AddEmployeeCommandHelper {
 
 		Optional<EmpRegHistory> optRegHist = this.empHisRepo.getLastRegHistory(currentEmpId);
 
-		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(currentEmpId, companyId, GeneralDate.today(),
-				employeeId, "");
+		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(currentEmpId, companyId,
+				GeneralDateTime.now(), employeeId, "");
 
 		if (optRegHist.isPresent()) {
 

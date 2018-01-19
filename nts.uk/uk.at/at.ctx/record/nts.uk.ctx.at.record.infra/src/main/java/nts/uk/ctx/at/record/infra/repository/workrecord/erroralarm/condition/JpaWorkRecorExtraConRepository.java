@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.condition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +10,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtractingCondition;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtWorkRecordExtraCon;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtWorkRecordExtraConPK;
 
 @Stateless
 public class JpaWorkRecorExtraConRepository extends JpaRepository implements WorkRecordExtraConRepository  {
@@ -17,8 +17,7 @@ public class JpaWorkRecorExtraConRepository extends JpaRepository implements Wor
 	
 	private final String SELECT_FROM_WORK_RECORD = " SELECT c FROM KrcmtWorkRecordExtraCon c ";
 	private final String SELECT_FROM_WORK_RECORD_BY_ID = SELECT_FROM_WORK_RECORD 
-			+ " WHERE c.krcmtWorkRecordExtraConPK.errorAlarmCheckID = :errorAlarmCheckID "
-			+ " AND c.krcmtWorkRecordExtraConPK.checkItem = :checkItem";
+			+ " WHERE c.errorAlarmCheckID = :errorAlarmCheckID ";
 	
 	@Override
 	public List<WorkRecordExtractingCondition> getAllWorkRecordExtraCon() {
@@ -28,10 +27,9 @@ public class JpaWorkRecorExtraConRepository extends JpaRepository implements Wor
 	}
 
 	@Override
-	public Optional<WorkRecordExtractingCondition> getWorkRecordExtraConById(String errorAlarmCheckID,int checkItem) {
+	public Optional<WorkRecordExtractingCondition> getWorkRecordExtraConById(String errorAlarmCheckID) {
 		Optional<WorkRecordExtractingCondition> data = this.queryProxy().query(SELECT_FROM_WORK_RECORD_BY_ID,KrcmtWorkRecordExtraCon.class)
 				.setParameter("errorAlarmCheckID", errorAlarmCheckID)
-				.setParameter("checkItem", checkItem)
 				.getSingle(c->c.toDomain());
 				
 		return data;
@@ -46,7 +44,7 @@ public class JpaWorkRecorExtraConRepository extends JpaRepository implements Wor
 	@Override
 	public void updateWorkRecordExtraCon(WorkRecordExtractingCondition workRecordExtractingCondition) {
 		KrcmtWorkRecordExtraCon newEntity = KrcmtWorkRecordExtraCon.toEntity(workRecordExtractingCondition);
-		KrcmtWorkRecordExtraCon updateEntity = this.queryProxy().find(new KrcmtWorkRecordExtraConPK(newEntity.krcmtWorkRecordExtraConPK.errorAlarmCheckID,newEntity.krcmtWorkRecordExtraConPK.checkItem), KrcmtWorkRecordExtraCon.class).get();
+		KrcmtWorkRecordExtraCon updateEntity = this.queryProxy().find(newEntity.errorAlarmCheckID, KrcmtWorkRecordExtraCon.class).get();
 		updateEntity.messageBold = newEntity.messageBold;
 		updateEntity.messageColor = newEntity.messageColor;
 		updateEntity.sortOrderBy = newEntity.sortOrderBy;
@@ -56,9 +54,21 @@ public class JpaWorkRecorExtraConRepository extends JpaRepository implements Wor
 	}
 
 	@Override
-	public void deleteWorkRecordExtraCon(String errorAlarmCheckID,int checkItem) {
-		this.commandProxy().remove(KrcmtWorkRecordExtraCon.class,new KrcmtWorkRecordExtraConPK(errorAlarmCheckID,checkItem));
+	public void deleteWorkRecordExtraCon(String errorAlarmCheckID) {
+		this.commandProxy().remove(KrcmtWorkRecordExtraCon.class,errorAlarmCheckID);
 		
+	}
+
+	@Override
+	public List<WorkRecordExtractingCondition> getAllWorkRecordExtraConByListID(List<String> listErrorAlarmID) {
+		List<WorkRecordExtractingCondition> data = new  ArrayList<>();
+		for(String errorAlarmID : listErrorAlarmID) {
+			Optional<WorkRecordExtractingCondition> workRecordExtractingCondition =  getWorkRecordExtraConById(errorAlarmID);
+			if(workRecordExtractingCondition.isPresent()) {
+				data.add(workRecordExtractingCondition.get());
+			}
+		}
+		return data;
 	}
 
 }

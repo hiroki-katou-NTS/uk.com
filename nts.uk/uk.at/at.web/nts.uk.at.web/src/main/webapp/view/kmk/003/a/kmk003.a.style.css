@@ -36,6 +36,7 @@
 
 .setting_header {
 	margin-left: 10px;
+	width: 910px;
 }
 
 .setting_header_br {
@@ -57,3 +58,7 @@
 .control-group {
 	display: inline-flex;
 } 
+.center-align {
+	text-align: center;
+}
+

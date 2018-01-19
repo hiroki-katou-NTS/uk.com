@@ -200,7 +200,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			updateEntity.specialVacationYears = sphdLimit.getSpecialVacationYears().v();
 		}
 		updateEntity.grantCarryForward = sphdLimit.getGrantCarryForward().value;
-		updateEntity.limitCarryoverDays = sphdLimit.getLimitCarryoverDays().v();
+		updateEntity.limitCarryoverDays = sphdLimit.getLimitCarryoverDays() != null ? sphdLimit.getLimitCarryoverDays().v() : null;
 		updateEntity.specialVacationMethod = sphdLimit.getSpecialVacationMethod().value;
 		updateEntity.kshstSphdLimitPK = kshstSphdLimitPK;
 		return updateEntity;
@@ -259,7 +259,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				updateEntity.useAge = subCondition.getUseAge().value;
 				updateEntity.genderAtr = subCondition.getGenderAtr().value;
 			if (UseAge.Allow.equals(subCondition.getUseAge())) {
-				updateEntity.limitAgeFrom = subCondition.getLimitAgeFrom().v();
+				updateEntity.limitAgeFrom = subCondition.getLimitAgeFrom() .v();
 				updateEntity.limitAgeTo = subCondition.getLimitAgeTo().v();
 			}
 			updateEntity.ageCriteriaAtr = subCondition.getAgeCriteriaAtr().value;

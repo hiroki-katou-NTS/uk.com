@@ -22,7 +22,7 @@ public class AddFixedConWorkRecordCmdHandler extends CommandHandler<FixedConditi
 		FixedConditionWorkRecordCmd fixedConditionWorkRecordCmd = context.getCommand();
 		FixedConditionWorkRecord fixedConditionWorkRecord =fixedConditionWorkRecordCmd.fromDomain();
 		Optional<FixedConditionWorkRecord> checkData = repo.getFixedConWRByCode(
-				fixedConditionWorkRecord.getErrorAlarmCode(), fixedConditionWorkRecord.getFixConWorkRecordNo().value);
+				fixedConditionWorkRecord.getErrorAlarmID());
 		if(checkData.isPresent()) {
 			throw new BusinessException("Msg_3");
 		} else {

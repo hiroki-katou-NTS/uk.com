@@ -42,9 +42,6 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	@Inject
 	private SyWorkplacePub workplacePub;
 
-	/** The employment pub. */
-	@Inject
-	private SyEmploymentPub employmentPub;
 	@Inject
 	private PersonAdapter psInfor;
 	@Inject
@@ -77,17 +74,6 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 					"","","",null,null);
 		    }).collect(Collectors.toList());
 		return lstEmpDto;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.
-	 * EmployeeApproveAdapter#getEmploymentCode(java.lang.String,
-	 * java.lang.String, nts.arc.time.GeneralDate)
-	 */
-	public String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate) {
-		return employmentPub.getEmploymentCode(companyId, employeeId, baseDate);
 	}
 
 	@Override

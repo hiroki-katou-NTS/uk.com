@@ -81,9 +81,8 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 				command.goBackCommand.getWorkTimeStart2(),
 				command.goBackCommand.getWorkTimeEnd2(), 
 				command.goBackCommand.workLocationCD2);
-		updateGoBack.setVersion(command.goBackCommand.version);
 		// update
 		
-		this.goBackDirectlyUpdateService.updateGoBackDirectly(updateGoBack, updateApp);
+		this.goBackDirectlyUpdateService.updateGoBackDirectly(updateGoBack, updateApp, command.goBackCommand.version);
 	}
 }

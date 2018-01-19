@@ -7,15 +7,6 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 
 public interface EmployeeAdapter {
-	
-	/**
-	 * get employment code by companyID, employeeID and base date
-	 * @param companyId 会社ID
-	 * @param employeeId　社員ID　
-	 * @param baseDate　基準日
-	 * @return　雇用コード
-	 */
-	String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate);
 
 	/**
 	 * 「所属職場履歴」をすべて取得する

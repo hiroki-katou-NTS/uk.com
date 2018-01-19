@@ -1535,7 +1535,7 @@ var nts;
                 var val = parseFloat(value);
                 if (message !== undefined)
                     message.id = 'FND_E_HALFINT';
-                if (val !== NaN && ((Math.ceil(val) - val) === 0.5) && (val * 2) % 1 === 0)
+                if (val !== NaN && (val * 2) % 1 === 0)
                     return true;
                 return false;
             }
@@ -2887,12 +2887,13 @@ var nts;
                 return dfd.promise();
             }
             request.writeDynamicConstraint = writeDynamicConstraint;
-            function ajax(webAppId, path, data, options) {
+            function ajax(webAppId, path, data, options, restoresSession) {
                 if (typeof arguments[1] !== 'string') {
                     return ajax.apply(null, _.concat(location.currentAppId, arguments));
                 }
                 var dfd = $.Deferred();
                 options = options || {};
+                restoresSession = restoresSession !== false;
                 if (typeof data === 'object') {
                     data = JSON.stringify(data);
                 }
@@ -2900,28 +2901,36 @@ var nts;
                     .mergeRelativePath(request.WEB_APP_NAME[webAppId] + '/')
                     .mergeRelativePath(location.ajaxRootDir)
                     .mergeRelativePath(path);
-                $.ajax({
-                    type: options.method || 'POST',
-                    contentType: options.contentType || 'application/json',
-                    url: webserviceLocator.serialize(),
-                    dataType: options.dataType || 'json',
-                    data: data,
-                    headers: {
-                        'PG-Path': location.current.serialize()
-                    }
-                }).done(function (res) {
-                    if (nts.uk.util.exception.isErrorToReject(res)) {
-                        dfd.reject(res);
-                    }
-                    else if (res !== undefined && res.commandResult === true) {
-                        dfd.resolve(res.value);
-                    }
-                    else {
-                        dfd.resolve(res);
-                    }
-                }).fail(function () {
-                    specials.errorPages.systemError();
-                });
+                function ajaxFunc() {
+                    $.ajax({
+                        type: options.method || 'POST',
+                        contentType: options.contentType || 'application/json',
+                        url: webserviceLocator.serialize(),
+                        dataType: options.dataType || 'json',
+                        data: data,
+                        headers: {
+                            'PG-Path': location.current.serialize()
+                        }
+                    }).done(function (res) {
+                        if (nts.uk.util.exception.isErrorToReject(res)) {
+                            dfd.reject(res);
+                        }
+                        else if (res !== undefined && res.commandResult === true) {
+                            dfd.resolve(res.value);
+                        }
+                        else {
+                            dfd.resolve(res);
+                        }
+                    }).fail(function () {
+                        specials.errorPages.systemError();
+                    });
+                }
+                if (restoresSession && webAppId != nts.uk.request.location.currentAppId) {
+                    doTaskShareingSesion(webAppId, ajaxFunc);
+                }
+                else {
+                    ajaxFunc();
+                }
                 return dfd.promise();
             }
             request.ajax = ajax;
@@ -2938,34 +2947,51 @@ var nts;
                     .mergeRelativePath(request.WEB_APP_NAME[webAppId] + '/')
                     .mergeRelativePath(location.ajaxRootDir)
                     .mergeRelativePath(path);
-                $.ajax({
-                    type: options.method || 'POST',
-                    contentType: options.contentType || 'application/json',
-                    url: webserviceLocator.serialize(),
-                    dataType: options.dataType || 'json',
-                    data: data,
-                    async: false,
-                    headers: {
-                        'PG-Path': location.current.serialize()
-                    },
-                    success: function (res) {
-                        if (nts.uk.util.exception.isErrorToReject(res)) {
-                            dfd.reject(res);
+                function ajaxFunc() {
+                    $.ajax({
+                        type: options.method || 'POST',
+                        contentType: options.contentType || 'application/json',
+                        url: webserviceLocator.serialize(),
+                        dataType: options.dataType || 'json',
+                        data: data,
+                        async: false,
+                        headers: {
+                            'PG-Path': location.current.serialize()
+                        },
+                        success: function (res) {
+                            if (nts.uk.util.exception.isErrorToReject(res)) {
+                                dfd.reject(res);
+                            }
+                            else if (res !== undefined && res.commandResult === true) {
+                                dfd.resolve(res.value);
+                            }
+                            else {
+                                dfd.resolve(res);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            specials.errorPages.systemError();
                         }
-                        else if (res !== undefined && res.commandResult === true) {
-                            dfd.resolve(res.value);
-                        }
-                        else {
-                            dfd.resolve(res);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        specials.errorPages.systemError();
-                    }
-                });
+                    });
+                }
+                if (webAppId != nts.uk.request.location.currentAppId) {
+                    doTaskShareingSesion(webAppId, ajaxFunc);
+                }
+                else {
+                    ajaxFunc();
+                }
                 return dfd.promise();
             }
             request.syncAjax = syncAjax;
+            function doTaskShareingSesion(webAppId, task) {
+                login.keepSerializedSession()
+                    .then(function () {
+                    return login.restoreSessionTo(webAppId);
+                })
+                    .then(function () {
+                    task();
+                });
+            }
             function uploadFile(data, option) {
                 return $.ajax({
                     url: "/nts.uk.com.web/webapi/ntscommons/arc/filegate/upload",
@@ -3087,7 +3113,11 @@ var nts;
                 var errorPages;
                 (function (errorPages) {
                     function systemError() {
-                        //jump('com', '/view/common/error/system/index.xhtml');
+                        if ($(".nts-system-error-dialog").length !== 0) {
+                            return;
+                        }
+                        var sub = uk.ui.windows.sub.modal("com", "/view/common/error/system/index.xhtml");
+                        sub.$dialog.addClass("nts-system-error-dialog");
                     }
                     errorPages.systemError = systemError;
                     function sessionTimeout() {
@@ -3120,7 +3150,12 @@ var nts;
                 var resolvedPath = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
                     .mergeRelativePath(path).serialize();
-                uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
+                if (data === undefined) {
+                    uk.sessionStorage.removeItem(request.STORAGE_KEY_TRANSFER_DATA);
+                }
+                else {
+                    uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
+                }
                 login.keepSerializedSession()
                     .then(function () {
                     return login.restoreSessionTo(webAppId);
@@ -3178,7 +3213,7 @@ var nts;
                 login.keepSerializedSession = keepSerializedSession;
                 function restoreSessionTo(webAppId) {
                     var serializedTicket = uk.sessionStorage.getItem(STORAGE_KEY_SERIALIZED_SESSION).get();
-                    return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket);
+                    return request.ajax(webAppId, "/shr/web/session/restore", serializedTicket, null, false);
                 }
                 login.restoreSessionTo = restoreSessionTo;
             })(login = request.login || (request.login = {}));
@@ -3356,7 +3391,7 @@ var nts;
                  */
                 function request() {
                     $("#logo").on(constants.CLICK, function () {
-                        uk.request.jumpToTopPage();
+                        //            uk.request.jumpToTopPage();
                     });
                     displayUserInfo();
                     nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function (menuSet) {
@@ -4480,6 +4515,10 @@ var nts;
                     return errorsViewModel().gridHasError();
                 }
                 errors_1.gridHasError = gridHasError;
+                function getErrorList() {
+                    return errorsViewModel().displayErrors();
+                }
+                errors_1.getErrorList = getErrorList;
             })(errors = ui.errors || (ui.errors = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -4513,10 +4552,7 @@ var nts;
                     autoOpen: false,
                     draggable: true,
                     resizable: false,
-                    dialogClass: "no-close",
-                    create: function (event) {
-                        $(event.target).dialog('widget').css({ position: 'fixed' });
-                    }
+                    dialogClass: "no-close"
                 };
                 /**
                  * Main or Sub Window(dialog)
@@ -4582,24 +4618,28 @@ var nts;
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
                             var dialogName = _this.globalContext.__viewContext["program"]["programName"];
-                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? toBeResource.unset : dialogName;
-                            //                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName; 
+                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "" : dialogName;
+                            var showCloseButton = _this.globalContext.dialogCloseButton === true;
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
                                 title: title,
                                 resizable: options.resizable,
-                                position: {
-                                    my: "center",
-                                    at: "center",
-                                    of: window,
-                                    collision: "none"
-                                },
                                 open: function () {
-                                    if ($(this).parent().height() >= $(window).height()) {
-                                        $(this).dialog("option", "position", { my: "center top", at: "center top", of: window, collision: "none" });
-                                        $(this).parent().css("position", "absolute");
+                                    var $dialog = $(this);
+                                    if (!showCloseButton) {
+                                        $dialog.closest(".ui-dialog").addClass("no-close-btn");
                                     }
+                                    $dialog.dialogPositionControl();
+                                    //                            if ($(this).parent().height() >= $("#contents-area").height()) {
+                                    //                                $(this).dialog("option", "position", {
+                                    //                                    my: "center top",
+                                    //                                    at: "center top",
+                                    //                                    of: $("#contents-area"),
+                                    //                                    collision: "none"
+                                    //                                })
+                                    //                                $(this).parent().css("position", "absolute");
+                                    //                            }
                                     var $dialogDocument = $(this).parent();
                                     var $dialogContentDoc = $(this.lastElementChild.contentDocument);
                                     // catch press tab key in close button of dialog.
@@ -4744,6 +4784,10 @@ var nts;
                     return ScreenWindowContainer;
                 }());
                 windows.ScreenWindowContainer = ScreenWindowContainer;
+                function rgc() {
+                    return windows.container.windows[MAIN_WINDOW_ID].globalContext;
+                }
+                windows.rgc = rgc;
                 if (uk.util.isInFrame()) {
                     var parent = window.parent;
                     windows.container = (parent.nts.uk.ui.windows.container);
@@ -4884,6 +4928,7 @@ var nts;
                             window.parent.$(event.target).remove();
                         }
                     });
+                    $this.dialogPositionControl();
                     //add header text if it has
                     if (header && header.text) {
                         $this.dialog("option", "title", header.text);
@@ -5146,7 +5191,7 @@ var nts;
                             },
                             close: function (event) {
                             }
-                        });
+                        }).dialogPositionControl();
                     }, 0);
                     return {
                         then: function (callback) {
@@ -5278,6 +5323,13 @@ var nts;
             (function (ig) {
                 var grid;
                 (function (grid) {
+                    function getScrollContainer($grid) {
+                        var $scroll = $grid.igGrid("scrollContainer");
+                        if ($scroll.length === 1)
+                            return $scroll;
+                        return $("#" + $grid.attr("id") + "_scrollContainer");
+                    }
+                    grid.getScrollContainer = getScrollContainer;
                     function getRowIdFrom($anyElementInRow) {
                         return $anyElementInRow.closest('tr').attr('data-id');
                     }
@@ -5286,6 +5338,11 @@ var nts;
                         return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
                     }
                     grid.getRowIndexFrom = getRowIndexFrom;
+                    function expose(targetRow, $grid) {
+                        var $scroll = getScrollContainer($grid);
+                        $scroll.exposeVertically(targetRow.element);
+                    }
+                    grid.expose = expose;
                     var virtual;
                     (function (virtual) {
                         function getDisplayContainer(gridId) {
@@ -5315,7 +5372,34 @@ var nts;
                             }).last();
                         }
                         virtual.getLastVisibleRow = getLastVisibleRow;
+                        function expose(targetRow, $grid) {
+                            if (targetRow.index === undefined) {
+                                $grid.igGrid("virtualScrollTo", dataSource.getIndexOfKey(targetRow.id, $grid) + 1);
+                                return;
+                            }
+                            var rowHeight = targetRow.element.outerHeight();
+                            var targetTop = targetRow.index * rowHeight;
+                            var targetBottom = targetTop + rowHeight;
+                            var $scroll = getScrollContainer($grid);
+                            var viewHeight = $scroll.height();
+                            var viewTop = $scroll.scrollTop();
+                            var viewBottom = viewTop + viewHeight;
+                            if (viewTop <= targetTop && targetBottom <= viewBottom) {
+                                return;
+                            }
+                            // when specify 1, top row will be shown.
+                            $grid.igGrid("virtualScrollTo", targetRow.index + 1);
+                        }
+                        virtual.expose = expose;
                     })(virtual = grid.virtual || (grid.virtual = {}));
+                    var dataSource;
+                    (function (dataSource) {
+                        function getIndexOfKey(targetKey, $grid) {
+                            var option = $grid.igGrid("option");
+                            return _.findIndex(option.dataSource, function (s) { return s[option.primaryKey].toString() === targetKey.toString(); });
+                        }
+                        dataSource.getIndexOfKey = getIndexOfKey;
+                    })(dataSource = grid.dataSource || (grid.dataSource = {}));
                     var header;
                     (function (header) {
                         function getCell(gridId, columnKey) {
@@ -5714,7 +5798,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
+        (function (ui_3) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 // This file left here for log purpose
@@ -5747,7 +5831,35 @@ var nts;
                     });
                     return $element;
                 };
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+                $.fn.dialogPositionControl = function () {
+                    var $dialog = $(this);
+                    $dialog.dialog("option", "position", {
+                        my: "center",
+                        at: "center",
+                        of: window,
+                        collision: "none"
+                    });
+                    var $container = $dialog.closest(".ui-dialog");
+                    var offsetContentsArea = $("#header").height();
+                    var offsetDialog = $container.offset();
+                    if (offsetDialog.top < offsetContentsArea) {
+                        offsetDialog.top = offsetContentsArea;
+                    }
+                    if (offsetDialog.left < 0) {
+                        offsetDialog.left = 0;
+                    }
+                    $container.offset(offsetDialog);
+                    $dialog.dialog({ dragStop: function (event, ui) {
+                            var offsetDialog = $container.offset();
+                            if (offsetDialog.top < offsetContentsArea) {
+                                offsetDialog.top = offsetContentsArea;
+                                $container.offset(offsetDialog);
+                                return false;
+                            }
+                        } });
+                    return $dialog;
+                };
+            })(jqueryExtentions = ui_3.jqueryExtentions || (ui_3.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -5757,7 +5869,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_3) {
+        (function (ui_4) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -5972,7 +6084,7 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
-            })(koExtentions = ui_3.koExtentions || (ui_3.koExtentions = {}));
+            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -5982,7 +6094,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_4) {
+        (function (ui_5) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -6164,7 +6276,7 @@ var nts;
                     return ComboBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
-            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
+            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -7085,7 +7197,7 @@ var nts;
                             close: function (event) {
                                 bindingContext.$data.option().show(false);
                             }
-                        });
+                        }).dialogPositionControl();
                     };
                     /**
                      * Update
@@ -7890,7 +8002,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_5) {
+        (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -7916,6 +8028,7 @@ var nts;
                         var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
                         var enable = ko.unwrap(data.enable);
                         var value = ko.unwrap(data.value);
+                        var virtualization = true;
                         var rows = ko.unwrap(data.rows);
                         $grid.data("init", true);
                         if (data.multiple) {
@@ -8013,7 +8126,7 @@ var nts;
                             height: height,
                             primaryKey: optionsValue,
                             columns: iggridColumns,
-                            virtualization: true,
+                            virtualization: virtualization,
                             virtualizationMode: 'continuous',
                             features: features,
                             tabIndex: -1
@@ -8058,8 +8171,26 @@ var nts;
                                 }
                             }
                         });
-                        $grid.setupSearchScroll("igGrid", true);
+                        $grid.setupSearchScroll("igGrid", virtualization);
                         $grid.ntsGridList("setupScrollWhenBinding");
+                        $grid.bind("switchvaluechanged", function (evt, dataX) {
+                            setTimeout(function () {
+                                var source = _.cloneDeep(data.dataSource !== undefined ? data.dataSource() : data.options());
+                                _.forEach(source, function (o) {
+                                    if (o[optionsValue] === dataX.rowKey) {
+                                        o[dataX.columnKey] = dataX.value;
+                                        return true;
+                                    }
+                                });
+                                $grid.data("ui-changed", true);
+                                if (data.dataSource !== undefined) {
+                                    data.dataSource(source);
+                                }
+                                else {
+                                    data.options(source);
+                                }
+                            }, 100);
+                        });
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
@@ -8308,7 +8439,7 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
-            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
+            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8625,7 +8756,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_6) {
+        (function (ui_7) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsRadioBoxBindingHandler = (function () {
@@ -8874,7 +9005,7 @@ var nts;
                 }
                 ko.bindingHandlers['ntsRadioButton'] = new NtsRadioBoxBindingHandler();
                 ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
-            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
+            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8884,7 +9015,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_7) {
+        (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -9201,7 +9332,7 @@ var nts;
                     return NtsSearchBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSearchBox'] = new NtsSearchBoxBindingHandler();
-            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
+            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -9211,7 +9342,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_8) {
+        (function (ui_9) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -9339,7 +9470,7 @@ var nts;
                             .searchControl($swap.find(".ntsSwapSearchLeft").find(".search-btn"))
                             .clearControl($swap.find(".ntsSwapSearchLeft").find(".clear-btn"))
                             .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
-                            .setDataSource(originalSource)
+                            .withDataSource(originalSource)
                             .setSearchCriterion(data.leftSearchCriterion || data.searchCriterion || leftCriterion)
                             .setSearchMode(data.searchMode || "highlight")
                             .setColumns(leftColumns())
@@ -9352,7 +9483,7 @@ var nts;
                             .searchControl($swap.find(".ntsSwapSearchRight").find(".search-btn"))
                             .clearControl($swap.find(".ntsSwapSearchRight").find(".clear-btn"))
                             .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
-                            .setDataSource(data.value())
+                            .withDataSource(data.value())
                             .setSearchCriterion(data.rightSearchCriterion || data.searchCriterion || rightCriterion)
                             .setSearchMode(data.searchMode || "highlight")
                             .setColumns(rightColumns())
@@ -9458,11 +9589,11 @@ var nts;
                             }) !== undefined;
                         });
                         //            if (!_.isEqual(currentSource, newSources)) {
-                        this.swapper.Model.swapParts[0].bindData(newSources.slice());
+                        this.swapper.Model.swapParts[0].setDataSource(newSources.slice());
                         this.swapper.Model.transportBuilder.setFirst(newSources);
                         //            }
                         //            if (!_.isEqual(currentSelectedList, newSelectedList)) {
-                        this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
+                        this.swapper.Model.swapParts[1].setDataSource(newSelectedList.slice());
                         this.swapper.Model.transportBuilder.setSecond(newSelectedList);
                         //            }
                     };
@@ -9686,8 +9817,14 @@ var nts;
                         this.searchCriterion = searchCriterion;
                         return this;
                     };
-                    SwapPart.prototype.setDataSource = function (dataSource) {
+                    SwapPart.prototype.withDataSource = function (dataSource) {
                         this.dataSource = dataSource;
+                        this.resetOriginalDataSource();
+                        return this;
+                    };
+                    SwapPart.prototype.setDataSource = function (dataSource) {
+                        this.bindData(dataSource);
+                        this.resetOriginalDataSource();
                         return this;
                     };
                     SwapPart.prototype.setColumns = function (columns) {
@@ -9714,7 +9851,7 @@ var nts;
                         this.$listControl.sortable(opts).disableSelection();
                     };
                     SwapPart.prototype.resetOriginalDataSource = function () {
-                        this.originalDataSource = this.dataSource;
+                        this.originalDataSource = _.cloneDeep(this.dataSource);
                     };
                     SwapPart.prototype.search = function () {
                         var searchContents = this.$searchBox.val();
@@ -9921,8 +10058,8 @@ var nts;
                         }
                         var firstSource = this.transportBuilder.getFirst();
                         var secondSource = this.transportBuilder.getSecond();
-                        this.swapParts[0].bindData(firstSource);
-                        this.swapParts[1].bindData(secondSource);
+                        this.swapParts[0].setDataSource(firstSource);
+                        this.swapParts[1].setDataSource(secondSource);
                         value(secondSource);
                         $source.igGridSelection("clearSelection");
                         $dest.igGridSelection("clearSelection");
@@ -10071,7 +10208,7 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
-            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
+            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10081,7 +10218,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_9) {
+        (function (ui_10) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -10228,7 +10365,7 @@ var nts;
                     return NtsSwitchButtonBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
-            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
+            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10238,7 +10375,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_10) {
+        (function (ui_11) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -10346,7 +10483,7 @@ var nts;
                     return TabPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
-            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
+            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10420,7 +10557,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_11) {
+        (function (ui_12) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -10738,7 +10875,7 @@ var nts;
                     return ExpandNode;
                 }());
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
-            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
+            })(koExtentions = ui_12.koExtentions || (ui_12.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10748,7 +10885,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_12) {
+        (function (ui_13) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -11013,7 +11150,7 @@ var nts;
                     return NtsUpDownBindingHandler;
                 }());
                 ko.bindingHandlers['ntsUpDown'] = new NtsUpDownBindingHandler();
-            })(koExtentions = ui_12.koExtentions || (ui_12.koExtentions = {}));
+            })(koExtentions = ui_13.koExtentions || (ui_13.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11260,7 +11397,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_13) {
+        (function (ui_14) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -11324,7 +11461,7 @@ var nts;
                     return NtsCharsetSettingBindingHandler;
                 }());
                 ko.bindingHandlers['ntsCharsetSetting'] = new NtsCharsetSettingBindingHandler();
-            })(koExtentions = ui_13.koExtentions || (ui_13.koExtentions = {}));
+            })(koExtentions = ui_14.koExtentions || (ui_14.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11334,7 +11471,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_14) {
+        (function (ui_15) {
             var contextmenu;
             (function (contextmenu) {
                 var ContextMenu = (function () {
@@ -11507,7 +11644,7 @@ var nts;
                     return ContextMenuItem;
                 }());
                 contextmenu.ContextMenuItem = ContextMenuItem;
-            })(contextmenu = ui_14.contextmenu || (ui_14.contextmenu = {}));
+            })(contextmenu = ui_15.contextmenu || (ui_15.contextmenu = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11566,7 +11703,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_15) {
+        (function (ui_16) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -11739,7 +11876,7 @@ var nts;
                             $target.ntsError('clear');
                             $ntsDateRange.ntsError("clear");
                             var isStart = $target.hasClass("ntsStartDatePicker");
-                            var validator = new ui_15.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var validator = new ui_16.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                             var result = validator.validate(newText);
                             var oldValue = value();
                             if ($target.hasClass("ntsStartDatePicker")) {
@@ -11758,7 +11895,7 @@ var nts;
                                 $(e.target).ntsError('set', getMessage('FND_E_REQ_INPUT', [isStart ? startName : endName]), 'FND_E_REQ_INPUT');
                             }
                             else {
-                                var validator = new ui_15.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                                var validator = new ui_16.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                                 var result = validator.validate(newText);
                                 if (!result.isValid) {
                                     $(e.target).ntsError('set', result.errorMessage, result.errorCode);
@@ -11770,7 +11907,7 @@ var nts;
                             var newText = $target.val();
                             var isStart = $target.hasClass("ntsStartDatePicker");
                             var oldValue = value();
-                            var validator = new ui_15.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var validator = new ui_16.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                             var result = validator.validate(newText);
                             $target.ntsError('clear');
                             $ntsDateRange.ntsError("clear");
@@ -11833,7 +11970,7 @@ var nts;
                     return NtsDateRangePickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsDateRangePicker'] = new NtsDateRangePickerBindingHandler();
-            })(koExtentions = ui_15.koExtentions || (ui_15.koExtentions = {}));
+            })(koExtentions = ui_16.koExtentions || (ui_16.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -11950,7 +12087,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_16) {
+        (function (ui_17) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsFixedTable;
@@ -12047,7 +12184,7 @@ var nts;
                         return controls;
                     }
                 })(ntsFixedTable || (ntsFixedTable = {}));
-            })(jqueryExtentions = ui_16.jqueryExtentions || (ui_16.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_17.jqueryExtentions || (ui_17.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12057,7 +12194,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_17) {
+        (function (ui_18) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGridList;
@@ -12103,6 +12240,7 @@ var nts;
                                 $parent.attr('data-value', selectedValue);
                                 $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);
                                 $grid.igGrid("commit");
+                                $grid.trigger("switchvaluechanged", { columnKey: columnKey, rowKey: rowKey, value: parseInt(selectedValue) });
                                 if ($grid.igGrid("hasVerticalScrollbar")) {
                                     //                        let current = $grid.ntsGridList("getSelected");
                                     //                        if(current !== undefined){
@@ -12266,7 +12404,7 @@ var nts;
                             mousePos = {
                                 x: e.pageX,
                                 y: e.pageY,
-                                rowIndex: ui_17.ig.grid.getRowIndexFrom($(e.target))
+                                rowIndex: ui_18.ig.grid.getRowIndexFrom($(e.target))
                             };
                             // set position to start dragging
                             dragSelectRange.push(mousePos.rowIndex);
@@ -12283,7 +12421,7 @@ var nts;
                             }, 20);
                             // handle mousemove on window while dragging (unhandle when mouseup)
                             $(window).bind('mousemove.NtsGridListDragging', function (e) {
-                                var newPointedRowIndex = ui_17.ig.grid.getRowIndexFrom($(e.target));
+                                var newPointedRowIndex = ui_18.ig.grid.getRowIndexFrom($(e.target));
                                 // selected range is not changed
                                 if (mousePos.rowIndex === newPointedRowIndex) {
                                     return;
@@ -12359,7 +12497,7 @@ var nts;
                         //            $grid.off('mouseup');
                     }
                 })(ntsGridList || (ntsGridList = {}));
-            })(jqueryExtentions = ui_17.jqueryExtentions || (ui_17.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_18.jqueryExtentions || (ui_18.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12369,7 +12507,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_18) {
+        (function (ui_19) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsWizard;
@@ -12458,7 +12596,7 @@ var nts;
                         return wizard.steps("getCurrentIndex");
                     }
                 })(ntsWizard || (ntsWizard = {}));
-            })(jqueryExtentions = ui_18.jqueryExtentions || (ui_18.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12557,7 +12695,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_19) {
+        (function (ui_20) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var isNull = nts.uk.util.isNullOrUndefined;
@@ -12924,7 +13062,7 @@ var nts;
                     }());
                     ntsButtonTable.TableButtonEntity = TableButtonEntity;
                 })(ntsButtonTable || (ntsButtonTable = {}));
-            })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_20.jqueryExtentions || (ui_20.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12934,7 +13072,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_20) {
+        (function (ui_21) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -13132,7 +13270,7 @@ var nts;
                     return NtsTreeDragAndDropBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeDragAndDrop'] = new NtsTreeDragAndDropBindingHandler();
-            })(koExtentions = ui_20.koExtentions || (ui_20.koExtentions = {}));
+            })(koExtentions = ui_21.koExtentions || (ui_21.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13142,7 +13280,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_21) {
+        (function (ui_22) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -13259,7 +13397,7 @@ var nts;
                     return NtsMonthDaysBindingHandler;
                 }());
                 ko.bindingHandlers['ntsMonthDays'] = new NtsMonthDaysBindingHandler();
-            })(koExtentions = ui_21.koExtentions || (ui_21.koExtentions = {}));
+            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13269,7 +13407,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_22) {
+        (function (ui_23) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -13643,7 +13781,7 @@ var nts;
                     return ImageEditorHelper;
                 }());
                 ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
-            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
+            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13653,7 +13791,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_23) {
+        (function (ui_24) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -13743,7 +13881,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
+            })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13903,7 +14041,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_24) {
+        (function (ui_25) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -13988,7 +14126,7 @@ var nts;
                     return NtsAccordionBindingHandler;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
-            })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
+            })(koExtentions = ui_25.koExtentions || (ui_25.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14106,7 +14244,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_25) {
+        (function (ui_26) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -14263,7 +14401,7 @@ var nts;
                     return NtsColorPickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsColorPicker'] = new NtsColorPickerBindingHandler();
-            })(koExtentions = ui_25.koExtentions || (ui_25.koExtentions = {}));
+            })(koExtentions = ui_26.koExtentions || (ui_26.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14432,7 +14570,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_26) {
+        (function (ui_27) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var errorMementos = {};
@@ -14553,7 +14691,7 @@ var nts;
                         return control.find("#sidebar-area .navigator a.active").closest("li").index();
                     }
                 })(ntsSideBar || (ntsSideBar = {}));
-            })(jqueryExtentions = ui_26.jqueryExtentions || (ui_26.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_27.jqueryExtentions || (ui_27.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14638,13 +14776,7 @@ var nts;
                                     row = $grid.igGrid("selectedRow");
                                 }
                                 if (row) {
-                                    var rowScrollTop = row.index * row.element.height();
-                                    var scrollContainer = $($grid.igGrid("container")).find("#" + $grid.igGrid("id") + "_scrollContainer");
-                                    if (isNaN(rowScrollTop) // In case virtualization not render row 
-                                        || rowScrollTop < scrollContainer.scrollTop()
-                                        || rowScrollTop > scrollContainer.scrollTop() + scrollContainer.height() - row.element.height()) {
-                                        $grid.igGrid("virtualScrollTo", row.index === undefined ? getSelectRowIndex($grid, row.id) : row.index);
-                                    }
+                                    ui.ig.grid.virtual.expose(row, $grid);
                                 }
                             });
                         }
@@ -14659,10 +14791,7 @@ var nts;
                                     row = $grid.igGrid("selectedRow");
                                 }
                                 if (row) {
-                                    var index = row.index;
-                                    var height = row.element[0].scrollHeight;
-                                    var gridId = $grid.attr('id');
-                                    $("#" + gridId + "_scrollContainer").scrollTop(index * height);
+                                    ui.ig.grid.expose(row, $grid);
                                 }
                             });
                         }
@@ -14726,7 +14855,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_27) {
+        (function (ui_28) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGrid;
@@ -14872,7 +15001,7 @@ var nts;
                             if (column.ntsControl === ntsControls.LABEL) {
                                 ntsControls.drawLabel($(self), column, cellFormatter);
                                 columnControlTypes[column.key] = ntsControls.LABEL;
-                                return cellFormatter.format(column);
+                                return cellFormatter.format(column, true);
                             }
                             var controlDef = _.find(options.ntsControls, function (ctl) {
                                 return ctl.name === column.ntsControl;
@@ -14922,6 +15051,9 @@ var nts;
                                     showHeaderCheckbox: column.showHeaderCheckbox,
                                     enable: isEnable
                                 };
+                                if (!uk.util.isNullOrUndefined(column.tabIndex)) {
+                                    data.tabIndex = column.tabIndex;
+                                }
                                 var back;
                                 if (back = bounceCombos[column.key]) {
                                     data.bounce = back;
@@ -14967,6 +15099,7 @@ var nts;
                         options.columns = columns;
                         updating.addFeature(options);
                         options.autoCommit = true;
+                        options.tabIndex = -1;
                         dist.query(options.ntsFeatures);
                         // Decorate editor border
                         events.onCellClick($(self));
@@ -15111,22 +15244,35 @@ var nts;
                         function editStarted(evt, ui) {
                             var $grid = $(ui.owner.element);
                             var valueType = validation.getValueType($grid, ui.columnKey);
-                            if (valueType === "TimeWithDay") {
-                                var timeWithDayAttr_1 = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes);
-                                setTimeout(function () {
-                                    var $editor = $(ui.editor.find("input")[0]);
-                                    $editor.val(timeWithDayAttr_1.shortText).select();
-                                }, 140);
+                            if (!uk.util.isNullOrUndefined(ui.value) && !_.isEmpty(ui.value)) {
+                                if (valueType === "TimeWithDay" || valueType === "Clock") {
+                                    var formatted_1;
+                                    try {
+                                        formatted_1 = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes).shortText;
+                                    }
+                                    catch (e) {
+                                        return;
+                                    }
+                                    setTimeout(function () {
+                                        var $editor = $(ui.editor.find("input")[0]);
+                                        $editor.val(formatted_1).select();
+                                    }, 140);
+                                }
+                                else if (valueType === "Currency") {
+                                    var groupSeparator = validation.getGroupSeparator($grid, ui.columnKey) || ",";
+                                    var value_1 = uk.text.replaceAll(ui.value, groupSeparator, "");
+                                    setTimeout(function () {
+                                        ui.editor.addClass("input-currency-symbol");
+                                        var $editor = $(ui.editor.find("input")[0]);
+                                        var numb = Number(value_1);
+                                        $editor.val(isNaN(numb) ? value_1 : numb).css("text-align", "right").select();
+                                    }, 140);
+                                }
                             }
                             else if (valueType === "Currency") {
-                                var groupSeparator = validation.getGroupSeparator($grid, ui.columnKey) || ",";
-                                var value_1 = uk.text.replaceAll(ui.value, groupSeparator, "");
-                                setTimeout(function () {
-                                    ui.editor.addClass("input-currency-symbol");
-                                    var $editor = $(ui.editor.find("input")[0]);
-                                    var numb = Number(value_1);
-                                    $editor.val(isNaN(numb) ? value_1 : numb).css("text-align", "right").select();
-                                }, 140);
+                                ui.editor.addClass("input-currency-symbol");
+                                var $editor = $(ui.editor.find("input")[0]);
+                                $editor.css("text-align", "right");
                             }
                         }
                         /**
@@ -15275,13 +15421,13 @@ var nts;
                             var autoCommit = grid.options.autoCommit;
                             var columnsMap = allColumnsMap || utils.getColumnsMap($grid);
                             var rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
-                            var validators = $grid.data(validation.VALIDATORS);
-                            var fieldValidator = validators[columnKey];
-                            if (fieldValidator) {
-                                var result = fieldValidator.probe(String(cellValue));
-                                if (result.isValid) {
-                                    cellValue = result.parsedValue;
+                            var valueType = validation.getValueType($grid, columnKey);
+                            if (!uk.util.isNullOrUndefined(cellValue) && !_.isEmpty(cellValue)
+                                && (valueType === "TimeWithDay" || valueType === "Clock")) {
+                                try {
+                                    cellValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).shortText;
                                 }
+                                catch (e) { }
                             }
                             grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                             var isControl = utils.isNtsControl($grid, columnKey);
@@ -16362,7 +16508,7 @@ var nts;
                             ComboBox.prototype.draw = function (data) {
                                 var self = this;
                                 // Default values.
-                                var distanceColumns = '     ';
+                                var distanceColumns = data.controlDef.spaceSize === "small" ? '  ' : '     ';
                                 // Character used fill to the columns.
                                 var fillCharacter = ' ';
                                 var maxWidthCharacter = 15;
@@ -16458,7 +16604,8 @@ var nts;
                                         }
                                     },
                                     rendered: function () {
-                                        container.igCombo("option", "tabIndex", -1);
+                                        var tabIndex = !uk.util.isNullOrUndefined(data.tabIndex) ? data.tabIndex : -1;
+                                        container.igCombo("option", "tabIndex", tabIndex);
                                     }
                                 });
                                 // Save init value
@@ -16478,6 +16625,9 @@ var nts;
                                     });
                                     $dropDownOptions.find('.nts-combo-item').css({ 'min-width': totalWidth });
                                     container.css({ 'min-width': totalWidth });
+                                }
+                                if (!uk.util.isNullOrUndefined(data.controlDef.width)) {
+                                    container.igCombo("option", "width", data.controlDef.width);
                                 }
                                 container.data("columns", columns);
                                 container.data("comboMode", comboMode);
@@ -16915,7 +17065,9 @@ var nts;
                                         }
                                     }
                                     else {
-                                        copiedData = selectedCells[0].element.text();
+                                        var $cell = selectedCells[0].element;
+                                        var origVal = $cell.data(internal.CELL_ORIG_VAL);
+                                        copiedData = !uk.util.isNullOrUndefined(origVal) ? origVal : $cell.text();
                                     }
                                 }
                                 else {
@@ -16937,6 +17089,7 @@ var nts;
                                 var minColumn = 0;
                                 var structure = [];
                                 var structData = "";
+                                var $tdCell, origVal;
                                 var checker = cut ? utils.isCuttableControls : utils.isCopiableControls;
                                 _.forEach(cells, function (cell, index) {
                                     var rowIndex = cell.rowIndex;
@@ -16965,7 +17118,9 @@ var nts;
                                         }
                                     }
                                     else {
-                                        structure[rowIndex][columnIndex] = cell.element.text();
+                                        $tdCell = cell.element;
+                                        origVal = $tdCell.data(internal.CELL_ORIG_VAL);
+                                        structure[rowIndex][columnIndex] = !uk.util.isNullOrUndefined(origVal) ? origVal : $tdCell.text();
                                     }
                                 });
                                 for (var i = minRow; i <= maxRow; i++) {
@@ -17739,7 +17894,7 @@ var nts;
                                 message: message
                             };
                             // Error column headers
-                            var headers = ko.toJS(ui.errors.errorsViewModel().option.headers);
+                            var headers = ko.toJS(ui.errors.errorsViewModel().option().headers());
                             _.forEach(headers, function (header) {
                                 if (uk.util.isNullOrUndefined(record[header.name])
                                     || !uk.util.isNullOrUndefined(error[header.name]))
@@ -17882,7 +18037,7 @@ var nts;
                             /**
                              * Format textbox.
                              */
-                            CellFormatter.prototype.format = function (column) {
+                            CellFormatter.prototype.format = function (column, notTb) {
                                 var self = this;
                                 if (uk.util.isNullOrUndefined(this.cellStateFeatureDef)
                                     || column.formatter !== undefined)
@@ -17894,9 +18049,40 @@ var nts;
                                 column.formatter = function (value, rowObj) {
                                     if (uk.util.isNullOrUndefined(rowObj))
                                         return value;
+                                    var origValue = value;
+                                    if (!notTb && column.constraint) {
+                                        var constraint = column.constraint;
+                                        var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
+                                            : constraint.cDisplayType;
+                                        if (!uk.util.isNullOrUndefined(value) && !_.isEmpty(value)) {
+                                            if (valueType === "TimeWithDay") {
+                                                var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                                var timeOpts = { timeWithDay: true };
+                                                var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
+                                                value = formatter.format(minutes);
+                                            }
+                                            else if (valueType === "Clock") {
+                                                var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                                var timeOpts = { timeWithDay: false };
+                                                var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
+                                                value = formatter.format(minutes);
+                                            }
+                                            else if (valueType === "Currency") {
+                                                var currencyOpts = new ui.option.CurrencyEditorOption();
+                                                currencyOpts.grouplength = constraint.groupLength | 3;
+                                                currencyOpts.decimallength = constraint.decimalLength | 2;
+                                                currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
+                                                var groupSeparator = constraint.groupSeparator || ",";
+                                                var rawValue = uk.text.replaceAll(value, groupSeparator, "");
+                                                var formatter = new uk.text.NumberFormatter({ option: currencyOpts });
+                                                value = formatter.format(Number(rawValue));
+                                            }
+                                        }
+                                    }
                                     var _self = self;
                                     setTimeout(function () {
                                         var $gridCell = self.$grid.igGrid("cellById", rowObj[self.$grid.igGrid("option", "primaryKey")], column.key);
+                                        $gridCell.data(internal.CELL_ORIG_VAL, origValue);
                                         if (!$gridCell)
                                             return;
                                         var $tr = $gridCell.closest("tr");
@@ -18550,6 +18736,7 @@ var nts;
                         internal.ERRORS_LOG = "ntsErrorsLog";
                         internal.LOADER = "ntsLoader";
                         internal.TXT_RAW = "rawText";
+                        internal.CELL_ORIG_VAL = "_origValue";
                     })(internal || (internal = {}));
                     var utils;
                     (function (utils) {
@@ -18967,12 +19154,13 @@ var nts;
                         }
                         function setChildrenTabIndex($grid, index) {
                             var container = $grid.igGrid("container");
+                            $(container).attr("tabindex", 0);
                             $(container).find("tr, th, td").attr("tabindex", index);
                         }
                         utils.setChildrenTabIndex = setChildrenTabIndex;
                     })(utils || (utils = {}));
                 })(ntsGrid = jqueryExtentions.ntsGrid || (jqueryExtentions.ntsGrid = {}));
-            })(jqueryExtentions = ui_27.jqueryExtentions || (ui_27.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_28.jqueryExtentions || (ui_28.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -19660,7 +19848,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_28) {
+        (function (ui_29) {
             var exTable;
             (function (exTable_1) {
                 var NAMESPACE = "extable";
@@ -26521,7 +26709,7 @@ var nts;
                         return css;
                     }
                 })(widget || (widget = {}));
-            })(exTable = ui_28.exTable || (ui_28.exTable = {}));
+            })(exTable = ui_29.exTable || (ui_29.exTable = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

@@ -89,7 +89,7 @@
 							data-bind="ntsTimeWithDayEditor: { name: '勤務時間直行',
 															constraint:'TimeWithDayAttr',
 															value: workChange().workTimeStart1, 
-															enable: true, 
+															enable: $parent.editable, 
 															readonly: false,
 															required: true }" />
 						<!--A7_2 ~--> 
@@ -103,7 +103,7 @@
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間直帰', 
 															constraint:'TimeWithDayAttr', 
 															value: workChange().workTimeEnd1, 
-															enable: true, 
+															enable: $parent.editable, 
 															readonly: false,
 															required: true}" />
 					</div>
@@ -126,7 +126,7 @@
 									optionsValue: 'goCode',
 									optionsText: 'goName',
 									value: workChange().goWorkAtr1,
-									enable: true }">
+									enable: $parent.editable }">
 						</div>
 					</div>					
 				</div>
@@ -143,7 +143,7 @@
 									optionsValue: 'backCode',
 									optionsText: 'backName',
 									value: workChange().backHomeAtr1,
-									enable: true }">
+									enable: $parent.editable }">
 					</div>
 				</div>
 			</div>
@@ -192,7 +192,7 @@
 									optionsValue: 'goCode',
 									optionsText: 'goName',
 									value: workChange().goWorkAtr2,
-									enable: true }">
+									enable: $parent.editable }">
 						</div>
 					</div>					
 				</div>
@@ -209,7 +209,7 @@
 									optionsValue: 'backCode',
 									optionsText: 'backName',
 									value: workChange().backHomeAtr2,
-									enable: true }">
+									enable: $parent.editable }">
 					</div>
 				</div>
 			</div>		
@@ -226,7 +226,8 @@
 						<input class="row-cell-margin" id="breakTimeStart1"
 							data-bind="ntsTimeWithDayEditor: {name: '開始時刻',
 															constraint:'TimeWithDayAttr',
-															value: workChange().breakTimeStart1}" />
+															value: workChange().breakTimeStart1,
+															enable: $parent.editable}" />
 						<!--A9_2 ~--> 
 						<label class="valign-center link-label">#{i18n.getText('KAF007_14')}</label>
 					</div>					
@@ -236,7 +237,8 @@
 					<input class="row-cell-margin" id="breakTimeEnd1"
 						data-bind="ntsTimeWithDayEditor: {name: '終了時刻', 
 															constraint:'TimeWithDayAttr',
-															value: workChange().breakTimeEnd1}" />
+															value: workChange().breakTimeEnd1,
+															enable: $parent.editable}" />
 				</div>
 			</div>		
 		</div>
@@ -250,7 +252,9 @@
 					<!--A10_1 休日は除く--> 
 					<!--A10_2 休日は除く--> 
 					<div>
-						<div data-bind="ntsCheckBox: { checked: $parent.excludeHolidayAtr , text: '#{i18n.getText('KAF007_42')}' }"></div>
+						<div data-bind="ntsCheckBox: { checked: $parent.excludeHolidayAtr , 
+														text: '#{i18n.getText('KAF007_42')}',
+														enable: $parent.editable }"></div>
 					</div>
 				</div>
 			</div>
@@ -267,7 +271,7 @@
 								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
 								value: $parent.selectedReason,
-								enable: true,
+								enable: $parent.editable,
 								columns: [{ prop: 'reasonName', length: 10 }]}">
 			</div>
 		</div>
@@ -275,19 +279,19 @@
 		<div class="valign-center control-group-kaf007" data-bind="if: $parent.displayAppReasonContentFlg">
 			<!--A12 申請理由（ラベル）-->
 			<div class="lblTitle-kaf007"
-				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF007_27')}</div>
+				data-bind="ntsFormLabel: {}">#{i18n.getText('KAF007_27')}</div>
 			<!--A12_1 申請理由-->
 			<div id="multiline-kaf007">
-				<textarea
+				<textarea id="inpReasonTextarea"
 					data-bind="ntsMultilineEditor: {value: $parent.multilContent, 
 													option: {
 															resizeable: false,
 									                    	width: '450',
 									                    	textalign: 'left'
-									                   	}, 
-			                   						constraint: 'AppReason', 
+									                   	},
 			                   						required : $parent.requiredReason(), 
-			                   						name: '#[KAF007_29]'}" />
+			                   						name: '#[KAF007_29]',
+			                   						enable: $parent.editable}" />
 			</div>
 		</div>
 	</div>

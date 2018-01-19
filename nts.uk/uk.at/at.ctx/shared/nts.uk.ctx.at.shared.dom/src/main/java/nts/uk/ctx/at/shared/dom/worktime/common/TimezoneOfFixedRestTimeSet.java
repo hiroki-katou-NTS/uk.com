@@ -33,6 +33,15 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 	}
 
 	/**
+	 * Constructor
+	 * @param timezones the timezone
+	 */
+	public TimezoneOfFixedRestTimeSet(List<DeductionTime> timezones) {
+		super();
+		this.timezones = timezones;
+	}
+	
+	/**
 	 * Check overlap.
 	 */
 	public void checkOverlap(String param) {
@@ -67,5 +76,7 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 	public void saveToMemento(TimezoneOfFixedRestTimeSetSetMemento memento) {
 		memento.setTimezones(this.timezones);
 	}
+
+
 	
 }

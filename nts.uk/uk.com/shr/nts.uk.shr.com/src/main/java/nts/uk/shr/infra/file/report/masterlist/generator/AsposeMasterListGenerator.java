@@ -145,7 +145,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 			for (Entry<String, List<MasterHeaderColumn>> extraTable : extraTableColumns.entrySet()) {
 				List<MasterHeaderColumn> columns = getViewColumn(extraTable.getValue());
 				List<MasterData> extraData = extraTableDatas.get(extraTable.getKey());
-				startRow += drawATable(cells, columns, extraData, startRow);
+				startRow = drawATable(cells, columns, extraData, startRow);
 			}
 		}
 		return startRow;

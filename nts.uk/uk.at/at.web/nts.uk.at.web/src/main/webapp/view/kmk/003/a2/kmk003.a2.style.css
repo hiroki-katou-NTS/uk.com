@@ -3,9 +3,13 @@
 }
 
 .column-combo-box {
-	min-width: 100px !important;
+	min-width: 70px !important;
 }
 
 .itemleft {
 	margin-left: 30px;
+}
+
+.table-width {
+	width: 486px;
 }

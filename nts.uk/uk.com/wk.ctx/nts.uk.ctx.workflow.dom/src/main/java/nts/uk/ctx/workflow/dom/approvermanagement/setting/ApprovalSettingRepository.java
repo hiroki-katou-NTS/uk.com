@@ -9,4 +9,10 @@ public interface ApprovalSettingRepository {
 	 * @return
 	 */
 	Optional<PrincipalApprovalFlg> getPrincipalByCompanyId(String companyId);
+	/**
+	 * update approval setting
+	 * @param appro
+	 * @author yennth
+	 */
+	void update(ApprovalSetting appro);
 }

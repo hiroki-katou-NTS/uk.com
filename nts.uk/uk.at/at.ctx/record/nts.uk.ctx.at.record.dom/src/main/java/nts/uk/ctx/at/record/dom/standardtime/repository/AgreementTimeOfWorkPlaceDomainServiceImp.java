@@ -29,7 +29,7 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 			/**
 			 * パラメータ parameters {0}：#KMK008_66 {1}：#KMK008_68
 			 */
-			errors.add("Msg_59, #KMK008_66, #KMK008_68");
+			errors.add("Msg_59,KMK008_66,KMK008_68");
 			// throw new BusinessException("Msg_59","#KMK008_66", "#KMK008_68");
 		}
 
@@ -38,7 +38,7 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 			 * パラメータ parameters {0}：#KMK008_67 {1}：#KMK008_66
 			 * 
 			 */
-			errors.add("Msg_59, #KMK008_67, #KMK008_66");
+			errors.add("Msg_59,KMK008_67,KMK008_66");
 		}
 
 		if (errors.isEmpty()) {
@@ -57,7 +57,7 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 			/**
 			 * パラメータ parameters {0}：#KMK008_66 {1}：#KMK008_68
 			 */
-			errors.add("Msg_59, #KMK008_66, #KMK008_68");
+			errors.add("Msg_59,KMK008_66,KMK008_68");
 			// throw new BusinessException("Msg_59","#KMK008_66", "#KMK008_68");
 		}
 
@@ -66,7 +66,7 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 			 * パラメータ parameters {0}：#KMK008_67 {1}：#KMK008_66
 			 * 
 			 */
-			errors.add("Msg_59, #KMK008_67, #KMK008_66");
+			errors.add("Msg_59,KMK008_67,KMK008_66");
 		}
 		if (errors.isEmpty()) {
 			this.basicAgreementSettingRepository.update2(basicAgreementSetting);
@@ -84,13 +84,13 @@ public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOf
 	}
 
 	private boolean checkLimitTimeAndErrorTime(BasicAgreementSetting setting) {
-		if (setting.getErrorWeek().v().compareTo(setting.getLimitWeek().v()) > 0
-				|| setting.getErrorTwoWeeks().v().compareTo(setting.getLimitTwoWeeks().v()) > 0
-				|| setting.getErrorFourWeeks().v().compareTo(setting.getLimitFourWeeks().v()) > 0
-				|| setting.getErrorOneMonth().v().compareTo(setting.getLimitOneMonth().v()) > 0
-				|| setting.getErrorTwoMonths().v().compareTo(setting.getLimitTwoMonths().v()) > 0
-				|| setting.getErrorThreeMonths().v().compareTo(setting.getLimitThreeMonths().v()) > 0
-				|| setting.getErrorOneYear().v().compareTo(setting.getLimitOneYear().v()) > 0) {
+		if ((setting.getErrorWeek().v().compareTo(setting.getLimitWeek().v()) > 0 && setting.getLimitWeek().v()!=0)
+				|| (setting.getErrorTwoWeeks().v().compareTo(setting.getLimitTwoWeeks().v()) > 0 && setting.getLimitTwoWeeks().v()!=0)
+				|| (setting.getErrorFourWeeks().v().compareTo(setting.getLimitFourWeeks().v()) > 0 && setting.getLimitFourWeeks().v()!=0)
+				|| (setting.getErrorOneMonth().v().compareTo(setting.getLimitOneMonth().v()) > 0 && setting.getLimitOneMonth().v()!=0 )
+				|| (setting.getErrorTwoMonths().v().compareTo(setting.getLimitTwoMonths().v()) > 0 && setting.getLimitTwoMonths().v()!=0)
+				|| (setting.getErrorThreeMonths().v().compareTo(setting.getLimitThreeMonths().v()) > 0 && setting.getLimitThreeMonths().v()!=0)
+				|| (setting.getErrorOneYear().v().compareTo(setting.getLimitOneYear().v()) > 0) && setting.getLimitOneYear().v()!=0) {
 			return true;
 		}
 		return false;

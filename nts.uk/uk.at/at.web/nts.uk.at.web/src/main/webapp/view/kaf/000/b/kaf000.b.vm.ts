@@ -563,12 +563,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         //kiểm tra list người xác nhận, nếu khác null thì show info 392
                         if (!nts.uk.util.isNullOrEmpty(data)) {
                             nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(function(){
-                                self.setScreenAfterDelete();    
+                                //self.setScreenAfterDelete();    
                             });
-                        }else{
-                            self.setScreenAfterDelete();
                         }
-                        
+//                        else{
+//                            //self.setScreenAfterDelete();
+//                        }
+                         nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
                     });
                 }).fail(function(res: any) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {

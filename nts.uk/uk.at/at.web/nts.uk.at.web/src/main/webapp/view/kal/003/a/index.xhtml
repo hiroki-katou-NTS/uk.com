@@ -13,6 +13,7 @@
 			<com:scriptfile path="../share/kal003utils.js" />
 			<com:scriptfile path="common/scopecheck.js" />
 			<com:scriptfile path="common/checkconditiontab.js" />
+			<com:scriptfile path="daily/fixedcheckcondition/fixedchecktab.js" />
 			<com:stylefile path="kal003.a.style.css" />
 			<com:scriptfile path="kal003.a.service.js" />
 			<com:scriptfile path="kal003.a.vm.js" />
@@ -84,7 +85,7 @@
 								<input data-bind="ntsTextEditor: {value: displayAvailableRoles, readonly: true}" />
 								<button tabindex="9">#{i18n.getText('KAL003_14')}</button>
 							</div>
-							<div class="valign-center control-group" id="AA1">
+							<div class="valign-center control-group" data-bind="visible: category() == 5">
 								<label class="flabel">#{i18n.getText('KAL003_50')}</label>
 								<div data-bind="ntsRadioBoxGroup: {
 									options: $parent.radioItemList,
@@ -105,12 +106,11 @@
 								<span>Tab Content 2</span><br />
 <!-- 								<ui:include src="../b/index.xhtml" /> -->
 							</div>
-							<div class="tab-content-3" data-bind="with: checkConditionTab">
+							<div class="tab-content-3" data-bind="with: tabCheckCondition">
  								<ui:include src="common/checkconditions.xhtml" />
 							</div>
-							<div class="tab-content-4">
-								<span>Tab Content 4</span><br />
-<!-- 								<ui:include src="../b/index.xhtml" /> -->
+							<div class="tab-content-4" data-bind="with: tabFixedCondition">
+								<ui:include src="daily/fixedcheckcondition/fixedcheck.xhtml" />
 							</div>
 						</div>
 					</div>

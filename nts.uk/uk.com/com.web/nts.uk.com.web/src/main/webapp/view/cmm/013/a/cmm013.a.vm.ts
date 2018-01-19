@@ -529,12 +529,19 @@ module nts.uk.com.view.cmm013.a {
             public init(data: History[]): void {
                 let _self = this;
                 _self.listJobTitleHistory(data);
-                _self.selectFirst();
+                if (nts.uk.util.isNullOrEmpty(_self.oldSelectedHistoryId()) || nts.uk.util.isNullOrUndefined(_.find(data, o => o.historyId == _self.oldSelectedHistoryId()))) {
+                    _self.selectFirst();
+                } else {
+                    _self.selectedHistoryId(_self.oldSelectedHistoryId());
+                }              
             }
 
             public clearData(): void {
                 let _self = this;
                 _self.listJobTitleHistory([]);
+                if (!nts.uk.util.isNullOrEmpty(_self.selectedHistoryId())) {
+                    _self.oldSelectedHistoryId(_self.selectedHistoryId());
+                }                
                 _self.selectedHistoryId(null);
             }
 

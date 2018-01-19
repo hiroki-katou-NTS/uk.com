@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf009.b {
     import common = nts.uk.at.view.kaf009.share.common;
     import model = nts.uk.at.view.kaf000.b.viewmodel.model;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export module viewmodel{
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
             DATE_FORMAT: string = 'YYYY/MM/DD';
@@ -61,10 +62,12 @@ module nts.uk.at.view.kaf009.b {
             //comboBox 定型理由
             reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
             selectedReason: KnockoutObservable<string> = ko.observable('');
+            displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
             //MultilineEditor
             requiredReason : KnockoutObservable<boolean> = ko.observable(false);
             multilContent: KnockoutObservable<string> = ko.observable('');
             multiOption: any;
+            displayReason: KnockoutObservable<boolean> = ko.observable(false);
             //Insert command
             command: KnockoutObservable<common.GoBackCommand> = ko.observable(null);
             //list Work Location 
@@ -108,6 +111,8 @@ module nts.uk.at.view.kaf009.b {
                 let change = 3; //3:変更する
                 //get Common Setting
                 service.getGoBackSetting().done(function(settingData: any) {
+                    self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
+                    self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
                     self.employeeID = settingData.sid;
                     //get Reason
                     self.setReasonControl(settingData.listReasonDto);
@@ -174,7 +179,9 @@ module nts.uk.at.view.kaf009.b {
                         self.selectedBack2.subscribe(value => { $("#inpEndTime2").ntsError("clear"); });
                         
                         //画面モード(表示/編集)
-                        self.editable = ko.observable(detailData.outMode == 0 ? true: false);
+                        //self.editable = ko.observable(detailData.outMode == 0 ? true: false);
+                        //Focus process
+                        self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });
                         //フォーカス制御 => 勤務時間直行
                         $("#inpStartTime1").focus();
                     }).fail(function() {
@@ -195,6 +202,9 @@ module nts.uk.at.view.kaf009.b {
                 $("#inpEndTime2").ntsError("clear");
                 nts.uk.ui.block.invisible();
                 let self = this;
+                if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.getCommand().appCommand.appReasonID) ? self.getCommand().appCommand.appReasonID + "\n" + self.multilContent() : self.multilContent(),"#inpReasonTextarea")){
+                        return;
+                }
                 var promiseResult = self.checkUse();
                 promiseResult.done((result) => {
                     if (result) {
@@ -346,7 +356,7 @@ module nts.uk.at.view.kaf009.b {
             getCommand() {
                 let self = this; 
                 let goBackCommand: common.GoBackCommand = new common.GoBackCommand();
-                goBackCommand.version = self.version;
+                goBackCommand.version = self.inputCommandEvent().version;
                 goBackCommand.appID = self.appID();
                 goBackCommand.workTypeCD = self.workTypeCd();
                 goBackCommand.siftCD = self.siftCD();
@@ -367,7 +377,12 @@ module nts.uk.at.view.kaf009.b {
                     let reasonText = _.find(self.reasonCombo(),function(data){return data.reasonId == self.selectedReason()});;
                     txtReasonTmp = reasonText.reasonName;
                 }
+                if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(txtReasonTmp) ? txtReasonTmp + "\n" + self.multilContent() : self.multilContent(),"#inpReasonTextarea")){
+                        return;
+                }
                 let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
+                    self.version,
+                    self.appID(),
                     txtReasonTmp,
                     self.prePostSelected(),
                     self.appDate(),

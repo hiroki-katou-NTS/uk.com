@@ -27,8 +27,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 @Stateless
 public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	final String DATE_FORMAT = "yyyy/MM/dd";
@@ -45,9 +45,9 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	@Inject
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
 	@Inject
-	private WorkTimeSetRepository workTimeSetRepository;
+	private PredetemineTimeSettingRepository workTimeSetRepository;
 	@Inject
-	private IOvertimePreProcess IOvertimePreProcess;
+	private IOvertimePreProcess overtimePreProcess;
 	
 	/* 
 	 * 06-01_色表示チェック
@@ -93,11 +93,11 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		if(condition){
 			//Imported(申請承認)「勤務実績」を取得する
 			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
-			Optional<WorkTimeSet> workTimeSetOtp = workTimeSetRepository.findByCode(companyID, siftCD);
+			Optional<PredetemineTimeSetting> workTimeSetOtp = workTimeSetRepository.findByWorkTimeCode(companyID, siftCD);
 			if (workTimeSetOtp.isPresent()) {
-				WorkTimeSet workTimeSet = workTimeSetOtp.get();
+				PredetemineTimeSetting workTimeSet = workTimeSetOtp.get();
 				
-				if(IOvertimePreProcess.checkTimeDay(appDate.toString("yyyy/MM/dd"),workTimeSet)){
+				if(overtimePreProcess.checkTimeDay(appDate.toString("yyyy/MM/dd"),workTimeSet)){
 					// 06-04-3_当日の場合
 					overTimeInputs = checkDuringTheDay(companyID, employeeID, appDate.toString("yyyy/MM/dd"), requestAppDetailSetting, siftCD, overTimeInputs,recordWorkInfoImport);
 				}else{
@@ -236,7 +236,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		CaculationTime overtimeCheckResult = new CaculationTime();
 		// Imported(申請承認)「計算残業時間」を取得する :TODO
 		List<OvertimeInputCaculation> overtimeInputCaculations = initOvertimeInputCaculation();
-		if(recordWorkInfoImport.getAttendanceStampTimeFirst() != -1 && recordWorkInfoImport.getLeaveStampTimeFirst() != -1){
+		if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
 			// 打刻あり
 			if(siftCD != recordWorkInfoImport.getWorkTimeCode()){
 				// Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
@@ -268,7 +268,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 			RequestAppDetailSetting requestAppDetailSetting, String siftCD, List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport) {
 		List<CaculationTime> result = new ArrayList<>();
 		List<OvertimeInputCaculation> overtimeInputCaculations = initOvertimeInputCaculation();
-		if(recordWorkInfoImport.getLeaveStampTimeFirst() == -1){
+		if(recordWorkInfoImport.getLeaveStampTimeFirst() == null){
 			// 退勤打刻なし
 			result = printColor(overtimeHours, overtimeInputCaculations);
 		}else{

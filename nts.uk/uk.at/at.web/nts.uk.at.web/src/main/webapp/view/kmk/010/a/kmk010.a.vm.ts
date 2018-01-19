@@ -220,10 +220,6 @@ module nts.uk.at.view.kmk010.a {
                     });
                     
                     if (!stopLoop) {
-                        self.startPage().done(() => {
-                            service.initTooltip();
-                            nts.uk.ui.block.clear();
-                        });
                         return;    
                     }
                     
@@ -316,17 +312,7 @@ module nts.uk.at.view.kmk010.a {
              */
             private exportFileExcelOutsideOTSetting(): void {
                 var self = this;
-                // check manage call service
-                service.checkManageSixtyHourVacationSetting().done(function(data){
-                    service.getCid().done(function(data1){
-                        self.isManage(data.manage);
-                        service.getCompanyName(data1.companyId.substr(data1.companyId.indexOf('-')+1)).done(function(data2){
-                            // call service export                    
-                            service.exportOutsideOTSettingExcel(self.languageId, self.isManage(), data2);    
-                        }) 
-                            
-                    })
-                });
+                service.exportOutsideOTSettingExcelMasterList(self.languageId);
             }
             /**
              * function update select unit rounding

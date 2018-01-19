@@ -181,20 +181,26 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	 */
 	@Override
 	public List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate baseDate) {
-		Optional<AffWorkplaceHistory_ver1> affWrkPlc = affWorkplaceHistoryRepository_v1.getByEmployeeId(companyId,
-				employeeId);
-		if (!affWrkPlc.isPresent())
-			return new ArrayList<>();
-		List<String> histIds = affWrkPlc.get().getHistoryItems().stream().map(x -> x.identifier())
-				.collect(Collectors.toList());
-		List<String> lstWpkIds = new ArrayList<>();
-		for (String histId : histIds) {
-			Optional<AffWorkplaceHistoryItem> affWrkPlcItem = affWorkplaceHistoryItemRepository_v1.getByHistId(histId);
-			if (affWrkPlcItem.isPresent())
-				lstWpkIds.add(affWrkPlcItem.get().getWorkplaceId());
-		}
-		return lstWpkIds;
+		// Query
+		List<AffWorkplaceHistoryItem> items = affWorkplaceHistoryItemRepository_v1
+				.getAffWrkplaHistItemByEmpIdAndDate(baseDate, employeeId);
 
+		List<String> lstWpkIds = new ArrayList<>();
+
+		// Get all parent wkp.
+		items.stream().forEach(item -> {
+			wkpConfigInfoRepo.findAllParentByWkpId(companyId, baseDate, item.getWorkplaceId())
+					.ifPresent(wkpConfigInfo -> {
+						lstWpkIds.addAll(wkpConfigInfo.getLstWkpHierarchy().stream()
+								.map(WorkplaceHierarchy::getWorkplaceId)
+								.collect(Collectors.toList()));
+					});
+
+			// Include this wkp
+			lstWpkIds.add(item.getWorkplaceId());
+		});
+
+		return lstWpkIds.stream().distinct().sorted((first,second) -> second.compareTo(first)).collect(Collectors.toList());
 	}
 
 	/*

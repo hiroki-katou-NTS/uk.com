@@ -8,12 +8,12 @@
 		<jta-data-source>java:jboss/datasources/UK</jta-data-source>
 		<jar-file>lib/nts.uk.ctx.basic.infra-0.4.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.bs.company.infra-0.8.1.jar</jar-file>
-		<jar-file>lib/nts.uk.ctx.bs.employee.infra-0.10.19.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.bs.employee.infra-0.10.24.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.bs.person.infra-0.6.2.jar</jar-file>
 
 		<jar-file>lib/nts.uk.ctx.pereg.infra-0.1.6.jar</jar-file>
 
-		<jar-file>lib/nts.uk.ctx.workflow.infra-0.10.9.7.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.workflow.infra-0.10.9.8.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.env.infra-0.2.2.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.auth.infra-0.3.6.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.sys.portal.infra-0.1.2.jar</jar-file>
@@ -24,7 +24,7 @@
 		<jar-file>lib/nts.uk.ctx.at.request.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.at.shared.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.screen.at.infra.jar</jar-file>
-		<jar-file>lib/nts.uk.shr.com-0.7.22.1.jar</jar-file>
+		<jar-file>lib/nts.uk.shr.com-0.7.26.jar</jar-file>
 		
 		<class>nts.uk.shr.infra.i18n.entity.CompanyResource</class>
 		<class>nts.uk.shr.infra.i18n.entity.SystemResource</class>

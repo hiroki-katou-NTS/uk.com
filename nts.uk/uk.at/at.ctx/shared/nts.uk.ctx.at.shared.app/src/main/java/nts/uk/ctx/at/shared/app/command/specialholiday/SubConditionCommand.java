@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class SubConditionCommand {
 
 	/**特別休暇コード*/
-	private int specialHolidayCode;
+	private String specialHolidayCode;
 	
 	/**性別制限*/
 	private int useGender;

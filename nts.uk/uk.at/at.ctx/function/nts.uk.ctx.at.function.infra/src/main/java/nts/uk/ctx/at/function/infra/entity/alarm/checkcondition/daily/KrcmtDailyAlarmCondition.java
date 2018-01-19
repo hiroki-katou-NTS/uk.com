@@ -10,17 +10,13 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -28,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_DAILY_ALARM_CON")
-public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializable  {
+public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,60 +41,63 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 	@Column(name = "CATEGORY")
 	public int category;
 
-	@Column(name = "ERROR_ALARM_CHECK_ID")
-	public String errorAlarmCode;
-
 	@Column(name = "CON_EXTRACTED_DAILY")
 	public int conExtractedDaily;
-	
+
 	@Column(name = "ADD_APPLICATION")
 	public int addApplication;
-	
+
 	@OneToOne
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false),
-			@JoinColumn(name = "CATEGORY_CODE", referencedColumnName = "CD", insertable = false, updatable = false)
-	})
+			@JoinColumn(name = "CATEGORY_CODE", referencedColumnName = "CD", insertable = false, updatable = false) })
 	public KfnmtAlarmCheckConditionCategory condition;
 
+	@OneToMany(mappedBy = "dailyAlarmCondition", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<KrcmtDailyErrorCode> listErrorAlarmCode;
+
+	@OneToMany(mappedBy = "dailyAlarmCondition", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<KrcmtDailyFixExtra> listFixedExtractConditionWorkRecord;
+
+	@OneToMany(mappedBy = "dailyAlarmCondition", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<KrcmtDailyWkRecord> listExtractConditionWorkRecord;
+
 	public KrcmtDailyAlarmCondition(String dailyAlarmConID, String companyId, String code, int category,
-			String errorAlarmCode, int conExtractedDaily, int addApplication) {
+			int conExtractedDaily, int addApplication, List<KrcmtDailyErrorCode> dailyErrorCode,
+			List<KrcmtDailyFixExtra> dailyFixExtra, List<KrcmtDailyWkRecord> dailyWkRecord) {
 		super();
 		this.dailyAlarmConID = dailyAlarmConID;
 		this.companyId = companyId;
 		this.code = code;
 		this.category = category;
-		this.errorAlarmCode = errorAlarmCode;
 		this.conExtractedDaily = conExtractedDaily;
 		this.addApplication = addApplication;
+		this.listErrorAlarmCode = dailyErrorCode;
+		this.listFixedExtractConditionWorkRecord = dailyFixExtra;
+		this.listExtractConditionWorkRecord = dailyWkRecord;
 	}
-	
+
 	@Override
 	protected Object getKey() {
 		return dailyAlarmConID;
 	}
 
-	public static KrcmtDailyAlarmCondition toEntity(String companyId,AlarmCheckConditionCode code ,AlarmCategory category, DailyAlarmCondition domain) {
-		return new KrcmtDailyAlarmCondition(
-					domain.getDailyAlarmConID(),
-					companyId,
-					code.v(),
-					category.value,
-					domain.getErrorAlarmCode(),
-					domain.getConExtractedDaily().value,
-					domain.isAddApplication()?1:0
-				);
+	public static KrcmtDailyAlarmCondition toEntity(String companyId, AlarmCheckConditionCode code,
+			AlarmCategory category, DailyAlarmCondition domain) {
+		return new KrcmtDailyAlarmCondition(domain.getDailyAlarmConID(), companyId, code.v(), category.value,
+				domain.getConExtractedDaily().value, domain.isAddApplication() ? 1 : 0,
+				KrcmtDailyErrorCode.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()),
+				KrcmtDailyFixExtra.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()),
+				KrcmtDailyWkRecord.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()));
 	}
-	
+
 	public DailyAlarmCondition toDomain() {
-		return new DailyAlarmCondition(
-				this.dailyAlarmConID,
-				EnumAdaptor.valueOf(this.conExtractedDaily, ConExtractedDaily.class) ,
-				
-				this.addApplication == 1?true:false,
-				this.errorAlarmCode
-				);
+		return new DailyAlarmCondition(this.dailyAlarmConID, this.conExtractedDaily,
+				this.addApplication == 1 ? true : false,
+				this.listErrorAlarmCode.stream().map(c -> c.krcmtDailyErrorCodePK.errorAlarmCode)
+						.collect(Collectors.toList()),
+				this.listFixedExtractConditionWorkRecord.stream().map(c -> c.krcmtDailyFixExtraPK.errorAlarmID).collect(Collectors.toList()),
+				this.listExtractConditionWorkRecord.stream().map(c -> c.krcmtDailyWkRecordPK.errorAlarmID).collect(Collectors.toList()));
 	}
 
 }

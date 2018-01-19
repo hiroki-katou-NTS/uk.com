@@ -20,13 +20,13 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
 import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
-import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistory;
-import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
@@ -68,11 +68,11 @@ public class EmployeeSearchQueryProcessor {
 
 	/** The employment history repository. */
 	@Inject
-	private AffEmploymentHistoryRepository employmentHistoryRepository;
+	private EmploymentHistoryItemRepository employmentHistoryRepository;
 
 	/** The classification history repository. */
 	@Inject
-	private AffClassHistoryRepository classificationHistoryRepository;
+	private AffClassHistItemRepository_ver1 classificationHistoryRepository;
 
 	/** The job title history repository. */
 	@Inject
@@ -110,7 +110,7 @@ public class EmployeeSearchQueryProcessor {
 		
 		// Filter by state
 		employeeDatas = employeeDatas.stream()
-				.filter(item -> EmployeeDeletionAttr.NOTDELETED.equals(item.getDeletedStatus()))
+				.filter(item -> { return EmployeeDeletionAttr.NOTDELETED.value == item.getDeletedStatus().value; })
 				.collect(Collectors.toList());
 
 		// get work place history by employee
@@ -245,11 +245,11 @@ public class EmployeeSearchQueryProcessor {
 		String companyId = loginUserContext.companyId();
 
 		// find by employment
-		List<AffEmploymentHistory> employmentHistory = this.employmentHistoryRepository
+		List<EmploymentHistoryItem> employmentHistory = this.employmentHistoryRepository
 				.searchEmployee(input.getBaseDate(), input.getEmploymentCodes());
 
 		// find by classification
-		List<AffClassHistory> classificationHistorys = this.classificationHistoryRepository
+		List<AffClassHistItem_ver1> classificationHistorys = this.classificationHistoryRepository
 				.searchClassification(
 						employmentHistory.stream().map(employment -> employment.getEmployeeId())
 								.collect(Collectors.toList()),

@@ -4,7 +4,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
-    import dialog = nts.uk.ui.dialog.info;
+    import dialog = nts.uk.ui.dialog;
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
 
@@ -14,7 +14,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         columns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', prop: 'id', width: 100, hidden: true },
-            { headerText: getText('CPS006_16'), prop: 'itemName', width: 185 },
+            { headerText: getText('CPS006_16'), prop: 'itemName', width: 250 },
             { headerText: getText('CPS006_17'), prop: 'isAbolition', width: 50, formatter: makeIcon },
         ]);
 
@@ -195,7 +195,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             service.updateItemChange(command)
                 .done(function() {
 
-                    dialog({ messageId: "Msg_15" }).then(function() {
+                    dialog.info({ messageId: "Msg_15" }).then(function() {
 
                         self.loadDataForGrid().done(function() {
                             self.currentItem().selectionLst([]);
@@ -213,8 +213,17 @@ module nts.uk.com.view.cps006.b.viewmodel {
                         });
                     });
                 }).fail(function(res) {
+                    if (res.messageId == "Msg_928") {
+                        dialog.alertError({
+                            messageId: res.messageId,
+                            messageParams: ["項目"]
+                        }).then(() => {
+                            $('#itemName').focus();
+                        });
+                    } else {
 
-                    dialog({ messageId: res.messageId });
+                        dialog.alertError({ messageId: res.messageId });
+                    }
                     block.clear();
 
                 });
@@ -377,7 +386,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         }
 
         genTime(time) {
-            
+
 
             return nts.uk.time.parseTime(time, true).format();
 
@@ -386,13 +395,13 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
 
         genNumber(itemNumber: any, decimalPart: any) {
-            let option : any;
+            let option: any;
             if (nts.uk.text.isNullOrEmpty(decimalPart)) {
                 option = new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 0 });
-               
-            }else{
-               option = new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: decimalPart });
-                 
+
+            } else {
+                option = new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: decimalPart });
+
             }
             return nts.uk.ntsNumber.formatNumber(itemNumber, option);
         }

@@ -80,7 +80,7 @@ module nts.uk.com.view.cps005.b {
                 let self = this,
                     newItemDef;
                 block.invisible();
-                
+
                 newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
 
                 self.checkRequired(newItemDef);
@@ -102,8 +102,18 @@ module nts.uk.com.view.cps005.b {
                         self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
                         self.currentItemData().perInfoItemSelectCode.valueHasMutated();
                     }).fail(error => {
-                        alertError({ messageId: error.message }).then(() => {
-                        });
+
+                        if (error.message == 'Msg_928') {
+                            alertError({
+                                messageId: error.message,
+                                messageParams: ["項目"]
+                            }).then(() => {
+                                $('#item-name-control').focus();
+                            });
+                        } else {
+                            alertError({ messageId: error.message }).then(() => {
+                            });
+                        }
                         block.clear();
 
                     });
@@ -121,8 +131,16 @@ module nts.uk.com.view.cps005.b {
                         });
                         info({ messageId: "Msg_15" }).then(() => { block.clear(); });
                     }).fail(error => {
-
-                        alertError({ messageId: error.message });
+                        if (error.message == 'Msg_928') {
+                            alertError({
+                                messageId: error.message,
+                                messageParams: ["項目"]
+                            }).then(() => {
+                                $('#item-name-control').focus();
+                            });
+                        } else {
+                            alertError({ messageId: error.message });
+                        }
                         block.clear();
 
                     });
@@ -286,7 +304,7 @@ module nts.uk.com.view.cps005.b {
                         self.isEnableButtonProceed(true);
                         self.isEnableButtonDelete(true);
                         __viewContext['screenModelB'].isUpdate = true;
-                       
+
                         if (self.currentItemSelected().fixedAtr() == 1) {
                             self.currentItemSelected().selectionItem().selectionItemName(data.selectionItemName);
                             self.isEnableButtonProceed(false);
@@ -389,34 +407,34 @@ module nts.uk.com.view.cps005.b {
                     self.numericItem().numericItemMinus.subscribe(function(data) {
                         self.numericItem().decimalPart.valueHasMutated();
                     })
-        
+
                     self.numericItem().integerPart.subscribe(x => {
                         self.numericItem().decimalPart.valueHasMutated();
                     });
-        
+
                     self.numericItem().decimalPart.subscribe(x => {
-                        if(self.numericItem().integerPart() == ""){ return;}
+                        if (self.numericItem().integerPart() == "") { return; }
                         let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, x || 0) - 1) / Math.pow(10, x || 0));
                         writeConstraint("NumericItemMin", {
-                            mantissaMaxLength: x,
+                            mantissaMaxLength: parseInt(x),
                             min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
                             max: maxValue
                         });
-                        
-                            $('#numericItemMax').trigger('change');
-                            $('#numericItemMin').trigger('change');
-                        
+
+                        $('#numericItemMax').trigger('change');
+                        $('#numericItemMin').trigger('change');
+
                     });
                     let init = true;
                     self.numericItem().numericItemMin.subscribe(x => {
-                        if(!self.numericItem().integerPart()){                        
-                             $('#integerPart').trigger('change');
+                        if (!self.numericItem().integerPart()) {
+                            $('#integerPart').trigger('change');
                             return;
                         }
                         let maxValue = (Math.pow(10, self.numericItem().integerPart()) - 1) + ((Math.pow(10, self.numericItem().decimalPart() || 0) - 1) / Math.pow(10, self.numericItem().decimalPart() || 0));
                         if (init) {
                             writeConstraint("NumericItemMin", {
-                                mantissaMaxLength: x,
+                                mantissaMaxLength: parseInt(self.numericItem().decimalPart()),
                                 min: self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
                                 max: maxValue
                             });
@@ -424,16 +442,16 @@ module nts.uk.com.view.cps005.b {
                             $('#numericItemMin').trigger('change');
                         }
                         writeConstraint("NumericItemMax", {
-                            mantissaMaxLength: x,
-                            min: x ? x : self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
+                            mantissaMaxLength: parseInt(self.numericItem().decimalPart()),
+                            min: x ? parseFloat(x.toString()) : self.numericItem().numericItemMinus() == 0 ? 0 : maxValue * (-1),
                             max: maxValue
                         });
                         $('#numericItemMax').trigger('change');
                     });
                     self.numericItem().numericItemMax.subscribe(x => {
-                        if(!self.numericItem().integerPart()){
-                            
-                             $('#integerPart').trigger('change');
+                        if (!self.numericItem().integerPart()) {
+
+                            $('#integerPart').trigger('change');
                             return;
                         }
                         if (init) {
@@ -519,28 +537,28 @@ module nts.uk.com.view.cps005.b {
             });
 
             self.decimalPart.subscribe(x => {
-                if(self.integerPart() == ""){ return;}
-                let maxValue = Math.pow(10, self.integerPart() || 0) - Math.pow(10, self.decimalPart()*-1 || 0);
+                if (self.integerPart() == "") { return; }
+                let maxValue = Math.pow(10, self.integerPart() || 0) - Math.pow(10, self.decimalPart() * -1 || 0);
                 writeConstraint("NumericItemMin", {
-                    mantissaMaxLength: x,
+                    mantissaMaxLength: parseInt(x),
                     min: self.numericItemMinus() == 0 ? 0 : maxValue * (-1),
                     max: maxValue
                 });
-               
-                    $('#numericItemMax').trigger('change');
-                    $('#numericItemMin').trigger('change');
-                
+
+                $('#numericItemMax').trigger('change');
+                $('#numericItemMin').trigger('change');
+
             });
             let init = true;
             self.numericItemMin.subscribe(x => {
-                if(!self.integerPart()){                            
-                     $('#integerPart').trigger('change');
+                if (!self.integerPart()) {
+                    $('#integerPart').trigger('change');
                     return;
                 }
-                let maxValue = Math.pow(10, self.integerPart() || 0) - Math.pow(10, self.decimalPart()*-1 || 0);
+                let maxValue = Math.pow(10, self.integerPart() || 0) - Math.pow(10, self.decimalPart() * -1 || 0);
                 if (init) {
                     writeConstraint("NumericItemMin", {
-                        mantissaMaxLength: x,
+                        mantissaMaxLength: parseInt(self.decimalPart()),
                         min: self.numericItemMinus() == 0 ? 0 : maxValue * (-1),
                         max: maxValue
                     });
@@ -548,15 +566,15 @@ module nts.uk.com.view.cps005.b {
                     $('#numericItemMin').trigger('change');
                 }
                 writeConstraint("NumericItemMax", {
-                    mantissaMaxLength: x,
+                    mantissaMaxLength: parseInt(self.decimalPart()),
                     min: x ? x : (self.numericItemMinus() == 0 ? 0 : maxValue * (-1)),
                     max: maxValue
                 });
                 $('#numericItemMax').trigger('change');
             });
             self.numericItemMax.subscribe(x => {
-                if(!self.integerPart()){                            
-                     $('#integerPart').trigger('change');
+                if (!self.integerPart()) {
+                    $('#integerPart').trigger('change');
                     return;
                 }
                 if (init) {
@@ -567,9 +585,9 @@ module nts.uk.com.view.cps005.b {
 
 
         checkIntegerEmpty() {
-//            if ($("#integerPart").val() == "") {
-//                $("#integerPart").focus();
-//            }
+            //            if ($("#integerPart").val() == "") {
+            //                $("#integerPart").focus();
+            //            }
         }
     }
     export class TimeItemModel {

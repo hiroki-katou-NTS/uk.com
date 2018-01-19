@@ -45,7 +45,7 @@
 					<div class="cm-title-div" data-bind="text: topComment().text, 
 														style: {
 															color: topComment().color,
-															'font-weight': topComment().fontWeight() === 1 ? 'bold' : 'normal' 
+															'font-weight': topComment().fontWeight() ? 'bold' : 'normal' 
 														}"></div>
 					<div>
 						<div data-bind="if: stampRequestMode() == 0">
@@ -77,7 +77,7 @@
 					<div class="cm-title-div" data-bind="text: botComment().text, 
 														style: {
 															color: botComment().color,
-															'font-weight': botComment().fontWeight() === 1 ? 'bold' : 'normal' 
+															'font-weight': botComment().fontWeight() ? 'bold' : 'normal' 
 														}"></div>
 					<div class="table cm-table" data-bind="if: inputReasonsDisp() != 0">
 						<div class="cell cm-column1">
@@ -98,14 +98,13 @@
 					</div>
 					<div class="table cm-table" data-bind="if: detailReasonDisp() != 0">
 						<div class="cell cm-column1">
-							<div data-bind="ntsFormLabel: { constraint: 'AppReason' }">#{i18n.getText('KAF002_11')}</div>	
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_11')}</div>	
 						</div>
 						<div class="cell cm-column2">
 							<span>
-								<textarea class="cm-memo" data-bind="ntsMultilineEditor: { 
+								<textarea id = "appReason" class="cm-memo" data-bind="ntsMultilineEditor: { 
 									name: '#[KAF002_11]',
-									value: application().contentReason,
-									constraint: 'AppReason' }" />
+									value: application().contentReason }" />
 							</span>
 						</div>
 					</div>

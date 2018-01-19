@@ -113,13 +113,12 @@ public class DailyAttendanceItemFinder {
 	/**
 	 * アルゴリズム「連続勤務の項目取得」を実行する
 	 * Execute the algorithm "Item acquisition for continuous work"
-	 * @param eralCheckId
 	 * @return
 	 */
-	public List<WorkTypeDto> findDailyAttendanceContinousWorkBy(List<String> workTypeCodes) {
+	public List<WorkTypeDto> findDailyAttendanceContinousWorkType() {
 	    String companyId = AppContexts.user().companyId();
 	    
-	    List<WorkTypeDto> lstWorkTypeDtos = workTypeRepo.findNotDeprecatedByListCode(companyId, workTypeCodes).stream()
+	    List<WorkTypeDto> lstWorkTypeDtos = workTypeRepo.findNotDeprecated(companyId).stream()
 	            .map(dom -> WorkTypeDto.fromDomain(dom))
 	            .sorted(Comparator.comparing(WorkTypeDto::getWorkTypeCode))
 	            .collect(Collectors.toList());
@@ -136,7 +135,6 @@ public class DailyAttendanceItemFinder {
         List<WorkTimeSetting> WorkTimeSettings = workTimeSettingRepo.findByCompanyId(companyId).stream()
                 .filter(item -> !item.isAbolish())
                 .collect(Collectors.toList());
-                // 表示区分　=　表示する ?? TODO
 
         List<SimpleWorkTimeSettingDto> lstSimpleWorkTimeSettingDto = WorkTimeSettings.stream().map(item -> {
             return SimpleWorkTimeSettingDto.builder()
@@ -154,7 +152,7 @@ public class DailyAttendanceItemFinder {
      */
     public List<AttdItemDto> findDailyAttendanceCompoundBy(int eralCheckId) {
         List<AttdItemDto> attdItems = new ArrayList<>();
-        
+        /*
         Optional<ErrorAlarmWorkRecord> optErAlCondition = errorAlarmWorkRecordRepo.findByErrorAlamCheckId(String.valueOf(eralCheckId));
         if (optErAlCondition.isPresent()) {
           //ドメインモデル「勤怠項目に対する条件」を取得する - Acquire domain model "Condition for attendance item"
@@ -166,7 +164,7 @@ public class DailyAttendanceItemFinder {
                 //errorAlarmCondition
             }
         }
-        
+        */
         return attdItems;
     }
 	
@@ -223,7 +221,10 @@ public class DailyAttendanceItemFinder {
         // Acquisition error error Acquire the domain model "ErrorAlarmWorkRecord" on the basis of the alarm check ID
         Optional<ErrorAlarmWorkRecord> optErAlCondition = errorAlarmWorkRecordRepo.findByErrorAlamCheckId(eralCheckId);
         if (optErAlCondition.isPresent()) {
-            return ErrorAlarmWorkRecordDto.fromDomain(optErAlCondition.get());
+        	ErrorAlarmWorkRecord errorAlarmWorkRecord = optErAlCondition.get();
+        	Optional<ErrorAlarmCondition> optOrrorAlarmCondition = errorAlarmWorkRecordRepo.findConditionByErrorAlamCheckId(errorAlarmWorkRecord.getErrorAlarmCheckID());
+            return ErrorAlarmWorkRecordDto.fromDomain(optErAlCondition.get(), 
+            		optOrrorAlarmCondition.isPresent() ? optOrrorAlarmCondition.get() : null);
         }
         return null;
 	}

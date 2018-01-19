@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
@@ -22,7 +24,7 @@ public class JpaFlexHAFlowRestTzSetMemento implements FlowRestTimezoneSetMemento
 	private KshmtFlexHaRtSet entity;
 	
 	/** The period no. */
-	private int periodNo = 0;
+	private int periodNo = 1;
 	/**
 	 * Instantiates a new jpa flex HA flow rest tz set memento.
 	 *
@@ -40,22 +42,52 @@ public class JpaFlexHAFlowRestTzSetMemento implements FlowRestTimezoneSetMemento
 	 * setFlowRestSet(java.util.List)
 	 */
 	@Override
-	public void setFlowRestSet(List<FlowRestSetting> set) {
-		if (CollectionUtil.isEmpty(set)) {
+	public void setFlowRestSet(List<FlowRestSetting> lstFlowRestSet) {
+		
+		// check list entity get empty
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHaRestSets())) {
 			this.entity.setKshmtFlexHaRestSets(new ArrayList<>());
-		} else {
-			periodNo = 0;
-			this.entity.setKshmtFlexHaRestSets(set.stream().map(domain -> {
-				periodNo++;
-				KshmtFlexHaRestSet entity = new KshmtFlexHaRestSet(
-						new KshmtFlexHaRestSetPK(this.entity.getKshmtFlexHaRtSetPK().getCid(),
-								this.entity.getKshmtFlexHaRtSetPK().getWorktimeCd(),
-								this.entity.getKshmtFlexHaRtSetPK().getAmPmAtr(), periodNo));
-				domain.saveToMemento(new JpaFlexHAFlowRestSetMemento(entity));
-				return entity;
-			}).collect(Collectors.toList()));
 		}
-
+		
+		// check input empty
+		if (CollectionUtil.isEmpty(lstFlowRestSet)) {
+			this.entity.setKshmtFlexHaRestSets(new ArrayList<>());
+			return;
+		}
+		
+		// convert map entity
+		Map<KshmtFlexHaRestSetPK, KshmtFlexHaRestSet> mapEntity = this.entity.getKshmtFlexHaRestSets().stream()
+				.collect(Collectors.toMap(entity -> ((KshmtFlexHaRestSet) entity).getKshmtFlexHaRestSetPK(),
+						Function.identity()));
+		
+		String companyId = this.entity.getKshmtFlexHaRtSetPK().getCid();
+		String workTimeCd = this.entity.getKshmtFlexHaRtSetPK().getWorktimeCd();
+		Integer amPmAtr = this.entity.getKshmtFlexHaRtSetPK().getAmPmAtr();
+		
+		// set list entity
+		this.entity.setKshmtFlexHaRestSets(lstFlowRestSet.stream().map(domain -> {
+			
+			// newPk
+			KshmtFlexHaRestSetPK pk = new KshmtFlexHaRestSetPK();
+			pk.setCid(companyId);
+			pk.setWorktimeCd(workTimeCd);
+			pk.setAmPmAtr(amPmAtr);
+			pk.setPeriodNo(periodNo);
+			
+			// find entity existed if not have, new entity
+			KshmtFlexHaRestSet entity = mapEntity.get(pk);
+			if (entity == null) {
+				entity = new KshmtFlexHaRestSet(pk);
+			}
+			
+			// save to memento
+			domain.saveToMemento(new JpaFlexHAFlowRestSetMemento(entity));
+			
+			// increase period no
+			periodNo++;
+			
+			return entity;
+		}).collect(Collectors.toList()));
 	}
 
 	/*

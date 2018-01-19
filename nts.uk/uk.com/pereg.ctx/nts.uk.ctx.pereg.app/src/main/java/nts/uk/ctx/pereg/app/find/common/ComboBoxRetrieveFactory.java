@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -16,6 +17,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
@@ -24,6 +26,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.Child
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
@@ -47,6 +50,7 @@ import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 /**
  * @author danpv
@@ -117,7 +121,7 @@ public class ComboBoxRetrieveFactory {
 	private final String JP_SPACE = "　";
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
-			GeneralDate standardDate, boolean isCps001) {
+			GeneralDate standardDate, boolean isDisplayItemCode) {
 
 		switch (selectionItemDto.getReferenceType()) {
 		case ENUM:
@@ -131,14 +135,14 @@ public class ComboBoxRetrieveFactory {
 		case DESIGNATED_MASTER:
 			MasterRefConditionDto masterRefTypeDto = (MasterRefConditionDto) selectionItemDto;
 
-			return getMasterComboBox(masterRefTypeDto.getMasterType(), employeeId, standardDate, isCps001);
+			return getMasterComboBox(masterRefTypeDto.getMasterType(), employeeId, standardDate, isDisplayItemCode);
 
 		}
 		return new ArrayList<>();
 	}
 
 	private List<ComboBoxObject> getMasterComboBox(String masterType, String employeeId, GeneralDate standardDate,
-			boolean isCps001) {
+			boolean isDisplayItemCode) {
 		String companyId = AppContexts.user().companyId();
 		switch (masterType) {
 
@@ -147,7 +151,7 @@ public class ComboBoxRetrieveFactory {
 			break;
 		case "M00002":
 			// 職場マスタ
-			if (isCps001) {
+			if (isDisplayItemCode) {
 				return workPlaceRepo.findAll(companyId, standardDate).stream()
 						.map(workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(),
 								workPlace.getWorkplaceCode().v() + JP_SPACE + workPlace.getWorkplaceName().v()))
@@ -165,7 +169,7 @@ public class ComboBoxRetrieveFactory {
 			return getEmploymentList(companyId);
 		case "M00004":
 			// 分類マスタ１
-			if (isCps001) {
+			if (isDisplayItemCode) {
 				return classificationRepo.getAllManagementCategory(companyId)
 						.stream().map(
 								classification -> new ComboBoxObject(classification.getClassificationCode().v(),
@@ -181,7 +185,7 @@ public class ComboBoxRetrieveFactory {
 			}
 		case "M00005":
 			// 職位マスタ
-			if (isCps001) {
+			if (isDisplayItemCode) {
 				return jobTitleRepo.findAll(companyId, standardDate).stream()
 						.map(jobTitle -> new ComboBoxObject(jobTitle.getJobTitleId(),
 								jobTitle.getJobTitleCode() + JP_SPACE + jobTitle.getJobTitleName().v()))
@@ -194,7 +198,7 @@ public class ComboBoxRetrieveFactory {
 			}
 		case "M00006":
 			// 休職休業マスタ
-			if (isCps001) {
+			if (isDisplayItemCode) {
 				return tempAbsFrameRepo.findByCid(companyId).stream()
 						.filter(frame -> frame.getUseClassification() == NotUseAtr.USE)
 						.map(frame -> new ComboBoxObject(frame.getTempAbsenceFrNo().v() + "",
@@ -209,13 +213,13 @@ public class ComboBoxRetrieveFactory {
 			}
 		case "M00007":
 			// 勤務種別マスタ
-			if (isCps001) {
-				return businessTypeRepo.findAll(companyId).stream().map(businessType -> new ComboBoxObject(
+			if (isDisplayItemCode) {
+				return getBusinessType(companyId).stream().map(businessType -> new ComboBoxObject(
 						businessType.getBusinessTypeCode().v(),
 						businessType.getBusinessTypeCode().v() + JP_SPACE + businessType.getBusinessTypeName().v()))
 						.collect(Collectors.toList());
 			} else {
-				return businessTypeRepo.findAll(companyId).stream()
+				return getBusinessType(companyId).stream()
 						.map(businessType -> new ComboBoxObject(businessType.getBusinessTypeCode().v(),
 								businessType.getBusinessTypeName().v()))
 						.collect(Collectors.toList());
@@ -223,28 +227,30 @@ public class ComboBoxRetrieveFactory {
 			}
 		case "M00008":
 			// 勤務種類マスタ
-			if (isCps001) {
-				return workTypeRepo.findByCompanyId(companyId).stream()
+			List<WorkType> workTypeList = workTypeRepo.findNotDeprecateByCompanyId(companyId);
+			if (isDisplayItemCode) {
+				return workTypeList.stream()
 						.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(),
 								workType.getWorkTypeCode().v() + JP_SPACE + workType.getName().v()))
 						.collect(Collectors.toList());
 			} else {
-				return workTypeRepo.findByCompanyId(companyId).stream()
+				return workTypeList.stream()
 						.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(), workType.getName().v()))
 						.collect(Collectors.toList());
-
 			}
 		case "M00009":
 			// 就業時間帯マスタ
-			AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) layoutingProcessor
-					.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate)).getDomainDto();
-			String workPlaceId = workPlaceItem.getWorkplaceCode();
-			List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workPlaceId);
-			return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
-					.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
-							workTimeSetting.getWorktimeCode() + JP_SPACE
-									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName()))
-					.collect(Collectors.toList());
+			PeregDto resultDto = layoutingProcessor.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
+			if (resultDto != null) {
+				AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
+				String workPlaceId = workPlaceItem.getWorkplaceCode();
+				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workPlaceId);
+				return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
+						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
+								workTimeSetting.getWorktimeCode() + JP_SPACE
+										+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName()))
+						.collect(Collectors.toList());
+			}
 		default:
 			break;
 		}
@@ -294,6 +300,16 @@ public class ComboBoxRetrieveFactory {
 					employment.getEmploymentCode().v() + JP_SPACE + employment.getEmploymentName().v()));
 		}
 		return comboBoxList;
+	}
+
+	private List<BusinessType> getBusinessType(String companyId) {
+		List<BusinessType> descendingList = businessTypeRepo.findAll(companyId);
+		List<BusinessType> ascendingList = new ArrayList<>();
+		int size = descendingList.size();
+		for (int i = size - 1; i >= 0; i--) {
+			ascendingList.add(descendingList.get(i));
+		}
+		return ascendingList;
 	}
 
 }
