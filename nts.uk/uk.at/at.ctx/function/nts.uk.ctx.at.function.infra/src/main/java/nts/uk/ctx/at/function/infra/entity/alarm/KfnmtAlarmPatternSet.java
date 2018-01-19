@@ -34,11 +34,11 @@ public class KfnmtAlarmPatternSet extends UkJpaEntity implements Serializable{
 	@Column(name = "ALARM_PATTERN_NAME")
 	public String alarmPatternName;
 	
-    @OneToMany(mappedBy = "alarmPatternSet", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "alarmPatternSet", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "KFNMT_CHECK_CONDITION")
     public List<KfnmtCheckCondition> checkConList;
 	
-	@OneToOne(mappedBy="alarmPatternSet", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy="alarmPatternSet", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_ALARM_PER_SET")
 	public KfnmtAlarmPerSet alarmPerSet;
 	
