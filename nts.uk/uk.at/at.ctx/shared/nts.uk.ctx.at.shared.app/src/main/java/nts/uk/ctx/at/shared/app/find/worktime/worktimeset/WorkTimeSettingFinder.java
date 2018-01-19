@@ -230,7 +230,7 @@ public class WorkTimeSettingFinder {
 							.size() >= TWO_TIMEZONE) {
 						timezone2 = item.getPrescribedTimezoneSetting().getLstTimezone()
 								.get(TWO_ITEM);
-					}
+					} 
 					workTimeDtos
 							.add(new WorkTimeDto(currentWorkTime.getWorktimeCode().v(),
 									currentWorkTime.getWorkTimeDisplayName().getWorkTimeName().v(),
@@ -311,5 +311,4 @@ public class WorkTimeSettingFinder {
 		}
 		return dto;
 	}
-
 }

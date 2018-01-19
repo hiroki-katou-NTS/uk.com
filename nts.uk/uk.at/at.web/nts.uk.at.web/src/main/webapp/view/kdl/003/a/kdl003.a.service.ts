@@ -8,6 +8,7 @@ module nts.uk.at.view.kdl003.a {
             findByTime: "at/shared/worktimesetting/findByTime",
             isWorkTimeSettingNeeded: "at/schedule/basicschedule/isWorkTimeSettingNeeded",
             checkPairWorkTypeWorkTime: "at/schedule/basicschedule/checkPairWorkTypeWorkTime",
+            findBreakByCodes: "at/shared/worktimesetting/findBreakByCodes",
 
         }
 
@@ -59,5 +60,13 @@ module nts.uk.at.view.kdl003.a {
         export function checkPairWorkTypeWorkTime(workTypeCode: string, workTimeCode): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.checkPairWorkTypeWorkTime + '/' + workTypeCode + '/' + workTimeCode);
         }
+        
+        /**
+         * Search break time
+         */
+        export function findBreakByCodes(workTimeCode: string, styleTime: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findBreakByCodes+ '/' + workTimeCode + '/' + styleTime);
+        }
+
     }
 }

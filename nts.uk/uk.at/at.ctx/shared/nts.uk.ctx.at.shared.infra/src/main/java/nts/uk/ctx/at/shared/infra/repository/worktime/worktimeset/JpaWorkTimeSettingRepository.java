@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -25,6 +26,12 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet_;
+import nts.uk.ctx.at.shared.infra.repository.worktime.fixedset.JpaFixHalfDayWorkTimezoneGetMemento;
+import nts.uk.ctx.at.shared.infra.repository.worktime.fixedset.JpaFixedWorkSettingGetMemento;
 
 /**
  * The Class JpaWorkTimeSettingRepository.
@@ -229,4 +236,32 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK(companyId, worktimeCode);
 		return this.queryProxy().find(pk, KshmtWorkTimeSet.class);
 	}
+	
+//	@Override
+//	public List<FixedWorkSetting> findBreakByCodes(String companyID, String codes) {
+//		// get entity manager
+//		EntityManager em = this.getEntityManager();
+//		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+//
+//		CriteriaQuery<KshmtFixedHalfRestSet> cq = criteriaBuilder.createQuery(KshmtFixedWorkSet.class);
+//		Root<KshmtFixedWorkSet> root = cq.from(KshmtFixedWorkSet.class);
+//
+//		// select root
+//		cq.select(root);
+//
+//		// add where
+//		List<Predicate> lstpredicateWhere = new ArrayList<>();
+//		lstpredicateWhere.add(criteriaBuilder
+//				.equal(root.get(KshmtFixedWorkSet_.kshmtFixedWorkSetPK).get(KshmtFixedWorkSetPK_.cid), companyID));
+//		lstpredicateWhere
+//				.add(root.get(KshmtFixedWorkSet_.kshmtFixedWorkSetPK).get(KshmtFixedWorkSetPK_.worktimeCd).in(codes));
+//		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+//
+//		List<KshmtFixedWorkSet> lstKwtstBreakTimeSet = em.createQuery(cq).getResultList();
+//
+//		return lstKwtstBreakTimeSet.stream().map(item -> {
+//			FixedWorkSetting worktimeSetting = new FixedWorkSetting(new JpaFixedWorkSettingGetMemento(item));
+//			return worktimeSetting;
+//		}).collect(Collectors.toList());
+//	}
 }

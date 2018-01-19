@@ -7,16 +7,39 @@ module nts.uk.at.view.kdl003.a {
             startTime: KnockoutObservable<number>;
             endTimeOption: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
+            
+            currentCode: KnockoutObservable<any>;
+            currentCode2: KnockoutObservable<any>;
+            currentCode3: KnockoutObservable<any>;
+            currentCode4: KnockoutObservable<any>;
+            
+            startBTime: KnockoutObservable<number>;
+            endBTime: KnockoutObservable<number>;
+            
+            startBBTime: KnockoutObservable<number>;
+            endBBTime: KnockoutObservable<number>;
 
             // Data list & selected code.
             listWorkTime: KnockoutObservableArray<WorkTimeSet>;
             selectedWorkTimeCode: KnockoutObservable<string>;
             listWorkType: KnockoutObservableArray<WorkType>;
             selectedWorkTypeCode: KnockoutObservable<string>;
+            
+            listTimeBreak1: KnockoutObservableArray<BreakTime>;
+            listTimeBreakBreak1: KnockoutObservableArray<BreakTime>;
+            listTimeBreak2: KnockoutObservableArray<BreakTime>;
+            listTimeBreakBreak2: KnockoutObservableArray<BreakTime>;
+            
+            styleWorkTime: KnockoutObservable<string>;
 
             // Define columns.
             workTimeColumns: KnockoutObservableArray<NtsGridListColumn>;
             workTypeColumns: KnockoutObservableArray<NtsGridListColumn>;
+            
+            breakColumns1: KnockoutObservableArray<NtsGridListColumn>;
+            breakBreakColumns1: KnockoutObservableArray<NtsGridListColumn>;
+            breakColumns2: KnockoutObservableArray<NtsGridListColumn>;
+            breakBreakColumns2: KnockoutObservableArray<NtsGridListColumn>;
 
             // Initial work time code list..
             initialWorkTimeCodes: Array<String>;
@@ -32,11 +55,28 @@ module nts.uk.at.view.kdl003.a {
                 self.startTime = ko.observable(null);
                 self.endTimeOption = ko.observable(1);
                 self.endTime = ko.observable(null);
+                
+                self.startBTime = ko.observable(null);
+                self.endBTime = ko.observable(null);
+                self.startBBTime = ko.observable(null);
+                self.endBBTime = ko.observable(null);
+                
+                self.styleWorkTime = ko.observable(null);
 
                 self.listWorkTime = ko.observableArray([]);
                 self.selectedWorkTimeCode = ko.observable('');
                 self.listWorkType = ko.observableArray([]);
                 self.selectedWorkTypeCode = ko.observable('');
+                
+                self.listTimeBreak1 = ko.observableArray([]);
+                self.listTimeBreakBreak1 = ko.observableArray([]);
+                self.listTimeBreak2 = ko.observableArray([]);
+                self.listTimeBreakBreak2 = ko.observableArray([]);
+                
+                self.currentCode = ko.observable();
+                self.currentCode2 = ko.observable();
+                self.currentCode3 = ko.observable();
+                self.currentCode4 = ko.observable();
 
                 // Define gridlist's columns
                 self.workTypeColumns = ko.observableArray([
@@ -52,7 +92,23 @@ module nts.uk.at.view.kdl003.a {
                     { headerText: nts.uk.resource.getText('KDL003_21'), prop: 'workAtr', width: 100 },
                     { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'remark', template: '<span>${remark}</span>' }
                 ]);
-
+                self.breakColumns1 = ko.observableArray([
+                    { headerText: nts.uk.resource.getText('KDL003_33'), prop: 'code', width: 30 },
+                    { headerText: nts.uk.resource.getText('KDL003_34'), prop: 'name', width: 170 }
+                ]);
+                self.breakBreakColumns1 = ko.observableArray([
+                    { headerText: nts.uk.resource.getText('KDL003_33'), prop: 'code', width: 30 },
+                    { headerText: nts.uk.resource.getText('KDL003_34'), prop: 'name', width: 170 }
+                ]);         
+                self.breakColumns2 = ko.observableArray([
+                    { headerText: nts.uk.resource.getText('KDL003_33'), prop: 'code', width: 30 },
+                    { headerText: nts.uk.resource.getText('KDL003_34'), prop: 'name', width: 170 }
+                ]);
+                self.breakBreakColumns2 = ko.observableArray([
+                    { headerText: nts.uk.resource.getText('KDL003_33'), prop: 'code', width: 30 },
+                    { headerText: nts.uk.resource.getText('KDL003_34'), prop: 'name', width: 170 }
+                ]);         
+                       
                 //parent data
                 self.callerParameter = parentData;
 
@@ -103,6 +159,28 @@ module nts.uk.at.view.kdl003.a {
                 return dfd.promise();
             }
 
+            private getTimeBySeleckedCode(data: Array<WorkTimeSet>, code: string): void{
+                let self = this;
+                $.each(data, function( key, value ) {
+                    if(data[key].code == code){
+                        if(!nts.uk.util.isNullOrEmpty(data[key].workTime1)){
+                            let codeTime = data[key].workTime1;
+                            let array = codeTime.split(' ~ ');
+                            self.startBTime(array[0].substring(2));
+                            self.endBTime(array[1].substring(2));
+                        };
+                        if(!nts.uk.util.isNullOrEmpty(data[key].workTime2)){
+                            let codeTime = data[key].workTime2;
+                            let array = codeTime.split(' ~ ');
+                            self.startBBTime(array[0].substring(2));
+                            self.endBBTime(array[1].substring(2));
+                        };
+                        
+                        self.styleWorkTime(data[key].workAtr);
+                    }
+                });
+            }
+            
             /**
              * Load work time.
              */
@@ -114,7 +192,8 @@ module nts.uk.at.view.kdl003.a {
                 if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workTimeCodes)) {
                     service.findWorkTimeByCodes(self.callerParameter.workTimeCodes)
                         .done(function(data) {
-//                            self.addFirstItem(data);
+                            self.getTimeBySeleckedCode(data, self.callerParameter.selectedWorkTimeCode);
+                            self.addFirstItem(data);
                             self.listWorkTime(data);
                             dfd.resolve();
                         });
@@ -122,10 +201,54 @@ module nts.uk.at.view.kdl003.a {
                     // Find all work time
                     service.findAllWorkTime()
                         .done(function(data) {
-//                            self.addFirstItem(data);
+                            self.getTimeBySeleckedCode(data, self.callerParameter.selectedWorkTimeCode);
+                            self.addFirstItem(data);
                             self.listWorkTime(data);
                             dfd.resolve();
                         });
+                }
+                
+                if (!nts.uk.util.isNullOrEmpty(self.callerParameter.selectedWorkTimeCode)) {
+                    service.findBreakByCodes(self.callerParameter.selectedWorkTimeCode, self.styleWorkTime).done(function(data){
+                        let data1 = data.breakBreakTimeDto;
+                        let data2 = data.breakTimeDto;
+                        let data3 = [];
+                        let data4 = [];
+                        if(data2.length <= 5 && data1.length <= 5){
+                            for(let i = data2.length; i < 5; i++){
+                                data2.push({
+                                    code: "",
+                                    name: "",
+                                });
+                            }
+                            for(let i = data1.length; i < 5; i++){
+                                data1.push({
+                                    code: "",
+                                    name: "",
+                                });
+                            }
+                            for(let i = 0; i < 5; i++){
+                                data3.push({
+                                    code: "",
+                                    name: "",
+                                });
+                                data4.push({
+                                    code: "",
+                                    name: "",
+                                });
+                            }
+                            
+                            self.listTimeBreak1(data2);
+                            self.listTimeBreak2(data3);
+                            self.listTimeBreakBreak1(data1);
+                            self.listTimeBreakBreak2(data4);
+                        }else{
+                            self.listTimeBreak1(data2);
+                            self.listTimeBreakBreak1(data1);
+                        }
+                        
+                        dfd.resolve();
+                    });
                 }
                 return dfd.promise();
             }
@@ -154,13 +277,13 @@ module nts.uk.at.view.kdl003.a {
                 }
                 return dfd.promise();
             }
-
+            
             /**
              * Add first work time item.
              */
             private addFirstItem(data: Array<WorkTimeSet>): void {
                 let self = this;
-                //add item　なし
+                 //add item　なし
                 data.unshift({
                     code: "000",
                     name: "なし",
@@ -171,7 +294,7 @@ module nts.uk.at.view.kdl003.a {
                 });
                 self.listWorkTime(data);
             }
-
+            
             /**
              * Initial work type selection 
              */
@@ -302,7 +425,7 @@ module nts.uk.at.view.kdl003.a {
                 // Loading, block ui.
                 nts.uk.ui.block.invisible();
 
-                // Set work time = なし if list work time is empty.
+                // Set work time = ã�ªã�— if list work time is empty.
                 if (!workTimeCode || nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
                     workTimeCode = '000';
                 }
@@ -368,6 +491,11 @@ module nts.uk.at.view.kdl003.a {
             public closeDialog(): void {
                 nts.uk.ui.windows.close();
             }
+        }
+        
+        interface BreakTime {
+            code: string;
+            name: string;
         }
 
         interface WorkTimeSet {

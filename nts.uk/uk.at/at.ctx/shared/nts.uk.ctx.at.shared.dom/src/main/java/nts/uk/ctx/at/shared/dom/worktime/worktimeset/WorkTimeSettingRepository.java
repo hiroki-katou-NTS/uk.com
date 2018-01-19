@@ -7,6 +7,9 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+
+// TODO: Auto-generated Javadoc
 /**
  * The Interface WorkTimeSettingRepository.
  */
@@ -50,6 +53,7 @@ public interface WorkTimeSettingRepository {
 	/**
 	 * Gets the list work time set by list code.
 	 *
+	 * @param companyId the company id
 	 * @param workTimeCodes the work time codes
 	 * @return the list work time set by list code
 	 */
@@ -76,4 +80,13 @@ public interface WorkTimeSettingRepository {
 	 * @param workTimeCode the work time code
 	 */
 	public void remove(String companyId,String workTimeCode);
+	
+	/**
+	 * Find break by codes.
+	 *
+	 * @param companyId the company id
+	 * @param workTimeCode the work time code
+	 * @return the optional
+	 */
+//	public Optional<FixedWorkSetting> findBreakByCodes(String companyId, String workTimeCode);
 }

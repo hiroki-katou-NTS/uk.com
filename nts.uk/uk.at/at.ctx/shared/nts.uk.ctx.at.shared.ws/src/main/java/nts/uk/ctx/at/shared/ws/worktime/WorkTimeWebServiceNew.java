@@ -23,13 +23,15 @@ import nts.uk.ctx.at.shared.app.command.worktime.flexset.FlexWorkSettingSaveComm
 import nts.uk.ctx.at.shared.app.command.worktime.flexset.FlexWorkSettingSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveCommand;
 import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.find.breaktime.dto.BreakTimeDayDto;
 import nts.uk.ctx.at.shared.app.find.worktime.WorkTimeSettingInfoFinder;
+import nts.uk.ctx.at.shared.app.find.worktime.difftimeset.DiffTimeWorkSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
+import nts.uk.ctx.at.shared.app.find.worktime.fixedset.FixedWorkSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.WorkTimeSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
-import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * The Class WorkTimeWebServiceNew.
@@ -43,6 +45,12 @@ public class WorkTimeWebServiceNew extends WebService {
 	/** The work time set finder. */
 	@Inject
 	private WorkTimeSettingFinder workTimeSetFinder;
+	
+	@Inject
+	private FixedWorkSettingFinder fixedTimeFinder;
+	
+	@Inject
+	private DiffTimeWorkSettingFinder flexTimeFinder;
 
 	/** The fixed handler. */
 	@Inject
@@ -71,7 +79,7 @@ public class WorkTimeWebServiceNew extends WebService {
 	
 
 	/**
-	 * Find all by Cid
+	 * Find all by Cid.
 	 *
 	 * @return the list
 	 */
@@ -206,5 +214,24 @@ public class WorkTimeWebServiceNew extends WebService {
 	@Path("remove")
 	public void removeByWorkTimeCode(WorkTimeCommonDeleteCommand command) {
 		this.workTimeCommonDeleteCommandHandler.handle(command);
+	}
+	
+	/**
+	 * Find break by codes.
+	 *
+	 * @param codes the codes
+	 * @return the list
+	 */
+	@POST
+	@Path("findBreakByCodes/{workTimeCode/{styleTime}")
+	public BreakTimeDayDto findBreakByCodes(@PathParam("workTimeCode") String workTimeCode,
+			@PathParam("styleTime") String styleTime) {
+		if(styleTime.equalsIgnoreCase("固定勤務")){
+			return this.fixedTimeFinder.findBreakTimeByCode(workTimeCode);
+		}
+		if(styleTime.equalsIgnoreCase("フレックス勤務用")){
+			return this.flexTimeFinder.findBreakTimeByCode(workTimeCode);
+		}
+		return null;
 	}
 }
