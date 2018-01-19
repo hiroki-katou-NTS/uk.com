@@ -30,7 +30,12 @@
 			<!--申請日付 -->
 			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF009_11')}</div>
 			<div data-bind="if: screenModeNew()" class="mode-style">
-				<div id = "inputdate" data-bind="ntsDatePicker: {name: '#[KAF009_12]',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}"></div>
+				<div id = "inputdate" data-bind="ntsDatePicker: {
+									name: '#[KAF009_12]',
+									required:true, 
+									value: appDate, 
+									dateFormat: 'YYYY/MM/DD',
+									valueFormat: 'YYYY/MM/DD'}"></div>
 			</div>
 			<div data-bind="if: !screenModeNew()" class="mode-style">
 				<span data-bind="text: appDate"></span>
@@ -242,10 +247,10 @@
 		<!-- 申請理由（ラベル) -->
 		<div class="valign-center control-group">
 			<div class="lblTitleKAF009"
-				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
+				data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_27')}</div>
 			<div id="inpReason">
 				<textarea id="inpReasonTextarea"
-					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption, constraint: 'AppReason', required : requiredReason(), name: '#[KAF009_29]'}" />
+					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption, required : requiredReason(), name: '#[KAF009_29]'}" />
 			</div>
 		</div>
 	</div>

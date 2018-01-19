@@ -12,7 +12,8 @@ module nts.custombinding {
     import parseTime = nts.uk.time.parseTime;
     import clearError = nts.uk.ui.errors.clearAll;
 
-    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
+    let getError = window['nts']['uk']['ui']['errors']['getErrorList'],
+        writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraint'],
         writeConstraints = window['nts']['uk']['ui']['validation']['writeConstraints'],
         parseTimeWidthDay = window['nts']['uk']['time']['minutesBased']['clock']['dayattr']['create'];
 
@@ -1323,6 +1324,58 @@ module nts.custombinding {
                             _.each(row, (def, j) => {
                                 // call some validate function at here
                                 if (_.has(def, "item") && !_.isNull(def.item)) {
+                                    let validate = (prev: any, next: any) => {
+                                        if (!prev || !next) {
+                                            return;
+                                        }
+
+                                        let id1 = '#' + prev.itemDefId.replace(/[-_]/g, ""),
+                                            id2 = '#' + next.itemDefId.replace(/[-_]/g, "");
+
+                                        if (id1 == id2) {
+                                            return;
+                                        }
+
+                                        $(document).on('change, blur', `${id1}, ${id2}`, (evt) => {
+                                            setTimeout(() => {
+                                                let dom1 = $(id1),
+                                                    dom2 = $(id2);
+
+                                                if (!dom1[0] || !dom2[0]) {
+                                                    return;
+                                                }
+
+                                                if (!dom1.val() && dom2.val()) {
+                                                    if (!dom1.parent().hasClass('error')) {
+                                                        dom1.ntsError('set', { messageId: "Msg_858" });
+                                                    }
+                                                }
+
+                                                if (dom1.val() && !dom2.val()) {
+                                                    if (!dom2.parent().hasClass('error')) {
+                                                        dom2.ntsError('set', { messageId: "Msg_858" });
+                                                    }
+                                                }
+
+                                                if ((!dom1.val() && !dom2.val()) || (dom1.val() && dom2.val())) {
+                                                    let rm: Array<any> = [],
+                                                        error: Array<any> = getError();
+                                                    _.each(error, er => {
+                                                        let dom = er.$control[0];
+                                                        if ((dom.id == dom1[0].id || dom.id == dom2[0].id) && er.errorCode == "Msg_858") {
+                                                            rm.push(er);
+                                                        }
+                                                    });
+
+                                                    _.remove(error, x => _.indexOf(rm, x) > -1);
+
+                                                    if (!error.length) {
+                                                        clearError();
+                                                    }
+                                                }
+                                            }, 0);
+                                        });
+                                    };
                                     // validate date range
                                     switch (def.item.dataTypeValue) {
                                         case ITEM_SINGLE_TYPE.DATE:
@@ -1366,19 +1419,20 @@ module nts.custombinding {
                                             }
                                             break;
                                         case ITEM_SINGLE_TYPE.TIME:
+                                            validate(def, row[2]);
                                             if (def.index == 1) {
                                                 def.value.subscribe(v => {
                                                     let next = row[2] || { value: () => ko.observable(undefined) };
-                                                    if (next.item && next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME
-                                                        && _.has(next, "value")
-                                                        && ko.isObservable(next.value)) {
-                                                        let clone = _.cloneDeep(next);
-                                                        clone.item.min = def.value() + 1;
+                                                    if (next.item && next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME && _.has(next, "value")) {
+                                                        if (ko.isObservable(next.value)) {
+                                                            let clone = _.cloneDeep(next);
+                                                            clone.item.min = def.value() + 1;
 
-                                                        let primi = primitiveConst(v ? clone : next);
+                                                            let primi = primitiveConst(v ? clone : next);
 
-                                                        exceptConsts.push(primi.itemCode);
-                                                        writeConstraint(primi.itemCode, primi);
+                                                            exceptConsts.push(primi.itemCode);
+                                                            writeConstraint(primi.itemCode, primi);
+                                                        }
                                                     }
                                                 });
                                                 def.value.valueHasMutated();
@@ -1387,35 +1441,36 @@ module nts.custombinding {
                                             if (def.index == 2) {
                                                 def.value.subscribe(v => {
                                                     let prev = row[1] || { value: () => ko.observable(undefined) };
-                                                    if (prev.item && prev.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME
-                                                        && _.has(prev, "value")
-                                                        && ko.isObservable(prev.value)) {
-                                                        let clone = _.cloneDeep(prev);
-                                                        clone.item.max = def.value() - 1;
+                                                    if (prev.item && prev.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME && _.has(prev, "value")) {
+                                                        if (ko.isObservable(prev.value)) {
+                                                            let clone = _.cloneDeep(prev);
+                                                            clone.item.max = def.value() - 1;
 
-                                                        let primi = primitiveConst(v ? clone : prev);
+                                                            let primi = primitiveConst(v ? clone : prev);
 
-                                                        exceptConsts.push(primi.itemCode);
-                                                        writeConstraint(primi.itemCode, primi);
+                                                            exceptConsts.push(primi.itemCode);
+                                                            writeConstraint(primi.itemCode, primi);
+                                                        }
                                                     }
                                                 });
                                                 def.value.valueHasMutated();
                                             }
                                             break;
                                         case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                            validate(def, row[2]);
                                             if (def.index == 1) {
                                                 def.value.subscribe(v => {
                                                     let next = row[2] || { value: () => ko.observable(undefined) };
-                                                    if (next.item && next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIMEPOINT
-                                                        && _.has(next, "value")
-                                                        && ko.isObservable(next.value)) {
-                                                        let clone = _.cloneDeep(next);
-                                                        clone.item.timePointItemMin = def.value() + 1;
+                                                    if (next.item && next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIMEPOINT && _.has(next, "value")) {
+                                                        if (ko.isObservable(next.value)) {
+                                                            let clone = _.cloneDeep(next);
+                                                            clone.item.timePointItemMin = def.value() + 1;
 
-                                                        let primi = primitiveConst(v ? clone : next);
+                                                            let primi = primitiveConst(v ? clone : next);
 
-                                                        exceptConsts.push(primi.itemCode);
-                                                        writeConstraint(primi.itemCode, primi);
+                                                            exceptConsts.push(primi.itemCode);
+                                                            writeConstraint(primi.itemCode, primi);
+                                                        }
                                                     }
                                                 });
                                                 def.value.valueHasMutated();
@@ -1423,16 +1478,16 @@ module nts.custombinding {
                                             if (def.index == 2) {
                                                 def.value.subscribe(v => {
                                                     let prev = row[1] || { value: () => ko.observable(undefined) };
-                                                    if (prev.item && prev.item.dataTypeValue == ITEM_SINGLE_TYPE.TIMEPOINT
-                                                        && _.has(prev, "value")
-                                                        && ko.isObservable(prev.value)) {
-                                                        let clone = _.cloneDeep(prev);
-                                                        clone.item.timePointItemMax = def.value() - 1;
+                                                    if (prev.item && prev.item.dataTypeValue == ITEM_SINGLE_TYPE.TIMEPOINT && _.has(prev, "value")) {
+                                                        if (ko.isObservable(prev.value)) {
+                                                            let clone = _.cloneDeep(prev);
+                                                            clone.item.timePointItemMax = def.value() - 1;
 
-                                                        let primi = primitiveConst(v ? clone : prev);
+                                                            let primi = primitiveConst(v ? clone : prev);
 
-                                                        exceptConsts.push(primi.itemCode);
-                                                        writeConstraint(primi.itemCode, primi);
+                                                            exceptConsts.push(primi.itemCode);
+                                                            writeConstraint(primi.itemCode, primi);
+                                                        }
                                                     }
                                                 });
                                                 def.value.valueHasMutated();

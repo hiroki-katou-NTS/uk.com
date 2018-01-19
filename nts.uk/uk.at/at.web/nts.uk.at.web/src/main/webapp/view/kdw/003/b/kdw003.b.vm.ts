@@ -12,10 +12,14 @@ module nts.uk.at.view.kdw003.b {
                 nts.uk.ui.windows.close();
             }
 
-            startPage(param): JQueryPromise<any> {
+            startPage(param, errorValidate): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
                 service.getErrorRefer(param).done((data) => {
+                    let i : number = data.length;
+                    _.each(errorValidate, value =>{
+                        data.push({ id : i++,date: value.date, employeeCode: value.employeeCode, employeeName: value.employeeName, message: value.message, itemName: value.itemName, errorCode:""});
+                    });
                     self.lstError(_.orderBy(data, ['employeeCode', 'date'], ['asc', 'asc']).map((d) => { return new ErrorReferModel(d); }));
                     self.loadGrid();
                     dfd.resolve();

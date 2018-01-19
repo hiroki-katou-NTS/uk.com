@@ -12,27 +12,33 @@ import java.util.Optional;
 public interface FlowWorkSettingRepository {
 
 	/**
-	 * Find by id.
+	 * Find.
 	 *
 	 * @param companyId the company id
-	 * @param workTimeCode the worktime code
+	 * @param workTimeCode the work time code
 	 * @return the optional
 	 */
-	public Optional<FlowWorkSetting> find(String companyId, String workTimeCode);
+	Optional<FlowWorkSetting> find(String companyId, String workTimeCode);
 
 	/**
-	 * Save.
+	 * Adds the.
 	 *
 	 * @param domain the domain
 	 */
-	public void save(FlowWorkSetting domain);
+	void add(FlowWorkSetting domain);
+	
+	/**
+	 * Update.
+	 *
+	 * @param domain the domain
+	 */
+	void update(FlowWorkSetting domain);
 
 	/**
 	 * Removes the.
 	 *
 	 * @param companyId the company id
 	 * @param workTimeCode the work time code
-	 * @return true, if successful
 	 */
-	public boolean remove(String companyId, String workTimeCode);
+	void remove(String companyId, String workTimeCode);
 }

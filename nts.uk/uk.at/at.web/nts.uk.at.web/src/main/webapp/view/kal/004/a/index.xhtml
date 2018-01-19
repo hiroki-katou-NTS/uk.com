@@ -22,6 +22,7 @@
             <com:scriptfile path="periodSetting/kal004.tab2.vm.js" />
             <!--End Tab2 -->
             <com:scriptfile path="setpermission/kal004.tab3.vm.js" />
+            <com:scriptfile path="setpermission/kal004.tab3.service.js" />
 			<com:stylefile path="kal004.a.style.css" />
 			<com:scriptfile path="kal004.a.service.js" />
 			<com:scriptfile path="kal004.a.vm.js" />
@@ -32,14 +33,14 @@
 			<div id="functions-area">
 				<div class="container">
 					<a class="goback link-button" data-bind="ntsLinkButton: { jump: '../../002/a/index.xhtml' }">#{i18n.getText('KAL004_3')}</a>
-					<button id="new"  tabindex="1">#{i18n.getText('KAL004_4')}</button>
-					<button id="registration"  class="proceed" tabindex="2">#{i18n.getText('KAL004_5')}</button>
-					<button id="delete" class="danger" data-bind="enable: currentCode !=''" tabindex="3">#{i18n.getText('KAL004_6')}</button>
+					<button id="new"  tabindex="1" data-bind="click: createAlarm">#{i18n.getText('KAL004_4')}</button>
+					<button id="registration"  class="proceed" tabindex="2" data-bind="click: saveAlarm">#{i18n.getText('KAL004_5')}</button>
+					<button id="delete" class="danger" data-bind="click: removeAlarm, enable: currentCode !=''" tabindex="3">#{i18n.getText('KAL004_6')}</button>
 				</div>
 			</div>
 			<div id="contents-area" >
 				<div class="container">
-					<div id="left-content" >
+					<div id="left-content" class ="bg-green caret-right caret-background">
 						<table id="single-list" data-bind="ntsGridList: {								
 								height: 350,
 								dataSource: alarmSource,

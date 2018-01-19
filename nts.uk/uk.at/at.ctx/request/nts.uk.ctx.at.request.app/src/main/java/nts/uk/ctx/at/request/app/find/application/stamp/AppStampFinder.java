@@ -14,8 +14,8 @@ import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampSetDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
+import nts.uk.ctx.at.request.app.find.setting.company.request.stamp.dto.StampRequestSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingDto;
-import nts.uk.ctx.at.request.app.find.setting.stamp.dto.StampRequestSettingDto;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDefaultImpl;
@@ -53,23 +53,23 @@ public class AppStampFinder {
 		appStampNewPreDto.appStampSetDto = new AppStampSetDto(
 				new StampRequestSettingDto(
 						companyID, 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopComment(), 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopComment().v(), 
 						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopCommentFontColor(), 
 						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopCommentFontWeight(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomComment(), 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomComment().v(), 
 						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomCommentFontColor(), 
 						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomCommentFontWeight(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getResultDisp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getSupFrameDispNO(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampPlaceDisp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampAtr_Work_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampAtr_GoOut_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampAtr_Care_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampAtr_Sup_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampGoOutAtr_Private_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampGoOutAtr_Public_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampGoOutAtr_Compensation_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampGoOutAtr_Union_Disp()),  
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getResultDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getSupFrameDispNO().v(), 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampPlaceDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampAtrWorkDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampAtrGoOutDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampAtrCareDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampAtrSupDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampGoOutAtrPrivateDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampGoOutAtrPublicDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampGoOutAtrCompensationDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampGoOutAtrUnionDisp().value),  
 				appStampNewPreOutput.appStampSetOutput.getApplicationReasons().stream()
 					.map(x -> new ApplicationReasonDto(
 							x.getCompanyId(),

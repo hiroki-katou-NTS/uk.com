@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
@@ -23,9 +25,6 @@ public class JpaFlexODFlowRestTzSetMemento implements FlowRestTimezoneSetMemento
 	
 	/** The entity. */
 	private KshmtFlexOdRtSet entity;
-
-	/** The period no. */
-	private int periodNo = 0;
 	
 	/**
 	 * Instantiates a new jpa flex OD flow rest tz set memento.
@@ -45,15 +44,24 @@ public class JpaFlexODFlowRestTzSetMemento implements FlowRestTimezoneSetMemento
 		if (CollectionUtil.isEmpty(set)) {
 			this.entity.setKshmtFlexOdRestSets(new ArrayList<>());
 		} else {
-			periodNo = 0;
-			this.entity.setKshmtFlexOdRestSets(set.stream().map(domain -> {
-				periodNo++;
-				KshmtFlexOdRestSet entity = new KshmtFlexOdRestSet(
-						new KshmtFlexOdRestSetPK(this.entity.getKshmtFlexOdRtSetPK().getCid(),
-								this.entity.getKshmtFlexOdRtSetPK().getWorktimeCd(), periodNo));
-				domain.saveToMemento(new JpaFlexODFlowRestSetMemento(entity));
-				return entity;
-			}).collect(Collectors.toList()));
+			Map<KshmtFlexOdRestSetPK, KshmtFlexOdRestSet> mapEntity = this.entity.getKshmtFlexOdRestSets().stream()
+					.collect(Collectors.toMap(KshmtFlexOdRestSet::getKshmtFlexOdRestSetPK, Function.identity()));
+			List<KshmtFlexOdRestSet> lstNew = new ArrayList<>();
+			for (int i = 0; i < set.size(); i++) {
+				KshmtFlexOdRestSetPK newPK = new KshmtFlexOdRestSetPK(this.entity.getKshmtFlexOdRtSetPK().getCid(),
+						this.entity.getKshmtFlexOdRtSetPK().getWorktimeCd(), i + 1);
+				KshmtFlexOdRestSet newEntity = new KshmtFlexOdRestSet(newPK);
+
+				KshmtFlexOdRestSet oldEntity = mapEntity.get(newPK);
+				if (oldEntity != null) {
+					// update
+					newEntity = oldEntity;
+				}
+				// insert
+				set.get(i).saveToMemento(new JpaFlexODFlowRestSetMemento(newEntity));
+				lstNew.add(newEntity);
+			}
+			this.entity.setKshmtFlexOdRestSets(lstNew);
 		}
 	}
 

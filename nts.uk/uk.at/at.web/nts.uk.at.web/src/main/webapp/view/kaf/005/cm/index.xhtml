@@ -342,17 +342,16 @@
 			</div>
 		</div>
 		<!-- 申請理由（ラベル) -->
-		<div class="valign-center control-group"
+		<div class="cf valign-top control-group"
 			data-bind="if: displayAppReasonContentFlg">
 			<!--A9_3 申請理由ラベル--> 			
 			<div class="lblTitle cm-column"
-				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF005_88')}</div>
+				data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_88')}</div>
 			<!--A9_4 申請理由入力--> 
 			<div id="multiline">
-				<textarea tabindex="19"
+				<textarea tabindex="19" id ="appReason"
 					data-bind="ntsMultilineEditor: {name: '#[KAF005_89]', 
 								value: multilContent,
-								constraint: 'AppReason',
 								option: {
 									resizeable: false,
 			                    	width: '500',
@@ -378,17 +377,16 @@
 			</div>
 		</div>
 		<!-- 申請理由（ラベル) -->
-		<div class="valign-center control-group"
+		<div class="cf valign-top control-group"
 			data-bind="if: displayDivergenceReasonInput">
 			<!--A9_7 乖離理由ラベル--> 
 			<div class="lblTitle cm-column"
-				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF005_92')}</div>
+				data-bind="ntsFormLabel: {}">#{i18n.getText('KAF005_92')}</div>
 			<!--A9_8 乖離理由入力--> 
 			<div id="multiline"> 
-				<textarea tabindex="21"
+				<textarea tabindex="21" id ="divergenceReason"
 					data-bind="ntsMultilineEditor: {name: '#[KAF005_93]', 
 								value: multilContent2,
-								constraint: 'AppReason',
 								option: {
 									resizeable: false,
 			                    	width: '500',

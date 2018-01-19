@@ -2,9 +2,12 @@ package nts.uk.ctx.at.function.app.command.alarm;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
@@ -32,7 +35,7 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 		String companyId = AppContexts.user().companyId();
 		
 		// check duplicate code
-		if (domainService.checkDuplicateCode(c.getAlarmPatternCD())) {
+		if (!domainService.checkDuplicateCode(c.getAlarmPatternCD())) {
 			
 			AlarmPermissionSetting alarmPerSet = new AlarmPermissionSetting(c.getAlarmPatternCD(), companyId,
 					c.getAlarmPerSet().isAuthSetting(), c.getAlarmPerSet().getRoleIds());
@@ -52,6 +55,8 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 				repo.create(domain);
 			}
 			
+		}else{
+			throw new BusinessException("Msg_3");
 		}
 	}
 }
