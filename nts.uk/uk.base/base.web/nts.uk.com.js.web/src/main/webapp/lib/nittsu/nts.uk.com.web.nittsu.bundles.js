@@ -2921,8 +2921,8 @@ var nts;
                         else {
                             dfd.resolve(res);
                         }
-                    }).fail(function () {
-                        specials.errorPages.systemError();
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        specials.errorPages.systemError(jqXHR.responseJSON);
                     });
                 }
                 if (restoresSession && webAppId != nts.uk.request.location.currentAppId) {
@@ -2970,7 +2970,7 @@ var nts;
                             }
                         },
                         error: function (xhr, status, error) {
-                            specials.errorPages.systemError();
+                            specials.errorPages.systemError(xhr.responseJSON);
                         }
                     });
                 }
@@ -3112,11 +3112,14 @@ var nts;
                 specials.isFileExist = isFileExist;
                 var errorPages;
                 (function (errorPages) {
-                    function systemError() {
+                    function systemError(error) {
                         if ($(".nts-system-error-dialog").length !== 0) {
                             return;
                         }
-                        var sub = uk.ui.windows.sub.modal("com", "/view/common/error/system/index.xhtml");
+                        uk.ui.windows.setShared("errorInfo", error);
+                        var sub = uk.ui.windows.sub.modal("com", "/view/common/error/system/index.xhtml", {
+                            resizable: true
+                        });
                         sub.$dialog.addClass("nts-system-error-dialog");
                     }
                     errorPages.systemError = systemError;
