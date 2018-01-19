@@ -1,0 +1,29 @@
+package nts.uk.ctx.at.request.dom.setting.company.request.stamp;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+/**
+ * 申請コメント設定
+ * @author Doan Duy Hung
+ *
+ */
+@Getter
+@AllArgsConstructor
+public class AppCommentSetting {
+	
+	/**
+	 * コメント
+	 */
+	private Comment comment;
+	
+	/**
+	 * 文字色
+	 */
+	private String fontColor;
+	
+	/**
+	 * 太字
+	 */
+	private Boolean fontWeight;
+}
