@@ -37,7 +37,7 @@
 								data-bind="ntsGridList:{
 									name: '#[KMK009_3]',
 									width: 450,
-									height: 368,
+									height: 380,
 									options: itemTotalTimes,								
 									optionsValue: 'totalCountNo',
 									primaryKey: 'totalCountNo',
@@ -180,7 +180,7 @@
 									<!--A3:17 : Check error(select) -->
 									<div tabindex="9"
 										data-bind="ntsCheckBox:{
-									checked: selectUppper,
+									checked: selectUnder,
 									enable: enableUse
 									}">
 									</div>
@@ -190,12 +190,12 @@
 										style="width: 50px"
 										data-bind="ntsTimeEditor: {
 									name: '#[KMK009_16]',
-									value: itemTotalTimesDetail.totalCondition.thresoldUpperLimit,
+									value: itemTotalTimesDetail.totalCondition.thresoldLowerLimit,
 									inputFormat: 'time', 
 									mode: 'time', 
 									required: true,
 									constraint: 'ConditionThresholdLimit',
-									enable: enableUpper}" />
+									enable: enableUnder}" />
 									<!-- A3_19 -->
 									#{i18n.getText('KMK009_17')}
 								</div>
@@ -208,7 +208,7 @@
 									<!-- :A3_20 Check error(select) -->
 									<div tabindex="11"
 										data-bind="ntsCheckBox:{
-									checked: selectUnder,
+									checked: selectUppper,
 									enable: enableUse
 									}">
 									</div>
@@ -216,12 +216,12 @@
 									<input style="width: 50px" tabindex="12"
 										data-bind="ntsTimeEditor: {
 									name: '#[KMK009_19]',
-									value: itemTotalTimesDetail.totalCondition.thresoldLowerLimit,
+									value: itemTotalTimesDetail.totalCondition.thresoldUpperLimit,
 									inputFormat: 'time', 
 									mode: 'time', 
 									required: true,
 									constraint: 'ConditionThresholdLimit',
-									enable: enableUnder}" />
+									enable: enableUpper}" />
 									<!-- A3_22 -->
 									#{i18n.getText('KMK009_20')}
 								</div>
@@ -231,7 +231,7 @@
 						<tr class="row">
 							<td>
 								<!-- A3_27 -->
-								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_23')}</div>
+								<div id="targetItemLb" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('KMK009_23')}</div>
 							</td>
 							<td>
 								<!-- A3_28 Open dialog KDL002-->

@@ -392,25 +392,31 @@ module nts.uk.ui.jqueryExtentions {
             function editStarted(evt: any, ui: any) {
                 let $grid = $(ui.owner.element);
                 let valueType = validation.getValueType($grid, ui.columnKey);
-                if (valueType === "TimeWithDay" || valueType === "Clock") {
-                    let formatted;
-                    try {
-                        formatted = time.minutesBased.duration.create(
-                        time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes).text;
-                    } catch(e) { return; }
-                    setTimeout(function() {
-                        let $editor = $(ui.editor.find("input")[0]);
-                        $editor.val(formatted).select();
-                    }, 140);
+                if (!util.isNullOrUndefined(ui.value) && !_.isEmpty(ui.value)) {
+                    if (valueType === "TimeWithDay" || valueType === "Clock") {
+                        let formatted;
+                        try {
+                            formatted = time.minutesBased.clock.dayattr.create(
+                            time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes).shortText;
+                        } catch(e) { return; }
+                        setTimeout(function() {
+                            let $editor = $(ui.editor.find("input")[0]);
+                            $editor.val(formatted).select();
+                        }, 140);
+                    } else if (valueType === "Currency") {
+                        let groupSeparator = validation.getGroupSeparator($grid, ui.columnKey) || ",";
+                        let value = text.replaceAll(ui.value, groupSeparator, "");
+                        setTimeout(function() {
+                            ui.editor.addClass("input-currency-symbol");
+                            let $editor = $(ui.editor.find("input")[0]);
+                            let numb = Number(value);
+                            $editor.val(isNaN(numb) ? value : numb).css("text-align", "right").select();
+                        }, 140);
+                    }
                 } else if (valueType === "Currency") {
-                    let groupSeparator = validation.getGroupSeparator($grid, ui.columnKey) || ",";
-                    let value = text.replaceAll(ui.value, groupSeparator, "");
-                    setTimeout(function() {
-                        ui.editor.addClass("input-currency-symbol");
-                        let $editor = $(ui.editor.find("input")[0]);
-                        let numb = Number(value);
-                        $editor.val(isNaN(numb) ? value : numb).css("text-align", "right").select();
-                    }, 140);
+                    ui.editor.addClass("input-currency-symbol");
+                    let $editor = $(ui.editor.find("input")[0]);
+                    $editor.css("text-align", "right");
                 }
             }
             
@@ -562,10 +568,11 @@ module nts.uk.ui.jqueryExtentions {
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
                 
                 let valueType = validation.getValueType($grid, columnKey);
-                if (valueType === "TimeWithDay" | valueType === "Clock") {
+                if (!util.isNullOrUndefined(cellValue) && !_.isEmpty(cellValue) 
+                    && (valueType === "TimeWithDay" || valueType === "Clock")) {
                     try {
-                        cellValue = time.minutesBased.duration.create(
-                            time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).text;
+                        cellValue = time.minutesBased.clock.dayattr.create(
+                            time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).shortText;
                     } catch(e) {}
                 }
                 grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
@@ -1612,7 +1619,7 @@ module nts.uk.ui.jqueryExtentions {
                 draw(data: any): JQuery {
                     var self = this;
                     // Default values.
-                    var distanceColumns = '     ';
+                    var distanceColumns = data.controlDef.spaceSize === "small" ? '  ' : '     ';
                     // Character used fill to the columns.
                     var fillCharacter = ' ';
                     var maxWidthCharacter = 15;
@@ -1735,6 +1742,9 @@ module nts.uk.ui.jqueryExtentions {
                         container.css({ 'min-width': totalWidth });
                     }
     
+                    if (!util.isNullOrUndefined(data.controlDef.width)) {
+                        container.igCombo("option", "width", data.controlDef.width);
+                    }
                     container.data("columns", columns);
                     container.data("comboMode", comboMode);
                     return container;
@@ -3006,7 +3016,7 @@ module nts.uk.ui.jqueryExtentions {
                     message: message
                 };
                 // Error column headers
-                let headers = ko.toJS(ui.errors.errorsViewModel().option.headers);
+                let headers = ko.toJS(ui.errors.errorsViewModel().option().headers());
                 _.forEach(headers, function(header: any) {
                     if (util.isNullOrUndefined(record[header.name]) 
                         || !util.isNullOrUndefined(error[header.name])) return;
@@ -3171,28 +3181,27 @@ module nts.uk.ui.jqueryExtentions {
                             let constraint = column.constraint;
                             let valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
                                         : constraint.cDisplayType;
-                            if (valueType === "TimeWithDay") {
-                                if (uk.util.isNullOrUndefined(value)) return value;
-                                let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
-                                let timeOpts = { timeWithDay: true };
-                                let formatter = new text.TimeWithDayFormatter(timeOpts);
-                                value = formatter.format(minutes);
-                            } else if (valueType === "Clock") {
-                                if (util.isNullOrUndefined(value)) return value;
-                                let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
-                                let timeOpts = { timeWithDay: false };
-                                let formatter = new text.TimeWithDayFormatter(timeOpts);
-                                value = formatter.format(minutes);
-                            } else if (valueType === "Currency") {
-                                if (uk.util.isNullOrUndefined(value)) return value; 
-                                let currencyOpts: any = new ui.option.CurrencyEditorOption();
-                                currencyOpts.grouplength = constraint.groupLength | 3;
-                                currencyOpts.decimallength = constraint.decimalLength | 2;
-                                currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
-                                let groupSeparator = constraint.groupSeparator || ",";
-                                let rawValue = text.replaceAll(value, groupSeparator, "");
-                                let formatter = new uk.text.NumberFormatter({ option: currencyOpts });
-                                value = formatter.format(Number(rawValue));
+                            if (!uk.util.isNullOrUndefined(value) && !_.isEmpty(value)) {
+                                if (valueType === "TimeWithDay") {
+                                    let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                    let timeOpts = { timeWithDay: true };
+                                    let formatter = new text.TimeWithDayFormatter(timeOpts);
+                                    value = formatter.format(minutes);
+                                } else if (valueType === "Clock") {
+                                    let minutes = time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                    let timeOpts = { timeWithDay: false };
+                                    let formatter = new text.TimeWithDayFormatter(timeOpts);
+                                    value = formatter.format(minutes);
+                                } else if (valueType === "Currency") { 
+                                    let currencyOpts: any = new ui.option.CurrencyEditorOption();
+                                    currencyOpts.grouplength = constraint.groupLength | 3;
+                                    currencyOpts.decimallength = constraint.decimalLength | 2;
+                                    currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
+                                    let groupSeparator = constraint.groupSeparator || ",";
+                                    let rawValue = text.replaceAll(value, groupSeparator, "");
+                                    let formatter = new uk.text.NumberFormatter({ option: currencyOpts });
+                                    value = formatter.format(Number(rawValue));
+                                }
                             }
                         }
                         var _self = self;

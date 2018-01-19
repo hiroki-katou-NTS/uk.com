@@ -36,7 +36,7 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 		List<CheckCondition> checkConList = c.getCheckConditonList().stream()
 				.map(x -> new CheckCondition(c.getAlarmPatternCD(), companyId,
 						EnumAdaptor.valueOf(x.getAlarmCategory(), AlarmCategory.class), x.getCheckConditionCodes(),
-						(ExtractionRangeBase) x.getExtractPeriod().toDomain()))
+						(ExtractionRangeBase) x.getExtractionPeriodDaily().toDomain()))
 				.collect(Collectors.toList());
 		
 		// set update property  

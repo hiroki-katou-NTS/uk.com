@@ -16,17 +16,38 @@ module nts.uk.at.view.kal004.a.service {
                 authSetting: true,
                 roleIds: ['0001', '0002']    
             }
+            let extractionDailyDto= {
+                extractionId: "",
+                extractionRange: 0,
+                strSpecify: 0,
+                strPreviousDay: 0,
+                strMakeToDay: 0,
+                strDay: 3,
+                strPreviousMonth: null,
+                strCurrentMonth: null,
+                strMonth: null,
+                endSpecify: 0,
+                endPreviousDay: 0,
+                endMakeToDay: 0,
+                endDay: 1,
+                endPreviousMonth: null,
+                endCurrentMonth: null,
+                endMonth: null
+            }
             let checkConditionDto1={
                 alarmCategory: 1, 
-                checkConditionCodes: ['001', '002']    
+                checkConditionCodes: ['001', '002'],
+                extractionDailyDto:    extractionDailyDto 
             }
             let checkConditionDto2={
                 alarmCategory: 2, 
-                checkConditionCodes: ['003', '004', '005']    
+                checkConditionCodes: ['003', '004', '005'],
+                 extractionDailyDto:    extractionDailyDto     
             }
             let checkConditionDto3={
                 alarmCategory: 3, 
-                checkConditionCodes: ['006', '007', '008']    
+                checkConditionCodes: ['006', '007', '008'] ,
+                extractionDailyDto:    extractionDailyDto    
             }                          
             let alarmPatternSettingDto1 ={
                 alarmPatternCD : '01',
@@ -46,15 +67,15 @@ module nts.uk.at.view.kal004.a.service {
                 alarmPerSet : alarmPermissionSettingDto,
                 checkConList : [checkConditionDto1, checkConditionDto2, checkConditionDto3]    
             }            
-            let dfd = $.Deferred();
-            let alarmResult = [alarmPatternSettingDto1, alarmPatternSettingDto2, alarmPatternSettingDto3];
-            let alarmResolve = _.sortBy(alarmResult, [function(o) { return o.alarmPatternCD; }]);
-            dfd.resolve(alarmResolve);
-            return dfd.promise(alarmResolve);
-            //return nts.uk.request.ajax("at", paths.getAlarmPattern);
+//            let dfd = $.Deferred();
+//            let alarmResult = [alarmPatternSettingDto1, alarmPatternSettingDto2, alarmPatternSettingDto3];
+//            let alarmResolve = _.sortBy(alarmResult, [function(o) { return o.alarmPatternCD; }]);
+//            dfd.resolve(alarmResolve);
+//            return dfd.promise(alarmResolve);
+            return nts.uk.request.ajax("at", paths.getAlarmPattern);
         }        
 
-        export function getCheckConditionCode(): JQueryPromise<Array<share.ModelCheckConditonCode>> {
+        export function getCheckConditionCode(): JQueryPromise<Array<share.AlarmCheckConditonCodeDto>> {
             let enum1 ={
                 value: 1,
                 fieldName: "日次",
@@ -125,17 +146,17 @@ module nts.uk.at.view.kal004.a.service {
                 checkConditionName: 'checkCondition009',
                 listRoleId: ['0001', '0002', '0003', '0004', '0005', '0006'],   
             }
-            let result = [alarmCheck1, alarmCheck2, alarmCheck3, alarmCheck4, alarmCheck5, alarmCheck6, alarmCheck7, alarmCheck8, alarmCheck9];
-            let resolve = _.map(result, (x) =>{return new share.ModelCheckConditonCode(x) });                   
-            let dfd = $.Deferred();
-            dfd.resolve(resolve);
-            return dfd.promise(resolve);                                      
-            //return nts.uk.request.ajax("at", paths.getCheckConditionCode);
+//            let result = [alarmCheck1, alarmCheck2, alarmCheck3, alarmCheck4, alarmCheck5, alarmCheck6, alarmCheck7, alarmCheck8, alarmCheck9];
+//            let resolve = _.map(result, (x) =>{return new share.ModelCheckConditonCode(x) });                   
+//            let dfd = $.Deferred();
+//            dfd.resolve(resolve);
+//            return dfd.promise(resolve);                                      
+              return nts.uk.request.ajax("at", paths.getCheckConditionCode);
         }         
         
 
         /** add Alarm pattern setting */
-        export function addAlarmPattern(alarm: any): JQueryPromise<void> {
+        export function addAlarmPattern(alarm: share.AddAlarmPatternSettingCommand): JQueryPromise<void> {
             return nts.uk.request.ajax("at", paths.addAlarmPattern, alarm);
         }
     
@@ -145,7 +166,7 @@ module nts.uk.at.view.kal004.a.service {
         }
         
         /** Update Alarm pattern setting */
-        export function updateAlarmPattern(alarm: any): JQueryPromise<void> {
+        export function updateAlarmPattern(alarm: share.AddAlarmPatternSettingCommand): JQueryPromise<void> {
             return nts.uk.request.ajax("at", paths.updateAlarmPattern, alarm );
         }
  

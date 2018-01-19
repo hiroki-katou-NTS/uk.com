@@ -8,7 +8,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
 
     export class ScreenModel {
-        currentErrAlaCheckCondition: KnockoutObservable<sharemodel.ErrorAlarmCondition>;
+        workRecordExtractingCondition: KnockoutObservable<sharemodel.WorkRecordExtractingCondition>;
         // list item check
         listTypeCheckWorkRecords    : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         listSingleValueCompareTypes : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
@@ -16,44 +16,52 @@ module nts.uk.at.view.kal003.b.viewmodel{
         listCompareTypes            : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetServiceType_BA1_2         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetSelectionRange_BA1_5         : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
-        itemListTargetSelectionRange_BA1_5_target_working_hours : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         listAllWorkType         : Array<string> = ([]);
         listAllAttdItem         : Array<string> = ([]);
-        listAllSettingTimeZone  : Array<string> = ([]);
+        listAllWorkingTime  : Array<string> = ([]);
 
         displayWorkTypeSelections_BA1_4         : KnockoutObservable<string> = ko.observable('');
-        displayWorkTimeItemSelections_BA2_3     : KnockoutObservable<string> = ko.observable('');
-        displayWorkingTimeZoneSelections_BA5_3  : KnockoutObservable<string> = ko.observable('');
-        targetServiceTypeSelected_BA1_2         : KnockoutObservable<number> = ko.observable(1);
-        targetSelectionRangeSelected_BA1_5      : KnockoutObservable<number> = ko.observable(0);
-        targetSelectionRangeSelected_BA1_5_target_working_hours : KnockoutObservable<number> = ko.observable(1);
-        private setting : sharemodel.ErrorAlarmCondition;
+        displayAttendanceItemSelections_BA2_3     : KnockoutObservable<string> = ko.observable('');
+        displayWorkingTimeSelections_BA5_3  : KnockoutObservable<string> = ko.observable('');
+               
+        private setting : sharemodel.WorkRecordExtractingCondition;
         swANDOR_B5_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         swANDOR_B6_3 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         swANDOR_B7_2 : KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         enableComparisonMaxValue : KnockoutObservable<boolean> = ko.observable(false);
+        comparisonRange : KnockoutObservable<model.ComparisonValueRange>;
+
         constructor() {
             let self = this;
-            var option = windows.getShared('inputKal003b');
-            self.setting = $.extend({}, shareutils.getDefaultErrorAlarmCondition(0), option);
-            self.currentErrAlaCheckCondition = ko.observable(self.setting);
+            let option = windows.getShared('inputKal003b');
+            self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option);
+            self.workRecordExtractingCondition = ko.observable(self.setting);
+            // setting comparison value range
+            
+            let erAlAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
+            self.comparisonRange = ko.observable(new model.ComparisonValueRange(
+                self.workRecordExtractingCondition().checkItem
+                , erAlAtdItemCondition.compareOperator
+                , erAlAtdItemCondition.compareStartValue()
+                , erAlAtdItemCondition.compareEndValue()));
+                
             // change select item check
-            self.currentErrAlaCheckCondition().checkItem.subscribe((itemCheck) => {
+            self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                 errors.clearAll();
                 if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
                     self.initialScreen();
                 }
             });
-            self.currentErrAlaCheckCondition().comparisonOperator.subscribe((comparisonOperatorId) => {
-                errors.clearAll();
-                self.settingEnableComparisonMaxValueField();
-            });
 
-            self.currentErrAlaCheckCondition().compoundCondition().hasGroup2.subscribe((hsGroup2) => {
-                if (hsGroup2) {
-                    $("#table-group2condition").ntsFixedTable();
-                }
+            /*
+            self.currentErrAlaCheckCondition().minimumValue.subscribe((minimumValue) => {
+                
+                self.checkValidOfRange(0); //min
             });
+            self.currentErrAlaCheckCondition().maximumValue.subscribe((maximumValue) => {
+                self.checkValidOfRange(1); //max
+            });
+            */
         }
 
         //initial screen
@@ -80,32 +88,89 @@ module nts.uk.at.view.kal003.b.viewmodel{
          */
         private settingEnableComparisonMaxValueField() {
             let self = this;
-            self.enableComparisonMaxValue(self.currentErrAlaCheckCondition().comparisonOperator() > 5);
+            self.enableComparisonMaxValue(
+                self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon[0]().compareOperator() > 5);
         }
-
+        
+        /**
+         * valid range of comparision 
+         */
+        /*
+        private checkValidOfRange(textBox : number) : boolean {
+            let self = this,
+                currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+            let isValid : boolean = true;
+            
+            if (currentErrAlaCheckCondition.comparisonOperator() > 5) {
+                let minValue : number = undefined;
+                let maxValue : number = undefined;
+                switch (currentErrAlaCheckCondition.checkItem()) {
+                    case enItemCheck.Time:          //時間 - 0: check time
+                    case enItemCheck.CountinuousTime:   //連続時間 - 4:  check time
+                        minValue = nts.uk.time.parseTime(currentErrAlaCheckCondition.minimumValue()).toValue();
+                        maxValue = nts.uk.time.parseTime(currentErrAlaCheckCondition.maximumValue()).toValue();
+                        break;
+                    case enItemCheck.Times:         //回数 - 1: check times
+                        minValue = parseInt(currentErrAlaCheckCondition.minimumValue());
+                        maxValue = parseInt(currentErrAlaCheckCondition.maximumValue());
+                        break;
+                    case enItemCheck.AmountOfMoney: //金額 - 2: check amount of money
+                        minValue = parseFloat(currentErrAlaCheckCondition.minimumValue());
+                        maxValue = parseFloat(currentErrAlaCheckCondition.maximumValue());
+                        break;
+                    case enItemCheck.TimeOfDate:    //時刻の場合 - 3: time within day
+                        minValue = nts.uk.time.parseTimeOfTheDay(currentErrAlaCheckCondition.minimumValue()).toValue();
+                        maxValue = nts.uk.time.parseTimeOfTheDay(currentErrAlaCheckCondition.maximumValue()).toValue();
+                        break
+                    default:
+                        break;
+                }
+                
+                if (minValue != undefined && maxValue != undefined) {
+                    isValid = self.compareValid(currentErrAlaCheckCondition.comparisonOperator(), minValue, maxValue);
+                }
+            }
+            if (!isValid) {
+                dialog.info({ messageId: "Msg_927" });
+                if(textBox === 1) { //max
+                    $('#[KAL003_65]').ntsError('set', {messageId:"Msg_927"});
+                    $('#[KAL003_65]').focus();
+                } else {
+                    $('#[KAL003_64]').ntsError('set', {messageId:"Msg_927"});
+                    $('#[KAL003_64]').focus();
+                }
+            }
+            return isValid;
+        }
+        */
+        /**
+         * execute check valid of range
+         */
+        /*
+        private compareValid(comOper : number, minValue : number, maxValue: number): boolean {
+             switch (comOper) {
+                case 6: // 範囲の間（境界値を含まない）（＜＞）
+                case 8: // 範囲の外（境界値を含まない）（＞＜）
+                    return (minValue >= maxValue);
+                case 7: // 範囲の間（境界値を含む）（≦≧）
+                case 9: // 範囲の外（境界値を含む）（≧≦）
+                    return (minValue > maxValue);
+                default:
+                    break;
+            }
+            return true;
+        }
+        */
         /**
          * initial screen
          */
         private initialScreen() : JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            switch (self.currentErrAlaCheckCondition().category) {
-            case enCategory.Daily:
-                self.initialDaily().done(() => {
-                    self.settingEnableComparisonMaxValueField();
-                    dfd.resolve();
-                });
-                break;
-            case enCategory.Weekly:
+            self.initialDaily().done(() => {
+                self.settingEnableComparisonMaxValueField();
                 dfd.resolve();
-                break;
-            case enCategory.Monthly:
-                dfd.resolve();
-                break;
-            default:
-                dfd.resolve();
-                break;
-            }
+            });
             return dfd.promise();
         }
         
@@ -129,12 +194,11 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
                     self.listRangeCompareTypes(self.getLocalizedNameForEnum(lstRangeCompareType));
                     self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listTypeCheckWorkRecord));
-                    var listTargetRangeWithName = self.getLocalizedNameForEnum(listTargetSelectionRange);
+                    let listTargetRangeWithName = self.getLocalizedNameForEnum(listTargetSelectionRange);
                     self.itemListTargetSelectionRange_BA1_5(listTargetRangeWithName);
-                    self.itemListTargetSelectionRange_BA1_5_target_working_hours(listTargetRangeWithName);
                     self.itemListTargetServiceType_BA1_2(self.getLocalizedNameForEnum(listTargetServiceType));
                     self.buildListCompareTypes();
-                    var listANDOR = self.getLocalizedNameForEnum(listLogicalOperator)
+                    let listANDOR = self.getLocalizedNameForEnum(listLogicalOperator)
                   //ENUM 論理演算子
                     self.swANDOR_B5_3 = ko.observableArray(listANDOR);
                     //ENUM 論理演算子
@@ -178,31 +242,37 @@ module nts.uk.at.view.kal003.b.viewmodel{
          * Initial Group Condition
          * @param listGroupCondition
          */
-        private initGroupCondition(listGroupCondition : Array<sharemodel.Condition>) : Array<sharemodel.Condition> {
-            let listCondition : Array<sharemodel.Condition> = [];
-            for(var i = 0; i < listGroupCondition.length && i < 3; i++) {
-                listCondition.push(listGroupCondition[i]);
+        private initGroupCondition(listGroupCondition : Array<sharemodel.ErAlAtdItemCondition>) : Array<sharemodel.ErAlAtdItemCondition> {
+            let listCondition : Array<sharemodel.ErAlAtdItemCondition> = [];
+            let maxRow = 3;
+            if (listGroupCondition && listGroupCondition != undefined) {
+                for(var i = 0; i < listGroupCondition.length && i < maxRow; i++) {
+                    listCondition.push(listGroupCondition[i]);
+                }
             }
-            if (listCondition.length < 3) {
-                for(var i = listCondition.length; i < 3; i++) {
-                    listCondition.push(shareutils.getDefaultCondition(7));
+            if (listCondition.length < maxRow) {
+                for(var i = listCondition.length; i < maxRow; i++) {
+                    listCondition.push(shareutils.getDefaultCondition(i-1));
                 }
             }
             return listCondition;
         }
-        
+ 
         /**
          * Initial Compound Group Condition
          */
         private initCompoundGroupCondition() {
-            let self = this, currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
-            let compoundCondition = currentErrAlaCheckCondition.compoundCondition();
-            let listGr1 = self.initGroupCondition(compoundCondition.group1Condition().groupListCondition());
-            compoundCondition.group1Condition().groupListCondition(listGr1);
-            let listGr2 = self.initGroupCondition(compoundCondition.group2Condition().groupListCondition());
-            compoundCondition.group2Condition().groupListCondition(listGr2);
-            $("#table-group1condition").ntsFixedTable();
-            $("#table-group2condition").ntsFixedTable();
+            let self = this,
+                errorAlarmCondition = self.workRecordExtractingCondition().errorAlarmCondition();
+            let compoundCondition = errorAlarmCondition.atdItemCondition();
+            if (!compoundCondition || compoundCondition == undefined) {
+                compoundCondition = shareutils.getDefaultAttendanceItemCondition();
+                errorAlarmCondition.atdItemCondition(compoundCondition);
+            }
+            let listGr1 = self.initGroupCondition(compoundCondition.group1().lstErAlAtdItemCon());
+            compoundCondition.group1().lstErAlAtdItemCon(listGr1);
+            let listGr2 = self.initGroupCondition(compoundCondition.group2().lstErAlAtdItemCon());
+            compoundCondition.group2().lstErAlAtdItemCon(listGr2);
         }
      // ============build enum for combobox BA2-5: end ==============
         // ===========common end =====================
@@ -213,7 +283,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
         private initialDaily() : JQueryPromise<any> {
             let self = this,
             dfd = $.Deferred();
-            switch (self.currentErrAlaCheckCondition().checkItem()) {
+            switch (self.workRecordExtractingCondition().checkItem()) {
                 case enItemCheck.Time:          //時間
                 case enItemCheck.Times:         //回数
                 case enItemCheck.AmountOfMoney: //金額
@@ -236,6 +306,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     dfd.resolve();
                     break;
                 default:
+                    
                     dfd.resolve();
                     break;
             }
@@ -247,15 +318,15 @@ module nts.uk.at.view.kal003.b.viewmodel{
          */
         private initialDailyItemChkItemComparison() {
             let self = this,
-            currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+            workRecordExtractingCondition = self.workRecordExtractingCondition();
             //ドメインモデル「日次の勤怠項目」を取得する - Acquire domain model "DailyAttendanceItem"
-            service.getDailyItemChkItemComparison(currentErrAlaCheckCondition.checkItem()).done((itemAttendances : Array<any>) => {
+            service.getDailyItemChkItemComparison(workRecordExtractingCondition.checkItem()).done((itemAttendances : Array<any>) => {
                 self.listAllAttdItem = self.getListAttendanceIdFromDtos(itemAttendances);
                 
                 // build name of Attendance Item
-                let listWorkTimeItemSelectedCode = self.currentErrAlaCheckCondition().workTimeItemSelections();
-                self.generateNameCorrespondingToAttendanceItem(listWorkTimeItemSelectedCode).done((names) => {
-                            self.displayWorkTimeItemSelections_BA2_3(names);
+               let listAttendanceItemSelectedCode = self.getListAttendanceItemCode();//勤怠項目の加算減算式
+                self.generateNameCorrespondingToAttendanceItem(listAttendanceItemSelectedCode).done((names) => {
+                            self.displayAttendanceItemSelections_BA2_3(names);
                 });
                 
                 //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
@@ -273,9 +344,9 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 self.listAllAttdItem = self.getListAttendanceIdFromDtos(itemAttendances);
 
                 // build name of Attendance Item
-                let listWorkTimeItemSelectedCode = self.currentErrAlaCheckCondition().workTimeItemSelections();
+                let listWorkTimeItemSelectedCode = self.getListAttendanceItemCode();//勤怠項目の加算減算式
                 self.generateNameCorrespondingToAttendanceItem(listWorkTimeItemSelectedCode).done((names) => {
-                    self.displayWorkTimeItemSelections_BA2_3(names);
+                    self.displayAttendanceItemSelections_BA2_3(names);
                 });
                 
                 //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
@@ -299,7 +370,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let self = this;
             //ドメインモデル「就業時間帯の設定」を取得する - Acquire domain model "WorkTimeSetting"
             service.getAttendCoutinousTimeZone().done((settingTimeZones) => {
-                self.initialSettingTimeZoneCodesFromDtos(settingTimeZones);
+                self.initialWorkTimeCodesFromDtos(settingTimeZones);
               //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
                 self.initialWorkTypes();
             });
@@ -308,9 +379,9 @@ module nts.uk.at.view.kal003.b.viewmodel{
         //TODO
         private initialDailyItemChkCompound() {
             let self = this,
-            currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+            workRecordExtractingCondition = self.workRecordExtractingCondition();
             //アルゴリズム「複合条件の項目取得」を実行する - Execute the algorithm "item acquisition of compound condition"
-            service.getAttendCompound(currentErrAlaCheckCondition.erAlCheckId).done((data) => {
+            service.getAttendCompound(workRecordExtractingCondition.errorAlarmCheckID).done((data) => {
                 if (data) {
                     //TODO
                 }
@@ -318,6 +389,21 @@ module nts.uk.at.view.kal003.b.viewmodel{
             });
         }
 
+        private getListAttendanceItemCode() : Array<any> {
+            let self = this,
+                workRecordExtractingCondition = self.workRecordExtractingCondition();
+            let lstErAlAtdItemCon = workRecordExtractingCondition.errorAlarmCondition()
+                .atdItemCondition().group1().lstErAlAtdItemCon();
+            let listWorkTimeItemSelectedCode = lstErAlAtdItemCon[0].countableAddAtdItems() || [];//勤怠項目の加算減算式
+            
+            return listWorkTimeItemSelectedCode;
+        }
+        private setListAttendanceItemCode(listWorkTimeItemSelectedCode : Array<any>) {
+            let self = this,
+                workRecordExtractingCondition = self.workRecordExtractingCondition();
+            let lstErAlAtdItemCon = workRecordExtractingCondition.errorAlarmCondition()
+                .atdItemCondition().group1().lstErAlAtdItemCon(listWorkTimeItemSelectedCode || []);//勤怠項目の加算減算式
+        }
         /**
          * アルゴリズム「勤怠項目に対応する名称を生成する」を実行する - Execute algorithm "Generate name corresponding to attendance item"
          * @param List<itemAttendanceId>
@@ -379,18 +465,27 @@ module nts.uk.at.view.kal003.b.viewmodel{
          * 
          */
         private initialWorkTypes() : void {
-            let self =this;
+            let self =this,
+                workTypeCondition = self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition();
             self.listAllWorkType = [];
+            // get all Work type
             service.getAttendCoutinousWork().done((workTypes) => {
                 if (workTypes && workTypes != undefined) {
                     for(var i = 0; i < workTypes.length; i++) {
                         self.listAllWorkType.push(workTypes[i].workTypeCode);
                     }
-                    self.displayWorkTypeSelections_BA1_4(self.buildItemName(workTypes));
-                } else {
-                    self.displayWorkTypeSelections_BA1_4('');
                 }
             });
+            // get Name of selected work type.
+            let wkTypeSelected = workTypeCondition.planLstWorkType();
+            if (wkTypeSelected && wkTypeSelected.length > 0) {
+                service.findWorkTypeByCodes(wkTypeSelected).done((listWrkTypes) => {
+                    let names : string = self.buildItemName(listWrkTypes);
+                    self.displayWorkTypeSelections_BA1_4(names);
+                });
+            } else {
+                self.displayWorkTypeSelections_BA1_4("");
+            }
         }
         
         /**
@@ -408,15 +503,16 @@ module nts.uk.at.view.kal003.b.viewmodel{
         }
         
         /**
-         * initial list of Setting Time Zone Code, selected name from list Dtos
+         * initial list of Setting Work Time Code, selected name from list Dtos
          * @param settingTimeZones
          */
-        private initialSettingTimeZoneCodesFromDtos (settingTimeZones : Array<any>) {
+        /*
+        private initialWorkTimeZoneCodesFromDtos (settingTimeZones : Array<any>) {
             let self = this;
             let names : string = '';
             if (settingTimeZones && settingTimeZones != undefined) {
                 for(var i = 0; i < settingTimeZones.length; i++) {
-                    self.listAllSettingTimeZone.push(settingTimeZones[i].worktimeCode);
+                    self.listAllWorkTime.push(settingTimeZones[i].worktimeCode);
                     if (names) {
                         names = names + "," + settingTimeZones[i].worktimeName;
                     } else {
@@ -424,8 +520,9 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     }
                 }
             }
-            self.displayWorkingTimeZoneSelections_BA5_3(names);
+            self.displayWorkTimeSelections_BA5_3(names);
         }
+        */
           //==========Daily session End====================
 
         /**
@@ -447,10 +544,10 @@ module nts.uk.at.view.kal003.b.viewmodel{
          */
         btnSettingBA1_3_click () {
             let self = this,
-                currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+                workTypeCondition = self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition();
 
             block.invisible();
-            let lstSelectedCode = currentErrAlaCheckCondition.workTypeSelections();
+            let lstSelectedCode = workTypeCondition.planLstWorkType();
             //let lstSelectableCode = "001,002,003,006,111,112,113,114,115,116,117,118,119,120,121,122, 123,124,125,126,127,999".split(",");
 
             windows.setShared("KDL002_Multiple", true);
@@ -464,7 +561,8 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 let listItems : Array<any> = windows.getShared("KDL002_SelectedNewItem");
                 if (listItems != null && listItems != undefined) {
                     let listCodes : Array<string> = self.getListCode(listItems);
-                    currentErrAlaCheckCondition.workTypeSelections(listCodes);
+                    workTypeCondition.planLstWorkType(listCodes);
+                    // get name
                     let names : string = self.buildItemName(listItems);
                     self.displayWorkTypeSelections_BA1_4(names);
                     
@@ -478,13 +576,13 @@ module nts.uk.at.view.kal003.b.viewmodel{
          */
         btnSettingBA5_2_click() {
             let self = this,
-                currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+                workTimeCondition = self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition();
 
             block.invisible();
-            let lstSelectedCode = currentErrAlaCheckCondition.workingTimeZoneSelections();
+            let lstSelectedCode = workTimeCondition.planLstWorkTime();
             windows.setShared("kml001multiSelectMode", true);
             //all possible items
-            windows.setShared("kml001selectAbleCodeList", self.listAllSettingTimeZone);
+            windows.setShared("kml001selectAbleCodeList", self.listAllWorkingTime);
             //selected items
             windows.setShared("kml001selectedCodeList", lstSelectedCode);
             windows.sub.modal("/view/kdl/001/a/index.xhtml", 
@@ -492,10 +590,11 @@ module nts.uk.at.view.kal003.b.viewmodel{
               //get data from share window
                 let listItems : Array<any> = windows.getShared("kml001selectedCodeList");
                 if (listItems != null && listItems != undefined) {
-                    let listCodes : Array<string> = self.getListCode(listItems);
-                    currentErrAlaCheckCondition.workingTimeZoneSelections(listCodes);
-                    let names : string = self.buildItemName(listItems);
-                    self.displayWorkingTimeZoneSelections_BA5_3(names);
+                    workTimeCondition.planLstWorkTime(listItems);
+                    //get name
+                    self.generateNameCorrespondingToAttendanceItem(listItems).done((data) => {
+                        self.displayWorkingTimeSelections_BA5_3(data);
+                    });
                 }
                 block.clear();
             });
@@ -505,11 +604,10 @@ module nts.uk.at.view.kal003.b.viewmodel{
          * open dialog for select working time zone
          */
         btnSettingBA2_2_click() {
-            let self = this,
-            currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+            let self = this;
 
             block.invisible();
-            let lstSelectedCode = currentErrAlaCheckCondition.workTimeItemSelections();
+            let lstSelectedCode = self.getListAttendanceItemCode();
             windows.setShared("Multiple", true);
             //all possible items
             windows.setShared("AllAttendanceObj", self.listAllAttdItem);
@@ -520,15 +618,18 @@ module nts.uk.at.view.kal003.b.viewmodel{
               //get data from share window
                 let listItems = windows.getShared('selectedChildAttendace');
                 if (listItems != null && listItems != undefined) {
-                    let listCodes : Array<string> = self.getListCode(listItems);
-                    currentErrAlaCheckCondition.workTimeItemSelections(listCodes);
-                    /*
-                    self.generateNameCorrespondingToAttendanceItem(listAttendenceItemCode).done((data) => {
-                        self.displayWorkTimeItemSelections_BA2_3(data);
+                    self.setListAttendanceItemCode(listItems);
+                    // get name
+                    self.generateNameCorrespondingToAttendanceItem(listItems).done((data) => {
+                        self.displayAttendanceItemSelections_BA2_3(data);
                     });
-                    */
-                    let names = self.buildItemName(listItems);
-                    self.displayWorkTimeItemSelections_BA2_3(names);
+                    
+                   let group1 = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1();
+                    let listErAlAtdItemCondition = group1.lstErAlAtdItemCon();
+                    let erAlAtdItemCondition = listErAlAtdItemCondition[0];
+                    self.comparisonRange().comparisonOperator(erAlAtdItemCondition.compareOperator());
+                    self.comparisonRange().minValue(erAlAtdItemCondition.compareStartValue());
+                    self.comparisonRange().maxValue(erAlAtdItemCondition.compareEndValue());
                 }
                 block.clear();
             });
@@ -537,15 +638,16 @@ module nts.uk.at.view.kal003.b.viewmodel{
         /**
          * Open dialog C for group condition 1
          */
+        /*
         btnSettingB5_7_click () {
             let self = this,
-                currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+                workRecordExtractingCondition = self.workRecordExtractingCondition();
 
             alert("open dialog B5_7");
 
             block.invisible();
 
-            let lstSelectedCode = currentErrAlaCheckCondition.workTypeSelections();
+            let lstSelectedCode = workRecordExtractingCondition.workTypeSelections();
             let lstSelectableCode = [];
             
             windows.setShared('KAL003C_Multiple',false,true);
@@ -563,18 +665,20 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 block.clear();
             });
         }
+        */
         /**
          * Open dialog C for group condition 2
          */
+        /*
         btnSettingB16_5_click () {
             let self = this,
-                currentErrAlaCheckCondition = self.currentErrAlaCheckCondition();
+                workRecordExtractingCondition = self.workRecordExtractingCondition();
 
             alert("open dialog B16_5");
 
             block.invisible();
 
-            let lstSelectedCode = currentErrAlaCheckCondition.workTypeSelections();
+            let lstSelectedCode = workRecordExtractingCondition.workTypeSelections();
             let lstSelectableCode = [];
             
             windows.setShared('KAL003C_Multiple',false,true);
@@ -592,14 +696,29 @@ module nts.uk.at.view.kal003.b.viewmodel{
             });
         }
         
-        
+        */
         /**
          * close dialog B and return result
          */
         btnDecision() {
-            let self = this;
-            windows.setShared('outputKal003b', self.currentErrAlaCheckCondition());
-            windows.close();
+            let self = this,
+                workRecordExtractingCondition = self.workRecordExtractingCondition();
+                
+             // validate comparison range
+            let group1 = workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1();
+            let listErAlAtdItemCondition = group1.lstErAlAtdItemCon();
+            let erAlAtdItemCondition = listErAlAtdItemCondition[0];
+            if (self.comparisonRange().checkValidOfRange(
+                workRecordExtractingCondition.checkItem()
+                , erAlAtdItemCondition.compareOperator()
+                , 1)) {
+                
+                erAlAtdItemCondition.compareStartValue(self.comparisonRange().minValue());
+                erAlAtdItemCondition.compareEndValue(self.comparisonRange().maxValue());
+                
+                windows.setShared('outputKal003b', workRecordExtractingCondition);
+                windows.close();
+            }
         }
         /**
          * close dialog B and return result
@@ -655,7 +774,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 self.localizedName = param.localizedName || '';
             }
         }
-        
+        /*
         export interface IAttdItemDto {
             attendanceItemId            : number;
             attendanceItemName          : string;
@@ -735,5 +854,176 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 self.attendanceItemDisplayNumber = param.attendanceItemDisplayNumber || 0;
             }
         }
-    }
+        */
+        /**
+         * ComparisonValueRange
+         */
+        export class ComparisonValueRange {
+            minTimeValue: KnockoutObservable<string> =  ko.observable('');
+            maxTimeValue: KnockoutObservable<string> =  ko.observable('');
+            
+            minTimesValue: KnockoutObservable<string> =  ko.observable('0');
+            maxTimesValue: KnockoutObservable<string> =  ko.observable('0');
+            
+            minAmountOfMoneyValue: KnockoutObservable<string> =  ko.observable('0');
+            maxAmountOfMoneyValue: KnockoutObservable<string> =  ko.observable('0');
+            
+            minTimeWithinDayValue: KnockoutObservable<string> =  ko.observable('0');
+            maxTimeWithinDayValue: KnockoutObservable<string> =  ko.observable('0');
+            minValue : KnockoutObservable<string> =  ko.observable('');
+            maxValue : KnockoutObservable<string> =  ko.observable('');
+            
+            checkItem : KnockoutObservable<number> =  ko.observable(0);
+            comparisonOperator : KnockoutObservable<number> =  ko.observable(0);
+            constructor(checkItem : KnockoutObservable<number>, comOper : KnockoutObservable<number>, minValue : string, maxValue: string) {
+                let self = this;
+                self.minValue(minValue || '');
+                self.maxTimeValue(maxValue || '');
+                self.comparisonOperator = checkItem;
+                self.comparisonOperator = comOper;
+                switch(checkItem()) {
+                    case enItemCheck.Time:              //時間 - 0: check time
+                    case enItemCheck.CountinuousTime:   //連続時間 - 4:  check time
+                        self.minTimeValue(minValue);
+                        self.maxTimeValue(maxValue);
+                        break;
+                    case enItemCheck.Times:         //回数 - 1: check times
+                        self.minTimesValue(minValue);
+                        self.maxTimesValue(maxValue);
+                        break;
+                    case enItemCheck.AmountOfMoney: //金額 - 2: check amount of money
+                        self.minAmountOfMoneyValue(minValue);
+                        self.maxAmountOfMoneyValue(maxValue);
+                        break;
+                    case enItemCheck.TimeOfDate:    //時刻の場合 - 3: time within day
+                        self.minTimeWithinDayValue(minValue);
+                        self.maxTimeWithinDayValue(maxValue);
+                        break;
+                    default:
+                        break;
+               }
+               //時間 - 0: check time
+               //連続時間 - 4:  check time
+               self.minTimeValue.subscribe((minValue) => {
+                    if (self.checkValidOfRange(checkItem(), comOper(), 0)) { //min
+                        self.minValue(self.minTimeValue());
+                        self.maxValue(self.maxTimeValue());
+                    }
+                });
+                self.maxTimeValue.subscribe((maxValue) => {
+                    if (self.checkValidOfRange(checkItem(), comOper(), 1)) { //max
+                        self.minValue(self.minTimeValue());
+                        self.maxValue(self.maxTimeValue());
+                    }
+                });
+
+                //回数 - 1: check times
+                self.minTimesValue.subscribe((minValue) => {
+                    if (self.checkValidOfRange(checkItem(), comOper(), 0)) { //min
+                        self.minValue(self.minTimesValue());
+                        self.maxValue(self.maxTimesValue());
+                    }
+                });
+                self.maxTimesValue.subscribe((maxValue) => {
+                    if (self.checkValidOfRange(checkItem(), comOper(), 1)) { //max
+                        self.minValue(self.minTimesValue());
+                        self.maxValue(self.maxTimesValue());
+                    }
+                });
+
+                //金額 - 2: check amount of money
+                self.minAmountOfMoneyValue.subscribe((minValue) => {
+                    if (self.checkValidOfRange(checkItem(), comOper(), 0)) { //min
+                        self.minValue(self.minAmountOfMoneyValue());
+                        self.maxValue(self.maxAmountOfMoneyValue());
+                    }
+                });
+                self.maxAmountOfMoneyValue.subscribe((maxValue) => {
+                    if (self.checkValidOfRange(checkItem(), comOper(), 1)) { //max
+                        self.minValue(self.minAmountOfMoneyValue());
+                        self.maxValue(self.maxAmountOfMoneyValue());
+                    }
+                });
+                
+                //時刻の場合 - 3: time within day
+                self.minTimeWithinDayValue.subscribe((minValue) => {
+                    if (self.checkValidOfRange(checkItem(), comOper(), 0)) { //min
+                        self.minValue(self.minTimeWithinDayValue());
+                        self.maxValue(self.maxTimeWithinDayValue());
+                    }
+                });
+                self.maxTimeWithinDayValue.subscribe((maxValue) => {
+                    if (self.checkValidOfRange(checkItem(), comOper(), 1)) { //max
+                        self.minValue(self.minTimeWithinDayValue());
+                        self.maxValue(self.maxTimeWithinDayValue());
+                    }
+                });
+            }
+            
+            /**
+             * valid range of comparision 
+             */
+            checkValidOfRange(checkItem: number, comOper: number, textBox : number) : boolean {
+                let self = this;
+                let isValid : boolean = true;
+                
+                if (comOper > 5) {
+                    let minValue : number = undefined;
+                    let maxValue : number = undefined;
+                    switch (checkItem) {
+                        case enItemCheck.Time:          //時間 - 0: check time
+                        case enItemCheck.CountinuousTime:   //連続時間 - 4:  check time
+                            minValue = nts.uk.time.parseTime(self.minTimeValue()).toValue();
+                            maxValue = nts.uk.time.parseTime(self.maxTimeValue()).toValue();
+                            break;
+                        case enItemCheck.Times:         //回数 - 1: check times
+                            minValue = parseInt(self.minTimesValue());
+                            maxValue = parseInt(self.maxTimesValue());
+                            break;
+                        case enItemCheck.AmountOfMoney: //金額 - 2: check amount of money
+                            minValue = parseFloat(self.minAmountOfMoneyValue());
+                            maxValue = parseFloat(self.maxAmountOfMoneyValue());
+                            break;
+                        case enItemCheck.TimeOfDate:    //時刻の場合 - 3: time within day
+                            minValue = nts.uk.time.parseTimeOfTheDay(self.minTimeWithinDayValue()).toValue();
+                            maxValue = nts.uk.time.parseTimeOfTheDay(self.maxTimeWithinDayValue()).toValue();
+                            break
+                        default:
+                            break;
+                    }
+                    
+                    if (minValue != undefined && maxValue != undefined) {
+                        isValid = self.compareValid(comOper, minValue, maxValue);
+                    }
+                }
+                if (!isValid) {
+                    dialog.info({ messageId: "Msg_927" });
+                    if(textBox === 1) { //max
+                        $('#[KAL003_65]').ntsError('set', {messageId:"Msg_927"});
+                        $('#[KAL003_65]').focus();
+                    } else {
+                        $('#[KAL003_64]').ntsError('set', {messageId:"Msg_927"});
+                        $('#[KAL003_64]').focus();
+                    }
+                }
+                return isValid;
+            }
+            /**
+             * execute check valid of range
+             */
+            private compareValid(comOper : number, minValue : number, maxValue: number): boolean {
+                 switch (comOper) {
+                    case 6: // 範囲の間（境界値を含まない）（＜＞）
+                    case 8: // 範囲の外（境界値を含まない）（＞＜）
+                        return (minValue >= maxValue);
+                    case 7: // 範囲の間（境界値を含む）（≦≧）
+                    case 9: // 範囲の外（境界値を含む）（≧≦）
+                        return (minValue > maxValue);
+                    default:
+                        break;
+                }
+                return true;
+            }
+        }
+     }
 }

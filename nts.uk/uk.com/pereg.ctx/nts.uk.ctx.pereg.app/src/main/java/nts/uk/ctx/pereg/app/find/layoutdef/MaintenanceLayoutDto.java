@@ -20,7 +20,6 @@ public class MaintenanceLayoutDto {
 	String layoutName;
 	String maintenanceLayoutID;
 	List<LayoutPersonInfoClsDto> listItemClsDto;
-	boolean isNewLayout;
 
 
 	public MaintenanceLayoutDto(String companyId, String layoutCode, String layoutName, String maintenanceLayoutID) {

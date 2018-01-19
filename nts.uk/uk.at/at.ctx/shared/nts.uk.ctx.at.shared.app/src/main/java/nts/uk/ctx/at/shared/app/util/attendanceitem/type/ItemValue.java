@@ -21,6 +21,19 @@ public class ItemValue {
 	
 	@Getter
 	private final Integer itemId;
+	
+	private String pathLink;
+	
+	public ItemValue(Object value, ValueType valueType, String layoutCode, Integer itemId){
+		this(valueType, layoutCode, itemId, value);
+	}
+	
+	public ItemValue(ValueType valueType, String layoutCode, Integer itemId, Object value){
+		value(value);
+		this.valueType = valueType;
+		this.layoutCode = layoutCode;
+		this.itemId = itemId;
+	}
 
 	@SuppressWarnings("unchecked")
 	public <T> T value() {
@@ -43,5 +56,13 @@ public class ItemValue {
 	
 	public void value(Object value){
 		this.value = value == null ? null : value.toString();
+	}
+	
+	public void withPath(String path){
+		this.pathLink = path;
+	}
+	
+	public String path(){
+		return this.pathLink;
 	}
 }

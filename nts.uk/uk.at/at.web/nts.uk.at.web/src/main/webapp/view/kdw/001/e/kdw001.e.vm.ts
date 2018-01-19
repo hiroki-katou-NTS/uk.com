@@ -7,7 +7,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         // Time data
         isComplete: KnockoutObservable<boolean> = ko.observable(false);
         taskId: KnockoutObservable<string> = ko.observable("");
-        startTime: KnockoutObservable<string> = ko.observable(moment.utc().format("YYYY/MM/DD HH:mm:ss"));
+        startTime: KnockoutObservable<string> = ko.observable("");
         endTime: KnockoutObservable<string> = ko.observable("");
         elapseTime: kibanTimer = new kibanTimer('elapseTime');
         empCalAndSumExecLogID: KnockoutObservable<string> = ko.observable("");
@@ -30,16 +30,16 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         errorMessageInfo: KnockoutObservableArray<shareModel.PersonInfoErrMessageLog> = ko.observableArray([]);
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any> = ko.observable();
-        
+
         //enable enableCancelTask
-        enableCancelTask : KnockoutObservable<boolean> = ko.observable(true);
-        
+        enableCancelTask: KnockoutObservable<boolean> = ko.observable(true);
+
         //disappear
-        visibleDailiCreate : KnockoutObservable<boolean> = ko.observable(false);
-        visibleDailiCalculation : KnockoutObservable<boolean> = ko.observable(false);
-        visibleApproval : KnockoutObservable<boolean> = ko.observable(false);
-        visibleMonthly : KnockoutObservable<boolean> = ko.observable(false);
-        
+        visibleDailiCreate: KnockoutObservable<boolean> = ko.observable(false);
+        visibleDailiCalculation: KnockoutObservable<boolean> = ko.observable(false);
+        visibleApproval: KnockoutObservable<boolean> = ko.observable(false);
+        visibleMonthly: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {
             var self = this;
             self.elapseTime.start();
@@ -49,9 +49,9 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                 { headerText: getText('KDW001_35'), key: 'personName', width: 150 },
                 { headerText: getText('KDW001_36'), key: 'disposalDay', width: 150 },
                 { headerText: getText('KDW001_37'), key: 'messageError', width: 290 },
-                { headerText: '', key: 'GUID', width: 1 ,hirren :true },
+                { headerText: '', key: 'GUID', width: 1, hirren: true },
             ]);
-            
+
             self.selectedExeContent.subscribe((value) => {
                 self.getLogData();
             });
@@ -66,39 +66,40 @@ module nts.uk.at.view.kdw001.e.viewmodel {
 
             service.insertData(params).done((res: shareModel.AddEmpCalSumAndTargetCommandResult) => {
                 self.empCalAndSumExecLogID(res.empCalAndSumExecLogID);
-                if(params.dailyCreation ==false){
+                if (params.dailyCreation == false) {
                     _.remove(res.enumComboBox, function(n) {
-                      return n.value == 0;
+                        return n.value == 0;
                     });
                     self.visibleDailiCreate(true);
                 }
-                if(params.dailyCalClass ==false){
+                if (params.dailyCalClass == false) {
                     _.remove(res.enumComboBox, function(n) {
-                      return n.value == 1;
+                        return n.value == 1;
                     });
                     self.visibleDailiCalculation(true);
                 }
-                if(params.refApprovalresult ==false){
+                if (params.refApprovalresult == false) {
                     _.remove(res.enumComboBox, function(n) {
-                      return n.value == 2;
+                        return n.value == 2;
                     });
                     self.visibleApproval(true);
                 }
-                if(params.monthlyAggregation ==false){
+                if (params.monthlyAggregation == false) {
                     _.remove(res.enumComboBox, function(n) {
-                      return n.value == 3;
+                        return n.value == 3;
                     });
                     self.visibleMonthly(true);
                 }
-                
+
                 self.executionContents(res.enumComboBox);
-                self.startAsyncTask(); 
+                self.startTime(moment.utc(res.startTime).format("YYYY/MM/DD HH:mm:ss"));
+                self.startAsyncTask();
                 dfd.resolve();
             });
 
             return dfd.promise();
         }
-        
+
         exportLog(): void {
             var self = this;
             if (self.errorMessageInfo().length > 0)
@@ -114,7 +115,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
-        
+
         private startAsyncTask(): void {
             var self = this;
             var data: shareModel.CheckProcessCommand = {
@@ -125,7 +126,6 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             service.checkTask(data).done(res => {
                 self.taskId(res.id);
                 self.repeatCheckAsyncResult();
-                
             });
         }
 
@@ -137,18 +137,23 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                         // DailyCreate
                         self.dailyCreateCount(self.getAsyncData(info.taskDatas, "dailyCreateCount").valueAsNumber);
                         self.dailyCreateTotal(self.getAsyncData(info.taskDatas, "dailyCreateTotal").valueAsNumber);
-                        
+
                         if (!info.pending && !info.running) {
                             self.isComplete(true);
-                            
-                            // End Time
+
+                            // End count time
                             self.elapseTime.end();
-                            self.endTime(moment.utc().format("YYYY/MM/DD HH:mm:ss"));
                             
+                            // Get EndTime from server, fallback to client
+                            let endTime = self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString;
+                            if (nts.uk.text.isNullOrEmpty(endTime))
+                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
+                            self.endTime(endTime);
+
                             // DailyCreate
                             self.dailyCreateStatus(self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString);
                             self.dailyCreateHasError(self.getAsyncData(info.taskDatas, "dailyCreateHasError").valueAsString);
-                            
+
                             // Get Log data
                             self.getLogData();
                         }
@@ -164,7 +169,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             var result = _.find(data, (item) => {
                 return item.key == key;
             });
-            return result || { valueAsString: "" , valueAsNumber: 0, valueAsBoolean: false };
+            return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
         }
 
         private getLogData(): void {

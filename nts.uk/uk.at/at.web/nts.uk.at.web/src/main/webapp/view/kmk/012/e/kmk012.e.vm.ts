@@ -32,7 +32,7 @@ module nts.uk.at.view.kmk012.e {
             insertDelArray(source: any) {
                 let self = this;
                 var dfd = $.Deferred();
-
+                nts.uk.ui.block.invisible();
                 //Only get item when closureId != -1
                 _.forEach(source, function(item) {
                     if (item.closureId != -1) {
@@ -43,7 +43,7 @@ module nts.uk.at.view.kmk012.e {
                 //Insert del in server.
                 service.insertDelArray(self.clousureEmpAddDto).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    
+                    nts.uk.ui.block.clear();    
                     //Clear data when add success. To fix bug add duplicate item when not refresh web page.
                     self.clousureEmpAddDto.empCdNameList = new Array<EmpCdNameDto>();
                     
@@ -51,6 +51,7 @@ module nts.uk.at.view.kmk012.e {
 
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
+                    nts.uk.ui.block.clear();    
                 });
 
                 return dfd.promise();
@@ -126,12 +127,12 @@ module nts.uk.at.view.kmk012.e {
 
         //Combobox data Sub-Dto ClosureCdNameDto
         export class ClosureCdNameDto {
-            closureIdMain: number;
-            closureName: string;
+            id: number;
+            name: string;
 
             constructor(closureIdMain: number, closureName: string) {
-                this.closureIdMain = closureIdMain;
-                this.closureName = closureName;
+                this.id = closureIdMain;
+                this.name = closureName;
             }
         }
 

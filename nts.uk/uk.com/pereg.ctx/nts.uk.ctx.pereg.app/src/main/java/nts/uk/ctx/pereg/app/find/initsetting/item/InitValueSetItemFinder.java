@@ -77,7 +77,7 @@ public class InitValueSetItemFinder {
 
 		if (isSetText) {
 
-			this.settingItemMap.setTextForSelectionItem(result, employeeId);
+			this.settingItemMap.setTextForSelectionItem(result, employeeId, command.getBaseDate());
 
 		}
 

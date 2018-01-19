@@ -105,7 +105,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             new ItemModel('2', '役職手当'),
             new ItemModel('3', '基本給2')]);
 
-        comboColumns: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 4 },
+        comboColumns: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 1 },
+            { prop: 'name', length: 2 }]);
+        comboColumnsCalc: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 1 },
             { prop: 'name', length: 8 }]);
          comboItemsDoWork : KnockoutObservable<any> = ko.observableArray([]);
          comboItemsReason : KnockoutObservable<any> = ko.observableArray([]);
@@ -245,6 +247,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     endDate: moment(self.dateRanger().endDate).utc().toISOString()
                 },
                 displayFormat : 0,
+                initScreen: 0,
                 lstEmployee: [],
                 formatCodes: self.formatCodes()
             };
@@ -423,32 +426,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         getPrimitiveValue(value : any): string{
             var self = this;
             let valueResult : string = "";
-            if(String(value).indexOf("日") != -1){
-                //時刻
-                let valueTemp : any;
-                valueTemp = value.split('日')[1];
-                if(String(value).indexOf("当日") != -1){
-                    // same date
-                    valueResult = String(self.getHours(valueTemp));
-                }else if(String(value).indexOf("翌日") != -1){
-                    // 1 date
-                     valueResult = String(24*60 + (self.getHours(valueTemp)));
-                }else if(String(value).indexOf("翌々日") != -1){
-                    // 2 date
-                     valueResult = String(24*60*2 + (self.getHours(valueTemp)));
-                }else{
-                    // -1 date 前日
-                    valueResult = String("-"+self.getHours(valueTemp));
-                }
-                
-            }else if(String(value).indexOf(".") != -1){
-                //Money
-                for(let i = 0; i< value.split(',').length; i++){
-                    valueResult += value.split(',')[i];
-                }
-            }else if(String(value).indexOf(":") != -1){
+            if(String(value).indexOf(":") != -1){
                 // Time
-                valueResult = String(self.getHours(value));
+                valueResult = String(self.getHoursAll(value));
             }else{
                 valueResult = value;
             }
@@ -459,13 +439,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
         }
         
-        getHoursAll(value: any) : string{
+        getHoursAll(value: any) : number{
+            var self = this;
             if (value.indexOf(":") != -1) {
                 if (value.indexOf("-") != -1) {
                     let valueTemp = value.split('-')[1];
-                    return String(Number(valueTemp.split(':')[0]) * 60 + Number(valueTemp.split(':')[1]));
+                    return Number("-"+self.getHours(valueTemp));
                 } else {
-                    return String(Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]));
+                    return self.getHours(value);
                 }
             }else{
                return value;
@@ -508,10 +489,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 }
                 let param = {
                     dateRange: {
-                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                        startDate:  self.displayFormat() === 1 ?  moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                        endDate:  self.displayFormat() === 1 ?  moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
                     },
-                    displayFormat : 1,
+                    displayFormat : self.displayFormat(),
+                    initScreen: 1,
                     lstEmployee: lstEmployee,
                     formatCodes: self.formatCodes()
                 };
@@ -538,6 +520,42 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         showErrorDialog() {
             var self = this;
             let lstEmployee = [];
+            let uiErrors = nts.uk.ui.errors.getErrorList();
+            let errorValidateScreeen : any = [];
+            if (self.displayFormat() === 0) {
+                _.each(uiErrors, value => {
+                    let dateCon = _.find(self.dpData, (item: any) => {
+                        return item.id == value.rowId.substring(1, value.rowId.length);
+                    });
+
+                    let object = { date: dateCon.date , employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: value.message, itemName: "", columnKey: value.columnKey };
+                    let item = _.find(self.lstAttendanceItem(), (data) => {
+                        return String(data.id) === value.columnKey.substring(1, value.columnKey.length);
+                    })
+                    object.itemName = (item == undefined) ? "" : item.name; 
+                    errorValidateScreeen.push(object);
+                });
+            } else {
+                _.each(uiErrors, value => {
+                    let dateCon = _.find(self.dpData, (item: any) => {
+                        return item.id == value.rowId.substring(1, value.rowId.length);
+                    });
+
+                    let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: value.message, itemName: "", columnKey: value.columnKey };
+                    let item = _.find(self.lstAttendanceItem(), (data) => {
+                        return String(data.id) === value.columnKey.substring(1, value.columnKey.length);
+                    })
+                    object.itemName = (item == undefined) ? "" : item.name;
+                    errorValidateScreeen.push(object);
+                });
+            };
+//            errorValidateScreeen = [{ date: moment(self.dateRanger().startDate, "YYYY/MM/DD"), employeeCode: "00000001", employeeName: "AAA", message: "Loi gi", itemName: "AAAA", columnKey:"A312" }];
+//            _.each(errorValidateScreeen, value =>{
+//                let item = _.find(self.lstAttendanceItem(), (data) => {
+//                    return String(data.id) === value.columnKey.substring(1, value.columnKey.length);
+//                })
+//                value.itemName = (item == undefined) ? "" : item.name; 
+//            })
             if (self.displayFormat() === 0) {
                 lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
@@ -553,6 +571,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 lstEmployee: lstEmployee
             };
             nts.uk.ui.windows.setShared("paramToGetError", param);
+            nts.uk.ui.windows.setShared("errorValidate", errorValidateScreeen);
             nts.uk.ui.windows.sub.modal("/view/kdw/003/b/index.xhtml").onClosed(() => {
             });
         }
@@ -575,10 +594,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (errorCodes != undefined) {
                         let param = {
                             dateRange: {
-                                startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                                endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                                startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                                endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
                             },
                             lstEmployee: lstEmployee,
+                            displayFormat : self.displayFormat(),
                             errorCodes: errorCodes,
                             formatCodes: self.formatCodes()
                         };
@@ -620,11 +640,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             lstEmployee = self.lstEmployee();
                         }
                         let param = {
-                            dateRange: {
-                                startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                                endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                           dateRange: {
+                                startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                                endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
                             },
                             lstEmployee: lstEmployee,
+                            displayFormat : self.displayFormat(),
                             formatCodes: data
                         };
                         nts.uk.ui.block.invisible();
@@ -923,7 +944,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (!isNaN(n)) total += n;
                 }
             });
-            return total;
+            return total.toLocaleString('en');
         }
         //load kcp009 component: employee picker
         loadKcp009() {
@@ -1127,9 +1148,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     },
                     { name: 'TextEditorNumberSeparated', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } },
                     { name: 'TextEditorTimeShortHM', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } },
-                    { name: 'ComboboxCalc', options: self.comboItemsCalc(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
-                    { name: 'ComboboxReason', options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
-                    { name: 'ComboboxDoWork', options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
+                    { name: 'ComboboxCalc',  width: '250px', options: self.comboItemsCalc(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumnsCalc(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                    { name: 'ComboboxReason',  width: '120px',  options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                    { name: 'ComboboxDoWork',  width: '120px', options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                     {
                         name: 'FlexImage', source: 'ui-icon ui-icon-locked', click: function(key, rowId, evt) {
                             let data = $("#dpGrid").igGrid("getCellValue", rowId, key);

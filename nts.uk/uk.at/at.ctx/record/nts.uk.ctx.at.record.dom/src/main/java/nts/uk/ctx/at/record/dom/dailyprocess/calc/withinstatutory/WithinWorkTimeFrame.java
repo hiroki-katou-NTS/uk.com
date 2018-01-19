@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 
 /**

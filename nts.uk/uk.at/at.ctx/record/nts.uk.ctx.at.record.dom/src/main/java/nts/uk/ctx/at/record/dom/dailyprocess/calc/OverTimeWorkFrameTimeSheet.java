@@ -20,9 +20,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTi
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidOverTimeWorkSheet;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidWorkTimeSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**

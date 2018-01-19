@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshmtFixedStampReflect.
@@ -21,7 +22,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "KSHMT_FIXED_STAMP_REFLECT")
-public class KshmtFixedStampReflect implements Serializable {
+public class KshmtFixedStampReflect extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -81,6 +82,11 @@ public class KshmtFixedStampReflect implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	protected Object getKey() {
+		return this.kshmtFixedStampReflectPK;
 	}
 
 }

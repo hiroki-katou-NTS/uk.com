@@ -7,7 +7,7 @@ import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -31,7 +31,7 @@ public class LateDecisionClock {
 	 * @return
 	 */
 	public static LateDecisionClock create(
-			int workNo, WorkTimeSet predetermineTimeSet,
+			int workNo, PredetemineTimeSetting predetermineTimeSet,
 			DeductionTimeSheet deductionTimeSheet,
 			GraceTimeSetting lateGraceTime) {
 
@@ -61,7 +61,7 @@ public class LateDecisionClock {
 	 * @return
 	 */
 	public static List<LateDecisionClock> createListOfAllWorks(
-			WorkTimeSet predetermineTimeSet,
+			PredetemineTimeSetting predetermineTimeSet,
 			DeductionTimeSheet deductionTimeSheet,
 			GraceTimeSetting lateGraceTime) {
 

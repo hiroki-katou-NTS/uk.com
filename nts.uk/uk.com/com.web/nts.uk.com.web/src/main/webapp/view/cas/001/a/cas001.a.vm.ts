@@ -76,7 +76,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                         }
                         else {
-                            dialog({ messageId: "Msg_364" });
+                            dialog({ messageId: "Msg_217" });
                         }
 
                     })
@@ -400,7 +400,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 } else {
 
-                    dialog({ messageId: "Msg_217" });
+                    dialog({ messageId: "Msg_364" }).then(function(){
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                    });
 
                 }
 

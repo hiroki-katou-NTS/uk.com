@@ -13,14 +13,13 @@
 		                <th style="width: 70px;"/>
 		            </tr>
 		        </thead>
-		        
-			        <tbody data-bind=''>
-			            <tr>
-			                <td>a</td>
-			                <td>d</td>
-			                <td><button data-bind="click: openDialog" >dialog</button></td>
-			            </tr>
-			        </tbody>
+		        <tbody data-bind='foreach: ListView'>
+		            <tr>
+		                <td data-bind="text: categoryName"></td>
+		                <td data-bind="text: extractionPeriod"></td>
+		                <td><button data-bind="click: $parent.openDialog.bind($parent)" >#{i18n.getText('KAL004_23')}</button></td>
+		            </tr>
+		        </tbody>
 		    </table>
 		</div>
 

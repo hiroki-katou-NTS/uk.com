@@ -22,7 +22,7 @@ public class OutingTimeZoneDto {
 	private WithActualTimeStampDto comeBack;
 
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "外出理由")
-	@AttendanceItemValue(itemId = { 86, 93, 100, 107, 114, 121, 128, 135, 142, 149 }, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private int reason;
 	
 	private int outTimeCalc;

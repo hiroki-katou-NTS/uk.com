@@ -69,4 +69,12 @@ public enum FlowFixedRestCalcMethod {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 参照せずに打刻するであるか判定する
+	 * @return　参照せずに打刻するである
+	 */
+	public boolean isStampWithoutReference() {
+		return this.equals(STAMP_WHITOUT_REFER);
+	}
 }

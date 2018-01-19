@@ -51,6 +51,6 @@ public class OutingTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand 
 				c.getAfterRoundingTimesOfDay() == null ? null : new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
 				c.getTimesOfDay() == null ? null : new TimeWithDayAttr(c.getTimesOfDay()),
 				c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
-				c.getStampSourceInfo() == null ? null : ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
+				c.getStampSourceInfo() == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

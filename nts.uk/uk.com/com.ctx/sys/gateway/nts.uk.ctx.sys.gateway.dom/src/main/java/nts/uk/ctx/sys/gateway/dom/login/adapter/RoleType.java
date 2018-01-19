@@ -7,6 +7,7 @@ package nts.uk.ctx.sys.gateway.dom.login.adapter;
 /**
  * The Enum RoleTypeExport.
  */
+//same enum of auth
 public enum RoleType {
 
 	/** The system manager. */

@@ -651,7 +651,6 @@ module nts.fixedtable {
                     if (!oldValue || oldValue != newValue) {
                         _.defer(() => self.itemList.valueHasMutated());
                         $(this).data('value', newValue);
-                        console.log('Test');
                     }
                 });
             }

@@ -84,6 +84,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.commandProxy().update(this.toEntityUpdate(bSchedule));
 		this.removeAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate());
 		this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getChildCareSchedules());
+		this.removeAllTimeZone(bSchedule.getEmployeeId(), bSchedule.getDate());
 		this.commandProxy().updateAll(this.updateWorkScheduleTimeZone(bSchedule));
 	}
 
@@ -329,7 +330,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		entity = optionalEntity.get();
 		domain.saveToMemento(new JpaBasicScheduleSetMemento(entity));
 		entity.workTimeCode = StringUtil.isNullOrEmpty(domain.getWorkTimeCode(), true)
-				|| ("000").equals(domain.getWorkTimeCode()) ? "   " : domain.getWorkTimeCode();
+				|| ("000").equals(domain.getWorkTimeCode()) ? null : domain.getWorkTimeCode();
 
 		return entity;
 	}
@@ -411,12 +412,10 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	}
 
 	/**
-	 * Removes the all child care.
+	 * Removes the all time zone.
 	 *
-	 * @param employeeId
-	 *            the employee id
-	 * @param baseDate
-	 *            the base date
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
 	 */
 	private void removeAllTimeZone(String employeeId, GeneralDate baseDate) {
 

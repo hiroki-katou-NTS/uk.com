@@ -139,14 +139,14 @@ module nts.uk.at.view.kmk008.k {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.reloadData(yearOrYearMonth);
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, [nts.uk.resource.getText("KMK008_30")]));
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.message));
                     });
                 } else {
                     new service.Service().addAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done((res) => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.reloadData(yearOrYearMonth);
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, [nts.uk.resource.getText("KMK008_29")]));
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.message));
                     });
                 }
             }

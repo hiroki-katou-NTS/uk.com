@@ -10,8 +10,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.Affiliatio
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandUpdateHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AddAttendanceTimeOfDailyPerformCommandAddHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AddAttendanceTimeOfDailyPerformCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandAddHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceCommandAddHandler;
@@ -49,7 +49,7 @@ public class DailyRecordWorkCommandHandler {
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "", index = 1)
 	private WorkInformationOfDailyPerformCommandAddHandler workInfoAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "", index = 1, isUpdate = true)
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "", index = 1)
 	private WorkInformationOfDailyPerformCommandUpdateHandler workInfoUpdateHandler;
 
 	/** 計算区分： 日別実績の計算区分 */
@@ -57,7 +57,7 @@ public class DailyRecordWorkCommandHandler {
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "", index = 2)
 	private CalcAttrOfDailyPerformanceCommandAddHandler calcAttrAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "", index = 2, isUpdate = true)
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "", index = 2)
 	private CalcAttrOfDailyPerformanceCommandUpdateHandler calcAttrUpdateHandler;
 
 	/** 所属情報： 日別実績の所属情報 */
@@ -65,7 +65,7 @@ public class DailyRecordWorkCommandHandler {
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "", index = 3)
 	private AffiliationInforOfDailyPerformCommandAddHandler affiliationInfoAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "", index = 3, isUpdate = true)
+	@AttendanceItemLayout(layout = "C", jpPropertyName = "", index = 3)
 	private AffiliationInforOfDailyPerformCommandUpdateHandler affiliationInfoUpdateHandler;
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
@@ -73,7 +73,7 @@ public class DailyRecordWorkCommandHandler {
 	@AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
 	private EmployeeDailyPerErrorCommandAddHandler errorAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4, isUpdate = true)
+	@AttendanceItemLayout(layout = "D", jpPropertyName = "", index = 4)
 	private EmployeeDailyPerErrorCommandUpdateHandler errorUpdateHandler;
 
 	/** 外出時間帯: 日別実績の外出時間帯 */
@@ -81,7 +81,7 @@ public class DailyRecordWorkCommandHandler {
 	@AttendanceItemLayout(layout = "E", jpPropertyName = "", index = 5)
 	private OutingTimeOfDailyPerformanceCommandAddHandler outingTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "", index = 5, isUpdate = true)
+	@AttendanceItemLayout(layout = "E", jpPropertyName = "", index = 5)
 	private OutingTimeOfDailyPerformanceCommandUpdateHandler outingTimeUpdateHandler;
 
 	/** 休憩時間帯: 日別実績の休憩時間帯 */
@@ -89,23 +89,23 @@ public class DailyRecordWorkCommandHandler {
 	@AttendanceItemLayout(layout = "F", jpPropertyName = "", index = 6)
 	private BreakTimeOfDailyPerformanceCommandAddHandler breakTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "F", jpPropertyName = "", index = 6, isUpdate = true)
+	@AttendanceItemLayout(layout = "F", jpPropertyName = "", index = 6)
 	private BreakTimeOfDailyPerformanceCommandUpdateHandler breakTimeUpdateHandler;
 
 	/** 勤怠時間: 日別実績の勤怠時間 */
 	@Inject
 	@AttendanceItemLayout(layout = "G", jpPropertyName = "", index = 7)
-	private AddAttendanceTimeOfDailyPerformCommandAddHandler attendanceTimeAddHandler;
+	private AttendanceTimeOfDailyPerformCommandAddHandler attendanceTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "G", jpPropertyName = "", index = 7, isUpdate = true)
-	private AddAttendanceTimeOfDailyPerformCommandUpdateHandler attendanceTimeUpdateHandler;
+	@AttendanceItemLayout(layout = "G", jpPropertyName = "", index = 7)
+	private AttendanceTimeOfDailyPerformCommandUpdateHandler attendanceTimeUpdateHandler;
 
 	/** 作業別勤怠時間: 日別実績の作業別勤怠時間 */
 	@Inject
 	@AttendanceItemLayout(layout = "H", jpPropertyName = "", index = 8)
 	private AttendanceTimeByWorkOfDailyCommandAddHandler attendanceTimeByWorkAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "H", jpPropertyName = "", index = 8, isUpdate = true)
+	@AttendanceItemLayout(layout = "H", jpPropertyName = "", index = 8)
 	private AttendanceTimeByWorkOfDailyCommandUpdateHandler attendanceTimeByWorkUpdateHandler;
 
 	/** 出退勤: 日別実績の出退勤 */
@@ -113,7 +113,7 @@ public class DailyRecordWorkCommandHandler {
 	@AttendanceItemLayout(layout = "I", jpPropertyName = "", index = 9)
 	private TimeLeavingOfDailyPerformanceCommandAddHandler timeLeavingAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "I", jpPropertyName = "", index = 9, isUpdate = true)
+	@AttendanceItemLayout(layout = "I", jpPropertyName = "", index = 9)
 	private TimeLeavingOfDailyPerformanceCommandUpdateHandler timeLeavingUpdatedHandler;
 
 	/** 短時間勤務時間帯: 日別実績の短時間勤務時間帯 */
@@ -121,7 +121,7 @@ public class DailyRecordWorkCommandHandler {
 	@AttendanceItemLayout(layout = "J", jpPropertyName = "", index = 10)
 	private ShortTimeOfDailyCommandAddHandler shortWorkTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "J", jpPropertyName = "", index = 10, isUpdate = true)
+	@AttendanceItemLayout(layout = "J", jpPropertyName = "", index = 10)
 	private ShortTimeOfDailyCommandUpdateHandler shortWorkTimeUpdateHandler;
 
 	/** 特定日区分: 日別実績の特定日区分 */
@@ -129,7 +129,7 @@ public class DailyRecordWorkCommandHandler {
 	@AttendanceItemLayout(layout = "K", jpPropertyName = "", index = 11)
 	private SpecificDateAttrOfDailyCommandAddHandler specificDateAttrAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "K", jpPropertyName = "", index = 11, isUpdate = true)
+	@AttendanceItemLayout(layout = "K", jpPropertyName = "", index = 11)
 	private SpecificDateAttrOfDailyCommandUpdateHandler specificDateAttrUpdateHandler;
 
 	/** 入退門: 日別実績の入退門 */
@@ -137,7 +137,7 @@ public class DailyRecordWorkCommandHandler {
 	@AttendanceItemLayout(layout = "L", jpPropertyName = "", index = 12)
 	private AttendanceLeavingGateOfDailyCommandAddHandler attendanceLeavingGateAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "L", jpPropertyName = "", index = 12, isUpdate = true)
+	@AttendanceItemLayout(layout = "L", jpPropertyName = "", index = 12)
 	private AttendanceLeavingGateOfDailyCommandUpdateHandler attendanceLeavingGateUpdateHandler;
 
 	/** 任意項目: 日別実績の任意項目 */
@@ -145,7 +145,7 @@ public class DailyRecordWorkCommandHandler {
 	@AttendanceItemLayout(layout = "M", jpPropertyName = "", index = 13)
 	private OptionalItemOfDailyPerformCommandAddHandler optionalItemAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "M", jpPropertyName = "", index = 13, isUpdate = true)
+	@AttendanceItemLayout(layout = "M", jpPropertyName = "", index = 13)
 	private OptionalItemOfDailyPerformCommandUpdateHandler optionalItemUpdateHandler;
 
 	/** 編集状態: 日別実績の編集状態 */
@@ -153,7 +153,7 @@ public class DailyRecordWorkCommandHandler {
 	//@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
 	private EditStateOfDailyPerformCommandAddHandler editStateAddHandler;
 	@Inject
-	//@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14, isUpdate = true)
+	//@AttendanceItemLayout(layout = "N", jpPropertyName = "", index = 14)
 	private EditStateOfDailyPerformCommandUpdateHandler editStateUpdateHandler;
 
 	/** 臨時出退勤: 日別実績の臨時出退勤 */
@@ -161,7 +161,7 @@ public class DailyRecordWorkCommandHandler {
 	@AttendanceItemLayout(layout = "O", jpPropertyName = "", index = 15)
 	private TemporaryTimeOfDailyPerformanceCommandAddHandler temporaryTimeAddHandler;
 	@Inject
-	@AttendanceItemLayout(layout = "O", jpPropertyName = "", index = 15, isUpdate = true)
+	@AttendanceItemLayout(layout = "O", jpPropertyName = "", index = 15)
 	private TemporaryTimeOfDailyPerformanceCommandUpdateHandler temporaryTimeUpdateHandler;
 
 	public void handleAdd(DailyRecordWorkCommand command) {

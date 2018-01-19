@@ -8,10 +8,15 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
+/**
+ * The Class PublicHolidayGrantDate.
+ */
+// 公休付与日
 @Getter
 @Setter
-// 公休付与日
-public class PublicHolidayGrantDate extends DomainObject{
+public class PublicHolidayGrantDate extends DomainObject
+					implements PublicHolidayManagementStartDate
+{
 	
 	/** The period. */
 	// 管理期間
@@ -20,9 +25,9 @@ public class PublicHolidayGrantDate extends DomainObject{
 	/**
 	 * Instantiates a new public holiday grant date.
 	 *
-	 * @param memento the memento
+	 * @param period the period
 	 */
-	public PublicHolidayGrantDate() {
-		super();
+	public PublicHolidayGrantDate(PublicHolidayPeriod period) {
+		this.period = period;
 	}
 }

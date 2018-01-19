@@ -100,7 +100,7 @@ public class TempAbsenceHisItem extends AggregateRoot {
 		case 8:
 		case 9:
 		case 10:
-			return AnyLeave.init(historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
+			return AnyLeave.init(tempAbsenceFrNo, historyId, employeeId, remarks, soInsPayCategory, familyMemberId);
 		default:
 			return null;
 		}

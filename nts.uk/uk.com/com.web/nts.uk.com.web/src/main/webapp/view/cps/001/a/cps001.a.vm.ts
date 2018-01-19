@@ -253,16 +253,12 @@ module cps001.a.vm {
                 reload = getShared(RELOAD_KEY),
                 reloadData = getShared(RELOAD_DT_KEY),
                 employee = self.employee(),
-                employees = ko.toJS(self.employees),
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             if (reload) {
-                if (employees.length == 1) {
-                    $('.btn-quick-search[tabindex=4]').click();
-                } else {
-                    $('.btn-quick-search[tabindex=3]').click();
-                }
-
+                let single = self.employees().length == 1;
+                self.employees.removeAll();
+                $('.btn-quick-search[tabindex=3]').click();
                 $.when((() => {
                     let def = $.Deferred(),
                         int = setInterval(() => {
@@ -272,7 +268,10 @@ module cps001.a.vm {
                             }
                         }, 0);
                     return def.promise();
-                })()).done(x => {
+                })()).done((employees: Array<IEmployee>) => {
+                    if (single) {
+                        self.employees(_.filter(employees, m => m.employeeId == employee.employeeId()));
+                    }
                     employee.employeeId.valueHasMutated();
                 });
             } else {
@@ -294,10 +293,9 @@ module cps001.a.vm {
                         return def.promise();
                     })()).done((employees: Array<IEmployee>) => {
                         if (params && params.employeeId) {
-                            employees = _.filter(employees, m => m.employeeId == params.employeeId);
-                            self.employees(employees);
+                            self.employees(_.filter(employees, m => m.employeeId == params.employeeId));
                         }
-                        employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                        employee.employeeId(self.employees()[0] ? self.employees()[0].employeeId : undefined);
                         setShared(RELOAD_KEY, true);
                     });
                 });
@@ -350,35 +348,7 @@ module cps001.a.vm {
                 iemp: IEmployee = ko.toJS(employee);
 
             modal('../c/index.xhtml').onClosed(() => {
-                let params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined, showAll: false };
-
-                $('.btn-quick-search[tabindex=3]').click();
-                $.when((() => {
-                    let def = $.Deferred(),
-                        int = setInterval(() => {
-                            if (self.employees().length) {
-                                clearInterval(int);
-                                def.resolve(self.employees());
-                            }
-                        }, 0);
-                    return def.promise();
-                })()).done((employees: Array<IEmployee>) => {
-                    if (!employee.employeeId()) {
-                        let employees = _.filter(self.employees(), m => m.employeeId == params.employeeId);
-                        if (!params.showAll) {
-                            self.employees(employees);
-                        }
-                        if (employees[0]) {
-                            if (employees[0].employeeId == employee.employeeId()) {
-                                employee.employeeId();
-                            } else {
-                                employee.employeeId(employees[0].employeeId);
-                            }
-                        } else {
-                            employee.employeeId(undefined);
-                        }
-                    }
-                });
+                self.start();
             });
         }
 
@@ -424,11 +394,7 @@ module cps001.a.vm {
                 };
 
             // trigger change of all control in layout
-            _.each(__viewContext.primitiveValueConstraints, x => {
-                if (_.has(x, "itemCode")) {
-                    $('#' + x.itemCode).trigger('change');
-                }
-            })
+            $('.drag-panel .nts-input').trigger('change');
 
             if (hasError()) {
                 $('#func-notifier-errors').trigger('click');
@@ -446,6 +412,7 @@ module cps001.a.vm {
                     };
 
                 setShared(RELOAD_DT_KEY, saveData);
+                setShared(REPL_KEY, REPL_KEYS.NORMAL);
 
                 info({ messageId: "Msg_15" }).then(function() {
                     unblock();
@@ -632,6 +599,9 @@ module cps001.a.vm {
 
             self.id.subscribe(id => {
                 let mode: TABS = self.mode();
+
+                setShared(REPL_KEY, REPL_KEYS.NORMAL);
+
                 if (id) {
                     if (mode == TABS.CATEGORY) {
                         let option = _.find(self.combobox(), x => x.optionValue == id);
@@ -1080,13 +1050,12 @@ module cps001.a.vm {
 
         age: KnockoutComputed<string> = ko.computed(() => {
             let self = this,
+                now = moment.utc(),
                 birthDay = self.birthDate(),
-                duration = moment.duration(moment.utc().diff(moment.utc(birthDay))),
-                years = duration.years(),
-                months = duration.months(),
-                days = duration.days();
+                birth = moment.utc(birthDay),
+                duration = moment.duration(now.diff(birth));
 
-            return (years + Number(!!(months || days))) + text('CPS001_66');
+            return duration.years() + text('CPS001_66');
         });
     }
 
