@@ -76,7 +76,7 @@
 								</tr>
 						</table>
 						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-							<div class="tab-content-1" >
+							<div class="tab-content-1 tab-content-fixsize" >
 								<div>						
 									<div id='check-condition-text'> 
 										<div id = 'select-text'><span>#{i18n.getText('KAL004_15')}</span></div>
@@ -99,10 +99,10 @@
 						            showSort:{ showLeft : false, showRight: false}									
 								  }"></div>
 							</div>
-							<div class="tab-content-2" data-bind="with: periodSetting" >
+							<div class="tab-content-2 tab-content-fixsize" data-bind="with: periodSetting" >
 								<ui:include src="periodSetting/index.xhtml" /> 
 							</div>
-							<div class="tab-content-3" data-bind="with: setPermissionModel" >
+							<div class="tab-content-3 tab-content-fixsize" data-bind="with: setPermissionModel" >
 							<ui:include src="setpermission/index.xhtml" />
 							</div>
 						</div>											
