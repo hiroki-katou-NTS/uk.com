@@ -145,26 +145,26 @@ public class RegisterBasicScheduleCommandHandler
 				// Flag to determine whether to handle
 				// the update function or not
 				boolean isAllowUpdate = true;
-//				List<WorkScheduleTimeZone> workScheduleTimeZones = basicScheduleObj.getWorkScheduleTimeZones();
-//				for (int i = 0; i < workScheduleTimeZones.size(); i++) {
-//					workScheduleTimeZones.get(i).validate();
-//					try {
-//						if (workScheduleTimeZones.get(i).getScheduleStartClock() != null
-//								|| workScheduleTimeZones.get(i).getScheduleEndClock() != null) {
-//							workScheduleTimeZones.get(i).validateTime();
-//
-//							if (basicScheduleService.isReverseStartAndEndTime(
-//									workScheduleTimeZones.get(i).getScheduleStartClock(),
-//									workScheduleTimeZones.get(i).getScheduleEndClock())) {
-//								addMessage(errList, "Msg_441,KSU001_73,KSU001_74");
-//								isAllowUpdate = false;
-//							}
-//						}
-//					} catch (BusinessException ex) {
-//						addMessage(errList, ex.getMessageId());
-//						continue;
-//					}
-//				}
+				List<WorkScheduleTimeZone> workScheduleTimeZones = basicScheduleObj.getWorkScheduleTimeZones();
+				for (int i = 0; i < workScheduleTimeZones.size(); i++) {
+					workScheduleTimeZones.get(i).validate();
+					try {
+						if (workScheduleTimeZones.get(i).getScheduleStartClock() != null
+								|| workScheduleTimeZones.get(i).getScheduleEndClock() != null) {
+							workScheduleTimeZones.get(i).validateTime();
+
+							if (basicScheduleService.isReverseStartAndEndTime(
+									workScheduleTimeZones.get(i).getScheduleStartClock(),
+									workScheduleTimeZones.get(i).getScheduleEndClock())) {
+								addMessage(errList, "Msg_441,KSU001_73,KSU001_74");
+								isAllowUpdate = false;
+							}
+						}
+					} catch (BusinessException ex) {
+						addMessage(errList, ex.getMessageId());
+						continue;
+					}
+				}
 
 				if (isAllowUpdate) {
 					basicScheduleRepo.update(basicScheduleObj);
