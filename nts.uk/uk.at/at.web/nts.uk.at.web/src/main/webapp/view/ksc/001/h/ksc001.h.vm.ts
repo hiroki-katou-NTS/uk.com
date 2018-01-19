@@ -68,10 +68,10 @@ module nts.uk.at.view.ksc001.h {
                         self.targetRange = ko.observable(nts.uk.resource.getText("KSC001_46", [data.startDate, data.endDate]));
                         self.detailContentMethod = ko.observableArray(self.loadDetailCreateMethod(data));
                         self.executionContent = ko.observableArray(self.loadDetailContentString(data));
-                        self.exeStart = ko.observable(moment(data.executionStart).format(dateTimeFormat));
-                        self.exeEnd = ko.observable(moment(data.executionEnd).format(dateTimeFormat));
+                        self.exeStart = ko.observable(moment.utc(data.executionStart).format(dateTimeFormat));
+                        self.exeEnd = ko.observable(moment.utc(data.executionEnd).format(dateTimeFormat));
                         //get diff time execution
-                        let diffTime = moment.utc(moment(data.executionEnd, dateTimeFormat).diff(moment(data.executionStart, dateTimeFormat))).format(timeFormat);
+                        let diffTime = moment.utc(moment.utc(data.executionEnd, dateTimeFormat).diff(moment.utc(data.executionStart, dateTimeFormat))).format(timeFormat);
                         self.executionDateTime = ko.observable(diffTime);
                         self.executionNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countExecution]));
                         self.errorNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countError]));
