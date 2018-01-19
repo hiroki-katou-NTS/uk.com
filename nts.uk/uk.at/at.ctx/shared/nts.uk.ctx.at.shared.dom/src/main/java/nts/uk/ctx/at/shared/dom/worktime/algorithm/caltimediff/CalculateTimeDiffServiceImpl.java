@@ -9,10 +9,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.CollectionAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.JoggingWorkTime;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.PrescribedTimezoneSetting;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 

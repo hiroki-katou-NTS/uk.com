@@ -55,4 +55,5 @@ public class CommonRestSetting extends DomainObject {
 		this.calculateMethod = RestTimeOfficeWorkCalcMethod.OFFICE_WORK_APPROP_ALL;
 	}
 
+	
 }

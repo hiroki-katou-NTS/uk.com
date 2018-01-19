@@ -12,11 +12,11 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 
 
@@ -35,7 +35,7 @@ public class BreakTimeManagement {
 	 * @return 休憩時間帯
 	 */
 	
-	public List<TimeSheetOfDeductionItem> getBreakTimeSheet(WorkTimeDivision workTimeDivision,FixRestCalcMethod calcRest,FluidPrefixBreakTimeSet noStampSet
+	public List<TimeSheetOfDeductionItem> getBreakTimeSheet(WorkTimeDivision workTimeDivision,FixedRestCalculateMethod calcRest,FlowFixedRestSet noStampSet
 															,FlowRestCalcMethod calcMethod) {
 		List<Optional<BreakTimeOfDailyPerformance>> timeSheets = new ArrayList<Optional<BreakTimeOfDailyPerformance>>();
 		/**/
@@ -71,7 +71,7 @@ public class BreakTimeManagement {
 	 * @return 休  時間帯
 
  */
-	public Optional<BreakTimeOfDailyPerformance> getFixedBreakTimeSheet(FixRestCalcMethod calcRest) {
+	public Optional<BreakTimeOfDailyPerformance> getFixedBreakTimeSheet(FixedRestCalculateMethod calcRest) {
 		if(calcRest.isReferToMaster()) {
 			return breakTimeSheetOfDaily.stream()
 										.filter(tc -> tc.getBreakType().isReferWorkTime())
@@ -92,21 +92,21 @@ public class BreakTimeManagement {
 	 * @param noStampSet 休 未打刻時 休設定
 	 * @return 休 時間帯
 	 */
-	public List<Optional<BreakTimeOfDailyPerformance>> getFluidBreakTimeSheet(FlowRestCalcMethod calcMethod,boolean isFixedBreakTime,FluidPrefixBreakTimeSet noStampSet) {
+	public List<Optional<BreakTimeOfDailyPerformance>> getFluidBreakTimeSheet(FlowRestCalcMethod calcMethod,boolean isFixedBreakTime,FlowFixedRestSet noStampSet) {
 		List<Optional<BreakTimeOfDailyPerformance>> fluidBreakTimeSheet = new ArrayList<Optional<BreakTimeOfDailyPerformance>>();
 		if(isFixedBreakTime) {
-			switch(noStampSet.getCalcMethod()) {
+			switch(noStampSet.getCalculateMethod()) {
 				//予定を参照する
-				case ReferToSchedule:
+				case REFER_SCHEDULE:
 					fluidBreakTimeSheet.add(getReferenceTimeSheetFromSchedule());
 				//マスタを参照
-				case ReferToMaster:
+				case REFER_MASTER:
 					fluidBreakTimeSheet.add(getReferenceTimeSheetFromWorkTime());
 				//参照せずに打刻をする
-				case StampWithoutReference:
+				case STAMP_WHITOUT_REFER:
 					fluidBreakTimeSheet.add(getReferenceTimeSheetFromBreakStamp());
 					
-					if(fluidBreakTimeSheet.isEmpty() && noStampSet.isReferToBreakClockFromMaster()) {
+					if(fluidBreakTimeSheet.isEmpty() && noStampSet.isReferRestTime()) {
 						fluidBreakTimeSheet.add(getReferenceTimeSheetFromWorkTime());
 						
 				}
