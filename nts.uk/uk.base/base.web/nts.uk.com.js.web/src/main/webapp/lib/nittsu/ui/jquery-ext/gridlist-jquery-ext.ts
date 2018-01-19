@@ -254,7 +254,7 @@ module nts.uk.ui.jqueryExtentions {
                 }, 20);
 
                 // handle mousemove on window while dragging (unhandle when mouseup)
-                $(window).bind('mousemove.NtsGridListDragging', function(e) {
+                $(window).bind('pointermove.NtsGridListDragging', function(e) {
 
                     var newPointedRowIndex = ig.grid.getRowIndexFrom($(e.target));
 
@@ -280,7 +280,7 @@ module nts.uk.ui.jqueryExtentions {
                 $(window).one('pointerup', function(e) {
                     mousePos = null;
                     dragSelectRange = [];
-                    $(window).unbind('mousemove.NtsGridListDragging');
+                    $(window).unbind('pointermove.NtsGridListDragging');
                     if ($grid.data("selectUpdated") === true) {
                         $grid.triggerHandler('selectionchanged');
                     }
@@ -339,7 +339,7 @@ module nts.uk.ui.jqueryExtentions {
 
         function unsetupDragging($grid: JQuery) {
 
-            $grid.unbind('mousedown');
+            $grid.unbind('pointerdown');
         }
 
         function unsetupSelectingEvents($grid: JQuery) {
