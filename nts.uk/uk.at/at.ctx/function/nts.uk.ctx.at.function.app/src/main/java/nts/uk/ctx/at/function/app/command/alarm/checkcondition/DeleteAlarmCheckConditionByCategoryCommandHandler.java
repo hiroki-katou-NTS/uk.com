@@ -35,7 +35,11 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
 		AlarmCheckConditionByCategoryCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		
+		//TODO:
+				// When alarm check condition by category is deleted
+				// Delete the "time item check of work record (勤務実績の勤怠項目チェック)"
+				// and "error item condition of time item (勤怠項目のエラーアラーム条件)"
+				// linked to error work alarm check ID of work record
 		//TODO: delete List Work Record Extract Condition by list Error Alarm Code
 		List<String> listErrorAlarmCode =  command.getDailyAlarmCheckCondition().getListErrorAlarmCode().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList());
 		this.workRecordExtraConRepo.deleteWorkRecordExtraConPub(listErrorAlarmCode);
