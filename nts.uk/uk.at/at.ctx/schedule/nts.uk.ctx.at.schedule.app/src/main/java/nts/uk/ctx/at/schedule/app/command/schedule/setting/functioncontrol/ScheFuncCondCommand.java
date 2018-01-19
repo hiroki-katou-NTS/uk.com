@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol.ScheFuncCond;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * TanLV
@@ -13,9 +14,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol.ScheFuncCond;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ScheFuncCondCommand {
-	/** 会社ID */
-	private String companyId;
-	
 	/** 条件NO */
 	private int conditionNo;
 	
@@ -25,7 +23,8 @@ public class ScheFuncCondCommand {
 	 * @param conditionNo
 	 * @return
 	 */
-	public ScheFuncCond toDomain(String companyId, int conditionNo){
+	public ScheFuncCond toDomain(int conditionNo){
+		String companyId = AppContexts.user().companyId();
 		return ScheFuncCond.createFromJavaType(companyId, conditionNo);
  	}
 }

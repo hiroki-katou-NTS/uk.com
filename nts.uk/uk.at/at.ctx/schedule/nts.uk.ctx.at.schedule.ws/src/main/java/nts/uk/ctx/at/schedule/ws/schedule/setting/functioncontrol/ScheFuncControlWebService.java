@@ -19,7 +19,7 @@ import nts.uk.ctx.at.schedule.app.find.schedule.setting.functioncontrol.ScheFunc
 
 @Path("ctx/at/schedule/setting/functioncontrol")
 @Produces("application/json")
-public class ScheFuncControlWebSevice extends WebService {
+public class ScheFuncControlWebService extends WebService {
 	@Inject
 	private ScheFuncControlFinder scheFuncControlFinder;
 	

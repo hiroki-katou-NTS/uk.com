@@ -84,6 +84,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.commandProxy().update(this.toEntityUpdate(bSchedule));
 		this.removeAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate());
 		this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getChildCareSchedules());
+		this.removeAllTimeZone(bSchedule.getEmployeeId(), bSchedule.getDate());
 		this.commandProxy().updateAll(this.updateWorkScheduleTimeZone(bSchedule));
 	}
 
