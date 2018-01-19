@@ -331,9 +331,9 @@ module nts.uk.at.view.kal003.share.model {
             self.countableSubAtdItems = param && param.countableSubAtdItems ? ko.observableArray(param.countableSubAtdItems) : ko.observableArray([]);
             self.conditionType = param ? ko.observable(param.conditionType) : ko.observable(0);
             self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
-            self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(0);
+            self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable('');
             self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable('');
-            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable('');
+            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
             self.displayLeftCompare = ko.observable("");
             self.displayLeftOperator = ko.observable("");
             self.displayTarget = ko.observable("");
