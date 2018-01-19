@@ -69,7 +69,7 @@ public class FixedWorkSettingFinder {
 	 * @param opFixedWorkSetting the op fixed work setting
 	 * @return the break time dtos
 	 */
-	private BreakTimeDayDto getBreakTimeDtos(Optional<FixedWorkSetting> opFixedWorkSetting) {
+	public BreakTimeDayDto getBreakTimeDtos(Optional<FixedWorkSetting> opFixedWorkSetting) {
 		
 		BreakTimeDayDto breakTimeDtos = new BreakTimeDayDto();
 		

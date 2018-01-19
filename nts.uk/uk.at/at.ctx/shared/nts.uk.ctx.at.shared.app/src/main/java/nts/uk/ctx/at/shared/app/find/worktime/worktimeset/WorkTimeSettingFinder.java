@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -231,21 +232,35 @@ public class WorkTimeSettingFinder {
 						timezone2 = item.getPrescribedTimezoneSetting().getLstTimezone()
 								.get(TWO_ITEM);
 					} 
-					workTimeDtos
-							.add(new WorkTimeDto(currentWorkTime.getWorktimeCode().v(),
-									currentWorkTime.getWorkTimeDisplayName().getWorkTimeName().v(),
-									(timezone1 != null) ? createWorkTimeField(timezone1.getUseAtr(),
-											timezone1.getStart(), timezone1.getEnd()) : null,
-									(timezone2 != null)
-											? createWorkTimeField(timezone2.getUseAtr(),
-													timezone2.getStart(), timezone2.getEnd())
-											: null,
-									i18n.localize(currentWorkTime.getWorkTimeDivision()
-											.getWorkTimeMethodSet().nameId).get(),
-									currentWorkTime.getNote().v()));
+					if (currentWorkTime.getWorkTimeDivision().getWorkTimeDailyAtr().equals(WorkTimeDailyAtr.REGULAR_WORK)) {
+						workTimeDtos
+								.add(new WorkTimeDto(currentWorkTime.getWorktimeCode().v(),
+										currentWorkTime.getWorkTimeDisplayName().getWorkTimeName().v(),
+										(timezone1 != null) ? createWorkTimeField(timezone1.getUseAtr(),
+												timezone1.getStart(), timezone1.getEnd()) : null,
+										(timezone2 != null)
+												? createWorkTimeField(timezone2.getUseAtr(),
+														timezone2.getStart(), timezone2.getEnd())
+												: null,
+										i18n.localize(currentWorkTime.getWorkTimeDivision()
+												.getWorkTimeMethodSet().nameId).get(),
+										currentWorkTime.getNote().v()));
+					} else {
+						workTimeDtos
+						.add(new WorkTimeDto(currentWorkTime.getWorktimeCode().v(),
+								currentWorkTime.getWorkTimeDisplayName().getWorkTimeName().v(),
+								(timezone1 != null) ? createWorkTimeField(timezone1.getUseAtr(),
+										timezone1.getStart(), timezone1.getEnd()) : null,
+								(timezone2 != null)
+										? createWorkTimeField(timezone2.getUseAtr(),
+												timezone2.getStart(), timezone2.getEnd())
+										: null,
+								i18n.localize(currentWorkTime.getWorkTimeDivision()
+										.getWorkTimeDailyAtr().nameId).get(),
+								currentWorkTime.getNote().v()));
+					}
 				}
-			}
-			;
+			};
 		}
 		return workTimeDtos;
 	}

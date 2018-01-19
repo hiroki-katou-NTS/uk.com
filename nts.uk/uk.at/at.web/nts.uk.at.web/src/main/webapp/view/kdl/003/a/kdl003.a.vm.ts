@@ -107,11 +107,16 @@ module nts.uk.at.view.kdl003.a {
                 self.breakBreakColumns2 = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KDL003_33'), prop: 'code', width: 30 },
                     { headerText: nts.uk.resource.getText('KDL003_34'), prop: 'name', width: 170 }
-                ]);         
-                       
+                ]);     
+                
+                // On selectedWorkTimeCode changed event.
+                self.selectedWorkTimeCode.subscribe(code => {
+                    self.getListTimeBySeleckedCode(code);
+                    self.loadWorkTime(code);
+                }); 
+                
                 //parent data
                 self.callerParameter = parentData;
-
             }
 
             /**
@@ -121,8 +126,7 @@ module nts.uk.at.view.kdl003.a {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 nts.uk.ui.block.invisible();
-                $.when(self.loadWorkTime(),
-                    self.loadWorkType())
+                $.when(self.loadWorkTime(self.callerParameter.workTimeCodes), self.loadWorkType())
                     .done(() => {
                         // Set initial selection.
                         self.initWorkTypeSelection();
@@ -158,33 +162,13 @@ module nts.uk.at.view.kdl003.a {
                     });
                 return dfd.promise();
             }
-
-            private getTimeBySeleckedCode(data: Array<WorkTimeSet>, code: string): void{
-                let self = this;
-                $.each(data, function( key, value ) {
-                    if(data[key].code == code){
-                        if(!nts.uk.util.isNullOrEmpty(data[key].workTime1)){
-                            let codeTime = data[key].workTime1;
-                            let array = codeTime.split(' ~ ');
-                            self.startBTime(array[0].substring(2));
-                            self.endBTime(array[1].substring(2));
-                        };
-                        if(!nts.uk.util.isNullOrEmpty(data[key].workTime2)){
-                            let codeTime = data[key].workTime2;
-                            let array = codeTime.split(' ~ ');
-                            self.startBBTime(array[0].substring(2));
-                            self.endBBTime(array[1].substring(2));
-                        };
-                        
-                        self.styleWorkTime(data[key].workAtr);
-                    }
-                });
-            }
             
+            
+
             /**
              * Load work time.
              */
-            private loadWorkTime(): JQueryPromise<void> {
+            private loadWorkTime(code: string): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
@@ -192,7 +176,7 @@ module nts.uk.at.view.kdl003.a {
                 if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workTimeCodes)) {
                     service.findWorkTimeByCodes(self.callerParameter.workTimeCodes)
                         .done(function(data) {
-                            self.getTimeBySeleckedCode(data, self.callerParameter.selectedWorkTimeCode);
+                            self.getTimeBySeleckedCode(data, code);
                             self.addFirstItem(data);
                             self.listWorkTime(data);
                             dfd.resolve();
@@ -201,55 +185,13 @@ module nts.uk.at.view.kdl003.a {
                     // Find all work time
                     service.findAllWorkTime()
                         .done(function(data) {
-                            self.getTimeBySeleckedCode(data, self.callerParameter.selectedWorkTimeCode);
+                            self.getTimeBySeleckedCode(data, code);
                             self.addFirstItem(data);
                             self.listWorkTime(data);
                             dfd.resolve();
                         });
                 }
                 
-                if (!nts.uk.util.isNullOrEmpty(self.callerParameter.selectedWorkTimeCode)) {
-                    service.findBreakByCodes(self.callerParameter.selectedWorkTimeCode, self.styleWorkTime).done(function(data){
-                        let data1 = data.breakBreakTimeDto;
-                        let data2 = data.breakTimeDto;
-                        let data3 = [];
-                        let data4 = [];
-                        if(data2.length <= 5 && data1.length <= 5){
-                            for(let i = data2.length; i < 5; i++){
-                                data2.push({
-                                    code: "",
-                                    name: "",
-                                });
-                            }
-                            for(let i = data1.length; i < 5; i++){
-                                data1.push({
-                                    code: "",
-                                    name: "",
-                                });
-                            }
-                            for(let i = 0; i < 5; i++){
-                                data3.push({
-                                    code: "",
-                                    name: "",
-                                });
-                                data4.push({
-                                    code: "",
-                                    name: "",
-                                });
-                            }
-                            
-                            self.listTimeBreak1(data2);
-                            self.listTimeBreak2(data3);
-                            self.listTimeBreakBreak1(data1);
-                            self.listTimeBreakBreak2(data4);
-                        }else{
-                            self.listTimeBreak1(data2);
-                            self.listTimeBreakBreak1(data1);
-                        }
-                        
-                        dfd.resolve();
-                    });
-                }
                 return dfd.promise();
             }
 
@@ -266,16 +208,94 @@ module nts.uk.at.view.kdl003.a {
                         .done(function(workTypeList: Array<WorkType>) {
                             self.listWorkType(workTypeList);
                             dfd.resolve();
-                        });
+                    });
                 } else {
                     // Find all work type.
                     service.findAllWorkType()
                         .done(function(workTypeList: Array<WorkType>) {
                             self.listWorkType(workTypeList);
                             dfd.resolve();
-                        });
+                    });
                 }
                 return dfd.promise();
+            }
+            
+            private getTimeBySeleckedCode(data: Array<WorkTimeSet>, code: string): void{
+                let self = this;
+                $.each(data, function( key, value ) {
+                    if (data[key].code == code){
+                        if (!nts.uk.util.isNullOrEmpty(data[key].workTime1)){
+                            let codeTime = data[key].workTime1;
+                            let array = codeTime.split(' ~ ');
+                            self.startBTime(array[0].substring(2));
+                            self.endBTime(array[1].substring(2));
+                        };
+                        if (!nts.uk.util.isNullOrEmpty(data[key].workTime2)){
+                            let codeTime = data[key].workTime2;
+                            let array = codeTime.split(' ~ ');
+                            self.startBBTime(array[0].substring(2));
+                            self.endBBTime(array[1].substring(2));
+                        };
+                        
+                        self.styleWorkTime(data[key].workAtr);
+                    }
+                });
+            }
+            
+            private getListTimeBySeleckedCode(code: string): void{
+                let self = this;
+                service.findBreakByCodes(code).done(function(data){
+                    let dataBB = data.breakBreakTimeDto;
+                    let dataB = data.breakTimeDto;
+                    let data1, data2 = [];
+                    let data3 = [];
+                    let data4 = [];
+                    if (dataB.length <= 5 && dataBB.length <= 5){
+                        for (let i = 0; i < 5; i++){
+                            data3.push({
+                                code: "",
+                                name: "",
+                            });
+                            data4.push({
+                                code: "",
+                                name: "",
+                            });
+                        }
+                        for (let i = dataB.length; i < 5; i++){
+                            dataB.push({
+                                code: "",
+                                name: "",
+                            });
+                        }
+                        for (let i = dataBB.length; i < 5; i++){
+                            dataBB.push({
+                                code: "",
+                                name: "",
+                            });
+                        }
+                        
+                        self.listTimeBreak1(dataB);
+                        self.listTimeBreak2(data3);
+                        self.listTimeBreakBreak1(dataBB);
+                        self.listTimeBreakBreak2(data4);
+                    } else {
+                        if(dataB.length > 5){
+                            for (let i = 0; i < 5 ; i++){
+                                self.listTimeBreak1(dataB[i]);
+                            }
+                            for (let i = 5; i < dataB.length ; i++){
+                                self.listTimeBreak2(dataB[i]);
+                            }
+                        } else {
+                            for (let i = 0; i < 5 ; i++){
+                                self.listTimeBreakBreak1(dataBB[i]);
+                            }
+                            for (let i = 5; i < dataB.length ; i++){
+                                self.listTimeBreakBreak2(dataBB[i]);
+                            }
+                        }
+                    }
+                });
             }
             
             /**
@@ -399,7 +419,7 @@ module nts.uk.at.view.kdl003.a {
                 $('#inputStartTime').ntsError('clear');
 
                 // Reload list work time.
-                self.loadWorkTime().always(() => {
+                self.loadWorkTime(self.callerParameter.workTimeCodes).always(() => {
                     nts.uk.ui.block.clear();
                 });
 

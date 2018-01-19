@@ -25,9 +25,7 @@ import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveComm
 import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.breaktime.dto.BreakTimeDayDto;
 import nts.uk.ctx.at.shared.app.find.worktime.WorkTimeSettingInfoFinder;
-import nts.uk.ctx.at.shared.app.find.worktime.difftimeset.DiffTimeWorkSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
-import nts.uk.ctx.at.shared.app.find.worktime.fixedset.FixedWorkSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.WorkTimeSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
@@ -46,12 +44,6 @@ public class WorkTimeWebServiceNew extends WebService {
 	@Inject
 	private WorkTimeSettingFinder workTimeSetFinder;
 	
-	@Inject
-	private FixedWorkSettingFinder fixedTimeFinder;
-	
-	@Inject
-	private DiffTimeWorkSettingFinder flexTimeFinder;
-
 	/** The fixed handler. */
 	@Inject
 	private FixedWorkSettingSaveCommandHandler fixedHandler;
@@ -219,19 +211,12 @@ public class WorkTimeWebServiceNew extends WebService {
 	/**
 	 * Find break by codes.
 	 *
-	 * @param codes the codes
-	 * @return the list
+	 * @param workTimeCode the work time code
+	 * @return the break time day dto
 	 */
 	@POST
-	@Path("findBreakByCodes/{workTimeCode/{styleTime}")
-	public BreakTimeDayDto findBreakByCodes(@PathParam("workTimeCode") String workTimeCode,
-			@PathParam("styleTime") String styleTime) {
-		if(styleTime.equalsIgnoreCase("固定勤務")){
-			return this.fixedTimeFinder.findBreakTimeByCode(workTimeCode);
-		}
-		if(styleTime.equalsIgnoreCase("フレックス勤務用")){
-			return this.flexTimeFinder.findBreakTimeByCode(workTimeCode);
-		}
-		return null;
+	@Path("findBreakByCodes/{workTimeCode}")
+	public BreakTimeDayDto findBreakByCodes(@PathParam("workTimeCode") String workTimeCode) {
+		return this.workTimeSettingInfoFinder.findModeMethod(workTimeCode);
 	}
 }

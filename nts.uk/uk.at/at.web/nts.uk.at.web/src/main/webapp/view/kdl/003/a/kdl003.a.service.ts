@@ -64,8 +64,8 @@ module nts.uk.at.view.kdl003.a {
         /**
          * Search break time
          */
-        export function findBreakByCodes(workTimeCode: string, styleTime: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.findBreakByCodes+ '/' + workTimeCode + '/' + styleTime);
+        export function findBreakByCodes(workTimeCode: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findBreakByCodes+ '/' + workTimeCode);
         }
 
     }
