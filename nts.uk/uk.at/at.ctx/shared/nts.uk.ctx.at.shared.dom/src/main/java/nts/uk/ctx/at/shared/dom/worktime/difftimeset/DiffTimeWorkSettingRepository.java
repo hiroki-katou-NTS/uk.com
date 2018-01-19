@@ -21,12 +21,26 @@ public interface DiffTimeWorkSettingRepository {
 	Optional<DiffTimeWorkSetting> find(String companyId, String workTimeCode);
 
 	/**
+	 * Adds the.
+	 *
+	 * @param diffTimeWorkSetting the diff time work setting
+	 */
+	void add(DiffTimeWorkSetting diffTimeWorkSetting);
+
+	/**
 	 * Save.
 	 *
 	 * @param diffTimeWorkSetting the diff time work setting
 	 */
 	void save(DiffTimeWorkSetting diffTimeWorkSetting);
-	
+
+	/**
+	 * Update.
+	 *
+	 * @param diffTimeWorkSetting the diff time work setting
+	 */
+	void update(DiffTimeWorkSetting diffTimeWorkSetting);
+
 	/**
 	 * Removes the.
 	 *
