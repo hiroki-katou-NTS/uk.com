@@ -19,7 +19,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	private static final String SELECT_All_BY_SID_WKP_ID = SELECT_ALL
 			+ " WHERE wm.employeeId = :employeeId AND wm.workplaceId = :workplaceId";
 	private static final String SELECT_All_BY_WKP_ID = SELECT_ALL
-			+ " WHERE wm.workplaceId = :workplaceId";	
+			+ " WHERE wm.workplaceId = :workplaceId ORDER BY wm.employeeId, wm.startDate";	
 	private static final String SELECT_ALL_BY_SID_BASE_DATE = "SELECT wm FROM SacmtWorkplaceManager wm"
 			+ " WHERE wm.employeeId = :employeeId AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate";
 	
