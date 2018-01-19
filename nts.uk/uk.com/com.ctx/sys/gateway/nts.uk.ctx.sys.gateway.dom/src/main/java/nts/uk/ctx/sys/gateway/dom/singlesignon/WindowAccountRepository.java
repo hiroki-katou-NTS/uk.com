@@ -56,4 +56,7 @@ public interface WindowAccountRepository {
 	 * @return the list
 	 */
 	List<WindowAccount> findByUserId(String userId);
+
+	void update(WindowAccount winAccCommand, WindowAccount winAccDB);
+	
 }

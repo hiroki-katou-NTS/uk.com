@@ -11,7 +11,7 @@
 			<tr>
 				<!-- C1_1 -->
 				<td class="padding-checkbox">
-					<div data-bind="ntsCheckBox: { checked: enable_otherAcc }">#{i18n.getText('CMM021_37')}</div>
+					<div tabindex="-1" data-bind="ntsCheckBox: { checked: enable_otherAcc }">#{i18n.getText('CMM021_37')}</div>
 				</td>
 			</tr>
 			<!-- C1_2 -->
@@ -22,7 +22,7 @@
 					<div>#{i18n.getText('CMM021_38')}</div>
 				</td>
 				<!-- C1_4 -->
-				<td class="padding-scr-c"><input id="focus-CompanyCode" tabindex="1"
+				<td class="padding-scr-c"><input id="focus-CompanyCode" tabindex="8"
 					data-bind="ntsTextEditor: {
 									value: companyCode6,
 									name: '#[CMM021_38]',
@@ -40,7 +40,7 @@
 					<div>#{i18n.getText('CMM021_39')}</div>
 				</td>
 				<!-- C1_6 -->
-				<td class="padding-scr-c"><input id="" tabindex="2"
+				<td class="padding-scr-c"><input id="" tabindex="9"
 					data-bind="ntsTextEditor: {
 									value: userName6,
 									name: '#[CMM021_39]',

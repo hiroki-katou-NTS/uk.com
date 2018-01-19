@@ -49,7 +49,7 @@
 						<div data-bind="ntsFormLabel: {}" style="margin-bottom: 10px;">#{i18n.getText('CMM021_8')}</div>
 						<!-- A5_2 -->
 						<div tabindex="4" class="base-date-editor" style="margin-left: 20px;"
-							data-bind=" ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, required: true}"></div>
+							data-bind=" ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name: '#[CMM021_8]', required: true}"></div>
 						<!-- A5_3 -->	
 						<button tabindex="5" data-bind="click: loadUserInfo" style="width: 60px; margin-left: 7px" class="button-load-user-info">#{i18n.getText('CMM021_9')}</button>
 					</div>
@@ -68,8 +68,8 @@
 					</div>
 
 					<!-- Searchbox A6_1-->
-					<div class="searchbox">
-						<div
+					<div class="searchbox" tabindex="-1">
+						<div tabindex="-1"
 							data-bind="ntsSearchBox:{
 							             searchMode: 'filter',
 										 targetKey: 'loginId', 									
@@ -83,7 +83,7 @@
 
 					<!-- table grid list -->
 					<!-- A7_1 -->	
-					<div id="tabpanel-1" role="tabpanel" class="table-grid-list">
+					<div id="tabpanel-1" tabindex="7" role="tabpanel" class="table-grid-list">
 						<table id="single-list"
 							data-bind="ntsGridList: {								
 								dataSource: items,								

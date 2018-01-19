@@ -6,7 +6,6 @@ package nts.uk.ctx.sys.gateway.app.find.singlesignon;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -46,9 +45,11 @@ public class WindowAccountFinder {
 				listWindownAccountFinderDto.add(windownAccountFinderDto);
 			}
 		}
-		return listWindownAccountFinderDto.stream().sorted((dto1, dto2) -> {
-			return dto1.getNo().compareTo(dto2.getNo());
-		}).collect(Collectors.toList());
+		
+		return listWindownAccountFinderDto;
+//		return listWindownAccountFinderDto.stream().sorted((dto1, dto2) -> {
+//			return dto1.getNo().compareTo(dto2.getNo());
+//		}).collect(Collectors.toList());
 
 	}
 

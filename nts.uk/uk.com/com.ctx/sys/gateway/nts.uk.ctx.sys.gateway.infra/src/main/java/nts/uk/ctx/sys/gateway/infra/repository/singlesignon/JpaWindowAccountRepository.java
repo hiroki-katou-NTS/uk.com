@@ -178,6 +178,21 @@ public class JpaWindowAccountRepository extends JpaRepository implements WindowA
 	private WindowAccount toDomain(SgwmtWindowAcc entity) {
 		return new WindowAccount(new JpaWindowAccountGetMemento(entity));
 
+	}	
+
+	@Override
+	public void update(WindowAccount winAccCommand, WindowAccount winAccDb) {
+		SgwmtWindowAcc entity = this.queryProxy()
+				.find(new SgwmtWindowAccPK(winAccDb.getUserId(), winAccDb.getUserName(), winAccDb.getHostName()),
+						SgwmtWindowAcc.class)
+				.get();
+
+		// set data
+		entity.getSgwmtWindowAccPK().setHostName(winAccCommand.getHostName());
+		entity.getSgwmtWindowAccPK().setUserName(winAccCommand.getUserName());
+
+		// update
+		this.commandProxy().update(entity);
 	}
 
 }

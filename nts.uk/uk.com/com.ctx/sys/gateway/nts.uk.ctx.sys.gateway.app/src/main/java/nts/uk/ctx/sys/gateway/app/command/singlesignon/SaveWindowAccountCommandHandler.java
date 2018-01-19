@@ -6,7 +6,10 @@ package nts.uk.ctx.sys.gateway.app.command.singlesignon;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -43,14 +46,10 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 		if (command.getWinAcc1() == null && command.getWinAcc2() == null && command.getWinAcc3() == null
 				&& command.getWinAcc4() == null && command.getWinAcc5() == null) {
 			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getUserId());
-			if (!listWindowAcc.isEmpty()) {
-				listWindowAcc.stream().forEach(wd -> {
-					windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
-				});
+			for (WindowAccount wd : listWindowAcc) {
+				windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
 			}
-
 		} else {
-
 			List<WindowAccountDto> listWinAccDto = new ArrayList<>();
 						
 			// TODO: need refactor
@@ -93,18 +92,64 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 			// remove old domain
 			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getUserId());
 			
-			if (!listWindowAcc.isEmpty()) {
-				listWindowAcc.stream().forEach(wd -> {
-					windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
-				});
-			}
-
-			// Save new domain
-			listWinAccDto.forEach(winAcc -> this.windowAccountRepository.add(new WindowAccount(winAcc)));
+//			if (!listWindowAcc.isEmpty()) {
+//				listWindowAcc.forEach(wd -> {
+//					windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
+//				});
+//			}
+			
+			
+			
+			//listWindowAcc.stream()
+			// add and update data to db
+			save(listWindowAcc,listWinAccDto );
+			
+			
+			
+			
+//			for (WindowAccount wd : listWindowAcc) {
+//				windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
+//			}
+//			// Save new domain
+//			listWinAccDto.forEach(winAcc -> this.windowAccountRepository.add(new WindowAccount(winAcc)));
 			
 		}
 	}
+	
+	
+	
 
+
+	
+	private void save(List<WindowAccount> listWindowAccDB, List<WindowAccountDto> listWinAccDto) {
+		List<WindowAccount> lstWindAccCommand = listWinAccDto.stream().map(item -> new WindowAccount(item)).collect(Collectors.toList());
+		
+		Map<Integer, WindowAccount> mapWinAcc = listWindowAccDB.stream()
+				.collect(Collectors.toMap(item -> ((WindowAccount) item).getNo(), Function.identity()));
+		
+		List<Integer> lstWinAccSaved = new ArrayList<>();
+		
+		lstWindAccCommand.forEach(domain -> {
+			lstWinAccSaved.add(domain.getNo());
+			
+			WindowAccount winAccDb = mapWinAcc.get(domain.getNo());
+			
+			// not existed, insert DB
+			if (winAccDb == null) {
+				this.windowAccountRepository.add(domain);
+			} else {
+				this.windowAccountRepository.update(domain, winAccDb);
+			}
+		});
+		
+		// remove item not setting
+		listWindowAccDB.stream()
+		.filter(domain -> domain.getNo() != null && !lstWinAccSaved.contains(domain.getNo()))
+		.forEach(domain -> {
+			this.windowAccountRepository.remove(domain.getUserId(), domain.getUserName(), domain.getHostName());
+		});
+	}
+	
 	/**
 	 * Validate.
 	 *
@@ -120,7 +165,7 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 				dto.getHostName());
 
 		// Check condition
-		if (opWindowAccount.isPresent()) {
+		if (opWindowAccount.isPresent() && !opWindowAccount.get().getUserId().contains(dto.getUserId())) {
 			// Has error, throws message
 			isError = true;
 			exceptions.addMessage("Msg_616");

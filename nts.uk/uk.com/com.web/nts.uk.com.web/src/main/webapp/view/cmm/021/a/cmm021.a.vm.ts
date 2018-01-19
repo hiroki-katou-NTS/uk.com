@@ -325,12 +325,17 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
                 service.findListWindowAccByUserIdAndUseAtr(userId).done((data: any) => {
-
                     // check data null or empty
-                    if (data && data.length) {
-                        if (data[0]) {
-                            _self.hostName1(data[0].hostName);
-                            _self.userName1(data[0].userName);
+                    if (data && data.length) {                        
+                        let winAcc1: any = data.filter(function(o: any) {return o.no == 1;});
+                        let winAcc2: any = data.filter(function(o: any) {return o.no == 2;});
+                        let winAcc3: any = data.filter(function(o: any) {return o.no == 3;});
+                        let winAcc4: any = data.filter(function(o: any) {return o.no == 4;});
+                        let winAcc5: any = data.filter(function(o: any) {return o.no == 5;});
+                        
+                        if (winAcc1.length > 0) {
+                            _self.hostName1(winAcc1[0].hostName);
+                            _self.userName1(winAcc1[0].userName);
                             _self.enable_WinAcc1(true);
                             _self.windowAcc1.isChange = false;
                         } else {
@@ -340,9 +345,9 @@ module nts.uk.com.view.cmm021.a {
                             _self.windowAcc1.isChange = true;
                         }
 
-                        if (data[1]) {
-                            _self.hostName2(data[1].hostName);
-                            _self.userName2(data[1].userName);
+                        if (winAcc2.length > 0) {
+                            _self.hostName2(winAcc2[0].hostName);
+                            _self.userName2(winAcc2[0].userName);
                             _self.enable_WinAcc2(true);
                             _self.windowAcc2.isChange = false;
                         } else {
@@ -352,9 +357,9 @@ module nts.uk.com.view.cmm021.a {
                             _self.windowAcc2.isChange = true;
                         }
 
-                        if (data[2]) {
-                            _self.hostName3(data[2].hostName);
-                            _self.userName3(data[2].userName);
+                        if (winAcc3.length > 0) {
+                            _self.hostName3(winAcc3[0].hostName);
+                            _self.userName3(winAcc3[0].userName);
                             _self.enable_WinAcc3(true);
                             _self.windowAcc3.isChange = false;
                         } else {
@@ -364,9 +369,9 @@ module nts.uk.com.view.cmm021.a {
                             _self.windowAcc3.isChange = true;
                         }
 
-                        if (data[3]) {
-                            _self.hostName4(data[3].hostName);
-                            _self.userName4(data[3].userName);
+                        if (winAcc4.length > 0) {
+                            _self.hostName4(winAcc4[0].hostName);
+                            _self.userName4(winAcc4[0].userName);
                             _self.enable_WinAcc4(true);
                             _self.windowAcc4.isChange = false;
                         } else {
@@ -376,9 +381,9 @@ module nts.uk.com.view.cmm021.a {
                             _self.windowAcc4.isChange = true;
                         }
 
-                        if (data[4]) {
-                            _self.hostName5(data[4].hostName);
-                            _self.userName5(data[4].userName);
+                        if (winAcc5.length > 0) {
+                            _self.hostName5(winAcc5[0].hostName);
+                            _self.userName5(winAcc5[0].userName);
                             _self.enable_WinAcc5(true);
                             _self.windowAcc5.isChange = false;
                         } else {
@@ -433,14 +438,14 @@ module nts.uk.com.view.cmm021.a {
                     win1.useAtr = 1;
                     saveCommand.winAcc1 = win1;
                 }
-//                    else if(_self.enable_WinAcc1() == false){
-//                    win1.userId = _self.userId();
-//                    win1.hostName = _self.hostName1();
-//                    win1.userName = _self.userName1();
-//                    win1.no = 1;
-//                    win1.useAtr = 0;
-//                    saveCommand.winAcc1 = win1;    
-//                }
+                    else if(_self.enable_WinAcc1() == false){
+                    win1.userId = _self.userId();
+                    win1.hostName = "";
+                    win1.userName = "";
+                    win1.no = 1;
+                    win1.useAtr = 0;
+                    saveCommand.winAcc1 = win1;    
+                }
 
                 if (_self.enable_WinAcc2() == true && _self.hostName2() != "" && _self.userName2() != "") {
                     win2.userId = _self.userId();
@@ -450,17 +455,17 @@ module nts.uk.com.view.cmm021.a {
                     win2.useAtr = 1;
                     saveCommand.winAcc2 = win2;
                 }
-//                    else if(_self.enable_WinAcc1() == false){
-//                    win2.userId = _self.userId();
-//                    win2.hostName = _self.hostName1();
-//                    win2.userName = _self.userName1();
-//                    win2.no = 1;
-//                    win2.useAtr = 0;
-//                    saveCommand.winAcc1 = win1;    
-//                }
+                    else if(_self.enable_WinAcc1() == false){
+                    win2.userId = _self.userId();
+                    win2.hostName = "";
+                    win2.userName = "";
+                    win2.no = 1;
+                    win2.useAtr = 0;
+                    saveCommand.winAcc1 = win1;    
+                }
                     
 
-                if (_self.enable_WinAcc3() == true && _self.hostName1() != "" && _self.userName1() != "") {
+                if (_self.enable_WinAcc3() == true && _self.hostName3() != "" && _self.userName3() != "") {
                     win3.userId = _self.userId();
                     win3.hostName = _self.hostName3();
                     win3.userName = _self.userName3();
@@ -468,14 +473,14 @@ module nts.uk.com.view.cmm021.a {
                     win3.useAtr = 1;
                     saveCommand.winAcc3 = win3;
                 }
-//                    else if(_self.enable_WinAcc1() == false){
-//                    win3.userId = _self.userId();
-//                    win3.hostName = _self.hostName1();
-//                    win3.userName = _self.userName1();
-//                    win3.no = 1;
-//                    win3.useAtr = 0;
-//                    saveCommand.winAcc1 = win1;    
-//                }
+                    else if(_self.enable_WinAcc1() == false){
+                    win3.userId = _self.userId();
+                    win3.hostName = "";
+                    win3.userName = "";
+                    win3.no = 1;
+                    win3.useAtr = 0;
+                    saveCommand.winAcc1 = win1;    
+                }
 
                 if (_self.enable_WinAcc4() == true && _self.hostName4() != "" && _self.userName4() != "") {
                     win4.userId = _self.userId();
@@ -485,14 +490,14 @@ module nts.uk.com.view.cmm021.a {
                     win4.useAtr = 1;
                     saveCommand.winAcc4 = win4;
                 }
-//                    else if(_self.enable_WinAcc1() == false){
-//                    win4.userId = _self.userId();
-//                    win4.hostName = _self.hostName1();
-//                    win4.userName = _self.userName1();
-//                    win4.no = 1;
-//                    win4.useAtr = 0;
-//                    saveCommand.winAcc1 = win1;    
-//                }
+                    else if(_self.enable_WinAcc1() == false){
+                    win4.userId = _self.userId();
+                    win4.hostName = "";
+                    win4.userName = "";
+                    win4.no = 1;
+                    win4.useAtr = 0;
+                    saveCommand.winAcc1 = win1;    
+                }
 
                 if (_self.enable_WinAcc5() == true && _self.hostName5() != "" && _self.userName5() != "") {
                     win5.userId = _self.userId();
@@ -502,14 +507,14 @@ module nts.uk.com.view.cmm021.a {
                     win5.useAtr = 1;
                     saveCommand.winAcc5 = win5;
                 }
-//                    else if(_self.enable_WinAcc1() == false){
-//                    win5.userId = _self.userId();
-//                    win5.hostName = _self.hostName1();
-//                    win5.userName = _self.userName1();
-//                    win5.no = 1;
-//                    win5.useAtr = 0;
-//                    saveCommand.winAcc1 = win1;    
-//                }
+                    else if(_self.enable_WinAcc1() == false){
+                    win5.userId = _self.userId();
+                    win5.hostName = "";
+                    win5.userName = "";
+                    win5.no = 1;
+                    win5.useAtr = 0;
+                    saveCommand.winAcc1 = win1;    
+                }
 
                 saveCommand.userId = _self.userId();
                 if (saveCommand.winAcc1 != null || saveCommand.winAcc2 != null || saveCommand.winAcc3 != null || saveCommand.winAcc4 != null || saveCommand.winAcc5 != null) {
@@ -600,7 +605,7 @@ module nts.uk.com.view.cmm021.a {
                     }
                 // if user info loaded is empty, set default empty element   
                 }else{
-                    _self.items.push(new ItemModel("", "", "", "", "", false, 0));
+                   // _self.items.push(new ItemModel("", "", "", "", "", false, 0));
                     _self.unselectedMode();
                 }       
           
