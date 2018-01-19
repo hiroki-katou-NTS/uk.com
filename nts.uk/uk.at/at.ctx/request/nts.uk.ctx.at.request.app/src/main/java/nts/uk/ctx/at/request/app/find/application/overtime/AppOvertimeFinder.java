@@ -615,9 +615,12 @@ public class AppOvertimeFinder {
 			}else{
 				result.setAllPreAppPanelFlg(true);
 			}
+			//時間外表示区分
+			result.setExtratimeDisplayFlag(overtimeRestAppCommonSet.get().getExtratimeDisplayAtr().value == 1 ? true : false);
 		}
 		// 01-04_加給時間を取得
 		if(overtimeRestAppCommonSet.isPresent()){
+			result.setDisplayBonusTime(false);
 			if(overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
 				result.setDisplayBonusTime(true);
 				List<BonusPayTimeItem> bonusPayTimeItems= this.iOvertimePreProcess.getBonusTime(employeeID,overtimeRestAppCommonSet,appDate,companyID, result.getSiftType());
@@ -629,14 +632,13 @@ public class AppOvertimeFinder {
 					overtimeInputDto.setTimeItemTypeAtr(bonusPayTimeItem.getTimeItemTypeAtr().value);
 					overTimeInputs.add(overtimeInputDto);
 				}
-			}else{
-				result.setDisplayBonusTime(false);
 			}
 		}
 		result.setOverTimeInputs(overTimeInputs);
 		// 01-05_申請定型理由を取得, 01-06_申請理由を取得
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID,  ApplicationType.OVER_TIME_APPLICATION.value);
 		if(appTypeDiscreteSetting.isPresent()){
+			result.setTypicalReasonDisplayFlg(false);
 			// 01-05_申請定型理由を取得
 			if(appTypeDiscreteSetting.get().getTypicalReasonDisplayFlg().value == AppDisplayAtr.DISPLAY.value){
 				result.setTypicalReasonDisplayFlg(true);
@@ -648,34 +650,29 @@ public class AppOvertimeFinder {
 					applicationReasonDtos.add(applicationReasonDto);
 				}
 				result.setApplicationReasonDtos(applicationReasonDtos);
-			}else{
-				result.setTypicalReasonDisplayFlg(false);
 			}
 			//01-06_申請理由を取得
 			result.setDisplayAppReasonContentFlg(iOvertimePreProcess.displayAppReasonContentFlg(appTypeDiscreteSetting));
 		}
 		if(overtimeRestAppCommonSet.isPresent()){
+			result.setDisplayDivergenceReasonForm(false);
 			//01-08_乖離定型理由を取得
 			if(result.getApplication().getPrePostAtr() != PrePostAtr.PREDICT.value && overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr().value == UseAtr.USE.value){
 				result.setDisplayDivergenceReasonForm(true);
 				List<DivergenceReason> divergenceReasons = iOvertimePreProcess.getDivergenceReasonForm(companyID,ApplicationType.OVER_TIME_APPLICATION.value,overtimeRestAppCommonSet);
 				convertToDivergenceReasonDto(divergenceReasons,result);
-			}else{
-				result.setDisplayDivergenceReasonForm(false);
 			}
 			//01-07_乖離理由を取得
 			result.setDisplayDivergenceReasonInput(result.getApplication().getPrePostAtr() != PrePostAtr.PREDICT.value && iOvertimePreProcess.displayDivergenceReasonInput(overtimeRestAppCommonSet));
 		}
 		//01-09_事前申請を取得
 		if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
+			result.setPreAppPanelFlg(false);
 			AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(companyID, employeeID,overtimeRestAppCommonSet, appDate,result.getApplication().getPrePostAtr());
 			if(appOvertime != null){
 				result.setPreAppPanelFlg(true);
 				convertOverTimeDto(companyID,preAppOvertimeDto,result,appOvertime);
-			}else{
-				result.setPreAppPanelFlg(false);
-			}
-			
+			}			
 		}
 		
 	}
