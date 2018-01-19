@@ -315,7 +315,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 				Collections.emptyList(), new BigDecimal(0), Collections.emptyList(), new BigDecimal(0),
 				new BigDecimal(0), null, null, null, Collections.emptyList(), Collections.emptyList(),
 				new BigDecimal(0), new BigDecimal(0), null, null, null, Collections.emptyList(),
-				Collections.emptyList(), new BigDecimal(0), new BigDecimal(0), "0", null, null, null);
+				Collections.emptyList(), new BigDecimal(0), new BigDecimal(0), "0", null, null, null, null);
 		if (!domain.getFixedAtr()) {
 			// Set Check target condition
 			BigDecimal filterByBusinessType = conditionDomain.getCheckTargetCondtion().getFilterByBusinessType()
@@ -421,7 +421,8 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 					wtActualFilterAtr, wtCompareAtr, lstWtActual, lstWtPlan, workingHoursUseAtr, whPlanActualOperator,
 					whPlanFilterAtr, whActualFilterAtr, whCompareAtr, lstWhActual, lstWhPlan, operatorBetweenGroups,
 					group2UseAtr, atdItemConditionGroup1, krcstErAlConGroup1, atdItemConditionGroup2,
-					krcstErAlConGroup2);
+					krcstErAlConGroup2, conditionDomain.getContinuousPeriod() != null
+							? new BigDecimal(conditionDomain.getContinuousPeriod().v()) : null);
 		}
 		KwrmtErAlWorkRecord entity = new KwrmtErAlWorkRecord(kwrmtErAlWorkRecordPK, errorAlarmName, fixedAtr, useAtr,
 				typeAtr, boldAtr, messageColor.equals("") ? null : messageColor, cancelableAtr, errorDisplayItem,
@@ -444,6 +445,9 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 	public static ErrorAlarmCondition toConditionDomain(KwrmtErAlWorkRecord entity) {
 		ErrorAlarmCondition condition = ErrorAlarmCondition.init();
 		condition.setDisplayMessage(entity.krcmtErAlCondition.messageDisplay);
+		if (entity.krcmtErAlCondition.continuousPeriod != null) {
+			condition.setContinuousPeriod(entity.krcmtErAlCondition.continuousPeriod.intValue());
+		}
 		if (entity.fixedAtr.intValue() != 1) {
 			// Set AlCheckTargetCondition
 			condition.createAlCheckTargetCondition(entity.krcmtErAlCondition.filterByBusinessType.intValue() == 1,

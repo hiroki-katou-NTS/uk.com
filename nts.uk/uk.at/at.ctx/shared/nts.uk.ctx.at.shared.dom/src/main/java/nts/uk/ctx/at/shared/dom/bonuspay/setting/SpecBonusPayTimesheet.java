@@ -4,13 +4,9 @@
 package nts.uk.ctx.at.shared.dom.bonuspay.setting;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.RoundingAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UnitAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;

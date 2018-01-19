@@ -66,8 +66,8 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		builder.append(" WHERE c.kshmtWorkTypePK.companyId = :companyId");
 		builder.append(" AND c.deprecateAtr = :abolishAtr");
 		builder.append(" AND c.oneDayAtr IN :oneDayAtrs");
-		builder.append(" OR c.morningAtr IN :morningAtrs");
-		builder.append(" OR c.afternoonAtr IN :afternoonAtrs");
+		builder.append(" AND (c.morningAtr IN :morningAtrs");
+		builder.append(" OR c.afternoonAtr IN :afternoonAtrs)");
 		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
 		FIND_WORKTYPE_ALLDAY_AND_HALFDAY = builder.toString();
 	}

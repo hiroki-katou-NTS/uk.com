@@ -45,7 +45,7 @@
 					<div class="cm-title-div" data-bind="text: topComment().text, 
 														style: {
 															color: topComment().color,
-															'font-weight': topComment().fontWeight() === 1 ? 'bold' : 'normal' 
+															'font-weight': topComment().fontWeight() ? 'bold' : 'normal' 
 														}"></div>
 					<div>
 						<div data-bind="if: stampRequestMode() == 0">
@@ -77,7 +77,7 @@
 					<div class="cm-title-div" data-bind="text: botComment().text, 
 														style: {
 															color: botComment().color,
-															'font-weight': botComment().fontWeight() === 1 ? 'bold' : 'normal' 
+															'font-weight': botComment().fontWeight() ? 'bold' : 'normal' 
 														}"></div>
 					<div class="table cm-table" data-bind="if: inputReasonsDisp() != 0">
 						<div class="cell cm-column1">

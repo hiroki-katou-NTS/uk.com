@@ -39,5 +39,29 @@ public class FixedConWorkRecordAcFinder implements FixedConWorkRecordAdapter {
 				);
 	}
 	
+	private FixedConWorkRecordPubExport convertToExport(FixedConWorkRecordAdapterDto dto) {
+		return new FixedConWorkRecordPubExport(
+				dto.getErrorAlarmID(),
+				dto.getFixConWorkRecordNo(),
+				dto.getMessage(),
+				dto.isUseAtr()
+				);
+	}
+
+	@Override
+	public void addFixedConWorkRecordPub(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto) {
+		this.fixedConWorkRecordPub.addFixedConWorkRecordPub(convertToExport(fixedConWorkRecordAdapterDto));
+	}
+
+	@Override
+	public void updateFixedConWorkRecordPub(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto) {
+		this.fixedConWorkRecordPub.updateFixedConWorkRecordPub(convertToExport(fixedConWorkRecordAdapterDto));
+	}
+
+	@Override
+	public void deleteFixedConWorkRecordPub(List<String> errorAlarmID) {
+		this.fixedConWorkRecordPub.deleteFixedConWorkRecordPub(errorAlarmID);
+	}
+	
 	
 }

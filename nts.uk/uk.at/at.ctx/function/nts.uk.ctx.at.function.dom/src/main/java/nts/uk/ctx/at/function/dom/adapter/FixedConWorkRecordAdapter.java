@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.adapter;
 import java.util.List;
 
 
+
 public interface FixedConWorkRecordAdapter {
 
 	/**
@@ -18,4 +19,10 @@ public interface FixedConWorkRecordAdapter {
 	 * @return
 	 */
 	FixedConWorkRecordAdapterDto getFixedConWRByCode(String errorAlarmID);
+	
+	void addFixedConWorkRecordPub(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto);
+	
+	void updateFixedConWorkRecordPub(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto);
+	
+	void deleteFixedConWorkRecordPub(List<String> errorAlarmID);
 }

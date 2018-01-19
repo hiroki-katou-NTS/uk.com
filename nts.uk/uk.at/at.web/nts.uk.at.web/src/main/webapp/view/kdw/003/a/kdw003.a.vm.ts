@@ -426,32 +426,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         getPrimitiveValue(value : any): string{
             var self = this;
             let valueResult : string = "";
-            if(String(value).indexOf("日") != -1){
-                //時刻
-                let valueTemp : any;
-                valueTemp = value.split('日')[1];
-                if(String(value).indexOf("当日") != -1){
-                    // same date
-                    valueResult = String(self.getHours(valueTemp));
-                }else if(String(value).indexOf("翌日") != -1){
-                    // 1 date
-                     valueResult = String(24*60 + (self.getHours(valueTemp)));
-                }else if(String(value).indexOf("翌々日") != -1){
-                    // 2 date
-                     valueResult = String(24*60*2 + (self.getHours(valueTemp)));
-                }else{
-                    // -1 date 前日
-                    valueResult = String("-"+self.getHours(valueTemp));
-                }
-                
-            }else if(String(value).indexOf(".") != -1){
-                //Money
-                for(let i = 0; i< value.split(',').length; i++){
-                    valueResult += value.split(',')[i];
-                }
-            }else if(String(value).indexOf(":") != -1){
+            if(String(value).indexOf(":") != -1){
                 // Time
-                valueResult = String(self.getHours(value));
+                valueResult = String(self.getHoursAll(value));
             }else{
                 valueResult = value;
             }
@@ -462,13 +439,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]);
         }
         
-        getHoursAll(value: any) : string{
+        getHoursAll(value: any) : number{
+            var self = this;
             if (value.indexOf(":") != -1) {
                 if (value.indexOf("-") != -1) {
                     let valueTemp = value.split('-')[1];
-                    return String(Number(valueTemp.split(':')[0]) * 60 + Number(valueTemp.split(':')[1]));
+                    return Number("-"+self.getHours(valueTemp));
                 } else {
-                    return String(Number(value.split(':')[0]) * 60 + Number(value.split(':')[1]));
+                    return self.getHours(value);
                 }
             }else{
                return value;
@@ -966,7 +944,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (!isNaN(n)) total += n;
                 }
             });
-            return total;
+            return total.toLocaleString('en');
         }
         //load kcp009 component: employee picker
         loadKcp009() {

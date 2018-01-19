@@ -7,4 +7,10 @@ public interface WorkRecordExtraConPub {
 	List<WorkRecordExtraConPubExport> getAllWorkRecordExtraConByListID(List<String> listErrorAlarmID );
 	
 	WorkRecordExtraConPubExport getWorkRecordExtraConById(String errorAlarmCheckID);
+	
+	void addWorkRecordExtraConPub(WorkRecordExtraConPubExport workRecordExtraConPubExport);
+	
+	void updateWorkRecordExtraConPub(WorkRecordExtraConPubExport workRecordExtraConPubExport);
+	
+	void deleteWorkRecordExtraConPub(List<String> errorAlarmCheckID);
 }

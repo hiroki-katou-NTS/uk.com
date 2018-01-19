@@ -2,31 +2,32 @@ module nts.uk.at.view.kal003.share.model {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import modal = nts.uk.ui.windows.sub.modal;
+    import getText = nts.uk.resource.getText;
 
     export function getListCategory(): Array<ItemModel> {
         return [
-            new ItemModel(0, 'スケジュール日次'),
-            new ItemModel(1, 'スケジュール週次'),
-            new ItemModel(2, 'スケジュール4週'),
-            new ItemModel(3, 'スケジュール月次'),
-            new ItemModel(4, 'スケジュール年間'),
-            new ItemModel(5, '日次'),
-            new ItemModel(6, '週次'),
-            new ItemModel(7, '月次'),
-            new ItemModel(8, '申請承認'),
-            new ItemModel(9, '複数月'),
-            new ItemModel(10, '任意期間'),
-            new ItemModel(11, '年休付与用出勤率'),
-            new ItemModel(12, '３６協定'),
-            new ItemModel(13, '工数チェック')
+            new ItemModel(0, getText('Enum_AlarmCategory_SCHEDULE_DAILY')),
+            new ItemModel(1, getText('Enum_AlarmCategory_SCHEDULE_WEEKLY')),
+            new ItemModel(2, getText('Enum_AlarmCategory_SCHEDULE_4WEEK')),
+            new ItemModel(3, getText('Enum_AlarmCategory_SCHEDULE_MONTHLY')),
+            new ItemModel(4, getText('Enum_AlarmCategory_SCHEDULE_YEAR')),
+            new ItemModel(5, getText('Enum_AlarmCategory_DAILY')),
+            new ItemModel(6, getText('Enum_AlarmCategory_WEEKLY')),
+            new ItemModel(7, getText('Enum_AlarmCategory_MONTHLY')),
+            new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
+            new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')),
+            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
+            new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
+            new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
+            new ItemModel(13, getText('Enum_AlarmCategory_MAN_HOUR_CHECK'))
         ];
     }
 
     export function getConditionToExtractDaily(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, '全て'),
-            new model.ItemModel(1, '確認済のデータ'),
-            new model.ItemModel(2, '未確認のデータ')
+            new model.ItemModel(0, getText('Enum_ConExtractedDaily_ALL')),
+            new model.ItemModel(1, getText('Enum_ConExtractedDaily_CONFIRMED_DATA')),
+            new model.ItemModel(2, getText('Enum_ConExtractedDaily_UNCONFIRMER_DATA'))
         ];
     }
     
@@ -67,28 +68,28 @@ module nts.uk.at.view.kal003.share.model {
     }
 
     export class AlarmCheckTargetCondition {
-        filterByEmployment: KnockoutObservable<boolean>;
-        filterByClassification: KnockoutObservable<boolean>;
-        filterByJobTitle: KnockoutObservable<boolean>;
-        filterByBusinessType: KnockoutObservable<boolean>;
-        targetEmployment: KnockoutObservableArray<string>;
-        targetClassification: KnockoutObservableArray<string>;
-        targetJobTitle: KnockoutObservableArray<string>;
-        targetBusinessType: KnockoutObservableArray<string>;
-        displayTargetEmployment: KnockoutObservable<string>;
+        filterByEmployment      : KnockoutObservable<boolean>;
+        filterByClassification  : KnockoutObservable<boolean>;
+        filterByJobTitle        : KnockoutObservable<boolean>;
+        filterByBusinessType    : KnockoutObservable<boolean>;
+        targetEmployment        : KnockoutObservableArray<string>;
+        targetClassification    : KnockoutObservableArray<string>;
+        targetJobTitle          : KnockoutObservableArray<string>;
+        targetBusinessType      : KnockoutObservableArray<string>;
+        displayTargetEmployment : KnockoutObservable<string>;
         displayTargetClassification: KnockoutObservable<string>;
-        displayTargetJobTitle: KnockoutObservable<string>;
-        displayTargetBusinessType: KnockoutObservable<string>;
+        displayTargetJobTitle       : KnockoutObservable<string>;
+        displayTargetBusinessType   : KnockoutObservable<string>;
 
         constructor(fbe: boolean, fbc: boolean, fbjt: boolean, fbbt: boolean, targetEmp: Array<string>, targetCls: Array<string>, targetJob: Array<string>, targetBus: Array<string>) {
-            this.filterByEmployment = ko.observable(fbe);
+            this.filterByEmployment     = ko.observable(fbe);
             this.filterByClassification = ko.observable(fbc);
-            this.filterByJobTitle = ko.observable(fbjt);
-            this.filterByBusinessType = ko.observable(fbbt);
-            this.targetEmployment = ko.observableArray(targetEmp);
-            this.targetClassification = ko.observableArray(targetCls);
-            this.targetJobTitle = ko.observableArray(targetJob);
-            this.targetBusinessType = ko.observableArray(targetBus);
+            this.filterByJobTitle       = ko.observable(fbjt);
+            this.filterByBusinessType   = ko.observable(fbbt);
+            this.targetEmployment       = ko.observableArray(targetEmp);
+            this.targetClassification   = ko.observableArray(targetCls);
+            this.targetJobTitle         = ko.observableArray(targetJob);
+            this.targetBusinessType     = ko.observableArray(targetBus);
             this.displayTargetEmployment = ko.computed(function() {
                 return this.targetEmployment().join(", ");
             }, this);
@@ -185,12 +186,18 @@ module nts.uk.at.view.kal003.share.model {
     }
     
     export class DailyAlarmCheckCondition {
-        conditionToExtractDaily: KnockoutObservable<number>;
-        listWorkRecordExtractingConditions: KnockoutObservableArray<WorkRecordExtractingCondition>;
+        conditionToExtractDaily: KnockoutObservable<number>;//main screen
+        addApplication: KnockoutObservable<boolean>;//tab daily
+        listErrorAlarmCode: KnockoutObservableArray<ErrorAlarmCondition>;//tab daily
+        listExtractConditionWorkRecork: KnockoutObservableArray<WorkRecordExtractingCondition>;//tab check condition
+        listFixedExtractConditionWorkRecord: KnockoutObservableArray<FixedConditionWorkRecord>;//tab  fixed
         
-        constructor(conditionToExtractDaily: number, listWorkRecordExtractingConditions: Array<WorkRecordExtractingCondition>) {
+        constructor(conditionToExtractDaily: number, addApplication: boolean, listErrorAlarmCondition: Array<ErrorAlarmCondition>, listWorkRecordExtractingConditions: Array<WorkRecordExtractingCondition>, listFixedConditionWorkRecord: Array<FixedConditionWorkRecord>) {
             this.conditionToExtractDaily = ko.observable(conditionToExtractDaily);
-            this.listWorkRecordExtractingConditions = ko.observableArray(listWorkRecordExtractingConditions);
+            this.addApplication = ko.observable(addApplication);
+            this.listErrorAlarmCode = ko.observableArray(listErrorAlarmCondition);
+            this.listExtractConditionWorkRecork = ko.observableArray(listWorkRecordExtractingConditions);
+            this.listFixedExtractConditionWorkRecord = ko.observableArray(listFixedConditionWorkRecord);
         } 
     }
 
@@ -238,6 +245,8 @@ module nts.uk.at.view.kal003.share.model {
     export interface IWorkRecordExtractingCondition {
         errorAlarmCheckID   : string;
         checkItem           : number;
+        messageBold         : boolean;
+        messageColor        : string;
         sortOrderBy         : number;
         useAtr              : boolean;
         nameWKRecord        : string;
@@ -248,6 +257,8 @@ module nts.uk.at.view.kal003.share.model {
     export class WorkRecordExtractingCondition {
         errorAlarmCheckID   : string;
         checkItem           : KnockoutObservable<number> = ko.observable(0);
+        messageBold         : KnockoutObservable<boolean> = ko.observable(false);
+        messageColor        : KnockoutObservable<string> = ko.observable('');
         sortOrderBy         : number;
         useAtr              : KnockoutObservable<boolean> = ko.observable(false);
         nameWKRecord        : KnockoutObservable<string>  = ko.observable('');
@@ -255,18 +266,21 @@ module nts.uk.at.view.kal003.share.model {
         rowId               : KnockoutObservable<number> = ko.observable(0);
         constructor(param : IWorkRecordExtractingCondition) {
             let self = this;
-            self.errorAlarmCheckID   = param.errorAlarmCheckID || '';
-            self.checkItem           (param.checkItem || 0);
-            self.sortOrderBy         = param.sortOrderBy || 0;
-            self.useAtr               (param.useAtr || false);
-            self.nameWKRecord         (param.nameWKRecord || '');
-            self.errorAlarmCondition  (param.errorAlarmCondition); // || kal003utils.getDefaultErrorAlarmCondition());
-            self.rowId                (param.rowId || 0);
+            self.errorAlarmCheckID  = param.errorAlarmCheckID || '';
+            self.checkItem          (param.checkItem || 0);
+            self.messageBold        (param.messageBold);
+            self.messageColor       (param.messageColor);
+            self.sortOrderBy        = param.sortOrderBy || 0;
+            self.useAtr             (param.useAtr || false);
+            self.nameWKRecord       (param.nameWKRecord || '');
+            self.errorAlarmCondition(param.errorAlarmCondition); // || kal003utils.getDefaultErrorAlarmCondition());
+            self.rowId              (param.rowId || 0);
         }
     }
     
     //---------------- KAL003 - B begin----------------//
     //Condition of group (C screen) ErAlAtdItemCondition
+    // 勤怠項目のエラーアラーム条件
     export interface IErAlAtdItemCondition {
         targetNO: number;
         conditionAtr: number;
@@ -277,8 +291,8 @@ module nts.uk.at.view.kal003.share.model {
         conditionType: number;
         compareOperator: number;
         singleAtdItem: number;
-        compareStartValue: number;
-        compareEndValue: number;
+        compareStartValue: string;
+        compareEndValue: string;
         
         displayLeftCompare: string;
         displayLeftOperator: string;
@@ -298,19 +312,19 @@ module nts.uk.at.view.kal003.share.model {
         conditionType: KnockoutObservable<number>;
         compareOperator: KnockoutObservable<number>;
         singleAtdItem: KnockoutObservable<number>;
-        compareStartValue: KnockoutObservable<number>;
-        compareEndValue: KnockoutObservable<number>;
+        compareStartValue: KnockoutObservable<string>;
+        compareEndValue: KnockoutObservable<string>;
 
-        displayLeftCompare: KnockoutObservable<string>;
-        displayLeftOperator: KnockoutObservable<string>;
-        displayTarget: KnockoutObservable<string>;
-        displayRightCompare: KnockoutObservable<string>;
-        displayRightOperator: KnockoutObservable<string>;
+        displayLeftCompare: KnockoutObservable<any>;
+        displayLeftOperator: KnockoutObservable<any>;
+        displayTarget: KnockoutObservable<any>;
+        displayRightCompare: KnockoutObservable<any>;
+        displayRightOperator: KnockoutObservable<any>;
 
         constructor(NO, param) {
             let self = this;
             self.targetNO = ko.observable(NO);
-            self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(0);
+            self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(1); //1: 勤怠項目 - AttendanceItem, 0: fix
             self.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
             self.uncountableAtdItem = param ? ko.observable(param.uncountableAtdItem) : ko.observable(null);
             self.countableAddAtdItems = param && param.countableAddAtdItems ? ko.observableArray(param.countableAddAtdItems) : ko.observableArray([]);
@@ -318,8 +332,8 @@ module nts.uk.at.view.kal003.share.model {
             self.conditionType = param ? ko.observable(param.conditionType) : ko.observable(0);
             self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
             self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(0);
-            self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(0);
-            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
+            self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable('');
+            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable('');
             self.displayLeftCompare = ko.observable("");
             self.displayLeftOperator = ko.observable("");
             self.displayTarget = ko.observable("");
@@ -524,6 +538,7 @@ module nts.uk.at.view.kal003.share.model {
         }
     }
 
+    // BA2_3 - group1 and group2UseAtr is false
     export interface IAttendanceItemCondition {
         group1:         ErAlConditionsAttendanceItem;
         group2UseAtr:   boolean; // B17-1
@@ -537,70 +552,130 @@ module nts.uk.at.view.kal003.share.model {
         operatorBetweenGroups: KnockoutObservable<number>                   = ko.observable(0);
         constructor(param: IAttendanceItemCondition) {
             let self = this;
-            self.group1(param.group1);
-            self.group2UseAtr(param.group2UseAtr || false);
-            self.group2(param.group2);
+            self.group1         (param.group1);
+            self.group2UseAtr   (param.group2UseAtr || false);
+            self.group2         (param.group2);
             self.operatorBetweenGroups(param.operatorBetweenGroups);
         }
     }
 
-    export interface IErrorAlarmCondition { 
-        category: number;
-        erAlCheckId: string;
-        checkItem: number;
-        workTypeSelections: Array<string>;
-        workTimeItemSelections: Array<string>;
-        comparisonOperator: number;
-        minimumValue: string;
-        maximumValue: string;
-        continuousPeriodInput: string;
-        workingTimeZoneSelections: Array<string>;
-        color: string;
-        message: string;
-        isBold: boolean;
-        workTypeCondition: number;
-        workTimeCondition: number;
-        atdItemCondition: AttendanceItemCondition;
+    // アラームチェック対象者の条件
+    export interface IAlCheckTargetCondition {
+        filterByBusinessType    : boolean;
+        filterByJobTitle        : boolean;
+        filterByEmployment      : boolean;
+        filterByClassification  : boolean;
+        lstBusinessTypeCode     : Array<string>;
+        lstJobTitleId           : Array<string>;
+        lstEmploymentCode       : Array<string>;
+        lstClassificationCode   : Array<string>;
+    }
+    
+    export class AlCheckTargetCondition {
+        filterByBusinessType    : boolean;
+        filterByJobTitle        : boolean;
+        filterByEmployment      : boolean;
+        filterByClassification  : boolean;
+        lstBusinessTypeCode     : Array<string>;
+        lstJobTitleId           : Array<string>;
+        lstEmploymentCode       : Array<string>;
+        lstClassificationCode   : Array<string>;
+        constructor(param : IAlCheckTargetCondition) {
+            let self = this;
+            self.filterByBusinessType   = param.filterByBusinessType;
+            self.filterByJobTitle       = param.filterByJobTitle;
+            self.filterByEmployment     = param.filterByEmployment;
+            self.filterByClassification = param.filterByClassification;
+            self.lstBusinessTypeCode    = param.lstBusinessTypeCode;
+            self.lstJobTitleId          = param.lstJobTitleId;
+            self.lstEmploymentCode      = param.lstEmploymentCode;
+            self.lstClassificationCode  = param.lstClassificationCode;
+        }
     }
 
+    //BA5_3
+    export interface IWorkTimeCondition {
+        useAtr                  : boolean;
+        comparePlanAndActual    : number;
+        planFilterAtr           : boolean;
+        planLstWorkTime         : Array<string>;
+        actualFilterAtr         : boolean;
+        actualLstWorkTime       : Array<string>;
+    }
+    export class WorkTimeCondition {
+        useAtr                  : boolean;
+        comparePlanAndActual    : KnockoutObservable<number>= ko.observable(0);
+        planFilterAtr           : boolean;
+        planLstWorkTime         : KnockoutObservableArray<string> = ko.observableArray([]);
+        actualFilterAtr         : boolean;
+        actualLstWorkTime       : Array<string>;
+
+        constructor(param: IWorkTimeCondition) {
+            let self = this;
+            self.useAtr                 = param.useAtr || false;
+            self.comparePlanAndActual   (param.comparePlanAndActual || 0);
+            self.planFilterAtr          = param.planFilterAtr || false;
+            self.planLstWorkTime        (param.planLstWorkTime || []);
+            self.actualFilterAtr        = param.actualFilterAtr || false;
+            self.actualLstWorkTime      = param.actualLstWorkTime || [];
+        }
+    }
+    //BA1-4
+    export interface IWorkTypeCondition {
+        useAtr : boolean;
+        comparePlanAndActual: number;
+        planFilterAtr : boolean;
+        planLstWorkType : Array<string>;
+        actualFilterAtr: boolean;
+        actualLstWorkType: Array<string>;
+    }
+    
+    export class WorkTypeCondition {
+        useAtr : boolean;
+        comparePlanAndActual: KnockoutObservable<number>= ko.observable(0);
+        planFilterAtr : boolean;
+        planLstWorkType : KnockoutObservableArray<string> = ko.observableArray([]);
+        actualFilterAtr: boolean;
+        actualLstWorkType: Array<string>;
+        constructor(param: IWorkTypeCondition) {
+            let self = this;
+            self.useAtr                 = param.useAtr || false;
+            self.comparePlanAndActual   (param.comparePlanAndActual || 1);
+            self.planFilterAtr          = param.planFilterAtr || false;
+            self.planLstWorkType        (param.planLstWorkType || []);
+            self.actualFilterAtr        = param.actualFilterAtr || false;
+            self.actualLstWorkType      = param.actualLstWorkType || [];  
+        }
+    }
+    
+    //勤務実績のエラーアラームチェック
+    export interface IErrorAlarmCondition {
+        errorAlarmCheckID       : string;
+        displayMessage          : string;
+        alCheckTargetCondition  : AlCheckTargetCondition;
+        workTypeCondition       : WorkTypeCondition; // 勤務種類の条件
+        workTimeCondition       : WorkTimeCondition; // 勤怠項目のエラーアラーム条件
+        atdItemCondition        : AttendanceItemCondition;
+        continuousPeriod        : number; //連続期間
+    }
+    
     export class ErrorAlarmCondition {
-        category:               number;
-        erAlCheckId:            string;
-        checkItem:              KnockoutObservable<number> = ko.observable(0);
-        workTypeSelections:     KnockoutObservableArray<string> = ko.observableArray([]);
-        workTimeItemSelections: KnockoutObservableArray<string> = ko.observableArray([]);
-        comparisonOperator:     KnockoutObservable<number> = ko.observable(0);
-        minimumValue:           KnockoutObservable<string> = ko.observable('');
-        maximumValue:           KnockoutObservable<string> = ko.observable('');
-        continuousPeriodInput:  KnockoutObservable<string> = ko.observable('');
-        workingTimeZoneSelections: KnockoutObservableArray<string> = ko.observableArray([]);
-        color:                  KnockoutObservable<string> = ko.observable('');
-        message:                KnockoutObservable<string> = ko.observable('');
-        isBold:                 KnockoutObservable<boolean> = ko.observable(false);
-        
-        workTypeCondition :     KnockoutObservable<number> = ko.observable(1);
-        workTimeCondition:      KnockoutObservable<number> = ko.observable(0);
-        
-        atdItemCondition :     KnockoutObservable<AttendanceItemCondition> = ko.observable(null);
+        errorAlarmCheckID       : KnockoutObservable<string> = ko.observable('');
+        displayMessage          : KnockoutObservable<string> = ko.observable('');
+        alCheckTargetCondition  : KnockoutObservable<AlCheckTargetCondition> = ko.observable(null);
+        workTypeCondition       : KnockoutObservable<WorkTypeCondition> = ko.observable(null);
+        workTimeCondition       : KnockoutObservable<WorkTimeCondition> = ko.observable(null);
+        atdItemCondition        : KnockoutObservable<AttendanceItemCondition> = ko.observable(null);
+        continuousPeriod        : KnockoutObservable<number> = ko.observable(null); //連続期間
         constructor(param : IErrorAlarmCondition) {
             let self = this;
-            self.category               = param.category || 0;
-            self.erAlCheckId            = param.erAlCheckId || '';
-            self.checkItem(param.checkItem || 0);
-
-            self.workTypeSelections(param.workTypeSelections || []);
-            self.workTimeItemSelections(param.workTimeItemSelections || []);
-            self.comparisonOperator( param.comparisonOperator || 0);
-            self.minimumValue(param.minimumValue || '');
-            self.maximumValue(param.maximumValue || '');
-            self.continuousPeriodInput(param.continuousPeriodInput || '');
-            self.workingTimeZoneSelections(param.workingTimeZoneSelections || []);
-            self.color(param.color || '');
-            self.message(param.message || '');
-            self.isBold(param.isBold || false);
-            self.workTypeCondition(param.workTypeCondition || 1);
-            self.workTimeCondition(param.workTimeCondition || 0);
+            self.errorAlarmCheckID(param.errorAlarmCheckID || '')
+            self.displayMessage(param.displayMessage || '');
+            self.alCheckTargetCondition(param.alCheckTargetCondition);
+            self.workTypeCondition(param.workTypeCondition);
+            self.workTimeCondition(param.workTimeCondition);
             self.atdItemCondition(param.atdItemCondition);
+            self.continuousPeriod(param.continuousPeriod || 0); //連続期間
         }
     }
     
@@ -616,6 +691,7 @@ module nts.uk.at.view.kal003.share.model {
             nameWKRecord: string;
         }
     
+   
     //class WorkRecordExtraCon
     export class WorkRecordExtraCon {
         errorAlarmCheckID: string;
@@ -638,22 +714,25 @@ module nts.uk.at.view.kal003.share.model {
     
     //interface FixedConditionWorkRecord
     export interface IFixedConditionWorkRecord {
-        errorAlarmCode: string;
+        errorAlarmId: string;
+        checkName: string;
         fixConWorkRecordNo: number;
         message: string;
-        useAtr?: boolean;
+        useAtr: boolean;
     }
     //class FixedConditionWorkRecord
     export class FixedConditionWorkRecord {
-        errorAlarmCode: string;
-        fixConWorkRecordNo: number;
-        message: string;
+        errorAlarmId: string;
+        fixConWorkRecordNo: KnockoutObservable<number>;
+        checkName: string;
+        message: KnockoutObservable<string>;
         useAtr: KnockoutObservable<boolean>;
         constructor(data: IFixedConditionWorkRecord) {
-            this.errorAlarmCode = data.errorAlarmCode;
-            this.fixConWorkRecordNo = data.fixConWorkRecordNo;
-            this.message = data.message;
+            this.errorAlarmId = data.errorAlarmId;
+            this.fixConWorkRecordNo = ko.observable(data.fixConWorkRecordNo);
+            this.message = ko.observable(data.message);
             this.useAtr = ko.observable(data.useAtr);
+            this.checkName = data.checkName;
         }
     }
 }
