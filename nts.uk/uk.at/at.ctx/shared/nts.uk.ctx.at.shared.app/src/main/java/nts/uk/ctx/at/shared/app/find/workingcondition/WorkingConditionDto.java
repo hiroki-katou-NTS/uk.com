@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.find.workingcondition;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Setter;
@@ -818,6 +819,11 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 */
 	@PeregItem("IS00253")
 	private int contractTime;
+	
+	/** The auto stamp set atr. */
+	// 自動打刻セット区分
+	@PeregItem("IS00258")
+	private int autoStampSetAtr;
 
 	public WorkingConditionDto(String recordId) {
 		super(recordId);
@@ -912,6 +918,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 		}
 		dto.setLaborSystem(workingConditionItem.getLaborSystem().value);
 		dto.setContractTime(workingConditionItem.getContractTime().v());
+		dto.setAutoStampSetAtr(workingConditionItem.getAutoStampSetAtr().value);
 
 		return dto;
 	}

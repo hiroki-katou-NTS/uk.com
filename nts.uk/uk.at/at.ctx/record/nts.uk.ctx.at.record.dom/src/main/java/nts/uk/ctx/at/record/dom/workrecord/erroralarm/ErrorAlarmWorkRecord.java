@@ -51,9 +51,6 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	/* エラー解除ロールID */
 	private String cancelRoleId;
 
-	/* エラーアラーム条件 */
-	private ErrorAlarmCondition errorAlarmCondition;
-
 	private List<Integer> lstApplication;
 
 	private String errorAlarmCheckID;
@@ -117,19 +114,8 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 		return errorAlarmWorkRecord;
 	}
 
-	public void setCondition(ErrorAlarmCondition condition) {
-		this.errorAlarmCondition = condition;
-	}
-
 	public void setCheckId(String errorAlarmCheckID) {
 		this.errorAlarmCheckID = errorAlarmCheckID;
 	}
 
-	public void setGroupId1(String groupId) {
-		this.errorAlarmCondition.setGroupId1(groupId);
-	}
-
-	public void setGroupId2(String groupId) {
-		this.errorAlarmCondition.setGroupId2(groupId);
-	}
 }
