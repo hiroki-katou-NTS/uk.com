@@ -277,7 +277,6 @@ module nts.uk.at.view.kmk003.a {
                 let dfd = $.Deferred<void>();
                 service.getEnumWorktimeSeting().done(function(setting: any) {
                     self.settingEnum = setting;
-                    self.settingEnum.workTimeMethodSet = self.settingEnum.workTimeMethodSet.slice(0,1);
                     self.workTimeSettingLoader.setEnums(setting);
                     dfd.resolve();
                 });
