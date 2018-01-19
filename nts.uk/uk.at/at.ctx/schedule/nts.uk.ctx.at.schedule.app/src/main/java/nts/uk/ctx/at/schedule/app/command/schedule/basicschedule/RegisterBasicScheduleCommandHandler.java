@@ -133,7 +133,10 @@ public class RegisterBasicScheduleCommandHandler
 				addMessage(errList, businessException.getMessageId());
 				continue;
 			}
-
+			
+			// process data schedule time soze
+			this.addScheTimeZone(companyId, basicScheduleObj, workType);
+			
 			// Check exist of basicSchedule
 			Optional<BasicSchedule> basicSchedule = basicScheduleRepo.find(bSchedule.getEmployeeId(),
 					bSchedule.getDate());
@@ -142,52 +145,60 @@ public class RegisterBasicScheduleCommandHandler
 				// Flag to determine whether to handle
 				// the update function or not
 				boolean isAllowUpdate = true;
-				List<WorkScheduleTimeZone> workScheduleTimeZones = basicScheduleObj.getWorkScheduleTimeZones();
-				for (int i = 0; i < workScheduleTimeZones.size(); i++) {
-					workScheduleTimeZones.get(i).validate();
-					try {
-						if (workScheduleTimeZones.get(i).getScheduleStartClock() != null
-								|| workScheduleTimeZones.get(i).getScheduleEndClock() != null) {
-							workScheduleTimeZones.get(i).validateTime();
-
-							if (basicScheduleService.isReverseStartAndEndTime(
-									workScheduleTimeZones.get(i).getScheduleStartClock(),
-									workScheduleTimeZones.get(i).getScheduleEndClock())) {
-								addMessage(errList, "Msg_441,KSU001_73,KSU001_74");
-								isAllowUpdate = false;
-							}
-						}
-					} catch (BusinessException ex) {
-						addMessage(errList, ex.getMessageId());
-						continue;
-					}
-				}
+//				List<WorkScheduleTimeZone> workScheduleTimeZones = basicScheduleObj.getWorkScheduleTimeZones();
+//				for (int i = 0; i < workScheduleTimeZones.size(); i++) {
+//					workScheduleTimeZones.get(i).validate();
+//					try {
+//						if (workScheduleTimeZones.get(i).getScheduleStartClock() != null
+//								|| workScheduleTimeZones.get(i).getScheduleEndClock() != null) {
+//							workScheduleTimeZones.get(i).validateTime();
+//
+//							if (basicScheduleService.isReverseStartAndEndTime(
+//									workScheduleTimeZones.get(i).getScheduleStartClock(),
+//									workScheduleTimeZones.get(i).getScheduleEndClock())) {
+//								addMessage(errList, "Msg_441,KSU001_73,KSU001_74");
+//								isAllowUpdate = false;
+//							}
+//						}
+//					} catch (BusinessException ex) {
+//						addMessage(errList, ex.getMessageId());
+//						continue;
+//					}
+//				}
 
 				if (isAllowUpdate) {
 					basicScheduleRepo.update(basicScheduleObj);
 				}
 			} else {
-				List<WorkScheduleTimeZone> workScheduleTimeZones = new ArrayList<WorkScheduleTimeZone>();
-				Optional<PredetemineTimeSetting> predetemineTimeSet = this.predetemineTimeSettingRepo
-						.findByWorkTimeCode(companyId, basicScheduleObj.getWorkTimeCode());
-				if (predetemineTimeSet.isPresent()) {
-					List<TimezoneUse> listTimezoneUse = predetemineTimeSet.get().getPrescribedTimezoneSetting()
-							.getLstTimezone();
-					
-					workScheduleTimeZones = listTimezoneUse.stream()
-						.filter(x -> x.isUsed())
-						.map((timezoneUse) -> {
-							BounceAtr bounceAtr = addScheduleBounce(workType);
-							return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
-									timezoneUse.getEnd(), bounceAtr);
-						}).collect(Collectors.toList());
-				}
-				
-				basicScheduleObj.setWorkScheduleTimeZones(workScheduleTimeZones);
 				basicScheduleRepo.insert(basicScheduleObj);
 			}
 		}
 		return errList;
+	}
+
+	/**
+	 * @param companyId
+	 * @param basicScheduleObj
+	 * @param workType
+	 */
+	private void addScheTimeZone(String companyId, BasicSchedule basicScheduleObj, WorkType workType) {
+		List<WorkScheduleTimeZone> workScheduleTimeZones = new ArrayList<WorkScheduleTimeZone>();
+		Optional<PredetemineTimeSetting> predetemineTimeSet = this.predetemineTimeSettingRepo
+				.findByWorkTimeCode(companyId, basicScheduleObj.getWorkTimeCode());
+		if (predetemineTimeSet.isPresent()) {
+			List<TimezoneUse> listTimezoneUse = predetemineTimeSet.get().getPrescribedTimezoneSetting()
+					.getLstTimezone();
+			
+			workScheduleTimeZones = listTimezoneUse.stream()
+				.filter(x -> x.isUsed())
+				.map((timezoneUse) -> {
+					BounceAtr bounceAtr = addScheduleBounce(workType);
+					return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
+							timezoneUse.getEnd(), bounceAtr);
+				}).collect(Collectors.toList());
+		}
+		
+		basicScheduleObj.setWorkScheduleTimeZones(workScheduleTimeZones);
 	}
 	
 	/**
