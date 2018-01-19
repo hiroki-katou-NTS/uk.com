@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.command.alarm.checkcondition;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,6 +10,10 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
+import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
+import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
@@ -30,6 +35,12 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 
 	@Inject
 	private AlarmCheckConditionByCategoryRepository conditionRepo;
+	
+	@Inject
+	private WorkRecordExtraConAdapter workRecordExtraConRepo;
+	
+	@Inject
+	private FixedConWorkRecordAdapter fixedConWorkRecordRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
@@ -55,8 +66,15 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					command.getTargetCondition().getTargetClassification(),
 					command.getTargetCondition().getTargetJobTitle(),
 					command.getTargetCondition().getTargetBusinessType(), command.getAvailableRoles());
-			//TODO: update WorkRecordExtractCondition
-			//TODO: update FixedWorkRecordExtractCondition
+			
+			//update WorkRecordExtractCondition
+			for(WorkRecordExtraConAdapterDto workRecordExtraConAdapterDto : command.getDailyAlarmCheckCondition().getListErrorAlarmCode()) {
+				this.workRecordExtraConRepo.updateWorkRecordExtraConPub(workRecordExtraConAdapterDto);
+			}
+			// update FixedWorkRecordExtractCondition
+			for(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto : command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord()) {
+				this.fixedConWorkRecordRepo.updateFixedConWorkRecordPub(fixedConWorkRecordAdapterDto);
+			}
 			conditionRepo.update(domain);
 		} else {
 			// add
@@ -68,9 +86,10 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						: new DailyAlarmCondition(IdentifierUtil.randomUniqueId(),
 								command.getDailyAlarmCheckCondition().getConditionToExtractDaily(),
 								command.getDailyAlarmCheckCondition().isAddApplication(),
+								command.getDailyAlarmCheckCondition().getListErrorAlarmCode().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList()),
 								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork(),
-								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord(),
-								command.getDailyAlarmCheckCondition().getListErrorAlarmCode());
+								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(c->c.getErrorAlarmID()).collect(Collectors.toList())
+								);
 				break;
 			case SCHEDULE_4WEEK:
 				extractionCondition = command.getSchedule4WeekAlarmCheckCondition() == null ? null
@@ -92,9 +111,20 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 							command.getTargetCondition().getTargetEmployment(),
 							command.getTargetCondition().getTargetClassification()),
 					command.getAvailableRoles(), extractionCondition);
+			//Ma A hieu tra ve sau khi tao moi
+			String errorAlarmCheckID = "abc";
 			
-			//TODO: add WorkRecordExtractCondition
-			//TODO: add FixedWorkRecordExtractCondition
+			//add WorkRecordExtractCondition
+			for(WorkRecordExtraConAdapterDto workRecordExtraConAdapterDto : command.getDailyAlarmCheckCondition().getListErrorAlarmCode()) {
+				workRecordExtraConAdapterDto.setErrorAlarmCheckID(errorAlarmCheckID);
+				this.workRecordExtraConRepo.addWorkRecordExtraConPub(workRecordExtraConAdapterDto);
+			}
+			//add FixedWorkRecordExtractCondition
+			for(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto : command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord()) {
+				fixedConWorkRecordAdapterDto.setErrorAlarmID(errorAlarmCheckID);
+				this.fixedConWorkRecordRepo.addFixedConWorkRecordPub(fixedConWorkRecordAdapterDto);
+			}
+			
 			conditionRepo.add(domain);
 		}
 	}
