@@ -217,7 +217,7 @@ module nts.uk.ui.jqueryExtentions {
             var mousePos: { x: number, y: number, rowIndex: number } = null;
 
 
-            $grid.bind('mousedown', function(e) {
+            $grid.bind('pointerdown', function(e) {
 
                 // グリッド内がマウスダウンされていない場合は処理なしで終了
                 var $container = $grid.closest('.ui-iggrid-scrolldiv');
@@ -277,7 +277,7 @@ module nts.uk.ui.jqueryExtentions {
                 });
 
                 // stop dragging
-                $(window).one('mouseup', function(e) {
+                $(window).one('pointerup', function(e) {
                     mousePos = null;
                     dragSelectRange = [];
                     $(window).unbind('mousemove.NtsGridListDragging');
