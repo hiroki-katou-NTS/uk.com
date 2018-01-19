@@ -255,9 +255,9 @@
 							<div class="active-panel cf">
 								<div class="column">
 									<button class="btn btn-location" type="button"
-										data-bind="click: pickLocation, enable: _auth.allowMapBrowse()" tabindex="16">#{i18n.getText('CPS001_20')}</button>
+										data-bind="click: pickLocation, style: { visibility: _auth.allowMapBrowse() ? 'visible' : 'hidden' }" tabindex="16">#{i18n.getText('CPS001_20')}</button>
 									<button class="btn btn-details" type="button"
-										data-bind="click: uploadebook, enable: _auth.allowDocRef()" tabindex="15">#{i18n.getText('CPS001_19')}</button>
+										data-bind="click: uploadebook,  style: { visibility: _auth.allowDocRef() ? 'visible' : 'hidden' }" tabindex="15">#{i18n.getText('CPS001_19')}</button>
 								</div>
 								<div class="column">
 									<button class="btn btn-print hidden" type="button" tabindex="14">#{i18n.getText('CPS001_17')}</button>
