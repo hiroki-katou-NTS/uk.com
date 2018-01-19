@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.function.app.find.alarm.checkcondition;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
@@ -32,25 +29,4 @@ public class FixedConditionWorkRecordDto {
 		this.useAtr = importDto.isUseAtr();
 	}
 
-//	public FixedConditionWorkRecordDto(String checkName, int fixConWorkRecordNo, String message) {
-//		super();
-//		this.checkName = checkName;
-//		this.fixConWorkRecordNo = fixConWorkRecordNo;
-//		this.message = message;
-//	}
-//	
-//	public static List<FixedConditionWorkRecordDto> combine(List<FixedConditionWorkRecordDto> bList, List<FixedConditionWorkRecordDto> vList) {
-//		List<FixedConditionWorkRecordDto> result = new ArrayList<>();
-//		if (bList == null || bList.isEmpty()) return result;
-//		result = bList;
-//		if (vList != null && !bList.isEmpty()) {
-//			for (FixedConditionWorkRecordDto i : result) {
-//				for (FixedConditionWorkRecordDto e : vList) {
-//					
-//				}
-//			}
-//		}
-//		return result;
-//	}
-	
 }

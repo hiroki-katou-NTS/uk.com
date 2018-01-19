@@ -76,7 +76,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						: new DailyAlarmCondition(IdentifierUtil.randomUniqueId(),
 								command.getDailyAlarmCheckCondition().getConditionToExtractDaily(),
 								command.getDailyAlarmCheckCondition().isAddApplication(),
-								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork(),
+								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()),
 								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(item -> item.getErrorAlarmID()).collect(Collectors.toList()),
 								command.getDailyAlarmCheckCondition().getListErrorAlarmCode().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()));
 				break;
@@ -91,7 +91,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			domain.changeState(command.getName(), command.getAvailableRoles(), targetConditionValue, extractionCondition);
 			
 			//update WorkRecordExtractCondition
-			for(WorkRecordExtraConAdapterDto workRecordExtraConAdapterDto : command.getDailyAlarmCheckCondition().getListErrorAlarmCode()) {
+			for(WorkRecordExtraConAdapterDto workRecordExtraConAdapterDto : command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork()) {
 				this.workRecordExtraConRepo.updateWorkRecordExtraConPub(workRecordExtraConAdapterDto);
 			}
 			// update FixedWorkRecordExtractCondition
@@ -109,9 +109,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						: new DailyAlarmCondition(IdentifierUtil.randomUniqueId(),
 								command.getDailyAlarmCheckCondition().getConditionToExtractDaily(),
 								command.getDailyAlarmCheckCondition().isAddApplication(),
-								command.getDailyAlarmCheckCondition().getListErrorAlarmCode().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList()),
-								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork(),
-								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(c->c.getErrorAlarmID()).collect(Collectors.toList())
+								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()),
+								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(c->c.getErrorAlarmID()).collect(Collectors.toList()),
+								command.getDailyAlarmCheckCondition().getListErrorAlarmCode().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
 								);
 				break;
 			case SCHEDULE_4WEEK:
@@ -138,7 +138,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			String errorAlarmCheckID = "abc";
 			
 			//add WorkRecordExtractCondition
-			for(WorkRecordExtraConAdapterDto workRecordExtraConAdapterDto : command.getDailyAlarmCheckCondition().getListErrorAlarmCode()) {
+			for(WorkRecordExtraConAdapterDto workRecordExtraConAdapterDto : command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork()) {
 				workRecordExtraConAdapterDto.setErrorAlarmCheckID(errorAlarmCheckID);
 				this.workRecordExtraConRepo.addWorkRecordExtraConPub(workRecordExtraConAdapterDto);
 			}
