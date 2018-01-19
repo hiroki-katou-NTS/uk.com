@@ -54,5 +54,16 @@ public class AlarmCheckTargetCondition extends DomainObject {
 		this.lstEmploymentCode = lstEmploymentCode;
 		this.lstClassificationCode = lstClassificationCode;
 	}
+	
+	public void changeState(AlarmCheckTargetCondition value) {
+		this.filterByBusinessType = value.filterByBusinessType;
+		this.filterByClassification = value.filterByClassification;
+		this.filterByEmployment = value.filterByEmployment;
+		this.filterByJobTitle = value.filterByJobTitle;
+		this.lstBusinessTypeCode = value.lstBusinessTypeCode;
+		this.lstClassificationCode = value.lstClassificationCode;
+		this.lstEmploymentCode = value.lstEmploymentCode;
+		this.lstJobTitleId = value.lstJobTitleId;
+	}
 
 }

@@ -28,5 +28,5 @@ public class JpaPublicHolidaySettingRepository extends JpaRepository implements 
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 }

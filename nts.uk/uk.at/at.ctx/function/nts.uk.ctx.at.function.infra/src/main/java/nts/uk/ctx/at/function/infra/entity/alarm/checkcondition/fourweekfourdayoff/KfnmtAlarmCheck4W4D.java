@@ -67,7 +67,7 @@ public class KfnmtAlarmCheck4W4D extends UkJpaEntity implements Serializable {
 	}
 	
 	public AlarmCheckCondition4W4D toDomain() {
-		return new AlarmCheckCondition4W4D(this.fourW4DCheckCond);
+		return new AlarmCheckCondition4W4D(this.pk.alCheck4w4dID, this.fourW4DCheckCond);
 	}
 
 	public static KfnmtAlarmCheck4W4D toEntity(AlarmCheckCondition4W4D domain, String CID, AlarmCategory category,

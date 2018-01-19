@@ -261,4 +261,12 @@ public class WorkType extends AggregateRoot {
 			}
 		}
 	}
+	
+	/**
+	 * 廃止区分.廃止する
+	 * @return
+	 */
+	public boolean isDeprecated() {
+		return DeprecateClassification.Deprecated == this.deprecate;
+	}
 }

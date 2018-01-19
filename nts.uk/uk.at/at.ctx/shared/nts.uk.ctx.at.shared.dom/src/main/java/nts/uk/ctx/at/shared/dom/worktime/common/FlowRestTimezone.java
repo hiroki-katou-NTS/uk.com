@@ -33,6 +33,20 @@ public class FlowRestTimezone extends DomainObject {
 	private FlowRestSetting hereAfterRestSet;
 
 	/**
+	 * Constructor
+	 * @param flowRestSets  The flow rest sets.
+	 * @param useHereAfterRestSet The use here after rest set.
+	 * @param hereAfterRestSet The here after rest set.
+	 */
+	public FlowRestTimezone(List<FlowRestSetting> flowRestSets, boolean useHereAfterRestSet,
+			FlowRestSetting hereAfterRestSet) {
+		super();
+		this.flowRestSets = flowRestSets;
+		this.useHereAfterRestSet = useHereAfterRestSet;
+		this.hereAfterRestSet = hereAfterRestSet;
+	}
+	
+	/**
 	 * Instantiates a new flow rest timezone.
 	 *
 	 * @param memento the memento
@@ -91,4 +105,6 @@ public class FlowRestTimezone extends DomainObject {
 			throw new BusinessException("Msg_869");
 		}
 	}
+
+
 }

@@ -63,11 +63,12 @@ public class EmployeeInfoFinder {
 
 	public String generateEmplCode(String startLetters) {
 		String returnString = "";
+		int maxLength = 6;
 		String companyId = AppContexts.user().companyId();
 		String lastEmployeeCode = empDataMngInfoRepo.findLastEml(companyId, startLetters);
 		int length = lastEmployeeCode.length();
-		if(length <12){
-			for(int i = 0; i < (12 - length); i++){
+		if(length <maxLength){
+			for(int i = 0; i < (maxLength - length); i++){
 				lastEmployeeCode += " ";
 			}
 		}

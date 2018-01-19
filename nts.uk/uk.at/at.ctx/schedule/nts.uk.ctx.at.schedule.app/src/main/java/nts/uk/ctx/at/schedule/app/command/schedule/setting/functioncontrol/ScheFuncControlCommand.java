@@ -19,10 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScheFuncControlCommand {
-	/** 会社ID */
-	private String companyId;
-	
+public class ScheFuncControlCommand {	
 	/** アラームチェック使用区分 */
 	private int alarmCheckUseCls;
 	

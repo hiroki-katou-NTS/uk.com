@@ -6,11 +6,13 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class KrcmtDailyErrorCodePK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -18,6 +20,6 @@ public class KrcmtDailyErrorCodePK implements Serializable {
 	@Column(name = "DAILY_ALARM_CON_ID")
 	public String dailyAlarmConID;
 	
-	@Column(name = "ERROR_ALARM_CHECK_ID")
+	@Column(name = "ERROR_ALARM_CODE")
 	public String errorAlarmCode;
 }

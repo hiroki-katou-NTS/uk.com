@@ -256,14 +256,14 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 					startTime1 = workTimeSet.get().getPrescribedTimezoneSetting().getLstTimezone().get(0).getStart().v();
 				}
 			}
-			if (recordWorkInfoImport.getLeaveStampTimeFirst() == -1) {
+			if (recordWorkInfoImport.getLeaveStampTimeFirst() == null) {
 				if (requestAppDetailSetting.getTimeEndDispFlg().equals(DisplayBreakTime.SYSTEM_TIME)) {
 					endTime1 = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 				}
 			} else {
 				endTime1 = recordWorkInfoImport.getLeaveStampTimeFirst();
 			}
-			if (recordWorkInfoImport.getLeaveStampTimeSecond() == -1) {
+			if (recordWorkInfoImport.getLeaveStampTimeSecond() == null) {
 				if (requestAppDetailSetting.getTimeEndDispFlg().equals(DisplayBreakTime.SYSTEM_TIME)) {
 					endTime2 = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 				}

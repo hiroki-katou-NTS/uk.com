@@ -32,7 +32,7 @@ public class JpaFlowHalfDayWorkTimezoneSetMemento implements FlHalfDayWtzSetMeme
 	 */
 	@Override
 	public void setRestTimezone(FlowWorkRestTimezone tzone) {
-		//TODOtzone.saveToMemento(new JpaFlowWorkRestTimezoneSetMemento(this.entity.getFlowHalfDayWorkRtSet()));
+		tzone.saveToMemento(new JpaFlowWorkRestTimezoneSetMemento(this.entity.getFlowHalfDayWorkRtSet()));
 	}
 
 	/* (non-Javadoc)
@@ -40,7 +40,7 @@ public class JpaFlowHalfDayWorkTimezoneSetMemento implements FlHalfDayWtzSetMeme
 	 */
 	@Override
 	public void setWorkTimeZone(FlowWorkTimezoneSetting tzone) {
-		//TODOtzone.saveToMemento(new JpaFlowWorkTimezoneSettingSetMemento(this.entity));
+		tzone.saveToMemento(new JpaFlowWorkTimezoneSettingSetMemento(this.entity));
 	}
 
 }
