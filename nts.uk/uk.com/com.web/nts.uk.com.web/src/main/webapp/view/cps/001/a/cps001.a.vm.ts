@@ -256,7 +256,9 @@ module cps001.a.vm {
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             if (reload) {
-                let single = self.employees().length == 1;
+                let single = self.employees().length == 1,
+                    old_index = _.indexOf(self.employees().map(x => x.employeeId), employee.employeeId());
+
                 self.employees.removeAll();
                 $('.btn-quick-search[tabindex=3]').click();
                 $.when((() => {
@@ -272,7 +274,22 @@ module cps001.a.vm {
                     if (single) {
                         self.employees(_.filter(employees, m => m.employeeId == employee.employeeId()));
                     }
-                    employee.employeeId.valueHasMutated();
+                    
+                    let first = _.find(self.employees(), x => x.employeeId == employee.employeeId());
+                    if (first) {
+                        employee.employeeId.valueHasMutated();
+                    } else {
+                        first = _.find(self.employees(), (x, i) => i == old_index) || _.last(self.employees());
+                        if (first) {
+                            employee.employeeId(first.employeeId);
+                        } else {
+                            if (employee.employeeId()) {
+                                employee.employeeId(undefined);
+                            } else {
+                                employee.employeeId.valueHasMutated();
+                            }
+                        }
+                    }
                 });
             } else {
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
