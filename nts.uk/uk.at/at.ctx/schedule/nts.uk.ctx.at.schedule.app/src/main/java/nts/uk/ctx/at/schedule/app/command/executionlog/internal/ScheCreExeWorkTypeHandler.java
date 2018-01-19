@@ -133,10 +133,10 @@ public class ScheCreExeWorkTypeHandler {
 			}
 
 			// find work type code by day of week
-			String worktypeCode = this.scheCreExeWorkTimeHandler.getWorkTimeCodeOfDayOfWeekPersonalCondition(
+			String worktypeCode = this.scheCreExeWorkTimeHandler.getWorkTypeCodeOfDayOfWeekPersonalCondition(
 					command.toWorktimeConvert(), optionalWorkingConditionItem.get());
 
-			// check default work time code
+			// check default work type code
 			if (this.scheCreExeWorkTimeHandler.checkNullOrDefaulCode(worktypeCode)) {
 				return command.getWorkTypeCode();
 			}

@@ -544,8 +544,8 @@ public class ScheCreExeWorkTimeHandler {
 				}
 
 				// check exist data work category of week day
-				if (workingConditionItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
-					return workingConditionItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v();
+				if (workingConditionItem.getWorkCategory().getHolidayTime().getWorkTimeCode().isPresent()) {
+					return workingConditionItem.getWorkCategory().getHolidayTime().getWorkTimeCode().get().v();
 				}
 			}
 		}
