@@ -34,6 +34,7 @@
 						data-bind="ntsComboBox: {
 								options: listWorkType,
 								optionsValue: 'workTypeCode',
+								visibleItemsCount: 10,
 								value: selectedWorkTypeCode,
 								editable:  false,
 								enable: true,
@@ -66,7 +67,7 @@
 				<div id="table-worktime">
 					<table id="single-list"
 						data-bind="ntsGridList: {								
-							height: 250,
+							height: 278,
 							dataSource: listWorkTimeComboBox,
 							primaryKey: 'codeName',
 							columns: columnsWorkTime,
