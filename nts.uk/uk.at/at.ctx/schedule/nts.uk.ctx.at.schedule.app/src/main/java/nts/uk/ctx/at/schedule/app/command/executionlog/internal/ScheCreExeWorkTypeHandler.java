@@ -137,7 +137,7 @@ public class ScheCreExeWorkTypeHandler {
 					command.toWorktimeConvert(), optionalWorkingConditionItem.get());
 
 			// check default work type code
-			if (this.scheCreExeWorkTimeHandler.checkNullOrDefaulCode(worktypeCode)) {
+			if (!this.scheCreExeWorkTimeHandler.checkNullOrDefaulCode(worktypeCode)) {
 				return command.getWorkTypeCode();
 			}
 
