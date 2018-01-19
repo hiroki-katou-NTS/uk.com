@@ -161,6 +161,7 @@ module nts.uk.at.view.kaf005.b {
                 self.version = data.version;
                 self.manualSendMailAtr(data.manualSendMailAtr);
                 self.prePostSelected(data.application.prePostAtr);
+                self.displayCaculationTime(data.displayCaculationTime);
                 self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
                 self.displayAppReasonContentFlg(data.displayAppReasonContentFlg);
                 self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
@@ -207,6 +208,7 @@ module nts.uk.at.view.kaf005.b {
                 self.instructInfor(data.overtimeInstructInformation);
                 self.referencePanelFlg(data.referencePanelFlg);
                 self.preAppPanelFlg(data.preAppPanelFlg);
+                self.allPreAppPanelFlg(data.allPreAppPanelFlg);
                 // preAppOvertime
                 if(data.preAppOvertimeDto != null){
                     self.appDatePre(data.preAppOvertimeDto.appDatePre);
