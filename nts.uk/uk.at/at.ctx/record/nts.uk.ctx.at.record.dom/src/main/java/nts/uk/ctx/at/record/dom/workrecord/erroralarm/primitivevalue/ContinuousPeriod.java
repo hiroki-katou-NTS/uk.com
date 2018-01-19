@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  *
  */
 //連続期間
-@IntegerRange(min = -99999999, max = 999999999)
+@IntegerRange(min = 0, max = 99)
 public class ContinuousPeriod extends IntegerPrimitiveValue<CheckedAmountValue> {
 
 	private static final long serialVersionUID = 1L;
