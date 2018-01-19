@@ -17,6 +17,8 @@ import nts.uk.ctx.bs.employee.app.find.holidaysetting.configuration.HolidaySetti
 import nts.uk.ctx.bs.employee.app.find.holidaysetting.configuration.HolidaySettingConfigFinder;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.DayOfPublicHoliday;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.DayOfWeek;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayCarryOverDeadline;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementClassification;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayPeriod;
 
 /**
@@ -87,5 +89,27 @@ public class HolidaySettingConfigWebService extends WebService {
 	@POST
 	public List<EnumConstant> getEnumPublicHolidayPeriod(){
 		return EnumAdaptor.convertToValueNameList(PublicHolidayPeriod.class);
+	}
+	
+	/**
+	 * Gets the enum public holiday management classification.
+	 *
+	 * @return the enum public holiday management classification
+	 */
+	@Path("enum/pubhdmanagementatr")
+	@POST
+	public List<EnumConstant> getEnumPublicHolidayManagementClassification(){
+		return EnumAdaptor.convertToValueNameList(PublicHolidayManagementClassification.class);
+	}
+	
+	/**
+	 * Gets the enum public holiday carry over deadline.
+	 *
+	 * @return the enum public holiday carry over deadline
+	 */
+	@Path("enum/publicholidaycarryoverdeadline")
+	@POST
+	public List<EnumConstant> getEnumPublicHolidayCarryOverDeadline(){
+		return EnumAdaptor.convertToValueNameList(PublicHolidayCarryOverDeadline.class);
 	}
 }
