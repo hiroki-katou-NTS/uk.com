@@ -46,7 +46,7 @@ public class FlowOTTimezone extends DomainObject {
 	 * @param memento
 	 *            the memento
 	 */
-	public FlowOTTimezone(FlOTTimezoneGetMemento memento) {
+	public FlowOTTimezone(FlowOTTimezoneGetMemento memento) {
 		this.worktimeNo = memento.getWorktimeNo();
 		this.restrictTime = memento.getRestrictTime();
 		this.oTFrameNo = memento.getOTFrameNo();
@@ -61,7 +61,7 @@ public class FlowOTTimezone extends DomainObject {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(FlOTTimezoneSetMemento memento) {
+	public void saveToMemento(FlowOTTimezoneSetMemento memento) {
 		memento.setWorktimeNo(this.worktimeNo);
 		memento.setRestrictTime(this.restrictTime);
 		memento.setOTFrameNo(this.oTFrameNo);

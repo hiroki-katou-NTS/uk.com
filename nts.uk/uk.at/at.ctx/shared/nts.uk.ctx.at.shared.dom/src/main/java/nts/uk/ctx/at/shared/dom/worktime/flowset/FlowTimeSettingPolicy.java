@@ -4,15 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+
 /**
- * The Interface FlowOTSetGetMemento.
+ * The Interface FlTimeSettingPolicy.
  */
-public interface FlOTGetMemento {
+public interface FlowTimeSettingPolicy {
 	
 	/**
-	 * Gets the fixed change atr.
+	 * Validate.
 	 *
-	 * @return the fixed change atr
+	 * @param predTime the pred time
+	 * @param flTimeSetting the fl time setting
 	 */
-	FixedChangeAtr getFixedChangeAtr();
+	void validate(PredetemineTimeSetting predTime, FlowTimeSetting flTimeSetting);
 }

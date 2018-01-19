@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 /**
  * The Interface FlTimeSetMemento.
  */
-public interface FlTimeSetMemento {
+public interface FlowTimeSetMemento {
 
 	/**
 	 * Sets the rouding.

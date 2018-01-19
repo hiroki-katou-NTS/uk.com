@@ -6,6 +6,9 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
@@ -66,6 +69,10 @@ public class JpaTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFixedR
 			lstEntity = new ArrayList<>();
 		}
 
+		// convert map entity
+     	Map<KshmtFlowFixedRtSetPK, KshmtFlowFixedRtSet> mapEntity = lstEntity.stream()
+     			.collect(Collectors.toMap(KshmtFlowFixedRtSet::getKshmtFlowFixedRtSetPK, Function.identity()));
+		
 		// set list entity
 		List<KshmtFlowFixedRtSet> newListEntity = new ArrayList<>();
 		int periodNo = 1;
@@ -76,8 +83,12 @@ public class JpaTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFixedR
 			pk.setResttimeAtr(resttimeAtr);
 			pk.setPeriodNo(periodNo);
 
-			KshmtFlowFixedRtSet entity = new KshmtFlowFixedRtSet();
-			entity.setKshmtFlowFixedRtSetPK(pk);
+			// find entity if existed, else new entity
+			KshmtFlowFixedRtSet entity = mapEntity.get(pk);
+ 			if (entity == null) {
+ 				entity = new KshmtFlowFixedRtSet();
+ 				entity.setKshmtFlowFixedRtSetPK(pk);
+ 			}
 
 			// save to memento
 			domain.saveToMemento(new JpaDeductionTimeSetMemento(entity));
