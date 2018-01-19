@@ -279,6 +279,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.referencePanelFlg(data.referencePanelFlg);
             self.preAppPanelFlg(data.preAppPanelFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
+            self.indicationOvertimeFlg(data.extratimeDisplayFlag);
             // preAppOvertime
             self.convertpreAppOvertimeDto(data);
             // 休憩時間
