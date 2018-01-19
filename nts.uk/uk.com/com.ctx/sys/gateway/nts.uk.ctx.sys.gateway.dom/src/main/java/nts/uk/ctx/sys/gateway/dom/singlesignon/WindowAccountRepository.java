@@ -12,16 +12,15 @@ import java.util.Optional;
  */
 public interface WindowAccountRepository {
 	
+
 	/**
-	 * Find by user id and use atr.
+	 * Find list window account by user id.
 	 *
 	 * @param userId the user id
-	 * @param useAtr the use atr
 	 * @return the list
 	 */
-	List<WindowAccount> findByUserIdAndUseAtr(String userId, Integer useAtr);
+	List<WindowAccount> findListWindowAccountByUserId(String userId);
 
-	
 	/**
 	 * Removes the.
 	 *
@@ -29,7 +28,7 @@ public interface WindowAccountRepository {
 	 * @param userName the user name
 	 * @param hostName the host name
 	 */
-	void remove(String userId, String userName, String hostName);
+	void remove(String userId, Integer no);
 
 	/**
 	 * Adds the.

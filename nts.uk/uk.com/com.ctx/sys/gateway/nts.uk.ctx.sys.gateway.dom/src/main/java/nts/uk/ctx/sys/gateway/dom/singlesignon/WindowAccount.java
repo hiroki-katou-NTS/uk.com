@@ -26,11 +26,11 @@ public class WindowAccount extends AggregateRoot{
 
 	// ホスト名
 	/** The hot name. */
-	private String hostName;
+	private HostName hostName;
 
 	// ユーザ名
 	/** The user name. */
-	private String userName;
+	private UserName userName;
 
 	// NO
 	/** The no. */

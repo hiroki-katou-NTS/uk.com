@@ -21,8 +21,11 @@ import nts.arc.time.GeneralDate;
  * @param baseDate the new base date
  */
 @Setter
-public class UserInfoDate {
+public class UserInfo {
 	
 	/** The base date. */
 	private GeneralDate baseDate;
+	
+	/** The is screen C. */
+	private Boolean isScreenC;
 }

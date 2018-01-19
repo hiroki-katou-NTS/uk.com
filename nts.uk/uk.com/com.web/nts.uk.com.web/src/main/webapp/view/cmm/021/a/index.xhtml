@@ -5,9 +5,9 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/sidebar.xhtml">
+	<ui:composition template="../../../../master/sidebar.xhtml" tabindex="-1">
 	
-		<ui:define name="sidebar-head">
+		<ui:define name="sidebar-head" tabindex="-1">
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="cmm021.a.service.js" />
 			<com:scriptfile path="cmm021.a.vm.js" />
@@ -23,14 +23,13 @@
 				<!-- A1_2 -->
 				<li
 					data-bind="click: onSelectScreenC"><a
-					tabindex="-1" href="#tabpanel-2" role="tab-navigator"   >#{i18n.getText('CMM021_4')}</a></li>
-				
+					tabindex="-1" href="#tabpanel-2" role="tab-navigator"   >#{i18n.getText('CMM021_4')}</a></li>				
 			</ul>
 		</ui:define>
 
-		<ui:define name="sidebar-content">
+		<ui:define name="sidebar-content" tabindex="-1">
 
-			<div class="sidebar-content-header">
+			<div class="sidebar-content-header" tabindex="-1">
 				<span class="title">#{i18n.getText('CMM021_3')}</span> <span
 					class="action-bar">
 					<!-- BEGIN A2_1 & A2_2 -->
@@ -68,7 +67,7 @@
 					</div>
 
 					<!-- Searchbox A6_1-->
-					<div class="searchbox" tabindex="-1">
+					<div class="searchbox">
 						<div tabindex="-1"
 							data-bind="ntsSearchBox:{
 							             searchMode: 'filter',
@@ -83,8 +82,8 @@
 
 					<!-- table grid list -->
 					<!-- A7_1 -->	
-					<div id="tabpanel-1" tabindex="7" role="tabpanel" class="table-grid-list">
-						<table id="single-list"
+					<div id="tabpanel-1" role="tabpanel" class="table-grid-list" tabindex="-1">
+						<table id="single-list" tabindex="7"
 							data-bind="ntsGridList: {								
 								dataSource: items,								
 								primaryKey: 'employeeId',

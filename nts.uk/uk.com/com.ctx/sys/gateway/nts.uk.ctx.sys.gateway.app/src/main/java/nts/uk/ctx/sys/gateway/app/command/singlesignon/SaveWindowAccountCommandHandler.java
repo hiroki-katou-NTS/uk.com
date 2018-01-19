@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -47,7 +49,7 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 				&& command.getWinAcc4() == null && command.getWinAcc5() == null) {
 			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getUserId());
 			for (WindowAccount wd : listWindowAcc) {
-				windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
+					windowAccountRepository.remove(wd.getUserId(), wd.getNo());
 			}
 		} else {
 			List<WindowAccountDto> listWinAccDto = new ArrayList<>();
@@ -91,35 +93,12 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 			
 			// remove old domain
 			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getUserId());
-			
-//			if (!listWindowAcc.isEmpty()) {
-//				listWindowAcc.forEach(wd -> {
-//					windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
-//				});
-//			}
-			
-			
-			
-			//listWindowAcc.stream()
+		
 			// add and update data to db
 			save(listWindowAcc,listWinAccDto );
-			
-			
-			
-			
-//			for (WindowAccount wd : listWindowAcc) {
-//				windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
-//			}
-//			// Save new domain
-//			listWinAccDto.forEach(winAcc -> this.windowAccountRepository.add(new WindowAccount(winAcc)));
-			
+
 		}
 	}
-	
-	
-	
-
-
 	
 	private void save(List<WindowAccount> listWindowAccDB, List<WindowAccountDto> listWinAccDto) {
 		List<WindowAccount> lstWindAccCommand = listWinAccDto.stream().map(item -> new WindowAccount(item)).collect(Collectors.toList());
@@ -146,7 +125,7 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 		listWindowAccDB.stream()
 		.filter(domain -> domain.getNo() != null && !lstWinAccSaved.contains(domain.getNo()))
 		.forEach(domain -> {
-			this.windowAccountRepository.remove(domain.getUserId(), domain.getUserName(), domain.getHostName());
+			this.windowAccountRepository.remove(domain.getUserId(), domain.getNo());
 		});
 	}
 	
@@ -161,19 +140,21 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 		boolean isError = false;
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
-		Optional<WindowAccount> opWindowAccount = windowAccountRepository.findbyUserNameAndHostName(dto.getUserName(),
-				dto.getHostName());
+		if (!StringUtils.isEmpty(dto.getHostName().v()) && !StringUtils.isEmpty(dto.getUserName().v())) {
+			Optional<WindowAccount> opWindowAccount = windowAccountRepository
+					.findbyUserNameAndHostName(dto.getUserName().v(), dto.getHostName().v());
 
-		// Check condition
-		if (opWindowAccount.isPresent() && !opWindowAccount.get().getUserId().contains(dto.getUserId())) {
-			// Has error, throws message
-			isError = true;
-			exceptions.addMessage("Msg_616");
-		}
+			// Check condition
+			if (opWindowAccount.isPresent() && !opWindowAccount.get().getUserId().contains(dto.getUserId())) {
+				// Has error, throws message
+				isError = true;
+				exceptions.addMessage("Msg_616");
+			}
 
-		if (isError) {			
-			//show error list
-			exceptions.throwExceptions();
+			if (isError) {
+				// show error list
+				exceptions.throwExceptions();
+			}
 		}
 	}
 		

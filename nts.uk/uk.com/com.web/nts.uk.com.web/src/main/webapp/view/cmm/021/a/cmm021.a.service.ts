@@ -19,8 +19,8 @@ module nts.uk.com.view.cmm021.a {
         }
         
         // Screen B
-        export function findListUserInfo(baseDate: Date): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.findListUserInfo, { baseDate: baseDate });
+        export function findListUserInfo(baseDate: Date, isScreenC: boolean): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findListUserInfo, { baseDate: baseDate,isScreenC: isScreenC});
         }
 
         export function findListWindowAccByUserIdAndUseAtr(userId: string): JQueryPromise<model.WindownAccountFinderDto[]> {
@@ -73,6 +73,7 @@ module nts.uk.com.view.cmm021.a {
                 personName: string;
                 employeeId: string;
                 isSetting: boolean;
+                isScreenC: boolean;
                 other: number;
             }
             

@@ -62,7 +62,7 @@ public class UserInfoFinder {
 	 *            the base date
 	 * @return the list
 	 */
-	public List<UserDto> findListUserInfo(GeneralDate baseDate) {
+	public List<UserDto> findListUserInfo(GeneralDate baseDate, Boolean isScreenC) {
 
 		// Get Company Id
 		String companyId = AppContexts.user().companyId();
@@ -147,21 +147,33 @@ public class UserInfoFinder {
 			}
 		});
 
-		return loadUserSetting(listUserMap);
+		return loadUserSetting(listUserMap, isScreenC);
 				
 	}
 	
-	public List<UserDto> loadUserSetting(List<UserDto> listUserMap){		
-		listUserMap.forEach(w -> {			
-			List<WindowAccount> winAcc = this.windowAccountRepository.findByUserId(w.getUserId());
-			Optional<OtherSysAccount> opOtherSysAcc = otherSysAccountRepository.findByUserId(w.getUserId());
-			if(winAcc.isEmpty() && !opOtherSysAcc.isPresent()){
-				w.setIsSetting(false);
-			}else{
-				w.setIsSetting(true);
-			}
-		});	
+	public List<UserDto> loadUserSetting(List<UserDto> listUserMap, Boolean isScreenC){	
 		
+		if(isScreenC == true){		
+			listUserMap.forEach(w -> {			
+				Optional<OtherSysAccount> opOtherSysAcc = otherSysAccountRepository.findByUserId(w.getUserId());				
+				if(opOtherSysAcc.isPresent()){
+					w.setIsSetting(true);
+				}else{
+					w.setIsSetting(false);
+				}
+			});	
+				
+		}else{		
+			listUserMap.forEach(w -> {
+				List<WindowAccount> winAcc = this.windowAccountRepository.findByUserId(w.getUserId());
+
+				if (!winAcc.isEmpty()) {
+					w.setIsSetting(true);
+				} else {
+					w.setIsSetting(false);
+				}
+			});
+		}
 		return listUserMap;
 	}	
 }

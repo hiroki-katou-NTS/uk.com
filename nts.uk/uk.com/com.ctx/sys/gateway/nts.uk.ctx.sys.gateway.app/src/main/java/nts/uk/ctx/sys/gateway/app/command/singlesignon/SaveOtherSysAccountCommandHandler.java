@@ -39,8 +39,7 @@ public class SaveOtherSysAccountCommandHandler extends CommandHandler<SaveOtherS
 		if (opOtherSysAcc.isPresent()) {
 			this.validate(command);				
 			// remove
-			this.otherSysAccountRepository.remove(opOtherSysAcc.get().getUserId(), opOtherSysAcc.get().getCompanyCode(),
-					opOtherSysAcc.get().getUserName());
+			this.otherSysAccountRepository.remove(opOtherSysAcc.get().getUserId());
 		}
 
 		// save domain
@@ -61,7 +60,7 @@ public class SaveOtherSysAccountCommandHandler extends CommandHandler<SaveOtherS
 
 		// check only company code and user name
 		Optional<OtherSysAccount> opOtherSysAccount = otherSysAccountRepository
-				.findByCompanyCodeAndUserName(dto.getCompanyCode(), dto.getUserName());
+				.findByCompanyCodeAndUserName(dto.getCompanyCode().v(), dto.getUserName().v());
 
 		// Check condition
 		if (opOtherSysAccount.isPresent()) {

@@ -35,16 +35,14 @@ public class JpaOtherSysAccountRepository extends JpaRepository implements Other
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountRepository#remove(java.lang.String)
 	 */
 	@Override
-	public void remove(String userId, String companyCode, String userName) {
-		SgwmtOtherSysAccPK pk = new SgwmtOtherSysAccPK(userId ,companyCode,  userName);
+	public void remove(String userId) {
+		SgwmtOtherSysAccPK pk = new SgwmtOtherSysAccPK(userId);
 
 		if (pk != null) {
 			this.commandProxy().remove(SgwmtOtherSysAcc.class, pk);
 
 		}
 		
-		
-
 	}
 
 	/* (non-Javadoc)
@@ -79,21 +77,15 @@ public class JpaOtherSysAccountRepository extends JpaRepository implements Other
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(
-				bd.equal(root.get(SgwmtOtherSysAcc_.sgwmtOtherSysAccPK).get(SgwmtOtherSysAccPK_.ccd), companyCode));
+				bd.equal(root.get(SgwmtOtherSysAcc_.ccd), companyCode));
 		predicateList.add(
-				bd.equal(root.get(SgwmtOtherSysAcc_.sgwmtOtherSysAccPK).get(SgwmtOtherSysAccPK_.userName), userName));
+				bd.equal(root.get(SgwmtOtherSysAcc_.userName), userName));
 
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Create Query
 		TypedQuery<SgwmtOtherSysAcc> query = em.createQuery(cq);
-
-		// if (query.getSingleResult() != null) {
-		// return Optional.of(this.toDomain(query.getSingleResult()));
-		// }
-		//
-		// return Optional.empty();
 
 		try {
 			// exclude select
