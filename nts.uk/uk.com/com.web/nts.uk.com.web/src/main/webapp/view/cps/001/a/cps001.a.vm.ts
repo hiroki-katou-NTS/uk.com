@@ -394,34 +394,38 @@ module cps001.a.vm {
                 };
 
             // trigger change of all control in layout
-            $('.drag-panel .nts-input').trigger('change');
+            $('.drag-panel .nts-input')
+                .trigger('blur')
+                .trigger('change');
 
-            if (hasError()) {
-                $('#func-notifier-errors').trigger('click');
-                return;
-            }
+            setTimeout(() => {
+                if (hasError()) {
+                    $('#func-notifier-errors').trigger('click');
+                    return;
+                }
 
-            // push data layout to webservice
-            block();
-            service.saveCurrentLayout(command).done(() => {
-                let firstData: MultiData = _.first(self.multipleData()) || new MultiData(),
-                    saveData: IReloadData = {
-                        id: firstData.id(),
-                        infoId: firstData.infoId(),
-                        categoryId: firstData.categoryId()
-                    };
+                // push data layout to webservice
+                block();
+                service.saveCurrentLayout(command).done(() => {
+                    let firstData: MultiData = _.first(self.multipleData()) || new MultiData(),
+                        saveData: IReloadData = {
+                            id: firstData.id(),
+                            infoId: firstData.infoId(),
+                            categoryId: firstData.categoryId()
+                        };
 
-                setShared(RELOAD_DT_KEY, saveData);
-                setShared(REPL_KEY, REPL_KEYS.NORMAL);
+                    setShared(RELOAD_DT_KEY, saveData);
+                    setShared(REPL_KEY, REPL_KEYS.NORMAL);
 
-                info({ messageId: "Msg_15" }).then(function() {
+                    info({ messageId: "Msg_15" }).then(function() {
+                        unblock();
+                        self.start();
+                    });
+                }).fail((mes) => {
                     unblock();
-                    self.start();
+                    alert(mes.message);
                 });
-            }).fail((mes) => {
-                unblock();
-                alert(mes.message);
-            });
+            }, 100);
         }
     }
 
