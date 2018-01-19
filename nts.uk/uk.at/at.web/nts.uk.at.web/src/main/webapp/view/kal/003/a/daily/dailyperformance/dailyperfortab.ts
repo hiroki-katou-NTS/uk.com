@@ -8,23 +8,30 @@ module nts.uk.at.view.kal003.a.tab {
     export class DailyPerformanceTab {
         listWorkRecordExtraCon: KnockoutObservableArray<model.WorkRecordExtraCon> = ko.observableArray([]);
         isAllDailyPerfor: KnockoutObservable<boolean> = ko.observable(false);
-        category: KnockoutObservable<number>;
 
-        constructor(category: number, listWorkRecordExtraCon?: Array<model.WorkRecordExtraCon>) {
+        constructor(listWorkRecordExtraCon?: Array<model.WorkRecordExtraCon>) {
             let self = this;
-            self.category = ko.observable(category);
 
             if (listWorkRecordExtraCon) {
                 self.listWorkRecordExtraCon.removeAll();
                 self.listWorkRecordExtraCon(listWorkRecordExtraCon);
-                for (var i = 0; i < self.listWorkRecordExtraCon().length; i++) {
-                    self.listWorkRecordExtraCon()[i].rowId(i + 1);
-                }
             }
-            self.isAllDailyPerfor.subscribe(function(value){
-                 _.each(self.listWorkRecordExtraCon(), (workRecordExtraCon) => {
-                    workRecordExtraCon.useAtr(value);
-                });   
+            
+            self.isAllDailyPerfor = ko.pureComputed({
+                read: function () {
+                    let l = self.listWorkRecordExtraCon().length;
+                    if (self.listWorkRecordExtraCon().filter((x) => {return x.useAtr()}).length == l && l > 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                write: function (value) {
+                    for (var i = 0; i < self.listWorkRecordExtraCon().length; i++) {
+                        self.listWorkRecordExtraCon()[i].useAtr(value);
+                    }
+                },
+                owner: self
             });
         }//end constructor
     }//end DailyPerformanceTab
