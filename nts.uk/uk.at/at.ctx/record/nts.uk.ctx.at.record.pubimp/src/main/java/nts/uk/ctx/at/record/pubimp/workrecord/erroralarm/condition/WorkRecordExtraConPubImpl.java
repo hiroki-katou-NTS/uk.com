@@ -8,15 +8,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.DisplayMessages;
+import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtractingCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.WorkRecordExtraConPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.WorkRecordExtraConPubExport;
+import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.ErrorAlarmConditionPubExport;
 
 @Stateless
 public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
@@ -24,12 +24,18 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 	@Inject
 	private WorkRecordExtraConRepository repo;
 	
+	@Inject
+    private ErrorAlarmConditionRepository errorAlarmConditionRepository;
+	
 	@Override
 	public List<WorkRecordExtraConPubExport> getAllWorkRecordExtraConByListID(List<String> listErrorAlarmID) {
 		List<WorkRecordExtraConPubExport> data = repo.getAllWorkRecordExtraConByListID(listErrorAlarmID)
 				.stream().map(c->convertToExport(c)).collect(Collectors.toList());
 		if(data.isEmpty())
 			return Collections.emptyList();
+		// get List ErrorAlarmCondition
+		List<ErrorAlarmCondition> listErrorAlarmCondition = errorAlarmConditionRepository.findConditionByListErrorAlamCheckId(listErrorAlarmID);
+		data = data.stream().map(item -> setErrorAlarmConditionPubExport(item, listErrorAlarmCondition)).collect(Collectors.toList());
 		return data;
 	}
 
@@ -52,36 +58,64 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 					domain.getNameWKRecord().v()
 				);
 	}
-	
-	public WorkRecordExtractingCondition convertToDomain(WorkRecordExtraConPubExport dto) {
-		return new WorkRecordExtractingCondition(
-				dto.getErrorAlarmCheckID(),
-					EnumAdaptor.valueOf(dto.getCheckItem(), TypeCheckWorkRecord.class),
-					new DisplayMessages(
-							dto.isMessageBold(),
-							new ColorCode(dto.getMessageColor())
-							),
-					dto.getSortOrderBy(),
-					dto.isUseAtr(),
-					new NameWKRecord(dto.getNameWKRecord())
-				);
+
+	private WorkRecordExtraConPubExport setErrorAlarmConditionPubExport(WorkRecordExtraConPubExport workRecordExtraConPubExport,
+			List<ErrorAlarmCondition> listErrorAlarmCondition) {
+		workRecordExtraConPubExport.setErrorAlarmCondition(getErrorAlarmCondition(
+				workRecordExtraConPubExport.getCheckItem(), listErrorAlarmCondition));
+		return workRecordExtraConPubExport;
+	}
+	private ErrorAlarmConditionPubExport getErrorAlarmCondition(int eralCheckId, List<ErrorAlarmCondition> listErrorAlarmCondition) {
+		Optional<ErrorAlarmCondition> optErAlCondition = 
+				listErrorAlarmCondition.stream().filter(item -> item.getErrorAlarmCheckID().equals(eralCheckId)).findFirst();
+        if (!optErAlCondition.isPresent()) {
+        	return null;
+        }
+      //ドメインモデル「勤怠項目に対する条件」を取得する - Acquire domain model "Condition for attendance item"
+        ErrorAlarmCondition errorAlarmCondition = optErAlCondition.get();
+       
+    	ErrorAlarmConditionPubExport errorAlarmConditionPubExport = new ErrorAlarmConditionPubExport();
+    	errorAlarmConditionPubExport.convertFromDomain(errorAlarmCondition);
+        return errorAlarmConditionPubExport;
 	}
 
 	@Override
 	public void addWorkRecordExtraConPub(WorkRecordExtraConPubExport workRecordExtraConPubExport) {
-		this.repo.addWorkRecordExtraCon(convertToDomain(workRecordExtraConPubExport));
+		String errorAlarmCheckId = IdentifierUtil.randomUniqueId();
+		
+		ErrorAlarmConditionPubExport errorAlarmConditionPubExport = workRecordExtraConPubExport.getErrorAlarmCondition();
+		
+		// for ErrorAlarmCondition
+		if (workRecordExtraConPubExport.getCheckItem() >= TypeCheckWorkRecord.CONTINUOUS_TIME.value) {
+			validRangeOfErAlCondition(errorAlarmConditionPubExport);
+		}
+		ErrorAlarmCondition errorAlarmCondition = errorAlarmConditionPubExport.toConditionDomain();
+		errorAlarmCondition.setCheckId(errorAlarmCheckId);
+		errorAlarmCondition.validate();
+		workRecordExtraConPubExport.setErrorAlarmCheckID(errorAlarmCheckId);
+		this.errorAlarmConditionRepository.addErrorAlarmCondition(errorAlarmCondition);
 	}
 
 	@Override
 	public void updateWorkRecordExtraConPub(WorkRecordExtraConPubExport workRecordExtraConPubExport) {
-		this.repo.updateWorkRecordExtraCon(convertToDomain(workRecordExtraConPubExport));
+		ErrorAlarmConditionPubExport errorAlarmConditionPubExport = workRecordExtraConPubExport.getErrorAlarmCondition();
+		
+		// for ErrorAlarmCondition
+		validRangeOfErAlCondition(errorAlarmConditionPubExport);
+		ErrorAlarmCondition errorAlarmCondition = errorAlarmConditionPubExport.toConditionDomain();
+		errorAlarmCondition.validate();
+		this.errorAlarmConditionRepository.updateErrorAlarmCondition(errorAlarmCondition);
 	}
 
 	@Override
-	public void deleteWorkRecordExtraConPub(List<String> errorAlarmCheckID) {
-		for(String errorID : errorAlarmCheckID) {
-			this.repo.deleteWorkRecordExtraCon(errorID);
+	public void deleteWorkRecordExtraConPub(List<String> lstErrorAlarmCheckID) {
+		// for ErrorAlarmCondition
+		if (lstErrorAlarmCheckID != null && !lstErrorAlarmCheckID.isEmpty()) {
+			this.errorAlarmConditionRepository.removeErrorAlarmCondition(lstErrorAlarmCheckID);
 		}
+	}
+	
+	private void validRangeOfErAlCondition(ErrorAlarmConditionPubExport errorAlarmConditionPubExport) {
 		
 	}
 
