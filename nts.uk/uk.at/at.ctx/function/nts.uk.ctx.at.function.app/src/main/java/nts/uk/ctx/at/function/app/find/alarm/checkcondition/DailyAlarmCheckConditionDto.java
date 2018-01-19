@@ -24,6 +24,6 @@ public class DailyAlarmCheckConditionDto {
 	
 	private List<String> listExtractConditionWorkRecork;
 	
-	private List<String> listFixedExtractConditionWorkRecord;
+	private List<FixedConditionWorkRecordDto> listFixedExtractConditionWorkRecord;
 	
 }

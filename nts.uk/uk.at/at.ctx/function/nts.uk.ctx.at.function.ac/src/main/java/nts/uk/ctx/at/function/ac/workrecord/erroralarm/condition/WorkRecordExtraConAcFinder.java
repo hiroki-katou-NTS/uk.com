@@ -46,4 +46,34 @@ public class WorkRecordExtraConAcFinder implements WorkRecordExtraConAdapter {
 				);
 	}
 
+	private WorkRecordExtraConPubExport convertToExport( WorkRecordExtraConAdapterDto dto ) {
+		return new WorkRecordExtraConPubExport(
+				dto.getErrorAlarmCheckID(),
+				dto.getCheckItem(),
+				dto.isMessageBold(),
+				dto.getMessageColor(),
+				dto.getSortOrderBy(),
+				dto.isUseAtr(),
+				dto.getNameWKRecord()
+				);
+	}
+	
+	@Override
+	public void addWorkRecordExtraConPub(WorkRecordExtraConAdapterDto workRecordExtraConPubExport) {
+		this.repo.addWorkRecordExtraConPub(convertToExport(workRecordExtraConPubExport));
+		
+	}
+
+	@Override
+	public void updateWorkRecordExtraConPub(WorkRecordExtraConAdapterDto workRecordExtraConPubExport) {
+		this.repo.updateWorkRecordExtraConPub(convertToExport(workRecordExtraConPubExport));
+		
+	}
+
+	@Override
+	public void deleteWorkRecordExtraConPub(List<String> listErrorAlarmID) {
+		this.repo.deleteWorkRecordExtraConPub(listErrorAlarmID);
+		
+	}
+
 }

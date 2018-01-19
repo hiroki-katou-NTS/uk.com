@@ -7,9 +7,13 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EnumType;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.WorkRecordFixedCheckItem;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.FixedConWorkRecordPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.FixedConWorkRecordPubExport;
 
@@ -43,6 +47,36 @@ public class FixedConWorkRecordPubImpl implements FixedConWorkRecordPub {
 				domain.getMessage().v(),
 				domain.isUseAtr()
 				);
+		
+	}
+	
+	public FixedConditionWorkRecord convertToDomain(FixedConWorkRecordPubExport dto) {
+		return new FixedConditionWorkRecord(
+				dto.getErrorAlarmID(),
+				EnumAdaptor.valueOf(dto.getFixConWorkRecordNo(), WorkRecordFixedCheckItem.class),
+				new FixedConditionWorkRecordName(dto.getMessage()),
+				dto.isUseAtr()
+				);
+		
+	}
+	
+
+	@Override
+	public void addFixedConWorkRecordPub(FixedConWorkRecordPubExport fixedConWorkRecordPubExport) {
+		this.repo.addFixedConWorkRecord(convertToDomain(fixedConWorkRecordPubExport));
+	}
+
+	@Override
+	public void updateFixedConWorkRecordPub(FixedConWorkRecordPubExport fixedConWorkRecordPubExport) {
+		this.repo.updateFixedConWorkRecord(convertToDomain(fixedConWorkRecordPubExport));
+		
+	}
+
+	@Override
+	public void deleteFixedConWorkRecordPub(List<String> errorAlarmID) {
+		for(String errorId :errorAlarmID ) {
+			this.repo.deleteFixedConWorkRecord(errorId);
+		}
 		
 	}
 

@@ -9,7 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.AppCommentSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.Comment;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.GoOutTypeDisplayControl;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampDisplayControl;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.SupportFrameDispNumber;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -83,22 +86,26 @@ public class KrqstStampRequestSetting extends UkJpaEntity {
 	public StampRequestSetting toDomain(){
 		return new StampRequestSetting(
 				this.companyID, 
-				new Comment(this.topComment), 
-				this.topCommentFontColor, 
-				this.topCommentFontWeight == 1? true : false, 
-				new Comment(this.bottomComment), 
-				this.bottomCommentFontColor, 
-				this.bottomCommentFontWeight == 1? true : false, 
+				new AppCommentSetting(
+						new Comment(this.topComment), 
+						this.topCommentFontColor, 
+						this.topCommentFontWeight == 1? true : false),
+				new AppCommentSetting(
+						new Comment(this.bottomComment), 
+						this.bottomCommentFontColor, 
+						this.bottomCommentFontWeight == 1? true : false),
 				EnumAdaptor.valueOf(this.resultDisp, DisplayAtr.class), 
 				new SupportFrameDispNumber(this.supFrameDispNO), 
 				EnumAdaptor.valueOf(this.stampPlaceDisp, DisplayAtr.class), 
-				EnumAdaptor.valueOf(this.stampAtr_Work_Disp, DisplayAtr.class), 
-				EnumAdaptor.valueOf(this.stampAtr_GoOut_Disp, DisplayAtr.class), 
-				EnumAdaptor.valueOf(this.stampAtr_Care_Disp, DisplayAtr.class), 
-				EnumAdaptor.valueOf(this.stampAtr_Sup_Disp, DisplayAtr.class), 
-				EnumAdaptor.valueOf(this.stampGoOutAtr_Private_Disp, DisplayAtr.class), 
-				EnumAdaptor.valueOf(this.stampGoOutAtr_Public_Disp, DisplayAtr.class), 
-				EnumAdaptor.valueOf(this.stampGoOutAtr_Compensation_Disp, DisplayAtr.class), 
-				EnumAdaptor.valueOf(this.stampGoOutAtr_Union_Disp, DisplayAtr.class));
+				new StampDisplayControl(
+						EnumAdaptor.valueOf(this.stampAtr_Work_Disp, DisplayAtr.class), 
+						EnumAdaptor.valueOf(this.stampAtr_GoOut_Disp, DisplayAtr.class), 
+						EnumAdaptor.valueOf(this.stampAtr_Care_Disp, DisplayAtr.class), 
+						EnumAdaptor.valueOf(this.stampAtr_Sup_Disp, DisplayAtr.class)),
+				new GoOutTypeDisplayControl(
+						EnumAdaptor.valueOf(this.stampGoOutAtr_Private_Disp, DisplayAtr.class), 
+						EnumAdaptor.valueOf(this.stampGoOutAtr_Public_Disp, DisplayAtr.class), 
+						EnumAdaptor.valueOf(this.stampGoOutAtr_Compensation_Disp, DisplayAtr.class), 
+						EnumAdaptor.valueOf(this.stampGoOutAtr_Union_Disp, DisplayAtr.class)));
 	}
 }

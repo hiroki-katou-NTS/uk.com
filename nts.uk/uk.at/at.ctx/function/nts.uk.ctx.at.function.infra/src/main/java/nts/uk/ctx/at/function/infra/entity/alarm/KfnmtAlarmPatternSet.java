@@ -73,6 +73,7 @@ public class KfnmtAlarmPatternSet extends UkJpaEntity implements Serializable{
 				this.checkConList.add(e);
 			}
 		});
+		this.alarmPerSet.fromEntity(entity.alarmPerSet);
 	}
 
 }

@@ -23,7 +23,9 @@
 				</div>
 			</div>
 			<div data-bind="if: !screenModeNew()" class="mode-style">
-				<span data-bind="text: prePostSelected()==0 ? '#{i18n.getText('KAF009_9')}' : '#{i18n.getText('KAF009_10')}'"></span>
+				<div data-bind="if: prePostSelected() &lt; 2" class="mode-style">
+					<span data-bind="text: prePostSelected()==0 ? '#{i18n.getText('KAF009_9')}' : '#{i18n.getText('KAF009_10')}'"></span>
+				</div>
 			</div>
 		</div>
 		<div class="valign-center control-group">

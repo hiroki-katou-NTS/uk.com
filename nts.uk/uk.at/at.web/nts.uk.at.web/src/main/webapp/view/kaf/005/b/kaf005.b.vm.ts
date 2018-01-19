@@ -209,6 +209,7 @@ module nts.uk.at.view.kaf005.b {
                 self.referencePanelFlg(data.referencePanelFlg);
                 self.preAppPanelFlg(data.preAppPanelFlg);
                 self.allPreAppPanelFlg(data.allPreAppPanelFlg);
+                self.indicationOvertimeFlg(data.extratimeDisplayFlag);
                 // preAppOvertime
                 if(data.preAppOvertimeDto != null){
                     self.appDatePre(data.preAppOvertimeDto.appDatePre);

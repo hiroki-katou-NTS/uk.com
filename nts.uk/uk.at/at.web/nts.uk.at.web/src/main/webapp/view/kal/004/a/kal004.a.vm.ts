@@ -202,6 +202,7 @@ module nts.uk.at.view.kal004.a.model {
             let checkConditonList: Array<share.CheckConditionCommand> = self.periodSetting.listCheckCondition();
             let command = new share.AddAlarmPatternSettingCommand(self.alarmCode(), self.alarmName(), alarmPerSet, checkConditonList);
             block.invisible();
+            // Call service
             if(self.createMode()){
             service.addAlarmPattern(command).done(()=>{
                 
@@ -217,25 +218,22 @@ module nts.uk.at.view.kal004.a.model {
                  block.clear();
             });                           
             }else{
-//                service.updateAlarmPattern(command).done(()=>{
-//                    
-//                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-//                              
-//                    self.getAlarmPattern().done(function(){
-//                         self.currentCode(self.alarmCode());                          
-//                    }).always(() =>{
-//                         block.clear();    
-//                    });    
-//                }).fail((error) => {
-//                     nts.uk.ui.dialog.alert({ messageId: error.messageId });
-//                     block.clear();
-//                });                 
+                service.updateAlarmPattern(command).done(()=>{
+                    
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                              
+                    self.getAlarmPattern().done(function(){
+                         self.currentCode(self.alarmCode());                          
+                    }).always(() =>{
+                         block.clear();    
+                    });    
+                }).fail((error) => {
+                     nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                     block.clear();
+                });                 
             
             }           
-            // Call service
-
                        
-
         }
         public createAlarm() : void{
             let self = this;    
