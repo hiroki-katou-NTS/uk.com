@@ -95,14 +95,16 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format(self.dateType)).done(function(){
                     nts.uk.ui.block.clear();
                     self.appDate.subscribe(value => {
-                        if(!nts.uk.util.isNullOrEmpty(value)){
-                            nts.uk.ui.block.invisible();
-                            self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false)
-                            .done(()=>{
-                                nts.uk.ui.block.clear();         
-                            }).fail(()=>{
-                                nts.uk.ui.block.clear();    
-                            });
+                        if(!$('#inputdate').ntsError('hasError')){
+                            if(!nts.uk.util.isNullOrEmpty(value)){
+                                nts.uk.ui.block.invisible();
+                                self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false)
+                                .done(()=>{
+                                    nts.uk.ui.block.clear();         
+                                }).fail(()=>{
+                                    nts.uk.ui.block.clear();    
+                                });
+                            }
                         }
                     });
                     //フォーカス制御=>申請日付

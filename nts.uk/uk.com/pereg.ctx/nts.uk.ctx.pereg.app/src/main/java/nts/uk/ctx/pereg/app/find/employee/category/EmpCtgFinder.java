@@ -24,11 +24,13 @@ import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
+import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
+import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
@@ -83,6 +85,9 @@ public class EmpCtgFinder {
 
 	@Inject
 	private PersonInfoItemAuthRepository itemAuth;
+	
+	@Inject
+	private PerInfoItemDefRepositoty perItemRepo;
 
 	/**
 	 * Get all category by selected employee
@@ -117,7 +122,7 @@ public class EmpCtgFinder {
 
 			String ctgId = x.getPersonInfoCategoryId();
 			PersonInfoCategoryAuth ctgAuth = mapCategoryAuth.get(ctgId);
-			return checkRole(ctgAuth, roleIdOfLogin, ctgId, isSelf, isSameCom);
+			return checkRole(ctgAuth, roleIdOfLogin, ctgId, isSelf, isSameCom) && checkIsNotAbolition(x);
 		}).collect(Collectors.toList());
 
 		List<PerInfoCtgFullDto> returnDtoList = returnList.stream()
@@ -379,5 +384,13 @@ public class EmpCtgFinder {
 			} else
 				return false;
 		}
+	}
+	
+	private boolean checkIsNotAbolition(PersonInfoCategory ctg) {
+		if(ctg.getIsAbolition() == IsAbolition.ABOLITION) return false;
+		List<PersonInfoItemDefinition> lstItem = perItemRepo.getAllPerInfoItemDefByCategoryId(ctg.getPersonInfoCategoryId(), AppContexts.user().contractCode());
+		return lstItem.stream().filter(x -> {
+			return x.getIsAbolition() == IsAbolition.ABOLITION;
+		}).collect(Collectors.toList()).size() != lstItem.size();
 	}
 }

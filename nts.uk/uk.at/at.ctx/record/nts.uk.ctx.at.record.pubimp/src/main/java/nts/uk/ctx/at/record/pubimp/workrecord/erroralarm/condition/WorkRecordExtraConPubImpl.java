@@ -8,8 +8,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.DisplayMessages;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtractingCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.WorkRecordExtraConPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.WorkRecordExtraConPubExport;
 
@@ -46,6 +51,38 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 					domain.isUseAtr(),
 					domain.getNameWKRecord().v()
 				);
+	}
+	
+	public WorkRecordExtractingCondition convertToDomain(WorkRecordExtraConPubExport dto) {
+		return new WorkRecordExtractingCondition(
+				dto.getErrorAlarmCheckID(),
+					EnumAdaptor.valueOf(dto.getCheckItem(), TypeCheckWorkRecord.class),
+					new DisplayMessages(
+							dto.isMessageBold(),
+							new ColorCode(dto.getMessageColor())
+							),
+					dto.getSortOrderBy(),
+					dto.isUseAtr(),
+					new NameWKRecord(dto.getNameWKRecord())
+				);
+	}
+
+	@Override
+	public void addWorkRecordExtraConPub(WorkRecordExtraConPubExport workRecordExtraConPubExport) {
+		this.repo.addWorkRecordExtraCon(convertToDomain(workRecordExtraConPubExport));
+	}
+
+	@Override
+	public void updateWorkRecordExtraConPub(WorkRecordExtraConPubExport workRecordExtraConPubExport) {
+		this.repo.updateWorkRecordExtraCon(convertToDomain(workRecordExtraConPubExport));
+	}
+
+	@Override
+	public void deleteWorkRecordExtraConPub(List<String> errorAlarmCheckID) {
+		for(String errorID : errorAlarmCheckID) {
+			this.repo.deleteWorkRecordExtraCon(errorID);
+		}
+		
 	}
 
 }

@@ -165,7 +165,12 @@ public class UpdateErrorAlarmWrCommand {
 		ErrorAlarmWorkRecord domain = ErrorAlarmWorkRecord.init(companyId, code, name, fixedAtr == 1, useAtr == 1,
 				typeAtr, boldAtr == 1, messageColor, cancelableAtr == 1,
 				errorDisplayItem != null ? new BigDecimal(errorDisplayItem) : null, lstApplicationTypeCode);
+		return domain;
+	}
+
+	public ErrorAlarmCondition toConditionDomain(ErrorAlarmWorkRecord eralDomain) {
 		ErrorAlarmCondition condition = ErrorAlarmCondition.init();
+		condition.setCheckId(eralDomain.getErrorAlarmCheckID());
 		condition.setDisplayMessage(displayMessage);
 		if (fixedAtr != 1) {
 			// Set AlCheckTargetCondition
@@ -207,8 +212,7 @@ public class UpdateErrorAlarmWrCommand {
 					.setAttendanceItemConditionGroup1(operatorGroup1, conditionsGroup1)
 					.setAttendanceItemConditionGroup2(operatorGroup2, conditionsGroup2);
 		}
-		domain.setCondition(condition);
-		return domain;
+		return condition;
 	}
-
+	
 }

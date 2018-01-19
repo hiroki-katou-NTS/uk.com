@@ -152,7 +152,7 @@ public class DailyAttendanceItemFinder {
      */
     public List<AttdItemDto> findDailyAttendanceCompoundBy(int eralCheckId) {
         List<AttdItemDto> attdItems = new ArrayList<>();
-        
+        /*
         Optional<ErrorAlarmWorkRecord> optErAlCondition = errorAlarmWorkRecordRepo.findByErrorAlamCheckId(String.valueOf(eralCheckId));
         if (optErAlCondition.isPresent()) {
           //ドメインモデル「勤怠項目に対する条件」を取得する - Acquire domain model "Condition for attendance item"
@@ -164,7 +164,7 @@ public class DailyAttendanceItemFinder {
                 //errorAlarmCondition
             }
         }
-        
+        */
         return attdItems;
     }
 	
@@ -221,7 +221,10 @@ public class DailyAttendanceItemFinder {
         // Acquisition error error Acquire the domain model "ErrorAlarmWorkRecord" on the basis of the alarm check ID
         Optional<ErrorAlarmWorkRecord> optErAlCondition = errorAlarmWorkRecordRepo.findByErrorAlamCheckId(eralCheckId);
         if (optErAlCondition.isPresent()) {
-            return ErrorAlarmWorkRecordDto.fromDomain(optErAlCondition.get());
+        	ErrorAlarmWorkRecord errorAlarmWorkRecord = optErAlCondition.get();
+        	Optional<ErrorAlarmCondition> optOrrorAlarmCondition = errorAlarmWorkRecordRepo.findConditionByErrorAlamCheckId(errorAlarmWorkRecord.getErrorAlarmCheckID());
+            return ErrorAlarmWorkRecordDto.fromDomain(optErAlCondition.get(), 
+            		optOrrorAlarmCondition.isPresent() ? optOrrorAlarmCondition.get() : null);
         }
         return null;
 	}

@@ -49,6 +49,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 
 	@Column(name = "MESSAGE_DISPLAY")
 	public String messageDisplay;
+	
+	@Column(name = "CONTINUOUS_PERIOD")
+	public BigDecimal continuousPeriod;
 
 	@Column(name = "FILTER_BY_BUSINESS_TYPE")
 	public BigDecimal filterByBusinessType;
@@ -164,7 +167,7 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 			BigDecimal whActualFilterAtr, BigDecimal whCompareAtr, List<KrcstErAlWhActual> lstWhActual,
 			List<KrcstErAlWhPlan> lstWhPlan, BigDecimal operatorBetweenGroups, BigDecimal group2UseAtr,
 			String atdItemConditionGroup1, KrcstErAlConGroup krcstErAlConGroup1, String atdItemConditionGroup2,
-			KrcstErAlConGroup krcstErAlConGroup2) {
+			KrcstErAlConGroup krcstErAlConGroup2, BigDecimal continuousPeriod) {
 		super();
 		this.eralCheckId = eralCheckId;
 		this.messageDisplay = messageDisplay;
@@ -196,6 +199,7 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 		this.krcstErAlConGroup1 = krcstErAlConGroup1;
 		this.atdItemConditionGroup2 = atdItemConditionGroup2;
 		this.krcstErAlConGroup2 = krcstErAlConGroup2;
+		this.continuousPeriod = continuousPeriod;
 	}
 
 }

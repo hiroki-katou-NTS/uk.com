@@ -13,6 +13,7 @@
 			<com:scriptfile path="../share/kal003utils.js" />
 			<com:scriptfile path="common/scopecheck.js" />
 			<com:scriptfile path="common/checkconditiontab.js" />
+			<com:scriptfile path="daily/fixedcheckcondition/fixedchecktab.js" />
 			<com:stylefile path="kal003.a.style.css" />
 			<com:scriptfile path="kal003.a.service.js" />
 			<com:scriptfile path="kal003.a.vm.js" />
@@ -108,9 +109,8 @@
 							<div class="tab-content-3" data-bind="with: tabCheckCondition">
  								<ui:include src="common/checkconditions.xhtml" />
 							</div>
-							<div class="tab-content-4">
-<!-- 								<ui:include src="daily/fixedcheckcondition/fixedcheck.xhtml" /> -->
-<!-- 								<ui:include src="../b/index.xhtml" /> -->
+							<div class="tab-content-4" data-bind="with: tabFixedCondition">
+								<ui:include src="daily/fixedcheckcondition/fixedcheck.xhtml" />
 							</div>
 						</div>
 					</div>

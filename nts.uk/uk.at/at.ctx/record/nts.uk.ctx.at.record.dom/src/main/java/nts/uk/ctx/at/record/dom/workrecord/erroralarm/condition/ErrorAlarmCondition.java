@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanAct
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.WorkTypeCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 
 /**
@@ -26,6 +27,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMess
 // 勤務実績のエラーアラームチェック
 @Getter
 public class ErrorAlarmCondition extends AggregateRoot {
+	
+	// Check ID
+	private String errorAlarmCheckID;
 
 	/* 表示メッセージ */
 	private DisplayMessage displayMessage;
@@ -41,6 +45,8 @@ public class ErrorAlarmCondition extends AggregateRoot {
 
 	// 勤怠項目の条件
 	private AttendanceItemCondition atdItemCondition;
+	
+	private ContinuousPeriod continuousPeriod;
 
 	private ErrorAlarmCondition() {
 		super();
@@ -222,6 +228,10 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		this.atdItemCondition.setGroup2(group);
 		return this;
 	}
+	
+	public void setCheckId(String errorAlarmCheckID) {
+		this.errorAlarmCheckID = errorAlarmCheckID;
+	}
 
 	public void setGroupId1(String groupId) {
 		this.atdItemCondition.setGroupId1(groupId);
@@ -229,5 +239,9 @@ public class ErrorAlarmCondition extends AggregateRoot {
 
 	public void setGroupId2(String groupId) {
 		this.atdItemCondition.setGroupId2(groupId);
+	}
+	
+	public void setContinuousPeriod(int continuousPeriod){
+		this.continuousPeriod = new ContinuousPeriod(continuousPeriod);
 	}
 }
