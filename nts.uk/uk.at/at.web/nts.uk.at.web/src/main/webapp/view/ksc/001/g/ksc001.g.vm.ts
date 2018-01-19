@@ -60,7 +60,7 @@ module nts.uk.at.view.ksc001.g {
                 self.items([]);
                 if (data && data.length > 0) {
                     data.forEach(function(item, index) {
-                        let dateString = moment(item.executionDateTime.executionStartDate).format('YYYY/MM/DD').toString();
+                        let dateString = moment.utc(item.executionDateTime.executionStartDate).format('YYYY/MM/DD').toString();
                         self.items.push(new GridItem(dateString, item.employeeCode, item.employeeName, item.period, item.completionStatus, item.executionId));
                     });
                 }
