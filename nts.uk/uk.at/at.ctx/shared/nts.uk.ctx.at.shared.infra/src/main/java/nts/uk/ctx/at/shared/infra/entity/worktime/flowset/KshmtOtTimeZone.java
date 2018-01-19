@@ -18,9 +18,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class KshmtOtTimeZone.
  */
+@Entity
 @Getter
 @Setter
-@Entity
 @Table(name = "KSHMT_OT_TIME_ZONE")
 public class KshmtOtTimeZone extends UkJpaEntity implements Serializable {
 

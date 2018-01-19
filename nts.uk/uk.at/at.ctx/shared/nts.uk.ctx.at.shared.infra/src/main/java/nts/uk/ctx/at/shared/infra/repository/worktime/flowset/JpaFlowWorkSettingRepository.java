@@ -84,7 +84,7 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 			entity = new KshmtFlowWorkSet();
 		}
 		// save to memento
-		domain.saveToMemento(new JpaFlowWorkSettingSetMemento(entity));
+		//TODOdomain.saveToMemento(new JpaFlowWorkSettingSetMemento(entity));
 		return entity;
 	}
 }

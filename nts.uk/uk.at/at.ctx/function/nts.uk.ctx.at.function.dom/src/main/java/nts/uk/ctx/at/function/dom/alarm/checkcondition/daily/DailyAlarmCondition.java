@@ -6,6 +6,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
 
 /**
@@ -23,25 +24,21 @@ public class DailyAlarmCondition extends ExtractionCondition  {
 	
 	private boolean addApplication;
 	
-	private List<String> errorAlarmWk = new ArrayList<String>();
+	private List<String> extractConditionWorkRecord = new ArrayList<String>();
 	
-	private List<String> errorAlarmFixed = new ArrayList<String>();
+	private List<String> fixedExtractConditionWorkRecord = new ArrayList<String>();
 	
-	private List<String > errorAlarmCode = new ArrayList<String>();
+	private List<String> errorAlarmCode = new ArrayList<String>();
 
-	public DailyAlarmCondition(String dailyAlarmConID, ConExtractedDaily conExtractedDaily, boolean addApplication,
+	public DailyAlarmCondition(String dailyAlarmConID, int conExtractedDaily, boolean addApplication,
 			List<String> errorAlarmWk, List<String> errorAlarmFixed, List<String> errorAlarmCode) {
 		super();
 		this.dailyAlarmConID = dailyAlarmConID;
-		this.conExtractedDaily = conExtractedDaily;
+		this.conExtractedDaily = EnumAdaptor.valueOf(conExtractedDaily, ConExtractedDaily.class);;
 		this.addApplication = addApplication;
-		this.errorAlarmWk = errorAlarmWk;
-		this.errorAlarmFixed = errorAlarmFixed;
+		this.extractConditionWorkRecord = errorAlarmWk;
+		this.fixedExtractConditionWorkRecord = errorAlarmFixed;
 		this.errorAlarmCode = errorAlarmCode;
 	}
-
-
-
-	
 
 }

@@ -31,4 +31,8 @@ public class ErrorAlarmWorkRecordFinder {
 		return ErrorAlarmWorkRecordDto.fromDomain(repository.findByCode(code).get());
 	}
 
+	public List<ErrorAlarmWorkRecordDto> findByListErrorAlamCheckId(List<String> listEralCheckId) {
+		return repository.findByListErrorAlamCheckId(listEralCheckId).stream()
+				.map(domain -> ErrorAlarmWorkRecordDto.fromDomain(domain)).collect(Collectors.toList());
+	}
 }

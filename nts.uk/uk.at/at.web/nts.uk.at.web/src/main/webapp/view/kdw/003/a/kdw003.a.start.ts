@@ -7,11 +7,10 @@ module nts.uk.at.view.kdw003.a {
                 forGrid: true,
                 headers: [
                     new nts.uk.ui.errors.ErrorHeader("message", "エラー内容", "auto", true),
-                    new nts.uk.ui.errors.ErrorHeader("errorCode", "エラーコード", "auto", true)
-//                    new nts.uk.ui.errors.ErrorHeader("employeeCode", nts.uk.resource.getText("KDW003_32"), "auto", true),
-//                    new nts.uk.ui.errors.ErrorHeader("employeeName", nts.uk.resource.getText("KDW003_33"), "auto", true),
-//                    new nts.uk.ui.errors.ErrorHeader("date",nts.uk.resource.getText('KDW003_34'), "auto", true),
-//                    new nts.uk.ui.errors.ErrorHeader("message", nts.uk.resource.getText('KDW003_36'), "auto", true)
+                    new nts.uk.ui.errors.ErrorHeader("errorCode", "エラーコード", "auto", false)
+                    new nts.uk.ui.errors.ErrorHeader("employeeCode", nts.uk.resource.getText("KDW003_32"), "auto", false),
+                    new nts.uk.ui.errors.ErrorHeader("employeeName", nts.uk.resource.getText("KDW003_33"), "auto", false),
+                    new nts.uk.ui.errors.ErrorHeader("date",nts.uk.resource.getText('KDW003_34'), "auto", false)
                 ]
             };
             //this.bind(screenModel, dialogOptions);

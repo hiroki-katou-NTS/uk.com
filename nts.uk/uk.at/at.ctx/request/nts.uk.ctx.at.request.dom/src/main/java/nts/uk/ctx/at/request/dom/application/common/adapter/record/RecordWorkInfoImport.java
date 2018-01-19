@@ -71,9 +71,9 @@ public class RecordWorkInfoImport {
 	/**
 	 * 計算就業外深夜
 	 */
-	private int shiftNightCaculation;
+	private Integer shiftNightCaculation;
 	/**
 	 * 休出深夜
 	 */
-	private int breakLateNight;
+	private Integer breakLateNight;
 }

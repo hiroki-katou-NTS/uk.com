@@ -242,10 +242,10 @@
 		<!-- 申請理由（ラベル) -->
 		<div class="valign-center control-group">
 			<div class="lblTitleKAF009"
-				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
+				data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_27')}</div>
 			<div id="inpReason">
 				<textarea id="inpReasonTextarea"
-					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption, constraint: 'AppReason', required : requiredReason(), name: '#[KAF009_29]'}" />
+					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption, required : requiredReason(), name: '#[KAF009_29]'}" />
 			</div>
 		</div>
 	</div>

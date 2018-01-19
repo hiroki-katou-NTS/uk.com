@@ -143,13 +143,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 
 	@Override
 	public List<SiftType> getSiftType(String companyID, String employeeID,
-			RequestAppDetailSetting requestAppDetailSetting) {
+			RequestAppDetailSetting requestAppDetailSetting,GeneralDate baseDate) {
 		List<SiftType> result = new ArrayList<>();
 		if (requestAppDetailSetting != null) {
 			// 時刻計算利用チェック
 			if (requestAppDetailSetting.getTimeCalUseAtr().value == UseAtr.USE.value) {
 				// 1.職場別就業時間帯を取得
-				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, GeneralDate.today());
+				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate);
 				
 				if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
 					List<WorkTimeSetting> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);

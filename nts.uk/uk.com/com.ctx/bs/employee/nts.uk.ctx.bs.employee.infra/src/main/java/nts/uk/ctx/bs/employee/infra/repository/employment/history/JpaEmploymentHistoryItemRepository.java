@@ -1,16 +1,27 @@
 package nts.uk.ctx.bs.employee.infra.repository.employment.history;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
-import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
+import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
+import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
 
 @Stateless
 public class JpaEmploymentHistoryItemRepository extends JpaRepository implements EmploymentHistoryItemRepository {
@@ -107,5 +118,223 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		this.commandProxy().remove(BsymtEmploymentHistItem.class, histId);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.basic.dom.company.organization.employment.history.
+	 * EmploymentHistoryRepository#searchEmployee(nts.arc.time.GeneralDate,
+	 * java.util.List)
+	 */
+	@Override
+	public List<EmploymentHistoryItem> searchEmployee(GeneralDate baseDate,
+			List<String> employmentCodes) {
+		
+		// check not data input
+		if (CollectionUtil.isEmpty(employmentCodes)) {
+			return new ArrayList<>();
+		}
+
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KMNMT_EMPLOYMENT_HIST (KmnmtEmploymentHist SQL)
+		CriteriaQuery<BsymtEmploymentHistItem> cq = criteriaBuilder
+				.createQuery(BsymtEmploymentHistItem.class);
+
+		// root data
+		Root<BsymtEmploymentHistItem> root = cq.from(BsymtEmploymentHistItem.class);
+
+		// select root
+		cq.select(root);
+		
+		// Split query.
+		List<BsymtEmploymentHistItem> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(employmentCodes, 1000, (subList) -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+			// employment in data employment
+			lstpredicateWhere
+					.add(criteriaBuilder.and(root.get(BsymtEmploymentHistItem_.empCode).in(subList)));
+
+			// start date <= base date
+			lstpredicateWhere.add(criteriaBuilder
+					.lessThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+							.get(BsymtEmploymentHist_.strDate), baseDate));
+
+			// endDate >= base date
+			lstpredicateWhere.add(criteriaBuilder
+					.greaterThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+							.get(BsymtEmploymentHist_.endDate), baseDate));
+
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+			// create query
+			TypedQuery<BsymtEmploymentHistItem> query = em.createQuery(cq);
+			resultList.addAll(query.getResultList());
+		});
+		
+
+		// exclude select
+		return resultList.stream().map(category -> toDomain(category))
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.basic.dom.company.organization.employment.history.
+	 * EmploymentHistoryRepository#searchEmployee(java.util.List,
+	 * nts.arc.time.GeneralDate, java.util.List)
+	 */
+	@Override
+	public List<EmploymentHistoryItem> searchEmployee(List<String> employeeIds, GeneralDate baseDate,
+			List<String> employmentCodes) {
+		if (CollectionUtil.isEmpty(employeeIds) || CollectionUtil.isEmpty(employmentCodes)) {
+			return new ArrayList<>();
+		}
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KMNMT_EMPLOYMENT_HIST (KmnmtEmploymentHist SQL)
+		CriteriaQuery<BsymtEmploymentHistItem> cq = criteriaBuilder
+				.createQuery(BsymtEmploymentHistItem.class);
+
+		// root data
+		Root<BsymtEmploymentHistItem> root = cq.from(BsymtEmploymentHistItem.class);
+
+		// select root
+		cq.select(root);
+
+		List<BsymtEmploymentHistItem> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, employeeSubList -> {
+			CollectionUtil.split(employmentCodes, 1000, employmentSubList -> {
+				// add where
+				List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+				// employment in data employment
+				lstpredicateWhere
+						.add(criteriaBuilder.and(root.get(BsymtEmploymentHistItem_.empCode).in(employmentSubList)));
+
+				// employee id in data employee id
+				lstpredicateWhere
+						.add(criteriaBuilder.and(root.get(BsymtEmploymentHistItem_.sid).in(employeeSubList)));
+
+				// start date <= base date
+				lstpredicateWhere.add(criteriaBuilder
+						.lessThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+								.get(BsymtEmploymentHist_.strDate), baseDate));
+
+				// endDate >= base date
+				lstpredicateWhere.add(criteriaBuilder
+						.greaterThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+								.get(BsymtEmploymentHist_.endDate), baseDate));
+
+				// set where to SQL
+				cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+				// create query
+				TypedQuery<BsymtEmploymentHistItem> query = em.createQuery(cq);
+				resultList.addAll(query.getResultList());
+			});
+		});
+		
+
+		// exclude select
+		return resultList.stream().map(category -> toDomain(category))
+				.collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistoryRepository
+	 * #searchEmploymentOfSids(java.util.List, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<EmploymentHistoryItem> searchEmploymentOfSids(List<String> employeeIds,
+			GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KMNMT_EMPLOYMENT_HIST (KmnmtEmploymentHist SQL)
+		CriteriaQuery<BsymtEmploymentHistItem> cq = criteriaBuilder
+				.createQuery(BsymtEmploymentHistItem.class);
+
+		// root data
+		Root<BsymtEmploymentHistItem> root = cq.from(BsymtEmploymentHistItem.class);
+
+		// select root
+		cq.select(root);
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			// start date <= base date
+			lstpredicateWhere.add(criteriaBuilder
+					.lessThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+							.get(BsymtEmploymentHist_.strDate), baseDate));
+	
+			// endDate >= base date
+			lstpredicateWhere.add(criteriaBuilder
+					.greaterThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+							.get(BsymtEmploymentHist_.endDate), baseDate));
+	
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+	
+			// create query
+			TypedQuery<BsymtEmploymentHistItem> query = em.createQuery(cq);
+	
+			// exclude select
+			return query.getResultList().stream().map(category -> toDomain(category))
+					.collect(Collectors.toList());
+		}
+		
+		// Split employee ids.
+		List<BsymtEmploymentHistItem> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			
+
+			// employee id in data employee id
+			lstpredicateWhere
+					.add(criteriaBuilder.and(root.get(BsymtEmploymentHistItem_.sid).in(subList)));
+
+			lstpredicateWhere.add(criteriaBuilder
+					.lessThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+							.get(BsymtEmploymentHist_.strDate), baseDate));
+	
+			// endDate >= base date
+			lstpredicateWhere.add(criteriaBuilder
+					.greaterThanOrEqualTo(root.get(BsymtEmploymentHistItem_.bsymtEmploymentHist)
+							.get(BsymtEmploymentHist_.endDate), baseDate));
+			
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+			// create query
+			TypedQuery<BsymtEmploymentHistItem> query = em.createQuery(cq);
+			resultList.addAll(query.getResultList());
+		});
+		
+
+		// exclude select
+		return resultList.stream().map(category -> toDomain(category)).collect(Collectors.toList());
+	}
+
+	/**
+	 * To domain.
+	 *
+	 * @param entity
+	 *            the entity
+	 * @return the employment history
+	 */
+	private EmploymentHistoryItem toDomain(BsymtEmploymentHistItem entity) {
+		return EmploymentHistoryItem.createFromJavaType(entity.hisId, entity.sid, entity.empCode, entity.salarySegment);
+	}
 
 }

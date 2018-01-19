@@ -11,11 +11,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
+import nts.uk.ctx.sys.auth.dom.user.User;
+import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -36,6 +39,9 @@ public class RoleSetServiceImp implements RoleSetService{
 
     @Inject
     private RoleSetGrantedJobTitleRepository roleSetGrantedJobTitleRepository;
+    
+    @Inject
+    private UserRepository userRepo;
 
     /**
      * Get all Role Set - ロールセットをすべて取得する
@@ -136,4 +142,13 @@ public class RoleSetServiceImp implements RoleSetService{
         /** check from CAS014 */
         return roleSetGrantedJobTitleRepository.checkRoleSetCdExist(roleSetCd, companyId);
     }
+
+	@Override
+	public RoleSet getRoleSetFromUserId(String userId, GeneralDate baseData) {
+		Optional<User> userOpt = userRepo.getByUserID(userId);
+		if(userOpt.get().getAssociatedPersonID()!=null) {
+			
+		}
+		return null;
+	}
 }

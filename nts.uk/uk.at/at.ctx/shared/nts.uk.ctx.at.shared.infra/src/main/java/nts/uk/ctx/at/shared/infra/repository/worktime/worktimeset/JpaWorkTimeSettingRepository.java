@@ -207,7 +207,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder
 				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyId));
-		lstpredicateWhere.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid).in(workTimeCodes));
+		lstpredicateWhere.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd).in(workTimeCodes));
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();

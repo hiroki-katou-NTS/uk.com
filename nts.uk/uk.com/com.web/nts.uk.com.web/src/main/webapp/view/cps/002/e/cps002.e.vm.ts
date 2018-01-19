@@ -14,7 +14,7 @@ module cps002.e.vm {
         displayGenerateEmCode: KnockoutObservable<string> = ko.observable("");
         
         constructor() {
-            let self = this, textValue = getShared("textValue");
+            let self = this, textValue = "";
             self.cardNoMode = getShared("cardNoMode");
 
 

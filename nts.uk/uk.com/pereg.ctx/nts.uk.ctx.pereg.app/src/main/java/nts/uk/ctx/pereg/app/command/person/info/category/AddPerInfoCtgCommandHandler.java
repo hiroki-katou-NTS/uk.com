@@ -35,8 +35,9 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 	@Override
 	protected void handle(CommandHandlerContext<AddPerInfoCtgCommand> context) {
 		AddPerInfoCtgCommand perInfoCtgCommand = context.getCommand();
+		String ctgName = perInfoCtgCommand.getCategoryName();
 		// need ctgId = ' ' becase sql oracle server can't query ''
-		if (perInfoCtgCommand.getCategoryName().trim().equals("")) {
+		if (CheckNameSpace.checkName(ctgName)) {
 			throw new BusinessException(new RawErrorMessage("Msg_928"));
 		}
 

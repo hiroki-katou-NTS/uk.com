@@ -70,23 +70,34 @@ public class KrcdtDayLateTime extends UkJpaEntity implements Serializable {
 		val entity = new KrcdtDayLateTime();
 		/* 主キー */
 		entity.krcdtDayLateTimePK = new KrcdtDayLateTimePK(employeeId, date, domain.getWorkNo().v());
-		/* 遅刻時間 */
-		entity.lateTime = domain.getLateTime().getTime().valueAsMinutes();
-		/* 計算遅刻時間 */
-		entity.calcLateTime = domain.getLateTime().getCalcTime().valueAsMinutes();
-		/* 遅刻控除時間 */
-		entity.lateDedctTime = domain.getLateDeductionTime().getTime().valueAsMinutes();
-		/* 計算遅刻控除時間 */
-		entity.calcLateDedctTime = domain.getLateDeductionTime().getCalcTime().valueAsMinutes();
-		/* 時間年休使用時間 */
-		entity.timeAnallvUseTime = domain.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes();
-		/* 時間代休使用時間 */
-		entity.timeCmpnstlvUseTime = domain.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes();
-		/* 超過有休使用時間 */
-		entity.overPayVactnUseTime = domain.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes();
-		/* 特別休暇使用時間 */
-		entity.spVactnUseTime = domain.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes();
+		entity.setData(domain);
 		return entity;
+	}
+	
+	public void setData(LateTimeOfDaily domain){
+		if(domain.getLateTime() != null){
+			/* 遅刻時間 */
+			this.lateTime = domain.getLateTime().getTime() == null ? 0 : domain.getLateTime().getTime().valueAsMinutes();
+			/* 計算遅刻時間 */
+			this.calcLateTime = domain.getLateTime().getCalcTime() == null ? this.lateTime : domain.getLateTime().getCalcTime().valueAsMinutes();
+		}
+		if(domain.getLateDeductionTime() != null){
+			/* 遅刻控除時間 */
+			this.lateDedctTime = domain.getLateDeductionTime().getTime() == null ? 0 : domain.getLateDeductionTime().getTime().valueAsMinutes();
+			/* 計算遅刻控除時間 */
+			this.calcLateDedctTime = domain.getLateDeductionTime().getCalcTime() == null ? this.calcLateDedctTime : domain.getLateDeductionTime().getCalcTime().valueAsMinutes();
+		}
+		TimevacationUseTimeOfDaily vacation = domain.getTimePaidUseTime();
+		if(vacation != null){
+			/* 時間年休使用時間 */
+			this.timeAnallvUseTime = vacation.getTimeAnnualLeaveUseTime() == null ? 0 : vacation.getTimeAnnualLeaveUseTime().valueAsMinutes();
+			/* 時間代休使用時間 */
+			this.timeCmpnstlvUseTime = vacation.getTimeCompensatoryLeaveUseTime() == null ? 0 : vacation.getTimeCompensatoryLeaveUseTime().valueAsMinutes();
+			/* 超過有休使用時間 */
+			this.overPayVactnUseTime = vacation.getSixtyHourExcessHolidayUseTime() == null ? 0 : vacation.getSixtyHourExcessHolidayUseTime().valueAsMinutes();
+			/* 特別休暇使用時間 */
+			this.spVactnUseTime = vacation.getTimeSpecialHolidayUseTime() == null ? 0 : vacation.getTimeSpecialHolidayUseTime().valueAsMinutes();
+		}
 	}
 
 	public LateTimeOfDaily toDomain() {

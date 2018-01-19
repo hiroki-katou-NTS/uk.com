@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.schedule.dom.schedule.setting.function.control.UseAtr;
+import nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol.UseAtr;
 /**
  * 
  * @author phongtq

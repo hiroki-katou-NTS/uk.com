@@ -105,10 +105,7 @@ module nts.uk.at.view.kmf022 {
             start() {
                 var self = this;
                 var dfd = $.Deferred();
-                service.findJobAssign().done((lstData) => {
-                    console.log(lstData);
-                    dfd.resolve();
-                });
+
                 return dfd.promise();
             }
 

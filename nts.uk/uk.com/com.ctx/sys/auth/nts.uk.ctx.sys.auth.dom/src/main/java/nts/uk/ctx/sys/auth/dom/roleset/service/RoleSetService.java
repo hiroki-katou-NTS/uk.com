@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.auth.dom.roleset.service;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 
 /**
@@ -37,4 +38,14 @@ public interface RoleSetService {
      * @param roleSetCd
      */
     void deleteRoleSet(String roleSetCd);
+    
+    /**
+     * ユーザIDからロールセットを取得する
+     * @param userId
+     * @param baseData
+     * 
+     * @return RoleSet domain
+     */
+    RoleSet getRoleSetFromUserId(String userId, GeneralDate baseData);
+    
 }
