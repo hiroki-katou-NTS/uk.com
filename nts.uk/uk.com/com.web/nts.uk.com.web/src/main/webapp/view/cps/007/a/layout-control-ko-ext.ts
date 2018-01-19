@@ -1336,7 +1336,7 @@ module nts.custombinding {
                                             return;
                                         }
 
-                                        $(document).on('change, blur', `${id1}, ${id2}`, (evt) => {
+                                        $(document).on('blur', `${id1}, ${id2}`, (evt) => {
                                             setTimeout(() => {
                                                 let dom1 = $(id1),
                                                     dom2 = $(id2);
@@ -1345,19 +1345,24 @@ module nts.custombinding {
                                                     return;
                                                 }
 
-                                                if (!dom1.val() && dom2.val()) {
-                                                    if (!dom1.parent().hasClass('error')) {
-                                                        dom1.ntsError('set', { messageId: "Msg_858" });
-                                                    }
+                                                let pv = ko.toJS(prev.value),
+                                                    nv = ko.toJS(next.value),
+                                                    tpt = typeof pv == 'number',
+                                                    tnt = typeof nv == 'number';
+
+
+                                                dom2.trigger('change');
+                                                dom1.trigger('change');
+
+                                                if (!tpt && tnt && !dom1.parent().hasClass('error')) {
+                                                    dom1.ntsError('set', { messageId: "Msg_858" });
                                                 }
 
-                                                if (dom1.val() && !dom2.val()) {
-                                                    if (!dom2.parent().hasClass('error')) {
-                                                        dom2.ntsError('set', { messageId: "Msg_858" });
-                                                    }
+                                                if (tpt && !tnt && !dom2.parent().hasClass('error')) {
+                                                    dom2.ntsError('set', { messageId: "Msg_858" });
                                                 }
 
-                                                if ((!dom1.val() && !dom2.val()) || (dom1.val() && dom2.val())) {
+                                                if ((!tpt && !tnt) || (tpt && tnt)) {
                                                     let rm: Array<any> = [],
                                                         error: Array<any> = getError();
                                                     _.each(error, er => {
@@ -1422,13 +1427,14 @@ module nts.custombinding {
                                             validate(def, row[2]);
                                             if (def.index == 1) {
                                                 def.value.subscribe(v => {
-                                                    let next = row[2] || { value: () => ko.observable(undefined) };
+                                                    let t = typeof v == 'number',
+                                                        next = row[2] || { value: () => ko.observable(undefined) };
                                                     if (next.item && next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME && _.has(next, "value")) {
                                                         if (ko.isObservable(next.value)) {
                                                             let clone = _.cloneDeep(next);
                                                             clone.item.min = def.value() + 1;
 
-                                                            let primi = primitiveConst(v ? clone : next);
+                                                            let primi = primitiveConst(t ? clone : next);
 
                                                             exceptConsts.push(primi.itemCode);
                                                             writeConstraint(primi.itemCode, primi);
@@ -1440,13 +1446,14 @@ module nts.custombinding {
 
                                             if (def.index == 2) {
                                                 def.value.subscribe(v => {
-                                                    let prev = row[1] || { value: () => ko.observable(undefined) };
+                                                    let t = typeof v == 'number',
+                                                        prev = row[1] || { value: () => ko.observable(undefined) };
                                                     if (prev.item && prev.item.dataTypeValue == ITEM_SINGLE_TYPE.TIME && _.has(prev, "value")) {
                                                         if (ko.isObservable(prev.value)) {
                                                             let clone = _.cloneDeep(prev);
                                                             clone.item.max = def.value() - 1;
 
-                                                            let primi = primitiveConst(v ? clone : prev);
+                                                            let primi = primitiveConst(t ? clone : prev);
 
                                                             exceptConsts.push(primi.itemCode);
                                                             writeConstraint(primi.itemCode, primi);
@@ -1460,13 +1467,14 @@ module nts.custombinding {
                                             validate(def, row[2]);
                                             if (def.index == 1) {
                                                 def.value.subscribe(v => {
-                                                    let next = row[2] || { value: () => ko.observable(undefined) };
+                                                    let t = typeof v == 'number',
+                                                        next = row[2] || { value: () => ko.observable(undefined) };
                                                     if (next.item && next.item.dataTypeValue == ITEM_SINGLE_TYPE.TIMEPOINT && _.has(next, "value")) {
                                                         if (ko.isObservable(next.value)) {
                                                             let clone = _.cloneDeep(next);
                                                             clone.item.timePointItemMin = def.value() + 1;
 
-                                                            let primi = primitiveConst(v ? clone : next);
+                                                            let primi = primitiveConst(t ? clone : next);
 
                                                             exceptConsts.push(primi.itemCode);
                                                             writeConstraint(primi.itemCode, primi);
@@ -1477,13 +1485,14 @@ module nts.custombinding {
                                             }
                                             if (def.index == 2) {
                                                 def.value.subscribe(v => {
-                                                    let prev = row[1] || { value: () => ko.observable(undefined) };
+                                                    let t = typeof v == 'number',
+                                                        prev = row[1] || { value: () => ko.observable(undefined) };
                                                     if (prev.item && prev.item.dataTypeValue == ITEM_SINGLE_TYPE.TIMEPOINT && _.has(prev, "value")) {
                                                         if (ko.isObservable(prev.value)) {
                                                             let clone = _.cloneDeep(prev);
                                                             clone.item.timePointItemMax = def.value() - 1;
 
-                                                            let primi = primitiveConst(v ? clone : prev);
+                                                            let primi = primitiveConst(t ? clone : prev);
 
                                                             exceptConsts.push(primi.itemCode);
                                                             writeConstraint(primi.itemCode, primi);
