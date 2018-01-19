@@ -19,9 +19,10 @@ module nts.uk.at.view.kaf002.cm {
             currentReasonText: KnockoutObservable<string> = ko.observable('');
             inputReasonsDisp: KnockoutObservable<number> = ko.observable(0);
             detailReasonDisp: KnockoutObservable<number> = ko.observable(0);
-            topComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',0)); 
-            botComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',0));
+            topComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',false)); 
+            botComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',false));
             employeeName: KnockoutObservable<string> = ko.observable("");
+            empEditable: KnockoutObservable<boolean> = ko.observable(true);
             constructor(stampRequestMode: number, screenMode: number){
                 var self = this;
                 self.stampRequestMode(stampRequestMode);

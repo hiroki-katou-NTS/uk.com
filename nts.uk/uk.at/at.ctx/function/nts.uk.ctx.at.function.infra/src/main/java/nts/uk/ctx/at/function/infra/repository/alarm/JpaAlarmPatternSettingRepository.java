@@ -50,9 +50,7 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 				.setParameter("companyId", domain.getCompanyID())
 				.setParameter("alarmPatternCode", domain.getAlarmPatternCD().v()).getSingle().get();
 		
-		updateEntity.checkConList = newEntity.checkConList;
-		updateEntity.alarmPerSet = newEntity.alarmPerSet;
-		updateEntity.alarmPatternName = newEntity.alarmPatternName;
+		updateEntity.fromEntity(newEntity);
 		this.commandProxy().update(updateEntity);		
 	}
 
