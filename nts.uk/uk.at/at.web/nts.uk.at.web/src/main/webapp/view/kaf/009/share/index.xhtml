@@ -30,7 +30,12 @@
 			<!--申請日付 -->
 			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{required:true}">#{i18n.getText('KAF009_11')}</div>
 			<div data-bind="if: screenModeNew()" class="mode-style">
-				<div id = "inputdate" data-bind="ntsDatePicker: {name: '#[KAF009_12]',required:true, value: appDate, dateFormat: 'YYYY/MM/DD'}"></div>
+				<div id = "inputdate" data-bind="ntsDatePicker: {
+									name: '#[KAF009_12]',
+									required:true, 
+									value: appDate, 
+									dateFormat: 'YYYY/MM/DD',
+									valueFormat: 'YYYY/MM/DD'}"></div>
 			</div>
 			<div data-bind="if: !screenModeNew()" class="mode-style">
 				<span data-bind="text: appDate"></span>
