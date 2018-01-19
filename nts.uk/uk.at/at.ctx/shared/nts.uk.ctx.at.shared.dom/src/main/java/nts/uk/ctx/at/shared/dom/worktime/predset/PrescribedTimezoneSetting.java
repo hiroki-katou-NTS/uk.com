@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.error.BundledBusinessException;
@@ -316,4 +317,17 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		this.getTimezoneShiftTwo().restoreDefaultData();
 	}
 
+	/**
+	 * 引数のNoと一致している勤務Noを持つ時間帯(使用区分付き)を取得する
+	 * @param workNo
+	 * @return 時間帯(使用区分付き)
+	 *  @author keisuke_hoshina
+	 */
+	public TimezoneUse getMatchWorkNoTimeSheet(int workNo) {
+		List<TimezoneUse> timeSheetWithUseAtrList = this.lstTimezone.stream().filter(tc -> tc.getWorkNo() == workNo).collect(Collectors.toList());
+		if(timeSheetWithUseAtrList.size()>1) {
+			throw new RuntimeException("Exist duplicate workNo : " + workNo);
+		}
+		return timeSheetWithUseAtrList.get(0);
+	}
 }

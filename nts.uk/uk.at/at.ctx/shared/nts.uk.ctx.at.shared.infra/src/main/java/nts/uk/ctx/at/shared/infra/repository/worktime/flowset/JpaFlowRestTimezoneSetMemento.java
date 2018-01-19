@@ -6,6 +6,9 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
@@ -63,6 +66,10 @@ public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento
             lstEntity = new ArrayList<>();
         }
 		
+        // convert map entity
+     	Map<KshmtFlowFlowRtSetPK, KshmtFlowFlowRtSet> mapEntity = lstEntity.stream()
+     			.collect(Collectors.toMap(KshmtFlowFlowRtSet::getKshmtFlowFlowRtSetPK, Function.identity()));
+        
         // set list entity
         List<KshmtFlowFlowRtSet> newListEntity = new ArrayList<>();
         int periodNo = 1;
@@ -73,8 +80,12 @@ public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento
             pk.setResttimeAtr(resttimeAtr);
             pk.setPeriodNo(periodNo);
             
-            KshmtFlowFlowRtSet entity = new KshmtFlowFlowRtSet();
-            entity.setKshmtFlowFlowRtSetPK(pk);	                
+            // find entity if existed, else new entity
+            KshmtFlowFlowRtSet entity = mapEntity.get(pk);
+ 			if (entity == null) {
+ 				entity = new KshmtFlowFlowRtSet();
+ 				entity.setKshmtFlowFlowRtSetPK(pk);
+ 			}
             
             // save to memento
             domain.saveToMemento(new JpaFlowRestSettingSetMemento(entity));

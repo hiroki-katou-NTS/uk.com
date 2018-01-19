@@ -682,15 +682,18 @@ public class ScheCreExeWorkTimeHandler {
 		// call service check work day
 		WorkStyle workStyle = this.basicScheduleService.checkWorkDay(command.getWorktypeCode());
 		switch (workStyle) {
-		case ONE_DAY_REST:
-			return Optional.empty();
-		case ONE_DAY_WORK:
-			return Optional
-					.of(this.predTimeRepository.findByWorkTimeCode(command.getCompanyId(), command.getWorkingCode())
-							.get().getPrescribedTimezoneSetting());
-		default:
-			// morning or afternoon
-			return Optional.of(this.getTimeZone(command));
+			case ONE_DAY_REST :
+				return Optional.empty();
+			case ONE_DAY_WORK :
+				if (command.getWorkingCode() == null) {
+					return Optional.empty();
+				}
+				return Optional
+						.of(this.predTimeRepository.findByWorkTimeCode(command.getCompanyId(), command.getWorkingCode())
+								.get().getPrescribedTimezoneSetting());
+			default :
+				// morning or afternoon
+				return Optional.of(this.getTimeZone(command));
 		}
 	}
 

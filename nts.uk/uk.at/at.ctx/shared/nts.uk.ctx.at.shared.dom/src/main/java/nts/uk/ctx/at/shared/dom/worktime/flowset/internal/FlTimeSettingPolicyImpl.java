@@ -8,14 +8,14 @@ import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSettingPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
  * The Class FlTimeSettingPolicyImpl.
  */
 @Stateless
-public class FlTimeSettingPolicyImpl implements FlTimeSettingPolicy {
+public class FlTimeSettingPolicyImpl implements FlowTimeSettingPolicy {
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSettingPolicy#validate(nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting, nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeSetting)

@@ -15,14 +15,23 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -38,6 +47,9 @@ public class RegisterBasicScheduleCommandHandler
 
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
+
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 
 	@Inject
 	private BasicScheduleRepository basicScheduleRepo;
@@ -82,7 +94,7 @@ public class RegisterBasicScheduleCommandHandler
 				continue;
 			}
 
-			if (workType.getDeprecate() == DeprecateClassification.Deprecated) {
+			if (workType.isDeprecated()) {
 				// set error to list
 				addMessage(errList, "Msg_468");
 				continue;
@@ -100,7 +112,7 @@ public class RegisterBasicScheduleCommandHandler
 					continue;
 				}
 
-				if (workTimeSetting.getAbolishAtr().value == AbolishAtr.ABOLISH.value) {
+				if (workTimeSetting.isAbolish()) {
 					// Set error to list
 					addMessage(errList, "Msg_469");
 					continue;
@@ -155,12 +167,66 @@ public class RegisterBasicScheduleCommandHandler
 					basicScheduleRepo.update(basicScheduleObj);
 				}
 			} else {
+				List<WorkScheduleTimeZone> workScheduleTimeZones = new ArrayList<WorkScheduleTimeZone>();
+				Optional<PredetemineTimeSetting> predetemineTimeSet = this.predetemineTimeSettingRepo
+						.findByWorkTimeCode(companyId, basicScheduleObj.getWorkTimeCode());
+				if (predetemineTimeSet.isPresent()) {
+					List<TimezoneUse> listTimezoneUse = predetemineTimeSet.get().getPrescribedTimezoneSetting()
+							.getLstTimezone();
+					
+					workScheduleTimeZones = listTimezoneUse.stream()
+						.filter(x -> x.isUsed())
+						.map((timezoneUse) -> {
+							BounceAtr bounceAtr = addScheduleBounce(workType);
+							return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
+									timezoneUse.getEnd(), bounceAtr);
+						}).collect(Collectors.toList());
+				}
+				
+				basicScheduleObj.setWorkScheduleTimeZones(workScheduleTimeZones);
 				basicScheduleRepo.insert(basicScheduleObj);
 			}
 		}
 		return errList;
 	}
+	
+	/**
+	 * Add schedule bounce atr.
+	 * @param workType
+	 * @return
+	 */
+	private BounceAtr addScheduleBounce(WorkType workType) {
+		List<WorkTypeSet> workTypeSetList = workType.getWorkTypeSetList();
+		if (AttendanceHolidayAttr.FULL_TIME == workType.getAttendanceHolidayAttr()) {
+			WorkTypeSet workTypeSet = workTypeSetList.get(0);
+			return getBounceAtr(workTypeSet);
+		} else if (AttendanceHolidayAttr.AFTERNOON == workType.getAttendanceHolidayAttr()) {
+			WorkTypeSet workTypeSet1 = workTypeSetList.stream().filter(x -> WorkAtr.Afternoon.value == x.getWorkAtr().value).findFirst().get();
+			return getBounceAtr(workTypeSet1);
+		} else if (AttendanceHolidayAttr.MORNING == workType.getAttendanceHolidayAttr()) {
+			WorkTypeSet workTypeSet2 = workTypeSetList.stream().filter(x -> WorkAtr.Monring.value == x.getWorkAtr().value).findFirst().get();
+			return getBounceAtr(workTypeSet2);
+		}
+		
+		return BounceAtr.NO_DIRECT_BOUNCE;
+	}
 
+	/**
+	 * @param workTypeSet
+	 * @return
+	 */
+	private BounceAtr getBounceAtr(WorkTypeSet workTypeSet) {
+		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK && workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
+			return BounceAtr.NO_DIRECT_BOUNCE;
+		} else if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.CHECK && workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
+			return BounceAtr.DIRECTLY_ONLY;
+		} else if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK && workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
+			return BounceAtr.BOUNCE_ONLY;
+		} 
+			
+		return BounceAtr.DIRECT_BOUNCE;
+	}
+	
 	/**
 	 * Add exception message
 	 * 

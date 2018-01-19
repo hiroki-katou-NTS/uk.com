@@ -49,7 +49,7 @@ public class FlOffdayWorkTzDto implements FlOffdayWtzSetMemento {
 	public void setLstWorkTimezone(List<FlowWorkHolidayTimeZone> listHdtz) {
 		this.lstWorkTimezone = listHdtz.stream().map(item -> {
 			FlWorkHdTimeZoneDto dto = new FlWorkHdTimeZoneDto();
-			item.saveToMement(dto);
+			item.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
 	}

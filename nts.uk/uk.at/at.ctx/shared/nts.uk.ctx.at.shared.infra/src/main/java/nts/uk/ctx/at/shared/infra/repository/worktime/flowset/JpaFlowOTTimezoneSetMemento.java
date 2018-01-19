@@ -7,14 +7,14 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTTimezoneSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtOtTimeZone;
 
 /**
  * The Class JpaFlowOTTimezoneSetMemento.
  */
-public class JpaFlowOTTimezoneSetMemento implements FlOTTimezoneSetMemento {
+public class JpaFlowOTTimezoneSetMemento implements FlowOTTimezoneSetMemento {
 
 	/** The entity. */
 	private KshmtOtTimeZone entity;

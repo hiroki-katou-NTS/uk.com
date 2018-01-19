@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -70,5 +71,20 @@ public class FlowWorkTimezoneSetting extends DomainObject {
 		if (setFlowPassageTime.size() < this.lstOTTimezone.size()) {
 			throw new BusinessException("Msg_869");
 		}
+	}
+	
+	/**
+	 * 残業枠Noに一致する流動残業時間帯を取得する
+	 * @param workNo
+	 * @return
+	 */
+	public Optional<FlowOTTimezone> getMatchWorkNoOverTimeWorkSheet(int overTimeFrameNo) {
+		List<FlowOTTimezone> timeSheet = this.lstOTTimezone.stream().filter(tc -> tc.getOTFrameNo().v().intValue() == overTimeFrameNo).collect(Collectors.toList());
+		if(timeSheet.size()>1) {
+			throw new RuntimeException("Exist duplicate overTimeFrameNo : " + overTimeFrameNo);
+		}else if(timeSheet==null) {
+			return Optional.empty();
+		}
+		return Optional.of(timeSheet.get(0));
 	}
 }

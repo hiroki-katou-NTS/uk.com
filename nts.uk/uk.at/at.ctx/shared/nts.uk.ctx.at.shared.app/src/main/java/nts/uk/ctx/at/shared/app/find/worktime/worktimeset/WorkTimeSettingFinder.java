@@ -16,11 +16,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.PredetemineTimeSetFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
-import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;

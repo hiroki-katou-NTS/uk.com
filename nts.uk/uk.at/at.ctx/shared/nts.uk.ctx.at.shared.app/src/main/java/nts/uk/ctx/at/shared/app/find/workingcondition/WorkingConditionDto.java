@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.app.find.workingcondition;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Setter;
