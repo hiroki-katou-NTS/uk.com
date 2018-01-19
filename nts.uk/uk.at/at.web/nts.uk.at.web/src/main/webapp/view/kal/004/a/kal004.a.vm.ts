@@ -138,13 +138,11 @@ module nts.uk.at.view.kal004.a.model {
                 self.periodSetting.listCheckConditionCode(shareTab2);
                
             });
-            self.createMode.subscribe((isCreate)=>{
-                if(isCreate)  self.periodSetting.listStorageCheckCondition.removeAll();            
-            });
         }
 
         public alarmCodeChange(newV): any {
             let self = this;
+            
             if (newV == ''){                 
                 self.createMode(true);
                 self.alarmCode('');
@@ -182,7 +180,10 @@ module nts.uk.at.view.kal004.a.model {
                 self.currentCodeListSwap([]);
                 self.checkConditionList( _.sortBy(checkSource, ['category', 'checkConditonCode']));
                 self.currentCodeListSwap( _.sortBy(currentCodeListSwap, ['category', 'checkConditonCode']));
-                                
+                      
+                // Tab 2: 
+                self.periodSetting.listStorageCheckCondition.removeAll(); 
+                
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
                 self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting==true? 0: 1);
