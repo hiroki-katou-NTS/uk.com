@@ -132,12 +132,12 @@ public class ScheCreExeWorkTypeHandler {
 				return command.getWorkTypeCode();
 			}
 
-			// find work type code by day of week
-			String worktypeCode = this.scheCreExeWorkTimeHandler.getWorkTypeCodeOfDayOfWeekPersonalCondition(
+			// find work time code by day of week
+			String worktimeCode = this.scheCreExeWorkTimeHandler.getWorkTimeCodeOfDayOfWeekPersonalCondition(
 					command.toWorktimeConvert(), optionalWorkingConditionItem.get());
 
 			// check default work type code
-			if (!this.scheCreExeWorkTimeHandler.checkNullOrDefaulCode(worktypeCode)) {
+			if (!this.scheCreExeWorkTimeHandler.checkNullOrDefaulCode(worktimeCode)) {
 				return command.getWorkTypeCode();
 			}
 
