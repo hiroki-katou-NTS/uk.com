@@ -98,6 +98,11 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	
 	public void fromEntity(KfnmtCheckCondition entity) {
 		this.extractionPeriodDaily.fromEntity(entity.extractionPeriodDaily);
+		this.extractionRange = entity.extractionRange;
+		this.checkConItems.removeIf(item -> !entity.checkConItems.contains(item));
+		entity.checkConItems.forEach( item ->{
+			if(!this.checkConItems.contains(item)) this.checkConItems.add(item);
+		});
 	}
 	
 	private static KfnmtCheckConItemPK buildCheckConItemPK(CheckCondition domain, String checkConditionCD, String companyId, String alarmPatternCode) {
