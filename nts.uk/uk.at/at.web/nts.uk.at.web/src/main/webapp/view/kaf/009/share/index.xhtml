@@ -51,7 +51,7 @@
 				</div>
 				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
-						<input class="row-cell-margin" id="inpStartTime1"
+						<input class="row-cell-margin inputTime-kaf009" id="inpStartTime1"
 							data-bind="ntsTimeWithDayEditor: { name: '勤務時間直行',
 															constraint:'TimeWithDayAttr',
 															value: timeStart1, 
@@ -60,14 +60,14 @@
 						<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
 					</div>
 					<div class="row-cell-margin" style="display: inline-block; width: 250px;">
-						<input id="inpEndTime1"
+						<input class="row-cell-margin inputTime-kaf009" id="inpEndTime1" 
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間直帰', 
 															constraint:'TimeWithDayAttr',
 															value: timeEnd1, 
 															enable: editable(), 
 															readonly: false}" />
 					</div>
-					<div class="cell valign-top row-cell-margin" style="display: inline-block">
+					<div class="cell valign-center row-cell-margin" style="display: inline-block">
 						<!--選択場所　Button-->
 						<button id="btnLocation1" class="location-button-009"
 							data-bind="click: function(){openLocationDialog(1)}, enable: editable()">#{i18n.getText('KAF009_15')}</button>
@@ -136,14 +136,14 @@
 				</div>
 				<div class="cell valign-center">
 					<div style="display: inline-block; width: 250px;">
-						<input class="row-cell-margin" id="inpStartTime2"
+						<input class="row-cell-margin inputTime-kaf009" id="inpStartTime2"
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間２直行',
 															constraint:'TimeWithDayAttr',
 															value: timeStart2}" />
 						<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
 					</div>
 					<div class="row-cell-margin" style="display: inline-block; width: 250px;">
-						<input class="row-cell-margin" id="inpEndTime2"
+						<input class="row-cell-margin inputTime-kaf009" id="inpEndTime2"
 							data-bind="ntsTimeWithDayEditor: {name: '勤務時間２直帰', 
 															constraint:'TimeWithDayAttr',
 															value: timeEnd2}" />
@@ -233,7 +233,7 @@
 			</div>
 		</div>
 		<!--定型理由 -->
-		<div class="valign-center control-group overlay-reason">
+		<div class="valign-top control-group overlay-reason" data-bind="if: displayTypicalReason">
 			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>
 			<div id="combo-box"
 				data-bind="ntsComboBox: {
@@ -247,7 +247,7 @@
 			</div>
 		</div>
 		<!-- 申請理由（ラベル) -->
-		<div class="valign-center control-group">
+		<div class="valign-top control-group" data-bind="if: displayReason">
 			<div class="lblTitleKAF009"
 				data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_27')}</div>
 			<div id="inpReason">
