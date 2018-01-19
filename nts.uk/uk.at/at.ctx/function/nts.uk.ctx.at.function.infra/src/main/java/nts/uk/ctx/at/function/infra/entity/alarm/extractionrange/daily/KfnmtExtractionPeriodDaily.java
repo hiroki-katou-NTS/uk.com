@@ -131,7 +131,6 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 		// set end date
 		EndSpecify endPrev = EnumAdaptor.valueOf(endDate.getEndSpecify().value, EndSpecify.class);
 		this.endSpecify = endDate.getEndSpecify().value;
-		this.endPreviousDay = endDate.getEndSpecify().value;
 		if (endPrev == EndSpecify.DAYS) {
 			this.endPreviousDay = endDate.getEndDays().get().getDayPrevious().value;
 			this.endMakeToDay = endDate.getEndDays().get().isMakeToDay() == true ? 1 : 0;
@@ -142,5 +141,22 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 			this.endMonth = endDate.getEndMonth().get().getMonth();
 		}
 	}
-
+	
+	public void fromEntity(KfnmtExtractionPeriodDaily newEntity) {
+		this.strSpecify = newEntity.strSpecify;
+		this.strPreviousDay = newEntity.strPreviousDay;
+		this.strMakeToDay = newEntity.strMakeToDay;
+		this.strDay = newEntity.strDay;
+		this.strPreviousMonth = newEntity.strPreviousMonth;
+		this.strCurrentMonth = newEntity.strCurrentMonth;		
+		this.strMonth = newEntity.strMonth;
+		this.endSpecify = newEntity.endSpecify;
+		this.endPreviousDay = newEntity.endPreviousDay;
+		this.endMakeToDay = newEntity.endMakeToDay;
+		this.endDay = newEntity.endDay;
+		this.endPreviousMonth = newEntity.endPreviousMonth;
+		this.endCurrentMonth = newEntity.endCurrentMonth;		
+		this.endMonth = newEntity.endMonth;	
+		this.kfnmtExtractionPeriodDailyPK.extractionRange = newEntity.kfnmtExtractionPeriodDailyPK.extractionRange;
+	}
 }
