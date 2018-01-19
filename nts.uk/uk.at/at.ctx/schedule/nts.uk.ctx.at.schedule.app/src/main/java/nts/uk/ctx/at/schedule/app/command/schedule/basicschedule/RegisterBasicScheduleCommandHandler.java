@@ -15,9 +15,14 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
@@ -38,6 +43,9 @@ public class RegisterBasicScheduleCommandHandler
 
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
+
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 
 	@Inject
 	private BasicScheduleRepository basicScheduleRepo;
@@ -155,6 +163,27 @@ public class RegisterBasicScheduleCommandHandler
 					basicScheduleRepo.update(basicScheduleObj);
 				}
 			} else {
+				List<WorkScheduleTimeZone> workScheduleTimeZones = new ArrayList<WorkScheduleTimeZone>();
+				Optional<PredetemineTimeSetting> predetemineTimeSet = this.predetemineTimeSettingRepo
+						.findByWorkTimeCode(companyId, basicScheduleObj.getWorkTimeCode());
+				if (predetemineTimeSet.isPresent()) {
+					List<TimezoneUse> listTimezoneUse = predetemineTimeSet.get().getPrescribedTimezoneSetting()
+							.getLstTimezone();
+					workScheduleTimeZones = listTimezoneUse.stream().map((timezoneUse) -> {
+						if (UseSetting.USE == timezoneUse.getUseAtr()) {
+							// List<WorkTypeSet> workTypeSet =
+							// workTypeRepo.findWorkTypeSet(companyId,
+							// basicScheduleObj.getWorkTypeCode());
+							
+							//Set static BounceAtr = BOUNCE_ONLY
+							return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
+									timezoneUse.getEnd(), BounceAtr.BOUNCE_ONLY);
+						}
+						return null;
+					}).collect(Collectors.toList());
+				}
+				
+				basicScheduleObj.setWorkScheduleTimeZones(workScheduleTimeZones);
 				basicScheduleRepo.insert(basicScheduleObj);
 			}
 		}
