@@ -14,7 +14,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 // 社員CD
 @StringCharType(CharType.ANY_HALF_WIDTH)
-@StringMaxLength(12)
+@StringMaxLength(6)
 public class EmployeeCode extends StringPrimitiveValue<EmployeeCode> {
 
 	/** The Constant serialVersionUID. */

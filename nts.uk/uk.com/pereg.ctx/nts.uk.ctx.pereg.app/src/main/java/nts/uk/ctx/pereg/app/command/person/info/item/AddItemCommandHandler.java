@@ -59,58 +59,6 @@ public class AddItemCommandHandler extends CommandHandlerWithResult<AddItemComma
 				throw new BusinessException(new RawErrorMessage("Msg_587"));
 
 			}
-		} else if (addItemCommand.getSingleItem().getDataType() == 2) {
-			SingleItemCommand number = addItemCommand.getSingleItem();
-			BigDecimal max = new BigDecimal(Math.pow(10, number.getIntegerPart().doubleValue())
-					- Math.pow(10, number.getDecimalPart() == null ? 0 : -number.getDecimalPart().intValue()));
-			BigDecimal min = new BigDecimal(0);
-			// if (number.getNumericItemMin() != null && number.getNumericItemMax() != null)
-			// {
-			if (number.getNumericItemMinus() == 0) {
-				if (number.getNumericItemMin() != null) {
-					if (number.getNumericItemMin().compareTo(min) < 0) {
-
-						throw new BusinessException(new RawErrorMessage("Msg_596"));
-
-					}
-
-				}
-
-				if (number.getNumericItemMax() != null) {
-					if (number.getNumericItemMax().compareTo(min) < 0) {
-						throw new BusinessException(new RawErrorMessage("Msg_596"));
-					}
-
-				}
-
-			} else {
-				min = max.negate();
-			}
-
-			if (number.getNumericItemMin() != null && number.getNumericItemMax() != null) {
-				if (number.getNumericItemMin().compareTo(number.getNumericItemMax()) > 0) {
-					throw new BusinessException(new RawErrorMessage("Msg_598"));
-				}
-			}
-
-			if (number.getNumericItemMin() != null) {
-
-				if (number.getNumericItemMin().compareTo(max) > 0 || number.getNumericItemMin().compareTo(min) < 0) {
-					throw new BusinessException(new RawErrorMessage("Msg_599"));
-				}
-			}
-
-			if (number.getNumericItemMax() != null) {
-
-				if (number.getNumericItemMax().compareTo(max) > 0 || number.getNumericItemMax().compareTo(min) < 0) {
-					throw new BusinessException(new RawErrorMessage("Msg_600"));
-				}
-			}
-
-		}
-
-		if (addItemCommand.getItemName().trim().equals("")) {
-			throw new BusinessException(new RawErrorMessage(""));
 		}
 
 		// need perInfoItemDefId = ' ' becase sql oracle server can't query ''
