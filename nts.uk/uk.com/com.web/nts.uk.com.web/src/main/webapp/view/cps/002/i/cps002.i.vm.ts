@@ -18,8 +18,8 @@ module cps002.i.vm {
 
 
 
-            self.imageId.subscribe((newId) => {
-                if (newId) {
+            self.imageId.subscribe((oldId) => {
+                if (oldId) {
                     $(".checkbox-holder").show();
                 } else {
                     $(".checkbox-holder").hide();
@@ -29,6 +29,8 @@ module cps002.i.vm {
             $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                 $(".checkbox-holder").show();
             });
+
+
         }
         start() {
             let self = this;
@@ -36,6 +38,8 @@ module cps002.i.vm {
 
             if (dImageId != "" && dImageId != undefined) {
                 self.imageId().defaultImgId = dImageId;
+                $(".ntsCheckBox-label input:checkbox").prop('checked', false);
+                $(".ntsCheckBox-label input:checkbox").trigger("change");
                 self.getImage();
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
                     if (!self.isInit) {

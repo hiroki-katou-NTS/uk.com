@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepo
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 
 @Stateless
-public class AddAttendanceTimeOfDailyPerformCommandAddHandler extends CommandFacade<AttendanceTimeOfDailyPerformCommand> {
+public class AttendanceTimeOfDailyPerformCommandUpdateHandler extends CommandFacade<AttendanceTimeOfDailyPerformCommand> {
 
 	@Inject
 	private AttendanceTimeRepository repo;
@@ -17,7 +17,7 @@ public class AddAttendanceTimeOfDailyPerformCommandAddHandler extends CommandFac
 	protected void handle(CommandHandlerContext<AttendanceTimeOfDailyPerformCommand> context) {
 		AttendanceTimeOfDailyPerformCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.add(command.toDomain());
+			repo.update(command.toDomain());
 		}
 	}
 

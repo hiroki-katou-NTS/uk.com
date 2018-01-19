@@ -375,8 +375,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 overtimeHours: ko.toJS(self.overtimeHours()),
                 breakTimes: ko.toJS(self.breakTimes()),
                 restTime: ko.toJS(self.restTime()),
-                overTimeShiftNight: ko.toJS(overTimeShiftNightTmp() == null ? -1 : overTimeShiftNightTmp),
-                flexExessTime: ko.toJS(flexExessTimeTmp() == null ? -1 : flexExessTimeTmp),
+                overTimeShiftNight: ko.toJS(overTimeShiftNightTmp == null ? -1 : overTimeShiftNightTmp),
+                flexExessTime: ko.toJS(flexExessTimeTmp == null ? -1 : flexExessTimeTmp),
                 divergenceReasonContent: divergenceReason,
                 sendMail: self.manualSendMailAtr(),
                 calculateFlag: self.calculateFlag()
@@ -756,10 +756,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     self.siftCodeReference(data.appOvertimeReference.siftTypeRefer.siftCode);
                     self.siftNameReference(data.appOvertimeReference.siftTypeRefer.siftName);
                 }
-                if(data.appOvertimeReference.workClockFrom1Refer != -1 || data.appOvertimeReference.workClockTo1Refer!= -1){
+                if(data.appOvertimeReference.workClockFrom1Refer != null || data.appOvertimeReference.workClockTo1Refer!= null){
                      self.workClockFrom1To1Reference(self.convertIntToTime(data.appOvertimeReference.workClockFrom1Refer) + " "+ nts.uk.resource.getText("KAF005_126") +" "+self.convertIntToTime(data.appOvertimeReference.workClockTo1Refer));
                 }
-                if(data.appOvertimeReference.workClockFrom2Refer != -1 || data.appOvertimeReference.workClockTo2Refer!= -1){
+                if(data.appOvertimeReference.workClockFrom2Refer != null || data.appOvertimeReference.workClockTo2Refer!= null){
                     self.workClockFrom2To2Reference(self.convertIntToTime(data.appOvertimeReference.workClockFrom2Refer) +" "+ nts.uk.resource.getText("KAF005_126") +" "+ self.convertIntToTime(data.appOvertimeReference.workClockTo2Refer));
                 }
                 if(self.workClockFrom2To2Reference () == null){
@@ -790,11 +790,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if(nts.uk.util.isNullOrEmpty(data)){
                 return null;
             }else if (data == 0) {
-                hourMinute = "00:00";
+                hourMinute = "0:00";
             }else if(data != null){
                 let hour = Math.floor(data/60);
                 let minutes = Math.floor(data%60);
-                hourMinute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
+                hourMinute = hour + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
             }
             return hourMinute;
         } 

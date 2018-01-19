@@ -130,9 +130,11 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 	@Override
 	public void setOffdayWorkTime(FlexOffdayWorkTime offdayWorkTime) {
 		if (offdayWorkTime != null) {
-			this.entity.setKshmtFlexOdRtSet(
-					new KshmtFlexOdRtSet(new KshmtFlexOdRtSetPK(this.entity.getKshmtFlexWorkSetPK().getCid(),
-							this.entity.getKshmtFlexWorkSetPK().getWorktimeCd())));
+			if (this.entity.getKshmtFlexOdRtSet() == null) {
+				this.entity.setKshmtFlexOdRtSet(
+						new KshmtFlexOdRtSet(new KshmtFlexOdRtSetPK(this.entity.getKshmtFlexWorkSetPK().getCid(),
+								this.entity.getKshmtFlexWorkSetPK().getWorktimeCd())));
+			}
 			offdayWorkTime.saveToMemento(new JpaFlexODWorkTimeSetMemento(this.entity.getKshmtFlexOdRtSet()));
 		}
 	}

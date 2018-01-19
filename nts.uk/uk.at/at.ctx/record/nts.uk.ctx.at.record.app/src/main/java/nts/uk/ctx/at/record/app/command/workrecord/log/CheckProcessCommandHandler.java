@@ -8,6 +8,7 @@ import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ProcessFlowOfDailyCreationDomainService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -30,6 +31,6 @@ public class CheckProcessCommandHandler extends AsyncCommandHandler<CheckProcess
 				GeneralDate.fromString(command.getPeriodEndDate(), "yyyy/MM/dd"));
 		processFlowOfDailyCreationDomainService.processFlowOfDailyCreation(asyncContext, ExecutionAttr.MANUAL, periodTime, command.getEmpCalAndSumExecLogID());
 		
-		dataSetter.setData("complete", true);
+		dataSetter.setData("endTime", GeneralDateTime.now().toString());
 	}
 }

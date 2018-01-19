@@ -631,7 +631,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
                 let stateWorkTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
                 // if workTypeCode is not required( state = 2) worktime is needless
-                if (stateWorkTypeCd && stateWorkTypeCd.state == 2 && (data.workTimeCode !== null || data.workTimeCode !== '000') {
+                if (stateWorkTypeCd && stateWorkTypeCd.state == 2 && data.workTimeCode !== null && data.workTimeCode !== '000') {
                     return function() {
                         alertError({ messageId: 'Msg_434' });
                     };
