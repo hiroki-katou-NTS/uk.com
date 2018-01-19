@@ -255,8 +255,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.workTypecodes(data.workTypes);
             self.workTimecodes(data.siftTypes);
             self.timeStart1(data.workClockFrom1 == -1 ? null : data.workClockFrom1);
-            self.timeEnd1(data.workClockFrom2 == -1 ? null : data.workClockFrom2);
-            self.timeStart2(data.workClockTo1 == -1 ? null : data.workClockTo1);
+            self.timeEnd1(data.workClockTo1 == -1 ? null : data.workClockTo1);
+            self.timeStart2(data.workClockFrom2 == -1 ? null : data.workClockFrom2);
             self.timeEnd2(data.workClockTo2 == -1 ? null : data.workClockTo2);
             if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
                 let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
@@ -279,6 +279,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.referencePanelFlg(data.referencePanelFlg);
             self.preAppPanelFlg(data.preAppPanelFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
+            self.indicationOvertimeFlg(data.extratimeDisplayFlag);
             // preAppOvertime
             self.convertpreAppOvertimeDto(data);
             // 休憩時間
@@ -648,15 +649,21 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if (overtimeDto.siftType != null) {
                 self.siftCD(overtimeDto.siftType.siftCode);
                 self.siftName(overtimeDto.siftType.siftName);
+            }else{
+                 self.siftCD('');
+                 self.siftName('');
             }
             if (overtimeDto.workType != null) {
                 self.workTypeCd(overtimeDto.workType.workTypeCode);
                 self.workTypeName(overtimeDto.workType.workTypeName);
+            }else{
+              self.workTypeCd('');
+              self.workTypeName('');  
             }
-            self.timeStart1(data.workClockFrom1 == -1 ? null : data.workClockFrom1);
-            self.timeEnd1(data.workClockFrom2 == -1 ? null : data.workClockFrom2);
-            self.timeStart2(data.workClockTo1 == -1 ? null : data.workClockTo1);
-            self.timeEnd2(data.workClockTo2 == -1 ? null : data.workClockTo2);
+            self.timeStart1(data.workClockFrom1);
+            self.timeEnd1(data.workClockTo1);
+            self.timeStart2(data.workClockFrom2);
+            self.timeEnd2(data.workClockTo2);
             if(overtimeDto.applicationReasonDtos != null){
                 self.reasonCombo(_.map(overtimeDto.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); }));
                 self.selectedReason(_.find(overtimeDto.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID);
