@@ -10,16 +10,16 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestTimezoneDto;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtzSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWtzSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 
 /**
  * The Class FlowOffdayWorkTimezoneDto.
  */
 @Getter
 @Setter
-public class FlOffdayWorkTzDto implements FlOffdayWtzSetMemento {
+public class FlOffdayWorkTzDto implements FlowOffdayWtzSetMemento {
 
 	/** The rest time zone. */
 	private FlowWorkRestTimezoneDto restTimeZone;

@@ -9,15 +9,15 @@ import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.FlowWorkRestTimezoneDto;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtzGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWtzGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 
 /**
  * The Class FlOffdayWorkTzDto.
  */
 @Value
-public class FlOffdayWorkTzDto implements FlOffdayWtzGetMemento {
+public class FlOffdayWorkTzDto implements FlowOffdayWtzGetMemento {
 
 	/** The rest time zone. */
 	private FlowWorkRestTimezoneDto restTimeZone;

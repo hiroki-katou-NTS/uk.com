@@ -8,7 +8,6 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 
 /**
  * The Class FlowOffdayWorkTimezone.
@@ -30,7 +29,7 @@ public class FlowOffdayWorkTimezone extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public FlowOffdayWorkTimezone(FlOffdayWtzGetMemento memento) {
+	public FlowOffdayWorkTimezone(FlowOffdayWtzGetMemento memento) {
 		this.restTimeZone = memento.getRestTimeZone();
 		this.lstWorkTimezone = memento.getLstWorkTimezone();
 	}
@@ -40,7 +39,7 @@ public class FlowOffdayWorkTimezone extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(FlOffdayWtzSetMemento memento) {
+	public void saveToMemento(FlowOffdayWtzSetMemento memento) {
 		memento.setRestTimeZone(this.restTimeZone);
 		memento.setLstWorkTimezone(this.lstWorkTimezone);
 	}

@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -40,6 +41,7 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<FixedWorkSettingSaveCommand> context) {
 
 		String companyId = AppContexts.user().companyId();

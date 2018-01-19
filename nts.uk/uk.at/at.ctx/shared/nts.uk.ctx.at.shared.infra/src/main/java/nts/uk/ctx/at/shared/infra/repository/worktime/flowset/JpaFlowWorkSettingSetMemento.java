@@ -4,15 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkDedicateSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneComm
 /**
  * The Class JpaFlowWorkSettingSetMemento.
  */
-public class JpaFlowWorkSettingSetMemento implements FlWorkSettingSetMemento {
+public class JpaFlowWorkSettingSetMemento implements FlowWorkSettingSetMemento {
 
 	/** The entity. */
 	private KshmtFlowWorkSet entity;

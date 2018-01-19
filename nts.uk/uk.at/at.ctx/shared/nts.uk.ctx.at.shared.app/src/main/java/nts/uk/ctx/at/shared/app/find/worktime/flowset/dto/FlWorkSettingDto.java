@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDto;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -16,14 +15,15 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkDedicateSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingSetMemento;
 
 /**
  * The Class FlowWorkSettingDto.
  */
 @Getter
 @Setter
-public class FlWorkSettingDto implements FlWorkSettingSetMemento {
+public class FlWorkSettingDto implements FlowWorkSettingSetMemento {
 
 	/** The working code. */
 	private String workingCode;

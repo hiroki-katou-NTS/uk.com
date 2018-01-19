@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -64,7 +63,7 @@ public class FlowWorkSetting extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public FlowWorkSetting(FlWorkSettingGetMemento memento) {
+	public FlowWorkSetting(FlowWorkSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.workingCode = memento.getWorkingCode();
 		this.restSetting = memento.getRestSetting();
@@ -82,7 +81,7 @@ public class FlowWorkSetting extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(FlWorkSettingSetMemento memento) {
+	public void saveToMemento(FlowWorkSettingSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setWorkingCode(this.workingCode);
 		memento.setRestSetting(this.restSetting);

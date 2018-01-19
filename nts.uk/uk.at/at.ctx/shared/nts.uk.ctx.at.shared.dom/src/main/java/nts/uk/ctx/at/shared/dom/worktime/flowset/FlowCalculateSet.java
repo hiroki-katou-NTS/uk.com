@@ -23,7 +23,7 @@ public class FlowCalculateSet extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public FlowCalculateSet(FlCalcGetMemento memento) {
+	public FlowCalculateSet(FlowCalculateGetMemento memento) {
 		this.calcStartTimeSet = memento.getCalcStartTimeSet();
 	}
 
@@ -32,7 +32,7 @@ public class FlowCalculateSet extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(FlCalcSetMemento memento) {
+	public void saveToMemento(FlowCalculateSetMemento memento) {
 		memento.setCalcStartTimeSet(this.calcStartTimeSet);
 	}
 }

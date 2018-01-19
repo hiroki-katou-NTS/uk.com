@@ -4,15 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtzSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWtzSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 
 /**
  * The Class JpaFlowHalfDayWorkTimezoneSetMemento.
  */
-public class JpaFlowHalfDayWorkTimezoneSetMemento implements FlHalfDayWtzSetMemento {
+public class JpaFlowHalfDayWorkTimezoneSetMemento implements FlowHalfDayWtzSetMemento {
 
 	/** The entity. */
 	private KshmtFlowWorkSet entity;

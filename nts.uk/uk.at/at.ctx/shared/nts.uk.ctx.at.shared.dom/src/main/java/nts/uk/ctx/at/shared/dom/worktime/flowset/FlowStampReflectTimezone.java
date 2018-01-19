@@ -30,7 +30,7 @@ public class FlowStampReflectTimezone extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public FlowStampReflectTimezone(FlStampReflectTzGetMemento memento) {
+	public FlowStampReflectTimezone(FlowStampReflectTzGetMemento memento) {
 		this.twoTimesWorkReflectBasicTime = memento.getTwoTimesWorkReflectBasicTime();
 		this.stampReflectTimezones = memento.getStampReflectTimezone();
 	}
@@ -40,7 +40,7 @@ public class FlowStampReflectTimezone extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(FlStampReflectTzSetMemento memento) {
+	public void saveToMemento(FlowStampReflectTzSetMemento memento) {
 		memento.setTwoTimesWorkReflectBasicTime(this.twoTimesWorkReflectBasicTime);
 		memento.setStampReflectTimezone(this.stampReflectTimezones);
 	}

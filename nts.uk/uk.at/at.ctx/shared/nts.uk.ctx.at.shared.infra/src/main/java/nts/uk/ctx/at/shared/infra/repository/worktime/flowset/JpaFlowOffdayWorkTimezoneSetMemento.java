@@ -11,9 +11,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtzSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWtzSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFworkHolidayTime;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFworkHolidayTimePK;
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFworkHolidayTimeP
 /**
  * The Class JpaFlowOffdayWorkTimezoneSetMemento.
  */
-public class JpaFlowOffdayWorkTimezoneSetMemento implements FlOffdayWtzSetMemento {
+public class JpaFlowOffdayWorkTimezoneSetMemento implements FlowOffdayWtzSetMemento {
 
 	/** The entity. */
 	private KshmtFlowWorkSet entity;
