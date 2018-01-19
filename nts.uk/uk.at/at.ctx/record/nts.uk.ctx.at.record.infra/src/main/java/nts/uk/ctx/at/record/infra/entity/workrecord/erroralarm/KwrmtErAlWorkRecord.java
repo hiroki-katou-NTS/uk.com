@@ -6,7 +6,6 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +21,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -292,7 +290,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 				erAlCompareRange, erAlSingleFixed, erAlSingleAtd);
 	}
 
-	public static KwrmtErAlWorkRecord fromDomain(ErrorAlarmWorkRecord domain) {
+	public static KwrmtErAlWorkRecord fromDomain(ErrorAlarmWorkRecord domain, ErrorAlarmCondition conditionDomain) {
 		// Set PK
 		KwrmtErAlWorkRecordPK kwrmtErAlWorkRecordPK = new KwrmtErAlWorkRecordPK(AppContexts.user().companyId(),
 				domain.getCode().v());
@@ -311,7 +309,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 						domain.getCode().v(), new BigDecimal(appTypeCd))))
 				.collect(Collectors.toList());
 		String cancelRoleId = domain.getCancelRoleId();
-		String messageDisplay = domain.getErrorAlarmCondition().getDisplayMessage().v();
+		String messageDisplay = conditionDomain.getDisplayMessage().v();
 		KrcmtErAlCondition krcmtErAlCondition = new KrcmtErAlCondition(eralCheckId, messageDisplay, new BigDecimal(0),
 				Collections.emptyList(), new BigDecimal(0), Collections.emptyList(), new BigDecimal(0),
 				Collections.emptyList(), new BigDecimal(0), Collections.emptyList(), new BigDecimal(0),
@@ -320,43 +318,38 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 				Collections.emptyList(), new BigDecimal(0), new BigDecimal(0), "0", null, null, null);
 		if (!domain.getFixedAtr()) {
 			// Set Check target condition
-			BigDecimal filterByBusinessType = domain.getErrorAlarmCondition().getCheckTargetCondtion()
-					.getFilterByBusinessType() ? new BigDecimal(1) : new BigDecimal(0);
+			BigDecimal filterByBusinessType = conditionDomain.getCheckTargetCondtion().getFilterByBusinessType()
+					? new BigDecimal(1) : new BigDecimal(0);
 			BigDecimal filterByJobTitle = new BigDecimal(
-					domain.getErrorAlarmCondition().getCheckTargetCondtion().getFilterByJobTitle() ? 1 : 0);
+					conditionDomain.getCheckTargetCondtion().getFilterByJobTitle() ? 1 : 0);
 			BigDecimal filterByEmployment = new BigDecimal(
-					domain.getErrorAlarmCondition().getCheckTargetCondtion().getFilterByEmployment() ? 1 : 0);
+					conditionDomain.getCheckTargetCondtion().getFilterByEmployment() ? 1 : 0);
 			BigDecimal filterByClassification = new BigDecimal(
-					domain.getErrorAlarmCondition().getCheckTargetCondtion().getFilterByClassification() ? 1 : 0);
-			List<KrcstErAlBusinessType> lstBusinessType = domain.getErrorAlarmCondition().getCheckTargetCondtion()
+					conditionDomain.getCheckTargetCondtion().getFilterByClassification() ? 1 : 0);
+			List<KrcstErAlBusinessType> lstBusinessType = conditionDomain.getCheckTargetCondtion()
 					.getLstBusinessTypeCode().stream().map(businessTypeCd -> new KrcstErAlBusinessType(
 							new KrcstErAlBusinessTypePK(eralCheckId, businessTypeCd.v())))
 					.collect(Collectors.toList());
-			List<KrcstErAlJobTitle> lstJobTitle = domain.getErrorAlarmCondition().getCheckTargetCondtion()
-					.getLstJobTitleId().stream()
+			List<KrcstErAlJobTitle> lstJobTitle = conditionDomain.getCheckTargetCondtion().getLstJobTitleId().stream()
 					.map(jobTitleId -> new KrcstErAlJobTitle(new KrcstErAlJobTitlePK(eralCheckId, jobTitleId)))
 					.collect(Collectors.toList());
-			List<KrcstErAlEmployment> lstEmployment = domain.getErrorAlarmCondition().getCheckTargetCondtion()
-					.getLstEmploymentCode().stream()
-					.map(emptCd -> new KrcstErAlEmployment(new KrcstErAlEmploymentPK(eralCheckId, emptCd.v())))
+			List<KrcstErAlEmployment> lstEmployment = conditionDomain.getCheckTargetCondtion().getLstEmploymentCode()
+					.stream().map(emptCd -> new KrcstErAlEmployment(new KrcstErAlEmploymentPK(eralCheckId, emptCd.v())))
 					.collect(Collectors.toList());
-			List<KrcstErAlClass> lstClassification = domain.getErrorAlarmCondition().getCheckTargetCondtion()
-					.getLstClassificationCode().stream()
-					.map(clssCd -> new KrcstErAlClass(new KrcstErAlClassPK(eralCheckId, clssCd.v())))
+			List<KrcstErAlClass> lstClassification = conditionDomain.getCheckTargetCondtion().getLstClassificationCode()
+					.stream().map(clssCd -> new KrcstErAlClass(new KrcstErAlClassPK(eralCheckId, clssCd.v())))
 					.collect(Collectors.toList());
 			// Set worktype condition
-			BigDecimal workTypeUseAtr = new BigDecimal(
-					domain.getErrorAlarmCondition().getWorkTypeCondition().getUseAtr() ? 1 : 0);
+			BigDecimal workTypeUseAtr = new BigDecimal(conditionDomain.getWorkTypeCondition().getUseAtr() ? 1 : 0);
 			BigDecimal wtCompareAtr = new BigDecimal(
-					domain.getErrorAlarmCondition().getWorkTypeCondition().getComparePlanAndActual().value);
+					conditionDomain.getWorkTypeCondition().getComparePlanAndActual().value);
 			BigDecimal wtPlanActualOperator = new BigDecimal(0);
 			BigDecimal wtPlanFilterAtr = new BigDecimal(0);
 			BigDecimal wtActualFilterAtr = new BigDecimal(0);
 			List<KrcstErAlWtPlan> lstWtPlan = new ArrayList<>();
 			List<KrcstErAlWtActual> lstWtActual = new ArrayList<>();
 			if (wtCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
-				PlanActualWorkType wtypeCondition = (PlanActualWorkType) domain.getErrorAlarmCondition()
-						.getWorkTypeCondition();
+				PlanActualWorkType wtypeCondition = (PlanActualWorkType) conditionDomain.getWorkTypeCondition();
 				wtPlanActualOperator = new BigDecimal(wtypeCondition.getOperatorBetweenPlanActual().value);
 				wtPlanFilterAtr = new BigDecimal(wtypeCondition.getWorkTypePlan().getFilterAtr() ? 1 : 0);
 				wtActualFilterAtr = new BigDecimal(wtypeCondition.getWorkTypeActual().getFilterAtr() ? 1 : 0);
@@ -367,25 +360,23 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 						.map(wtCode -> new KrcstErAlWtActual(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v())))
 						.collect(Collectors.toList());
 			} else {
-				SingleWorkType wtypeCondition = (SingleWorkType) domain.getErrorAlarmCondition().getWorkTypeCondition();
+				SingleWorkType wtypeCondition = (SingleWorkType) conditionDomain.getWorkTypeCondition();
 				wtPlanFilterAtr = new BigDecimal(wtypeCondition.getTargetWorkType().getFilterAtr() ? 1 : 0);
 				lstWtPlan = wtypeCondition.getTargetWorkType().getLstWorkType().stream()
 						.map(wtCode -> new KrcstErAlWtPlan(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v())))
 						.collect(Collectors.toList());
 			}
 			// Set worktime condition
-			BigDecimal workingHoursUseAtr = new BigDecimal(
-					domain.getErrorAlarmCondition().getWorkTimeCondition().getUseAtr() ? 1 : 0);
+			BigDecimal workingHoursUseAtr = new BigDecimal(conditionDomain.getWorkTimeCondition().getUseAtr() ? 1 : 0);
 			BigDecimal whCompareAtr = new BigDecimal(
-					domain.getErrorAlarmCondition().getWorkTimeCondition().getComparePlanAndActual().value);
+					conditionDomain.getWorkTimeCondition().getComparePlanAndActual().value);
 			BigDecimal whPlanActualOperator = new BigDecimal(0);
 			BigDecimal whPlanFilterAtr = new BigDecimal(0);
 			BigDecimal whActualFilterAtr = new BigDecimal(0);
 			List<KrcstErAlWhPlan> lstWhPlan = new ArrayList<>();
 			List<KrcstErAlWhActual> lstWhActual = new ArrayList<>();
 			if (whCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
-				PlanActualWorkTime wtimeCondition = (PlanActualWorkTime) domain.getErrorAlarmCondition()
-						.getWorkTimeCondition();
+				PlanActualWorkTime wtimeCondition = (PlanActualWorkTime) conditionDomain.getWorkTimeCondition();
 				whPlanActualOperator = new BigDecimal(wtimeCondition.getOperatorBetweenPlanActual().value);
 				whPlanFilterAtr = new BigDecimal(wtimeCondition.getWorkTimePlan().getFilterAtr() ? 1 : 0);
 				whActualFilterAtr = new BigDecimal(wtimeCondition.getWorkTimeActual().getFilterAtr() ? 1 : 0);
@@ -396,7 +387,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 						.map(wtCode -> new KrcstErAlWhActual(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v())))
 						.collect(Collectors.toList());
 			} else {
-				SingleWorkTime wtimeCondition = (SingleWorkTime) domain.getErrorAlarmCondition().getWorkTimeCondition();
+				SingleWorkTime wtimeCondition = (SingleWorkTime) conditionDomain.getWorkTimeCondition();
 				whPlanFilterAtr = new BigDecimal(wtimeCondition.getTargetWorkTime().getFilterAtr() ? 1 : 0);
 				lstWhPlan = wtimeCondition.getTargetWorkTime().getLstWorkTime().stream()
 						.map(wtCode -> new KrcstErAlWhPlan(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v())))
@@ -404,24 +395,21 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			}
 			// Set attendance item condition
 			BigDecimal operatorBetweenGroups = new BigDecimal(
-					domain.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups().value);
-			BigDecimal group2UseAtr = new BigDecimal(
-					domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2UseAtr() ? 1 : 0);
-			String atdItemConditionGroup1 = domain.getErrorAlarmCondition().getAtdItemCondition().getGroup1()
-					.getAtdItemConGroupId();
-			String atdItemConditionGroup2 = domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2()
-					.getAtdItemConGroupId();
+					conditionDomain.getAtdItemCondition().getOperatorBetweenGroups().value);
+			BigDecimal group2UseAtr = new BigDecimal(conditionDomain.getAtdItemCondition().getGroup2UseAtr() ? 1 : 0);
+			String atdItemConditionGroup1 = conditionDomain.getAtdItemCondition().getGroup1().getAtdItemConGroupId();
+			String atdItemConditionGroup2 = conditionDomain.getAtdItemCondition().getGroup2().getAtdItemConGroupId();
 			BigDecimal conditionOperator1 = new BigDecimal(
-					domain.getErrorAlarmCondition().getAtdItemCondition().getGroup1().getConditionOperator().value);
-			List<KrcmtErAlAtdItemCon> lstAtdItemCon1 = domain.getErrorAlarmCondition().getAtdItemCondition().getGroup1()
+					conditionDomain.getAtdItemCondition().getGroup1().getConditionOperator().value);
+			List<KrcmtErAlAtdItemCon> lstAtdItemCon1 = conditionDomain.getAtdItemCondition().getGroup1()
 					.getLstErAlAtdItemCon().stream()
 					.map(erAlAtdItemCon -> getKrcmtErAlAtdItemConFromDomain(atdItemConditionGroup1, erAlAtdItemCon))
 					.collect(Collectors.toList());
 			KrcstErAlConGroup krcstErAlConGroup1 = new KrcstErAlConGroup(atdItemConditionGroup1, conditionOperator1,
 					lstAtdItemCon1);
 			BigDecimal conditionOperator2 = new BigDecimal(
-					domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2().getConditionOperator().value);
-			List<KrcmtErAlAtdItemCon> lstAtdItemCon2 = domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2()
+					conditionDomain.getAtdItemCondition().getGroup2().getConditionOperator().value);
+			List<KrcmtErAlAtdItemCon> lstAtdItemCon2 = conditionDomain.getAtdItemCondition().getGroup2()
 					.getLstErAlAtdItemCon().stream()
 					.map(erAlAtdItemCon -> getKrcmtErAlAtdItemConFromDomain(atdItemConditionGroup2, erAlAtdItemCon))
 					.collect(Collectors.toList());
@@ -450,7 +438,10 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 						.map(eralAppEntity -> eralAppEntity.krcstErAlApplicationPK.appTypeCd.intValue())
 						.collect(Collectors.toList()),
 				entity.eralCheckId);
+		return domain;
+	}
 
+	public static ErrorAlarmCondition toConditionDomain(KwrmtErAlWorkRecord entity) {
 		ErrorAlarmCondition condition = ErrorAlarmCondition.init();
 		condition.setDisplayMessage(entity.krcmtErAlCondition.messageDisplay);
 		if (entity.fixedAtr.intValue() != 1) {
@@ -529,8 +520,8 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 									.intValue(),
 							conditionsGroup2);
 		}
-		domain.setCondition(condition);
-		return domain;
+		condition.setCheckId(entity.eralCheckId);
+		return condition;
 	}
 
 }

@@ -47,29 +47,8 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     }
                 });        
             }
-            
             self.listCheckCondition(listCheckConditionDto);
             self.ListView(listConverToview);
-            
-            
-//            var uniqueCategory: Array<share.CheckConditionCommand> = _.uniqBy(listCheckCode, "category");
-//            var listCurrentCheckCondition: Array<share.CheckConditionDto> = __viewContext["viewmodel"].currentAlarm.checkConList;
-//            
-//            var listConver: Array<ModelCheckConditonCode> = [];
-//            var listCheckCondition = [];
-//            _.forEach(uniqueCategory, (category: share.ModelCheckConditonCode) => {
-//                let matchCheckCondition = _.find(listCurrentCheckCondition, (item) => {
-//                    return item.alarmCategory == category.category;
-//                });
-//                if(nts.uk.util.isNullOrUndefined(matchCheckCondition)){
-//                    matchCheckCondition = { alarmCategory: 0, checkConditionCodes: '', extractionDailyDto: null};    
-//                }  
-//                    let checkCondition = new share.CheckCondition(category.category, category.categoryName, matchCheckCondition.extractionDailyDto);
-//                    listCheckCondition.push(checkCondition);
-//                    //listConver.push(new ModelCheckConditonCode(checkCondition));
-//            });
-//            self.listCheckCondition(listCheckCondition);
-//            self.ListView(listConver);
         }
 
         private openDialog(ModelCheckConditonCode): void {

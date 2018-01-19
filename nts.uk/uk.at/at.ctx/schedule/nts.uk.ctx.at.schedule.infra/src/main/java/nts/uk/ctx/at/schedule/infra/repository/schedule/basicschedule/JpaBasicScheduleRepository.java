@@ -411,12 +411,10 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	}
 
 	/**
-	 * Removes the all child care.
+	 * Removes the all time zone.
 	 *
-	 * @param employeeId
-	 *            the employee id
-	 * @param baseDate
-	 *            the base date
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
 	 */
 	private void removeAllTimeZone(String employeeId, GeneralDate baseDate) {
 

@@ -7,8 +7,8 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSetRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -20,21 +20,21 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Stateless
 public class RangeOfDayTimeZoneServiceImpl implements RangeOfDayTimeZoneService {
-	
+
 	@Inject
-	public WorkTimeSetRepository workTimeSetRepo;
+	public PredetemineTimeSettingRepository preTimeSetRepo;
 
 	@Override
 	public TimeSpanForCalc getRangeofOneDay(String siftCode) {
 		TimeSpanForCalc timeSpanForCalc = new TimeSpanForCalc();
 		String companyId = AppContexts.user().companyId();
-		Optional<WorkTimeSet> optional = workTimeSetRepo.findByCode(companyId, siftCode);
+		Optional<PredetemineTimeSetting> optional = preTimeSetRepo.findByWorkTimeCode(companyId, siftCode);
 		if (!optional.isPresent()) {
 			return null;
 		}
-		WorkTimeSet workTimeSet = optional.get();
-		TimeWithDayAttr startTime = workTimeSet.getStartDateClock();
-		AttendanceTime rangeTimeDay = workTimeSet.getRangeTimeDay();
+		PredetemineTimeSetting prSetting = optional.get();
+		TimeWithDayAttr startTime = prSetting.getStartDateClock();
+		AttendanceTime rangeTimeDay = prSetting.getRangeTimeDay();
 		TimeWithDayAttr endTime = startTime.forwardByHours(rangeTimeDay.valueAsMinutes());
 		timeSpanForCalc.setEnd(endTime);
 		timeSpanForCalc.setStart(startTime);

@@ -14,41 +14,41 @@ import nts.arc.layer.dom.DomainObject;
  */
 // 個人勤務日区分別勤務
 @Getter
-public class PersonalWorkCategory extends DomainObject{
-	
-	/** The holiday work. */
-	// 休日出勤時
-	private SingleDaySchedule holidayWork;
-	
-	/** The holiday time. */
-	// 休日時
-	private SingleDaySchedule holidayTime;
-	
+public class PersonalWorkCategory extends DomainObject {
+
 	/** The weekday time. */
 	// 平日時
 	private SingleDaySchedule weekdayTime;
-	
-	/** The public holiday work. */
-	// 公休出勤時
-	private Optional<SingleDaySchedule> publicHolidayWork;
-	
+
+	/** The holiday work. */
+	// 休日出勤時
+	private SingleDaySchedule holidayWork;
+
 	/** The in law break time. */
 	// 法内休出時
 	private Optional<SingleDaySchedule> inLawBreakTime;
-	
+
 	/** The outside law break time. */
 	// 法外休出時
 	private Optional<SingleDaySchedule> outsideLawBreakTime;
-	
+
 	/** The holiday attendance time. */
 	// 祝日出勤時
 	private Optional<SingleDaySchedule> holidayAttendanceTime;
-	
-	
+
+	/** The public holiday work. */
+	// 公休出勤時
+	private Optional<SingleDaySchedule> publicHolidayWork;
+
+	/** The holiday time. */
+	// 休日時
+	private SingleDaySchedule holidayTime;
+
 	/**
 	 * Instantiates a new personal work category.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public PersonalWorkCategory(PersonalWorkCategoryGetMemento memento) {
 		this.holidayWork = memento.getHolidayWork();
@@ -59,13 +59,14 @@ public class PersonalWorkCategory extends DomainObject{
 		this.outsideLawBreakTime = memento.getOutsideLawBreakTime();
 		this.holidayAttendanceTime = memento.getHolidayAttendanceTime();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public void saveToMemento(PersonalWorkCategorySetMemento memento){
+	public void saveToMemento(PersonalWorkCategorySetMemento memento) {
 		memento.setHolidayWork(this.holidayWork);
 		memento.setHolidayTime(this.holidayTime);
 		memento.setWeekdayTime(this.weekdayTime);

@@ -247,6 +247,55 @@ public class ScheCreExeWorkTimeHandler {
 	}
 	
 	/**
+	 * Gets the work type code of day of week personal condition.
+	 *
+	 * @param command the command
+	 * @param workingConditionItem the working condition item
+	 * @return the work type code of day of week personal condition
+	 */
+	public String getWorkTypeCodeOfDayOfWeekPersonalCondition(WorkTimeConvertCommand command,
+			WorkingConditionItem workingConditionItem) {
+
+		// get MONDAY of data
+		if (DayOfWeek.MONDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getMonday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getMonday());
+		}
+		// get TUESDAY of data
+		if (DayOfWeek.TUESDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getTuesday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getTuesday());
+		}
+		// get WEDNESDAY of data
+		if (DayOfWeek.WEDNESDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getWednesday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getWednesday());
+		}
+		// get THURSDAY of data
+		if (DayOfWeek.THURSDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getThursday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getThursday());
+		}
+		// get FRIDAY of data
+		if (DayOfWeek.FRIDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getFriday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getFriday());
+		}
+		// get SATURDAY of data
+		if (DayOfWeek.SATURDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getSaturday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getSaturday());
+		}
+		// get SUNDAY of data
+		if (DayOfWeek.SUNDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getSunday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getSunday());
+		}
+		return DEFAULT_CODE;
+
+	}
+	
+	/**
 	 * Convert working hours employment status.
 	 *
 	 * @param command the command
@@ -345,6 +394,16 @@ public class ScheCreExeWorkTimeHandler {
 	 */
 	private String getWorkTimeCodeBySingleDaySchedule(Optional<SingleDaySchedule> optionalSingleDaySchedule) {
 		return optionalSingleDaySchedule.get().getWorkTimeCode().get().v();
+	}
+	
+	/**
+	 * Gets the work type code by single day schedule.
+	 *
+	 * @param optionalSingleDaySchedule the optional single day schedule
+	 * @return the work type code by single day schedule
+	 */
+	private String getWorkTypeCodeBySingleDaySchedule(Optional<SingleDaySchedule> optionalSingleDaySchedule) {
+		return optionalSingleDaySchedule.get().getWorkTypeCode().v();
 	}
 	
 	/**
@@ -623,15 +682,18 @@ public class ScheCreExeWorkTimeHandler {
 		// call service check work day
 		WorkStyle workStyle = this.basicScheduleService.checkWorkDay(command.getWorktypeCode());
 		switch (workStyle) {
-		case ONE_DAY_REST:
-			return Optional.empty();
-		case ONE_DAY_WORK:
-			return Optional
-					.of(this.predTimeRepository.findByWorkTimeCode(command.getCompanyId(), command.getWorkingCode())
-							.get().getPrescribedTimezoneSetting());
-		default:
-			// morning or afternoon
-			return Optional.of(this.getTimeZone(command));
+			case ONE_DAY_REST :
+				return Optional.empty();
+			case ONE_DAY_WORK :
+				if (command.getWorkingCode() == null) {
+					return Optional.empty();
+				}
+				return Optional
+						.of(this.predTimeRepository.findByWorkTimeCode(command.getCompanyId(), command.getWorkingCode())
+								.get().getPrescribedTimezoneSetting());
+			default :
+				// morning or afternoon
+				return Optional.of(this.getTimeZone(command));
 		}
 	}
 

@@ -93,7 +93,7 @@ module cps001.e.vm {
             let self = this;
             service.checkEmpFileMnExist(currentEmpFileMn.employeeId).done(function(isExist) {
                 if (isExist) {
-                    confirm({ messageId: "Msg_386", messageParams: "CPS001_69" }).ifYes(() => {
+                    confirm({ messageId: "Msg_386", messageParams: [nts.uk.resource.getText("CPS001_69")] }).ifYes(() => {
                         //insert employee file management
                         block();
                         service.removeAvaOrMap(oldEmpFileMn).done(function() {
