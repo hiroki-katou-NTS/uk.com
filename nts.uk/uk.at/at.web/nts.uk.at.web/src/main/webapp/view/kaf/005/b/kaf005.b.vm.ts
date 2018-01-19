@@ -561,8 +561,8 @@ module nts.uk.at.view.kaf005.b {
                     let self = this;
                     let dfd = $.Deferred();
                     let param : any ={
-                        overtimeHours: ko.toJS(self.overtimeHours()),
-                        bonusTimes: ko.toJS(self.bonusTimes()),
+                        overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
+                        bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),
                         prePostAtr : self.prePostSelected(),
                         appDate : moment(self.appDate()).format(self.DATE_FORMAT),
                         siftCD: self.siftCD()
@@ -733,7 +733,20 @@ module nts.uk.at.view.kaf005.b {
             private isEmptyOverTimeInput(OverTimeInputs: Array<any>): boolean {
                 return _.isEmpty(_.filter(OverTimeInputs, x => !nts.uk.util.isNullOrEmpty(x.applicationTime)));
             }
-            
+            private initCalculateData(item: any): any{
+                return data ={companyID: item.companyID,
+                                appID: item.appID,
+                                attendanceID: item.attendanceID,
+                                attendanceName: item.attendanceName,
+                                frameNo: item.frameNo,
+                                timeItemTypeAtr: item.timeItemTypeAtr,
+                                frameName: item.frameName,
+                                applicationTime: item.applicationTime,
+                                preAppTime: null,
+                                caculationTime: null,
+                                nameID: item.nameID, 
+                                itemName:item.itemName};
+            }
             private checkWorkContentChanged(){
                 let self = this;
                 //Check calculate times
