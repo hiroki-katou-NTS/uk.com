@@ -3,12 +3,9 @@ package nts.uk.ctx.bs.employee.pub.jobtitle;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.uk.shr.com.history.DateHistoryItem;
 
-@NoArgsConstructor
-@Setter
+@AllArgsConstructor
 public class AffJobTitleHistory_ver1Export {
 
 	/** 会社ID */
@@ -17,6 +14,9 @@ public class AffJobTitleHistory_ver1Export {
 	/** The employee id. */
 	// 社員ID
 	public String employeeId;
+	
+	
+	public String jobTitleId;
 
 	/** The Date History Item. */
 	// 履歴項目
