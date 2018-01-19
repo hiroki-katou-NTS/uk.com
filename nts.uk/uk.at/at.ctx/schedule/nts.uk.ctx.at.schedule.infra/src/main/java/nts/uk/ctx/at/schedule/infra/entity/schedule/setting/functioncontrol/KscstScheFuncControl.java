@@ -75,7 +75,7 @@ public class KscstScheFuncControl extends UkJpaEntity implements Serializable {
 	public int symbolDisp;
 
 	/** ２８日 */
-	@Column(name = "28_DAYS_CYCLE")
+	@Column(name = "DAYS_CYCLE_28")
 	public int twentyEightDaysCycle;
 
 	/** 末日 */
