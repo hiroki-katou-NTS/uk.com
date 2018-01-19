@@ -231,7 +231,7 @@
 			</div>
 		</div>
 		<!--定型理由 -->
-		<div class="valign-center control-group overlay-reason">
+		<div class="valign-top control-group overlay-reason" data-bind="if: displayTypicalReason">
 			<div class="lblTitleKAF009" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>
 			<div id="combo-box"
 				data-bind="ntsComboBox: {
@@ -245,7 +245,7 @@
 			</div>
 		</div>
 		<!-- 申請理由（ラベル) -->
-		<div class="valign-center control-group">
+		<div class="valign-top control-group" data-bind="if: displayReason">
 			<div class="lblTitleKAF009"
 				data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_27')}</div>
 			<div id="inpReason">
