@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 /**
  * The Interface FlowOTTimezoneSetMemento.
  */
-public interface FlOTTimezoneSetMemento {
+public interface FlowOTTimezoneSetMemento {
 
 	/**
 	 * Sets the worktime no.

@@ -29,7 +29,7 @@ public class FlowTimeSetting extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public FlowTimeSetting(FlTimeGetMemento memento) {
+	public FlowTimeSetting(FlowTimeGetMemento memento) {
 		this.rounding = memento.getRouding();
 		this.elapsedTime = memento.getElapsedTime();
 	}
@@ -39,7 +39,7 @@ public class FlowTimeSetting extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(FlTimeSetMemento memento) {
+	public void saveToMemento(FlowTimeSetMemento memento) {
 		memento.setRouding(this.rounding);
 		memento.setElapsedTime(this.elapsedTime);
 	}

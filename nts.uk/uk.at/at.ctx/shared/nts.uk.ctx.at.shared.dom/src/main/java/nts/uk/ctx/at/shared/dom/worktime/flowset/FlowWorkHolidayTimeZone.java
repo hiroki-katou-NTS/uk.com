@@ -67,7 +67,7 @@ public class FlowWorkHolidayTimeZone extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMement (FlWorkHdTzSetMemento memento) {
+	public void saveToMemento (FlWorkHdTzSetMemento memento) {
 		memento.setWorktimeNo(this.worktimeNo);
 		memento.setUseInLegalBreakRestrictTime(this.useInLegalBreakRestrictTime);
 		memento.setInLegalBreakFrameNo(this.inLegalBreakFrameNo);

@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkDedicateSetting;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
-import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlowWorkRestSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetGetMemento;
 
 /**

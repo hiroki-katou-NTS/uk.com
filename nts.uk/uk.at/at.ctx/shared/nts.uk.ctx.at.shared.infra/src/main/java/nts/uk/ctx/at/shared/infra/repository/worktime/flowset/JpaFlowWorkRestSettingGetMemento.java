@@ -2,12 +2,13 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.worktime.common;
+package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaCommonRestSettingGetMemento;
 
 /**
  * The Class JpaFlowWorkRestSettingGetMemento.
