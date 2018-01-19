@@ -22,6 +22,9 @@ public class KfnmtCheckConItemPK implements Serializable {
 	
 	@Column(name = "ALARM_CATEGORY")
 	public int alarmCategory;
+
+	@Column(name = "ALARM_CHECK_CONDITION_CODE")
+	public String checkConditionCD;
 	
 	@Override
 	public int hashCode() {
@@ -63,6 +66,4 @@ public class KfnmtCheckConItemPK implements Serializable {
 		return true;
 	}
 
-	@Column(name = "ALARM_CHECK_CONDITION_CODE")
-	public String checkConditionCD;
 }
