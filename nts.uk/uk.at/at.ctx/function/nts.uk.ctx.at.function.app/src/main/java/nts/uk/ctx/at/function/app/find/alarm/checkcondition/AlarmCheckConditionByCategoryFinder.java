@@ -1,12 +1,20 @@
 package nts.uk.ctx.at.function.app.find.alarm.checkcondition;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
+import nts.uk.ctx.at.function.dom.adapter.FixedConditionDataAdapter;
+import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -16,13 +24,54 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class AlarmCheckConditionByCategoryFinder {
-	
+
 	@Inject
 	private AlarmCheckConditionByCategoryRepository conditionRepo;
+
+	@Inject
+	private FixedConWorkRecordAdapter fixedConditionAdapter;
 	
-	public List<AlarmCheckConditionByCategoryDto> getAllData(int category){
+//	@Inject
+//	private FixedConditionDataAdapter fixCondDataAdapter;
+
+	public List<AlarmCheckConditionByCategoryDto> getAllData(int category) {
 		String companyId = AppContexts.user().companyId();
-		return conditionRepo.findByCategory(companyId, category).stream().map(item -> AlarmCheckConditionByCategoryDto.fromDomain(item)).collect(Collectors.toList());
+
+		return conditionRepo.findByCategory(companyId, category).stream().map(item -> fromDomain(item))
+				.collect(Collectors.toList());
 	}
 
+	private AlarmCheckConditionByCategoryDto fromDomain(AlarmCheckConditionByCategory domain) {
+		int schedule4WCondition = -1;
+		DailyAlarmCondition dailyAlarmCondition = new DailyAlarmCondition("", ConExtractedDaily.ALL.value, false,
+				Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+		if (domain.getCategory() == AlarmCategory.SCHEDULE_4WEEK && domain.getExtractionCondition() != null) {
+			AlarmCheckCondition4W4D schedule4WeekCondition = (AlarmCheckCondition4W4D) domain.getExtractionCondition();
+			schedule4WCondition = schedule4WeekCondition.getFourW4DCheckCond().value;
+		}
+		if (domain.getCategory() == AlarmCategory.DAILY && domain.getExtractionCondition() != null) {
+			dailyAlarmCondition = (DailyAlarmCondition) domain.getExtractionCondition();
+		}
+		
+		//List<FixedConditionWorkRecordDto> listFixedCondition = fixCondDataAdapter.getAllFixedConditionDataPub().stream().map(item -> new FixedConditionWorkRecordDto(item.getFixConWorkRecordName(), item.getFixConWorkRecordNo(), item.getMessage())).collect(Collectors.toList());
+		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
+				domain.getCategory().value,
+				new AlarmCheckTargetConditionDto(domain.getExtractTargetCondition().isFilterByEmployment(),
+						domain.getExtractTargetCondition().isFilterByClassification(),
+						domain.getExtractTargetCondition().isFilterByJobTitle(),
+						domain.getExtractTargetCondition().isFilterByBusinessType(),
+						domain.getExtractTargetCondition().getLstEmploymentCode(),
+						domain.getExtractTargetCondition().getLstClassificationCode(),
+						domain.getExtractTargetCondition().getLstJobTitleId(),
+						domain.getExtractTargetCondition().getLstBusinessTypeCode()),
+				domain.getListRoleId(), schedule4WCondition,
+				new DailyAlarmCheckConditionDto(dailyAlarmCondition.isAddApplication(),
+						dailyAlarmCondition.getConExtractedDaily().value, dailyAlarmCondition.getErrorAlarmCode(),
+						dailyAlarmCondition.getExtractConditionWorkRecord(),
+						fixedConditionAdapter
+								.getAllFixedConWorkRecordByListID(
+										dailyAlarmCondition.getFixedExtractConditionWorkRecord())
+								.stream().map(item -> new FixedConditionWorkRecordDto(item))
+								.collect(Collectors.toList())));
+	}
 }

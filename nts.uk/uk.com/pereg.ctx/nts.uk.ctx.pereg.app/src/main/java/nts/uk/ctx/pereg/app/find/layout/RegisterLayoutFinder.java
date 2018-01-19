@@ -98,27 +98,23 @@ public class RegisterLayoutFinder {
 
 		if (command.getCreateType() != 3) {
 			dataServer = this.getAllSettingItemList(command);
-
-			if (CollectionUtil.isEmpty(dataServer)) {
-
-				return null;
-			}
 		}
-		setData(dataServer, listItemCls, command.getCreateType());
+		setData(dataServer, listItemCls, command);
 
 		return listItemCls;
 	}
 
-	private void setData(List<SettingItemDto> dataServer, List<LayoutPersonInfoClsDto> listItemCls, int createType) {
+	private void setData(List<SettingItemDto> dataServer, List<LayoutPersonInfoClsDto> listItemCls,
+			AddEmployeeCommand command) {
 
 		listItemCls.forEach(itemCls -> {
-			createInfoValueDtoByItemCls(dataServer, itemCls, createType);
+			createInfoValueDtoByItemCls(dataServer, itemCls, command);
 		});
 
 	}
 
 	private void createInfoValueDtoByItemCls(List<SettingItemDto> dataServer, LayoutPersonInfoClsDto itemCls,
-			int createType) {
+			AddEmployeeCommand command) {
 		List<PerInfoItemDefDto> itemDefList = itemCls.getListItemDf();
 		List<Object> itemDataList = new ArrayList<Object>();
 		if (!CollectionUtil.isEmpty(itemDefList)) {
@@ -130,10 +126,11 @@ public class RegisterLayoutFinder {
 				LayoutPersonInfoValueDto infoValue = null;
 				if (setItemOpt.isPresent()) {
 					SettingItemDto setItem = setItemOpt.get();
-					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value, itemCls);
+					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value, itemCls,
+							command);
 				} else {
 
-					infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value, itemCls);
+					infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value, itemCls, command);
 
 				}
 
@@ -164,7 +161,7 @@ public class RegisterLayoutFinder {
 	}
 
 	private LayoutPersonInfoValueDto createPersonInfoValueDtoFromDef(SettingItemDto setItem, PerInfoItemDefDto itemDef,
-			int actionRole, LayoutPersonInfoClsDto itemCls) {
+			int actionRole, LayoutPersonInfoClsDto itemCls, AddEmployeeCommand command) {
 
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
@@ -182,7 +179,7 @@ public class RegisterLayoutFinder {
 			if (dataTypeValue == 6) {
 				SelectionItemDto selectionItemDto = (SelectionItemDto) dataObject.getItem();
 				List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
-						AppContexts.user().employeeId(), GeneralDate.today(), true);
+						AppContexts.user().employeeId(), command.getHireDate(), true);
 				dataObject.setLstComboBoxValue(lstComboBox);
 			}
 		}

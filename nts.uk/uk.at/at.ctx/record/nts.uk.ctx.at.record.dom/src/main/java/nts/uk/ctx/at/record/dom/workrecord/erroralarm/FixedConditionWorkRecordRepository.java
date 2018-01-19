@@ -9,6 +9,12 @@ public interface FixedConditionWorkRecordRepository {
 	 * @return
 	 */
 	List<FixedConditionWorkRecord> getAllFixedConditionWorkRecord();
+	
+	/**
+	 * get all fixed condition work record by list errorAlarmID
+	 * @return
+	 */
+	List<FixedConditionWorkRecord> getAllFixedConWorkRecordByListID(List<String> listErrorAlarmID);
 
 	/**
 	 * get fixed condition work record by dailyAlarmConID and fixConWorkRecordNo

@@ -92,6 +92,15 @@ public class PersonInformationRoleFinder {
 		return personRoleRepo.find(roleIds);
 	}
 	
+	public List<RoleDto> findByListRoleID(List<String> lstRoleId){
+		List<RoleDto> data = roleRepo.findByListId(lstRoleId)
+				.stream().map(c ->RoleDto.fromDomain(c)).collect(Collectors.toList());
+		if(data.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return data;
+	}
+	
 	/**
 	 * Get Role by role Id
 	 * @param roleId

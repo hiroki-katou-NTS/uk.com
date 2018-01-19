@@ -52,6 +52,8 @@ module cps002.a.vm {
 
         layoutData: KnockoutObservableArray<any> = ko.observableArray([]);
 
+        defaultImgId: KnockoutObservable<string> = ko.observable("");
+
         ccgcomponent: any = {
             baseDate: ko.observable(moment().toDate()),
             isQuickSearchTab: true,
@@ -688,10 +690,12 @@ module cps002.a.vm {
         }
 
         openIModal() {
+
+
             let self = this,
-                avatarId = self.currentEmployee().avatarId();
+                avatarId = self.defaultImgId();
             if (avatarId != "") {
-                setShared("imageId", avatarId);
+                setShared("CPS002A", avatarId);
             }
             if (self.isAllowAvatarUpload()) {
 
@@ -699,11 +703,15 @@ module cps002.a.vm {
 
                     let imageResult = getShared("imageId");
 
-                    if (imageResult) {
-                        self.currentEmployee().avatarId(imageResult);
-                    }
 
-                });
+
+                    if (imageResult) {
+                        self.currentEmployee().avatarId(imageResult.cropImgId)
+                        self.defaultImgId(imageResult.defaultImgId);
+
+
+
+                    });
 
             }
         }

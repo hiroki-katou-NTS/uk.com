@@ -69,7 +69,9 @@ public class WorkingConditionFinder implements PeregFinder<WorkingConditionDto>{
 		return hists.stream()
 				.sorted((a, b) -> b.start().compareTo(a.start()))
 				.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), 
-						x.end().equals(GeneralDate.max()) && query.getCtgType() == 3 ? "" : x.end().toString()))
+						x.end().equals(GeneralDate.max()) 
+						//&& query.getCtgType() == 3 
+						? "" : x.end().toString()))
 				.collect(Collectors.toList());
 	}
 

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.alarm;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -15,7 +16,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPermissionSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -71,5 +71,8 @@ public class KfnmtAlarmPerSet extends UkJpaEntity implements Serializable{
 				domain.isAuthSetting() ? 1 : 0, alarmPerSetItems);
 	}
 
-	
+	public void fromEntity(KfnmtAlarmPerSet  newEntity) {
+		this.alarmPerSetItems.removeIf(c->!newEntity.alarmPerSetItems.contains(c));	
+		this.authSetting = newEntity.authSetting;
+	}
 }

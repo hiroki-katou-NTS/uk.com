@@ -221,8 +221,8 @@ module nts.uk.at.view.kaf002.shr {
         export class CommentUI {
             text: KnockoutObservable<string>; 
             color: KnockoutObservable<string>; 
-            fontWeight: KnockoutObservable<number>;     
-            constructor(text: string, color: string, fontWeight: number){
+            fontWeight: KnockoutObservable<boolean>;     
+            constructor(text: string, color: string, fontWeight: boolean){
                 this.text = ko.observable(text);
                 this.color = ko.observable(color);
                 this.fontWeight = ko.observable(fontWeight);      
