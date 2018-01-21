@@ -180,17 +180,17 @@ public class PeregProcessor {
 		
 		PeregDto peregDto = null;
 		
-		boolean ctgIsViewOnly = false;
 		if ((perInfoCtg.getIsFixed() == IsFixed.FIXED && query.getInfoId() != null)
 				||(query.getInfoId() == null && perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO)) {
 			peregDto = layoutingProcessor.findSingle(query);
 		}
+		CheckViewOnlyReturnObj checkViewOnly = new CheckViewOnlyReturnObj();
 		if(perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO) {
-			ctgIsViewOnly = checkCtgIsViewOnly(peregDto, perInfoCtg, roleId, query.getInfoId(), loginEmpId.equals(query.getEmployeeId()));
+			checkViewOnly = checkCtgIsViewOnly(peregDto, perInfoCtg, roleId, query.getInfoId(), loginEmpId.equals(query.getEmployeeId()));
 		}
 		for (int i = 0; i < lstItemDef.size(); i++) {
 			PerInfoItemDefForLayoutDto perInfoItemDefForLayoutDto = perInfoItemDefForLayoutFinder
-					.createFromDomain(query.getEmployeeId(), perInfoCtg.getCategoryType().value, lstItemDef.get(i), perInfoCtg.getCategoryCode().v(), i, roleId, ctgIsViewOnly);
+					.createFromDomain(query.getEmployeeId(), perInfoCtg.getCategoryType().value, lstItemDef.get(i), perInfoCtg.getCategoryCode().v(), i, roleId, checkViewOnly.isViewOnly, checkViewOnly.startDate);
 			if (perInfoItemDefForLayoutDto != null)
 				lstPerInfoItemDefForLayout.add(perInfoItemDefForLayoutDto);
 		}
@@ -305,13 +305,16 @@ public class PeregProcessor {
 		}
 	}
 	
-	private boolean checkCtgIsViewOnly(PeregDto peregDto, PersonInfoCategory perInfoCtg, String roleId, String infoId, boolean isSelf) {
+	private CheckViewOnlyReturnObj checkCtgIsViewOnly(PeregDto peregDto, PersonInfoCategory perInfoCtg, String roleId, String infoId, boolean isSelf) {
+		CheckViewOnlyReturnObj returnObject = new CheckViewOnlyReturnObj();
 		PersonInfoCategoryAuth perInfoCtgAuth = perAuth.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
 		String exceptionItemCode = "CS00003";
 		if(infoId == null) {
-		if((perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO && !isSelf)
-				||(perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) 
-				 return true;
+			if((perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO && !isSelf)
+					||(perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) {
+				returnObject.isViewOnly =  true;
+				return returnObject;
+			}
 		}else {
 			String sDateId = "";	
 			String eDateId = "";	
@@ -343,14 +346,21 @@ public class PeregProcessor {
 				}			
 			}
 			Period period = getPeriod(sValue, eValue);
-			if(period == Period.PRESENT) return false;
+			GeneralDate sDate = GeneralDate.fromString(sValue.toString(), "yyyy/MM/dd");
+			returnObject.startDate = sDate;
+			if(period == Period.PRESENT) {
+				returnObject.isViewOnly = false;
+				return returnObject;
+			}
 			if(period == Period.FUTURE) {
-				return isSelf?perInfoCtgAuth.getSelfFutureHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherFutureHisAuth() == PersonInfoAuthType.REFERENCE;
+				returnObject.isViewOnly = isSelf?perInfoCtgAuth.getSelfFutureHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherFutureHisAuth() == PersonInfoAuthType.REFERENCE;
+				return returnObject;
 			}else {
-				return isSelf?perInfoCtgAuth.getSelfPastHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherPastHisAuth() == PersonInfoAuthType.REFERENCE;
+				returnObject.isViewOnly = isSelf?perInfoCtgAuth.getSelfPastHisAuth() == PersonInfoAuthType.REFERENCE : perInfoCtgAuth.getOtherPastHisAuth() == PersonInfoAuthType.REFERENCE;
+				return returnObject;
 			}
 		}
-		return false;
+		return returnObject;
 	}
 	private Object getDateValueOfFixedCtg(PeregDto peregDto, String ctgCode, String exceptionItemCode, List<Field> fields, String dateId, boolean isStart) {
 		Optional<Field> field = Optional.empty();
@@ -389,4 +399,8 @@ public class PeregProcessor {
 		FUTURE(3);
 		Period(int a) {}
 	}
+}
+class CheckViewOnlyReturnObj{
+	boolean isViewOnly;
+	GeneralDate startDate;
 }
