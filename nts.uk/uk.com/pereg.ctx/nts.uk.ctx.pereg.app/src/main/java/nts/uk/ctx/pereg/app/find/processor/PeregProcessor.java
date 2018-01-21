@@ -264,10 +264,13 @@ public class PeregProcessor {
 			PeregQuery query) {
 		if (perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE) {
 			List<EmpInfoCtgData> empInfoCtgDatas = new ArrayList<>();
-			if(query.getInfoId() != null || query.getStandardDate() != null)
-					empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(query.getEmployeeId(),
-					perInfoCtg.getPersonInfoCategoryId());
-			else MappingFactory.matchEmpOptionData(null, classItemList, new ArrayList<>());
+			if(query.getInfoId() == null && query.getStandardDate() == null && perInfoCtg.getCategoryType() != CategoryType.SINGLEINFO) {
+				MappingFactory.matchEmpOptionData(null, classItemList, new ArrayList<>());
+			}
+			else {
+				empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(query.getEmployeeId(),
+						perInfoCtg.getPersonInfoCategoryId());
+			}
 			if (!empInfoCtgDatas.isEmpty()) {
 				String recordId = empInfoCtgDatas.get(0).getRecordId();
 				List<EmpOptionalDto> empOptionItemData = empInfoItemDataRepository.getAllInfoItemByRecordId(recordId)
