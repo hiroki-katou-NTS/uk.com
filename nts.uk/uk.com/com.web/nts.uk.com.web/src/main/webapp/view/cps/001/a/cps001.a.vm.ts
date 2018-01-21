@@ -517,7 +517,6 @@ module cps001.a.vm {
         employeeId: KnockoutObservable<string> = ko.observable(undefined);
 
         category: KnockoutObservable<Category> = ko.observable(new Category());
-
         // event action
         events: Events = {
             add: (callback?: any) => {
@@ -796,7 +795,8 @@ module cps001.a.vm {
                 let id = self.id(),
                     mode: TABS = self.mode(),
                     ctp = cat.categoryType(),
-                    layout = self.layout();
+                    layout = self.layout(),
+                    index = _.indexOf(_.map(self.gridlist(), x => x.optionValue), infoId);
 
                 if (id && mode == TABS.CATEGORY) {
                     let catid = self.categoryId(),
@@ -863,7 +863,21 @@ module cps001.a.vm {
                                 }
 
                                 if (perm && !!(selEmId == logInId ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
-                                    self.permisions.remove(true);
+                                    debugger;
+                                    if (index > -1) {
+                                        if (index == 0) {
+                                            self.permisions.remove(true);
+                                        } else {
+                                            let cat: ICategory = ko.toJS(self.category);
+                                            if (cat.categoryType == IT_CAT_TYPE.NODUPLICATE) {
+                                                self.permisions.remove(true);
+                                            } else {
+                                                self.permisions.remove(false);
+                                            }
+                                        }
+                                    } else {
+                                        self.permisions.remove(false);
+                                    }
                                 } else {
                                     self.permisions.remove(false);
                                 }
