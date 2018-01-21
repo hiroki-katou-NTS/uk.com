@@ -274,7 +274,7 @@ module cps001.a.vm {
                     if (single) {
                         self.employees(_.filter(employees, m => m.employeeId == employee.employeeId()));
                     }
-                    
+
                     let first = _.find(self.employees(), x => x.employeeId == employee.employeeId());
                     if (first) {
                         employee.employeeId.valueHasMutated();
@@ -801,20 +801,24 @@ module cps001.a.vm {
 
                                 self.infoId(undefined);
 
+                                let removed: Array<any> = [];
                                 _.each(data.classificationItems, (c: any, i: number) => {
                                     if (_.has(c, "items") && _.isArray(c.items)) {
-                                        _.each(c.items, m => {
-                                            if (!_.isArray(m)) {
-                                                if (i == 0) {
-                                                    m.value = undefined;
-                                                }
-                                                m.recordId = undefined;
-                                            } else {
-                                                _.each(m, k => {
-                                                    k.recordId = undefined;
+                                        if (!removed.length) {
+                                            removed = _.filter(c.items, (x: any) => x.item && x.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE);
+                                            if (removed.length) {
+                                                _.each(c.items, m => {
+                                                    if (!_.isArray(m)) {
+                                                        m.value = undefined;
+                                                        m.recordId = undefined;
+                                                    } else {
+                                                        _.each(m, k => {
+                                                            k.recordId = undefined;
+                                                        });
+                                                    }
                                                 });
                                             }
-                                        });
+                                        }
                                     }
                                 });
                             } else if (self.infoId()) {
