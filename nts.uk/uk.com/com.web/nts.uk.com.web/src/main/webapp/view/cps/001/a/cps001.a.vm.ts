@@ -465,6 +465,8 @@ module cps001.a.vm {
     }
 
     class Layout {
+        showColor: KnockoutObservable<boolean> = ko.observable(false);
+
         outData: KnockoutObservableArray<any> = ko.observableArray([]);
 
         listItemCls: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -674,13 +676,28 @@ module cps001.a.vm {
 
                         service.getCurrentLayout(query).done((data: any) => {
                             if (data) {
+                                layout.showColor(true);
                                 layout.standardDate(data.standardDate || undefined);
+
+                                _.each(data.classificationItems, x => {
+                                    if ([IT_CLA_TYPE.ITEM].indexOf(x.layoutItemType) > -1) {
+                                        _.each(x.items, m => {
+                                            if (!_.isNil(m.value) && !_.isEmpty(m.value)) {
+                                                m.showColor = true;
+                                            } else {
+                                                m.showColor = false;
+                                            }
+                                        });
+                                    }
+                                });
+
                                 layout.listItemCls(data.classificationItems || []);
                             } else {
                                 layout.listItemCls.removeAll();
                             }
                             setShared(RELOAD_DT_KEY, undefined);
                         }).fail(mgs => {
+                            layout.showColor(true);
                             layout.listItemCls.removeAll();
                             setShared(RELOAD_DT_KEY, undefined);
                         });
@@ -697,6 +714,7 @@ module cps001.a.vm {
                         switch (cat.categoryType()) {
                             case IT_CAT_TYPE.SINGLE:
                                 self.infoId(undefined);
+                                layout.showColor(false);
 
                                 self.changeTitle(ATCS.UPDATE);
 
@@ -826,6 +844,7 @@ module cps001.a.vm {
                             } else if (self.infoId()) {
                                 self.changeTitle(ATCS.UPDATE);
                             }
+                            layout.showColor(false);
                             layout.listItemCls(data.classificationItems);
 
                             let roleId = self.roleId(),
@@ -1146,6 +1165,12 @@ module cps001.a.vm {
     enum TABS {
         LAYOUT = <any>"layout",
         CATEGORY = <any>"category"
+    }
+    // define ITEM_CLASSIFICATION_TYPE
+    enum IT_CLA_TYPE {
+        ITEM = <any>"ITEM", // single item
+        LIST = <any>"LIST", // list item
+        SPER = <any>"SeparatorLine" // line item
     }
 
     // define ITEM_CATEGORY_TYPE

@@ -149,7 +149,8 @@ public class LayoutFinder {
 		
 		// validate standard date
 		//standardDate = validateStandardDate(cid, browsingEmpId, standardDate, result);
-
+		result.setStandardDate(standardDate);
+		
 		// check authority & get data
 		boolean selfBrowsing = browsingEmpId.equals(AppContexts.user().employeeId());
 		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(layoutQuery.getLayoutId());
