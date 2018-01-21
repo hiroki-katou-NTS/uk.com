@@ -142,7 +142,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		if (domain.getTempAbsenceFrNo() != null){
 			entity.tempAbsFrameNo = domain.getTempAbsenceFrNo().v().intValue();
 		}
-		if (domain.getRemarks() != null){
+		if (domain.getRemarks() != null && !domain.getRemarks().v().equals("")){
 			entity.remarks = domain.getRemarks().v();
 		}
 		if (domain.getSoInsPayCategory() != null){
