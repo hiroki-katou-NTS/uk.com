@@ -396,11 +396,12 @@
 			<script type="text/html" id="simple-layout"
 				data-structor="{
 					items: listItemCls,
-					outData: outData
+					outData: outData,
+					showColor: ko.observable(true)
 				}">
 				<div style="padding-top: 10px"
 					data-bind="ntsLayoutControl: {
-					showColor: ko.observable(true), 
+					showColor: $data.showColor || false, 
 					data: $data.items,
 					outData: $data.outData || ko.observableArray([]),
 					editAble: 2 }"></div>
@@ -422,7 +423,8 @@
 								name: 'simple-layout',
 								data: {
 									items: multiple.layout().listItemCls,
-									outData: multiple.layout().outData
+									outData: multiple.layout().outData,
+									showColor: multiple.layout().showColor
 								},
 								permision: {
 									add: ko.observable(),
@@ -436,7 +438,8 @@
 								name: 'simple-layout',
 								data: {
 									items: multiple.layout().listItemCls,
-									outData: multiple.layout().outData
+									outData: multiple.layout().outData,
+									showColor: multiple.layout().showColor
 								},
 								permision: {
 									add: ko.observable(),
