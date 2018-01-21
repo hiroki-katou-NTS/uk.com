@@ -4,6 +4,7 @@
 package nts.uk.ctx.pereg.app.find.layout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,6 @@ import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
@@ -147,14 +147,8 @@ public class LayoutFinder {
 		EmployeeDataMngInfo employee = employeeDataRepo.findByEmpId(browsingEmpId).get();
 		String browsingPeronId = employee.getPersonId();
 		
-		AffCompanyHist affCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(cid,browsingEmpId);
-		if ( affCompanyHist == null ) {
-			throw new RuntimeException("Affliate Company Histoty can't be null!");
-		}
-		AffCompanyHistByEmployee employeeHistory = affCompanyHist.getAffCompanyHistByEmployee(browsingEmpId);
-		
 		// validate standard date
-		standardDate = validateStandardDate(standardDate, employeeHistory, result);
+		standardDate = validateStandardDate(cid, browsingEmpId, standardDate, result);
 
 		// check authority & get data
 		boolean selfBrowsing = browsingEmpId.equals(AppContexts.user().employeeId());
@@ -194,6 +188,7 @@ public class LayoutFinder {
 		// GET DATA WITH EACH CATEGORY
 		Map<String, List<LayoutPersonInfoClsDto>> classItemInCategoryMap = new HashMap<>();
 		for (LayoutPersonInfoClsDto classItem : authItemClasList) {
+			
 			if (classItem.getLayoutItemType() != LayoutItemType.SeparatorLine) {
 				if (classItem.getLayoutItemType() == LayoutItemType.ITEM) {
 					List<LayoutPersonInfoClsDto> classItemList = classItemInCategoryMap
@@ -210,10 +205,10 @@ public class LayoutFinder {
 
 		}
 
-		for (Entry<String, List<LayoutPersonInfoClsDto>> entry : classItemInCategoryMap.entrySet())
+		for (Entry<String, List<LayoutPersonInfoClsDto>> classItemsOfCategory : classItemInCategoryMap.entrySet())
 		{
-			String categoryId = entry.getKey();
-			List<LayoutPersonInfoClsDto> classItemList = entry.getValue(); 
+			String categoryId = classItemsOfCategory.getKey();
+			List<LayoutPersonInfoClsDto> classItemList = classItemsOfCategory.getValue(); 
 		    PersonInfoCategory perInfoCategory = perInfoCateRepo
 					.getPerInfoCategory(categoryId, AppContexts.user().contractCode()).get();
 			PeregQuery query = new PeregQuery(perInfoCategory.getCategoryCode().v(), layoutQuery.getBrowsingEmpId(),
@@ -257,8 +252,15 @@ public class LayoutFinder {
 	 * @param employee
 	 * @param result
 	 */
-	private GeneralDate validateStandardDate(GeneralDate stardardDate, AffCompanyHistByEmployee employeeHistory,
+	private GeneralDate validateStandardDate(String cid, String browsingEmpId, GeneralDate stardardDate,
 			EmpMaintLayoutDto result) {
+
+		AffCompanyHist affCompanyHist = affCompanyHistRepo.getAffCompanyHistoryOfEmployee(cid, browsingEmpId);
+		if (affCompanyHist == null) {
+			throw new RuntimeException("Affliate Company Histoty can't be null!");
+		}
+		AffCompanyHistByEmployee employeeHistory = affCompanyHist.getAffCompanyHistByEmployee(browsingEmpId);
+
 		if (employeeHistory.getHistoryWithReferDate(stardardDate).isPresent()) {
 			result.setStandardDate(stardardDate);
 		} else {
@@ -338,6 +340,8 @@ public class LayoutFinder {
 			GeneralDate standardDate, String personId, String employeeId, PeregQuery query) {
 
 		cloneDefItemToValueItem(perInfoCategory, classItemList);
+		
+		GeneralDate comboBoxStandardDate = null; 
 
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 			// get domain data
@@ -345,7 +349,18 @@ public class LayoutFinder {
 
 			if (peregDto != null) {
 				MappingFactory.mapListItemClass(peregDto, classItemList);
+				
+				Map<String, Object> itemValueMap = MappingFactory.getFullDtoValue(peregDto);
+				List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119");
+				for (String itemCode : standardDateItemCodes) {
+					if ( itemValueMap.containsKey(itemCode)) {
+						comboBoxStandardDate = (GeneralDate) itemValueMap.get(itemCode);
+						break;
+					}
+				}
 			}
+			
+			
 		} else {
 			switch (perInfoCategory.getCategoryType()) {
 			case SINGLEINFO:
@@ -389,17 +404,21 @@ public class LayoutFinder {
 
 		}
 
-		// getComboBox
-		classItemList.forEach(classItem -> {
+		// For each classification item to get combo box list
+		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
+				
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 				DataTypeStateDto itemDataTypeSate = valueItem.getItem();
-				if ( itemDataTypeSate != null && itemDataTypeSate.getDataTypeValue() == DataTypeValue.SELECTION.value) {
+				
+				if (itemDataTypeSate != null && itemDataTypeSate.getDataTypeValue() == DataTypeValue.SELECTION.value) {
+					
 					SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
-					valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, employeeId, standardDate, true));
+					valueItem.setLstComboBoxValue(
+							comboBoxFactory.getComboBox(selectionItemDto, employeeId, comboBoxStandardDate, true));
 				}
 			}
-		});
+		}
 
 	}
 
