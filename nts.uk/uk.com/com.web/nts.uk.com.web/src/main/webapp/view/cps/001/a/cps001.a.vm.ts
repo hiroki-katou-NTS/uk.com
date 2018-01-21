@@ -566,7 +566,9 @@ module cps001.a.vm {
                                         callback();
                                     }
                                 });
-                            });
+                            }).fail(msg => {
+                                alert(msg);
+                            });;
                         });
                     }
                 });
@@ -711,7 +713,7 @@ module cps001.a.vm {
                                 });
                                 break;
                             case IT_CAT_TYPE.MULTI:
-
+                                layout.listItemCls.removeAll();
                                 break;
                             case IT_CAT_TYPE.CONTINU:
                             case IT_CAT_TYPE.CONTINUWED:
