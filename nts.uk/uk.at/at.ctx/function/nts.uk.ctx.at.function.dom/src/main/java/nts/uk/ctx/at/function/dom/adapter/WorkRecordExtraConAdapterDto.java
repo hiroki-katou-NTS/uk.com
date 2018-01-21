@@ -2,10 +2,12 @@ package nts.uk.ctx.at.function.dom.adapter;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
 public class WorkRecordExtraConAdapterDto {
+	@Setter
 	private String errorAlarmCheckID;
 	//TypeCheckWorkRecord
 	private int checkItem;

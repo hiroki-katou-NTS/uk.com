@@ -23,6 +23,18 @@ public class FlowRestSetting extends DomainObject {
 	// 流動経過時間
 	private AttendanceTime flowPassageTime;
 
+	
+	/**
+	 * Constructor
+	 * @param flowRestTime the flow rest time
+	 * @param flowPassageTime the flow passage time.
+	 */
+	public FlowRestSetting(AttendanceTime flowRestTime, AttendanceTime flowPassageTime) {
+		super();
+		this.flowRestTime = flowRestTime;
+		this.flowPassageTime = flowPassageTime;
+	}
+	
 	/**
 	 * Instantiates a new flow rest setting.
 	 *
@@ -53,4 +65,6 @@ public class FlowRestSetting extends DomainObject {
 		memento.setFlowRestTime(this.flowRestTime);
 		memento.setFlowPassageTime(this.flowPassageTime);
 	}
+
+
 }

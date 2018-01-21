@@ -50,6 +50,14 @@ public class TimezoneUse extends TimeZone {
 		this.useAtr = UseSetting.NOT_USE;
 	}
 
+	/**
+	 * Reset time.
+	 */
+	public void resetTime() {
+		this.start = null;
+		this.end = null;
+	}
+
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.TimeZone#validate()
 	 */

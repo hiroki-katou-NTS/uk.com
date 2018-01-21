@@ -564,28 +564,30 @@ module nts.uk.at.view.ksm006.a {
                         alreadySettingList.push(new UnitAlreadySettingModel(data[i], true));
                     }
                     self.workplaceAlreadySetList(alreadySettingList);
-                });
+                }).then(function() {
+                    // Reload Workplace List
+                    $('#workplace-list').ntsTreeComponent(self.workplaceGrid).done(() => $('#workplace-list').focus());
 
-                // Selected Item subscribe
-                self.selectedWorkplaceId.subscribe(function(data: string) {
-                    blockUI.invisible();
-                    if (data) {
-                        // Find WorkplaceBasicWork by WorkplaceId
-                        service.findWorkplaceBasicWork(data).done(function(workplaceBasicWork: WorkplaceBasicWorkFindDto) {
-                            self.bindWorkplaceBasicWork(workplaceBasicWork);
-                        });
-                        // Set Workplace Name.
-                        let tree = $('#workplace-list').getDataList();
-                        self.setWorkplaceName(tree, self.selectedWorkplaceId());
-                    } else {
-                        self.workplaceBWWorkingDay(new BasicWorkModel(null, null, null, null));
-                        self.workplaceBWNonInLaw(new BasicWorkModel(null, null, null, null));
-                        self.workplaceBWNonExtra(new BasicWorkModel(null, null, null, null));
-                    }
-                    blockUI.clear();
+                    // Selected Item subscribe
+                    self.selectedWorkplaceId.subscribe(function(data: string) {
+                        blockUI.invisible();
+                        if (data) {
+                            // Find WorkplaceBasicWork by WorkplaceId
+                            service.findWorkplaceBasicWork(data).done(function(workplaceBasicWork: WorkplaceBasicWorkFindDto) {
+                                self.bindWorkplaceBasicWork(workplaceBasicWork);
+                            });
+                            // Set Workplace Name.
+                            let tree = $('#workplace-list').getDataList();
+                            self.setWorkplaceName(tree, self.selectedWorkplaceId());
+                        } else {
+                            self.workplaceBWWorkingDay(new BasicWorkModel(null, null, null, null));
+                            self.workplaceBWNonInLaw(new BasicWorkModel(null, null, null, null));
+                            self.workplaceBWNonExtra(new BasicWorkModel(null, null, null, null));
+                        }
+                        blockUI.clear();
+                    });
                 });
-                // Reload Workplace List
-                $('#workplace-list').ntsTreeComponent(self.workplaceGrid).done(() => $('#workplace-list').focus());
+                
                 blockUI.clear();
             }
 
@@ -607,33 +609,35 @@ module nts.uk.at.view.ksm006.a {
                         areadySettingList.push({ "code": data[i], "isAlreadySetting": true });
                     }
                     self.classifiAlreadySetList(areadySettingList);
-                })
-                // Reload Classification List
-                $('#classification-list').ntsListComponent(self.classificationGrid).done(() => $('#classification-list').focus());
-
-                // SelectedClassification Subscribe
-                self.selectedClassifi.subscribe(function(data: string) {
-                    blockUI.invisible();
-                    if (data) {
-                        // Find ClassificationBasicWork
-                        service.findClassifyBasicWork(data).done(function(classifyBasicWork: ClassifiBasicWorkFindDto) {
-                            self.bindClassifyBasicWork(classifyBasicWork);
-                        });
-
-                        // Set Classification Name
-                        var classifyDataList = $('#classification-list').getDataList();
-                        var classify = classifyDataList.filter((item) => {
-                            return item.code == self.selectedClassifi();
-                        })[0];
-                        self.classificationName(classify.name);
-                    } else {
-                        // If data is null
-                        self.classifyBWWorkingDay(new BasicWorkModel(null, null, null, null));
-                        self.classifyBWNonInLaw(new BasicWorkModel(null, null, null, null));
-                        self.classifyBWNonExtra(new BasicWorkModel(null, null, null, null));
-                    }
-                    blockUI.clear();
+                }).then(function() {
+                   // Reload Classification List
+                    $('#classification-list').ntsListComponent(self.classificationGrid).done(() => $('#classification-list').focus());
+    
+                    // SelectedClassification Subscribe
+                    self.selectedClassifi.subscribe(function(data: string) {
+                        blockUI.invisible();
+                        if (data) {
+                            // Find ClassificationBasicWork
+                            service.findClassifyBasicWork(data).done(function(classifyBasicWork: ClassifiBasicWorkFindDto) {
+                                self.bindClassifyBasicWork(classifyBasicWork);
+                            });
+    
+                            // Set Classification Name
+                            var classifyDataList = $('#classification-list').getDataList();
+                            var classify = classifyDataList.filter((item) => {
+                                return item.code == self.selectedClassifi();
+                            })[0];
+                            self.classificationName(classify.name);
+                        } else {
+                            // If data is null
+                            self.classifyBWWorkingDay(new BasicWorkModel(null, null, null, null));
+                            self.classifyBWNonInLaw(new BasicWorkModel(null, null, null, null));
+                            self.classifyBWNonExtra(new BasicWorkModel(null, null, null, null));
+                        }
+                        blockUI.clear();
+                    });
                 });
+                
                 blockUI.clear();
             }
 

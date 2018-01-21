@@ -40,7 +40,7 @@ public class KfnmtAlarmPerSet extends UkJpaEntity implements Serializable{
 	})
 	public KfnmtAlarmPatternSet alarmPatternSet;
 	
-	@OneToMany(mappedBy="alarmPerSet", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="alarmPerSet", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_ALARM_PER_SET_ITEM")
 	public List<KfnmtAlarmPerSetItem> alarmPerSetItems;
 	
@@ -72,7 +72,11 @@ public class KfnmtAlarmPerSet extends UkJpaEntity implements Serializable{
 	}
 
 	public void fromEntity(KfnmtAlarmPerSet  newEntity) {
-		this.alarmPerSetItems.removeIf(c->!newEntity.alarmPerSetItems.contains(c));	
+		this.alarmPerSetItems = newEntity.alarmPerSetItems;
+//		this.alarmPerSetItems.removeIf(c->!newEntity.alarmPerSetItems.contains(c));	
+//		newEntity.alarmPerSetItems.forEach( item ->{
+//			if(!this.alarmPerSetItems.contains(item)) this.alarmPerSetItems.add(item);		
+//		});
 		this.authSetting = newEntity.authSetting;
 	}
 }

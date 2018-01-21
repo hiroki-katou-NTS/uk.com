@@ -24,7 +24,7 @@
 }
 /*Set margin button */
 .location-button-009 {
-	margin: 0px 0px 0px -150px;
+	margin: 0px 0px 0px -130px;
 }
 
 .link-label {
@@ -129,4 +129,7 @@ div.form-label.broken {
 }
 .mode-style{
 	display: inline-block;
+}
+.inputTime-kaf009 {
+	width: 85px !important;	
 }

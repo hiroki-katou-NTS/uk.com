@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.ComparableRange;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * Calculate time from start to end. 計算時間帯

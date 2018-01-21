@@ -13,13 +13,13 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.commonsetting.BreakSetOfCommon;
-import nts.uk.ctx.at.shared.dom.worktime.commonsetting.CalcMethodIfLeaveWorkDuringBreakTime;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FlowRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 
@@ -73,14 +73,14 @@ public class DeductionTimeSheet {
 	 * @return 控除時間帯
 	 */
 	public static DeductionTimeSheet createDedctionTimeSheet(AcquisitionConditionsAtr acqAtr,WorkTimeMethodSet setMethod,RestClockManageAtr clockManage,
-			OutingTimeOfDailyPerformance dailyGoOutSheet,TimeSpanForCalc oneDayRange,BreakSetOfCommon CommonSet, TimeLeavingOfDailyPerformance attendanceLeaveWork
-								,FixRestCalcMethod fixedCalc,WorkTimeDivision workTimeDivision,FluidPrefixBreakTimeSet noStampSet, FlowRestCalcMethod fluidSet, BreakTimeManagement breakmanage
-								, WorkTimeMethodSet workTimeMethodSet,Optional<FluRestTime> fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet){
+			OutingTimeOfDailyPerformance dailyGoOutSheet,TimeSpanForCalc oneDayRange,CommonRestSetting CommonSet, TimeLeavingOfDailyPerformance attendanceLeaveWork
+								,FixedRestCalculateMethod fixedCalc,WorkTimeDivision workTimeDivision,FlowFixedRestSet noStampSet, FlowRestCalcMethod fluidSet, BreakTimeManagement breakmanage
+								, WorkTimeMethodSet workTimeMethodSet,Optional<FlowWorkRestTimezone> fluRestTime){
 		
 		/*控除時間帯取得　控除時間帯リストへコピー*/
 		List<TimeSheetOfDeductionItem> useDedTimeSheet = collectDeductionTimes(dailyGoOutSheet,oneDayRange,CommonSet
 				,attendanceLeaveWork,fixedCalc,workTimeDivision,noStampSet,fluidSet,acqAtr,breakmanage
-				,workTimeMethodSet,fluRestTime,fluidprefixBreakTimeSet);
+				,workTimeMethodSet,fluRestTime);
 		
 		/*重複部分補正処理*/
 		useDedTimeSheet = new DeductionTimeSheetAdjustDuplicationTime(useDedTimeSheet).reCreate(setMethod, clockManage,workTimeDivision.getWorkTimeDailyAtr());
@@ -115,15 +115,15 @@ public class DeductionTimeSheet {
 	 * @param acqAtr 
 	 * @return 
 	 */
-	public static List<TimeSheetOfDeductionItem> collectDeductionTimes(OutingTimeOfDailyPerformance dailyGoOutSheet,TimeSpanForCalc oneDayRange,BreakSetOfCommon CommonSet
-										, TimeLeavingOfDailyPerformance attendanceLeaveWork,FixRestCalcMethod fixedCalc,WorkTimeDivision workTimeDivision,FluidPrefixBreakTimeSet noStampSet
+	public static List<TimeSheetOfDeductionItem> collectDeductionTimes(OutingTimeOfDailyPerformance dailyGoOutSheet,TimeSpanForCalc oneDayRange,CommonRestSetting CommonSet
+										, TimeLeavingOfDailyPerformance attendanceLeaveWork,FixedRestCalculateMethod fixedCalc,WorkTimeDivision workTimeDivision,FlowFixedRestSet noStampSet
 										, FlowRestCalcMethod fluidSet, AcquisitionConditionsAtr acqAtr , BreakTimeManagement breakManagement
-										, WorkTimeMethodSet workTimeMethodSet,Optional<FluRestTime> fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet) {
+										, WorkTimeMethodSet workTimeMethodSet,Optional<FlowWorkRestTimezone> fluRestTime) {
 		List<TimeSheetOfDeductionItem> sheetList = new ArrayList<TimeSheetOfDeductionItem>(); 
 		/*休憩時間帯取得*/
 		sheetList.addAll(breakManagement.getBreakTimeSheet(workTimeDivision, fixedCalc, noStampSet, fluidSet));
 		/*外出時間帯取得*/
-		sheetList.addAll(dailyGoOutSheet.removeUnuseItemBaseOnAtr(acqAtr,workTimeMethodSet,fluRestTime,fluidprefixBreakTimeSet));
+		sheetList.addAll(dailyGoOutSheet.removeUnuseItemBaseOnAtr(acqAtr,workTimeMethodSet,fluRestTime,noStampSet));
 		
 //								.forEach(tc ->{
 //									sheetList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(withRounding,
@@ -144,7 +144,7 @@ public class DeductionTimeSheet {
 		/*ソート処理*/
 		sheetList.stream().sorted((first,second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart()));
 		/*計算範囲による絞り込み*/
-		List<TimeSheetOfDeductionItem> reNewSheetList = refineCalcRange(sheetList,oneDayRange,CommonSet.getLeaveWorkDuringBreakTime()
+		List<TimeSheetOfDeductionItem> reNewSheetList = refineCalcRange(sheetList,oneDayRange,CommonSet.getCalculateMethod()
 				, attendanceLeaveWork);
 		return reNewSheetList;
 		
@@ -157,7 +157,7 @@ public class DeductionTimeSheet {
 	 * @param oneDayRange　1日の範囲
 	 * @return 控除項目の時間帯リスト
 	 */
-	public static List<TimeSheetOfDeductionItem> refineCalcRange(List<TimeSheetOfDeductionItem> dedTimeSheets,TimeSpanForCalc oneDayRange,CalcMethodIfLeaveWorkDuringBreakTime calcMethod
+	public static List<TimeSheetOfDeductionItem> refineCalcRange(List<TimeSheetOfDeductionItem> dedTimeSheets,TimeSpanForCalc oneDayRange,RestTimeOfficeWorkCalcMethod calcMethod
 												,TimeLeavingOfDailyPerformance attendanceLeaveWork) {
 		List<TimeSheetOfDeductionItem> sheetList = new ArrayList<TimeSheetOfDeductionItem>(); 
 		for(TimeSheetOfDeductionItem timeSheet: dedTimeSheets){
