@@ -78,7 +78,7 @@ public class JpaAffClassHistItem extends JpaRepository implements AffClassHistIt
 		if (!entityOpt.isPresent()) {
 			throw new RuntimeException("invalid TempAbsenceHisItem");
 		}
-		this.commandProxy().update(entityOpt.get());
+		this.commandProxy().remove(BsymtAffClassHistItem_Ver1.class, historyId);
 	}
 	
 	@Override
