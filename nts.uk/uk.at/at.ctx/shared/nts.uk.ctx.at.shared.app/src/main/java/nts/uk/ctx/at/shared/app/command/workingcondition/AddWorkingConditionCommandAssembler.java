@@ -284,7 +284,7 @@ public class AddWorkingConditionCommandAssembler {
 	}
 	
 	private Optional<SingleDaySchedule> getOptionalSingleDay(SingleDaySchedule value){
-		if (value.getWorkTypeCode() != null){
+		if (value.getWorkTypeCode() != null && !value.getWorkTypeCode().equals("")){
 			return Optional.of(value);
 		}
 		
