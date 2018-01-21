@@ -334,13 +334,13 @@
 					permisions: {
 						add: ko.observable(),
 						replication: ko.observable(),
-						delete: ko.observable()
+						remove: ko.observable()
 					}
 				}">
 				<div class="form-group search-box">
 					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.add()" tabindex="10">#{i18n.getText('CPS001_32')}</button>
 					<button type="button" class="btn-repli" data-bind="click: $data.event.replication || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.replace() &amp;&amp; $data.list.value()" tabindex="11">#{i18n.getText('CPS001_33')}</button>
-					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.remove() &amp;&amp; _.indexOf(_.map(ko.toJS($data.list.dataSource), function(x) { return x.optionValue; }), $data.list.value()) == 0 , " tabindex="12">#{i18n.getText('CPS001_34')}</button>
+					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.remove() &amp;&amp; $data.list.dataSource().length > -1" tabindex="12">#{i18n.getText('CPS001_34')}</button>
 				</div>
 				<div data-bind="template: {
 						name: 'list-data',
