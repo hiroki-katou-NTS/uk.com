@@ -121,7 +121,7 @@ public class BasicSchedule extends AggregateRoot {
 		return new BasicSchedule(sId, date, workTypeCode, workTimeCode,
 				EnumAdaptor.valueOf(confirmedAtr, ConfirmedAtr.class));
 	}
-
+	
 	/**
 	 * Save to memento.
 	 *
@@ -213,6 +213,10 @@ public class BasicSchedule extends AggregateRoot {
 		} else if (!workTypeCode.equals(other.workTypeCode))
 			return false;
 		return true;
+	}
+
+	public void setWorkScheduleTimeZones(List<WorkScheduleTimeZone> workScheduleTimeZones) {
+		this.workScheduleTimeZones = workScheduleTimeZones;
 	}
 
 }

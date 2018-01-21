@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTTimezoneSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
 
 /**
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
  */
 @Getter
 @Setter
-public class FlOTTimezoneDto implements FlOTTimezoneSetMemento {
+public class FlOTTimezoneDto implements FlowOTTimezoneSetMemento {
 
 	/** The worktime no. */
 	private Integer worktimeNo;

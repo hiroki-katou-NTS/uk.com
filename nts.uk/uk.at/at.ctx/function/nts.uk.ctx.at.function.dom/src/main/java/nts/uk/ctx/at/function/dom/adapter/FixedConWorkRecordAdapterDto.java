@@ -2,11 +2,13 @@ package nts.uk.ctx.at.function.dom.adapter;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
 public class FixedConWorkRecordAdapterDto {
 	/** 日次のアラームチェック条件ID */
+	@Setter
 	private String errorAlarmID;
 	/** No */
 	private int fixConWorkRecordNo;

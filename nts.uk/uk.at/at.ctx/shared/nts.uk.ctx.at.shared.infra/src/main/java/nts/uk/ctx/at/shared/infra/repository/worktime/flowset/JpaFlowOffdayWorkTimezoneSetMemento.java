@@ -25,17 +25,18 @@ public class JpaFlowOffdayWorkTimezoneSetMemento implements FlOffdayWtzSetMement
 
 	/** The entity. */
 	private KshmtFlowWorkSet entity;
-	
+
 	/** The company id. */
 	private String companyId;
-	
+
 	/** The work time cd. */
 	private String workTimeCd;
-	
+
 	/**
 	 * Instantiates a new jpa flow offday work timezone set memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaFlowOffdayWorkTimezoneSetMemento(KshmtFlowWorkSet entity) {
 		super();
@@ -46,57 +47,61 @@ public class JpaFlowOffdayWorkTimezoneSetMemento implements FlOffdayWtzSetMement
 		this.companyId = this.entity.getKshmtFlowWorkSetPK().getCid();
 		this.workTimeCd = this.entity.getKshmtFlowWorkSetPK().getWorktimeCd();
 	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtzSetMemento#setRestTimeZone(nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtzSetMemento#
+	 * setRestTimeZone(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * FlowWorkRestTimezone)
 	 */
 	@Override
 	public void setRestTimeZone(FlowWorkRestTimezone tzone) {
-		//TODOtzone.saveToMemento(new JpaFlowWorkRestTimezoneSetMemento(this.entity.getFlowOffDayWorkRtSet()));
+		tzone.saveToMemento(new JpaFlowWorkRestTimezoneSetMemento(this.entity.getFlowOffDayWorkRtSet()));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtzSetMemento#setLstWorkTimezone(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtzSetMemento#
+	 * setLstWorkTimezone(java.util.List)
 	 */
 	@Override
 	public void setLstWorkTimezone(List<FlowWorkHolidayTimeZone> listHdtz) {
 		if (CollectionUtil.isEmpty(listHdtz)) {
 			this.entity.setLstKshmtFworkHolidayTime(new ArrayList<>());
 			return;
-		}		
-		
+		}
+
 		List<KshmtFworkHolidayTime> lstEntity = this.entity.getLstKshmtFworkHolidayTime();
-        if (CollectionUtil.isEmpty(lstEntity)) {
-            lstEntity = new ArrayList<>();
-        }
+		if (CollectionUtil.isEmpty(lstEntity)) {
+			lstEntity = new ArrayList<>();
+		}
 
 		// convert map entity
-        Map<KshmtFworkHolidayTimePK, KshmtFworkHolidayTime> mapEntity = lstEntity.stream()
-                .collect(Collectors.toMap(KshmtFworkHolidayTime::getKshmtFworkHolidayTimePK, Function.identity()));
-        
-        // set list entity
-        this.entity.setLstKshmtFworkHolidayTime(listHdtz.stream()
-        		.map(domain -> {           
-		            // newPk
-        			KshmtFworkHolidayTimePK pk = new KshmtFworkHolidayTimePK();
-		            pk.setCid(companyId);
-		            pk.setWorktimeCd(workTimeCd);
-		            pk.setWorktimeNo(domain.getWorktimeNo());
-		            
-		            // find entity if existed, else new entity
-		            KshmtFworkHolidayTime entity = mapEntity.get(pk);
-		            if (entity == null) {
-		                entity = new KshmtFworkHolidayTime();
-		                entity.setKshmtFworkHolidayTimePK(pk);
-		            }
-		            
-		            // save to memento
-		            //TODO
-		            //domain.saveToMemento(new JpaFlowWorkHolidayTimeZoneSetMemento(entity));
-		            
-		            return entity;
-		        })
-        		.collect(Collectors.toList()));		
+		Map<KshmtFworkHolidayTimePK, KshmtFworkHolidayTime> mapEntity = lstEntity.stream()
+				.collect(Collectors.toMap(KshmtFworkHolidayTime::getKshmtFworkHolidayTimePK, Function.identity()));
+
+		// set list entity
+		this.entity.setLstKshmtFworkHolidayTime(listHdtz.stream().map(domain -> {
+			// newPk
+			KshmtFworkHolidayTimePK pk = new KshmtFworkHolidayTimePK();
+			pk.setCid(companyId);
+			pk.setWorktimeCd(workTimeCd);
+			pk.setWorktimeNo(domain.getWorktimeNo());
+
+			// find entity if existed, else new entity
+			KshmtFworkHolidayTime entity = mapEntity.get(pk);
+			if (entity == null) {
+				entity = new KshmtFworkHolidayTime();
+				entity.setKshmtFworkHolidayTimePK(pk);
+			}
+
+			// save to memento
+			domain.saveToMemento(new JpaFlowWorkHolidayTimeZoneSetMemento(entity));
+
+			return entity;
+		}).collect(Collectors.toList()));
 	}
 
 }

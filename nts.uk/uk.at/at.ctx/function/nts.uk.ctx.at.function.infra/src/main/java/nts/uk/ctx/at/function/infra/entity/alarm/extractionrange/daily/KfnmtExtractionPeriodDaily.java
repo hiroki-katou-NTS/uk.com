@@ -77,7 +77,7 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 	@Column(name = "END_MONTH", nullable = true)
 	public Integer endMonth;
 
-	@OneToOne(mappedBy = "extractionPeriodDaily")
+	@OneToOne(mappedBy = "extractionPeriodDaily", orphanRemoval = true)
 	public KfnmtCheckCondition checkCondition;
 
 	public ExtractionPeriodDaily toDomain() {

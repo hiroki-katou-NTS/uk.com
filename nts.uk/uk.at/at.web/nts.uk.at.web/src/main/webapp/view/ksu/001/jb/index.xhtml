@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1000, height: 680 };</script>
+			<script>var dialogSize = { width: 1000, height: 670 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
 			</com:ValidatorScript>
@@ -32,6 +32,7 @@
 						data-bind="ntsComboBox: {
 								options: listWorkType,
 								optionsValue: 'workTypeCode',
+								visibleItemsCount: 15,
 								value: selectedWorkTypeCode,
 								editable:  false,
 								enable: true,
@@ -61,6 +62,7 @@
 							data-bind="ntsComboBox: {
 										options: listWorkTimeComboBox,
 										optionsValue: 'codeName',
+										visibleItemsCount: 14,
 										value: selectedWorkTimeCode,
 										optionsText: 'labelDisplay', 
 										editable:  false,

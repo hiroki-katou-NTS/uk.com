@@ -6,13 +6,13 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlTimeGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtOtTimeZone;
 
 /**
  * The Class JpaFlowOTTimeSettingGetMemento.
  */
-public class JpaFlowOTTimeSettingGetMemento implements FlTimeGetMemento {
+public class JpaFlowOTTimeSettingGetMemento implements FlowTimeGetMemento {
 
 	/** The entity. */
 	private KshmtOtTimeZone entity; 

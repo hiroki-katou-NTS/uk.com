@@ -9,11 +9,15 @@ import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 
+/**
+ * The Class PublicHoliday.
+ */
+// 公休起算日
 @Getter
 @Setter
-// 公休起算日
-public class PublicHoliday extends DomainObject{
-	
+public class PublicHoliday extends DomainObject
+				implements PublicHolidayManagementStartDate
+{
 	/** The date. */
 	// 年月日
 	private GeneralDate date;
@@ -26,7 +30,16 @@ public class PublicHoliday extends DomainObject{
 	// 起算日指定方法
 	private DayOfPublicHoliday determineStartDate;
 	
-	public PublicHoliday() {
-		super();
+	/**
+	 * Instantiates a new public holiday.
+	 *
+	 * @param date the date
+	 * @param dayMonth the day month
+	 * @param determineStartDate the determine start date
+	 */
+	public PublicHoliday(GeneralDate date, int dayMonth, DayOfPublicHoliday determineStartDate) {
+		this.date = date;
+		this.dayMonth = dayMonth;
+		this.determineStartDate = determineStartDate;
 	}
 }

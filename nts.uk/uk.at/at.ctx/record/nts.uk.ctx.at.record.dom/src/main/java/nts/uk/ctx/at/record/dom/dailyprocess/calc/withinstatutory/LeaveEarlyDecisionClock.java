@@ -8,7 +8,7 @@ import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -24,7 +24,7 @@ public class LeaveEarlyDecisionClock {
 	
 	
 	public static LeaveEarlyDecisionClock create(
-			int workNo, WorkTimeSet predetermineTimeSet,
+			int workNo, PredetemineTimeSetting predetermineTimeSet,
 			DeductionTimeSheet deductionTimeSheet,
 			GraceTimeSetting leaveEarlyGraceTime) {
 		
@@ -56,7 +56,7 @@ public class LeaveEarlyDecisionClock {
 	 * @return
 	 */
 	public static List<LeaveEarlyDecisionClock> createListOfAllWorks(
-			WorkTimeSet predetermineTimeSet,
+			PredetemineTimeSetting predetermineTimeSet,
 			DeductionTimeSheet deductionTimeSheet,
 			GraceTimeSetting leaveEarlyGraceTime) {
 

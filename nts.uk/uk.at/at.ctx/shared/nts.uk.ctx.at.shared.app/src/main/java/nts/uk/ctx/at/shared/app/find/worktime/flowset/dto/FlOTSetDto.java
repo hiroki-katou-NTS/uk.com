@@ -7,14 +7,14 @@ package nts.uk.ctx.at.shared.app.find.worktime.flowset.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSetMemento;
 
 /**
  * The Class FlowOTSetDto.
  */
 @Getter
 @Setter
-public class FlOTSetDto implements FlOTSetMemento {
+public class FlOTSetDto implements FlowOTSetMemento {
 
 	/** The fixed change atr. */
 	private Integer fixedChangeAtr;

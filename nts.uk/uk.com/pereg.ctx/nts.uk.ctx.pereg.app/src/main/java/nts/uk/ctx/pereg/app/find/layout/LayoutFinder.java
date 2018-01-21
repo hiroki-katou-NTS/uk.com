@@ -148,7 +148,7 @@ public class LayoutFinder {
 		String browsingPeronId = employee.getPersonId();
 		
 		// validate standard date
-		standardDate = validateStandardDate(cid, browsingEmpId, standardDate, result);
+		//standardDate = validateStandardDate(cid, browsingEmpId, standardDate, result);
 
 		// check authority & get data
 		boolean selfBrowsing = browsingEmpId.equals(AppContexts.user().employeeId());
