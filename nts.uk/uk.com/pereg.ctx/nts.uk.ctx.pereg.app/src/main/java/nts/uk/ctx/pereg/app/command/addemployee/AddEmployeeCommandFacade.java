@@ -169,7 +169,7 @@ public class AddEmployeeCommandFacade {
 			if (itemVal != null) {
 				x.setSaveData(new SaveDataDto(x.getSaveData().getSaveDataType(),
 						itemVal.value() != null ? itemVal.value().toString() : ""));
-
+				x.setDataType(getSaveDataType(x.getDataType(), x));
 				inputs.remove(itemVal);
 			} else {
 
@@ -193,6 +193,31 @@ public class AddEmployeeCommandFacade {
 
 		return dataList;
 
+	}
+
+	private DataTypeValue getSaveDataType(DataTypeValue dataType, SettingItemDto item) {
+
+		if (dataType.equals(DataTypeValue.SELECTION)) {
+			switch (item.getSelectionItemRefType()) {
+			case ENUM:
+				return DataTypeValue.NUMERIC;
+			case CODE_NAME:
+				return DataTypeValue.STRING;
+			case DESIGNATED_MASTER:
+
+				if (item.getSaveData().getValue().toString().chars().allMatch(Character::isDigit)) {
+					return DataTypeValue.NUMERIC;
+				} else {
+					return DataTypeValue.STRING;
+				}
+			default:
+				return dataType;
+			}
+		} else {
+
+			return dataType;
+
+		}
 	}
 
 	private ItemValue getItemById(List<ItemsByCategory> inputs, String itemCode, String ctgCode) {

@@ -105,16 +105,20 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  							? null : attendanceStamp.getActualStamp().getAfterRoundingTime().valueAsMinutes();
  	 				krcdtTimeLeavingWork.attendanceActualTime = attendanceStamp.getActualStamp().getTimeWithDay() == null 
  	 						? null : attendanceStamp.getActualStamp().getTimeWithDay().valueAsMinutes();
- 	 				krcdtTimeLeavingWork.attendanceActualPlaceCode = attendanceStamp.getActualStamp().getLocationCode().v();
- 	 				krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceStamp.getActualStamp().getStampSourceInfo().value;
+ 	 				krcdtTimeLeavingWork.attendanceActualPlaceCode = attendanceStamp.getActualStamp().getLocationCode() == null ? null 
+ 	 						: attendanceStamp.getActualStamp().getLocationCode().v();
+ 	 				krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceStamp.getActualStamp().getStampSourceInfo() == null ? 0 
+ 	 						: attendanceStamp.getActualStamp().getStampSourceInfo().value;
  				}
  				if(attendanceStamp.getStamp().isPresent()){
  					krcdtTimeLeavingWork.attendanceStampRoudingTime = attendanceStamp.getStamp().get().getAfterRoundingTime() == null 
  							? null : attendanceStamp.getStamp().get().getAfterRoundingTime().valueAsMinutes();
  	 				krcdtTimeLeavingWork.attendanceStampTime= attendanceStamp.getStamp().get().getTimeWithDay() == null 
  	 						? null : attendanceStamp.getStamp().get().getTimeWithDay().valueAsMinutes();
- 	 				krcdtTimeLeavingWork.attendanceStampPlaceCode = attendanceStamp.getStamp().get().getLocationCode().v();
- 	 				krcdtTimeLeavingWork.attendanceStampSourceInfo = attendanceStamp.getStamp().get().getStampSourceInfo().value;
+ 	 				krcdtTimeLeavingWork.attendanceStampPlaceCode = attendanceStamp.getStamp().get().getLocationCode() == null ? null 
+ 	 						: attendanceStamp.getStamp().get().getLocationCode().v();
+ 	 				krcdtTimeLeavingWork.attendanceStampSourceInfo = attendanceStamp.getStamp().get().getStampSourceInfo() == null ? 0 
+ 	 						: attendanceStamp.getStamp().get().getStampSourceInfo().value;
  				}
  				krcdtTimeLeavingWork.attendanceNumberStamp = attendanceStamp.getNumberOfReflectionStamp();
  			}
@@ -125,16 +129,20 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  							? null : leaveStamp.getActualStamp().getAfterRoundingTime().valueAsMinutes();
  	 				krcdtTimeLeavingWork.leaveWorkActualTime = leaveStamp.getActualStamp().getTimeWithDay() == null 
  	 						? null : leaveStamp.getActualStamp().getTimeWithDay().valueAsMinutes();
- 	 				krcdtTimeLeavingWork.leaveWorkActualPlaceCode = leaveStamp.getActualStamp().getLocationCode().v();
- 	 				krcdtTimeLeavingWork.leaveActualSourceInfo = leaveStamp.getActualStamp().getStampSourceInfo().value;
+ 	 				krcdtTimeLeavingWork.leaveWorkActualPlaceCode = leaveStamp.getActualStamp().getLocationCode() == null ? null 
+ 	 						: leaveStamp.getActualStamp().getLocationCode().v();
+ 	 				krcdtTimeLeavingWork.leaveActualSourceInfo = leaveStamp.getActualStamp().getStampSourceInfo() == null ? 0 
+ 	 						: leaveStamp.getActualStamp().getStampSourceInfo().value;
  				}
  				if(leaveStamp.getStamp().isPresent()){
  					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = leaveStamp.getStamp().get().getAfterRoundingTime() == null 
  							? null : leaveStamp.getStamp().get().getAfterRoundingTime().valueAsMinutes();
  	 				krcdtTimeLeavingWork.leaveWorkStampTime= leaveStamp.getStamp().get().getTimeWithDay() == null 
  	 						? null : leaveStamp.getStamp().get().getTimeWithDay().valueAsMinutes();
- 	 				krcdtTimeLeavingWork.leaveWorkStampPlaceCode = leaveStamp.getStamp().get().getLocationCode().v();
- 	 				krcdtTimeLeavingWork.leaveWorkStampSourceInfo = leaveStamp.getStamp().get().getStampSourceInfo().value;
+ 	 				krcdtTimeLeavingWork.leaveWorkStampPlaceCode = leaveStamp.getStamp().get().getLocationCode() == null ? null 
+ 	 						: leaveStamp.getStamp().get().getLocationCode().v();
+ 	 				krcdtTimeLeavingWork.leaveWorkStampSourceInfo = leaveStamp.getStamp().get().getStampSourceInfo() == null ? 0 
+ 	 						: leaveStamp.getStamp().get().getStampSourceInfo().value;
  				}
  				krcdtTimeLeavingWork.leaveWorkNumberStamp = leaveStamp.getNumberOfReflectionStamp();
  			}

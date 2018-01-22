@@ -75,7 +75,7 @@ module nts.uk.at.view.kdw002.c {
                 });
                 self.txtSearch = ko.observable("");
             }
-
+            /*
             copy(): void {
                 var self = this;
                 var bussinessCodeItems = self.bussinessCodeItems();
@@ -87,6 +87,7 @@ module nts.uk.at.view.kdw002.c {
                 }
                 nts.uk.ui.windows.setShared("KDW002_B_AUTHORITYTYPE", data);
             }
+            */
 
 
             startPage(): JQueryPromise<any> {

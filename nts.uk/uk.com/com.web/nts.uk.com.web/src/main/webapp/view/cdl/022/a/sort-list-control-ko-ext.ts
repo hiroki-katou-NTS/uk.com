@@ -15,7 +15,7 @@ module nts.custombinding {
 
             .sortable-container .sortable-area {
                 cursor: pointer;
-                overflow-x: none;
+                overflow-x: hidden;
                 overflow-y: scroll;
                 position: relative;
             }
@@ -65,14 +65,7 @@ module nts.custombinding {
             $body
                 .sortable({
                     axis: "y",
-                    scroll: false,
-                    sort: function(evt) {
-                        let uisortable = $body
-                            .find('.ui-sortable-helper'),
-                            top = uisortable.offset().top;
-
-                        $body.scrollTop(top - $body.offset().top);
-                    },
+                    items: ".sort-row-item",
                     update: function(event, ui) {
                         let _options = [],
                             rows = $(event.target).find('li.sort-row-item');
@@ -83,7 +76,7 @@ module nts.custombinding {
 
                         data.options(_.filter(_options, x => !!x));
                     }
-                });
+                }).disableSelection();
         }
         update = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
             let $element = $(element),
@@ -98,7 +91,9 @@ module nts.custombinding {
                 let $div = $('<li>', {
                     text: row[text],
                     'class': 'sort-row-item'
-                }).data('item', row);
+                })
+                    .data('item', row)
+                    .disableSelection();
 
                 $body.append($div);
             });
