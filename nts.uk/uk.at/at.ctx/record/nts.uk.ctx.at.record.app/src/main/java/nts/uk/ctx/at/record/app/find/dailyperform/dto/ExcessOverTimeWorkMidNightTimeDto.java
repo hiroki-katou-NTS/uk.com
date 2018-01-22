@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 法定外残業深夜時間 */

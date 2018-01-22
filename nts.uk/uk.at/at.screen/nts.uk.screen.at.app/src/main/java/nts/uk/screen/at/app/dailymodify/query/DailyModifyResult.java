@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ItemValue;
 
 @Data
 public class DailyModifyResult {

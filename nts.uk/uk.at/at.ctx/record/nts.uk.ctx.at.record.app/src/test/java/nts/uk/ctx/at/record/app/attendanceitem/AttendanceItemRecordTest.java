@@ -8,9 +8,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 
 public class AttendanceItemRecordTest {
 

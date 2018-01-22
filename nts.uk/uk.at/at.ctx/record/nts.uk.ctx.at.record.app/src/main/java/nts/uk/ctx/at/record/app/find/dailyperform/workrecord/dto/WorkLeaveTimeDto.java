@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 
 @Data
 /** 出退勤時刻 */

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.attendanceitem.util;
+package nts.uk.ctx.at.shared.app.util.attendanceitem;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -18,11 +18,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.gul.reflection.ReflectionUtil;
 import nts.gul.reflection.ReflectionUtil.Condition;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ItemValue;
 
 public class AttendanceItemUtil {
 
@@ -80,9 +80,10 @@ public class AttendanceItemUtil {
 												item -> item.value(value).valueType(valueAnno.type())
 													.layout(currentLayout + getTextWithCondition(item.path())).completed());
 					} else {
-						Map<String, List<ItemValue>> subGroups = mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false));
+//						Map<String, List<ItemValue>> subGroups = mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false));
 						return getItemValues(fieldValue(className, value), layoutIdx + 1, currentLayout, 
-												pathName, getExCondition(extraCondition, attendanceItems, layout), index, subGroups);
+												pathName, getExCondition(extraCondition, attendanceItems, layout), index, 
+												mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
 					}
 				}
 			}

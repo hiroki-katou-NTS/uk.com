@@ -16,9 +16,9 @@ import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.latetime.IntervalExemptionTime;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 

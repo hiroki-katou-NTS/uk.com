@@ -10,8 +10,8 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTi
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の作業別勤怠時間")

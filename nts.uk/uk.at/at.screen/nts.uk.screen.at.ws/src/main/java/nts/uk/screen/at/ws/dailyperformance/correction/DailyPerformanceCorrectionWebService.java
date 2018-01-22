@@ -20,8 +20,8 @@ import javax.ws.rs.Produces;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;

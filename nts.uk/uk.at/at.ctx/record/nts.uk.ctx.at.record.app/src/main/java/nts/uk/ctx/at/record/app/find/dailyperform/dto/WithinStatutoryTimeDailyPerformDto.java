@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の所定内時間 */

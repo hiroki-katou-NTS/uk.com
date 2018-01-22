@@ -12,7 +12,7 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.shr.com.context.AppContexts;

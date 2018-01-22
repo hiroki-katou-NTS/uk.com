@@ -1,13 +1,15 @@
-package nts.uk.ctx.at.shared.dom.attendanceitem.util.item;
+package nts.uk.ctx.at.shared.app.util.attendanceitem.item;
 
 import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
+@Getter
 public class ItemValue {
 
 	private String value;
@@ -93,6 +95,5 @@ public class ItemValue {
 	public static ItemValue builder(){
 		return new ItemValue();
 	}
-	
 	
 }

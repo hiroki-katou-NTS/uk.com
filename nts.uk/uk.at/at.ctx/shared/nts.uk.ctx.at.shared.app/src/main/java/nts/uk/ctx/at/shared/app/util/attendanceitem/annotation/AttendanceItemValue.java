@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation;
+package nts.uk.ctx.at.shared.app.util.attendanceitem.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 
 /** 加給時間 */
 @Data

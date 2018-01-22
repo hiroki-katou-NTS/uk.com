@@ -26,8 +26,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
@@ -605,7 +605,7 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		Set<ItemValue> set = screenDto.getItemValues().stream()
 	            .collect(Collectors.toCollection(() -> 
-	                 new TreeSet<>(Comparator.comparing(ItemValue::itemId))));
+	                 new TreeSet<>(Comparator.comparing(ItemValue::getItemId))));
 		screenDto.getItemValues().clear();
 		screenDto.getItemValues().addAll(set);
 		// screenDto.setLstData(lstData);

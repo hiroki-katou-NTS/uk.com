@@ -7,8 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendanceitem.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
 
 @AttendanceItemRoot(rootName = "社員の日別実績エラー一覧")
 @Data
