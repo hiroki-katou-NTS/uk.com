@@ -156,11 +156,11 @@ button.nts-switch-button {
 }
 
 .nts-wizard.vertical>.steps {
-	height: 800px;
+	height: 739px;
 }
 
 .nts-wizard.vertical>.content {
-	height: 800px;
+	height: 739px;
 	margin: 0 0 0 0;
 	background: none;
 }
