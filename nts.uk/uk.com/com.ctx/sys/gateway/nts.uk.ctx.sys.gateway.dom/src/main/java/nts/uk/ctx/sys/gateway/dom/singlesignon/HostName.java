@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * The Class HostName.
  */
-@StringMaxLength(16)
+@StringMaxLength(256)
 public class HostName extends StringPrimitiveValue<HostName> {
 
 	/** The Constant serialVersionUID. */

@@ -33,18 +33,18 @@ public class SaveOtherSysAccountCommandHandler extends CommandHandler<SaveOtherS
 		
 		// Get command
 		SaveOtherSysAccountCommand command = context.getCommand();
-
 		Optional<OtherSysAccount> opOtherSysAcc = otherSysAccountRepository.findByUserId(command.getUserId());
 
 		if (opOtherSysAcc.isPresent()) {
 			this.validate(command);				
 			// remove
-			this.otherSysAccountRepository.remove(opOtherSysAcc.get().getUserId());
-		}
+			this.otherSysAccountRepository.update(new OtherSysAccount(command) , opOtherSysAcc.get());
+		}else{
 
 		// save domain
-		OtherSysAccount otherSysAccount = new OtherSysAccount(command);
-		this.otherSysAccountRepository.add(otherSysAccount);
+		//OtherSysAccount otherSysAccount = new OtherSysAccount(command);
+		this.otherSysAccountRepository.add(new OtherSysAccount(command));
+		}
 	}
 			
 	/**

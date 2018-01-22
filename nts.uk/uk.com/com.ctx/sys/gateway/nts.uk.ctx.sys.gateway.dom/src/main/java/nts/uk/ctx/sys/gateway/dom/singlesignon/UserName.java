@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * The Class UserName.
  */
-@StringMaxLength(16)
+@StringMaxLength(256)
 public class UserName extends StringPrimitiveValue<UserName> {
 
 	/** The Constant serialVersionUID. */

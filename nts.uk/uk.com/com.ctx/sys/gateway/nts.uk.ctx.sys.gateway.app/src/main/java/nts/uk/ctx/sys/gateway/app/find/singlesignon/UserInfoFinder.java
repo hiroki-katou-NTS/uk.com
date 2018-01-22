@@ -156,9 +156,9 @@ public class UserInfoFinder {
 		if(isScreenC == true){		
 			listUserMap.forEach(w -> {			
 				Optional<OtherSysAccount> opOtherSysAcc = otherSysAccountRepository.findByUserId(w.getUserId());				
-				if(opOtherSysAcc.isPresent()){
+				if(opOtherSysAcc.isPresent() && opOtherSysAcc.get().getUseAtr().value == 1 ){
 					w.setIsSetting(true);
-				}else{
+				}else if(!opOtherSysAcc.isPresent() || opOtherSysAcc.get().getUseAtr().value == 0){
 					w.setIsSetting(false);
 				}
 			});	
@@ -166,10 +166,10 @@ public class UserInfoFinder {
 		}else{		
 			listUserMap.forEach(w -> {
 				List<WindowAccount> winAcc = this.windowAccountRepository.findByUserId(w.getUserId());
-
-				if (!winAcc.isEmpty()) {
+				//System.out.println(winAcc.get(1).getUseAtr().value);
+				if (winAcc.size() > 1 || (winAcc.size() == 1 && winAcc.get(0).getUseAtr().value == 1 )) {
 					w.setIsSetting(true);
-				} else {
+				} else if (winAcc.isEmpty() || (winAcc.size() == 1 && winAcc.get(0).getUseAtr().value == 0 )) {
 					w.setIsSetting(false);
 				}
 			});

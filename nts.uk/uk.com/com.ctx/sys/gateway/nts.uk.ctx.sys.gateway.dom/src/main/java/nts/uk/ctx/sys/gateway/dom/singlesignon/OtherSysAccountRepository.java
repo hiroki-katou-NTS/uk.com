@@ -46,4 +46,6 @@ public interface OtherSysAccountRepository {
 	 * @return the optional
 	 */
 	Optional<OtherSysAccount> findByUserId(String userId);
+	
+	void update(OtherSysAccount otherSysAccCommand, OtherSysAccount otherSysAccDB);
 }

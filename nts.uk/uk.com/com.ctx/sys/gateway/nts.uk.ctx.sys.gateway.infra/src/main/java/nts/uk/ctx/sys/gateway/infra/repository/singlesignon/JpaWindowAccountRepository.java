@@ -186,6 +186,7 @@ public class JpaWindowAccountRepository extends JpaRepository implements WindowA
 		// set data
 		entity.setHostName(winAccCommand.getHostName().v());
 		entity.setUserName(winAccCommand.getUserName().v());
+		entity.setUseAtr(winAccCommand.getUseAtr().value);
 
 		// update
 		this.commandProxy().update(entity);

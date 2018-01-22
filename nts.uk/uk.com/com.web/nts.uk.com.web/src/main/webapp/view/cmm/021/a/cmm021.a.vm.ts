@@ -24,6 +24,7 @@ module nts.uk.com.view.cmm021.a {
             useSet: KnockoutObservableArray<any>;
             selectUse: KnockoutObservable<number>;
             selectUseScreenAC: KnockoutObservable<number>;
+            
             enableSave: KnockoutObservable<boolean>;
 
             listWindowAccCommand: WindowAccountDto[];
@@ -67,6 +68,7 @@ module nts.uk.com.view.cmm021.a {
 
             userId: KnockoutObservable<string>;
             listUserUnsetting: UserDto[];
+            listUserUnsettingScreenAC: UserDto[];
 
             userIdBeChoosen: KnockoutObservable<string>;
 
@@ -225,24 +227,29 @@ module nts.uk.com.view.cmm021.a {
                 });
 
                 _self.selectUse.subscribe((newValue) => {
-                    if (newValue == 1) {
+                    if (newValue == 1 && _self.isScreenBSelected() == true) {
                         _self.loadUserSetting();
-                    } else {
+                    } else if(newValue == 0 && _self.isScreenBSelected() == true) {
                         _self.loadUserUnsetting();
+                    }else if(newValue == 1 && _self.isScreenCSelected() == true){
+                         _self.loadUserSettingScreenAC();
+                    }else if(newValue == 0 && _self.isScreenCSelected() == true){
+                         _self.loadUserUnsettingScreenAC();
                     }
                 });
                 
-                _self.selectUseScreenAC.subscribe((newValue) => {
-                    if (newValue == 1) {
-                        _self.loadUserSettingScreenAC();
-                    } else {
-                        _self.loadUserUnsettingScreenAC();
-                    }
-                
-                });
+//                _self.selectUseScreenAC.subscribe((newValue) => {
+//                    if (newValue == 1) {
+//                        _self.loadUserSettingScreenAC();
+//                    } else {
+//                        _self.loadUserUnsettingScreenAC();
+//                    }
+//                
+//                });
 
 
                 _self.listUserUnsetting = [];
+                _self.listUserUnsettingScreenAC = [];
 
                 _self.isScreenBSelected = ko.observable(false);
                 _self.isScreenCSelected = ko.observable(false);
@@ -475,9 +482,9 @@ module nts.uk.com.view.cmm021.a {
                     win2.userId = _self.userId();
                     win2.hostName = "";
                     win2.userName = "";
-                    win2.no = 1;
+                    win2.no = 2;
                     win2.useAtr = 0;
-                    saveCommand.winAcc1 = win1;    
+                    saveCommand.winAcc2 = win2;    
                 }
                     
 
@@ -493,9 +500,9 @@ module nts.uk.com.view.cmm021.a {
                     win3.userId = _self.userId();
                     win3.hostName = "";
                     win3.userName = "";
-                    win3.no = 1;
+                    win3.no = 3;
                     win3.useAtr = 0;
-                    saveCommand.winAcc1 = win1;    
+                    saveCommand.winAcc3 = win3;    
                 }
 
                 if (_self.enable_WinAcc4() == true && _self.hostName4() != "" && _self.userName4() != "") {
@@ -510,9 +517,9 @@ module nts.uk.com.view.cmm021.a {
                     win4.userId = _self.userId();
                     win4.hostName = "";
                     win4.userName = "";
-                    win4.no = 1;
+                    win4.no = 4;
                     win4.useAtr = 0;
-                    saveCommand.winAcc1 = win1;    
+                    saveCommand.winAcc4 = win4;    
                 }
 
                 if (_self.enable_WinAcc5() == true && _self.hostName5() != "" && _self.userName5() != "") {
@@ -527,16 +534,18 @@ module nts.uk.com.view.cmm021.a {
                     win5.userId = _self.userId();
                     win5.hostName = "";
                     win5.userName = "";
-                    win5.no = 1;
+                    win5.no = 5;
                     win5.useAtr = 0;
-                    saveCommand.winAcc1 = win1;    
+                    saveCommand.winAcc5 = win5;    
                 }
 
                 saveCommand.userId = _self.userId();
+                console.log(saveCommand);
                 if (saveCommand.winAcc1 != null || saveCommand.winAcc2 != null || saveCommand.winAcc3 != null || saveCommand.winAcc4 != null || saveCommand.winAcc5 != null) {
                     service.saveWindowAccount(saveCommand)
                         .done((data: any) => {
                             _self.loadUserInfo();
+                            _self.reload();
                             _self.updateMode();
                             $('#focus-hostName1').focus();
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -549,6 +558,13 @@ module nts.uk.com.view.cmm021.a {
 
                 }
                 
+            }
+            
+            private reload(){
+                let _self = this;                
+               
+                _self.userId("");
+                _self.userId(_self.userIdBeChoosen());
             }
 
             
@@ -696,16 +712,16 @@ module nts.uk.com.view.cmm021.a {
                 _self.items([]);
                 for (let userDto of _self.listUserDtoScreenC) {
                     if (!userDto.isSetting) {
-                        _self.listUserUnsetting.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, userDto.other));
+                        _self.listUserUnsettingScreenAC.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, userDto.other));
                     }
                 }
                 // select first item in list unsetting
                 _self.selectedEmployeeId("");
-                _self.selectedEmployeeId(_self.listUserUnsetting[0].employeeId);
+                _self.selectedEmployeeId(_self.listUserUnsettingScreenAC[0].employeeId);
                 _self.newMode();
 
-                _self.items(_self.listUserUnsetting);
-                if (_self.listUserUnsetting.length = 0) {
+                _self.items(_self.listUserUnsettingScreenAC);
+                if (_self.listUserUnsettingScreenAC.length = 0) {
                     _self.unselectedMode();
                 }
             }
@@ -824,7 +840,7 @@ module nts.uk.com.view.cmm021.a {
 
             public onSelectScreenC() {
                 let _self = this;
-                _self.selectUseScreenAC(1);
+                _self.selectUse(1);
                 _self.isScreenBSelected(false);
                 _self.isScreenCSelected(true);
                 _self.loadUserInfoForOtherAcc();
@@ -857,15 +873,22 @@ module nts.uk.com.view.cmm021.a {
 
             private SaveOtherAcc(): JQueryPromise<any> {
                 let _self = this;
-                let otherAcc: SaveOtherSysAccountCommand = new SaveOtherSysAccountCommand(
-                    _self.userIdBeChoosen(),
-                    _self.companyCode6(),
-                    _self.userName6(),
-                    1);
-
-                let dfd = $.Deferred<any>();
+                let otherAcc = new SaveOtherSysAccountCommand();
                 
-                if (otherAcc.companyCode != "" && otherAcc.userName != "") {
+                if (_self.enable_otherAcc() == true && _self.companyCode6() != "" && _self.userName6() != "") {
+                    otherAcc.userId = _self.userIdBeChoosen();
+                    otherAcc.companyCode = _self.companyCode6();
+                    otherAcc.userName = _self.userName6();                  
+                    otherAcc.useAtr = 1;
+                } else if(_self.enable_otherAcc() == false){
+                    otherAcc.userId = _self.userIdBeChoosen();
+                    otherAcc.companyCode = "";
+                    otherAcc.userName = "";                  
+                    otherAcc.useAtr = 0; 
+                }       
+               // console.log(otherAcc);        
+                if(otherAcc.userId != undefined){
+                let dfd = $.Deferred<any>();                           
                     service.saveOtherSysAccount(otherAcc)
                         .done((data: any) => {
                             _self.loadUserInfoForOtherAcc();
@@ -878,9 +901,8 @@ module nts.uk.com.view.cmm021.a {
                             nts.uk.ui.dialog.bundledErrors(res);
                             dfd.reject();
                         });
-                    return dfd.promise();
-                }
-                
+                    return dfd.promise(); 
+                }              
             }
 
             private deleteOtherAcc() {

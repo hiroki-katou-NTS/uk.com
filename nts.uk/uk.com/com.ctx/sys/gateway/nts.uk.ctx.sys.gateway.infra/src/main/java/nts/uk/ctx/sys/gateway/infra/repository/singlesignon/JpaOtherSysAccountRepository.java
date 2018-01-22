@@ -139,4 +139,21 @@ public class JpaOtherSysAccountRepository extends JpaRepository implements Other
 
 	}
 
+	@Override
+	public void update(OtherSysAccount otherSysAccCommand, OtherSysAccount otherSysAccDB) {
+		SgwmtOtherSysAcc entity = this.queryProxy()
+				.find(new SgwmtOtherSysAccPK(otherSysAccDB.getUserId()),
+						SgwmtOtherSysAcc.class)
+				.get();
+
+		// set data
+		entity.setCcd(otherSysAccCommand.getCompanyCode().v());
+		entity.setUserName(otherSysAccCommand.getUserName().v());
+		entity.setUseAtr(otherSysAccCommand.getUseAtr().value);
+
+		// update
+		this.commandProxy().update(entity);
+		
+	}
+
 }
