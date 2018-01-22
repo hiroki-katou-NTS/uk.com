@@ -615,7 +615,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     service.getRecordWork(
                         {
                             employeeID: self.employeeID(), 
-                            appDate: moment(self.appDate()).format(self.DATE_FORMAT),
+                            appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
                             siftCD: self.siftCD(),
                             prePostAtr: self.prePostSelected(),
                             overtimeHours: ko.toJS(self.overtimeHours)

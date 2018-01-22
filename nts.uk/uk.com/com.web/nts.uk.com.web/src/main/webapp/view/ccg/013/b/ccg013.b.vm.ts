@@ -30,8 +30,8 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.itemRadioAtcClass = ko.observableArray([]);
             self.selectedRadioAtcClass = ko.observable(0);
             //color picker
-            self.letterColor = ko.observable('');
-            self.backgroundColor = ko.observable('');
+            self.letterColor = ko.observable('#FFFFFF');
+            self.backgroundColor = ko.observable('#92D050');
             //GridList
             self.allPart = ko.observableArray([]);
             self.listStandardMenu = ko.observableArray([]);
