@@ -109,9 +109,11 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
              */
             private reloadPage(): void {
                 var self = this;
+                nts.uk.ui.block.invisible();
                 service.findScheduleExecutionLogById(self.inputData.executionId).done(function(data) {
-                    self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
                     service.findAllScheduleErrorLog(self.inputData.executionId).done(function(errorLogs){
+                        nts.uk.ui.block.clear();
+                        self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
                         // check error log
                         if (errorLogs && errorLogs.length > 0) {
                             self.isError(true);
@@ -128,9 +130,10 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                             let order = _.orderBy(errorLogs,[self.compareCode,self.compareDate],['asc','asc']);
                             let array = _.forEach(order,(object,index)=>{ object.noID = index+1;});
                             self.errorLogs(array); 
+                        } else {
+                            // focus on close button if has no errors
+                            $('#btn-f-close').focus();
                         }
-                        // focus on close button if has no errors
-                        $('#btn-f-close').focus();
                     });
                 });
             }
