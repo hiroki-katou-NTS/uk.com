@@ -139,14 +139,14 @@ public class ComboBoxRetrieveFactory {
 		case DESIGNATED_MASTER:
 			MasterRefConditionDto masterRefTypeDto = (MasterRefConditionDto) selectionItemDto;
 
-			return getMasterComboBox(masterRefTypeDto.getMasterType(), employeeId, standardDate, isDisplayItemCode);
+			return getMasterComboBox(masterRefTypeDto.getMasterType(), employeeId, standardDate, isDisplayItemCode, false, null);
 
 		}
 		return new ArrayList<>();
 	}
 
 	private List<ComboBoxObject> getMasterComboBox(String masterType, String employeeId, GeneralDate standardDate,
-			boolean isDisplayItemCode) {
+			boolean isDisplayItemCode, boolean cps002screen, String workplaceId) {
 		String companyId = AppContexts.user().companyId();
 		switch (masterType) {
 
@@ -244,11 +244,16 @@ public class ComboBoxRetrieveFactory {
 			}
 		case "M00009":
 			// 就業時間帯マスタ
-			PeregDto resultDto = layoutingProcessor.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
-			if (resultDto != null) {
-				AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
-				String workPlaceId = workPlaceItem.getWorkplaceCode();
-				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workPlaceId);
+			if (!cps002screen) {
+				PeregDto resultDto = layoutingProcessor
+						.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
+				if (resultDto != null) {
+					AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
+					workplaceId = workPlaceItem.getWorkplaceCode();
+				}
+			}
+			if ( workplaceId != null ) {
+				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId);
 				return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
 						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
 								workTimeSetting.getWorktimeCode() + JP_SPACE
@@ -290,7 +295,8 @@ public class ComboBoxRetrieveFactory {
 		case CODE_NAME:
 			return getCodeNameComboBox(RefCd, standardDate);
 		case DESIGNATED_MASTER:
-			return getMasterComboBox(RefCd, employeeId, standardDate, false);
+			// Son cần sửa 2 tham số cuối truyền vào. Sửa xong thì bỏ dòng comment này đi.
+			return getMasterComboBox(RefCd, employeeId, standardDate, false, true, null);
 
 		}
 		return new ArrayList<>();
