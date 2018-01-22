@@ -605,8 +605,6 @@ module nts.custombinding {
                                     constraint: nameid,
                                     required: required,
                                     option: {
-                                        grouplength: 3,
-                                        decimallength: 2,
                                         textalign: 'left'
                                     },
                                     enable: editable,
