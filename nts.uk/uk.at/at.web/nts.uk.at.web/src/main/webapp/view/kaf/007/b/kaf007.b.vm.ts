@@ -164,6 +164,9 @@ module nts.uk.at.view.kaf007.b {
                     self.displayAppReasonContentFlg(),
                     self.multilContent()
                 );
+                if(!appcommon.CommonProcess.checklenghtReason(appReason,"#inpReasonTextarea")){
+                        return;
+                }
                 let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
                 if(appReasonError){
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    

@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.Di
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.GoOutOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.holidaytime.HolidayTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.LateLeaveEarlyOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.PremiumTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
@@ -40,6 +41,8 @@ public class WorkTimeOfMonthly {
 	private BudgetTimeVarienceOfMonthly budgetTimeVarience;
 	/** 乖離時間 */
 	private DivergenceTimeOfMonthly divergenceTime;
+	/** 医療時間 */
+	private MedicalTimeOfMonthly medicalTime;
 	/** 予約 */
 	//reservation
 	
@@ -58,6 +61,7 @@ public class WorkTimeOfMonthly {
 		this.attendanceLeaveGateTime = new AttendanceLeaveGateTimeOfMonthly();
 		this.budgetTimeVarience = new BudgetTimeVarienceOfMonthly();
 		this.divergenceTime = new DivergenceTimeOfMonthly();
+		this.medicalTime = new MedicalTimeOfMonthly();
 	}
 
 	/**
@@ -72,6 +76,7 @@ public class WorkTimeOfMonthly {
 	 * @param attendanceLeaveGateTime 入退門時間
 	 * @param budgetTimeVarience 予実差異時間
 	 * @param divergenceTime 乖離時間
+	 * @param medicalTime 医療時間
 	 * @return 月別実績の勤務時間
 	 */
 	public static WorkTimeOfMonthly of(
@@ -84,7 +89,8 @@ public class WorkTimeOfMonthly {
 			LateLeaveEarlyOfMonthly lateLeaveEarly,
 			AttendanceLeaveGateTimeOfMonthly attendanceLeaveGateTime,
 			BudgetTimeVarienceOfMonthly budgetTimeVarience,
-			DivergenceTimeOfMonthly divergenceTime){
+			DivergenceTimeOfMonthly divergenceTime,
+			MedicalTimeOfMonthly medicalTime){
 		
 		val domain = new WorkTimeOfMonthly();
 		domain.bonusPayTime = bonusPayTime;
@@ -97,6 +103,7 @@ public class WorkTimeOfMonthly {
 		domain.attendanceLeaveGateTime = attendanceLeaveGateTime;
 		domain.budgetTimeVarience = budgetTimeVarience;
 		domain.divergenceTime = divergenceTime;
+		domain.medicalTime = medicalTime;
 		return domain;
 	}
 }

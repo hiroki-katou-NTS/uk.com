@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -91,11 +93,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	/** The select by cid and sid. */
 	public final String SELECT_BY_CID_SID = SELECT_NO_PARAM
 			+ " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.sId = :sid ";
-	
-	
+
 	/** The select by cid and sid. */
 	public final String SELECT_BY_SIDS = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
-	
 
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -110,10 +110,10 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.getSingleOrNull();
 
 		if (entity != null) {
-			if (domain.getEmployeeCode() != null) {
+			if (domain.getEmployeeCode() != null && !domain.getEmployeeCode().v().equals("")) {
 				entity.employeeCode = domain.getEmployeeCode().v();
 			}
-			if (domain.getExternalCode() != null) {
+			if (domain.getExternalCode() != null && !domain.getExternalCode().v().equals("")) {
 				entity.extCode = domain.getExternalCode().v();
 			}
 			commandProxy().update(entity);
@@ -388,7 +388,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	// sonnlb code start
 	@Override
 	public String findLastEml(String companyId, String startLetters) {
-		if (startLetters == null)
+		if (StringUtils.isEmpty(startLetters))
 			startLetters = " ";
 		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId)
 				.setParameter("emlCode", Character.toString(startLetters.charAt(0))).getList();

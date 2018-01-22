@@ -38,6 +38,7 @@ module nts.uk.at.view.kdw001 {
             empCalAndSumExecLogID: string;
             periodStartDate: string;
             periodEndDate: string;
+            startTime: string;
         }
 
         // AddEmpCalSumAndTargetCommand

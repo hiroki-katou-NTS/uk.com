@@ -39,8 +39,6 @@ module nts.uk.com.view.kal004.b.viewmodel {
             self.endSelected = ko.observable(self.getParam.endSpecify);
             self.endDay = ko.observable(self.getParam.endDay);
             self.endMonth = ko.observable(self.getParam.endMonth);
-            
-            //console.log(self.getParam);
         }
         Decide(): any {
             var self = this;

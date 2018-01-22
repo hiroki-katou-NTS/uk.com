@@ -306,6 +306,13 @@ module nts.uk.com.view.cmm018.a {
                                 if(self.selectedModeCode()==0){
                                     self.tabSelected(vmbase.RootType.PERSON);
                                 }else{
+                                    if(self.employeeInputList().length == 0){
+                                        servicebase.getInfoEmLogin().done(function(employeeInfo){
+                                            self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
+                                                employeeInfo.employeeCode, employeeInfo.employeeName, '', ''));
+                                        });
+                                    }
+                                    $('#emp-component').ntsLoadListComponent( self.listComponentOption);
                                     __viewContext.viewModel.viewmodelB.checkTabSelectedB(vmbase.RootType.PERSON,self.selectedItem());
                                 }
                          }
@@ -2563,7 +2570,7 @@ module nts.uk.com.view.cmm018.a {
                 if(mode == 0){//まとめて登録モード
                     return;
                 }
-                self.singleSelectedCode('');
+//                self.singleSelectedCode('');
                 self.historyStr('');
                 self.singleSelectedCode(null);
                 self.dataDisplay([]);

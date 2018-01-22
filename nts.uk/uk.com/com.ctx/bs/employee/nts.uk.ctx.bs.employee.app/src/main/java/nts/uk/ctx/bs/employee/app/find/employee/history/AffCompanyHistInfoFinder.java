@@ -92,7 +92,9 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 			return affCompanyHist.getLstAffCompanyHistByEmployee().get(0).getLstAffCompanyHistoryItem().stream()
 					.filter(x -> aciFinder.getAffCompanyInfoByHistId(x.identifier()) != null)
 					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), 
-							x.end().equals(GeneralDate.max()) && query.getCtgType() == 3 ? "" :x.end().toString()))
+							x.end().equals(GeneralDate.max())
+							//&& query.getCtgType() == 3 
+							? "" :x.end().toString()))
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();

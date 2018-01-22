@@ -52,6 +52,9 @@ public class JpaBWSettingClassifyGetMemento implements BasicWorkSettingGetMement
 	 */
 	@Override
 	public WorkingCode getSiftCode() {
+		if (this.typeValue.getWorkingCode() == null) {
+			return null;
+		}
 		return new WorkingCode(this.typeValue.getWorkingCode());
 	}
 

@@ -188,3 +188,8 @@ table.symbol-control td {
 button.nts-switch-button {
 	width: 95px;
 }
+
+.items-tree {
+	float: left;
+	margin: 10px 8px;
+}

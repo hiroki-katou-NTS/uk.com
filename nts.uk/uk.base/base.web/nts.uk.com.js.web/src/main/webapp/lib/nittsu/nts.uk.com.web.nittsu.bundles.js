@@ -2921,8 +2921,8 @@ var nts;
                         else {
                             dfd.resolve(res);
                         }
-                    }).fail(function () {
-                        specials.errorPages.systemError();
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        specials.errorPages.systemError(jqXHR.responseJSON);
                     });
                 }
                 if (restoresSession && webAppId != nts.uk.request.location.currentAppId) {
@@ -2970,7 +2970,7 @@ var nts;
                             }
                         },
                         error: function (xhr, status, error) {
-                            specials.errorPages.systemError();
+                            specials.errorPages.systemError(xhr.responseJSON);
                         }
                     });
                 }
@@ -3112,11 +3112,14 @@ var nts;
                 specials.isFileExist = isFileExist;
                 var errorPages;
                 (function (errorPages) {
-                    function systemError() {
+                    function systemError(error) {
                         if ($(".nts-system-error-dialog").length !== 0) {
                             return;
                         }
-                        var sub = uk.ui.windows.sub.modal("com", "/view/common/error/system/index.xhtml");
+                        uk.ui.windows.setShared("errorInfo", error);
+                        var sub = uk.ui.windows.sub.modal("com", "/view/common/error/system/index.xhtml", {
+                            resizable: true
+                        });
                         sub.$dialog.addClass("nts-system-error-dialog");
                     }
                     errorPages.systemError = systemError;
@@ -4515,6 +4518,10 @@ var nts;
                     return errorsViewModel().gridHasError();
                 }
                 errors_1.gridHasError = gridHasError;
+                function getErrorList() {
+                    return errorsViewModel().displayErrors();
+                }
+                errors_1.getErrorList = getErrorList;
             })(errors = ui.errors || (ui.errors = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -15240,28 +15247,35 @@ var nts;
                         function editStarted(evt, ui) {
                             var $grid = $(ui.owner.element);
                             var valueType = validation.getValueType($grid, ui.columnKey);
-                            if (valueType === "TimeWithDay" || valueType === "Clock") {
-                                var formatted_1;
-                                try {
-                                    formatted_1 = uk.time.minutesBased.duration.create(uk.time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes).text;
+                            if (!uk.util.isNullOrUndefined(ui.value) && !_.isEmpty(ui.value)) {
+                                if (valueType === "TimeWithDay" || valueType === "Clock") {
+                                    var formatted_1;
+                                    try {
+                                        formatted_1 = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(ui.value).asMinutes).shortText;
+                                    }
+                                    catch (e) {
+                                        return;
+                                    }
+                                    setTimeout(function () {
+                                        var $editor = $(ui.editor.find("input")[0]);
+                                        $editor.val(formatted_1).select();
+                                    }, 140);
                                 }
-                                catch (e) {
-                                    return;
+                                else if (valueType === "Currency") {
+                                    var groupSeparator = validation.getGroupSeparator($grid, ui.columnKey) || ",";
+                                    var value_1 = uk.text.replaceAll(ui.value, groupSeparator, "");
+                                    setTimeout(function () {
+                                        ui.editor.addClass("input-currency-symbol");
+                                        var $editor = $(ui.editor.find("input")[0]);
+                                        var numb = Number(value_1);
+                                        $editor.val(isNaN(numb) ? value_1 : numb).css("text-align", "right").select();
+                                    }, 140);
                                 }
-                                setTimeout(function () {
-                                    var $editor = $(ui.editor.find("input")[0]);
-                                    $editor.val(formatted_1).select();
-                                }, 140);
                             }
                             else if (valueType === "Currency") {
-                                var groupSeparator = validation.getGroupSeparator($grid, ui.columnKey) || ",";
-                                var value_1 = uk.text.replaceAll(ui.value, groupSeparator, "");
-                                setTimeout(function () {
-                                    ui.editor.addClass("input-currency-symbol");
-                                    var $editor = $(ui.editor.find("input")[0]);
-                                    var numb = Number(value_1);
-                                    $editor.val(isNaN(numb) ? value_1 : numb).css("text-align", "right").select();
-                                }, 140);
+                                ui.editor.addClass("input-currency-symbol");
+                                var $editor = $(ui.editor.find("input")[0]);
+                                $editor.css("text-align", "right");
                             }
                         }
                         /**
@@ -15411,9 +15425,10 @@ var nts;
                             var columnsMap = allColumnsMap || utils.getColumnsMap($grid);
                             var rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
                             var valueType = validation.getValueType($grid, columnKey);
-                            if (valueType === "TimeWithDay" | valueType === "Clock") {
+                            if (!uk.util.isNullOrUndefined(cellValue) && !_.isEmpty(cellValue)
+                                && (valueType === "TimeWithDay" || valueType === "Clock")) {
                                 try {
-                                    cellValue = uk.time.minutesBased.duration.create(uk.time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).text;
+                                    cellValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).shortText;
                                 }
                                 catch (e) { }
                             }
@@ -16496,7 +16511,7 @@ var nts;
                             ComboBox.prototype.draw = function (data) {
                                 var self = this;
                                 // Default values.
-                                var distanceColumns = '     ';
+                                var distanceColumns = data.controlDef.spaceSize === "small" ? '  ' : '     ';
                                 // Character used fill to the columns.
                                 var fillCharacter = ' ';
                                 var maxWidthCharacter = 15;
@@ -16613,6 +16628,9 @@ var nts;
                                     });
                                     $dropDownOptions.find('.nts-combo-item').css({ 'min-width': totalWidth });
                                     container.css({ 'min-width': totalWidth });
+                                }
+                                if (!uk.util.isNullOrUndefined(data.controlDef.width)) {
+                                    container.igCombo("option", "width", data.controlDef.width);
                                 }
                                 container.data("columns", columns);
                                 container.data("comboMode", comboMode);
@@ -17879,7 +17897,7 @@ var nts;
                                 message: message
                             };
                             // Error column headers
-                            var headers = ko.toJS(ui.errors.errorsViewModel().option.headers);
+                            var headers = ko.toJS(ui.errors.errorsViewModel().option().headers());
                             _.forEach(headers, function (header) {
                                 if (uk.util.isNullOrUndefined(record[header.name])
                                     || !uk.util.isNullOrUndefined(error[header.name]))
@@ -18039,33 +18057,29 @@ var nts;
                                         var constraint = column.constraint;
                                         var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
                                             : constraint.cDisplayType;
-                                        if (valueType === "TimeWithDay") {
-                                            if (uk.util.isNullOrUndefined(value))
-                                                return value;
-                                            var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
-                                            var timeOpts = { timeWithDay: true };
-                                            var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
-                                            value = formatter.format(minutes);
-                                        }
-                                        else if (valueType === "Clock") {
-                                            if (uk.util.isNullOrUndefined(value))
-                                                return value;
-                                            var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
-                                            var timeOpts = { timeWithDay: false };
-                                            var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
-                                            value = formatter.format(minutes);
-                                        }
-                                        else if (valueType === "Currency") {
-                                            if (uk.util.isNullOrUndefined(value))
-                                                return value;
-                                            var currencyOpts = new ui.option.CurrencyEditorOption();
-                                            currencyOpts.grouplength = constraint.groupLength | 3;
-                                            currencyOpts.decimallength = constraint.decimalLength | 2;
-                                            currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
-                                            var groupSeparator = constraint.groupSeparator || ",";
-                                            var rawValue = uk.text.replaceAll(value, groupSeparator, "");
-                                            var formatter = new uk.text.NumberFormatter({ option: currencyOpts });
-                                            value = formatter.format(Number(rawValue));
+                                        if (!uk.util.isNullOrUndefined(value) && !_.isEmpty(value)) {
+                                            if (valueType === "TimeWithDay") {
+                                                var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                                var timeOpts = { timeWithDay: true };
+                                                var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
+                                                value = formatter.format(minutes);
+                                            }
+                                            else if (valueType === "Clock") {
+                                                var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                                var timeOpts = { timeWithDay: false };
+                                                var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
+                                                value = formatter.format(minutes);
+                                            }
+                                            else if (valueType === "Currency") {
+                                                var currencyOpts = new ui.option.CurrencyEditorOption();
+                                                currencyOpts.grouplength = constraint.groupLength | 3;
+                                                currencyOpts.decimallength = constraint.decimalLength | 2;
+                                                currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
+                                                var groupSeparator = constraint.groupSeparator || ",";
+                                                var rawValue = uk.text.replaceAll(value, groupSeparator, "");
+                                                var formatter = new uk.text.NumberFormatter({ option: currencyOpts });
+                                                value = formatter.format(Number(rawValue));
+                                            }
                                         }
                                     }
                                     var _self = self;
@@ -20500,8 +20514,9 @@ var nts;
                             var column = self.columnsMap[key];
                             if (uk.util.isNullOrUndefined(column))
                                 return;
+                            var ws = column.css && column.css.whiteSpace ? column.css.whiteSpace : "nowrap";
                             var $td = $("<td/>").data(internal.VIEW, rowIdx + "-" + key)
-                                .css({ borderWidth: "1px", overflow: "hidden", whiteSpace: "nowrap", position: "relative" });
+                                .css({ borderWidth: "1px", overflow: "hidden", whiteSpace: ws, position: "relative" });
                             self.highlight($td);
                             if (!self.visibleColumnsMap[key])
                                 $td.hide();

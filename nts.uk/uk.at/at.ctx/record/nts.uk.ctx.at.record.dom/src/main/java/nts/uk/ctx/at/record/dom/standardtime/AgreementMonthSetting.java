@@ -42,7 +42,7 @@ public class AgreementMonthSetting extends AggregateRoot {
 	
 	public void validate(){
 		if(alarmOneMonth.v().compareTo(errorOneMonth.v()) > 0){
-			throw new BusinessException("Msg_59");
+			throw new BusinessException("Msg_59", "KMK008_43", "KMK008_42");
 		}
 	}
 

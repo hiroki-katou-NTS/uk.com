@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.error.BundledBusinessException;
@@ -43,6 +44,55 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		this.morningEndTime = memento.getMorningEndTime();
 		this.afternoonStartTime = memento.getAfternoonStartTime();
 		this.lstTimezone = memento.getLstTimezone();
+	}
+
+	public boolean isUseShiftTwo() {
+		return this.getTimezoneShiftTwo().isUsed();
+	}
+
+	/**
+	 * Sets the morning work.
+	 */
+	public void setMorningWork() {
+		if (this.isUseShiftTwo()) {
+			// work time set update morning
+			if (this.isMorningEndTimeLessThanOrEqualToShift2StartTime()) {
+
+				// update end time shift 1 and remove shift 2
+				this.setMorningEndTimeShiftOne();
+				this.getTimezoneShiftTwo().resetTime();
+			} else {
+
+				// update end time shift 2
+				this.setMorningEndTimeShiftTwo();
+			}
+		} else {
+			// update time shift 1 to end time morning
+			this.setMorningEndTimeShiftOne();
+			this.getTimezoneShiftTwo().resetTime();
+		}
+	}
+
+	/**
+	 * Sets the afternoon work.
+	 */
+	public void setAfternoonWork() {
+		if (this.isUseShiftTwo()) {
+			if (this.isAfternoonStartTimeLessThanOrEqualToShift1EndTime()) {
+
+				// update start time shift 1
+				this.setAfternoonStartTimeShiftOne();
+			} else {
+
+				// update start time shift 2 and remove shift 1
+				this.setAfternoonStartTimeShiftTwo();
+				this.getTimezoneShiftOne().resetTime();
+			}
+		} else {
+			// update time shift 1 and remove shift 2
+			this.setAfternoonStartTimeShiftOne();
+			this.getTimezoneShiftTwo().resetTime();
+		}
 	}
 	
 	/**
@@ -119,6 +169,66 @@ public class PrescribedTimezoneSetting extends DomainObject {
 			.filter(timezone -> timezone.getWorkNo() == workNo)
 			.findFirst()
 			.get();
+	}
+
+	/**
+	 * Disable shift two.
+	 */
+	public void disableShiftTwo() {
+		this.getTimezoneShiftTwo().disable();
+	}
+
+	/**
+	 * Disable shift one.
+	 */
+	public void disableShiftOne() {
+		this.getTimezoneShiftTwo().disable();
+	}
+
+	/**
+	 * Checks if is morning end time less than or equal to shift 2 start time.
+	 *
+	 * @return true, if is morning end time less than or equal to shift 2 start time
+	 */
+	private boolean isMorningEndTimeLessThanOrEqualToShift2StartTime() {
+		return this.morningEndTime.lessThanOrEqualTo(this.getTimezoneShiftTwo().getStart());
+	}
+
+	/**
+	 * Checks if is afternoon start time less than or equal to shift 1 end time.
+	 *
+	 * @return true, if is afternoon start time less than or equal to shift 1 end time
+	 */
+	private boolean isAfternoonStartTimeLessThanOrEqualToShift1EndTime() {
+		return this.afternoonStartTime.lessThanOrEqualTo(this.getTimezoneShiftOne().getEnd());
+	}
+
+	/**
+	 * Sets the morning end time shift two.
+	 */
+	private void setMorningEndTimeShiftTwo() {
+		this.getTimezoneShiftTwo().updateEndTime(this.morningEndTime);
+	}
+
+	/**
+	 * Sets the morning end time shift one.
+	 */
+	private void setMorningEndTimeShiftOne() {
+		this.getTimezoneShiftOne().updateEndTime(this.morningEndTime);
+	}
+
+	/**
+	 * Sets the afternoon start time shift one.
+	 */
+	private void setAfternoonStartTimeShiftOne() {
+		this.getTimezoneShiftOne().updateStartTime(this.afternoonStartTime);
+	}
+
+	/**
+	 * Sets the afternoon start time shift two.
+	 */
+	private void setAfternoonStartTimeShiftTwo() {
+		this.getTimezoneShiftTwo().updateStartTime(this.afternoonStartTime);
 	}
 	
 	/* (non-Javadoc)
@@ -207,4 +317,17 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		this.getTimezoneShiftTwo().restoreDefaultData();
 	}
 
+	/**
+	 * 引数のNoと一致している勤務Noを持つ時間帯(使用区分付き)を取得する
+	 * @param workNo
+	 * @return 時間帯(使用区分付き)
+	 *  @author keisuke_hoshina
+	 */
+	public TimezoneUse getMatchWorkNoTimeSheet(int workNo) {
+		List<TimezoneUse> timeSheetWithUseAtrList = this.lstTimezone.stream().filter(tc -> tc.getWorkNo() == workNo).collect(Collectors.toList());
+		if(timeSheetWithUseAtrList.size()>1) {
+			throw new RuntimeException("Exist duplicate workNo : " + workNo);
+		}
+		return timeSheetWithUseAtrList.get(0);
+	}
 }

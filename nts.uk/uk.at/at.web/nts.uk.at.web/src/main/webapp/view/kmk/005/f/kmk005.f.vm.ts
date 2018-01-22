@@ -243,6 +243,7 @@ module nts.uk.at.view.kmk005.f {
                             self.createCommand(self.currentBonusPaySetting(), self.currentBonusPayTimesheets(), self.currentSpecBonusPayTimesheets())
                         ).done((data) => {
                             self.getBonusPaySetting();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                             nts.uk.ui.block.clear();
                         }).fail((res) => {
                             nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });

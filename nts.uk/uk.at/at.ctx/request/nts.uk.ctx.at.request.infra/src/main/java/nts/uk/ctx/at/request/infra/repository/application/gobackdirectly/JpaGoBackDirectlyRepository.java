@@ -91,7 +91,6 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		Optional<KrqdtGoBackDirectly> goBack = this.queryProxy().find(new KrqdtGoBackDirectlyPK(goBackDirectly.getCompanyID(),goBackDirectly.getAppID()), KrqdtGoBackDirectly.class);
 		if(goBack.isPresent()) {
 			KrqdtGoBackDirectly currentEntity = goBack.get();
-			currentEntity.setVersion(goBackDirectly.getVersion());
 			currentEntity.setGoWorkAtr1(goBackDirectly.getGoWorkAtr1().value);
 			currentEntity.setBackHomeAtr1(goBackDirectly.getBackHomeAtr1().value);
 			currentEntity.setWorkTimeStart1(goBackDirectly.getWorkTimeStart1().v() == -1 ? null : goBackDirectly.getWorkTimeStart1().v());

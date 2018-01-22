@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.alarm;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -33,11 +34,11 @@ public class KfnmtAlarmPatternSet extends UkJpaEntity implements Serializable{
 	@Column(name = "ALARM_PATTERN_NAME")
 	public String alarmPatternName;
 	
-    @OneToMany(mappedBy = "alarmPatternSet", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "alarmPatternSet", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "KFNMT_CHECK_CONDITION")
     public List<KfnmtCheckCondition> checkConList;
 	
-	@OneToOne(mappedBy="alarmPatternSet", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy="alarmPatternSet", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_ALARM_PER_SET")
 	public KfnmtAlarmPerSet alarmPerSet;
 	
@@ -59,6 +60,20 @@ public class KfnmtAlarmPatternSet extends UkJpaEntity implements Serializable{
 		return new KfnmtAlarmPatternSet(
 				new KfnmtAlarmPatternSetPK(domain.getCompanyID(), domain.getAlarmPatternCD().v()),
 				domain.getAlarmPatternName().v(), checkConList, alarmPerSet);
+	}
+	
+	public void fromEntity(KfnmtAlarmPatternSet entity) {
+		this.alarmPatternName = entity.alarmPatternName;
+		this.checkConList.removeIf(c -> !entity.checkConList.contains(c));
+		entity.checkConList.forEach(e -> {
+			Optional<KfnmtCheckCondition> checkCon = this.checkConList.stream().filter(c -> c.pk.equals(e.pk)).findFirst();
+			if (checkCon.isPresent()) {
+				checkCon.get().fromEntity(e);
+			} else {
+				this.checkConList.add(e);
+			}
+		});
+		this.alarmPerSet.fromEntity(entity.alarmPerSet);
 	}
 
 }

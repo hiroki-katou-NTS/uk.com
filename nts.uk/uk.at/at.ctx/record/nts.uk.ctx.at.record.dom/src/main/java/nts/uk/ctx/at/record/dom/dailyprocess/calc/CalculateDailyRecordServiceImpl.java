@@ -46,21 +46,21 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSetOfWeek
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.commonsetting.BreakSetOfCommon;
-import nts.uk.ctx.at.shared.dom.worktime.commonsetting.CalcMethodIfLeaveWorkDuringBreakTime;
-import nts.uk.ctx.at.shared.dom.worktime.commonsetting.childfamilycareset.ShortTimeWorkSetOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTimeGroup;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FlowRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidPrefixBreakTimeOfCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -95,6 +95,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private FixedWorkSettingRepository fixedWorkSettingRepository;
 	
+	@Inject
+	private FlexWorkSettingRepository flexWorkSettingRpository;
+	
+
 	/**
 	 * 勤務情報を取得して計算
 	 * @param companyId 会社ID
@@ -147,12 +151,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																		  TimeWithCalculation.sameTime(new AttendanceTime(0)),
 																		  TimeWithCalculation.sameTime(new AttendanceTime(0)));
 			//流動勤務の休憩時間帯
-			FluRestTime fluRestTime = new FluRestTime(new FixRestTimeSetting(Collections.emptyList()),
-													  new FluRestTimeGroup(Collections.emptyList(),false,new FluRestTimeSetting(new AttendanceTime(0), new AttendanceTime(0))),
-													  true);
+			FlowWorkRestTimezone fluRestTime = new FlowWorkRestTimezone(
+													  true,
+													  new TimezoneOfFixedRestTimeSet(Collections.emptyList()),
+													  new FlowRestTimezone(Collections.emptyList(),false,new FlowRestSetting(new AttendanceTime(0), new AttendanceTime(0)))
+													  );
 			
 			//流動固定休憩設定
-			FluidPrefixBreakTimeSet fluidPrefixBreakTimeSet = new FluidPrefixBreakTimeSet(false,FluidPrefixBreakTimeOfCalcMethod.ReferToMaster,false,false);
+			FlowFixedRestSet fluidPrefixBreakTimeSet = new FlowFixedRestSet(false,false,false,FlowFixedRestCalcMethod.REFER_MASTER);
 			
 			/*所定時間設定取得*/
 			val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId, integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
@@ -192,15 +198,15 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //												WorkTimeMethodSet  setMethod,
 												workTime.get().getWorkTimeDivision().getWorkTimeMethodSet(),
 //												RestClockManageAtr clockManage, 固定勤務のみの時間帯計算であるため一旦固定値を渡しておく
-												RestClockManageAtr.isClockManage,
+												RestClockManageAtr.IS_CLOCK_MANAGE,
 //												OutingTimeOfDailyPerformance dailyGoOutSheet,
 												new OutingTimeOfDailyPerformance(employeeId,targetDate,Collections.emptyList()),
 //												BreakSetOfCommon  commonSet,
-												new BreakSetOfCommon(CalcMethodIfLeaveWorkDuringBreakTime.NotRecordAll),
+												new CommonRestSetting(RestTimeOfficeWorkCalcMethod.NOT_APPROP_ALL),
 //												FixRestCalcMethod fixedCalc,
-												FixRestCalcMethod.ReferToMaster,
+												FixedRestCalculateMethod.MASTER_REF,
 //												FluidBreakTimeOfCalcMethod  fluidSet,
-												FlowRestCalcMethod.ReferToMaster,
+												FlowRestCalcMethod.REFER_MASTER,
 //												BreakTimeManagement breakmanage,
 												new BreakTimeManagement(BreakTimeOfDaily.sameTotalTime(deductionTotalTime),Collections.emptyList()),
 //												Optional<FluRestTime>  fluRestTime,
@@ -212,7 +218,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 //												FixedWorkSetting fixedWorkSetting,
 												fixedWorkSetting,//(repository確認中)
 //												WorkTimeCommonSet workTimeCommonSet,
-												new WorkTimeCommonSet(false, new ShortTimeWorkSetOfWorkTime(false,false,false)),
+												fixedWorkSetting.getCommonSetting(),
 //												BonusPaySetting bonusPaySetting,
 												BonusPaySetting.createFromJavaType(companyId,
 																					"01"/*ここは聞く*/,

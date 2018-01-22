@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
@@ -22,9 +24,6 @@ public class JpaFlexODTzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 	
 	/** The entitys. */
 	private KshmtFlexOdRtSet entity;
-
-	/** The period no. */
-	private int periodNo = 0;
 
 	/**
 	 * Instantiates a new jpa flex OD tz OFR time set set memento.
@@ -45,15 +44,26 @@ public class JpaFlexODTzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 		if (CollectionUtil.isEmpty(timzones)) {
 			this.entity.setKshmtFlexOdFixRests(new ArrayList<>());
 		} else {
-			periodNo = 0;
-			this.entity.setKshmtFlexOdFixRests(timzones.stream().map(domain -> {
-				periodNo++;
-				KshmtFlexOdFixRest entity = new KshmtFlexOdFixRest(
-						new KshmtFlexOdFixRestPK(this.entity.getKshmtFlexOdRtSetPK().getCid(),
-								this.entity.getKshmtFlexOdRtSetPK().getWorktimeCd(), periodNo));
-				domain.saveToMemento(new JpaFlexODDeductionTimeSetMemento(entity));
-				return entity;
-			}).collect(Collectors.toList()));
+			Map<KshmtFlexOdFixRestPK, KshmtFlexOdFixRest> mapEntity = this.entity.getKshmtFlexOdFixRests().stream()
+					.collect(Collectors.toMap(KshmtFlexOdFixRest::getKshmtFlexOdFixRestPK, Function.identity()));
+
+			List<KshmtFlexOdFixRest> lstNew = new ArrayList<>();
+			for (int i = 0; i < timzones.size(); i++) {
+
+				KshmtFlexOdFixRestPK newPK = new KshmtFlexOdFixRestPK(this.entity.getKshmtFlexOdRtSetPK().getCid(),
+						this.entity.getKshmtFlexOdRtSetPK().getWorktimeCd(), i+1);
+				KshmtFlexOdFixRest newEntity = new KshmtFlexOdFixRest(newPK);
+
+				KshmtFlexOdFixRest oldEntity = mapEntity.get(newPK);
+				if (oldEntity != null) {
+					// update
+					newEntity = oldEntity;
+				}
+				// insert
+				timzones.get(i).saveToMemento(new JpaFlexODDeductionTimeSetMemento(newEntity));
+				lstNew.add(newEntity);
+			}
+			this.entity.setKshmtFlexOdFixRests(lstNew);
 		}
 
 	}

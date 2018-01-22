@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.auth.dom.roleset;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.auth.dom.role.RoleType;
 
 /**
  * ロールセット - Class RoleSet.
@@ -125,5 +126,25 @@ public class RoleSet extends AggregateRoot {
      */
     public void setEmploymentRoleId() {
         this.employmentRoleId = null;
+    }
+    
+    /** Get RoleID by RoleType */
+    public String getRoleIDByRoleType(RoleType roleType) {
+    	switch(roleType) {
+	    	case EMPLOYMENT:
+	    		return this.employmentRoleId;
+	    	case SALARY:
+	    		return this.salaryRoleId;
+	    	case HUMAN_RESOURCE:
+	    		return this.hRRoleId;
+	    	case OFFICE_HELPER:
+	    		return this.officeHelperRoleId;
+	    	case MY_NUMBER:
+	    		return this.myNumberRoleId;
+	    	case PERSONAL_INFO:
+	    		return this.personInfRoleId;
+    		default:
+    			return "";
+    	}
     }
 }

@@ -12,6 +12,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pereg.app.command.person.info.category.CheckNameSpace;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
@@ -32,8 +33,7 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		UpdateItemCommand itemCommand = context.getCommand();
 		// String mess = "Msg_233";
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
-		
-		if (itemCommand.getItemName().trim().equals("")) {
+		if (CheckNameSpace.checkName(itemCommand.getItemName())){
 			throw new BusinessException(new RawErrorMessage("Msg_928"));
 		}
 		if (itemCommand.getSingleItem().getDataType() == 6) {
@@ -52,62 +52,8 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 
 			}
 
-		} else if (itemCommand.getSingleItem().getDataType() == 2) {
-
-			SingleItemCommand number = itemCommand.getSingleItem();
-			BigDecimal max = new BigDecimal(Math.pow(10, number.getIntegerPart().doubleValue())
-					- Math.pow(10, number.getDecimalPart() == null ? 0 : -number.getDecimalPart().intValue()));
-			BigDecimal min = new BigDecimal(0);
-			// if (number.getNumericItemMin() != null && number.getNumericItemMax() != null)
-			// {
-			if (number.getNumericItemMinus() == 0) {
-				if (number.getNumericItemMin() != null) {
-					if (number.getNumericItemMin().compareTo(min) < 0) {
-
-						throw new BusinessException(new RawErrorMessage("Msg_596"));
-
-					}
-
-				}
-
-				if (number.getNumericItemMax() != null) {
-					if (number.getNumericItemMax().compareTo(min) < 0) {
-						throw new BusinessException(new RawErrorMessage("Msg_596"));
-					}
-
-				}
-
-			} else {
-				min = max.negate();
-			}
-
-			if (number.getNumericItemMin() != null && number.getNumericItemMax() != null) {
-				if (number.getNumericItemMin().compareTo(number.getNumericItemMax()) > 0) {
-					throw new BusinessException(new RawErrorMessage("Msg_598"));
-				}
-			}
-
-			if (number.getNumericItemMin() != null) {
-
-				if (number.getNumericItemMin().compareTo(max) > 0 || number.getNumericItemMin().compareTo(min) < 0) {
-					throw new BusinessException(new RawErrorMessage("Msg_599"));
-				}
-			}
-
-			if (number.getNumericItemMax() != null) {
-
-				if (number.getNumericItemMax().compareTo(max) > 0 || number.getNumericItemMax().compareTo(min) < 0) {
-					throw new BusinessException(new RawErrorMessage("Msg_600"));
-				}
-			}
-
-			// }
-
 		}
-
-		if (itemCommand.getItemName().trim().equals("")) {
-			throw new BusinessException("");
-		}
+		
 		if (!this.pernfoItemDefRep.checkItemNameIsUnique(itemCommand.getPerInfoCtgId(), itemCommand.getItemName(),
 				itemCommand.getPerInfoItemDefId())) {
 			throw new BusinessException(new RawErrorMessage("Msg_358"));

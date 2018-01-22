@@ -21,8 +21,6 @@ import nts.uk.ctx.bs.employee.infra.entity.holidaysetting.employee.KshmtEmployee
 import nts.uk.ctx.bs.employee.infra.entity.holidaysetting.employee.KshmtEmployeeMonthDaySetPK_;
 import nts.uk.ctx.bs.employee.infra.entity.holidaysetting.employee.KshmtEmployeeMonthDaySet_;
 
-
-
 /**
  * The Class JpaEmployeeMonthDaySettingRepository.
  */

@@ -161,6 +161,7 @@ module nts.uk.at.view.kaf005.b {
                 self.version = data.version;
                 self.manualSendMailAtr(data.manualSendMailAtr);
                 self.prePostSelected(data.application.prePostAtr);
+                self.displayCaculationTime(data.displayCaculationTime);
                 self.typicalReasonDisplayFlg(data.typicalReasonDisplayFlg);
                 self.displayAppReasonContentFlg(data.displayAppReasonContentFlg);
                 self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
@@ -207,6 +208,8 @@ module nts.uk.at.view.kaf005.b {
                 self.instructInfor(data.overtimeInstructInformation);
                 self.referencePanelFlg(data.referencePanelFlg);
                 self.preAppPanelFlg(data.preAppPanelFlg);
+                self.allPreAppPanelFlg(data.allPreAppPanelFlg);
+                self.indicationOvertimeFlg(data.extratimeDisplayFlag);
                 // preAppOvertime
                 if(data.preAppOvertimeDto != null){
                     self.appDatePre(data.preAppOvertimeDto.appDatePre);
@@ -264,6 +267,7 @@ module nts.uk.at.view.kaf005.b {
                 };
                 _.forEach(dataOverTime, (item) => { 
                     if(item.frameNo == 11){
+                            if (data.appOvertimeNightFlg == 1) {
                                 self.overtimeHours.push(new common.OvertimeCaculation(
                                     item.companyID, 
                                     item.appID, 
@@ -275,7 +279,8 @@ module nts.uk.at.view.kaf005.b {
                                     item.applicationTime, 
                                     null, 
                                     null,"#[KAF005_64]"));
-                            }else if(item.frameNo == 12){
+                             }
+                    }else if(item.frameNo == 12){
                                 self.overtimeHours.push(new common.OvertimeCaculation(
                                     item.companyID, 
                                     item.appID, 
@@ -287,7 +292,7 @@ module nts.uk.at.view.kaf005.b {
                                     item.applicationTime, 
                                     null, 
                                     null,"#[KAF005_66]"));
-                            }else{
+                     }else{
                                 self.overtimeHours.push(new common.OvertimeCaculation(
                                     item.companyID, 
                                     item.appID, 
@@ -299,7 +304,7 @@ module nts.uk.at.view.kaf005.b {
                                     item.applicationTime, 
                                     null, 
                                     null, "#[KAF005_55]"));
-                        }
+                    }
                 }); 
                 _.forEach(dataBreakTime, (item) => { 
                     self.breakTimes.push(new common.OvertimeCaculation(
@@ -351,6 +356,9 @@ module nts.uk.at.view.kaf005.b {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    
                     return;    
                 }
+                if(!appcommon.CommonProcess.checklenghtReason(appReason,"#appReason")){
+                    return;
+                }
                 divergenceReason = self.getReason(
                     self.displayDivergenceReasonForm(),
                     self.selectedReason2(),
@@ -358,6 +366,9 @@ module nts.uk.at.view.kaf005.b {
                     self.displayDivergenceReasonInput(),
                     self.multilContent2()
                 );
+                if(!appcommon.CommonProcess.checklenghtReason(divergenceReason,"#divergenceReason")){
+                    return;
+                }
                 let overTimeShiftNightTmp: number = 0;
                 let flexExessTimeTmp: number = 0;
                 for (let i = 0; i < self.overtimeHours().length; i++) {
@@ -550,8 +561,8 @@ module nts.uk.at.view.kaf005.b {
                     let self = this;
                     let dfd = $.Deferred();
                     let param : any ={
-                        overtimeHours: ko.toJS(self.overtimeHours()),
-                        bonusTimes: ko.toJS(self.bonusTimes()),
+                        overtimeHours: _.map(ko.toJS(self.overtimeHours()), item => {return self.initCalculateData(item);}),
+                        bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),
                         prePostAtr : self.prePostSelected(),
                         appDate : moment(self.appDate()).format(self.DATE_FORMAT),
                         siftCD: self.siftCD()
@@ -670,14 +681,14 @@ module nts.uk.at.view.kaf005.b {
             }
             convertIntToTime(data : number) : string{
                 let hourMinute : string = "";
-                if(data == -1 || data === ""){
+                if(nts.uk.util.isNullOrEmpty(data)){
                     return null;
                 }else if (data == 0) {
-                    hourMinute = "00:00";
+                    hourMinute = "0:00";
                 }else if(data != null){
                     let hour = Math.floor(data/60);
                     let minutes = Math.floor(data%60);
-                    hourMinute = (hour < 10 ? ("0" + hour) : hour ) + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
+                    hourMinute =  hour + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
                 }
                 return hourMinute;
             }
@@ -722,7 +733,20 @@ module nts.uk.at.view.kaf005.b {
             private isEmptyOverTimeInput(OverTimeInputs: Array<any>): boolean {
                 return _.isEmpty(_.filter(OverTimeInputs, x => !nts.uk.util.isNullOrEmpty(x.applicationTime)));
             }
-            
+            private initCalculateData(item: any): any{
+                return data ={companyID: item.companyID,
+                                appID: item.appID,
+                                attendanceID: item.attendanceID,
+                                attendanceName: item.attendanceName,
+                                frameNo: item.frameNo,
+                                timeItemTypeAtr: item.timeItemTypeAtr,
+                                frameName: item.frameName,
+                                applicationTime: item.applicationTime,
+                                preAppTime: null,
+                                caculationTime: null,
+                                nameID: item.nameID, 
+                                itemName:item.itemName};
+            }
             private checkWorkContentChanged(){
                 let self = this;
                 //Check calculate times
