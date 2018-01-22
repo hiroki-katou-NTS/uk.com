@@ -89,7 +89,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
         private settingEnableComparisonMaxValueField() {
             let self = this;
             self.enableComparisonMaxValue(
-                self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon[0]().compareOperator() > 5);
+                self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0].compareOperator() > 5);
         }
         
         /**

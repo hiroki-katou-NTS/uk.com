@@ -28,6 +28,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
         //scope check tab
         tabScopeCheck: tab.ScopeCheckTab;
+        //daily tab
+        tabDailyErrorAlarm: tab.DailyPerformanceTab;
         //check condition tab
         tabCheckCondition: tab.CheckConditionTab;
         //tab fixed check condition
@@ -45,6 +47,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.selectedTab = ko.observable('tab-1');
 
             self.tabScopeCheck = new tab.ScopeCheckTab();
+            self.tabDailyErrorAlarm = new tab.DailyPerformanceTab();
             self.tabCheckCondition = new tab.CheckConditionTab(self.selectedCategory());
             self.tabFixedCondition = new tab.FixedCheckConditionTab();
 
@@ -134,6 +137,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 data.dailyAlarmCheckCondition().conditionToExtractDaily(self.selectedDataCondition());
                 data.dailyAlarmCheckCondition().addApplication(true);
                 data.dailyAlarmCheckCondition().listExtractConditionWorkRecork(self.tabCheckCondition.listWorkRecordExtractingConditions());
+                data.dailyAlarmCheckCondition().listFixedExtractConditionWorkRecord(self.tabFixedCondition.listFixedConditionWorkRecord());
             }
             if (data.category() == model.CATEGORY.SCHEDULE_4_WEEK) {
                 data.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(self.tabCheckCondition.schedule4WeekCheckCondition());

@@ -2,11 +2,14 @@ package nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.ErrorAlarmConditionPubExport;
 
 @Getter
+
 @NoArgsConstructor
 public class WorkRecordExtraConPubExport {
+	@Setter
 	private String errorAlarmCheckID;
 	//TypeCheckWorkRecord
 	private int checkItem;

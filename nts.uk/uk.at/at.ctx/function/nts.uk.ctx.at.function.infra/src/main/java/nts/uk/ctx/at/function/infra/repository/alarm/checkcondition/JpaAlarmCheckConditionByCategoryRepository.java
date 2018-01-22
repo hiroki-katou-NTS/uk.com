@@ -189,7 +189,7 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 				entity.dailyAlarmCondition.listFixedExtractConditionWorkRecord = newListFixedWkRecord;
 			}
 			
-			if (entity.pk.category == AlarmCategory.DAILY.value) {
+			if (entity.pk.category == AlarmCategory.SCHEDULE_4WEEK.value) {
 				AlarmCheckCondition4W4D schedule4Week = (AlarmCheckCondition4W4D) domain.getExtractionCondition();
 				entity.schedule4W4DAlarmCondition.fourW4DCheckCond = schedule4Week.getFourW4DCheckCond().value;
 			}

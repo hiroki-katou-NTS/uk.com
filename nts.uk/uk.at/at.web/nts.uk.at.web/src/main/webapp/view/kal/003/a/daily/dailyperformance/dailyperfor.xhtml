@@ -13,9 +13,10 @@
             <thead>
             <tr class="bg-green">
                 <th style="width: 55px;text-align: center;"><div data-bind="ntsCheckBox: { checked: isAllDailyPerfor}"></div></th>
-                <th style="width: 100px;">#{i18n.getText('KDW001_25')}</th>
-                <th style="width: 155px; text-align: center;">#{i18n.getText('KDW001_26')}</th>
-                <th style="width: 200px;">#{i18n.getText('KDW001_80')}</th>
+                <th style="width: 100px;">#{i18n.getText('KAL003_52')}</th>
+                <th style="width: 155px; text-align: center;">#{i18n.getText('KAL003_53')}</th>
+                <th style="width: 200px;">#{i18n.getText('KAL003_54')}</th>
+                <th style="width: 200px;">#{i18n.getText('KAL003_55')}</th>
             </tr>
         </thead>
         <tbody>
@@ -24,9 +25,10 @@
                     <td style="text-align: center;">
                         <div data-bind="ntsCheckBox: { checked: $data.useAtr }"></div>
                     </td>
-                    <td><span data-bind="text: $data.no"></span> </td>
-                    <td> <span data-bind="text: $data.name"></span></td>
-                    <td> <input data-bind="ntsTextEditor: {value: $data.name}" /></td>
+                    <td><span data-bind="text: nameWKRecord"></span> </td>
+                    <td> <span data-bind="text: nameWKRecord"></span></td>
+                    <td> <input data-bind="text: nameWKRecord" /></td>
+                    <td> <input data-bind="text: nameWKRecord" /></td>
                 </tr>
             </com:ko-foreach>
         </tbody>

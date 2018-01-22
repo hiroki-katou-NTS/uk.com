@@ -13,13 +13,16 @@
 			<com:scriptfile path="../share/kal003utils.js" />
 			<com:scriptfile path="common/scopecheck.js" />
 			<com:scriptfile path="common/checkconditiontab.js" />
+			<com:scriptfile path="daily/dailyperformance/dailyperfortab.js" />
 			<com:scriptfile path="daily/fixedcheckcondition/fixedchecktab.js" />
 			<com:stylefile path="kal003.a.style.css" />
 			<com:scriptfile path="kal003.a.service.js" />
 			<com:scriptfile path="kal003.a.vm.js" />
 
-			<!-- 			<com:scriptfile path="../b/cas014.b.vm.js" /> -->
-			<!-- 			<com:scriptfile path="../b/cas014.b.service.js" /> -->
+			<com:ValidatorScript>
+		        nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode
+		        nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionName
+		    </com:ValidatorScript>
 
 			<com:scriptfile path="kal003.a.start.js" />
 			
@@ -72,9 +75,9 @@
 						<div data-bind="with: selectedAlarmCheckCondition">
 							<div class="valign-center control-group">
 								<label class="flabel">#{i18n.getText('KAL003_11')}</label> 
-								<input data-bind="ntsTextEditor: {value: code, required: true, enable: $parent.screenMode() == 0, option: {width: '80px'}}" /> 
+								<input data-bind="ntsTextEditor: {value: code, required: true, constraint: 'AlarmCheckConditionCode', enable: $parent.screenMode() == 0, option: {width: '80px'}}" /> 
 								<label style="padding-left: 50px">#{i18n.getText('KAL003_12')}</label>
-								<input data-bind="ntsTextEditor: {value: name, required: true}" />
+								<input data-bind="ntsTextEditor: {value: name, required: true, constraint: 'AlarmCheckConditionName'}" />
 							</div>
 							<div class="valign-center control-group">
 								<label class="flabel">#{i18n.getText('KAL003_9')}</label> 
@@ -102,9 +105,8 @@
 									<ui:include src="common/scopecheck.xhtml"/>
 								</div>
 							</div>
-							<div class="tab-content-2">
-								<span>Tab Content 2</span><br />
-<!-- 								<ui:include src="../b/index.xhtml" /> -->
+							<div class="tab-content-2" data-bind="with: tabDailyErrorAlarm">
+								<ui:include src="daily/dailyperformance/dailyperfor.xhtml" />
 							</div>
 							<div class="tab-content-3" data-bind="with: tabCheckCondition">
  								<ui:include src="common/checkconditions.xhtml" />
