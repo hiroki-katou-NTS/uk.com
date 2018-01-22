@@ -52,7 +52,7 @@ public class JpaAffJobTitleHistoryItemRepository_v1 extends JpaRepository
 		if (domain.getJobTitleId() != null){
 			entity.jobTitleId = domain.getJobTitleId();
 		}
-		if (domain.getNote() != null){
+		if (domain.getNote() != null && !domain.getNote().v().equals("")){
 			entity.note = domain.getNote().v();
 		}
 	}
