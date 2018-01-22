@@ -34,20 +34,10 @@ public class BusinessTypeOfHistoryGeneralRepositoryImpl implements BusinessTypeO
 		historyRepos.update(bEmployeeHistory.getCompanyId(), bEmployeeHistory.getEmployeeId(), item.identifier(),
 				item.start(), item.end());
 		updateItemBefore(bEmployeeHistory, item);
-		updateItemAfter(bEmployeeHistory, item);
 	}
 
 	public void updateItemBefore(BusinessTypeOfEmployeeHistory bEmployeeHistory, DateHistoryItem item) {
 		Optional<DateHistoryItem> optinal = bEmployeeHistory.immediatelyBefore(item);
-		if (optinal.isPresent()) {
-			DateHistoryItem itemToBeUpdate = optinal.get();
-			historyRepos.update(bEmployeeHistory.getCompanyId(), bEmployeeHistory.getEmployeeId(),
-					itemToBeUpdate.identifier(), itemToBeUpdate.start(), itemToBeUpdate.end());
-		}
-	}
-
-	public void updateItemAfter(BusinessTypeOfEmployeeHistory bEmployeeHistory, DateHistoryItem item) {
-		Optional<DateHistoryItem> optinal = bEmployeeHistory.immediatelyAfter(item);
 		if (optinal.isPresent()) {
 			DateHistoryItem itemToBeUpdate = optinal.get();
 			historyRepos.update(bEmployeeHistory.getCompanyId(), bEmployeeHistory.getEmployeeId(),

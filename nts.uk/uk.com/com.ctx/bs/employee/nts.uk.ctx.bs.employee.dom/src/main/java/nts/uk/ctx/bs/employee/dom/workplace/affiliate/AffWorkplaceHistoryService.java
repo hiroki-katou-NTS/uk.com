@@ -47,9 +47,8 @@ public class AffWorkplaceHistoryService {
 	 */
 	public void update(AffWorkplaceHistory_ver1 domain, DateHistoryItem item){
 		affWorkplaceHistoryRepository.update(item);
-		// Update item before and after
+		// Update item before
 		updateItemBefore(domain,item);
-		updateItemAfter(domain,item);
 	}
 	
 	/**
@@ -64,16 +63,5 @@ public class AffWorkplaceHistoryService {
 		}
 		affWorkplaceHistoryRepository.update(itemToBeUpdated.get());
 	}
-	/**
-	 * Update item after
-	 * @param domain
-	 * @param item
-	 */
-	private void updateItemAfter(AffWorkplaceHistory_ver1 domain, DateHistoryItem item){
-		Optional<DateHistoryItem> itemToBeUpdated = domain.immediatelyAfter(item);
-		if (!itemToBeUpdated.isPresent()){
-			return;
-		}
-		affWorkplaceHistoryRepository.update(itemToBeUpdated.get());
-	}
+
 }

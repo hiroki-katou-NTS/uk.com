@@ -4,7 +4,9 @@ module nts.uk.at.view.ksm011.a.service {
      */
     var paths: any = {
         findScheFuncControl: "ctx/at/schedule/setting/functioncontrol/findScheFuncControl",
-        saveScheFuncControl: "ctx/at/schedule/setting/functioncontrol/saveScheFuncControl"
+        saveScheFuncControl: "ctx/at/schedule/setting/functioncontrol/saveScheFuncControl",
+        getShiftConditionCat: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftConCategory",
+        getShiftCondition: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftCondition"
     }
     
     /**
@@ -20,6 +22,20 @@ module nts.uk.at.view.ksm011.a.service {
     export function saveScheFuncControl(data: ScheFuncControlDto): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.saveScheFuncControl, data);
     } 
+    
+    /**
+     *  Get Shift Condition Category
+     */
+    export function getShiftConditionCat(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getShiftConditionCat);
+    }
+    
+    /**
+     *  Get Shift Condition
+     */
+    export function getShiftCondition(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getShiftCondition);
+    }
     
     export interface ScheFuncControlDto {
         alarmCheckUseCls: number,

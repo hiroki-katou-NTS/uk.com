@@ -181,9 +181,18 @@ module nts.uk.at.view.ksm011 {
             confirmEnable: KnockoutObservable<boolean>;
             retrievalMethodEnable: KnockoutObservable<boolean>;
             optionCompleteEnable: KnockoutObservable<boolean>;
+            dataA: any;
+            dataE: any;
+            conditionData: KnockoutObservableArray<ConditionModel>;
+            scheFuncCondList: KnockoutObservableArray<any>;
             
             constructor() {
                 var self = this;
+                
+                self.dataA = null;
+                self.dataE = null;
+                self.conditionData = ko.observableArray([]);
+                self.scheFuncCondList = ko.observableArray([]);
 
                 self.alarmCheckEnable = ko.observable(false);
                 self.alarmMethodEnable = ko.observable(true);
@@ -460,6 +469,9 @@ module nts.uk.at.view.ksm011 {
                     if(value == 0) {
                         self.openEDialogEnable(false);
                         self.conditionListEnable(false);
+                        self.conditionList("");
+                        self.dataE = null;
+                        self.scheFuncCondList([]);
                     } else {
                         self.openEDialogEnable(true);
                         self.conditionListEnable(true);
@@ -482,17 +494,199 @@ module nts.uk.at.view.ksm011 {
                 var self = this;
                 var dfd = $.Deferred();
                 
-               service.findScheFuncControl().done(function(data) {
-                    
-                    if(data != null) {
+                self.conditionData([]);
+                
+                $.when(self.getData(), self.getShiftConditionCat(), self.getShiftCondition()).done(function() {
+                    if(self.conditionData().length > 0 && self.dataA != null) {
+                        var conds = "";
+                        self.scheFuncCondList([]);
                         
+                        self.selectedAlarm(self.dataA.alarmCheckUseCls); 
+                        self.selectedConfirmed(self.dataA.confirmedCls); 
+                        self.selectedPublic(self.dataA.publicCls); 
+                        self.selectedOutput(self.dataA.outputCls); 
+                        self.selectedWorkDivision(self.dataA.workDormitionCls); 
+                        self.selectedTeamDivision(self.dataA.teamCls); 
+                        self.selectedRank(self.dataA.rankCls); 
+                        self.selectedDay(self.dataA.startDateInWeek); 
+                        self.selectedShortName(self.dataA.shortNameDisp); 
+                        self.selectedTime(self.dataA.timeDisp); 
+                        self.selectedSymbol(self.dataA.symbolDisp); 
+                        self.selectedDispOn28th(self.dataA.twentyEightDaysCycle); 
+                        self.selectedIndication(self.dataA.lastDayDisp); 
+                        self.selectedIndividual(self.dataA.individualDisp); 
+                        self.selectedDate(self.dataA.dispByDate); 
+                        self.selectedIndicationByShift(self.dataA.indicationByShift);
+                        self.selectedRegular(self.dataA.regularWork); 
+                        self.selectedFluid(self.dataA.fluidWork); 
+                        self.selectedFlex(self.dataA.workingForFlex); 
+                        self.selectedOvertime(self.dataA.overtimeWork); 
+                        self.selectedGeneral(self.dataA.normalCreation); 
+                        self.selectedSimulation(self.dataA.simulationCls); 
+                        self.selectedCapture(self.dataA.captureUsageCls); 
+                        self.selectedCompFunc(self.dataA.completedFuncCls); 
+                        self.selectedOptionComp(self.dataA.howToComplete); 
+                        self.selectedAlarmCheck(self.dataA.alarmCheckCls); 
+                        self.selectedAlarmMethod(self.dataA.executionMethod); 
+                        self.selectedUnhooking(self.dataA.handleRepairAtr); 
+                        self.selectedConfirm(self.dataA.confirm); 
+                        self.selectedSearchMethod(self.dataA.searchMethod); 
+                        self.selectedRetrieval(self.dataA.searchMethodDispCls);
+                        
+                        _.forEach(self.dataA.scheFuncCond, function(item) {
+                            var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(item.conditionNo); });
+                            self.scheFuncCondList.push(result);
+                            conds += result.conditionName + ", ";
+                        });
+                        
+                        self.conditionList(conds.trim().slice(0, -1));
+                    } else {
+                        self.selectedAlarm(1); 
+                        self.selectedConfirmed(1); 
+                        self.selectedPublic(0); 
+                        self.selectedOutput(1); 
+                        self.selectedWorkDivision(0); 
+                        self.selectedTeamDivision(0); 
+                        self.selectedRank(0); 
+                        self.selectedDay(0); 
+                        self.selectedShortName(1); 
+                        self.selectedTime(1); 
+                        self.selectedSymbol(0); 
+                        self.selectedDispOn28th(0); 
+                        self.selectedIndication(0); 
+                        self.selectedIndividual(0); 
+                        self.selectedDate(0); 
+                        self.selectedIndicationByShift(0);
+                        self.selectedRegular(1); 
+                        self.selectedFluid(1); 
+                        self.selectedFlex(1); 
+                        self.selectedOvertime(1); 
+                        self.selectedGeneral(0); 
+                        self.selectedSimulation(0); 
+                        self.selectedCapture(0); 
+                        self.selectedCompFunc(0); 
+                        self.selectedOptionComp(0); 
+                        self.selectedAlarmCheck(0); 
+                        self.selectedAlarmMethod(0);
+                        self.conditionList("");
+                        self.selectedUnhooking(0); 
+                        self.selectedConfirm(0); 
+                        self.selectedSearchMethod(0); 
+                        self.selectedRetrieval(1);
                     }
+                    
+                    dfd.resolve();
+                }).fail(function(res) {
+                    dfd.reject(res);
+                });
+
+                return dfd.promise();
+            }
+            
+            /**
+             * Get data from db.
+             */
+            getData(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+                
+                service.findScheFuncControl().done(function(data) {
+                    if(data != null) {
+                        var dataItems = new ScheFuncControlDto({
+                                                    alarmCheckUseCls: data.alarmCheckUseCls, 
+                                                    confirmedCls: data.confirmedCls, 
+                                                    publicCls: data.publicCls, 
+                                                    outputCls: data.outputCls, 
+                                                    workDormitionCls: data.workDormitionCls, 
+                                                    teamCls: data.teamCls, 
+                                                    rankCls: data.rankCls, 
+                                                    startDateInWeek: data.startDateInWeek, 
+                                                    shortNameDisp: data.shortNameDisp, 
+                                                    timeDisp: data.timeDisp, 
+                                                    symbolDisp: data.symbolDisp, 
+                                                    twentyEightDaysCycle: data.twentyEightDaysCycle, 
+                                                    lastDayDisp: data.lastDayDisp, 
+                                                    individualDisp: data.individualDisp, 
+                                                    dispByDate: data.dispByDate, 
+                                                    indicationByShift: data.indicationByShift,
+                                                    regularWork: data.regularWork, 
+                                                    fluidWork: data.fluidWork, 
+                                                    workingForFlex: data.workingForFlex, 
+                                                    overtimeWork: data.overtimeWork, 
+                                                    normalCreation: data.normalCreation, 
+                                                    simulationCls: data.simulationCls, 
+                                                    captureUsageCls: data.captureUsageCls, 
+                                                    completedFuncCls: data.completedFuncCls, 
+                                                    howToComplete: data.howToComplete, 
+                                                    alarmCheckCls: data.alarmCheckCls, 
+                                                    executionMethod: data.executionMethod, 
+                                                    handleRepairAtr: data.handleRepairAtr, 
+                                                    confirm: data.confirm, 
+                                                    searchMethod: data.searchMethod, 
+                                                    searchMethodDispCls: data.searchMethodDispCls,
+                                                    scheFuncCond: data.scheFuncCond
+                                                });
+                            
+                        self.dataA = dataItems;  
+                    }
+                                   
+                    dfd.resolve(data);
+                }).fail(function(res) {
+                    dfd.reject(res);    
+                });
+    
+                return dfd.promise();
+            }
+            
+            /**
+             * Get ShiftConditionCat.
+             */
+            getShiftConditionCat(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+                
+                service.getShiftConditionCat().done(function(data) {
+                    _.forEach(data, function(item) {
+                        var model = new ConditionModel({
+                            conditionNo: item.categoryNo,
+                            conditionName: item.categoryName,
+                            isParent: true,
+                        });
+                        
+                        self.conditionData.push(model);
+                    });
                     
                     dfd.resolve(data);
                 }).fail(function(res) {
                     dfd.reject(res);    
                 });
-
+    
+                return dfd.promise();
+            }
+            
+            /**
+             * Get ShiftCondition.
+             */
+            getShiftCondition(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+                
+                service.getShiftCondition().done(function(data) {
+                    _.forEach(data, function(item) {
+                        var model = new ConditionModel({
+                            conditionNo: item.conditionNo,
+                            conditionName: item.conditionName,
+                            isParent: false,
+                        });
+                        
+                        self.conditionData.push(model);
+                    });
+                    
+                    dfd.resolve(data);
+                }).fail(function(res) {
+                    dfd.reject(res);    
+                });
+    
                 return dfd.promise();
             }
             
@@ -505,11 +699,38 @@ module nts.uk.at.view.ksm011 {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
                 
+                if(self.selectedCompFunc() == 0 && self.selectedOptionComp() == 1) {
+                    if(self.selectedAlarmCheck() == 0 && self.selectedAlarmMethod() == 1) {
+                        if(self.dataE == null && self.scheFuncCondList().length == 0) {
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_718" });
+                            return;
+                        }
+                    }
+                    
+                    if(self.selectedAlarmCheck() != 0 && self.selectedUnhooking() != 0 && self.selectedConfirm() != 0) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_717" });
+                        return;
+                    }
+                }
+                
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
                 
-                //var conditions = new ScheFuncCondDto();
+                var conditionData = [];
+                if(self.dataE != null && self.dataE.length > 0) {
+                    _.forEach(self.dataE, function(code) {
+                        conditionData.push({ 
+                            conditionNo: Number(code)
+                        });
+                    });
+                } else {
+                    _.forEach(self.scheFuncCondList(), function(item) {
+                        conditionData.push({ 
+                            conditionNo: Number(item.conditionNo)
+                        });
+                    });                    
+                }
                 
                 var data = new ScheFuncControlDto({
                                 alarmCheckUseCls: self.selectedAlarm(), 
@@ -543,7 +764,7 @@ module nts.uk.at.view.ksm011 {
                                 confirm: self.selectedConfirm(), 
                                 searchMethod: self.selectedSearchMethod(), 
                                 searchMethodDispCls: self.selectedRetrieval(),
-                                scheFuncCond: null
+                                scheFuncCond: conditionData
                 });
                 
                 service.saveScheFuncControl(data).done(function() {
@@ -557,8 +778,35 @@ module nts.uk.at.view.ksm011 {
              * Open E dialog to set condition list.
              */
             openEDialog() {
-                nts.uk.ui.windows.sub.modal("/view/ksm/011/e/index.xhtml").onClosed(() => {
+                var self = this;
+                
+                if(self.dataE != null) {
+                    nts.uk.ui.windows.setShared("KSM011_A_DATA_SELECTED", self.dataE);
+                } else {
+                    var oldData = [];
                     
+                    _.forEach(self.scheFuncCondList(), function(item) {
+                        oldData.push(item.conditionNo.toString());
+                    });
+                    
+                    nts.uk.ui.windows.setShared("KSM011_A_DATA_SELECTED", oldData);
+                }
+                
+                nts.uk.ui.windows.sub.modal("/view/ksm/011/e/index.xhtml").onClosed(() => {
+                    self.dataE = nts.uk.ui.windows.getShared("KSM011_E_DATA");
+                    
+                    if(self.conditionData().length > 0 && self.dataE != null) {
+                        var conds = "";
+                        self.scheFuncCondList([]);
+                        
+                        _.forEach(self.dataE, function(code) {
+                            var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(code); });
+                            self.scheFuncCondList.push(result);
+                            conds += result.conditionName + ", ";
+                        });
+                        
+                        self.conditionList(conds.trim().slice(0, -1));
+                    }
                 });
             }
         }
@@ -677,7 +925,25 @@ module nts.uk.at.view.ksm011 {
         }
         
         interface IScheFuncCondDto {
-            conditionNo: number;  
+            conditionNo: number;
+        }
+        
+        class ConditionModel {
+            conditionNo: number;
+            conditionName: string;
+            isParent: boolean;
+            
+            constructor(param: IConditionModel) {
+                this.conditionNo = param.conditionNo;
+                this.conditionName = param.conditionName;
+                this.isParent = param.isParent;
+            }
+        }
+        
+        interface IConditionModel {
+            conditionNo: number;
+            conditionName: string;
+            isParent: boolean;
         }
     }
 }

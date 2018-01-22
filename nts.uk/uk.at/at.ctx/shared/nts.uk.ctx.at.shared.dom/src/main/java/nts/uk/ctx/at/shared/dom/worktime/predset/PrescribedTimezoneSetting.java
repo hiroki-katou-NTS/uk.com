@@ -60,7 +60,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 
 				// update end time shift 1 and remove shift 2
 				this.setMorningEndTimeShiftOne();
-				this.disableShiftTwo();
+				this.getTimezoneShiftTwo().resetTime();
 			} else {
 
 				// update end time shift 2
@@ -69,7 +69,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		} else {
 			// update time shift 1 to end time morning
 			this.setMorningEndTimeShiftOne();
-			this.disableShiftTwo();
+			this.getTimezoneShiftTwo().resetTime();
 		}
 	}
 
@@ -86,12 +86,12 @@ public class PrescribedTimezoneSetting extends DomainObject {
 
 				// update start time shift 2 and remove shift 1
 				this.setAfternoonStartTimeShiftTwo();
-				this.disableShiftOne();
+				this.getTimezoneShiftOne().resetTime();
 			}
 		} else {
 			// update time shift 1 and remove shift 2
 			this.setAfternoonStartTimeShiftOne();
-			this.disableShiftTwo();
+			this.getTimezoneShiftTwo().resetTime();
 		}
 	}
 	

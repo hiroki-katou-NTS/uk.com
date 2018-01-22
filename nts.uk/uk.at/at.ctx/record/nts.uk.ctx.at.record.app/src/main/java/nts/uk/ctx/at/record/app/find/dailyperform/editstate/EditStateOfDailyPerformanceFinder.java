@@ -27,8 +27,7 @@ public class EditStateOfDailyPerformanceFinder extends FinderFacade {
 	@Override
 	public List<EditStateOfDailyPerformanceDto> finds(String employeeId, GeneralDate baseDate) {
 		return ConvertHelper.mapTo(this.repo.findByKey(employeeId, baseDate),
-				(c) -> new EditStateOfDailyPerformanceDto(c.getEmployeeId(), c.getAttendanceItemId(), c.getYmd(),
-						c.getEditStateSetting().value));
+				(c) -> EditStateOfDailyPerformanceDto.getDto(c));
 	}
 
 }

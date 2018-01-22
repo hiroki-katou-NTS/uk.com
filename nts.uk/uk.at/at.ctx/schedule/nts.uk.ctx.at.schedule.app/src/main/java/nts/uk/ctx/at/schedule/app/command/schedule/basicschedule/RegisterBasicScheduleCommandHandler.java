@@ -133,7 +133,10 @@ public class RegisterBasicScheduleCommandHandler
 				addMessage(errList, businessException.getMessageId());
 				continue;
 			}
-
+			
+			// process data schedule time soze
+			this.addScheTimeZone(companyId, basicScheduleObj, workType);
+			
 			// Check exist of basicSchedule
 			Optional<BasicSchedule> basicSchedule = basicScheduleRepo.find(bSchedule.getEmployeeId(),
 					bSchedule.getDate());
@@ -167,27 +170,35 @@ public class RegisterBasicScheduleCommandHandler
 					basicScheduleRepo.update(basicScheduleObj);
 				}
 			} else {
-				List<WorkScheduleTimeZone> workScheduleTimeZones = new ArrayList<WorkScheduleTimeZone>();
-				Optional<PredetemineTimeSetting> predetemineTimeSet = this.predetemineTimeSettingRepo
-						.findByWorkTimeCode(companyId, basicScheduleObj.getWorkTimeCode());
-				if (predetemineTimeSet.isPresent()) {
-					List<TimezoneUse> listTimezoneUse = predetemineTimeSet.get().getPrescribedTimezoneSetting()
-							.getLstTimezone();
-					
-					workScheduleTimeZones = listTimezoneUse.stream()
-						.filter(x -> x.isUsed())
-						.map((timezoneUse) -> {
-							BounceAtr bounceAtr = addScheduleBounce(workType);
-							return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
-									timezoneUse.getEnd(), bounceAtr);
-						}).collect(Collectors.toList());
-				}
-				
-				basicScheduleObj.setWorkScheduleTimeZones(workScheduleTimeZones);
 				basicScheduleRepo.insert(basicScheduleObj);
 			}
 		}
 		return errList;
+	}
+
+	/**
+	 * @param companyId
+	 * @param basicScheduleObj
+	 * @param workType
+	 */
+	private void addScheTimeZone(String companyId, BasicSchedule basicScheduleObj, WorkType workType) {
+		List<WorkScheduleTimeZone> workScheduleTimeZones = new ArrayList<WorkScheduleTimeZone>();
+		Optional<PredetemineTimeSetting> predetemineTimeSet = this.predetemineTimeSettingRepo
+				.findByWorkTimeCode(companyId, basicScheduleObj.getWorkTimeCode());
+		if (predetemineTimeSet.isPresent()) {
+			List<TimezoneUse> listTimezoneUse = predetemineTimeSet.get().getPrescribedTimezoneSetting()
+					.getLstTimezone();
+			
+			workScheduleTimeZones = listTimezoneUse.stream()
+				.filter(x -> x.isUsed())
+				.map((timezoneUse) -> {
+					BounceAtr bounceAtr = addScheduleBounce(workType);
+					return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
+							timezoneUse.getEnd(), bounceAtr);
+				}).collect(Collectors.toList());
+		}
+		
+		basicScheduleObj.setWorkScheduleTimeZones(workScheduleTimeZones);
 	}
 	
 	/**
