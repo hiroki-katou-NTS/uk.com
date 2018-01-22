@@ -539,8 +539,6 @@ public class DailyPerformanceCorrectionProcessor {
 				Thread.currentThread().interrupt();
 				e1.printStackTrace();
 			}
-
-			latch.await();
 		} else if (displayFormat == 1 && listEmployeeId.size() > 10) {
 			service = Executors.newFixedThreadPool(3);
 			latch = new CountDownLatch(3);
@@ -570,8 +568,6 @@ public class DailyPerformanceCorrectionProcessor {
 				Thread.currentThread().interrupt();
 				e1.printStackTrace();
 			}
-
-			latch.await();
 		} else {
 			service = Executors.newFixedThreadPool(1);
 			latch = new CountDownLatch(1);
@@ -590,10 +586,8 @@ public class DailyPerformanceCorrectionProcessor {
 				Thread.currentThread().interrupt();
 				e1.printStackTrace();
 			}
-
-			latch.await();
 		}
-
+		latch.await();
 		Map<String, DailyModifyResult> resultDailyMap = results.stream()
 				.collect(Collectors.toMap((x) -> x.getEmployeeId() + "|" + x.getDate(), Function.identity()));
 		//// 11. Excel: 未計算のアラームがある場合は日付又は名前に表示する
@@ -746,7 +740,7 @@ public class DailyPerformanceCorrectionProcessor {
 		// screenDto.setLstData(lstData);
 		screenDto.markLoginUser();
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
-		//screenDto.createAccessModifierCellState(mapDP);
+		screenDto.createAccessModifierCellState(mapDP);
 		screenDto.getLstFixedHeader().forEach(column -> {
 			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
 		});
