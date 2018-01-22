@@ -6,8 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
 
 @AttendanceItemRoot(rootName = "社員の日別実績エラー一覧")
 @Data
@@ -36,4 +37,16 @@ public class EmployeeDailyPerErrorDto implements ConvertibleAttendanceItem {
 //	@AttendanceItemLayout(layout = "A", jpPropertyName = "", isList = true, listMaxLength = ?)
 //	@AttendanceItemValue(type = ValueType.INTEGER)
 	private List<Integer> attendanceItemList;
+	
+	public  static EmployeeDailyPerErrorDto getDto(EmployeeDailyPerError domain){
+		EmployeeDailyPerErrorDto dto = new EmployeeDailyPerErrorDto();
+		if(domain != null){
+			dto.setAttendanceItemList(domain.getAttendanceItemList());
+			dto.setCompanyID(domain.getCompanyID());
+			dto.setDate(domain.getDate());
+			dto.setEmployeeID(domain.getEmployeeID());
+			dto.setErrorCode(domain.getErrorAlarmWorkRecordCode().v());
+		}
+		return dto;
+	}
 }

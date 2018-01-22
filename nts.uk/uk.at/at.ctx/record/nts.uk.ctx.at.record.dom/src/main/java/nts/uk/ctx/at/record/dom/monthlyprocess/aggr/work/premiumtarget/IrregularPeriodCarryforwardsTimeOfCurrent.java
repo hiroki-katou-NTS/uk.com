@@ -34,7 +34,7 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent {
 		AddedVacationUseTime addedVacationUseTime = new AddedVacationUseTime();
 		
 		// 月割増対象時間（休暇加算前）を求める
-		val beforeAddVacation = TargetPremiumTimeMonthOfBeforeAddVacation.askTime(
+		val beforeAddVacation = TargetPremiumTimeMonth.askTime(
 				companyId, employeeId, datePeriod, weeklyTotalPremiumTime, addSet, aggregateTotalWorkingTime);
 		
 		// 月割増対象時間（休暇加算前）を〃（休暇加算後）に入れる
