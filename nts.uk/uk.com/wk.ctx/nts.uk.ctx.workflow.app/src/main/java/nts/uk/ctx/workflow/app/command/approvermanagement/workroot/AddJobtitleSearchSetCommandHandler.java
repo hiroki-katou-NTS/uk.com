@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSet;
@@ -29,11 +28,11 @@ public class AddJobtitleSearchSetCommandHandler extends CommandHandler<JobtitleS
 		JobtitleSearchSetCommand data = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		Optional<JobtitleSearchSet> jobtitle = jobRep.finById(companyId, data.getJobId());
-		if(jobtitle.isPresent()){
-			throw new BusinessException("Msg_3");
-		}
 		JobtitleSearchSet jobSearch = data.toDomain(data.getJobId());
 		jobSearch.validate();
+		if(jobtitle.isPresent()){
+			jobRep.update(jobSearch);
+		}
 		jobRep.insert(jobSearch);
 	}
 	
