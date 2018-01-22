@@ -16,7 +16,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public interface MonthlyAggregationService {
 
 	/**
-	 * Manager
+	 * Managerクラス
 	 * @param asyncContext 同期コマンドコンテキスト
 	 * @param companyId 会社ID
 	 * @param employeeIds 社員IDリスト

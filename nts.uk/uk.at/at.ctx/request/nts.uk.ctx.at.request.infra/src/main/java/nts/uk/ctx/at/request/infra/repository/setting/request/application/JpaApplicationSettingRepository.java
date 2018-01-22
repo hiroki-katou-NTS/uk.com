@@ -13,7 +13,6 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AprovalPersonFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.NumDaysOfWeek;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.PriorityFLg;
@@ -131,5 +130,14 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 	public Optional<ApplicationSetting> getApplicationSettingByComID(String companyID) {
 		 Optional<ApplicationSetting> op = this.queryProxy().find(new KrqstApplicationSettingPK(companyID), KrqstApplicationSetting.class).map(x-> toDomain(x));
 		 return op;
+	}
+	/**
+	 * insert a application setting
+	 * @author yennth
+	 */
+	@Override
+	public void insert(ApplicationSetting applicationSetting) {
+		KrqstApplicationSetting appSet = toEntity(applicationSetting);
+		this.commandProxy().insert(appSet);
 	}
 }

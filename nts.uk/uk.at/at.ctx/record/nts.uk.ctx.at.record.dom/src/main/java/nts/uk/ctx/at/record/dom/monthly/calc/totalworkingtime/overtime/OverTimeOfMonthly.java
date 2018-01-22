@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalOverTimeTransferOrderOfAggrMonthly;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalOverTimeTransferOrderOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatOverTimeOfLessThanCriteriaPerDay;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;

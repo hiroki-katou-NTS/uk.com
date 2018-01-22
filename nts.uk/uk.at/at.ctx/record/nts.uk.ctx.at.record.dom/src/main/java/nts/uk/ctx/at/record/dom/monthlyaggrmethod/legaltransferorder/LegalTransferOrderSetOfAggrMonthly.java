@@ -1,11 +1,8 @@
-package nts.uk.ctx.at.record.dom.monthlyaggrmethod;
+package nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder;
 
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalHolidayWorkTransferOrderOfAggrMonthly;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalOverTimeTransferOrderOfAggrMonthly;
 
 /**
  * 月次集計の法定内振替順設定
@@ -44,8 +41,7 @@ public class LegalTransferOrderSetOfAggrMonthly extends AggregateRoot {
 	public static LegalTransferOrderSetOfAggrMonthly of(
 			String companyId,
 			LegalOverTimeTransferOrderOfAggrMonthly legalOverTimeTransferOrder,
-			LegalHolidayWorkTransferOrderOfAggrMonthly legalHolidayWorkTransferOrder,
-			AggrSettingMonthlyOfFlx aggrSettingMonthlyOfFlx){
+			LegalHolidayWorkTransferOrderOfAggrMonthly legalHolidayWorkTransferOrder){
 		
 		val domain = new LegalTransferOrderSetOfAggrMonthly(companyId);
 		domain.legalOverTimeTransferOrder = legalOverTimeTransferOrder;

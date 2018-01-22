@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
@@ -12,8 +10,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
  */
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class TimeMonthWithCalculation {
 
 	/** 時間 */
@@ -21,6 +17,25 @@ public class TimeMonthWithCalculation {
 	/** 計算期間 */
 	private AttendanceTimeMonth calcTime;
 
+	/**
+	 * コンストラクタ
+	 */
+	public TimeMonthWithCalculation(){
+		this.time = new AttendanceTimeMonth(0);
+		this.calcTime = new AttendanceTimeMonth(0);
+	}
+	
+	/**
+	 * コンストラクタ
+	 * @param time 時間
+	 * @param calcTime 計算時間
+	 */
+	public TimeMonthWithCalculation(AttendanceTimeMonth time, AttendanceTimeMonth calcTime) {
+		super();
+		this.time = time;
+		this.calcTime = calcTime;
+	}
+	
 	/**
 	 * 時間と計算時間を同じ時間で作成
 	 * @param minutes 時間（分）
