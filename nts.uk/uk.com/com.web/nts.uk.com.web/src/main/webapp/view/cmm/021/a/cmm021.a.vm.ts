@@ -23,6 +23,7 @@ module nts.uk.com.view.cmm021.a {
 
             useSet: KnockoutObservableArray<any>;
             selectUse: KnockoutObservable<number>;
+            selectUseScreenAC: KnockoutObservable<number>;
             enableSave: KnockoutObservable<boolean>;
 
             listWindowAccCommand: WindowAccountDto[];
@@ -95,6 +96,7 @@ module nts.uk.com.view.cmm021.a {
                     { code: '0', name: nts.uk.resource.getText("CMM021_10") },
                 ]);
                 _self.selectUse = ko.observable(1);
+                _self.selectUseScreenAC = ko.observable(1);
 
                 _self.enableSave = ko.observable(true);
                 _self.windowAcc1 = new WindowAccountDto("", "", "", 0, 0);
@@ -228,6 +230,15 @@ module nts.uk.com.view.cmm021.a {
                     } else {
                         _self.loadUserUnsetting();
                     }
+                });
+                
+                _self.selectUseScreenAC.subscribe((newValue) => {
+                    if (newValue == 1) {
+                        _self.loadUserSettingScreenAC();
+                    } else {
+                        _self.loadUserUnsettingScreenAC();
+                    }
+                
                 });
 
 
@@ -678,7 +689,29 @@ module nts.uk.com.view.cmm021.a {
                     _self.unselectedMode();
                 }
             }
+            
+            
+            private loadUserUnsettingScreenAC() {
+                let _self = this;
+                _self.items([]);
+                for (let userDto of _self.listUserDtoScreenC) {
+                    if (!userDto.isSetting) {
+                        _self.listUserUnsetting.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, userDto.other));
+                    }
+                }
+                // select first item in list unsetting
+                _self.selectedEmployeeId("");
+                _self.selectedEmployeeId(_self.listUserUnsetting[0].employeeId);
+                _self.newMode();
 
+                _self.items(_self.listUserUnsetting);
+                if (_self.listUserUnsetting.length = 0) {
+                    _self.unselectedMode();
+                }
+            }
+            
+                                    
+         
             private loadUserSetting() {
                 let _self = this;
                 _self.loadUserInfo();
@@ -689,6 +722,18 @@ module nts.uk.com.view.cmm021.a {
                 _self.newMode();
 
             }
+            
+            private loadUserSettingScreenAC() {
+                let _self = this;
+                _self.loadUserInfoForOtherAcc();
+
+                // select first item in list setting
+                _self.selectedEmployeeId("");
+                _self.selectedEmployeeId(_self.listUserDtoScreenC[0].employeeId);
+                _self.newMode();
+
+            }
+                   
 
             // new mode
             private newMode() {
@@ -779,7 +824,7 @@ module nts.uk.com.view.cmm021.a {
 
             public onSelectScreenC() {
                 let _self = this;
-                _self.selectUse(1);
+                _self.selectUseScreenAC(1);
                 _self.isScreenBSelected(false);
                 _self.isScreenCSelected(true);
                 _self.loadUserInfoForOtherAcc();
