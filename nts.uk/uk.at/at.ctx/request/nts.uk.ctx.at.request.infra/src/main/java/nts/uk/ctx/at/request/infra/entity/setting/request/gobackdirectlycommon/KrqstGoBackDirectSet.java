@@ -19,7 +19,7 @@ public class KrqstGoBackDirectSet extends UkJpaEntity {
 	@EmbeddedId
 	public KrqstGoBackDirectSetPK krqstGoBackDirectSetPK;
 	/**
-	 * 勤務変更
+	 * 勤務の変更
 	 */
 	@Column(name = "WORK_CHANGE_FLG")
 	public int workChangeFlg;
