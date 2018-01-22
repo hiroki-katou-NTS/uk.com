@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
@@ -15,6 +16,8 @@ import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachCompanyRepos
 import nts.uk.ctx.at.request.dom.setting.requestofeach.SelectionFlg;
 import nts.uk.ctx.at.request.infra.entity.setting.requestofearch.KrqstComAppConfig;
 import nts.uk.ctx.at.request.infra.entity.setting.requestofearch.KrqstComAppConfigDetail;
+import nts.uk.ctx.at.request.infra.entity.setting.requestofearch.KrqstComAppConfigDetailPK;
+import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaRequestOfEarchCompanyRepository extends JpaRepository implements RequestOfEachCompanyRepository{
 
@@ -76,5 +79,75 @@ public class JpaRequestOfEarchCompanyRepository extends JpaRepository implements
 				c.instructionUseAtr,
 				c.timeEndDispFlg);
 	}
-
+	/**
+	 * convert from Request App Detail Setting domain to entity
+	 * @param domain
+	 * @return
+	 * @author yennth
+	 */
+	private  KrqstComAppConfigDetail toEntityDetail(RequestAppDetailSetting domain){
+		val entity = new KrqstComAppConfigDetail();
+		entity.krqstWpAppConfigDetailPK = new KrqstComAppConfigDetailPK(domain.getCompanyId(), domain.getAppType().value);
+		entity.atworkTimeBeginDisFlg = domain.getAtworkTimeBeginDisFlg().value;
+		entity.breakInputFieldDisFlg = domain.getBreakInputFieldDisFlg().value;
+		entity.breakTimeDisFlg = domain.getBreakTimeDisFlg().value;
+		entity.goOutTimeBeginDisFlg = domain.getGoOutTimeBeginDisFlg().value;
+		entity.holidayTimeAppCalFlg = domain.getHolidayTimeAppCalFlg().value;
+		entity.instructionAtr = domain.getInstructionUseSetting().getInstructionAtr().value;
+		entity.instructionMemo = domain.getInstructionUseSetting().getInstructionRemarks().v();
+		entity.instructionUseAtr = domain.getInstructionUseSetting().getInstructionUseDivision().value;
+		entity.lateOrLeaveAppCancelFlg = domain.getLateOrLeaveAppCancelFlg().value;
+		entity.lateOrLeaveAppSettingFlg = domain.getLateOrLeaveAppSettingFlg().value;
+		entity.memo = domain.getMemo().v();
+		entity.otAppSettingFlg = domain.getOtAppSettingFlg().value;
+		entity.prerequisiteForpauseFlg = domain.getPrerequisiteForpauseFlg().value;
+		entity.requiredInstructionFlg = domain.getRequiredInstructionFlg().value;
+		entity.timeCalUseAtr = domain.getTimeCalUseAtr().value;
+		entity.timeEndDispFlg = domain.getTimeEndDispFlg().value;
+		entity.timeInputUseAtr = domain.getTimeInputUseAtr().value;
+		entity.useAtr = domain.getUserAtr().value;
+		return entity;
+	}
+	/**
+	 * convert form Request Of Each Company domain to entity 
+	 * @param domain
+	 * @return
+	 * @author yennth
+	 */
+	private KrqstComAppConfig toEntity(RequestOfEachCompany domain){
+		val entity = new KrqstComAppConfig();
+		List<KrqstComAppConfigDetail> list = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
+		entity.companyId = companyId;
+		entity.selectOfApproversFlg = domain.getSelectOfApproversFlg().value;
+		if(!domain.getRequestAppDetailSettings().isEmpty()){
+			for(RequestAppDetailSetting item: domain.getRequestAppDetailSettings()){
+				list.add(toEntityDetail(item));
+			}
+		}
+		entity.krqstComAppConfigDetails = list;
+		return entity;
+	}
+	
+	/**
+	 * update request of each company
+	 * @author yennth
+	 */
+	@Override
+	public void updateRequestOfEachCompany(RequestOfEachCompany request) {
+		KrqstComAppConfig entity = toEntity(request);
+		Optional<KrqstComAppConfig> oldEntity = this.queryProxy().find(entity.companyId, KrqstComAppConfig.class);
+		oldEntity.get().selectOfApproversFlg = entity.selectOfApproversFlg;
+		oldEntity.get().krqstComAppConfigDetails = entity.krqstComAppConfigDetails;
+		this.commandProxy().update(oldEntity);
+	}
+	/**
+	 * insert request of each company
+	 * @author yennth
+	 */
+	@Override
+	public void insertRequestOfEachCompany(RequestOfEachCompany company) {
+		KrqstComAppConfig entity = toEntity(company);
+		this.commandProxy().insert(entity);
+	}
 }

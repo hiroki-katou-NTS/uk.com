@@ -1,7 +1,12 @@
 package nts.uk.ctx.at.request.app.find.setting.company.request.stamp.dto;
 
 import lombok.AllArgsConstructor;
-
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 @AllArgsConstructor
 public class StampRequestSettingDto {
 	
@@ -40,5 +45,27 @@ public class StampRequestSettingDto {
 	public Integer stampGoOutAtr_Compensation_Disp;
 	
 	public Integer stampGoOutAtr_Union_Disp;
+	
+	public static StampRequestSettingDto fromDomain(StampRequestSetting stampRequestSetting){
+		return new StampRequestSettingDto(
+				stampRequestSetting.getCompanyID(), 
+				stampRequestSetting.getTopComment().getComment().v(), 
+				stampRequestSetting.getTopComment().getFontColor(), 
+				stampRequestSetting.getTopComment().getFontWeight(), 
+				stampRequestSetting.getBottomComment().getComment().v(), 
+				stampRequestSetting.getBottomComment().getFontColor(), 
+				stampRequestSetting.getBottomComment().getFontWeight(), 
+				stampRequestSetting.getResultDisp().value, 
+				stampRequestSetting.getSupFrameDispNO().v(), 
+				stampRequestSetting.getStampPlaceDisp().value, 
+				stampRequestSetting.getStampDisplayControl().getStampAtrWorkDisp().value, 
+				stampRequestSetting.getStampDisplayControl().getStampAtrGoOutDisp().value, 
+				stampRequestSetting.getStampDisplayControl().getStampAtrCareDisp().value, 
+				stampRequestSetting.getStampDisplayControl().getStampAtrSupDisp().value, 
+				stampRequestSetting.getGoOutTypeDisplayControl().getStampGoOutAtrPrivateDisp().value, 
+				stampRequestSetting.getGoOutTypeDisplayControl().getStampGoOutAtrPublicDisp().value, 
+				stampRequestSetting.getGoOutTypeDisplayControl().getStampGoOutAtrCompensationDisp().value, 
+				stampRequestSetting.getGoOutTypeDisplayControl().getStampGoOutAtrUnionDisp().value);
+	}
 	
 }

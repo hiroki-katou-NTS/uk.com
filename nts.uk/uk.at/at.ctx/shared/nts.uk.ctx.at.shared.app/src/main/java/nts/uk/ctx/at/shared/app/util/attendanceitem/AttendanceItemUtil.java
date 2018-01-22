@@ -58,10 +58,10 @@ public class AttendanceItemUtil {
 			Field field = fields.get(c.getKey());
 			if(field != null){
 				AttendanceItemLayout layout = getLayoutAnnotation(field); 
-				String pathName = getPath(path, layout, getRootAnnotation(field));
 				boolean isList = layout.listMaxLength() > 0;
 				Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
-				String currentLayout = mergeLayout(layoutCode, layout.layout());
+				String pathName = getPath(path, layout, getRootAnnotation(field)),
+						currentLayout = mergeLayout(layoutCode, layout.layout());
 				if(isList){
 					List<T> list = ReflectionUtil.getFieldValue(field, attendanceItems);
 					return mapByPath(c.getValue(), x -> getIndexFromString(x.path())).entrySet().stream().map(idx -> {
@@ -101,8 +101,8 @@ public class AttendanceItemUtil {
 				AttendanceItemLayout layout = getLayoutAnnotation(field); 
 				boolean isList = layout.listMaxLength() > 0;
 				Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
-				String pathName = getPath(path, layout, getRootAnnotation(field));
-				String currentLayout = mergeLayout(layoutCode, layout.layout());
+				String pathName = getPath(path, layout, getRootAnnotation(field)), 
+						currentLayout = mergeLayout(layoutCode, layout.layout());
 				if(isList){
 					List<T> list = processListToMax(ReflectionUtil.getFieldValue(field, attendanceItems), 
 												layout.listMaxLength(), className, layout.indexField());
@@ -194,10 +194,9 @@ public class AttendanceItemUtil {
 	}
 
 	public static <T> Map<String, Field> getFieldMap(T attendanceItems, Map<String, List<ItemValue>> groups) {
-		Map<String, Field> fields = ReflectionUtil.getStreamOfFieldsAnnotated(attendanceItems.getClass(), Condition.ALL, AttendanceItemLayout.class)
+		return ReflectionUtil.getStreamOfFieldsAnnotated(attendanceItems.getClass(), Condition.ALL, AttendanceItemLayout.class)
 				.filter(c -> groups.get(c.getAnnotation(AttendanceItemLayout.class).jpPropertyName()) != null)
 				.collect(Collectors.toMap(c -> c.getAnnotation(AttendanceItemLayout.class).jpPropertyName(), c -> c));
-		return fields;
 	}
 	
 	private static <T> Field getField(String fieldName, Class<T> classType) {
