@@ -11,11 +11,13 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SaveDataDto;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
+import nts.uk.ctx.pereg.dom.person.info.dateitem.DateType;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.SaveDataType;
@@ -167,9 +169,26 @@ public class AddEmployeeCommandFacade {
 			if (itemVal != null) {
 				x.setSaveData(new SaveDataDto(x.getSaveData().getSaveDataType(),
 						itemVal.value() != null ? itemVal.value().toString() : ""));
+
+				inputs.remove(itemVal);
 			} else {
 
 			}
+		});
+
+		inputs.forEach(ctg -> {
+
+			ctg.getItems().stream().forEach(item -> {
+				if (!dataList.stream().filter(i -> i.getItemDefId().equals(item.definitionId())).findFirst()
+						.isPresent()) {
+					dataList.add(new SettingItemDto(ctg.getCategoryCd(), item.definitionId(), item.itemCode(), "", 0,
+							new SaveDataDto(EnumAdaptor.valueOf(item.itemValueType().value, SaveDataType.class),
+									item.value()),
+							EnumAdaptor.valueOf(item.itemValueType().value, DataTypeValue.class), null, null,
+							DateType.YEARMONTHDAY, ""));
+				}
+			});
+
 		});
 
 		return dataList;
@@ -197,8 +216,8 @@ public class AddEmployeeCommandFacade {
 
 		List<ItemValue> items = new ArrayList<ItemValue>();
 		getAllItemInCategoryByCode(dataList, categoryCd).forEach(item -> {
-			items.add(new ItemValue(item.getItemDefId(), item.getItemCode(), item.getSaveData().getValue().toString(),
-					item.getDataType().value));
+			String value = item.getSaveData().getValue() == null ? "" : item.getSaveData().getValue().toString();
+			items.add(new ItemValue(item.getItemDefId(), item.getItemCode(), value, item.getDataType().value));
 		});
 		if (CollectionUtil.isEmpty(items)) {
 			return null;

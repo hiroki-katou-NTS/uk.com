@@ -1,5 +1,6 @@
 module nts.uk.at.view.ksu001.a.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
+    import alertError = nts.uk.ui.dialog.alertError;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
     import blockUI = nts.uk.ui.block;
@@ -109,6 +110,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         listColorOfHeader: KnockoutObservableArray<ksu001.common.viewmodel.CellColor> = ko.observableArray([]);
         flag: boolean = true;
         isClickChangeDisplayMode: boolean = false;
+        stopRequest: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this;
@@ -151,7 +153,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
 
             self.selectedModeDisplay.subscribe(function(newValue) {
-                nts.uk.ui.block.grayout();
+                self.stopRequest(false);
                 // close screen O1 when change mode
                 let currentScreen = __viewContext.viewModel.viewO.currentScreen;
                 if (currentScreen) {
@@ -208,8 +210,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.isClickChangeDisplayMode = true;
                     // update exTable to update color for extable
                     self.updateDetailAndHorzSum();
+                } else {
+                    self.stopRequest(true);
                 }
-                nts.uk.ui.block.clear();
             });
 
             self.selectedModeDisplayObject.subscribe((newValue) => {
@@ -238,6 +241,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.lengthListSid = ko.pureComputed(() => {
                 return nts.uk.resource.getText('KSU001_54', [self.listSid().length.toString()]);
             });
+
+            self.stopRequest.subscribe(function(value) {
+                if (!value) {
+                    nts.uk.ui.block.grayout();
+                } else {
+                    nts.uk.ui.block.clear();
+                }
+            });
         }
 
         /**
@@ -260,12 +271,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // get data for dialog C
                 self.initShiftCondition();
                 // init and get data for screen A
-                // checkNeededOfWorkTimeSetting(): get list state of workTypeCode relate to need of workTime- get for screen JB
-                $.when(self.checkStateWorkTypeCode(lstWorkTypeCode), self.checkNeededOfWorkTimeSetting(lstWorkTypeCode), self.getDataWorkEmpCombine()).done(() => {
-                    self.initCCG001();
-                    self.initExTable();
-                    dfd.resolve();
-                });
+                // checkNeededOfWorkTimeSetting(): get list state of workTypeCode relate to need of workTime
+                self.listStateWorkTypeCode(__viewContext.viewModel.viewO.checkStateWorkTypeCode);
+                self.listCheckNeededOfWorkTime(__viewContext.viewModel.viewO.checkNeededOfWorkTimeSetting);
+                self.dataWorkEmpCombine(__viewContext.viewModel.viewO.workEmpCombines);
+
+                self.initCCG001();
+                self.initExTable();
+                dfd.resolve();
             });
             return dfd.promise();
         }
@@ -276,7 +289,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {
             let self = this;
-            nts.uk.ui.block.grayout();
+            self.stopRequest(false);
 
             self.empItems.removeAll();
             _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
@@ -316,7 +329,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.updateExTable();
                     });
                 }
-            })
+            }).fail(() => { self.stopRequest(true); });
         }
 
         /**
@@ -373,11 +386,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 //Get dates in time period
                 currentDay = new Date(self.dtPrev().toString());
 
-            while (currentDay <= self.dtAft()) {
-                self.arrDay.push(new Time(currentDay));
-                currentDay.setDate(currentDay.getDate() + 1);
-            }
-
             // create data for columns
             let leftmostDs = [],
                 middleDs = [],
@@ -393,20 +401,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 leftHorzContentDs = [],
                 vertSumContentDs = [];
 
+            while (currentDay <= self.dtAft()) {
+                self.arrDay.push(new Time(currentDay));
+                let time = new Time(currentDay);
+                objDetailHeaderDs['_' + time.yearMonthDay] = '';
+                detailColumns.push({
+                    key: "_" + time.yearMonthDay, width: "50px", headerText: "", handlerType: "input", dataType: "time/time", visible: true
+                });
+
+                currentDay.setDate(currentDay.getDate() + 1);
+            }
+
             //create dataSource for detailHeader
             detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
-            for (let i = 0; i < self.arrDay.length; i++) {
-                objDetailHeaderDs['_' + self.arrDay[i].yearMonthDay] = '';
-            }
             detailHeaderDs.push(objDetailHeaderDs);
 
             //define the detailColumns
-            _.each(self.arrDay, (x: Time) => {
-                detailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "50px", headerText: "", handlerType: "input", dataType: "time/time", visible: true
-                });
-            });
-
             horzSumHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
 
             //create leftMost Header and Content
@@ -614,6 +624,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $(".close-popup").click(function() {
                 $('#popup-area8').css('display', 'none');
             });
+
+            /**
+             * validate when stick data in cell
+             */
+            $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
+                let stateWorkTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
+                // if workTypeCode is not required( state = 2) worktime is needless
+                if (stateWorkTypeCd && stateWorkTypeCd.state == 2 && data.workTimeCode !== null && data.workTimeCode !== '000') {
+                    return function() {
+                        alertError({ messageId: 'Msg_434' });
+                    };
+                }
+                // if workTypeCode is required( state = 0) worktime is need
+                if (stateWorkTypeCd && stateWorkTypeCd.state == 0 && (data.workTimeCode === null || data.workTimeCode === '000')) {
+                    return function() {
+                        alertError({ messageId: 'Msg_435' });
+                    };
+                }
+
+                return true;
+            });
         }
 
         /**
@@ -623,8 +654,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateExTable(): void {
             let self = this;
-
-            nts.uk.ui.block.grayout();
+            self.stopRequest(false);
 
             let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newDetailHeaderDs = [], newObjDetailHeaderDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
 
@@ -754,7 +784,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").on("extablecellupdated", function() { });
                 $("#extable").on("extablerowupdated", function() { });
             }).always(() => {
-                nts.uk.ui.block.clear();
+                self.stopRequest(true);
             });
         }
 
@@ -763,28 +793,26 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateDetailAndHorzSum(): void {
             let self = this;
-            nts.uk.ui.block.grayout();
+
             //Get dates in time period
             let currentDay = new Date(self.dtPrev().toString());
             self.arrDay = [];
             let newDetailColumns = [], newObjDetailHeaderDs = [], newDetailHeaderDs = [], newDetailContentDs = [];
             while (currentDay <= self.dtAft()) {
                 self.arrDay.push(new Time(currentDay));
+                let time = new Time(currentDay);
+                //define the new detailColumns
+                newDetailColumns.push({
+                    key: "_" + time.yearMonthDay, width: "50px", headerText: "", handlerType: "input", dataType: "time/time", visible: true
+                });
+                //create new detailHeaderDs
+                newObjDetailHeaderDs['_' + time.yearMonthDay] = '';
+
                 currentDay.setDate(currentDay.getDate() + 1);
             }
 
-            //define the new detailColumns
-            _.each(self.arrDay, (x: Time) => {
-                newDetailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "50px", headerText: "", handlerType: "input", dataType: "time/time", visible: true
-                });
-            });
-
             //create new detailHeaderDs
             newDetailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
-            for (let i = 0; i < self.arrDay.length; i++) {
-                newObjDetailHeaderDs['_' + self.arrDay[i].yearMonthDay] = '';
-            }
             newDetailHeaderDs.push(newObjDetailHeaderDs);
 
             //get new horzSumContentDs
@@ -803,7 +831,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             //if haven't data in extable, only update header detail and header horizontal
             if (self.empItems().length == 0) {
-                //                self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco).done(() => {
                 let updateDetailHeader = {
                     columns: newDetailColumns,
                     dataSource: newDetailHeaderDs,
@@ -812,7 +839,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         rows: { 0: "40px", 1: "20px" }
                     }, {
                             name: "HeaderCellStyle",
-                            //                                decorator: detailHeaderDeco
                         }, {
                             name: "HeaderPopups",
                             menu: {
@@ -834,15 +860,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     dataSource: newDetailHeaderDs,
                     features: [{
                         name: "HeaderCellStyle",
-                        //                            decorator: detailHeaderDeco
                     }]
                 };
 
                 $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
                 $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
-                //                }).always(() => {
-                nts.uk.ui.block.clear();
-                //                });
+                self.stopRequest(true);
             } else if (self.selectedModeDisplayObject() == 1) {
                 self.setDatasource().done(() => {
                     self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
@@ -905,7 +928,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
                     });
                 }).always(() => {
-                    nts.uk.ui.block.clear();
+                    self.stopRequest(true);
                 });
             } else if (self.selectedModeDisplayObject() == 2) {
                 // in phare 2, set dataSource of actual data = dataSource of intended data
@@ -969,8 +992,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
                     });
                 }).always(() => {
-                    nts.uk.ui.block.clear();
+                    self.stopRequest(true);
                 });
+            } else {
+                self.stopRequest(true);
             }
         }
 
@@ -980,19 +1005,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         initShiftCondition(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            service.getShiftCondition().done(function(listShiftCondition) {
-                service.getShiftConditionCategory().done(function(listShiftCategory) {
-                    _.forEach(listShiftCategory, function(shiftCate) {
-                        let level1 = new Node(shiftCate.categoryNo, shiftCate.categoryName, []);
-                        _.forEach(listShiftCondition, function(shiftCon) {
-                            if (shiftCate.categoryNo == shiftCon.categoryNo) {
-                                let level2 = new Node(shiftCon.conditionNo, shiftCon.conditionName, []);
-                                level1.childs.push(level2);
-                            }
-                        });
-                        self.itemsTree.push(level1);
-                    });
-                });
+            service.buildTreeShiftCondition().done(function(itemsTree) {
+                self.itemsTree(itemsTree);
                 dfd.resolve();
             });
             return dfd.promise();
@@ -1244,6 +1258,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         nextMonth(): void {
             let self = this;
+            self.stopRequest(false);
             if (self.selectedTimePeriod() == 1) {
                 //Recalculate the time period
                 let dtMoment = moment(self.dtAft());
@@ -1254,6 +1269,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.dtAft(dtMoment.toDate());
                 self.dataSource([]);
                 self.updateDetailAndHorzSum();
+            } else {
+                self.stopRequest(true);
             }
         }
 
@@ -1262,6 +1279,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         backMonth(): void {
             let self = this;
+            self.stopRequest(false);
             if (self.selectedTimePeriod() == 1) {
                 //Recalculate the time period
                 let dtMoment = moment(self.dtPrev());
@@ -1277,6 +1295,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.dtPrev(new Date(dtMoment.format('YYYY/MM/DD')));
                 self.dataSource([]);
                 self.updateDetailAndHorzSum();
+            } else {
+                self.stopRequest(true);
             }
         }
 
@@ -1292,7 +1312,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 return;
             }
 
-            nts.uk.ui.block.grayout();
+            self.stopRequest(false);
 
             if (self.selectedModeDisplay() == 2) {
                 _.each(arrTmp, (item) => {
@@ -1336,21 +1356,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.updateExTable();
                     if (error.length != 0) {
                         self.addListError(error);
-                    } else {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }
                 });
             }).fail(function(error: any) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                alertError({ messageId: error.messageId });
             }).always(() => {
-                nts.uk.ui.block.clear();
+                self.stopRequest(true);
             });
         }
 
         /**
          * Set color for text in cell : 明細セル文字色の判断処理
          */
-        setColorForText(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
+        setColorForText(detailContentDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             //Set color for text in cell 
             if (self.selectedModeDisplayObject() == 2) {
@@ -1409,7 +1427,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * Set background color for cell
          */
-        setColorForCell(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
+        setColorForCell(detailContentDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             if (self.selectedBackgroundColor() === '001') {
                 // Return value：就業時間帯 -> query table WorkTime to get color code
@@ -1503,6 +1521,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             if (self.isClickChangeDisplayMode) {
                 self.isClickChangeDisplayMode = false;
+                _.map(self.listColorOfHeader(), (item) => {
+                    detailHeaderDeco.push(item);
+                });
                 dfd.resolve();
                 return;
             }
@@ -1568,8 +1589,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         setColor(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco), self.setColorForText(detailHeaderDeco, detailContentDeco),
-                self.setColorForCell(detailHeaderDeco, detailContentDeco), self.setColorForLeftmostContent()).done(() => {                    //set lock cell
+            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco), self.setColorForText(detailContentDeco),
+                self.setColorForCell(detailContentDeco), self.setColorForLeftmostContent()).done(() => {                    //set lock cell
                     _.each(self.dataSource(), (x) => {
                         if (x.confirmedAtr == 1) {
                             $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));

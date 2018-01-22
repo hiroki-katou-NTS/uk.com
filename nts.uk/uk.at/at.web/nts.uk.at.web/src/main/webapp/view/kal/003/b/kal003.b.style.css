@@ -31,9 +31,24 @@
 .nts-editor-wrapped {display: initial !IMPORTANT;}
 
 .ntsRadioBox {
-	margin-right: 20px;
+	margin-right: 0px;
+    margin-left: 24px;
 }
 .ntsRadioBox span.label {
   display: inline-block;
   padding-left: 5px;
+}
+
+.tx_radiobox_right {
+	text-align:right;
+}
+
+.div_radiobox_right {
+	float: right;
+}
+.ntsControl.symbol:after {
+  position: absolute;
+  content: attr(data-content);
+  top: 0px;
+  color: #999;
 }

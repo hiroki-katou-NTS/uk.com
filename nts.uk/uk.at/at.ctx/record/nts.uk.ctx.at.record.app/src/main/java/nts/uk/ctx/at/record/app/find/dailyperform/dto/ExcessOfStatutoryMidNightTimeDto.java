@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 
 /** 所定外深夜時間 */
 @Data
@@ -19,6 +19,6 @@ public class ExcessOfStatutoryMidNightTimeDto {
 
 	/** 事前申請時間: 勤怠時間 */
 	 @AttendanceItemLayout(layout = "B", jpPropertyName="事前申請時間")
-	 @AttendanceItemValue(itemId = 565, type = ValueType.INTEGER)
+	 @AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer beforeApplicationTime;
 }

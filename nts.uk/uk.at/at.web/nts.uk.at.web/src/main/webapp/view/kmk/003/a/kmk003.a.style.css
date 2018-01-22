@@ -36,6 +36,7 @@
 
 .setting_header {
 	margin-left: 10px;
+	width: 910px;
 }
 
 .setting_header_br {
@@ -60,3 +61,4 @@
 .center-align {
 	text-align: center;
 }
+

@@ -10,6 +10,7 @@ import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -197,5 +198,26 @@ public class PredetemineTimeSetting extends AggregateRoot {
 			this.prescribedTimezoneSetting.restoreDisabledDataFrom(domain.getPrescribedTimezoneSetting());
 		}
 	}
+	
+	/**
+	 * 1日の範囲を時間帯として返す
+	 * 
+	 * @return 1日の範囲(時間帯)
+	 * 
+	 * @author keisuke_hoshina
+	 */
+	public TimeSpanForCalc getOneDaySpan() {
+		return new TimeSpanForCalc(startDateClock,
+				new TimeWithDayAttr(startDateClock.valueAsMinutes() + rangeTimeDay.valueAsMinutes()));
+	}
+	
+	public int getPredetermineEndTime() {
+		return this.startDateClock.minute() + (int) this.rangeTimeDay.minute();
+	}
+
+	public TimezoneUse getTimeSheetOf(int workNo) {
+		return this.prescribedTimezoneSetting.getMatchWorkNoTimeSheet(workNo);
+	}
+
 
 }

@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 
 /**
  * The Interface EmTimeZoneSetPolicy.
@@ -18,4 +19,12 @@ public interface EmTimeZoneSetPolicy {
 	 * @param etzSet the etz set
 	 */
 	void validate(PredetemineTimeSetting predTime, EmTimeZoneSet etzSet);
+
+	/**
+	 * Validate timezone.
+	 *
+	 * @param presTz the pres tz
+	 * @param timezone the timezone
+	 */
+	void validateTimezone(PrescribedTimezoneSetting presTz, TimeZoneRounding timezone);
 }

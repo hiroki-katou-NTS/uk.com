@@ -236,7 +236,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		CaculationTime overtimeCheckResult = new CaculationTime();
 		// Imported(申請承認)「計算残業時間」を取得する :TODO
 		List<OvertimeInputCaculation> overtimeInputCaculations = initOvertimeInputCaculation();
-		if(recordWorkInfoImport.getAttendanceStampTimeFirst() != -1 && recordWorkInfoImport.getLeaveStampTimeFirst() != -1){
+		if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
 			// 打刻あり
 			if(siftCD != recordWorkInfoImport.getWorkTimeCode()){
 				// Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
@@ -268,7 +268,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 			RequestAppDetailSetting requestAppDetailSetting, String siftCD, List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport) {
 		List<CaculationTime> result = new ArrayList<>();
 		List<OvertimeInputCaculation> overtimeInputCaculations = initOvertimeInputCaculation();
-		if(recordWorkInfoImport.getLeaveStampTimeFirst() == -1){
+		if(recordWorkInfoImport.getLeaveStampTimeFirst() == null){
 			// 退勤打刻なし
 			result = printColor(overtimeHours, overtimeInputCaculations);
 		}else{

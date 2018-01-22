@@ -10,7 +10,7 @@ import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.shorttimework.primitivevalue.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -29,7 +29,7 @@ public class ShortTimeOfDailyCommand extends DailyWorkCommonCommand {
 		return data.isPresent() ? new ShortTimeOfDailyPerformance(getEmployeeId(),
 				ConvertHelper.mapTo(data.get().getShortWorkingTimeSheets(),
 						(c) -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getShortWorkTimeFrameNo()),
-								ConvertHelper.getEnum(c.getChildCareAttr(), ChildCareAttribute.class),
+								c.getChildCareAttr() == null ? ChildCareAttribute.CHILD_CARE : ConvertHelper.getEnum(c.getChildCareAttr(), ChildCareAttribute.class),
 								createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),
 								createAttendanceTime(c.getDeductionTime()), createAttendanceTime(c.getShortTime()))),
 				getWorkDate()) : null;

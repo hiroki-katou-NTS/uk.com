@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.record.dom.premiumtime;
 
+import java.util.List;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -10,12 +13,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  *
  */
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PremiumTimeOfDailyPerformance {
 	
-	//割増時間NO - primitive value
-	private Integer premiumTimeNo;
-	
-	//割増時間
-	private AttendanceTime premitumTime;
+	List<PremiumTime> premiumTimes;
 
 }

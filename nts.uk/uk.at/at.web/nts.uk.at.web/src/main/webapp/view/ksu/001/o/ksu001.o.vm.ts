@@ -18,6 +18,9 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         startDateScreenA: any = null;
         endDateScreenA: any = null;
         isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
+        checkStateWorkTypeCode: any = null;
+        checkNeededOfWorkTimeSetting: any = null;
+        workEmpCombines: any = null;
 
         constructor() {
             let self = this;
@@ -60,9 +63,9 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     let c = _.find(self.listWorkTime(), ['workTimeCode', workTimeCd]);
                     if (c) {
                         workTimeName = c.abName;
-                        workTimeCode = (c.workTimeCode == '000' ? null : c.workTimeCode);
-                        startTime = c.workNo == 1 ? nts.uk.time.parseTime(c.startTime, true).format() : '';
-                        endTime = c.workNo == 1 ? nts.uk.time.parseTime(c.endTime, true).format() : '';
+                        workTimeCode = (c.workTimeCode == '000') ? null : c.workTimeCode;
+                        startTime = nts.uk.time.parseTime(c.startTime, true).format();
+                        endTime = nts.uk.time.parseTime(c.endTime, true).format();
                     } else {
                         workTimeName = null;
                         workTimeCode = null;
@@ -116,10 +119,15 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             if (!self.time1() && !self.time2()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
                 self.isEnableClearSearchButton(false);
+                self.clear();
                 return;
             }
             if (self.time1() && self.time2() && moment(self.time1(), 'HH:mm').isSameOrAfter(moment(self.time2(), 'HH:mm'))) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_54" });
+                self.clear();
+                return;
+            }
+            if (nts.uk.ui.errors.hasError()) {
                 return;
             }
             self.listWorkTimeComboBox([]);
@@ -153,6 +161,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
          * get startDate, endDate give to A1_1(CCG001) 
          * becasue CCG001 is not available startDate and endDate
          * so get startDate, endDate for screen A
+         * checkNeededOfWorkTimeSetting(): get list state of workTypeCode relate to need of workTime
          */
         getWorkTypeTimeAndStartEndDate(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
@@ -162,6 +171,10 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 self.endDateScreenA = data.endDate;
                 //set data for listWorkType
                 self.listWorkType(data.listWorkType);
+                //
+                self.checkStateWorkTypeCode = data.checkStateWorkTypeCode;
+                self.checkNeededOfWorkTimeSetting = data.checkNeededOfWorkTimeSetting;
+                self.workEmpCombines = data.workEmpCombines;
                 //set data for listWorkTime
                 self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                     workTimeCode: '000',
@@ -175,7 +188,8 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     note: null,
                     startTime: undefined,
                     endTime: undefined,
-                    workNo: undefined
+                    workNo: undefined,
+                    useAtr: undefined
                 }));
                 // insert item 「なし」 with code = '000'
                 self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
@@ -190,7 +204,8 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     note: null,
                     startTime: undefined,
                     endTime: undefined,
-                    workNo: undefined
+                    workNo: undefined,
+                    useAtr: undefined
                 }));
                 // insert item 「個人情報設定」 with code = '000'
                 self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
@@ -205,14 +220,17 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     note: null,
                     startTime: undefined,
                     endTime: undefined,
-                    workNo: undefined
+                    workNo: undefined,
+                    useAtr: undefined
                 }));
                 _.each(data.listWorkTime, function(wT) {
                     let workTimeObj: ksu001.common.viewmodel.WorkTime = _.find(self.listWorkTime(), ['workTimeCode', wT.workTimeCode]);
                     if (workTimeObj && wT.workNo == 1) {
-                        workTimeObj.timeZone1 = nts.uk.time.parseTime(wT.startTime, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.endTime, true).format();
+                        workTimeObj.timeZone1 = nts.uk.time.parseTime(wT.startTime, true).format() + nts.uk.resource.getText("KSU001_66")
+                            + nts.uk.time.parseTime(wT.endTime, true).format();
                     } else if (workTimeObj && wT.workNo == 2) {
-                        workTimeObj.timeZone2 = nts.uk.time.parseTime(wT.startTime, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.endTime, true).format();
+                        workTimeObj.timeZone2 = wT.useAtr == 1 ? (nts.uk.time.parseTime(wT.startTime, true).format()
+                            + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.endTime, true).format()) : '';
                     } else {
                         self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({
                             workTimeCode: wT.workTimeCode,
@@ -226,7 +244,8 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                             note: wT.note,
                             startTime: wT.startTime,
                             endTime: wT.endTime,
-                            workNo: wT.workNo
+                            workNo: wT.workNo,
+                            useAtr: wT.useAtr
                         }));
                     }
                 });

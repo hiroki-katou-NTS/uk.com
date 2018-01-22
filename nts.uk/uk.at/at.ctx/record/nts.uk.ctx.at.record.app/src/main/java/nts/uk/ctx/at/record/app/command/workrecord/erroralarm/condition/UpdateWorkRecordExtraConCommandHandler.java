@@ -22,8 +22,7 @@ public class UpdateWorkRecordExtraConCommandHandler extends CommandHandler<WorkR
 		WorkRecordExtraConCommand workRecordExtraConCommand = context.getCommand();
 		WorkRecordExtractingCondition workRecordExtractingCondition  = workRecordExtraConCommand.fromDomain();
 		Optional<WorkRecordExtractingCondition> checkData = repo.getWorkRecordExtraConById(
-				workRecordExtractingCondition.getErrorAlarmCheckID(),
-				workRecordExtractingCondition.getCheckItem().value);
+				workRecordExtractingCondition.getErrorAlarmCheckID());
 		if(checkData.isPresent()) {
 			repo.updateWorkRecordExtraCon(workRecordExtractingCondition);
 			

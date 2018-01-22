@@ -11,11 +11,14 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureEmpAddCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureHistoryAddCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureHistoryAddCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureHistorySaveCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureHistorySaveCommandHandler;
+import nts.uk.ctx.at.shared.app.command.workrule.closure.ClousureEmpAddCommand;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureHistoryFinder;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureEmployDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryHeaderDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
@@ -40,6 +43,8 @@ public class ClosureHistoryWs {
 	@Inject
 	private ClosureHistoryAddCommandHandler add;
 	
+	@Inject
+	private ClosureEmpAddCommandHandler closureEmpAdd;
 	
 	/**
 	 * Find all.
@@ -86,5 +91,15 @@ public class ClosureHistoryWs {
 	public void add(ClosureHistoryAddCommand command){
 		this.add.handle(command);
 	}
+	@POST
+	@Path("getClosureEmploy")
+	public ClosureEmployDto getClosureEmploy() {
+		return this.finder.getClosureEmploy();
+	}
 	
+	@POST
+	@Path("addClousureEmp")
+	public void addClousureEmp(ClousureEmpAddCommand command) {
+		this.closureEmpAdd.handle(command);
+	}
 }

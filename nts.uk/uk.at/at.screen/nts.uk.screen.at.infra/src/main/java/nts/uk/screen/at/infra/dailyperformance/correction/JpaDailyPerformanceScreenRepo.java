@@ -50,10 +50,8 @@ import nts.uk.ctx.at.shared.infra.entity.workplace.KshmtWorkTimeWorkplace;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmpClosureEmploymentPK;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime_old.KwtmtWorkTime;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassification;
-import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmploymentPK;
@@ -118,7 +116,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SEL_WORKPLACE;
 
-	private final static String SEL_CLASSIFICATION = "SELECT c FROM CclmtClassification c WHERE c.cclmtClassificationPK.cid = :companyId";
+	private final static String SEL_CLASSIFICATION = "SELECT c FROM BsymtClassification c WHERE c.bsymtClassificationPK.cid = :companyId";
 
 	private final static String SEL_EMPLOYEE;
 
@@ -492,6 +490,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<WorkInfoOfDailyPerformanceDto> getListWorkInfoOfDailyPerformance(List<String> lstEmployee,
 			DateRange dateRange) {
+		if(lstEmployee.isEmpty()) return new ArrayList<>();
 		return this.queryProxy().query(SEL_DAILY_WORK_INFO, KrcdtDaiPerWorkInfo.class)
 				.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", lstEmployee).getList(e -> {
 					return new WorkInfoOfDailyPerformanceDto(e.krcdtDaiPerWorkInfoPK.employeeId, e.calculationState,
@@ -501,9 +500,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<String> getListClassification() {
-		return this.queryProxy().query(SEL_CLASSIFICATION, CclmtClassification.class)
+		return this.queryProxy().query(SEL_CLASSIFICATION, BsymtClassification.class)
 				.setParameter("companyId", AppContexts.user().companyId()).getList().stream().map(c -> {
-					return c.getCclmtClassificationPK().getCode();
+					return c.getBsymtClassificationPK().getClscd();
 				}).collect(Collectors.toList());
 	}
 
@@ -619,7 +618,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 							s.kwrmtErAlWorkRecordPK.errorAlarmCode, s.errorAlarmName,
 							s.fixedAtr.intValue() == 1 ? true : false, s.useAtr.intValue() == 1 ? true : false,
 							s.typeAtr.intValue(), "", s.boldAtr.intValue() == 1 ? true : false, s.messageColor,
-							s.cancelableAtr.intValue() == 1 ? true : false, s.errorDisplayItem.intValue());
+							s.cancelableAtr.intValue() == 1 ? true : false, s.errorDisplayItem == null ? null : s.errorDisplayItem.intValue());
 				}).collect(Collectors.toList());
 	}
 

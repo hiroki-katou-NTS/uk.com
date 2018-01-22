@@ -12,10 +12,9 @@ import nts.uk.ctx.at.record.dom.daily.calcset.RelationSetOfGoOutAndFluBreakTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktimeset.common.FlowRestClockCalcMethod;
@@ -112,14 +111,14 @@ public class DeductionTotalTimeForFluidCalc {
 	public void collectDeductionTotalTime(
 			List<TimeSheetOfDeductionItem> list,/*外出時間帯リスト*/
 			AttendanceTime getGoOutStartClock,/*intで渡せばよくね？*/
-			FluidWorkSetting fluidWorkSetting,
+			FixedWorkSetting fluidWorkSetting,
 			int roopNo,
 			RelationSetOfGoOutAndFluBreakTime relation
 			) {
 		
 //		//経過時間を取得（一時的に作成、後々削除予定）
-		AttendanceTime elpsedTime = fluidWorkSetting.getWeekdayWorkTime().getWorkTimeSheet().
-				getMatchWorkNoOverTimeWorkSheet(roopNo).get().getFluidWorkTimeSetting().getElapsedTime();	
+		AttendanceTime elpsedTime = new AttendanceTime(0);//fluidWorkSetting.getLstHalfDayWorkTimezone().getWorkTimeSheet().
+				//getMatchWorkNoOverTimeWorkSheet(roopNo).get().getFluidWorkTimeSetting().getElapsedTime();	
 //		//流動休憩開始時刻の作成
 		AttendanceTime startTime = new AttendanceTime(getGoOutStartClock.valueAsMinutes() + elpsedTime.valueAsMinutes() + this.totalTime.valueAsMinutes());
 //		//外出時間帯リスト作成に使用する時間帯の作成

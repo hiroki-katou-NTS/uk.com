@@ -51,15 +51,12 @@ public class AlarmCheckConditionByCategory extends AggregateRoot {
 		this.extractionCondition = extractionCondition;
 	}
 
-	public void changeState(String name, boolean filterByEmployment, boolean filterByClassification,
-			boolean filterByJobTitle, boolean filterByBusinessType, List<String> lstEmploymentCode,
-			List<String> lstClassificationCode, List<String> lstJobTitleId, List<String> lstBusinessTypeCode,
-			List<String> lstRoleId) {
+	public void changeState(String name, List<String> lstRoleId, AlarmCheckTargetCondition targetCondition,
+			ExtractionCondition extractCondition) {
 		this.name = new AlarmCheckConditionName(name);
 		this.listRoleId = lstRoleId;
-		this.extractTargetCondition = new AlarmCheckTargetCondition(this.extractTargetCondition.getId(),
-				filterByBusinessType, filterByJobTitle, filterByEmployment, filterByClassification, lstBusinessTypeCode,
-				lstJobTitleId, lstEmploymentCode, lstClassificationCode);		
+		this.extractTargetCondition.changeState(targetCondition);
+		this.extractionCondition.changeState(extractCondition);
 	}
 
 }

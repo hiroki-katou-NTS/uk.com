@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -36,11 +36,11 @@ public class WorkHolidayTimeDailyPerformDto {
 
 	/** 休出拘束時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "C", jpPropertyName="休出拘束時間")
-	@AttendanceItemValue(itemId = 746, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer holidayTimeSpentAtWork;
 
 	/** 休出枠時間: 休出枠時間 */
-	@AttendanceItemLayout(layout = "D", isList = true, jpPropertyName="休出枠時間", listMaxLength = 10, setFieldWithIndex = "holidayFrameNo", needCheckIDWithIndex = true)
+	@AttendanceItemLayout(layout = "D", jpPropertyName="休出枠時間", listMaxLength = 10, indexField = "holidayFrameNo", needCheckIDWithIndex = true)
 	private List<HolidayWorkFrameTimeDto> holidayWorkFrameTime;
 	
 	public static WorkHolidayTimeDailyPerformDto fromOverTimeWorkDailyPerform(HolidayWorkTimeOfDaily domain){

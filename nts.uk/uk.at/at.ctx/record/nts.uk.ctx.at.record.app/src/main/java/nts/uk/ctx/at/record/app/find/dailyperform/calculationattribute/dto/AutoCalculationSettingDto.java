@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 
 @Data
 @AllArgsConstructor
@@ -15,7 +15,7 @@ public class AutoCalculationSettingDto {
 
 	/** 計算区分: 時間外の自動計算区分 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "計算区分")
-	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private int calculationAttr;
 
 	/** 上限の設定: 時間外の上限設定 */

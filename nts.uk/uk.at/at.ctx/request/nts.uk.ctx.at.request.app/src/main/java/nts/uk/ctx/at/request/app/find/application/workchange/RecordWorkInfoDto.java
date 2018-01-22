@@ -22,20 +22,20 @@ public class RecordWorkInfoDto {
 	private String workTimeName;
 
 	// 開始時刻1
-	private int startTime1;
+	private Integer startTime1;
 
 	// 終了時刻1
-	private int endTime1;
+	private Integer endTime1;
 
 	// 開始時刻2
-	private int startTime2;
+	private Integer startTime2;
 
 	// 終了時刻2
-	private int endTime2;
+	private Integer endTime2;
 
 	// 休憩時間開始時刻
-	private int breakTimeStart;
+	private Integer breakTimeStart;
 
 	//休憩時間終了時刻
-	private int breakTimeEnd;
+	private Integer breakTimeEnd;
 }

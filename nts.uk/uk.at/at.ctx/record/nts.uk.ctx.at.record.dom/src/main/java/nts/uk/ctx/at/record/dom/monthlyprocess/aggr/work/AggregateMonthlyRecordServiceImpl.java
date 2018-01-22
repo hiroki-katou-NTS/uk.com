@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,13 +14,18 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistoryAdopter;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 /**
  * ドメインサービス：月別実績を集計する
@@ -29,8 +35,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecordService {
 
 	/** 労働契約履歴 */
-	@Inject
-	private EmploymentContractHistoryAdopter employmentContractHistoryAdopter;
+	//@Inject
+	//private EmploymentContractHistoryAdopter employmentContractHistoryAdopter;
 	
 	/** 社員 */
 	@Inject
@@ -106,51 +112,51 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		val totalWorkingTime = monthlyCalculation.getTotalWorkingTime();
 		totalWorkingTime.getWorkTime().setWorkTime(new AttendanceTimeMonth(450 + randomVal));
 		val aggrOvertime1 =	AggregateOverTime.of(
-				new OvertimeWorkFrameNo(BigDecimal.valueOf(1)),
+				new OverTimeFrameNo(1),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(118),
 						new AttendanceTimeMonth(120 + randomVal)),
 				new AttendanceTimeMonth(0),
-				TimeMonthWithCalculation.ofSameTime(new AttendanceTimeMonth(0)),
+				TimeMonthWithCalculation.ofSameTime(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
 		val aggrOvertime2 =	AggregateOverTime.of(
-				new OvertimeWorkFrameNo(BigDecimal.valueOf(2)),
+				new OverTimeFrameNo(2),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(236),
 						new AttendanceTimeMonth(240 + randomVal)),
 				new AttendanceTimeMonth(0),
-				TimeMonthWithCalculation.ofSameTime(new AttendanceTimeMonth(0)),
+				TimeMonthWithCalculation.ofSameTime(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
-		totalWorkingTime.getOverTime().getAggregateOverTimes().put(
+		totalWorkingTime.getOverTime().getAggregateOverTimeMap().put(
 				aggrOvertime1.getOverTimeFrameNo(), aggrOvertime1);
 		if (randomVal >= 5){
-			totalWorkingTime.getOverTime().getAggregateOverTimes().put(
+			totalWorkingTime.getOverTime().getAggregateOverTimeMap().put(
 					aggrOvertime2.getOverTimeFrameNo(), aggrOvertime2);
 		}
 		val aggrHdwktime1 = AggregateHolidayWorkTime.of(
-				new WorkdayoffFrameNo(BigDecimal.valueOf(1)),
+				new HolidayWorkFrameNo(1),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(178),
 						new AttendanceTimeMonth(180 + randomVal)),
 				new AttendanceTimeMonth(0),
-				TimeMonthWithCalculation.ofSameTime(new AttendanceTimeMonth(0)),
+				TimeMonthWithCalculation.ofSameTime(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
 		val aggrHdwktime2 = AggregateHolidayWorkTime.of(
-				new WorkdayoffFrameNo(BigDecimal.valueOf(2)),
+				new HolidayWorkFrameNo(2),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(296),
 						new AttendanceTimeMonth(300 + randomVal)),
 				new AttendanceTimeMonth(0),
-				TimeMonthWithCalculation.ofSameTime(new AttendanceTimeMonth(0)),
+				TimeMonthWithCalculation.ofSameTime(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
-		totalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimes().put(
+		totalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap().put(
 				aggrHdwktime1.getHolidayWorkFrameNo(), aggrHdwktime1);
 		if (randomVal >= 6){
-			totalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimes().put(
+			totalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap().put(
 					aggrHdwktime2.getHolidayWorkFrameNo(), aggrHdwktime2);
 		}
 		val actualWorkingTime = monthlyCalculation.getActualWorkingTime();

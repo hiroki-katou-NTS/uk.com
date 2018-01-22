@@ -2,10 +2,13 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.time.DateUtils;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -70,7 +73,8 @@ public class StampServiceImpl implements StampDomainService{
 				int attendanceClock = x.getAttendanceTime().v();
 				TimeZoneOutput stampRange = s.getStampRange();
 				boolean reflectClass = false;
-				if (x.getDate().compareTo(date) == 0 && attendanceClock >= stampRange.getStart().v().intValue()
+				
+				if ( DateUtils.isSameDay(x.getDate().date(),date.date()) && attendanceClock >= stampRange.getStart().v().intValue()
 						&& attendanceClock <= stampRange.getEnd().v().intValue() && reflectClass == false) {
 					lstStampItemOutput.add(x);
 				}
@@ -85,7 +89,7 @@ public class StampServiceImpl implements StampDomainService{
 		lstStampItem.forEach(x -> {
 			int attendanceClock = x.getAttendanceTime().v().intValue();
 			TimeZoneOutput stampRange = s.getStampRange();
-			if (x.getDate().compareTo(date) == 0 && attendanceClock >= stampRange.getStart().v().intValue()
+			if (DateUtils.isSameDay(x.getDate().date(),date.date()) && attendanceClock >= stampRange.getStart().v().intValue()
 					&& attendanceClock <= stampRange.getEnd().v().intValue()) {
 				lstStampItemOutput.add(x);
 			}

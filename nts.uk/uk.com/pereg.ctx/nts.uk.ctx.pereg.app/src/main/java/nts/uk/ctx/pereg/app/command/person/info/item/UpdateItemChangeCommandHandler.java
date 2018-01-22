@@ -11,6 +11,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pereg.app.command.person.info.category.CheckNameSpace;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.item.SystemRequired;
@@ -29,8 +30,9 @@ public class UpdateItemChangeCommandHandler extends CommandHandler<UpdateItemCha
 	@Override
 	protected void handle(CommandHandlerContext<UpdateItemChangeCommand> context) {
 		UpdateItemChangeCommand command = context.getCommand();
-		if (command.getItemName().trim().equals("")) {
-			throw new BusinessException("Msg_928");
+		String itemName = command.getItemName();
+		if(CheckNameSpace.checkName(itemName)){
+			throw new BusinessException(new RawErrorMessage("Msg_928"));
 		}
 		
 		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep

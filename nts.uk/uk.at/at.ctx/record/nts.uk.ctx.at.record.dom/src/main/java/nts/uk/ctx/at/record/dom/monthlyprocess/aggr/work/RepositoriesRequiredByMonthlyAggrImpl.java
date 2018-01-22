@@ -8,8 +8,8 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepo
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.GetAggrSettingMonthly;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.GetOfStatutoryWorkTime;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 /**
@@ -45,12 +45,17 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	public GetOfStatutoryWorkTime getOfStatutoryWorkTime;
 	
 	/** 代休時間設定の取得 */
-	@Inject
-	@Getter
-	public CompensatoryOccurrenceSettingGetMemento compensatoryOccurrenceSet;
+	//@Inject
+	//@Getter
+	//public CompensatoryOccurrenceSettingGetMemento compensatoryOccurrenceSet;
 	
 	/** 月別実績の勤怠時間の取得 */
 	@Inject
 	@Getter
 	public AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthly;
+	
+	/** 休日加算設定 */
+	@Inject
+	@Getter
+	public HolidayAddtionRepository holidayAddition;
 }

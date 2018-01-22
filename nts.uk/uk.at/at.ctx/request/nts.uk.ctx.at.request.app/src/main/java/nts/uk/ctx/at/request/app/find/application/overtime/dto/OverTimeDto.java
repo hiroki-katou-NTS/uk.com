@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
@@ -178,6 +179,10 @@ public class OverTimeDto {
 	 * allPreAppPanelFlg
 	 */
 	private boolean allPreAppPanelFlg;
+	/**
+	 * 時間外表示区分
+	 */
+	private boolean extratimeDisplayFlag;
 	
 	/**
 	 * manualSendMailAtr
@@ -234,7 +239,8 @@ public class OverTimeDto {
 				0, 
 				false,
 				false,
-				false, 
+				false,
+				false,
 				false, 
 				null,
 				null);

@@ -12,6 +12,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonDeleteCommand;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonDeleteCommandHandler;
@@ -24,12 +26,11 @@ import nts.uk.ctx.at.shared.app.command.worktime.flexset.FlexWorkSettingSaveComm
 import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveCommand;
 import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.worktime.WorkTimeSettingInfoFinder;
+import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.WorkTimeSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
-import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
-import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * The Class WorkTimeWebServiceNew.
@@ -206,4 +207,16 @@ public class WorkTimeWebServiceNew extends WebService {
 	public void removeByWorkTimeCode(WorkTimeCommonDeleteCommand command) {
 		this.workTimeCommonDeleteCommandHandler.handle(command);
 	}
+	
+	
+}
+
+@Data
+@NoArgsConstructor
+class WorkTimeCommandFinder {
+	List<String> codelist;
+	Integer startAtr;
+	Integer startTime;
+	int endAtr;
+	Integer endTime;
 }

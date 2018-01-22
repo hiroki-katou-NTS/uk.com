@@ -17,10 +17,11 @@
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
 			<com:stylefile path="cps001.a.style.css" />
-			<com:scriptfile path="/view/cps/007/a/layout-control-ko-ext.js"
-				of="/nts.uk.com.web" />
-				
-			<com:scriptfile path="cbx-control-ko-ext.js" />
+			
+			<com:scriptfile path="/view/cps/shr/cbx-control-ko-ext.js" />
+			<com:scriptfile path="/view/cps/shr/layout-control-ko-ext.js" />
+			<com:scriptfile path="/view/cps/shr/layout-control-validation.js" />
+			
 			<com:scriptfile path="cps001.a.service.js" />
 			<com:scriptfile path="cps001.a.vm.js" />
 			<com:scriptfile path="cps001.a.start.js" />
@@ -220,8 +221,8 @@
 											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_11')}</td>
 											<td>
 												<div class="info">
-													<span data-bind="text: _emp.employeeCode"></span> 
-													<span data-bind="text:  _emp.employeeName"></span>
+													<span data-bind="text: _emp.employeeCode, attr: { title: _emp.employeeCode }"></span> 
+													<span data-bind="text:  _emp.employeeName, attr: { title: _emp.employeeName }"></span>
 													<span data-bind="text:  _pers.gender() ? ('(' + _pers.gender() + ')') : ''"></span>
 												</div>
 											</td>
@@ -255,9 +256,9 @@
 							<div class="active-panel cf">
 								<div class="column">
 									<button class="btn btn-location" type="button"
-										data-bind="click: pickLocation, enable: _auth.allowMapBrowse()" tabindex="16">#{i18n.getText('CPS001_20')}</button>
+										data-bind="click: pickLocation, style: { visibility: _auth.allowMapBrowse() ? 'visible' : 'hidden' }" tabindex="16">#{i18n.getText('CPS001_20')}</button>
 									<button class="btn btn-details" type="button"
-										data-bind="click: uploadebook, enable: _auth.allowDocRef()" tabindex="15">#{i18n.getText('CPS001_19')}</button>
+										data-bind="click: uploadebook,  style: { visibility: _auth.allowDocRef() ? 'visible' : 'hidden' }" tabindex="15">#{i18n.getText('CPS001_19')}</button>
 								</div>
 								<div class="column">
 									<button class="btn btn-print hidden" type="button" tabindex="14">#{i18n.getText('CPS001_17')}</button>
@@ -333,13 +334,13 @@
 					permisions: {
 						add: ko.observable(),
 						replication: ko.observable(),
-						delete: ko.observable()
+						remove: ko.observable()
 					}
 				}">
 				<div class="form-group search-box">
 					<button type="button" class="btn-add" data-bind="click: $data.event.add || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.add()" tabindex="10">#{i18n.getText('CPS001_32')}</button>
 					<button type="button" class="btn-repli" data-bind="click: $data.event.replication || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.replace() &amp;&amp; $data.list.value()" tabindex="11">#{i18n.getText('CPS001_33')}</button>
-					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.remove() &amp;&amp; _.indexOf(_.map(ko.toJS($data.list.dataSource), function(x) { return x.optionValue; }), $data.list.value()) == 0 , " tabindex="12">#{i18n.getText('CPS001_34')}</button>
+					<button type="button" class="btn-delete danger" data-bind="click: $data.event.delete || function() {}, enable: $data.permisions &amp;&amp; $data.permisions.remove() &amp;&amp; $data.list.dataSource().length > -1" tabindex="12">#{i18n.getText('CPS001_34')}</button>
 				</div>
 				<div data-bind="template: {
 						name: 'list-data',
@@ -396,11 +397,12 @@
 			<script type="text/html" id="simple-layout"
 				data-structor="{
 					items: listItemCls,
-					outData: outData
+					outData: outData,
+					showColor: ko.observable(true)
 				}">
 				<div style="padding-top: 10px"
 					data-bind="ntsLayoutControl: {
-					showColor: ko.observable(true), 
+					showColor: $data.showColor || false, 
 					data: $data.items,
 					outData: $data.outData || ko.observableArray([]),
 					editAble: 2 }"></div>
@@ -422,7 +424,8 @@
 								name: 'simple-layout',
 								data: {
 									items: multiple.layout().listItemCls,
-									outData: multiple.layout().outData
+									outData: multiple.layout().outData,
+									showColor: multiple.layout().showColor
 								},
 								permision: {
 									add: ko.observable(),
@@ -436,7 +439,8 @@
 								name: 'simple-layout',
 								data: {
 									items: multiple.layout().listItemCls,
-									outData: multiple.layout().outData
+									outData: multiple.layout().outData,
+									showColor: multiple.layout().showColor
 								},
 								permision: {
 									add: ko.observable(),

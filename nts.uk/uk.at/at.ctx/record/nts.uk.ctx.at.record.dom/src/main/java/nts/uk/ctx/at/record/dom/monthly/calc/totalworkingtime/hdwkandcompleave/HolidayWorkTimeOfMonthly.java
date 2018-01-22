@@ -14,8 +14,8 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalHolidayWorkTransferOrderOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.ExcessOutsideTimeSet;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalHolidayWorkTransferOrderOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatHolidayWorkTimeOfLessThanCriteriaPerWeek;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
@@ -24,7 +24,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworkTime.DailyCalculationPersonalInformation;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
 /**
  * 月別実績の休出時間
@@ -159,10 +160,15 @@ public class HolidayWorkTimeOfMonthly {
 		// 勤務種類から法定内休日か判断する
 		val workType = repositories.getWorkType().findByPK(companyId, workInfo.getWorkTypeCode().v());
 		if (workType.isPresent()){
-			
-			//*****（未）　休日設定（HolidaySetting）の取り方が判らない。
+			val workTypeSet = workType.get().getWorkTypeSet();
+			if (workTypeSet != null){
+				val holidayAtr = workTypeSet.getHolidayAtr();
+				// 法定内休日なら、休出を集計しない
+				if (holidayAtr == HolidayAtr.STATUTORY_HOLIDAYS) return false;
+			}
 		}
 		
+		// 法定内休日以外なら、休出を集計する
 		return true;
 	}
 	

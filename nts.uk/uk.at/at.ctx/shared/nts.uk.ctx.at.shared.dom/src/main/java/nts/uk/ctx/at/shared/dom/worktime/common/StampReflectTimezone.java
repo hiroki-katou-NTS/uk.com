@@ -63,8 +63,6 @@ public class StampReflectTimezone extends DomainObject {
 	@Override
 	public void validate() {
 		super.validate();
-
-		// TODO: Validate message 516
 	}
 	
 }

@@ -1,16 +1,14 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 
 /** 短時間勤務時間帯 */
 @Data
@@ -31,12 +29,12 @@ public class ShortWorkTimeSheetDto {
 
 	/** 開始: 時刻(日区分付き) */
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "開始", needCheckIDWithIndex = true, needCheckIDWithMethod = "childCare", methodForEnumValues = "childCareEnum")
-	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer startTime;
 
 	/** 終了: 時刻(日区分付き) */
 	@AttendanceItemLayout(layout = "D", jpPropertyName = "終了", needCheckIDWithIndex = true, needCheckIDWithMethod = "childCare", methodForEnumValues = "childCareEnum")
-	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer endTime;
 
 	/** 控除時間: 勤怠時間 */
@@ -64,9 +62,17 @@ public class ShortWorkTimeSheetDto {
 		}
 	}
 	
-	public Map<String, List<Integer>> childCareEnum(){
-		Map<String, List<Integer>> enums = new HashMap<>();
-		enums.put("childCareAttr", Arrays.asList(0, 1));
-		return enums;
+	public void childCare(String text){
+		if(childCareAttr == null){
+			if(text.contains("育児")){
+				this.childCareAttr = 0;
+			} else if (text.contains("介護")){
+				this.childCareAttr = 1;
+			}
+		}
+	}
+	
+	public List<String> childCareEnum(){
+		return Arrays.asList("育児", "介護");
 	}
 }

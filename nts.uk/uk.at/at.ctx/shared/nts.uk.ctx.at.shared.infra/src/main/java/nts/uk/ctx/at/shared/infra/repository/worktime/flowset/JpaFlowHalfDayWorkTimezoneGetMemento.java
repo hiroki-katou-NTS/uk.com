@@ -1,0 +1,46 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
+
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtzGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
+
+/**
+ * The Class JpaFlowHalfDayWorkTimezoneGetMemento.
+ */
+public class JpaFlowHalfDayWorkTimezoneGetMemento implements FlHalfDayWtzGetMemento {
+
+	/** The entity. */
+	private KshmtFlowWorkSet entity;
+	
+	/**
+	 * Instantiates a new jpa flow half day work timezone get memento.
+	 *
+	 * @param entity the entity
+	 */
+	public JpaFlowHalfDayWorkTimezoneGetMemento(KshmtFlowWorkSet entity) {
+		super();
+		this.entity = entity;
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtzGetMemento#getRestTimezone()
+	 */
+	@Override
+	public FlowWorkRestTimezone getRestTimezone() {
+		return new FlowWorkRestTimezone(new JpaFlowWorkRestTimezoneGetMemento(this.entity.getFlowHalfDayWorkRtSet()));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtzGetMemento#getWorkTimeZone()
+	 */
+	@Override
+	public FlowWorkTimezoneSetting getWorkTimeZone() {
+		return new FlowWorkTimezoneSetting(new JpaFlowWorkTimezoneSettingGetMemento(this.entity));
+	}
+
+}

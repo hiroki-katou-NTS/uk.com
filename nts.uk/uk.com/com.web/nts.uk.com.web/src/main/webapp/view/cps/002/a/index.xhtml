@@ -20,7 +20,7 @@
 			<com:scriptfile path="cps002.a.service.js" />
 			<com:scriptfile path="cps002.a.vm.js" />
 			<com:scriptfile path="cps002.a.start.js" />
-			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
+			<com:scriptfile path="/view/cps/shr/layout-control-ko-ext.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
 				nts.uk.ctx.sys.gateway.dom.login.UserName
@@ -271,7 +271,7 @@
 										<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_40')}</div>
 									</div>
 									<div class="div_line">
-										<div style="width: 190px" id="initSearchBox"
+										<div style="width: 260px" id="initSearchBox"
 											data-bind="ntsSearchBox: {
 															targetKey: 'itemCode',
 															mode:'igGrid', 
@@ -291,8 +291,8 @@
 															dataSource: initValueList ,
 															primaryKey: 'itemCode',
 															columns:[
-																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'itemCode', width: 40},
-															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'itemName', width: 130 } ]  ,
+																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'itemCode', width: 80},
+															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'itemName', width: 160 } ]  ,
 															multiple: false,
 															value: initSettingSelectedCode ,
 															rows:15

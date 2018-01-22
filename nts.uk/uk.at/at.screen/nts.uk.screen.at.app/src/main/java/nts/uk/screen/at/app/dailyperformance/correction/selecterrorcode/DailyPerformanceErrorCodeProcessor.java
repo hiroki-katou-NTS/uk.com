@@ -23,7 +23,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
@@ -83,9 +83,27 @@ public class DailyPerformanceErrorCodeProcessor {
 	
 	@Inject
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
+	
+	private static final String CODE = "Code";
+	private static final String NAME = "Name";
+	private static final String NO = "NO";
+    private static final String LOCK_DATE = "date";
+	private static final String LOCK_EMP_CODE = "employeeCode";
+	private static final String LOCK_EMP_NAME = "employeeName";
+	private static final String LOCK_ERROR = "error";
+	private static final String LOCK_SIGN = "sign";
+	private static final String LOCK_PIC = "picture-person";
+	private static final String ADD_CHARACTER = "A";
+	private static final String PX = "px";
+	private static final String TYPE_LABEL = "label";
+	private static final String FORMAT_HH_MM = "%d:%02d";
+	private static final String TYPE_LINK = "Link2";
+	private static final String LOCK_EDIT_CELL_DAY = "D";
+	private static final String LOCK_EDIT_CELL_MONTH = "M";
+	private static final String LOCK_EDIT_CELL_WORK = "C";
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
-			List<DailyPerformanceEmployeeDto> lstEmployee, int displayFormat, CorrectionOfDailyPerformance correct,
+			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer displayFormat, CorrectionOfDailyPerformance correct,
 			List<String> errorCodes, List<String> formatCodes) {
 		String sId = AppContexts.user().employeeId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
@@ -139,12 +157,6 @@ public class DailyPerformanceErrorCodeProcessor {
 		// date + Acquire personalized information + Acquire error alarm
 		// information
 		screenDto.setLstData(getListData(screenDto.getLstEmployee(), dateRange));
-		/// 対応する「日別実績」をすべて取得する-- lay tat ca thanh tich theo ngay tuong ung
-		//// 日別実績の勤務情報
-//		List<DailyModifyResult> results = dailyModifyQueryProcessor
-//				.initScreens(new DailyModifyQuery(listEmployeeId, dateRange.toListDate()));
-//		Map<String, DailyModifyResult> resultDailyMap = results.stream()
-//				.collect(Collectors.toMap((x) -> x.getEmployId() + "|" + x.getDate(), Function.identity()));
 		/// アルゴリズム「対象日に対応する社員の実績の編集状態を取得する」を実行する | Execute "Acquire edit status
 		/// of employee's record corresponding to target date"| lay ve trang
 		/// thai sua cua thanh tich nhan vien tuong ung
@@ -181,16 +193,16 @@ public class DailyPerformanceErrorCodeProcessor {
 				Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(AppContexts.user().companyId(), x.getClosureId());
 				if(actualLockDto.isPresent()){
 					if(actualLockDto.get().getDailyLockState()==1){
-						employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+"D", datePeriod);
+						employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+LOCK_EDIT_CELL_DAY, datePeriod);
 					};
 					if(actualLockDto.get().getMonthlyLockState()==1){
-						employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+"M", datePeriod);
+						employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+LOCK_EDIT_CELL_MONTH, datePeriod);
 					}
 				}
 				//アルゴリズム「表示項目を制御する」を実行する | Execute "control display items"
 				Optional<WorkFixedDto> workFixedOp =repo.findWorkFixed(x.getClosureId(), x.getClosureMonth());
 				if(workFixedOp.isPresent()){
-					employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+workFixedOp.get().getWkpId()+"|"+"C", datePeriod);
+					employeeAndDateRange.put(x.getSid()+"|"+x.getClosureId()+"|"+workFixedOp.get().getWkpId()+"|"+LOCK_EDIT_CELL_WORK, datePeriod);
 				}
 			});
 		}
@@ -206,6 +218,16 @@ public class DailyPerformanceErrorCodeProcessor {
 		screenDto.getLstFixedHeader().forEach(column ->{
 			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
 		});
+		if (displayFormat == 2) {
+			// only filter data error
+			Map<String, String> listEmployeeError = new HashMap<>();
+			for(DPErrorDto dto: lstError){
+				listEmployeeError.put(dto.getEmployeeId(), "");
+			}
+			listEmployeeId = listEmployeeId.stream().filter(x -> listEmployeeError.containsKey(x))
+					.collect(Collectors.toList());
+			screenDto.setLstData(screenDto.getLstData().stream().filter(x -> listEmployeeError.containsKey(x.getEmployeeId())).collect(Collectors.toList()));
+		}
 		/// 対応する「日別実績」をすべて取得する-- lay tat ca thanh tich theo ngay tuong ung
 		//// 日別実績の勤務情報
 		List<DailyModifyResult> results = new ArrayList<>();
@@ -238,20 +260,20 @@ public class DailyPerformanceErrorCodeProcessor {
 			boolean lock = false;
 			if(!employeeAndDateRange.isEmpty()){
 				for(int i = 1; i<= 5 ; i++){
-					DatePeriod dateD = employeeAndDateRange.get(data.getEmployeeId()+"|"+i+"|"+"D");
-					DatePeriod dateM = employeeAndDateRange.get(data.getEmployeeId()+"|"+i+"|"+"M");
-					DatePeriod dateC = employeeAndDateRange.get(data.getEmployeeId()+"|"+i+"|"+data.getWorkplaceId()+"|"+"C");
+					DatePeriod dateD = employeeAndDateRange.get(data.getEmployeeId()+"|"+i+"|"+LOCK_EDIT_CELL_DAY);
+					DatePeriod dateM = employeeAndDateRange.get(data.getEmployeeId()+"|"+i+"|"+LOCK_EDIT_CELL_MONTH);
+					DatePeriod dateC = employeeAndDateRange.get(data.getEmployeeId()+"|"+i+"|"+data.getWorkplaceId()+"|"+LOCK_EDIT_CELL_WORK);
 					String lockD="";
 					String lockM="";
 					String lockC="";
 					if((dateD != null && (data.getDate().afterOrEquals(dateD.start()) && data.getDate().beforeOrEquals(dateD.end())))){
-						lockD ="|"+"D";
+						lockD ="|"+LOCK_EDIT_CELL_DAY;
 					}
 					if((dateM != null && (data.getDate().afterOrEquals(dateM.start()) && data.getDate().beforeOrEquals(dateM.end())))){
-						lockM ="|"+"M";
+						lockM ="|"+LOCK_EDIT_CELL_MONTH;
 					}
 					if((dateC != null && (data.getDate().afterOrEquals(dateC.start()) && data.getDate().beforeOrEquals(dateC.end())))){
-						lockC ="|"+"C";
+						lockC ="|"+LOCK_EDIT_CELL_WORK;
 					}
 					if(!lockD.equals("")|| !lockM.equals("")|| !lockC.equals("")){
 						data.setState("lock"+lockD+lockM+lockC);
@@ -260,12 +282,12 @@ public class DailyPerformanceErrorCodeProcessor {
 				}
 			}
 			if(lock){
-				screenDto.setLock(data.getId(), "date");
-			    screenDto.setLock(data.getId(), "employeeCode");
-			    screenDto.setLock(data.getId(), "employeeName");
-			    screenDto.setLock(data.getId(), "error");
-			    screenDto.setLock(data.getId(), "sign");
-			    screenDto.setLock(data.getId(), "picture-person");
+				screenDto.setLock(data.getId(), LOCK_DATE);
+			    screenDto.setLock(data.getId(), LOCK_EMP_CODE);
+			    screenDto.setLock(data.getId(), LOCK_EMP_NAME);
+			    screenDto.setLock(data.getId(), LOCK_ERROR);
+			    screenDto.setLock(data.getId(), LOCK_SIGN);
+			    screenDto.setLock(data.getId(), LOCK_PIC);
 			}
 			DailyModifyResult resultOfOneRow = resultDailyMap.isEmpty() ? null : resultDailyMap.get(data.getEmployeeId()+"|"+data.getDate());
 			if(resultOfOneRow != null){
@@ -275,7 +297,7 @@ public class DailyPerformanceErrorCodeProcessor {
 					attendanceTimes.add(x);
 				});
 				screenDto.getItemValues().addAll(attendanceTimes);
-				itemValueMap = attendanceTimes.isEmpty()? Collections.emptyMap(): attendanceTimes.stream().collect(Collectors.toMap(x -> x.getItemId()+"|"+data.getEmployeeId()+"|"+data.getDate(), x -> x));
+				itemValueMap = attendanceTimes.isEmpty()? Collections.emptyMap(): attendanceTimes.stream().collect(Collectors.toMap(x -> x.itemId()+"|"+data.getEmployeeId()+"|"+data.getDate(), x -> x));
 			}
 			List<DPCellDataDto> cellDatas = new ArrayList<>();
 			if (dPControlDisplayItem.getLstAttendanceItem() != null) {
@@ -288,11 +310,11 @@ public class DailyPerformanceErrorCodeProcessor {
 							|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
 						if(attendanceAtr == DailyAttendanceAtr.Code.value){
 							if(lock){
-								screenDto.setLock(data.getId(), "Code" + String.valueOf(item.getId()));
-								screenDto.setLock(data.getId(), "Name" + String.valueOf(item.getId()));
+								screenDto.setLock(data.getId(), CODE + String.valueOf(item.getId()));
+								screenDto.setLock(data.getId(), NAME + String.valueOf(item.getId()));
 							}
-							cellDatas.add(new DPCellDataDto("Code" + String.valueOf(item.getId()), value ,
-									String.valueOf(item.getAttendanceAtr()), "label"));
+							cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), value ,
+									String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
 							if(value.equals("")){
 								value = TextResource.localize("KDW003_82");
 							}else{
@@ -300,23 +322,23 @@ public class DailyPerformanceErrorCodeProcessor {
 								//CodeName codeName = null;
 								value = (codeName == null) ? TextResource.localize("KDW003_81") : codeName.getName();
 							}
-							cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()),
-									value , String.valueOf(item.getAttendanceAtr()), "Link2"));
+							cellDatas.add(new DPCellDataDto(NAME + String.valueOf(item.getId()),
+									value , String.valueOf(item.getAttendanceAtr()), TYPE_LINK));
 							
 						}else{
 							if(lock){
-								screenDto.setLock(data.getId(), "NO" + String.valueOf(item.getId()));
-								screenDto.setLock(data.getId(), "Name" + String.valueOf(item.getId()));
+								screenDto.setLock(data.getId(), NO + String.valueOf(item.getId()));
+								screenDto.setLock(data.getId(), NAME + String.valueOf(item.getId()));
 							}
-							cellDatas.add(new DPCellDataDto("NO" + String.valueOf(item.getId()), value ,
-									String.valueOf(item.getAttendanceAtr()), "label"));
-							cellDatas.add(new DPCellDataDto("Name" + String.valueOf(item.getId()),
-									value , String.valueOf(item.getAttendanceAtr()), "Link2"));
+							cellDatas.add(new DPCellDataDto(NO + String.valueOf(item.getId()), value ,
+									String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
+							cellDatas.add(new DPCellDataDto(NAME + String.valueOf(item.getId()),
+									value , String.valueOf(item.getAttendanceAtr()), TYPE_LINK));
 						}
 						
 					} else {
 						if (lock) {
-							screenDto.setLock(data.getId(), "A" + String.valueOf(item.getId()));
+							screenDto.setLock(data.getId(), ADD_CHARACTER + String.valueOf(item.getId()));
 						}
 						if (attendanceAtr == DailyAttendanceAtr.Time.value
 								|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
@@ -325,16 +347,16 @@ public class DailyPerformanceErrorCodeProcessor {
 								int minute = Integer.parseInt(value);
 								int hours = Math.abs(minute / 60); 
 								int minutes =  Math.abs(minute) % 60;
-								value = String.format("%d:%02d", minute >0 ? hours : 0-hours, minutes);
-								cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
-										String.valueOf(item.getAttendanceAtr()), "label"));
+								value = String.format(FORMAT_HH_MM, minute >0 ? hours : 0-hours, minutes);
+								cellDatas.add(new DPCellDataDto(ADD_CHARACTER + String.valueOf(item.getId()), value,
+										String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
 							}else{
-								cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
-										String.valueOf(item.getAttendanceAtr()), "label"));
+								cellDatas.add(new DPCellDataDto(ADD_CHARACTER + String.valueOf(item.getId()), value,
+										String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
 							}
 						} else {
-							cellDatas.add(new DPCellDataDto("A" + String.valueOf(item.getId()), value,
-									String.valueOf(item.getAttendanceAtr()), "label"));
+							cellDatas.add(new DPCellDataDto(ADD_CHARACTER + String.valueOf(item.getId()), value,
+									String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
 						}
 					}
 				};
@@ -479,8 +501,8 @@ public class DailyPerformanceErrorCodeProcessor {
 					for (FormatDPCorrectionDto dto : lstFormat) {
 						// chia cot con code name cua AttendanceItemId chinh va
 						// set
-						lstHeader.add(DPHeaderDto.createSimpleHeader("A" + String.valueOf(dto.getAttendanceItemId()),
-								String.valueOf(dto.getColumnWidth()) + "px", mapDP));
+						lstHeader.add(DPHeaderDto.createSimpleHeader(ADD_CHARACTER + String.valueOf(dto.getAttendanceItemId()),
+								String.valueOf(dto.getColumnWidth()) + PX, mapDP));
 					}
 					result.setLstHeader(lstHeader);
 					// result.setLstSheet(lstSheet);
@@ -517,8 +539,8 @@ public class DailyPerformanceErrorCodeProcessor {
 					result.addColumnsToSheet(lstFormat, mapDP);
 					List<DPHeaderDto> lstHeader = new ArrayList<>();
 					for (FormatDPCorrectionDto dto : lstFormat) {
-						lstHeader.add(DPHeaderDto.createSimpleHeader("A" + String.valueOf(dto.getAttendanceItemId()),
-								String.valueOf(dto.getColumnWidth()) + "px", mapDP));
+						lstHeader.add(DPHeaderDto.createSimpleHeader(ADD_CHARACTER + String.valueOf(dto.getAttendanceItemId()),
+								String.valueOf(dto.getColumnWidth()) + PX, mapDP));
 					}
 					result.setLstHeader(lstHeader);
 				}

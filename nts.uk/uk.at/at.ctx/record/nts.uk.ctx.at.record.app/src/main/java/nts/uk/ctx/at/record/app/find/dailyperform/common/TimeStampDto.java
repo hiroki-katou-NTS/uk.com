@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 
 @Data
 @AllArgsConstructor
@@ -14,17 +14,17 @@ public class TimeStampDto {
 
 	/** 時刻 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "時刻", needCheckIDWithIndex = true)
-	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer timesOfDay;
 
 	/** 丸め後の時刻 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "丸め後の時刻", needCheckIDWithIndex = true)
-	@AttendanceItemValue(type = ValueType.INTEGER, getIdFromUtil = true)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer afterRoundingTimesOfDay;
 
 	/** 場所コード */
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "場所コード", needCheckIDWithIndex = true)
-	@AttendanceItemValue(getIdFromUtil = true)
+	@AttendanceItemValue
 	private String placeCode;
 	
 	

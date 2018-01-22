@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class TimeLeavingOfDailyPerformanceCommand extends DailyWorkCommonCommand {
@@ -58,6 +58,6 @@ public class TimeLeavingOfDailyPerformanceCommand extends DailyWorkCommonCommand
 					c.getAfterRoundingTimesOfDay() == null ? null : new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
 					c.getTimesOfDay() == null ? null : new TimeWithDayAttr(c.getTimesOfDay()), 
 					c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
-					ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
+					c.getStampSourceInfo() == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

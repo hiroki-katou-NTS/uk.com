@@ -7,7 +7,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkSchedu
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の勤務予定時間 */
@@ -26,12 +26,12 @@ public class WorkScheduleTimeDailyPerformDto {
 
 	/** 実績所定労働時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "実績所定労働時間")
-	@AttendanceItemValue(itemId = 531, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer recordPrescribedLaborTime;
 
 	/** 計画所定労働時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName = "計画所定労働時間")
-	@AttendanceItemValue(itemId = 530, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer schedulePrescribedLaborTime;
 
 	public static WorkScheduleTimeDailyPerformDto fromWorkScheduleTime(WorkScheduleTimeOfDaily domain) {

@@ -55,7 +55,11 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	 * nts.arc.time.GeneralDate)
 	 */
 	public String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate) {
-		return this.employmentPub.getEmploymentCode(companyId, employeeId, baseDate);
+		Optional<SEmpHistExport> employmentData = this.employmentPub.findSEmpHistBySid(companyId, employeeId, baseDate);
+		if (employmentData.isPresent()){
+			return employmentData.get().getEmploymentCode();
+		}
+		return null;
 	}
 
 	/*

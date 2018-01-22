@@ -5,6 +5,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationName;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -54,7 +55,7 @@ public class StampItem extends AggregateRoot {
 	/**
 	 * 年月日
 	 */
-	private GeneralDate date;
+	private GeneralDateTime date;
 	/**
 	 * 
 	 */
@@ -65,7 +66,7 @@ public class StampItem extends AggregateRoot {
 	private ReflectedAtr reflectedAtr;
 	public static StampItem createFromJavaType(String cardNumber, int attendanceTime,
 			int stampCombinationAtr, String SiftCd, int stampMethod, int stampAtr, String workLocationCd,String workLocationName,
-			int stampReason, GeneralDate date,String personId, Integer reflected ) {
+			int stampReason, GeneralDateTime date,String personId, Integer reflected ) {
 		return new StampItem(new CardNumber(cardNumber), 
 				new AttendanceTime(attendanceTime),
 				EnumAdaptor.valueOf(stampCombinationAtr, StampCombinationAtr.class), 

@@ -10,6 +10,9 @@ import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -20,25 +23,25 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class BreakTimeSheetDailyPerformDto {
 
 	/** 計上用合計時間: 控除合計時間 */
-	// @AttendanceItemLayout(layout = "A")
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "計上用合計時間")
 	private TotalDeductionTimeDto toRecordTotalTime;
 
 	/** 控除用合計時間: 控除合計時間 */
-	// @AttendanceItemLayout(layout = "B")
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "控除用合計時間")
 	private TotalDeductionTimeDto deductionTotalTime;
 
 	/** 勤務間時間: 勤怠時間 */
-	// @AttendanceItemLayout(layout = "C")
-	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "C", jpPropertyName = "勤務間時間")
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer duringWork;
 
 	/** 補正後時間帯: 休憩時間帯 */
-	// @AttendanceItemLayout(layout = "D", isList = true, listMaxLength = ?, setFieldWithIndex = "breakFrameNo")
+	 @AttendanceItemLayout(layout = "D", jpPropertyName = "補正後時間帯", listMaxLength = 10, indexField = "breakFrameNo")
 	private List<BreakTimeSheetDto> correctedTimeSheet;
 
 	/** 休憩回数: 休憩外出回数 */
-	// @AttendanceItemLayout(layout = "E")
-	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = "E", jpPropertyName = "休憩回数")
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer breakTimes;
 
 	public static BreakTimeSheetDailyPerformDto fromBreakTimeOfDaily(BreakTimeOfDaily domain) {

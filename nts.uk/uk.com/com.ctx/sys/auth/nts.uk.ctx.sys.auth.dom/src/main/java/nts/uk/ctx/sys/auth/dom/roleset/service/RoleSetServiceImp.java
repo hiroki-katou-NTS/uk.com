@@ -10,12 +10,22 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmpInfoByCidSidImport;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoAdapter;
+import nts.uk.ctx.sys.auth.dom.adapter.jobtitle.SyJobTitleAdapter;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitle;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleDetail;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
+import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
+import nts.uk.ctx.sys.auth.dom.user.User;
+import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -26,7 +36,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class RoleSetServiceImp implements RoleSetService{
 
-    @Inject RoleSetRepository roleSetRepository;
+    @Inject
+    private RoleSetRepository roleSetRepository;
 
     @Inject
     private DefaultRoleSetRepository defaultRoleSetRepository;
@@ -36,6 +47,15 @@ public class RoleSetServiceImp implements RoleSetService{
 
     @Inject
     private RoleSetGrantedJobTitleRepository roleSetGrantedJobTitleRepository;
+    
+    @Inject
+    private EmployeeInfoAdapter employeeInfoAdapter;
+    
+    @Inject
+    private UserRepository userRepo;
+    
+    @Inject
+    private SyJobTitleAdapter syJobTitleAdapter;
 
     /**
      * Get all Role Set - ロールセットをすべて取得する
@@ -136,4 +156,38 @@ public class RoleSetServiceImp implements RoleSetService{
         /** check from CAS014 */
         return roleSetGrantedJobTitleRepository.checkRoleSetCdExist(roleSetCd, companyId);
     }
+
+	@Override
+	public RoleSet getRoleSetFromUserId(String userId, GeneralDate baseDate) {
+		String companyId = AppContexts.user().companyId();
+		User user = userRepo.getByUserID(userId).get();
+		
+		if (user.getAssociatedPersonID() == null)
+			throw new RuntimeException("取得失敗");
+		
+		Optional<EmpInfoByCidSidImport> optImportEmployee = employeeInfoAdapter.getEmpInfoBySidCid(user.getAssociatedPersonID(), companyId);
+		if (!optImportEmployee.isPresent())
+			throw new RuntimeException("取得失敗");
+		
+		// Get RoleSet granted for Person
+		EmpInfoByCidSidImport importEmployee = optImportEmployee.get();
+		Optional<RoleSetGrantedPerson> optRoleSetGrantedPerson = roleSetGrantedPersonRepository.getByEmployeeId(importEmployee.getSid());
+		if (optRoleSetGrantedPerson.isPresent())
+			return roleSetRepository.findByRoleSetCdAndCompanyId(optRoleSetGrantedPerson.get().getRoleSetCd().v(), companyId).get();
+		
+		// Get RoleSet granted for JobTitle
+		val optSysJobTitle = syJobTitleAdapter.gerBySidAndBaseDate(importEmployee.getSid(), baseDate);
+		if (optSysJobTitle.isPresent()) {
+			String jobTitleId = optSysJobTitle.get().jobTitleId;
+			RoleSetGrantedJobTitle roleSetGrantedJobTitle = roleSetGrantedJobTitleRepository.getOneByCompanyId(companyId).get();
+	    	Optional<RoleSetGrantedJobTitleDetail> optJobTitleInCompany = roleSetGrantedJobTitle.getDetails().stream().filter(c -> c.getJobTitleId().equals(jobTitleId)).findFirst();
+	    	if (optJobTitleInCompany.isPresent()) {
+	    		return roleSetRepository.findByRoleSetCdAndCompanyId(optJobTitleInCompany.get().getRoleSetCd().v(), companyId).get();
+	    	}
+		}
+		
+    	// Get Default RoleSet
+    	String defaultRoleSetCD = defaultRoleSetRepository.findByCompanyId(companyId).get().getRoleSetCd().v();
+    	return roleSetRepository.findByRoleSetCdAndCompanyId(defaultRoleSetCD, companyId).get();
+	}
 }

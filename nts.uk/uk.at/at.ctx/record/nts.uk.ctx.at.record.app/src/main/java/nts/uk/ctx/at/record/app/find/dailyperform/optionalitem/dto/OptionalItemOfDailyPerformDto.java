@@ -4,18 +4,38 @@ import java.util.List;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の任意項目")
 public class OptionalItemOfDailyPerformDto implements ConvertibleAttendanceItem {
 
 	private String employeeId;
-	
+
 	private GeneralDate date;
-	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "任意項目値", isList = true, listMaxLength = 99, setFieldWithIndex = "itemNo")
+
+	@AttendanceItemLayout(layout = "A", jpPropertyName = "任意項目値", listMaxLength = 99, indexField = "itemNo")
 	private List<OptionalItemValueDto> optionalItems;
+
+	public static OptionalItemOfDailyPerformDto getDto(AnyItemValueOfDaily domain) {
+		OptionalItemOfDailyPerformDto dto = new OptionalItemOfDailyPerformDto();
+		if (domain != null) {
+			dto.setDate(domain.getYmd());
+			dto.setEmployeeId(domain.getEmployeeId());
+			dto.setOptionalItems(ConvertHelper.mapTo(domain.getItems(), (c) -> {
+				boolean isTimes = c.getTimes().isPresent();
+				boolean isAmount = c.getAmount().isPresent();
+				boolean isTime = c.getTime().isPresent();
+				String value = isAmount ? c.getAmount().get().v().toString()
+						: isTime ? String.valueOf(c.getTime().get().valueAsMinutes())
+								: String.valueOf(c.getTimes().get().v());
+				return new OptionalItemValueDto(value, c.getItemNo().v(), isTime, isTimes, isAmount);
+			}));
+		}
+		return dto;
+	}
 }

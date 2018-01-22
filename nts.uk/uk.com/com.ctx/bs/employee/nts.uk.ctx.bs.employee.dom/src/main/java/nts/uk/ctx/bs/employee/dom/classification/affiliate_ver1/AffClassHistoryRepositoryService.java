@@ -44,7 +44,6 @@ public class AffClassHistoryRepositoryService {
 		affClassHistoryRepo.update(item);
 		// Update item before and after
 		updateItemBefore(history, item);
-		updateItemAfter(history, item);
 	}
 	
 	/**
@@ -73,13 +72,4 @@ public class AffClassHistoryRepositoryService {
 
 	}
 
-	private void updateItemAfter(AffClassHistory_ver1 history, DateHistoryItem item) {
-		// Update item after
-		Optional<DateHistoryItem> afterItemOpt = history.immediatelyAfter(item);
-
-		if (!afterItemOpt.isPresent()) {
-			return;
-		}
-		affClassHistoryRepo.update(afterItemOpt.get());
-	}
 }

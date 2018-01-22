@@ -253,16 +253,14 @@ module cps001.a.vm {
                 reload = getShared(RELOAD_KEY),
                 reloadData = getShared(RELOAD_DT_KEY),
                 employee = self.employee(),
-                employees = ko.toJS(self.employees),
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             if (reload) {
-                if (employees.length == 1) {
-                    $('.btn-quick-search[tabindex=4]').click();
-                } else {
-                    $('.btn-quick-search[tabindex=3]').click();
-                }
+                let single = self.employees().length == 1,
+                    old_index = _.indexOf(self.employees().map(x => x.employeeId), employee.employeeId());
 
+                self.employees.removeAll();
+                $('.btn-quick-search[tabindex=3]').click();
                 $.when((() => {
                     let def = $.Deferred(),
                         int = setInterval(() => {
@@ -272,8 +270,26 @@ module cps001.a.vm {
                             }
                         }, 0);
                     return def.promise();
-                })()).done(x => {
-                    employee.employeeId.valueHasMutated();
+                })()).done((employees: Array<IEmployee>) => {
+                    if (single) {
+                        self.employees(_.filter(employees, m => m.employeeId == employee.employeeId()));
+                    }
+
+                    let first = _.find(self.employees(), x => x.employeeId == employee.employeeId());
+                    if (first) {
+                        employee.employeeId.valueHasMutated();
+                    } else {
+                        first = _.find(self.employees(), (x, i) => i == old_index) || _.last(self.employees());
+                        if (first) {
+                            employee.employeeId(first.employeeId);
+                        } else {
+                            if (employee.employeeId()) {
+                                employee.employeeId(undefined);
+                            } else {
+                                employee.employeeId.valueHasMutated();
+                            }
+                        }
+                    }
                 });
             } else {
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
@@ -294,10 +310,9 @@ module cps001.a.vm {
                         return def.promise();
                     })()).done((employees: Array<IEmployee>) => {
                         if (params && params.employeeId) {
-                            employees = _.filter(employees, m => m.employeeId == params.employeeId);
-                            self.employees(employees);
+                            self.employees(_.filter(employees, m => m.employeeId == params.employeeId));
                         }
-                        employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+                        employee.employeeId(self.employees()[0] ? self.employees()[0].employeeId : undefined);
                         setShared(RELOAD_KEY, true);
                     });
                 });
@@ -350,35 +365,7 @@ module cps001.a.vm {
                 iemp: IEmployee = ko.toJS(employee);
 
             modal('../c/index.xhtml').onClosed(() => {
-                let params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined, showAll: false };
-
-                $('.btn-quick-search[tabindex=3]').click();
-                $.when((() => {
-                    let def = $.Deferred(),
-                        int = setInterval(() => {
-                            if (self.employees().length) {
-                                clearInterval(int);
-                                def.resolve(self.employees());
-                            }
-                        }, 0);
-                    return def.promise();
-                })()).done((employees: Array<IEmployee>) => {
-                    if (!employee.employeeId()) {
-                        let employees = _.filter(self.employees(), m => m.employeeId == params.employeeId);
-                        if (!params.showAll) {
-                            self.employees(employees);
-                        }
-                        if (employees[0]) {
-                            if (employees[0].employeeId == employee.employeeId()) {
-                                employee.employeeId();
-                            } else {
-                                employee.employeeId(employees[0].employeeId);
-                            }
-                        } else {
-                            employee.employeeId(undefined);
-                        }
-                    }
-                });
+                self.start();
             });
         }
 
@@ -424,37 +411,38 @@ module cps001.a.vm {
                 };
 
             // trigger change of all control in layout
-            _.each(__viewContext.primitiveValueConstraints, x => {
-                if (_.has(x, "itemCode")) {
-                    $('#' + x.itemCode).trigger('change');
+            $('.drag-panel .nts-input')
+                .trigger('blur')
+                .trigger('change');
+
+            setTimeout(() => {
+                if (hasError()) {
+                    $('#func-notifier-errors').trigger('click');
+                    return;
                 }
-            })
 
-            if (hasError()) {
-                $('#func-notifier-errors').trigger('click');
-                return;
-            }
+                // push data layout to webservice
+                block();
+                service.saveCurrentLayout(command).done(() => {
+                    let firstData: MultiData = _.first(self.multipleData()) || new MultiData(),
+                        saveData: IReloadData = {
+                            id: firstData.id(),
+                            infoId: firstData.infoId(),
+                            categoryId: firstData.categoryId()
+                        };
 
-            // push data layout to webservice
-            block();
-            service.saveCurrentLayout(command).done(() => {
-                let firstData: MultiData = _.first(self.multipleData()) || new MultiData(),
-                    saveData: IReloadData = {
-                        id: firstData.id(),
-                        infoId: firstData.infoId(),
-                        categoryId: firstData.categoryId()
-                    };
+                    setShared(RELOAD_DT_KEY, saveData);
+                    setShared(REPL_KEY, REPL_KEYS.NORMAL);
 
-                setShared(RELOAD_DT_KEY, saveData);
-
-                info({ messageId: "Msg_15" }).then(function() {
+                    info({ messageId: "Msg_15" }).then(function() {
+                        unblock();
+                        self.start();
+                    });
+                }).fail((mes) => {
                     unblock();
-                    self.start();
+                    alert(mes.message);
                 });
-            }).fail((mes) => {
-                unblock();
-                alert(mes.message);
-            });
+            }, 100);
         }
     }
 
@@ -477,6 +465,8 @@ module cps001.a.vm {
     }
 
     class Layout {
+        showColor: KnockoutObservable<boolean> = ko.observable(false);
+
         outData: KnockoutObservableArray<any> = ko.observableArray([]);
 
         listItemCls: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -527,7 +517,6 @@ module cps001.a.vm {
         employeeId: KnockoutObservable<string> = ko.observable(undefined);
 
         category: KnockoutObservable<Category> = ko.observable(new Category());
-
         // event action
         events: Events = {
             add: (callback?: any) => {
@@ -578,7 +567,9 @@ module cps001.a.vm {
                                         callback();
                                     }
                                 });
-                            });
+                            }).fail(msg => {
+                                alert(msg);
+                            });;
                         });
                     }
                 });
@@ -632,6 +623,9 @@ module cps001.a.vm {
 
             self.id.subscribe(id => {
                 let mode: TABS = self.mode();
+
+                setShared(REPL_KEY, REPL_KEYS.NORMAL);
+
                 if (id) {
                     if (mode == TABS.CATEGORY) {
                         let option = _.find(self.combobox(), x => x.optionValue == id);
@@ -681,13 +675,28 @@ module cps001.a.vm {
 
                         service.getCurrentLayout(query).done((data: any) => {
                             if (data) {
+                                layout.showColor(true);
                                 layout.standardDate(data.standardDate || undefined);
+
+                                _.each(data.classificationItems, x => {
+                                    if ([IT_CLA_TYPE.ITEM].indexOf(x.layoutItemType) > -1) {
+                                        _.each(x.items, m => {
+                                            if (!_.isNil(m.value) && !_.isEmpty(m.value)) {
+                                                m.showColor = true;
+                                            } else {
+                                                m.showColor = false;
+                                            }
+                                        });
+                                    }
+                                });
+
                                 layout.listItemCls(data.classificationItems || []);
                             } else {
                                 layout.listItemCls.removeAll();
                             }
                             setShared(RELOAD_DT_KEY, undefined);
                         }).fail(mgs => {
+                            layout.showColor(true);
                             layout.listItemCls.removeAll();
                             setShared(RELOAD_DT_KEY, undefined);
                         });
@@ -704,6 +713,7 @@ module cps001.a.vm {
                         switch (cat.categoryType()) {
                             case IT_CAT_TYPE.SINGLE:
                                 self.infoId(undefined);
+                                layout.showColor(false);
 
                                 self.changeTitle(ATCS.UPDATE);
 
@@ -720,7 +730,7 @@ module cps001.a.vm {
                                 });
                                 break;
                             case IT_CAT_TYPE.MULTI:
-
+                                layout.listItemCls.removeAll();
                                 break;
                             case IT_CAT_TYPE.CONTINU:
                             case IT_CAT_TYPE.CONTINUWED:
@@ -785,7 +795,8 @@ module cps001.a.vm {
                 let id = self.id(),
                     mode: TABS = self.mode(),
                     ctp = cat.categoryType(),
-                    layout = self.layout();
+                    layout = self.layout(),
+                    index = _.indexOf(_.map(self.gridlist(), x => x.optionValue), infoId);
 
                 if (id && mode == TABS.CATEGORY) {
                     let catid = self.categoryId(),
@@ -810,25 +821,30 @@ module cps001.a.vm {
 
                                 self.infoId(undefined);
 
+                                let removed: Array<any> = [];
                                 _.each(data.classificationItems, (c: any, i: number) => {
                                     if (_.has(c, "items") && _.isArray(c.items)) {
-                                        _.each(c.items, m => {
-                                            if (!_.isArray(m)) {
-                                                if (i == 0) {
-                                                    m.value = undefined;
-                                                }
-                                                m.recordId = undefined;
-                                            } else {
-                                                _.each(m, k => {
-                                                    k.recordId = undefined;
+                                        if (!removed.length) {
+                                            removed = _.filter(c.items, (x: any) => x.item && x.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE);
+                                            if (removed.length) {
+                                                _.each(c.items, m => {
+                                                    if (!_.isArray(m)) {
+                                                        m.value = undefined;
+                                                        m.recordId = undefined;
+                                                    } else {
+                                                        _.each(m, k => {
+                                                            k.recordId = undefined;
+                                                        });
+                                                    }
                                                 });
                                             }
-                                        });
+                                        }
                                     }
                                 });
                             } else if (self.infoId()) {
                                 self.changeTitle(ATCS.UPDATE);
                             }
+                            layout.showColor(false);
                             layout.listItemCls(data.classificationItems);
 
                             let roleId = self.roleId(),
@@ -847,7 +863,21 @@ module cps001.a.vm {
                                 }
 
                                 if (perm && !!(selEmId == logInId ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
-                                    self.permisions.remove(true);
+                                    debugger;
+                                    if (index > -1) {
+                                        if (index == 0) {
+                                            self.permisions.remove(true);
+                                        } else {
+                                            let cat: ICategory = ko.toJS(self.category);
+                                            if (cat.categoryType == IT_CAT_TYPE.NODUPLICATE) {
+                                                self.permisions.remove(true);
+                                            } else {
+                                                self.permisions.remove(false);
+                                            }
+                                        }
+                                    } else {
+                                        self.permisions.remove(false);
+                                    }
                                 } else {
                                     self.permisions.remove(false);
                                 }
@@ -1080,13 +1110,12 @@ module cps001.a.vm {
 
         age: KnockoutComputed<string> = ko.computed(() => {
             let self = this,
+                now = moment.utc(),
                 birthDay = self.birthDate(),
-                duration = moment.duration(moment.utc().diff(moment.utc(birthDay))),
-                years = duration.years(),
-                months = duration.months(),
-                days = duration.days();
+                birth = moment.utc(birthDay),
+                duration = moment.duration(now.diff(birth));
 
-            return (years + Number(!!(months || days))) + text('CPS001_66');
+            return duration.years() + text('CPS001_66');
         });
     }
 
@@ -1150,6 +1179,12 @@ module cps001.a.vm {
     enum TABS {
         LAYOUT = <any>"layout",
         CATEGORY = <any>"category"
+    }
+    // define ITEM_CLASSIFICATION_TYPE
+    enum IT_CLA_TYPE {
+        ITEM = <any>"ITEM", // single item
+        LIST = <any>"LIST", // list item
+        SPER = <any>"SeparatorLine" // line item
     }
 
     // define ITEM_CATEGORY_TYPE

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,10 +89,10 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 		AlarmCategory category = AlarmCategory.values()[entity.pk.category];
 		switch (category) {
 		case DAILY:
-			extractionCondition = entity.dailyAlarmCondition.toDomain();
+			extractionCondition = entity.dailyAlarmCondition == null ? null : entity.dailyAlarmCondition.toDomain();
 			break;
 		case SCHEDULE_4WEEK:
-			extractionCondition = entity.schedule4W4DAlarmCondition.toDomain();
+			extractionCondition = entity.schedule4W4DAlarmCondition == null ? null : entity.schedule4W4DAlarmCondition.toDomain();
 			break;
 		default:
 			break;

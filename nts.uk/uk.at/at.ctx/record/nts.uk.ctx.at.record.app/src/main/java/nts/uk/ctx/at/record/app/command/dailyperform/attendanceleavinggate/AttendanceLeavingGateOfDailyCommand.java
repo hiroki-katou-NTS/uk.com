@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -40,6 +40,6 @@ public class AttendanceLeavingGateOfDailyCommand extends DailyWorkCommonCommand 
 		return c == null ? null : new WorkStamp(new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
 				new TimeWithDayAttr(c.getTimesOfDay()),
 				new WorkLocationCD(c.getPlaceCode()),
-				EnumAdaptor.valueOf(c.getStampSourceInfo(), StampSourceInfo.class));
+				c == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : EnumAdaptor.valueOf(c.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }
