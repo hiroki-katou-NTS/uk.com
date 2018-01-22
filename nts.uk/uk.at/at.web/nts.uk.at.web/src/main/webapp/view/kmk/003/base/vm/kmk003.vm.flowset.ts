@@ -433,12 +433,12 @@ module nts.uk.at.view.kmk003.a {
                     this.flowSetting.updateData(data.flowSetting);
                 }
 
-                toDto(): FlWorkSettingDto {
-                    var dataDTO: FlWorkSettingDto = {
-                        workingCode: this.workingCode(),
-                        restSetting: this.restSetting.toDto(),
+                toDto(commonSetting: WorkTimezoneCommonSetModel): FlWorkSettingDto {
+                    let dataDTO: FlWorkSettingDto = {
+                        workingCode: this.workingCode(),         
+                        restSetting: this.restSetting.toDto(),              
                         offdayWorkTimezone: this.offdayWorkTimezone.toDto(),
-                        commonSetting: this.commonSetting.toDto(),
+                        commonSetting: commonSetting.toDto(),
                         halfDayWorkTimezone: this.halfDayWorkTimezone.toDto(),
                         stampReflectTimezone: this.stampReflectTimezone.toDto(),
                         designatedSetting: this.designatedSetting(),
