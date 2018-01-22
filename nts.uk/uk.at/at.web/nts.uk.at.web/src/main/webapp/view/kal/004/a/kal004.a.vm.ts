@@ -143,12 +143,11 @@ module nts.uk.at.view.kal004.a.model {
 
         public alarmCodeChange(newV): any {
             let self = this;
-            
+            errors.clearAll();
             if (newV == ''){                 
                 self.createMode(true);
                 self.alarmCode('');
-                self.alarmName('');
-                errors.clearAll();    
+                self.alarmName('');                    
                 self.currentCode('');
                 self.currentCodeListSwap([]);
                 self.checkConditionList( _.sortBy(self.checkSource, ['category', 'checkConditonCode']));
