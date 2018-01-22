@@ -61,7 +61,7 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         function clearErrorByCode($control: JQuery, errorCode: string) {
-            ui.errors.removeByElement($control);
+            ui.errors.removeByCode($control, errorCode);
             let remainErrors = ui.errors.getErrorByElement($control);
             if(util.isNullOrUndefined(remainErrors)) {
                 $control.data(DATA_HAS_ERROR, false);
