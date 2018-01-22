@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.common;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -31,6 +33,10 @@ public class UpdateApplicationSettingCommandHandler extends CommandHandler<Appli
 				data.getWarningDateDispAtr(), data.getAppReasonDispAtr(), 
 				data.getAppContentChangeFlg(), data.getScheReflectFlg(), 
 				data.getPriorityTimeReflectFlg(), data.getAttendentTimeReflectFlg());
-		appRep.updateSingle(appli);
+		Optional<ApplicationSetting> appSet = appRep.getApplicationSettingByComID(companyId);
+		if(appSet.isPresent()){
+			appRep.updateSingle(appli);
+		}
+		appRep.insert(appli);
 	}
 }

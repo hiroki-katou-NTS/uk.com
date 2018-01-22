@@ -40,5 +40,34 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 		oldEntity.principalApprovalFlg = entity.principalApprovalFlg;
 		this.commandProxy().update(oldEntity);
 	}
+	/**
+	 * convert from entity to domain
+	 * @param entity
+	 * @return
+	 * @author yennth
+	 */
+	private ApprovalSetting toDomainApproval(WwfstApprovalSetting entity){
+		ApprovalSetting domain = ApprovalSetting.createFromJavaType(entity.companyId, entity.principalApprovalFlg);
+		return domain;
+	}
+	
+	/**
+	 * get approval setting by companyId
+	 * @author yennth
+	 */
+	@Override
+	public Optional<ApprovalSetting> getApprovalByComId(String companyId) {
+		return this.queryProxy().find(companyId, WwfstApprovalSetting.class).map(x -> toDomainApproval(x));
+	}
+
+	/**
+	 * insert approval setting
+	 * @author yennth
+	 */
+	@Override
+	public void insert(ApprovalSetting appro) {
+		WwfstApprovalSetting entity = toEntity(appro);
+		this.commandProxy().insert(entity);
+	}
 	
 }
