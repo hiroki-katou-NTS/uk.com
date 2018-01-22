@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
@@ -103,7 +104,10 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				continue;
 			}
 			
-			// process data schedule time soze
+			// get schedule time zone from user input
+			List<WorkScheduleTimeZone> workScheduleTimeZonesCommand = new ArrayList<>(bSchedule.getWorkScheduleTimeZones());
+			
+			// process data schedule time zone
 			this.addScheTimeZone(companyId, bSchedule, workType);
 			
 			// Check exist of basicSchedule
@@ -114,27 +118,24 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				// Flag to determine whether to handle
 				// the update function or not
 				boolean isAllowUpdate = true;
-				List<WorkScheduleTimeZone> workScheduleTimeZones = bSchedule.getWorkScheduleTimeZones();
-				for (int i = 0; i < workScheduleTimeZones.size(); i++) {
-					workScheduleTimeZones.get(i).validate();
-					try {
-						if (workScheduleTimeZones.get(i).getScheduleStartClock() != null
-								|| workScheduleTimeZones.get(i).getScheduleEndClock() != null) {
-							workScheduleTimeZones.get(i).validateTime();
-
-							if (basicScheduleService.isReverseStartAndEndTime(
-									workScheduleTimeZones.get(i).getScheduleStartClock(),
-									workScheduleTimeZones.get(i).getScheduleEndClock())) {
-								addMessage(errList, "Msg_441,KSU001_73,KSU001_74");
-								isAllowUpdate = false;
-							}
-						}
-					} catch (BusinessException ex) {
-						addMessage(errList, ex.getMessageId());
+				if (!CollectionUtil.isEmpty(workScheduleTimeZonesCommand)) {
+					// update again data time zone for case user update start time, end time (mode show time)
+					if (!checkTimeZone(errList, workScheduleTimeZonesCommand, isAllowUpdate)) {
 						continue;
 					}
+					
+					// update again data time zone for case user update start time, end time (mode show time)
+					List<WorkScheduleTimeZone> timeZonesNew = new ArrayList<>(); 
+					bSchedule.getWorkScheduleTimeZones().forEach(item -> {
+						if (item.getScheduleCnt() == 1) {
+							WorkScheduleTimeZone timeZone = workScheduleTimeZonesCommand.get(0);
+							item.updateTime(timeZone.getScheduleStartClock(), timeZone.getScheduleEndClock());
+						}
+						timeZonesNew.add(item);
+					});
+					bSchedule.setWorkScheduleTimeZones(timeZonesNew);
 				}
-
+				
 				if (isAllowUpdate) {
 					basicScheduleRepo.update(bSchedule);
 				}
@@ -143,6 +144,29 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			}
 		}
 		return errList;
+	}
+	
+	/**
+	 * Check time zone for case update (mode show time)
+	 * @param errList
+	 * @param workScheduleTimeZonesCommand
+	 * @return
+	 */
+	private boolean checkTimeZone(List<String> errList, List<WorkScheduleTimeZone> workScheduleTimeZonesCommand, boolean isAllowUpdate) {
+		WorkScheduleTimeZone timeZone = workScheduleTimeZonesCommand.get(0);
+		timeZone.validate();
+		try {
+			timeZone.validateTime();
+			if (basicScheduleService.isReverseStartAndEndTime(timeZone.getScheduleStartClock(), timeZone.getScheduleEndClock())) {
+				addMessage(errList, "Msg_441,KSU001_73,KSU001_74");
+				isAllowUpdate = false;
+			}
+		} catch (BusinessException ex) {
+			addMessage(errList, ex.getMessageId());
+			return false;
+		}
+		
+		return true;
 	}
 
 	/**
