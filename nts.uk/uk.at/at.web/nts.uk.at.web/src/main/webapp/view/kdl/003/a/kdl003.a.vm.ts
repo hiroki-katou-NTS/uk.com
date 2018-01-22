@@ -8,6 +8,10 @@ module nts.uk.at.view.kdl003.a {
             endTimeOption: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
             
+            readonly: KnockoutObservable<boolean>;
+            enable1: KnockoutObservable<boolean>;
+            enable2: KnockoutObservable<boolean>;
+            
             currentCode: KnockoutObservable<any>;
             currentCode2: KnockoutObservable<any>;
             currentCode3: KnockoutObservable<any>;
@@ -49,6 +53,10 @@ module nts.uk.at.view.kdl003.a {
 
             constructor(parentData: CallerParameter) {
                 var self = this;
+                
+                self.readonly = ko.observable(true);
+                self.enable1 = ko.observable(true);
+                self.enable2 = ko.observable(true);
 
                 // Search options
                 self.startTimeOption = ko.observable(1);
@@ -229,12 +237,22 @@ module nts.uk.at.view.kdl003.a {
                             let array = codeTime.split(' ~ ');
                             self.startBTime(array[0].substring(2));
                             self.endBTime(array[1].substring(2));
+                            self.enable1(true);
+                        } else {
+                            self.startBTime(":");
+                            self.endBTime(":");
+                            self.enable1(false);
                         };
                         if (!nts.uk.util.isNullOrEmpty(data[key].workTime2)){
                             let codeTime = data[key].workTime2;
                             let array = codeTime.split(' ~ ');
                             self.startBBTime(array[0].substring(2));
                             self.endBBTime(array[1].substring(2));
+                            self.enable2(true);
+                        } else {
+                            self.startBBTime(":");
+                            self.endBBTime(":");
+                            self.enable2(false);
                         };
                         
                         self.styleWorkTime(data[key].workAtr);
@@ -244,58 +262,63 @@ module nts.uk.at.view.kdl003.a {
             
             private getListTimeBySeleckedCode(code: string): void{
                 let self = this;
-                service.findBreakByCodes(code).done(function(data){
-                    let dataBB = data.breakBreakTimeDto;
-                    let dataB = data.breakTimeDto;
-                    let data1, data2 = [];
-                    let data3 = [];
-                    let data4 = [];
-                    if (dataB.length <= 5 && dataBB.length <= 5){
-                        for (let i = 0; i < 5; i++){
-                            data3.push({
-                                code: "",
-                                name: "",
-                            });
-                            data4.push({
-                                code: "",
-                                name: "",
-                            });
-                        }
-                        for (let i = dataB.length; i < 5; i++){
-                            dataB.push({
-                                code: "",
-                                name: "",
-                            });
-                        }
-                        for (let i = dataBB.length; i < 5; i++){
-                            dataBB.push({
-                                code: "",
-                                name: "",
-                            });
-                        }
-                        
-                        self.listTimeBreak1(dataB);
-                        self.listTimeBreak2(data3);
-                        self.listTimeBreakBreak1(dataBB);
-                        self.listTimeBreakBreak2(data4);
-                    } else {
-                        if(dataB.length > 5){
-                            for (let i = 0; i < 5 ; i++){
-                                self.listTimeBreak1(dataB[i]);
-                            }
-                            for (let i = 5; i < dataB.length ; i++){
-                                self.listTimeBreak2(dataB[i]);
-                            }
-                        } else {
-                            for (let i = 0; i < 5 ; i++){
-                                self.listTimeBreakBreak1(dataBB[i]);
-                            }
-                            for (let i = 5; i < dataB.length ; i++){
-                                self.listTimeBreakBreak2(dataBB[i]);
-                            }
-                        }
+                let emptyArray = {code: "", name: ""};
+                let dataBB = [];
+                let dataB = [];
+                let dataEmpty = [];
+                if (code === "000"){
+                    for (let i = 0; i < 5; i++){
+                        dataEmpty.push(emptyArray);
                     }
-                });
+                    
+                    self.listTimeBreak1(dataEmpty);
+                    self.listTimeBreak2(dataEmpty);
+                    self.listTimeBreakBreak1(dataEmpty);
+                    self.listTimeBreakBreak2(dataEmpty);
+                    self.startBBTime(":");
+                    self.endBBTime(":");
+                    self.enable2(false);
+                    self.startBTime(":");
+                    self.endBTime(":");
+                    self.enable1(false);
+                } else {
+                    service.findBreakByCodes(code).done(function(data){
+                        dataBB = data.breakBreakTimeDto;
+                        dataB = data.breakTimeDto;
+                        if (dataB.length <= 5 && dataBB.length <= 5){
+                            for (let i = 0; i < 5; i++){
+                                dataEmpty.push(emptyArray);
+                            }
+                            for (let i = dataB.length; i < 5; i++){
+                                dataB.push(emptyArray);
+                            }
+                            for (let i = dataBB.length; i < 5; i++){
+                                dataBB.push(emptyArray);
+                            }
+                            
+                            self.listTimeBreak1(dataB);
+                            self.listTimeBreak2(dataEmpty);
+                            self.listTimeBreakBreak1(dataBB);
+                            self.listTimeBreakBreak2(dataEmpty);
+                        } else {
+                            if(dataB.length > 5){
+                                for (let i = 0; i < 5 ; i++){
+                                    self.listTimeBreak1(dataB[i]);
+                                }
+                                for (let i = 5; i < dataB.length ; i++){
+                                    self.listTimeBreak2(dataB[i]);
+                                }
+                            } else {
+                                for (let i = 0; i < 5 ; i++){
+                                    self.listTimeBreakBreak1(dataBB[i]);
+                                }
+                                for (let i = 5; i < dataB.length ; i++){
+                                    self.listTimeBreakBreak2(dataBB[i]);
+                                }
+                            }
+                        }
+                    });
+                }
             }
             
             /**

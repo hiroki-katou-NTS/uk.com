@@ -13,6 +13,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommandFinder;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonDeleteCommand;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonDeleteCommandHandler;
 import nts.uk.ctx.at.shared.app.command.worktime.difftimeset.DiffTimeWorkSettingSaveCommand;
@@ -25,10 +26,10 @@ import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveComm
 import nts.uk.ctx.at.shared.app.command.worktime.flowset.FlowWorkSettingSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.breaktime.dto.BreakTimeDayDto;
 import nts.uk.ctx.at.shared.app.find.worktime.WorkTimeSettingInfoFinder;
+import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.WorkTimeSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
-import nts.uk.ctx.at.shared.app.find.worktime_old.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
 
 /**
@@ -117,8 +118,7 @@ public class WorkTimeWebServiceNew extends WebService {
 	@POST
 	@Path("findByTime")
 	public List<WorkTimeDto> findByTime(WorkTimeCommandFinder command) {
-		return this.workTimeSetFinder.findByTime(command.codelist, command.startAtr,
-				command.startTime, command.endAtr, command.endTime);
+		return this.workTimeSetFinder.findByTime(command.getCodelist(), command.getStartTime(), command.getEndTime());
 	}
 
 	/**

@@ -59,43 +59,13 @@
 								</td>
 								<td style="vertical-align: top; border-left: solid grey 1px;" colspan="2">
 									<div id="search-div" class="control-group valign-center">
-										<span tabindex="4"
-											data-bind="ntsComboBox: {
-									name: '#[KDL003_11]',
-									options: ko.observableArray([
-						                { code: 0, name: '前日' },
-						                { code: 1, name: '当日' },
-						                { code: 2, name: '翌日' },
-						                { code: 3, name: '翌々日' }
-						            ]),
-									optionsValue: 'code',
-									value: startTimeOption,
-									optionsText: 'name',
-									enable: true,
-									columns: [
-										{ prop: 'name', length: 3 },
-									]}"></span>
 										<input id="inputStartTime" tabindex="5"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_12]', constraint:'TimeOfDay', value: startTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
+											data-bind="ntsTimeEditor: {name: '#[KDL003_12]', constraint:'TimeOfDay', value: startTime, 
+												inputFormat: 'time', mode: 'time', option: { width: '100px' }}" />
 										<span>#{i18n.getText('KDL003_13')}</span>
-										<span tabindex="6"
-											data-bind="ntsComboBox: {
-									name: '#[KDL003_14]',
-									options: ko.observableArray([
-						                { code: 0, name: '前日' },
-						                { code: 1, name: '当日' },
-						                { code: 2, name: '翌日' },
-						                { code: 3, name: '翌々日' }
-						            ]),
-									optionsValue: 'code',
-									value: endTimeOption,
-									optionsText: 'name',
-									enable: true,
-									columns: [
-										{ prop: 'name', length: 3 },
-									]}"></span>
 										<input id="inputEndTime" tabindex="7"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_15]', constraint:'TimeOfDay', value: endTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
+											data-bind="ntsTimeEditor: {name: '#[KDL003_15]', constraint:'TimeOfDay', value: endTime, 
+												inputFormat: 'time', mode: 'time', option: { width: '100px' }}" />
 										<button tabindex="8" class="caret-bottom" data-bind="click: search">#{i18n.getText('KDL003_16')}</button>
 										<button tabindex="9" class="pull-right" data-bind="click: clearSearchCondition">#{i18n.getText('KDL003_17')}</button>
 									</div>
@@ -135,18 +105,22 @@
 									<div id="search-div" class="control-group valign-center">
 										<span>#{i18n.getText('KDL003_25')}</span>
 										<input id="inputStartBTime" tabindex="11"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_12]', constraint:'TimeOfDay', value: startBTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
+											data-bind="ntsTimeEditor: {name: '#[KDL003_12]', constraint:'TimeOfDay', value: startBTime, 
+												inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable1, readonly: readonly}" />
 										<span>#{i18n.getText('KDL003_13')}</span>
 										<input id="inputEndBTime" tabindex="12"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_15]', constraint:'TimeOfDay', value: endBTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
+											data-bind="ntsTimeEditor: {name: '#[KDL003_15]', constraint:'TimeOfDay', value: endBTime,
+												 inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable1, readonly: readonly}" />
 									</div>
 									<div id="search-div" class="control-group valign-center">
 										<span>#{i18n.getText('KDL003_29')}</span>
 										<input id="inputStartBBTime" tabindex="13"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_12]', constraint:'TimeOfDay', value: startBBTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
+											data-bind="ntsTimeEditor: {name: '#[KDL003_12]', constraint:'TimeOfDay', value: startBBTime, 
+												inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable2, readonly: readonly}" />
 										<span>#{i18n.getText('KDL003_13')}</span>
 										<input id="inputEndBBTime" tabindex="14"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_15]', constraint:'TimeOfDay', value: endBBTime, inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
+											data-bind="ntsTimeEditor: {name: '#[KDL003_15]', constraint:'TimeOfDay', value: endBBTime,
+												 inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable2, readonly: readonly}" />
 									</div>
 								</td>
 								<td style="vertical-align: top; border-left: solid grey 1px;">
@@ -175,7 +149,7 @@
 									<div id="day-list-div" style="display: flex;">
 										<table id="list-worktype"
 										data-bind="ntsGridList: {
-											height: 200,
+											height: 180,
 											options: listTimeBreakBreak1,
 											optionsValue: 'code',
 											columns: breakBreakColumns1,
@@ -184,7 +158,7 @@
 										</table>
 										<table id="list-worktype"
 										data-bind="ntsGridList: {
-											height: 200,
+											height: 180,
 											options: listTimeBreakBreak2,
 											optionsValue: 'code',
 											columns: breakBreakColumns2,
