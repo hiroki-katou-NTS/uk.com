@@ -122,6 +122,10 @@ public class ComboBoxRetrieveFactory {
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
 			GeneralDate standardDate, boolean isDisplayItemCode) {
+		
+		if (standardDate == null ) {
+			standardDate = GeneralDate.today();
+		}
 
 		switch (selectionItemDto.getReferenceType()) {
 		case ENUM:

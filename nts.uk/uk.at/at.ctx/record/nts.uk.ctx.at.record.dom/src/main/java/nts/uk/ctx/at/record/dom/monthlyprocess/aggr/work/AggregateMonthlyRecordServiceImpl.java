@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.Aggregate
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -60,7 +61,6 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		
 		val returnValue = new AggregateMonthlyRecordValue();
 		
-		/*
 		//*****（未）　期間で取れるメソッドが必要
 		//List<EmploymentContractHistory> employmentContracts =
 		//		this.employmentContractHistoryAdopter.findByEmployeeIdAndDatePeriod(employeeID, datePeriod);
@@ -101,9 +101,9 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			// 計算結果を戻り値に蓄積
 			returnValue.getAttendanceTimes().add(attendanceTime);
 		}
-		*/
 		
 		//*****（テスト）　2017/12検収テスト用。仮データ設定。
+		/*
 		Random random = new Random();
 		val randomVal = random.nextInt(9) + 1;		// 1～9の乱数発生
 		val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth,
@@ -164,6 +164,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		actualWorkingTime.setMonthlyTotalPremiumTime(new AttendanceTimeMonth(2460 + randomVal));
 		
 		returnValue.getAttendanceTimes().add(attendanceTime);
+		*/
 		
 		//*****（テスト）　2017/12集計設定読み込み
 		/*

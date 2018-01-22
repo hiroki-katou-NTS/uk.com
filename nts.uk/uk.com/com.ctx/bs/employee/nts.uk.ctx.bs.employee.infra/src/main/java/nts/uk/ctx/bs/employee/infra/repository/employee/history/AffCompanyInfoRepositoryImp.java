@@ -33,7 +33,7 @@ public class AffCompanyInfoRepositoryImp extends JpaRepository implements AffCom
 			if (domain.getRetirementAllowanceCalcStartDate() != null){
 				entity.retirementAllowanceCalcStartDate = domain.getRetirementAllowanceCalcStartDate();
 			}
-			if (domain.getRecruitmentClassification() != null){
+			if (domain.getRecruitmentClassification() != null && !domain.getRecruitmentClassification().v().equals("")){
 				entity.recruitmentCategoryCode = domain.getRecruitmentClassification().v();
 			}
 			
