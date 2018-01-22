@@ -85,7 +85,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 * @param entity
 	 */
 	private void updateEntity(EmploymentHistoryItem domain, BsymtEmploymentHistItem entity) {
-		if (domain.getEmploymentCode() != null){
+		if (domain.getEmploymentCode() != null && !domain.getEmploymentCode().v().equals("")){
 			entity.empCode = domain.getEmploymentCode().v();
 		}
 		if (domain.getSalarySegment() != null){

@@ -10,8 +10,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import nts.uk.ctx.at.shared.app.util.attendanceitem.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 
 public class AttendanceItemUtilTest {
 	

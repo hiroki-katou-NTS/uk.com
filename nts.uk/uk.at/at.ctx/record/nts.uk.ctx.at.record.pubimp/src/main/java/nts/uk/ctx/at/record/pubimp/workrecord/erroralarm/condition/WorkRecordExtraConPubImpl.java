@@ -119,4 +119,10 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 		
 	}
 
+	@Override
+	public void checkUpdateListErAl(List<WorkRecordExtraConPubExport> listErroAlarm) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

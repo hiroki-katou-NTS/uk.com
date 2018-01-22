@@ -2,11 +2,16 @@ package nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalHolidaySetting;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfOverTime;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalculationSetting;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の計算区分")
@@ -42,4 +47,52 @@ public class CalcAttrOfDailyPerformanceDto implements ConvertibleAttendanceItem 
 	@AttendanceItemLayout(layout = "F", jpPropertyName = "乖離時間")
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	private int divergenceTime;
+	
+	public static CalcAttrOfDailyPerformanceDto getDto(CalAttrOfDailyPerformance domain) {
+		CalcAttrOfDailyPerformanceDto result = new CalcAttrOfDailyPerformanceDto();
+		if (domain != null) {
+			result.setDivergenceTime(domain.getDivergenceTime().getDivergenceTime().value);
+			result.setEmployeeId(domain.getEmployeeId());
+			result.setFlexExcessTime(newAutoCalcSetting(domain.getFlexExcessTime()));
+			result.setHolidayTimeSetting(newAutoCalcHolidaySetting(domain.getHolidayTimeSetting()));
+			result.setLeaveEarlySetting(newAutoCalcLeaveSetting(domain.getLeaveEarlySetting()));
+			result.setOvertimeSetting(getOverTimeSetting(domain.getOvertimeSetting()));
+			result.setRasingSalarySetting(newAutoCalcSalarySetting(domain));
+			result.setYmd(domain.getYmd());
+		}
+		return result;
+	}
+
+	private static AutoCalRaisingSalarySettingDto newAutoCalcSalarySetting(CalAttrOfDailyPerformance domain) {
+		return domain == null ? null : new AutoCalRaisingSalarySettingDto(
+						domain.getRasingSalarySetting().getSalaryCalSetting().value,
+						domain.getRasingSalarySetting().getSpecificSalaryCalSetting().value);
+	}
+
+	private static AutoCalOfLeaveEarlySettingDto newAutoCalcLeaveSetting(AutoCalOfLeaveEarlySetting domain) {
+		return domain == null ? null : new AutoCalOfLeaveEarlySettingDto(
+						domain.getLeaveEarly().value, 
+						domain.getLeaveLate().value);
+	}
+
+	private static AutoCalHolidaySettingDto newAutoCalcHolidaySetting(AutoCalHolidaySetting domain) {
+		return domain == null ? null : new AutoCalHolidaySettingDto(
+						newAutoCalcSetting(domain.getHolidayWorkTime()),
+						newAutoCalcSetting(domain.getLateNightTime()));
+	}
+
+	private static AutoCalOfOverTimeDto getOverTimeSetting(AutoCalOfOverTime domain) {
+		return domain == null ? null : new AutoCalOfOverTimeDto(newAutoCalcSetting(domain.getEarlyOverTime()),
+						newAutoCalcSetting(domain.getEarlyMidnightOverTime()),
+						newAutoCalcSetting(domain.getNormalOverTime()),
+						newAutoCalcSetting(domain.getNormalMidnightOverTime()),
+						newAutoCalcSetting(domain.getLegalOverTime()),
+						newAutoCalcSetting(domain.getLegalMidnightOverTime()));
+	}
+
+	private static AutoCalculationSettingDto newAutoCalcSetting(AutoCalculationSetting domain) {
+		return domain == null ? null : new AutoCalculationSettingDto(
+					domain.getCalculationAttr().value, 
+					domain.getUpperLimitSetting().value);
+	}
 }

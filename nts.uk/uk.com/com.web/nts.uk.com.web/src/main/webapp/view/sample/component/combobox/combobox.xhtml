@@ -18,6 +18,7 @@
             </ui:define>
             
             <ui:define name="content">
+            	<div id="functions-area"></div>
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
@@ -42,10 +43,12 @@
 												optionsText: 'name',
 												editable: isEditable,
 												enable: isEnable,
+												dropDownAttachedToBody: true,
 												columns: [
 														{ prop: 'code', length: 4 },
 														{ prop: 'name', length: 10 },
-													]}"></div>
+													]}
+												"></div>
 						</div>
 						<div class="status">
 							<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
@@ -58,16 +61,16 @@
 						<h2>Expand width when dropped down</h2>
 						<div class="control-group valign-center">
 							<div id="combo-box2" data-bind="ntsComboBox: {options: itemList,
-												optionsValue: 'code',
-												visibleItemsCount: 5,
-												value: selectedCode,
-												optionsText: 'name',
-												editable: isEditable,
-												enable: isEnable,
-												columns: [
-														{ prop: 'code', length: 4 },
-														{ prop: 'name', length: 10, lengthDropDown: 20 },
-													]}"></div>
+ 												optionsValue: 'code',
+ 												visibleItemsCount: 5,
+ 												value: selectedCode,
+ 												optionsText: 'name',
+ 												editable: isEditable,
+ 												enable: isEnable,
+ 												columns: [
+ 														{ prop: 'code', length: 4 },
+ 														{ prop: 'name', length: 10, lengthDropDown: 20 },
+ 													]}"></div>
 						</div>
 						
 						<article class="cf">
