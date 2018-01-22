@@ -20,8 +20,8 @@ import javax.ws.rs.Produces;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ItemValue;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
@@ -110,7 +110,7 @@ public class DailyPerformanceCorrectionWebService {
 		mapSidDate.entrySet().forEach(x -> {
 			List<ItemValue> itemCovert = x.getValue().stream().map(y -> new ItemValue(y.getValue(),
 					ValueType.valueOf(y.getValueType()), y.getLayoutCode(), y.getItemId()))
-					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.getItemId())).collect(Collectors.toList());
+					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.itemId())).collect(Collectors.toList());
 			Map<String, List<ItemValue>> itemMap = new HashMap<>();
 			itemMap.put("AttendanceTimeOfDailyPerformance", itemCovert);
 			dailyModifyCommandFacade.handleUpdate(

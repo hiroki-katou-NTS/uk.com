@@ -65,6 +65,7 @@ module nts.uk.at.view.ksm006.a {
                     maxRows: 10,
                     systemType: 2
                 };
+                $('#workplace-list').ntsTreeComponent(self.workplaceGrid);
 
                 self.selectedClassifi = ko.observable("");
                 self.classifiAlreadySetList = ko.observableArray([]);
@@ -79,6 +80,7 @@ module nts.uk.at.view.ksm006.a {
                     alreadySettingList: self.classifiAlreadySetList,
                     maxRows: 12
                 };
+                $('#classification-list').ntsListComponent(self.classificationGrid);
 
                 // Initialize on Company Tab
                 self.companyBWWorkingDay = ko.observable<BasicWorkModel>(new BasicWorkModel(null, null, null, null));
@@ -564,28 +566,33 @@ module nts.uk.at.view.ksm006.a {
                         alreadySettingList.push(new UnitAlreadySettingModel(data[i], true));
                     }
                     self.workplaceAlreadySetList(alreadySettingList);
-                });
+                }).then(function() {
+                    // Reload Workplace List
+                    $('#workplace-list').ntsTreeComponent(self.workplaceGrid)
+                        .done(function() {
+                            // Selected Item subscribe
+                            self.selectedWorkplaceId.subscribe(function(data: string) {
+                                blockUI.invisible();
+                                if (data) {
+                                    // Find WorkplaceBasicWork by WorkplaceId
+                                    service.findWorkplaceBasicWork(data).done(function(workplaceBasicWork: WorkplaceBasicWorkFindDto) {
+                                        self.bindWorkplaceBasicWork(workplaceBasicWork);
+                                    });
+                                    // Set Workplace Name.
+                                    let tree = $('#workplace-list').getDataList();
+                                    self.setWorkplaceName(tree, self.selectedWorkplaceId());
+                                } else {
+                                    self.workplaceBWWorkingDay(new BasicWorkModel(null, null, null, null));
+                                    self.workplaceBWNonInLaw(new BasicWorkModel(null, null, null, null));
+                                    self.workplaceBWNonExtra(new BasicWorkModel(null, null, null, null));
+                                }
+                                blockUI.clear();
+                            });
 
-                // Selected Item subscribe
-                self.selectedWorkplaceId.subscribe(function(data: string) {
-                    blockUI.invisible();
-                    if (data) {
-                        // Find WorkplaceBasicWork by WorkplaceId
-                        service.findWorkplaceBasicWork(data).done(function(workplaceBasicWork: WorkplaceBasicWorkFindDto) {
-                            self.bindWorkplaceBasicWork(workplaceBasicWork);
+                            $('#workplace-list').focus();
                         });
-                        // Set Workplace Name.
-                        let tree = $('#workplace-list').getDataList();
-                        self.setWorkplaceName(tree, self.selectedWorkplaceId());
-                    } else {
-                        self.workplaceBWWorkingDay(new BasicWorkModel(null, null, null, null));
-                        self.workplaceBWNonInLaw(new BasicWorkModel(null, null, null, null));
-                        self.workplaceBWNonExtra(new BasicWorkModel(null, null, null, null));
-                    }
-                    blockUI.clear();
                 });
-                // Reload Workplace List
-                $('#workplace-list').ntsTreeComponent(self.workplaceGrid).done(() => $('#workplace-list').focus());
+                
                 blockUI.clear();
             }
 
@@ -607,33 +614,40 @@ module nts.uk.at.view.ksm006.a {
                         areadySettingList.push({ "code": data[i], "isAlreadySetting": true });
                     }
                     self.classifiAlreadySetList(areadySettingList);
-                })
-                // Reload Classification List
-                $('#classification-list').ntsListComponent(self.classificationGrid).done(() => $('#classification-list').focus());
-
-                // SelectedClassification Subscribe
-                self.selectedClassifi.subscribe(function(data: string) {
-                    blockUI.invisible();
-                    if (data) {
-                        // Find ClassificationBasicWork
-                        service.findClassifyBasicWork(data).done(function(classifyBasicWork: ClassifiBasicWorkFindDto) {
-                            self.bindClassifyBasicWork(classifyBasicWork);
+                }).then(function() {
+                   // Reload Classification List
+                    $('#classification-list').ntsListComponent(self.classificationGrid)
+                    .done(function() {
+                        // SelectedClassification Subscribe
+                        self.selectedClassifi.subscribe(function(data: string) {
+                            blockUI.invisible();
+                            if (data) {
+                                // Find ClassificationBasicWork
+                                service.findClassifyBasicWork(data).done(function(classifyBasicWork: ClassifiBasicWorkFindDto) {
+                                    self.bindClassifyBasicWork(classifyBasicWork);
+                                });
+        
+                                // Set Classification Name
+                                var classifyDataList = $('#classification-list').getDataList();
+                                var classify = classifyDataList.filter((item) => {
+                                    return item.code == self.selectedClassifi();
+                                })[0];
+                                self.classificationName(classify.name);
+                            } else {
+                                // If data is null
+                                self.classifyBWWorkingDay(new BasicWorkModel(null, null, null, null));
+                                self.classifyBWNonInLaw(new BasicWorkModel(null, null, null, null));
+                                self.classifyBWNonExtra(new BasicWorkModel(null, null, null, null));
+                            }
+                            blockUI.clear();
                         });
-
-                        // Set Classification Name
-                        var classifyDataList = $('#classification-list').getDataList();
-                        var classify = classifyDataList.filter((item) => {
-                            return item.code == self.selectedClassifi();
-                        })[0];
-                        self.classificationName(classify.name);
-                    } else {
-                        // If data is null
-                        self.classifyBWWorkingDay(new BasicWorkModel(null, null, null, null));
-                        self.classifyBWNonInLaw(new BasicWorkModel(null, null, null, null));
-                        self.classifyBWNonExtra(new BasicWorkModel(null, null, null, null));
-                    }
-                    blockUI.clear();
+                            
+                        $('#classification-list').focus();
+                    });
+    
+                    
                 });
+                
                 blockUI.clear();
             }
 

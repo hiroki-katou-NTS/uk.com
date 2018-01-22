@@ -5,27 +5,3 @@
 #contents-area>div:first-child {
 	margin: 10px 0 20px 0;
 }
-
-#contents-area table.ui-iggrid-headertable th {
-	padding: 3px 5px;
-}
-
-#contents-area tbody.ui-iggrid-tablebody td {
-	cursor: pointer;
-	display: block;
-	padding: 3px 5px;
-	border-top: 0 !important;
-}
-
-#contents-area tbody.ui-iggrid-tablebody tr.ui-sortable-helper>td {
-	cursor: pointer;
-	border-top: 1px solid #ccc !important;
-}
-
-#contents-area tbody.ui-iggrid-tablebody tr.ui-sortable-placeholder>td {
-	visibility: visible !important;
-}
-
-.ui-iggrid .ui-iggrid-headertable, .ui-iggrid .ui-iggrid-content, .ui-iggrid .ui-widget-content, .ui-iggrid-scrolldiv table {
-	position: relative;
-}

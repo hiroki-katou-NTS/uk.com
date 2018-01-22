@@ -1,50 +1,107 @@
 module nts.custombinding {
     export class SortListControl implements KnockoutBindingHandler {
+        style: string = `<style type="text/css" id="sortable-style">
+            .sortable-container {
+                width: 100%;
+                display: block;
+                border: 1px solid #ccc;
+            }
+
+            .sortable-container .fixed-header {
+                line-height: 24px;
+                background-color: #CFF1A5;
+                border-bottom: 1px solid #ccc;
+            }
+
+            .sortable-container .sortable-area {
+                cursor: pointer;
+                overflow-x: none;
+                overflow-y: scroll;
+                position: relative;
+            }
+
+            .sortable-container .sort-row-item {
+                line-height: 24px;
+                border: 1px solid #ccc;
+                border-top: 0;
+                border-left: 0;
+                border-right: 0;                
+                padding-left: 10px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .sortable-container .sort-row-item.ui-sortable-helper {
+                background-color: #fff;
+                border-top: 1px solid #ccc;
+            }
+
+            .sortable-container .sort-row-item.ui-sortable-placeholder {
+                background-color: #007fff;
+                visibility: visible !important;
+            }
+          </style>`;
+
         init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
-            let data = valueAccessor(),
-                key = data.optionsValue || 'id',
-                height = data.height || (data.rows || 15) * 28 + 3,
-                columns = ko.unwrap(data.columns) || [
-                    { headerText: 'コード', key: 'id', width: 0, hidden: true },
-                    { headerText: '名称', key: 'name', width: 280 }
-                ];
+            let self = this,
+                data = valueAccessor(),
+                key = data.optionValue || 'id',
+                text = data.optionText || 'name',
+                height = data.height || ((data.rows || 15) * 24),
+                $element = $(element),
+                $head = $('<div>', { 'class': 'fixed-header', text: '名称' }),
+                $body = $('<ul>', { 'class': 'sortable-area', 'height': String(height).replace(/[pxt]/g, '') + 'px' });
 
-            $.extend(data, { value: ko.observableArray([]) });
+            // add style to <head> on first run
+            if (!$('#sortable-style').length) {
+                $('head').append(self.style);
+            }
 
-            ko.bindingHandlers['ntsGridList'].init(element, () => data, allBindingsAccessor, viewModel, bindingContext);
-            ko.bindingHandlers['ntsGridList'].update(element, () => data, allBindingsAccessor, viewModel, bindingContext);
+            $element
+                .append($head)
+                .append($body)
+                .addClass('sortable-container');
 
-            $(element)
-                .on("iggriddatarendered", (evt, ui) => {
-                    setTimeout(() => {
-                        let rows = $(element).find('tbody.ui-iggrid-tablebody tr');
-                        _.each(rows, (element, i) => {
-                            $(element).data("item", ko.unwrap(data.options)[i]);
-                        });
-                    }, 0);
-                })
-                .find('tbody.ui-iggrid-tablebody')
+            $body
                 .sortable({
                     axis: "y",
                     scroll: false,
+                    sort: function(evt) {
+                        let uisortable = $body
+                            .find('.ui-sortable-helper'),
+                            top = uisortable.offset().top;
+
+                        $body.scrollTop(top - $body.offset().top);
+                    },
                     update: function(event, ui) {
-                        setTimeout(() => {
-                            let _options = [],
-                                rows = $(event.target).find('tr');
+                        let _options = [],
+                            rows = $(event.target).find('li.sort-row-item');
 
-                            _.each(rows, element => {
-                                _options.push($(element).data("item"));
-                            });
+                        _.each(rows, element => {
+                            _options.push($(element).data("item"));
+                        });
 
-                            data.options(_options);
-                        }, 0);
+                        data.options(_.filter(_options, x => !!x));
                     }
                 });
         }
         update = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
-            let unwrap = ko.unwrap(valueAccessor().options);
+            let $element = $(element),
+                data = valueAccessor(),
+                key = data.optionsValue || 'id',
+                text = data.optionText || 'name',
+                $body = $element.find('ul.sortable-area'),
+                options: Array<any> = ko.unwrap(data.options);
 
-            $(element).igGrid("option", "dataSource", _.map(unwrap, x => x));
+            $body.empty();
+            _.each(options, row => {
+                let $div = $('<li>', {
+                    text: row[text],
+                    'class': 'sort-row-item'
+                }).data('item', row);
+
+                $body.append($div);
+            });
         }
     }
 }
