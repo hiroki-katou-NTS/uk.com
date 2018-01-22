@@ -32,6 +32,8 @@ module nts.uk.ui.jqueryExtentions {
                     return setError($control, message, errorCode);
                 case 'clear':
                     return clearErrors($control);
+                case 'clearByCode':
+                    return clearErrorByCode($control, message);
             }
         }
         
@@ -55,6 +57,16 @@ module nts.uk.ui.jqueryExtentions {
             $control.data(DATA_HAS_ERROR, false);
             ui.errors.removeByElement($control);
             $control.parent().removeClass('error');
+            return $control;
+        }
+
+        function clearErrorByCode($control: JQuery, errorCode: string) {
+            ui.errors.removeByElement($control);
+            let remainErrors = ui.errors.getErrorByElement($control);
+            if(util.isNullOrUndefined(remainErrors)) {
+                $control.data(DATA_HAS_ERROR, false);
+                $control.parent().removeClass('error');
+            }
             return $control;
         }
 
