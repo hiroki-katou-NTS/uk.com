@@ -29,7 +29,7 @@ module nts.uk.at.view.kal003.c.viewmodel {
 
         constructor() {
             let self = this;
-            let param = nts.uk.ui.windows.getShared("KDW007BParams");
+            let param = nts.uk.ui.windows.getShared("KAL003CParams");
             param.countableAddAtdItems = _.values(param.countableAddAtdItems ? param.countableAddAtdItems : []);
             param.countableSubAtdItems = _.values(param.countableSubAtdItems ? param.countableSubAtdItems : []);
             self.currentAtdItemCondition = ko.mapping.fromJS(param);
@@ -249,7 +249,7 @@ module nts.uk.at.view.kal003.c.viewmodel {
                 let param = ko.mapping.toJS(self.currentAtdItemCondition);
                 param.countableAddAtdItems = _.values(param.countableAddAtdItems);
                 param.countableSubAtdItems = _.values(param.countableSubAtdItems);
-                nts.uk.ui.windows.setShared('KDW007BResult', param);
+                nts.uk.ui.windows.setShared('KAL003CResult', param);
                 nts.uk.ui.windows.close();
             }
         }
