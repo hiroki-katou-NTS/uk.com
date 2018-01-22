@@ -171,7 +171,11 @@ public class ComboBoxRetrieveFactory {
 
 		case "M00003":
 			// 雇用マスタ
-			return getEmploymentList(companyId);
+			return employmentRepo.findAll(companyId).stream()
+					.map(employment -> new ComboBoxObject(employment.getEmploymentCode().v(),
+							employment.getEmploymentCode().v() + JP_SPACE + employment.getEmploymentName().v()))
+					.collect(Collectors.toList());
+			
 		case "M00004":
 			// 分類マスタ１
 			if (isDisplayItemCode) {
@@ -300,16 +304,6 @@ public class ComboBoxRetrieveFactory {
 
 		}
 		return new ArrayList<>();
-	}
-
-	private List<ComboBoxObject> getEmploymentList(String companyId) {
-		List<Employment> employments = employmentRepo.findAll(companyId);
-		List<ComboBoxObject> comboBoxList = new ArrayList<>();
-		for (Employment employment : employments) {
-			comboBoxList.add(new ComboBoxObject(employment.getEmploymentCode().v(),
-					employment.getEmploymentCode().v() + JP_SPACE + employment.getEmploymentName().v()));
-		}
-		return comboBoxList;
 	}
 
 	private List<BusinessType> getBusinessType(String companyId) {

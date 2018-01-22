@@ -242,7 +242,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	@Override
 	public void updateRemoveReason(EmployeeDataMngInfo domain) {
-		this.commandProxy().update(toEntity(domain));
+		
+		this.updateAfterRemove(domain);
 	}
 
 	@Override
@@ -387,11 +388,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	// sonnlb code start
 	@Override
-	public String findLastEml(String companyId, String startLetters) {
-		if (StringUtils.isEmpty(startLetters))
-			startLetters = " ";
+	public String findLastEml(String companyId, String startLetters) {		
 		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId)
-				.setParameter("emlCode", Character.toString(startLetters.charAt(0))).getList();
+				.setParameter("emlCode", StringUtils.isEmpty(startLetters) ? "" : Character.toString(startLetters.charAt(0))).getList();
 		String returnStr = "";
 		if (lst.size() > 0) {
 			Object obj = lst.get(0);
@@ -416,6 +415,31 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.setParameter("listSid", listSid).getList(c -> toDomain(c));
 
 		return result;
+	}
+
+	@Override
+	public void updateAfterRemove(EmployeeDataMngInfo domain) {
+		BsymtEmployeeDataMngInfo entity = queryProxy().query(SELECT_BY_ID, BsymtEmployeeDataMngInfo.class)
+				.setParameter("sId", domain.getEmployeeId()).setParameter("pId", domain.getPersonId())
+				.getSingleOrNull();
+
+		if (entity != null) {
+			if (domain.getEmployeeCode() != null && !domain.getEmployeeCode().v().equals("")) {
+				entity.employeeCode = domain.getEmployeeCode().v();
+			}
+			if (domain.getExternalCode() != null && !domain.getExternalCode().v().equals("")) {
+				entity.extCode = domain.getExternalCode().v();
+			}
+			
+			entity.removeReason = domain.getRemoveReason() != null ? domain.getRemoveReason().v() : null;
+			entity.delStatus = domain.getDeletedStatus().value;
+			entity.delDateTmp = domain.getDeleteDateTemporary();
+			
+			
+			
+			commandProxy().update(entity);
+		}
+		
 	}
 
 	// laitv code end
