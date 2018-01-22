@@ -143,7 +143,6 @@ public class ScheduleCreatorExecutionCommandHandler
 
 		// update command
 		command.setCompanyId(companyId);
-		command.setIsConfirm(false);
 		command.setIsDeleteBeforInsert(false);
 
 		// find execution log by id
@@ -282,6 +281,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		} else {
 			domain.setCompletionStatus(CompletionStatus.COMPLETION_ERROR);
 		}
+		domain.updateExecutionTimeEndToNow();
 		this.scheduleExecutionLogRepository.update(domain);
 	}
 	
