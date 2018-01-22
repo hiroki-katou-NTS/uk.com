@@ -75,6 +75,8 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
              */
             public execution(): void {
                 var self = this;
+                // focus stop button
+                $("#btn-f-stop").focus();
                 // find task id
                 service.executionScheduleExecutionLog(self.inputData).done(function(res: any) {
                     self.taskId(res.taskInfor.id);
@@ -126,6 +128,8 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                             let array = _.forEach(order,(object,index)=>{ object.noID = index+1;});
                             self.errorLogs(array); 
                         }
+                        // focus on close button if has no errors
+                        $('#btn-f-close').focus();
                     });
                 });
             }
@@ -165,7 +169,6 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                             self.updateInfoStatus();
                             self.isFinish(true);
                             self.reloadPage();
-                            $('#closeDialog').focus();
                         }
                     });
                 }).while(infor => {
