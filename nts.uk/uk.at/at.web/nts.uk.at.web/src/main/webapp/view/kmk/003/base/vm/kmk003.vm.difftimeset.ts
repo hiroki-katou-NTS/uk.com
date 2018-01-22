@@ -21,6 +21,8 @@ module nts.uk.at.view.kmk003.a {
     import InstantRoundingModel = nts.uk.at.view.kmk003.a.viewmodel.common.InstantRoundingModel;
     import FixedWorkRestSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkRestSetModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
+    import TimeRangeModelConverter = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModelConverter;
+    import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
 
     export module viewmodel {
         export module difftimeset {
@@ -78,15 +80,31 @@ module nts.uk.at.view.kmk003.a {
             }
 
 
-            export class DiffTimeRestTimezoneModel {
-                restTimezones: DiffTimeDeductTimezoneModel[];
+            export class DiffTimeRestTimezoneModel extends TimeRangeModelConverter<DiffTimeDeductTimezoneModel>{
+                restTimezones: KnockoutObservableArray<DiffTimeDeductTimezoneModel>;
 
                 constructor() {
-                    this.restTimezones = [];
+                    super();
+                    let self = this;
+                    this.restTimezones = self.originalList;
+                }
+
+                toConvertedList(): Array<TimeRangeModel> {
+                    let self = this;
+                    return _.map(self.restTimezones(), tz => self.toTimeRangeItem(tz.start(), tz.end()));
+                }
+
+                fromConvertedList(newList: Array<TimeRangeModel>): Array<DiffTimeDeductTimezoneModel> {
+                    return _.map(newList, newVl => {
+                        let vl = new DiffTimeDeductTimezoneModel();
+                        vl.start(newVl.column1().startTime);
+                        vl.end(newVl.column1().endTime);
+                        return vl;
+                    });
                 }
 
                 updateData(data: DiffTimeRestTimezoneDto) {
-                    this.restTimezones = [];
+                    this.restTimezones([]);
                     for (var dataDTO of data.restTimezones) {
                         var dataModel: DiffTimeDeductTimezoneModel = new DiffTimeDeductTimezoneModel();
                         dataModel.updateData(dataDTO);
@@ -96,7 +114,7 @@ module nts.uk.at.view.kmk003.a {
 
                 toDto(): DiffTimeRestTimezoneDto {
                     var restTimezones: DiffTimeDeductTimezoneDto[] = [];
-                    for (var dataModel of this.restTimezones) {
+                    for (var dataModel of this.restTimezones()) {
                         restTimezones.push(dataModel.toDto());
                     }
                     var dataDTO: DiffTimeRestTimezoneDto = {
