@@ -55,7 +55,8 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 					domain.getDisplayMessages().getMessageColor().v(),
 					domain.getSortOrderBy(),
 					domain.isUseAtr(),
-					domain.getNameWKRecord().v()
+					domain.getNameWKRecord().v(),
+					null
 				);
 	}
 
