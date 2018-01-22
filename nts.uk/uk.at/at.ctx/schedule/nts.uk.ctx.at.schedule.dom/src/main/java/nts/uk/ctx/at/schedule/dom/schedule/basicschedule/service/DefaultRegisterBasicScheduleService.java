@@ -117,10 +117,9 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			if (basicSchedule.isPresent()) {
 				// Flag to determine whether to handle
 				// the update function or not
-				boolean isAllowUpdate = true;
 				if (!CollectionUtil.isEmpty(workScheduleTimeZonesCommand)) {
 					// update again data time zone for case user update start time, end time (mode show time)
-					if (!checkTimeZone(errList, workScheduleTimeZonesCommand, isAllowUpdate)) {
+					if (!checkTimeZone(errList, workScheduleTimeZonesCommand)) {
 						continue;
 					}
 					
@@ -136,10 +135,10 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 					bSchedule.setWorkScheduleTimeZones(timeZonesNew);
 				}
 				
-				if (isAllowUpdate) {
-					basicScheduleRepo.update(bSchedule);
-				}
+				// update schedule
+				basicScheduleRepo.update(bSchedule);
 			} else {
+				// insert schedule
 				basicScheduleRepo.insert(bSchedule);
 			}
 		}
@@ -152,14 +151,14 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	 * @param workScheduleTimeZonesCommand
 	 * @return
 	 */
-	private boolean checkTimeZone(List<String> errList, List<WorkScheduleTimeZone> workScheduleTimeZonesCommand, boolean isAllowUpdate) {
+	private boolean checkTimeZone(List<String> errList, List<WorkScheduleTimeZone> workScheduleTimeZonesCommand) {
 		WorkScheduleTimeZone timeZone = workScheduleTimeZonesCommand.get(0);
 		timeZone.validate();
 		try {
 			timeZone.validateTime();
 			if (basicScheduleService.isReverseStartAndEndTime(timeZone.getScheduleStartClock(), timeZone.getScheduleEndClock())) {
 				addMessage(errList, "Msg_441,KSU001_73,KSU001_74");
-				isAllowUpdate = false;
+				return false;
 			}
 		} catch (BusinessException ex) {
 			addMessage(errList, ex.getMessageId());
