@@ -79,6 +79,11 @@ module nts.uk.at.view.kmk003.a {
          */
         export function saveFlowWorkSetting(command: model.command.FlowWorkSettingSaveCommand): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.saveFlowWorkSetting, command);
+        }
+            
+        /**
+         * function save diff work setting by call service
+         */
         export function saveDiffTimeWorkSetting(command: model.command.DiffTimeWorkSettingSaveCommand): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.saveDiffTimeWorkSetting, command);
         }
