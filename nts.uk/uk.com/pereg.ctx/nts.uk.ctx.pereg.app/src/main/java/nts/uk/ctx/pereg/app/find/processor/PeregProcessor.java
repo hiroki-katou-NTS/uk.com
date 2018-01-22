@@ -315,7 +315,7 @@ public class PeregProcessor {
 		if(infoId == null) {
 			if((perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO && !isSelf)
 					||(perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) {
-				returnObject.isViewOnly =  true;
+				returnObject.isViewOnly = false;
 				return returnObject;
 			}
 		}else {
