@@ -24,6 +24,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             var listCheckConditionDto = [];
             if(listCheckCode.length==0){
                 self.ListView.removeAll();
+                self.listCheckCondition.removeAll();
                 return;
             }else if(self.listStorageCheckCondition().length == 0){
                 _.forEach(listCheckCode, (category: share.CheckConditionCommand) =>{
