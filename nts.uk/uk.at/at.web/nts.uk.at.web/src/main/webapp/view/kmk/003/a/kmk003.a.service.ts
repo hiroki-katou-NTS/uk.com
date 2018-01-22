@@ -13,6 +13,7 @@ module nts.uk.at.view.kmk003.a {
             savePred: "at/shared/pred/save",
             saveFlexWorkSetting: "at/shared/worktimesetting/flexset/save",
             saveFixedWorkSetting: "at/shared/worktimesetting/fixedset/save",
+            saveDiffTimeWorkSetting: "at/shared/worktimesetting/difftimeset/save",
             removeWorkTimeByCode: "at/shared/worktimesetting/remove"
         };
 
@@ -70,6 +71,13 @@ module nts.uk.at.view.kmk003.a {
          */
         export function saveFixedWorkSetting(command: model.command.FixedWorkSettingSaveCommand): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.saveFixedWorkSetting, command);
+        }
+        
+         /**
+         * function save diff time work setting by call service
+         */
+        export function saveDiffTimeWorkSetting(command: model.command.DiffTimeWorkSettingSaveCommand): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.saveDiffTimeWorkSetting, command);
         }
         
         /**

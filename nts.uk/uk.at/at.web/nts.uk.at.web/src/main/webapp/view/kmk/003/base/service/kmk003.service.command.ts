@@ -1,6 +1,8 @@
 module nts.uk.at.view.kmk003.a {
     import fixedset = nts.uk.at.view.kmk003.a.service.model.fixedset;
     import flexset = nts.uk.at.view.kmk003.a.service.model.flexset;
+    import difftimeset = nts.uk.at.view.kmk003.a.service.model.difftimeset;
+    
     import predset = nts.uk.at.view.kmk003.a.service.model.predset;
     import worktimeset = nts.uk.at.view.kmk003.a.service.model.worktimeset;
     
@@ -23,6 +25,11 @@ module nts.uk.at.view.kmk003.a {
                 
                 export interface FlexWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
                     flexWorkSetting: flexset.FlexWorkSettingDto;
+                    screenMode: TabMode;
+                }
+                
+                export interface DiffTimeWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
+                    difftimeWorkSetting: difftimeset.DiffTimeWorkSettingDto;
                     screenMode: TabMode;
                 }
             }

@@ -685,6 +685,13 @@ module nts.uk.at.view.kmk003.a {
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
 
+//                if (self.workTimeSetting.isDiffTime()) {
+//                    service.saveDiffTimeWorkSetting(self.toDiffTimeCommand(addMode, tabMode))
+//                        .done(() => self.onSaveSuccess(dfd))
+//                        .fail(err => dfd.reject(err))
+//                        .always(() => _.defer(() => nts.uk.ui.block.clear()));
+//                }
+                
                 return dfd.promise();
             }
 
