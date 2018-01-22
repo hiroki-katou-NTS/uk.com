@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -71,5 +72,14 @@ public interface JobTitleRepository {
      * @return the optional
      */
     Optional<JobTitle> findByBaseDate(String companyId, String jobTitleId, GeneralDate baseDate);
+    
+    /**
+     * Find all.
+     *
+     * @param companyId the company id
+     * @param baseDate the base date
+     * @return the list
+     */
+    List<JobTitle> findAll(String companyId, GeneralDate baseDate);
     
 }

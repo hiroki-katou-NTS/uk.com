@@ -443,10 +443,14 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 
 	@Override
 	public AppOvertimeReference getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID, String appDate,RequestAppDetailSetting requestAppDetailSetting,List<CaculationTime> overtimeHours) {
+		
 		// TODO Auto-generated method stub
 		AppOvertimeReference result = new AppOvertimeReference();
 		List<CaculationTime> caculationTimes = new ArrayList<>();
 		if (PrePostAtr.POSTERIOR.value == prePostAtr) {
+			if(appDate == null){
+				return result;
+			}
 			//Imported(申請承認)「勤務実績」を取得する
 			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
 			if (!StringUtil.isNullOrEmpty(recordWorkInfoImport.getWorkTypeCode(), false)) {
