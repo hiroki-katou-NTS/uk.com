@@ -280,6 +280,8 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
 				root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD),
 				baseDate));
+		
+		// TODO: join BsymtWkpConfigInfo, sort by hierarchyCd
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
