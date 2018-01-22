@@ -111,7 +111,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			val value = this.aggregateMonthlyRecordService.aggregate(companyId, employeeId,
 					yearMonth, closureId, closureDate, datePeriod);
 			if (value.isError()) {
-				//*****（未）　返却値に、「エラー」が必要？画面側の仕様が不明だが、とりあえず、このプロパティに書くのか？
+				//*****（未）　画面側の仕様が不明だが、画面にエラーを表示するなら、このタイミングで、セション値として入れて返す。
 				dataSetter.updateData("monthlyAggregateHasError", "エラーあり");
 				asyncContext.finishedAsCancelled();
 				return ProcessState.INTERRUPTION;

@@ -15,8 +15,8 @@ module nts.uk.at.view.ksu001.l.viewmodel {
         ]);
         workPlaceId: string;
         workPlaceName: string;
-        workPlaceCode:KnockoutObservable<any> = ko.observable();
-        workPlaceDisplayName:KnockoutObservable<any> = ko.observable();
+        workPlaceCode: KnockoutObservable<any> = ko.observable();
+        workPlaceDisplayName: KnockoutObservable<any> = ko.observable();
         listEmployee: Array<any>;
         listEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
         listEmployeeSwapTemp: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -54,33 +54,38 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                     self.listEmployeeSwap().concat(self.listEmployeeTemporary());
                     let teamSelected = _.filter(self.listEmployeeSwap(), ['teamCode', newValue]);
                     let newListEmployeeSwap = self.listEmployeeSwap().concat(self.selectedEmployeeSwap());
-                    self.selectedEmployeeSwap(teamSelected);
-                    self.listEmployeeSwap(_.orderBy(newListEmployeeSwap,['empId'],['asc']));
+                    self.selectedEmployeeSwap(_.orderBy(teamSelected, ['empId'], ['asc']));
+                    self.listEmployeeSwap(_.orderBy(newListEmployeeSwap, ['empId'], ['asc']));
                 } else {
                     //self.listEmployeeTemporary(self.selectedEmployeeSwap());
                     let teamSelected = _.filter(self.listEmployeeTemporary(), ['teamCode', newValue]);
                     let temporary = _.reject(self.listEmployeeSwap(), ['teamCode', 'なし']);
                     let teamSelectedTemp = self.selectedEmployeeSwap().concat(temporary);
                     self.listEmployeeTemporary(teamSelectedTemp);
-                    self.selectedEmployeeSwap(teamSelected);
+                    self.selectedEmployeeSwap(_.orderBy(teamSelected, ['empId'], ['asc']));
                 }
 
                 //self.listEmployeeSwapTemp(_.clone(newListEmployeeSwap));
                 self.teamName(_.find(self.listTeam(), ['code', self.selectedTeam()]).name);
             });
-            self.selectedEmployeeSwap.subscribe(()=>{
-                let employees =_.orderBy(self.listEmployeeSwap(),['empId'],['asc']);
-                self.listEmployeeSwap(employees);
-                
+            self.selectedEmployeeSwap.subscribe(() => {
+                let employees = _.orderBy(self.listEmployeeSwap(), ['empId'], ['asc']);
+                if (!_.isEqual(employees, self.listEmployeeSwap())) {
+                    self.listEmployeeSwap(employees);
+                }
+                let selectedEmployees = _.orderBy(self.selectedEmployeeSwap(), ['empId'], ['asc']);
+                if (!_.isEqual(selectedEmployees, self.selectedEmployeeSwap())) {
+                    self.selectedEmployeeSwap(selectedEmployees);
+                }
             });
             self.onlyEmpNotTeam.subscribe(function(value) {
                 self.filterEmpNotTeam(value);
             });
             let data = {
-                workplaceId:self.workPlaceId,
-                baseDate:moment().toISOString()    
+                workplaceId: self.workPlaceId,
+                baseDate: moment().toISOString()
             }
-            service.getWorkPlaceById(data).done((wkp)=>{
+            service.getWorkPlaceById(data).done((wkp) => {
                 self.workPlaceCode(wkp.workplaceCode);
                 self.workPlaceDisplayName(wkp.wkpDisplayName);
             });
@@ -156,7 +161,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                             employee.teamCode = team.teamCode;
                             employee.teamCodeOld = team.teamCode;
                             employee.teamName = team.teamName;
-                        }else{
+                        } else {
                             employee.teamName = "なし";
                         }
                     } else {
@@ -253,7 +258,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
                 self.listEmployeeSwap(teamSelected);
             } else {
                 let newListEmployeeSwap = self.listEmployeeSwap().concat(self.listEmployeeTemporary());
-                let employees =_.orderBy(newListEmployeeSwap,['empId'],['asc']);
+                let employees = _.orderBy(newListEmployeeSwap, ['empId'], ['asc']);
                 self.listEmployeeSwap(employees);
             }
         }

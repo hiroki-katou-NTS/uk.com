@@ -36,9 +36,8 @@ public class AffJobTitleHistoryService {
 	 */
 	public void update(AffJobTitleHistory_ver1 domain, DateHistoryItem item){
 		affJobTitleHistoryRepository_ver1.update(item);
-		// Update item before and after
+		// Update item before
 		updateItemBefore(domain, item);
-		updateItemAfter(domain, item);
 	}
 
 	/**
@@ -66,16 +65,5 @@ public class AffJobTitleHistoryService {
 		}
 		affJobTitleHistoryRepository_ver1.update(itemToBeUpdated.get());
 	}
-	/**
-	 * Update item after
-	 * @param domain
-	 * @param item
-	 */
-	private void updateItemAfter(AffJobTitleHistory_ver1 domain, DateHistoryItem item){
-		Optional<DateHistoryItem> itemToBeUpdated = domain.immediatelyAfter(item);
-		if (!itemToBeUpdated.isPresent()){
-			return;
-		}
-		affJobTitleHistoryRepository_ver1.update(itemToBeUpdated.get());
-	}
+
 }

@@ -296,21 +296,20 @@ public class EmpCtgFinder {
 							ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
 			}
 		}
-		return sortComboBox(comboBoxs);
+		 List<ComboBoxObject> result =  sortComboBox(comboBoxs);
+		 return result;
 	}
 
 	private void sortDate(List<String> optionText, PeregQuery query) {
 		optionText.sort((a, b) -> {
-			if (a.equals(""))
-				return 1;
-			if (b.equals(""))
-				return 0;
+			if (a.equals("") || b.equals(""))
+				return b.length() - a.length();
 			GeneralDate start = GeneralDate.fromString(a, "yyyy/MM/dd");
 			GeneralDate end = GeneralDate.fromString(b, "yyyy/MM/dd");
 			return start.compareTo(end);
 		});
-
-		optionText.set(1, dateToString(optionText.get(1), query));
+		if(!optionText.get(1).equals(""))
+			optionText.set(1, dateToString(optionText.get(1), query));
 	}
 
 	private String dateToString(String dateValue, PeregQuery query) {
@@ -343,11 +342,15 @@ public class EmpCtgFinder {
 		GeneralDate today = GeneralDate.today();
 		return infoList.stream().filter(x -> {
 			boolean isPast = false;
+			
 			String enddate = x.getOptionText().substring(13);
 			if (!enddate.equals("")) {
 				isPast = today.after(GeneralDate.fromString(enddate, "yyyy/MM/dd"));
 			}
 			if (!isPast) {
+				String sDate = x.getOptionText().substring(0, 10);
+				GeneralDate startDate = GeneralDate.fromString(sDate, "yyyy/MM/dd");
+				if(today.afterOrEquals(startDate)) return true;
 				return isSelf ? perInfoCtgAuth.getSelfFutureHisAuth() != PersonInfoAuthType.HIDE
 						: perInfoCtgAuth.getOtherFutureHisAuth() != PersonInfoAuthType.HIDE;
 			} else {
