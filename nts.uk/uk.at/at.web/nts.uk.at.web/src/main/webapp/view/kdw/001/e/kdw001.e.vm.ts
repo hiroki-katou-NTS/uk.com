@@ -92,7 +92,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                 }
 
                 self.executionContents(res.enumComboBox);
-                self.startTime(moment(res.startTime).format("YYYY/MM/DD hh:mm:ss"));
+                self.startTime(moment.utc(res.startTime).format("YYYY/MM/DD HH:mm:ss"));
                 self.startAsyncTask();
                 dfd.resolve();
             });
@@ -147,7 +147,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                             // Get EndTime from server, fallback to client
                             let endTime = self.getAsyncData(info.taskDatas, "dailyCreateStatus").valueAsString;
                             if (nts.uk.text.isNullOrEmpty(endTime))
-                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD hh:mm:ss")
+                                endTime = moment.utc().add(9,"h").format("YYYY/MM/DD HH:mm:ss")
                             self.endTime(endTime);
 
                             // DailyCreate

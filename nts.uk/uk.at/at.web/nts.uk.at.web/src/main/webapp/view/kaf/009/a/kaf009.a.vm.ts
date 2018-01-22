@@ -61,10 +61,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         //comboBox 定型理由
         reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
         selectedReason: KnockoutObservable<string> = ko.observable('');
+        displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
         //MultilineEditor
         requiredReason : KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
         multiOption: any;
+        displayReason: KnockoutObservable<boolean> = ko.observable(false);
         //Insert command
         command: KnockoutObservable<common.GoBackCommand> = ko.observable(null);
         //list Work Location 
@@ -95,14 +97,16 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format(self.dateType)).done(function(){
                     nts.uk.ui.block.clear();
                     self.appDate.subscribe(value => {
-                        if(!nts.uk.util.isNullOrEmpty(value)){
-                            nts.uk.ui.block.invisible();
-                            self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false)
-                            .done(()=>{
-                                nts.uk.ui.block.clear();         
-                            }).fail(()=>{
-                                nts.uk.ui.block.clear();    
-                            });
+                        if(!$('#inputdate').ntsError('hasError')){
+                            if(!nts.uk.util.isNullOrEmpty(value)){
+                                nts.uk.ui.block.invisible();
+                                self.kaf000_a.getAppDataDate(4, moment(value).format(self.dateType), false)
+                                .done(()=>{
+                                    nts.uk.ui.block.clear();         
+                                }).fail(()=>{
+                                    nts.uk.ui.block.clear();    
+                                });
+                            }
                         }
                     });
                     //フォーカス制御=>申請日付
@@ -129,6 +133,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             //get Common Setting
             service.getGoBackSetting().done(function(settingData: any) {
                 if(!nts.uk.util.isNullOrEmpty(settingData)){
+                    self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
+                    self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
                     //申請制限設定.申請理由が必須
                     self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true: false);
                     if(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos.length>0){
@@ -138,8 +144,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         //申請種類別設定.事前事後区分を変更できる 〇
                         //申請種類別設定.事前事後区分を変更できない  ×
                         self.prePostEnable(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostCanChangeFlg == 1 ? true: false);
-                        let initPrePost = settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostInitFlg;
-                        self.prePostSelected(initPrePost > 1 ? null : initPrePost);
+                        self.prePostSelected(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].prePostInitFlg );
                     }
                     //事前事後区分 ※A１
                     //申請表示設定.事前事後区分　＝　表示する　〇

@@ -193,8 +193,8 @@ module nts.uk.request {
                 } else {
                     dfd.resolve(res);
                 }
-            }).fail(function () {
-                specials.errorPages.systemError();
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                specials.errorPages.systemError(jqXHR.responseJSON);
             });
         }
         
@@ -246,7 +246,7 @@ module nts.uk.request {
                     }
                 },
                 error: function(xhr,status, error) {
-                    specials.errorPages.systemError();
+                    specials.errorPages.systemError(xhr.responseJSON);
                 }
             });
         }
@@ -392,12 +392,15 @@ module nts.uk.request {
         
         export module errorPages {
             
-            export function systemError() {
+            export function systemError(error) {
                 if ($(".nts-system-error-dialog").length !== 0) {
                     return;
                 }
                 
-                let sub = ui.windows.sub.modal("com", "/view/common/error/system/index.xhtml");
+                ui.windows.setShared("errorInfo", error);
+                let sub = ui.windows.sub.modal("com", "/view/common/error/system/index.xhtml", {
+                    resizable: true
+                });
                 sub.$dialog.addClass("nts-system-error-dialog");
             }
             

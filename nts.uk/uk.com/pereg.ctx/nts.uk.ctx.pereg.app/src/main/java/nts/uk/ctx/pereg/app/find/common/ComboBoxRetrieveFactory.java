@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -49,6 +50,7 @@ import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
 /**
  * @author danpv
@@ -120,6 +122,10 @@ public class ComboBoxRetrieveFactory {
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
 			GeneralDate standardDate, boolean isDisplayItemCode) {
+		
+		if (standardDate == null ) {
+			standardDate = GeneralDate.today();
+		}
 
 		switch (selectionItemDto.getReferenceType()) {
 		case ENUM:
@@ -238,15 +244,17 @@ public class ComboBoxRetrieveFactory {
 			}
 		case "M00009":
 			// 就業時間帯マスタ
-			AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) layoutingProcessor
-					.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate)).getDomainDto();
-			String workPlaceId = workPlaceItem.getWorkplaceCode();
-			List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workPlaceId);
-			return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
-					.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
-							workTimeSetting.getWorktimeCode() + JP_SPACE
-									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName()))
-					.collect(Collectors.toList());
+			PeregDto resultDto = layoutingProcessor.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
+			if (resultDto != null) {
+				AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
+				String workPlaceId = workPlaceItem.getWorkplaceCode();
+				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workPlaceId);
+				return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
+						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
+								workTimeSetting.getWorktimeCode() + JP_SPACE
+										+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName()))
+						.collect(Collectors.toList());
+			}
 		default:
 			break;
 		}
@@ -297,12 +305,12 @@ public class ComboBoxRetrieveFactory {
 		}
 		return comboBoxList;
 	}
-	
+
 	private List<BusinessType> getBusinessType(String companyId) {
 		List<BusinessType> descendingList = businessTypeRepo.findAll(companyId);
 		List<BusinessType> ascendingList = new ArrayList<>();
 		int size = descendingList.size();
-		for ( int i = size - 1 ; i >= 0 ; i -- ) {
+		for (int i = size - 1; i >= 0; i--) {
 			ascendingList.add(descendingList.get(i));
 		}
 		return ascendingList;

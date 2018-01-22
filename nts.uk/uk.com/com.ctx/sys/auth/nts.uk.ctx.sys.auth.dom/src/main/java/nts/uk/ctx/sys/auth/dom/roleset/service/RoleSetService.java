@@ -46,6 +46,6 @@ public interface RoleSetService {
      * 
      * @return RoleSet domain
      */
-    RoleSet getRoleSetFromUserId(String userId, GeneralDate baseData);
+    RoleSet getRoleSetFromUserId(String userId, GeneralDate baseDate);
     
 }

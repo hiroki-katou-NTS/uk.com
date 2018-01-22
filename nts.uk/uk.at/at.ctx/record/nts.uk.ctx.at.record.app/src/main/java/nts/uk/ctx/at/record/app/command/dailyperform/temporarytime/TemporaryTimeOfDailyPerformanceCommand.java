@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class TemporaryTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {

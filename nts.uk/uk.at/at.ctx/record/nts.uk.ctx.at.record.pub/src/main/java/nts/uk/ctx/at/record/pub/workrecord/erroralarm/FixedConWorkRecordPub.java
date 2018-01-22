@@ -19,4 +19,9 @@ public interface FixedConWorkRecordPub {
 	 */
 	FixedConWorkRecordPubExport getFixedConWRByCode(String errorAlarmID);
 	
+	void addFixedConWorkRecordPub(FixedConWorkRecordPubExport fixedConWorkRecordPubExport);
+	
+	void updateFixedConWorkRecordPub(FixedConWorkRecordPubExport fixedConWorkRecordPubExport);
+	
+	void deleteFixedConWorkRecordPub(List<String> errorAlarmID);
 }

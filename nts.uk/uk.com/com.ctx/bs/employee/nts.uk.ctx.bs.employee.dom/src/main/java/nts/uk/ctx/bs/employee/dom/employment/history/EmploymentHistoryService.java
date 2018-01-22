@@ -34,9 +34,8 @@ public class EmploymentHistoryService {
 	 */
 	public void update(EmploymentHistory domain, DateHistoryItem itemToBeUpdated){
 		employmentHistoryRepository.update(itemToBeUpdated);
-		// Update item before and after
+		// Update item before
 		updateItemBefore(domain,itemToBeUpdated);
-		updateItemAfter(domain,itemToBeUpdated);
 	}
 	
 	/**
@@ -66,16 +65,5 @@ public class EmploymentHistoryService {
 		}
 		employmentHistoryRepository.update(itemToBeUpdated.get());
 	}
-	/**
-	 * Update item after
-	 * @param domain
-	 * @param item
-	 */
-	private void updateItemAfter(EmploymentHistory domain, DateHistoryItem item){
-		Optional<DateHistoryItem> itemToBeUpdated = domain.immediatelyAfter(item);
-		if (!itemToBeUpdated.isPresent()){
-			return;
-		}
-		employmentHistoryRepository.update(itemToBeUpdated.get());
-	}
+
 }

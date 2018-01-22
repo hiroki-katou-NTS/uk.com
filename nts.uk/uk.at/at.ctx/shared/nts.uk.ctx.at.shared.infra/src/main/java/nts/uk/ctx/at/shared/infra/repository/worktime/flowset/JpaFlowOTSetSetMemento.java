@@ -5,13 +5,13 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlOTSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 
 /**
  * The Class JpaFlowOTSetSetMemento.
  */
-public class JpaFlowOTSetSetMemento implements FlOTSetMemento {
+public class JpaFlowOTSetSetMemento implements FlowOTSetMemento {
 
 	/** The entity. */
 	private KshmtFlowWorkSet entity;

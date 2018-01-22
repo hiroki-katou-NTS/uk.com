@@ -62,10 +62,12 @@ module nts.uk.at.view.kaf009.b {
             //comboBox 定型理由
             reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
             selectedReason: KnockoutObservable<string> = ko.observable('');
+            displayTypicalReason: KnockoutObservable<boolean> = ko.observable(false);
             //MultilineEditor
             requiredReason : KnockoutObservable<boolean> = ko.observable(false);
             multilContent: KnockoutObservable<string> = ko.observable('');
             multiOption: any;
+            displayReason: KnockoutObservable<boolean> = ko.observable(false);
             //Insert command
             command: KnockoutObservable<common.GoBackCommand> = ko.observable(null);
             //list Work Location 
@@ -109,6 +111,8 @@ module nts.uk.at.view.kaf009.b {
                 let change = 3; //3:変更する
                 //get Common Setting
                 service.getGoBackSetting().done(function(settingData: any) {
+                    self.displayTypicalReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
+                    self.displayReason(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
                     self.employeeID = settingData.sid;
                     //get Reason
                     self.setReasonControl(settingData.listReasonDto);
