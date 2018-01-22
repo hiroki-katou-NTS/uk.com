@@ -123,10 +123,10 @@ public class AddEmployeeCommandHelper {
 	private void addEmployeeDataMngInfo(String personId, String employeeId, AddEmployeeCommand command,
 			String companyId) {
 		// check duplicate employeeCode
-		List<EmployeeDataMngInfo> infoList = this.empDataRepo
-				.getEmployeeNotDeleteInCompany(AppContexts.user().companyId(), command.getEmployeeCode());
+		Optional<EmployeeDataMngInfo> empInfo = this.empDataRepo.getEmployeeByCidScd(AppContexts.user().companyId(),
+				command.getEmployeeCode());
 
-		if (!CollectionUtil.isEmpty(infoList)) {
+		if (empInfo.isPresent()) {
 			throw new BusinessException("Msg_345");
 		}
 		// add system data
