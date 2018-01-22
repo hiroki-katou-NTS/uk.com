@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular;
+package nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -207,19 +207,9 @@ public class ComboBoxRetrieveFactory {
 			}
 		case "M00006":
 			// 休職休業マスタ
-			if (isDisplayItemCode) {
-				return tempAbsFrameRepo.findByCid(companyId).stream()
-						.filter(frame -> frame.getUseClassification() == NotUseAtr.USE)
-						.map(frame -> new ComboBoxObject(frame.getTempAbsenceFrNo().v() + "",
-								frame.getTempAbsenceFrName().v()))
-						.collect(Collectors.toList());
-			} else {
-				return tempAbsFrameRepo.findByCid(companyId).stream()
-						.filter(frame -> frame.getUseClassification() == NotUseAtr.USE)
-						.map(frame -> new ComboBoxObject(frame.getTempAbsenceFrNo().v() + "",
-								frame.getTempAbsenceFrName().v()))
-						.collect(Collectors.toList());
-			}
+			return tempAbsFrameRepo.findWithUseState(companyId, NotUseAtr.USE.value).stream()
+					.map(frame -> new ComboBoxObject(frame.getTempAbsenceFrNo().v() + "", frame.getTempAbsenceFrName().v()))
+					.collect(Collectors.toList());
 		case "M00007":
 			// 勤務種別マスタ
 			if (isDisplayItemCode) {

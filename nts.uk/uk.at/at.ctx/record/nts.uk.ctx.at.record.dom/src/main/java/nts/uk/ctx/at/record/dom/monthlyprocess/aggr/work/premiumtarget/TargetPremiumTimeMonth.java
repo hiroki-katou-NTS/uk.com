@@ -7,20 +7,20 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * 月割増対象時間（休暇加算前）
+ * 月割増対象時間
  * @author shuichu_ishida
  */
-public class TargetPremiumTimeMonthOfBeforeAddVacation {
+public class TargetPremiumTimeMonth {
 
 	/**
-	 * 月割増対象時間（休暇加算前）を求める
+	 * 月割増対象時間を求める
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param datePeriod 期間
 	 * @param weeklyTotalPremiumTime 週割増合計時間
 	 * @param addSet 加算設定
 	 * @param aggregateTotalWorkingTime 集計総労働時間
-	 * @return 月割増対象時間（休暇加算前）
+	 * @return 月割増対象時間
 	 */
 	public static AttendanceTimeMonth askTime(
 			String companyId, String employeeId, DatePeriod datePeriod,
@@ -63,7 +63,7 @@ public class TargetPremiumTimeMonthOfBeforeAddVacation {
 			excessOrDificiency = targetPremiumTimeMonthSrc.minusMinutes(recordPresctibedWorkingTime.v());
 		}
 		
-		// 月割増対象時間（休暇加算前）を求める
+		// 月割増対象時間を求める
 		returnTime = excessOrDificiency.minusMinutes(weeklyTotalPremiumTime.v());
 		
 		return returnTime;

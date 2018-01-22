@@ -1,5 +1,7 @@
 package nts.uk.ctx.workflow.app.command.approvermanagement.setting;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -24,9 +26,13 @@ public class UpdateApprovalSettingCommandHandler extends CommandHandler<Approval
 	protected void handle(CommandHandlerContext<ApprovalSettingCommand> context) {
 		ApprovalSettingCommand data = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		Optional<ApprovalSetting> approOld = appRep.getApprovalByComId(companyId);
 		ApprovalSetting appro = ApprovalSetting.createFromJavaType(companyId, data.getPrinFlg());
 		appro.validate();
-		appRep.update(appro);
+		if(approOld.isPresent()){
+			appRep.update(appro);
+		}
+		appRep.insert(appro);
 	}
 	
 }

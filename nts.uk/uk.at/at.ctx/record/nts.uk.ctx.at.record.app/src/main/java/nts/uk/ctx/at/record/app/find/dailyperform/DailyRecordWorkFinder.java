@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.find.dailyperform;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -13,7 +11,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerf
 import nts.uk.ctx.at.record.app.find.dailyperform.erroralarm.EmployeeDailyPerErrorFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.goout.OutingTimeOfDailyPerformanceFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.OptionalItemOfDailyPerformFinder;
-import nts.uk.ctx.at.record.app.find.dailyperform.resttime.RestTimeZoneOfDailyFinder;
+import nts.uk.ctx.at.record.app.find.dailyperform.resttime.BreakTimeDailyFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.ShortTimeOfDailyFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.SpecificDateAttrOfDailyPerforFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.TemporaryTimeOfDailyPerformanceFinder;
@@ -38,7 +36,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	// @Inject
 	// private PCLogOnInforOfDailyPerformFinder pcLogOnInfoFinder;
 	@Inject
-	private RestTimeZoneOfDailyFinder breakItemFinder;
+	private BreakTimeDailyFinder breakItemFinder;
 	@Inject
 	private SpecificDateAttrOfDailyPerforFinder specificDateAttrFinder;
 	@Inject
@@ -61,23 +59,23 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	@SuppressWarnings("unchecked")
 	@Override
 	public DailyRecordDto find(String employeeId, GeneralDate baseDate) {
-		DailyRecordDto result = new DailyRecordDto();
-		result.setAffiliationInfo(affiliationInfoFinder.find(employeeId, baseDate));
-		result.setAttendanceLeavingGate(Optional.of(attendanceLeavingGateFinder.find(employeeId, baseDate)));
-		result.setAttendanceTime(Optional.of(attendanceItemFinder.find(employeeId, baseDate)));
-		result.setBreakTime(breakItemFinder.finds(employeeId, baseDate));
-		result.setOptionalItem(Optional.of(optionalItemFinder.find(employeeId, baseDate)));
-		result.setOutingTime(Optional.of(outingTimeFinder.find(employeeId, baseDate)));
-		result.setSpecificDateAttr(Optional.of(specificDateAttrFinder.find(employeeId, baseDate)));
-		result.setTemporaryTime(Optional.of(temporaryTimeFinder.find(employeeId, baseDate)));
-		result.setTimeLeaving(Optional.of(timeLeavingFinder.find(employeeId, baseDate)));
-		result.setWorkInfo(workInfoFinder.find(employeeId, baseDate));
-		result.setCalcAttr(calcAttrFinder.find(employeeId, baseDate));
-		result.setShortWorkTime(Optional.of(shortWorkFinder.find(employeeId, baseDate)));
-		result.setEditStates(editStateFinder.finds(employeeId, baseDate));
-		result.setErrors(errorFinder.find(employeeId, baseDate));
-		result.setAttendanceTimeByWork(Optional.of(attendanceTimeByWorkFinder.find(employeeId, baseDate)));
-		return result;
+		return DailyRecordDto.builder()
+					.withWorkInfo(workInfoFinder.find(employeeId, baseDate))
+						.withCalcAttr(calcAttrFinder.find(employeeId, baseDate))
+							.withAffiliationInfo(affiliationInfoFinder.find(employeeId, baseDate))
+								.withErrors(errorFinder.find(employeeId, baseDate))
+							.outingTime(outingTimeFinder.find(employeeId, baseDate))
+						.addBreakTime(breakItemFinder.finds(employeeId, baseDate))
+					.attendanceTime(attendanceItemFinder.find(employeeId, baseDate))
+						.attendanceTimeByWork(attendanceTimeByWorkFinder.find(employeeId, baseDate))
+							.timeLeaving(timeLeavingFinder.find(employeeId, baseDate))
+								.shortWorkTime(shortWorkFinder.find(employeeId, baseDate))
+							.specificDateAttr(specificDateAttrFinder.find(employeeId, baseDate))
+						.attendanceLeavingGate(attendanceLeavingGateFinder.find(employeeId, baseDate))
+					.optionalItems(optionalItemFinder.find(employeeId, baseDate))
+						.addEditStates(editStateFinder.finds(employeeId, baseDate))
+							.temporaryTime(temporaryTimeFinder.find(employeeId, baseDate))
+								.complete();
 	}
 
 }
