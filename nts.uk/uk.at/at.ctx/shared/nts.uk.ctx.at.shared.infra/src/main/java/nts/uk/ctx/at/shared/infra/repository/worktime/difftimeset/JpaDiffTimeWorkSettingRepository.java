@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingReposito
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSetPK;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JpaDiffTimeWorkSettingRepository.
  */
@@ -22,8 +21,11 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkS
 @Stateless
 public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements DiffTimeWorkSettingRepository {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository#find(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingRepository#find(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Optional<DiffTimeWorkSetting> find(String companyId, String workTimeCode) {
@@ -40,40 +42,57 @@ public class JpaDiffTimeWorkSettingRepository extends JpaRepository implements D
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository#add(nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingRepository#add(nts.uk.ctx.at.shared.dom.worktime.
+	 * difftimeset.DiffTimeWorkSetting)
 	 */
 	@Override
 	public void add(DiffTimeWorkSetting diffTimeWorkSetting) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().insert(this.toEntity(diffTimeWorkSetting));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository#save(nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting)
-	 */
-	@Override
-	public void save(DiffTimeWorkSetting diffTimeWorkSetting) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository#update(nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingRepository#update(nts.uk.ctx.at.shared.dom.worktime.
+	 * difftimeset.DiffTimeWorkSetting)
 	 */
 	@Override
 	public void update(DiffTimeWorkSetting diffTimeWorkSetting) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().update(this.toEntity(diffTimeWorkSetting));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository#remove(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.difftimeset.
+	 * DiffTimeWorkSettingRepository#remove(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean remove(String companyId, String workTimeCode) {
-		// TODO Auto-generated method stub
-		return false;
+	public void remove(String companyId, String workTimeCode) {
+		this.commandProxy().remove(KshmtDiffTimeWorkSet.class, new KshmtDiffTimeWorkSetPK(companyId, workTimeCode));
+	}
+
+	private KshmtDiffTimeWorkSet toEntity(DiffTimeWorkSetting domain) {
+		// Find entity
+		Optional<KshmtDiffTimeWorkSet> optional = this.queryProxy().find(
+				new KshmtDiffTimeWorkSetPK(domain.getCompanyId(), domain.getWorkTimeCode().v()),
+				KshmtDiffTimeWorkSet.class);
+
+		KshmtDiffTimeWorkSet entity;
+		// check existed
+		if (optional.isPresent()) {
+			entity = optional.get();
+		} else {
+			entity = new KshmtDiffTimeWorkSet();
+		}
+		// save to memento
+		domain.saveToMemento(new JpaDiffTimeWorkSettingSetMemento(entity));
+		return entity;
 	}
 
 }

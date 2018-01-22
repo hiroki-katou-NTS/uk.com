@@ -16,9 +16,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -82,6 +79,10 @@ public class KshmtDiffTimeWorkSet extends UkJpaEntity implements Serializable {
 	@Column(name = "TIME_ROUNDING_UNIT")
 	private int timeRoundingUnit;
 
+	/** The upd start time. */
+	@Column(name = "UPD_START_TIME")
+	private int updStartTime;
+	
 	/** The lst kshmt dt half rest time. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({
@@ -118,10 +119,11 @@ public class KshmtDiffTimeWorkSet extends UkJpaEntity implements Serializable {
 	private List<KshmtDiffTimeHolSet> lstKshmtDiffTimeHolSet;//ok
 	
 	/** The lst kshmt dt stamp reflect. */
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
-	private KshmtDtStampReflect kshmtDtStampReflect;//ok
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
+	private List<KshmtDtStampReflect> lstKshmtDtStampReflect;//ok
 	
 	/** The lst kshmt worktime common set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

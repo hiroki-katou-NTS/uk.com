@@ -47,10 +47,6 @@ public class KshmtDtStampReflect extends UkJpaEntity implements Serializable {
 	@Column(name = "END_TIME")
 	private int endTime;
 
-	/** The upd start time. */
-	@Column(name = "UPD_START_TIME")
-	private int updStartTime;
-
 	/**
 	 * Instantiates a new kshmt dt stamp reflect.
 	 */

@@ -35,49 +35,69 @@ public class KshmtDtHalfRestTimePK implements Serializable {
 	@Column(name = "AM_PM_ATR")
 	private int amPmAtr;
 
+	/** The period no. */
+	@Column(name = "PERIOD_NO")
+	private int periodNo;
+
 	/**
 	 * Instantiates a new kshmt dt half rest time PK.
 	 */
 	public KshmtDtHalfRestTimePK() {
 		super();
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
+	
+	/**
+	 * Instantiates a new kshmt dt half rest time PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param amPmAtr the am pm atr
+	 * @param periodNo the period no
 	 */
+	public KshmtDtHalfRestTimePK(String cid, String worktimeCd, int amPmAtr, int periodNo) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.amPmAtr = amPmAtr;
+		this.periodNo = periodNo;
+	}
+	
 	@Override
 	public int hashCode() {
-		int hash = 0;
-		hash += (cid != null ? cid.hashCode() : 0);
-		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-		hash += (int) amPmAtr;
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + amPmAtr;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + periodNo;
+		result = prime * result + ((worktimeCd == null) ? 0 : worktimeCd.hashCode());
+		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof KshmtDtHalfRestTimePK)) {
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		KshmtDtHalfRestTimePK other = (KshmtDtHalfRestTimePK) object;
-		if ((this.cid == null && other.cid != null)
-				|| (this.cid != null && !this.cid.equals(other.cid))) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		if ((this.worktimeCd == null && other.worktimeCd != null)
-				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
+		KshmtDtHalfRestTimePK other = (KshmtDtHalfRestTimePK) obj;
+		if (amPmAtr != other.amPmAtr)
 			return false;
-		}
-		if (this.amPmAtr != other.amPmAtr) {
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
 			return false;
-		}
+		if (periodNo != other.periodNo)
+			return false;
+		if (worktimeCd == null) {
+			if (other.worktimeCd != null)
+				return false;
+		} else if (!worktimeCd.equals(other.worktimeCd))
+			return false;
 		return true;
 	}
+
+
 }

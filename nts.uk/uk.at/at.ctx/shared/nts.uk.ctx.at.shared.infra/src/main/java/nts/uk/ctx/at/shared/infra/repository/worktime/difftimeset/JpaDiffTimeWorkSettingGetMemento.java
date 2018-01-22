@@ -82,8 +82,7 @@ public class JpaDiffTimeWorkSettingGetMemento implements DiffTimeWorkSettingGetM
 
 	@Override
 	public DiffTimeWorkStampReflectTimezone getStampReflectTimezone() {
-		return new DiffTimeWorkStampReflectTimezone(
-				new JpaDiffTimeStampReflectGetMemento(this.entity.getKshmtDtStampReflect()));
+		return new DiffTimeWorkStampReflectTimezone(new JpaDiffTimeStampReflectGetMemento(this.entity));
 	}
 
 	@Override

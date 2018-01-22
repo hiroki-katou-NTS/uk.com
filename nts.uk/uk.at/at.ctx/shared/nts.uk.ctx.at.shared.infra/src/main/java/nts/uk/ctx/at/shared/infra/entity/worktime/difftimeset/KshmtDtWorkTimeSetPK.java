@@ -46,46 +46,60 @@ public class KshmtDtWorkTimeSetPK implements Serializable {
 		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * Instantiates a new kshmt dt work time set PK.
+	 *
+	 * @param cid
+	 *            the cid
+	 * @param worktimeCd
+	 *            the worktime cd
+	 * @param amPmAtr
+	 *            the am pm atr
+	 * @param timeFrameNo
+	 *            the time frame no
 	 */
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (cid != null ? cid.hashCode() : 0);
-		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-		hash += (int) amPmAtr;
-		hash += (int) timeFrameNo;
-		return hash;
+	public KshmtDtWorkTimeSetPK(String cid, String worktimeCd, int amPmAtr, int timeFrameNo) {
+		super();
+		this.cid = cid;
+		this.worktimeCd = worktimeCd;
+		this.amPmAtr = amPmAtr;
+		this.timeFrameNo = timeFrameNo;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof KshmtDtWorkTimeSetPK)) {
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + amPmAtr;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + timeFrameNo;
+		result = prime * result + ((worktimeCd == null) ? 0 : worktimeCd.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		KshmtDtWorkTimeSetPK other = (KshmtDtWorkTimeSetPK) object;
-		if ((this.cid == null && other.cid != null)
-				|| (this.cid != null && !this.cid.equals(other.cid))) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		if ((this.worktimeCd == null && other.worktimeCd != null)
-				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
+		KshmtDtWorkTimeSetPK other = (KshmtDtWorkTimeSetPK) obj;
+		if (amPmAtr != other.amPmAtr)
 			return false;
-		}
-		if (this.amPmAtr != other.amPmAtr) {
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
 			return false;
-		}
-		if (this.timeFrameNo != other.timeFrameNo) {
+		if (timeFrameNo != other.timeFrameNo)
 			return false;
-		}
+		if (worktimeCd == null) {
+			if (other.worktimeCd != null)
+				return false;
+		} else if (!worktimeCd.equals(other.worktimeCd))
+			return false;
 		return true;
 	}
 
