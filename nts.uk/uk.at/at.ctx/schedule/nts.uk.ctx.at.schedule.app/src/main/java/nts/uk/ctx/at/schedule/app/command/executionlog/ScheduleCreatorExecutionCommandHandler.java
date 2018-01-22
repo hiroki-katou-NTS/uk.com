@@ -159,6 +159,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		ScheduleCreateContent scheCreContent = this.contentRepository.findByExecutionId(command.getExecutionId()).get();
 		command.setContent(scheCreContent);
 
+		command.setConfirm(scheCreContent.getConfirm());
 		// register personal schedule
 		this.registerPersonalSchedule(command, domain, context);
 
@@ -358,7 +359,6 @@ public class ScheduleCreatorExecutionCommandHandler
 				
 				// 登録前削除区分をTrue（削除する）とする
 				command.setIsDeleteBeforInsert(true); // FIX BUG #87113
-				
 				// check parameter implementAtr recreate (入力パラメータ「実施区分」を判断)
 				if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
 					this.createWorkScheduleByRecreate(command, basicSchedule, workingConditionItem);
