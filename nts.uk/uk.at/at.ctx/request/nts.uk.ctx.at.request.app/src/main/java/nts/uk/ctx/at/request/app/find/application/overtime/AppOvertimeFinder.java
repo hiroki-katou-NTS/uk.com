@@ -290,6 +290,8 @@ public class AppOvertimeFinder {
 			}else{
 				overTimeDto.setDisplayDivergenceReasonForm(false);
 			}
+			//時間外表示区分
+			overTimeDto.setExtratimeDisplayFlag(overtimeRestAppCommonSet.get().getExtratimeDisplayAtr().value == 1 ? true : false);
 			//01-07_乖離理由を取得
 			overTimeDto.setDisplayDivergenceReasonInput(overTimeDto.getApplication().getPrePostAtr() != PrePostAtr.PREDICT.value && iOvertimePreProcess.displayDivergenceReasonInput(overtimeRestAppCommonSet));
 		}
