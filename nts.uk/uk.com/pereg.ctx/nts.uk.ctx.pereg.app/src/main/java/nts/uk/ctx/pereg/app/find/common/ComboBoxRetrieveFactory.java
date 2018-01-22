@@ -122,8 +122,8 @@ public class ComboBoxRetrieveFactory {
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
 			GeneralDate standardDate, boolean isDisplayItemCode) {
-		
-		if (standardDate == null ) {
+
+		if (standardDate == null) {
 			standardDate = GeneralDate.today();
 		}
 
@@ -139,14 +139,15 @@ public class ComboBoxRetrieveFactory {
 		case DESIGNATED_MASTER:
 			MasterRefConditionDto masterRefTypeDto = (MasterRefConditionDto) selectionItemDto;
 
-			return getMasterComboBox(masterRefTypeDto.getMasterType(), employeeId, standardDate, isDisplayItemCode, false, null);
+			return getMasterComboBox(masterRefTypeDto.getMasterType(), employeeId, standardDate, isDisplayItemCode,
+					false, null);
 
 		}
 		return new ArrayList<>();
 	}
 
 	private List<ComboBoxObject> getMasterComboBox(String masterType, String employeeId, GeneralDate standardDate,
-			boolean isDisplayItemCode, boolean cps002screen, String workplaceId) {
+			boolean isDisplayItemCode, boolean isCps002, String workplaceId) {
 		String companyId = AppContexts.user().companyId();
 		switch (masterType) {
 
@@ -248,7 +249,7 @@ public class ComboBoxRetrieveFactory {
 			}
 		case "M00009":
 			// 就業時間帯マスタ
-			if (!cps002screen) {
+			if (!isCps002) {
 				PeregDto resultDto = layoutingProcessor
 						.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
 				if (resultDto != null) {
@@ -256,7 +257,7 @@ public class ComboBoxRetrieveFactory {
 					workplaceId = workPlaceItem.getWorkplaceCode();
 				}
 			}
-			if ( workplaceId != null ) {
+			if (workplaceId != null) {
 				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId);
 				return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
 						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
@@ -292,15 +293,14 @@ public class ComboBoxRetrieveFactory {
 	}
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes RefType, String RefCd,
-			GeneralDate standardDate, String employeeId) {
+			GeneralDate standardDate, String employeeId, String workplaceId) {
 		switch (RefType) {
 		case ENUM:
 			return getEnumComboBox(RefCd);
 		case CODE_NAME:
 			return getCodeNameComboBox(RefCd, standardDate);
 		case DESIGNATED_MASTER:
-			// Son cần sửa 2 tham số cuối truyền vào. Sửa xong thì bỏ dòng comment này đi.
-			return getMasterComboBox(RefCd, employeeId, standardDate, false, true, null);
+			return getMasterComboBox(RefCd, employeeId, standardDate, false, true, workplaceId);
 
 		}
 		return new ArrayList<>();
