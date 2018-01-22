@@ -75,6 +75,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 }
                 
                 nts.uk.ui.windows.setShared("extractionDailyDto", ExtractionDailyDto);
+                nts.uk.ui.windows.setShared("categoryName", ModelCheckConditonCode.categoryName);
                 nts.uk.ui.windows.sub.modal("../b/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("extractionDaily");
                     
