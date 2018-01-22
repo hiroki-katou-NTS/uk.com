@@ -11,4 +11,6 @@ public interface EmpRegHistoryRepository {
 	void add(EmpRegHistory domain);
 
 	void update(EmpRegHistory newEmpRegHistory);
+
+	Optional<EmpRegHistory> getRegHistById(String employeeID);
 }
