@@ -62,13 +62,14 @@
 	                       <button data-bind="click: function() {$parent.btnSettingCheckCondition_click(rowId)},enable: true">#{i18n.getText('KAL003_14')}</button>
 	                   </td>
 	                   <td>
-	                       <input data-bind="ntsTextEditor: {value: errorAlarmCondition().message,
-	                           option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-	                            textmode: 'text',
-	                            placeholder: '',
-	                            width: '203px',
-	                            textalign: 'left'
-	                        }))}" />
+<!-- 	                       <input data-bind="ntsTextEditor: {value: errorAlarmCondition().message, -->
+<!-- 	                           option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({ -->
+<!-- 	                            textmode: 'text', -->
+<!-- 	                            placeholder: '', -->
+<!-- 	                            width: '203px', -->
+<!-- 	                            textalign: 'left' -->
+<!-- 	                        }))}" /> -->
+	                        <span data-bind="text: 'WorkRecordExtractCondition.message'"></span>
 	                   </td>
 		           </tr>
 		       </tbody>

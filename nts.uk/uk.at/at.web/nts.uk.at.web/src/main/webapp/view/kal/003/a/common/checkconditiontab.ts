@@ -88,7 +88,7 @@ module nts.uk.at.view.kal003.a.tab {
             }
             let workRecordExtractingCondition = self.listWorkRecordExtractingConditions()[rowId() - 1];
             if (workRecordExtractingCondition) {
-                self.showDialogKal003B(workRecordExtractingCondition(), rowId());
+                self.showDialogKal003B(workRecordExtractingCondition, rowId());
             }
         }
 
@@ -97,7 +97,7 @@ module nts.uk.at.view.kal003.a.tab {
          * @param errorAlamCondition
          * @param rowId
          */
-        private showDialogKal003B(workRecordExtractingCondition, rowId) {
+        private showDialogKal003B(workRecordExtractingCondition: model.WorkRecordExtractingCondition, rowId: number) {
             let self = this;
             windows.setShared('inputKal003b', workRecordExtractingCondition);
             windows.sub.modal('/view/kal/003/b/index.xhtml', { height: 500, width: 1020 }).onClosed(function(): any {
@@ -106,7 +106,7 @@ module nts.uk.at.view.kal003.a.tab {
                 if (data != null && data != undefined) {
                     if (rowId > 0 && rowId <= self.listWorkRecordExtractingConditions().length) {
                         let workRecordExtractingCondition = self.listWorkRecordExtractingConditions()[rowId - 1];
-                        workRecordExtractingCondition(data);
+                        workRecordExtractingCondition = data;
                     }
                 }
                 block.clear();
