@@ -180,11 +180,11 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			}
 
 			if (entity[1] != null) {
-				emp.setEmployeeName(entity[1].toString());
+				emp.setPersonName(entity[1].toString());
 			}
 
 			if (entity[2] != null) {
-				emp.setPersonName(entity[2].toString());
+				emp.setEmployeeName(entity[2].toString());
 			}
 
 			if (entity[3] != null) {
