@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.util.attendanceitem;
+package nts.uk.ctx.at.shared.dom.attendance.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -18,11 +18,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.gul.reflection.ReflectionUtil;
 import nts.gul.reflection.ReflectionUtil.Condition;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 public class AttendanceItemUtil {
 

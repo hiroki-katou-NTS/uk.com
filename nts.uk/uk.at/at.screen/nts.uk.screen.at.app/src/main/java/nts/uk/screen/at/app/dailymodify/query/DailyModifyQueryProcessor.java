@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 
 /**　日別修正QueryProcessor　*/
 @Stateless
