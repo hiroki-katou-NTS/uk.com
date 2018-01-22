@@ -2,8 +2,6 @@ package nts.uk.ctx.at.function.dom.adapter;
 
 import java.util.List;
 
-
-
 public interface WorkRecordExtraConAdapter {
 	List<WorkRecordExtraConAdapterDto> getAllWorkRecordExtraConByListID(List<String> listErrorAlarmID );
 	
@@ -14,4 +12,6 @@ public interface WorkRecordExtraConAdapter {
 	void updateWorkRecordExtraConPub(WorkRecordExtraConAdapterDto workRecordExtraConPubExport);
 	
 	void deleteWorkRecordExtraConPub(List<String> listErrorAlarmID);
+	
+	void checkUpdateListErAl(List<WorkRecordExtraConAdapterDto> listErroAlarm);
 }

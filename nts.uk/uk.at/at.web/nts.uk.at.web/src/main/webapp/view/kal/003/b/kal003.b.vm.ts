@@ -370,7 +370,8 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let self = this;
             //ドメインモデル「就業時間帯の設定」を取得する - Acquire domain model "WorkTimeSetting"
             service.getAttendCoutinousTimeZone().done((settingTimeZones) => {
-                self.initialWorkTimeCodesFromDtos(settingTimeZones);
+                self.getListAttendanceIdFromDtos(settingTimeZones);
+                //self.initialWorkTimeCodesFromDtos(settingTimeZones);
               //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
                 self.initialWorkTypes();
             });
