@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.condition;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -121,9 +122,70 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 	}
 
 	@Override
-	public void checkUpdateListErAl(List<WorkRecordExtraConPubExport> listErroAlarm) {
-		// TODO Auto-generated method stub
+	public void checkUpdateListErAl(List<String> listErrorAlarmCheckID,List<WorkRecordExtraConPubExport> listErroAlarm) {
+		//get list gốc theo list Error AlarmCheckID
+		List<WorkRecordExtraConPubExport> data = new ArrayList<>();
+		for(String erroAlarmCheckID : listErrorAlarmCheckID) {
+			WorkRecordExtraConPubExport workRecordExtraConPubExport = getWorkRecordExtraConById(erroAlarmCheckID);
+			if(workRecordExtraConPubExport != null) {
+				data.add(workRecordExtraConPubExport);
+			}
+		}
+		List<String> listErrorAlarmID = new ArrayList<>();
+		//ktra xem có xóa phần tử nào k?
+		//lặp list gốc
+		for(WorkRecordExtraConPubExport oldWorkRecordExtraCon :data) {
+			boolean checkExist = false;
+			//lặp list truyền vào
+			for(WorkRecordExtraConPubExport newWorkRecordExtraCon  : listErroAlarm ) {
+				//nếu tồn tại thì gán checkExist
+				if(oldWorkRecordExtraCon.getErrorAlarmCheckID().equals(newWorkRecordExtraCon.getErrorAlarmCheckID())) {
+					checkExist = true;
+					break;
+				}
+			}//end lặp list truyền vào 
+			//nếu checkExist bằng false tức là đã bị xóa, gọi hàm xóa
+			if(!checkExist) {
+				listErrorAlarmID.add(oldWorkRecordExtraCon.getErrorAlarmCheckID());
+			}
+		}//end lặp list gốc
+		//nếu list id có dữ liệu, tức có phần tử bị xóa đy, gọi hàm xóa
+		if(!listErrorAlarmID.isEmpty()) {
+			deleteWorkRecordExtraConPub(listErrorAlarmID);
+		}
 		
+		
+		//ktra xem có add và update phần tử nào k?
+		//lặp list truyền vào
+		for(WorkRecordExtraConPubExport newWorkRecordExtraCon :listErroAlarm) {
+			//check tồn tại
+			boolean checkExist1 = false;
+			//lặp list gốc
+			for(WorkRecordExtraConPubExport oldWorkRecordExtraCon : data) {
+				if(newWorkRecordExtraCon.getErrorAlarmCheckID().equals(oldWorkRecordExtraCon.getErrorAlarmCheckID())) {
+					if(!newWorkRecordExtraCon.equals(oldWorkRecordExtraCon)) {
+						updateWorkRecordExtraConPub(newWorkRecordExtraCon);
+						checkExist1 = true;
+						break;
+					}
+				}
+			}//end lặp list gốc
+			//nếu checkExist1 = false, tức là phần tử thêm mới, gọi hàm thêm mới
+			if(!checkExist1) {
+				addWorkRecordExtraConPub(newWorkRecordExtraCon);
+			}
+		}//end lặp list truyền vào
+		
+	}
+
+	@Override
+	public List<String> addNewListErAl(List<WorkRecordExtraConPubExport> listErroAlarm) {
+		List<String> listErrorAlarmCheckID = new ArrayList<>();
+		for(WorkRecordExtraConPubExport workRecordExtraCon :listErroAlarm) {
+			addWorkRecordExtraConPub(workRecordExtraCon);
+			listErrorAlarmCheckID.add(workRecordExtraCon.getErrorAlarmCheckID());
+		}
+		return listErrorAlarmCheckID;
 	}
 
 }

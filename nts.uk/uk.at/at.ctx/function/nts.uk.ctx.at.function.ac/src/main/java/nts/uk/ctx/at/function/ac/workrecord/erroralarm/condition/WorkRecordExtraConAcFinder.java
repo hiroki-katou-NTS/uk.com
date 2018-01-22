@@ -250,11 +250,19 @@ public class WorkRecordExtraConAcFinder implements WorkRecordExtraConAdapter {
 	}
 
 	@Override
-	public void checkUpdateListErAl(List<WorkRecordExtraConAdapterDto> listErroAlarm) {
+	public void checkUpdateListErAl(List<String> listErrorAlarmCheckID,List<WorkRecordExtraConAdapterDto> listErroAlarm) {
 		this.repo.checkUpdateListErAl(
+				listErrorAlarmCheckID,
 				listErroAlarm.stream().map(c->convertToExport(c)).collect(Collectors.toList())
 				);
-		
+	}
+
+
+	@Override
+	public  List<String> addNewListErAl(List<WorkRecordExtraConAdapterDto> listErroAlarm) {
+		return this.repo.addNewListErAl(
+				listErroAlarm.stream().map(c->convertToExport(c)).collect(Collectors.toList())
+				);
 	}
 
 }
