@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetVacationAddTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -27,13 +26,13 @@ public class TargetPremiumTimeMonthOfIrregular {
 	}
 	
 	/**
-	 * 変形労働勤務の月割増時間の対象となる時間を求める　（休暇加算前）
+	 * 変形労働勤務の月割増時間の対象となる時間を求める
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param datePeriod 期間
 	 * @param addSet 加算設定
 	 * @param aggregateTotalWorkingTime 集計総労働時間
-	 * @return 加算した休暇使用時間　（休暇加算前）
+	 * @return 加算した休暇使用時間
 	 */
 	public void askPremiumTimeMonth(String companyId, String employeeId, DatePeriod datePeriod,
 			AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime){

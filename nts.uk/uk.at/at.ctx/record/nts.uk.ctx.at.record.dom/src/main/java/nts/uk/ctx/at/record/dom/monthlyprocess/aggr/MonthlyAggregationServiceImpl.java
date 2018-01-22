@@ -37,7 +37,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 	private MonthlyAggregationEmployeeService monthlyAggregationEmployeeService;
 	
 	/**
-	 * Manager
+	 * Managerクラス
 	 * @param asyncContext 同期コマンドコンテキスト
 	 * @param companyId 会社ID
 	 * @param employeeIds 社員IDリスト

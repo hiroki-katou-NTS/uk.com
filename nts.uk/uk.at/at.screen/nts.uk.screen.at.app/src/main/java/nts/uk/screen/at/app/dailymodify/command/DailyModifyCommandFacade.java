@@ -36,7 +36,7 @@ public class DailyModifyCommandFacade {
 
 	private DailyRecordDto toDto(DailyModifyQuery query) {
 		DailyRecordDto oldValues = finder.find(query.getEmployeeId(), query.getBaseDate());
-		return AttendanceItemUtil.toConvertibleAttendanceItem(oldValues, query.getItemValues());
+		return AttendanceItemUtil.fromItemValues(oldValues, query.getItemValues());
 	}
 
 	private DailyRecordWorkCommand createCommand(DailyRecordDto dto, DailyModifyQuery query){

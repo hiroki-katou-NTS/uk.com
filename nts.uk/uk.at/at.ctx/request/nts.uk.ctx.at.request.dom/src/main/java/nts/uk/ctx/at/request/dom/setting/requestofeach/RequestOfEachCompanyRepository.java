@@ -16,5 +16,17 @@ public interface RequestOfEachCompanyRepository {
 	 * @return
 	 */
 	Optional<RequestAppDetailSetting> getRequestDetail(String companyId, int appType);
+	/**
+	 * update request of each company 
+	 * @param company
+	 * @author yennth
+	 */
+	void updateRequestOfEachCompany(RequestOfEachCompany company);
+	/**
+	 * insert request of each company
+	 * @param company
+	 * @author yennth
+	 */
+	void insertRequestOfEachCompany(RequestOfEachCompany company);
 	
 }

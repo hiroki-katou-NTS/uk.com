@@ -31,11 +31,11 @@ public class AddApplicationDeadlineCommandHandler extends CommandHandler<Applica
 		ApplicationDeadlineCommand data = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		Optional<ApplicationDeadline> appDeadline = appRep.getDeadlineByClosureId(companyId, data.getClosureId());
-		if(appDeadline.isPresent()){
-			throw new BusinessException("Msg_3");
-		}
 		ApplicationDeadline appDead = data.toDomain(data.getClosureId());
 		appDead.validate();
+		if(appDeadline.isPresent()){
+			appRep.update(appDead);
+		}
 		appRep.insert(appDead);
 	}
 	

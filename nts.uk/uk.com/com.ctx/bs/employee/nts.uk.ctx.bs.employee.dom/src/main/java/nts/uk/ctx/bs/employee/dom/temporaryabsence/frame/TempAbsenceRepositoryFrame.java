@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.temporaryabsence.frame;
 
 import java.util.List;
@@ -6,14 +10,14 @@ import java.util.List;
  * The Interface TempAbsenceRepositoryFrame.
  */
 public interface TempAbsenceRepositoryFrame {
-	
+
 	/**
 	 * Udpate.
 	 *
 	 * @param tempAbsenceFrame the temp absence frame
 	 */
 	void udpate(TempAbsenceFrame tempAbsenceFrame);
-	
+
 	/**
 	 * Find by temp absence frame pk.
 	 *
@@ -22,7 +26,7 @@ public interface TempAbsenceRepositoryFrame {
 	 * @return the temp absence frame
 	 */
 	TempAbsenceFrame findByTempAbsenceFramePk (String cId, int tempAbsenceFrameNo);
-	
+
 	/**
 	 * Find by cid.
 	 *
@@ -30,4 +34,12 @@ public interface TempAbsenceRepositoryFrame {
 	 * @return the list
 	 */
 	List<TempAbsenceFrame> findByCid(String cId);
+
+	/**
+	 * Find active items by cid.
+	 *
+	 * @param cId the c id
+	 * @return the list
+	 */
+	List<TempAbsenceFrame> findWithUseState(String cId,Integer useAtr);
 }
