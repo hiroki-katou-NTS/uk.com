@@ -1090,7 +1090,7 @@ module nts.custombinding {
                             default:
                             case ITEM_SINGLE_TYPE.STRING:
                                 constraint.valueType = "String";
-                                constraint.maxLength = dts.stringItemLength || undefined;
+                                constraint.maxLength = dts.stringItemLength || dts.maxLength;
                                 constraint.stringExpression = '';
 
                                 switch (dts.stringItemType) {
@@ -1106,12 +1106,10 @@ module nts.custombinding {
                                         break;
                                     case ITEM_STRING_TYPE.NUMERIC:
                                         constraint.charType = 'Numeric';
-                                        if (dts.decimalPart > 0) {
-                                            constraint.valueType = "Decimal";
-                                            constraint.mantissaMaxLength = dts.decimalPart;
-                                        } else {
-                                            constraint.valueType = "Integer";
-                                        }
+                                        constraint.valueType = "Integer";
+
+                                        constraint.min = 0;
+                                        constraint.max = Math.pow(10, dts.maxLength || 0) - 1;
                                         break;
                                     case ITEM_STRING_TYPE.KANA:
                                         constraint.charType = 'Kana';
@@ -1119,6 +1117,7 @@ module nts.custombinding {
                                 }
                                 break;
                             case ITEM_SINGLE_TYPE.NUMERIC:
+                                constraint.charType = 'Numeric';
                                 if (dts.decimalPart == 0) {
                                     constraint.valueType = "Integer";
                                 } else {
@@ -1127,8 +1126,6 @@ module nts.custombinding {
                                 }
 
                                 let max = (Math.pow(10, dts.integerPart) - Math.pow(10, -(dts.decimalPart || 0)));
-
-                                constraint.charType = 'Numeric';
                                 constraint.min = dts.numericItemMin || 0;
                                 constraint.max = dts.numericItemMax || max;
                                 break;
