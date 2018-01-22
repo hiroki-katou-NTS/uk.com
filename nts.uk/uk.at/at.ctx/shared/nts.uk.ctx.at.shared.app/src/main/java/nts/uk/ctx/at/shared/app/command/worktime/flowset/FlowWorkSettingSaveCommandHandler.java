@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveCommandHandler;
@@ -48,6 +49,12 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 	@Transactional
 	protected void handle(CommandHandlerContext<FlowWorkSettingSaveCommand> context) {
 		
+		try {
+			throw new BusinessException("Msg_3");
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		}
+		
 		String companyId = AppContexts.user().companyId();
 		
 		// get command
@@ -64,7 +71,7 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 
 		// call repository save flow work setting
 		if (command.isAddMode()) {
-			//TODOflowWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			flowWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			this.flowRepo.add(flowWorkSetting);
 		} else {
 			Optional<FlowWorkSetting> opFlowWorkSetting = this.flowRepo.find(companyId,

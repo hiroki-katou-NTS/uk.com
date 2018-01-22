@@ -157,6 +157,8 @@ public class FixedWorkSetting extends AggregateRoot {
 		} else {
 			this.lstHalfDayWorkTimezone = oldDomain.getLstHalfDayWorkTimezone();
 		}
+		
+		//TODO tab 3 + 5
 	}
 	
 	/**
@@ -166,8 +168,5 @@ public class FixedWorkSetting extends AggregateRoot {
 	 */
 	public void restoreDefaultData(ScreenMode screenMode) {
 		this.commonSetting.restoreDefaultData(screenMode);
-		
-		// restore 平日勤務時間帯
-		//TODO
 	}
 }

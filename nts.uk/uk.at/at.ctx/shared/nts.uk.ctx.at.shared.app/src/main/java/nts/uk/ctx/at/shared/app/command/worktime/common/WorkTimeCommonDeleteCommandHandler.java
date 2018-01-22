@@ -78,9 +78,9 @@ public class WorkTimeCommonDeleteCommandHandler extends CommandHandler<WorkTimeC
 		}
 		
 		//remove difftime
-		if(this.diffTimeWorkSettingRepository.find(companyId, workTimeCode).isPresent()){
-			this.diffTimeWorkSettingRepository.remove(companyId, workTimeCode);
-		}
+//		if(this.diffTimeWorkSettingRepository.find(companyId, workTimeCode).isPresent()){
+//			this.diffTimeWorkSettingRepository.remove(companyId, workTimeCode);
+//		}
 		
 		//remove flex
 		if(this.flexWorkSettingRepository.find(companyId, workTimeCode).isPresent()){

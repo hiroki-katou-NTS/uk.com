@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 @Getter
 public class FlowWorkSetting extends AggregateRoot {
 
-	/** The company code. */
+	/** The company id. */
 	// 会社ID
 	private String companyId;
 
@@ -41,7 +41,7 @@ public class FlowWorkSetting extends AggregateRoot {
 	// 打刻反映時間帯
 	private FlowStampReflectTimezone stampReflectTimezone;
 
-	/** The designated setting. */
+	/** The legal OT setting. */
 	// 法定内残業設定
 	private LegalOTSetting legalOTSetting;
 
@@ -92,15 +92,21 @@ public class FlowWorkSetting extends AggregateRoot {
 		memento.setLegalOTSetting(this.legalOTSetting);
 		memento.setFlowSetting(this.flowSetting);
 	}
-	
+
 	/**
 	 * Restore data.
 	 *
-	 * @param screenMode the screen mode
-	 * @param oldDomain the old domain
+	 * @param screenMode
+	 *            the screen mode
+	 * @param workTimeType
+	 *            the work time type
+	 * @param other
+	 *            the other
 	 */
 	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlowWorkSetting other) {
-		// restore 平日勤務時間帯
+		this.commonSetting.restoreData(screenMode, other.getCommonSetting());
+
+		// Tab 2 restore 平日勤務時間帯
 		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
 				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
 			this.flowSetting.restoreData(screenMode, other.getFlowSetting());
@@ -108,5 +114,15 @@ public class FlowWorkSetting extends AggregateRoot {
 			this.halfDayWorkTimezone = other.getHalfDayWorkTimezone();
 			this.flowSetting = other.getFlowSetting();
 		}
+	}
+
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		this.commonSetting.restoreDefaultData(screenMode);
 	}
 }

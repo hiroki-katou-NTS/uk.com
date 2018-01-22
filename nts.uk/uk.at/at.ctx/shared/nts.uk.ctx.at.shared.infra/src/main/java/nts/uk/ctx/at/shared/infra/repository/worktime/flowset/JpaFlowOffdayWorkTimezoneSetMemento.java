@@ -14,6 +14,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWtzSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFworkHolidayTime;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFworkHolidayTimePK;
@@ -57,6 +59,17 @@ public class JpaFlowOffdayWorkTimezoneSetMemento implements FlowOffdayWtzSetMeme
 	 */
 	@Override
 	public void setRestTimeZone(FlowWorkRestTimezone tzone) {
+		KshmtFlowRtSet offDayEntity = this.entity.getFlowOffDayWorkRtSet();
+		if (offDayEntity == null) {
+			KshmtFlowRtSetPK pk = new KshmtFlowRtSetPK();
+			pk.setCid(this.entity.getKshmtFlowWorkSetPK().getCid());
+			pk.setWorktimeCd(this.entity.getKshmtFlowWorkSetPK().getWorktimeCd());
+			pk.setResttimeAtr(ResttimeAtr.OFF_DAY.value);
+			
+			offDayEntity = new KshmtFlowRtSet();
+			offDayEntity.setKshmtFlowRtSetPK(pk);
+			this.entity.getLstKshmtFlowRtSet().add(offDayEntity);
+		}			
 		tzone.saveToMemento(new JpaFlowWorkRestTimezoneSetMemento(this.entity.getFlowOffDayWorkRtSet()));
 	}
 
