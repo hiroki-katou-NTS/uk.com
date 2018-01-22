@@ -4,7 +4,7 @@ import java.util.List;
 
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 
-public interface BasicScheduleService {
+public interface RegisterBasicScheduleService {
 	/**
 	 * Process register basic schedule
 	 * @return

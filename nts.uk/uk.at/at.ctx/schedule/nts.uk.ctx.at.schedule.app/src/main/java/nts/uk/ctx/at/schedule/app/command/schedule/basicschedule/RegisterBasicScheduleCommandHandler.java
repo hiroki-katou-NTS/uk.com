@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.BasicScheduleService;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.RegisterBasicScheduleService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -21,7 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class RegisterBasicScheduleCommandHandler
 		extends CommandHandlerWithResult<List<RegisterBasicScheduleCommand>, List<String>> {
 	@Inject
-	private BasicScheduleService basicScheduleService;
+	private RegisterBasicScheduleService basicScheduleService;
 
 	@Override
 	protected List<String> handle(CommandHandlerContext<List<RegisterBasicScheduleCommand>> context) {

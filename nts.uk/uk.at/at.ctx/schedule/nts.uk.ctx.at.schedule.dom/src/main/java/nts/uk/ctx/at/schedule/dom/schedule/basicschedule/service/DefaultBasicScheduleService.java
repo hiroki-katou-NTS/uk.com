@@ -15,6 +15,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -28,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 
 @Stateless
-public class DefaultBasicScheduleService implements BasicScheduleService {
+public class DefaultBasicScheduleService implements RegisterBasicScheduleService {
 	@Inject
 	private WorkTypeRepository workTypeRepo;
 
@@ -41,9 +42,9 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	@Inject
 	private BasicScheduleRepository basicScheduleRepo;
 
-	//TODO: need move all method about this class
+	//TODO: need check again this service, can move to package 
 	@Inject
-	private nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService basicScheduleService;
+	private BasicScheduleService basicScheduleService;
 	
 	@Override
 	public List<String> register(String companyId, List<BasicSchedule> basicScheduleList) {
