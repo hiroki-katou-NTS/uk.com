@@ -869,8 +869,8 @@ module nts.uk.at.view.kal003.b.viewmodel{
             minAmountOfMoneyValue: KnockoutObservable<string> =  ko.observable('0');
             maxAmountOfMoneyValue: KnockoutObservable<string> =  ko.observable('0');
             
-            minTimeWithinDayValue: KnockoutObservable<string> =  ko.observable('0');
-            maxTimeWithinDayValue: KnockoutObservable<string> =  ko.observable('0');
+            minTimeWithinDayValue: KnockoutObservable<number> =  ko.observable(0);
+            maxTimeWithinDayValue: KnockoutObservable<number> =  ko.observable(0);
             minValue : KnockoutObservable<string> =  ko.observable('');
             maxValue : KnockoutObservable<string> =  ko.observable('');
             
@@ -893,12 +893,12 @@ module nts.uk.at.view.kal003.b.viewmodel{
                         self.maxTimesValue(maxValue);
                         break;
                     case enItemCheck.AmountOfMoney: //金額 - 2: check amount of money
-                        self.minAmountOfMoneyValue(minValue);
-                        self.maxAmountOfMoneyValue(maxValue);
+                        self.minAmountOfMoneyValue(minValue || 0);
+                        self.maxAmountOfMoneyValue(maxValue || 0);
                         break;
                     case enItemCheck.TimeOfDate:    //時刻の場合 - 3: time within day
-                        self.minTimeWithinDayValue(minValue);
-                        self.maxTimeWithinDayValue(maxValue);
+                        self.minTimeWithinDayValue(minValue || 0);
+                        self.maxTimeWithinDayValue(maxValue || 0);
                         break;
                     default:
                         break;
