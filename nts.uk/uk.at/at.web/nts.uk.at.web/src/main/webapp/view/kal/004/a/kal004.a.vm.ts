@@ -114,6 +114,7 @@ module nts.uk.at.view.kal004.a.model {
             var self = this;
             // AlarmPatternSetting
             self.currentCode.subscribe((newV) => {
+                self.periodSetting.listStorageCheckCondition.removeAll();
                 self.alarmCodeChange(newV);
             });
             
@@ -182,7 +183,7 @@ module nts.uk.at.view.kal004.a.model {
                 self.currentCodeListSwap( _.sortBy(currentCodeListSwap, ['category', 'checkConditonCode']));
                       
                 // Tab 2: 
-                self.periodSetting.listStorageCheckCondition.removeAll(); 
+//                self.periodSetting.listStorageCheckCondition.removeAll(); 
                 
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
