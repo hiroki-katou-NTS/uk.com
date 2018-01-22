@@ -45,12 +45,18 @@ module nts.uk.at.view.kal004.tab3.viewmodel {
             };
             nts.uk.ui.windows.setShared("paramCdl025", param);
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/025/index.xhtml").onClosed(() => {
-                let data: KnockoutObservable<string> = nts.uk.ui.windows.getShared("dataCdl025");
+                let data : KnockoutObservable<string> = nts.uk.ui.windows.getShared("dataCdl025");
                 if (!nts.uk.util.isNullOrUndefined(data))
                     self.listRoleID(data);
-                service.getListRoleName(data).done(function() {
-                  
-                });
+                service.getListRoleName(self.listRoleID()).done(function(listRoleID) {
+                    _.forEach(listRoleID, function(value) {
+                        if(self.executionAuthor()== ""){
+                            self.executionAuthor(value.name);    
+                        }else{
+                            self.executionAuthor(self.executionAuthor()+" , "+value.name);
+                        }
+                    });
+                });   
             });
         }
 
