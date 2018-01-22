@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.util.attendanceitem.item;
+package nts.uk.ctx.at.shared.dom.attendance.util.item;
 
 public enum ValueType {
 	

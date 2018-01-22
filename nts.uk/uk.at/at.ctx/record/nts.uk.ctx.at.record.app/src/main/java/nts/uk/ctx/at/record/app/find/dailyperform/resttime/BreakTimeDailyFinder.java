@@ -24,7 +24,7 @@ public class BreakTimeDailyFinder extends FinderFacade {
 	public BreakTimeDailyDto find(String employeeId, GeneralDate baseDate) {
 		List<BreakTimeOfDailyPerformance> domains = this.repo.findByKey(employeeId, baseDate);
 		if (!domains.isEmpty()) {
-			return BreakTimeDailyDto.toDto(domains.get(0));
+			return BreakTimeDailyDto.getDto(domains.get(0));
 		}
 		return new BreakTimeDailyDto();
 	}
@@ -33,7 +33,7 @@ public class BreakTimeDailyFinder extends FinderFacade {
 	@Override
 	public List<BreakTimeDailyDto> finds(String employeeId, GeneralDate baseDate) {
 		return this.repo.findByKey(employeeId, baseDate).stream().map(x -> {
-			return BreakTimeDailyDto.toDto(x);
+			return BreakTimeDailyDto.getDto(x);
 		}).collect(Collectors.toList());
 	}
 }
