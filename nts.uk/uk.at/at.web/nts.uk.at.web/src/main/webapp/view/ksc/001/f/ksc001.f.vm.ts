@@ -29,6 +29,7 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 self.errorLogs = ko.observableArray([]);
 
                 self.columns = ko.observableArray([
+                    { headerText: '', key: 'noID', hidden: true },
                     { headerText: nts.uk.resource.getText("KSC001_56"), key: 'employeeCode', width: 150 },
                     { headerText: nts.uk.resource.getText("KSC001_57"), key: 'employeeName', width: 150 },
                     { headerText: nts.uk.resource.getText("KSC001_58"), key: 'date', width: 120 },
