@@ -35,7 +35,11 @@ module nts.uk.at.view.kmf002 {
                 
                 _self.fiscalYear = ko.observable(moment().format('YYYY'));
                 _self.arrMonth = ko.observableArray([]);
-                for (let i=1; i<=12; i++) {
+                for (let i=4; i<=12; i++) {
+                    _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(''), 'enable': ko.observable(true)});
+                }
+                
+                for (let i=1; i<=3; i++) {
                     _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(''), 'enable': ko.observable(true)});
                 }
                 

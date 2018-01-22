@@ -80,7 +80,7 @@ module nts.uk.at.view.kmf002.c {
 
                 }
 
-                $('#ccgcomponent').ntsGroupComponent(_self.ccgcomponent);
+//                $('#ccgcomponent').ntsGroupComponent(_self.ccgcomponent);
                 /* end declare variable CCG001 */
                 
                 
@@ -118,7 +118,7 @@ module nts.uk.at.view.kmf002.c {
                     isShowSelectAllButton: _self.isShowSelectAllButton()
                 };
                 
-                $('#component-items-list').ntsListComponent(_self.listComponentOption);
+//                $('#component-items-list').ntsListComponent(_self.listComponentOption);
                 
                 /* end declare variable KCP005 */
                 
@@ -150,6 +150,8 @@ module nts.uk.at.view.kmf002.c {
                 var dfd = $.Deferred<void>();
                 var _self = this;
                 _self.getDataFromService();
+                $('#ccgcomponent').ntsGroupComponent(_self.ccgcomponent);
+                $('#component-items-list').ntsListComponent(_self.listComponentOption);
                 nts.uk.ui.errors.clearAll();
                 dfd.resolve();
                 return dfd.promise();
