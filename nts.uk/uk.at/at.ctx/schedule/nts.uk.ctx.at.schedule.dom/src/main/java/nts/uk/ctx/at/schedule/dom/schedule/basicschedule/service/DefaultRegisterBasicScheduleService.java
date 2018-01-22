@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 
 @Stateless
-public class DefaultBasicScheduleService implements RegisterBasicScheduleService {
+public class DefaultRegisterBasicScheduleService implements RegisterBasicScheduleService {
 	@Inject
 	private WorkTypeRepository workTypeRepo;
 
