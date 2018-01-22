@@ -23,14 +23,13 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div>#{i18n.getText('CDL022_6')}</div>
-				<table id="sortable-list"
+				<div
 					data-bind="ntsSortList: {
-							rows: 15, 
-							optionsValue: 'id',
+							rows: 14,
 							options: sorts,
-							columns: [{ headerText: 'コード', key: 'id', width: 0, hidden: true },
-					                { headerText: '名称', key: 'name', width: 280 }]
-						}"></table>
+							optionsValue: 'id',
+							optionsText: 'name'
+						}"></div>
 			</div>
 			<div id="functions-area-bottom">
 				<button class="proceed x-large" data-bind="click: pushData">#{i18n.getText('CDL022_2')}</button>

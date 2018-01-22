@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.RestTimeZoneOfDailyDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
@@ -16,19 +16,19 @@ import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
 	@Getter
-	private List<RestTimeZoneOfDailyDto> data = new ArrayList<>();
+	private List<BreakTimeDailyDto> data = new ArrayList<>();
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		if(item != null){
-			this.data.add((RestTimeZoneOfDailyDto) item);
+			this.data.add((BreakTimeDailyDto) item);
 		}
 	}
 	

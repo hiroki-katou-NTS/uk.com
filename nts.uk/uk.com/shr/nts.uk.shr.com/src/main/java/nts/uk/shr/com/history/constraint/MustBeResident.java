@@ -22,7 +22,7 @@ public class MustBeResident<H extends HistoryItem<S, D>, S extends GeneralPeriod
 	@Override
 	public void validateIfCanRemove(History<H, S, D> history, HistoryItem<S, D> itemToBeRemoved) {
 		
-		if (history.items().isEmpty()) {
+		if (history.items().isEmpty() || history.items().size() == 1) {
 			throw new BusinessException("Msg_57");
 		}
 	}

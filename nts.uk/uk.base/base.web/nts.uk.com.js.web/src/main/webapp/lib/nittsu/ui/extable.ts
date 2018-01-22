@@ -696,8 +696,9 @@ module nts.uk.ui.exTable {
                             helper.viewData(self.options.view, self.options.viewMode, cData) : cData;
                 let column: any = self.columnsMap[key];
                 if (util.isNullOrUndefined(column)) return;
+                let ws = column.css && column.css.whiteSpace ? column.css.whiteSpace : "nowrap";
                 let $td = $("<td/>").data(internal.VIEW, rowIdx + "-" + key)
-                            .css({ borderWidth: "1px", overflow: "hidden", whiteSpace: "nowrap", position: "relative" });
+                            .css({ borderWidth: "1px", overflow: "hidden", whiteSpace: ws, position: "relative" });
                 self.highlight($td);
                 
                 if (!self.visibleColumnsMap[key]) $td.hide();

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.flex;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByM
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.AddedVacationUseTime;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetVacationAddTime;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.FlexWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
@@ -164,9 +166,22 @@ public class FlexTimeOfMonthly {
 		// 翌月繰越の時
 		if (aggrSetOfFlex.getShortageSet().getCarryforwardSet().isNextMonthCarryforward()){
 		
-			// フレックス不足時間をフレックス繰越時間にコピーする
+			// 前月の「月別実績の勤怠時間」を取得する
+			val prevYearMonth = yearMonth.previousMonth();
+			val prevAttendanceTimeList = repositories.getAttendanceTimeOfMonthly().findByYearMonth(
+					employeeId, prevYearMonth);
+			
+			// 前月のフレックス不足時間を取得する
+			AttendanceTimeMonth prevFlexShortageTime = new AttendanceTimeMonth(0);
+			if (!prevAttendanceTimeList.isEmpty()){
+				val prevAttendanceTime = prevAttendanceTimeList.get(prevAttendanceTimeList.size() - 1);
+				val prevFlexTime = prevAttendanceTime.getMonthlyCalculation().getFlexTime();
+				prevFlexShortageTime = new AttendanceTimeMonth(prevFlexTime.getFlexShortageTime().v());
+			}
+			
+			// 前月のフレックス不足時間を当月のフレックス繰越時間にコピーする
 			this.flexCarryforwardTime.setFlexCarryforwardTime(
-					new AttendanceTimeMonth(this.flexShortageTime.v()));
+					new AttendanceTimeMonth(prevFlexShortageTime.v()));
 		}
 		
 		// 便宜上集計の時
@@ -247,12 +262,8 @@ public class FlexTimeOfMonthly {
 	/**
 	 * フレックス不足の処理をする　（便宜上）
 	 * @param carryforwardTimeBeforeOffset 繰越時間相殺前
-	 * @return フレックス時間　（休暇加算後）
 	 */
-	private AttendanceTimeMonthWithMinus flexShortageForConvenience(
-			AttendanceTimeMonthWithMinus carryforwardTimeBeforeOffset){
-		
-		AttendanceTimeMonthWithMinus afterAddVacation = new AttendanceTimeMonthWithMinus(0);
+	private void flexShortageForConvenience(AttendanceTimeMonthWithMinus carryforwardTimeBeforeOffset){
 		
 		// フレックス繰越時間を取得する
 		val carryforwardTime = this.flexCarryforwardTime.getFlexCarryforwardTime();
@@ -262,14 +273,10 @@ public class FlexTimeOfMonthly {
 		this.flexCarryforwardTime.setFlexCarryforwardShortageTime(
 				carryforwardShortageTime.addMinutes(carryforwardTime.v()));
 		
-		// 繰越時間相殺前を休暇加算後にコピーする
-		afterAddVacation = new AttendanceTimeMonthWithMinus(carryforwardTimeBeforeOffset.v());
-		
 		// 繰越時間相殺前をフレックス不足時間・フレックス時間に加算する
 		this.flexShortageTime = this.flexShortageTime.addMinutes(carryforwardTimeBeforeOffset.v());
-		this.flexTime.setFlexTime(this.flexTime.getFlexTime().addSameTime(carryforwardTimeBeforeOffset.v()));
-		
-		return afterAddVacation;
+		this.flexTime.setFlexTime(this.flexTime.getFlexTime().addMinutes(
+				carryforwardTimeBeforeOffset.v(), 0));
 	}
 	
 	/**
@@ -308,10 +315,17 @@ public class FlexTimeOfMonthly {
 		// フレックス対象時間と所定労働時間（代休控除後）を比較する
 		if (flexTargetTime.greaterThanOrEqualTo(compensatoryLeaveAfterDudection.v())){
 			
+			// フレックス勤務の加算設定　取得
+			val holidayAdditionOpt = repositories.getHolidayAddition().findByCId(companyId);
+			Optional<FlexWork> flexWorkSet = Optional.empty();
+			if (holidayAdditionOpt.isPresent()){
+				flexWorkSet = Optional.of(holidayAdditionOpt.get().getFlexWork());
+			}
+			
 			// 所定以上の処理をする
 			this.addedVacationUseTime = this.greaterThanEqualPrescribedProcess(
 					datePeriod, flexTargetTime, compensatoryLeaveAfterDudection,
-					aggregateTotalWorkingTime, aggrSetOfFlex, addSet);
+					aggregateTotalWorkingTime, aggrSetOfFlex, addSet, flexWorkSet);
 		}
 		else {
 			
@@ -403,6 +417,7 @@ public class FlexTimeOfMonthly {
 	 * @param aggregateTotalWorkingTime 総労働時間
 	 * @param aggrSetOfFlex フレックス時間勤務の月の集計設定
 	 * @param addSet 加算設定
+	 * @param addSetOfFlex フレックス勤務の加算設定
 	 * @return 加算した休暇使用時間
 	 */
 	private AddedVacationUseTime greaterThanEqualPrescribedProcess(
@@ -411,7 +426,8 @@ public class FlexTimeOfMonthly {
 			AttendanceTimeMonthWithMinus compensatoryLeaveAfterDudection,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			AggrSettingMonthlyOfFlx aggrSetOfFlex,
-			AddSet addSet){
+			AddSet addSet,
+			Optional<FlexWork> addSetOfFlex){
 
 		AddedVacationUseTime addedVacationUseTime = new AddedVacationUseTime();
 		
@@ -433,6 +449,8 @@ public class FlexTimeOfMonthly {
 		}
 		
 		// 「フレックス勤務の加算設定．月次法定内のみ加算」を確認する
+		//*****（未）　対象メンバがまだない？
+		//addSetOfFlex...
 		
 		{
 			// 休暇加算時間を取得する
@@ -630,7 +648,7 @@ public class FlexTimeOfMonthly {
 
 		// 繰越時間相殺前をフレックス時間に加算する
 		this.flexTime.setFlexTime(this.flexTime.getFlexTime().addMinutes(
-				carryforwardTimeBeforeOffset.v(), carryforwardTimeBeforeOffset.v()));
+				carryforwardTimeBeforeOffset.v(), 0));
 		
 		return addedVacationUseTime;
 	}
