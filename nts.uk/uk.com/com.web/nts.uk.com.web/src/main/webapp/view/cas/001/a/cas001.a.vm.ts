@@ -572,7 +572,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 }
 
 
-                if (screenModel.RoleCategoryList().length > 0) {
+                if (screenModel.currentCategoryId()) {
 
                     self.setCtgSelectedId(result);
                 }
@@ -580,7 +580,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 screenModel.RoleCategoryList(_.map(result, x => new PersonRoleCategory(x)));
 
 
-                if (screenModel.RoleCategoryList().length <= 0) {
+                if (!screenModel.currentCategoryId()) {
                     self.setCtgSelectedId(result);
                 }
 
