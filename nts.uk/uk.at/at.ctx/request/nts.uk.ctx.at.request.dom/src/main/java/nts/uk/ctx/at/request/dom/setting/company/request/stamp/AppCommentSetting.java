@@ -26,4 +26,9 @@ public class AppCommentSetting {
 	 * 太字
 	 */
 	private Boolean fontWeight;
+
+	private AppCommentSetting aaaa(String comment, String fontColor, Boolean fontWeight) {
+		return new AppCommentSetting(new Comment(comment), fontColor, fontWeight);
+	}
+	
 }
