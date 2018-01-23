@@ -38,8 +38,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDai
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 @Stateless
 public class DailyRecordWorkCommandHandler {

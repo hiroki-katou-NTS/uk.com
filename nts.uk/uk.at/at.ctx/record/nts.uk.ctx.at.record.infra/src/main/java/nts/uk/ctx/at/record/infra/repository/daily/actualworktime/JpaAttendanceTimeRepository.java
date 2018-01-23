@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.daily.actualworktime;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -30,6 +32,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimework
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkPK;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTs;
 import nts.uk.ctx.at.record.infra.entity.daily.overtimework.KrcdtDayOvertimeworkTsPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaAttendanceTimeRepository extends JpaRepository implements AttendanceTimeRepository {
@@ -74,7 +77,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 			this.commandProxy()
 					.insert(KrcdtDayHolidyWorkTs.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(),
 							attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
-								.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTimeSheet()));
+									.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get()
+									.getHolidayWorkFrameTimeSheet()));
 		}
 		for (LateTimeOfDaily lateTime : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime()
 				.getLateTimeOfDaily()) {
@@ -186,12 +190,25 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		val pk = new KrcdtDayAttendanceTimePK(employeeId, ymd);
 		return this.queryProxy().find(pk, KrcdtDayAttendanceTime.class)
 				// find(pk,対象テーブル)
-				.map(e -> e.toDomain(ymd));
+				.map(e -> e.toDomain());
 	}
 
 	@Override
 	public List<AttendanceTimeOfDailyPerformance> findAllOf(String employeeId, List<GeneralDate> ymd) {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>();
+	}
+
+	@Override
+	public List<AttendanceTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a FROM KrcdtDayAttendanceTime a ");
+		query.append("WHERE a.krcdtDayAttendanceTimePK.employeeID IN :employeeId ");
+		query.append("AND a.krcdtDayAttendanceTimePK.generalDate <= :end AND a.krcdtDayAttendanceTimePK.generalDate >= : start");
+		return queryProxy().query(query.toString(), KrcdtDayAttendanceTime.class).setParameter("employeeId", employeeId)
+				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
+				.collect(Collectors.groupingBy(c -> c.krcdtDayAttendanceTimePK.employeeID + c.krcdtDayAttendanceTimePK.generalDate.toString()))
+				.entrySet().stream().map(c -> c.getValue().stream().map(x -> x.toDomain()).collect(Collectors.toList()))
+				.flatMap(List::stream).collect(Collectors.toList());
 	}
 }

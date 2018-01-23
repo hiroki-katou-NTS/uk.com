@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyItemValueOfDailyRepo {
@@ -30,6 +31,12 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	public List<AnyItemValueOfDaily> find(String employeeId) {
 		// TODO Auto-generated method stub
 		return Collections.emptyList();
+	}
+
+	@Override
+	public List<AnyItemValueOfDaily> finds(List<String> employeeId, DatePeriod baseDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

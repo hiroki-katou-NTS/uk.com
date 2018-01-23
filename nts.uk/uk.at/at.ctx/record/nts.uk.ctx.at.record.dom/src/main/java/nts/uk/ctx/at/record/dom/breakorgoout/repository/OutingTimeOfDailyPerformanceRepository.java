@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface OutingTimeOfDailyPerformanceRepository {
 
@@ -15,6 +16,8 @@ public interface OutingTimeOfDailyPerformanceRepository {
 	void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
 	
 	Optional<OutingTimeOfDailyPerformance> findByEmployeeIdAndDate(String employeeId, GeneralDate ymd);
+	
+	List<OutingTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
 	
 	void add(OutingTimeOfDailyPerformance outing);
 	

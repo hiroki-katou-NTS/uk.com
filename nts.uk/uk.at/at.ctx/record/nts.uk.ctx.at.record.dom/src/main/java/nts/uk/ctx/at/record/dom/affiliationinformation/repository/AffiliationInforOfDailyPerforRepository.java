@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AffiliationInforOfDailyPerforRepository {
 	
@@ -15,6 +16,8 @@ public interface AffiliationInforOfDailyPerforRepository {
 	void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
 	
 	Optional<AffiliationInforOfDailyPerfor> findByKey(String employeeId, GeneralDate ymd);
+	
+	List<AffiliationInforOfDailyPerfor> finds(List<String> employeeId, DatePeriod ymd);
 	
 	void updateByKey(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor);
 }

@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandler;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 
 @Stateless
