@@ -448,7 +448,6 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData() {
-                    this.workingCode('');
                     this.restSetting.resetData();
                     this.offdayWorkTimezone.resetData();
                     this.commonSetting.resetData();
