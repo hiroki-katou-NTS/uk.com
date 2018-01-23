@@ -234,7 +234,9 @@
                                                    value: $parent.comparisonRange().maxTimeValue,
                                                     constraint: 'CheckedTimeDuration',
                                                     required: $parent.enableComparisonMaxValue(),
-                                                    enable: $parent.enableComparisonMaxValue()}"/>
+                                                    enable: $parent.enableComparisonMaxValue(),
+                                                    mode: 'time',
+	                                                inputFormat: 'time'}"/>
                                         </com:ko-if>
                                         <com:ko-if bind="checkItem() == 1"> <!-- 回数 -->
                                             <input class="value-input needcheck" data-bind="ntsNumberEditor: {
