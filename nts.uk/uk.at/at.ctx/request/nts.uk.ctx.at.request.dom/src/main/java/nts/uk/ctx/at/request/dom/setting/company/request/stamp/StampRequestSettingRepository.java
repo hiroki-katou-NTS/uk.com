@@ -11,5 +11,17 @@ import java.util.Optional;
 public interface StampRequestSettingRepository {
 	
 	public Optional<StampRequestSetting> findByCompanyID(String companyID);
+	/**
+	 * update stamp request setting
+	 * @param stamp
+	 * @author yennth
+	 */
+	void updateStamp(StampRequestSetting stamp);
+	/**
+	 * insert stamp request setting
+	 * @param stamp
+	 * @author yennth
+	 */
+	void insertStamp(StampRequestSetting stamp);
 	
 }

@@ -1,0 +1,156 @@
+package nts.uk.ctx.at.record.app.find.dailyperform;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
+import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.dto.AttendanceTimeDailyPerformDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.erroralarm.dto.EmployeeDailyPerErrorDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.goout.dto.OutingTimeOfDailyPerformanceDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto.OptionalItemOfDailyPerformDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto.ShortTimeOfDailyDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto.SpecificDateAttrOfDailyPerforDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto.TemporaryTimeOfDailyPerformanceDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeByWorkOfDailyDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
+import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+
+@Stateless
+public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAttendanceItemConverter {
+
+	private final DailyRecordDto dailyRecord;
+
+	private DailyRecordToAttendanceItemConverterImpl() {
+		dailyRecord = new DailyRecordDto();
+	}
+
+	@Override
+	public Optional<ItemValue> convert(int attendanceItemId) {
+		List<ItemValue> items = AttendanceItemUtil.toItemValues(this.dailyRecord, Arrays.asList(attendanceItemId));
+		return items.isEmpty() ? Optional.empty() : Optional.of(items.get(0));
+	}
+
+	@Override
+	public List<ItemValue> convert(List<Integer> attendanceItemIds) {
+		return AttendanceItemUtil.toItemValues(this.dailyRecord, attendanceItemIds);
+	}
+
+	public static DailyRecordToAttendanceItemConverter builder() {
+		return new DailyRecordToAttendanceItemConverterImpl();
+	}
+
+	public DailyRecordToAttendanceItemConverter withWorkInfo(WorkInfoOfDailyPerformance domain) {
+		this.dailyRecord.withWorkInfo(WorkInformationOfDailyDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withCalcAttr(CalAttrOfDailyPerformance domain) {
+		this.dailyRecord.withCalcAttr(CalcAttrOfDailyPerformanceDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withAffiliationInfo(AffiliationInforOfDailyPerfor domain) {
+		this.dailyRecord.withAffiliationInfo(AffiliationInforOfDailyPerforDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withEmployeeErrors(EmployeeDailyPerError domain) {
+		this.dailyRecord.withErrors(EmployeeDailyPerErrorDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withOutingTime(OutingTimeOfDailyPerformance domain) {
+		this.dailyRecord.outingTime(OutingTimeOfDailyPerformanceDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withBreakTime(BreakTimeOfDailyPerformance domain) {
+		this.dailyRecord.addBreakTime(BreakTimeDailyDto.getDto(domain));
+		return this;
+	}
+	
+	public DailyRecordToAttendanceItemConverter withBreakTime(List<BreakTimeOfDailyPerformance> domain) {
+		this.dailyRecord.addBreakTime(domain.stream().map(c -> BreakTimeDailyDto.getDto(c)).collect(Collectors.toList()));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withAttendanceTime(AttendanceTimeOfDailyPerformance domain) {
+		this.dailyRecord.attendanceTime(AttendanceTimeDailyPerformDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withAttendanceTimeByWork(AttendanceTimeByWorkOfDaily domain) {
+		this.dailyRecord.attendanceTimeByWork(AttendanceTimeByWorkOfDailyDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withTimeLeaving(TimeLeavingOfDailyPerformance domain) {
+		this.dailyRecord.timeLeaving(TimeLeavingOfDailyPerformanceDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withShortTime(ShortTimeOfDailyPerformance domain) {
+		this.dailyRecord.shortWorkTime(ShortTimeOfDailyDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withSpecificDateAttr(SpecificDateAttrOfDailyPerfor domain) {
+		this.dailyRecord.specificDateAttr(SpecificDateAttrOfDailyPerforDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withAttendanceLeavingGate(AttendanceLeavingGateOfDaily domain) {
+		this.dailyRecord.attendanceLeavingGate(AttendanceLeavingGateOfDailyDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withAnyItems(AnyItemValueOfDaily domain) {
+		this.dailyRecord.optionalItems(OptionalItemOfDailyPerformDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withEditStates(EditStateOfDailyPerformance domain) {
+		this.dailyRecord.addEditStates(EditStateOfDailyPerformanceDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withEditStates(List<EditStateOfDailyPerformance> domain) {
+		this.dailyRecord.addEditStates(domain.stream().map(c -> EditStateOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList()));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter withTemporaryTime(TemporaryTimeOfDailyPerformance domain) {
+		this.dailyRecord.temporaryTime(TemporaryTimeOfDailyPerformanceDto.getDto(domain));
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter completed(){
+		return this;
+	}
+}

@@ -25,5 +25,5 @@ public class KrcdtDayAttendanceTimePK implements Serializable{
 	/*年月日*/
 	@Convert(converter = GeneralDateToDBConverter.class)
 	@Column(name = "YMD")
-	private GeneralDate generalDate;
+	public GeneralDate generalDate;
 }

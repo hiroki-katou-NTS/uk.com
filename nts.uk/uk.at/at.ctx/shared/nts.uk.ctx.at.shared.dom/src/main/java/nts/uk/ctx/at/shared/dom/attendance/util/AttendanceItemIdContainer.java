@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.util.attendanceitem;
+package nts.uk.ctx.at.shared.dom.attendance.util;
 
 import java.util.Collection;
 import java.util.HashMap;
