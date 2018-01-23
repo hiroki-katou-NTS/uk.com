@@ -2,39 +2,40 @@ module nts.uk.at.view.kal003.a.tab {
     import windows = nts.uk.ui.windows;
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
-    import model = nts.uk.at.view.kal003.share.model;
+    import model = kal003.share.model;
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
 
     export class DailyPerformanceTab {
-        listWorkRecordExtraCon: KnockoutObservableArray<model.WorkRecordExtraCon> = ko.observableArray([]);
-        isAllDailyPerfor: KnockoutObservable<boolean> = ko.observable(false);
+        listWorkRecordExtraCon: KnockoutObservableArray<model.DailyErrorAlarmCheck> = ko.observableArray([
+            new model.DailyErrorAlarmCheck('S001', 'name S001', 'AL', 'message s001'),
+            new model.DailyErrorAlarmCheck('S002', 'name S002', 'ER', 'message s002'),
+            new model.DailyErrorAlarmCheck('S003', 'name S003', 'AL', 'message s003'),
+            new model.DailyErrorAlarmCheck('S004', 'name S004', 'ER', 'message s004')
+        ]);
+        currentCodeList: KnockoutObservableArray<string>;
+        addApplication: KnockoutObservable<boolean> = ko.observable(true);
 
-        constructor(listWorkRecordExtraCon?: Array<model.WorkRecordExtraCon>) {
+        constructor(listWorkRecordExtraCon?: Array<model.DailyErrorAlarmCheck>) {
             let self = this;
 
             if (listWorkRecordExtraCon) {
                 self.listWorkRecordExtraCon.removeAll();
                 self.listWorkRecordExtraCon(listWorkRecordExtraCon);
             }
-            
-            self.isAllDailyPerfor = ko.pureComputed({
-                read: function () {
-                    let l = self.listWorkRecordExtraCon().length;
-                    if (self.listWorkRecordExtraCon().filter((x) => {return x.useAtr()}).length == l && l > 0) {
-                        return true;
-                    } else {
-                        return false;
+
+            self.listWorkRecordExtraCon.subscribe((data: Array<model.DailyErrorAlarmCheck>) => {
+                for (var i = 1; i <= data.length; i++){
+                    if ($( "table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)" ).text() == "ER") {
+                        $( "table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)" ).css("background-color", "red");
                     }
-                },
-                write: function (value) {
-                    for (var i = 0; i < self.listWorkRecordExtraCon().length; i++) {
-                        self.listWorkRecordExtraCon()[i].useAtr(value);
+                    if ($( "table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)" ).text() == "AL") {
+                        $( "table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)" ).css("background-color", "yellow");
                     }
-                },
-                owner: self
+                }
             });
+            this.currentCodeList = ko.observableArray([]);
         }//end constructor
-    }//end DailyPerformanceTab
+    }//en            b
 }//end tab
 
 

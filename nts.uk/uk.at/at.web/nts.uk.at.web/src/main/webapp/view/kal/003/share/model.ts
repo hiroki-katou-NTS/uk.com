@@ -48,7 +48,7 @@ module nts.uk.at.view.kal003.share.model {
         availableRoles: KnockoutObservableArray<string>;
         targetCondition: KnockoutObservable<AlarmCheckTargetCondition>;
         displayAvailableRoles: KnockoutObservable<string>;
-        dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, []));
+        dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, false, [], [], []));
         schedule4WeekAlarmCheckCondition: KnockoutObservable<Schedule4WeekAlarmCheckCondition> = ko.observable(new Schedule4WeekAlarmCheckCondition(SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY));
         action: KnockoutObservable<number> = ko.observable(0);
 
@@ -188,14 +188,14 @@ module nts.uk.at.view.kal003.share.model {
     export class DailyAlarmCheckCondition {
         conditionToExtractDaily: KnockoutObservable<number>;//main screen
         addApplication: KnockoutObservable<boolean>;//tab daily
-        listErrorAlarmCode: KnockoutObservableArray<ErrorAlarmCondition>;//tab daily
+        listErrorAlarmCode: KnockoutObservableArray<string>;//tab daily
         listExtractConditionWorkRecork: KnockoutObservableArray<WorkRecordExtractingCondition>;//tab check condition
         listFixedExtractConditionWorkRecord: KnockoutObservableArray<FixedConditionWorkRecord>;//tab  fixed
         
-        constructor(conditionToExtractDaily: number, addApplication: boolean, listErrorAlarmCondition: Array<ErrorAlarmCondition>, listWorkRecordExtractingConditions: Array<WorkRecordExtractingCondition>, listFixedConditionWorkRecord: Array<FixedConditionWorkRecord>) {
+        constructor(conditionToExtractDaily: number, addApplication: boolean, listErrorAlarmCode: Array<string>, listWorkRecordExtractingConditions: Array<WorkRecordExtractingCondition>, listFixedConditionWorkRecord: Array<FixedConditionWorkRecord>) {
             this.conditionToExtractDaily = ko.observable(conditionToExtractDaily);
             this.addApplication = ko.observable(addApplication);
-            this.listErrorAlarmCode = ko.observableArray(listErrorAlarmCondition);
+            this.listErrorAlarmCode = ko.observableArray(listErrorAlarmCode);
             this.listExtractConditionWorkRecork = ko.observableArray(listWorkRecordExtractingConditions);
             this.listFixedExtractConditionWorkRecord = ko.observableArray(listFixedConditionWorkRecord);
         } 
@@ -680,41 +680,23 @@ module nts.uk.at.view.kal003.share.model {
     }
     
     //---------------- KAL003 - B end------------------//
-    //interface WorkRecordExtraCon
-        export interface IWorkRecordExtraCon {
-            errorAlarmCheckID: string;
-            checkItem: number;
-            messageBold: boolean;
-            messageColor: string;
-            sortOrderBy: number;
-            useAtr?: boolean;
-            nameWKRecord: string;
-        }
-    
    
-    //class WorkRecordExtraCon
-    export class WorkRecordExtraCon {
-        errorAlarmCheckID: string;
-        checkItem: number;
-        messageBold: boolean;
-        messageColor: string;
-        sortOrderBy: number;
-        useAtr: KnockoutObservable<boolean>;
-        nameWKRecord: string;
-        constructor(data: IWorkRecordExtraCon) {
-            this.errorAlarmCheckID = data.errorAlarmCheckID;
-            this.checkItem = data.checkItem;
-            this.messageBold = data.messageBold;
-            this.messageColor = data.messageColor;
-            this.sortOrderBy = data.sortOrderBy;
-            this.useAtr = ko.observable(data.useAtr);
-            this.nameWKRecord = data.nameWKRecord;
+    export class DailyErrorAlarmCheck {
+        code: string;
+        name: string;
+        classification: string;
+        message: string;
+        constructor(code: string, name: string, classification: string, message: string) {
+            this.code = code;
+            this.name = name;
+            this.classification = classification;
+            this.message = message;
         }
     }//end class WorkRecordExtraCon
     
     //interface FixedConditionWorkRecord
     export interface IFixedConditionWorkRecord {
-        errorAlarmId: string;
+        dailyAlarmConID: string;
         checkName: string;
         fixConWorkRecordNo: number;
         message: string;
@@ -722,13 +704,13 @@ module nts.uk.at.view.kal003.share.model {
     }
     //class FixedConditionWorkRecord
     export class FixedConditionWorkRecord {
-        errorAlarmId: string;
+        dailyAlarmConID: string;
         fixConWorkRecordNo: KnockoutObservable<number>;
         checkName: string;
         message: KnockoutObservable<string>;
         useAtr: KnockoutObservable<boolean>;
         constructor(data: IFixedConditionWorkRecord) {
-            this.errorAlarmId = data.errorAlarmId;
+            this.dailyAlarmConID = data.dailyAlarmConID;
             this.fixConWorkRecordNo = ko.observable(data.fixConWorkRecordNo);
             this.message = ko.observable(data.message);
             this.useAtr = ko.observable(data.useAtr);
