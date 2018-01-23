@@ -7,11 +7,15 @@ package nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeStampReflectGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkStampReflectTimezone;
 
+@Getter
+@Setter
 public class DiffTimeWorkStampReflectTimezoneDto {
 
 	/** The stamp reflect timezone. */
@@ -50,7 +54,7 @@ public class DiffTimeWorkStampReflectTimezoneDto {
 
 		@Override
 		public List<StampReflectTimezone> getStampReflectTimezone() {
-			return this.dto.stampReflectTimezone.stream().map(item -> {
+			return this.dto.stampReflectTimezone == null ? null : this.dto.stampReflectTimezone.stream().map(item -> {
 				return new StampReflectTimezone(item);
 			}).collect(Collectors.toList());
 		}

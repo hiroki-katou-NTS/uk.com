@@ -23,6 +23,7 @@ public class JpaDiffTimeRestTimezoneSetMemento implements DiffTimeRestTimezoneSe
 	private String workTimeCode;
 
 	private int periodNo;
+
 	public JpaDiffTimeRestTimezoneSetMemento(KshmtDiffTimeWorkSet entity, int type) {
 		this.entity = entity;
 		this.type = type;
@@ -32,11 +33,12 @@ public class JpaDiffTimeRestTimezoneSetMemento implements DiffTimeRestTimezoneSe
 
 	@Override
 	public void setRestTimezones(List<DiffTimeDeductTimezone> restTimezone) {
-
+		if (this.entity.getLstKshmtDtHalfRestTime() == null) {
+			this.entity.setLstKshmtDtHalfRestTime(new ArrayList<>());
+		}
 		List<KshmtDtHalfRestTime> otherList = this.entity.getLstKshmtDtHalfRestTime().stream()
 				.filter(entity -> entity.getKshmtDtHalfRestTimePK().getAmPmAtr() != this.type)
 				.collect(Collectors.toList());
-
 		// get list old entity
 		Map<KshmtDtHalfRestTimePK, KshmtDtHalfRestTime> lstOldEntity = this.entity.getLstKshmtDtHalfRestTime().stream()
 				.filter(entity -> entity.getKshmtDtHalfRestTimePK().getAmPmAtr() == this.type)

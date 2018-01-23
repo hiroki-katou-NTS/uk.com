@@ -7,6 +7,8 @@ package nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDayOffWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDayOffWorkTimezoneGetMemento;
@@ -15,6 +17,8 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
 /**
  * The Class DiffTimeDayOffWorkTimezoneDto.
  */
+@Getter
+@Setter
 public class DiffTimeDayOffWorkTimezoneDto {
 
 	/** The rest timezone. */
@@ -51,11 +55,19 @@ public class DiffTimeDayOffWorkTimezoneDto {
 
 		@Override
 		public DiffTimeRestTimezone getRestTimezone() {
+			if(this.dto.restTimezone ==null)
+			{
+				return null;
+			}
 			return this.dto.restTimezone.toDomain();
 		}
 
 		@Override
 		public List<DayOffTimezoneSetting> getWorkTimezones() {
+			if(this.dto.workTimezones == null)
+			{
+				return null;
+			}
 			return this.dto.workTimezones.stream().map(item -> {
 				return item.toDomain();
 			}).collect(Collectors.toList());

@@ -212,7 +212,7 @@ module nts.uk.at.view.kmk003.a {
 
                 toDto(): DiffTimezoneSettingDto {
                     let self = this;
-                    let employmentTimezones = self.employmentTimezones().map(item => item.toDto()); 
+                    let employmentTimezones = self.employmentTimezones().map(item => item.toDto());
                     let oTTimezones = self.oTTimezones().map(item => item.toDto());
 
                     var dataDTO: DiffTimezoneSettingDto = {
@@ -265,11 +265,11 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class DiffTimeWorkStampReflectTimezoneModel {
-                stampReflectTimezone: StampReflectTimezoneModel;
+                stampReflectTimezone: KnockoutObservableArray<StampReflectTimezoneModel>;
                 isUpdateStartTime: KnockoutObservable<boolean>;
 
                 constructor() {
-                    this.stampReflectTimezone = new StampReflectTimezoneModel();
+                    this.stampReflectTimezone = ko.observableArray([]);
                     this.isUpdateStartTime = ko.observable(false);
                 }
 
@@ -279,8 +279,12 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 toDto(): DiffTimeWorkStampReflectTimezoneDto {
+                    var lstStamp = [];
+                    this.stampReflectTimezone().forEach(function(item, index) {
+                        lstStamp.push(item.toDto());
+                    });
                     var dataDTO: DiffTimeWorkStampReflectTimezoneDto = {
-                        stampReflectTimezone: this.stampReflectTimezone.toDto(),
+                        stampReflectTimezone: lstStamp,
                         isUpdateStartTime: this.isUpdateStartTime(),
                     };
                     return dataDTO;
@@ -390,7 +394,7 @@ module nts.uk.at.view.kmk003.a {
                     this.getHDWtzAfternoon().updateData(lstHalfDayWorkTimezone[2]);
                 }
 
-                toDto(): DiffTimeWorkSettingDto {
+                toDto(commonSetting: WorkTimezoneCommonSetModel): DiffTimeWorkSettingDto {
                     var halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneDto[] = [];
                     for (var dataModel of this.halfDayWorkTimezones) {
                         halfDayWorkTimezones.push(dataModel.toDto());
@@ -399,7 +403,7 @@ module nts.uk.at.view.kmk003.a {
                         workTimeCode: this.workTimeCode(),
                         restSet: this.restSet.toDto(),
                         dayoffWorkTimezone: this.dayoffWorkTimezone.toDto(),
-                        commonSet: this.commonSet.toDto(),
+                        commonSet: commonSetting.toDto(),
                         isUseHalfDayShift: this.isUseHalfDayShift(),
                         changeExtent: this.changeExtent.toDto(),
                         halfDayWorkTimezones: halfDayWorkTimezones,

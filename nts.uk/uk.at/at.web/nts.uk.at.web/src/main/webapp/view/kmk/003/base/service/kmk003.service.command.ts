@@ -3,8 +3,6 @@ module nts.uk.at.view.kmk003.a {
     import flowset = nts.uk.at.view.kmk003.a.service.model.flowset;
     import difftimeset = nts.uk.at.view.kmk003.a.service.model.difftimeset;
     import flexset = nts.uk.at.view.kmk003.a.service.model.flexset;
-    import difftimeset = nts.uk.at.view.kmk003.a.service.model.difftimeset;
-    
     import predset = nts.uk.at.view.kmk003.a.service.model.predset;
     import worktimeset = nts.uk.at.view.kmk003.a.service.model.worktimeset;
     
@@ -26,7 +24,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 export interface DiffTimeWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
-                    difftimeWorkSetting: difftimeset.DiffTimeWorkSettingDto;
+                    diffTimeWorkSetting: difftimeset.DiffTimeWorkSettingDto;
                     screenMode: TabMode;
                 }
                 
@@ -37,11 +35,6 @@ module nts.uk.at.view.kmk003.a {
                 
                 export interface FlexWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
                     flexWorkSetting: flexset.FlexWorkSettingDto;
-                    screenMode: TabMode;
-                }
-                
-                export interface DiffTimeWorkSettingSaveCommand extends WorkTimeCommonSaveCommand {
-                    difftimeWorkSetting: difftimeset.DiffTimeWorkSettingDto;
                     screenMode: TabMode;
                 }
             }

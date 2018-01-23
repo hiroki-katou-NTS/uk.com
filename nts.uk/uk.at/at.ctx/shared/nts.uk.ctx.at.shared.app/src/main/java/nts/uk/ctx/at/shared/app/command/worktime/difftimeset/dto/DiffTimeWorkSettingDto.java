@@ -111,6 +111,9 @@ public class DiffTimeWorkSettingDto implements DiffTimeWorkSettingGetMemento {
 	 */
 	@Override
 	public EmTimezoneChangeExtent getChangeExtent() {
+		if (this.changeExtent == null) {
+			return null;
+		}
 		return this.changeExtent.toDomain();
 	}
 

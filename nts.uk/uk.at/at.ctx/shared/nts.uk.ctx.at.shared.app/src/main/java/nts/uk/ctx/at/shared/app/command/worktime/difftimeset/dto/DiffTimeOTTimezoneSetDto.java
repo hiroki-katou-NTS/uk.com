@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.OverTimeOfTimeZoneSetDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
@@ -15,6 +17,9 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneSet;
 /**
  * The Class DiffTimeOTTimezoneSetDto.
  */
+
+@Getter
+@Setter
 public class DiffTimeOTTimezoneSetDto extends OverTimeOfTimeZoneSetDto {
 
 	/** The is update start time. */

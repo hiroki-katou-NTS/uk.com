@@ -21,6 +21,7 @@ module nts.uk.at.view.kmk003.a {
     import FixedWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FixedWorkSettingSaveCommand;
     import FlowWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlowWorkSettingSaveCommand;
     import FlexWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlexWorkSettingSaveCommand;
+    import DiffTimeSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.DiffTimeWorkSettingSaveCommand;
     
     export module viewmodel {
 
@@ -695,12 +696,12 @@ module nts.uk.at.view.kmk003.a {
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
 
-//                if (self.workTimeSetting.isDiffTime()) {
-//                    service.saveDiffTimeWorkSetting(self.toDiffTimeCommand(addMode, tabMode))
-//                        .done(() => self.onSaveSuccess(dfd))
-//                        .fail(err => dfd.reject(err))
-//                        .always(() => _.defer(() => nts.uk.ui.block.clear()));
-//                }
+                if (self.workTimeSetting.isDiffTime()) {
+                    service.saveDiffTimeWorkSetting(self.toDiffTimeCommand(addMode, tabMode))
+                        .done(() => self.onSaveSuccess(dfd))
+                        .fail(err => dfd.reject(err))
+                        .always(() => _.defer(() => nts.uk.ui.block.clear()));
+                }
                 
                 return dfd.promise();
             }
@@ -742,6 +743,22 @@ module nts.uk.at.view.kmk003.a {
                     screenMode: tabMode,
                     addMode: addMode,
                     flexWorkSetting: self.flexWorkSetting.toDto(self.commonSetting),
+                    predseting: self.predetemineTimeSetting.toDto(),
+                    worktimeSetting: self.workTimeSetting.toDto()
+                };
+                return command;
+            }
+            
+            /**
+             * Collect difftime data and convert to command dto
+             */
+            toDiffTimeCommand(addMode: boolean, tabMode: number): DiffTimeSettingSaveCommand {
+                let self = this;
+                let command: DiffTimeSettingSaveCommand;
+                command = {
+                    screenMode: tabMode,
+                    addMode: addMode,
+                    diffTimeWorkSetting: self.diffWorkSetting.toDto(self.commonSetting),
                     predseting: self.predetemineTimeSetting.toDto(),
                     worktimeSetting: self.workTimeSetting.toDto()
                 };

@@ -37,6 +37,10 @@ public class JpaDiffTimezoneSettingSetMemento implements DiffTimezoneSettingSetM
 	@Override
 	public void setEmploymentTimezones(List<EmTimeZoneSet> employmentTimezones) {
 		// KSHMT_DT_WORK_TIME_SET
+
+		if (this.entity.getLstKshmtDtWorkTimeSet() == null) {
+			this.entity.setLstKshmtDtWorkTimeSet(new ArrayList<>());
+		}
 		List<KshmtDtWorkTimeSet> otherList = this.entity.getLstKshmtDtWorkTimeSet().stream()
 				.filter(entity -> entity.getKshmtDtWorkTimeSetPK().getAmPmAtr() != this.type)
 				.collect(Collectors.toList());
@@ -71,7 +75,10 @@ public class JpaDiffTimezoneSettingSetMemento implements DiffTimezoneSettingSetM
 
 	@Override
 	public void setOTTimezones(List<DiffTimeOTTimezoneSet> oTTimezones) {
-		//KSHMT_DT_OT_TIME_SET
+		// KSHMT_DT_OT_TIME_SET
+		if (this.entity.getLstKshmtDtOtTimeSet() == null) {
+			this.entity.setLstKshmtDtOtTimeSet(new ArrayList<>());
+		}
 		List<KshmtDtOtTimeSet> otherList = this.entity.getLstKshmtDtOtTimeSet().stream()
 				.filter(entity -> entity.getKshmtDtOtTimeSetPK().getAmPmAtr() != this.type)
 				.collect(Collectors.toList());

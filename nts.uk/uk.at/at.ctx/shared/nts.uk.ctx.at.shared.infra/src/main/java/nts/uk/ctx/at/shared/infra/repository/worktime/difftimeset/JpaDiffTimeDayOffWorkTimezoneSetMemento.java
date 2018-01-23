@@ -28,7 +28,7 @@ public class JpaDiffTimeDayOffWorkTimezoneSetMemento implements DiffTimeDayOffWo
 	@Override
 	public void setRestTimezone(DiffTimeRestTimezone restTimezone) {
 		//KSHMT_DT_HOL_REST_TIME
-		if (restTimezone.getRestTimezones().isEmpty()) {
+		if (restTimezone == null ||restTimezone.getRestTimezones().isEmpty()) {
 			this.entity.setLstKshmtDtHolRestTime(new ArrayList<>());
 			return;
 		}
@@ -70,7 +70,7 @@ public class JpaDiffTimeDayOffWorkTimezoneSetMemento implements DiffTimeDayOffWo
 	@Override
 	public void setWorkTimezones(List<DayOffTimezoneSetting> workTimezone) {
 		//KSHMT_DIFF_TIME_HOL_SET
-		if (workTimezone.isEmpty()) {
+		if (workTimezone == null || workTimezone.isEmpty()) {
 			this.entity.setLstKshmtDiffTimeHolSet(new ArrayList<>());
 			return;
 		}

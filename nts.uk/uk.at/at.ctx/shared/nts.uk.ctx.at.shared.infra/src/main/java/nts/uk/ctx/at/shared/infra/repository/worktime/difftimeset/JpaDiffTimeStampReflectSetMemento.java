@@ -26,6 +26,10 @@ public class JpaDiffTimeStampReflectSetMemento implements DiffTimeStampReflectSe
 	@Override
 	public void setStampReflectTimezone(List<StampReflectTimezone> stampReflectTimezone) {
 		// KSHMT_DT_STAMP_REFLECT
+
+		if (this.entity.getLstKshmtDtStampReflect() == null) {
+			this.entity.setLstKshmtDtStampReflect(new ArrayList<>());
+		}
 		// get list old entity
 		Map<KshmtDtStampReflectPK, KshmtDtStampReflect> lstOldEntity = this.entity.getLstKshmtDtStampReflect().stream()
 				.collect(Collectors.toMap(KshmtDtStampReflect::getKshmtDtStampReflectPK, Function.identity()));

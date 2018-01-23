@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
 
 public class JpaDiffTimeWorkSettingSetMemento implements DiffTimeWorkSettingSetMemento {
@@ -26,6 +27,10 @@ public class JpaDiffTimeWorkSettingSetMemento implements DiffTimeWorkSettingSetM
 	private KshmtDiffTimeWorkSet entity;
 
 	public JpaDiffTimeWorkSettingSetMemento(KshmtDiffTimeWorkSet entity) {
+		//case add new 
+		if (entity.getKshmtDiffTimeWorkSetPK() == null) {
+			entity.setKshmtDiffTimeWorkSetPK(new KshmtDiffTimeWorkSetPK());
+		}
 		this.entity = entity;
 	}
 
@@ -79,10 +84,11 @@ public class JpaDiffTimeWorkSettingSetMemento implements DiffTimeWorkSettingSetM
 
 	@Override
 	public void setChangeExtent(EmTimezoneChangeExtent changeExtent) {
-		this.entity.setChangeAhead(changeExtent.getAheadChange().v());
-		this.entity.setChangeBehind(changeExtent.getBehindChange().v());
-		this.entity.setFrontRearAtr(changeExtent.getUnit().getFontRearSection().value);
-		this.entity.setTimeRoundingUnit(changeExtent.getUnit().getRoundingTimeUnit().value);
+		this.entity.setChangeAhead(changeExtent.getAheadChange() == null ? 0 : changeExtent.getAheadChange().v());
+		this.entity.setChangeBehind(changeExtent.getBehindChange() == null ? 0 : changeExtent.getBehindChange().v());
+		this.entity.setFrontRearAtr(
+				changeExtent.getUnit() == null ? 0 : changeExtent.getUnit().getFontRearSection().value);
+		this.entity.setTimeRoundingUnit(changeExtent.getUnit()==null?0:changeExtent.getUnit().getRoundingTimeUnit().value);
 	}
 
 	@Override
