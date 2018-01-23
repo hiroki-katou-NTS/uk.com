@@ -15,9 +15,11 @@ import nts.uk.ctx.pereg.app.command.person.info.category.UpdatePerInfoCtgCommand
 import nts.uk.ctx.pereg.app.command.person.info.category.UpdatePerInfoCtgCommandHandler;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgDataEnumDto;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgWithItemsNameDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgWithParentMapDto;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonCategoryData;
 
 @Path("ctx/pereg/person/info/category")
 @Produces("application/json")
@@ -31,6 +33,9 @@ public class PerInfoCtgWebservice extends WebService {
 	@Inject
 	private UpdatePerInfoCtgCommandHandler updatePerInfoCtgCommand;
 
+	
+	@Inject
+	private PerInfoCtgFinder finder;
 
 	
 	@POST
@@ -67,6 +72,12 @@ public class PerInfoCtgWebservice extends WebService {
 	@Path("findby/company")
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompany() {
 		return perInfoCtgFinder.getAllPerInfoCtgByCompany();
+	}
+	
+	@POST
+	@Path("find/companyId")
+	public List<PersonCategoryData> getAllPerInfoCtgByCID() {
+		return this.finder.getAllCtgUsedByCompanyId();
 	}
 	
 	@POST

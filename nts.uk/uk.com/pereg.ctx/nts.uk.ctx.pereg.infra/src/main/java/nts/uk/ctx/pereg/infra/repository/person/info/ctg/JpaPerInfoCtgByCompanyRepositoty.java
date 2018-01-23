@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonCategoryData;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
@@ -39,6 +40,13 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 	private final static String SELECT_CHECK_CTG_NAME_QUERY = "SELECT c.categoryName"
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName"
 			+ " AND c.ppemtPerInfoCtgPK.perInfoCtgId != :ctgId";
+	
+	private final static String SEL_ITEM_IS_ABOLITION = " SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.abolitionAtr,   i.ppemtPerInfoItemPK.perInfoItemDefId,  i.abolitionAtr FROM PpemtPerInfoCtg c "
+			+ " INNER JOIN  PpemtPerInfoItem i"
+			+ " ON c.ppemtPerInfoCtgPK.perInfoCtgId =  i.perInfoCtgId "
+			+ " WHERE c.cid =: cid AND c.abolitionAtr = 0"
+			+ " AND i.abolitionAtr = 0";
+
 
 	private static PpemtPerInfoCtg toEntity(PersonInfoCategory domain) {
 		PpemtPerInfoCtg entity = new PpemtPerInfoCtg();
@@ -72,6 +80,16 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 		int fixedAtr = Integer.parseInt(String.valueOf(c[7]));
 		return PersonInfoCategory.createFromEntity(personInfoCategoryId, AppContexts.user().companyId(), categoryCode,
 				categoryParentCd, categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
+
+	}
+	
+	// mapping
+	private PersonCategoryData toDomain(Object[] c) {
+		String ctgId = String.valueOf(c[0]);
+		int abolitionAtrCtg = Integer.parseInt(String.valueOf(c[1]));
+		String itemId = String.valueOf(c[2]);
+		int abolitionAtrItem = Integer.parseInt(String.valueOf(c[3]));
+		return new PersonCategoryData(ctgId, abolitionAtrCtg, itemId, abolitionAtrItem);
 
 	}
 
@@ -141,6 +159,15 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<PersonCategoryData> getAllCategoryByCompanyId(String companyId) {
+		List<PersonCategoryData> ctgList = this.queryProxy().query(SEL_ITEM_IS_ABOLITION, Object[].class)
+				.setParameter("cid", companyId)
+				.getList(c -> toDomain(c));
+		
+		return ctgList;
 	}
 
 }
