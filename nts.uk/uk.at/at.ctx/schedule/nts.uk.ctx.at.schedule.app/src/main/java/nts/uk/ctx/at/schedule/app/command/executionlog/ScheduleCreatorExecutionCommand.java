@@ -33,7 +33,7 @@ public class ScheduleCreatorExecutionCommand {
 	private ScheduleCreateContent content;
 	
 	/** The is confirm. */
-	private Boolean isConfirm; 
+	private Boolean confirm; 
 	
 	/** The is delete befor insert. */
 	private Boolean isDeleteBeforInsert;

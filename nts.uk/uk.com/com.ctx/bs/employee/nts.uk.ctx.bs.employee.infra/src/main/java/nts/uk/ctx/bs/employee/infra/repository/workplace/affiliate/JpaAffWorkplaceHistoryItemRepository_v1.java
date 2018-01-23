@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -66,10 +68,10 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	}
 	
 	private void updateEntity(AffWorkplaceHistoryItem domain, BsymtAffiWorkplaceHistItem entity) {
-		if (domain.getWorkplaceId() != null){
+		if (StringUtils.isNotEmpty(domain.getWorkplaceId())){
 			entity.setWorkPlaceId(domain.getWorkplaceId());
 		}
-		if (domain.getNormalWorkplaceId() != null){
+		if (StringUtils.isNotEmpty(domain.getNormalWorkplaceId())){
 			entity.setNormalWkpId(domain.getNormalWorkplaceId());
 		}
 	}

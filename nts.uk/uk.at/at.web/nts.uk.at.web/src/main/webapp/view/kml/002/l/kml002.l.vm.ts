@@ -53,13 +53,17 @@ module kml002.l.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.findAll().done(function(totalTimeArr: Array<ItemModel>) {
+                let lstRootItems = [];
                 _.forEach(totalTimeArr, function(res: IItemModel) {
-                    var totalTime: IItemModel = {
-                        totalCountNo: res.totalCountNo,
-                        totalTimesName: res.totalTimesName
-                    };
-                    self.rootItems.push(new ItemModel(totalTime));
+                    if (res.useAtr == 1) {
+                        var totalTime: IItemModel = {
+                            totalCountNo: res.totalCountNo,
+                            totalTimesName: res.totalTimesName
+                        };
+                        lstRootItems.push(new ItemModel(totalTime));
+                    }
                 });
+                self.rootItems(lstRootItems);
                 dfd.resolve();
             });
             return dfd.promise();
@@ -105,12 +109,12 @@ module kml002.l.viewmodel {
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                }).always(()=>{
-                    nts.uk.ui.block.clear();    
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
                 return dfd.promise();
             }
-            
+
             dfd.resolve();
             nts.uk.ui.block.clear();
             return dfd.promise();
