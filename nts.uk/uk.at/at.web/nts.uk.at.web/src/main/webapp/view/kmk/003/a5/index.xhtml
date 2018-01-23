@@ -26,6 +26,7 @@
 		</div>
 	</com:ko>
 	<!-- End of Fixed rest time switch button -->
+	
 	<!-- Begin Fixed timezones -->
 	<com:ko tag="if" bind="isFixed()">
 		<!-- Begin Simple mode -->
@@ -71,6 +72,7 @@
 		<!-- End of Detail mode -->
 	</com:ko>
 	<!-- End of Fixed timezones -->
+	
 	<!-- Begin Flex timezones -->
 	<com:ko tag="if" bind="isFlexTimezone">
 		<!-- Simple mode -->
@@ -114,6 +116,7 @@
 		</com:ko>
 	</com:ko>
 	<!-- End of Flex timezones -->
+	
 	<!-- Begin Flex rest set -->
 	<com:ko tag="if" bind="isFlexRestTime">
 		<!-- Simple mode -->
@@ -160,6 +163,7 @@
 				</div>
 		</com:ko>
 		<!-- End of Simple mode -->
+		
 		<!-- Begin Detail mode -->
 		<com:ko tag="if" bind="isDetailMode">
 			<!-- One day -->
@@ -306,18 +310,100 @@
 		<!-- End of Detail mode -->
 	</com:ko>
 	<!-- End of Flex rest set -->
+	
 	<!-- Begin flow timezones -->
 	<com:ko tag="if" bind="isFlowTimezone">
 		<div id="flowTz" data-bind="ntsFixTableCustom: {option: flowTimezoneOption}"></div>
 	</com:ko>
 	<!-- End of flow timezones -->
+	
 	<!-- Begin flow rest set -->
 	<com:ko tag="if" bind="isFlowRestTime">
-		<div id="flexRt" data-bind="ntsFixTableCustom: {option: flowRestSetOption}"></div>
-		<div data-bind="ntsCheckBox: {
-			checked: flowRestSetUse,
-			enable: true,
-			text: nts.uk.resource.getText('KMK003_144') }"></div>
+		<div id="flowRt" data-bind="ntsFixTableCustom: {option: flowRestSetOption}"></div>
+			
+		<com:ko tag="with" bind="flowRestSet">
+			<div tabindex="86" data-bind="ntsCheckBox: {
+				checked: useHereAfterRestSet,
+				enable: true,
+				text: nts.uk.resource.getText('KMK003_144') }"></div>
+				
+			<table class="tbl-after-restset default-input-width">
+				<tr>
+					<th>#{i18n.getText('KMK003_174')}</th>
+					<th>#{i18n.getText('KMK003_176')}</th>
+				</tr>
+				<tr>
+					<td>
+						<input tabindex="87" data-bind="ntsTimeEditor: {
+							name: '#[KMK003_174]',
+							option: {textalign: 'center'},
+							constraint: 'AttendanceTime',
+							value: hereAfterRestSet.flowPassageTime,
+							required: true,
+							inputFormat: 'time',
+							mode: 'time',
+							enable: useHereAfterRestSet }" />
+					</td>
+					<td>
+						<input tabindex="87" data-bind="ntsTimeEditor: {
+							name: '#[KMK003_176]',
+							option: {textalign: 'center'},
+							constraint: 'AttendanceTime',
+							value: hereAfterRestSet.flowRestTime,
+							required: true,
+							inputFormat: 'time',
+							mode: 'time',
+							enable: useHereAfterRestSet }" />
+					</td>
+				</tr>
+			</table>
+		</com:ko>
+			
 	</com:ko>
 	<!-- End of flow rest set -->
+	
+	<!-- Begin Diff timezones -->
+	<com:ko tag="if" bind="isDiffTime()">
+		<!-- Begin Simple mode -->
+		<com:ko tag="if" bind="!isDetailMode()">
+			<div id="diffOneDay" data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
+		</com:ko>
+		<!-- End of Simple mode -->
+		<!-- Begin Detail mode -->
+		<com:ko tag="if" bind="isDetailMode">
+			<!-- One day -->
+			<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
+				<h3>
+					<label>#{i18n.getText('KMK003_51')}</label>
+				</h3>
+				<div class ="accordion-content">
+					<div id="diffOneDay" data-bind="ntsFixTableCustom: {option: oneDayDiffTimezoneOption}"></div>
+				</div>
+			</div><!-- One day -->
+			
+			<com:ko tag="if" bind="useHalfDay">
+				<!-- Morning -->
+				<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
+					<h3>
+						<label>#{i18n.getText('KMK003_60')}</label>
+					</h3>
+					<div class ="accordion-content">
+						<div id="diffMorning" data-bind="ntsFixTableCustom: {option: morningDiffTimezoneOption}"></div>
+					</div>
+				</div><!-- Morning -->
+				
+				<!-- Afternoon -->
+				<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
+					<h3>
+						<label>#{i18n.getText('KMK003_61')}</label>
+					</h3>
+					<div class ="accordion-content">
+						<div id="diffAfternoon" data-bind="ntsFixTableCustom: {option: afternoonDiffTimezoneOption}"></div>
+					</div>
+				</div><!-- Afternoon -->
+			</com:ko>
+		</com:ko>
+		<!-- End of Detail mode -->
+	</com:ko>
+	
 </ui:composition>
