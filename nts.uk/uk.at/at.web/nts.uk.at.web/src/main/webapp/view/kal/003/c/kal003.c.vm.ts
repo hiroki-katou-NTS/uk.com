@@ -33,6 +33,8 @@ module nts.uk.at.view.kal003.c.viewmodel {
             param.countableAddAtdItems = _.values(param.countableAddAtdItems ? param.countableAddAtdItems : []);
             param.countableSubAtdItems = _.values(param.countableSubAtdItems ? param.countableSubAtdItems : []);
             self.currentAtdItemCondition = ko.mapping.fromJS(param);
+            self.currentAtdItemCondition.compareStartValue(nts.uk.util.isNullOrEmpty(self.currentAtdItemCondition.compareStartValue()) ? 0 : self.currentAtdItemCondition.compareStartValue());
+            self.currentAtdItemCondition.compareEndValue(nts.uk.util.isNullOrEmpty(self.currentAtdItemCondition.compareEndValue()) ? 0 : self.currentAtdItemCondition.compareEndValue());
             self.currentAtdItemCondition.conditionAtr.subscribe((val) => {
                 self.currentAtdItemCondition.uncountableAtdItem(null);
                 self.currentAtdItemCondition.countableAddAtdItems([]);
