@@ -346,7 +346,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString = new StringBuilder();
 		builderString.append("SELECT NEW ");
 		builderString.append(CodeName.class.getName());
-		builderString.append("(i.jobCd , i.jobName)");
+		builderString.append("(i.jobCd , i.jobName, i.bsymtJobInfoPK.jobId)");
 		builderString.append("FROM BsymtJobInfo i ");
 		builderString.append("JOIN BsymtJobHist h ");
 		builderString.append("ON i.bsymtJobInfoPK.cid = h.bsymtJobHistPK.cid ");
@@ -650,7 +650,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<CodeName> findEmployment(String companyId) {
 		return this.queryProxy().query(SEL_EMPLOYMENT_BY_CLOSURE, BsymtEmployment.class)
 				.setParameter("companyId", companyId).getList().stream().map(e -> {
-					return new CodeName(e.getBsymtEmploymentPK().getCode(), e.getName());
+					return new CodeName(e.getBsymtEmploymentPK().getCode(), e.getName(), "");
 				}).collect(Collectors.toList());
 	}
 
@@ -664,20 +664,20 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<CodeName> findClassification(String companyId) {
 		return this.queryProxy().query(SEL_FIND_CLASSIFICATION, BsymtClassification.class)
 				.setParameter("companyId", companyId)
-				.getList(x -> new CodeName(x.getBsymtClassificationPK().getClscd(), x.getClsname()));
+				.getList(x -> new CodeName(x.getBsymtClassificationPK().getClscd(), x.getClsname(), ""));
 	}
 
 	@Override
 	public List<CodeName> findWorkplace(String companyId, GeneralDate date) {
 		return this.queryProxy().query(SEL_ALL_WORKPLACE, BsymtWorkplaceInfo.class).setParameter("cid", companyId)
-				.setParameter("baseDate", date).getList(w -> new CodeName(w.getWkpcd(), w.getWkpName()));
+				.setParameter("baseDate", date).getList(w -> new CodeName(w.getWkpcd(), w.getWkpName(), w.getBsymtWorkplaceInfoPK().getWkpid()));
 	}
 
 	@Override
 	public List<CodeName> findWorkplaceLocation(String companyId) {
 		return this.queryProxy().query(SEL_FIND_WORKPLACE_LOCATION, KwlmtWorkLocation.class)
 				.setParameter("companyId", companyId)
-				.getList(w -> new CodeName(w.kwlmtWorkLocationPK.workLocationCD, w.workLocationName));
+				.getList(w -> new CodeName(w.kwlmtWorkLocationPK.workLocationCD, w.workLocationName, ""));
 	}
 
 	@Override
@@ -828,14 +828,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			return this.queryProxy()
 					.query(FIND_WORK_TIME_ZONE + " ORDER BY a.kshmtWorkTimeSetPK.worktimeCd ASC ", KshmtWorkTimeSet.class)
 					.setParameter("companyID", companyId)
-					.getList(x -> new CodeName(x.getKshmtWorkTimeSetPK().getWorktimeCd(), x.getName()));
+					.getList(x -> new CodeName(x.getKshmtWorkTimeSetPK().getWorktimeCd(), x.getName(), ""));
 		} else {
 			return this.queryProxy()
 					.query(FIND_WORK_TIME_ZONE
 							+ " AND  a.kshmtWorkTimeSetPK.worktimeCd IN :shifCode ORDER BY a.kshmtWorkTimeSetPK.worktimeCd ASC",
 							KshmtWorkTimeSet.class)
 					.setParameter("companyID", companyId).setParameter("shifCode", shifCode)
-					.getList(x -> new CodeName(x.getKshmtWorkTimeSetPK().getWorktimeCd(), x.getName()));
+					.getList(x -> new CodeName(x.getKshmtWorkTimeSetPK().getWorktimeCd(), x.getName(), ""));
 		}
 	}
 
@@ -867,13 +867,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<CodeName> findWorkType(String companyId, Set<String> typeCodes) {
 		if (typeCodes.isEmpty()) {
 			return this.queryProxy().query(SELECT_WORKTYPE, KshmtWorkType.class).setParameter("companyId", companyId)
-					.getList(c -> new CodeName(c.kshmtWorkTypePK.workTypeCode, c.name));
+					.getList(c -> new CodeName(c.kshmtWorkTypePK.workTypeCode, c.name, ""));
 		} else {
 			return this.queryProxy()
 					.query(SELECT_WORKTYPE + " AND c.kshmtWorkTypePK.workTypeCode IN :workTypeCodes",
 							KshmtWorkType.class)
 					.setParameter("companyId", companyId).setParameter("workTypeCodes", typeCodes)
-					.getList(c -> new CodeName(c.kshmtWorkTypePK.workTypeCode, c.name));
+					.getList(c -> new CodeName(c.kshmtWorkTypePK.workTypeCode, c.name, ""));
 		}
 	}
 	

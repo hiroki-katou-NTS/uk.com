@@ -47,7 +47,7 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 		Boolean releaseFlg = approvalRootStateAdapter.doDeny(companyID, appID, employeeID);
 		approvalRootStateAdapter.updateReason(appID, employeeID, memo);
 		if(releaseFlg.equals(Boolean.TRUE)){
-			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
+			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.DENIAL);
 			applicationRepository.updateWithVersion(application);
 			AppTypeDiscreteSetting discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
 			if (discreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {

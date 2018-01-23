@@ -130,6 +130,9 @@ public class DailyRecordDto implements ConvertibleAttendanceItem {
 	}
 	
 	public DailyRecordDto addBreakTime(List<BreakTimeDailyDto> breakTime){
+		if(breakTime == null){
+			return this;
+		}
 		this.breakTime.addAll(breakTime);
 		return this;
 	}
@@ -180,6 +183,9 @@ public class DailyRecordDto implements ConvertibleAttendanceItem {
 	}
 	
 	public DailyRecordDto addEditStates(List<EditStateOfDailyPerformanceDto> editStates){
+		if(editStates == null){
+			return this;
+		}
 		this.editStates.addAll(editStates);
 		return this;
 	}
