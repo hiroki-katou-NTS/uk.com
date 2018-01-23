@@ -6,7 +6,8 @@ module nts.uk.at.view.kmf022.a.service {
         //会社別申請承認設定
         findAll: "at/request/application/requestofearch/getrequestofearch",
         // update/insert: RequestOfEachCompanyCommandHandler
-        //A4_5: /at/shared/workrule/closure/history/findAll
+        //A4_5: 
+        findAllClosure: "ctx/at/shared/workrule/closure/history/findAll",
         // A4_6
         find: "at/request/application/getalldatabyclosureId",
 //        updateClosure: "at/request/application/update",
@@ -26,6 +27,10 @@ module nts.uk.at.view.kmf022.a.service {
         
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
+    }
+    
+    export function findAllClosure() {
+        return nts.uk.request.ajax("at", paths.findAllClosure); 
     }
     
     export function findDirectlycommon() {
