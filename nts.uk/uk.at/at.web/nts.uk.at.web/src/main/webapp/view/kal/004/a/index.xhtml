@@ -34,7 +34,7 @@
 				<div class="container">
 					<a class="goback link-button" data-bind="ntsLinkButton: { jump: '../../002/a/index.xhtml' }">#{i18n.getText('KAL004_3')}</a>
 					<button id="new"  tabindex="1" data-bind="click: createAlarm">#{i18n.getText('KAL004_4')}</button>
-					<button id="registration"  class="proceed" tabindex="2" data-bind="click: saveAlarm">#{i18n.getText('KAL004_5')}</button>
+					<button id="registration"  class="proceed" tabindex="2" data-bind="click: saveAlarm , enable : $root.errors.isEmpty">#{i18n.getText('KAL004_5')}</button>
 					<button id="delete" class="danger" data-bind="click: removeAlarm, enable: !createMode()" tabindex="3">#{i18n.getText('KAL004_6')}</button>
 				</div>
 			</div>
