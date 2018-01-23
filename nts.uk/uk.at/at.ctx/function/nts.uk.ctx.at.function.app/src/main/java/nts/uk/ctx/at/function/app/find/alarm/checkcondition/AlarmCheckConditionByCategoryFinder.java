@@ -59,9 +59,10 @@ public class AlarmCheckConditionByCategoryFinder {
 		if (domain.getCategory() == AlarmCategory.DAILY && domain.getExtractionCondition() != null) {
 			dailyAlarmCondition = (DailyAlarmCondition) domain.getExtractionCondition();
 		}
-
+		String dailyID = "aa";
+		
 		List<FixedConWorkRecordAdapterDto> listFixedConditionWorkRecord = fixedConditionAdapter
-				.getAllFixedConWorkRecordByListID(dailyAlarmCondition.getFixedExtractConditionWorkRecord());
+				.getAllFixedConWorkRecordByID(dailyID);
 		List<FixedConditionWorkRecordDto> listFixedConditionWkRecord = new ArrayList<>();
 		List<FixedConditionDataAdapterDto> listFixedConditionData = fixCondDataAdapter.getAllFixedConditionDataPub();
 		for (FixedConditionDataAdapterDto i : listFixedConditionData) {
@@ -69,7 +70,7 @@ public class AlarmCheckConditionByCategoryFinder {
 			if (listFixedConditionWorkRecord != null && !listFixedConditionWorkRecord.isEmpty()) {
 				for (FixedConWorkRecordAdapterDto e : listFixedConditionWorkRecord) {
 					if (e.getFixConWorkRecordNo() == i.getFixConWorkRecordNo()) {
-						FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto(e.getErrorAlarmID(),
+						FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto(e.getDailyAlarmConID(),
 								i.getFixConWorkRecordName(), i.getFixConWorkRecordNo(), e.getMessage(), e.isUseAtr());
 						listFixedConditionWkRecord.add(dto);
 						check = false;

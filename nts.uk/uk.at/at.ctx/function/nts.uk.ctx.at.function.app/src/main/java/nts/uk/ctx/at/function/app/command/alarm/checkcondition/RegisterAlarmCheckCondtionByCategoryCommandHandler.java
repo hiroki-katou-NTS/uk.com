@@ -77,7 +77,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 								command.getDailyAlarmCheckCondition().getConditionToExtractDaily(),
 								command.getDailyAlarmCheckCondition().isAddApplication(),
 								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()),
-								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(item -> item.getErrorAlarmID()).collect(Collectors.toList()),
+								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(item -> item.getFixConWorkRecordNo()).collect(Collectors.toList()),
 								command.getDailyAlarmCheckCondition().getListErrorAlarmCode().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()));
 				break;
 			case SCHEDULE_4WEEK:
@@ -110,7 +110,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 								command.getDailyAlarmCheckCondition().getConditionToExtractDaily(),
 								command.getDailyAlarmCheckCondition().isAddApplication(),
 								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()),
-								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(c->c.getErrorAlarmID()).collect(Collectors.toList()),
+								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(c->c.getFixConWorkRecordNo()).collect(Collectors.toList()),
 								command.getDailyAlarmCheckCondition().getListErrorAlarmCode().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
 								);
 				break;
@@ -122,6 +122,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			default:
 				break;
 			}
+			
 			AlarmCheckConditionByCategory domain = new AlarmCheckConditionByCategory(companyId, command.getCategory(),
 					command.getCode(), command.getName(),
 					new AlarmCheckTargetCondition(IdentifierUtil.randomUniqueId(),
@@ -135,16 +136,15 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 							command.getTargetCondition().getTargetClassification()),
 					command.getAvailableRoles(), extractionCondition);
 			//Ma A hieu tra ve sau khi tao moi
-			String errorAlarmCheckID = "abc";
 			
 			//add WorkRecordExtractCondition
 			for(WorkRecordExtraConAdapterDto workRecordExtraConAdapterDto : command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork()) {
-				workRecordExtraConAdapterDto.setErrorAlarmCheckID(errorAlarmCheckID);
 				this.workRecordExtraConRepo.addWorkRecordExtraConPub(workRecordExtraConAdapterDto);
 			}
+			String dailyID="abc";
 			//add FixedWorkRecordExtractCondition
 			for(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto : command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord()) {
-				fixedConWorkRecordAdapterDto.setErrorAlarmID(errorAlarmCheckID);
+				fixedConWorkRecordAdapterDto.setDailyAlarmConID(dailyID);
 				this.fixedConWorkRecordRepo.addFixedConWorkRecordPub(fixedConWorkRecordAdapterDto);
 			}
 			

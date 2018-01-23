@@ -14,7 +14,7 @@ import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 @AllArgsConstructor
 public class FixedConditionWorkRecordDto {
 
-	private String errorAlarmId;
+	private String dailyAlarmConID;
 	private String checkName;
 	private int fixConWorkRecordNo;
 	private String message;
@@ -22,7 +22,7 @@ public class FixedConditionWorkRecordDto {
 	
 	public FixedConditionWorkRecordDto(FixedConWorkRecordAdapterDto importDto) {
 		super();
-		this.errorAlarmId = importDto.getErrorAlarmID();
+		this.dailyAlarmConID = importDto.getDailyAlarmConID();
 		this.checkName = "sample name";
 		this.fixConWorkRecordNo = importDto.getFixConWorkRecordNo();
 		this.message = importDto.getMessage();

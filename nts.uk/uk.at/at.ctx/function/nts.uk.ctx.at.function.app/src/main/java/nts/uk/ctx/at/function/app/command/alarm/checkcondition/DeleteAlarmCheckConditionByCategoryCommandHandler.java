@@ -45,8 +45,8 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 		this.workRecordExtraConRepo.deleteWorkRecordExtraConPub(listErrorAlarmCode);
 		
 		//TODO: delete List Fixed Work Record Extract Condition by list Error Alarm Code
-		List<String> listFixedExtractConWorkRecord =  command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(c->c.getErrorAlarmID()).collect(Collectors.toList());
-		this.fixedConWorkRecordRepo.deleteFixedConWorkRecordPub(listFixedExtractConWorkRecord);
+		String dailyAlarmConID =  command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().get(0).getDailyAlarmConID();
+		this.fixedConWorkRecordRepo.deleteFixedConWorkRecordPub(dailyAlarmConID);
 		
 		conditionRepo.delete(companyId, command.getCategory(), command.getCode());
 	}

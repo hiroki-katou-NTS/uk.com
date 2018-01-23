@@ -38,6 +38,4 @@ public class ErAlAtdItemConAdapterDto {
 		this.compareStartValue = compareStartValue;
 		this.compareEndValue = compareEndValue;
 	}
-	
-	
 }

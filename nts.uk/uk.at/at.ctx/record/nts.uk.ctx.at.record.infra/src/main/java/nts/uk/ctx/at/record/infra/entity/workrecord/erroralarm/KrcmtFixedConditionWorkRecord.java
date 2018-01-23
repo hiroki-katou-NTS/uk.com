@@ -22,13 +22,9 @@ public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serial
 
 
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@Column(name = "ERROR_ALARM_CHECK_ID")
-	public String errorAlarmID;
-
-	@Column(name = "FIX_CON_WORK_RECORD_NO")
-	public int fixConWorkRecordNo;
+	
+	@EmbeddedId
+	public KrcmtFixedConditionWorkRecordPK krcmtFixedConditionWorkRecordPK;
 	
 	@Column(name = "MESSAGE")
 	public String message;
@@ -38,21 +34,22 @@ public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serial
 	
 	@Override
 	protected Object getKey() {
-		return errorAlarmID;
+		return krcmtFixedConditionWorkRecordPK;
 	}
-	
-	public KrcmtFixedConditionWorkRecord(String errorAlarmID, int fixConWorkRecordNo, String message, int useAtr) {
+	public KrcmtFixedConditionWorkRecord(KrcmtFixedConditionWorkRecordPK krcmtFixedConditionWorkRecordPK,
+			String message, int useAtr) {
 		super();
-		this.errorAlarmID = errorAlarmID;
-		this.fixConWorkRecordNo = fixConWorkRecordNo;
+		this.krcmtFixedConditionWorkRecordPK = krcmtFixedConditionWorkRecordPK;
 		this.message = message;
 		this.useAtr = useAtr;
 	}
 	
 	public static KrcmtFixedConditionWorkRecord toEntity(FixedConditionWorkRecord domain) {
 		return new KrcmtFixedConditionWorkRecord(
-				domain.getErrorAlarmID(),
-				domain.getFixConWorkRecordNo().value,
+				new KrcmtFixedConditionWorkRecordPK(
+						domain.getDailyAlarmConID(),
+						domain.getFixConWorkRecordNo().value
+						),
 				domain.getMessage().v(),
 				domain.isUseAtr()?1:0
 				);
@@ -60,11 +57,15 @@ public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serial
 	
 	public FixedConditionWorkRecord toDomain() {
 		return new FixedConditionWorkRecord(
-				this.errorAlarmID,
-				EnumAdaptor.valueOf(this.fixConWorkRecordNo, WorkRecordFixedCheckItem.class),
+				this.krcmtFixedConditionWorkRecordPK.dailyAlarmConID,
+				EnumAdaptor.valueOf(this.krcmtFixedConditionWorkRecordPK.fixConWorkRecordNo, WorkRecordFixedCheckItem.class),
 				new FixedConditionWorkRecordName(this.message),
 				this.useAtr == 1?true:false
 				);
 	}
+
+
+
+
 
 }
