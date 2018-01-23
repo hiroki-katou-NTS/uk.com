@@ -8,7 +8,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 /**
  * 
  * @author Doan Duy Hung
@@ -22,7 +22,7 @@ public class AppCommonSetOutput {
 	
 	public ApplicationSetting applicationSetting;  
 
-	public RequestAppDetailSetting requestOfEachCommon;
+	public ApprovalFunctionSetting approvalFunctionSetting;
 	
 	public List<AppTypeDiscreteSetting> appTypeDiscreteSettings;  
 	

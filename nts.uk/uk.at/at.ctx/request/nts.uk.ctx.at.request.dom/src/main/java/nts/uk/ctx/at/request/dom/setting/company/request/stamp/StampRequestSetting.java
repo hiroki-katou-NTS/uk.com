@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.company.request.stamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 /**
  * 打刻申請設定
@@ -49,4 +50,24 @@ public class StampRequestSetting {
 	 */
 	private GoOutTypeDisplayControl goOutTypeDisplayControl;
 	
+	public static StampRequestSetting createFromJavaType(String companyId, String commentTop, String fontColorTop, Boolean fontWeightTop, 
+			String commentBottom, String fontColorBottom, Boolean fontWeightBottom, Integer resultDisp, Integer supFrameDispNO,
+			Integer stampPlaceDisp, Integer stampAtrWorkDisp, Integer stampAtrGoOutDisp, Integer stampAtrCareDisp,
+			Integer stampAtrSupDisp, Integer stampGoOutAtrPrivateDisp, Integer stampGoOutAtrPublicDisp,
+			Integer stampGoOutAtrCompensationDisp, Integer stampGoOutAtrUnionDisp){
+		return new StampRequestSetting(companyId, new AppCommentSetting(new Comment(commentTop), fontColorTop, fontWeightTop), 
+										new AppCommentSetting(new Comment(commentBottom), fontColorBottom, fontWeightBottom), 
+										EnumAdaptor.valueOf(resultDisp, DisplayAtr.class), 
+										new SupportFrameDispNumber(supFrameDispNO) , 
+										EnumAdaptor.valueOf(stampPlaceDisp, DisplayAtr.class), 
+										new StampDisplayControl(EnumAdaptor.valueOf(stampAtrWorkDisp, DisplayAtr.class), 
+												EnumAdaptor.valueOf(stampAtrGoOutDisp, DisplayAtr.class), 
+												EnumAdaptor.valueOf(stampAtrCareDisp, DisplayAtr.class), 
+												EnumAdaptor.valueOf(stampAtrSupDisp, DisplayAtr.class)),
+										new GoOutTypeDisplayControl(EnumAdaptor.valueOf(stampGoOutAtrPrivateDisp, DisplayAtr.class),
+												EnumAdaptor.valueOf(stampGoOutAtrPublicDisp, DisplayAtr.class),
+												EnumAdaptor.valueOf(stampGoOutAtrCompensationDisp, DisplayAtr.class),
+												EnumAdaptor.valueOf(stampGoOutAtrUnionDisp, DisplayAtr.class)));
+		 
+	}
 }

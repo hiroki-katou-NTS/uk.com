@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSet;
 import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSetPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
@@ -68,9 +69,13 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
 		return this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
 				.setParameter("employeeId", employeeId).setParameter("ymd", ymd)
-				.getList(c -> new EditStateOfDailyPerformance(c.krcdtDailyRecEditSetPK.employeeId,
-						c.krcdtDailyRecEditSetPK.attendanceItemId, c.krcdtDailyRecEditSetPK.processingYmd,
-						EnumAdaptor.valueOf(c.editState, EditStateSetting.class)));
+				.getList(c -> toDomain(c));
+	}
+
+	private EditStateOfDailyPerformance toDomain(KrcdtDailyRecEditSet c) {
+		return new EditStateOfDailyPerformance(c.krcdtDailyRecEditSetPK.employeeId,
+				c.krcdtDailyRecEditSetPK.attendanceItemId, c.krcdtDailyRecEditSetPK.processingYmd,
+				EnumAdaptor.valueOf(c.editState, EditStateSetting.class));
 	}
 
 	@Override
@@ -80,6 +85,19 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 						.map(c -> new KrcdtDailyRecEditSet(new KrcdtDailyRecEditSetPK(c.getEmployeeId(),
 								c.getYmd(), c.getAttendanceItemId()), c.getEditStateSetting().value))
 						.collect(Collectors.toList()));
+	}
+
+	@Override
+	public List<EditStateOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a FROM KrcdtDailyRecEditSet a ");
+		query.append("WHERE a.krcdtDailyRecEditSetPK.employeeId IN :employeeId ");
+		query.append("AND a.krcdtDailyRecEditSetPK.processingYmd <= :end AND a.krcdtDailyRecEditSetPK.processingYmd >= : start");
+		return queryProxy().query(query.toString(), KrcdtDailyRecEditSet.class).setParameter("employeeId", employeeId)
+				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
+				.collect(Collectors.groupingBy(c -> c.krcdtDailyRecEditSetPK.employeeId + c.krcdtDailyRecEditSetPK.processingYmd.toString()))
+				.entrySet().stream().map(c -> c.getValue().stream().map(x -> toDomain(x)).collect(Collectors.toList()))
+				.flatMap(List::stream).collect(Collectors.toList());
 	}
 
 }
