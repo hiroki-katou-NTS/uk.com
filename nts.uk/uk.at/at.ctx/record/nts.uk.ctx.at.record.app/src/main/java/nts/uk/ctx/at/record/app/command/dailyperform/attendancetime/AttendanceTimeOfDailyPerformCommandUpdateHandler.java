@@ -24,17 +24,18 @@ public class AttendanceTimeOfDailyPerformCommandUpdateHandler
 	protected void handle(CommandHandlerContext<AttendanceTimeOfDailyPerformCommand> context) {
 		AttendanceTimeOfDailyPerformCommand command = context.getCommand();
 		if (command.getData().isPresent()) {
-			repo.update(calcService.calculate(
-							AppContexts.user().companyId(), 
-							command.getAffiliationInfo().getData().getWorkplaceID(),
-							command.getAffiliationInfo().getData().getEmploymentCode(), 
-							command.getEmployeeId(),
-							command.getWorkDate(),
-							new IntegrationOfDaily(
-									command.getWorkInfo().toDomain(),
-									command.getTimeLeaving().toDomain(), 
-									command.toDomain()))
-					.getAttendanceTimeOfDailyPerformance());
+			repo.update(command.toDomain());
+//			repo.update(calcService.calculate(
+//							AppContexts.user().companyId(), 
+//							command.getAffiliationInfo().getData().getWorkplaceID(),
+//							command.getAffiliationInfo().getData().getEmploymentCode(), 
+//							command.getEmployeeId(),
+//							command.getWorkDate(),
+//							new IntegrationOfDaily(
+//									command.getWorkInfo().toDomain(),
+//									command.getTimeLeaving().toDomain(), 
+//									command.toDomain()))
+//					.getAttendanceTimeOfDailyPerformance());
 		}
 	}
 
