@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.app.find.application.overtime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -54,7 +53,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
@@ -169,21 +168,18 @@ public class AppOvertimeFinder {
 		 */
 		// 06-01_色表示チェック
 		List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
-		if(appCommonSettingOutput.requestOfEachCommon != null){
-			List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
-			if(requestAppDetailSettings != null){
-				overtimeHours = this.overtimeSixProcess.checkDisplayColor(overtimeHours,
-						overtimeInputCaculations,
-						prePostAtr,
-						inputDate,
-						appDate == null ? null :GeneralDate.fromString(appDate, DATE_FORMAT),
-						ApplicationType.OVER_TIME_APPLICATION.value,
-						employeeID, 
-						companyID, 
-						requestAppDetailSettings.get(0),
-						siftCD);
-			}
-			
+		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
+		if(approvalFunctionSetting != null){
+			overtimeHours = this.overtimeSixProcess.checkDisplayColor(overtimeHours,
+					overtimeInputCaculations,
+					prePostAtr,
+					inputDate,
+					appDate == null ? null :GeneralDate.fromString(appDate, DATE_FORMAT),
+					ApplicationType.OVER_TIME_APPLICATION.value,
+					employeeID, 
+					companyID, 
+					approvalFunctionSetting,
+					siftCD);
 		}
 		// 06-02_残業時間を取得
 		List<CaculationTime> caculationTimeHours = this.overtimeSixProcess.getCaculationOvertimeHours(companyID, employeeID, appDate, ApplicationType.OVER_TIME_APPLICATION.value,overtimeHours);
@@ -219,46 +215,43 @@ public class AppOvertimeFinder {
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
 				appOverTime.getApplication().getEmployeeID(),
 				1, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), appOverTime.getApplication().getAppDate());
-		List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
-		if(requestAppDetailSettings != null){
-			List<RequestAppDetailSetting>  requestAppDetailSetting = requestAppDetailSettings.stream().filter( c -> c.appType == ApplicationType.OVER_TIME_APPLICATION).collect(Collectors.toList());
-			if(requestAppDetailSetting != null){
-				// 時刻計算利用チェック
-				if (requestAppDetailSetting.get(0).getTimeCalUseAtr().value == UseAtr.USE.value) {
-					overTimeDto.setDisplayCaculationTime(true);
-					// 07_勤務種類取得: lay loai di lam 
-					WorkType workType = workTypeRepository.findByPK(companyID, appOverTime.getWorkTypeCode().v()).get();
-					overTimeDto.setWorkType(new WorkTypeOvertime(workType.getWorkTypeCode().v(),workType.getName().v()));
-					
-					List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
-					List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, appOverTime.getApplication().getEmployeeID(),requestAppDetailSetting.get(0),appEmploymentWorkType);
-					
-					List<String> workTypeCodes = new ArrayList<>();
-					for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
-						workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
-					}
-					overTimeDto.setWorkTypes(workTypeCodes);
-					
-					// 08_就業時間帯取得(lay loai gio lam viec) 
-					List<SiftType> siftTypes = overtimeService.getSiftType(companyID, appOverTime.getApplication().getEmployeeID(), requestAppDetailSetting.get(0),appOverTime.getApplication().getAppDate());
-					List<String> siftCodes = new ArrayList<>();
-					for(SiftType siftType : siftTypes){
-						siftCodes.add(siftType.getSiftCode());
-					}
-					overTimeDto.setSiftTypes(siftCodes);
-					
-					WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get();
-					overTimeDto.setSiftType(new SiftType(workTime.getWorktimeCode().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
-					
-					;
-					
-					// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
-					boolean displayRestTime = iOvertimePreProcess.getRestTime(requestAppDetailSetting.get(0));
-					overTimeDto.setDisplayRestTime(displayRestTime);
-					
-				}else{
-					overTimeDto.setDisplayCaculationTime(false);
+		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
+		if(approvalFunctionSetting != null){
+			// 時刻計算利用チェック
+			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
+				overTimeDto.setDisplayCaculationTime(true);
+				// 07_勤務種類取得: lay loai di lam 
+				WorkType workType = workTypeRepository.findByPK(companyID, appOverTime.getWorkTypeCode().v()).get();
+				overTimeDto.setWorkType(new WorkTypeOvertime(workType.getWorkTypeCode().v(),workType.getName().v()));
+				
+				List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
+				List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, appOverTime.getApplication().getEmployeeID(),approvalFunctionSetting,appEmploymentWorkType);
+				
+				List<String> workTypeCodes = new ArrayList<>();
+				for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
+					workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
 				}
+				overTimeDto.setWorkTypes(workTypeCodes);
+				
+				// 08_就業時間帯取得(lay loai gio lam viec) 
+				List<SiftType> siftTypes = overtimeService.getSiftType(companyID, appOverTime.getApplication().getEmployeeID(), approvalFunctionSetting,appOverTime.getApplication().getAppDate());
+				List<String> siftCodes = new ArrayList<>();
+				for(SiftType siftType : siftTypes){
+					siftCodes.add(siftType.getSiftCode());
+				}
+				overTimeDto.setSiftTypes(siftCodes);
+				
+				WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get();
+				overTimeDto.setSiftType(new SiftType(workTime.getWorktimeCode().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
+				
+				;
+				
+				// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
+				boolean displayRestTime = iOvertimePreProcess.getRestTime(approvalFunctionSetting);
+				overTimeDto.setDisplayRestTime(displayRestTime);
+				
+			}else{
+				overTimeDto.setDisplayCaculationTime(false);
 			}
 		}
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
@@ -438,22 +431,21 @@ public class AppOvertimeFinder {
 //			PrePostAtr prePostAtrJudgment = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), GeneralDate.fromString(appDate, DATE_FORMAT));
 //		}
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval route )
-		List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
-		if(requestAppDetailSettings != null){
-			List<RequestAppDetailSetting>  requestAppDetailSetting = requestAppDetailSettings.stream().filter( c -> c.appType == ApplicationType.OVER_TIME_APPLICATION).collect(Collectors.toList());
+		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
+			
 			// 01-18_実績の内容を表示し直す : chưa xử lí
-			if(requestAppDetailSetting != null){
-				AppOvertimeReference appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePostAtr, siftCD, companyID,employeeID, appDate,requestAppDetailSetting.get(0),overtimeHours);
+			if(approvalFunctionSetting != null){
+				AppOvertimeReference appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePostAtr, siftCD, companyID,employeeID, appDate,approvalFunctionSetting,overtimeHours);
 				result.setAppOvertimeReference(appOvertimeReference);
 			}
 			if(appCommonSettingOutput.applicationSetting.getBaseDateFlg().value == BaseDateFlg.APP_DATE.value){
-				if(requestAppDetailSetting != null){
+				if(approvalFunctionSetting != null){
 					// 時刻計算利用チェック
-					if (requestAppDetailSetting.get(0).getTimeCalUseAtr().value == UseAtr.USE.value) {
+					if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 						result.setDisplayCaculationTime(true);
 						List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 						// 07_勤務種類取得: lay loai di lam 
-						List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID,requestAppDetailSetting.get(0),appEmploymentWorkType);
+						List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID,approvalFunctionSetting,appEmploymentWorkType);
 						if(!CollectionUtil.isEmpty(workTypeOvertimes)){
 							result.setWorkType(workTypeOvertimes.get(0));
 						}
@@ -463,7 +455,7 @@ public class AppOvertimeFinder {
 						}
 						result.setWorkTypes(workTypeCodes);
 						// 08_就業時間帯取得(lay loai gio lam viec) 
-						List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0),GeneralDate.fromString(appDate, "yyyy/MM/dd"));
+						List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, approvalFunctionSetting,GeneralDate.fromString(appDate, "yyyy/MM/dd"));
 						List<String> siftCodes = new ArrayList<>();
 						for(SiftType siftType : siftTypes){
 							siftCodes.add(siftType.getSiftCode());
@@ -477,21 +469,20 @@ public class AppOvertimeFinder {
 					}
 				}
 			}
-		if(requestAppDetailSetting != null){
-			if (requestAppDetailSetting.get(0).getTimeCalUseAtr().value == UseAtr.USE.value) {
-				result.setDisplayCaculationTime(true);
-				// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
-				RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,requestAppDetailSetting.get(0),result.getSiftType() == null ? "" : result.getSiftType().getSiftCode());
-				result.setDisplayCaculationTime(BooleanUtils.toBoolean(recordWorkOutput.getRecordWorkDisplay().value));
-				result.setWorkClockFrom1(recordWorkOutput.getStartTime1());
-				result.setWorkClockFrom2(recordWorkOutput.getStartTime2());
-				result.setWorkClockTo1(recordWorkOutput.getEndTime1());
-				result.setWorkClockTo2(recordWorkOutput.getEndTime2());
-			}else{
-				result.setDisplayCaculationTime(false);
+			if(approvalFunctionSetting != null){
+				if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
+					result.setDisplayCaculationTime(true);
+					// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
+					RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,result.getSiftType() == null ? "" : result.getSiftType().getSiftCode());
+					result.setDisplayCaculationTime(BooleanUtils.toBoolean(recordWorkOutput.getRecordWorkDisplay().value));
+					result.setWorkClockFrom1(recordWorkOutput.getStartTime1());
+					result.setWorkClockFrom2(recordWorkOutput.getStartTime2());
+					result.setWorkClockTo1(recordWorkOutput.getEndTime1());
+					result.setWorkClockTo2(recordWorkOutput.getEndTime2());
+				}else{
+					result.setDisplayCaculationTime(false);
+				}
 			}
-		}
-		}
 		String employeeName = "";
 		if(Strings.isNotBlank(applicationDto.getApplicantSID())){
 			employeeName = employeeAdapter.getEmployeeName(applicationDto.getApplicantSID());
@@ -538,51 +529,48 @@ public class AppOvertimeFinder {
 		result.setApplication(applicationDto);
 				
 		//String workplaceID = employeeAdapter.getWorkplaceId(companyID, employeeID, GeneralDate.today());
-		List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
-		if(requestAppDetailSettings != null){
-			List<RequestAppDetailSetting>  requestAppDetailSetting = requestAppDetailSettings.stream().filter( c -> c.appType == ApplicationType.OVER_TIME_APPLICATION).collect(Collectors.toList());
-			if(requestAppDetailSetting != null){
-				// 時刻計算利用チェック
-				if (requestAppDetailSetting.get(0).getTimeCalUseAtr().value == UseAtr.USE.value) {
-					result.setDisplayCaculationTime(true);
-					
-					List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
-					// 07_勤務種類取得: lay loai di lam 
-					List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID,requestAppDetailSetting.get(0),appEmploymentWorkType);
-					
-					List<String> workTypeCodes = new ArrayList<>();
-					for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
-						workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
-					}
-					result.setWorkTypes(workTypeCodes);
-					GeneralDate baseDate = appCommonSettingOutput.generalDate;
-					// 08_就業時間帯取得(lay loai gio lam viec) 
-					List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, requestAppDetailSetting.get(0),baseDate);
-					List<String> siftCodes = new ArrayList<>();
-					for(SiftType siftType : siftTypes){
-						siftCodes.add(siftType.getSiftCode());
-					}
-					result.setSiftTypes(siftCodes);
-					
-					// 09_勤務種類就業時間帯の初期選択をセットする
-					WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, baseDate, workTypeOvertimes, siftTypes);
-					result.setWorkType(workTypeAndSiftType.getWorkType());
-					result.setSiftType(workTypeAndSiftType.getSiftType());
-					// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
-					RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,requestAppDetailSetting.get(0),result.getSiftType().getSiftCode());
-					result.setDisplayCaculationTime(BooleanUtils.toBoolean(recordWorkOutput.getRecordWorkDisplay().value));
-					result.setWorkClockFrom1(recordWorkOutput.getStartTime1());
-					result.setWorkClockFrom2(recordWorkOutput.getStartTime2());
-					result.setWorkClockTo1(recordWorkOutput.getEndTime1());
-					result.setWorkClockTo2(recordWorkOutput.getEndTime2());
-					
-					// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
-					boolean displayRestTime = iOvertimePreProcess.getRestTime(requestAppDetailSetting.get(0));
-					result.setDisplayRestTime(displayRestTime);
-					
-				}else{
-					result.setDisplayCaculationTime(false);
+		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
+		if(approvalFunctionSetting != null){
+			// 時刻計算利用チェック
+			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
+				result.setDisplayCaculationTime(true);
+				
+				List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
+				// 07_勤務種類取得: lay loai di lam 
+				List<WorkTypeOvertime> workTypeOvertimes = overtimeService.getWorkType(companyID, employeeID,approvalFunctionSetting,appEmploymentWorkType);
+				
+				List<String> workTypeCodes = new ArrayList<>();
+				for(WorkTypeOvertime workTypeOvertime : workTypeOvertimes){
+					workTypeCodes.add(workTypeOvertime.getWorkTypeCode());
 				}
+				result.setWorkTypes(workTypeCodes);
+				GeneralDate baseDate = appCommonSettingOutput.generalDate;
+				// 08_就業時間帯取得(lay loai gio lam viec) 
+				List<SiftType> siftTypes = overtimeService.getSiftType(companyID, employeeID, approvalFunctionSetting,baseDate);
+				List<String> siftCodes = new ArrayList<>();
+				for(SiftType siftType : siftTypes){
+					siftCodes.add(siftType.getSiftCode());
+				}
+				result.setSiftTypes(siftCodes);
+				
+				// 09_勤務種類就業時間帯の初期選択をセットする
+				WorkTypeAndSiftType workTypeAndSiftType = overtimeService.getWorkTypeAndSiftTypeByPersonCon(companyID, employeeID, baseDate, workTypeOvertimes, siftTypes);
+				result.setWorkType(workTypeAndSiftType.getWorkType());
+				result.setSiftType(workTypeAndSiftType.getSiftType());
+				// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
+				RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,result.getSiftType().getSiftCode());
+				result.setDisplayCaculationTime(BooleanUtils.toBoolean(recordWorkOutput.getRecordWorkDisplay().value));
+				result.setWorkClockFrom1(recordWorkOutput.getStartTime1());
+				result.setWorkClockFrom2(recordWorkOutput.getStartTime2());
+				result.setWorkClockTo1(recordWorkOutput.getEndTime1());
+				result.setWorkClockTo2(recordWorkOutput.getEndTime2());
+				
+				// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
+				boolean displayRestTime = iOvertimePreProcess.getRestTime(approvalFunctionSetting);
+				result.setDisplayRestTime(displayRestTime);
+				
+			}else{
+				result.setDisplayCaculationTime(false);
 			}
 		}
 		
@@ -860,18 +848,15 @@ public class AppOvertimeFinder {
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID,
 				employeeID,
 				1, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
-		List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
-		if(requestAppDetailSettings != null){
-			List<RequestAppDetailSetting>  requestAppDetailSetting = requestAppDetailSettings.stream().filter( c -> c.appType == ApplicationType.OVER_TIME_APPLICATION).collect(Collectors.toList());
-			// 01-14_勤務時間取得(lay thoi gian): Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」)
-			RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,requestAppDetailSetting.get(0),siftCD);
-			startTime1 = recordWorkOutput.getStartTime1();
-			endTime1 = recordWorkOutput.getEndTime1();
-			startTime2 = recordWorkOutput.getStartTime2();
-			endTime2 = recordWorkOutput.getEndTime2();
-			// 01-18_実績の内容を表示し直す
-			appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePortAtr, siftCD, companyID,employeeID, appDate,requestAppDetailSetting.get(0),overtimeHours);
-		}
+		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
+		// 01-14_勤務時間取得(lay thoi gian): Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」)
+		RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,siftCD);
+		startTime1 = recordWorkOutput.getStartTime1();
+		endTime1 = recordWorkOutput.getEndTime1();
+		startTime2 = recordWorkOutput.getStartTime2();
+		endTime2 = recordWorkOutput.getEndTime2();
+		// 01-18_実績の内容を表示し直す
+		appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePortAtr, siftCD, companyID,employeeID, appDate,approvalFunctionSetting,overtimeHours);
 		
 		return new RecordWorkDto(startTime1, endTime1, startTime2, endTime2, appOvertimeReference);
 	} 

@@ -24,9 +24,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachCommon;
 //import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 
 @Stateless
 public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
@@ -61,25 +60,17 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
 				.prelaunchAppCommonSetService(companyID, employeeID, rootAtr, targetApp, appDate);
 		// 時刻計算利用する場合にチェックしたい
-		RequestOfEachCommon requestSetting = appCommonSettingOutput.requestOfEachCommon;
+		ApprovalFunctionSetting requestSetting = appCommonSettingOutput.approvalFunctionSetting;
 		if (null == requestSetting) {
 			// 終了
 			return;
 		}
-		List<RequestAppDetailSetting> requestAppDetailSettings = requestSetting.getRequestAppDetailSettings().stream().filter(x -> x.getAppType().value == ApplicationType.OVER_TIME_APPLICATION.value).collect(Collectors.toList());
-		if(requestAppDetailSettings == null){
-			return;
-		}
-		for (RequestAppDetailSetting appSetting : requestAppDetailSettings) {
-			// 申請詳細設定.時刻計算利用区分=利用する
-			if (appSetting.getTimeCalUseAtr().equals(UseAtr.USE)) {
-				// 計算フラグのチェック
-				if (CalculateFlg == 1) {
-					// 計算フラグ=1の場合:メッセージを表示する(Msg_750)
-					throw new BusinessException("Msg_750");
-				}
-				// 終了
-				break;
+		// 申請詳細設定.時刻計算利用区分=利用する
+		if (requestSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
+			// 計算フラグのチェック
+			if (CalculateFlg == 1) {
+				// 計算フラグ=1の場合:メッセージを表示する(Msg_750)
+				throw new BusinessException("Msg_750");
 			}
 		}
 	}

@@ -9,15 +9,15 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartApprovalRootService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
@@ -47,11 +47,11 @@ public class LateOrLeaveEarlyFinder {
 	
 	/** アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する (Thực thi 「1-4.新規画面起動時の承認ルート取得パターン」) */
 	@Inject
-	private StartApprovalRootService startApprovalRootService;
+	private CollectApprovalRootPatternService collectApprovalRootPatternService;
 	
 	/** アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する (Thực thi 「1-5.新規画面起動時のエラーチェック」) */
 	@Inject
-	private  StartCheckErrorService  startCheckErrorService;
+	private  StartupErrorCheckService startupErrorCheckService;
 	
 	/** ドメインモデル「複数回勤務」を取得 (Lấy 「複数回勤務」) */
 	@Inject
@@ -71,9 +71,18 @@ public class LateOrLeaveEarlyFinder {
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, null);
 		 
 		
-		startApprovalRootService.getApprovalRootPattern(companyID, employeeID, 1, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value, null);
-		
-		startCheckErrorService.checkError(ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
+		ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(
+				companyID, 
+				employeeID, 
+				EmploymentRootAtr.APPLICATION, 
+				ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, 
+				null, 
+				appID, 
+				true);
+		startupErrorCheckService.startupErrorCheck(
+				appCommonSettingOutput.generalDate, 
+				ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value,
+				approvalRootPattern.getApprovalRootContentImport());
 		
 		/** ドメインモデル「申請定型理由」を取得 (Lấy 「申請定型理由」) */
 		
