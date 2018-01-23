@@ -491,13 +491,15 @@ public class ScheCreExeWorkTimeHandler {
 
 			
 			// check holiday work type
-			if (this.checkHolidayWork(worktype.getDailyWork()) && this.checkHolidaySetting(worktype)) {
+			if (this.checkHolidayWork(worktype.getDailyWork())) {
+				if (this.checkHolidaySetting(worktype)) {
 
-				// check exist work time
-				if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-						workingConditionItem.getWorkCategory().getPublicHolidayWork())) {
-					return this.getWorkTimeCodeBySingleDaySchedule(
-							workingConditionItem.getWorkCategory().getPublicHolidayWork());
+					// check exist work time
+					if (this.checkExistWorkTimeCodeBySingleDaySchedule(
+							workingConditionItem.getWorkCategory().getPublicHolidayWork())) {
+						return this.getWorkTimeCodeBySingleDaySchedule(
+								workingConditionItem.getWorkCategory().getPublicHolidayWork());
+					}
 				}
 
 				// get holiday atr work type
@@ -506,31 +508,31 @@ public class ScheCreExeWorkTimeHandler {
 				// check exist data
 				if (optionalHolidayAtr.isPresent()) {
 					switch (optionalHolidayAtr.get()) {
-						// case 法定内休日
-						case STATUTORY_HOLIDAYS :
-							if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-									workingConditionItem.getWorkCategory().getInLawBreakTime())) {
-								return this.getWorkTimeCodeBySingleDaySchedule(
-										workingConditionItem.getWorkCategory().getInLawBreakTime());
-							}
+					// case 法定内休日
+					case STATUTORY_HOLIDAYS:
+						if (this.checkExistWorkTimeCodeBySingleDaySchedule(
+								workingConditionItem.getWorkCategory().getInLawBreakTime())) {
+							return this.getWorkTimeCodeBySingleDaySchedule(
+									workingConditionItem.getWorkCategory().getInLawBreakTime());
+						}
 
-							break;
-						// case 法定外休日
-						case NON_STATUTORY_HOLIDAYS :
-							if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-									workingConditionItem.getWorkCategory().getOutsideLawBreakTime())) {
-								return this.getWorkTimeCodeBySingleDaySchedule(
-										workingConditionItem.getWorkCategory().getOutsideLawBreakTime());
-							}
-							break;
-						// case 祝日
-						default :
-							if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-									workingConditionItem.getWorkCategory().getHolidayAttendanceTime())) {
-								return this.getWorkTimeCodeBySingleDaySchedule(
-										workingConditionItem.getWorkCategory().getHolidayAttendanceTime());
-							}
-							break;
+						break;
+					// case 法定外休日
+					case NON_STATUTORY_HOLIDAYS:
+						if (this.checkExistWorkTimeCodeBySingleDaySchedule(
+								workingConditionItem.getWorkCategory().getOutsideLawBreakTime())) {
+							return this.getWorkTimeCodeBySingleDaySchedule(
+									workingConditionItem.getWorkCategory().getOutsideLawBreakTime());
+						}
+						break;
+					// case 祝日
+					default:
+						if (this.checkExistWorkTimeCodeBySingleDaySchedule(
+								workingConditionItem.getWorkCategory().getHolidayAttendanceTime())) {
+							return this.getWorkTimeCodeBySingleDaySchedule(
+									workingConditionItem.getWorkCategory().getHolidayAttendanceTime());
+						}
+						break;
 					}
 
 					// default work time code
@@ -737,5 +739,6 @@ public class ScheCreExeWorkTimeHandler {
 		}
 		return Optional.empty();
 	}
+	
 
 }

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemN
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.specificdatetttr.KrcdtDaiSpeDayCla;
 import nts.uk.ctx.at.record.infra.entity.daily.specificdatetttr.KrcdtDaiSpeDayClaPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository implements SpecificDateAttrOfDailyPerforRepo{
@@ -24,8 +25,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 	@Override
 	public Optional<SpecificDateAttrOfDailyPerfor> find(String employeeId, GeneralDate baseDate) {
 		List<SpecificDateAttrSheet> shortTimeSheets = findEntities(employeeId, baseDate).getList(
-				c -> new SpecificDateAttrSheet(new SpecificDateItemNo(c.krcdtDaiSpeDayClaPK.speDayItemNo),
-						EnumAdaptor.valueOf(c.tobeSpeDay, SpecificDateAttr.class)));
+				c -> specificDateAttr(c));
 		if (!shortTimeSheets.isEmpty()) {
 			return Optional.of(new SpecificDateAttrOfDailyPerfor(employeeId, shortTimeSheets, baseDate));
 		}
@@ -68,6 +68,27 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 		query.append(" ORDER BY s.krcdtDaiSpeDayClaPK.speDayItemNo");
 		return queryProxy().query(query.toString(), KrcdtDaiSpeDayCla.class).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd);
+	}
+
+	@Override
+	public List<SpecificDateAttrOfDailyPerfor> finds(List<String> employeeId, DatePeriod ymd) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a FROM KrcdtDaiSpeDayCla a ");
+		query.append("WHERE a.krcdtDaiSpeDayClaPK.sid IN :employeeId ");
+		query.append("AND a.krcdtDaiSpeDayClaPK.ymd <= :end AND a.krcdtDaiSpeDayClaPK.ymd >= :start");
+		return queryProxy().query(query.toString(), KrcdtDaiSpeDayCla.class).setParameter("employeeId", employeeId)
+				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
+				.collect(Collectors.groupingBy(c -> c.krcdtDaiSpeDayClaPK.sid + c.krcdtDaiSpeDayClaPK.ymd.toString()))
+				.entrySet().stream().map(c -> new SpecificDateAttrOfDailyPerfor(
+												c.getValue().get(0).krcdtDaiSpeDayClaPK.sid,
+												c.getValue().stream().map(x -> specificDateAttr(x)).collect(Collectors.toList()),
+												c.getValue().get(0).krcdtDaiSpeDayClaPK.ymd))
+				.collect(Collectors.toList());
+	}
+
+	private SpecificDateAttrSheet specificDateAttr(KrcdtDaiSpeDayCla c) {
+		return new SpecificDateAttrSheet(new SpecificDateItemNo(c.krcdtDaiSpeDayClaPK.speDayItemNo),
+				EnumAdaptor.valueOf(c.tobeSpeDay, SpecificDateAttr.class));
 	}
 
 }

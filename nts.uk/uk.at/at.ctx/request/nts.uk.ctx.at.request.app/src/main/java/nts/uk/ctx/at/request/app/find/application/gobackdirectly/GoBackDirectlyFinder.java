@@ -40,7 +40,8 @@ public class GoBackDirectlyFinder {
 	 * @return
 	 */
 	public GoBackDirectSettingDto getGoBackDirectCommonSetting(String SID) {
-		return GoBackDirectSettingDto.convertToDto(goBackCommon.getSettingData(SID));
+		String companyID = AppContexts.user().companyId();
+		return GoBackDirectSettingDto.convertToDto(goBackCommon.getSettingData(companyID, SID));
 	}
 
 	/**

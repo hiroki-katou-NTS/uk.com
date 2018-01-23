@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -69,9 +69,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 	 */
 	@Override
 	public List<WorkTypeOvertime> getWorkType(String companyID, String employeeID,
-			RequestAppDetailSetting requestAppDetailSetting,List<AppEmploymentSetting> appEmploymentSettings) {
+			ApprovalFunctionSetting approvalFunctionSetting,List<AppEmploymentSetting> appEmploymentSettings) {
 		List<WorkTypeOvertime> result = new ArrayList<>();
-		if(requestAppDetailSetting == null || requestAppDetailSetting.getTimeCalUseAtr() != UseAtr.USE) {
+		if(approvalFunctionSetting == null || !approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 			return result;
 		}
 		// 時刻計算利用チェック
@@ -143,11 +143,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 
 	@Override
 	public List<SiftType> getSiftType(String companyID, String employeeID,
-			RequestAppDetailSetting requestAppDetailSetting,GeneralDate baseDate) {
+			ApprovalFunctionSetting approvalFunctionSetting,GeneralDate baseDate) {
 		List<SiftType> result = new ArrayList<>();
-		if (requestAppDetailSetting != null) {
+		if (approvalFunctionSetting != null) {
 			// 時刻計算利用チェック
-			if (requestAppDetailSetting.getTimeCalUseAtr().value == UseAtr.USE.value) {
+			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 				// 1.職場別就業時間帯を取得
 				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate);
 				
