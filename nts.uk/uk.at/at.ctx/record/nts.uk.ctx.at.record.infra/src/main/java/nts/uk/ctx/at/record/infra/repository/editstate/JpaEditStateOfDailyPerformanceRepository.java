@@ -92,7 +92,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtDailyRecEditSet a ");
 		query.append("WHERE a.krcdtDailyRecEditSetPK.employeeId IN :employeeId ");
-		query.append("AND a.krcdtDailyRecEditSetPK.processingYmd <= :end AND a.krcdtDailyRecEditSetPK.processingYmd >= : start");
+		query.append("AND a.krcdtDailyRecEditSetPK.processingYmd <= :end AND a.krcdtDailyRecEditSetPK.processingYmd >= :start");
 		return queryProxy().query(query.toString(), KrcdtDailyRecEditSet.class).setParameter("employeeId", employeeId)
 				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
 				.collect(Collectors.groupingBy(c -> c.krcdtDailyRecEditSetPK.employeeId + c.krcdtDailyRecEditSetPK.processingYmd.toString()))

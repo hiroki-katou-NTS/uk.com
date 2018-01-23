@@ -75,7 +75,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtSyainDpErList a ");
-		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
+		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId IN :employeeId ");
 		builderString.append("AND a.krcdtSyainDpErListPK.processingDate <= :end ");
 		builderString.append("AND a.krcdtSyainDpErListPK.processingDate >= :start ");
 		return this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)

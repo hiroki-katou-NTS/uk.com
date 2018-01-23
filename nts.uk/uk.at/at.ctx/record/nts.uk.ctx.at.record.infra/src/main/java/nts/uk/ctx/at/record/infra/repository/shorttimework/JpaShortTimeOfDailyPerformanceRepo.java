@@ -92,7 +92,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtDaiShortWorkTime a ");
 		query.append("WHERE a.krcdtDaiShortWorkTimePK.sid IN :employeeId ");
-		query.append("AND a.krcdtDaiShortWorkTimePK.ymd <= :end AND a.krcdtDaiShortWorkTimePK.ymd >= : start");
+		query.append("AND a.krcdtDaiShortWorkTimePK.ymd <= :end AND a.krcdtDaiShortWorkTimePK.ymd >= :start");
 		return queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class).setParameter("employeeId", employeeId)
 				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
 				.collect(Collectors.groupingBy(c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))

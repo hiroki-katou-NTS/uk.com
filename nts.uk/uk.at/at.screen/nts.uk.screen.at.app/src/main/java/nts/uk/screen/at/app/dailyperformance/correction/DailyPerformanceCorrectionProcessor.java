@@ -509,66 +509,66 @@ public class DailyPerformanceCorrectionProcessor {
 		ExecutorService service;
 		CountDownLatch latch;
 		List<GeneralDate> lstDate = dateRange.toListDate();
-		if (displayFormat == 0 && lstDate.size() > 10) {
-			service = Executors.newFixedThreadPool(3);
-			latch = new CountDownLatch(3);
-			DateRange dateRange1 = new DateRange(dateRange.getStartDate(), lstDate.get(lstDate.size() / 3));
-			DateRange dateRange2 = new DateRange(lstDate.get(lstDate.size() / 3 + 1),
-					lstDate.get(lstDate.size() * 2 / 3));
-			DateRange dateRange3 = new DateRange(lstDate.get(lstDate.size() * 2 / 3 + 1), dateRange.getEndDate());
-			Future<List<DailyModifyResult>> sResults = service.submit(new GetDataDaily(listEmployeeId, dateRange1,
-					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
-			Future<List<DailyModifyResult>> sResults2 = service.submit(new GetDataDaily(listEmployeeId, dateRange2,
-					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
-			Future<List<DailyModifyResult>> sResults3 = service.submit(new GetDataDaily(listEmployeeId, dateRange3,
-					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
-			dPControlDisplayItem = this.getItemIdNames(disItem.getFormatCode(), disItem.isSettingUnit(),
-					disItem.getLstFormat(), disItem.getLstSheet(), disItem.getLstAtdItemUnique(),
-					disItem.getLstBusinessTypeCode());
-			try {
-				results = sResults.get();
-				latch.countDown();
-				results.addAll(sResults2.get());
-				latch.countDown();
-				results.addAll(sResults3.get());
-				latch.countDown();
-			} catch (InterruptedException e1) {
-				Thread.currentThread().interrupt();
-				e1.printStackTrace();
-			} catch (ExecutionException e1) {
-				Thread.currentThread().interrupt();
-				e1.printStackTrace();
-			}
-		} else if (displayFormat == 1 && listEmployeeId.size() > 10) {
-			service = Executors.newFixedThreadPool(3);
-			latch = new CountDownLatch(3);
-			List<String> sid1 = listEmployeeId.subList(0, listEmployeeId.size()/3);
-			List<String> sid2=  listEmployeeId.subList(listEmployeeId.size()/3 +1, listEmployeeId.size()*2/3);;
-			List<String> sid3 =  listEmployeeId.subList(listEmployeeId.size()*2/3 +1, listEmployeeId.size());
-			Future<List<DailyModifyResult>> sResults = service.submit(new GetDataDaily(sid1, dateRange,
-					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
-			Future<List<DailyModifyResult>> sResults2 = service.submit(new GetDataDaily(sid2, dateRange,
-					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
-			Future<List<DailyModifyResult>> sResults3 = service.submit(new GetDataDaily(sid3, dateRange,
-					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
-			dPControlDisplayItem = this.getItemIdNames(disItem.getFormatCode(), disItem.isSettingUnit(),
-					disItem.getLstFormat(), disItem.getLstSheet(), disItem.getLstAtdItemUnique(),
-					disItem.getLstBusinessTypeCode());
-			try {
-				results = sResults.get();
-				latch.countDown();
-				results.addAll(sResults2.get());
-				latch.countDown();
-				results.addAll(sResults3.get());
-				latch.countDown();
-			} catch (InterruptedException e1) {
-				Thread.currentThread().interrupt();
-				e1.printStackTrace();
-			} catch (ExecutionException e1) {
-				Thread.currentThread().interrupt();
-				e1.printStackTrace();
-			}
-		} else {
+//		if (displayFormat == 0 && lstDate.size() > 10) {
+//			service = Executors.newFixedThreadPool(3);
+//			latch = new CountDownLatch(3);
+//			DateRange dateRange1 = new DateRange(dateRange.getStartDate(), lstDate.get(lstDate.size() / 3));
+//			DateRange dateRange2 = new DateRange(lstDate.get(lstDate.size() / 3 + 1),
+//					lstDate.get(lstDate.size() * 2 / 3));
+//			DateRange dateRange3 = new DateRange(lstDate.get(lstDate.size() * 2 / 3 + 1), dateRange.getEndDate());
+//			Future<List<DailyModifyResult>> sResults = service.submit(new GetDataDaily(listEmployeeId, dateRange1,
+//					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+//			Future<List<DailyModifyResult>> sResults2 = service.submit(new GetDataDaily(listEmployeeId, dateRange2,
+//					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+//			Future<List<DailyModifyResult>> sResults3 = service.submit(new GetDataDaily(listEmployeeId, dateRange3,
+//					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+//			dPControlDisplayItem = this.getItemIdNames(disItem.getFormatCode(), disItem.isSettingUnit(),
+//					disItem.getLstFormat(), disItem.getLstSheet(), disItem.getLstAtdItemUnique(),
+//					disItem.getLstBusinessTypeCode());
+//			try {
+//				results = sResults.get();
+//				latch.countDown();
+//				results.addAll(sResults2.get());
+//				latch.countDown();
+//				results.addAll(sResults3.get());
+//				latch.countDown();
+//			} catch (InterruptedException e1) {
+//				Thread.currentThread().interrupt();
+//				e1.printStackTrace();
+//			} catch (ExecutionException e1) {
+//				Thread.currentThread().interrupt();
+//				e1.printStackTrace();
+//			}
+//		} else if (displayFormat == 1 && listEmployeeId.size() > 10) {
+//			service = Executors.newFixedThreadPool(3);
+//			latch = new CountDownLatch(3);
+//			List<String> sid1 = listEmployeeId.subList(0, listEmployeeId.size()/3);
+//			List<String> sid2=  listEmployeeId.subList(listEmployeeId.size()/3 +1, listEmployeeId.size()*2/3);;
+//			List<String> sid3 =  listEmployeeId.subList(listEmployeeId.size()*2/3 +1, listEmployeeId.size());
+//			Future<List<DailyModifyResult>> sResults = service.submit(new GetDataDaily(sid1, dateRange,
+//					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+//			Future<List<DailyModifyResult>> sResults2 = service.submit(new GetDataDaily(sid2, dateRange,
+//					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+//			Future<List<DailyModifyResult>> sResults3 = service.submit(new GetDataDaily(sid3, dateRange,
+//					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
+//			dPControlDisplayItem = this.getItemIdNames(disItem.getFormatCode(), disItem.isSettingUnit(),
+//					disItem.getLstFormat(), disItem.getLstSheet(), disItem.getLstAtdItemUnique(),
+//					disItem.getLstBusinessTypeCode());
+//			try {
+//				results = sResults.get();
+//				latch.countDown();
+//				results.addAll(sResults2.get());
+//				latch.countDown();
+//				results.addAll(sResults3.get());
+//				latch.countDown();
+//			} catch (InterruptedException e1) {
+//				Thread.currentThread().interrupt();
+//				e1.printStackTrace();
+//			} catch (ExecutionException e1) {
+//				Thread.currentThread().interrupt();
+//				e1.printStackTrace();
+//			}
+//		} else {
 			service = Executors.newFixedThreadPool(1);
 			latch = new CountDownLatch(1);
 			Future<List<DailyModifyResult>> sResults = service.submit(new GetDataDaily(listEmployeeId, dateRange,
@@ -586,7 +586,7 @@ public class DailyPerformanceCorrectionProcessor {
 				Thread.currentThread().interrupt();
 				e1.printStackTrace();
 			}
-		}
+//		}
 		latch.await();
 		Map<String, DailyModifyResult> resultDailyMap = results.stream()
 				.collect(Collectors.toMap((x) -> x.getEmployeeId() + "|" + x.getDate(), Function.identity()));

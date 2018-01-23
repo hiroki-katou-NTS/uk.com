@@ -36,7 +36,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 	@Override
 	public List<AttendanceLeavingGateOfDaily> finds(List<String> employeeId, DatePeriod baseDate) {
 		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override

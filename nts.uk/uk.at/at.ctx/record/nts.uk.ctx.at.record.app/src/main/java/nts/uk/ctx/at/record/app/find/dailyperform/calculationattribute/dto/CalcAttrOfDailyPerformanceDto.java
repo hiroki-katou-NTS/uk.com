@@ -51,6 +51,8 @@ public class CalcAttrOfDailyPerformanceDto implements ConvertibleAttendanceItem 
 	public static CalcAttrOfDailyPerformanceDto getDto(CalAttrOfDailyPerformance domain) {
 		CalcAttrOfDailyPerformanceDto result = new CalcAttrOfDailyPerformanceDto();
 		if (domain != null) {
+			result.setEmployeeId(domain.getEmployeeId());
+			result.setYmd(domain.getYmd());
 			result.setDivergenceTime(domain.getDivergenceTime().getDivergenceTime().value);
 			result.setEmployeeId(domain.getEmployeeId());
 			result.setFlexExcessTime(newAutoCalcSetting(domain.getFlexExcessTime()));

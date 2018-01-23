@@ -75,7 +75,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtDaiSpeDayCla a ");
 		query.append("WHERE a.krcdtDaiSpeDayClaPK.sid IN :employeeId ");
-		query.append("AND a.krcdtDaiSpeDayClaPK.ymd <= :end AND a.krcdtDaiSpeDayClaPK.ymd >= : start");
+		query.append("AND a.krcdtDaiSpeDayClaPK.ymd <= :end AND a.krcdtDaiSpeDayClaPK.ymd >= :start");
 		return queryProxy().query(query.toString(), KrcdtDaiSpeDayCla.class).setParameter("employeeId", employeeId)
 				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
 				.collect(Collectors.groupingBy(c -> c.krcdtDaiSpeDayClaPK.sid + c.krcdtDaiSpeDayClaPK.ymd.toString()))

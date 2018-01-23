@@ -24,6 +24,8 @@ public class SpecificDateAttrOfDailyPerforDto implements ConvertibleAttendanceIt
 	public static SpecificDateAttrOfDailyPerforDto getDto(SpecificDateAttrOfDailyPerfor domain){
 		SpecificDateAttrOfDailyPerforDto dto = new SpecificDateAttrOfDailyPerforDto();
 		if (domain != null) {
+			dto.setEmployeeId(domain.getEmployeeId());
+			dto.setYmd(domain.getYmd());
 			dto.setSepecificDateAttrs(ConvertHelper.mapTo(domain.getSpecificDateAttrSheets(), (c) -> {
 				return new SpecificDateAttrDto(c.getSpecificDateAttr().value,
 						c.getSpecificDateItemNo().v().intValue());
