@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,25 +8,21 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.SettingFlg;
+import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -39,19 +33,17 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterService {
 	@Inject
-	RegisterAtApproveReflectionInfoService registerAppReplection;
+	RegisterAtApproveReflectionInfoService_New registerAppReplection;
 	@Inject
 	GoBackDirectlyRepository goBackDirectRepo;
 	@Inject
-	ApplicationRepository appRepo;
+	ApplicationApprovalService_New appRepo;
 	@Inject
-	NewBeforeRegister processBeforeRegister;
+	NewBeforeRegister_New processBeforeRegister;
 	@Inject
 	GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
-	@Inject
-	AppApprovalPhaseRepository appApprovalPhaseRepository;
 	@Inject 
-	NewAfterRegister newAfterRegister;
+	NewAfterRegister_New newAfterRegister;
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 
@@ -59,45 +51,28 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	 * 
 	 */
 	@Override
-	public void register(GoBackDirectly goBackDirectly, Application application,List<AppApprovalPhase> appApprovalPhases) {
-		String employeeID = application.getEnteredPersonSID();
-		//アルゴリズム「直行直帰登録」を実行する
-		//2-2.新規画面登録時承認反映情報の整理 
-		Application newApp = registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
+	public void register(GoBackDirectly goBackDirectly, Application_New application) {
+		String employeeID = application.getEmployeeID();
+		//アルゴリズム「直行直帰登録」を実行する		
 		goBackDirectRepo.insert(goBackDirectly);
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(goBackDirectly.getCompanyID());
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isBlank(application.getApplicationReason().v())) {
+				&& Strings.isBlank(application.getAppReason().v())) {
 			throw new BusinessException("Msg_115");
 		}
-		approvalRegistration(appApprovalPhases,newApp.getApplicationID());
-		appRepo.addApplication(newApp);
+		appRepo.insert(application);
+		// 2-2.新規画面登録時承認反映情報の整理
+		registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
-		newAfterRegister.processAfterRegister(newApp);
+		newAfterRegister.processAfterRegister(application);
 		
 	}
-	
-	private void approvalRegistration(List<AppApprovalPhase> appApprovalPhases, String appID){
-		appApprovalPhases.forEach(appApprovalPhase -> {
-			appApprovalPhase.setAppID(appID);
-			String phaseID = appApprovalPhase.getPhaseID();
-			appApprovalPhase.setPhaseID(phaseID);
-			appApprovalPhase.getListFrame().forEach(approvalFrame -> {
-				String frameID = approvalFrame.getFrameID();
-				approvalFrame.setFrameID(frameID);
-				approvalFrame.getListApproveAccepted().forEach(appAccepted -> {
-					String appAcceptedID = appAccepted.getAppAcceptedID();
-					appAccepted.setAppAcceptedID(appAcceptedID);
-				});
-			});
-		});
-	}
+
 	
 	@Override
-	public void checkBeforRegister(GoBackDirectly goBackDirectly, Application application,
-			List<AppApprovalPhase> appApprovalPhases) {
+	public void checkBeforRegister(GoBackDirectly goBackDirectly, Application_New application) {
 		String companyID = AppContexts.user().companyId();
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		//アルゴリズム「2-1.新規画面登録前の処理」を実行する
@@ -105,7 +80,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		// アルゴリズム「直行直帰するチェック」を実行する - client da duoc check
 		// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
 		GoBackDirectLateEarlyOuput goBackLateEarly = this.goBackDirectLateEarlyCheck(goBackDirectly);
-		//直行直帰遅刻早退のチェック chua the thuc hien duoc nen mac dinh luc nao cung co loi エラーあり
+		//直行直帰遅刻早退のチェック
+		//TODO: chua the thuc hien duoc nen mac dinh luc nao cung co loi エラーあり
 		if(goBackLateEarly.isError) {
 			//直行直帰申請共通設定.早退遅刻設定がチェックする
 			if(goBackCommonSet.getLateLeaveEarlySettingAtr() == CheckAtr.CHECKREGISTER) {
@@ -203,14 +179,14 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		if (line == 1) {
 			// MERGE NODE 1
 			// 勤務直行の確認
-			if (goBackDirectly.getGoWorkAtr1() == UseAtr.USE && goBackDirectly.getWorkTimeStart1().v() != 0) {
+			if (goBackDirectly.getGoWorkAtr1() == UseAtr.USE && goBackDirectly.getWorkTimeStart1() != null) {
 				// 入力する
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeStart(null);
 			}
 			// 勤務直帰の確認
-			if (goBackDirectly.getBackHomeAtr1() == UseAtr.USE && goBackDirectly.getWorkTimeEnd1().v() != 0) {
+			if (goBackDirectly.getBackHomeAtr1() == UseAtr.USE && goBackDirectly.getWorkTimeEnd1() != null) {
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeEnd(null);
@@ -218,14 +194,14 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		} else {
 			// MERGE NODE 1
 			// 勤務直行の確認
-			if (goBackDirectly.getGoWorkAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeStart2().v() != 0) {
+			if (goBackDirectly.getGoWorkAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeStart2() != null) {
 				// 入力する
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeStart(null);
 			}
 			// 勤務直帰の確認
-			if (goBackDirectly.getBackHomeAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeEnd2().v() != 0) {
+			if (goBackDirectly.getBackHomeAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeEnd2() != null) {
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeEnd(null);
@@ -233,7 +209,4 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		}
 		return result;
 	}
-
-	
-
 }

@@ -35,13 +35,18 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 	@Override
 	protected void handle(CommandHandlerContext<AddPerInfoCtgCommand> context) {
 		AddPerInfoCtgCommand perInfoCtgCommand = context.getCommand();
-		//need ctgId = ' ' becase sql oracle server can't query '' 
+		String ctgName = perInfoCtgCommand.getCategoryName();
+		// need ctgId = ' ' becase sql oracle server can't query ''
+		if (CheckNameSpace.checkName(ctgName)) {
+			throw new BusinessException(new RawErrorMessage("Msg_928"));
+		}
+
 		if (!this.perInfoCtgRep.checkCtgNameIsUnique(PersonInfoCategory.ROOT_COMPANY_ID,
 				perInfoCtgCommand.getCategoryName(), " ")) {
 			throw new BusinessException(new RawErrorMessage("Msg_215"));
 		}
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
-		
+
 		String newCtgCode = createNewCode(this.perInfoCtgRep.getPerInfoCtgCodeLastest(contractCd), SPECIAL_CTG_CODE);
 		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
 		AddItemCommand addItemCommand = null;
@@ -53,7 +58,8 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 		// add PersonInfoCategory for list of companyId. Which have the same
 		// contract code.
 		this.perInfoCtgRep.addPerInfoCtgWithListCompany(perInfoCtg, contractCd, companyIdList);
-		// checking Category is history information. If it isn't, exits function.
+		// checking Category is history information. If it isn't, exits
+		// function.
 		if (perInfoCtgCommand.getCategoryType() == CategoryType.SINGLEINFO.value
 				|| perInfoCtgCommand.getCategoryType() == CategoryType.MULTIINFO.value) {
 			return;
@@ -62,21 +68,21 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 		// default.
 		String newItemCodeForPeriod = createNewCode(null, SPECIAL_ITEM_CODE);
 		addItemCommand = new AddItemCommand(perInfoCtg.getPersonInfoCategoryId(), newItemCodeForPeriod, null, null,
-				null,0);
+				null, 0);
 		PersonInfoItemDefinition itemPeriod = MappingDtoToDomain.mappingFromDomaintoDtoForPeriod(addItemCommand);
 		this.pernfoItemDefRep.addPerInfoItemDefRoot(itemPeriod, contractCd, newCtgCode);
 		// mapping and Add with PersonInfoItemDefinition root is StartDate type
 		// default.
 		String newItemCodeStartDate = createNewCode(newItemCodeForPeriod, SPECIAL_ITEM_CODE);
 		addItemCommand = new AddItemCommand(perInfoCtg.getPersonInfoCategoryId(), newItemCodeStartDate,
-				newItemCodeForPeriod, null, null,0);
+				newItemCodeForPeriod, null, null, 0);
 		PersonInfoItemDefinition itemStartDate = MappingDtoToDomain.mappingFromDomaintoDtoForStartDate(addItemCommand);
 		this.pernfoItemDefRep.addPerInfoItemDefRoot(itemStartDate, contractCd, newCtgCode);
 		// mapping and Add with PersonInfoItemDefinition root is EndDate type
 		// default.
 		String newItemCodeEndDate = createNewCode(newItemCodeStartDate, SPECIAL_ITEM_CODE);
 		addItemCommand = new AddItemCommand(perInfoCtg.getPersonInfoCategoryId(), newItemCodeEndDate,
-				newItemCodeForPeriod, null, null,0);
+				newItemCodeForPeriod, null, null, 0);
 		PersonInfoItemDefinition itemEndDate = MappingDtoToDomain.mappingFromDomaintoDtoForEndtDate(addItemCommand);
 		this.pernfoItemDefRep.addPerInfoItemDefRoot(itemEndDate, contractCd, newCtgCode);
 		// add DateRangeItem root.

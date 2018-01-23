@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.auth.app.find.grant.rolesetjob;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,20 +39,24 @@ public class RoleSetGrantedJobTitleFinder {
 
 		// get Job Title by date, companyId
 		List<String> listJobId = jobTitleAdapter.findAll(companyId, refDate).stream().map(item -> item.getPositionId()).collect(Collectors.toList());
-
-		// get Sequence Master return List <position ID, position code, position name, ranking code, sort order>
-		List<SimpleJobTitleImport> listJobSimple = jobTitleAdapter.findByIds(companyId, listJobId, refDate);
-		listJobSimple.sort((s1, s2) -> s1.getDisporder().compareTo(s2.getDisporder()));
-		List<JobTitleDto> listJobTitle = listJobSimple.stream().map(item -> new JobTitleDto(item.getJobTitleId(), item.getJobTitleCode(), item.getJobTitleName())).collect(Collectors.toList());
-        
 		//no result => throw new BusinessException("Msg_712");
-		if (listJobTitle == null || listJobTitle.isEmpty()) {
+		if (listJobId.isEmpty()) {
 			throw new BusinessException("Msg_712");
 		}
+		
+		// get Sequence Master return List <position ID, position code, position name, ranking code, sort order>
+		List<SimpleJobTitleImport> listJobSimple = jobTitleAdapter.findByIds(companyId, listJobId, refDate);
+		//no result => throw new BusinessException("Msg_712");
+		if (listJobSimple.isEmpty()) {
+			throw new BusinessException("Msg_712");
+		}
+		listJobSimple.sort((s1, s2) -> s1.getJobTitleCode().compareTo(s2.getJobTitleCode()));
+		List<JobTitleDto> listJobTitle = listJobSimple.stream().map(item -> new JobTitleDto(item.getJobTitleId(), item.getJobTitleCode(), item.getJobTitleName())).collect(Collectors.toList());
+        
 		// get Role Set by companyId, sort ASC
 		List<RoleSetDto> listRoleSet = roleSetRepo.findByCompanyId(companyId).stream()
 				.map(item -> new RoleSetDto(item.getRoleSetCd().v(), item.getRoleSetName().v())).collect(Collectors.toList());
-		if (listRoleSet == null || listRoleSet.isEmpty()){
+		if (listRoleSet.isEmpty()){
 			throw new BusinessException("Msg_713");
 		}
 		listRoleSet.sort((rs1, rs2) -> rs1.getCode().compareTo(rs2.getCode()));
@@ -61,7 +64,7 @@ public class RoleSetGrantedJobTitleFinder {
 		// get Role Set Granted Job Title
 		Optional<RoleSetGrantedJobTitleDto> roleSetJobOpt = roleSetJobRepo.getOneByCompanyId(companyId)
 				.map(item -> RoleSetGrantedJobTitleDto.fromDomain(item));
-		RoleSetGrantedJobTitleDto roleSetJob = roleSetJobOpt.isPresent()? roleSetJobOpt.get() : null;
+		RoleSetGrantedJobTitleDto roleSetJob = roleSetJobOpt.isPresent() ? roleSetJobOpt.get() : null;
 
 		return new GrantRoleSetJobDto(listRoleSet, roleSetJob, listJobTitle);
 	}

@@ -15,13 +15,13 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
  */
 @Getter
 @Setter
-public class FlowWorkRestTimezoneDto implements FlowWorkRestTimezoneSetMemento{
+public class FlowWorkRestTimezoneDto implements FlowWorkRestTimezoneSetMemento {
 	/** The fix rest time. */
 	private boolean fixRestTime;
-	
+
 	/** The timezone. */
 	private TimezoneOfFixedRestTimeSetDto fixedRestTimezone;
-	
+
 	/** The flow rest timezone. */
 	private FlowRestTimezoneDto flowRestTimezone;
 
@@ -47,7 +47,10 @@ public class FlowWorkRestTimezoneDto implements FlowWorkRestTimezoneSetMemento{
 	 */
 	@Override
 	public void setFixedRestTimezone(TimezoneOfFixedRestTimeSet fixedRestTimezone) {
-		fixedRestTimezone.saveToMemento(this.fixedRestTimezone);
+		if (fixedRestTimezone != null) {
+			this.fixedRestTimezone = new TimezoneOfFixedRestTimeSetDto();
+			fixedRestTimezone.saveToMemento(this.fixedRestTimezone);
+		}
 	}
 
 	/*
@@ -60,9 +63,10 @@ public class FlowWorkRestTimezoneDto implements FlowWorkRestTimezoneSetMemento{
 	 */
 	@Override
 	public void setFlowRestTimezone(FlowRestTimezone flowRestTimezone) {
-		flowRestTimezone.saveToMemento(this.flowRestTimezone);
+		if (flowRestTimezone != null) {
+			this.flowRestTimezone = new FlowRestTimezoneDto();
+			flowRestTimezone.saveToMemento(this.flowRestTimezone);
+		}
 	}
 
-
-	
 }

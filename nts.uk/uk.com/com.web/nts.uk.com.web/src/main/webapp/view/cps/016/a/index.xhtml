@@ -7,8 +7,10 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
-<!-- 			<title>#{i18n.getText('CPS008_1')}</title> -->
-			<script>var dialogSize = { width: 1300, height: 750 };</script>
+			<script>
+				var dialogSize = { width: 1290, height: 800 };
+				
+			</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemName
 					nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionCodeLength
@@ -34,11 +36,11 @@
 				<button id="A_BTN_DELETE" class="danger"
 					data-bind="click : removeDataSelectioItem, enable: checkCreate()==false &amp;&amp; $root.errors.isEmpty" tabindex="4" >#{i18n.getText('CPS016_3')}</button>
 				
-					<button tabindex="5" id="A_BTN_CPS016_4"
-						data-bind="click: closeDialog, visible: isDialog ">#{i18n.getText('CPS016_4')}</button> 
-
  				<button class="goout" id="A_BTN_JUMP"
 					data-bind="click:OpenCPS017, enable: checkCreate()==false" tabindex="6" >#{i18n.getText('CPS016_23')}</button>
+			 
+			 	<button tabindex="5" id="A_BTN_CPS016_4"
+						data-bind="click: closeDialog, visible: isDialog ">#{i18n.getText('CPS016_4')}</button> 
 			 
 			</div>
 
@@ -49,13 +51,16 @@
 					<div class="cf">
 						<div style="float: left">
 							<div style="width: 395px"
+							
 								data-bind="ntsSearchBox: {       
    									searchMode: 'filter',       
    									targetKey: 'selectionItemId',        
    									comId: 'single-list',       
    									items: listItems,        
    									selected: perInfoSelectionItem().selectionItemId,       
-   									selectedKey: 'selectionItemId',        
+   									selectedKey: 'selectionItemId',
+   									placeHolder: '名称で検索…',
+									searchText: '検索',        
    									fields: ['selectionItemName'],        
    									mode: 'igGrid'       
    									}" />
@@ -64,10 +69,10 @@
 									height: 490,
 									options: listItems,
 									primaryKey: 'selectionItemId',
-									showNumbering:true,
+									showNumbering:false,
 									columns: [
 						                { headerText: '', key: 'selectionItemId', width: 20 ,hidden:true},
-						                { headerText: '#{i18n.getText('CPS016_7')}', key: 'selectionItemName', width: 320 }
+						                { headerText: '#{i18n.getText('CPS016_7')}', key: 'selectionItemName', width: 340 }
 						            ],
 									multiple: false,
 									value: perInfoSelectionItem().selectionItemId}">

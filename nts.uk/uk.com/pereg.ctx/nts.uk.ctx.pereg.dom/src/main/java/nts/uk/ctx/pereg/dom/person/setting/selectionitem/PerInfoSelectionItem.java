@@ -28,13 +28,25 @@ public class PerInfoSelectionItem {
 	private IntegrationCode integrationCode;
 	private FormatSelection formatSelection;
 
-	public static PerInfoSelectionItem createFromJavaType(String selectionItemId, String selectionItemName, String memo,
-			int selectionItemClsAtr, String contractCd, String integrationCd, int selectionCd, int characterTypeAtr,
-			int selectionName, int selectionExtCd) {
+	public static PerInfoSelectionItem createFromJavaType(
+			String selectionItemId, 
+			String selectionItemName, 
+			String memo,
+			int selectionItemClsAtr, 
+			String contractCd, 
+			String integrationCd, 
+			int selectionCd, 
+			int characterTypeAtr,
+			int selectionName, 
+			int selectionExtCd) {
 
 		// 個人情報の選択項目パラメーター帰還
-		return new PerInfoSelectionItem(selectionItemId, new SelectionItemName(selectionItemName), new Memo(memo),
-				EnumAdaptor.valueOf(selectionItemClsAtr, SelectionItemClassification.class), contractCd,
+		return new PerInfoSelectionItem(
+				selectionItemId, 
+				new SelectionItemName(selectionItemName), 
+				new Memo(memo),
+				EnumAdaptor.valueOf(selectionItemClsAtr, SelectionItemClassification.class), 
+				contractCd,
 				new IntegrationCode(integrationCd),
 				FormatSelection.createFromJavaType(selectionCd, characterTypeAtr, selectionName, selectionExtCd));
 

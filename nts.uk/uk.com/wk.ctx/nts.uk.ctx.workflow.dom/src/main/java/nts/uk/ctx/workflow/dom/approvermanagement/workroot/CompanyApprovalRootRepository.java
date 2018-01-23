@@ -88,7 +88,7 @@ public interface CompanyApprovalRootRepository {
 	 * @param appType
 	 * @return
 	 */
-	List<CompanyApprovalRoot> findByBaseDateOfCommon(String companyID, GeneralDate date);
+	Optional<CompanyApprovalRoot> findByBaseDateOfCommon(String companyID, GeneralDate date);
 	
 	/**
 	 * ドメインモデル「会社別就業承認ルート」を取得する
@@ -106,4 +106,12 @@ public interface CompanyApprovalRootRepository {
 	 * @return
 	 */
 	List<CompanyApprovalRoot> getComApprovalRootByType(String companyId, Integer applicationType, int employmentRootAtr);
+	
+	/**
+	 * getComAppRootLast
+	 * @param companyID
+	 * @param endDate
+	 * @return
+	 */
+	List<CompanyApprovalRoot> getComAppRootLast(String companyID,GeneralDate endDate);
 }

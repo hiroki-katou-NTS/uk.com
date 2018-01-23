@@ -21,6 +21,7 @@
 
 /// <reference path="request.ts"/>
 /// <reference path="ui/init.ts"/>
+/// <reference path="ui/menu.ts"/>
 /// <reference path="ui/notify.ts"/>
 /// <reference path="ui/validation.ts"/>
 /// <reference path="ui/errors.ts"/>

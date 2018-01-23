@@ -11,19 +11,25 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
-import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
+import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.system.ServerSystemProperties;
 import nts.gul.file.FileUtil;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
+import nts.uk.shr.infra.file.storage.info.StoredPackInfoRepository;
 
 @Stateless
 public class DefaultStoredFileStreamService implements StoredFileStreamService {
+	
 	@Inject
-	private FileStorage fileStorage;
+	private StoredFileInfoRepository fileInfoRepository;
+	
+	@Inject
+	private StoredPackInfoRepository packInfoRepository;
 
 	@Override
 	public void store(StoredFileInfo fileInfo, InputStream streamToStore) {
@@ -36,10 +42,11 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 	
 	@Override
 	public void storeZipEntry(StoredFileInfo fileInfo, InputStream streamToStore) {
-		try {
-			String[] names = fileInfo.getOriginalName().split("/");
-			if (names.length != 2) return;
-			Files.copy(CommonKeyCrypt.encrypt(streamToStore, fileInfo.getOriginalSize()), pathToStoredZipEntry(names[0], names[1]));
+		val pathToEntry = pathToStoredZipEntry(fileInfo);
+
+		try (val is = CommonKeyCrypt.encrypt(streamToStore, fileInfo.getOriginalSize())){
+			Files.createDirectories(pathToEntry.getParent());
+			Files.copy(is, pathToEntry);
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -47,7 +54,7 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 	
 	@Override
 	public InputStream takeOutFromFileId(String fileId) {
-		Optional<StoredFileInfo> fileInfo = fileStorage.getInfo(fileId);
+		Optional<StoredFileInfo> fileInfo = fileInfoRepository.find(fileId);
 		if(!fileInfo.isPresent()){
 			throw new BusinessException(new RawErrorMessage("file not found"));
 		}
@@ -56,12 +63,12 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 				FileUtil.NoCheck.newInputStream(pathToTargetStoredFile(fileInfo.get().getId())), 
 				fileInfo.get().getOriginalSize());
 	}
+	
 	@Override
 	public InputStream takeOut(StoredFileInfo fileInfo) {
 		Path filePath = null;
 		if (fileInfo.getOriginalName().indexOf("/") > -1) {
-			String[] names = fileInfo.getOriginalName().split("/");
-			filePath = pathToStoredZipEntry(names[0], names[1]);
+			filePath = pathToStoredZipEntry(fileInfo);
 		} else {
 			filePath = pathToTargetStoredFile(fileInfo.getId());
 		}
@@ -74,8 +81,7 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 	public InputStream takeOutDeleteOnClosed(StoredFileInfo fileInfo) {
 		Path filePath = null;
 		if (fileInfo.getOriginalName().indexOf("/") > -1) {
-			String[] names = fileInfo.getOriginalName().split("/");
-			filePath = pathToStoredZipEntry(names[0], names[1]);
+			filePath = pathToStoredZipEntry(fileInfo);
 		} else {
 			filePath = pathToTargetStoredFile(fileInfo.getId());
 		}
@@ -88,7 +94,7 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 	@Override
 	public void delete(String fileId) {
 		try {
-			Files.delete(pathToTargetStoredFile(fileId));
+			Files.deleteIfExists(pathToTargetStoredFile(fileId));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -98,14 +104,13 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 		return new File(ServerSystemProperties.fileStoragePath()).toPath().resolve(fileId);
 	}
 	
-	private static Path pathToStoredZipEntry(String zipFileId, String entryName) {
-		try {
-			Path filePath = new File(ServerSystemProperties.fileStoragePath()).toPath().resolve(zipFileId).resolve(entryName);
-			Files.createDirectories(filePath.getParent());
-			return filePath;
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+	private Path pathToStoredZipEntry(StoredFileInfo entryInfo) {
+		String packId = this.packInfoRepository.getPackId(entryInfo.getId())
+				.orElseThrow(() -> new RuntimeException("pack not found"));
+		
+		return new File(ServerSystemProperties.fileStoragePath()).toPath()
+				.resolve(packId)
+				.resolve(entryInfo.getOriginalName());
 	}
 
 }

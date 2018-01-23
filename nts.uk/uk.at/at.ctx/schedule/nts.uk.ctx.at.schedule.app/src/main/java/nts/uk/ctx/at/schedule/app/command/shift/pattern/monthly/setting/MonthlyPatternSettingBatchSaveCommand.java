@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternSettingBatchDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
@@ -29,39 +30,41 @@ public class MonthlyPatternSettingBatchSaveCommand {
 
 	/** The setting work days. */
 	private MonthlyPatternSettingBatchDto settingWorkDays;
-	
+
 	/** The setting statutory holidays. */
 	private MonthlyPatternSettingBatchDto settingStatutoryHolidays;
-	
+
 	/** The setting none statutory holidays. */
 	private MonthlyPatternSettingBatchDto settingNoneStatutoryHolidays;
-	
+
 	/** The setting public holidays. */
 	private MonthlyPatternSettingBatchDto settingPublicHolidays;
-	
+
 	/** The monthly pattern code. */
 	private String monthlyPatternCode;
-	
+
 	/** The monthly pattern name. */
 	private String monthlyPatternName;
 
 	/** The overwrite. */
 	private boolean overwrite;
-	
+
 	/** The start year month. */
 	private int startYearMonth;
-	
+
 	/** The end year month. */
 	private int endYearMonth;
 
 	/**
 	 * To domain work days.
 	 *
-	 * @param companyId the company id
-	 * @param ymdk the ymdk
+	 * @param companyId
+	 *            the company id
+	 * @param ymdk
+	 *            the ymdk
 	 * @return the work monthly setting
 	 */
-	public WorkMonthlySetting toDomainWorkDays(String companyId, int ymdk) {
+	public WorkMonthlySetting toDomainWorkDays(String companyId, GeneralDate ymdk) {
 		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(settingWorkDays,
 				companyId, ymdk, monthlyPatternCode));
 	}
@@ -69,11 +72,13 @@ public class MonthlyPatternSettingBatchSaveCommand {
 	/**
 	 * To domain statutory holidays.
 	 *
-	 * @param companyId the company id
-	 * @param ymdk the ymdk
+	 * @param companyId
+	 *            the company id
+	 * @param ymdk
+	 *            the ymdk
 	 * @return the work monthly setting
 	 */
-	public WorkMonthlySetting toDomainStatutoryHolidays(String companyId, int ymdk) {
+	public WorkMonthlySetting toDomainStatutoryHolidays(String companyId, GeneralDate ymdk) {
 		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(settingStatutoryHolidays,
 				companyId, ymdk, monthlyPatternCode));
 	}
@@ -81,11 +86,13 @@ public class MonthlyPatternSettingBatchSaveCommand {
 	/**
 	 * To domain none statutory holidays.
 	 *
-	 * @param companyId the company id
-	 * @param ymdk the ymdk
+	 * @param companyId
+	 *            the company id
+	 * @param ymdk
+	 *            the ymdk
 	 * @return the work monthly setting
 	 */
-	public WorkMonthlySetting toDomainNoneStatutoryHolidays(String companyId, int ymdk) {
+	public WorkMonthlySetting toDomainNoneStatutoryHolidays(String companyId, GeneralDate ymdk) {
 		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(
 				settingNoneStatutoryHolidays, companyId, ymdk, monthlyPatternCode));
 	}
@@ -93,52 +100,59 @@ public class MonthlyPatternSettingBatchSaveCommand {
 	/**
 	 * To domain public holidays.
 	 *
-	 * @param companyId the company id
-	 * @param ymdk the ymdk
+	 * @param companyId
+	 *            the company id
+	 * @param ymdk
+	 *            the ymdk
 	 * @return the work monthly setting
 	 */
-	public WorkMonthlySetting toDomainPublicHolidays(String companyId, int ymdk) {
-		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(settingPublicHolidays,
-				companyId, ymdk, monthlyPatternCode));
+	public WorkMonthlySetting toDomainPublicHolidays(String companyId, GeneralDate ymdk) {
+		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(this.settingPublicHolidays,
+				companyId, ymdk, this.monthlyPatternCode));
 	}
-	
-	public MonthlyPattern toDomainMonthlyPattern(String companyId){
+
+	public MonthlyPattern toDomainMonthlyPattern(String companyId) {
 		return new MonthlyPattern(new MonthlyPatternGetMementoImpl(monthlyPatternCode,
 				monthlyPatternName, companyId));
 	}
-	
-		/**
-		 * The Class WorkMonthlySettingGetMementoImpl.
-		 */
-	class WorkMonthlySettingGetMementoImpl implements WorkMonthlySettingGetMemento{
-		
+
+	/**
+	 * The Class WorkMonthlySettingGetMementoImpl.
+	 */
+	class WorkMonthlySettingGetMementoImpl implements WorkMonthlySettingGetMemento {
+
 		/** The dto. */
 		private MonthlyPatternSettingBatchDto dto;
-		
+
 		/** The company id. */
 		private String companyId;
-		
+
 		/** The ymdk. */
-		private int ymdk;
-		
+		private GeneralDate ymdk;
+
 		/** The monthly pattern code. */
 		private String monthlyPatternCode;
 
 		/**
 		 * Instantiates a new work monthly setting get memento impl.
 		 *
-		 * @param dto the dto
-		 * @param companyId the company id
-		 * @param ymdk the ymdk
-		 * @param monthlyPatternCode the monthly pattern code
+		 * @param dto
+		 *            the dto
+		 * @param companyId
+		 *            the company id
+		 * @param ymdk
+		 *            the ymdk
+		 * @param monthlyPatternCode
+		 *            the monthly pattern code
 		 */
 		public WorkMonthlySettingGetMementoImpl(MonthlyPatternSettingBatchDto dto, String companyId,
-				int ymdk, String monthlyPatternCode) {
+				GeneralDate ymdk, String monthlyPatternCode) {
 			this.dto = dto;
 			this.companyId = companyId;
 			this.ymdk = ymdk;
 			this.monthlyPatternCode = monthlyPatternCode;
 		}
+
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -179,8 +193,8 @@ public class MonthlyPatternSettingBatchSaveCommand {
 		 * WorkMonthlySettingGetMemento#getDate()
 		 */
 		@Override
-		public BigDecimal getYmdK() {
-			return BigDecimal.valueOf(this.ymdk);
+		public GeneralDate getYmdK() {
+			return this.ymdk;
 		}
 
 		/*
@@ -193,31 +207,32 @@ public class MonthlyPatternSettingBatchSaveCommand {
 		public MonthlyPatternCode getMonthlyPatternCode() {
 			return new MonthlyPatternCode(this.monthlyPatternCode);
 		}
-		
-		
+
 	}
-	
+
 	/**
 	 * The Class MonthlyPatternGetMementoImpl.
 	 */
-	class MonthlyPatternGetMementoImpl implements MonthlyPatternGetMemento{
+	class MonthlyPatternGetMementoImpl implements MonthlyPatternGetMemento {
 		/** The monthly pattern code. */
 		private String monthlyPatternCode;
-		
+
 		/** The monthly pattern name. */
 		private String monthlyPatternName;
-		
+
 		/** The company id. */
 		private String companyId;
-		
 
 		/**
 		 * Instantiates a new monthly pattern get memento impl.
 		 *
-		 * @param monthlyPatternCode the monthly pattern code
-		 * @param monthlyPatternName the monthly pattern name
+		 * @param monthlyPatternCode
+		 *            the monthly pattern code
+		 * @param monthlyPatternName
+		 *            the monthly pattern name
 		 */
-		public MonthlyPatternGetMementoImpl(String monthlyPatternCode, String monthlyPatternName, String companyId) {
+		public MonthlyPatternGetMementoImpl(String monthlyPatternCode, String monthlyPatternName,
+				String companyId) {
 			this.monthlyPatternCode = monthlyPatternCode;
 			this.monthlyPatternName = monthlyPatternName;
 			this.companyId = companyId;
@@ -255,7 +270,7 @@ public class MonthlyPatternSettingBatchSaveCommand {
 		public MonthlyPatternName getMonthlyPatternName() {
 			return new MonthlyPatternName(this.monthlyPatternName);
 		}
-		
+
 	}
-	
+
 }

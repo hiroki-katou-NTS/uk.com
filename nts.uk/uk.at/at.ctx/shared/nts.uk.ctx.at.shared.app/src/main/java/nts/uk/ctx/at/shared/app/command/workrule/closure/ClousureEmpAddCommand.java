@@ -8,5 +8,5 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.EmpCdNameDto;
 @Getter
 @Setter
 public class ClousureEmpAddCommand {
-	private List<EmpCdNameDto> listEmpCdNameDto;
+	private List<EmpCdNameDto> empCdNameList;
 }

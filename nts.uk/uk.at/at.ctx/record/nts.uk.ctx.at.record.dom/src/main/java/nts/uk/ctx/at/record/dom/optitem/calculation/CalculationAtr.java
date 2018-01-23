@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
+import lombok.Getter;
+
 /**
  * The Enum CalculationClassification.
  */
@@ -64,5 +66,21 @@ public enum CalculationAtr {
 
 		// Not found.
 		return null;
+	}
+	
+	/**
+	 * 計算項目選択であるか判定する
+	 * @return 計算項目選択である
+	 */
+	public boolean isItemSelection() {
+		return this.equals(ITEM_SELECTION);
+	}
+	
+	/**
+	 * 計算式設定であるか判定する
+	 * @return 計算式設定である
+	 */
+	public boolean isFormulaSetting() {
+		return this.equals(FORMULA_SETTING);
 	}
 }

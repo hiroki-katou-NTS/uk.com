@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.AppApprovalPhaseCmd;
 
 @Getter
 public class CreateOvertimeCommand {
@@ -41,9 +40,6 @@ public class CreateOvertimeCommand {
 	 * 申請.申請理由 = 申請.申請定型理由 + \n + 申請.申請理由
 	 */
 	private String applicationReason;
-
-	/** Phase list */
-	private List<AppApprovalPhaseCmd> appApprovalPhaseCmds;
 
 	/**
 	 * 残業申請

@@ -7,26 +7,23 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.predset;
 import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTimeSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSetPK;
 
 /**
  * The Class JpaPredetermineTimeSetMemento.
  */
-public class JpaPredetermineTimeSetMemento implements PredetermineTimeSetMemento{
-	
+public class JpaPredetermineTimeSetMemento implements PredetermineTimeSetMemento {
+
 	/** The entity. */
-	private  KshmtPredTimeSet entity;
-	
+	private KshmtPredTimeSet entity;
+
 	/**
 	 * Instantiates a new jpa predetermine time set memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaPredetermineTimeSetMemento(KshmtPredTimeSet entity) {
 		super();
-		if(entity.getKshmtPredTimeSetPK() == null){
-			entity.setKshmtPredTimeSetPK(new KshmtPredTimeSetPK());
-		}
 		this.entity = entity;
 	}
 

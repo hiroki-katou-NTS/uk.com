@@ -58,15 +58,34 @@
 	vertical-align: top;
 	background-color: #CFF1A5;
 }
-.b5_inner_left>.label{
+
+.b5_inner_left>.label {
 	margin-top: 10px;
 }
-table, th, td {
-    border: 1px black;
+
+table.table-right th, table.table-right td {
+	border-right: 1px solid #000 ;
+	border-left: 1px solid #000 ;
+	border-bottom: 1px solid #000 ;
+	border-top: 1px solid #000 ;
 }
-#b5_8{
+
+#b5_8 {
 	margin-left: 90px;
 }
-#b5_9{
+
+#b5_9 {
 	margin-left: 100px;
+}
+
+#b6_8, #b6_16 {
+	margin-left: 69px;
+}
+
+.caret-bottom.outline {
+	width: 3em;
+	height: 1em;
+	margin-left: 109px;
+	margin-top: 9px;
+	font-size: 2.3rem;
 }

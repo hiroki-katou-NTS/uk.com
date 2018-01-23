@@ -21,6 +21,8 @@ public class PeregQuery {
 	private GeneralDate standardDate;
 
 	private String infoId;
+	
+	private int ctgType;
 
 	public PeregQuery(String categoryCode, String employeeId, String personId, GeneralDate standardDate) {
 		this.categoryCode = categoryCode;

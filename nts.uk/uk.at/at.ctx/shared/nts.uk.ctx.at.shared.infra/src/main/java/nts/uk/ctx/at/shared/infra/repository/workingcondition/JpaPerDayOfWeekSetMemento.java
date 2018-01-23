@@ -4,11 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeekSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
@@ -31,18 +29,17 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	 *            the entities
 	 */
 	public JpaPerDayOfWeekSetMemento(String historyId, List<KshmtPersonalDayOfWeek> entities) {
-
 		this.historyId = historyId;
-
 		// Check empty
-		if (CollectionUtil.isEmpty(entities)) {
-			entities = new ArrayList<>();
-		}
-
-		// Clear item
-		entities.clear();
-
+//		if (CollectionUtil.isEmpty(entities)) {
+//			this.entities = new ArrayList<>();
+//		} else {
+//			this.entities = entities;
+//		}
 		this.entities = entities;
+		
+		// Clear item
+		this.entities.clear();
 	}
 
 	/*

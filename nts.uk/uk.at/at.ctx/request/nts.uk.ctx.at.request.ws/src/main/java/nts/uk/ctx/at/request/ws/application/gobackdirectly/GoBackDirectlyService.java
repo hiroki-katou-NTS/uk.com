@@ -6,16 +6,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.layer.ws.WebService;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.CheckInsertGoBackCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.CheckUpdateGoBackCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertApplicationGoBackDirectlyCommand;
-import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateApplicationGoBackDirectlyCommand;
-import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectDetailDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectSettingDto;
@@ -34,6 +30,9 @@ public class GoBackDirectlyService extends WebService {
 	
 	@Inject 
 	private CheckInsertGoBackCommandHandler checkInsertGoBackHandler;
+	
+	@Inject
+	private CheckUpdateGoBackCommandHandler checkUpdateGoBackHandler;
 
 	@Inject 
 	private UpdateGoBackDirectlyCommandHandler updateGoBackHandler;
@@ -86,6 +85,12 @@ public class GoBackDirectlyService extends WebService {
 	@Path("checkBeforeChangeGoBackDirectly")
 	public void checkBeforeInsertGoBackData (InsertApplicationGoBackDirectlyCommand command) {
 		this.checkInsertGoBackHandler.handle(command);
+	}
+	
+	@POST
+	@Path("checkBeforeUpdateGoBackData")
+	public void checkBeforeUpdateGoBackData (InsertApplicationGoBackDirectlyCommand command) {
+		this.checkUpdateGoBackHandler.handle(command);
 	}
 	
 	

@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.record.dom.breakorgoout;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
@@ -24,10 +25,8 @@ public class OutingTimeSheet extends DomainObject {
 	 */
 	private OutingFrameNo outingFrameNo;
 	
-	/*
-	 * 外出
-	 */
-	private TimeActualStamp goOut;
+	// 外出: 勤怠打刻(実打刻付き) - primitive value
+	private Optional<TimeActualStamp> goOut;
 	
 	/*
 	 * 
@@ -44,19 +43,18 @@ public class OutingTimeSheet extends DomainObject {
 	 */
 	private GoingOutReason reasonForGoOut;
 	
-	/*
-	 * 戻り
-	 */
-	private TimeActualStamp comeBack;
+	// 戻り: 勤怠打刻(実打刻付き) - primitive value
+	private Optional<TimeActualStamp> comeBack;
 
-	public void setProperty(OutingFrameNo outingFrameNo, TimeActualStamp goOut, AttendanceTime outingTimeCalculation,
-			AttendanceTime outingTime, GoingOutReason reasonForGoOut, TimeActualStamp comeBack) {
+	public void setProperty(OutingFrameNo outingFrameNo, Optional<TimeActualStamp> goOut, AttendanceTime outingTimeCalculation,
+			AttendanceTime outingTime,  GoingOutReason reasonForGoOut, Optional<TimeActualStamp> comeBack) {
 		this.outingFrameNo = outingFrameNo;
 		this.goOut = goOut;
 		this.outingTimeCalculation = outingTimeCalculation;
 		this.outingTime = outingTime;
 		this.reasonForGoOut = reasonForGoOut;
 		this.comeBack = comeBack;
+		
 	}
 	
 	

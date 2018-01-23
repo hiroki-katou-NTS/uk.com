@@ -50,7 +50,7 @@ public class CompanyInforDto {
 	private String contractCd;
 	
 	/** 法人マイナンバー */
-	private BigDecimal taxNum;
+	private String taxNum;
 	
 	private AddInforDto addinfor;
 }

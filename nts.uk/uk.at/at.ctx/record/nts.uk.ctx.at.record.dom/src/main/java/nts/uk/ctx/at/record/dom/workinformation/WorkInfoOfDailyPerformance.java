@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workinformation;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 
 /**
  * 
@@ -51,5 +53,39 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 		this.ymd = ymd;
 		this.scheduleTimeSheets = scheduleTimeSheets; 
 	}
+	
+	/**
+	 * 勤務予定を実績に移す
+	 */
+	public void shiftFromScheduleToRecord() {
+		recordWorkInformation = scheduleWorkInformation;
+	}
+	
+	/**
+	 * 勤務予定の勤務情報と勤務実績の勤務情報が同じかどうか確認する
+	 * @param workNo
+	 * @param predetermineTimeSheetSetting
+	 * @return
+	 */
+	public boolean isMatchWorkInfomation() {			
+		if(this.scheduleWorkInformation.getWorkTypeCode()==this.recordWorkInformation.getWorkTypeCode()&&
+				this.scheduleWorkInformation.getWorkTimeCode()==this.recordWorkInformation.getWorkTimeCode()) {
+			return true;
+		}
+		return false;
+	}
 
+	/**
+	 * 指定された勤務回数の予定時間帯を取得する
+	 * @param workNo
+	 * @return　予定時間帯
+	 */
+	public ScheduleTimeSheet getScheduleTimeSheet(WorkNo workNo) {
+		List<ScheduleTimeSheet> scheduleTimeSheetList = this.scheduleTimeSheets.stream()
+				.filter(ts -> ts.getWorkNo().equals(workNo)).collect(Collectors.toList());
+		if(scheduleTimeSheetList.size()>1) {
+			throw new RuntimeException("Exist duplicate workNo : " + workNo);
+		}	
+		return scheduleTimeSheetList.get(0);	
+	}
 }

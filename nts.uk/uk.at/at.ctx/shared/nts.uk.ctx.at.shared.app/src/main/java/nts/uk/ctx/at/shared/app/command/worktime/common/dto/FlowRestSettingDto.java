@@ -21,13 +21,16 @@ public class FlowRestSettingDto implements FlowRestSettingGetMemento {
 
 	/** The flow passage time. */
 	private Integer flowPassageTime;
+	
+	/** The Constant DEFAULT_ZERO. */
+	private static final Integer DEFAULT_ZERO = 0;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSettingGetMemento#getFlowRestTime()
 	 */
 	@Override
 	public AttendanceTime getFlowRestTime() {
-		return new AttendanceTime(this.flowRestTime);
+		return new AttendanceTime(this.flowRestTime == null ? DEFAULT_ZERO : this.flowRestTime);
 	}
 
 	/* (non-Javadoc)
@@ -35,7 +38,7 @@ public class FlowRestSettingDto implements FlowRestSettingGetMemento {
 	 */
 	@Override
 	public AttendanceTime getFlowPassageTime() {
-		return new AttendanceTime(this.flowPassageTime);
+		return new AttendanceTime(this.flowPassageTime == null ? DEFAULT_ZERO : this.flowPassageTime);
 	}
 	
 

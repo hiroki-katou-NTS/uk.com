@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.ws.calculation.holiday;
-
+/**
+ * @author phongtq
+ */
 import java.util.List;
 
 import javax.inject.Inject;
@@ -7,7 +9,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.calculation.holiday.roundingmonth.AddRoundingMonthCommand;
 import nts.uk.ctx.at.shared.app.command.calculation.holiday.roundingmonth.AddRoundingMonthCommandHandler;
@@ -30,13 +31,13 @@ public class RoundingMonthWebService extends WebService{
 	
 	@Path("add")
 	@POST
-	public JavaTypeResult<List<String>> add(AddRoundingMonthCommand command) {
-		return new JavaTypeResult<List<String>>(this.handler.handle(command));
+	public void add(List<AddRoundingMonthCommand> command) {
+		this.handler.handle(command);
 	}
 	
 	@Path("update")
 	@POST
-	public JavaTypeResult<List<String>> update(AddRoundingMonthCommand command) {
-		return new JavaTypeResult<List<String>>(this.handler.handle(command));
+	public void update(List<AddRoundingMonthCommand> command) {
+		this.handler.handle(command);
 	}
 }

@@ -24,8 +24,8 @@
 			<div id="contents-area">
 				<div id="content-top">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Workplace')}</div>
-					<span class="workPlaceCode" data-bind="text :(listEmployee[0])?(listEmployee[0].wokplaceCd) : ''"></span>  
-					<span class="workPlaceName" data-bind="text:(listEmployee[0])? listEmployee[0].workplaceName: ''"></span>
+					<span class="workPlaceCode" data-bind="text :workPlaceCode"></span>  
+					<span class="workPlaceName" data-bind="text:workPlaceDisplayName"></span>
 					<hr />
 				</div>
 				<div id="content-bot">
@@ -38,7 +38,7 @@
 						    selected: singleSelectedCode, 
 						    selectedKey: 'employeeCode', 
 						    childField: 'childs',
-						    searchMode: 'filter', 
+						    searchMode: 'highlight', 
 						    fields: ['rankName', 'employeeCode']}" />
 					<table id="grid2"></table>
 				</div>

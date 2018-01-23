@@ -18,4 +18,9 @@ public interface ApprovalBranchRepository {
 	 * @param lstBranch
 	 */
 	void addAllBranch(List<ApprovalBranch> lstBranch);
+	/**
+	 * delete Branch
+	 * @param branchId
+	 */
+	void deleteBranch(String companyId, String branchId);
 }

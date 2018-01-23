@@ -42,23 +42,23 @@ public class UpdateShortWorkTimeCommandHandler extends CommandHandler<UpdateShor
 	protected void handle(CommandHandlerContext<UpdateShortWorkTimeCommand> context) {
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		
-		DateHistoryItem dateItem = new DateHistoryItem(command.getHistoryId(), new DatePeriod(command.getStartDate()!=null?command.getStartDate():GeneralDate.min(), command.getEndDate()!= null? command.getEndDate():  GeneralDate.max()));
-		Optional<ShortWorkTimeHistory> existHist = sWorkTimeHistoryRepository.getBySid(companyId, command.getEmployeeId());
-		// In case of exist history of this employee
-		if (!existHist.isPresent()){
-			throw new RuntimeException("Invalid ShortWorkTimeHistory");
+		if (command.getStartDate() != null){
+			DateHistoryItem dateItem = new DateHistoryItem(command.getHistoryId(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  GeneralDate.max()));
+			Optional<ShortWorkTimeHistory> existHist = sWorkTimeHistoryRepository.getBySid(companyId, command.getEmployeeId());
+			// In case of exist history of this employee
+			if (!existHist.isPresent()){
+				throw new RuntimeException("Invalid ShortWorkTimeHistory");
+			}
+			
+			Optional<DateHistoryItem> itemtoBeUpdated = existHist.get().getHistoryItems().stream().filter(hst->hst.identifier().equals(command.getHistoryId())).findFirst();
+			if (!itemtoBeUpdated.isPresent()){
+				throw new RuntimeException("Invalid ShortWorkTimeHistory");
+			}
+			DatePeriod newSpan = new DatePeriod(command.getStartDate(), command.getEndDate());
+			existHist.get().changeSpan(itemtoBeUpdated.get(), newSpan);
+			
+			sWorkTimeHistoryRepository.update(command.getEmployeeId(),dateItem);
 		}
-		
-		Optional<DateHistoryItem> itemtoBeUpdated = existHist.get().getHistoryItems().stream().filter(hst->hst.identifier().equals(command.getHistoryId())).findFirst();
-		if (!itemtoBeUpdated.isPresent()){
-			throw new RuntimeException("Invalid ShortWorkTimeHistory");
-		}
-		DatePeriod newSpan = new DatePeriod(command.getStartDate(), command.getEndDate());
-		existHist.get().changeSpan(itemtoBeUpdated.get(), newSpan);
-		
-		sWorkTimeHistoryRepository.update(command.getEmployeeId(),dateItem);
-		
 		ShortWorkTimeHistoryItem sWorkTime = new ShortWorkTimeHistoryItem(command);
 		sWorkTimeHistItemRepository.update(sWorkTime);
 		

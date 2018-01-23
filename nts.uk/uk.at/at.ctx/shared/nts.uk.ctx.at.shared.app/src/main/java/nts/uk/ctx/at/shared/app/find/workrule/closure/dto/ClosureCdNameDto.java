@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 public class ClosureCdNameDto {
 	/** The closure id. */
 	// 締めＩＤ
-	private int closureId;
+	private int closureIdMain;
 
 	/** The closure name. */
 	// 名称: 締め名称

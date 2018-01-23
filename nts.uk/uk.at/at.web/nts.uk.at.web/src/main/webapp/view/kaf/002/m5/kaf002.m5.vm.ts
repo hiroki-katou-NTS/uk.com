@@ -19,9 +19,9 @@ module nts.uk.at.view.kaf002.m5 {
                 self.stampPlaceDisplay(data.stampPlaceDisp);
                 if(data.stampAtr_Work_Disp==1) self.stampAtrList.push({ code: 0, name: nts.uk.resource.getText('KAF002_29') });
                 if(data.stampAtr_GoOut_Disp==1) self.stampAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_31') });
-                if(data.stampAtr_Care_Disp==1) self.stampAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_33') });
-                if(data.stampAtr_Sup_Disp==1) self.stampAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_34') });
-                self.stampAtrList.push({ code: 4, name: nts.uk.resource.getText('KAF002_35') });
+                if(data.stampAtr_Care_Disp==1) self.stampAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_32') });
+                if(data.stampAtr_Sup_Disp==1) self.stampAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_33') });
+                self.stampAtrList.push({ code: 4, name: nts.uk.resource.getText('KAF002_34') });
                 self.stampAtr(_.first(self.stampAtrList()).code);
                 if(data.stampGoOutAtr_Private_Disp==1) self.stampGoOutAtrList.push({ code: 0, name: nts.uk.resource.getText('KAF002_40') });
                 if(data.stampGoOutAtr_Public_Disp==1) self.stampGoOutAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_41') });
@@ -47,6 +47,7 @@ module nts.uk.at.view.kaf002.m5 {
                     });
                 }
                 self.stampAtr.subscribe((value)=>{ 
+                    nts.uk.ui.errors.clearAll();
                     switch(value){
                         case 0: {
                             self.displayItemNo = 5; 
@@ -111,8 +112,7 @@ module nts.uk.at.view.kaf002.m5 {
                 } 
             }
             
-            register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
-                nts.uk.ui.block.invisible();
+            register(application : vmbase.Application){
                 var self = this;
                 let command = {
                     appID: "",
@@ -124,26 +124,33 @@ module nts.uk.at.view.kaf002.m5 {
                     employeeID: application.employeeID(),
                     stampRequestMode: 4,
                     appStampGoOutPermitCmds: null,
-                    appStampWorkCmds: _.map(self.appStampList(), (item) => self.convertToJS(item)),
+                    appStampWorkCmds: _.filter(
+                                                _.map(self.appStampList(), (item) => self.convertToJS(item)), 
+                                                o => { return !nts.uk.util.isNullOrEmpty(o.startTime)||
+                                                              !nts.uk.util.isNullOrEmpty(o.startLocation)||
+                                                              !nts.uk.util.isNullOrEmpty(o.endTime)}),
                     appStampCancelCmds: null,
-                    appStampOnlineRecordCmd: null,
-                    appApprovalPhaseCmds: approvalList   
+                    appStampOnlineRecordCmd: null
                 }
-                service.insert(command)
-                .done(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                        location.reload();
-                        $('.cm-memo').focus();
-                        nts.uk.ui.block.clear();
-                    });     
-                })
-                .fail(function(res) { 
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});
-                }); 
+                if(nts.uk.util.isNullOrEmpty(command.appStampWorkCmds)){
+                    $('.m5-time-editor').first().ntsError('set', {messageId:"Msg_308"});
+                } else {
+                    nts.uk.ui.block.invisible();
+                    service.insert(command)
+                    .done(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                            location.reload();
+                            $('.cm-memo').focus();
+                            nts.uk.ui.block.clear();
+                        });     
+                    })
+                    .fail(function(res) { 
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});
+                    }); 
+                }
             }
             
-            update(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
-                nts.uk.ui.block.invisible();
+            update(application : vmbase.Application){
                 var self = this;
                 let command = {
                     version: application.version,
@@ -158,26 +165,28 @@ module nts.uk.at.view.kaf002.m5 {
                     appStampGoOutPermitCmds: null,
                     appStampWorkCmds: _.map(self.appStampList(), (item) => self.convertToJS(item)),
                     appStampCancelCmds: null,
-                    appStampOnlineRecordCmd: null,
-                    appApprovalPhaseCmds: approvalList   
+                    appStampOnlineRecordCmd: null
                 }
-                service.update(command)
-                .done(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                        location.reload();
-                        $('.cm-memo').focus();
-                        nts.uk.ui.block.clear();
-                    });     
-                })
-                .fail(function(res) { 
-                    if(res.optimisticLock == true){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                if(!nts.uk.util.isNullOrEmpty(command.appStampWorkCmds)){
+                    nts.uk.ui.block.invisible();
+                    service.update(command)
+                    .done(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                             location.reload();
-                        });    
-                    } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});   
-                    }
-                });  
+                            $('.cm-memo').focus();
+                            nts.uk.ui.block.clear();
+                        });     
+                    })
+                    .fail(function(res) { 
+                        if(res.optimisticLock == true){
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
+                                location.reload();
+                            });    
+                        } else {
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});   
+                        }
+                    });  
+                }
             }
             
             convertToJS(appStamp: KnockoutObservable<vmbase.AppStampWork>){

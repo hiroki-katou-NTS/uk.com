@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 /** 休出枠時間 */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class HolidayWorkFrameTimeDto {
 
 	/** 休出時間: 計算付き時間 */
@@ -19,7 +23,7 @@ public class HolidayWorkFrameTimeDto {
 
 	/** 事前申請時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "事前申請時間")
-	@AttendanceItemValue(itemId = { 270, 275, 280, 285, 290, 295, 300, 305, 310, 315 }, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer beforeApplicationTime;
 
 	/** 休出枠NO: 休出枠NO */

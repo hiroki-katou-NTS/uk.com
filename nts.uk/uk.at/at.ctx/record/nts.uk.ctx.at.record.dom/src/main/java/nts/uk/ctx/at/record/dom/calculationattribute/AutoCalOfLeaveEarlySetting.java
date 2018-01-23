@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.record.dom.calculationattribute;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveEarlyAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveLateAttr;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
 
 /**
  * 
@@ -11,12 +12,14 @@ import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveLateAttr;
  *
  */
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AutoCalOfLeaveEarlySetting {
 	
 	//早退
-	private LeaveEarlyAttr leaveEarly;
+	private LeaveAttr leaveEarly;
 	
 	//遅刻
-	private LeaveLateAttr leaveLate;
+	private LeaveAttr leaveLate;
 
 }

@@ -21,8 +21,6 @@ import nts.uk.ctx.bs.employee.infra.entity.holidaysetting.employee.KshmtEmployee
 import nts.uk.ctx.bs.employee.infra.entity.holidaysetting.employee.KshmtEmployeeMonthDaySetPK_;
 import nts.uk.ctx.bs.employee.infra.entity.holidaysetting.employee.KshmtEmployeeMonthDaySet_;
 
-
-
 /**
  * The Class JpaEmployeeMonthDaySettingRepository.
  */
@@ -64,7 +62,7 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 		List<KshmtEmployeeMonthDaySet> entities = this.findBy(domain.getCompanyId(), domain.getEmployeeId(),
 				domain.getManagementYear(), null);
 		domain.saveToMemento(new JpaEmployeeMonthDaySettingSetMemento(entities));
-		this.commandProxy().insertAll(entities);
+		this.commandProxy().updateAll(entities);
 	}
 
 	/* (non-Javadoc)

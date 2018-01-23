@@ -66,6 +66,10 @@ public enum UseAtr {
 		// Not found.
 		return null;
 	}
+	
+	public boolean isUse() {
+		return this.equals(USE);
+	}
 
 
 }

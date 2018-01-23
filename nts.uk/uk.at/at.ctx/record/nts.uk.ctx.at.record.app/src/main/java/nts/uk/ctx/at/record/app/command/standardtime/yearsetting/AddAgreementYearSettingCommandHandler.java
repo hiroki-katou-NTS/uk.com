@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.app.command.standardtime.yearsetting;
 
+import java.math.BigDecimal;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
@@ -24,6 +27,11 @@ public class AddAgreementYearSettingCommandHandler extends CommandHandler<AddAgr
 	@Override
 	protected void handle(CommandHandlerContext<AddAgreementYearSettingCommand> context) {
 		AddAgreementYearSettingCommand command = context.getCommand();
+		
+		if(this.agreementYearSettingRepository.checkExistData(command.getEmployeeId(), new BigDecimal(command.getYearValue()))){
+			throw new BusinessException("Msg_61");
+		};
+		
 		AgreementYearSetting agreementYearSetting = new AgreementYearSetting(
 				command.getEmployeeId(),
 				command.getYearValue(), 

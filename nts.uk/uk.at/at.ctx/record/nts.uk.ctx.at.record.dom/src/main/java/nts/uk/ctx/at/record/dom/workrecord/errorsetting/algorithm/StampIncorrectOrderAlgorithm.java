@@ -31,65 +31,104 @@ public class StampIncorrectOrderAlgorithm {
 
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-	
+
 	@Inject
 	private RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
 
-	public OutPutProcess stampIncorrectOrder(String companyID, String employeeID, GeneralDate processingDate, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
-		OutPutProcess outPutProcess = OutPutProcess.NO_ERROR;
-		List<Integer> attendanceItemIds = new ArrayList<>();
+	public void stampIncorrectOrder(String companyID, String employeeID, GeneralDate processingDate,
+			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+		
+		if(timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty() && timeLeavingOfDailyPerformance.getTimeLeavingWorks().size() >= 2){
 
-//		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = timeLeavingOfDailyPerformanceRepository
-//					.findByKey(employeeID, processingDate).get();
-		// ペアの逆転がないか確認する			
-		List<OutPutProcess> pairOutPutList = checkPairReversed(timeLeavingOfDailyPerformance.getTimeLeavingWorks());
-
-		if (pairOutPutList.stream().anyMatch(item -> item == OutPutProcess.HAS_ERROR)) {
-			if (timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getWorkNo()
-					.greaterThan(timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getWorkNo())) {
-				this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
-						new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
-				outPutProcess = OutPutProcess.HAS_ERROR;
-			} else {
-				// 重複の判断処理
-				TimeWithDayAttr stampStartTimeFirstTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().getStamp().getTimeWithDay();
-				TimeWithDayAttr endStartTimeFirstTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().getStamp().getTimeWithDay();
-				TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime, endStartTimeFirstTime);
-				
-				TimeWithDayAttr stampStartTimeSecondTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().getStamp().getTimeWithDay();
-				TimeWithDayAttr endStartTimeSecondTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().getStamp().getTimeWithDay();
-				TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime, endStartTimeSecondTime);
-				
-				DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
-				DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService.checkStateAtr(duplicateStateAtr);
-				
-				if (duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING) {
-					this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
-							new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
-					outPutProcess = OutPutProcess.HAS_ERROR;
-				} 
-			}
-			return outPutProcess;
-		} else {
-			this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
-					new ErrorAlarmWorkRecordCode(SystemFixedErrorAlarm.INCORRECT_STAMP.name()), attendanceItemIds);
-			outPutProcess = OutPutProcess.HAS_ERROR;
-		}
-
-		return outPutProcess;
-	}
+			List<Integer> attendanceItemIds = new ArrayList<>();
 	
-	private List<OutPutProcess> checkPairReversed(List<TimeLeavingWork> timeLeavingWorks){
+			// TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance =
+			// timeLeavingOfDailyPerformanceRepository
+			// .findByKey(employeeID, processingDate).get();
+	
+			if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+	
+				// ペアの逆転がないか確認する
+				List<OutPutProcess> pairOutPutList = checkPairReversed(timeLeavingOfDailyPerformance.getTimeLeavingWorks());
+	
+				if (pairOutPutList.stream().anyMatch(item -> item == OutPutProcess.HAS_ERROR)) {
+					if (timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getWorkNo()
+							.greaterThan(timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getWorkNo())) {
+						this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
+								new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
+					} else {
+						if(timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp() != null 
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().isPresent()
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().get().getStamp() != null
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().get().getStamp().isPresent()
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp() != null
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().isPresent()
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp() != null
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().isPresent()){
+							// 重複の判断処理
+							TimeWithDayAttr stampStartTimeFirstTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0)
+									.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
+							TimeWithDayAttr endStartTimeFirstTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0)
+									.getLeaveStamp().get().getStamp().get().getTimeWithDay();
+							TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime,
+									endStartTimeFirstTime);
+	
+							if (timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp() != null 
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent()
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp() != null
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp().isPresent()
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp() != null
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().isPresent()
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp() != null
+								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp().isPresent()) {
+								TimeWithDayAttr stampStartTimeSecondTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks()
+										.get(1).getAttendanceStamp().get().getStamp().get().getTimeWithDay();
+								TimeWithDayAttr endStartTimeSecondTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1)
+										.getLeaveStamp().get().getStamp().get().getTimeWithDay();
+								TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(stampStartTimeSecondTime,
+										endStartTimeSecondTime);
+	
+								DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
+										.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
+								DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
+										.checkStateAtr(duplicateStateAtr);
+	
+								if (duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING) {
+									this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID,
+											processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
+								}
+							}
+						}	
+					}
+				} else {
+					this.createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
+							new ErrorAlarmWorkRecordCode(SystemFixedErrorAlarm.INCORRECT_STAMP.name()), attendanceItemIds);
+				}
+			}
+		}
+	}
+
+	private List<OutPutProcess> checkPairReversed(List<TimeLeavingWork> timeLeavingWorks) {
 		List<OutPutProcess> outPutProcessList = new ArrayList<>();
 		OutPutProcess pairOutPut = OutPutProcess.HAS_ERROR;
-		
-		for(TimeLeavingWork timeLeavingWorking : timeLeavingWorks){
-			if (timeLeavingWorking.getLeaveStamp().getStamp().getAfterRoundingTime().greaterThanOrEqualTo(timeLeavingWorking.getLeaveStamp().getStamp().getAfterRoundingTime())) {
-				pairOutPut = OutPutProcess.NO_ERROR;
+
+		for (TimeLeavingWork timeLeavingWorking : timeLeavingWorks) {
+			if (timeLeavingWorking.getLeaveStamp() != null
+					&& timeLeavingWorking.getLeaveStamp().isPresent()
+					&& timeLeavingWorking.getLeaveStamp().get().getStamp() != null
+					&& timeLeavingWorking.getLeaveStamp().get().getStamp().isPresent()
+					&& timeLeavingWorking.getAttendanceStamp() != null 
+					&& timeLeavingWorking.getAttendanceStamp().isPresent()
+					&& timeLeavingWorking.getAttendanceStamp().get().getStamp() != null
+					&& timeLeavingWorking.getAttendanceStamp().get().getStamp().isPresent()) {
+				if (timeLeavingWorking.getLeaveStamp().get().getStamp().get().getAfterRoundingTime()
+						.greaterThanOrEqualTo(timeLeavingWorking.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime())) {
+					pairOutPut = OutPutProcess.NO_ERROR;
+				}
 			}
 			outPutProcessList.add(pairOutPut);
 		}
-		
+
 		return outPutProcessList;
 	}
 }

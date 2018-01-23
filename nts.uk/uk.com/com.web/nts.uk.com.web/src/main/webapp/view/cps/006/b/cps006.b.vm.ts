@@ -4,7 +4,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
-    import dialog = nts.uk.ui.dialog.info;
+    import dialog = nts.uk.ui.dialog;
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
 
@@ -14,7 +14,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         columns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: '', prop: 'id', width: 100, hidden: true },
-            { headerText: getText('CPS006_16'), prop: 'itemName', width: 185 },
+            { headerText: getText('CPS006_16'), prop: 'itemName', width: 250 },
             { headerText: getText('CPS006_17'), prop: 'isAbolition', width: 50, formatter: makeIcon },
         ]);
 
@@ -185,7 +185,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     isAbolition: self.ckbIsAbolition() === true ? 1 : 0,
                     isRequired: self.isRequired(),
                     dataType: self.dataType(),
-                    selectionItemId: self.currentItem().itemTypeState.dataTypeState.typeCode,
+                    selectionItemId: self.dataType() === 1 ? null : (self.currentItem().itemTypeState.dataTypeState !== undefined ? self.currentItem().itemTypeState.dataTypeState.typeCode : null),
                     personEmployeeType: self.currentCategory.personEmployeeType
                 },
                 baseDate = moment(new Date()).format('YYYY-MM-DD');
@@ -195,7 +195,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             service.updateItemChange(command)
                 .done(function() {
 
-                    dialog({ messageId: "Msg_15" }).then(function() {
+                    dialog.info({ messageId: "Msg_15" }).then(function() {
 
                         self.loadDataForGrid().done(function() {
                             self.currentItem().selectionLst([]);
@@ -212,9 +212,18 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                         });
                     });
-                }).fail(function() {
+                }).fail(function(res) {
+                    if (res.messageId == "Msg_928") {
+                        dialog.alertError({
+                            messageId: res.messageId,
+                            messageParams: ["項目"]
+                        }).then(() => {
+                            $('#itemName').focus();
+                        });
+                    } else {
 
-                    dialog({ messageId: "Msg_233" });
+                        dialog.alertError({ messageId: res.messageId });
+                    }
                     block.clear();
 
                 });
@@ -378,9 +387,23 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         genTime(time) {
 
-            return nts.uk.time.parseTime(time, false).format();
+
+            return nts.uk.time.parseTime(time, true).format();
 
 
+        }
+
+
+        genNumber(itemNumber: any, decimalPart: any) {
+            let option: any;
+            if (nts.uk.text.isNullOrEmpty(decimalPart)) {
+                option = new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 0 });
+
+            } else {
+                option = new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: decimalPart });
+
+            }
+            return nts.uk.ntsNumber.formatNumber(itemNumber, option);
         }
 
         OpenCDL022Modal() {
@@ -451,8 +474,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
     function makeIcon(value, row) {
         if (value == '1')
-            return "<i class='icon icon-close'></i>";
-        return '';
+            return '<img src="../a/images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />';
+        return '<span></span>';
     }
 
     export interface IItemInfoDef {
@@ -517,7 +540,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         id: string;
         personEmployeeType: number;
         constructor(param) {
-            this.id = param.id();
+            this.id = param.id;
             this.personEmployeeType = param.personEmployeeType;
         }
 

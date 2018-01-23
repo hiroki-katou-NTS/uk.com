@@ -9,7 +9,7 @@ module nts.uk.com.view.cas001.c.viewmodel {
     export class ScreenModel {
         roleList: KnockoutObservableArray<any> = ko.observableArray([]);
         roleCodeArray = [];
-        roleCopy: KnockoutObservable<PersonRole> = ko.observable(getShared('personRole'));
+        roleCopy: KnockoutObservable<any> = ko.observable(getShared('currentRole'));
         isCanceled : boolean ;
 
         constructor() {
@@ -30,15 +30,15 @@ module nts.uk.com.view.cas001.c.viewmodel {
             let self = this;
             self.roleList.removeAll();
 
-            service.getAllPersonRole().done(function(data: Array<any>) {
-                if (data.length > 0) {
-                    _.each(data, function(c) {
-                        self.roleList.push(new PersonRole(c.roleId, c.roleCode, c.roleName));
+                if (self.roleCopy().roleList.length > 0) {
+                    _.each(self.roleCopy().roleList, function(c) {
+                        if (c.roleId !== self.roleCopy().personRole.roleId){
+                            self.roleList.push(new PersonRole(c.roleId, c.roleCode, c.roleName));
+                        }
                     });
                 }else{
                    dialog.alert(text('CAS001_7')); 
                 }
-            });
         }
 
         createCategory() {
@@ -54,7 +54,7 @@ module nts.uk.com.view.cas001.c.viewmodel {
                dialog.confirm({messageId: "Msg_64"}).ifYes(() => {
                     let roleObj = { roleIdDestination: self.roleCopy().roleId, roleIds: self.roleCodeArray };
                     service.update(roleObj).done(function(obj) {
-                        dialog.info({ messageId: "Msg_20" }).then(function() {
+                        dialog.info({ messageId: "Msg_926" }).then(function() {
                             close();
                         });
                     }).fail(function(res: any) {

@@ -12,15 +12,23 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.gateway.dom.login.User;
+import nts.arc.time.GeneralDate;
+import nts.gul.security.hash.password.PasswordHash;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
+import nts.uk.ctx.sys.gateway.dom.login.Contract;
+import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
+import nts.uk.ctx.sys.gateway.dom.login.InstallForm;
+import nts.uk.ctx.sys.gateway.dom.login.SystemConfig;
+import nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.ListCompanyAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 /**
@@ -38,10 +46,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	/** The company information adapter. */
 	@Inject
 	private CompanyInformationAdapter companyInformationAdapter;
-	
-	/** The role individual grant adapter. */
-	@Inject
-	private RoleIndividualGrantAdapter roleIndividualGrantAdapter;
 
 	/** The list company adapter. */
 	@Inject
@@ -50,6 +54,18 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	/** The manager. */
 	@Inject
 	private LoginUserContextManager manager;
+	
+	/** The system config repository. */
+	@Inject
+	private SystemConfigRepository systemConfigRepository;
+	
+	/** The contract repository. */
+	@Inject
+	private ContractRepository contractRepository;
+	
+	/** The role from user id adapter. */
+	@Inject
+	private RoleFromUserIdAdapter roleFromUserIdAdapter;
 	
 	/** The Constant FIST_COMPANY. */
 	private static final Integer FIST_COMPANY = 0;
@@ -72,6 +88,58 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 */
 	protected abstract void internalHanler(CommandHandlerContext<T> context);
 
+	
+	protected void reCheckContract(String contractCode, String contractPassword) {
+		SystemConfig systemConfig = this.getSystemConfig();
+		// case Cloud
+		if (systemConfig.getInstallForm().value == InstallForm.Cloud.value) {
+			// reCheck contract
+			// pre check contract
+			this.checkContractInput(contractCode, contractPassword);
+			// contract auth
+			this.contractAccAuth(contractCode, contractPassword);
+		}
+	}
+
+	/**
+	 * Check contract input.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	private void checkContractInput(String contractCode, String contractPassword) {
+		if (StringUtil.isNullOrEmpty(contractCode, true)) {
+			throw new RuntimeException();
+		}
+		if (StringUtil.isNullOrEmpty(contractPassword, true)) {
+			throw new RuntimeException();
+		}
+	}
+
+	/**
+	 * Contract acc auth.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	private void contractAccAuth(String contractCode, String contractPassword) {
+		Optional<Contract> contract = contractRepository.getContract(contractCode);
+		if (contract.isPresent()) {
+			// check contract pass
+			if (!PasswordHash.verifyThat(contractPassword, contract.get().getContractCode().v())
+					.isEqualTo(contract.get().getPassword().v())) {
+				throw new RuntimeException();
+			}
+			// check contract time
+			if (contract.get().getContractPeriod().start().after(GeneralDate.today())
+					|| contract.get().getContractPeriod().end().before(GeneralDate.today())) {
+				throw new RuntimeException();
+			}
+		} else {
+			throw new RuntimeException();
+		}
+	}
+	
 	/**
 	 * Sets the logged info.
 	 *
@@ -79,9 +147,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 * @param em the em
 	 * @param companyCode the company code
 	 */
-	protected void setLoggedInfo(User user,EmployeeImport em,String companyCode) {
+	protected void setLoggedInfo(UserImport user, EmployeeImport em, String companyCode) {
 		//set info to session 
-		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode().v(), em.getCompanyId(),
+		manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(), em.getCompanyId(),
 				companyCode, em.getEmployeeId(), em.getEmployeeCode());
 	}
 	
@@ -91,15 +159,15 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 * @param user the user
 	 */
 	//init session 
-	protected void initSession(User user) {
-		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatedPersonId());
+	protected void initSession(UserImport user) {
+		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatePersonId());
 		if (lstCompanyId.isEmpty()) {
-			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatedPersonId(), user.getContractCode().v(), null,
+			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(), null,
 					null, null, null);
 		} else {
 			// get employee
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
-					user.getAssociatedPersonId());
+					user.getAssociatePersonId());
 
 			// save to session
 			CompanyInformationImport companyInformation = this.companyInformationAdapter
@@ -118,6 +186,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	//set roll id into login user context 
 	protected void setRoleId(String userId)
 	{
+		String humanResourceRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE);
 		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT);
 		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY);
 		String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER);
@@ -126,14 +195,16 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 		String personalInfoRoleId = this.getRoleId(userId, RoleType.PERSONAL_INFO);
 		// 就業
 		if (employmentRoleId != null) {
-			manager.roleIdSetter().forPersonnel(employmentRoleId);
+			manager.roleIdSetter().forAttendance(employmentRoleId);
 		}
 		// 給与
 		if (salaryRoleId != null) {
 			manager.roleIdSetter().forPayroll(salaryRoleId);
 		}
 		// 人事
-
+		if (humanResourceRoleId != null) {
+			manager.roleIdSetter().forPersonnel(humanResourceRoleId);
+		}
 		// オフィスヘルパー
 		if (officeHelperRoleId != null) {
 			manager.roleIdSetter().forOfficeHelper(officeHelperRoleId);
@@ -164,10 +235,23 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandler<T> {
 	 * @return the role id
 	 */
 	protected String getRoleId(String userId, RoleType roleType) {
-		RoleIndividualGrantImport roleImport = roleIndividualGrantAdapter.getByUserAndRole(userId, roleType);
-		if (roleImport == null) {
+		String roleId = roleFromUserIdAdapter.getRoleFromUser(userId, roleType.value, GeneralDate.today());
+		if (roleId == null || roleId.isEmpty()) {
 			return null;
 		}
-		return roleImport.getRoleId();
+		return roleId;
+	}
+	
+	/**
+	 * Gets the system config.
+	 *
+	 * @return the system config
+	 */
+	private SystemConfig getSystemConfig() {
+		Optional<SystemConfig> systemConfig = systemConfigRepository.getSystemConfig();
+		if (systemConfig.isPresent()) {
+			return systemConfig.get();
+		}
+		return null;
 	}
 }

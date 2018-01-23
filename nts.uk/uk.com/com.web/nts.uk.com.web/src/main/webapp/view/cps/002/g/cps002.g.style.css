@@ -38,3 +38,7 @@ input.txtEmpCodeFirstChar {
     top: 164px;
 	
 }
+#empInitGroup,#initCardNoGroup {
+	padding-top: 10px;
+	margin-top: -5px;
+}

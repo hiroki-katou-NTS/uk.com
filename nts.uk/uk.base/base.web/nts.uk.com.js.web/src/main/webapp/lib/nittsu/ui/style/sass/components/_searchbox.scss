@@ -28,6 +28,8 @@
 	
 	div.input-wrapper {
 		display: inline-block;
-		line-height: 32px;
+	}
+	div{
+	  vertical-align: middle !important;
 	}
 }

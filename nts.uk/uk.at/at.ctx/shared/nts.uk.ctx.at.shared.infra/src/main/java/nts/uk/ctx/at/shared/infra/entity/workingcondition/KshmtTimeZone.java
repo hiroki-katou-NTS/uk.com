@@ -32,8 +32,8 @@ public abstract class KshmtTimeZone extends UkJpaEntity implements Serializable 
 	private int useAtr;
 
 	/** The cnt. */
-	@Column(name = "CNT")
-	private int cnt;
+	@Column(name = "START_TIME")
+	private int startTime;
 
 	/** The end time. */
 	@Column(name = "END_TIME")

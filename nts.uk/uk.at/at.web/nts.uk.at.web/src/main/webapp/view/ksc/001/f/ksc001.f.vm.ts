@@ -6,7 +6,7 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
     export module viewmodel {
 
         export class ScreenModel {
-            errorLogs: KnockoutObservableArray<ScheduleErrorLogDto>;
+            errorLogs: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
@@ -29,10 +29,11 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 self.errorLogs = ko.observableArray([]);
 
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KSC001_55"), key: 'employeeId', width: 80},
+                    { headerText: '', key: 'noID', hidden: true },
                     { headerText: nts.uk.resource.getText("KSC001_56"), key: 'employeeCode', width: 150 },
                     { headerText: nts.uk.resource.getText("KSC001_57"), key: 'employeeName', width: 150 },
-                    { headerText: nts.uk.resource.getText("KSC001_58"), key: 'errorContent', width: 150 }
+                    { headerText: nts.uk.resource.getText("KSC001_58"), key: 'date', width: 120 },
+                    { headerText: nts.uk.resource.getText("KSC001_59"), key: 'errorContent', width: 250 },
                 ]);
 
                 self.currentCode = ko.observable();
@@ -75,6 +76,8 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
              */
             public execution(): void {
                 var self = this;
+                // focus stop button
+                $("#btn-f-stop").focus();
                 // find task id
                 service.executionScheduleExecutionLog(self.inputData).done(function(res: any) {
                     self.taskId(res.taskInfor.id);
@@ -106,9 +109,11 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
              */
             private reloadPage(): void {
                 var self = this;
+                nts.uk.ui.block.invisible();
                 service.findScheduleExecutionLogById(self.inputData.executionId).done(function(data) {
-                    self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
                     service.findAllScheduleErrorLog(self.inputData.executionId).done(function(errorLogs){
+                        nts.uk.ui.block.clear();
+                        self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
                         // check error log
                         if (errorLogs && errorLogs.length > 0) {
                             self.isError(true);
@@ -116,15 +121,35 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                             // resize windows
                             var windowSize = nts.uk.ui.windows.getSelf();
                             windowSize.$dialog.dialog('option', {
-                                width: 650,
+                                width: 750,
                                 height: 700
                             });
+                            $("#exportButton").focus();
                             windowSize.$dialog.resize();
                             // update error to view
-                            self.errorLogs(errorLogs); 
+                            let order = _.orderBy(errorLogs,[self.compareCode,self.compareDate],['asc','asc']);
+                            let array = _.forEach(order,(object,index)=>{ object.noID = index+1;});
+                            self.errorLogs(array); 
+                        } else {
+                            // focus on close button if has no errors
+                            $('#btn-f-close').focus();
                         }
                     });
                 });
+            }
+            /**
+             * define function to sort
+             */
+            private compareCode(a: any) {
+                return a.employeeCode.toUpperCase();
+               
+            }
+            /**
+             * define function to sort
+             */
+            private compareDate(a: any) {
+                return new Date(a.date);
+              
             }
             
             /**
@@ -148,7 +173,6 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                             self.updateInfoStatus();
                             self.isFinish(true);
                             self.reloadPage();
-                            $('#closeDialog').focus();
                         }
                     });
                 }).while(infor => {

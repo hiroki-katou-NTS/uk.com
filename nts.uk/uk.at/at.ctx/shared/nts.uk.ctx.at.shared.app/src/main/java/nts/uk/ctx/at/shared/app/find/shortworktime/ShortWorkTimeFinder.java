@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
@@ -93,7 +94,10 @@ public class ShortWorkTimeFinder implements PeregFinder<ShortWorkTimeDto> {
 		if (history.isPresent()) {
 			return history.get().getHistoryItems().stream()
 					.filter(item -> shortTimeHistoryItemRepo.findByKey(employeeId, item.identifier()).isPresent())
-					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), 
+							x.end().equals(GeneralDate.max()) 
+							//&& query.getCtgType() == 3 
+							? "" : x.end().toString()))							
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();

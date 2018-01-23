@@ -18,6 +18,11 @@ public class EmTimezoneLateEarlyCommonSetDto implements  EmTimezoneLateEarlyComm
 	/** The del from em time. */
 	private boolean delFromEmTime;
 
+	/**
+	 * Instantiates a new em timezone late early common set dto.
+	 */
+	public EmTimezoneLateEarlyCommonSetDto() {}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -26,8 +31,7 @@ public class EmTimezoneLateEarlyCommonSetDto implements  EmTimezoneLateEarlyComm
 	 */
 	@Override
 	public void setDelFromEmTime(boolean val) {
-		this.delFromEmTime = val;
-		
+		this.delFromEmTime = val;		
 	}
 
 }

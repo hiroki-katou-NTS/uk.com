@@ -26,6 +26,7 @@
 #label310 {
 	width: 369px;
 	font-size: 11px;
+	background-color: #FEC0AD;
 }
 
 #panel37 {
@@ -76,4 +77,7 @@
 
 #linkButton1 {
 	margin-left: 19px;
+}
+#label310 {
+	    white-space: pre;
 }

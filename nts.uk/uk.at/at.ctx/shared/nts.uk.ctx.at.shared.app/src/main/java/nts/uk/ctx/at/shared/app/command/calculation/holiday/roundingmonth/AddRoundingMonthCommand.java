@@ -1,13 +1,12 @@
 package nts.uk.ctx.at.shared.app.command.calculation.holiday.roundingmonth;
 
-/**
- * @author phongtq
- * The class Add Rounding Month Command
- */
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.roundingmonth.RoundingMonth;
 
+/**
+ * @author phongtq The class Add Rounding Month Command
+ */
 @Data
 @AllArgsConstructor
 public class AddRoundingMonthCommand {

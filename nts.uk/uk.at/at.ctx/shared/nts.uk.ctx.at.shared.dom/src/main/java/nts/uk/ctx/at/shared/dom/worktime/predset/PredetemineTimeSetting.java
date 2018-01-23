@@ -6,9 +6,11 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -93,8 +95,12 @@ public class PredetemineTimeSetting extends AggregateRoot {
 		// validate startDateClock in -12:00 ~ 23:59
 		if ((this.startDateClock.valueAsMinutes() < TimeWithDayAttr.THE_PREVIOUS_DAY_1200.valueAsMinutes())
 				|| (this.startDateClock.valueAsMinutes() >= TimeWithDayAttr.THE_NEXT_DAY_0000.valueAsMinutes())) {
-			throw new BusinessException("Msg_785");
+			BundledBusinessException be = BundledBusinessException.newInstance();
+			be.addMessage("Msg_785");
+			be.throwExceptions();
 		}
+		
+		this.validateOneDay();
 		
 		this.validatePrescribedTimezone();
 	}
@@ -112,21 +118,35 @@ public class PredetemineTimeSetting extends AggregateRoot {
 	 * Validate prescribed timezone.
 	 */
 	private void validatePrescribedTimezone() {
-		val endDateClock = this.getEndDateClock();
-		val morningEnd = this.prescribedTimezoneSetting.getMorningEndTime();
-		val afternoonStart = this.prescribedTimezoneSetting.getAfternoonStartTime();
 		val timezones = this.prescribedTimezoneSetting.getLstTimezone();
-
 		// validate list time zone
-		if (timezones.stream()
-				.anyMatch(tz -> tz.getStart().greaterThan(endDateClock) || tz.getEnd().lessThan(this.startDateClock))) {
-			throw new BusinessException("Msg_516");
+		if (timezones.stream().anyMatch(
+				tz -> tz.getUseAtr() == UseSetting.USE && this.isOutOfRangeTimeDay(tz.getStart(), tz.getEnd()))) {
+			throw new BusinessException("Msg_516" , "KMK003_216");
 		}
+	}
 
-		// validate morning End time and afternoon start time
-		if (morningEnd.lessThan(this.startDateClock) || morningEnd.greaterThan(endDateClock)
-				|| afternoonStart.lessThan(this.startDateClock) || afternoonStart.greaterThan(endDateClock)) {
-			throw new BusinessException("Msg_516");
+	/**
+	 * Checks if is out of range time day.
+	 *
+	 * @param start the start
+	 * @param end the end
+	 * @return true, if is out of range time day
+	 */
+	private boolean isOutOfRangeTimeDay(TimeWithDayAttr start, TimeWithDayAttr end) {
+		val endDateClock = this.getEndDateClock();
+		return start.lessThan(this.startDateClock) || start.greaterThan(endDateClock)
+				|| end.lessThan(this.startDateClock) || end.greaterThan(endDateClock);
+	}
+	
+	/**
+	 * Validate one day.
+	 */
+	private void validateOneDay() {
+		AttendanceTime oneDayRange = this.getRangeTimeDay();
+		AttendanceTime oneDayTime = this.getPredTime().getPredTime().getOneDay(); 		
+		if (oneDayTime.greaterThan(oneDayRange)) {
+			throw new BusinessException("Msg_781");
 		}
 	}
 
@@ -166,5 +186,38 @@ public class PredetemineTimeSetting extends AggregateRoot {
 			return false;
 		return true;
 	}
+	
+	/**
+	 * Restore disabled data from.
+	 *
+	 * @param domain the domain
+	 */
+	public void restoreDisabledDataFrom(PredetemineTimeSetting domain) {
+		// check predetermine is TRUE
+		if (this.predetermine) {
+			this.prescribedTimezoneSetting.restoreDisabledDataFrom(domain.getPrescribedTimezoneSetting());
+		}
+	}
+	
+	/**
+	 * 1日の範囲を時間帯として返す
+	 * 
+	 * @return 1日の範囲(時間帯)
+	 * 
+	 * @author keisuke_hoshina
+	 */
+	public TimeSpanForCalc getOneDaySpan() {
+		return new TimeSpanForCalc(startDateClock,
+				new TimeWithDayAttr(startDateClock.valueAsMinutes() + rangeTimeDay.valueAsMinutes()));
+	}
+	
+	public int getPredetermineEndTime() {
+		return this.startDateClock.minute() + (int) this.rangeTimeDay.minute();
+	}
+
+	public TimezoneUse getTimeSheetOf(int workNo) {
+		return this.prescribedTimezoneSetting.getMatchWorkNoTimeSheet(workNo);
+	}
+
 
 }

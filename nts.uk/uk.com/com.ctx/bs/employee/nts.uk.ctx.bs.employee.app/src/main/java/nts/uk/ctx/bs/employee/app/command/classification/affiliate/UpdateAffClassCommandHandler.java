@@ -53,23 +53,24 @@ public class UpdateAffClassCommandHandler extends CommandHandler<UpdateAffClassi
 	protected void handle(CommandHandlerContext<UpdateAffClassificationCommand> context) {
 		UpdateAffClassificationCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-
-		// update history
-		Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(companyId, command.getEmployeeId());
-		if (!historyOption.isPresent()) {
-			throw new RuntimeException("invalid AffClassHistory_ver1");
+		// In case of date period are exist in the screen
+		if (command.getStartDate() != null){
+			// update history
+			Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(companyId, command.getEmployeeId());
+			if (!historyOption.isPresent()) {
+				throw new RuntimeException("invalid AffClassHistory_ver1");
+			}
+	
+			Optional<DateHistoryItem> itemToBeUpdateOpt = historyOption.get().getPeriods().stream()
+					.filter(h -> h.identifier().equals(command.getHistoryId())).findFirst();
+			if (!itemToBeUpdateOpt.isPresent()) {
+				throw new RuntimeException("invalid AffClassHistory_ver1");
+			}
+	
+			historyOption.get().changeSpan(itemToBeUpdateOpt.get(),
+					new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
+			affClassHistoryRepositoryService.update(historyOption.get(), itemToBeUpdateOpt.get());
 		}
-
-		Optional<DateHistoryItem> itemToBeUpdateOpt = historyOption.get().getPeriods().stream()
-				.filter(h -> h.identifier().equals(command.getHistoryId())).findFirst();
-		if (!itemToBeUpdateOpt.isPresent()) {
-			throw new RuntimeException("invalid AffClassHistory_ver1");
-		}
-
-		historyOption.get().changeSpan(itemToBeUpdateOpt.get(),
-				new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
-		affClassHistoryRepositoryService.update(historyOption.get(), itemToBeUpdateOpt.get());
-
 		// update history item
 		AffClassHistItem_ver1 historyItem = AffClassHistItem_ver1.createFromJavaType(command.getEmployeeId(),
 				command.getHistoryId(), command.getClassificationCode());

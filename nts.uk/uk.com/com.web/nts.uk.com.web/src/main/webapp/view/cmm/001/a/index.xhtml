@@ -32,14 +32,12 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<!--  -->
 				<!-- A1_1 -->
 				<button id="reset" tabindex="1" class="group-button-1"
 					data-bind="click: innit">#{i18n.getText('CMM001_1')}</button>
-				<!-- , enable: $root.errors.isEmpty" -->
 				<!-- A1_2 -->
 				<button id="register" tabindex="2" class="proceed group-button-1"
-					data-bind="click: register">#{i18n.getText('CMM001_2')}</button>
+					data-bind="click: register, enable:  $root.errors.isEmpty">#{i18n.getText('CMM001_2')}</button>
 				<!-- A1_3 -->
 				<button id="setting" tabindex="3" class="group-button-1">#{i18n.getText('CMM001_3')}</button>
 				<!-- A1_4 -->
@@ -172,7 +170,7 @@
 
 					<!-- <Tabpanel> -->
 					<div class="cf flex">
-						<div style="width: 100%; height: 100%; margin-top: 20px">
+						<div style=" margin-top: 20px">
 
 							<div class="cf"
 								data-bind="ntsTabPanel: { dataSource: $parent.tabs,
@@ -196,7 +194,7 @@
 													<div>
 														<!-- B1_2 -->
 														<input id="corporateMyNumber" tabindex="17" class="save-error"
-															data-bind="ntsNumberEditor: {value: taxNum, constraint: 'TaxNo', name: '#[CMM001_19]'}" />
+															data-bind="ntsTextEditor: {value: taxNum, constraint: 'TaxNo', name: '#[CMM001_19]'}" />
 													</div>
 												</th>
 											</tr>

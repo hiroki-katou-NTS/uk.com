@@ -5,91 +5,136 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	<com:ValidatorScript>
 		nts.uk.shr.com.time.TimeWithDayAttr
-   	</com:ValidatorScript>
+	</com:ValidatorScript>
 
-	<com:ko tag="ifnot" bind="isFlowMode">
-		<div data-bind ="rended: true">
-			<div tabindex="-1" class="accordion setting_detail_tab2" data-bind="ntsAccordion: {enable: true} ">
+
+	<!-- BEGIN A14_1 ~ A16_12 -->
+	<div data-bind="rended: true">
+		<com:ko tag="if" bind="!isSimpleMode() &amp;&amp; !isFlowMode()">
+			<div tabindex="-1" class="accordion setting_detail_tab2"
+				data-bind="ntsAccordion: {enable: true} ">
 				<h3>
 					<label>#{i18n.getText('KMK003_51')}</label>
 				</h3>
-				<div data-bind="ntsFixTableCustom: {option: fixTableOptionOneDay}"></div>
+				<div class ="accordion-content">
+					<div id="fixtable-tab2-one-day" class="table-width" data-bind="ntsFixTableCustom: {
+							option: fixTableOptionOneDay}"></div>
+				</div>
 			</div>
-			<div tabindex="-1" class="accordion setting_detail_tab2" data-bind="ntsAccordion: {enable: true}">
+		</com:ko>
+		
+		<com:ko tag="if" bind="isSimpleMode() &amp;&amp; !isFlowMode()">
+			<div tabindex="-1" class="accordion setting_detail_tab2">
+				<div id="fixtable-tab2-one-day-simple-mode" class="table-width" data-bind="ntsFixTableCustom: {
+						isEnableAllControl: isEnableTimeRangeOneDaySimpleMode,
+						option: fixTableOptionOneDaySimpleMode}"></div>
+			</div>
+		</com:ko>
+		
+		<!-- =================== Begin Use Half Day Shift And Detail mode =================== -->
+		<com:ko tag="if" bind="!isSimpleMode() &amp;&amp; isUseHalfDay()">
+			<div tabindex="-1" class="accordion setting_detail_tab2"
+				data-bind="ntsAccordion: {enable: true}">
 				<h3>
 					<label>#{i18n.getText('KMK003_60')}</label>
 				</h3>
-				<div data-bind="ntsFixTableCustom: {option: fixTableOptionMorning}"></div>
+				<div class ="accordion-content">
+					<div id="fixtable-tab2-morning-day" class="table-width" data-bind="ntsFixTableCustom: {
+						option: fixTableOptionMorning}"></div>
+				</div>
 			</div>
-			<div tabindex="-1" class="accordion setting_detail_tab2" data-bind="ntsAccordion: {enable: true}">
+			<div tabindex="-1" class="accordion setting_detail_tab2"
+				data-bind="ntsAccordion: {enable: true}">
 				<h3>
 					<label>#{i18n.getText('KMK003_61')}</label>
 				</h3>
-				<div  data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoon}"></div>
+				<div class ="accordion-content">
+					<div id="fixtable-tab2-afternoon" class="table-width"
+						data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoon}"></div>
+				</div>
 			</div>
-		</div>
-	</com:ko>
+		</com:ko>
+		<!-- =================== End Use Half Day Shift And Detail mode =================== -->
+	</div>
+
+
+
+
+	<!-- =================== Begin Flow Mode =================== -->
 	<com:ko tag="if" bind="isFlowMode">
+
+		<!-- BEGIN A18_13 ~ A18_18 -->
 		<div class="labelSetting">
 			<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_134')}</div>
 		</div>
 		<div style="width: 50%">
-			<hr/>
+			<hr />
 		</div>
-		<div class="labelSetting" style="display: inline-flex;">
-			<div data-bind="ntsComboBox: {
-				options: comboxRoundings,
-				optionsValue: 'code',
-				visibleItemsCount: 5,
-				value: selectedCodeRounding,
-				optionsText: 'name',
-				editable: false,
-				name: '#[KMK003_169]',
-				enable: true,
-				columns: [
-					{ prop: 'name', length: 10 }
-				]}">
+		<div class="labelSetting itemleft" style="display: inline-flex;">
+			<div tabindex="49" style="margin-right: 10px;" data-bind="ntsComboBox: {
+						options: settingEnum.roundingTime,
+						optionsValue: 'value',
+						visibleItemsCount: 8,
+						value: selectedRoundingTime,
+						optionsText: 'localizedName',
+						editable: false,
+						name: '#[KMK003_169]',
+						enable: true,
+						dropDownAttachedToBody: true,
+						columns: [
+							{ prop: 'localizedName', length: 10 }
+						]}">
 			</div>
-			<div data-bind="ntsSwitchButton: {
-				options: roundingProcsses,
-				optionsValue: 'code',
-				optionsText: 'name',
-				name: '#[KMK003_169]',
-				value: selectedCodeRoundingProcess,
-				enable: true }">
+			<div tabindex="50"
+				data-bind="ntsSwitchButton: {
+						options: roundingProcsses,
+						optionsValue: 'code',
+						optionsText: 'name',
+						name: '#[KMK003_169]',
+						value: selectedRounding,
+						enable: true }">
 			</div>
-		</div>
+		</div><!-- END A18_13 ~ A18_18 -->
+
+		<!-- BEGIN A18_19 ~ A18_23 -->
 		<div class="labelSetting">
 			<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_135')}</div>
 		</div>
 		<div style="width: 50%">
-			<hr/>
+			<hr />
 		</div>
-		<div data-bind="ntsRadioBoxGroup: {
-			options: calculationMethods,
-			optionsValue: 'code',
-			optionsText: 'name',
-			value: selectedCodeCalMed,
-			enable: true}">
-		</div>
-		<div class="labelSetting">
-			<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_138')}</div>
-		</div>
-		<div style="width: 50%">
-			<hr/>
-		</div>
-		<div class="labelSetting" data-bind="ntsComboBox: {
-				options: settingAttrs,
-				optionsValue: 'code',
-				visibleItemsCount: 5,
-				value: selectedCodeSetting,
-				optionsText: 'name',
-				editable: false,
-				name: '#[KMK003_175]',
-				enable: true,
-				columns: [
-					{ prop: 'name', length: 10 }
-				]}">
+		<div tabindex="51" class="itemleft" style="width: 300px;" data-bind="ntsRadioBoxGroup: {
+					options: calculationMethods,
+					optionsValue: 'code',
+					optionsText: 'name',
+					value: selectedCalcStartTimeSet,
+					enable: true}">
+		</div><!-- END A18_19 ~ A18_23 -->
+
+		<!-- BEGIN A18_24 ~ A18_26 -->
+		<com:ko tag="if" bind="!isSimpleMode()">
+			<div class="labelSetting">
+				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_138')}</div>
 			</div>
+			<div style="width: 50%">
+				<hr />
+			</div>
+			<div tabindex="52" class="labelSetting, itemleft"
+				data-bind="ntsComboBox: {
+					options: settingEnum.lstFixedChangeAtr,
+					optionsValue: 'value',
+					visibleItemsCount: 3,
+					value: selectedCodeSetting,
+					optionsText: 'localizedName',
+					editable: false,
+					name: '#[KMK003_175]',
+					enable: true,
+					dropDownAttachedToBody: true,
+					columns: [
+						{ prop: 'localizedName', length: 10 }
+					]}">
+			</div>
+		</com:ko><!-- END A18_24 ~ A18_26 -->
 	</com:ko>
+	<!-- =================== End Flow Mode =================== -->
 </ui:composition>

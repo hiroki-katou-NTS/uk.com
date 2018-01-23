@@ -3,6 +3,7 @@ module cps007.a.vm {
     import alert = nts.uk.ui.dialog.alert;
     import error = nts.uk.ui.dialog.alertError;
     import text = nts.uk.resource.getText;
+    import lv = nts.layout.validate;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -30,18 +31,7 @@ module cps007.a.vm {
                 layout.name(lt.name);
 
                 // remove all sibling sperators
-                let maps = _(lt.itemsClassification)
-                    .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
-                    .filter(x => x != -1).value();
-
-                _.each(maps, (t, i) => {
-                    if (maps[i + 1] == t + 1) {
-                        _.remove(lt.itemsClassification, (m: IItemClassification) => {
-                            let item: IItemClassification = ko.unwrap(lt.itemsClassification)[maps[i + 1]];
-                            return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
-                        });
-                    }
-                });
+                lv.removeDoubleLine(lt.itemsClassification);
 
                 layout.itemsClassification(lt.itemsClassification);
             });
@@ -68,14 +58,13 @@ module cps007.a.vm {
                         };
                     }).value()
                 };
-            
+
             let itemids = _(command.itemsClassification)
-                .map(x => x.listItemClsDf)
+                .map(x => _.map(x.listItemClsDf, m => m))
                 .flatten()
                 .filter(x => !!x)
-                .map((x: any) => x.personInfoItemDefinitionID)
-                .groupBy()
-                .pickBy((x: Array<string>) => x.length > 1)
+                .groupBy((x: any) => x.personInfoItemDefinitionID)
+                .pickBy((x: Array<any>) => x.length > 1)
                 .keys()
                 .value();
 

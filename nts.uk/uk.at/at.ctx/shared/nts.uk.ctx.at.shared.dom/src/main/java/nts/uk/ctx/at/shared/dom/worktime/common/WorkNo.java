@@ -4,9 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import java.math.BigDecimal;
-
-import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
 import nts.arc.primitive.constraint.DecimalRange;
 
@@ -16,11 +14,11 @@ import nts.arc.primitive.constraint.DecimalRange;
 // 勤務NO
 @DecimalRange(min = "1", max = "3")
 @DecimalMantissaMaxLength(1)
-public class WorkNo extends DecimalPrimitiveValue<WorkNo> {
+public class WorkNo extends IntegerPrimitiveValue<WorkNo> {
 
 	private static final long serialVersionUID = 1L;
 
-	public WorkNo(BigDecimal rawValue) {
+	public WorkNo(Integer rawValue) {
 		super(rawValue);
 	}
 

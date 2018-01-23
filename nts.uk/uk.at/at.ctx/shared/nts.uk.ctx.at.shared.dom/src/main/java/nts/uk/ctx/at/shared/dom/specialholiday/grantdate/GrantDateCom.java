@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 
@@ -31,7 +32,7 @@ public class GrantDateCom extends DomainObject {
 	private GrantDateAtr grantDateAtr;
 
 	/*一律基準日*/
-	private GrantDate grantDate;
+	private GeneralDate grantDate;
 	
 	private List<GrantDateSet> grantDateSets;
 	
@@ -39,11 +40,11 @@ public class GrantDateCom extends DomainObject {
 	 * Create from java type
 	 */
 	public static GrantDateCom createFromJavaType(String companyId, String specialHolidayCode, int grantDateAtr,
-			int grantDate ,List<GrantDateSet> grantDateSets) {
+			GeneralDate grantDate ,List<GrantDateSet> grantDateSets) {
 		return new GrantDateCom(companyId,
 				new SpecialHolidayCode(specialHolidayCode),
 				EnumAdaptor.valueOf(grantDateAtr, GrantDateAtr.class),
-				new GrantDate(grantDate),
+				grantDate,
 				grantDateSets);
 	}
 

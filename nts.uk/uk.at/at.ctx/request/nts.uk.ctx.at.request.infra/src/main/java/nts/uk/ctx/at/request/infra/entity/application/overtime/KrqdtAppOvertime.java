@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.infra.entity.application.overtime;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,9 +11,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -24,7 +20,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
-import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -80,17 +75,9 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
     @OneToMany(targetEntity=KrqdtOvertimeInput.class, mappedBy="appOvertime", cascade = CascadeType.ALL)
     @JoinTable(name = "KRQDT_OVERTIME_INPUT")
 	public List<KrqdtOvertimeInput> overtimeInputs;
-    
-    @OneToOne(targetEntity=KafdtApplication.class, cascade = CascadeType.ALL, orphanRemoval = true)
-	@PrimaryKeyJoinColumns({
-		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
-		@PrimaryKeyJoinColumn(name="APP_ID",referencedColumnName="APP_ID")
-	})
-	public KafdtApplication kafdtApplication;
-    
+
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
 		return krqdtAppOvertimePK;
 	}
 
@@ -102,7 +89,6 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 		this.setWorkClockTo1(appOverTime.getWorkClockTo1());
 		this.setWorkClockFrom2(appOverTime.getWorkClockFrom2());
 		this.setWorkClockTo2(appOverTime.getWorkClockTo2());
-		// krqdtAppOvertime.setOvertimeInputs(krqdtAppOvertime.getOvertimeInputs().stream().);
 		this.setOvertimeAtr(appOverTime.getOverTimeAtr().value);
 		this.setOvertimeShiftNight(appOverTime.getOverTimeShiftNight());
 		this.setFlexExcessTime(appOverTime.getFlexExessTime());

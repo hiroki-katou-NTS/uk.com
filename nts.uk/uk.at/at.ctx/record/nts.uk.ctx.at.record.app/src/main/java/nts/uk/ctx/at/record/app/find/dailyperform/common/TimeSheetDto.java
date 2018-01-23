@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 @Data
 /**　時間帯　*/
+@AllArgsConstructor
+@NoArgsConstructor
 public class TimeSheetDto {
 	
 	private Integer timeSheetNo;
@@ -14,4 +18,6 @@ public class TimeSheetDto {
 
 	@AttendanceItemLayout(layout="B", jpPropertyName="終了時間")
 	private TimeStampDto end;
+	
+	private int breakTime;
 }

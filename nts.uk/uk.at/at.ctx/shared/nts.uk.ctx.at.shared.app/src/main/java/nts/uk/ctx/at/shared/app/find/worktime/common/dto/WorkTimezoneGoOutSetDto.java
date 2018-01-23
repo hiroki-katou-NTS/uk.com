@@ -23,6 +23,14 @@ public class WorkTimezoneGoOutSetDto implements WorkTimezoneGoOutSetSetMemento{
 	/** The diff timezone setting. */
 	private GoOutTimezoneRoundingSetDto diffTimezoneSetting;
 
+	/**
+	 * Instantiates a new work timezone go out set dto.
+	 */
+	public WorkTimezoneGoOutSetDto() {
+		this.totalRoundingSet = new TotalRoundingSetDto();
+		this.diffTimezoneSetting = new GoOutTimezoneRoundingSetDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

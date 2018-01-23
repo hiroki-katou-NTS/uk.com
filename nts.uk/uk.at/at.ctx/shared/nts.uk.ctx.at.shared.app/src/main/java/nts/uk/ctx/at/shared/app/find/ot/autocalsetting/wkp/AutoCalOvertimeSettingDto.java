@@ -51,7 +51,7 @@ public class AutoCalOvertimeSettingDto implements AutoCalOvertimeSettingSetMemen
 	 */
 	@Override
 	public void setEarlyOtTime(AutoCalSetting earlyOtTime) {
-		this.earlyOtTime = new AutoCalSettingDto(earlyOtTime.getUpLimitOtSet().value, earlyOtTime.getCalAtr().value);
+		this.earlyOtTime = new AutoCalSettingDto(earlyOtTime.getUpLimitORtSet().value, earlyOtTime.getCalAtr().value);
 	}
 
 	/*
@@ -63,7 +63,7 @@ public class AutoCalOvertimeSettingDto implements AutoCalOvertimeSettingSetMemen
 	 */
 	@Override
 	public void setEarlyMidOtTime(AutoCalSetting earlyMidOtTime) {
-		this.earlyMidOtTime = new AutoCalSettingDto(earlyMidOtTime.getUpLimitOtSet().value,
+		this.earlyMidOtTime = new AutoCalSettingDto(earlyMidOtTime.getUpLimitORtSet().value,
 				earlyMidOtTime.getCalAtr().value);
 
 	}
@@ -77,7 +77,7 @@ public class AutoCalOvertimeSettingDto implements AutoCalOvertimeSettingSetMemen
 	 */
 	@Override
 	public void setNormalOtTime(AutoCalSetting normalOtTime) {
-		this.normalOtTime = new AutoCalSettingDto(normalOtTime.getUpLimitOtSet().value, normalOtTime.getCalAtr().value);
+		this.normalOtTime = new AutoCalSettingDto(normalOtTime.getUpLimitORtSet().value, normalOtTime.getCalAtr().value);
 	}
 
 	/*
@@ -89,7 +89,7 @@ public class AutoCalOvertimeSettingDto implements AutoCalOvertimeSettingSetMemen
 	 */
 	@Override
 	public void setNormalMidOtTime(AutoCalSetting normalMidOtTime) {
-		this.normalMidOtTime = new AutoCalSettingDto(normalMidOtTime.getUpLimitOtSet().value,
+		this.normalMidOtTime = new AutoCalSettingDto(normalMidOtTime.getUpLimitORtSet().value,
 				normalMidOtTime.getCalAtr().value);
 	}
 
@@ -102,7 +102,7 @@ public class AutoCalOvertimeSettingDto implements AutoCalOvertimeSettingSetMemen
 	 */
 	@Override
 	public void setLegalOtTime(AutoCalSetting legalOtTime) {
-		this.legalOtTime = new AutoCalSettingDto(legalOtTime.getUpLimitOtSet().value, legalOtTime.getCalAtr().value);
+		this.legalOtTime = new AutoCalSettingDto(legalOtTime.getUpLimitORtSet().value, legalOtTime.getCalAtr().value);
 	}
 
 	/*
@@ -114,7 +114,7 @@ public class AutoCalOvertimeSettingDto implements AutoCalOvertimeSettingSetMemen
 	 */
 	@Override
 	public void setLegalMidOtTime(AutoCalSetting legalMidOtTime) {
-		this.legalMidOtTime = new AutoCalSettingDto(legalMidOtTime.getUpLimitOtSet().value,
+		this.legalMidOtTime = new AutoCalSettingDto(legalMidOtTime.getUpLimitORtSet().value,
 				legalMidOtTime.getCalAtr().value);
 
 	}

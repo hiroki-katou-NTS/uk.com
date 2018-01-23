@@ -1,0 +1,96 @@
+package nts.uk.ctx.at.function.ws.alarm.checkcondition;
+
+import java.util.List;
+
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
+import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetSelectionRange;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetServiceType;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.TypeCheckWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
+/**
+ * Class Kal003bWebService
+ * @author HieuNV
+ *
+ */
+@Path("at/function/alarm/checkcondition/kal003b")
+@Produces("application/json")
+public class Kal003bWebService extends WebService{
+	
+	@POST
+	@Path("getEnumSingleValueCompareTypse")
+	public List<EnumConstant> getEnumSingleValueCompareType(){
+
+	    return EnumAdaptor.convertToValueNameList(SingleValueCompareType.class, 
+	            SingleValueCompareType.EQUAL,
+	            SingleValueCompareType.NOT_EQUAL,
+	            SingleValueCompareType.GREATER_THAN,
+	            SingleValueCompareType.GREATER_OR_EQUAL,
+	            SingleValueCompareType.LESS_THAN,
+	            SingleValueCompareType.LESS_OR_EQUAL);
+	} 
+	
+	@POST
+	@Path("getEnumRangeCompareType")
+    public List<EnumConstant> getEnumRangeCompareType(){
+
+        return EnumAdaptor.convertToValueNameList(RangeCompareType.class, 
+                RangeCompareType.BETWEEN_RANGE_OPEN,
+                RangeCompareType.BETWEEN_RANGE_CLOSED,
+                RangeCompareType.OUTSIDE_RANGE_OPEN,
+                RangeCompareType.OUTSIDE_RANGE_CLOSED);
+        
+        
+    }
+
+	@POST
+	@Path("getEnumTypeCheckWorkRecord")
+    public List<EnumConstant> getEnumTypeCheckWorkRecord(){
+
+        return EnumAdaptor.convertToValueNameList(TypeCheckWorkRecord.class, 
+                TypeCheckWorkRecord.TIME,
+                TypeCheckWorkRecord.TIMES,
+                TypeCheckWorkRecord.AMOUNT_OF_MONEY,
+                TypeCheckWorkRecord.TIME_OF_DATE,
+                TypeCheckWorkRecord.CONTINUOUS_TIME,
+                TypeCheckWorkRecord.CONTINUOUS_WORK,
+                TypeCheckWorkRecord.CONTINUOUS_TIME_ZONE,
+                TypeCheckWorkRecord.COMPOUND_CONDITION);
+
+    }
+	
+	@POST
+	@Path("getEnumTargetSelectionRange")
+    public List<EnumConstant> getEnumTargetSelectionRange(){
+
+        return EnumAdaptor.convertToValueNameList(TargetSelectionRange.class, 
+                TargetSelectionRange.SELECTION,
+                TargetSelectionRange.OTHER_SELECTION);
+    }
+	
+	@POST
+	@Path("getEnumTargetServiceType")
+    public List<EnumConstant> getEnumTargetServiceType(){
+
+        return EnumAdaptor.convertToValueNameList(TargetServiceType.class, 
+                TargetServiceType.ALL,
+                TargetServiceType.SELECTION,
+                TargetServiceType.OTHER_SELECTION);
+    }
+	
+	@POST
+    @Path("getEnumLogicalOperator")
+    public List<EnumConstant> getEnumLogicalOperator(){
+
+        return EnumAdaptor.convertToValueNameList(LogicalOperator.class, 
+                LogicalOperator.AND,
+                LogicalOperator.OR);
+    }
+}

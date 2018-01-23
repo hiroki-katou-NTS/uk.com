@@ -1,4 +1,4 @@
-#function_area {
+ #function_area {
 	margin-top: 10px;
 }
 
@@ -91,13 +91,21 @@
 	margin-left: -15px;
 }
 
-.bg-green {
+#list{
 	margin-top: 30px;
 	margin-left: 100px;
 	width: 300px;
 	height: 530px;
 	float: left;
 }
+
+/* .bg-green {
+	margin-top: 30px;
+	margin-left: 100px;
+	width: 300px;
+	height: 530px;
+	float: left;
+} */
 
 #H_LST_001_grid_displayContainer {
 	margin-left: 10px;
@@ -112,12 +120,6 @@
 	float: right;
 	margin-top: 33px;
 	margin-right: 277px;
-}
-
-.tab-content-2, .tab-content-1, .tab-content-3, .tab-content-4 {
-	height: 407px !important;
-	width: 550px !important;
-	overflow-y: hidden !important;
 }
 
 .cell-column1 {
@@ -216,3 +218,6 @@
 .top-content-data {
 	height: 39px;
 }
+#emp-component {
+	margin-left: 100px;
+} 

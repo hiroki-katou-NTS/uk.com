@@ -12,6 +12,7 @@
                nts.uk.ctx.at.record.dom.optitem.NumberRangeValue
                nts.uk.ctx.at.record.dom.optitem.TimeRangeValue
                nts.uk.ctx.at.record.dom.optitem.AmountRangeValue
+               nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName
             </com:ValidatorScript>
             <com:scriptfile set="IGNITE" />
             <com:stylefile path="kmk002.a.style.css" />
@@ -259,7 +260,7 @@
                            <colgroup>
                               <col width="35px"/>
                               <col width="38px"/>
-                              <col width="85px"/>
+                              <col width="145px"/>
                               <col width="157px"/>
                               <col width="207px"/>
                               <col width="35px"/>
@@ -306,7 +307,7 @@
                                           optionsText: 'localizedName',
                                           enable: $parent.isUsed,
                                           columns: [
-                                          { prop: 'localizedName', length: 1 },
+                                          { prop: 'localizedName', length: 8 },
                                           ]}">
                                        </div>
                                     </td>
@@ -316,6 +317,7 @@
                                        name: '#[KMK002_40]',
                                        value: formulaName,
                                        enable: $parent.isUsed, 
+                                       constraint: 'FormulaName',
                                        required: true}"/>
                                     </td>
                                     <td>

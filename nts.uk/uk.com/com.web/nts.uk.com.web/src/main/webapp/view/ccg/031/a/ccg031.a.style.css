@@ -3,6 +3,7 @@
 /* Override base */
 #header {display: none;}
 #functions-area {position:relative;}
+#contents-area{overflow: visible; }
 
 .ui-draggable-dragging {cursor: move;}
 

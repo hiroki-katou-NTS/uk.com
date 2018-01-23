@@ -12,8 +12,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
@@ -23,11 +23,11 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
@@ -41,11 +41,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 	@Inject
 	private OvertimeRepository overTimeRepository;
 	@Inject
-	ApplicationRepository appRepository;
+	ApplicationApprovalService_New appRepository;
 	
 	@Inject
 	private PersonalLaborConditionRepository personalLaborConditionRepository;
@@ -69,9 +69,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 	 */
 	@Override
 	public List<WorkTypeOvertime> getWorkType(String companyID, String employeeID,
-			RequestAppDetailSetting requestAppDetailSetting,List<AppEmploymentSetting> appEmploymentSettings) {
+			ApprovalFunctionSetting approvalFunctionSetting,List<AppEmploymentSetting> appEmploymentSettings) {
 		List<WorkTypeOvertime> result = new ArrayList<>();
-		if(requestAppDetailSetting == null || requestAppDetailSetting.getTimeCalUseAtr() != UseAtr.USE) {
+		if(approvalFunctionSetting == null || !approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 			return result;
 		}
 		// 時刻計算利用チェック
@@ -143,19 +143,19 @@ public class OvertimeServiceImpl implements OvertimeService {
 
 	@Override
 	public List<SiftType> getSiftType(String companyID, String employeeID,
-			RequestAppDetailSetting requestAppDetailSetting) {
+			ApprovalFunctionSetting approvalFunctionSetting,GeneralDate baseDate) {
 		List<SiftType> result = new ArrayList<>();
-		if (requestAppDetailSetting != null) {
+		if (approvalFunctionSetting != null) {
 			// 時刻計算利用チェック
-			if (requestAppDetailSetting.getTimeCalUseAtr().value == UseAtr.USE.value) {
+			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 				// 1.職場別就業時間帯を取得
-				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, GeneralDate.today());
+				List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate);
 				
 				if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
-					List<WorkTime> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);
-					for(WorkTime workTime : workTimes){
+					List<WorkTimeSetting> workTimes =  workTimeRepository.findByCodes(companyID,listWorkTimeCodes);
+					for(WorkTimeSetting workTime : workTimes){
 						SiftType siftType = new SiftType();
-						siftType.setSiftCode(workTime.getSiftCD().toString());
+						siftType.setSiftCode(workTime.getWorktimeCode().toString());
 						siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
 						result.add(siftType);
 					}
@@ -163,16 +163,16 @@ public class OvertimeServiceImpl implements OvertimeService {
 				}
 			}
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	/**
 	 * 登録処理を実行
 	 */
 	@Override
-	public void CreateOvertime(AppOverTime domain, Application newApp){
+	public void CreateOvertime(AppOverTime domain, Application_New newApp){
 		//Register application
-		appRepository.addApplication(newApp);
+		appRepository.insert(newApp);
 		//Register overtime
 		overTimeRepository.Add(domain);
 	}
@@ -201,9 +201,12 @@ public class OvertimeServiceImpl implements OvertimeService {
 				workTypeOvertime.setWorkTypeName(workType.get().getName().toString());
 			}
 			workTypeAndSiftType.setWorkType(workTypeOvertime);
-			Optional<WorkTime> workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
-			siftType.setSiftCode(personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString());
-			siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
+			WorkTimeSetting workTime =  workTimeRepository.findByCode(companyID,personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString())
+					.orElseGet(()->{
+						return workTimeRepository.findByCompanyId(companyID).get(0);
+					});
+			siftType.setSiftCode(workTime.getWorktimeCode().toString());
+			siftType.setSiftName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
 			workTypeAndSiftType.setSiftType(siftType);
 		}
 		return workTypeAndSiftType;

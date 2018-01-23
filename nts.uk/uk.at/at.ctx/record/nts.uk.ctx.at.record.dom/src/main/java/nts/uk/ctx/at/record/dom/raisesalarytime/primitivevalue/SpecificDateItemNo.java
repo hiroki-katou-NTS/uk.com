@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue;
 
-import java.math.BigDecimal;
-
-import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalMaxValue;
-import nts.arc.primitive.constraint.DecimalMinValue;
+import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.constraint.IntegerMaxValue;
+import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
  * 
@@ -12,13 +10,13 @@ import nts.arc.primitive.constraint.DecimalMinValue;
  * 外出枠NO
  *
  */
-@DecimalMinValue("1")
-@DecimalMaxValue("10")
-public class SpecificDateItemNo extends DecimalPrimitiveValue<SpecificDateItemNo> {
+@IntegerMinValue(1)
+@IntegerMaxValue(10)
+public class SpecificDateItemNo extends IntegerPrimitiveValue<SpecificDateItemNo> {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public SpecificDateItemNo(BigDecimal rawValue) {
+	public SpecificDateItemNo(Integer rawValue) {
 		super(rawValue);
 	}
 

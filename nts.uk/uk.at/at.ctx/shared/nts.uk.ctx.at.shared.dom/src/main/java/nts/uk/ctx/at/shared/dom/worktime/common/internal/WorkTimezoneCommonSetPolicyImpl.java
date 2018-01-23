@@ -39,7 +39,9 @@ public class WorkTimezoneCommonSetPolicyImpl implements WorkTimezoneCommonSetPol
 	@Override
 	public void validate(PredetemineTimeSetting predSet, WorkTimezoneCommonSet wtzCommon) {
 		// validate WorkTimezoneOtherSubHolTimeSet
-		this.wtzOtherPolicy.validate(predSet, wtzCommon.getSubHolTimeSet());
+		wtzCommon.getSubHolTimeSet().forEach(subHolTimeSet -> {
+			this.wtzOtherPolicy.validate(predSet, subHolTimeSet);
+		});		
 
 		// validate WorkTimezoneLateEarlySet
 		this.wtzLateEarlyPolicy.validate(predSet, wtzCommon.getLateEarlySet());

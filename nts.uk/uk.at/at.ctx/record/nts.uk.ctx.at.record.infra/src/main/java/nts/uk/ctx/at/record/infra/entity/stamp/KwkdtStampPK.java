@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 @Embeddable
 @AllArgsConstructor
@@ -27,6 +28,6 @@ public class KwkdtStampPK implements Serializable {
 
 	/* 年月日 */
 	@Column(name = "STAMP_DATE")
-	public GeneralDate stampDate;
+	public GeneralDateTime stampDate;
 
 }

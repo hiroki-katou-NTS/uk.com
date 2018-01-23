@@ -26,10 +26,10 @@ public interface GoOutTimezoneRoundingSetSetMemento {
 	
 	
 	/**
-	 * Sets the OT timezone.
+	 * Sets the ottimezone.
 	 *
-	 * @param OTTimezone the new OT timezone
+	 * @param ottimezone the new ottimezone
 	 */
-	void setOTTimezone(GoOutTypeRoundingSet OTTimezone);
+	void setOttimezone(GoOutTypeRoundingSet ottimezone);
 
 }

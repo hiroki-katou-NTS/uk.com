@@ -27,6 +27,20 @@ public class FlowWorkRestTimezone extends DomainObject{
 	private FlowRestTimezone flowRestTimezone;
 	
 	/**
+	 * Constructor
+	 * @param fixRestTime  The fix rest time
+	 * @param fixedRestTimezone The fixed rest timezone
+	 * @param flowRestTimezone The flow rest timezone
+	 */
+	public FlowWorkRestTimezone(boolean fixRestTime, TimezoneOfFixedRestTimeSet fixedRestTimezone,
+			FlowRestTimezone flowRestTimezone) {
+		super();
+		this.fixRestTime = fixRestTime;
+		this.fixedRestTimezone = fixedRestTimezone;
+		this.flowRestTimezone = flowRestTimezone;
+	}
+	
+	/**
 	 * Instantiates a new flow work rest timezone.
 	 *
 	 * @param memento the memento
@@ -47,5 +61,6 @@ public class FlowWorkRestTimezone extends DomainObject{
 		memento.setFixedRestTimezone(this.fixedRestTimezone);
 		memento.setFlowRestTimezone(this.flowRestTimezone);
 	}
+
 	
 }

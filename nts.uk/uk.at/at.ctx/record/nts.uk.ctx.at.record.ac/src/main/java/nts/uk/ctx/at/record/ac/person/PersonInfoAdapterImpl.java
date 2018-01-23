@@ -78,8 +78,15 @@ public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 	 */
 	@Override
 	public List<EmpBasicInfoImport> getListPersonInfo(List<String> listSid) {
+		List<EmpBasicInfoImport> data1 = new ArrayList<>();
+		if (listSid.isEmpty()) {
+			return data1;
+		}
 		List<EmployeeBasicInfoExport> data = syEmployeePub.findBySIds(listSid);
-		List<EmpBasicInfoImport> data1 = data.stream().map(c->coverEmpBasicInfoImport(c)).collect(Collectors.toList());
+		if(data.isEmpty()){
+			return data1;
+		}
+		data1 = data.stream().map(c->coverEmpBasicInfoImport(c)).collect(Collectors.toList());
 		List<String> listPid = data.stream().map(c->c.getPId()).collect(Collectors.toList());
 		List<PersonInfoImport> listPerson = this.getByListId(listPid);
 		for(EmpBasicInfoImport empBasicInfoImport:data1) {

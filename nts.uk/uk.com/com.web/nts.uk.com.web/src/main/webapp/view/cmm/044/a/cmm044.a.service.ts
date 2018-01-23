@@ -2,6 +2,7 @@ module cmm044.a.service {
     var paths: any = {
         findAgent: "workflow/agent/find",
         findAllAgent: "workflow/agent/find/",
+        findEmployeeName: "workflow/agent/findEmpName",
         deleteAgent: "workflow/agent/delete/",
         addAgent: "workflow/agent/add/",
         updateAgent: "workflow/agent/update/",
@@ -30,5 +31,9 @@ module cmm044.a.service {
 
     export function searchEmployeeByLogin(baseDate: Date): JQueryPromise<any> {
         return nts.uk.request.ajax('com', paths.searchEmployeeByLogin, baseDate);
+    }
+    
+     export function findEmployeeName(sId: String): JQueryPromise<any> {
+        return nts.uk.request.ajax('com', paths.findEmployeeName, sId);
     }
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -22,6 +23,21 @@ public class DailyServiceTypeControlFinder {
 				.getListDailyServiceTypeControl(new BusinessTypeCode(businessTypeCode), companyId);
 		return lstDailyServiceTypeControl.stream().map(c -> toDailyServiceTypeControlDto(c))
 				.collect(Collectors.toList());
+	}
+	
+	public DailyServiceTypeControlDto getDailyServiceTypeControl(String businessTypeCode,
+			int attendanceItemId) {
+		 Optional<DailyServiceTypeControl> dailyServiceTypeControlOptional = this.dailyServiceTypeControlRepository
+				.getDailyServiceTypeControl(new BusinessTypeCode(businessTypeCode), attendanceItemId);
+		 if(dailyServiceTypeControlOptional.isPresent()){
+			 DailyServiceTypeControl dailyServiceTypeControl = dailyServiceTypeControlOptional.get();
+				return new DailyServiceTypeControlDto(dailyServiceTypeControl.getAttendanceItemId(),
+						dailyServiceTypeControl.getAttendanceItemName(), dailyServiceTypeControl.getBusinessTypeCode().v(),
+						dailyServiceTypeControl.isUse(), dailyServiceTypeControl.isYouCanChangeIt(),
+						dailyServiceTypeControl.isCanBeChangedByOthers(),
+						dailyServiceTypeControl.getUserCanSet() == 1 ? true : false); 
+		 }
+		 return null;
 	}
 
 	private DailyServiceTypeControlDto toDailyServiceTypeControlDto(DailyServiceTypeControl dailyServiceTypeControl) {

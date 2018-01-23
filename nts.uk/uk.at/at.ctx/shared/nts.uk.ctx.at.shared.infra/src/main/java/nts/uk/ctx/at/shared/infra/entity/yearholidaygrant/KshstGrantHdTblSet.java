@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -53,6 +54,7 @@ public class KshstGrantHdTblSet extends UkJpaEntity {
 	public String yearHolidayNote;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantHdTblSet", orphanRemoval = true)
+	@OrderBy("kshstGrantConditionPK.conditionNo ASC")
 	public List<KshstGrantCondition> grantConditions;
 	
 	@Override

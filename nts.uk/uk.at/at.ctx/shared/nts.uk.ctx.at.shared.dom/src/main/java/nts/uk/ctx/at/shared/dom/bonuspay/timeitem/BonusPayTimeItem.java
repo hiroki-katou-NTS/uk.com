@@ -6,12 +6,9 @@ package nts.uk.ctx.at.shared.dom.bonuspay.timeitem;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.TimeItemTypeAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.TimeItemId;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.TimeItemName;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * @author hungnm

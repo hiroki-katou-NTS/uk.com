@@ -39,9 +39,9 @@ public class YearServicePerWebService extends WebService{
 	 * @return
 	 */
 	@POST
-	@Path("findAllPer")
-	public List<YearServicePerDto> finderPer(){
-		return this.finderPer.finder();
+	@Path("findAllPer/{specialHolidayCode}")
+	public List<YearServicePerDto> finderPer(@PathParam("specialHolidayCode") String specialHolidayCode){
+		return this.finderPer.finder(specialHolidayCode);
 	}
 	/**
 	 * get all data per set 

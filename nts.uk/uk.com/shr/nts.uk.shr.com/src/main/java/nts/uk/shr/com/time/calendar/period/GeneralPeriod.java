@@ -42,5 +42,9 @@ public abstract class GeneralPeriod<S extends GeneralPeriod<S, T>, T extends Com
 		return this.newSpan(this.start, this.max());
 	}
 	
+	public boolean isReversed() {
+		return this.start.compareTo(this.end) > 0;
+	}
+	
 	protected abstract T max();
 }

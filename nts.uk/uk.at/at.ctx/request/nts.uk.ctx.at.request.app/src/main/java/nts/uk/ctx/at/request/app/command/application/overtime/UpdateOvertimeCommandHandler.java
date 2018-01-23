@@ -9,18 +9,17 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
-import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -37,7 +36,7 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 	private DetailAfterUpdate detailAfterUpdate;
 	
 	@Inject
-	private ApplicationRepository applicationRepository;
+	private ApplicationRepository_New applicationRepository;
 	
 	@Override
 	protected List<String> handle(CommandHandlerContext<UpdateOvertimeCommand> context) {
@@ -60,25 +59,25 @@ public class UpdateOvertimeCommandHandler extends CommandHandlerWithResult<Updat
 		appOverTime.setOverTimeAtr(EnumAdaptor.valueOf(command.getOvertimeAtr(), OverTimeAtr.class));
 		appOverTime.setOverTimeInput(overTimeInputs);
 		appOverTime.setOverTimeShiftNight(command.getOverTimeShiftNight());
-		appOverTime.setSiftCode(new SiftCode(command.getSiftTypeCode()));
+		appOverTime.setSiftCode(new WorkTimeCode(command.getSiftTypeCode()));
 		appOverTime.setWorkClockFrom1(command.getWorkClockFrom1());
 		appOverTime.setWorkClockFrom2(command.getWorkClockFrom2());
 		appOverTime.setWorkClockTo1(command.getWorkClockTo1());
 		appOverTime.setWorkClockTo2(command.getWorkClockTo2());
 		appOverTime.setWorkTypeCode(new WorkTypeCode(command.getWorkTypeCode()));
-		appOverTime.getApplication().setApplicationReason(new AppReason(applicationReason));
+		appOverTime.getApplication().setAppReason(new AppReason(applicationReason));
 		appOverTime.setVersion(command.getVersion());
 		appOverTime.getApplication().setVersion(appOverTime.getVersion());
 		
 		detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
-				appOverTime.getApplication().getApplicantSID(), 
-				appOverTime.getApplication().getApplicationDate(), 
+				appOverTime.getApplication().getEmployeeID(), 
+				appOverTime.getApplication().getAppDate(), 
 				1, 
 				appOverTime.getAppID(), 
-				appOverTime.getApplication().getPrePostAtr());
+				appOverTime.getApplication().getPrePostAtr(), appOverTime.getVersion());
 		overtimeRepository.update(appOverTime);
-		applicationRepository.updateApplication(appOverTime.getApplication());
+		applicationRepository.updateWithVersion(appOverTime.getApplication());
 		return detailAfterUpdate.processAfterDetailScreenRegistration(appOverTime.getApplication());
 	}
 

@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.infra.repository.holidaysetting.employee;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
@@ -39,6 +38,7 @@ public class JpaEmployeeMonthDaySettingSetMemento implements EmployeeMonthDaySet
 				item.setKshmtEmployeeMonthDaySetPK(new KshmtEmployeeMonthDaySetPK());
 			}
 		});
+		this.listKshmtEmployeeMonthDaySet = entities;
 	}
 
 	/* (non-Javadoc)
@@ -70,17 +70,29 @@ public class JpaEmployeeMonthDaySettingSetMemento implements EmployeeMonthDaySet
 	 */
 	@Override
 	public void setPublicHolidayMonthSettings(List<PublicHolidayMonthSetting> publicHolidayMonthSettings) {
-		publicHolidayMonthSettings.stream().forEach(item -> {
-			KshmtEmployeeMonthDaySet entity = new KshmtEmployeeMonthDaySet();
-			entity.getKshmtEmployeeMonthDaySetPK().setCid(this.companyId);
-			entity.getKshmtEmployeeMonthDaySetPK().setSid(this.sId);
-			entity.getKshmtEmployeeMonthDaySetPK().setManageYear(this.year);
-			entity.getKshmtEmployeeMonthDaySetPK().setMonth(item.getMonth());
-			entity.setInLegalHd(new BigDecimal(item.getInLegalHoliday().v()));
-			entity.setOutLegalHd(new BigDecimal(item.getOutLegalHoliday().v()));
-			
-			this.listKshmtEmployeeMonthDaySet.add(entity);
-		});
+		if(this.listKshmtEmployeeMonthDaySet.isEmpty()){
+			publicHolidayMonthSettings.stream().forEach(item -> {
+				KshmtEmployeeMonthDaySet entity = new KshmtEmployeeMonthDaySet();
+				entity.setKshmtEmployeeMonthDaySetPK(new KshmtEmployeeMonthDaySetPK());
+				entity.getKshmtEmployeeMonthDaySetPK().setCid(this.companyId);
+				entity.getKshmtEmployeeMonthDaySetPK().setSid(this.sId);
+				entity.getKshmtEmployeeMonthDaySetPK().setManageYear(this.year);
+				entity.getKshmtEmployeeMonthDaySetPK().setMonth(item.getMonth());
+				entity.setInLegalHd(item.getInLegalHoliday().v());
+				
+				this.listKshmtEmployeeMonthDaySet.add(entity);
+			});
+		} else {
+			this.listKshmtEmployeeMonthDaySet.stream().forEach(e -> {
+				e.getKshmtEmployeeMonthDaySetPK().setCid(this.companyId);
+				e.getKshmtEmployeeMonthDaySetPK().setManageYear(this.year);
+				e.getKshmtEmployeeMonthDaySetPK().setMonth(publicHolidayMonthSettings.stream()
+														.filter(item -> e.getKshmtEmployeeMonthDaySetPK().getMonth() == item.getMonth())
+																	.findFirst().get().getMonth());
+				e.setInLegalHd(publicHolidayMonthSettings.stream()
+						.filter(item -> e.getKshmtEmployeeMonthDaySetPK().getMonth() == item.getMonth())
+									.findAny().get().getInLegalHoliday().v());
+			});
+		}
 	}
-	
 }

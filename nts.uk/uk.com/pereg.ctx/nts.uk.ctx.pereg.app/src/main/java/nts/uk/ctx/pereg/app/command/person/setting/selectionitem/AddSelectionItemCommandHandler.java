@@ -18,7 +18,6 @@ import nts.uk.ctx.pereg.dom.person.setting.selectionitem.IPerInfoSelectionItemRe
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.SelectionItemClassification;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -47,10 +46,13 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 			throw new BusinessException(new RawErrorMessage("Msg_513"));
 		}
 
+		//Checked -> person -> 0
+		//Uncheck -> employee -> 1
+		int isSelect = command.isSelectionItemClassification() == true ? 0 : 1;
+		
 		// ドメインモデル「個人情報の選択項目」を追加登録する
 		PerInfoSelectionItem domain = PerInfoSelectionItem.createFromJavaType(newId, command.getSelectionItemName(),
-				command.getMemo(), SelectionItemClassification.EmployeeInformation.value,
-				AppContexts.user().contractCode(), command.getIntegrationCode(),
+				command.getMemo(), isSelect, AppContexts.user().contractCode(), command.getIntegrationCode(),
 				command.getFormatSelection().getSelectionCode(),
 				command.getFormatSelection().isSelectionCodeCharacter() == true ? 1 : 0,
 				command.getFormatSelection().getSelectionName(),

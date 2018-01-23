@@ -67,4 +67,12 @@ public enum WorkTimeDailyAtr {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * フレックス勤務か判定
+	 * @return　フレックス勤務である
+	 */
+	public boolean isFlex() {
+		return FLEX_WORK.equals(this);
+	}
 }

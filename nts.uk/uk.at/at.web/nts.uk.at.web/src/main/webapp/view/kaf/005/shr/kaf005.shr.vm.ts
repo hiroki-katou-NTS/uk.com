@@ -178,7 +178,6 @@ module nts.uk.at.view.kaf005.share {
             prePostAtr: number;
             applicantSID: string;
             applicationReason: string;
-            appApprovalPhaseCmds: Array<any>;
             workType: string;
             siftType: string;
             workClockFrom1: number;
@@ -245,6 +244,7 @@ module nts.uk.at.view.kaf005.share {
             preAppTime: KnockoutObservable<string>;
             caculationTime: KnockoutObservable<string>;
             nameID: KnockoutObservable<string>;
+            itemName: string;
             constructor(
                 companyID: string,
                 appID: string,
@@ -268,6 +268,7 @@ module nts.uk.at.view.kaf005.share {
                 this.preAppTime = ko.observable(preAppTime);
                 this.caculationTime = ko.observable(caculationTime);
                 this.nameID = ko.observable(nameID);
+                this.itemName = nts.uk.resource.getText("KAF005_85",[frameName]);
             }
         }  
 		export class overtimeWork {
@@ -322,6 +323,40 @@ module nts.uk.at.view.kaf005.share {
                 this.nameID = ko.observable(nameID);
             }
         }
-
+        /**
+         * 勤務内容
+         */
+         export class WorkContent{
+             //申請日
+             applicationDate: string;
+             //勤務種類
+             workType: string;
+             //就業時間帯
+             siftType: string;
+             //勤務時間
+             workClockFrom1: number;
+             workClockTo1: number;
+             workClockFrom2: number;
+             workClockTo2: number;
+             //休憩時間
+             breakTimes: Array<any>;
+            constructor(
+                applicationDate: string,
+                workType: string,
+                siftType: string,
+                workClockFrom1: number,
+                workClockTo1: number,
+                workClockFrom2: number,
+                workClockTo2: number,
+                breakTimes: Array<any>) {
+                this.applicationDate = applicationDate;
+                this.workType = workType;
+                this.breakTimes = breakTimes;
+                this.workClockFrom1 = workClockFrom1;
+                this.workClockTo1 = workClockTo1;
+                this.workClockFrom2 = workClockFrom2;
+                this.workClockTo2 = workClockTo2;
+            }
+        }
     }
 }

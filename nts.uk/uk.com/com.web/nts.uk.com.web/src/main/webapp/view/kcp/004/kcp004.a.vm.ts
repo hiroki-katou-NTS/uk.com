@@ -4,6 +4,8 @@ module kcp004.a.viewmodel {
     import TreeType = kcp.share.tree.TreeType;
     import SelectType = kcp.share.tree.SelectionType;
     import UnitAlreadySettingModel = kcp.share.tree.UnitAlreadySettingModel; 
+    import SystemType = kcp.share.tree.SystemType;
+    
     
     export class ScreenModel {
         
@@ -14,11 +16,16 @@ module kcp004.a.viewmodel {
         listSelectionType: KnockoutObservableArray<any>;
         selectedSelectionType: KnockoutObservable<number>;
         
+        isMultipleUse: KnockoutObservable<boolean>;
         isMultipleTreeGrid: KnockoutObservable<boolean>;
         isShowAlreadySet: KnockoutObservable<boolean>;
         isDialog: KnockoutObservable<boolean>;
         isShowSelectButton: KnockoutObservable<boolean>;
         enableShowSelectButton: KnockoutObservable<boolean>;
+        
+        
+        listSystemType: KnockoutObservableArray<any>;
+        selectedSystemType: KnockoutObservable<number>;
         
         // Control component
         selectedWorkplaceId: KnockoutObservable<string>;
@@ -36,9 +43,11 @@ module kcp004.a.viewmodel {
             let self = this;
             
             // Control common
+            self.isMultipleUse =  ko.observable(false);
+            
             self.listTreeType = ko.observableArray([
-                {code : 0, name: 'Single tree grid'},
-                {code : 1, name: 'Multiple tree grid'}
+                {code : 0, name: 'Single tree select grid'},
+                {code : 1, name: 'Multiple tree select grid'}
             ]);
             self.selectedTreeType = ko.observable(1);
             self.isMultipleTreeGrid = ko.computed(function () {
@@ -64,9 +73,20 @@ module kcp004.a.viewmodel {
             ]);
             self.selectedSelectionType = ko.observable(3);
             
+            
+            self.listSystemType = ko.observableArray([
+                {code : 1, name: '個人情報', enable: self.enable},
+                {code : 2, name: '就業', enable: self.enable},
+                {code : 3, name: '給与', enable: self.enable},
+                {code : 4, name: '人事', enable: self.enable},
+                {code : 5, name: '管理者', enable: self.enable}
+            ]);
+            self.selectedSystemType = ko.observable(5);
+                                      
             self.alreadySettingList = ko.observableArray([]);
             self.treeGrid = {
                 isShowAlreadySet: self.isShowAlreadySet(),
+                isMultipleUse: self.isMultipleUse(),
                 isMultiSelect: self.isMultipleTreeGrid(),
                 treeType: TreeType.WORK_PLACE,
                 selectedWorkplaceId: self.getSelectedWorkplaceId(),
@@ -74,7 +94,9 @@ module kcp004.a.viewmodel {
                 selectType: self.selectedSelectionType(), 
                 isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
-                alreadySettingList: self.alreadySettingList
+                alreadySettingList: self.alreadySettingList,
+                systemType : self.selectedSystemType()
+                
             };
             
             self.jsonData = ko.observable('');
@@ -82,6 +104,12 @@ module kcp004.a.viewmodel {
             self.isBindingTreeGrid = ko.observable(false);
             
             // Subscribe
+            self.isMultipleUse.subscribe(function(code) {
+                self.resetSelectedWorkplace();
+                self.reloadTreeGrid().done(() => {
+                    self.getSelectedData();
+                });
+            });
             self.selectedTreeType.subscribe(function(code) {
                 // single tree grid
                 if (code == 0 && self.selectedSelectionType() == 2) {
@@ -92,6 +120,8 @@ module kcp004.a.viewmodel {
                     self.getSelectedData();
                 });
             });
+                          
+                 
             self.isDialog.subscribe(function(value) {
                 self.reloadTreeGrid();
             });
@@ -106,13 +136,30 @@ module kcp004.a.viewmodel {
             });
             self.selectedSelectionType.subscribe((code) => {
                 if (code == 1) {
+                       self.selectedWorkplaceId();
+                       self.multiSelectedWorkplaceId();
+                }                
+                                
+                if (code == 4) {
                     self.resetSelectedWorkplace();
                 }
-
+                
                 self.reloadTreeGrid().done(function() {
                     self.getSelectedData();
                 });
             });
+            
+            self.selectedSystemType.subscribe((code) => {
+                // check in case NoSelect button active
+                if (self.selectedSelectionType() == 4) {
+                    self.resetSelectedWorkplace();
+                }
+                self.reloadTreeGrid().done(function() {
+                    self.getSelectedData();
+                });
+            });
+            
+                                          
             self.selectedWorkplaceId.subscribe(() => {
                 self.getSelectedData();
             });
@@ -178,6 +225,7 @@ module kcp004.a.viewmodel {
             let self = this;
             self.treeGrid = {
                 isShowAlreadySet: self.isShowAlreadySet(),
+                isMultipleUse: self.isMultipleUse(),
                 isMultiSelect: self.isMultipleTreeGrid(),
                 treeType: TreeType.WORK_PLACE,
                 selectedWorkplaceId: self.getSelectedWorkplaceId(),
@@ -185,7 +233,8 @@ module kcp004.a.viewmodel {
                 selectType: self.selectedSelectionType(),
                 isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
-                alreadySettingList: self.alreadySettingList
+                alreadySettingList: self.alreadySettingList,
+                systemType: self.selectedSystemType()
             };
         }
         

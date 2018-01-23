@@ -11,12 +11,12 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
  * 01_初期データ取得
@@ -88,7 +88,7 @@ public interface IOvertimePreProcess {
 	 * @return
 	 */
 	
-	public AppOverTime getPreApplication(String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate, int prePostAtr);
+	public AppOverTime getPreApplication(String companyID, String employeeId, Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet,String appDate, int prePostAtr);
 	
 	/**
 	 * 01-10_0時跨ぎチェック
@@ -112,20 +112,20 @@ public interface IOvertimePreProcess {
 	 * @param appDate
 	 * @param requestAppDetailSetting
 	 */
-	public RecordWorkOutput getWorkingHours(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting, String siftCD);
+	public RecordWorkOutput getWorkingHours(String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD);
 	/**
 	 *  01-17_休憩時間取得
 	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public boolean getRestTime(RequestAppDetailSetting requestAppDetailSetting);
+	public boolean getRestTime(ApprovalFunctionSetting approvalFunctionSetting);
 	
 	/**
 	 * 01-18_実績の内容を表示し直す
 	 * @param prePostAtr
 	 * @return
 	 */
-	public AppOvertimeReference getResultContentActual(int prePostAtr,String siftCode,String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting,List<CaculationTime> overtimeHours);
+	public AppOvertimeReference getResultContentActual(int prePostAtr,String siftCode,String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting,List<CaculationTime> overtimeHours);
 	
 	/**
 	 * @param employeeID
@@ -141,5 +141,5 @@ public interface IOvertimePreProcess {
 	 * @param workTimeSet
 	 * @return
 	 */
-	public boolean checkTimeDay(String appDate, WorkTimeSet workTimeSet);
+	public boolean checkTimeDay(String appDate, PredetemineTimeSetting workTimeSet);
 }

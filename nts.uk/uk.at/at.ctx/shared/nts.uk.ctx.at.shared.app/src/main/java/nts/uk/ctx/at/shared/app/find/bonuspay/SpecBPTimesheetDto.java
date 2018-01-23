@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.app.find.bonuspay;
 
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Value;
 @AllArgsConstructor
@@ -11,7 +9,7 @@ public class SpecBPTimesheetDto {
 	public int timeSheetNO;
 	public int useAtr;
 	public String bonusPaySettingCode;
-	public String timeItemId;
+	public int timeItemID;
 	public int startTime;
 	public int endTime;
 	public int roundingTimeAtr;

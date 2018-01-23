@@ -7,7 +7,6 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<title>#{i18n.getText('CPS007_2')}</title>
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 580,
@@ -39,6 +38,7 @@
 						height: 300,
 						dataSource: allItems,
 						primaryKey: 'id',
+						placeHolder: '名称で検索・・・',
 						columns: ko.observableArray([{ headerText: 'コード', key: 'id', width: 0, hidden: true },{ headerText: '#{i18n.getText('CPS007_14')}', key: 'itemName', width: 150 }]),
 						value: chooseItems,
 						searchCriterion: ['itemName'],

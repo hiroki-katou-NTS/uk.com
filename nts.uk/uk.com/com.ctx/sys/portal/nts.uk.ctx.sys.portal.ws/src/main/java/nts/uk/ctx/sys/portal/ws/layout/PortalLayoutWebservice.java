@@ -32,8 +32,8 @@ public class PortalLayoutWebservice {
 
 	@POST
 	@Path("registry")
-	public JavaTypeResult<String>  registryLayoutSetting(RegistryPortalLayoutCommand command) {
-		return new JavaTypeResult<String>(registryPortalLayoutCommandHandler.handle(command));
+	public String registryLayoutSetting(RegistryPortalLayoutCommand command) {
+		return registryPortalLayoutCommandHandler.handle(command);
 	}
 
 }

@@ -35,7 +35,12 @@ module nts.uk.pr.view.ccg007.d {
                                 self.openContractAuthDialog();
                             }
                             else {
-                                self.getEmployeeLoginSetting(data.contractCode);
+                                if (data) {
+                                    self.getEmployeeLoginSetting(data.contractCode);
+                                }
+                                else {
+                                    nts.uk.request.jump("/view/ccg/007/b/index.xhtml");
+                                }
                             }
                             dfd.resolve();
                         }
@@ -112,6 +117,7 @@ module nts.uk.pr.view.ccg007.d {
                 submitData.contractPassword = _.escape(self.contractPassword());
                 blockUI.invisible();
                 service.submitLogin(submitData).done(function() {
+                    nts.uk.request.login.keepUsedLoginPage();
                     nts.uk.characteristics.remove("form3LoginInfo").done(function() {
                         if (self.isSaveLoginInfo()) {
                             nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {

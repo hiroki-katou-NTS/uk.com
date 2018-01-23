@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition>
+		<div class="sidebar-content-header">
+			<!-- B1_1 -->
+   			<button tabindex="1" data-bind="click: saveWorkpalce, attr : {'disabled' : multiSelectedWorkplaceId().length == 0 ? true : false}">#{i18n.getText('KMF002_2')}</button>
+   			<!-- B1_2 -->
+   			<button tabindex="2" data-bind="click: removeWorkplace, attr : {'disabled' : multiSelectedWorkplaceId().length == 0 ? true : false}">#{i18n.getText('KMF002_11')}</button>
+		</div>
+		
+		<div id="scrB" class="contents-area">
+			<div id="tree-grid"></div>
+			<div id="includeTableMonthlyDay" data-bind="with: commonTableMonthDaySet">
+				<ui:include src="../base.xhtml"/>
+			</div>
+		</div>
+	</ui:composition>
+</body>
+</html>

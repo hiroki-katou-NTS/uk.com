@@ -21,7 +21,6 @@ import nts.uk.ctx.bs.employee.app.find.holidaysetting.company.CompanyMonthDaySet
 @Path("bs/employee/holidaysetting/company")
 @Produces(MediaType.APPLICATION_JSON)
 public class CompanyMonthDaySettingWebService extends WebService {
-	
 	/** The finder. */
 	@Inject
 	private CompanyMonthDaySettingFinder finder;

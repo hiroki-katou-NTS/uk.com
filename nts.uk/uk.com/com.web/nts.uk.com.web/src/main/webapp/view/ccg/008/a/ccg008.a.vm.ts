@@ -46,7 +46,8 @@
                 //console.log(data);
                 self.dataSource(data);
                 if(data.topPage!=null && data.topPage.standardMenuUrl!=null){//hien thi standardmenu
-                    location.href = data.topPage.standardMenuUrl;
+                    var res = "/" + data.topPage.standardMenuUrl.split("web/")[1];
+                    nts.uk.request.jump(res);
                 }
                 if(data.checkMyPage == false ){//k hien thi my page
                     self.visibleMyPage(false);
@@ -92,7 +93,7 @@
             
             if(data.flowMenu != null){
                 _.map(data.flowMenu, (items) => {
-                    var html = '<img style="width:'+ ((items.widthSize * 150)-13) +'px;height:'+ ((items.heightSize * 150)-50) +'px" src="'+ nts.uk.request.liveView(items.fileID) +'"/>';
+                    var html = '<iframe style="width:'+ ((items.widthSize * 150)-13) +'px;height:'+ ((items.heightSize * 150)-50) +'px" src="'+ nts.uk.request.liveView(items.fileID) +'"/>';
                     listPlacement.push( new model.Placement(items.fileID, items.topPageName,
                     items.row, items.column,
                     items.widthSize, items.heightSize, null,

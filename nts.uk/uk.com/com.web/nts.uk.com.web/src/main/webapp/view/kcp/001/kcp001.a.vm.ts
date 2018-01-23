@@ -27,6 +27,10 @@ module kcp001.a.viewmodel {
         selectedOption: KnockoutObservable<number>;
         jsonData: KnockoutObservable<string>;
         selectedItems: KnockoutObservable<any>;
+        isDisplayClosureSelection: KnockoutObservable<boolean>;
+        isDisplayFullClosureOption: KnockoutObservable<boolean>;
+        closureSelectionType: KnockoutObservable<number>;
+        selectClosureTypeList: KnockoutObservableArray<any>;
 
         constructor() {
             var self = this;
@@ -36,7 +40,13 @@ module kcp001.a.viewmodel {
             self.isAlreadySetting.subscribe(function() {
                 self.reloadComponent();
             });
-
+            
+             self.selectClosureTypeList = ko.observableArray([
+                { code: 1, name: 'Select Full Closure option' },
+                { code: 2, name: 'Select by selected closure code'},
+                { code: 3, name: 'Nothing (Select first option)' },
+            ]);
+            
             self.isDialog = ko.observable(false);
             self.isDialog.subscribe(function(value: boolean) {
                 self.reloadComponent();
@@ -46,6 +56,30 @@ module kcp001.a.viewmodel {
             self.isShowNoSelectionItem.subscribe(function(data: boolean) {
                 self.reloadComponent();
             });
+            
+            self.isDisplayClosureSelection = ko.observable(false);
+            self.isDisplayClosureSelection.subscribe(function(val) {
+                self.reloadComponent();
+            })
+            
+            self.isDisplayFullClosureOption = ko.observable(false);
+            self.isDisplayFullClosureOption.subscribe(val => {
+                if (val == true && !self.isDisplayClosureSelection()) {
+                    alert("You can display Full Closure option while not display Closure Selection!");
+                    self.isDisplayFullClosureOption(false);
+                }
+                self.reloadComponent();
+            });
+            
+            self.closureSelectionType = ko.observable(1);
+            self.closureSelectionType.subscribe(val => {
+                if (val == 1 && !self.isDisplayFullClosureOption()) {
+                    alert("Can not select Full Closure option when not display it!");
+                    self.closureSelectionType(2);
+                    return;
+                }
+                self.reloadComponent();
+            })
 
             self.multiBySelectedCode = ko.observableArray([]);
             self.multiSelectedCode = ko.observableArray([]);
@@ -93,7 +127,11 @@ module kcp001.a.viewmodel {
                 isDialog: self.isDialog(),
                 isShowNoSelectRow: self.isShowNoSelectionItem(),
                 alreadySettingList: self.alreadySettingList,
-                maxRows: 12, 
+                maxRows: 12,
+                isDisplayClosureSelection: self.isDisplayClosureSelection(),
+                isDisplayFullClosureOption: self.isDisplayFullClosureOption(),
+                closureSelectionType: self.closureSelectionType(),
+                selectedClosureId: ko.observable(null)
             };
 
             self.selectionTypeList = ko.observableArray([
@@ -244,6 +282,9 @@ module kcp001.a.viewmodel {
             self.listComponentOption.alreadySettingList = self.alreadySettingList;
             self.listComponentOption.isMultiSelect = self.isMultiSelect();
             self.listComponentOption.selectType = self.selectedType();
+            self.listComponentOption.isDisplayClosureSelection = self.isDisplayClosureSelection();
+            self.listComponentOption.isDisplayFullClosureOption = self.isDisplayFullClosureOption();
+            self.listComponentOption.closureSelectionType = self.closureSelectionType();
             $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function () {
                 $('#empt-list-setting').focusComponent();
             });

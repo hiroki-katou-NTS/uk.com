@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.employment;
@@ -28,4 +28,11 @@ public interface EmploymentFinder {
 	 */
 	List<EmploymentDto> findAll();
 	
+	/**
+	 * Find by codes.
+	 *
+	 * @param code the code
+	 * @return the list
+	 */
+	List<EmploymentDto> findByCodes(List<String> empCodes);
 }

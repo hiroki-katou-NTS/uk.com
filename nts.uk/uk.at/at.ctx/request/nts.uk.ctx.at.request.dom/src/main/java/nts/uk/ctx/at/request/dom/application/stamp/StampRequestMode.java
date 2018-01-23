@@ -20,7 +20,7 @@ public enum StampRequestMode {
 	/**
 	 * 出退勤漏れ
 	 */
-	STAMP_ADDITIONAL(1,"出退勤漏れ"),
+	STAMP_WORK(1,"出退勤漏れ"),
 	
 	/**
 	 * 打刻取消

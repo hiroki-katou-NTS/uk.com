@@ -14,7 +14,7 @@ module nts.uk.at.view.kdw002.c {
                 self.bussinessCodeItems = ko.observableArray([]);
 
                 this.bussinessColumn = ko.observableArray([
-                    { headerText: 'ID', key: 'roleId', width: 100, hidden: true  },
+                    { headerText: 'ID', key: 'roleId', width: 100, hidden: true },
                     { headerText: getText('KDW002_12'), key: 'roleCode', width: 100 },
                     { headerText: getText('KDW002_4'), key: 'roleName', width: 150, formatter: _.escape },
                 ]);
@@ -38,14 +38,18 @@ module nts.uk.at.view.kdw002.c {
                                 var l = filteredData.length;
                                 for (i = 0; i < l; i++) {
                                     if (!filteredData[i].userCanSet || !filteredData[i].use) {
-                                        var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
-                                        var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
-                                        cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
-                                        cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
-
                                         if (!filteredData[i].userCanSet) {
                                             $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", false);
                                         }
+                                        var rowId = filteredData[i].attendanceItemId;
+                                        var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
+                                        var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
+                                        cellYouCanChangeIt.addClass('readOnlyColorIsUse');
+                                        cellCanBeChangedByOthers.addClass('readOnlyColorIsUse');
+                                        cellYouCanChangeIt.children().prop("disabled", true);
+                                        cellCanBeChangedByOthers.children().prop("disabled", true);
+
+
                                     }
                                 }
                             }
@@ -63,7 +67,7 @@ module nts.uk.at.view.kdw002.c {
                             bussinessCodeItems.push(new BusinessType(empRole));
                             //   self.bussinessCodeItems.push(new BusinessType(businessType));
                         });
-                        var bTypes = _.sortBy(bussinessCodeItems, 'roleId');
+                        var bTypes = _.sortBy(bussinessCodeItems, 'roleCode');
                         self.bussinessCodeItems(bTypes);
                         var businessTypeCode = bTypes[0].roleId;
                         self.currentRoleId(businessTypeCode);
@@ -71,7 +75,7 @@ module nts.uk.at.view.kdw002.c {
                 });
                 self.txtSearch = ko.observable("");
             }
-
+            /*
             copy(): void {
                 var self = this;
                 var bussinessCodeItems = self.bussinessCodeItems();
@@ -83,6 +87,7 @@ module nts.uk.at.view.kdw002.c {
                 }
                 nts.uk.ui.windows.setShared("KDW002_B_AUTHORITYTYPE", data);
             }
+            */
 
 
             startPage(): JQueryPromise<any> {
@@ -228,9 +233,16 @@ function useChanged(element, rowId) {
 
         cellYouCanChangeIt.addClass('readOnlyColorIsUse');
         cellCanBeChangedByOthers.addClass('readOnlyColorIsUse');
+        cellYouCanChangeIt.children().prop("disabled", true);
+        cellCanBeChangedByOthers.children().prop("disabled", true);
     } else if (value != true && $("#grid").igGrid("getCellValue", rowId, "userCanSet")) {
         cellYouCanChangeIt.removeClass('readOnlyColorIsUse');
         cellCanBeChangedByOthers.removeClass('readOnlyColorIsUse');
+        cellYouCanChangeIt.children().prop("disabled", false);
+        cellCanBeChangedByOthers.children().prop("disabled", false);
+    } else {
+        cellYouCanChangeIt.children().prop("disabled", true);
+        cellCanBeChangedByOthers.children().prop("disabled", true);
     }
 }
 
@@ -266,16 +278,21 @@ function useHeaderChanged(element) {
         var l = filteredData.length;
         for (i = 0; i < l; i++) {
             $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "use", true);
+            var rowId = filteredData[i].attendanceItemId;
+            var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
+            var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
             if (filteredData[i].userCanSet) {
-                var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
-                var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
-                if (cellYouCanChangeIt.classList.contains('readOnlyColorIsUse')) {
-                    cellYouCanChangeIt.classList.remove('readOnlyColorIsUse');
+                if (cellYouCanChangeIt.hasClass('readOnlyColorIsUse')) {
+                    cellYouCanChangeIt.removeClass('readOnlyColorIsUse');
                 }
-
-                if (cellCanBeChangedByOthers.classList.contains('readOnlyColorIsUse')) {
-                    cellCanBeChangedByOthers.classList.remove('readOnlyColorIsUse');
+                if (cellCanBeChangedByOthers.hasClass('readOnlyColorIsUse')) {
+                    cellCanBeChangedByOthers.removeClass('readOnlyColorIsUse');
                 }
+                cellYouCanChangeIt.children().prop("disabled", false);
+                cellCanBeChangedByOthers.children().prop("disabled", false);
+            } else {
+                cellYouCanChangeIt.children().prop("disabled", true);
+                cellCanBeChangedByOthers.children().prop("disabled", true);
             }
         }
 
@@ -284,16 +301,21 @@ function useHeaderChanged(element) {
         var l = filteredData.length;
         for (i = 0; i < l; i++) {
             $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "use", false);
+            var rowId = filteredData[i].attendanceItemId;
+            var cellYouCanChangeIt = $("#grid").igGrid("cellById", rowId, "youCanChangeIt");
+            var cellCanBeChangedByOthers = $("#grid").igGrid("cellById", rowId, "canBeChangedByOthers");
             if (filteredData[i].userCanSet) {
-                var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
-                var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
-                if (!cellYouCanChangeIt.classList.contains('readOnlyColorIsUse')) {
-                    cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
+                if (!cellYouCanChangeIt.hasClass('readOnlyColorIsUse')) {
+                    cellYouCanChangeIt.addClass('readOnlyColorIsUse');
                 }
-
-                if (!cellCanBeChangedByOthers.classList.contains('readOnlyColorIsUse')) {
-                    cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
+                if (!cellCanBeChangedByOthers.hasClass('readOnlyColorIsUse')) {
+                    cellCanBeChangedByOthers.addClass('readOnlyColorIsUse');
                 }
+                cellYouCanChangeIt.children().prop("disabled", true);
+                cellCanBeChangedByOthers.children().prop("disabled", true);
+            } else {
+                cellYouCanChangeIt.children().prop("disabled", true);
+                cellCanBeChangedByOthers.children().prop("disabled", true);
             }
         }
 
@@ -369,11 +391,11 @@ function loadIgrid() {
         // virtualizationMode: "continuous",
         virtualizationMode: "fixed",
         columns: [
-            { key: "attendanceItemId", width: "100px", headerText: nts.uk.resource.getText('KDW002_3'), dataType: "number" },
+            { key: "attendanceItemId", width: "50px", headerText: nts.uk.resource.getText('KDW002_3'), dataType: "number" },
             { key: "attendanceItemName", width: "250px", headerText: nts.uk.resource.getText('KDW002_4'), dataType: "string" },
             { key: "use", width: "100px", headerText: useHeader + nts.uk.resource.getText('KDW002_5'), dataType: "bool", template: useTemplate },
             { key: "youCanChangeIt", width: "120px", headerText: youCanChangeItHeader + nts.uk.resource.getText('KDW002_6'), dataType: "bool", template: youCanChangeItTemplate },
-            { key: "canBeChangedByOthers", width: "120px", headerText: canBeChangedByOthersHeader + nts.uk.resource.getText('KDW002_7'), dataType: "bool", template: canBeChangedByOthersTemplate },
+            { key: "canBeChangedByOthers", width: "145px", headerText: canBeChangedByOthersHeader + nts.uk.resource.getText('KDW002_7'), dataType: "bool", template: canBeChangedByOthersTemplate },
             { key: "userCanSet", dataType: "bool", hidden: true }
         ],
         features: [

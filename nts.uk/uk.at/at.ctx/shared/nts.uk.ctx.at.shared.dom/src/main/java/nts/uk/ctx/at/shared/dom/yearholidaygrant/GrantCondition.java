@@ -25,14 +25,16 @@ public class GrantCondition {
 	
 	/* 条件利用区分 */
 	private UseConditionAtr useConditionAtr;
+	
+	private boolean hadSet;
 
 	public GrantCondition(String companyId, YearHolidayCode yearHolidayCode, int conditionNo, ConditionValue conditionValue,
-			UseConditionAtr useConditionAtr) {
-		
+			UseConditionAtr useConditionAtr, boolean hadSet) {
 		this.companyId = companyId;
 		this.yearHolidayCode = yearHolidayCode;
 		this.conditionNo = conditionNo;
 		this.conditionValue = conditionValue;
 		this.useConditionAtr = useConditionAtr;
+		this.hadSet = hadSet;
 	}	
 }

@@ -10,14 +10,13 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class SpecBPTimesheetUpdateCommandHandler extends CommandHandler<List<SpecBPTimesheetUpdateCommand>> {
 	@Inject
-	private SpecBPTimesheetRepository specBPTimesheetRepository;
+	private nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository specBPTimesheetRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<List<SpecBPTimesheetUpdateCommand>> context) {
@@ -45,7 +44,7 @@ public class SpecBPTimesheetUpdateCommandHandler extends CommandHandler<List<Spe
 	private SpecBonusPayTimesheet toSpecBonusPayTimesheetDomain(
 			SpecBPTimesheetUpdateCommand specBPTimesheetUpdateCommand) {
 		return SpecBonusPayTimesheet.createFromJavaType(specBPTimesheetUpdateCommand.timeSheetNO,
-				specBPTimesheetUpdateCommand.useAtr, specBPTimesheetUpdateCommand.timeItemId,
+				specBPTimesheetUpdateCommand.useAtr, specBPTimesheetUpdateCommand.timeItemID,
 				specBPTimesheetUpdateCommand.startTime,
 				specBPTimesheetUpdateCommand.endTime, specBPTimesheetUpdateCommand.roundingTimeAtr,
 				specBPTimesheetUpdateCommand.roundingAtr, specBPTimesheetUpdateCommand.specialDateItemNO);

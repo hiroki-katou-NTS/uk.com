@@ -1,20 +1,13 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.scoped.session.SessionContextProvider;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.PrelaunchAppSetting;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
-import nts.uk.ctx.at.request.dom.application.common.service.other.DataAppPhaseFrame;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.OutputAllDataApp;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -22,12 +15,8 @@ import nts.uk.shr.com.context.AppContexts;
 /** 詳細画面起動前申請共通設定を取得する */
 public class BeforeAppCommonSettingImpl implements BeforeAppCommonSetting {
 
-	/** 15.詳細画面申請データを取得する */
-	@Inject
-	DataAppPhaseFrame getAllDataAppPhaseFrame;
-	
 	 @Inject
-	 ApplicationRepository appRepo;
+	 ApplicationRepository_New appRepo;
 	                  
 
 	/** 1-1.新規画面起動前申請共通設定を取得する */
@@ -38,16 +27,9 @@ public class BeforeAppCommonSettingImpl implements BeforeAppCommonSetting {
 	public PrelaunchAppSetting getPrelaunchAppSetting(String appID) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		
-		OutputAllDataApp outputAllDataApp = getAllDataAppPhaseFrame.getAllDataAppPhaseFrame(appID );
-		Application app = appRepo.getAppById(companyID, appID).get();
-		
-	
-		
-		Optional<Application> applicationInfo = getAllDataAppPhaseFrame.getAllDataAppPhaseFrame(appID).getApplication();
-		Application appInfor = applicationInfo.get();
+		Application_New app = appRepo.findByID(companyID, appID).get();
 		// TODO: Tra Application Setting tu 1-1
-		ApplicationSetting appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, app.getApplicationType(),appInfor.getApplicationDate()).applicationSetting;
+		ApplicationSetting appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, app.getAppType(),app.getAppDate()).applicationSetting;
 		GeneralDate cacheDate = SessionContextProvider.get().get("baseDate");
 		return new PrelaunchAppSetting(appCommonSetting, cacheDate);
 	}

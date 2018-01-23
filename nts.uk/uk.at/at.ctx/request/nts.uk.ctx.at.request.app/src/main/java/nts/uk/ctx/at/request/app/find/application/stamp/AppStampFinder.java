@@ -14,10 +14,11 @@ import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampSetDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
+import nts.uk.ctx.at.request.app.find.setting.company.request.stamp.dto.StampRequestSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingDto;
-import nts.uk.ctx.at.request.app.find.setting.stamp.dto.StampRequestSettingDto;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDefaultImpl;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
@@ -33,9 +34,6 @@ public class AppStampFinder {
 	
 	@Inject
 	private AppStampNewDomainService appStampNewDomainService;
-	
-	@Inject
-	private AppStampRepository appStampRepository;
 	
 	@Inject 
 	private AppStampCommonDomainService appStampCommonDomainService;
@@ -55,23 +53,23 @@ public class AppStampFinder {
 		appStampNewPreDto.appStampSetDto = new AppStampSetDto(
 				new StampRequestSettingDto(
 						companyID, 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopComment(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopCommentFontColor(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopCommentFontWeight(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomComment(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomCommentFontColor(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomCommentFontWeight(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getResultDisp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getSupFrameDispNO(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampPlaceDisp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampAtr_Work_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampAtr_GoOut_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampAtr_Care_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampAtr_Sup_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampGoOutAtr_Private_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampGoOutAtr_Public_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampGoOutAtr_Compensation_Disp(), 
-						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampGoOutAtr_Union_Disp()),  
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopComment().getComment().v(), 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopComment().getFontColor(), 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getTopComment().getFontWeight(), 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomComment().getComment().v(), 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomComment().getFontColor(), 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getBottomComment().getFontWeight(), 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getResultDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getSupFrameDispNO().v(), 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampPlaceDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrWorkDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrGoOutDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrCareDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getStampDisplayControl().getStampAtrSupDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getGoOutTypeDisplayControl().getStampGoOutAtrPrivateDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getGoOutTypeDisplayControl().getStampGoOutAtrPublicDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getGoOutTypeDisplayControl().getStampGoOutAtrCompensationDisp().value, 
+						appStampNewPreOutput.appStampSetOutput.getStampRequestSetting().getGoOutTypeDisplayControl().getStampGoOutAtrUnionDisp().value),  
 				appStampNewPreOutput.appStampSetOutput.getApplicationReasons().stream()
 					.map(x -> new ApplicationReasonDto(
 							x.getCompanyId(),
@@ -97,8 +95,8 @@ public class AppStampFinder {
 	
 	public AppStampDto getAppStampByID(String appID){
 		String companyID = AppContexts.user().companyId();
-		AppStamp appStamp = appStampRepository.findByAppID(companyID, appID);
-		String employee = appStampCommonDomainService.getEmployeeName(appStamp.getApplicantSID());
+		AppStamp appStamp = appStampCommonDomainService.findByID(companyID, appID);
+		String employee = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEmployeeID());
 		return AppStampDto.convertToDto(appStamp, employee);
 	}
 }

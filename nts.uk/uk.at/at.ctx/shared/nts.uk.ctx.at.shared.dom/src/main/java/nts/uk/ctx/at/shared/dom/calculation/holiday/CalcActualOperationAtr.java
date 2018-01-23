@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
-/**
- * @author phongtq
- */
-import lombok.AllArgsConstructor;
 
+import lombok.AllArgsConstructor;
+/**
+ * 
+ * @author phongtq
+ *実働のみで計算する
+ */
 @AllArgsConstructor
 public enum CalcActualOperationAtr {
 

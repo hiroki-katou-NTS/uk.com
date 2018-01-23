@@ -115,7 +115,54 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 		return em.createQuery(cq).getResultList();
 
 	}
+	@Override
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository#
+	 * find(java.lang.String)
+	 */
+	public List<Formula> find(String companyId) {
+		// TODO Auto-generated method stub
+		List<KrcmtOptItemFormula> results = this.findEntityByCompanyId(companyId);
 
+		// Return
+		if (CollectionUtil.isEmpty(results)) {
+			return Collections.emptyList();
+		}
+
+		return results.stream().map(item -> new Formula(new JpaFormulaGetMemento(item))).collect(Collectors.toList());
+	}
+	
+	/**
+	 * Find entity.
+	 *
+	 * @param companyId the company id
+	 * @param optItemNo the opt item no
+	 * @return the list
+	 */
+	private List<KrcmtOptItemFormula> findEntityByCompanyId(String companyId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// create query
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<KrcmtOptItemFormula> cq = criteriaBuilder.createQuery(KrcmtOptItemFormula.class);
+
+		// select from table
+		Root<KrcmtOptItemFormula> root = cq.from(KrcmtOptItemFormula.class);
+		cq.select(root);
+
+		// add conditions
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KrcmtOptItemFormula_.krcmtOptItemFormulaPK).get(KrcmtOptItemFormulaPK_.cid), companyId));
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// Get results
+		return em.createQuery(cq).getResultList();
+
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

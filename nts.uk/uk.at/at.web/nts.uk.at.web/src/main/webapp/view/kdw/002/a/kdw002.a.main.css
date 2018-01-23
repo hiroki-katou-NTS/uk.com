@@ -47,11 +47,14 @@
 }
 
 .unitRounding {
-	margin-left: 112px;
+	margin-left: 142px;
 }
 .leftpanel {
 	float: left;
 }
-.clear-btn, th {
+.clear-btn {
 	display: none !important;
+}
+table#gridList tbody td:nth-child(1) {
+    text-align: right;
 }

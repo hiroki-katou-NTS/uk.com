@@ -34,11 +34,20 @@ module kdl002.b.viewmodel {
             //selected items
             nts.uk.ui.windows.setShared('KDL002_SelectedItemId',lstSelectedCode,true);
             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
-                self.items();
-                self.items(nts.uk.ui.windows.getShared('KDL002_SelectedNewItem'));
+                var lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+                self.SelectedCode();
+                let strLstCode = '';
+                _.each(lst,function(item, index){
+                    if(index == 0){
+                        strLstCode = strLstCode + lst[index].code;
+                    }else{
+                        strLstCode = strLstCode + ',' + lst[index].code;
+                    }
+                });
+                self.SelectedCode(strLstCode);
             })
         }
-
+        //mode single
         OpenDialog002(){
             var self = this;
             let lstSelectedCode = self.list(self.SelectedCode());
@@ -51,7 +60,8 @@ module kdl002.b.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                 self.items([]);
                 var lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
-                self.items(lst);
+                self.SelectedCode();
+                self.SelectedCode(lst[0].code);
             })
         }
     }

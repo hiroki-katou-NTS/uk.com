@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf004.e.viewmodel {
     import model = nts.uk.at.view.kaf000.b.viewmodel.model;
     import service = nts.uk.at.view.kaf004.b.service;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
         // applicantName
         applicantName: KnockoutObservable<string> = ko.observable("");
@@ -96,6 +97,18 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 $("#inputdate").focus();
                 nts.uk.ui.block.clear();
                 dfd.resolve();
+            }).fail((res) =>{
+                if(res.messageId == 'Msg_426'){
+                        nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
+                            nts.uk.ui.block.clear();
+                        });
+                }else{ 
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
+                            nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");  
+                        });
+                }
+                nts.uk.ui.block.clear();
+                dfd.reject();
             });
                
             return dfd.promise();
@@ -117,6 +130,9 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                     let reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
                     txtReasonTmp = reasonText.reasonTemp;
                 }
+                 if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(txtReasonTmp) ? txtReasonTmp + "\n" + self.appreason() : self.appreason(),"#appReason")){
+                        return;
+                 }
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
                     version: self.version,
                     appID: self.appID(),

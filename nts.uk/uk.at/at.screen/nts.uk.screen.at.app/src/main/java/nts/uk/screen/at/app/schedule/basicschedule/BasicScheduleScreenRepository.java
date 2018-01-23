@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.screen.at.app.shift.workpairpattern.ComPatternScreenDto;
+import nts.uk.screen.at.app.shift.workpairpattern.WkpPatternScreenDto;
 
 /**
  * 
@@ -22,11 +24,13 @@ public interface BasicScheduleScreenRepository {
 	List<BasicScheduleScreenDto> getByListSidAndDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
 
 	/**
-	 * Get data from WorkTime and WorkTimeDay
+	 * Get data from WorkTimeSet and WorkTimeSheetSet
 	 * 
+	 * @param companyId
+	 * @param abolitionAtr
 	 * @return
 	 */
-	List<WorkTimeScreenDto> getListWorkTime(String companyId, int displayAtr);
+	List<WorkTimeScreenDto> getListWorkTime(String companyId, int abolitionAtr);
 
 	/**
 	 * Find by companyId and deprecateCls.
@@ -58,4 +62,18 @@ public interface BasicScheduleScreenRepository {
 	 * @return
 	 */
 	List<BasicScheduleScreenDto> getDataWorkScheTimezone(List<String> sId, GeneralDate startDate, GeneralDate endDate);
+
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
+	List<ComPatternScreenDto> getDataComPattern(String companyId);
+
+	/**
+	 * 
+	 * @param workplaceId
+	 * @return
+	 */
+	List<WkpPatternScreenDto> getDataWkpPattern(String workplaceId);
 }

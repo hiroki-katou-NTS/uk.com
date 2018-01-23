@@ -44,7 +44,7 @@ module nts.uk.at.view.ksc001.b {
             confirm: KnockoutObservable<boolean>;
 
             periodDate: KnockoutObservable<any>;
-            copyStartDate: KnockoutObservable<Date>;
+            copyStartDate: KnockoutObservable<any>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
 
@@ -203,6 +203,11 @@ module nts.uk.at.view.ksc001.b {
                 self.isReSetting = ko.computed(function() {
                     return self.checkProcessExecutionAtrReconfig() && self.isReCreate();
                 });
+                self.periodDate.subscribe((newValue)=>{
+                    if(newValue.startDate){
+                        self.copyStartDate(newValue.startDate);    
+                    }    
+                });
             }
             /**
              * save to client service PersonalSchedule by employeeId
@@ -331,6 +336,9 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageEmployee(): void {
                 var self = this;
+                if ($('.nts-input').ntsError('hasError')) {
+                    return;
+                }
                 // check selection employee 
                 if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
                     var user: any = __viewContext.user;
@@ -441,11 +449,25 @@ module nts.uk.at.view.ksc001.b {
                 }
 
             }
+
+            /**
+             * Validate copy paste schedule
+             */
+            private isInValidCopyPasteSchedule(): boolean {
+                let self = this;
+                if (self.checkCreateMethodAtrCopyPastSchedule()) {
+                    $('#copy-start-date').ntsEditor('validate');
+                }
+                return $('.nts-input').ntsError('hasError');
+            }
             /**
              * function previous page by selection employee goto page (D)
              */
             private previousPageD(): void {
                 var self = this;
+                if (self.isInValidCopyPasteSchedule()) {
+                    return;
+                }
                 self.previous();
             }
             /**
@@ -453,6 +475,9 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageD(): void {
                 var self = this;
+                if (self.isInValidCopyPasteSchedule()) {
+                    return;
+                }
 
                 // check D1_4 is checked
                 if (self.checkCreateMethodAtrPatternSchedule()) {
@@ -468,17 +493,7 @@ module nts.uk.at.view.ksc001.b {
                                 // next page E by pattern code of res
                                 self.findByPatternCodeAndOpenPageE(res.patternCode);
                             } else {
-                                baseService.findAllPattern().done(function(allData) {
-
-                                    // next page E by pattern code of all data first
-                                    if (allData && allData.length > 0) {
-                                        self.responeDailyPatternSetting(allData[0]);
-                                        self.openDialogPageE();
-                                    } else {
-                                        // show message error 531
-                                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_531' });
-                                    }
-                                });
+                                self.findAllPattern();
                             }
                         });
                     }
@@ -489,18 +504,42 @@ module nts.uk.at.view.ksc001.b {
             }
 
             /**
+             * Find all pattern
+             */
+            private findAllPattern(): void {
+                let self = this;
+                _.defer(() => {
+                    nts.uk.ui.block.invisible();
+                    baseService.findAllPattern()
+                        .done(allData => {
+                            // next page E by pattern code of all data first
+                            if (allData && allData.length > 0) {
+                                self.responeDailyPatternSetting(allData[0]);
+                                self.openDialogPageE();
+                            } else {
+                                // show message error 531
+                                nts.uk.ui.dialog.alertError({ messageId: 'Msg_531' });
+                            }
+                        }).always(() => nts.uk.ui.block.clear());
+                });
+            }
+
+            /**
              * find by pattern code and open dialog E
              */
             private findByPatternCodeAndOpenPageE(patternCode: string): void {
                 var self = this;
-                baseService.findPatternByCode(patternCode).done(function(res) {
-                    if (res && res != null) {
-                        self.responeDailyPatternSetting(res);
-                        self.openDialogPageE();
-                    }
-                    else {
-                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_531' });
-                    }
+                _.defer(() => {
+                    nts.uk.ui.block.invisible();
+                    baseService.findPatternByCode(patternCode).done(function(res) {
+                        if (res && res != null) {
+                            self.responeDailyPatternSetting(res);
+                            self.openDialogPageE();
+                        }
+                        else {
+                            nts.uk.ui.dialog.alertError({ messageId: 'Msg_531' });
+                        }
+                    }).always(() => nts.uk.ui.block.clear());
                 });
             }
 
@@ -539,9 +578,7 @@ module nts.uk.at.view.ksc001.b {
                     if (check) {
                         // show message confirm 567
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_567' }).ifYes(function() {
-                            service.checkMonthMax(self.toDate(self.periodDate().startDate)).done(function(checkMax) {
-                                self.createByCheckMaxMonth();
-                            });
+                            self.createByCheckMaxMonth();
                         }).ifNo(function() {
                             return;
                         });
@@ -659,17 +696,20 @@ module nts.uk.at.view.ksc001.b {
              */
             private createByCheckMaxMonth(): void {
                 var self = this;
-                service.checkMonthMax(self.toDate(self.periodDate().startDate)).done(function(checkMax) {
-                    // check max
-                    if (checkMax) {
-                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_568' }).ifYes(function() {
+                _.defer(() => {
+                    nts.uk.ui.block.invisible();
+                    service.checkMonthMax(self.toDate(self.periodDate().startDate)).done(checkMax => {
+                        nts.uk.ui.block.clear();
+                        if (checkMax) {
+                            nts.uk.ui.dialog.confirm({ messageId: 'Msg_568' }).ifYes(function() {
+                                self.createPersonalSchedule();
+                            }).ifNo(function() {
+                                return;
+                            });
+                        } else {
                             self.createPersonalSchedule();
-                        }).ifNo(function() {
-                            return;
-                        });
-                    } else {
-                        self.createPersonalSchedule();
-                    }
+                        }
+                    });
                 });
             }
             /**
@@ -794,7 +834,7 @@ module nts.uk.at.view.ksc001.b {
                     resetTimeAssignment: data.resetTimeAssignment,
                     confirm: data.confirm,
                     createMethodAtr: data.createMethodAtr,
-                    copyStartDate: self.copyStartDate(),
+                    copyStartDate: self.toDate(self.copyStartDate()),
                     employeeIds: self.findEmployeeIdsByCode(self.selectedEmployeeCode())
                 };
                 return dto;

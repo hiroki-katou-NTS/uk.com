@@ -21,17 +21,17 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	private final String SEL = "SELECT s FROM CcgstStandardMenu s ";
 	private final String GET_ALL_STANDARD_MENU = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId";
 	private final String GET_ALL_STANDARD_MENU_BY_SYSTEM = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
-			+ "AND s.ccgmtStandardMenuPK.system = :system AND s.menuAtr = 1";	
+			+ "AND s.ccgmtStandardMenuPK.system = :system AND s.menuAtr = 1";
 	private final String GET_ALL_STANDARD_MENU_DISPLAY = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
-			+ "AND s.webMenuSetting = 1 ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";	
+			+ "AND s.webMenuSetting = 1 ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";
 	private final String FIND_BY_AFTER_LOGIN_DISPLAY = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.afterLoginDisplay = :afterLoginDisplay ";
 	private final String FIND_BY_SYSTEM_MENUCLASSIFICATION = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.ccgmtStandardMenuPK.system = :system "
 			+ "AND s.ccgmtStandardMenuPK.classification = :menu_classification ORDER BY s.ccgmtStandardMenuPK.code ASC";
-	private final String FIND_BY_SYSTEM_MENUCLASSIFICATION_AND_AFTER_LOGIN_DIS = SEL
-			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId " + "AND s.ccgmtStandardMenuPK.system = :system "
-			+ "AND s.ccgmtStandardMenuPK.classification = :menu_classification AND s.afterLoginDisplay = :afterLoginDisplay "
+	private final String FIND_BY_MENUCLASSIFICATION_OR_AFTER_LOGIN_DIS = SEL
+			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
+			+ "AND (s.ccgmtStandardMenuPK.classification = :menu_classification OR s.afterLoginDisplay = :afterLoginDisplay) "
 			+ "ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";
 
 	private final String GET_ALL_STANDARD_MENU_BY_ATR = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
@@ -93,18 +93,17 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("companyId", companyId).setParameter("system", system)
 				.setParameter("menu_classification", menu_classification).getList(t -> toDomain(t));
 	}
-	
+
 	/**
 	 * added by sonnh1
 	 * 
-	 * find by COMPANYID and SYSTEM and MENU_CLASSIFICATION and AFTER_LOGIN_DISPLAY
+	 * find by COMPANYID and MENU_CLASSIFICATION or AFTER_LOGIN_DISPLAY
 	 */
 	@Override
-	public List<StandardMenu> findDataForAfterLoginDis(String companyId, int afterLoginDisplay, int system,
+	public List<StandardMenu> findDataForAfterLoginDis(String companyId, int afterLoginDisplay,
 			int menu_classification) {
-		return this.queryProxy().query(FIND_BY_SYSTEM_MENUCLASSIFICATION_AND_AFTER_LOGIN_DIS, CcgstStandardMenu.class)
-				.setParameter("companyId", companyId).setParameter("system", system)
-				.setParameter("menu_classification", menu_classification)
+		return this.queryProxy().query(FIND_BY_MENUCLASSIFICATION_OR_AFTER_LOGIN_DIS, CcgstStandardMenu.class)
+				.setParameter("companyId", companyId).setParameter("menu_classification", menu_classification)
 				.setParameter("afterLoginDisplay", afterLoginDisplay).getList(t -> toDomain(t));
 	}
 
@@ -171,7 +170,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 
 	/**
 	 * yennth
-	 * @param list standardMenu
+	 * 
+	 * @param list
+	 *            standardMenu
 	 */
 	@Override
 	public boolean isExistDisplayName(List<StandardMenu> StandardMenu) {
@@ -192,15 +193,18 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		return this.queryProxy().query(GET_ALL_STANDARD_MENU_DISPLAY, CcgstStandardMenu.class)
 				.setParameter("companyId", companyId).getList(t -> toDomain(t));
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository
 	 * #getProgram(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Optional<StandardMenu> getProgram(String companyId, String programId, String screenId) {
-		return this.queryProxy().query(GET_PG, CcgstStandardMenu.class)
-			.setParameter("companyId", companyId).setParameter("programId", programId)
-			.setParameter("screenId", screenId).getSingle(m -> toDomain(m));
+		List<CcgstStandardMenu> menus = this.queryProxy().query(GET_PG, CcgstStandardMenu.class).setParameter("companyId", companyId)
+				.setParameter("programId", programId).setParameter("screenId", screenId).getList();
+		if (menus.isEmpty() || menus.size() > 1) return Optional.empty();
+		return Optional.ofNullable(toDomain(menus.get(0)));
 	}
 }

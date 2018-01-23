@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -27,7 +27,7 @@ public class AppOverTime extends AggregateRoot{
 	/**
 	 * application
 	 */
-	private Application application;
+	private Application_New application;
 	/**
 	 * 会社ID
 	 * companyID
@@ -52,7 +52,7 @@ public class AppOverTime extends AggregateRoot{
 	/**
 	 * 就業時間帯
 	 */
-	private SiftCode siftCode;
+	private WorkTimeCode siftCode;
 	/**
 	 * 勤務時間From1
 	 */
@@ -98,7 +98,7 @@ public class AppOverTime extends AggregateRoot{
 		this.appID = appID;
 		this.overTimeAtr = EnumAdaptor.valueOf(overTimeAtr, OverTimeAtr.class);
 		this.workTypeCode = new WorkTypeCode(workTypeCode);
-		this.siftCode = new SiftCode(siftCode);
+		this.siftCode = new WorkTimeCode(siftCode);
 		this.workClockFrom1 = workClockFrom1;
 		this.workClockTo1 = workClockTo1;
 		this.workClockFrom2 = workClockFrom2;
@@ -134,6 +134,4 @@ public class AppOverTime extends AggregateRoot{
 								overTimeShiftNight);
 		
 	}
-	
-	
 }

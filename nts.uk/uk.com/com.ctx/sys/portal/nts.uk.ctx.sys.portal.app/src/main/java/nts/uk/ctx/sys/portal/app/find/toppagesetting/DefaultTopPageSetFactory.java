@@ -174,26 +174,29 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 		}
 		// topPageJob: setting
 		Optional<TopPagePersonSet> topPPerson = topPagePerson.getbyCode(companyId, employeeId);
-		String code = getMenuCode(fromScreen, topPageJob.getTopMenuCode(), topPageJob.getLoginMenuCode());
+		//String code = getMenuCode(fromScreen, topPageJob.getTopMenuCode(), topPageJob.getLoginMenuCode());
 		// login menu code & top page person
-		if (topPPerson.isPresent() && !StringUtil.isNullOrEmpty(code, true)) {
+		if (topPPerson.isPresent()) {
 			// display top page person set (個人別トップページ設定)-B
 			TopPagePersonSet tpPerson = topPPerson.get();
 			check = false;
 			String menuCode = getMenuCode(fromScreen, tpPerson.getTopMenuCode(), tpPerson.getLoginMenuCode());
-			layoutTopPage = getTopPageByCode(companyId, menuCode, tpPerson.getLoginSystem().value,
-					tpPerson.getMenuClassification().value, isLoginScreen);
-			// case not use my page
-			if (!checkMyPage) {
-				check = true;
-				return new LayoutAllDto(null, layoutTopPage, check, false, checkTopPage);
+			if (!StringUtil.isNullOrEmpty(menuCode, true)) {
+				layoutTopPage = getTopPageByCode(companyId, menuCode, tpPerson.getLoginSystem().value,
+						tpPerson.getMenuClassification().value, isLoginScreen);
+				// case not use my page
+				if (!checkMyPage) {
+					check = true;
+					return new LayoutAllDto(null, layoutTopPage, check, false, checkTopPage);
+				}
+				LayoutForMyPageDto layoutMypage = findLayoutMyPage();
+				if(layoutMypage.isNotActiveMyPage()==true && layoutTopPage!=null){
+					check = true;
+				}
+				return new LayoutAllDto(layoutMypage, layoutTopPage, check, true, checkTopPage);
 			}
-			LayoutForMyPageDto layoutMypage = findLayoutMyPage();
-			if(layoutMypage.isNotActiveMyPage()==true && layoutTopPage!=null){
-				check = true;
-			}
-			return new LayoutAllDto(layoutMypage, layoutTopPage, check, true, checkTopPage);
 		}
+		String code = getMenuCode(fromScreen, topPageJob.getTopMenuCode(), topPageJob.getLoginMenuCode());
 		// not top page person or not login menu code
 		if (StringUtil.isNullOrEmpty(code, true)) {// login menu code: empty
 			// display my page

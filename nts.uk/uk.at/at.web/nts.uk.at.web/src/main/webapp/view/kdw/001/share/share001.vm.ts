@@ -3,11 +3,27 @@ module nts.uk.at.view.kdw001 {
                 
         // ErrMessageInfoDto
         export interface PersonInfoErrMessageLogDto {
-            employeeCode: string;
+            personCode: string;
             personName: string;
             disposalDay: string;
             messageError: number;
         }
+        
+        export class PersonInfoErrMessageLog{
+            GUID : string ;
+            personCode: string;
+            personName: string;
+            disposalDay: string;
+            messageError: number;
+            constructor(data : PersonInfoErrMessageLogDto){
+                this.GUID = nts.uk.util.randomId();
+                this.personCode = data.personCode;
+                this.personName = data.personName;
+                this.disposalDay = data.disposalDay;
+                this.messageError = data.messageError;
+            }
+        }
+            
         
         // CheckProcessCommand
         export interface CheckProcessCommand {
@@ -22,6 +38,7 @@ module nts.uk.at.view.kdw001 {
             empCalAndSumExecLogID: string;
             periodStartDate: string;
             periodEndDate: string;
+            startTime: string;
         }
 
         // AddEmpCalSumAndTargetCommand

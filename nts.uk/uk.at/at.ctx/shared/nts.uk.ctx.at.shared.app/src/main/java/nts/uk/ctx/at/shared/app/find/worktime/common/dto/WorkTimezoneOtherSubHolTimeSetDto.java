@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.common.OriginAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSetSetMemento;
@@ -27,6 +27,10 @@ public class WorkTimezoneOtherSubHolTimeSetDto implements WorkTimezoneOtherSubHo
 	/** The origin atr. */
 	private Integer originAtr;
 
+	public WorkTimezoneOtherSubHolTimeSetDto() {
+		this.subHolTimeSet = new SubHolTransferSetDto();
+	}
+	
 	@Override
 	public void setSubHolTimeSet(SubHolTransferSet set) {
 		set.saveToMemento(this.subHolTimeSet);
@@ -53,7 +57,7 @@ public class WorkTimezoneOtherSubHolTimeSetDto implements WorkTimezoneOtherSubHo
 	 * shared.dom.worktime.common.OriginAtr)
 	 */
 	@Override
-	public void setOriginAtr(OriginAtr atr) {
+	public void setOriginAtr(CompensatoryOccurrenceDivision atr) {
 		this.originAtr = atr.value;
 	}
 

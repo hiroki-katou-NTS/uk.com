@@ -64,5 +64,21 @@ public enum RestClockManageAtr {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 時刻管理するか判定する
+	 * @return　時刻管理をする
+	 */
+	public boolean isClockManage() {
+		return this.equals(IS_CLOCK_MANAGE);
+	}
+	
+	/**
+	 * 時刻管理しないか判定する
+	 * @return　時刻管理をしない
+	 */
+	public boolean isNotClockManage() {
+		return this.equals(NOT_CLOCK_MANAGE);
+	}
 
 }

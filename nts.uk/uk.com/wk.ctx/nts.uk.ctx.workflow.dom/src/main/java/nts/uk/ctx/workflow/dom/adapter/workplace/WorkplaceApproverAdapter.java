@@ -21,5 +21,4 @@ public interface WorkplaceApproverAdapter {
 	
 	WorkplaceImport findBySid(String employeeId, GeneralDate baseDate);
 
-
 }

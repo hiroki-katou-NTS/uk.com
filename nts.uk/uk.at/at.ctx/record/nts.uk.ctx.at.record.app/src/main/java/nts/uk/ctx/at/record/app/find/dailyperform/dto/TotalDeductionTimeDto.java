@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 /** 控除合計時間 */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TotalDeductionTimeDto {
 
 	/** 所定外合計時間 */

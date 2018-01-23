@@ -7,6 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.worktype.WorkTypeName
+			</com:ValidatorScript>
 			<script>
 				var dialogSize = {
 					width : 620,
@@ -23,7 +26,7 @@
 		<ui:define name="content">
 		
 			<div id="functions-area">
-				<button id="register-button" class="proceed" data-bind="click: register">#{i18n.getText('KMK007_46')}</button>
+				<button id="register-button" class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" >#{i18n.getText('KMK007_46')}</button>
 				<button id="close-button" data-bind="click: close">#{i18n.getText('KMK007_47')}</button>				
 			</div>
 			
@@ -45,8 +48,9 @@
 				<div class="right-contents">
 					<table>
 						<tr>
-							<td width="80">#{i18n.getText('KMK007_51')}</td>
-							<td><input data-bind="ntsTextEditor: {value: frameName, required: true, name: '#[KMK007_51]'}, hasfocus: true" /></td>
+							<td>
+							<div data-bind="ntsFormLabel: {constraint: ['WorkTypeName'],required: true}">#{i18n.getText('KMK007_51')} </div></td>
+							<td><input data-bind="ntsTextEditor: {value: frameName, constraint: 'WorkTypeName', required: true, name: '#[KMK007_51]'}, hasfocus: true" /></td>
 						</tr>
 						<tr></tr>
 						<tr>

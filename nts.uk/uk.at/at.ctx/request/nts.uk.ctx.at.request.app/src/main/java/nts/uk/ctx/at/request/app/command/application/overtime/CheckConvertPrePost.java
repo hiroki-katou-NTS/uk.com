@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.app.command.application.overtime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -28,11 +27,11 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -47,7 +46,7 @@ public class CheckConvertPrePost {
 	private IOvertimePreProcess iOvertimePreProcess;
 	
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
@@ -73,15 +72,12 @@ public class CheckConvertPrePost {
 				if(overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
 					result.setReferencePanelFlg(true);
 					// 01-18_実績の内容を表示し直す
-					List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings();
-					if(requestAppDetailSettings != null){
-						List<RequestAppDetailSetting>  requestAppDetailSetting = requestAppDetailSettings.stream().filter( c -> c.appType == ApplicationType.OVER_TIME_APPLICATION).collect(Collectors.toList());
-						AppOvertimeReference appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePostAtr, siftCD, companyID,employeeID, appDate,requestAppDetailSetting.get(0),overtimeHours);
-					}
+					ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
+					AppOvertimeReference appOvertimeReference = iOvertimePreProcess.getResultContentActual(prePostAtr, siftCD, companyID,employeeID, appDate,approvalFunctionSetting,overtimeHours);
 				}
 				if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value== UseAtr.USE.value){
 					result.setAllPreAppPanelFlg(true);
-					AppOverTime appOverTime = iOvertimePreProcess.getPreApplication(employeeID, overtimeRestAppCommonSet, appDate, prePostAtr);
+					AppOverTime appOverTime = iOvertimePreProcess.getPreApplication(companyID, employeeID, overtimeRestAppCommonSet, appDate, prePostAtr);
 					if(appOverTime != null){
 						convertOverTimeDto(companyID,preAppOvertimeDto,result,appOverTime);
 						result.setPreAppPanelFlg(true);
@@ -124,8 +120,8 @@ public class CheckConvertPrePost {
 	}
 	private void convertOverTimeDto(String companyID,PreAppOvertimeDto preAppOvertimeDto, OverTimeDto result,AppOverTime appOvertime){
 		if(appOvertime.getApplication() != null){
-			if(appOvertime.getApplication().getApplicationDate() != null){
-				preAppOvertimeDto.setAppDatePre(appOvertime.getApplication().getApplicationDate().toString(DATE_FORMAT));
+			if(appOvertime.getApplication().getAppDate() != null){
+				preAppOvertimeDto.setAppDatePre(appOvertime.getApplication().getAppDate().toString(DATE_FORMAT));
 			}
 		}
 		
@@ -143,7 +139,7 @@ public class CheckConvertPrePost {
 			SiftType siftType = new SiftType();
 
 			siftType.setSiftCode(appOvertime.getSiftCode().toString());
-			Optional<WorkTime> workTime = workTimeRepository.findByCode(companyID,
+			Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyID,
 					appOvertime.getSiftCode().toString());
 			if (workTime.isPresent()) {
 				siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());

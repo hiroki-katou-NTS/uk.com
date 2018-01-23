@@ -28,5 +28,5 @@ public interface WorkTimezoneOtherSubHolTimeSetSetMemento {
 	 *
 	 * @param atr the new origin atr
 	 */
-	 void setOriginAtr(OriginAtr atr);
+	 void setOriginAtr(CompensatoryOccurrenceDivision atr);
 }

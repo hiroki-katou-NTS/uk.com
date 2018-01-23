@@ -4,7 +4,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,10 +33,10 @@ public class KrcdtSyainDpErList extends UkJpaEntity implements Serializable {
 	public KrcdtSyainDpErListPK krcdtSyainDpErListPK;
 
 	@Column(name = "ATTENDANCE_ITEM_ID")
-	public BigDecimal attendanceItemId;
+	public Integer attendanceItemId;
 
 	@Column(name = "ERROR_CANCELABLE")
-	public BigDecimal errorCancelable;
+	public Integer errorCancelable;
 
 	@Override
 	protected Object getKey() {
@@ -51,7 +50,7 @@ public class KrcdtSyainDpErList extends UkJpaEntity implements Serializable {
 						employeeDailyPerError.getEmployeeID(), 
 						employeeDailyPerError.getDate(),
 						employeeDailyPerError.getCompanyID()),
-				         new BigDecimal(item),
-						new BigDecimal(employeeDailyPerError.getErrorCancelAble()));}).collect(Collectors.toList());
+				         item,
+						employeeDailyPerError.getErrorCancelAble());}).collect(Collectors.toList());
 	}
 }

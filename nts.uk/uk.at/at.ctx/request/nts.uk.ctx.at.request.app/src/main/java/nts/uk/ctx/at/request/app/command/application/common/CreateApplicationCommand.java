@@ -1,16 +1,11 @@
 package nts.uk.ctx.at.request.app.command.application.common;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author tutk
@@ -22,6 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 @AllArgsConstructor
 public class CreateApplicationCommand {
 	
+	private Long version;
 	
 	/**
 	 * 申請ID
@@ -118,33 +114,6 @@ public class CreateApplicationCommand {
 	/**
 	 * 申請開始日
 	 */
-	private GeneralDate endDate;
-	/**
-	 * list phase
-	 */
-	private List<AppApprovalPhaseDto> listPhase;
+	private GeneralDate endDate;	
 	
-	public Application toDomain() {
-		return Application.createFromJavaType(
-				AppContexts.user().companyId(),
-				this.prePostAtr, 
-				this.inputDate,  
-				this.enteredPersonSID,  
-				this.reversionReason,  
-				this.applicationDate,  
-				this.applicationReason,
-				this.applicationType,  
-				this.applicantSID,  
-				this.reflectPlanScheReason,  
-				this.reflectPlanTime,  
-				this.reflectPlanState,  
-				this.reflectPlanEnforce,  
-				this.reflectPerScheReason,  
-				this.reflectPerTime,  
-				this.reflectPerState,  
-				this.reflectPerEnforce,
-				this.startDate,
-				this.endDate,
-				null);
-	}
 }

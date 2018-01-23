@@ -1,14 +1,18 @@
 package nts.uk.ctx.workflow.infra.entity.approverstatemanagement;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
@@ -19,6 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name="WWFDT_APPROVER_STATE")
+@Builder
 public class WwfdtApproverState extends UkJpaEntity {
 	
 	@EmbeddedId
@@ -35,6 +40,26 @@ public class WwfdtApproverState extends UkJpaEntity {
 	@Override
 	protected Object getKey() {
 		return wwfdpApproverStatePK;
+	}
+	
+	public static WwfdtApproverState fromDomain(ApproverState approverState){
+		return WwfdtApproverState.builder()
+				.wwfdpApproverStatePK(
+						new WwfdpApproverStatePK(
+								approverState.getRootStateID(), 
+								approverState.getPhaseOrder(), 
+								approverState.getFrameOrder(), 
+								approverState.getApproverID()))
+				.build();
+	}
+	
+	public ApproverState toDomain(){
+		return ApproverState.builder()
+				.rootStateID(this.wwfdpApproverStatePK.rootStateID)
+				.phaseOrder(this.wwfdpApproverStatePK.phaseOrder)
+				.frameOrder(this.wwfdpApproverStatePK.frameOrder)
+				.approverID(this.wwfdpApproverStatePK.approverID)
+				.build();
 	}
 	
 }

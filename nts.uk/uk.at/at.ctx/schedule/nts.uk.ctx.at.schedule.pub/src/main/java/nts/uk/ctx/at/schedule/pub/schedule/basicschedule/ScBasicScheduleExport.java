@@ -36,9 +36,4 @@ public class ScBasicScheduleExport {
 	/** The work schedule time zones. */
 	// 勤務予定時間帯
 	private List<WorkScheduleTimeZoneExport> workScheduleTimeZones;
-	
-	/** The work day atr. */
-	// 稼働日区分
-	private int workDayAtr;
-
 }

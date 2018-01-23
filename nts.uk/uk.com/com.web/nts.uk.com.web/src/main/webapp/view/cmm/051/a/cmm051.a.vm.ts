@@ -125,7 +125,8 @@ module nts.uk.com.view.cmm051.a {
                 let dfd = $.Deferred<void>();
                 
                 self.wkpManagerTree([]);
-                service.findAllWkpManagerByWkpId(wkpId).done(function(dataList: Array<WorkplaceManager>) {
+                self.wkpManagerList([]);
+                service.findAllWkpManagerByWkpId(wkpId).done(function(dataList) {
                     if (dataList && dataList.length > 0) {
                         self.isNewMode(false);
                         self.wkpManagerList(dataList);
@@ -136,11 +137,11 @@ module nts.uk.com.view.cmm051.a {
                         }
                         // Setup workplace manager display tree
                         _.forEach(dataList, (mng) => {
-                            let node = _.find(self.wkpManagerTree(), function(o : Node) { return o.wkpManagerId == mng.employeeInfo.employeeId; });
+                            let node = _.find(self.wkpManagerTree(), function(o : Node) { return o.wkpManagerId == mng.employeeId; });
                             if (node) { // Existed employee
                                 node.childs.push(new WorkplaceManager(mng));
                             } else {
-                                self.wkpManagerTree.push(new Node(mng.employeeInfo.employeeCode, mng.employeeInfo.namePerson, [new WorkplaceManager(mng)], mng.employeeInfo.employeeId));
+                                self.wkpManagerTree.push(new Node(mng.employeeInfo.employeeCode, mng.employeeInfo.namePerson, [new WorkplaceManager(mng)], mng.employeeId));
                             }
                         });
                         self.reBindingTreeList();
@@ -166,7 +167,7 @@ module nts.uk.com.view.cmm051.a {
                     self.dateValue({startDate : self.selectedWkpManager().startDate, endDate : self.selectedWkpManager().endDate});
                     self.component.roleId(self.selectedWpkManagerId());
                 }
-                setTimeout(function(){$("#daterangepicker").find(".ntsStartDatePicker").focus();},100);
+                setTimeout(function(){$(".ntsStartDatePicker").focus();},100);
             }
             
             /**
@@ -221,10 +222,7 @@ module nts.uk.com.view.cmm051.a {
 
                 // validate
                 $(".ntsDatepicker ").ntsEditor('validate');
-                if (nts.uk.text.isNullOrEmpty(self.selectedWkpManager().employeeId)) {
-                    $("#func-notifier-errors").addClass("shown");
-                    return false;
-                }
+                $(".nts-editor").trigger("validate");
                 return !$('.nts-input').ntsError('hasError');
             }
             
@@ -232,8 +230,7 @@ module nts.uk.com.view.cmm051.a {
              * clearError
              */
             private clearError() {
-                $(".ntsDatepicker ").ntsError('clear');
-                $("#func-notifier-errors").removeClass("shown");
+                nts.uk.ui.errors.clearAll();
             }
             
             // 削除 button
@@ -254,40 +251,39 @@ module nts.uk.com.view.cmm051.a {
 
                 // show message confirm
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_35" }).then(() => {
-                        let command: any = {};
-                        command.wkpManagerId = self.selectedWpkManagerId();
-    
-                        nts.uk.ui.block.grayout();
-                        service.deleteWkpManager(command).done(() => {
-                            // Get workplace manager list
+                    let command: any = {};
+                    command.wkpManagerId = self.selectedWpkManagerId();
+
+                    nts.uk.ui.block.grayout();
+                    service.deleteWkpManager(command).done(() => {
+                        // Get workplace manager list
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             $.when(self.getWkpManagerList(self.selectedWkpId(), '')).done(()=>{
+                                var selectedId = "";
                                 if (self.wkpManagerList().length > 0) {
                                     if (currentItemIndex == lastItemIndex) {
                                         if (isFinalElement) {
                                             if (currentNodeIndex == lastNodeIndex) {
                                                 var prevItemList = nodeList[currentNodeIndex - 1].childs;
-                                                self.selectedCode(prevItemList[prevItemList.length - 1].wkpManagerId);
+                                                selectedId = prevItemList[prevItemList.length - 1].wkpManagerId;
                                             } else {
                                                 var nextItemList = nodeList[currentNodeIndex + 1].childs;
-                                                self.selectedCode(nextItemList[0].wkpManagerId);
+                                                selectedId = nextItemList[0].wkpManagerId;
                                             }
                                         } else {
-                                            self.selectedCode(currentItemList[currentItemIndex - 1].wkpManagerId);
+                                            selectedId = currentItemList[currentItemIndex - 1].wkpManagerId;
                                         }
                                     } else {
-                                        self.selectedCode(currentItemList[currentItemIndex + 1].wkpManagerId);
+                                        selectedId = currentItemList[currentItemIndex + 1].wkpManagerId;
                                     }
                                 }
+                                self.selectedCode(selectedId);
                             });
-                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16"));
-                        }).fail((res: any) => {
-                            nts.uk.ui.dialog.bundledErrors(res);
-                        })
-                        nts.uk.ui.block.clear();
-                    });
-                }).ifNo(() => {                  
-                    nts.uk.ui.dialog.info({ messageId: "Msg_36" });
+                        });
+                    }).fail((res: any) => {
+                        nts.uk.ui.dialog.bundledErrors(res);
+                    })
+                    nts.uk.ui.block.clear();
                 });
             }
             
@@ -317,7 +313,7 @@ module nts.uk.com.view.cmm051.a {
                     if (data) {
                         self.selectedWkpManager().employeeId = empId;
                         self.selectedWkpManager().employeeInfo({employeeId:data.employeeId,
-                                                                employeeCode:data.employeeCode,
+                                                                employeeCode:ko.observable(data.employeeCode),
                                                                 namePerson:data.personalName});
                     }
                 }).fail(function(error) {

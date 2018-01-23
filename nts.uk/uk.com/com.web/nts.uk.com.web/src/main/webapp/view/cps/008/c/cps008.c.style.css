@@ -1,17 +1,7 @@
-#BTN_DECIDE {
-	margin-right: 20px;
-}
-
 .bottomStype {
 	margin-top: 20px;
 	text-align: center;
 }
-
-#header {
-	display: none;
-}
-
-
 
 .input_002 {
 	display: inline-block;
@@ -24,11 +14,6 @@
 	border-right: none;
 }
 
-.sub_table {
-    width: 97px;
-    height: 376px;
-    background: #F3F3F3;
-    margin-top: 62px;
-    border: 5px solid white;
-    border-left: none;
+#contents-area {
+	height: auto !important;
 }

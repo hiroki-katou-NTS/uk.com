@@ -18,7 +18,8 @@ public class DeductionTime extends TimeZone {
 	 *
 	 * @param memento the memento
 	 */
-	public DeductionTime(DeductionTimeGetMemento memento){
+	public DeductionTime(DeductionTimeGetMemento memento) {		
+		super(memento.getStart(), memento.getEnd());
 		this.start = memento.getStart();
 		this.end = memento.getEnd();
 	}

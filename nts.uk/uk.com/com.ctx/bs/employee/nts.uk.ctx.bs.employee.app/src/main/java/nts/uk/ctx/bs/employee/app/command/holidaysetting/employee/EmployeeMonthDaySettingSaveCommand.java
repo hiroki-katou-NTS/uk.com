@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.app.command.holidaysetting.employee;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,8 +60,7 @@ public class EmployeeMonthDaySettingSaveCommand implements EmployeeMonthDaySetti
 		return this.publicHolidayMonthSettings.stream().map(e -> {
 			PublicHolidayMonthSetting domain = new PublicHolidayMonthSetting(new Year(this.year),
 																			new Integer(e.getMonth()),
-																			new MonthlyNumberOfDays(e.getInLegalHoliday()),
-																			new MonthlyNumberOfDays(e.getOutLegalHoliday()));
+																			new MonthlyNumberOfDays(BigDecimal.valueOf(e.getInLegalHoliday())));
 			return domain;
 		}).collect(Collectors.toList());
 	}

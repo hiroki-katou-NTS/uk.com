@@ -1,12 +1,28 @@
 package nts.uk.ctx.at.record.infra.entity.daily.holidayworktime;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.val;
+import nts.arc.time.GeneralDate;
+import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -174,7 +190,7 @@ public class KrcdtDayHolidyWork extends UkJpaEntity implements Serializable{
 	@Column(name = "ILLEG_HOLI_WORK_MIDN")
 	public int illegHoliWorkMidn;
 	/*祝日日出勤深夜*/
-	@Column(name = "PB_HOLI_WORK__MIDN")
+	@Column(name = "PB_HOLI_WORK_MIDN")
 	public int pbHoliWorkMidn;
 	/*計算法定内休日出勤深夜*/
 	@Column(name = "CALC_LEG_HOLI_WORK_MIDN")
@@ -183,15 +199,192 @@ public class KrcdtDayHolidyWork extends UkJpaEntity implements Serializable{
 	@Column(name = "CALC_ILLEG_HOLI_WORK_MIDN")
 	public int calcIllegHoliWorkMidn;
 	/*計算祝日日出勤深夜*/
-	@Column(name = "CALC_PB_HOLI_WORK__MIDN")
+	@Column(name = "CALC_PB_HOLI_WORK_MIDN")
 	public int calcPbHoliWorkMidn;
 	/*休日出勤拘束時間*/
 	@Column(name = "HOLI_WORK_BIND_TIME")
 	public int holiWorkBindTime;
 	
+	@OneToOne(mappedBy="krcdtDayHolidyWork")
+	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
+	
 	@Override
 	protected Object getKey() {
 		return this.krcdtDayHolidyWorkPK;
 	}
+	
+	
+	public static KrcdtDayHolidyWork create(String employeeId, GeneralDate date, HolidayWorkTimeOfDaily domain) {
+		val entity = new KrcdtDayHolidyWork();
+		/*主キー*/
+		entity.krcdtDayHolidyWorkPK = new KrcdtDayHolidyWorkPK(employeeId,date);
+		entity.setData(domain);
+		
+		return entity;
+	}
+
+
+	public void setData(HolidayWorkTimeOfDaily domain) {
+		HolidayWorkFrameTime frame1 = getHolidayTimeFrame(domain.getHolidayWorkFrameTime(), 1);
+		HolidayWorkFrameTime frame2 = getHolidayTimeFrame(domain.getHolidayWorkFrameTime(), 2);
+		HolidayWorkFrameTime frame3 = getHolidayTimeFrame(domain.getHolidayWorkFrameTime(), 3);
+		HolidayWorkFrameTime frame4 = getHolidayTimeFrame(domain.getHolidayWorkFrameTime(), 4);
+		HolidayWorkFrameTime frame5 = getHolidayTimeFrame(domain.getHolidayWorkFrameTime(), 5);
+		HolidayWorkFrameTime frame6 = getHolidayTimeFrame(domain.getHolidayWorkFrameTime(), 6);
+		HolidayWorkFrameTime frame7 = getHolidayTimeFrame(domain.getHolidayWorkFrameTime(), 7);
+		HolidayWorkFrameTime frame8 = getHolidayTimeFrame(domain.getHolidayWorkFrameTime(), 8);
+		HolidayWorkFrameTime frame9 = getHolidayTimeFrame(domain.getHolidayWorkFrameTime(), 9);
+		HolidayWorkFrameTime frame10 = getHolidayTimeFrame(domain.getHolidayWorkFrameTime(), 10);
+		/*休日出勤時間*/
+		this.holiWorkTime1 = frame1.getHolidayWorkTime().get().getTime() == null ? 0 : frame1.getHolidayWorkTime().get().getTime().valueAsMinutes();
+		this.holiWorkTime2 = frame2.getHolidayWorkTime().get().getTime() == null ? 0 : frame2.getHolidayWorkTime().get().getTime().valueAsMinutes();
+		this.holiWorkTime3 = frame3.getHolidayWorkTime().get().getTime() == null ? 0 : frame3.getHolidayWorkTime().get().getTime().valueAsMinutes();
+		this.holiWorkTime4 = frame4.getHolidayWorkTime().get().getTime() == null ? 0 : frame4.getHolidayWorkTime().get().getTime().valueAsMinutes();
+		this.holiWorkTime5 = frame5.getHolidayWorkTime().get().getTime() == null ? 0 : frame5.getHolidayWorkTime().get().getTime().valueAsMinutes();
+		this.holiWorkTime6 = frame6.getHolidayWorkTime().get().getTime() == null ? 0 : frame6.getHolidayWorkTime().get().getTime().valueAsMinutes();
+		this.holiWorkTime7 = frame7.getHolidayWorkTime().get().getTime() == null ? 0 : frame7.getHolidayWorkTime().get().getTime().valueAsMinutes();
+		this.holiWorkTime8 = frame8.getHolidayWorkTime().get().getTime() == null ? 0 : frame8.getHolidayWorkTime().get().getTime().valueAsMinutes();
+		this.holiWorkTime9 = frame9.getHolidayWorkTime().get().getTime() == null ? 0 : frame9.getHolidayWorkTime().get().getTime().valueAsMinutes();
+		this.holiWorkTime10 = frame10.getHolidayWorkTime().get().getTime() == null ? 0 : frame10.getHolidayWorkTime().get().getTime().valueAsMinutes();
+		/*振替時間*/
+		this.transTime1 = frame1.getTransferTime().get().getTime() == null ? 0 : frame1.getTransferTime().get().getTime().valueAsMinutes();
+		this.transTime2 = frame2.getTransferTime().get().getTime() == null ? 0 : frame2.getTransferTime().get().getTime().valueAsMinutes();
+		this.transTime3 = frame3.getTransferTime().get().getTime() == null ? 0 : frame3.getTransferTime().get().getTime().valueAsMinutes();
+		this.transTime4 = frame4.getTransferTime().get().getTime() == null ? 0 : frame4.getTransferTime().get().getTime().valueAsMinutes();
+		this.transTime5 = frame5.getTransferTime().get().getTime() == null ? 0 : frame5.getTransferTime().get().getTime().valueAsMinutes();
+		this.transTime6 = frame6.getTransferTime().get().getTime() == null ? 0 : frame6.getTransferTime().get().getTime().valueAsMinutes();
+		this.transTime7 = frame7.getTransferTime().get().getTime() == null ? 0 : frame7.getTransferTime().get().getTime().valueAsMinutes();
+		this.transTime8 = frame8.getTransferTime().get().getTime() == null ? 0 : frame8.getTransferTime().get().getTime().valueAsMinutes();
+		this.transTime9 = frame9.getTransferTime().get().getTime() == null ? 0 : frame9.getTransferTime().get().getTime().valueAsMinutes();
+		this.transTime10 = frame10.getTransferTime().get().getTime() == null ? 0 : frame10.getTransferTime().get().getTime().valueAsMinutes();
+		/*計算休日出勤時間*/
+		this.calcHoliWorkTime1 = frame1.getTransferTime().get().getCalcTime() == null ? 0 : frame1.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcHoliWorkTime2 = frame2.getTransferTime().get().getCalcTime() == null ? 0 : frame2.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcHoliWorkTime3 = frame3.getTransferTime().get().getCalcTime() == null ? 0 : frame3.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcHoliWorkTime4 = frame4.getTransferTime().get().getCalcTime() == null ? 0 : frame4.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcHoliWorkTime5 = frame5.getTransferTime().get().getCalcTime() == null ? 0 : frame5.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcHoliWorkTime6 = frame6.getTransferTime().get().getCalcTime() == null ? 0 : frame6.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcHoliWorkTime7 = frame7.getTransferTime().get().getCalcTime() == null ? 0 : frame7.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcHoliWorkTime8 = frame8.getTransferTime().get().getCalcTime() == null ? 0 : frame8.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcHoliWorkTime9 = frame9.getTransferTime().get().getCalcTime() == null ? 0 : frame9.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcHoliWorkTime10 = frame10.getTransferTime().get().getCalcTime() == null ? 0 : frame10.getTransferTime().get().getCalcTime().valueAsMinutes();
+		/*計算振替時間*/
+		this.calcTransTime1 = frame1.getTransferTime().get().getCalcTime() == null ? 0 : frame1.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcTransTime2 = frame2.getTransferTime().get().getCalcTime() == null ? 0 : frame2.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcTransTime3 = frame3.getTransferTime().get().getCalcTime() == null ? 0 : frame3.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcTransTime4 = frame4.getTransferTime().get().getCalcTime() == null ? 0 : frame4.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcTransTime5 = frame5.getTransferTime().get().getCalcTime() == null ? 0 : frame5.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcTransTime6 = frame6.getTransferTime().get().getCalcTime() == null ? 0 : frame6.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcTransTime7 = frame7.getTransferTime().get().getCalcTime() == null ? 0 : frame7.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcTransTime8 = frame8.getTransferTime().get().getCalcTime() == null ? 0 : frame8.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcTransTime9 = frame9.getTransferTime().get().getCalcTime() == null ? 0 : frame9.getTransferTime().get().getCalcTime().valueAsMinutes();
+		this.calcTransTime10 = frame10.getTransferTime().get().getCalcTime() == null ? 0 : frame10.getTransferTime().get().getCalcTime().valueAsMinutes();
+		/*事前申請時間*/
+		this.preAppTime1 = frame1.getBeforeApplicationTime().get() == null ? 0 : frame1.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime1 = frame2.getBeforeApplicationTime().get() == null ? 0 : frame2.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime1 = frame3.getBeforeApplicationTime().get() == null ? 0 : frame3.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime1 = frame4.getBeforeApplicationTime().get() == null ? 0 : frame4.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime1 = frame5.getBeforeApplicationTime().get() == null ? 0 : frame5.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime1 = frame6.getBeforeApplicationTime().get() == null ? 0 : frame6.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime1 = frame7.getBeforeApplicationTime().get() == null ? 0 : frame7.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime1 = frame8.getBeforeApplicationTime().get() == null ? 0 : frame8.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime1 = frame9.getBeforeApplicationTime().get() == null ? 0 : frame9.getBeforeApplicationTime().get().valueAsMinutes();
+		this.preAppTime1 = frame10.getBeforeApplicationTime().get() == null ? 0 : frame10.getBeforeApplicationTime().get().valueAsMinutes();	
+		
+		HolidayWorkMidNightTime within = getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
+		HolidayWorkMidNightTime excess = getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
+		HolidayWorkMidNightTime publicWork = getHolidayMidNightWork(domain.getHolidayMidNightWork().get(), StaturoryAtrOfHolidayWork.PublicHolidayWork);
+		if(within.getTime() != null){
+			/*法定内休日出勤深夜*/
+			this.legHoliWorkMidn = within.getTime().getTime() == null ? null : within.getTime().getTime().valueAsMinutes();
+			/*計算法定内休日出勤深夜*/
+			this.calcLegHoliWorkMidn = within.getTime().getCalcTime() == null ? 0 : within.getTime().getCalcTime().valueAsMinutes();
+		}
+		if(excess != null){
+			/*法定外休日出勤深夜*/
+			this.illegHoliWorkMidn = excess.getTime().getTime() == null ? 0 : excess.getTime().getTime().valueAsMinutes();
+			/*計算法定外休日出勤深夜*/
+			this.calcIllegHoliWorkMidn = excess.getTime().getCalcTime() == null ? 0 : excess.getTime().getCalcTime().valueAsMinutes();
+		}
+		if(publicWork != null){
+			/*祝日日出勤深夜*/
+			this.pbHoliWorkMidn = publicWork.getTime().getTime() == null ? 0 : publicWork.getTime().getTime().valueAsMinutes();
+			/*計算祝日日出勤深夜*/
+			this.calcPbHoliWorkMidn = publicWork.getTime().getCalcTime() == null ? 0 : publicWork.getTime().getCalcTime().valueAsMinutes();
+		}
+		
+		/*休日出勤拘束時間*/
+		this.holiWorkBindTime = domain.getHolidayTimeSpentAtWork() == null ? 0 : domain.getHolidayTimeSpentAtWork().valueAsMinutes();
+	}
+
+
+	private HolidayWorkMidNightTime getHolidayMidNightWork(HolidayMidnightWork domain, StaturoryAtrOfHolidayWork statutoryAttr) {
+		return domain.getHolidayWorkMidNightTime().stream().filter(tc -> tc.getStatutoryAtr() == statutoryAttr).findFirst().get();
+	}
+
+
+	private HolidayWorkFrameTime getHolidayTimeFrame(List<HolidayWorkFrameTime> frames, int frameNo) {
+		return frames.stream().filter(tc -> tc.getHolidayFrameNo().v() == frameNo).findFirst().get();
+	}
+	
+	
+	public HolidayWorkTimeOfDaily toDomain() {
+		
+		List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheetList = new ArrayList<>();//KrcdtDayHolidyWorkTsのtoDomainを呼べる？
+		
+		List<HolidayWorkFrameTime> holiWorkFrameTimeList = new ArrayList<>();
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(1),
+														   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.holiWorkTime1),new AttendanceTime(this.calcHoliWorkTime1))),
+														   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.calcTransTime1),new AttendanceTime(this.calcTransTime1))),
+														   Finally.of(new AttendanceTime(this.preAppTime1))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(2),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.holiWorkTime2),new AttendanceTime(this.calcHoliWorkTime2))),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.calcTransTime2),new AttendanceTime(this.calcTransTime2))),
+				   										   Finally.of(new AttendanceTime(this.preAppTime2))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(3),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.holiWorkTime3),new AttendanceTime(this.calcHoliWorkTime3))),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.calcTransTime3),new AttendanceTime(this.calcTransTime3))),
+				   										   Finally.of(new AttendanceTime(this.preAppTime3))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(4),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.holiWorkTime4),new AttendanceTime(this.calcHoliWorkTime4))),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.calcTransTime4),new AttendanceTime(this.calcTransTime4))),
+				   										   Finally.of(new AttendanceTime(this.preAppTime4))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(5),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.holiWorkTime5),new AttendanceTime(this.calcHoliWorkTime5))),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.calcTransTime5),new AttendanceTime(this.calcTransTime5))),
+				   										   Finally.of(new AttendanceTime(this.preAppTime5))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(6),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.holiWorkTime6),new AttendanceTime(this.calcHoliWorkTime6))),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.calcTransTime6),new AttendanceTime(this.calcTransTime6))),
+				   										   Finally.of(new AttendanceTime(this.preAppTime6))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(7),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.holiWorkTime7),new AttendanceTime(this.calcHoliWorkTime7))),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.calcTransTime7),new AttendanceTime(this.calcTransTime7))),
+				   										   Finally.of(new AttendanceTime(this.preAppTime7))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(8),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.holiWorkTime8),new AttendanceTime(this.calcHoliWorkTime8))),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.calcTransTime8),new AttendanceTime(this.calcTransTime8))),
+				   										   Finally.of(new AttendanceTime(this.preAppTime8))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(9),
+														   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.holiWorkTime9),new AttendanceTime(this.calcHoliWorkTime9))),
+														   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.calcTransTime9),new AttendanceTime(this.calcTransTime9))),
+														   Finally.of(new AttendanceTime(this.preAppTime9))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(10),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.holiWorkTime10),new AttendanceTime(this.calcHoliWorkTime10))),
+				   										   Finally.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.calcTransTime10),new AttendanceTime(this.calcTransTime10))),
+				   										   Finally.of(new AttendanceTime(this.preAppTime10))));
+		
+		List<HolidayWorkMidNightTime> holidayWorkMidNightTimeList = new ArrayList<>();
+		holidayWorkMidNightTimeList.add(new HolidayWorkMidNightTime(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.legHoliWorkMidn),new AttendanceTime(this.calcLegHoliWorkMidn)),
+																	StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
+		holidayWorkMidNightTimeList.add(new HolidayWorkMidNightTime(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.illegHoliWorkMidn),new AttendanceTime(this.calcIllegHoliWorkMidn)),
+																	StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
+		holidayWorkMidNightTimeList.add(new HolidayWorkMidNightTime(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.pbHoliWorkMidn),new AttendanceTime(this.calcPbHoliWorkMidn)),
+																	StaturoryAtrOfHolidayWork.PublicHolidayWork));
+		
+		return new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheetList,holiWorkFrameTimeList,Finally.of(new HolidayMidnightWork(holidayWorkMidNightTimeList)), new AttendanceTime(this.holiWorkBindTime));
+	}
+	
+	
 	
 }

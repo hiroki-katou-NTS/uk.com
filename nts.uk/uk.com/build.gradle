@@ -110,8 +110,8 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-        compile group: 'nts.gul', name: 'nts.gul', version: '0.38.1'
-        compile group: 'nts.arc', name: 'nts.arc', version: '0.49'
+        compile group: 'nts.gul', name: 'nts.gul', version: '0.42'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.55'
 	}
 }
 //=============com.file↓===========================================
@@ -567,6 +567,7 @@ project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.ac') {
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.app')
 		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.pub')
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.pub')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 	}
 }
 project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub') {
@@ -621,8 +622,8 @@ project (':com.screen:nts.uk.screen.com.app') {
 	 	compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
 		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
 		
-		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: '0.2.7'
-		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: '0.2.7'
+		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: '0.2.8'
+		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: '0.2.8'
 	}
 }
 
@@ -811,12 +812,12 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':pereg.ctx:nts.uk.ctx.pereg.infra')
 		runtime project (':pereg.ctx:nts.uk.ctx.pereg.ws')
 		
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.ac', version: '0.2.7'
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: '0.2.7'
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: '0.2.7'
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: '0.2.7'
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pub', version: '0.2.2'
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pubimp', version: '0.2.2'
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.ac', version: '0.2.8'
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: '0.2.8'
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: '0.2.8'
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: '0.2.8'
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pub', version: '0.2.8'
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pubimp', version: '0.2.8'
 		
 		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.ac', version: '0.3'
 		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.app', version: '0.3'
@@ -825,33 +826,33 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pub', version: '0.3'
 		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pubimp', version: '0.3'
 		
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.ac', version: '0.3.4'
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: '0.3.4'
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: '0.3.4'
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: '0.3.4'
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: '0.3.4'
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pubimp', version: '0.3.4'
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.ac', version: '0.3.6'
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: '0.3.6'
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: '0.3.6'
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: '0.3.6'
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: '0.3.6'
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pubimp', version: '0.3.6'
 		
-		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.ac', version: '0.3'
-		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: '0.3'
-		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.dom', version: '0.3'
-		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.infra', version: '0.3'
-		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.pub', version: '0.3'
-		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.pubimp', version: '0.3'
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.ac', version: '0.3.1'
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: '0.3.1'
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.dom', version: '0.3.1'
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.infra', version: '0.3.1'
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.pub', version: '0.3.1'
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.pubimp', version: '0.3.1'
 		
-		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.ac', version: '0.4'
-		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.app', version: '0.4'
-		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: '0.4'
-		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.infra', version: '0.4'
-		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pub', version: '0.4'
-		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pubimp', version: '0.4'
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.ac', version: '0.4.2'
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.app', version: '0.4.2'
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: '0.4.2'
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.infra', version: '0.4.2'
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pub', version: '0.4.2'
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pubimp', version: '0.4.2'
 		
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.ac', version: '0.4.9'
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: '0.4.9'
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: '0.4.9'
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: '0.4.9'
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: '0.4.9'
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: '0.4.9'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.ac', version: '0.4.29'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: '0.4.29'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: '0.4.29'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: '0.4.29'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: '0.4.29'
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: '0.4.29'
 		
 		// shr find implement
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'
@@ -916,6 +917,7 @@ project (':wk.ctx:nts.uk.ctx.workflow.ac') {
 		compile project(':wk.ctx:nts.uk.ctx.workflow.app')
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.pub')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 	}
 }
 project (':wk.ctx:nts.uk.ctx.workflow.pub') {
@@ -969,18 +971,18 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile project (':wk.ctx:nts.uk.ctx.workflow.app')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
 		
-		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: '0.2'
-		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: '0.2'
+		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: '0.2.8'
+		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: '0.2.8'
 		compile group: 'at.function', name: 'nts.uk.ctx.at.function.app', version: '0.3'
 		compile group: 'at.function', name: 'nts.uk.ctx.at.function.dom', version: '0.3'
-		compile group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: '0.3.4'
-		compile group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: '0.3.4'
-		compile group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: '0.3'
-		compile group: 'at.request', name: 'nts.uk.ctx.at.request.dom', version: '0.3'
-		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.app', version: '0.4'
-		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: '0.4'
-		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: '0.4.9'
-		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: '0.4.9'
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: '0.3.6'
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: '0.3.6'
+		compile group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: '0.3.1'
+		compile group: 'at.request', name: 'nts.uk.ctx.at.request.dom', version: '0.3.1'
+		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.app', version: '0.4.2'
+		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: '0.4.2'
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: '0.4.29'
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: '0.4.29'
 
 	}
 }
@@ -1046,12 +1048,12 @@ project (':query:nts.uk.query.infra') {
 		compile project (':wk.ctx:nts.uk.ctx.workflow.infra')
 		compile project (':pereg.ctx:nts.uk.ctx.pereg.infra')
 		
-		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: '0.2'
+		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: '0.2.8'
 		compile group: 'at.function', name: 'nts.uk.ctx.at.function.infra', version: '0.3'
-		compile group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: '0.3.4'
-		compile group: 'at.request', name: 'nts.uk.ctx.at.request.infra', version: '0.3'
-		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.infra', version: '0.4'
-		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: '0.4.9'
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: '0.3.6'
+		compile group: 'at.request', name: 'nts.uk.ctx.at.request.infra', version: '0.3.1'
+		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.infra', version: '0.4.2'
+		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: '0.4.29'
 		
 		//compile group: 'pr.core', name: 'nts.uk.ctx.pr.core.infra', version: '0.1'
 		//compile group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.infra', version: '0.1'

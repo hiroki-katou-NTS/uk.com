@@ -26,7 +26,9 @@
 button.nts-switch-button {
 	min-width: 60px;
 }
-
+#sw1{
+	margin-left: 40px!important;
+}
 #combo-box {
 	min-width: 44px !important;
 	width: 76px;
@@ -49,4 +51,11 @@ button.nts-switch-button {
 
 div#memo .nts-editor-wrapped {
 	position: absolute;
+}
+.label1{
+	margin-left: 137px;
+}
+
+.disabled {
+   color: darkgrey;
 }

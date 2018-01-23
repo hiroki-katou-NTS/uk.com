@@ -104,6 +104,6 @@ public class SpecialHoliday extends AggregateRoot {
 	 * @return
 	 */
 	public boolean isMethodManageRemainNumber() {
-		return this.grantMethod == GrantMethod.ManageRemainNumber;
+		return this.grantMethod == GrantMethod.DoNot_ManageRemainNumber;
 	}
 }

@@ -15,18 +15,21 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
 @Getter
 public class EmployeeDailyPerError extends AggregateRoot {
 	
+	/** 会社ID: 会社ID */
 	private String companyID;
 	
+	/** エラー発生社員: 社員ID*/
 	private String employeeID;
 	
+	/** 処理年月日: 年月日*/
 	private GeneralDate date;
 	
-	// 勤務実績のエラーアラームコード
+	/** エラー: 勤務実績のエラーアラームコード*/
 	private ErrorAlarmWorkRecordCode errorAlarmWorkRecordCode;
 	
-	// 勤怠項目ID
+	/** 項目一覧: 勤怠項目ID */
 	private List<Integer> attendanceItemList;
-	
+//	
 	// エラー解除する
 	private int errorCancelAble;
 

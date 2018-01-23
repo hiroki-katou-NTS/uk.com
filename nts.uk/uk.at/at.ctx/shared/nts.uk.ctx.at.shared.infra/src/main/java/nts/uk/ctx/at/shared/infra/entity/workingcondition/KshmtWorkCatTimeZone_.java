@@ -11,7 +11,7 @@ public class KshmtWorkCatTimeZone_ {
 
     public static volatile SingularAttribute<KshmtWorkCatTimeZone, KshmtWorkCatTimeZonePK> kshmtWorkCatTimeZonePK;
     public static volatile SingularAttribute<KshmtWorkCatTimeZone, Integer> useAtr;
-    public static volatile SingularAttribute<KshmtWorkCatTimeZone, Integer> cnt;
+    public static volatile SingularAttribute<KshmtWorkCatTimeZone, Integer> startTime;
     public static volatile SingularAttribute<KshmtWorkCatTimeZone, Integer> endTime;
     public static volatile SingularAttribute<KshmtWorkCatTimeZone, Integer> exclusVer;
 

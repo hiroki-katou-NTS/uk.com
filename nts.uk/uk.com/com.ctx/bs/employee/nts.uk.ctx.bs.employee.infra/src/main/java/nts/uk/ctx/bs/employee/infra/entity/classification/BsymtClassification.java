@@ -34,20 +34,21 @@ import lombok.Setter;
 @Table(name = "BSYMT_CLASSIFICATION")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "BsymtClassification.findAll", query = "SELECT b FROM BsymtClassification b"),
-    @NamedQuery(name = "BsymtClassification.findByInsDate", query = "SELECT b FROM BsymtClassification b WHERE b.insDate = :insDate"),
-    @NamedQuery(name = "BsymtClassification.findByInsCcd", query = "SELECT b FROM BsymtClassification b WHERE b.insCcd = :insCcd"),
-    @NamedQuery(name = "BsymtClassification.findByInsScd", query = "SELECT b FROM BsymtClassification b WHERE b.insScd = :insScd"),
-    @NamedQuery(name = "BsymtClassification.findByInsPg", query = "SELECT b FROM BsymtClassification b WHERE b.insPg = :insPg"),
-    @NamedQuery(name = "BsymtClassification.findByUpdDate", query = "SELECT b FROM BsymtClassification b WHERE b.updDate = :updDate"),
-    @NamedQuery(name = "BsymtClassification.findByUpdCcd", query = "SELECT b FROM BsymtClassification b WHERE b.updCcd = :updCcd"),
-    @NamedQuery(name = "BsymtClassification.findByUpdScd", query = "SELECT b FROM BsymtClassification b WHERE b.updScd = :updScd"),
-    @NamedQuery(name = "BsymtClassification.findByUpdPg", query = "SELECT b FROM BsymtClassification b WHERE b.updPg = :updPg"),
-    @NamedQuery(name = "BsymtClassification.findByExclusVer", query = "SELECT b FROM BsymtClassification b WHERE b.exclusVer = :exclusVer"),
-    @NamedQuery(name = "BsymtClassification.findByCid", query = "SELECT b FROM BsymtClassification b WHERE b.bsymtClassificationPK.cid = :cid"),
-    @NamedQuery(name = "BsymtClassification.findByClscd", query = "SELECT b FROM BsymtClassification b WHERE b.bsymtClassificationPK.clscd = :clscd"),
-    @NamedQuery(name = "BsymtClassification.findByClsname", query = "SELECT b FROM BsymtClassification b WHERE b.clsname = :clsname"),
-    @NamedQuery(name = "BsymtClassification.findByMemo", query = "SELECT b FROM BsymtClassification b WHERE b.memo = :memo")})
+//    @NamedQuery(name = "BsymtClassification.findAll", query = "SELECT b FROM BsymtClassification b"),
+//    @NamedQuery(name = "BsymtClassification.findByInsDate", query = "SELECT b FROM BsymtClassification b WHERE b.insDate = :insDate"),
+//    @NamedQuery(name = "BsymtClassification.findByInsCcd", query = "SELECT b FROM BsymtClassification b WHERE b.insCcd = :insCcd"),
+//    @NamedQuery(name = "BsymtClassification.findByInsScd", query = "SELECT b FROM BsymtClassification b WHERE b.insScd = :insScd"),
+//    @NamedQuery(name = "BsymtClassification.findByInsPg", query = "SELECT b FROM BsymtClassification b WHERE b.insPg = :insPg"),
+//    @NamedQuery(name = "BsymtClassification.findByUpdDate", query = "SELECT b FROM BsymtClassification b WHERE b.updDate = :updDate"),
+//    @NamedQuery(name = "BsymtClassification.findByUpdCcd", query = "SELECT b FROM BsymtClassification b WHERE b.updCcd = :updCcd"),
+//    @NamedQuery(name = "BsymtClassification.findByUpdScd", query = "SELECT b FROM BsymtClassification b WHERE b.updScd = :updScd"),
+//    @NamedQuery(name = "BsymtClassification.findByUpdPg", query = "SELECT b FROM BsymtClassification b WHERE b.updPg = :updPg"),
+//    @NamedQuery(name = "BsymtClassification.findByExclusVer", query = "SELECT b FROM BsymtClassification b WHERE b.exclusVer = :exclusVer"),
+//    @NamedQuery(name = "BsymtClassification.findByCid", query = "SELECT b FROM BsymtClassification b WHERE b.bsymtClassificationPK.cid = :cid"),
+//    @NamedQuery(name = "BsymtClassification.findByClscd", query = "SELECT b FROM BsymtClassification b WHERE b.bsymtClassificationPK.clscd = :clscd"),
+//    @NamedQuery(name = "BsymtClassification.findByClsname", query = "SELECT b FROM BsymtClassification b WHERE b.clsname = :clsname"),
+//    @NamedQuery(name = "BsymtClassification.findByMemo", query = "SELECT b FROM BsymtClassification b WHERE b.memo = :memo")
+	})
 public class BsymtClassification implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId

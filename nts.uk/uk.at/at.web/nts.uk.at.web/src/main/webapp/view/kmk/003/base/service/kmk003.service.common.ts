@@ -1,7 +1,5 @@
 module nts.uk.at.view.kmk003.a {
-    import flexset = nts.uk.at.view.kmk003.a.service.model.flexset;
-    import predset = nts.uk.at.view.kmk003.a.service.model.predset;
-    import worktimeset = nts.uk.at.view.kmk003.a.service.model.worktimeset;
+    
     export module service {
         export module model {
             export module common {
@@ -50,7 +48,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 export interface ExtraordWorkOTFrameSetDto {
-                    oTFrameNo: number;
+                    otFrameNo: number;
                     inLegalWorkFrameNo: number;
                     settlementOrder: number;
                 }
@@ -114,7 +112,7 @@ module nts.uk.at.view.kmk003.a {
                 export interface GoOutTimezoneRoundingSetDto {
                     pubHolWorkTimezone: GoOutTypeRoundingSetDto;
                     workTimezone: GoOutTypeRoundingSetDto;
-                    oTTimezone: GoOutTypeRoundingSetDto;
+                    ottimezone: GoOutTypeRoundingSetDto;
                 }
 
                 export interface GraceTimeSettingDto {
@@ -126,7 +124,7 @@ module nts.uk.at.view.kmk003.a {
                     workTimeNo: number;
                     timezone: TimeZoneRoundingDto;
                     isLegalHolidayConstraintTime: boolean;
-                    inLegalBreakFrameNo: boolean;
+                    inLegalBreakFrameNo: number;
                     isNonStatutoryDayoffConstraintTime: boolean;
                     outLegalBreakFrameNo: number;
                     isNonStatutoryHolidayConstraintTime: boolean;
@@ -169,7 +167,7 @@ module nts.uk.at.view.kmk003.a {
                     restraintTimeUse: boolean;
                     earlyOTUse: boolean;
                     timezone: TimeZoneRoundingDto;
-                    oTFrameNo: number;
+                    otFrameNo: number;
                     legalOTframeNo: number;
                     settlementOrder: number;
                 }
@@ -238,7 +236,7 @@ module nts.uk.at.view.kmk003.a {
                 export interface WorkTimezoneExtraordTimeSetDto {
                     holidayFrameSet: HolidayFramsetDto;
                     timeRoundingSet: TimeRoundingSettingDto;
-                    oTFrameSet: ExtraordWorkOTFrameSetDto;
+                    otFrameSet: ExtraordWorkOTFrameSetDto;
                     calculateMethod: number;
                 }
 
@@ -250,7 +248,7 @@ module nts.uk.at.view.kmk003.a {
                 export interface WorkTimezoneCommonSetDto {
                     zeroHStraddCalculateSet: boolean;
                     intervalSet: IntervalTimeSettingDto;
-                    subHolTimeSet: WorkTimezoneOtherSubHolTimeSetDto;
+                    subHolTimeSet: WorkTimezoneOtherSubHolTimeSetDto[];
                     raisingSalarySet: string;
                     medicalSet: WorkTimezoneMedicalSetDto[];
                     goOutSet: WorkTimezoneGoOutSetDto;
@@ -268,12 +266,38 @@ module nts.uk.at.view.kmk003.a {
 
                 export interface WorkTimeSettingInfoDto extends WorkTimeCommonDto {
                     flexWorkSetting: flexset.FlexWorkSettingDto;
-                    /*fixedWorkSetting:FixedWorkSettingDto ;
-                     flowWorkSetting: FlWorkSettingDto;
-                    diffTimeWorkSetting: DiffTimeWorkSettingDto ;
-                    */
+                    fixedWorkSetting: fixedset.FixedWorkSettingDto;
+                    flowWorkSetting: flowset.FlWorkSettingDto;
+                    diffTimeWorkSetting: difftimeset.DiffTimeWorkSettingDto;
+                }
+                
+                export interface FixedWorkTimezoneSetDto {
+                    lstWorkingTimezone: EmTimeZoneSetDto[];
+                    lstOTTimezone: OverTimeOfTimeZoneSetDto[];
                 }
 
+                
+                
+                // Common Enum
+                export enum LateEarlyAtr {
+                    LATE,
+                    EARLY
+                }               
+                
+                export enum SubHolidayOriginAtr {
+                    FROM_OVER_TIME,
+                    WORK_DAY_OFF_TIME
+                }
+                
+                export enum SubHolTransferSetAtr {
+                    SPECIFIED_TIME_SUB_HOL,
+                    CERTAIN_TIME_EXC_SUB_HOL
+                }
+                
+                export enum WorkSystemAtr {
+                    DAY_SHIFT,
+                    NIGHT_SHIFT
+                }
             }
         }
     }

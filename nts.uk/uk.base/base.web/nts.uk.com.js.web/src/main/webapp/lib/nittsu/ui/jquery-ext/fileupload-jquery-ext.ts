@@ -1,7 +1,11 @@
 /// <reference path="../../reference.ts"/>
 
+interface JQuery {
+    ntsFileUpload(options: nts.uk.ui.jqueryExtentions.ntsFileUpload.FileUploadOption);
+}
+
 module nts.uk.ui.jqueryExtentions {
-    module ntsFileUpload {
+    export module ntsFileUpload {
         export interface FileUploadOption {
             stereoType: string;
             onSuccess?(): any;
@@ -41,16 +45,21 @@ module nts.uk.ui.jqueryExtentions {
                             dfd.resolve(data);
                         }
                     }).fail(function(jqXHR, textStatus, errorThrown) {
-                        // Client Exception
-                        dfd.reject({ message: "Please check your network", messageId: "0" });
+                        
+                        if (jqXHR.status === 413) {
+                            dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
+                        } else {
+                            // Client Exception
+                            dfd.reject({ message: "アップロード処理に失敗しました。", messageId: "0" });
+                        }
                     });
                 }
                 else {
-                    dfd.reject({ message: "Please select file", messageId: "0" });
+                    dfd.reject({ message: "ファイルを選択してください。", messageId: "0" });
                 }
             }
             else {
-                dfd.reject({ messageId: "0", message: "Can not find control" });
+                dfd.reject({ messageId: "0", message: "ファイルを読み込めません。" });
             }
             return dfd.promise();
         }

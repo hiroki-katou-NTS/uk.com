@@ -9,7 +9,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,12 +25,30 @@ public class ErrorAlarmWorkRecordFinder {
 	private ErrorAlarmWorkRecordRepository repository;
 
 	public List<ErrorAlarmWorkRecordDto> getListErrorAlarmWorkRecord() {
-		return repository.getListErrorAlarmWorkRecord(AppContexts.user().companyId()).stream()
-				.map(domain -> ErrorAlarmWorkRecordDto.fromDomain(domain)).collect(Collectors.toList());
+		List<ErrorAlarmWorkRecord> lstErrorAlarm = repository.getListErrorAlarmWorkRecord(AppContexts.user().companyId());
+		List<ErrorAlarmCondition> lstCondition = repository.getListErrorAlarmCondition(AppContexts.user().companyId());
+		List<ErrorAlarmWorkRecordDto> lstDto = lstErrorAlarm.stream().map(eral -> {
+			for (ErrorAlarmCondition errorAlarmCondition : lstCondition) {
+				if(errorAlarmCondition.getErrorAlarmCheckID().equals(eral.getErrorAlarmCheckID())){
+					return ErrorAlarmWorkRecordDto.fromDomain(eral, errorAlarmCondition);
+				}
+			}
+			return null;
+		}).collect(Collectors.toList());
+		return lstDto;
 	}
 
-	public ErrorAlarmWorkRecordDto findByCode(String code) {
-		return ErrorAlarmWorkRecordDto.fromDomain(repository.findByCode(code));
+	public List<ErrorAlarmWorkRecordDto> findByListErrorAlamCheckId(List<String> listEralCheckId) {
+		List<ErrorAlarmWorkRecord> lstErrorAlarm = repository.findByListErrorAlamCheckId(listEralCheckId);
+		List<ErrorAlarmCondition> lstCondition = repository.findConditionByListErrorAlamCheckId(listEralCheckId);
+		List<ErrorAlarmWorkRecordDto> lstDto = lstErrorAlarm.stream().map(eral -> {
+			for (ErrorAlarmCondition errorAlarmCondition : lstCondition) {
+				if(errorAlarmCondition.getErrorAlarmCheckID().equals(eral.getErrorAlarmCheckID())){
+					return ErrorAlarmWorkRecordDto.fromDomain(eral, errorAlarmCondition);
+				}
+			}
+			return null;
+		}).collect(Collectors.toList());
+		return lstDto;
 	}
-
 }

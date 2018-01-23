@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdFixRest;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRtSet;
 
 /**
  * The Class JpaFlexOffdayTzOFRTimeSetGetMemento.
@@ -19,18 +19,18 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdFixRest;
 public class JpaFlexODTzOFRTimeSetGetMemento implements TimezoneOfFixedRestTimeSetGetMemento{
 	
 	/** The entitys. */
-	private List<KshmtFlexOdFixRest> entitys;
-
+	private KshmtFlexOdRtSet entity;
 
 	/**
 	 * Instantiates a new jpa flex OD tz OFR time set get memento.
 	 *
-	 * @param entitys the entitys
+	 * @param entity the entity
 	 */
-	public JpaFlexODTzOFRTimeSetGetMemento(List<KshmtFlexOdFixRest> entitys) {
+	public JpaFlexODTzOFRTimeSetGetMemento(KshmtFlexOdRtSet entity) {
 		super();
-		this.entitys = entitys;
+		this.entity = entity;
 	}
+
 
 
 	/* (non-Javadoc)
@@ -38,11 +38,13 @@ public class JpaFlexODTzOFRTimeSetGetMemento implements TimezoneOfFixedRestTimeS
 	 */
 	@Override
 	public List<DeductionTime> getTimezones() {
-		if (CollectionUtil.isEmpty(this.entitys)) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexOdFixRests())) {
 			return new ArrayList<>();
 		}
-		return this.entitys.stream().map(entity -> new DeductionTime(new JpaFlexODDeductionTimeGetMemento(entity)))
+		return this.entity.getKshmtFlexOdFixRests().stream()
+				.map(entity -> new DeductionTime(new JpaFlexODDeductionTimeGetMemento(entity)))
 				.collect(Collectors.toList());
+
 	}
 
 }

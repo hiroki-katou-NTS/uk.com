@@ -30,9 +30,21 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         constructor() {
             let self = this;
             let param = nts.uk.ui.windows.getShared("KDW007BParams");
-            param.countableAddAtdItems = Object.values(param.countableAddAtdItems);
-            param.countableSubAtdItems = Object.values(param.countableSubAtdItems);
+            param.countableAddAtdItems = _.values(param.countableAddAtdItems ? param.countableAddAtdItems : []);
+            param.countableSubAtdItems = _.values(param.countableSubAtdItems ? param.countableSubAtdItems : []);
             self.currentAtdItemCondition = ko.mapping.fromJS(param);
+            self.currentAtdItemCondition.conditionAtr.subscribe((val) => {
+                self.currentAtdItemCondition.uncountableAtdItem(null);
+                self.currentAtdItemCondition.countableAddAtdItems([]);
+                self.currentAtdItemCondition.countableSubAtdItems([]);
+                self.currentAtdItemCondition.conditionType(0);
+                self.currentAtdItemCondition.compareOperator(0);
+                self.currentAtdItemCondition.singleAtdItem(null);
+                self.currentAtdItemCondition.compareStartValue(0);
+                self.currentAtdItemCondition.compareEndValue(0);
+                self.fillTextDisplayTarget();
+                self.fillTextDisplayComparison();
+            });
             self.currentAtdItemCondition.compareOperator.subscribe((value) => {
                 if (value > 5) {
                     self.enumConditionType([
@@ -60,6 +72,12 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 $(".value-input").ntsError("clear");
                 self.currentAtdItemCondition.compareStartValue(0);
                 self.currentAtdItemCondition.compareEndValue(0);
+            });
+            self.currentAtdItemCondition.compareOperator.subscribe((value) => {
+                self.validateRange();
+            });
+            $(".value-input").blur(()=>{
+                self.validateRange();    
             });
             self.fillTextDisplayTarget();
             self.fillTextDisplayComparison();
@@ -205,11 +223,17 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
         validateRange() {
             let self = this;
-            if (self.currentAtdItemCondition.conditionType() === 0 && self.currentAtdItemCondition.compareOperator() > 5) {
-                if (self.currentAtdItemCondition.compareStartValue() >= self.currentAtdItemCondition.compareEndValue()) {
-                    $('.value-input').ntsError('set', '開始時刻と終了値の入力が不正です');
-                } else {
-                    $('.value-input').ntsError('clear');
+            $('.value-input').ntsError('clear');
+            $(".value-input").trigger("validate");
+            if (self.currentAtdItemCondition.conditionType() === 0 && (self.currentAtdItemCondition.compareOperator() === 7 || self.currentAtdItemCondition.compareOperator() === 9)) {
+                if (parseInt(self.currentAtdItemCondition.compareStartValue()) > parseInt(self.currentAtdItemCondition.compareEndValue())) {
+                    $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                    $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                }
+            } else if (self.currentAtdItemCondition.conditionType() === 0 && (self.currentAtdItemCondition.compareOperator() === 6 || self.currentAtdItemCondition.compareOperator() === 8)) {
+                if (parseInt(self.currentAtdItemCondition.compareStartValue()) >= parseInt(self.currentAtdItemCondition.compareEndValue())) {
+                    $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                    $('#endValue').ntsError('set', { messageId: "Msg_927" });
                 }
             }
         }
@@ -217,15 +241,14 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         returnData() {
             let self = this;
             $(".need-check").trigger("validate");
-            $(".value-input").trigger("validate");
             self.validateRange();
             $(".value-input").blur(function() {
                 self.validateRange();
             });
             if (!nts.uk.ui.errors.hasError()) {
                 let param = ko.mapping.toJS(self.currentAtdItemCondition);
-                param.countableAddAtdItems = Object.values(param.countableAddAtdItems);
-                param.countableSubAtdItems = Object.values(param.countableSubAtdItems);
+                param.countableAddAtdItems = _.values(param.countableAddAtdItems);
+                param.countableSubAtdItems = _.values(param.countableSubAtdItems);
                 nts.uk.ui.windows.setShared('KDW007BResult', param);
                 nts.uk.ui.windows.close();
             }
@@ -251,7 +274,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
         compareEndValue: KnockoutObservable<number>;
 
         constructor(param) {
-            this.targetNO = ko.observable(param.NO);
+            this.targetNO = ko.observable(param.targetNO);
             this.conditionAtr = ko.observable(param.conditionAtr);
             this.useAtr = ko.observable(param.useAtr);
             this.uncountableAtdItem = ko.observable(param.uncountableAtdItem);

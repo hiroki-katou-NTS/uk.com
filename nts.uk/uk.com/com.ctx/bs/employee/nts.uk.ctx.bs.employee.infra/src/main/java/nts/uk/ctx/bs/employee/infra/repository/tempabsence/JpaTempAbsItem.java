@@ -121,6 +121,9 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			return new BsymtTempAbsHisItem(sickLeave.getHistoryId(), sickLeave.getEmployeeId(),
 					tempAbsenceFrNo, sickLeave.getRemarks() != null? sickLeave.getRemarks().v():null, sickLeave.getSoInsPayCategory());
 		case 7:
+		case 8:
+		case 9:
+		case 10:
 			AnyLeave anyLeave = (AnyLeave) domain;
 			return new BsymtTempAbsHisItem(anyLeave.getHistoryId(), anyLeave.getEmployeeId(),
 					tempAbsenceFrNo,anyLeave.getRemarks() != null? anyLeave.getRemarks().v():null, anyLeave.getSoInsPayCategory());
@@ -142,7 +145,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		if (domain.getTempAbsenceFrNo() != null){
 			entity.tempAbsFrameNo = domain.getTempAbsenceFrNo().v().intValue();
 		}
-		if (domain.getRemarks() != null){
+		if (domain.getRemarks() != null && !domain.getRemarks().v().equals("")){
 			entity.remarks = domain.getRemarks().v();
 		}
 		if (domain.getSoInsPayCategory() != null){
@@ -197,6 +200,9 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		case 6:
 			break;
 		case 7:
+		case 8:
+		case 9:
+		case 10:
 			break;
 		default:
 		}

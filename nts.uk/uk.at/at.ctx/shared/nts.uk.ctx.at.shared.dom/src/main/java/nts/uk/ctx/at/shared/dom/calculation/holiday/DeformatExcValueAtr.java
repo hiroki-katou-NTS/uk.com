@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.shared.dom.calculation.holiday;
-/**
- * @author phongtq
- */
-import lombok.AllArgsConstructor;
 
+import lombok.AllArgsConstructor;
+/**
+ * 
+ * @author phongtq
+ *通常、変形の所定超過時
+ */
 @AllArgsConstructor
 public enum DeformatExcValueAtr {
 

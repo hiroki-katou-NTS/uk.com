@@ -7,6 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.sys.auth.dom.wkpmanager.EmployeeCode
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmm051.a.main.css" />
 			<com:stylefile path="/view/ccg/026/component/component.css"  of="/nts.uk.com.web"/>
@@ -34,7 +37,7 @@
 				<div id="wkp-component"></div>
 				<div id="left-content">
 					<div id="left-content-bottom" class="caret-right caret-background bg-green">
-						<table id="treegrid2" tabindex="5"
+						<table id="treegrid2" tabindex="0"
 								data-bind="ntsTreeGridView:{
 									width: 385,
 									height: 504,
@@ -61,15 +64,23 @@
 														enable: true, 
 														value: dateValue, 
 														maxRange: 'none',
-														required: true}" tabindex="8" />
+														required: true}" />
 						</div>
 					</div>
 					<div class="input-row control-group">
-						<div class="label-group" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM051_14')}</div>
+						<div class="label-group" data-bind="ntsFormLabel: { required: true, constraint: 'EmployeeCode' }">#{i18n.getText('CMM051_14')}</div>
 						<div id="employee-selection">
-							<button tabindex="9" id="B5_1_1" style="margin-right: 40px;"
-								data-bind="click: openDialogCDL009">#{i18n.getText('CMM044_15')}</button>
-							<label data-bind="text : selectedWkpManager().employeeInfo().employeeCode" style="padding-left: 15px"></label>
+							<button id="B5_1_1" style="margin-right: 40px;"
+								data-bind="click: openDialogCDL009">#{i18n.getText('CMM051_15')}</button>
+							<input id='selectionItemName' style="width: 320px; "
+								data-bind="ntsTextEditor: {
+									name: '#[CMM051_16]',
+									value: selectedWkpManager().employeeInfo().employeeCode,
+									constraint: 'EmployeeCode',
+									option: '',
+									required: true,
+									enable: true,
+									readonly: true}" />
 							<label data-bind="text : selectedWkpManager().employeeInfo().namePerson" style="padding-left: 15px"></label>
 						</div>
 					</div>

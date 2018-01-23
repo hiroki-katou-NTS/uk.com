@@ -16,77 +16,88 @@ public interface WorkTimezoneCommonSetSetMemento {
 	/**
 	 * Sets the zero H stradd calculate set.
 	 *
-	 * @param calcSet the new zero H stradd calculate set
+	 * @param calcSet
+	 *            the new zero H stradd calculate set
 	 */
-	 void setZeroHStraddCalculateSet(boolean calcSet);
+	void setZeroHStraddCalculateSet(boolean calcSet);
 
 	/**
 	 * Sets the interval set.
 	 *
-	 * @param itvset the new interval set
+	 * @param itvset
+	 *            the new interval set
 	 */
-	 void setIntervalSet(IntervalTimeSetting itvset);
+	void setIntervalSet(IntervalTimeSetting itvset);
 
 	/**
 	 * Sets the sub hol time set.
 	 *
-	 * @param shtSet the new sub hol time set
+	 * @param shtSet
+	 *            the new sub hol time set
 	 */
-	 void setSubHolTimeSet(WorkTimezoneOtherSubHolTimeSet shtSet);
+	 void setSubHolTimeSet(List<WorkTimezoneOtherSubHolTimeSet> shtSet);
 
 	/**
 	 * Sets the raising salary set.
 	 *
-	 * @param set the new raising salary set
+	 * @param set
+	 *            the new raising salary set
 	 */
-void setRaisingSalarySet(BonusPaySettingCode set);
+	 void setRaisingSalarySet(BonusPaySettingCode set);
 
 	/**
 	 * Sets the medical set.
 	 *
-	 * @param list the new medical set
+	 * @param list
+	 *            the new medical set
 	 */
-	 void setMedicalSet(List<WorkTimezoneMedicalSet> list);
+	void setMedicalSet(List<WorkTimezoneMedicalSet> list);
 
 	/**
 	 * Sets the go out set.
 	 *
-	 * @param set the new go out set
+	 * @param set
+	 *            the new go out set
 	 */
-	 void setGoOutSet(WorkTimezoneGoOutSet set);
+	void setGoOutSet(WorkTimezoneGoOutSet set);
 
 	/**
 	 * Sets the stamp set.
 	 *
-	 * @param set the new stamp set
+	 * @param set
+	 *            the new stamp set
 	 */
-	 void setStampSet(WorkTimezoneStampSet set);
+	void setStampSet(WorkTimezoneStampSet set);
 
 	/**
 	 * Sets the late night time set.
 	 *
-	 * @param set the new late night time set
+	 * @param set
+	 *            the new late night time set
 	 */
-	 void setLateNightTimeSet(WorkTimezoneLateNightTimeSet set);
+	void setLateNightTimeSet(WorkTimezoneLateNightTimeSet set);
 
 	/**
 	 * Sets the short time work set.
 	 *
-	 * @param set the new short time work set
+	 * @param set
+	 *            the new short time work set
 	 */
-	 void setShortTimeWorkSet(WorkTimezoneShortTimeWorkSet set);
+	void setShortTimeWorkSet(WorkTimezoneShortTimeWorkSet set);
 
 	/**
 	 * Sets the extraord time set.
 	 *
-	 * @param set the new extraord time set
+	 * @param set
+	 *            the new extraord time set
 	 */
-	 void setExtraordTimeSet(WorkTimezoneExtraordTimeSet set);
+	void setExtraordTimeSet(WorkTimezoneExtraordTimeSet set);
 
 	/**
 	 * Sets the late early set.
 	 *
-	 * @param set the new late early set
+	 * @param set
+	 *            the new late early set
 	 */
-	 void setLateEarlySet(WorkTimezoneLateEarlySet set);
+	void setLateEarlySet(WorkTimezoneLateEarlySet set);
 }

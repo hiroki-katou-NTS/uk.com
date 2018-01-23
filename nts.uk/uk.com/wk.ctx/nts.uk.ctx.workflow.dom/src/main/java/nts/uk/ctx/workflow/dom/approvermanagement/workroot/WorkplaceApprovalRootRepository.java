@@ -60,7 +60,7 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param appType
 	 * @return
 	 */
-	List<WorkplaceApprovalRoot> findByBaseDateOfCommon(String companyID, String workplaceID, GeneralDate date);
+	Optional<WorkplaceApprovalRoot> findByBaseDateOfCommon(String companyID, String workplaceID, GeneralDate date);
 
 	/**
 	 * add Workplace Approval Root
@@ -112,4 +112,12 @@ public interface WorkplaceApprovalRootRepository {
 	 * @return
 	 */
 	List<WorkplaceApprovalRoot> getWpApprovalRootByType(String companyId, String workplaceId, Integer applicationType, int employmentRootAtr);
+	/**
+	 * getWpAppRootLast
+	 * @param companyId
+	 * @param workplaceId
+	 * @param endDate
+	 * @return
+	 */
+	List<WorkplaceApprovalRoot> getWpAppRootLast(String companyId, String workplaceId,GeneralDate endDate);
 }

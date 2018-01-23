@@ -23,28 +23,27 @@
 
 #qViewModel #company, #qViewModel #workplace {
 	width: 1005px;
-	height: 97px;
+	height: 60px;
 	background-color: #DAE3F3
 }
 
 .caret-background.caret-bottom:after {
 	left: 5% !important;
 	margin-top: 0px !important;
-	border-width: 10px 30px !important;
+	border-width: 8px 24px !important;
 	color: #E0F59E !important;
 }
 
 #test1, #test2 {
 	background-color: #FBE5D6;
-	margin-top: 7px;
 	margin-left: -7px;
 	width: 1015px;
-	height: 70px;
-	padding: 4px 0 0 4px;
+	height: 53px;
 }
 
 #test1 button, #test2 button {
 	width: 95px !important;
+	height: 20px;
 }
 
 #test1 table td, #test2 table td {
@@ -53,26 +52,27 @@
 
 #qViewModel .hyperlink {
 	color: #0066CC;
-	margin-left: 8px;
-	margin-top: 4px;
+	margin-left: 15px;
+	margin-top: 1px
 }
 
-#part-1 {
+#part-1-1, #part-1-2 {
 	margin-left: -8px;
-	margin-top: -8px
+	margin-top: -11px
 }
 
-#part-1 div:FIRST-CHILD {
-	height: 25px;
-	width: 640px;
+#part-1-1 div:FIRST-CHILD, #part-1-2 div:FIRST-CHILD {
+	height: 18px;
+	width: 650px;
 }
 
-#part-1 div:NTH-CHILD(2) {
-	margin-left: 30px
+#part-1-1 div:NTH-CHILD(2), #part-1-2 div:NTH-CHILD(2) {
+	margin-left: 150px
 }
 
-#part-1 button {
-	margin-left: 20px
+#part-1-1 button, #part-1-2 button {
+	margin-left: 20px;
+	height: 24px;
 }
 
 #popup-area {

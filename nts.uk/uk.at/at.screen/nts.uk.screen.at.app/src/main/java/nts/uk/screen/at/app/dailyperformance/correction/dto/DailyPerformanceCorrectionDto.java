@@ -4,12 +4,15 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -48,12 +51,15 @@ public class DailyPerformanceCorrectionDto {
 	
 	//A13_1  コメント
 	private String comment;
+	
+	private Set<ItemValue> itemValues;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
 		this.lstFixedHeader = DPHeaderDto.GenerateFixedHeader();
 		this.lstCellState = new ArrayList<>();
 		this.lstControlDisplayItem = new DPControlDisplayItem();
+		this.itemValues = new HashSet<>();
 	}
 
 	/** Check if employeeId is login user */

@@ -37,7 +37,6 @@ public class FlexHalfDayWorkTimePolicyImpl implements FlexHalfDayWorkTimePolicy 
 	public void validate(FlexHalfDayWorkTime flexHalfDay, PredetemineTimeSetting predTime) {
 		// validate FixedWorkTimezoneSet
 		this.fixedWtzSetPolicy.validate(flexHalfDay.getWorkTimezone(), predTime);
-
 		// validate FlowWorkRestTimezone
 		this.flowRestPolicy.validate(predTime, flexHalfDay.getRestTimezone());
 	}

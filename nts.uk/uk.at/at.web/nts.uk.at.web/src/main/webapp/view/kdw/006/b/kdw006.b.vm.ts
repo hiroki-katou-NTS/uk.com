@@ -13,7 +13,7 @@ module nts.uk.at.view.kdw006 {
         export class TabScreenModel {
             tabs: KnockoutObservableArray<TabModel>;
             title: KnockoutObservable<string>;
-            enableCopyBtn : KnockoutObservable<boolean>; 
+           // enableCopyBtn : KnockoutObservable<boolean>; 
 
             constructor() {
                 let self = this;
@@ -21,11 +21,11 @@ module nts.uk.at.view.kdw006 {
                     new TabModel({ id: 'B', name: getText('KDW006_20'), active: true }), 
                     new TabModel({ id: 'C', name: getText('KDW006_21') }),
                     new TabModel({ id: 'D', name: getText('KDW006_22') }),
-                    new TabModel({ id: 'E', name: getText('KDW006_23') }),
-                    new TabModel({ id: 'G', name: getText('KDW006_58') })
+                    new TabModel({ id: 'E', name: getText('KDW006_23') })
+                    //new TabModel({ id: 'G', name: getText('KDW006_58') })
                 ]);
                 self.title = ko.observable('');
-                self.enableCopyBtn = ko.observable(false);
+               // self.enableCopyBtn = ko.observable(false);
                 self.tabs().map((t) => {
                     // set title for tab
                     if (t.active() == true) {
@@ -59,31 +59,31 @@ module nts.uk.at.view.kdw006 {
                         if (!!view.viewmodelB && typeof view.viewmodelB.start == 'function') {
                             view.viewmodelB.start();
                         }
-                        self.enableCopyBtn(false);
+                       // self.enableCopyBtn(false);
                         break;
                     case 'C':
                         if (!!view.viewmodelC && typeof view.viewmodelC.start == 'function') {
                             view.viewmodelC.start();
                         }
-                        self.enableCopyBtn(false);
+                      //  self.enableCopyBtn(false);
                         break;
                     case 'D':
                         if (!!view.viewmodelD && typeof view.viewmodelD.start == 'function') {
                             view.viewmodelD.start();
                         }
-                        self.enableCopyBtn(false);
+                       // self.enableCopyBtn(false);
                         break;
                     case 'E':
                         if (!!view.viewmodelE && typeof view.viewmodelE.start == 'function') {
                             view.viewmodelE.start();
                         }
-                        self.enableCopyBtn(true);
+                       // self.enableCopyBtn(true);
                         break;
                     case 'G':
                         if (!!view.viewmodelG && typeof view.viewmodelG.start == 'function') {
                             view.viewmodelG.start();
                         }
-                        self.enableCopyBtn(true);
+                       // self.enableCopyBtn(true);
                         break;
                 }
             }
@@ -95,9 +95,9 @@ module nts.uk.at.view.kdw006 {
                 href("../a/index.xhtml");
             }
             
-            copyData() {
-                let self = this;
-            }
+//            copyData() {
+//                let self = this;
+//            }
 
             saveData() {
                 let self = this, view = __viewContext.viewModel,

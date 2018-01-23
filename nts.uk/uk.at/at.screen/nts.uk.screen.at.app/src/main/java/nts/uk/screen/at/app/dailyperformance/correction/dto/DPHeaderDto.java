@@ -48,6 +48,8 @@ public class DPHeaderDto {
 	
 	private List<DPHeaderDto> group;
 	
+	private Constraint constraint;
+	
 	private DPHeaderDto(String headerText, String key, String dataType, String width, String color, boolean hidden,
 			String ntsControl,
 			Boolean changedByOther, Boolean changedByYou) {
@@ -108,11 +110,19 @@ public class DPHeaderDto {
 			}
 			dto.setGroup(groups);
 		}
-		if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value || attendanceAtr == DailyAttendanceAtr.NumberOfTime.value){
-			dto.setNtsControl("TextEditorNumberSeparated");
+		if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
+			//dto.setNtsControl("TextEditorNumberSeparated");
+			dto.setConstraint(new Constraint("Currency", true));
 		}
 		if(attendanceAtr == DailyAttendanceAtr.Time.value){
-			dto.setNtsControl("TextEditorTimeShortHM");
+			//dto.setNtsControl("TextEditorTimeShortHM");
+			dto.setConstraint(new Constraint("Clock", true));
+		}
+		if(attendanceAtr == DailyAttendanceAtr.NumberOfTime.value){
+			dto.setConstraint(new Constraint("Integer", true));
+		}
+		if(attendanceAtr == DailyAttendanceAtr.TimeOfDay.value){
+			dto.setConstraint(new Constraint("TimeWithDay", true));
 		}
 		return dto;
 	}

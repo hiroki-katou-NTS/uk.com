@@ -5,16 +5,6 @@ html{
 	margin-left: 8px;
 	width: 100%;
 	box-sizing: border-box;
-	overflow: hidden;
-}
-
-#functions-area {
-	height: 80px;
-}
-
-.proceed {
-	margin-top: 30px;
-	margin-left: 30px;
 }
 
 .contentPassComplex {
@@ -25,6 +15,9 @@ html{
 .contentPassComplex1 {
 	margin-left: 143px;
 }
+.panel {
+     padding: 0px !important; 
+}
 
 .contentsymbol {
 	margin-left: 201px;
@@ -32,7 +25,7 @@ html{
 }
 
 #panelPassPolicy {
-	height: 370px;
+	height: 373px;
 }
 
 .component-area {

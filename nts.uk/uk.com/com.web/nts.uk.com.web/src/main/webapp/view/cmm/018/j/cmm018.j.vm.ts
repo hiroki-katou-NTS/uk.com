@@ -41,7 +41,7 @@ module nts.uk.com.view.cmm018.j {
 //                block.invisible();
                 var self = this;
                 //data
-                let dataFix: vmbase.JData = new vmbase.JData(self.newStartDate(),'9999-12-31',self.dataSource.workplaceId,self.dataSource.employeeId,self.dataSource.check,self.selectedId(),self.dataSource.startDate,self.dataSource.lstUpdate);
+                let dataFix: vmbase.JData = new vmbase.JData(self.newStartDate(),'9999-12-31',self.dataSource.workplaceId,self.dataSource.employeeId,self.dataSource.check,self.selectedId(),self.dataSource.startDate,self.dataSource.lstUpdate,self.dataSource.mode);
                 if(self.isUpdate()) {//TH: edit
 //                //編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
 //                    if(self.newStartDate() < self.beginStartDate()){
@@ -59,7 +59,8 @@ module nts.uk.com.view.cmm018.j {
                             close();
                         });
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_156", messageParams: nts.uk.resource.getText("CMM018_48")}).then(function(res){
+                        nts.uk.ui.dialog.alertError({ messageId:res.messageId, messageParams: res.parameterIds}).then(function(res){
+                            $("#startDateInput").focus();
                                 block.clear();
                         });      
                     });
@@ -91,7 +92,8 @@ module nts.uk.com.view.cmm018.j {
                                 close();
                             });
                         }).fail(function(res){
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_156", messageParams: nts.uk.resource.getText("CMM018_48")}).then(function(res){
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds}).then(function(res){
+                                 $("#startDateInput").focus();
                                 block.clear();
                             });
 //                            nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){

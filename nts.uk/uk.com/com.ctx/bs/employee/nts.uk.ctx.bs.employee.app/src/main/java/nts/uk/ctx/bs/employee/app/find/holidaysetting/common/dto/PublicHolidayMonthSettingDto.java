@@ -1,32 +1,30 @@
 package nts.uk.ctx.bs.employee.app.find.holidaysetting.common.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class PublicHolidayMonthSettingDto.
  */
 @Data
+@NoArgsConstructor
 public class PublicHolidayMonthSettingDto {
 	
 	/** The public hd management year. */
-	private int publicHdManagementYear;
+	public int publicHdManagementYear;
 	
 	/** The month. */
-	private int month;
+	public int month;
 
 	/** The in legal holiday. */
-	private int inLegalHoliday;
-		
-	/** The out legal holiday. */
-	private int outLegalHoliday;
+	public double inLegalHoliday;
 	
 	/**
 	 * Instantiates a new public holiday month setting dto.
 	 */
-	public PublicHolidayMonthSettingDto(int publicHdManagementYear, int month, int inLegalHoliday, int outLegalHoliday){
+	public PublicHolidayMonthSettingDto(int publicHdManagementYear, int month, double inLegalHoliday){
 		this.publicHdManagementYear = publicHdManagementYear;
 		this.month = month;
 		this.inLegalHoliday = inLegalHoliday;
-		this.outLegalHoliday = outLegalHoliday;
 	}
 }

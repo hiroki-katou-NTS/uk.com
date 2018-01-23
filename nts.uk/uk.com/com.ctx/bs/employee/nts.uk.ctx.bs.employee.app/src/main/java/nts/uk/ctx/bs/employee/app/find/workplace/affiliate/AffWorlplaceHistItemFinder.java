@@ -56,7 +56,7 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 		return null;
 	}
 
-	private PeregDomainDto getByEmpIdAndStandDate(String employeeId, GeneralDate standDate) {
+	public AffWorlplaceHistItemDto getByEmpIdAndStandDate(String employeeId, GeneralDate standDate) {
 		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getByEmpIdAndStandDate(employeeId,
 				standDate);
 		if (affWrkplcHist.isPresent()) {
@@ -92,7 +92,10 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 		if (affWrkplcHist.isPresent()) {
 			return affWrkplcHist.get().getHistoryItems().stream()
 					.filter(x -> affWrkplcHistItemRepo.getByHistId(x.identifier()).isPresent())
-					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), 
+							x.end().equals(GeneralDate.max()) 
+							//&& query.getCtgType() == 3 
+							? "" : x.end().toString()))
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();

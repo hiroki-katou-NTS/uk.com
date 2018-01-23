@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -36,6 +40,10 @@ public class KscmtComPattern extends UkJpaEntity implements Serializable {
 
 	@Column(name = "NOTE")
 	public String note;
+
+	@OneToMany(targetEntity=KscmtComPatternItem.class, cascade = CascadeType.ALL, mappedBy = "kscmtComPattern", orphanRemoval = true)
+	@JoinTable(name = "KSCMT_COM_PATTERN_ITEM")
+	public List<KscmtComPatternItem> kscmtComPatternItem;
 
 	@Override
 	protected Object getKey() {

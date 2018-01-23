@@ -25,8 +25,8 @@
 			<div id="contents-area">
 				<div id="content-top">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Workplace')}</div>
-					<span class="code" data-bind="text:workPlaceId"></span> <span
-						data-bind="text: workPlaceName"></span>
+					<span class="code" data-bind="text:workPlaceCode"></span> <span
+						data-bind="text: workPlaceDisplayName"></span>
 					<hr />
 				</div>
 				<div id="content-bot">
@@ -78,8 +78,9 @@
 										leftColumns: columnsLeftSwap,
 										rightColumns: columnsRightSwap,
 										value: selectedEmployeeSwap,
-										searchMode: 'filter',
+										searchMode: 'highlight',
 										multiple: true,
+										searchCriterion:['code','name'],
 										enableRowNumbering: false ,
 										showNumbering: false,
 										showSort:{ showLeft : false, showRight: false}

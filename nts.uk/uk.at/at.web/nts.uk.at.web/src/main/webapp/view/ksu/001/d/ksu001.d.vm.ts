@@ -23,11 +23,10 @@ module nts.uk.at.view.ksu001.d.viewmodel {
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
 
         //ExCalendar
-        startDate: KnockoutObservable<Date> = ko.observable(getShared("dataForScreenD").startDate);
-        endDate: KnockoutObservable<Date> = ko.observable(getShared("dataForScreenD").endDate);
+        startDate: KnockoutObservable<string> = ko.observable(getShared("dataForScreenD").startDate);
+        endDate: KnockoutObservable<string> = ko.observable(getShared("dataForScreenD").endDate);
         permissionHandCorrection: KnockoutObservable<boolean> = ko.observable(getShared("dataForScreenD").permissionHandCorrection);
         listColorOfHeader: any = ko.observableArray(getShared("dataForScreenD").listColorOfHeader);
-
         selectedIds: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
@@ -63,11 +62,11 @@ module nts.uk.at.view.ksu001.d.viewmodel {
             let self = this;
 
             if (!self.multiSelectedCode() || self.multiSelectedCode().length == 0) {
-                nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage('Msg_499'));
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_499' });
                 return;
             }
             if (self.selectedIds().length === 0) {
-                nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage('Msg_500'));
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_500' });
                 return;
             }
             nts.uk.ui.block.grayout();
@@ -85,10 +84,16 @@ module nts.uk.at.view.ksu001.d.viewmodel {
                 checkedHandler: checkedHandler
             };
 
+
             service.updateBasicSchedule(command).done(() => {
                 nts.uk.ui.block.clear();
+                setShared('dataFromScreenD', {
+                    clickCloseDialog: false
+                });
                 nts.uk.ui.windows.close();
             });
+
+
 
         }
 

@@ -20,12 +20,13 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
 import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistory;
-import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
@@ -67,11 +68,11 @@ public class EmployeeSearchQueryProcessor {
 
 	/** The employment history repository. */
 	@Inject
-	private AffEmploymentHistoryRepository employmentHistoryRepository;
+	private EmploymentHistoryItemRepository employmentHistoryRepository;
 
 	/** The classification history repository. */
 	@Inject
-	private AffClassHistoryRepository classificationHistoryRepository;
+	private AffClassHistItemRepository_ver1 classificationHistoryRepository;
 
 	/** The job title history repository. */
 	@Inject
@@ -106,6 +107,11 @@ public class EmployeeSearchQueryProcessor {
 		if (CollectionUtil.isEmpty(employeeDatas)) {
 			throw new BusinessException("Msg_317");
 		}
+		
+		// Filter by state
+		employeeDatas = employeeDatas.stream()
+				.filter(item -> { return EmployeeDeletionAttr.NOTDELETED.value == item.getDeletedStatus().value; })
+				.collect(Collectors.toList());
 
 		// get work place history by employee
 		List<AffWorkplaceHistory_ver1> workplaceHistory = this.workplaceHistoryRepository
@@ -146,8 +152,7 @@ public class EmployeeSearchQueryProcessor {
 			if (workplaceHistoryMap.containsKey(employee.getEmployeeId())
 					&& personMap.containsKey(employee.getPersonId())) {
 				
-				// Find 
-				System.out.println(workplaceHistoryMap.get(employee.getEmployeeId()).getHistoryItems().get(0).identifier());
+				// Find
 				String wplId = this.itemRepository
 						.getByHistId(
 								workplaceHistoryMap.get(employee.getEmployeeId()).getHistoryItems().get(0).identifier())
@@ -240,11 +245,11 @@ public class EmployeeSearchQueryProcessor {
 		String companyId = loginUserContext.companyId();
 
 		// find by employment
-		List<AffEmploymentHistory> employmentHistory = this.employmentHistoryRepository
+		List<EmploymentHistoryItem> employmentHistory = this.employmentHistoryRepository
 				.searchEmployee(input.getBaseDate(), input.getEmploymentCodes());
 
 		// find by classification
-		List<AffClassHistory> classificationHistorys = this.classificationHistoryRepository
+		List<AffClassHistItem_ver1> classificationHistorys = this.classificationHistoryRepository
 				.searchClassification(
 						employmentHistory.stream().map(employment -> employment.getEmployeeId())
 								.collect(Collectors.toList()),
@@ -357,11 +362,10 @@ public class EmployeeSearchQueryProcessor {
 		String employeeId = loginUserContext.employeeId();
 
 		// get data work place history
-		Optional<AffWorkplaceHistory_ver1> wh = this.workplaceHistoryRepository.getByEmpIdAndStandDate(employeeId, baseDate);
-		AffWorkplaceHistoryItem item = this.itemRepository.getByHistId(wh.get().items().get(0).identifier()).get();
+		List<AffWorkplaceHistoryItem> items = this.itemRepository.getAffWrkplaHistItemByEmpIdAndDate(baseDate, employeeId);
 
 		// return data
-		return Arrays.asList(item.getWorkplaceId());
+		return items.stream().map(AffWorkplaceHistoryItem::getWorkplaceId).collect(Collectors.toList());
 	}
 
 	/**
@@ -477,36 +481,6 @@ public class EmployeeSearchQueryProcessor {
 			dataRes.add(data);
 		}
 		return dataRes;
-	}
-	
-	public List<EmployeeSearchData> getByDesignatedStatus(List<String> workplaceIdList, GeneralDate referenceDate,
-			List<Integer> empStatusList) {
-//		List<EmployeeInDesignatedExport> exportList = this.empInDesignatedPub.
-		// Search By List EmpIds and baseDate
-		// Sample empIdlist
-		List<String> empIdList = new ArrayList<>();
-		
-		// ForEach empId acquired
-//		empIdList.stream().forEach(empId -> {
-//			List<AffWorkplaceHistory> affWorkplaceHist = this.workplaceHistoryRepository.searchWorkplaceHistoryByEmployee(empId, referenceDate);
-//		});
-//		
-//		List<AffWorkplaceHistory> affWorkplaceList = this.workplaceHistoryRepository.searchWorkplaceOfCompanyId(empIdList, referenceDate);
-//		// WorkplaceId List
-//		List<String> workplaceIds = affWorkplaceList.stream().map(item -> {
-//			return item.getWorkplaceId().v();
-//		}).collect(Collectors.toList());
-//		
-//		List<EmployeeSearchOutput> empDataList = new ArrayList<>();
-//		// Get WorkplaceInfo
-//		workplaceIds.stream().forEach(wpId -> {
-//			Optional<WorkplaceInfo> workplaceInfo = this.workplaceInfoRepo.findByWkpId(wpId, referenceDate);
-//			EmployeeSearchOutput empData = new EmployeeSearchOutput();
-////			empData.setEmployeeId(employeeId);
-//		});
-		
-		
-		return null;
 	}
 
 }

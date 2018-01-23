@@ -51,7 +51,8 @@ public class ImplementationResultWebService extends WebService {
 	@POST
 	@Path("getErrorMessageInfo")
 	public List<PersonInfoErrMessageLogDto> getByEmpCalAndSumExecLogID(ScreenImplementationResultDto screenImplementationResultDto) {
-		return implementationResultFinder.getScreenImplementationResult(screenImplementationResultDto);
+		List<PersonInfoErrMessageLogDto> data = implementationResultFinder.getScreenImplementationResult(screenImplementationResultDto); 
+		return data;
 	}
 
 }

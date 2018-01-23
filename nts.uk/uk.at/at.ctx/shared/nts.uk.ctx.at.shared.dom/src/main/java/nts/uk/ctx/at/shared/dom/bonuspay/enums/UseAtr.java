@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.bonuspay.enums;
 import lombok.AllArgsConstructor;
 
 /**
+ * 使用するしない区分
  * @author hungnm
  *
  */
@@ -20,5 +21,13 @@ public enum UseAtr {
 	public final int value;
 
 	public final String nameId;
+	
+	/**
+	 * 使用するか判定する
+	 * @return 使用する
+	 */
+	public boolean isUse() {
+		return USE.equals(this);
+	}
 
 }

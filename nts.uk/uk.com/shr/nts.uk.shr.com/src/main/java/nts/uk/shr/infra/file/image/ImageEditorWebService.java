@@ -2,7 +2,6 @@ package nts.uk.shr.infra.file.image;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
@@ -18,8 +17,6 @@ import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFile;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.ws.WebService;
-import nts.arc.system.ServerSystemProperties;
-import nts.gul.text.IdentifierUtil;
 
 @Path("image/editor")
 @Produces("application/json")
@@ -48,8 +45,7 @@ public class ImageEditorWebService extends WebService{
 
 		ImageIO.write(bfi, query.getFormat(), tempFile.getPath().toFile());
 
-		StoredFileInfo fileInfo = this.fileStorage.store(IdentifierUtil.randomUniqueId(),
-				tempFile.getPath(), query.getFileName(), query.getStereoType());
+		StoredFileInfo fileInfo = this.fileStorage.store(tempFile.getPath(), query.getFileName(), query.getStereoType());
 		
 		tempFile.getPath().toFile().delete();
 		

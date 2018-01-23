@@ -35,11 +35,11 @@ public class AppStampWorkDto {
 				appStampWork.getStampAtr().value, 
 				appStampWork.getStampFrameNo(), 
 				appStampWork.getStampGoOutAtr().value,
-				appStampWork.getSupportCard(),
-				appStampWork.getSupportLocationCD(),
-				appStampWork.getStartTime().v(), 
-				appStampWork.getStartLocation(), 
-				appStampWork.getEndTime().v(), 
-				appStampWork.getEndLocation());
+				appStampWork.getSupportCard().orElse(null),
+				appStampWork.getSupportLocationCD().orElse(null),
+				appStampWork.getStartTime().map(x -> x.v()).orElse(null), 
+				appStampWork.getStartLocation().orElse(null), 
+				appStampWork.getEndTime().map(x -> x.v()).orElse(null), 
+				appStampWork.getEndLocation().orElse(null));
 	}
 }

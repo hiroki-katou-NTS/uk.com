@@ -26,7 +26,7 @@ module cps002.a.vm {
 
         itemSettingList: KnockoutObservableArray<SettingItem> = ko.observableArray([]);
 
-        createTypeId: KnockoutObservable<number> = ko.observable(1);
+        createTypeId: KnockoutObservable<number> = ko.observable(3);
 
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
 
@@ -51,6 +51,8 @@ module cps002.a.vm {
         employeeBasicInfo: KnockoutObservable<IEmployeeBasicInfo> = ko.observable(null);
 
         layoutData: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        defaultImgId: KnockoutObservable<string> = ko.observable("");
 
         ccgcomponent: any = {
             baseDate: ko.observable(moment().toDate()),
@@ -116,14 +118,29 @@ module cps002.a.vm {
                     return item.itemCode == initCode;
                 });
                 if (InitSetting) {
+
+                    let currentCtgCode = self.categorySelectedCode();
                     service.getAllInitValueCtgSetting(InitSetting.itemId).done((result: Array<IInitValueCtgSetting>) => {
-                        self.categorySelectedCode("");
+
                         if (result.length) {
                             self.categoryList(_.map(result, item => {
                                 return new CategoryItem(item);
                             }));
+                            self.categorySelectedCode.valueWillMutate();
+                            if (currentCtgCode === "") {
+                                self.categorySelectedCode(result[0].categoryCd);
+                            } else {
 
-                            self.categorySelectedCode(result[0].categoryCd);
+                                let currentCtg = _.find(result, item => {
+                                    return item.categoryCd == currentCtgCode;
+                                });
+                                if (currentCtg) {
+                                    self.categorySelectedCode(currentCtgCode);
+                                } else {
+                                    self.categorySelectedCode(result[0].categoryCd);
+                                }
+                            }
+
                         } else {
                             self.categoryList.removeAll();
                         }
@@ -210,11 +227,19 @@ module cps002.a.vm {
                 });
             }
         }
+        clearEmployeeData() {
+            let self = this;
+            self.currentEmployee().employeeName("");
+            self.currentEmployee().employeeCode("");
+            self.currentEmployee().loginId("");
+            self.currentEmployee().password("");
+            self.currentEmployee().avatarId("");
+        }
 
         start() {
 
             let self = this;
-
+            self.clearEmployeeData();
 
             nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
                 self.employeeBasicInfo(data);
@@ -308,7 +333,13 @@ module cps002.a.vm {
         }
 
         isError() {
-            $(".form_step1").trigger("validate");
+            let self = this;
+            if (self.currentStep() == 2) {
+                $('.drag-panel .nts-input').trigger('change');
+            } else {
+                $(".form_step1").trigger("validate");
+
+            }
             if (nts.uk.ui.errors.hasError()) {
                 return true;
             }
@@ -367,7 +398,6 @@ module cps002.a.vm {
             let self = this,
                 command = ko.toJS(self.currentEmployee()),
                 layout = self.layout();
-            self.currentEmployee().avatarId("");
             self.currentStep(2);
 
             //add atr
@@ -437,7 +467,7 @@ module cps002.a.vm {
 
                 //start Screen C
 
-                $('#initSettingPanel').show();
+
                 self.loadInitSettingData();
 
 
@@ -445,7 +475,7 @@ module cps002.a.vm {
 
                 //start Screen B
 
-                $('#initSettingPanel').hide();
+                $('#search_box').hide();
 
                 self.loadCopySettingCtgData();
                 if (self.copyEmployee().employeeId == '') {
@@ -495,13 +525,20 @@ module cps002.a.vm {
                         return new InitSetting(item);
                     }));
 
+                    self.initSettingSelectedCode.valueWillMutate();
                     if (self.initSettingSelectedCode() == '') {
                         if (self.employeeBasicInfo() && _.find(result, ['settingCode', self.employeeBasicInfo().initialValueCode])) {
                             self.initSettingSelectedCode(self.employeeBasicInfo().initialValueCode);
                         } else {
                             self.initSettingSelectedCode(result[0].settingCode);
                         }
+                    } else {
+                        if (!_.find(result, ctg => { return self.initSettingSelectedCode() == ctg.settingCode; })) {
+                            self.initSettingSelectedCode(result[0].settingCode);
+                        }
+
                     }
+
                     $("#initSearchBox input").focus();
                 }
             }).fail((error) => {
@@ -509,21 +546,27 @@ module cps002.a.vm {
                     self.currentStep(0);
                 });
 
+            }).always(() => {
+                $('#search_box').show();
             });
 
         }
 
         prev() {
             let self = this;
+            if (self.currentStep() === 1) {
+                $('#emp_reg_info_wizard').ntsWizard("prev");
+            }
             if (self.currentStep() === 2) {
-                //self.layout(new Layout({ id: '', code: '', name: '' }));
+                self.gotoStep2();
                 nts.uk.ui.errors.clearAll();
             }
             if (self.createTypeId() === 3) {
                 $('#emp_reg_info_wizard').ntsWizard("goto", 0);
                 return;
             }
-            $('#emp_reg_info_wizard').ntsWizard("prev");
+
+
 
 
         }
@@ -572,15 +615,13 @@ module cps002.a.vm {
                 service.addNewEmployee(command).done((employeeId) => {
                     self.saveBasicInfo(command, employeeId);
 
-                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "no-close", title: '' }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/cps/002/h/index.xhtml', { dialogClass: "finish", title: '' }).onClosed(() => {
                         if (getShared('isContinue')) {
 
                             self.backtoStep1();
 
                         } else {
-
-                            setShared('CPS002A_PARAMS', { sid: employeeId });
-                            jump('/view/cps/001/a/index.xhtml');
+                            jump('/view/cps/001/a/index.xhtml', { employeeId: employeeId });
                         }
                     });
 
@@ -625,8 +666,6 @@ module cps002.a.vm {
 
         openFModal() {
 
-            let self = this;
-
             subModal('/view/cps/002/f/index.xhtml', { title: '' }).onClosed(() => {
 
             });
@@ -651,10 +690,12 @@ module cps002.a.vm {
         }
 
         openIModal() {
+
+
             let self = this,
-                avatarId = self.currentEmployee().avatarId();
+                avatarId = self.defaultImgId();
             if (avatarId != "") {
-                setShared("imageId", avatarId);
+                setShared("CPS002A", avatarId);
             }
             if (self.isAllowAvatarUpload()) {
 
@@ -662,11 +703,15 @@ module cps002.a.vm {
 
                     let imageResult = getShared("imageId");
 
-                    if (imageResult) {
-                        self.currentEmployee().avatarId(imageResult);
-                    }
 
-                });
+
+                    if (imageResult) {
+                        self.currentEmployee().avatarId(imageResult.cropImgId)
+                        self.defaultImgId(imageResult.defaultImgId);
+
+
+
+                    });
 
             }
         }
@@ -674,7 +719,14 @@ module cps002.a.vm {
 
         openInitModal() {
 
-            jump('/view/cps/009/a/index.xhtml');
+
+            subModal('/view/cps/009/a/index.xhtml', { title: '', height: 700, width: 1400 }).onClosed(() => {
+
+            });
+            //            
+            //            subModal('/view/cps/009/a/index.xhtml', { title: text('CPS002_10') }).onClosed(() => {
+            //                
+            //            });
         }
 
 
@@ -817,11 +869,33 @@ module cps002.a.vm {
         itemName: string;
         isRequired: number;
         saveData: any;
+        dataType: string;
+        dateType: string;
         constructor(param?: any) {
             this.itemCode = param ? param.itemCode : '';
             this.itemName = param ? param.itemName : '';
             this.isRequired = param ? param.isRequired : 0;
             this.saveData = param ? param.saveData : null;
+            this.dataType = param ? param.dataType : '';
+            this.dateType = param ? param.dateType : '';
+            if (this.dataType === "DATE" && this.saveData.value) {
+                this.saveData.value = this.genDateString(this.saveData.value, this.dateType);
+            }
+        }
+        genDateString(value, dateType) {
+            let formatString = "yyyy/MM/dd";
+            switch (dateType) {
+                case "YEARMONTHDAY":
+                    formatString = "yyyy/MM/dd";
+                    break;
+                case "YEARMONTH":
+                    formatString = "yyyy/MM";
+                    break;
+                case "YEAR":
+                    formatString = "yyyy";
+                    break;
+            }
+            return nts.uk.time.formatDate(new Date(value), formatString);
         }
     }
 

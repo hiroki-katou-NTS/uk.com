@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneGetMemento;
@@ -15,6 +17,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneGetMemento;
 /**
  * The Class FlowRestTimezoneDto.
  */
+@Getter
+@Setter
 public class FlowRestTimezoneDto implements FlowRestTimezoneGetMemento {
 
 	/** The flow rest set. */

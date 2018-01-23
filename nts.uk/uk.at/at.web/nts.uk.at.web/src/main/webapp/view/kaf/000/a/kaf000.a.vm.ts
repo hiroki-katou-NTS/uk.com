@@ -35,6 +35,9 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         
         errorFlag: number = 0;
         errorMsg: string = '';
+        
+        approvalRootState: any = ko.observableArray([]);
+        
         constructor(){
             let self = this;
             let baseDate = new Date();
@@ -58,125 +61,63 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             
             self.appType(appType);
             
-            let dfd = $.Deferred();            
-            let dfdMessageDeadline = self.getMessageDeadline(self.appType(), new Date(standardDate));
-            let dfdAllApprovalRoot = self.getAllApprovalRoot();
-            $.when(dfdMessageDeadline,dfdAllApprovalRoot).done((dfdMessageDeadlineData,dfdAllApprovalRootData)=>{
-//                self.getAllFrameByListPhaseId1(self.listPhaseID);
-                 dfd.resolve(); 
+            let dfd = $.Deferred();
+            
+            //Call approval list
+            self.getAppDataDate(appType, standardDate, true).done(function() {
+                dfd.resolve(); 
+            }).fail((res)=>{
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){
+                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
+                    nts.uk.ui.block.clear();
+                });  
             });
             return dfd.promise();
         }
         
-        
-        //get all listApprovalRoot
-        getAllApprovalRoot(){
-            let self = this;
+        getAppDataDate(appType: number, appDate: string, isStartup: boolean): JQueryPromise<any> {
+            var self = this;
             let dfd = $.Deferred<any>();
-            nts.uk.at.view.kaf000.a.service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
-                self.listApprovalRoot(data);
-                self.approvalRoot([]);
-                if(self.listApprovalRoot() ==null || self.listApprovalRoot().length==0 ){
-                                
-                } else {
-                    self.errorFlag = self.listApprovalRoot()[0].errorFlag;
-                    if(self.errorFlag == 1){
-                        self.errorMsg = 'Msg_324';    
-                    } else if(self.errorFlag == 2){
-                        self.errorMsg = 'Msg_238';
-                    } else if(self.errorFlag == 3){
-                        self.errorMsg = 'Msg_237';
-                    } else {
-                        self.approvalRoot(self.listApprovalRoot()[0]);
-                        let listPhase = self.approvalRoot().beforeApprovers; 
-                        let approvalList = [];
-                        if(!nts.uk.util.isNullOrUndefined(listPhase)){
-                            for(let x = 1; x <= listPhase.length; x++){
-                                let phaseLoop = listPhase[x-1];
-                                let appPhase = new shrvm.model.AppApprovalPhase(
-                                    "",
-                                    "",
-                                    phaseLoop.approvalForm,
-                                    x,
-                                    0,
-                                    []); 
-                                for(let y = 1; y <= phaseLoop.approvers.length; y++){
-                                    let frameLoop = phaseLoop.approvers[y-1];
-                                    let appFrame = new shrvm.model.ApprovalFrame(
-                                        "",
-                                        y,
-                                        []);
-                                    if(!nts.uk.util.isNullOrUndefined(frameLoop.sid)){
-                                        let representerSID = "";
-                                        if(!nts.uk.util.isNullOrUndefined(frameLoop.frameLoop)){
-                                            representerSID = frameLoop.frameLoop;            
-                                        }
-                                        let appAccepted = new shrvm.model.ApproveAccepted(
-                                        "",
-                                        frameLoop.sid,
-                                        0,
-                                        frameLoop.confirmPerson ? 1 : 0,
-                                        "",
-                                        "",
-                                        representerSID);
-                                        appFrame.listApproveAccepted.push(appAccepted);     
-                                    } else {
-                                        for(let z = 1; z <= frameLoop.approverSIDList.length; z++){
-                                            let representerSID = "";
-                                            if(!nts.uk.util.isNullOrUndefined(frameLoop.representerNameList[z-1])){
-                                                representerSID = frameLoop.representerNameList[z-1];            
-                                            }
-                                            let appAccepted = new shrvm.model.ApproveAccepted(
-                                            "",
-                                            frameLoop.approverSIDList[z-1],
-                                            0,
-                                            frameLoop.confirmPerson ? 1 : 0,
-                                            "",
-                                            "",
-                                            representerSID);
-                                            appFrame.listApproveAccepted.push(appAccepted);        
-                                        }       
-                                    }
-                                    appPhase.listFrame.push(appFrame);   
-                                };
-                                approvalList.push(appPhase);    
-                            }
-                        }
-                        self.approvalList = approvalList;
-                    }
+            nts.uk.at.view.kaf000.a.service.getAppDataDate({
+                appTypeValue: appType,
+                appDate: appDate,
+                isStartup: isStartup
+            }).done((data)=>{
+                $('#listApproverRootState').ntsError('clear');
+                self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
+                if(isStartup==false){
+                    switch(data.errorFlag){
+                        case 1:
+                            $('#listApproverRootState').ntsError('set', {messageId:"Msg_324"});
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_324" });
+                            break;
+                        case 2: 
+                            $('#listApproverRootState').ntsError('set', {messageId:"Msg_238"});
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_238" });
+                            break;
+                        case 3:
+                            $('#listApproverRootState').ntsError('set', {messageId:"Msg_237"});
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_237" });
+                            break;
+                        default: 
+                    }               
                 }
-                dfd.resolve(data);    
-            }).fail(function (res: any){
-                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-            }); 
-            return dfd.promise();
-            
-        }
-         // getMessageDeadline
-        getMessageDeadline(appType: any, appDate: string){
-            let self = this;
-            let dfd = $.Deferred<any>();
-            let command = {
-                appID: "",
-                appType: appType,
-                appDate: new Date(appDate)
-            }
-            nts.uk.at.view.kaf000.a.service.getMessageDeadline(command).done(function(data){                
-                if(!nts.uk.text.isNullOrEmpty(data.message)){
-                    self.reasonOutputMessFull(self.reasonOutputMess + data.message);    
+                let deadlineMsg = data.outputMessageDeadline;
+                if(!nts.uk.text.isNullOrEmpty(deadlineMsg.message)){
+                    self.reasonOutputMessFull(self.reasonOutputMess + deadlineMsg.message);    
                 }
-                if(!nts.uk.text.isNullOrEmpty(data.deadline)){
-                    self.reasonOutputMessDealineFull(self.reasonOutputMessDealine + data.deadline);
+                if(!nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)){
+                    self.reasonOutputMessDealineFull(self.reasonOutputMessDealine + deadlineMsg.deadline);
                 }
-                if(nts.uk.text.isNullOrEmpty(data.message) && nts.uk.text.isNullOrEmpty(data.deadline)){
+                if(nts.uk.text.isNullOrEmpty(deadlineMsg.message) && nts.uk.text.isNullOrEmpty(deadlineMsg.deadline)){
                     self.messageArea(false);
                 }else{
                     self.messageArea(true);
                 }
-                dfd.resolve(data);    
-            }).fail(function (res: any){
-                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-            }); 
+                dfd.resolve();
+            }).fail((res)=>{
+                dfd.reject(res);    
+            });            
             return dfd.promise();
         }
     }

@@ -13,6 +13,7 @@
 				nts.uk.ctx.at.request.dom.application.AppReason
 				nts.uk.ctx.at.request.dom.application.ApproverReason
 				nts.uk.ctx.at.request.dom.application.stamp.TimeDayClock
+				nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../shr/kaf000.shr.vm.js"/>
@@ -52,6 +53,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
+				<div style="min-width: 1290px">
 					<!-- B1_1 -->
 					<a class="goback" data-bind="ntsLinkButton: { jump: '../test/index.xhtml' }">#{i18n.getText('KAF000_14')}</a>
 					<!-- B1_2 -->
@@ -60,7 +62,7 @@
 					<button data-bind="click: btnAfter, enable: enableAfter"><i class="icon icon-button-arrow-right"></i></button>
 					<!-- B1_4 -->
 					<button class="proceed" data-bind="click: btnApprove, 
-													enable: displayButtonControl().enableApproval(),
+													enable: displayButtonControl().enableApproval() &amp; $root.errors.isEmpty(),
 													visible: !displayButtonControl().displayApproval()">#{i18n.getText('KAF000_15')}</button>
 					<!-- B1_14 -->
 					<div class="comment" data-bind="visible: !displayButtonControl().displayApprovalLabel()">
@@ -68,23 +70,23 @@
 					</div>
 					<!-- B1_5 -->
 					<button data-bind="click: btnDeny, 
-									enable: displayButtonControl().enableDeny(),
+									enable: displayButtonControl().enableDeny() &amp; $root.errors.isEmpty(),
 									visible: !displayButtonControl().displayDeny()" >#{i18n.getText('KAF000_16')}</button>
 					<!-- B1_15 -->
 					<div class="comment" data-bind="visible: !displayButtonControl().displayDenyLabel()">
 						<label>【否認】</label>
 					</div>
 					<!-- B1_6 -->
-					<button data-bind="enable: displayButtonControl().enableRemand(),
+					<button data-bind="enable: displayButtonControl().enableRemand() &amp; $root.errors.isEmpty(),
 									   visible: !displayButtonControl().displayRemand()">#{i18n.getText('KAF000_17')}</button>
 					<!-- B1_7 -->
 					<button data-bind="click: btnRelease, 
-									enable: displayButtonControl().enableRelease(),
+									enable: displayButtonControl().enableRelease() &amp; $root.errors.isEmpty(),
 									visible: !displayButtonControl().displayRelease()" >#{i18n.getText('KAF000_18')}</button>
 					
 					<!-- B1_8 -->
 					<button class="proceed" data-bind="click: update,
-													enable : displayButtonControl().enableUpdate(), 
+													enable : displayButtonControl().enableUpdate() &amp; $root.errors.isEmpty(), 
 -													visible: !displayButtonControl().displayUpdate()">#{i18n.getText('KAF000_19')}</button>	
 
 					<!-- B1_9 -->
@@ -96,16 +98,16 @@
 					
 					<!-- B1_12 -->
 					<button  class="danger" data-bind="click: btnDelete,
-													enable : displayButtonControl().enableDelete(),
+													enable : displayButtonControl().enableDelete() &amp; $root.errors.isEmpty(),
 -													visible: !displayButtonControl().displayDelete()" >#{i18n.getText('KAF000_23')}</button>
 					
 					<!-- B1_13 -->
 					<button  class="danger" data-bind="click: btnCancel , 
-													enable : displayButtonControl().enableCancel(),
+													enable : displayButtonControl().enableCancel() &amp; $root.errors.isEmpty(),
 													visible: !displayButtonControl().displayCancel()">#{i18n.getText('KAF000_24')}</button>
 					<br></br>
 				</div>
-			
+			</div>
 			<div id="contents-area">
 				<!-- row1 -->
 				<div id="message-area" data-bind =  "visible: !displayButtonControl().displayMessageArea()"> 
@@ -159,44 +161,10 @@
 				
 				<!-- Footer -->
 				<div style="clear:both"></div>
-				<div id="label-1" style="margin-left: 0px !important;margin-right: 39px;">
-					<!-- B6 -->
-					<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
-					
+				<div>
+					<ui:include src="../../000/b/index1.xhtml" />	
 				</div>
-				<div id="table-1" data-bind="with: dataApplication">
-					<table id="table-phase">
-						<thead>
-							<tr  class="bg-green">
-								<th class="phase-app" style="width:111px;"></th>
-								<th class="name-app" style="width:111px;"></th>
-								<th class="content-app" style="width:230px;">#{i18n.getText('KAF000_3')}</th>
-								<th class="phase-app" style="width:111px;">#{i18n.getText('KAF000_29')}</th>
-								<th class="name-app" style="width:111px;">#{i18n.getText('KAF000_30')}</th>
-							</tr>
-						</thead>
-						<!-- foreach -->
-						<tbody data-bind="foreach : listPhase" >
-							<com:ko bind="$data.listFrame" tag ="foreach">
-								<tr>
-									<com:ko bind="$index() === 0" tag="if">
-										<td class="bg-green" data-bind="attr: {rowspan: $parent.listFrame.length}">
-											フェーズ<label data-bind="text: $parent.dispOrder"></label>
-										</td>
-									</com:ko>
-									<td class="bg-green" >
-										承認者<label data-bind="text: $data.dispOrder"></label>
-									</td>
-									<td class="approverContent">
-										<label data-bind="text: $data.nameAll"></label>
-									</td>
-									<td class="approverContent"><label data-bind="text: $data.approveAll"></label></td>
-									<td class="approverContent"><label data-bind="text: $data.reasonAll"> </label></td>
-								</tr>
-							</com:ko>
-						</tbody>  
-					</table>
-				</div>
+				
 				<!-- end footer -->
 			</div>
 			

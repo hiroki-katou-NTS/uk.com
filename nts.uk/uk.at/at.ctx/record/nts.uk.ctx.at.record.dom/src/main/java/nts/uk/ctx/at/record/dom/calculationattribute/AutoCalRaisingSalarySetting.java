@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.calculationattribute;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.SalaryCalAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.SpecificSalaryCalAttr;
 
@@ -11,6 +13,8 @@ import nts.uk.ctx.at.record.dom.calculationattribute.enums.SpecificSalaryCalAttr
  *
  */
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AutoCalRaisingSalarySetting {
 
 	//加給計算区分

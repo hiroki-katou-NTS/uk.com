@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.raisesalarytime;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -13,6 +14,7 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Getter
+@AllArgsConstructor
 public class SpecificDateAttrOfDailyPerfor extends AggregateRoot {
 	
 	private String employeeId;

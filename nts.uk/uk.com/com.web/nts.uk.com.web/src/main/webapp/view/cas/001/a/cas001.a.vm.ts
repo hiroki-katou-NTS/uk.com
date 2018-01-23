@@ -3,8 +3,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog.info;
+    import ccg = nts.uk.com.view.ccg025.a;
+    import model = nts.uk.com.view.ccg025.a.component.model;
     export class ScreenModel {
 
         personRoleList: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
@@ -27,21 +28,41 @@ module nts.uk.com.view.cas001.a.viewmodel {
         RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
         checkboxSelectedAll: KnockoutObservable<boolean> = ko.observable(false);
 
+        component: ccg.component.viewmodel.ComponentModel = new ccg.component.viewmodel.ComponentModel({
+            roleType: 8,
+            multiple: false
+        });
+        listRole: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
+
         constructor() {
             let self = this;
-            self.currentRoleId.subscribe(function(newRoleId) {
+            self.component.columns([
+                { headerText: getText("CCG025_3"), prop: 'roleId', width: 50, hidden: true },
+                { headerText: getText("CCG025_3"), prop: 'roleCode', width: 50 },
+                { headerText: getText("CCG025_4"), prop: 'name', width: 150 }
+            ]);
 
-                if (newRoleId == "") {
+            self.component.currentCode.subscribe(function(newRoleId) {
+                if (self.personRoleList().length < 1) {
+
                     return;
                 }
+                self.currentRoleId(newRoleId);
+
+            });
+            self.currentRoleId.subscribe(function(newRoleId) {
+
+                if (newRoleId == "" || self.personRoleList().length < 1) {
+                    return;
+                }
+
 
                 let newPersonRole = _.find(self.personRoleList(), (role) => { return role.roleId === newRoleId });
 
 
-                block.invisible();
-                service.getPersonRoleAuth(newPersonRole.roleId).done((result: IPersonRole) => {
+                service.getPersonRoleAuth(newRoleId).done((result: IPersonRole) => {
 
-                    newPersonRole.loadRoleCategoriesList(newPersonRole.roleId).done(() => {
+                    newPersonRole.loadRoleCategoriesList(newRoleId).done(() => {
 
                         newPersonRole.setRoleAuth(result);
 
@@ -55,13 +76,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                         }
                         else {
-                            dialog({ messageId: "Msg_364" });
+                            dialog({ messageId: "Msg_217" });
                         }
 
-                    }).always(() => {
-
-                        block.clear();
-                    });
+                    })
                 });
 
             });
@@ -73,7 +91,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 }
 
                 _.defer(() => {
-                    block.invisible();
+
                 });
 
                 let newCategory = _.find(self.RoleCategoryList(), (roleCategory) => {
@@ -91,7 +109,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         self.currentRole().currentCategory(newCategory);
 
                     }).always(() => {
-                        block.clear();
+
                     });
 
                 });
@@ -212,14 +230,14 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             setShared('personRole', self.currentRole());
 
-            block.invisible();
+
 
             nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 if (!getShared('isCanceled')) {
                     self.reload().always(() => {
 
-                        block.clear();
+
 
                     });
                 }
@@ -228,18 +246,22 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         OpenCModal() {
 
-            let self = this;
+            let self = this,
+                currentRole = {
+                    roleList: self.personRoleList(),
+                    personRole: self.currentRole()
+                };
 
-            setShared('personRole', self.currentRole());
+            setShared('currentRole', currentRole);
 
-            block.invisible();
+
 
             nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 if (!getShared('isCanceled')) {
                     self.reload().always(() => {
 
-                        block.clear();
+
 
                     });
                 }
@@ -263,13 +285,18 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 seftSelectedAllString = nts.uk.text.format(switchString, 'seftSelectedAll', '!!allowPersonRef()');
 
             $("#item_role_table_body").ntsGrid({
-                features: [{ name: 'Resizing' }
+                features: [{ name: 'Resizing' },
+                    {
+                        name: 'Selection',
+                        mode: 'row',
+                        multipleSelection: true
+                    }
                 ],
-                ntsFeatures: [{ name: 'CopyPaste' }],
+                //  ntsFeatures: [{ name: 'CopyPaste' }],
 
                 showHeader: true,
 
-                width: '830px',
+                width: '835px',
 
                 height: '315px',
 
@@ -365,18 +392,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             self.loadPersonRoleList().done(function() {
 
-                let selectedId = self.currentRoleId() !== '' ? self.currentRoleId() : self.personRoleList()[0].roleId;
-
-                self.currentRoleId('');
-
                 if (self.personRoleList().length > 0) {
+                    let selectedId = self.currentRoleId() !== '' ? self.currentRoleId() : self.personRoleList()[0].roleId;
 
                     self.currentRoleId(selectedId);
 
-                }
-                else {
 
-                    dialog({ messageId: "Msg_217" });
+                } else {
+
+                    dialog({ messageId: "Msg_364" }).then(function(){
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                    });
 
                 }
 
@@ -391,26 +417,21 @@ module nts.uk.com.view.cas001.a.viewmodel {
             let self = this,
                 dfd = $.Deferred();
 
-            block.invisible();
 
-            service.getPersonRoleList().done(function(result: Array<IPersonRole>) {
-
+            self.component.startPage().done(() => {
                 self.personRoleList.removeAll();
 
-                _.forEach(result, function(iPersonRole: IPersonRole) {
+                _.forEach(self.component.listRole(), function(iPersonRole: IPersonRole) {
 
-                    self.personRoleList().push(new PersonRole(iPersonRole));
+                    self.personRoleList(_.map(self.component.listRole(), x => new PersonRole(x)));
 
                 });
 
 
 
                 dfd.resolve();
-            }).always(() => {
-                block.clear();
 
             });
-
             return dfd.promise();
         }
 
@@ -419,15 +440,11 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 command = self.createSaveCommand();
 
-            block.invisible();
-
             service.savePersonRole(command).done(function() {
 
                 dialog({ messageId: "Msg_15" }).then(function() {
 
                     self.reload().always(() => {
-
-                        block.clear();
 
                     });
                 });
@@ -476,7 +493,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
     export interface IPersonRole {
         roleId: string;
         roleCode: string;
-        roleName: string;
+        name: string;
         allowMapBrowse: number;
         allowMapUpload: number;
         allowDocUpload: number;
@@ -533,7 +550,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             let self = this;
             self.roleId = param ? param.roleId : '';
             self.roleCode = param ? param.roleCode : '';
-            self.roleName = param ? param.roleName : '';
+            self.roleName = param ? param.name : '';
             self.allowMapBrowse = ko.observable(param ? param.allowMapBrowse : 0);
             self.allowMapUpload = ko.observable(param ? param.allowMapUpload : 0);
             self.allowDocUpload = ko.observable(param ? param.allowDocUpload : 0);
@@ -563,11 +580,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 screenModel.RoleCategoryList.removeAll();
 
-                _.forEach(result, function(iPersonRoleCategory: IPersonRoleCategory) {
-
-                    screenModel.RoleCategoryList.push(new PersonRoleCategory(iPersonRoleCategory));
-
-                });
+                screenModel.RoleCategoryList(_.map(result, x => new PersonRoleCategory(x)));
 
                 dfd.resolve();
             });
@@ -651,10 +664,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             service.getPersonRoleItemList(roleId, CategoryId).done(function(result: Array<IPersonRoleItem>) {
 
                 self.roleItemList.removeAll();
-                _.forEach(result, function(iPersonRoleItem: IPersonRoleItem) {
-                    self.roleItemList.push(new PersonRoleItem(iPersonRoleItem));
-                });
-
+                self.roleItemList(_.map(result, x => new PersonRoleItem(x)));
                 if (self.roleItemList().length < 1) {
                     dialog({ messageId: "Msg_217" });
                 }

@@ -2,7 +2,7 @@ module nts.uk.com.view.cps017.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        getAllSelectionItems: "ctx/pereg/person/info/setting/selection/findAll",
+        getAllSelectionItems: "ctx/pereg/person/info/setting/selection/findAll/true",
         getPerInfoSelectionItem: "ctx/pereg/person/info/setting/selection/findItem/{0}",
         getAllPerInfoHistorySelection: "ctx/pereg/person/info/setting/selection/findAllHistSelection/{0}",
         getAllOrderItemSelection: "ctx/pereg/person/info/setting/selection/findAllSelection/{0}",

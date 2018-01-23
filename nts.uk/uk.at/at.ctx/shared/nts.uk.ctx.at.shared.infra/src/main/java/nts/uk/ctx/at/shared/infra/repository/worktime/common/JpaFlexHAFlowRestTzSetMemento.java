@@ -6,40 +6,34 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRestTime;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaRestSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaRtSet;
 
-/**
- * The Class JpaFlexOffdayFlowRestTzSetMemento.
- */
 public class JpaFlexHAFlowRestTzSetMemento implements FlowRestTimezoneSetMemento{
 	
 	/** The entity. */
-	private KshmtFlexHaRestTime entity;
+	private KshmtFlexHaRtSet entity;
 	
-	/** The entity flow rests. */
-	private List<KshmtFlexOdRestSet> entityFlowRests;
-	
-	
-
+	/** The period no. */
+	private int periodNo = 1;
 	/**
-	 * Instantiates a new jpa flex offday flow rest tz set memento.
+	 * Instantiates a new jpa flex HA flow rest tz set memento.
 	 *
 	 * @param entity the entity
-	 * @param entityFlowRests the entity flow rests
 	 */
-	public JpaFlexHAFlowRestTzSetMemento(KshmtFlexHaRestTime entity, List<KshmtFlexOdRestSet> entityFlowRests) {
+	public JpaFlexHAFlowRestTzSetMemento(KshmtFlexHaRtSet entity) {
 		super();
 		this.entity = entity;
-		this.entityFlowRests = entityFlowRests;
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -48,18 +42,52 @@ public class JpaFlexHAFlowRestTzSetMemento implements FlowRestTimezoneSetMemento
 	 * setFlowRestSet(java.util.List)
 	 */
 	@Override
-	public void setFlowRestSet(List<FlowRestSetting> set) {
-		this.entityFlowRests = new ArrayList<>();
-		if (CollectionUtil.isEmpty(set)) {
-			return;
-		} 
+	public void setFlowRestSet(List<FlowRestSetting> lstFlowRestSet) {
 		
-		this.entityFlowRests = set.stream().map(domain -> {
-			KshmtFlexOdRestSet entity = new KshmtFlexOdRestSet();
-			domain.saveToMemento(new JpaFlexOffdayFlowRestSetMemento(entity));
+		// check list entity get empty
+		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHaRestSets())) {
+			this.entity.setKshmtFlexHaRestSets(new ArrayList<>());
+		}
+		
+		// check input empty
+		if (CollectionUtil.isEmpty(lstFlowRestSet)) {
+			this.entity.setKshmtFlexHaRestSets(new ArrayList<>());
+			return;
+		}
+		
+		// convert map entity
+		Map<KshmtFlexHaRestSetPK, KshmtFlexHaRestSet> mapEntity = this.entity.getKshmtFlexHaRestSets().stream()
+				.collect(Collectors.toMap(entity -> ((KshmtFlexHaRestSet) entity).getKshmtFlexHaRestSetPK(),
+						Function.identity()));
+		
+		String companyId = this.entity.getKshmtFlexHaRtSetPK().getCid();
+		String workTimeCd = this.entity.getKshmtFlexHaRtSetPK().getWorktimeCd();
+		Integer amPmAtr = this.entity.getKshmtFlexHaRtSetPK().getAmPmAtr();
+		
+		// set list entity
+		this.entity.setKshmtFlexHaRestSets(lstFlowRestSet.stream().map(domain -> {
+			
+			// newPk
+			KshmtFlexHaRestSetPK pk = new KshmtFlexHaRestSetPK();
+			pk.setCid(companyId);
+			pk.setWorktimeCd(workTimeCd);
+			pk.setAmPmAtr(amPmAtr);
+			pk.setPeriodNo(periodNo);
+			
+			// find entity existed if not have, new entity
+			KshmtFlexHaRestSet entity = mapEntity.get(pk);
+			if (entity == null) {
+				entity = new KshmtFlexHaRestSet(pk);
+			}
+			
+			// save to memento
+			domain.saveToMemento(new JpaFlexHAFlowRestSetMemento(entity));
+			
+			// increase period no
+			periodNo++;
+			
 			return entity;
-		}).collect(Collectors.toList());
-
+		}).collect(Collectors.toList()));
 	}
 
 	/*

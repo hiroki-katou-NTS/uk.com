@@ -30,13 +30,20 @@ public class JpaUserSetting extends JpaRepository implements UserSettingReposito
 	public void createUserSetting(UserSetting userSetting) {
 		BpsstUserSetting entity = this.createObject(userSetting);
 		getEntityManager().persist(entity);
-
 	}
 
 	@Override
 	public void updateUserSetting(UserSetting userSetting) {
-		BpsstUserSetting entity = this.createObject(userSetting);
-		this.commandProxy().update(entity);
+
+		Optional<BpsstUserSetting> entityOpt = this.queryProxy()
+				.find(new BpsstUserSettingPk(userSetting.getEmployeeId()), BpsstUserSetting.class);
+
+		if (entityOpt.isPresent()) {
+			BpsstUserSetting entity = entityOpt.get();
+			entity.updateFromDomain(userSetting);
+			this.commandProxy().update(entity);
+		}
+
 	}
 
 	@Override

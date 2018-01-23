@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.employment;
@@ -68,4 +68,26 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		dto.setMemo(employment.get().getMemo());
 		return dto;
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.app.find.employment.EmploymentFinder#findByCodes(java.util.List)
+	 */
+	@Override
+	public List<EmploymentDto> findByCodes(List<String> empCodes) {
+		// Get Company Id
+		String companyId = AppContexts.user().companyId();
+		
+		// Get All Employment
+		List<Employment> empList = this.repository.findByEmpCodes(companyId, empCodes);
+		
+		// Save to Memento
+		return empList.stream().map(employment -> {
+			EmploymentDto dto = new EmploymentDto();
+			dto.setCode(employment.getEmploymentCode().v());
+			dto.setName(employment.getEmploymentName().v());
+			return dto;
+		}).collect(Collectors.toList());
+	}
+	
+	
 }

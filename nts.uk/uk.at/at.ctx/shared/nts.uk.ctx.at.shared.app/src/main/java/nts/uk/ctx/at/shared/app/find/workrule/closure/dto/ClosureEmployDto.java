@@ -14,5 +14,5 @@ public class ClosureEmployDto {
 	//Employ data contain closure ID
 	List<EmpCdNameDto> empCdNameList;
 	//Check box data
-	List<ClosureCdNameDto> closureCdNameList;
+	List<ClosureHistoryFindDto> closureCdNameList;
 }

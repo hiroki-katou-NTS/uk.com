@@ -56,7 +56,7 @@ public class EmployeeMonthDaySettingDto implements EmployeeMonthDaySettingSetMem
 	public void setPublicHolidayMonthSettings(List<PublicHolidayMonthSetting> publicHolidayMonthSettings) {
 		this.publicHolidayMonthSettings = publicHolidayMonthSettings.stream().map(e -> {
 			PublicHolidayMonthSettingDto dto = new PublicHolidayMonthSettingDto(e.getPublicHdManagementYear().v(), e.getMonth().intValue(),
-																				e.getInLegalHoliday().v(), e.getOutLegalHoliday().v());
+																				e.getInLegalHoliday().v().doubleValue());
 			return dto;
 		}).collect(Collectors.toList());
 	}

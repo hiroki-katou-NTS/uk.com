@@ -22,7 +22,12 @@ module kcp.share.list {
         isShowAlreadySet: boolean;
         
         /**
-         * is Multi select.
+         * is Multi use (複数使用区分). Setting use multiple components?
+         */
+        isMultipleUse: boolean;
+        
+        /**
+         * is Multi select (選択モード). Setting multiple selection in grid.
          */
         isMultiSelect: boolean;
         
@@ -104,6 +109,35 @@ module kcp.share.list {
          * If not set, tabindex will same as spec of KCPs.
          */
         tabindex?: number;
+        
+        /**
+         * Set to display Closure Selection of not. Available for employment list only.
+         */
+        isDisplayClosureSelection?: boolean;
+        
+        /**
+         * Set to display FullClosure Option in Closure Selection of not. Available for employment list only.
+         */
+        isDisplayFullClosureOption?: boolean;
+        
+        /**
+         * Closure select type. Available for employment list only.
+         * 1. Select FullClosure option.
+         * 2. Select by selected closure code.
+         * 3. No select.
+         */
+        closureSelectionType?: ClosureSelectionType; 
+        
+        /**
+         * Selected closure code. Available for employment list only.
+         */
+        selectedClosureId?: KnockoutObservable<any>;
+    }
+    
+    export class ClosureSelectionType {
+        static SELECT_FULL_OPTION = 1;
+        static SELECT_BY_SELECTED_CODE = 2;
+        static NO_SELECT = 3;
     }
     
     export class SelectType {
@@ -148,6 +182,11 @@ module kcp.share.list {
         selectAllButton?: number;
     }
     
+    export interface ClosureItem {
+        id: number;
+        name: string;
+    }
+    
     /**
      * Screen Model.
      */
@@ -155,7 +194,8 @@ module kcp.share.list {
         itemList: KnockoutObservableArray<UnitModel>;
         selectedCodes: KnockoutObservable<any>;
         listComponentColumn: Array<any>;
-        isMultiple: boolean;
+        isMultipleUse: boolean;
+        isMultipleSelect: boolean;
         isDialog: boolean;
         hasBaseDate: boolean;
         baseDate: KnockoutObservable<Date>;
@@ -168,13 +208,26 @@ module kcp.share.list {
         targetKey: string;
         maxRows: number;
         tabIndex: TabIndex;
+        isDisplayClosureSelection: boolean;
+        closureSelectionType: ClosureSelectionType;
+        selectedClosureId: KnockoutObservable<any>;
+        isDisplayFullClosureOption: boolean;
+        closureList: KnockoutObservableArray<ClosureItem>;
+        isShowNoSelectRow: boolean;
         
         constructor() {
             this.itemList = ko.observableArray([]);
             this.listComponentColumn = [];
-            this.isMultiple = false;
+            this.isMultipleUse = false;
+            this.isMultipleSelect = false;
             this.componentGridId = (Date.now()).toString();
             this.alreadySettingList = ko.observableArray([]);
+            this.isDisplayClosureSelection = false;
+            this.isDisplayFullClosureOption = true;
+            this.closureSelectionType = ClosureSelectionType.NO_SELECT;
+            this.closureList = ko.observableArray([]);
+            var self = this;
+            
         }
         /**
          * Init component.
@@ -186,14 +239,32 @@ module kcp.share.list {
             ko.cleanNode($input[0]);
             
             // Init self data.
-            self.isMultiple = data.isMultiSelect;
+            if (data.isMultipleUse) {
+                self.isMultipleUse = data.isMultipleUse;
+            }
+            self.isMultipleSelect = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
             self.maxRows = data.maxRows ? data.maxRows : 12;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
-            self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
+            self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultipleUse;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
+            self.isShowNoSelectRow = data.isShowNoSelectRow;
+            
+            // Init data for employment list component.
+            if (data.listType == ListType.EMPLOYMENT) {
+                self.selectedClosureId = data.selectedClosureId ? data.selectedClosureId : ko.observable(null);
+                self.selectedClosureId.subscribe(id => {
+                    self.reloadEmployment(id);
+                })
+                self.isDisplayClosureSelection = data.isDisplayClosureSelection ? true : false;
+                self.isDisplayFullClosureOption = data.isDisplayFullClosureOption ? true : false;
+                self.closureSelectionType = data.closureSelectionType ? data.closureSelectionType : ClosureSelectionType.NO_SELECT;
+                if (data.isDisplayClosureSelection) {
+                    self.initSelectClosureOption(data);
+                }
+            }
             self.initGridStyle(data);
             if (data.maxWidth && data.maxWidth <= 350) {
                 data.maxWidth = 350;
@@ -245,10 +316,14 @@ module kcp.share.list {
                 data.employeeInputList.subscribe(dataList => {
                     self.addAreadySettingAttr(dataList, self.alreadySettingList());
                     self.itemList(dataList);
-                    self.createGlobalVarDataList(dataList, $input);
                 })
                 return dfd.promise();
             }
+            
+            // When itemList change -> refesh data list.
+            self.itemList.subscribe(newList => {
+                self.createGlobalVarDataList(newList, $input);
+            })
             
             // Find data list.
             this.findDataList(data.listType).done(function(dataList: Array<UnitModel>) {
@@ -257,6 +332,27 @@ module kcp.share.list {
                 });
             });
             return dfd.promise();
+        }
+        
+        /**
+         * Inint Closure Selection Type.
+         */
+        private initSelectClosureOption(data: ComponentOption) {
+            var self = this;
+            switch(data.closureSelectionType) {
+                case ClosureSelectionType.SELECT_FULL_OPTION:
+                    if (data.isDisplayFullClosureOption) {
+                        self.selectedClosureId(0);
+                    }
+                    break;
+                case ClosureSelectionType.SELECT_BY_SELECTED_CODE:
+                    break;
+                case ClosureSelectionType.NO_SELECT:
+                    self.selectedClosureId(data.isDisplayFullClosureOption ? 0 : 1);
+                    break;
+                default:
+                    break;
+            }
         }
         
         /**
@@ -278,14 +374,8 @@ module kcp.share.list {
                 })
             }
             self.itemList(dataList);
-            
-            // Remove No select row.
-            self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
-            
-            // Check is show no select row.
-            if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultiple) {
-                self.itemList.unshift({code: '', id: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
-            }
+            self.initNoSelectRow(data.isShowNoSelectRow);
+             
             
             // Init component.
             var fields: Array<string> = ['name', 'code'];
@@ -335,7 +425,7 @@ module kcp.share.list {
             }
             $.fn.reloadJobtitleDataList = self.reload;
             $.fn.isNoSelectRowSelected = function() {
-                if (self.isMultiple) {
+                if (self.isMultipleSelect) {
                     return false;
                 }
                 var selectedRow: any = $('#' + self.componentGridId).igGridSelection("selectedRow");
@@ -345,6 +435,20 @@ module kcp.share.list {
                 return false;
             }
             return dfd.promise();
+        }
+        
+        /**
+         * Add No select row to list
+         */
+        private initNoSelectRow(isShowNoSelectRow: boolean) {
+            var self = this;
+            // Remove No select row.
+            self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
+            
+            // Check is show no select row.
+            if (isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultipleSelect) {
+                self.itemList.unshift({code: '', id: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
+            }
         }
         
         /**
@@ -389,10 +493,12 @@ module kcp.share.list {
          * create Global Data List.
          */
         private createGlobalVarDataList(dataList: Array<UnitModel>, $input: JQuery) {
+            var dataListCloned : Array<UnitModel> = _.cloneDeep(dataList);
+            _.remove(dataListCloned, item => !item.id && !item.code)
             $('#script-for-' + $input.attr('id')).remove();
             var s = document.createElement("script");
             s.type = "text/javascript";
-            s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = ' + JSON.stringify(dataList);
+            s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = ' + JSON.stringify(dataListCloned);
             s.id = 'script-for-' + $input.attr('id');
             $("head").append(s);
         }
@@ -418,7 +524,7 @@ module kcp.share.list {
                     //self.selectedCodes(data.selectedCode());
                     return;
                 case SelectType.SELECT_ALL:
-                    if (!self.isMultiple){
+                    if (!self.isMultipleSelect){
                         return;
                     }
                     self.selectedCodes(dataList.map(item => self.listType == ListType.JOB_TITLE ? item.id : item.code));
@@ -456,7 +562,7 @@ module kcp.share.list {
          * Select data for multiple or not
          */
         private selectData(option: ComponentOption, data: UnitModel) :any {
-            if (this.isMultiple) {
+            if (this.isMultipleSelect) {
                 return option.listType == ListType.JOB_TITLE ? [data.id] : [data.code];
             }
             if (option.listType == ListType.JOB_TITLE) {
@@ -495,7 +601,7 @@ module kcp.share.list {
                 + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
             var totalRowsHeight = heightOfRow * this.maxRows + 24;
-            var totalHeight: number = this.hasBaseDate ? 101 : 55;
+            var totalHeight: number = this.hasBaseDate || this.isDisplayClosureSelection ? 101 : 55;
             codeColumnSize = data.maxWidth ? '25%': codeColumnSize;
             var nameColumnSize = data.maxWidth ? '35%' : 170;
             var workplaceColumnSize = data.maxWidth ? '25%' : 150;
@@ -516,9 +622,36 @@ module kcp.share.list {
          * Find data list.
          */
         private findDataList(listType: ListType):JQueryPromise<Array<UnitModel>> {
+            var self = this;
+            var dfd = $.Deferred<any>();
             switch(listType) {
                 case ListType.EMPLOYMENT:
-                    return service.findEmployments();
+                    if (self.isDisplayClosureSelection) {
+                        // Find all closure in current month.
+                        service.findAllClosure().done((items: ClosureItem[]) => {
+                            items = _.sortBy(items, item => item.id);
+                            self.closureList(items);
+                            // if show FullClosureOption -> add option.
+                            if (self.isDisplayFullClosureOption) {
+                                self.closureList.unshift({id: 0, name: nts.uk.resource.getText('CCG001_64')})
+                            }
+                            var selectedClosure = 0;
+                            if (!self.selectedClosureId()) {
+                                selectedClosure = self.closureList().length > 1 ? self.closureList()[0].id : 0;
+                            } else {
+                                selectedClosure = self.selectedClosureId();
+                            }
+                            service.findEmployments(selectedClosure).done(data => {
+                                dfd.resolve(data);
+                            });
+                        })
+                        return dfd.promise();
+                    } else {
+                        if (self.selectedClosureId()){
+                            return service.findEmployments(self.selectedClosureId());
+                        }
+                        return service.findAllEmployments();
+                    }
                 case ListType.JOB_TITLE:
                     return service.findJobTitles(this.baseDate());
                 case ListType.Classification:
@@ -533,7 +666,7 @@ module kcp.share.list {
          */
         public selectAll() {
             var self = this;
-            if (self.itemList().length == 0 || !self.isMultiple) {
+            if (self.itemList().length == 0 || !self.isMultipleSelect) {
                 return;
             }
             self.selectedCodes(self.itemList().map(item => item.code));
@@ -553,7 +686,24 @@ module kcp.share.list {
                     self.addAreadySettingAttr(data, self.alreadySettingList());
                 }
                 self.itemList(data);
+                self.initNoSelectRow(self.isShowNoSelectRow);
+                self.selectedCodes(null);
             });
+        }
+        
+        /**
+         * Reload employment.
+         */
+        private reloadEmployment(closureId: number) {
+            var self = this;
+            service.findEmployments(closureId).done(function(data: UnitModel[]) {
+                if (self.alreadySettingList) {
+                    self.addAreadySettingAttr(data, self.alreadySettingList());
+                }
+                self.itemList(data);
+                self.initNoSelectRow(self.isShowNoSelectRow);
+                self.selectedCodes(null);
+            })
         }
         
         /**
@@ -592,13 +742,40 @@ module kcp.share.list {
             findEmployments: "bs/employee/employment/findAll/",
             findJobTitles: 'bs/employee/jobtitle/findAll',
             findClassifications: 'bs/employee/classification/findAll',
+            findAllClosureItems: 'ctx/at/shared/workrule/closure/findClosureListByCurrentMonth',
+            findEmploymentByClosureId: 'ctx/at/shared/workrule/closure/findEmpByClosureId/',
+            findEmploymentByCodes: 'bs/employee/employment/findByCodes'
         }
         
         /**
          * Find Employment list.
          */
-        export function findEmployments(): JQueryPromise<Array<UnitModel>> {
+        export function findEmployments(closureId?: number): JQueryPromise<Array<UnitModel>> {
+            
+            // Find Employment Closure.
+            var dfd = $.Deferred<Array<UnitModel>>();
+            nts.uk.request.ajax('at', servicePath.findEmploymentByClosureId + closureId).done(function(empList: Array<any>) {
+                if (empList && empList.length > 0) {
+                    // Find by employment codes.
+                    nts.uk.request.ajax('com', servicePath.findEmploymentByCodes, empList).done(data => {
+                        dfd.resolve(data);
+                    })
+                    return dfd.promise();
+                }
+                dfd.resolve([])
+            })
+            return dfd.promise();
+        }
+        
+        export function findAllEmployments(): JQueryPromise<Array<UnitModel>>{
             return nts.uk.request.ajax('com', servicePath.findEmployments);
+        }
+        
+        /**
+         * Find Closure list.
+         */
+        export function findAllClosure(): JQueryPromise<Array<ClosureItem>> {
+            return nts.uk.request.ajax('at', servicePath.findAllClosureItems);
         }
         
         /**

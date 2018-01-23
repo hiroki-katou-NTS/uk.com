@@ -7,8 +7,9 @@ module nts.uk.at.view.ksu001 {
             let colors: any[] = ko.unwrap(data.colors());
             let heightC: string = !!data.height ? ko.unwrap(data.height()) : 'auto';
             let widthC: string = !!data.width ? ko.unwrap(data.width()) : '400px';
-            let startDate: Date = ko.unwrap(data.startDate());
+            let startDate: Date = new Date(ko.unwrap(data.startDate()));
             let endDate: Date = new Date(ko.unwrap(data.endDate()));
+            let startDateString: string = moment(startDate).format('YYYY/MM/DD');
             let endDateString: string = moment(endDate).format('YYYY/MM/DD');
             //if endDate is 2017/12/23,calendar will display to 2017/12/22, so add 1 days
             endDate.setDate(endDate.getDate() + 1);
@@ -38,20 +39,11 @@ module nts.uk.at.view.ksu001 {
 
                 //set color for header of cell, which is not disable
                 _.each($('span.fc-day-number'), (y) => {
-                    let clazz: string = _.find(arrayColor, ['columnKey', moment($(y.closest('td')).attr('data-date'), 'YYYY-MM-DD').format('_YYYYMMDD')]).clazz;
+                    var element = $(y);
+                    let clazz: string = _.find(arrayColor, ['columnKey', moment($(element.closest('td')).attr('data-date'), 'YYYY-MM-DD').format('_YYYYMMDD')]).clazz;
                     $(y).addClass(clazz);
                 });
             } 
-//            else {
-//                _.each($('span.fc-day-number'), (a) => {
-//                    $(a.closest('td')).addClass('color-gray');
-//                });
-//            }
-
-            //set color for header of cell, which is disabled
-//            _.each($('div.fc-content-skeleton thead td:not(.fc-day-top)'), (x) => {
-//                $(x).addClass('fc-day-top color-gray');
-//            });
             
             _.each($('div.fc-content-skeleton thead td'), (x) => {
                 $(x).addClass('fc-day-top color-gray');
@@ -60,7 +52,7 @@ module nts.uk.at.view.ksu001 {
 
             //create timeLable and button
             $(container).prepend("<div id='periodCoverd' data-bind='ntsFormLabel: {}'>" + nts.uk.resource.getText("KSU001_346") + "</div>");
-            $("<span id='startDate' data-bind='text: ko.observable(" + '"' + moment(startDate).format('YYYY/MM/DD') + '"' + ")'></span>").insertAfter("#periodCoverd");
+            $("<span id='startDate' data-bind='text: ko.observable(" + '"' + startDateString + '"' + ")'></span>").insertAfter("#periodCoverd");
             $("<span id='special'>" + nts.uk.resource.getText("KSU001_347") + "</span>").insertAfter("#startDate");
             $("<span id='endDate' data-bind='text: ko.observable(" + '"' + endDateString + '"' + ")'></span>").insertAfter("#special");
             $("<button id='checkAll'>" + nts.uk.resource.getText("KSU001_76") + "</button>").insertAfter("#endDate");
@@ -76,7 +68,8 @@ module nts.uk.at.view.ksu001 {
             $(container).on("click", ".checkBox-calendar", function(event) {
                 event.preventDefault();
                 event.stopPropagation();
-                var choosenDate = $(this).closest('td').attr("data-date");
+                var element = $(event.target);
+                var choosenDate = element.closest('td').attr("data-date");
                 if ($(this).find('input')[0].checked) {
                     _.remove(data.value(), (x) => {
                         return x == choosenDate;
@@ -92,7 +85,8 @@ module nts.uk.at.view.ksu001 {
             $('#checkAll').click(() => {
                 data.value([]);
                 _.each($('.checkBox-calendar .ntsCheckBox-label'), (x) => {
-                    data.value.push($(x).closest('td').attr("data-date"));
+                    var element = $(x);
+                    data.value.push(element.closest('td').attr("data-date"));
                     $(x)[0].childNodes[0].checked = true;
                 });
             });

@@ -26,10 +26,11 @@ module nts.uk.at.view.kmf004.c {
             name: KnockoutObservable<string>;
             itemList: KnockoutObservableArray<any>;
             selectedBaseDateId: any;
-            standardDate: KnockoutObservable<number>;
+            standardDate: KnockoutObservable<string>;
             dataItems: KnockoutObservableArray<Item>;
             specialHolidayCode: KnockoutObservable<string>;
             standardDateEnable: KnockoutObservable<boolean>;
+            standardDateReq: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this,
@@ -57,8 +58,10 @@ module nts.uk.at.view.kmf004.c {
                 ]);
                 
                 self.selectedBaseDateId = ko.observable(0); 
-                self.standardDate = ko.observable(101);
+                self.standardDate = ko.observable("");
                 self.standardDateEnable = ko.observable(true);
+                
+                self.standardDateReq = ko.observable(true);
                 
                 self.dataItems = ko.observableArray([]);
                 
@@ -88,8 +91,12 @@ module nts.uk.at.view.kmf004.c {
                 self.selectedBaseDateId.subscribe(function(value) {
                     if(value == 0){
                         self.standardDateEnable(true);
+                        self.standardDateReq(true);
                     } else {
                         self.standardDateEnable(false);
+                        self.standardDateReq(false);
+                        self.standardDate("");
+                        $("#standard-date-input").ntsError("clear");
                     }
                 }); 
                 
@@ -195,7 +202,8 @@ module nts.uk.at.view.kmf004.c {
                 self.name(""); 
                 
                 self.selectedBaseDateId(0); 
-                self.standardDate(101);
+                self.standardDate("");
+                self.standardDateReq(true);
                 
                 self.dataItems.removeAll();
                 
@@ -209,7 +217,7 @@ module nts.uk.at.view.kmf004.c {
                     self.dataItems.push(new Item(item));    
                 }
                 
-                self.singleSelectedCode(" ");
+                self.singleSelectedCode("");
                 $("#input-code").focus();
             }
             
@@ -218,11 +226,19 @@ module nts.uk.at.view.kmf004.c {
              */
             registerBtn(){
                 var self = this;
-                
+                nts.uk.ui.errors.clearAll();
                 var perSetData = [];
                 var index = 1;
                 
-                $(".nts-input").trigger("validate");
+                $("#input-code").trigger("validate");
+                $("#input-name").trigger("validate");
+                if (self.selectedBaseDateId() === 0) {
+                    if (self.standardDate() == null || self.standardDate() == "" || self.standardDate() == undefined) {
+                        self.standardDateReq(true);
+                    }
+                    $("#standard-date-input").trigger("validate");
+                }
+                
                 if (nts.uk.ui.errors.hasError()) {
                     return;    
                 }
@@ -249,7 +265,7 @@ module nts.uk.at.view.kmf004.c {
                     specialHolidayCode: self.specialHolidayCode(),
                     personalGrantDateCode: self.code(),
                     personalGrantDateName: self.name(),
-                    grantDate: self.standardDate(),
+                    grantDate: new Date(self.standardDate()),
                     grantDateAtr: self.selectedBaseDateId(),
                     grantDatePerSet: ko.toJS(perSetData)
                 };
@@ -261,7 +277,10 @@ module nts.uk.at.view.kmf004.c {
                         } else {  
                             self.getData();         
                             self.singleSelectedCode(self.code());
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
+                                $("#input-name").focus();
+                            });
                         }
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message);
@@ -275,7 +294,10 @@ module nts.uk.at.view.kmf004.c {
                         } else {  
                             self.getData();         
                             self.singleSelectedCode(self.code());
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
+                                $("#input-name").focus();
+                            });
                         }
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message);

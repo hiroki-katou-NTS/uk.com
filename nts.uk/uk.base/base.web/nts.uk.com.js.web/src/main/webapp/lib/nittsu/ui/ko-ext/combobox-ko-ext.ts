@@ -170,18 +170,30 @@ module nts.uk.ui.koExtentions {
             if (selectedValue !== undefined && selectedValue !== null) {
                 container.igCombo("value", selectedValue);
             }
+            
+            var isDropDownWidthSpecified = false;
 
             // Set width for multi columns.
             if (haveColumn && (isChangeOptions || isInitCombo)) {
-                var totalWidth = 0;
+                var componentWidth = 0;
                 var $dropDownOptions = $(container.igCombo("dropDown"));
                 _.forEach(columns, function(item, i) {
-                    var charLength: number = item.length;
-                    var width = charLength * maxWidthCharacter + 10;
-                    $dropDownOptions.find('.nts-combo-column-' + i).css("width", width);
-                    totalWidth += width + 10;
+                    isDropDownWidthSpecified = (isDropDownWidthSpecified || item.lengthDropDown !== undefined);
+                    if (item.lengthDropDown === undefined) {
+                        item.lengthDropDown = item.length;
+                    }
+                    
+                    var componentColumnWidth = item.length * maxWidthCharacter + 10;
+                    var dropDownColumnWidth = item.lengthDropDown * maxWidthCharacter + 10;
+                    $dropDownOptions.find('.nts-combo-column-' + i).css("width", dropDownColumnWidth);
+                    componentWidth += componentColumnWidth + 10;
                 });
-                container.css({ 'min-width': totalWidth });
+                
+                container.css({ 'min-width': componentWidth });
+                
+                if (isDropDownWidthSpecified) {
+                    container.find(".ui-igcombo-dropdown").css("width", "auto");
+                }
             }
 
             container.data("columns", columns);

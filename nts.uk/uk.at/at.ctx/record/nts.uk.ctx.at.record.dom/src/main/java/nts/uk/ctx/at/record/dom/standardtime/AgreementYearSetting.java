@@ -37,7 +37,7 @@ public class AgreementYearSetting extends AggregateRoot{
 	
 	public void validate(){
 		if(alarmOneYear.v().compareTo(errorOneYear.v()) > 0){
-			throw new BusinessException("Msg_59");
+			throw new BusinessException("Msg_59", "KMK008_43", "KMK008_42");
 		}
 	}
 	

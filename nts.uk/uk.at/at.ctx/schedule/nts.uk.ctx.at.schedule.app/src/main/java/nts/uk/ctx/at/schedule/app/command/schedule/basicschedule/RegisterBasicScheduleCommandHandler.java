@@ -1,175 +1,33 @@
 package nts.uk.ctx.at.schedule.app.command.schedule.basicschedule;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
-import nts.uk.ctx.at.shared.dom.worktype.DisplayAtr;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.RegisterBasicScheduleService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
+ * Insert or Update data to DB BASIC_SCHEDULE. If error exist return error
  * 
  * @author sonnh1
- * 
- *         Insert or Update data to DB BASIC_SCHEDULE. If error exist, return
- *         error
- *
  */
 @RequestScoped
 public class RegisterBasicScheduleCommandHandler
 		extends CommandHandlerWithResult<List<RegisterBasicScheduleCommand>, List<String>> {
 	@Inject
-	private I18NResourcesForUK internationalization;
-
-	@Inject
-	private WorkTypeRepository workTypeRepo;
-
-	@Inject
-	private WorkTimeRepository workTimeRepo;
-
-	@Inject
-	private BasicScheduleRepository basicScheduleRepo;
-
-	@Inject
-	private BasicScheduleService basicScheduleService;
+	private RegisterBasicScheduleService basicScheduleService;
 
 	@Override
 	protected List<String> handle(CommandHandlerContext<List<RegisterBasicScheduleCommand>> context) {
-		List<String> errList = new ArrayList<String>();
-
 		String companyId = AppContexts.user().companyId();
-		List<RegisterBasicScheduleCommand> bScheduleCommand = context.getCommand();
+		List<BasicSchedule> bScheduleCommand = context.getCommand().stream().map(x -> x.toDomain()).collect(Collectors.toList());
 
-		List<String> listWorkTypeCode = bScheduleCommand.stream().map(x -> {
-			return x.getWorkTypeCode();
-		}).collect(Collectors.toList());
-		List<String> listWorkTimeCode = bScheduleCommand.stream().map(x -> {
-			return x.getWorkTimeCode();
-		}).collect(Collectors.toList());
-
-		List<WorkType> listWorkType = workTypeRepo.getPossibleWorkType(companyId, listWorkTypeCode);
-		List<WorkTime> listWorkTime = workTimeRepo.findByCodeList(companyId, listWorkTimeCode);
-
-		Map<String, WorkType> workTypeMap = listWorkType.stream().collect(Collectors.toMap(x -> {
-			return x.getWorkTypeCode().v();
-		}, x -> x));
-
-		Map<String, WorkTime> workTimeMap = listWorkTime.stream().collect(Collectors.toMap(x -> {
-			return x.getSiftCD().v();
-		}, x -> x));
-
-		for (RegisterBasicScheduleCommand bSchedule : bScheduleCommand) {
-			BasicSchedule basicScheduleObj = bSchedule.toDomain();
-
-			// Check WorkType
-			WorkType workType = workTypeMap.get(bSchedule.getWorkTypeCode());
-
-			if (workType == null) {
-				// set error to list
-				addMessage(errList, "Msg_436");
-				continue;
-			}
-
-			if (workType.getDeprecate() == DeprecateClassification.Deprecated) {
-				// set error to list
-				addMessage(errList, "Msg_468");
-				continue;
-			}
-
-			// Check WorkTime
-			WorkTime workTime = workTimeMap.get(bSchedule.getWorkTimeCode());
-
-			if (!StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true)
-					&& !("000").equals(bSchedule.getWorkTimeCode())) {
-
-				if (workTime == null) {
-					// Set error to list
-					addMessage(errList, "Msg_437");
-					continue;
-				}
-
-				if (workTime.getDispAtr().value == DisplayAtr.DisplayAtr_NotDisplay.value) {
-					// Set error to list
-					addMessage(errList, "Msg_469");
-					continue;
-				}
-			}
-
-			// Check workType-workTime
-			try {
-				if (workTime == null) {
-					basicScheduleService.checkPairWorkTypeWorkTime(workType.getWorkTypeCode().v(),
-							bSchedule.getWorkTimeCode());
-				} else {
-					basicScheduleService.checkPairWorkTypeWorkTime(workType.getWorkTypeCode().v(),
-							workTime.getSiftCD().v());
-				}
-			} catch (RuntimeException ex) {
-				BusinessException businessException = (BusinessException) ex.getCause();
-				addMessage(errList, businessException.getMessageId());
-				continue;
-			}
-
-			// Check exist of basicSchedule
-			Optional<BasicSchedule> basicSchedule = basicScheduleRepo.find(bSchedule.getEmployeeId(),
-					bSchedule.getDate());
-			// Insert/Update
-			if (basicSchedule.isPresent()) {
-				List<WorkScheduleTimeZone> workScheduleTimeZones = basicScheduleObj.getWorkScheduleTimeZones();
-				for (int i = 0; i < workScheduleTimeZones.size(); i++) {
-					workScheduleTimeZones.get(i).validate();
-					try {
-						workScheduleTimeZones.get(i).validateTime();
-					} catch (BusinessException ex) {
-						addMessage(errList, ex.getMessageId());
-						continue;
-					}
-
-					if (basicScheduleService.isReverseStartAndEndTime(
-							workScheduleTimeZones.get(i).getScheduleStartClock(),
-							workScheduleTimeZones.get(i).getScheduleEndClock())) {
-						addMessage(errList,
-								this.internationalization.localize("Msg_441", "KSU001_73", "KSU001_74").get());
-					}
-				}
-
-				basicScheduleRepo.update(basicScheduleObj);
-			} else {
-				basicScheduleRepo.insert(basicScheduleObj);
-			}
-		}
-
-		return errList;
-	}
-
-	/**
-	 * Add exception message
-	 * 
-	 * @param exceptions
-	 * @param messageId
-	 */
-	private void addMessage(List<String> errorsList, String messageId) {
-		if (!errorsList.contains(messageId)) {
-			errorsList.add(messageId);
-		}
+		return basicScheduleService.register(companyId, bScheduleCommand);
 	}
 }

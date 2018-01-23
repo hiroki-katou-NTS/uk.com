@@ -10,7 +10,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.TimeItemId;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -24,8 +23,9 @@ public class KbpmtBPTimesheet extends UkJpaEntity implements Serializable {
 	public KbpmtBPTimesheetPK kbpmtBPTimesheetPK;
 	@Column(name = "USE_ATR")
 	public BigDecimal useAtr;
+	//加給時間項目NO
 	@Column(name = "TIME_ITEM_ID")
-	public String timeItemId;
+	public int timeItemId;
 	@Column(name = "START_TIME")
 	public BigDecimal startTime;
 	@Column(name = "END_TIME")

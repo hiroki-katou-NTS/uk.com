@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.predset;
 
-import java.util.List;
-
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -14,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -25,17 +22,12 @@ public class JpaPredetemineTimeSettingSetMemento implements PredetemineTimeSetti
 	/** The kshmt pred time set. */
 	private KshmtPredTimeSet entity;
 
-	/** The lst entity time. */
-	private List<KshmtWorkTimeSheetSet> lstEntityTime;
-
-
-	public JpaPredetemineTimeSettingSetMemento(KshmtPredTimeSet entity, List<KshmtWorkTimeSheetSet> lstEntityTime) {
+	public JpaPredetemineTimeSettingSetMemento(KshmtPredTimeSet entity) {
 		super();
-		if(entity.getKshmtPredTimeSetPK() == null){
+		if (entity.getKshmtPredTimeSetPK() == null) {
 			entity.setKshmtPredTimeSetPK(new KshmtPredTimeSetPK());
 		}
 		this.entity = entity;
-		this.lstEntityTime = lstEntityTime;
 	}
 
 	/*
@@ -53,23 +45,23 @@ public class JpaPredetemineTimeSettingSetMemento implements PredetemineTimeSetti
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetMemento#
-	 * setRangeTimeDay(nts.uk.ctx.at.shared.dom.common.time.AttendanceTime)
+	 * setWorkTimeCode(nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode)
 	 */
 	@Override
-	public void setRangeTimeDay(AttendanceTime rangeTimeDay) {
-		this.entity.setRangeTimeDay(rangeTimeDay.valueAsMinutes());
-
+	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
+		this.entity.getKshmtPredTimeSetPK().setWorktimeCd(workTimeCode.v());
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetMemento#
-	 * setWorkTimeCode(nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode)
+	 * setRangeTimeDay(nts.uk.ctx.at.shared.dom.common.time.AttendanceTime)
 	 */
 	@Override
-	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
-		this.entity.getKshmtPredTimeSetPK().setWorktimeCd(workTimeCode.v());
+	public void setRangeTimeDay(AttendanceTime rangeTimeDay) {
+		this.entity.setRangeTimeDay(rangeTimeDay.valueAsMinutes());
+
 	}
 
 	/*
@@ -103,7 +95,7 @@ public class JpaPredetemineTimeSettingSetMemento implements PredetemineTimeSetti
 	 */
 	@Override
 	public void setPrescribedTimezoneSetting(PrescribedTimezoneSetting prescribedTimezoneSetting) {
-		prescribedTimezoneSetting.saveToMemento(new JpaPrescribedTimezoneSettingSetMemento(entity, lstEntityTime));
+		prescribedTimezoneSetting.saveToMemento(new JpaPrescribedTimezoneSettingSetMemento(entity));
 	}
 
 	/*
@@ -125,7 +117,7 @@ public class JpaPredetemineTimeSettingSetMemento implements PredetemineTimeSetti
 	 */
 	@Override
 	public void setPredetermine(boolean predetermine) {
-		this.entity.setPredetermineAtr(BooleanGetAtr.getAtrByBoolean(predetermine));
+		this.entity.setIsIncludeOt(BooleanGetAtr.getAtrByBoolean(predetermine));
 	}
 
 }

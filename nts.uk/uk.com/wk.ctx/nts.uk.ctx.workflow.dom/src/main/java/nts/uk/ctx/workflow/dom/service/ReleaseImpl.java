@@ -6,9 +6,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
@@ -52,7 +54,8 @@ public class ReleaseImpl implements ReleaseService {
 				break;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				if(approvalFrame.getApproverID().equals(employeeID)||approvalFrame.getRepresenterID().equals(employeeID)){
+				if((Strings.isNotBlank(approvalFrame.getApproverID()) && approvalFrame.getApproverID().equals(employeeID)) ||
+						(Strings.isNotBlank(approvalFrame.getRepresenterID()) && approvalFrame.getRepresenterID().equals(employeeID))){
 					approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 					approvalFrame.setApproverID("");
 					approvalFrame.setRepresenterID("");
@@ -67,14 +70,15 @@ public class ReleaseImpl implements ReleaseService {
 
 	@Override
 	public Boolean canReleaseCheck(ApprovalPhaseState approvalPhaseState, String employeeID) {
-		if(approvalPhaseState.getApprovalForm().equals(ApprovalForm.EVERYONEAPPROVED)){
+		if(approvalPhaseState.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
 			return approvalPhaseState.getListApprovalFrame().stream()
 				.filter(x -> x.getApproverID().equals(employeeID)||x.getRepresenterID().equals(employeeID)).findAny().map(y ->true).orElse(false);
 		}
 		Optional<ApprovalFrame> opConfirmFrame = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(Boolean.TRUE)).findAny();
 		if(opConfirmFrame.isPresent()){
 			ApprovalFrame approvalFrame = opConfirmFrame.get();
-			if(approvalFrame.getApproverID().equals(employeeID)||approvalFrame.getRepresenterID().equals(employeeID)){
+			if((Strings.isNotBlank(approvalFrame.getApproverID()) && approvalFrame.getApproverID().equals(employeeID)) ||
+					(Strings.isNotBlank(approvalFrame.getRepresenterID()) && approvalFrame.getRepresenterID().equals(employeeID))){
 				return true;
 			}
 			return false;

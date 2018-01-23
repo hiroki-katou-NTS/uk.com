@@ -73,7 +73,7 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 			switch (optWorkTimeSetting.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
 			case FIXED_WORK:
 				Optional<FixedWorkSetting> optFixedWorkSetting = this.fixedWorkSettingRepo
-						.find(companyId, workTimeCode);
+						.findByKey(companyId, workTimeCode);
 				if (optFixedWorkSetting.isPresent()) {
 					return optFixedWorkSetting.get().getLstStampReflectTimezone();
 				}

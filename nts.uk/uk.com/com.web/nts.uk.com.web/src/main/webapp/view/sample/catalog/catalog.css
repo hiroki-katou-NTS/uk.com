@@ -1,5 +1,5 @@
 /* Common Elements */
-html, body {background-color:#f5f5f5;position:relative;}
+html, body {background-color:#f5f5f5;}
 a{color:#00B050;text-decoration: none;}
 b{font-weight:bold;}
 i{font-style: italic;}
@@ -8,8 +8,6 @@ h2{color:#00B050;font-size: 22px; margin:15px 0 7px;}
 h3{font-size:15px;margin:5px 0;font-weight:bold;}
 h4{font-size:13px;margin:3px 0;font-weight:bold;}
 hr{margin: 20px 0;}
-table {border-collapse: collapse;}
-table th, table td {padding: 5px 5px;border:1px solid #ccc;}
 pre {box-sizing:border-box;background:#f5f5f5;max-width:100%;padding:5px !important;margin:10px 0;border:none !important;overflow:auto;border-radius:5px;}
 pre {tab-size: 2;}
 pre * {font-family: Consolas;}
@@ -21,19 +19,20 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 .color {color:#00B050 !important;}
 .pull-left {float:left;}
 .pull-right {float:right;}
-.table {width: 100%;}
+.table {width: 100%;border-collapse: collapse;}
+.table th, .table td{padding: 5px 5px;border:1px solid #ccc;}
 .table th {background-color: #f5f5f5;}
 .table td:first-child {font-weight:bold; vertical-align:top;}
 .catalog-accordion .ui-accordion-header {font-size: 1rem;font-weight:bold;padding:0px;margin-top:5px;border:none;color:#00B050;}
 
 /* Area */
 #functions-area {background:#fff;}
-#contents-area {display:table;background:#f5f5f5;width:95%;margin:25px auto; padding:0px; border:1px solid #B1B1B1; box-shadow: 1px 1px 2px 1px rgba(0,0,0,0.2);}
+#contents-area {background:#fff;margin:0 auto;}
 
 /* Menu */
 #search-menu {margin: 10px 0px 0px 10px; width:190px; box-sizing: border-box; padding: 5px 10px; border-radius: 20px; border:1px solid #bbb; outline:none;}
 .collapse-button {cursor:pointer;background-color:#fff;border:1px solid #666;border-radius:3px;}
-#side-menu {display:table-cell;width:250px;background:#f5f5f5;padding-bottom:15px;overflow:hidden;box-sizing:border-box;box-shadow:-1px 0 2px 0 rgba(0,0,0,0.15) inset;}
+#side-menu {float:left;width:250px;background:#f5f5f5;padding-bottom:15px;overflow:hidden;box-sizing:border-box;box-shadow:-1px 0 2px 0 rgba(0,0,0,0.25) inset;}
 #side-menu h1{background:#fff;color:#000;border:1px solid #e0e0e0;border-left:5px solid #97D155;padding:6px 8px 6px 16px;margin:10px 0 5px;font-size:14px;font-weight:bold;text-transform:uppercase;cursor:pointer;box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);}
 #side-menu ul{}
 #side-menu ul ul{margin-left: 17px;}
@@ -49,7 +48,8 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 
 /* Content */
 #content{
-	display: table-cell;
+	float: left;
+    width: calc(100% - 250px);
 	background:#fff;
 	padding:10px 10px;
 	box-sizing:border-box;
@@ -109,13 +109,13 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 #search-menu{background:rgba(255,255,255,0.45);box-shadow:0 1px 0 0 rgba(255,255,255,0.6) inset, 0 -1px 0 0 rgba(0,0,0,0.075) inset; border:none; color:#fff;}
 .collapse-button {background-color:#fdf4d4;border-radius:50%;border:1px solid #c3d201;}*/
 /* Halloween */
-html, body{background: #000 url(images/bg-halloween-7.jpg) center top no-repeat; background-size: 100% auto; background-attachment: scroll;}
+/*html, body{background: #000 url(images/bg-halloween-7.jpg) center top no-repeat; background-size: 100% auto; background-attachment: scroll;}
 #header {background:#5e3885 url(images/halloween-decoration.png) repeat-x; background-size: auto 90%; color:#197a32;}
 #header .pumpkin {content:'';display:block;position:absolute;top:0;left:0;right:0;margin:auto;height:138px;width:138px;background:url(images/pumpkin.png) center top;background-size:100% 100%;z-index:3;}
 #header .pumpkin.changed {background:url(images/pumpkin-2.png) center top;background-size:100% 100%;}
 #master-content{}
 #functions-area{background-color:#25153c;border-bottom: 2px solid #e55d00;}
-#contents-area{/*position:relative;*/background:transparent;border-color:#5e3885;box-shadow: 4px 4px 13px 3px rgba(0,0,0,0.45); width:85%; margin: 60px auto 20px;}
+#contents-area{background:transparent;border-color:#5e3885;box-shadow: 4px 4px 13px 3px rgba(0,0,0,0.45); width:85%; margin: 60px auto 20px;}
 #side-menu{position:relative;background:rgba(255,255,255,0.475); box-shadow:-1px 0 2px 0 rgba(255,255,255,0.15) inset;}
 #side-menu h1{position:relative;background:#5e3885 url(images/web-icon.png) right top no-repeat; background-size: auto 90%;; border:none; padding-left:30px; color:#fbef40;}
 #side-menu h1:before{content:'';position:absolute;bottom:-2px;left:0;width:100%;background:#25153c url(images/dirt-sprite.png); background-size:auto 100%; height:4px;}
@@ -127,4 +127,4 @@ html, body{background: #000 url(images/bg-halloween-7.jpg) center top no-repeat;
 .collapse-button {background-color:#fff;border-radius:50%;border:1px solid #b00000;}
 #particles-js{position:absolute;bottom: 0;width: 100%;height: 100%;}
 #side-menu .label-new:before{background:#b60000;content:'New';}
-#side-menu .label-update:before{background:#5e3885;content:'Update';}
+#side-menu .label-update:before{background:#5e3885;content:'Update';}*/

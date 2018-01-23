@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 850, height: 330 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:stylefile path="kal003.c.style.css" />
+			<com:scriptfile path="kal003.c.service.js" />
+			<com:scriptfile path="kal003.c.start.js" />
+			<com:scriptfile path="kal003.c.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="contents-area">
+				<div class="cf">
+					<div class="valign-center control-group rowFirst">
+						<span class="label" style="margin-right: 15px;">#{i18n.getText('KAL003_37')}</span>
+						<div id="combo-box" tabindex="1"
+							data-bind="ntsComboBox: {
+							options: listItems,
+							optionsValue: 'value',
+							value: selected,
+							optionsText: 'name',
+							columns: [
+								{ prop: 'description', length: 5 }
+							]}"></div>
+							
+						<span class="label" style="margin-right: 15px;">#{i18n.getText('KAL003_38')}</span>
+						<div id="radio-box" data-bind="ntsRadioBoxGroup: {
+							options: itemList,
+							optionsValue: 'id',
+							optionsText: 'name',
+							value: selectedId,
+							enable: enable}"></div>
+					</div>
+					<div class="valign-center control-group rowSecond">
+						<span class="label" style="margin-right: 46px;">#{i18n.getText('KAL003_33')}</span>
+						
+						<span class="label">#{i18n.getText('KAL003_39')}</span>
+						<button id="" data-bind="">#{i18n.getText('KAL003_42')}</button>
+						<input class="input-box" data-bind="ntsTextEditor: {value: simpleValue}"/>
+						
+						<div id="combo-box2" tabindex="1"
+							data-bind="ntsComboBox: {
+							options: listItems,
+							optionsValue: 'value',
+							value: selected,
+							optionsText: 'name',
+							columns: [
+								{ prop: 'description', length: 10 }
+							]}"></div>
+							
+						<span class="label">#{i18n.getText('KAL003_39')}</span>
+						<button id="" data-bind="">#{i18n.getText('KAL003_42')}</button>
+						<input class="input-box" data-bind="ntsTextEditor: {value: simpleValue}" />	
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button data-bind="">#{i18n.getText('KAL003_45')}</button>
+				<button data-bind="click :cancel_Dialog">#{i18n.getText('KAL003_46')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

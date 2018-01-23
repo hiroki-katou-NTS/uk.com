@@ -9,14 +9,13 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
-import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryService;
-import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryService;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -68,7 +67,7 @@ public class AddEmploymentHistoryCommandHandler
 		// phải set Segment mặc định là 1 vì Enum value từ 1-> 4
 		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(newHistID, command.getEmployeeId(),
 				command.getEmploymentCode(),
-				command.getSalarySegment() != null ? command.getSalarySegment().intValue() : 1);
+				command.getSalarySegment() != null ? command.getSalarySegment().intValue() :ConstantUtils.ENUM_UNDEFINE_VALUE);
 		employmentHistoryItemRepository.add(histItem);
 
 		return new PeregAddCommandResult(newHistID);

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSymbol;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -26,9 +27,6 @@ import nts.uk.shr.com.primitive.Memo;
 @Getter
 @Setter
 public class WorkTimeSettingDto implements WorkTimeSettingGetMemento {
-
-	/** The company id. */
-	public String companyId;
 
 	/** The worktime code. */
 	public String worktimeCode;
@@ -57,7 +55,7 @@ public class WorkTimeSettingDto implements WorkTimeSettingGetMemento {
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.companyId;
+		return AppContexts.user().companyId();
 	}
 
 	/* (non-Javadoc)

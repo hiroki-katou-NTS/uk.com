@@ -97,7 +97,7 @@ module cas009.a.viewmodel {
             }).always(()=>{
                       block.clear();  
             });
-           // self.userHasRole();
+            self.userHasRole();
 
         }
         
@@ -174,9 +174,10 @@ module cas009.a.viewmodel {
         }
         public remove(): any{
             let self = this;
-               block.invisible();
+
                if(self.component.currentCode() !="" && self.component.currentCode() !=null){
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+                        block.invisible();                        
                         service.deleteRole({roleId: self.roleId(), assignAtr: self.assignAtr()}).done(function(){
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                             let index = _.findIndex(self.listRole(), ['roleId', self.roleId()]);

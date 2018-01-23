@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
@@ -33,11 +31,11 @@ public class OverTimeOfTimeZoneSetDto implements OverTimeOfTimeZoneSetGetMemento
 	/** The timezone. */
 	private TimeZoneRoundingDto timezone;
 
-	/** The o T frame no. */
-	private BigDecimal oTFrameNo;
+	/** The ot frame no. */
+	private Integer otFrameNo;
 
 	/** The legal O tframe no. */
-	private BigDecimal legalOTframeNo;
+	private Integer legalOTframeNo;
 
 	/** The settlement order. */
 	private Integer settlementOrder;
@@ -111,7 +109,7 @@ public class OverTimeOfTimeZoneSetDto implements OverTimeOfTimeZoneSetGetMemento
 	 */
 	@Override
 	public OTFrameNo getOTFrameNo() {
-		return new OTFrameNo(this.oTFrameNo);
+		return new OTFrameNo(this.otFrameNo);
 	}
 
 	/*

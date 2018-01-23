@@ -40,7 +40,7 @@ public class JpaTimezoneGetMemento implements TimezoneGetMemento{
 	 */
 	@Override
 	public int getWorkNo() {
-		return this.entity.getKshmtWorkTimeSheetSetPK().getTimeNumberCnt();
+		return this.entity.getKshmtWorkTimeSheetSetPK().getWorkNo();
 	}
 
 	/* (non-Javadoc)

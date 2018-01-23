@@ -1,9 +1,8 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -86,23 +85,27 @@ public class GrantHdTbl extends AggregateRoot {
 	 * @param grantHolidayList
 	 */
 	public static void validateInput(List<GrantHdTbl> grantHolidayList) {
-		// 重複した勤続年数の登録不可
-		Set<Integer> appeared = new HashSet<>();
+		// 重複した勤続年数の登録不可	
+		List<YearMonthHoliday> yearMonths = new ArrayList<>();
 		
-		for (GrantHdTbl item : grantHolidayList) {
-			if (item.lengthOfServiceYears != null && !appeared.add(item.lengthOfServiceYears.v())) {
-				throw new BusinessException("Msg_266");
-			}
-		}
-
 		for (int i = 0; i < grantHolidayList.size(); i++) {
 			GrantHdTbl currentCondition = grantHolidayList.get(i);
 			
+			if (currentCondition.getLengthOfServiceMonths() == null && currentCondition.getLengthOfServiceYears() == null) {
+				throw new BusinessException("Msg_270");
+			}
+			
 			// 勤続年数、0年0ヶ月は登録不可
-			if ((currentCondition.getLengthOfServiceMonths() == null && currentCondition.getLengthOfServiceYears() == null) ||
-					(currentCondition.getLengthOfServiceMonths().v() == 0 && currentCondition.getLengthOfServiceYears().v() == 0)) {
+			if (currentCondition.getLengthOfServiceMonths().v() == 0 && currentCondition.getLengthOfServiceYears().v() == 0) {
 				throw new BusinessException("Msg_268");
 			}
+			
+			// 重複した勤続年数の登録不可
+			YearMonthHoliday currentYearMonthHd = new YearMonthHoliday(currentCondition.getLengthOfServiceYears().v(), currentCondition.getLengthOfServiceMonths().v());
+			if (yearMonths.stream().anyMatch(x -> x.equals(currentYearMonthHd))) {
+				throw new BusinessException("Msg_266");
+			}
+			yearMonths.add(new YearMonthHoliday(currentCondition.getLengthOfServiceYears().v(), currentCondition.getLengthOfServiceMonths().v()));
 						
 			// 勤続年数が入力されている場合、付与日数を入力すること
 			if (currentCondition.getGrantDays() == null || currentCondition.getGrantDays().v() == null) {
@@ -163,20 +166,25 @@ public class GrantHdTbl extends AggregateRoot {
 	 */
 	public void calculateGrantDate(GeneralDate referenceDate, GeneralDate simultaneousGrantDate,
 			UseSimultaneousGrant useSimultaneousGrant) {
-		referenceDate = referenceDate.addMonths(lengthOfServiceMonths.v());
-		referenceDate = referenceDate.addYears(lengthOfServiceYears.v());
-
+		GeneralDate c = GeneralDate.ymd(referenceDate.year(), referenceDate.month(), referenceDate.day());
+		c = c.addMonths(lengthOfServiceMonths.v());
+		c = c.addYears(lengthOfServiceYears.v());
+		
 		if (UseSimultaneousGrant.USE.equals(useSimultaneousGrant)) {
 			if (GrantSimultaneity.USE.equals(this.grantSimultaneity)) {
 				// 処理名4.付与日シュミレーション計算処理について
-				this.grantDate = simultaneousGrantDate.after(referenceDate) ? referenceDate : simultaneousGrantDate;
+				if ((c.month() == simultaneousGrantDate.month() && c.day() >= simultaneousGrantDate.day()) || c.month() > simultaneousGrantDate.month()) {
+					this.grantDate = GeneralDate.ymd(c.year(), simultaneousGrantDate.month(), simultaneousGrantDate.day());
+				} else {
+					this.grantDate = GeneralDate.ymd(c.year() -1 , simultaneousGrantDate.month(), simultaneousGrantDate.day());
+				}
 			} else {
-				this.grantDate = referenceDate;
+				this.grantDate = c;
 			}
 
 		} else {
 			// 処理名3.付与日シュミレーション計算処理について
-			this.grantDate = referenceDate;
+			this.grantDate = c;
 		}
 	}
 }

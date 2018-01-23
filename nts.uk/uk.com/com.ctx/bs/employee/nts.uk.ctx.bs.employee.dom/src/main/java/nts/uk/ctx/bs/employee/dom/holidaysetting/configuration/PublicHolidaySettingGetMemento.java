@@ -29,4 +29,18 @@ public interface PublicHolidaySettingGetMemento {
 	 * @return the public hd management classification
 	 */
 	PublicHolidayManagementClassification getPublicHdManagementClassification();
+	
+	/**
+	 * Gets the checks if is weekly hd check.
+	 *
+	 * @return the checks if is weekly hd check
+	 */
+	boolean getIsWeeklyHdCheck();
+	
+	/**
+	 * Gets the public holiday management start date.
+	 *
+	 * @return the public holiday management start date
+	 */
+	PublicHolidayManagementStartDate getPublicHolidayManagementStartDate();
 }

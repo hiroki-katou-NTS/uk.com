@@ -42,8 +42,9 @@ public class EmploymentMonthDaySettingSaveCommandHandler extends CommandHandler<
 		// save data
 		if(optional.isPresent()){
 			this.repository.update(domain);
+		} else {
+			this.repository.add(domain);
 		}
-		this.repository.add(domain);
 	}
 
 }

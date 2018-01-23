@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktype;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,7 +60,8 @@ public class WorkTypeFinder {
 	public List<WorkTypeDto> findByCompanyId() {
 		// company id
 		String companyId = AppContexts.user().companyId();
-		return this.workTypeRepo.findByCompanyId(companyId).stream().map(c -> {
+		
+		List<WorkTypeDto> listWorktypeDto = this.workTypeRepo.findByCompanyId(companyId).stream().map(c -> {
 			List<WorkTypeSetDto> workTypeSetList = c.getWorkTypeSetList().stream()
 					.map(x -> WorkTypeSetDto.fromDomain(x)).collect(Collectors.toList());
 
@@ -66,6 +69,17 @@ public class WorkTypeFinder {
 			workType.setWorkTypeSets(workTypeSetList);
 			return workType;
 		}).collect(Collectors.toList());
+						
+		// Sorting by workType Code
+		Collections.sort(listWorktypeDto, new Comparator<WorkTypeDto>() {
+		        @Override
+		        public int compare(WorkTypeDto workTypeDto2, WorkTypeDto workTypeDto1)
+		        {
+		            return workTypeDto2.getWorkTypeCode().compareTo(workTypeDto1.getWorkTypeCode());
+		        }
+		    });
+		
+		return listWorktypeDto;
 	}
 
 	/**

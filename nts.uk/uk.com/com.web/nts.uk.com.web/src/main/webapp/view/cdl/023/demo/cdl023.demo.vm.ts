@@ -45,6 +45,7 @@ module nts.uk.com.view.cdl023.demo.viewmodel {
             
             // subscribe
             self.selectedTarget.subscribe(newValue => {
+                self.itemSetting = null;
                 self.selectedItems([]);
             });
             self.itemSetting.subscribe((newValue) => {

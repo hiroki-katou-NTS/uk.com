@@ -5,6 +5,9 @@
 package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import java.util.List;
+import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
 
 /**
  * The Interface ScheduleErrorLogRepository.
@@ -29,12 +32,28 @@ public interface ScheduleErrorLogRepository {
 	public List<ScheduleErrorLog> findByEmployeeId(String executionId, String employeeId);
 	
 	/**
+	 * Find by employee id.
+	 *
+	 * @param executionId the execution id
+	 * @param employeeId the employee id
+	 * @return the list
+	 */
+	public Optional<ScheduleErrorLog> findByKey(String executionId, String employeeId, GeneralDate baseDate); 
+	/**
 	 * Distinct error by execution id.
 	 *
 	 * @param executionId the execution id
 	 * @return the list
 	 */
 	public Integer distinctErrorByExecutionId(String executionId);
+	
+	/**
+	 * Distinct error by execution id.
+	 *
+	 * @param executionId the execution id
+	 * @return the list
+	 */
+	public Integer distinctErrorByExecutionIdNew(String executionId);
 	
 	
 	/**

@@ -7,7 +7,12 @@ module nts.uk.at.view.ksu001.a {
             viewQ: new ksu001.q.viewmodel.ScreenModel(),
             viewA: new ksu001.a.viewmodel.ScreenModel()
         };
-        __viewContext.bind(__viewContext.viewModel);
+        nts.uk.ui.block.grayout();
+        __viewContext.viewModel.viewA.startKSU001().done(() => {
+            __viewContext.bind(__viewContext.viewModel);
+            nts.uk.ui.block.clear();
+        });
+
         initEvent();
     });
 

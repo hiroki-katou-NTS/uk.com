@@ -10,7 +10,10 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
+import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.info.category.HistoryTypes;
+import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
@@ -32,9 +35,12 @@ public class PerInfoCategoryFinder {
 
 	@Inject
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
-	
+
 	@Inject
 	private PersonInfoCategoryAuthRepository personInfoCategoryAuthRepository;
+
+	@Inject
+	private EmInfoCtgDataRepository empDataRepo;
 
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg() {
 		return perInfoCtgRepositoty
@@ -52,8 +58,8 @@ public class PerInfoCategoryFinder {
 	// isParent, 1 - parent; 0 - is not
 	public List<PerInfoCtgWithParentMapDto> getPerInfoCtgWithParent(String parentCd) {
 		List<PerInfoCtgWithParentMapDto> lstResult = new ArrayList<>();
-		lstResult = perInfoCtgRepositoty.getPerInfoCtgByParentCode(parentCd, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
-				.stream().map(p -> {
+		lstResult = perInfoCtgRepositoty
+				.getPerInfoCtgByParentCode(parentCd, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream().map(p -> {
 					return new PerInfoCtgWithParentMapDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
 							p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
 							p.getCategoryType().value, p.getIsFixed().value, 0);
@@ -66,7 +72,7 @@ public class PerInfoCategoryFinder {
 				}).orElse(null));
 		return lstResult;
 	}
-	
+
 	/**
 	 * check exist auth of ctg by empId and ctgId
 	 * 
@@ -74,14 +80,14 @@ public class PerInfoCategoryFinder {
 	 * @param ctgId
 	 * @return
 	 */
-	public boolean checkPerInfoCtgAuth(String empId, String ctgId) {
+	public boolean checkPerInfoCtgAuth(String empId, String ctgId, String roleId) {
 		String loginEmpId = AppContexts.user().employeeId();
-		String roleId = AppContexts.user().roles().forCompanyAdmin();
 		boolean isSelfAuth = empId.equals(loginEmpId);
 		// get perInfoCtgAuth
 		Optional<PersonInfoCategoryAuth> perInfoCtgAuth = personInfoCategoryAuthRepository
 				.getDetailPersonCategoryAuthByPId(roleId, ctgId);
-		if(!perInfoCtgAuth.isPresent()) return false;
+		if (!perInfoCtgAuth.isPresent())
+			return false;
 		PersonInfoCategoryAuth personInfoCategoryAuth = perInfoCtgAuth.get();
 		if (isSelfAuth) {
 			return personInfoCategoryAuth.getAllowPersonRef() == PersonInfoPermissionType.YES;
@@ -132,10 +138,39 @@ public class PerInfoCategoryFinder {
 	public PerInfoCtgWithItemsNameDto getPerInfoCtgWithItemsName(String perInfoCtgId) {
 		List<String> itemNameList = pernfoItemDefRep.getPerInfoItemsName(perInfoCtgId,
 				PersonInfoItemDefinition.ROOT_CONTRACT_CODE);
-		return perInfoCtgRepositoty.getPerInfoCategory(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
-				.map(p -> {
+		PerInfoCtgWithItemsNameDto resultCtg = perInfoCtgRepositoty
+				.getPerInfoCategory(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).map(p -> {
 					return new PerInfoCtgWithItemsNameDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-							p.getCategoryType().value, p.getIsFixed().value, p.getPersonEmployeeType().value, itemNameList);
+							p.getCategoryType().value, p.getIsFixed().value, p.getPersonEmployeeType().value,
+							itemNameList, p.getIsFixed().equals(IsFixed.NOT_FIXED)
+									? isChangeAbleCtgType(p.getPersonInfoCategoryId()) : false);
 				}).orElse(null);
+
+		return resultCtg;
+
 	};
+	
+	public int getDispOrder(String perInfoCtgId) {
+		return perInfoCtgRepositoty.getDispOrder(perInfoCtgId);
+	}
+
+	private boolean isChangeAbleCtgType(String perInfoCtgId) {
+
+		String contractCd = AppContexts.user().contractCode();
+		// check not change Ctg Type
+		PersonInfoCategory ctg = this.perInfoCtgRepositoty.getPerInfoCategory(perInfoCtgId, contractCd).get();
+
+		List<String> ctgIds = this.perInfoCtgRepositoty.getAllCategoryByCtgCD(ctg.getCategoryCode().toString());
+
+		if (ctgIds.size() > 0) {
+
+			List<EmpInfoCtgData> empDataLst = this.empDataRepo.getByEmpIdAndCtgId(ctgIds);
+
+			if (empDataLst.size() > 0) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }

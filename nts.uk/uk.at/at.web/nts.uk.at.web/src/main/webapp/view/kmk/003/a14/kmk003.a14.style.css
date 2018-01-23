@@ -1,4 +1,25 @@
-.radio {
-	padding: 6px 33px;
-	display: inline-grid;
+.tab_14_setting_rows {
+	margin-top: 20px;
+	width: 100%;
+	display: flex;
+    align-items: center;
+}
+
+.tab_14_setting_header {
+	width: 300px;
+	margin-left: 20px;
+}
+
+.tab_14_inline_item {
+	padding: 0px 10px 0px 10px;
+	display: inline-block;
+}
+
+.tab_14_radio {
+	padding-left: 40px;
+	width: 200px;
+}
+
+.ntsRadioBox {
+	padding-bottom: 10px;
 }

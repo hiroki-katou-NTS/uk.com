@@ -7,13 +7,13 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
-			<title>#{i18n.getText('CPS008_1')}</title>
 			<com:ValidatorScript>
 					nts.uk.ctx.pereg.dom.person.layout.LayoutCode
 					nts.uk.ctx.pereg.dom.person.layout.LayoutName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
+			<com:scriptfile path="/view/cps/shr/layout-control-validation.js" />
+			<com:scriptfile path="/view/cps/shr/layout-control-ko-ext.js" />
 			<com:stylefile path="cps008.a.style.css" />
 			<com:scriptfile path="cps008.a.service.js" />
 			<com:scriptfile path="cps008.a.vm.js" />
@@ -38,16 +38,16 @@
 					<i class="icon icon-searchbox"></i>
 					<div class="cf">
 						<div style="float: left">
-							<div style="width: 395px"
+							<div style="width: 300px"
 								data-bind="ntsSearchBox: {
-									searchMode: 'filter',
-									targetKey: 'code', 
+									searchMode :'highlight',
+									targetKey: 'id', 
+									mode: 'igGrid',
 									comId: 'multi-list',
 									items: layouts, 
-									selectedKey: layout().code, 
-									fields: ['name', 'code'], 
-									mode: 'igGrid'
-									}" />
+									selected: 'id',
+									selectedKey: 'id', 
+									fields: ['name', 'code'] }" />
 							<table id="multi-list"
 								data-bind="ntsGridList: {
 									height: 535,
@@ -55,8 +55,8 @@
 									optionsValue: 'id',
 									columns: [
 						                { headerText: '', key: 'id', width: 0, hidden: true },
-						                { headerText: '#{i18n.getText('CPS008_9')}', key: 'code', width: 130, hidden: false },
-						                { headerText: '#{i18n.getText('CPS008_10')}', key: 'name', width: 180, hidden: false }
+						                { headerText: '#{i18n.getText('CPS008_9')}', key: 'code', width: 60, hidden: false },
+						                { headerText: '#{i18n.getText('CPS008_10')}', key: 'name', width: 220, hidden: false }
 						            ],
 									multiple: false,
 									value: layout().id}">
@@ -65,7 +65,14 @@
 					</div>
 				</div>
 				<div id="right-content" data-bind="with: layout">
-					<div id="right-content">
+					<div id="right-content"
+						data-bind="let: { LAYOUT_ACTION: {
+						        INSERT: 0,
+						        UPDATE: 1,
+						        COPY: 2,
+						        OVERRIDE: 3,
+						        REMOVE: 4
+						    } }">
 						<table class="table_content">
 							<colgroup>
 								<col width="220px" />
@@ -105,10 +112,17 @@
 							<button class="x-large"
 								data-bind="click: $parent.showDialogB.bind($parent) , enable: $parent.layout().id() != undefined">#{i18n.getText('CPS008_42')}</button>
 						</div>
-						<div  style="padding-top: 10px"
-							data-bind="ntsLayoutControl: { 
+						<div data-bind="if: action() != LAYOUT_ACTION.INSERT">
+							<div style="padding-top: 10px"
+								data-bind="ntsLayoutControl: { 
 								data: classifications,
 								editAble: false }"></div>
+						</div>
+						<div style="padding-top: 10px"
+							data-bind="if: action() == LAYOUT_ACTION.INSERT">
+							<div class="nosetarea"
+								style="display: flex; align-items: center; justify-content: center;">#{i18n.getText('CPS008_44')}</div>
+						</div>
 					</div>
 				</div>
 			</div>

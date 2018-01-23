@@ -30,7 +30,7 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 	
 	private final String SELECT_NO_WHERE_PER = "SELECT c FROM KshstYearServicePer c ";
 	
-	private final String SELECT_ITEM_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId";
+	private final String SELECT_ITEM_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId AND c.kshstYearServicePerPK.specialHolidayCode = :specialHolidayCode";
 	/**
 	 * change entity to domain
 	 * @param entity
@@ -130,9 +130,10 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 				.getList(c->toDomainPerSet(c));
 	}
 	@Override
-	public List<YearServicePer> findAllPer(String companyId) {
+	public List<YearServicePer> findAllPer(String companyId, String specialHolidayCode) {
 		return this.queryProxy().query(SELECT_ITEM_PER, KshstYearServicePer.class)
 				.setParameter("companyId", companyId)
+				.setParameter("specialHolidayCode", specialHolidayCode)
 				.getList(c->toDomainPer(c));
 	}
 	@Override

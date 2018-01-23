@@ -66,7 +66,7 @@ public class AuthorityDailyDetailFinder {
 						.isPresent()
 								? this.authorityFormatSheetRepository.find(companyId, new DailyPerformanceFormatCode(dailyPerformanceFormatCode),sheetNo)
 										.get().getSheetName()
-								: "",
+								: null,
 				dailyAttendanceAuthorityDetailDtos);
 
 		return dailyAttendanceAuthorityDailyDto;

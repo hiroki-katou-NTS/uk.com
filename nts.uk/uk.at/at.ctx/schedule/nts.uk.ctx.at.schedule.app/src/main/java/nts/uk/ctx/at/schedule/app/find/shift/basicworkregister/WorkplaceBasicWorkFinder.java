@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.BasicWorkSettingFindDto;
 import nts.uk.ctx.at.schedule.app.find.shift.basicworkregister.dto.WorkplaceBasicWorkFindDto;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkRepository;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -39,7 +39,7 @@ public class WorkplaceBasicWorkFinder {
 
 	/** The worktime repo. */
 	@Inject
-	private WorkTimeRepository worktimeRepo;
+	private WorkTimeSettingRepository worktimeRepo;
 	
 	/**
 	 * Find.
@@ -87,30 +87,33 @@ public class WorkplaceBasicWorkFinder {
 		}).collect(Collectors.toList());
 
 		// Find WorkTime
-		List<WorkTime> workingList = this.worktimeRepo.findByCodeList(companyId, workingCodeList);
+		List<WorkTimeSetting> workingList = this.worktimeRepo.findByCodes(companyId, workingCodeList);
 
-		basicWorkSettingFindDto.stream().filter(a -> {
-			return a.getWorkTypeCode().length() > 0;
-		}).forEach(item -> {
+		basicWorkSettingFindDto.stream().forEach(item -> {
 			// Get WorkType
 			WorkType worktype = worktypeList.stream().filter(a -> {
 				return a.getWorkTypeCode().equals(item.getWorkTypeCode());
 			}).findFirst().orElse(null);
+			
 			// Set WorkTypeDisplayName to Dto
-			if (worktype == null) {
+			if (worktype == null && !StringUtil.isNullOrEmpty(item.getWorkTypeCode(), true)) {
 				item.setWorkTypeDisplayName(TextResource.localize("KSM006_13"));
+			} else if (StringUtil.isNullOrEmpty(item.getWorkTypeCode(), true)) {
+				item.setWorkTypeDisplayName("");
 			} else {
 				item.setWorkTypeDisplayName(worktype.getName().v());
 			}
 
 			// Get WorkTime
-			WorkTime worktime = workingList.stream().filter(wt -> {
-				return wt.getSiftCD().v().equals(item.getWorkingCode());
+			WorkTimeSetting worktime = workingList.stream().filter(wt -> {
+				return wt.getWorktimeCode().v().equals(item.getWorkingCode());
 			}).findFirst().orElse(null);
 
 			// Set WorkingDisplayName
-			if (worktime == null) {
-				item.setWorkTypeDisplayName(TextResource.localize("KSM006_13"));
+			if (worktime == null && !StringUtil.isNullOrEmpty(item.getWorkingCode(), true)) {
+				item.setWorkingDisplayName(TextResource.localize("KSM006_13"));
+			} else if (StringUtil.isNullOrEmpty(item.getWorkingCode(), true)) {
+				item.setWorkingDisplayName("");
 			} else {
 				item.setWorkingDisplayName(worktime.getWorkTimeDisplayName().getWorkTimeName().v());
 			}
@@ -125,9 +128,9 @@ public class WorkplaceBasicWorkFinder {
 	 * @return the list
 	 */
 	public List<String> findSetting() {
-		List<WorkplaceId> workplaceBWList = this.repository.findSetting();
+		List<String> workplaceBWList = this.repository.findSetting();
 		return workplaceBWList.stream().map(workplaceBW -> {
-			return workplaceBW.v();
+			return workplaceBW;
 		}).collect(Collectors.toList());
 	}
 }

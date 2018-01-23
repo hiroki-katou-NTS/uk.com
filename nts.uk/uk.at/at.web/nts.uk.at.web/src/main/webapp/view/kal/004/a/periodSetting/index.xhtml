@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+		<div class="tab2" style="margin-top: 7px;margin-left: 50px;">
+			<table >
+		        <thead>
+		            <tr class="bg-green">
+		                <th style="width: 150px;">#{i18n.getText('KAL004_21')}</th>
+		                <th style="width: 330px;">#{i18n.getText('KAL004_22')}</th>
+		                <th style="width: 70px;"/>
+		            </tr>
+		        </thead>
+		        <tbody data-bind='foreach: ListView'>
+		            <tr>
+		                <td data-bind="text: categoryName"></td>
+		                <td data-bind="text: extractionPeriod"></td>
+		                <td><button data-bind="click: $parent.openDialog.bind($parent)" >#{i18n.getText('KAL004_23')}</button></td>
+		            </tr>
+		        </tbody>
+		    </table>
+		</div>
+
+</ui:composition>

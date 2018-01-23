@@ -25,11 +25,11 @@
 					</div>
 				</div>
 				<button tabindex="2" class="proceed" data-bind="click: submitData">#{i18n.getText('KDW002_2')}</button>
-				<button tabindex="3" class="copy"  data-bind="click: copy">#{i18n.getText('KDW002_14')}</button>
-				<label class="mylabel">#{i18n.getText('KDW002_1')}</label>
+				<!--  <button tabindex="3" class="copy"  data-bind="click: copy">#{i18n.getText('KDW002_14')}</button>  -->
+				<!--  <label class="mylabel">#{i18n.getText('KDW002_1')}</label> -->
 			</div>
 			<div id="contents-area">
-				<div class="container">
+				<!-- <div class="container"> -->
 					<div class="leftpanel"
 						data-bind="ntsPanel:{ direction: 'right', visible: true}">
 						<label class="leftLabel">権限</label>
@@ -50,7 +50,7 @@
 					<button class="searchButton" data-bind="click: searchData">検索</button>
 					<table id="grid"></table>
 				</div>
-			</div>
+			<!-- </div> -->
 		</ui:define>
 
 	</ui:composition>

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
@@ -91,7 +92,10 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 		if (affClassHistory.isPresent()) {
 			return affClassHistory.get().getPeriods().stream()
 					.filter(x -> affClassHistItemRepo.getByHistoryId(x.identifier()).isPresent())
-					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), 
+							x.end().equals(GeneralDate.max()) 
+							//&& query.getCtgType() == 3
+							?"":x.end().toString()))
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();

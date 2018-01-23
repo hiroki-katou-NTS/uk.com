@@ -13,7 +13,7 @@
 					nts.uk.ctx.at.shared.dom.worktype.WorkTypeAbbreviationName
 					nts.uk.ctx.at.shared.dom.worktype.WorkTypeSymbolicName
 					nts.uk.ctx.at.shared.dom.worktype.WorkTypeMemo
-				</com:ValidatorScript>
+			</com:ValidatorScript>
 			<com:stylefile path="kmk007.a.style.css" />
 			<com:scriptfile path="kmk007.a.start.js" />
 			<com:scriptfile path="kmk007.a.vm.js" />
@@ -50,7 +50,7 @@
 	                              items: listWorkType, selected: currentCode, selectedKey: 'workTypeCode', fields: ['workTypeCode', 'name'], mode: 'igGrid'}" />
 						<table id="single-list"
 							data-bind="ntsGridList: {	
-								width: 280,
+								width: 280,  
 								height: 450,
 								dataSource: listWorkType,
 								primaryKey: 'workTypeCode',
@@ -84,7 +84,7 @@
 							<div style="margin-top: 10px;"
 								data-bind="ntsFormLabel: {constraint: 'WorkTypeMemo'}">#{i18n.getText('KMK007_17')}</div>
 							<input id="memo-input"
-								data-bind="ntsTextEditor: {value: memo,name: '#[KMK007_17]', enable: $parent.isEnable}" />
+								data-bind="ntsTextEditor: {value: memo, name: '#[KMK007_17]', enable: $parent.isEnable, constraint: 'WorkTypeMemo'}" />
 						</div>
 
 
@@ -537,7 +537,7 @@
 														editable: false,
 														enable: $parent.enableMethod,
 														columns: [
-															{ prop: 'name', length: 15 },
+															{ prop: 'name', length: 18 },
 														]}"></div>
 					</div>
 				</div>

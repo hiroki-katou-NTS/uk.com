@@ -6,13 +6,14 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
         listWorkTime: KnockoutObservableArray<any>;
         selectedWorkTypeCode: KnockoutObservable<string> = ko.observable('');
         selectedWorkTimeCode: KnockoutObservable<string> = ko.observable('');
-        time1: KnockoutObservable<string> = ko.observable('12:00');
-        time2: KnockoutObservable<string> = ko.observable('15:00');
+        time1: KnockoutObservable<string> = ko.observable('');
+        time2: KnockoutObservable<string> = ko.observable('');
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
         nameWorkTimeType: KnockoutComputed<ksu001.common.viewmodel.ExCell>;
         columnsWorkTime: KnockoutObservableArray<NtsGridListColumn>;
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
+        isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
 
 
         constructor() {
@@ -24,10 +25,10 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                 { code: '2', name: nts.uk.resource.getText("KSU001_72") }
             ]);
             self.listWorkTimeComboBox = ko.observableArray(self.listWorkTime());
-            
+
             self.columnsWorkTime = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KSU001_1402"), key: 'siftCd', width: 70 },
-                { headerText: nts.uk.resource.getText("KSU001_1403"), key: 'symbol', width: 70 },
+                { headerText: nts.uk.resource.getText("KSU001_1402"), key: 'workTimeCode', width: 70 },
+                { headerText: nts.uk.resource.getText("KSU001_1403"), key: 'symbolName', width: 70 },
                 { headerText: nts.uk.resource.getText("KSU001_1404"), key: 'name', width: 110 },
                 { headerText: nts.uk.resource.getText("KSU001_1406"), key: 'timeZone1', width: 160 },
                 { headerText: nts.uk.resource.getText("KSU001_1407"), key: 'timeZone2', width: 160 },
@@ -38,37 +39,44 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
             //get name of workType and workTime
             self.nameWorkTimeType = ko.pureComputed(() => {
                 let workTypeName, workTypeCode, workTimeName, workTimeCode: string;
+                let startTime, endTime: any;
                 if (self.listWorkType().length > 0 || self.listWorkTime().length > 0) {
                     let d = _.find(self.listWorkType(), ['workTypeCode', self.selectedWorkTypeCode()]);
                     if (d) {
                         workTypeName = d.abbreviationName;
                         workTypeCode = d.workTypeCode;
                     } else {
-                        workTypeName = '';
-                        workTypeCode = '';
+                        workTypeName = null;
+                        workTypeCode = null;
                     }
 
-                    let siftCode: string = null;
+                    let workTimeCd: string = null;
                     if (self.selectedWorkTimeCode()) {
-                        siftCode = self.selectedWorkTimeCode().slice(0, 3);
+                        workTimeCd = self.selectedWorkTimeCode().slice(0, 3);
                     } else {
-                        siftCode = self.selectedWorkTimeCode()
+                        workTimeCd = self.selectedWorkTimeCode()
                     }
 
-                    let c = _.find(self.listWorkTime(), ['siftCd', siftCode]);
+                    let c = _.find(self.listWorkTime(), ['workTimeCode', workTimeCd]);
                     if (c) {
                         workTimeName = c.abName;
-                        workTimeCode = c.siftCd;
+                        workTimeCode = (c.workTimeCode == '000') ? null : c.workTimeCode;
+                        startTime = nts.uk.time.parseTime(c.startTime, true).format();
+                        endTime = nts.uk.time.parseTime(c.endTime, true).format();
                     } else {
-                        workTimeName = '';
-                        workTimeCode = '';
+                        workTimeName = null;
+                        workTimeCode = null;
+                        startTime = '';
+                        endTime = '';
                     }
                 }
                 return new ksu001.common.viewmodel.ExCell({
                     workTypeCode: workTypeCode,
                     workTypeName: workTypeName,
                     workTimeCode: workTimeCode,
-                    workTimeName: workTimeName
+                    workTimeName: workTimeName,
+                    startTime: startTime,
+                    endTime: endTime
                 });
             });
 
@@ -108,30 +116,48 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
+
+        /**
+         * search time
+         */
         search(): void {
             let self = this;
+            self.isEnableClearSearchButton(true);
             if (!self.time1() && !self.time2()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
+                self.isEnableClearSearchButton(false);
+                self.clear();
+                return;
             }
             if (self.time1() && self.time2() && moment(self.time1(), 'HH:mm').isSameOrAfter(moment(self.time2(), 'HH:mm'))) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_54" });
+                self.clear();
+                return;
+            }
+            if (nts.uk.ui.errors.hasError()) {
+                return;
             }
             self.listWorkTimeComboBox([]);
             _.forEach(self.listWorkTime(), (obj) => {
                 if (self.time1() && self.time2()
-                    && (moment.duration(self.time1()).asMinutes() == obj.start)
-                    && (moment.duration(self.time2()).asMinutes() == obj.end)) {
+                    && (moment.duration(self.time1()).asMinutes() == obj.startTime)
+                    && (moment.duration(self.time2()).asMinutes() == obj.endTime)) {
                     self.listWorkTimeComboBox.push(obj);
-                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() <= obj.start)) {
+                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() <= obj.startTime)) {
                     self.listWorkTimeComboBox.push(obj);
-                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() >= obj.end)) {
+                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() >= obj.endTime)) {
                     self.listWorkTimeComboBox.push(obj);
                 }
             });
-
+            $("#single-list").focus();
         }
+
+        /**
+         * clear search time
+         */
         clear(): void {
             let self = this;
+            self.isEnableClearSearchButton(false);
             self.listWorkTimeComboBox([]);
             self.listWorkTimeComboBox(self.listWorkTime());
         }

@@ -5,9 +5,10 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.val;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -31,11 +32,8 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	//時間帯
 	private List<TimezoneUse> lstTimezone;
 
-	/** The shift one. */
-	public static Integer SHIFT_ONE = 1;
-	
-	/** The shift two. */
-	public static Integer SHIFT_TWO = 2;
+	/** The size one. */
+	public static Integer SIZE_ONE = 1;
 	
 	/**
 	 * Instantiates a new prescribed timezone setting.
@@ -46,6 +44,55 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		this.morningEndTime = memento.getMorningEndTime();
 		this.afternoonStartTime = memento.getAfternoonStartTime();
 		this.lstTimezone = memento.getLstTimezone();
+	}
+
+	public boolean isUseShiftTwo() {
+		return this.getTimezoneShiftTwo().isUsed();
+	}
+
+	/**
+	 * Sets the morning work.
+	 */
+	public void setMorningWork() {
+		if (this.isUseShiftTwo()) {
+			// work time set update morning
+			if (this.isMorningEndTimeLessThanOrEqualToShift2StartTime()) {
+
+				// update end time shift 1 and remove shift 2
+				this.setMorningEndTimeShiftOne();
+				this.getTimezoneShiftTwo().resetTime();
+			} else {
+
+				// update end time shift 2
+				this.setMorningEndTimeShiftTwo();
+			}
+		} else {
+			// update time shift 1 to end time morning
+			this.setMorningEndTimeShiftOne();
+			this.getTimezoneShiftTwo().resetTime();
+		}
+	}
+
+	/**
+	 * Sets the afternoon work.
+	 */
+	public void setAfternoonWork() {
+		if (this.isUseShiftTwo()) {
+			if (this.isAfternoonStartTimeLessThanOrEqualToShift1EndTime()) {
+
+				// update start time shift 1
+				this.setAfternoonStartTimeShiftOne();
+			} else {
+
+				// update start time shift 2 and remove shift 1
+				this.setAfternoonStartTimeShiftTwo();
+				this.getTimezoneShiftOne().resetTime();
+			}
+		} else {
+			// update time shift 1 and remove shift 2
+			this.setAfternoonStartTimeShiftOne();
+			this.getTimezoneShiftTwo().resetTime();
+		}
 	}
 	
 	/**
@@ -65,7 +112,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @return the timezone shift one
 	 */
 	public TimezoneUse getTimezoneShiftOne() {
-		return this.getTimezone(SHIFT_ONE);
+		return this.getTimezone(TimezoneUse.SHIFT_ONE);
 	}
 
 	/**
@@ -74,7 +121,7 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * @return the timezone shift two
 	 */
 	public TimezoneUse getTimezoneShiftTwo() {
-		return this.getTimezone(SHIFT_TWO);
+		return this.getTimezone(TimezoneUse.SHIFT_TWO);
 	}
 
 	/**
@@ -123,6 +170,66 @@ public class PrescribedTimezoneSetting extends DomainObject {
 			.findFirst()
 			.get();
 	}
+
+	/**
+	 * Disable shift two.
+	 */
+	public void disableShiftTwo() {
+		this.getTimezoneShiftTwo().disable();
+	}
+
+	/**
+	 * Disable shift one.
+	 */
+	public void disableShiftOne() {
+		this.getTimezoneShiftTwo().disable();
+	}
+
+	/**
+	 * Checks if is morning end time less than or equal to shift 2 start time.
+	 *
+	 * @return true, if is morning end time less than or equal to shift 2 start time
+	 */
+	private boolean isMorningEndTimeLessThanOrEqualToShift2StartTime() {
+		return this.morningEndTime.lessThanOrEqualTo(this.getTimezoneShiftTwo().getStart());
+	}
+
+	/**
+	 * Checks if is afternoon start time less than or equal to shift 1 end time.
+	 *
+	 * @return true, if is afternoon start time less than or equal to shift 1 end time
+	 */
+	private boolean isAfternoonStartTimeLessThanOrEqualToShift1EndTime() {
+		return this.afternoonStartTime.lessThanOrEqualTo(this.getTimezoneShiftOne().getEnd());
+	}
+
+	/**
+	 * Sets the morning end time shift two.
+	 */
+	private void setMorningEndTimeShiftTwo() {
+		this.getTimezoneShiftTwo().updateEndTime(this.morningEndTime);
+	}
+
+	/**
+	 * Sets the morning end time shift one.
+	 */
+	private void setMorningEndTimeShiftOne() {
+		this.getTimezoneShiftOne().updateEndTime(this.morningEndTime);
+	}
+
+	/**
+	 * Sets the afternoon start time shift one.
+	 */
+	private void setAfternoonStartTimeShiftOne() {
+		this.getTimezoneShiftOne().updateStartTime(this.afternoonStartTime);
+	}
+
+	/**
+	 * Sets the afternoon start time shift two.
+	 */
+	private void setAfternoonStartTimeShiftTwo() {
+		this.getTimezoneShiftTwo().updateStartTime(this.afternoonStartTime);
+	}
 	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
@@ -133,21 +240,40 @@ public class PrescribedTimezoneSetting extends DomainObject {
 		
 		// valid timezone must increase
 		TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
-		TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
-		if (tzWorkNo2.getStart().lessThanOrEqualTo(tzWorkNo1.getEnd())) {
-			throw new BusinessException("Msg_772");
+		if(this.lstTimezone.size()> SIZE_ONE){
+			TimezoneUse tzWorkNo2 = this.getTimezoneShiftTwo();
+			//TODO rcheck overlap 
+			// valid: 2 時間帯 có 勤務NO=1 và 2 not overlap
+//			boolean isWorkNoOverlap = this.getTimezone(SHIFT_ONE).getWorkNo() == this.getTimezone(SHIFT_TWO).getWorkNo();
+//			if (isWorkNoOverlap) {
+//				throw new BusinessException("Msg_771");
+//			}
+			
+			// 使用する
+			if (tzWorkNo2.isUsed()) {
+				
+				if (tzWorkNo2.getStart().lessThan(tzWorkNo1.getEnd())) {
+					BundledBusinessException be = BundledBusinessException.newInstance();
+					be.addMessage("Msg_772");
+					be.throwExceptions();
+				}
+				
+				//check Msg_774
+				if (!tzWorkNo1.consistOf(this.getMorningEndTime()) && !tzWorkNo2.consistOf(this.getMorningEndTime())) {
+					throw new BusinessException("Msg_774", "KMK003_39");
+				}
+
+				if (!tzWorkNo1.consistOf(this.getAfternoonStartTime())
+						&& !tzWorkNo2.consistOf(this.getAfternoonStartTime())) {
+					throw new BusinessException("Msg_774", "KMK003_40");
+				}
+			}
 		}
 		
 		// valid 時間帯.終了 >= 0:01
-		if (this.lstTimezone.stream()
-				.anyMatch(timezone -> !timezone.getEnd().greaterThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))) {
+		if (this.lstTimezone.stream().anyMatch(timezone -> timezone.isUsed()
+				&& !timezone.getEnd().greaterThan(TimeWithDayAttr.THE_PRESENT_DAY_0000))) {
 			throw new BusinessException("Msg_778");
-		}
-		
-		// valid: 2 時間帯 có 勤務NO=1 và 2 not overlap
-		boolean isWorkNoOverlap = this.getTimezone(SHIFT_ONE).getWorkNo() == this.getTimezone(SHIFT_TWO).getWorkNo();
-		if (isWorkNoOverlap) {
-			throw new BusinessException("Msg_771");
 		}
 		
 		/**
@@ -161,36 +287,47 @@ public class PrescribedTimezoneSetting extends DomainObject {
 	 * Valid time day.
 	 */
 	private void validTimeDay() {
-		// 使用する
-		if (this.getTimezoneShiftTwo().isUsed()) {
-			if (!(this.isMorningAndAfternoonInShift1() || this.isMorningAndAfternoonInShift2())) {
-				throw new BusinessException("Msg_774");
+		// 使用しない
+		if (!this.getTimezoneShiftTwo().isUsed()) {
+			TimezoneUse tzWorkNo1 = this.getTimezoneShiftOne();
+			if (!tzWorkNo1.consistOf(this.getAfternoonStartTime())) {
+				throw new BusinessException("Msg_773", "KMK003_40");
+			}
+
+			if (!tzWorkNo1.consistOf(this.getMorningEndTime())) {
+				throw new BusinessException("Msg_773", "KMK003_39");
 			}
 		}
-		// 使用しない
-		else if (!this.isMorningAndAfternoonInShift1()) {
-			throw new BusinessException("Msg_773");
+	}
+
+	/**
+	 * Restore disabled data from.
+	 *
+	 * @param domain the domain
+	 */
+	public void restoreDisabledDataFrom(PrescribedTimezoneSetting domain) {
+		int indexOfShift2 = this.lstTimezone.indexOf(this.getTimezoneShiftTwo());
+		this.lstTimezone.set(indexOfShift2, domain.getTimezoneShiftTwo());
+	}
+
+	/**
+	 * Restore default data.
+	 */
+	public void restoreDefaultData() {
+		this.getTimezoneShiftTwo().restoreDefaultData();
+	}
+
+	/**
+	 * 引数のNoと一致している勤務Noを持つ時間帯(使用区分付き)を取得する
+	 * @param workNo
+	 * @return 時間帯(使用区分付き)
+	 *  @author keisuke_hoshina
+	 */
+	public TimezoneUse getMatchWorkNoTimeSheet(int workNo) {
+		List<TimezoneUse> timeSheetWithUseAtrList = this.lstTimezone.stream().filter(tc -> tc.getWorkNo() == workNo).collect(Collectors.toList());
+		if(timeSheetWithUseAtrList.size()>1) {
+			throw new RuntimeException("Exist duplicate workNo : " + workNo);
 		}
+		return timeSheetWithUseAtrList.get(0);
 	}
-
-	/**
-	 * Checks if is morning and afternoon in shift 1.
-	 *
-	 * @return true, if is morning and afternoon in shift 1
-	 */
-	private boolean isMorningAndAfternoonInShift1() {
-		val tzWorkNo1 = this.getTimezoneShiftOne();
-		return tzWorkNo1.consistOf(this.getAfternoonStartTime()) && tzWorkNo1.consistOf(this.getAfternoonStartTime());
-	}
-
-	/**
-	 * Checks if is morning and afternoon in shift 2.
-	 *
-	 * @return true, if is morning and afternoon in shift 2
-	 */
-	private boolean isMorningAndAfternoonInShift2() {
-		val tzWorkNo2 = this.getTimezoneShiftTwo();
-		return tzWorkNo2.consistOf(this.getAfternoonStartTime()) && tzWorkNo2.consistOf(this.getAfternoonStartTime());
-	}
-	
 }

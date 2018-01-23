@@ -93,13 +93,13 @@ module nts.uk.at.view.kmk010.c {
                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                            nts.uk.ui.windows.setShared("isSave", 1);
                            nts.uk.ui.block.clear();
-                           nts.uk.ui.windows.close();
+//                           nts.uk.ui.windows.close();
                        });
                    }).fail(function(error) {
                        nts.uk.ui.dialog.alertError(error).then(function() {
                            nts.uk.ui.windows.setShared("isSave", 1);
                            nts.uk.ui.block.clear();
-                           nts.uk.ui.windows.close();
+                          // nts.uk.ui.windows.close();
                        });
                    });
                } else {
@@ -117,17 +117,18 @@ module nts.uk.at.view.kmk010.c {
                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                            nts.uk.ui.windows.setShared("isSave", 1);
                            nts.uk.ui.block.clear();
-                           nts.uk.ui.windows.close();
+//                           nts.uk.ui.windows.close();
                        });
                    }).fail(function(error) {
                        nts.uk.ui.dialog.alertError(error).then(function() {
                            nts.uk.ui.windows.setShared("isSave", 1);
                            nts.uk.ui.block.clear();
-                           nts.uk.ui.windows.close();
+//                           nts.uk.ui.windows.close();
                        });
 
                    });
                }
+               self.switchNameResource();
            }
            /**
             * function validate domain save
@@ -157,6 +158,19 @@ module nts.uk.at.view.kmk010.c {
            private closeSaveOutsideOTBRDItem(): void {
                nts.uk.ui.windows.close();
            }
+            
+           /**
+             * swtich name for element when change language
+             */
+            private switchNameResource(): string {
+                let self = this;
+                
+                if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) { 
+                    return '#[KMK010_46]';
+                } else {
+                    return '#[KMK010_64]'; 
+                }
+            } 
         }
 
     }

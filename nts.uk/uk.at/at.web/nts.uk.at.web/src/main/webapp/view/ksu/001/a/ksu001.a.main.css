@@ -286,3 +286,11 @@ table th, table td {
 	height: 100%;
 	display: grid;
 }
+
+.h-90 {
+	height: 90px
+}
+
+#input-heightExtable {
+	width: 65px
+}

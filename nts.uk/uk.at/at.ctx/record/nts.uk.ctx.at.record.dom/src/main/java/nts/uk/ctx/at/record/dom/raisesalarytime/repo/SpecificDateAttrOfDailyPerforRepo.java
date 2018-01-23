@@ -1,0 +1,19 @@
+package nts.uk.ctx.at.record.dom.raisesalarytime.repo;
+
+import java.util.List;
+import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
+public interface SpecificDateAttrOfDailyPerforRepo {
+
+	public Optional<SpecificDateAttrOfDailyPerfor> find(String employeeId, GeneralDate baseDate);
+	
+	public List<SpecificDateAttrOfDailyPerfor> finds(List<String> employeeId, DatePeriod baseDate);
+	
+	public void update(SpecificDateAttrOfDailyPerfor domain);
+
+	public void add(SpecificDateAttrOfDailyPerfor domain);
+}

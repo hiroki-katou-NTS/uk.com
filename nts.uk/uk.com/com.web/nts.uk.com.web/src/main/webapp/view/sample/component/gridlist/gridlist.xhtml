@@ -17,6 +17,7 @@
 			</ui:define>
 			
 			<ui:define name="content">
+				<div id="functions-area"></div>
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
@@ -32,7 +33,7 @@
 						<hr />
 						<h3>Single selecting mode</h3>
 						<table id="single-list" data-bind="ntsGridList: {
-								height: 350,
+                                height: 350,
 								dataSource: items,
 								primaryKey: 'code',
 								columns: columns,

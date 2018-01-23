@@ -11,11 +11,13 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstAppReason;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class JpaApplicationReason extends JpaRepository implements ApplicationReasonRepository{
@@ -54,7 +56,14 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 	 * get reason by application type
 	 */
 	@Override
-	public List<ApplicationReason> getReasonByAppType(String companyId, int appType) {
+	public List<ApplicationReason> getReasonByAppType(String companyId, int appType) {		
+		return getReasonByAppType(companyId, appType, null);
+	}
+	/**
+	 * get reason by application type
+	 */
+	@Override
+	public List<ApplicationReason> getReasonByAppType(String companyId, int appType, String defaultResource) {
 		List<ApplicationReason> data = this.queryProxy()
 				.query(FINDBYAPPTYPE, KrqstAppReason.class)
 				.setParameter("companyId", companyId)
@@ -63,13 +72,13 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 		List<ApplicationReason> dataTmp = data.stream().filter(x -> x.getDefaultFlg() == DefaultFlg.DEFAULT).collect(Collectors.toList());
 		ApplicationReason firstData = new ApplicationReason(companyId, EnumAdaptor.valueOf(appType, ApplicationType.class), "", 0, "選択してください", DefaultFlg.NOTDEFAULT);
 		if(CollectionUtil.isEmpty(dataTmp)) {
-			firstData = new ApplicationReason(companyId, EnumAdaptor.valueOf(appType, ApplicationType.class), "", 0, "選択してください", DefaultFlg.DEFAULT);
+			String defaultRsName = StringUtil.isNullOrEmpty(defaultResource, true) ? "選択してください" : TextResource.localize(defaultResource);
+			firstData = new ApplicationReason(companyId, EnumAdaptor.valueOf(appType, ApplicationType.class), "", 0, defaultRsName, DefaultFlg.DEFAULT);
 		}
 		Collections.sort(data, Comparator.comparing(ApplicationReason :: getDispOrder));
 		data.add(0, firstData);
 		return data;
 	}
-
 	/**
 	 * get reason by reasonID
 	 */

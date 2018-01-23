@@ -27,13 +27,19 @@
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.sample.SampleTimeClock
+					nts.uk.shr.com.primitive.sample.ProcessingNo
+					nts.uk.shr.com.primitive.sample.CommonAmount
+					nts.uk.shr.com.time.TimeWithDayAttr
+		    </com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
 				<div id="function-content">
 					<button class="proceed"
-						data-bind="enable: $root.errors.isEmpty ,showButton().available1 ">#{i18n.getText('KDW003_4')}</button>
+						data-bind="enable: $root.errors.isEmpty ,showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
 					<button data-bind="visible: showButton().available4">#{i18n.getText('KDW003_5')}</button>
 					<button data-bind="visible: showButton().available2">#{i18n.getText('KDW003_6')}</button>
 					<button data-bind="visible: showButton().available3">#{i18n.getText('KDW003_12')}</button>
@@ -104,15 +110,13 @@
 											</thead>
 											<tbody>
 												<tr>
-													<td class="ui-widget-body"><span
+													<td class="ui-widget-body"><span class ="text-holiday"
 														data-bind="text: dataHoliday().compensation"></span></td>
-													<td class="ui-widget-body"><span
+													<td class="ui-widget-body"><span  class ="text-holiday"
 														data-bind="text: dataHoliday().substitute"></span></td>
-													<td class="ui-widget-body"><span
-														data-bind="text: dataHoliday().paidYear"></span> <br /> <span
-														data-bind="text: dataHoliday().paidHalf"></span> <br /> <span
-														data-bind="text: dataHoliday().paidHours"></span></td>
-													<td class="ui-widget-body"><span
+													<td class="ui-widget-body"><span  class ="text-holiday"
+														data-bind="text: dataHoliday().paidYear"></span></td>
+													<td class="ui-widget-body"><span  class ="text-holiday"
 														data-bind="text: dataHoliday().fundedPaid"></span></td>
 												</tr>
 											</tbody>

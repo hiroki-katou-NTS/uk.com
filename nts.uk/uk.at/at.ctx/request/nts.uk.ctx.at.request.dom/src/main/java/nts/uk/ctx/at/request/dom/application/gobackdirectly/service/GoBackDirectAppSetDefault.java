@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforeAppCommonSetting;
@@ -20,8 +20,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.adapter.WorkLocationAdapter;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -33,6 +33,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
 	private GoBackDirectlyRepository goBackRepo;
 
@@ -40,13 +41,13 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 	private WorkLocationAdapter workLocationAdapter;
 
 	@Inject
-	private WorkTimeRepository workTimeRepo;
+	private WorkTimeSettingRepository workTimeRepo;
 
 	@Inject
 	private WorkTypeRepository workTypeRepo;
 
 	@Inject
-	private ApplicationRepository appRepo;
+	private ApplicationRepository_New appRepo;
 
 	@Inject 
 	private BeforePreBootMode beforePreBootMode;
@@ -63,20 +64,25 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 	public GoBackDirectAppSet getGoBackDirectAppSet(String appID) {
 		String companyID = AppContexts.user().companyId();
 		GoBackDirectAppSet data = new GoBackDirectAppSet();
-		Application application = appRepo.getAppById(companyID, appID).get();
-		data.setEmployeeName(employeeAdapter.getEmployeeName(application.getApplicantSID()));
+		Optional<Application_New> applicationOpt = appRepo.findByID(companyID, appID);
+		if (!applicationOpt.isPresent()) {
+			return data;
+		}
+		Application_New application = applicationOpt.get();
+		data.setEmployeeName(employeeAdapter.getEmployeeName(application.getEmployeeID()));
 		//14-2.詳細画面起動前モードの判断
-		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(application, application.getApplicationDate());
+		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(companyID, application.getEmployeeID(), appID, application.getAppDate());
 		data.detailedScreenPreBootModeOutput = preBootOuput;
 		//14-1.詳細画面起動前申請共通設定を取得する
 		PrelaunchAppSetting prelaunchAppSetting = beforeAppCommonSetting.getPrelaunchAppSetting(appID);
 		data.prelaunchAppSetting = prelaunchAppSetting;
 		data.prePostAtr = application.getPrePostAtr().value;			
-		data.appReason = application.getApplicationReason().v();
-		data.appDate = application.getApplicationDate().toString("yyyy/MM/dd");
+		data.appReason = application.getAppReason().v();
+		data.appDate = application.getAppDate().toString(DATE_FORMAT);
 		//アルゴリズム「直行直帰基本データ」を実行する
 		GoBackDirectly goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
 		data.goBackDirectly = goBackDirect;
+		data.goBackDirectly.setVersion(application.getVersion());
 		if(Strings.isNotBlank(goBackDirect.getWorkLocationCD1())) {
 			data.workLocationName1 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD1())
 					.getWorkLocationName();
@@ -93,7 +99,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 			}
 		}
 		if (!StringUtils.isEmpty(goBackDirect.getSiftCD().v())) {
-			Optional<WorkTime> workTime = workTimeRepo.findByCode(companyID, goBackDirect.getSiftCD().v());
+			Optional<WorkTimeSetting> workTime = workTimeRepo.findByCode(companyID, goBackDirect.getSiftCD().v());
 			if(workTime.isPresent()) {
 				data.workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
 			}

@@ -4,14 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.statutory.worktime.employee;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.DeformationLaborSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.FlexSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.NormalSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WorkingTimeSetting;
 
 /**
  * 社員労働時間設定.
  */
+@Getter
 public class EmployeeWtSetting extends AggregateRoot {
 
 	/** 会社ID. */
@@ -25,6 +30,15 @@ public class EmployeeWtSetting extends AggregateRoot {
 
 	/** 労働時間設定. */
 	private WorkingTimeSetting workingTimeSetting;
+	
+	/** 通常労働時間設定*/
+	private NormalSetting normalSetting;
+	
+	/** フレックス労働時間設定　*/
+	private FlexSetting flexSetting;
+	
+	/** 変形労働時間設定 */
+	private DeformationLaborSetting deformatinLaborSetting;
 
 	/**
 	 * Instantiates a new employee setting.

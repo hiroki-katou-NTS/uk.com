@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeStampReflectSetMemento;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeStampReflectSetMeme
  * The Class DiffTimeWorkStampReflectTimezone.
  */
 @Getter
+@Setter
 public class DiffTimeWorkStampReflectTimezoneDto implements DiffTimeStampReflectSetMemento {
 
 	/** The stamp reflect timezone. */

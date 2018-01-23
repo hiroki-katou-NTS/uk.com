@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.overtime;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface OvertimeRepository {

@@ -28,18 +28,16 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	private static final String SELECT_ALL_SELECTION_BY_SELECTIONID = SELECT_ALL
 			+ " WHERE si.selectionId = :selectionId";
 
-	// Lanlt
-	
 	// cps005
 	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE = " SELECT se , item.selectionItemName FROM PpemtSelectionItem  item"
 			+ " INNER JOIN PpemtHistorySelection his "
 			+ " ON item.selectionItemPk.selectionItemId = his.selectionItemId" + " INNER JOIN PpemtSelection se"
-			+ " ON his.histidPK.histId = se.histId" + " INNER JOIN PpemtSelItemOrder order"
-			+ " ON his.histidPK.histId = order.histId "
-			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
+			+ " ON his.histidPK.histId = se.histId" + " INNER JOIN PpemtSelItemOrder o"
+			+ " ON his.histidPK.histId = o.histId "
+			+ " AND se.selectionId.selectionId = o.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
 			+ " AND his.endDate >= :baseDate " + " AND item.selectionItemPk.selectionItemId =:selectionItemId"
 			+ " AND item.selectionItemClsAtr =:selectionItemClsAtr "
-			+ " ORDER BY order.dispOrder";
+			+ " ORDER BY o.dispOrder";
 	
 	// selection for company
 	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionItemName FROM PpemtSelectionItem  item"

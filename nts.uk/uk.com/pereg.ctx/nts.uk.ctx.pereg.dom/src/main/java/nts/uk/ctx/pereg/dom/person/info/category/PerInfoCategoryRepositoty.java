@@ -57,6 +57,9 @@ public interface PerInfoCategoryRepositoty {
 	 * @return
 	 */
 	Optional<PersonInfoCategory> getPerInfoCategoryByCtgCD(String categoryCD, String companyID);
-
 	
+	
+	List<String> getAllCategoryByCtgCD(String categoryCD);
+
+	int getDispOrder(String perInfoCtgId);
 }

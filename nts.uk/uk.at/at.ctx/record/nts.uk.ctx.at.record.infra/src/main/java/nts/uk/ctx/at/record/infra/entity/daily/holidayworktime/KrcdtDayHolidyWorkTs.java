@@ -1,12 +1,22 @@
 package nts.uk.ctx.at.record.infra.entity.daily.holidayworktime;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.val;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -78,10 +88,114 @@ public class KrcdtDayHolidyWorkTs extends UkJpaEntity implements Serializable{
 	@Column(name = "HOLI_WORK_10_END_CLC")
 	public int holiWork10EndClc;
 	
+	@OneToOne(mappedBy="krcdtDayHolidyWorkTs")
+	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
 	
 	@Override
 	protected Object getKey() {
 		return this.krcdtDayHolidyWorkTsPK;
 	}
 
+	public static KrcdtDayHolidyWorkTs create(String employeeId, GeneralDate date, List<HolidayWorkFrameTimeSheet> domain) {
+		val entity = new KrcdtDayHolidyWorkTs();
+		/*主キー*/
+		entity.krcdtDayHolidyWorkTsPK = new KrcdtDayHolidyWorkTsPK(employeeId,date);
+		
+		entity.setData(domain);
+		return entity;
+	}
+
+	public void setData(List<HolidayWorkFrameTimeSheet> domain) {
+		TimeSpanForCalc sheet;
+		if(domain.size() >= 1){
+			sheet = getTimeSheet(domain, 1);
+			/*休日出勤1開始時刻*/
+			this.holiWork1StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤1終了時刻*/
+			this.holiWork1EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 2){
+			sheet = getTimeSheet(domain, 2);
+			/*休日出勤2開始時刻*/
+			this.holiWork2StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤2終了時刻*/
+			this.holiWork2EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 3){
+			sheet = getTimeSheet(domain, 3);
+			/*休日出勤3開始時刻*/
+			this.holiWork3StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤3終了時刻*/
+			this.holiWork3EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 4){
+			sheet = getTimeSheet(domain, 4);
+			/*休日出勤4開始時刻*/
+			this.holiWork4StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤4終了時刻*/
+			this.holiWork4EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 5){
+			sheet = getTimeSheet(domain, 5);
+			/*休日出勤5開始時刻*/
+			this.holiWork5StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤5終了時刻*/
+			this.holiWork5EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 6){
+			sheet = getTimeSheet(domain, 6);
+			/*休日出勤6開始時刻*/
+			this.holiWork6StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤6終了時刻*/
+			this.holiWork6EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 7){
+			sheet = getTimeSheet(domain, 7);
+			/*休日出勤7開始時刻*/
+			this.holiWork7StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤7終了時刻*/
+			this.holiWork7EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 8){
+			sheet = getTimeSheet(domain, 8);
+			/*休日出勤8開始時刻*/
+			this.holiWork8StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤8終了時刻*/
+			this.holiWork8EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 9){
+			sheet = getTimeSheet(domain, 9);
+			/*休日出勤9開始時刻*/
+			this.holiWork9StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤9終了時刻*/
+			this.holiWork9EndClc = sheet.getEnd().valueAsMinutes();
+		}
+		if(domain.size() >= 10){
+			sheet = getTimeSheet(domain, 10);
+			/*休日出勤10開始時刻*/
+			this.holiWork10StrClc = sheet.getStart().valueAsMinutes();
+			/*休日出勤10終了時刻*/
+			this.holiWork10EndClc = sheet.getEnd().valueAsMinutes();
+		}
+	}
+
+	private TimeSpanForCalc getTimeSheet(List<HolidayWorkFrameTimeSheet> domain, int sheetNo) {
+		return domain.stream().filter(tc -> tc.getHolidayWorkTimeSheetNo().v() == sheetNo).findFirst().get().getTimeSheet();
+	}
+	
+	
+	public List<HolidayWorkFrameTimeSheet> toDomain(){
+		List<HolidayWorkFrameTimeSheet> list = new ArrayList<>();
+		list.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(1)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
+		list.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(2)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
+		list.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(3)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
+		list.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(4)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
+		list.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(5)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
+		list.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(6)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
+		list.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(7)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
+		list.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(8)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
+		list.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(9)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
+		list.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(10)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
+		return list;
+	}
 }

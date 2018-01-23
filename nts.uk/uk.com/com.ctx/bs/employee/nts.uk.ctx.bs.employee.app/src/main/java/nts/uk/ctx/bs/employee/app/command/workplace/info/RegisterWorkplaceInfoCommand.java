@@ -7,7 +7,7 @@ package nts.uk.ctx.bs.employee.app.command.workplace.info;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceCode;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WkpCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceGenericName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
@@ -104,8 +104,8 @@ public class RegisterWorkplaceInfoCommand {
 		 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoGetMemento#getWorkplaceCode()
 		 */
 		@Override
-		public WorkplaceCode getWorkplaceCode() {
-			return new WorkplaceCode(this.workplaceInfoCommand.getWorkplaceCode());
+		public WkpCode getWorkplaceCode() {
+			return new WkpCode(this.workplaceInfoCommand.getWorkplaceCode());
 		}
 
 		/* (non-Javadoc)

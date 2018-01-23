@@ -5,12 +5,12 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width :650,
-					height :450
+					width : 700,
+					height : 270
 				};
 			</script>
 			<com:ValidatorScript>
@@ -26,12 +26,12 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="cf" data-bind="with: layout">
+				<div data-bind="with: layout">
 					<table class="table_content">
 						<colgroup>
 							<col width="150px" />
-							<col width="150px" />
-							<col width="350px" />
+							<col width="250px" />
+							<col width="260px" />
 						</colgroup>
 						<tr>
 							<td class="row_1">
@@ -42,14 +42,15 @@
 									#{i18n.getText('CPS008_33')}</div>
 							</td>
 							<td class="row_1"><span data-bind="text: code"></span> <span
-								style="margin-left: 76px" data-bind="text: name"></span></td>
+								style="margin-left: 24px" data-bind="text: name"></span></td>
 						</tr>
 						<tr>
 							<td class="row_2">
 								<div>#{i18n.getText('CPS008_34')}</div>
 							</td>
 							<td class="row_2">
-								<div data-bind="ntsFormLabel: {}">
+								<div
+									data-bind="ntsFormLabel: {constraint: ['LayoutCode','LayoutName'], required: true}">
 									#{i18n.getText('CPS008_35')}</div>
 							</td>
 							<td class="row_2">
@@ -75,14 +76,15 @@
 							</td>
 						</tr>
 					</table>
-					<div style="margin-left: 148px"
-						data-bind="ntsCheckBox: { checked: overrideMode, enable: true, text: '#{i18n.getText('CPS008_43')}' }"></div>
 				</div>
-				<div id="functions-area-bottom">
-					<button class="x-large proceed" id="BTN_DECIDE"
-						data-bind="click : coppyBtn">#{i18n.getText('CPS008_36')}</button>
-					<button id="BTN_CANCEL" data-bind="click : close">#{i18n.getText('CPS008_37')}</button>
-				</div>
+			</div>
+			<div id="functions-area-bottom" style = "height: 100px !important">
+			
+			<div style="margin-left: -10px" data-bind="ntsCheckBox: { checked: overrideMode, enable: true, text: '#{i18n.getText('CPS008_43')}' , style: 'warnpanel'}"></div>
+			
+			<div style = "margin-top: 10px">
+				<button class="x-large proceed" id="BTN_DECIDE" data-bind="click : coppyBtn">#{i18n.getText('CPS008_36')}</button>
+				<button id="BTN_CANCEL" data-bind="click : close">#{i18n.getText('CPS008_37')}</button> </div>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -16,11 +16,9 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.sys.gateway.dom.login.Contract;
-import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
-import nts.uk.ctx.sys.gateway.dom.login.User;
-import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
@@ -34,7 +32,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 
 	/** The user repository. */
 	@Inject
-	private UserRepository userRepository;
+	private UserAdapter userAdapter;
 
 	/** The employee code setting adapter. */
 	@Inject
@@ -43,10 +41,6 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 	/** The employee adapter. */
 	@Inject
 	private SysEmployeeAdapter employeeAdapter;
-
-	/** The contract repository. */
-	@Inject
-	private ContractRepository contractRepository;
 	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -62,19 +56,16 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		String companyId = contractCode+"-"+companyCode;
 		// check validate input
 		this.checkInput(command);
-
-		//recheck contract
-		// pre check contract
-		this.checkContractInput(command);
-		// contract auth
-		this.contractAccAuth(command);
+		
+		//reCheck Contract
+		this.reCheckContract(contractCode, command.getContractPassword());
 		
 		// Edit employee code
 		employeeCode = this.employeeCodeEdit(employeeCode, companyId);
 		// Get domain 社員
 		EmployeeImport em = this.getEmployee(companyId, employeeCode);
-		// Get User by associatedPersonId
-		User user = this.getUser(em.getEmployeeId().toString());
+		// Get User by PersonalId
+		UserImport user = this.getUser(em.getPersonalId());
 		// check password
 		this.compareHashPassword(user, password);
 		// check time limit
@@ -108,44 +99,6 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		}
 	}
 
-	/**
-	 * Check contract input.
-	 *
-	 * @param command
-	 *            the command
-	 */
-	private void checkContractInput(SubmitLoginFormThreeCommand command) {
-		if (StringUtil.isNullOrEmpty(command.getContractCode(), true)) {
-			throw new RuntimeException();
-		}
-		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
-			throw new RuntimeException();
-		}
-	}
-
-	/**
-	 * Contract acc auth.
-	 *
-	 * @param command the command
-	 */
-	private void contractAccAuth(SubmitLoginFormThreeCommand command) {
-		Optional<Contract> contract = contractRepository.getContract(command.getContractCode());
-		if (contract.isPresent()) {
-			// check contract pass
-			if (!PasswordHash.verifyThat(command.getContractPassword(), contract.get().getContractCode().v())
-					.isEqualTo(contract.get().getPassword().v())) {
-				throw new RuntimeException();
-			}
-			// check contract time
-			if (contract.get().getContractPeriod().start().after(GeneralDate.today())
-					|| contract.get().getContractPeriod().end().before(GeneralDate.today())) {
-				throw new RuntimeException();
-			}
-		} else {
-			throw new RuntimeException();
-		}
-	}
-	
 	/**
 	 * Employee code edit.
 	 *
@@ -203,11 +156,11 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 	/**
 	 * Gets the user.
 	 *
-	 * @param associatedPersonId the associated person id
+	 * @param personalId the personal id
 	 * @return the user
 	 */
-	private User getUser(String associatedPersonId) {
-		Optional<User> user = userRepository.getByAssociatedPersonId(associatedPersonId);
+	private UserImport getUser(String personalId) {
+		Optional<UserImport> user = userAdapter.findUserByAssociateId(personalId);
 		if (user.isPresent()) {
 			return user.get();
 		} else {
@@ -221,8 +174,8 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 	 * @param user the user
 	 * @param password the password
 	 */
-	private void compareHashPassword(User user, String password) {
-		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword().v())) {
+	private void compareHashPassword(UserImport user, String password) {
+		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword())) {
 			throw new BusinessException("Msg_302");
 		}
 	}
@@ -232,7 +185,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 	 *
 	 * @param user the user
 	 */
-	private void checkLimitTime(User user) {
+	private void checkLimitTime(UserImport user) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
 			throw new BusinessException("Msg_316");
 		}

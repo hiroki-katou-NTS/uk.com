@@ -4,24 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flexset;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet_;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 
 /**
  * The Class JpaFlexWorkSettingRepository.
@@ -38,7 +33,8 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<FlexWorkSetting> find(String companyId, String worktimeCode) {
-		return this.findWorkSetting(companyId, worktimeCode).map(entity -> this.toDomain(entity));
+		return this.findWorkSetting(companyId, worktimeCode)
+				.map(entity -> this.toDomain(entity, this.findCommonSetting(companyId, worktimeCode).get()));
 	}
 
 	/*
@@ -49,66 +45,76 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 	 * FlexWorkSetting)
 	 */
 	@Override
-	public void save(FlexWorkSetting domain) {
-
+	public void add(FlexWorkSetting domain) {
+		KshmtFlexWorkSet entity = new KshmtFlexWorkSet();
+		KshmtWorktimeCommonSet entityCommon = new KshmtWorktimeCommonSet(
+				new KshmtWorktimeCommonSetPK(domain.getCompanyId(), domain.getWorkTimeCode().v(),
+						WorkTimeDailyAtr.FLEX_WORK.value, WorkTimeMethodSet.FIXED_WORK.value));
+		domain.saveToMemento(new JpaFlexWorkSettingSetMemento(entity, entityCommon));
+		this.commandProxy().insert(entity);
+		this.commandProxy().insert(entityCommon);
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository#
+	 * update(nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting)
+	 */
+	@Override
+	public void update(FlexWorkSetting domain) {
+		KshmtFlexWorkSet entity = this.findWorkSetting(domain.getCompanyId(), domain.getWorkTimeCode().v()).get();
+		KshmtWorktimeCommonSet entityCommon = this
+				.findCommonSetting(domain.getCompanyId(), domain.getWorkTimeCode().v()).get();
+		domain.saveToMemento(new JpaFlexWorkSettingSetMemento(entity, entityCommon));
+		this.commandProxy().update(entity);
+		this.commandProxy().update(entityCommon);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository#
+	 * remove(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void remove(String companyId, String workTimeCode) {
+		this.commandProxy().remove(KshmtFlexWorkSet.class, new KshmtFlexWorkSetPK(companyId, workTimeCode));
+	}
+	
 	/**
 	 * To domain.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param entity the entity
 	 * @return the flex work setting
 	 */
-	private FlexWorkSetting toDomain(KshmtFlexWorkSet entity) {
-		return new FlexWorkSetting(new JpaFlexWorkSettingGetMemento(entity, null, null));
+	private FlexWorkSetting toDomain(KshmtFlexWorkSet entity, KshmtWorktimeCommonSet entityCommon) {
+		return new FlexWorkSetting(new JpaFlexWorkSettingGetMemento(entity, entityCommon));
 	}
 
+	
 	/**
 	 * Find work setting.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param worktimeCode
-	 *            the worktime code
+	 * @param companyId the company id
+	 * @param worktimeCode the worktime code
 	 * @return the optional
 	 */
 	private Optional<KshmtFlexWorkSet> findWorkSetting(String companyId, String worktimeCode) {
-
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		// call KSHMT_FLEX_WORK_SET (KshmtFlexWorkSet SQL)
-		CriteriaQuery<KshmtFlexWorkSet> cq = criteriaBuilder.createQuery(KshmtFlexWorkSet.class);
-
-		// root data
-		Root<KshmtFlexWorkSet> root = cq.from(KshmtFlexWorkSet.class);
-
-		// select root
-		cq.select(root);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal company id
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtFlexWorkSet_.kshmtFlexWorkSetPK).get(KshmtFlexWorkSetPK_.cid),
-				companyId));
-
-		// equal work time code
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshmtFlexWorkSet_.kshmtFlexWorkSetPK).get(KshmtFlexWorkSetPK_.worktimeCd),
-				worktimeCode));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		TypedQuery<KshmtFlexWorkSet> query = em.createQuery(cq);
-
-		// exclude select
-		return query.getResultList().stream().findFirst();
+		return this.queryProxy().find(new KshmtFlexWorkSetPK(companyId, worktimeCode),
+				KshmtFlexWorkSet.class);
+	}
+	
+	/**
+	 * Find common setting.
+	 *
+	 * @param companyId the company id
+	 * @param worktimeCode the worktime code
+	 * @return the optional
+	 */
+	private Optional<KshmtWorktimeCommonSet> findCommonSetting(String companyId, String worktimeCode ) {
+		return this.queryProxy().find(new KshmtWorktimeCommonSetPK(companyId, worktimeCode,
+				WorkTimeDailyAtr.FLEX_WORK.value, WorkTimeMethodSet.FIXED_WORK.value), KshmtWorktimeCommonSet.class);
 	}
 
 }

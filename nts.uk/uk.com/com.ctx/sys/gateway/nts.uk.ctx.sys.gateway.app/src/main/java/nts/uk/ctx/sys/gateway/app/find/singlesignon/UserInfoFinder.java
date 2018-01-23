@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.find.singlesignon;
@@ -21,8 +21,8 @@ import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.person.PersonInfoImport;
-import nts.uk.ctx.sys.gateway.dom.login.User;
-import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountRepository;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccount;
@@ -43,10 +43,6 @@ public class UserInfoFinder {
 	@Inject
 	private EmployeeInfoAdapter employeeInfoAdapter;
 
-	/** The user repo. */
-	@Inject
-	private UserRepository userRepo;
-
 	/** The window account repository. */
 	@Inject
 	private WindowAccountRepository windowAccountRepository;
@@ -54,6 +50,10 @@ public class UserInfoFinder {
 	/** The other sys account repository. */
 	@Inject
 	private OtherSysAccountRepository otherSysAccountRepository;
+	
+	/** The user adapter. */
+	@Inject
+	private UserAdapter userAdapter;
 
 	/**
 	 * Find list user info.
@@ -68,31 +68,45 @@ public class UserInfoFinder {
 		String companyId = AppContexts.user().companyId();
 
 		// get employee code
-		List<EmployeeInfoDtoImport> listEmpl = this.employeeInfoAdapter.getEmployeesAtWorkByBaseDate(companyId,
+		List<EmployeeInfoDtoImport> listEmployee = this.employeeInfoAdapter.getEmployeesAtWorkByBaseDate(companyId,
 				baseDate);
 		
 		List<String> listPersonId = new ArrayList<>();
 		List<UserDto> listUserMap = new ArrayList<>();
-		List<User> listUser = new ArrayList<>();
+		List<UserImport> listUser = new ArrayList<>();
 		List<UserDto> listUserAccount = new ArrayList<>();
-		
-		Set<String> list = new HashSet<>();
+		Set<String> listSubPersonId = new HashSet<>();		
 
 		// Step 1 - add employee info
-		listEmpl.forEach(employee -> {
+		// check listEmployee is empty
+		if(listEmployee.isEmpty()){
+			return listUserMap;			
+		}		
+		listEmployee.forEach(employee -> {
 			UserDto userDto = new UserDto();
 			userDto.setEmployeeCode(employee.getEmployeeCode());
 			userDto.setPersonId(employee.getPersonId());
 			userDto.setEmployeeId(employee.getEmployeeId());
 			listUserAccount.add(userDto);
-			list.add(employee.getPersonId());
+			listSubPersonId.add(employee.getPersonId());
 		});
 		
-		// reject duplicate element
-		listPersonId.addAll(list);
-
+		// check listSubPersonId is empty
+		if (listSubPersonId.isEmpty()) {
+			return listUserMap;
+		}
+		
+		// reject duplicate element, remove element == null or element is empty
+		listPersonId = listSubPersonId.stream().filter(personId -> (personId != null && !personId.isEmpty())).distinct()
+				.collect(Collectors.toList());
+		
 		// Step 2 - add person info
 		List<PersonInfoImport> listPerson = this.personInfoAdapter.getListPersonInfo(listPersonId);
+		
+		// check listPerson is empty
+		if(listPerson.isEmpty()){
+			return listUserMap;
+		}
 		Map<String, PersonInfoImport> mapPerson = listPerson.stream()
 				.collect(Collectors.toMap(PersonInfoImport::getPersonId, Function.identity()));
 
@@ -105,17 +119,21 @@ public class UserInfoFinder {
 
 		// Step 3 - add user info
 		for (String personId : listPersonId) {
-			Optional<User> user = userRepo.getByAssociatedPersonId(personId);
+			Optional<UserImport> user = userAdapter.findUserByAssociateId(personId);
 			if (user.isPresent()) {
 				listUser.add(user.get());
 			}
 		}
-
-		Map<String, User> mapUser = listUser.stream()
-				.collect(Collectors.toMap(User::getAssociatedPersonId, Function.identity()));
+		
+		// check list user is empty
+		if(listUser.isEmpty()){
+			return listUserMap;
+		}
+		Map<String, UserImport> mapUser = listUser.stream()
+				.collect(Collectors.toMap(UserImport::getAssociatePersonId, Function.identity()));
 
 		listUserAccount.forEach(item -> {
-			User user = mapUser.get(item.getPersonId());
+			UserImport user = mapUser.get(item.getPersonId());
 			if (user != null) {
 				item.setLoginId(user.getLoginId().toString());
 				item.setUserId(user.getUserId());
@@ -133,24 +151,17 @@ public class UserInfoFinder {
 				
 	}
 	
-	public List<UserDto> loadUserSetting(List<UserDto> listUserMap){
-				
-		listUserMap.forEach(w -> {
-			
+	public List<UserDto> loadUserSetting(List<UserDto> listUserMap){		
+		listUserMap.forEach(w -> {			
 			List<WindowAccount> winAcc = this.windowAccountRepository.findByUserId(w.getUserId());
 			Optional<OtherSysAccount> opOtherSysAcc = otherSysAccountRepository.findByUserId(w.getUserId());
 			if(winAcc.isEmpty() && !opOtherSysAcc.isPresent()){
 				w.setIsSetting(false);
-			}			
-			else{
+			}else{
 				w.setIsSetting(true);
 			}
 		});	
 		
 		return listUserMap;
-	}
-	
-	
-	
-	
+	}	
 }

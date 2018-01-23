@@ -225,47 +225,74 @@ module nts.uk.at.view.kdw001.c {
                 let self = this;
                 //var closureID = __viewContext["viewmodel"].closureID;
                 var closureID = '1';
-                service.findPeriodById(Number(closureID)).done((data) => {
-                    if (data) {
-                        let listEmpSelected = self.listComponentOption.selectedCode();
-                        if (listEmpSelected == undefined || listEmpSelected.length <= 0) {
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_206" });
-                            return;
-                        }
-                        let startDateS = self.dateValue().startDate.split("/");
-                        let endDateS = self.dateValue().endDate.split("/");
-                        let startDate = new Date(startDateS[0], startDateS[1], startDateS[2]);
-                        let endDate = new Date(endDateS[0], endDateS[1], endDateS[2]);
-                        let startDate_unixtime = parseInt(startDate.getTime() / 1000);
-                        let endDate_unixtime = parseInt(endDate.getTime() / 1000);
-                        var timeDifference = endDate_unixtime - startDate_unixtime;
-                        var timeDifferenceInHours = timeDifference / 60 / 60;
-                        var timeDifferenceInDays = timeDifferenceInHours / 24;
-
-                        if (timeDifferenceInDays > 31) {
-                            nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
-                                let yearPeriodStartDate = self.periodStartDate.split("/")[0];
-                                let monthPeriodStartDate = self.periodStartDate.split("/")[1];
-                                let dayPeriodStartDate = self.periodStartDate.split("/")[2];
-                                let yearStartDate = Number(self.dateValue().startDate.split("/")[0]);
+                if (!nts.uk.ui.errors.hasError()) {
+                    service.findPeriodById(Number(closureID)).done((data) => {
+                        if (data) {
+                            let listEmpSelected = self.listComponentOption.selectedCode();
+                            if (listEmpSelected == undefined || listEmpSelected.length <= 0) {
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_206" });
+                                return;
+                            }
+                            let startDateS = self.dateValue().startDate.split("/");
+                            let endDateS = self.dateValue().endDate.split("/");
+                            let startDate = new Date(startDateS[0], startDateS[1], startDateS[2]);
+                            let endDate = new Date(endDateS[0], endDateS[1], endDateS[2]);
+                            let startDate_unixtime = parseInt(startDate.getTime() / 1000);
+                            let endDate_unixtime = parseInt(endDate.getTime() / 1000);
+                            var timeDifference = endDate_unixtime - startDate_unixtime;
+                            var timeDifferenceInHours = timeDifference / 60 / 60;
+                            var timeDifferenceInDays = timeDifferenceInHours / 24;
+    
+                            if (timeDifferenceInDays > 31) {
+                                nts.uk.ui.dialog.confirm('対象期間が1か月を超えていますがよろしいですか？').ifYes(() => {
+                                    let yearPeriodStartDate = self.periodStartDate.split("/")[0];
+                                    let monthPeriodStartDate = self.periodStartDate.split("/")[1];
+                                    let dayPeriodStartDate = self.periodStartDate.split("/")[2];
+                                    let yearStartDate = Number(self.dateValue().startDate.split("/")[0]);
+                                    let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
+                                    let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
+                                    if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
+                                        nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
+                                        return;
+                                    }
+    
+                               
+                                    let listEmpSelectedId = [];
+                                    _.forEach(self.selectedEmployee(), function(value) {
+                                        if( _.includes(listEmpSelected,value.employeeCode)){
+                                            listEmpSelectedId.push(value.employeeId);
+                                        }
+                                    });
+    
+    
+    
+    
+                                    __viewContext["viewmodel"].params.setParamsScreenC({
+                                        lstEmployeeID: listEmpSelectedId,
+                                        periodStartDate: self.dateValue().startDate,
+                                        periodEndDate: self.dateValue().endDate
+                                    });
+                                    $("#wizard").ntsWizard("next").done(function() {
+                                        $('#checkBox1').focus();
+                                    });
+    
+                                })
+    
+                            } else {
+                                let monthNow = data.month; // thieu thang hien tai cua  domain 締め
                                 let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
-                                let dayStartDate = Number(self.dateValue().startDate.split("/")[2]);
-                                if (yearStartDate < yearPeriodStartDate || monthStartDate < monthPeriodStartDate || dayStartDate < dayPeriodStartDate) {
+                                if (monthStartDate < monthNow) {
                                     nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
                                     return;
                                 }
-
-                           
-                                let listEmpSelectedId = [];
-                                _.forEach(self.selectedEmployee(), function(value) {
-                                    if( _.includes(listEmpSelected,value.employeeCode)){
-                                        listEmpSelectedId.push(value.employeeId);
-                                    }
-                                });
-
-
-
-
+    
+                                 let listEmpSelectedId = [];
+                                    _.forEach(self.selectedEmployee(), function(value) {
+                                        if( _.includes(listEmpSelected,value.employeeCode)){
+                                            listEmpSelectedId.push(value.employeeId);
+                                        }
+                                    });
+    
                                 __viewContext["viewmodel"].params.setParamsScreenC({
                                     lstEmployeeID: listEmpSelectedId,
                                     periodStartDate: self.dateValue().startDate,
@@ -274,42 +301,11 @@ module nts.uk.at.view.kdw001.c {
                                 $("#wizard").ntsWizard("next").done(function() {
                                     $('#checkBox1').focus();
                                 });
-
-                            })
-
-                        } else {
-                            let monthNow = data.month; // thieu thang hien tai cua  domain 締め
-                            let monthStartDate = Number(self.dateValue().startDate.split("/")[1]);
-                            if (monthStartDate < monthNow) {
-                                nts.uk.ui.dialog.alertError('締め処理期間より過去の日付は指定できません');
-                                return;
+    
                             }
-
-                             let listEmpSelectedId = [];
-                                _.forEach(self.selectedEmployee(), function(value) {
-                                    if( _.includes(listEmpSelected,value.employeeCode)){
-                                        listEmpSelectedId.push(value.employeeId);
-                                    }
-                                });
-
-                            __viewContext["viewmodel"].params.setParamsScreenC({
-                                lstEmployeeID: listEmpSelectedId,
-                                periodStartDate: self.dateValue().startDate,
-                                periodEndDate: self.dateValue().endDate
-                            });
-                            $("#wizard").ntsWizard("next").done(function() {
-                                $('#checkBox1').focus();
-                            });
-
                         }
-                    }
-
-
-                });
-
-
-
-
+                    });
+                }//end if
 
             }
 

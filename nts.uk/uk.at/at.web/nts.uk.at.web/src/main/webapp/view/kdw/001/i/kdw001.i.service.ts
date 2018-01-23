@@ -3,7 +3,8 @@ module nts.uk.at.view.kdw001.i {
         var paths = {
             getByEmpCalAndSumExeLogId : "at/record/log/getallbyempid",
             getListTargetPersonByEmpId : "at/record/target/getbyempid",
-            getAllErrMessageInfoByEmpID : "at/record/message/getallbyempid"
+            getAllErrMessageInfoByEmpID : "at/record/message/getallbyempid",
+            getListPersonInforLog : "at/record/personlog/getallbylistsid"
         }
         
         /**
@@ -26,5 +27,11 @@ module nts.uk.at.view.kdw001.i {
             return nts.uk.request.ajax("at",paths.getAllErrMessageInfoByEmpID+"/"+empCalAndSumExecLogID);
         }
     
+        /**
+         * get all person infor by list sid 
+         */
+        export function getListPersonInforLog(listSid : Array<string>) : JQueryPromise<Array<any>>{
+            return nts.uk.request.ajax("at",paths.getListPersonInforLog,listSid);
+        }
     }
 }

@@ -1,12 +1,6 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.holidaysetting.configuration;
 
-/**
- * The Interface PublicHolidayManagementStartDate.
- */
+//公休管理開始日
 public interface PublicHolidayManagementStartDate {
 
 }

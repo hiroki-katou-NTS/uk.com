@@ -2,64 +2,32 @@
 	<div id="tab-panel"
 		data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical'}">
 		<div class="tab-content-1">
-			<div id="part-1">
-				<div class="bg-green caret-background caret-bottom cf">
+			<div id="part-1-1">
+				<div class="bg-green caret-background caret-bottom cf"
+					data-bind="foreach: textButtonArrComPattern">
 					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 0), text: text1Button1"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 1), text: text1Button2"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 2), text: text1Button3"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 3), text: text1Button4"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 4), text: text1Button5"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 5), text: text1Button6"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 6), text: text1Button7"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 7), text: text1Button8"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 8), text: text1Button9"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 9), text: text1Button10"></a>
+						data-bind="click: $parent.clickLinkButton.bind($parent, $element, $index), text: name"></a>
 				</div>
 				<div
 					data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KSU001_1601')}' }"></div>
 				<button data-bind="click: openDialogJA">#{i18n.getText('KSU001_1602')}</button>
 			</div>
-			<div id="test1"></div>
+			<div id="test1"
+				data-bind="ntsTableButton: {source: sourceCompany, row: 2, column: 10, contextMenu: contextMenu, disableMenuOnDataNotSet: [1, 2], mode: 'normal', selectedCell: selectedButtonTableCompany}"></div>
 		</div>
 		<div class="tab-content-2">
-			<div id="part-1">
-				<div class="bg-green caret-background caret-bottom cf">
+			<div id="part-1-2">
+				<div class="bg-green caret-background caret-bottom cf "
+					data-bind="foreach: textButtonArrWkpPattern">
 					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 0), text: text2Button1"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 1), text: text2Button2"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 2), text: text2Button3"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 3), text: text2Button4"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 4), text: text2Button5"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 5), text: text2Button6"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 6), text: text2Button7"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 7), text: text2Button8"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 8), text: text2Button9"></a>
-					<a class="hyperlink"
-						data-bind="click: clickLinkButton.bind($data, $element, 9), text: text2Button10"></a>
+						data-bind="click: $parent.clickLinkButton.bind($parent,$element, $index), text: name"></a>
 				</div>
 				<div
 					data-bind="ntsCheckBox: { checked: checked, enable: true, text: '#{i18n.getText('KSU001_1601')}' }"></div>
 				<button data-bind="click: openDialogJA">#{i18n.getText('KSU001_1602')}</button>
 			</div>
-			<div id="test2"></div>
+			<div id="test2"
+				data-bind="ntsTableButton: {source: sourceWorkplace, row: 2, column: 10, contextMenu: contextMenu, disableMenuOnDataNotSet: [1, 2], mode: 'normal', selectedCell: selectedButtonTableWorkplace}"></div>
 		</div>
 	</div>
 

@@ -17,4 +17,7 @@ public class WkpConfigInfoFindObject {
 
 	/** The base date. */
 	private GeneralDate baseDate;
+	
+	/** The system type. */
+	private Integer systemType = 5;
 }

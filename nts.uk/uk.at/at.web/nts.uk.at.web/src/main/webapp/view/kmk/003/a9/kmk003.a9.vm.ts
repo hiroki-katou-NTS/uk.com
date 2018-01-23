@@ -1,5 +1,16 @@
 module a9 {
     
+    import WorkTimeDailyAtr = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeDailyAtr;
+    import WorkTimeMethodSet = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeMethodSet
+    import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
+    import EnumConstantDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.EnumConstantDto;
+    
+    import TimeRoundingSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRoundingSettingModel;
+    import OtherEmTimezoneLateEarlySetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OtherEmTimezoneLateEarlySetModel;
+    
+    import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
+    import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
+    
     /**
      * Screen Model - Tab 9
      * 就業時間帯の共通設定 -> 遅刻早退設定
@@ -10,98 +21,73 @@ module a9 {
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
         
-        // Screen data
-        data: KnockoutObservable<any>;
+        // Screen data model
+        model: MainSettingModel;
+        settingEnum: WorkTimeSettingEnumDto;
 
-        // Data - Input value: Late 遅刻
-        lateSetting: TimeRoundingModel;
+        // Detail mode - Data
+        lateSettingRoundingTime: KnockoutObservable<number>;
+        lateSettingRounding: KnockoutObservable<number>;
+        leaveEarlySettingRoundingTime: KnockoutObservable<number>;
+        leaveEarlySettingRounding: KnockoutObservable<number>;   
         
-        // Data - Input value: Leave early 早退
-        leaveEarlySetting: TimeRoundingModel;     
+        listRoundingTimeValue: KnockoutObservableArray<EnumConstantDto>;
+        listRoundingValue: KnockoutObservableArray<EnumConstantDto>;
+        
+        // Simple mode - Data (nothing)        
+        
         
         /**
          * Constructor
          */
-        constructor(screenMode: any) {
+        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
             let _self = this;
+                    
+            // Check exist
+            if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
+                // Stop rendering page
+                return;    
+            }
+            
+            // Binding data
+            _self.model = model; 
+            _self.settingEnum = settingEnum;
+            _self.bindingData();
+            
+            // Init all data                               
+            _self.listRoundingTimeValue = ko.observableArray(_self.settingEnum.roundingTime);
+            _self.listRoundingValue = ko.observableArray(_self.settingEnum.roundingSimple);       
             
             // Detail mode and simple mode is same
-            _self.isDetailMode = ko.observable(true);
+            _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
-                (newValue === true) ? _self.loadDetailMode() : _self.loadSimpleMode();
-            });
-            
-            // Init data
-            _self.lateSetting = new TimeRoundingModel();
-            _self.leaveEarlySetting = new TimeRoundingModel();
-            
-            //TODO  
+                // Nothing to do
+            });                                                        
+            // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
-                value == "2" ? _self.isDetailMode(true) : _self.isDetailMode(false);
-            });
+                value == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
+            }); 
+        }            
+        
+        /**
+         * Start tab
+         */
+        public startTab(screenMode: any): void {
+            let _self = this;
+            screenMode() == TabMode.DETAIL ? _self.isDetailMode(true) : _self.isDetailMode(false);
         }
         
         /**
-         * Bind data to screen items
+         * Binding data
          */
-        public bindDataToScreen(data: any) {
+        private bindingData() {
             let _self = this;
-            //TODO
-        }
         
-        /**
-         * UI: change to Detail mode
-         */
-        private loadDetailMode(): void {
-            let _self = this;
-            //TODO
-        }
-        
-        /**
-         * UI: change to Simple mode
-         */
-        private loadSimpleMode(): void {
-            let _self = this;
-            //TODO
-        }
-    }
-    
-    /**
-     * Time Rounding Model
-     */
-    class TimeRoundingModel {
-        listRoundingTimeValue: KnockoutObservableArray<ItemModel>;
-        listRoundingValue: KnockoutObservableArray<ItemModel>;
-        selectRoundingTimeValue: KnockoutObservable<number>;
-        selectRoundingValue: KnockoutObservable<number>;
-        
-        constructor() {
-            let _self = this;
-            //TODO replace with enum value
-            _self.listRoundingTimeValue = ko.observableArray([
-                new ItemModel(1, nts.uk.resource.getText("KMK003_91")),
-                new ItemModel(2, nts.uk.resource.getText("KMK003_92"))
-            ]);
-            _self.listRoundingValue = ko.observableArray([
-                new ItemModel(1, nts.uk.resource.getText("KMK003_91")),
-                new ItemModel(2, nts.uk.resource.getText("KMK003_92"))
-            ]);
-            _self.selectRoundingTimeValue = ko.observable(1);
-            _self.selectRoundingValue = ko.observable(1);
-        }
-    }
-    
-    /**
-     * Item Model
-     */
-    class ItemModel {
-        value: number;
-        text: string;
-
-        constructor(value: number, text: string) {
-            this.value = value;
-            this.text = text;
-        }
+            _self.lateSettingRoundingTime = _self.model.commonSetting.lateEarlySet.getLateSet().delTimeRoundingSet.roundingTime;
+            _self.lateSettingRounding = _self.model.commonSetting.lateEarlySet.getLateSet().delTimeRoundingSet.rounding;
+            _self.leaveEarlySettingRoundingTime = _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().delTimeRoundingSet.roundingTime;
+            _self.leaveEarlySettingRounding = _self.model.commonSetting.lateEarlySet.getLeaveEarlySet().delTimeRoundingSet.rounding;
+        }                  
     }
     
     /**
@@ -129,15 +115,16 @@ module a9 {
             // Get data
             let input = valueAccessor();
             let screenMode = input.screenMode;
+            let model = input.model;
+            let settingEnum = input.enum;
 
-            let screenModel = new ScreenModel(screenMode);
+            let screenModel = new ScreenModel(screenMode, model, settingEnum);
             $(element).load(webserviceLocator, () => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                screenModel.startTab(screenMode);
             });
         }
-
-    }
-    
+    }   
     ko.bindingHandlers['ntsKMK003A9'] = new KMK003A9BindingHandler();
 }

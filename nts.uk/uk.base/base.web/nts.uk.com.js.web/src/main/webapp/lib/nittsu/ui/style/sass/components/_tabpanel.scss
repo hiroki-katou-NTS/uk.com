@@ -1,17 +1,17 @@
 .ui-widget.ui-tabs {
 	border: none;
 	
-	.ui-tabs-nav {
+	> .ui-tabs-nav {
 		background: transparent;
 		border: none;
 	    padding: .2em .4em 0;
     	
-		li { 
+		> li { 
 			border-color: $frame_border_color;
 			border-radius: 5px 5px 0 0;
 			box-sizing: border-box;
 			
-			a { 
+			> a { 
 				float: none;
 				display: block;
 				outline: none;
@@ -28,21 +28,28 @@
 		}
 	}
 	
-	.ui-tabs-panel {
+	> .ui-tabs-panel {
 		border: 2px solid $frame_border_color;
 		border-radius: 7px;
 		display: block !important;
+		
+		&.disappear {
+			> div {
+				height: 100% !important;
+				overflow: hidden !important;
+			}
+		}
 	}
 	
 	&.vertical {
 		display: flex;
 		
-		.ui-tabs-nav { 
+		> .ui-tabs-nav { 
 			float: left;
 			padding: .4em 0;
 			border-radius: 0;
 			
-			li {
+			> li {
 				clear: left;
 				width: 100%;
 				margin: -1px 0 0 0;
@@ -56,7 +63,7 @@
 				}
 			}
 		}
-		.ui-tabs-panel {
+		> .ui-tabs-panel {
 			width: 100%;
 			overflow: hidden;
 			padding: 1em;

@@ -31,6 +31,21 @@ public class FlowFixedRestSet extends DomainObject{
 	private FlowFixedRestCalcMethod calculateMethod;
 
 	/**
+	 * Constructor
+	 * @param isReferRestTime the is refer rest time
+	 * @param usePrivateGoOutRest the use private go out rest
+	 * @param useAssoGoOutRest the use asso go out rest
+	 * @param calculateMethod the calculate method
+	 */
+	public FlowFixedRestSet(boolean isReferRestTime, boolean usePrivateGoOutRest, boolean useAssoGoOutRest,
+			FlowFixedRestCalcMethod calculateMethod) {
+		super();
+		this.isReferRestTime = isReferRestTime;
+		this.usePrivateGoOutRest = usePrivateGoOutRest;
+		this.useAssoGoOutRest = useAssoGoOutRest;
+		this.calculateMethod = calculateMethod;
+	}
+	/**
 	 * Instantiates a new flow fixed rest set.
 	 *
 	 * @param memento the memento
@@ -53,4 +68,6 @@ public class FlowFixedRestSet extends DomainObject{
 		memento.setUseAssoGoOutRest(this.useAssoGoOutRest);
 		memento.setCalculateMethod(this.calculateMethod);
 	}
+
+
 }

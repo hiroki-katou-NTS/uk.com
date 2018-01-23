@@ -13,7 +13,7 @@ module nts.uk.at.view.kdw006.e.viewmodel {
             self.selectedItem = ko.observable();
 
             self.columns1 = ko.observableArray([
-                { headerText: 'ID', key: 'roleId', width: 100, hidden: true  },
+                { headerText: 'ID', key: 'roleId', width: 100, hidden: true },
                 { headerText: 'コード', key: 'roleCode', width: 100 },
                 { headerText: '名称', key: 'roleName', width: 150 }
             ]);
@@ -34,14 +34,18 @@ module nts.uk.at.view.kdw006.e.viewmodel {
                 primaryKey: 'functionNo',
                 virtualization: true,
                 virtualizationMode: 'continuous',
-                columns: [ 
+                columns: [
                     { headerText: 'コード', key: 'functionNo', dataType: 'number', width: '10px', hidden: true },
                     { headerText: '設定', key: 'displayName', dataType: 'string', width: '320px' },
                     { headerText: '利用区分', key: 'availability', dataType: 'boolean', width: ' 80px', ntsControl: 'Checkbox' },
                     { headerText: '説明', key: 'description', dataType: 'string', width: '370px' }
                 ],
-                features: [],
-                ntsFeatures: [{ name: 'CopyPaste' }],
+                features: [  { 
+                                            name: 'Selection',
+                                            mode: 'row',
+                                            multipleSelection: true
+                                        }],
+               // ntsFeatures: [{ name: 'CopyPaste' }],
                 ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }]
             });
         }
@@ -57,7 +61,7 @@ module nts.uk.at.view.kdw006.e.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.getRoleList().done(function(res: Array<RoleItem>) {
-                self.roleItems(res);
+                self.roleItems(_.sortBy(res, ['roleCode']));
                 self.selectedItem(self.roleItems()[0].roleId);
                 self.initGrid();
                 self.getFuncRest(self.selectedItem()).done(function() {

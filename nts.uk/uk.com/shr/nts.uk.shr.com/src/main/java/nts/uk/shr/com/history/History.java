@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.gul.util.value.DiscreteValue;
 import nts.uk.shr.com.history.constraint.HistoryConstraint;
 import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
@@ -22,6 +23,10 @@ public interface History<H extends HistoryItem<S, D>, S extends GeneralPeriod<S,
 	}
 
 	default void add(H itemToBeAdded) {
+		if (itemToBeAdded.span().isReversed()) {
+			throw new BusinessException("Msg_917");
+		}
+		
 		this.constraints().forEach(c -> c.validateIfCanAdd(this, itemToBeAdded));
 		this.items().add(itemToBeAdded);
 	}
@@ -32,6 +37,10 @@ public interface History<H extends HistoryItem<S, D>, S extends GeneralPeriod<S,
 	}
 	
 	default void changeSpan(H itemToBeChanged, S newSpan) {
+		if (newSpan.isReversed()) {
+			throw new BusinessException("Msg_917");
+		}
+		
 		this.constraints().forEach(c -> c.validateIfCanChangeSpan(this, itemToBeChanged, newSpan));
 		itemToBeChanged.changeSpan(newSpan);
 	}

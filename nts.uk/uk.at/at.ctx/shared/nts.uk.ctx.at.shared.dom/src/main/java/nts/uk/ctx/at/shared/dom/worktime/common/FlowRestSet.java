@@ -10,7 +10,13 @@ import nts.arc.layer.dom.DomainObject;
 /**
  * The Class FlowRestSet.
  */
-// 流動休憩設定
+//流動休憩設定
+
+/**
+ * Gets the calculate method.
+ *
+ * @return the calculate method
+ */
 @Getter
 public class FlowRestSet extends DomainObject {
 
@@ -30,23 +36,23 @@ public class FlowRestSet extends DomainObject {
 	//計算方法
 	private FlowRestCalcMethod calculateMethod;
 
-	/**
-	 * Instantiates a new flow rest set.
-	 *
-	 * @param memento the memento
-	 */
+//	/**
+//	 * Instantiates a new flow rest set.
+//	 *
+//	 * @param memento the memento
+//	 */
 	public FlowRestSet (FlowRestSetGetMemento memento) {
 		this.useStamp = memento.getUseStamp();
 		this.useStampCalcMethod = memento.getUseStampCalcMethod();
 		this.timeManagerSetAtr = memento.getTimeManagerSetAtr();
 		this.calculateMethod = memento.getCalculateMethod();
 	}
-
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
+//
+//	/**
+//	 * Save to memento.
+//	 *
+//	 * @param memento the memento
+//	 */
 	public void saveToMemento(FlowRestSetSetMemento memento) {
 		memento.setUseStamp(this.useStamp);
 		memento.setUseStampCalcMethod(this.useStampCalcMethod);

@@ -16,8 +16,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
 
 /**
- * @author hungnm
- * 勤務実績のエラーアラーム
+ * @author hungnm 勤務実績のエラーアラーム
  */
 @Getter
 public class ErrorAlarmWorkRecord extends AggregateRoot {
@@ -51,9 +50,6 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 
 	/* エラー解除ロールID */
 	private String cancelRoleId;
-
-	/* エラーアラーム条件 */
-	private ErrorAlarmCondition errorAlarmCondition;
 
 	private List<Integer> lstApplication;
 
@@ -90,9 +86,8 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	 * @return ErrorAlarmWorkRecord
 	 **/
 	public static ErrorAlarmWorkRecord createFromJavaType(String companyId, String code, String name, boolean fixedAtr,
-			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor,
-			boolean cancelableAtr, BigDecimal errorDisplayItem, List<Integer> lstApplication,
-			String errorAlarmCheckID) {
+			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor, boolean cancelableAtr,
+			BigDecimal errorDisplayItem, List<Integer> lstApplication, String errorAlarmCheckID) {
 		ErrorAlarmWorkRecord errorAlarmWorkRecord = new ErrorAlarmWorkRecord(companyId,
 				new ErrorAlarmWorkRecordCode(code), new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,
 				EnumAdaptor.valueOf(typeAtr, ErrorAlarmClassification.class),
@@ -108,17 +103,19 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	 * @return ErrorAlarmWorkRecord
 	 **/
 	public static ErrorAlarmWorkRecord init(String companyId, String code, String name, boolean fixedAtr,
-			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor,
-			boolean cancelableAtr, BigDecimal errorDisplayItem, List<Integer> lstApplication) {
+			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor, boolean cancelableAtr,
+			BigDecimal errorDisplayItem, List<Integer> lstApplication) {
 		ErrorAlarmWorkRecord errorAlarmWorkRecord = new ErrorAlarmWorkRecord(companyId,
-				code.length() < 4 ? new ErrorAlarmWorkRecordCode("U" + code) : new ErrorAlarmWorkRecordCode(code), new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,
+				code.length() < 4 ? new ErrorAlarmWorkRecordCode("U" + code) : new ErrorAlarmWorkRecordCode(code),
+				new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,
 				EnumAdaptor.valueOf(typeAtr, ErrorAlarmClassification.class),
 				ErrorAlarmMessage.createFromJavaType(boldAtr, messageColor), cancelableAtr, errorDisplayItem,
 				lstApplication, IdentifierUtil.randomUniqueId());
 		return errorAlarmWorkRecord;
 	}
 
-	public void setCondition(ErrorAlarmCondition condition) {
-		this.errorAlarmCondition = condition;
+	public void setCheckId(String errorAlarmCheckID) {
+		this.errorAlarmCheckID = errorAlarmCheckID;
 	}
+
 }

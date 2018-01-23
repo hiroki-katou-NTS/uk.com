@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.pubimp.person;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -66,22 +67,19 @@ public class PersonInfoPubImp implements IPersonInfoPub {
 		perResult.setEmployeeId(employee.getEmployeeId());
 		perResult.setEmployeeCode(employee.getEmployeeCode() == null ? "" : employee.getEmployeeCode().v());
 		String cid = AppContexts.user().companyId();
-		Date date = new Date();
-		GeneralDate systemDate = GeneralDate.legacyDate(date);
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid,employee.getEmployeeId());
+
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployeeDesc(cid, employee.getEmployeeId());
 
 		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(employee.getEmployeeId());
 
-		AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
+		if (affComHistByEmp != null) {
 
-		if (affComHistByEmp.items() != null) {
+			AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
 
-			List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-				return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
-			}).collect(Collectors.toList());
+			Optional<AffCompanyHistItem> history = affComHistByEmp.getHistory();
 
-			if (!filter.isEmpty()) {
-				affComHistItem = filter.get(0);
+			if (history.isPresent()) {
+				affComHistItem = history.get();
 				perResult.setEntryDate(affComHistItem.start());
 				perResult.setRetiredDate(affComHistItem.end());
 

@@ -10,8 +10,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 630,
-					height : 530
+					width : 555,
+					height : 500
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -139,12 +139,11 @@
 						</div>
 					</div>
 				</div>
-				<HR />
-				<div class="valign-center control-group function-button-class">
-					<button class="proceed x-large" data-bind="click: insertAndUpdate">#{i18n.getText('KMK008_37')}</button>
-					<button class="small" data-bind="click: closeDialog">#{i18n.getText('KMK008_38')}</button>
-				</div>
-
+			</div>
+			<div class="valign-center control-group function-button-class"
+				id="functions-area-bottom">
+				<button class="proceed x-large" data-bind="click: insertAndUpdate">#{i18n.getText('KMK008_37')}</button>
+				<button class="small" data-bind="click: closeDialog">#{i18n.getText('KMK008_38')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

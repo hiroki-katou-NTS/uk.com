@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.editstate;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -24,5 +23,5 @@ public class KrcdtDailyRecEditSetPK implements Serializable {
 	public GeneralDate processingYmd;
 	
 	@Column(name = "ATTENDANCE_ITEM_ID")
-	public BigDecimal attendanceItemId;
+	public int attendanceItemId;
 }

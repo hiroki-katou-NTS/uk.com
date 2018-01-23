@@ -1,0 +1,106 @@
+package nts.uk.ctx.at.record.infra.repository.shorttimework;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
+import nts.uk.ctx.at.record.dom.shorttimework.primitivevalue.ShortWorkTimFrameNo;
+import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
+import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTimePK;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
+@Stateless
+public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements ShortTimeOfDailyPerformanceRepository {
+
+	@Override
+	public Optional<ShortTimeOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
+		List<ShortWorkingTimeSheet> shortTimeSheets = findEntities(employeeId, ymd).getList(
+				c -> shortWorkTime(c));
+		if (!shortTimeSheets.isEmpty()) {
+			return Optional.of(new ShortTimeOfDailyPerformance(employeeId, shortTimeSheets, ymd));
+		}
+		return Optional.empty();
+	}
+
+	private ShortWorkingTimeSheet shortWorkTime(KrcdtDaiShortWorkTime c) {
+		return new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo),
+				EnumAdaptor.valueOf(c.childCareAtr, ChildCareAttribute.class), new TimeWithDayAttr(c.startTime),
+				new TimeWithDayAttr(c.endTime), new AttendanceTime(c.deductionTime),
+				new AttendanceTime(c.time));
+	}
+
+	@Override
+	public void updateByKey(ShortTimeOfDailyPerformance shortWork) {
+		List<KrcdtDaiShortWorkTime> entities = findEntities(shortWork.getEmployeeId(), shortWork.getYmd()).getList();
+		shortWork.getShortWorkingTimeSheets().stream().forEach(c -> {
+			KrcdtDaiShortWorkTime current = entities.stream()
+					.filter(x -> x.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo == c.getShortWorkTimeFrameNo().v())
+					.findFirst().orElse(null);
+			if(current != null){
+				current.childCareAtr = c.getChildCareAttr().value;
+				current.deductionTime = c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes();
+				current.endTime = c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes();
+				current.startTime = c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes();
+				current.time = c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes();
+			} else {
+				entities.add(newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c));
+			}
+		});
+		commandProxy().updateAll(entities);
+	}
+
+	@Override
+	public void insert(ShortTimeOfDailyPerformance shortWork) {
+		List<KrcdtDaiShortWorkTime> entities = shortWork.getShortWorkingTimeSheets().stream()
+				.map(c -> newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c)).collect(Collectors.toList());
+		commandProxy().insertAll(entities);
+	}
+
+	private KrcdtDaiShortWorkTime newEntities(String employeeId, GeneralDate ymd, ShortWorkingTimeSheet c) {
+		return new KrcdtDaiShortWorkTime(new KrcdtDaiShortWorkTimePK(employeeId, ymd, c.getShortWorkTimeFrameNo().v()),
+				c.getStartTime() == null ? 0 : c.getStartTime().valueAsMinutes(), 
+				c.getEndTime() == null ? 0 : c.getEndTime().valueAsMinutes(), 
+				c.getChildCareAttr().value,
+				c.getShortTime() == null ? 0 : c.getShortTime().valueAsMinutes(), 
+				c.getDeductionTime() == null ? 0 : c.getDeductionTime().valueAsMinutes());
+	}
+
+	private TypedQueryWrapper<KrcdtDaiShortWorkTime> findEntities(String employeeId, GeneralDate ymd) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT s FROM KrcdtDaiShortWorkTime s");
+		query.append(" WHERE s.krcdtDaiShortWorkTimePK.sid = :employeeId");
+		query.append(" AND s.krcdtDaiShortWorkTimePK.ymd = :ymd");
+		query.append(" ORDER BY s.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo");
+		return queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class).setParameter("employeeId", employeeId)
+				.setParameter("ymd", ymd);
+	}
+
+	@Override
+	public List<ShortTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a FROM KrcdtDaiShortWorkTime a ");
+		query.append("WHERE a.krcdtDaiShortWorkTimePK.sid IN :employeeId ");
+		query.append("AND a.krcdtDaiShortWorkTimePK.ymd <= :end AND a.krcdtDaiShortWorkTimePK.ymd >= :start");
+		return queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class).setParameter("employeeId", employeeId)
+				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
+				.collect(Collectors.groupingBy(c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
+				.entrySet().stream().map(c -> new ShortTimeOfDailyPerformance(
+												c.getValue().get(0).krcdtDaiShortWorkTimePK.sid,
+												c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
+												c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
+				.collect(Collectors.toList());
+	}
+
+}

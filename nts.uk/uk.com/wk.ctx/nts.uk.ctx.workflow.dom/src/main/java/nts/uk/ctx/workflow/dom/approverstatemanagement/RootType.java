@@ -15,12 +15,12 @@ public enum RootType {
 	/** 2:就業月別確認 */
 	CONFIRM_WORK_BY_MONTH(2,"就業月別確認");
 
-	public int value;
+	public final int value;
 	
-	public String nameId;
+	public final String name;
 	
-	RootType(int type, String nameId) {
+	RootType(int type, String name) {
 		this.value = type;
-		this.nameId = nameId;
+		this.name = name;
 	}
 }

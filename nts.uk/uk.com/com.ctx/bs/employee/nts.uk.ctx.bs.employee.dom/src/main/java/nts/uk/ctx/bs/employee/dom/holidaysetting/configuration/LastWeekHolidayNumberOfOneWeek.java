@@ -8,9 +8,12 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
+/**
+ * The Class LastWeekHolidayNumberOfOneWeek.
+ */
+// 1週間の最終週の公休日数
 @Getter
 @Setter
-// 1週間の最終週の公休日数
 public class LastWeekHolidayNumberOfOneWeek extends DomainObject{
 	
 	/** The in legal holiday. */
@@ -24,20 +27,11 @@ public class LastWeekHolidayNumberOfOneWeek extends DomainObject{
 	/**
 	 * Instantiates a new last week holiday number of one week.
 	 *
-	 * @param memento the memento
+	 * @param inLegalHoliday the in legal holiday
+	 * @param outLegalHoliday the out legal holiday
 	 */
-	public LastWeekHolidayNumberOfOneWeek(LastWeekHolidayNumberOfOneWeekGetMemento memento) {
-		this.inLegalHoliday = memento.getInLegalHoliday();
-		this.outLegalHoliday = memento.getOutLegalHoliday();
-	}
-
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(LastWeekHolidayNumberOfOneWeekSetMemento memento) {
-		memento.setInLegalHoliday(this.inLegalHoliday);
-		memento.setOutLegalHoliday(this.outLegalHoliday);
+	public LastWeekHolidayNumberOfOneWeek(WeekNumberOfDay inLegalHoliday, WeekNumberOfDay outLegalHoliday) {
+		this.inLegalHoliday = inLegalHoliday;
+		this.outLegalHoliday = outLegalHoliday;
 	}
 }

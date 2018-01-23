@@ -25,25 +25,9 @@ public class OneWeekPublicHoliday extends DomainObject {
 	// 法定外休日日数
 	private WeekNumberOfDay outLegalHoliday;
 	
-	/**
-	 * Instantiates a new one week public holiday.
-	 *
-	 * @param memento the memento
-	 */
-	public OneWeekPublicHoliday(OneWeekPublicHolidayGetMemento memento) {
-		this.lastWeekAddedDays = memento.getLastWeekAddedDays();
-		this.inLegalHoliday = memento.getInLegalHoliday();
-		this.outLegalHoliday = memento.getOutLegalHoliday();
-	}
-
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(OneWeekPublicHolidaySetMemento memento) {
-		memento.setLastWeekAddedDays(this.lastWeekAddedDays);
-		memento.setInLegalHoliday(this.inLegalHoliday);
-		memento.setOutLegalHoliday(this.outLegalHoliday);
+	public OneWeekPublicHoliday(LastWeekHolidayNumberOfOneWeek lastWeekAddedDays, WeekNumberOfDay inLegalHoliday, WeekNumberOfDay outLegalHoliday) {
+		this.lastWeekAddedDays = lastWeekAddedDays;
+		this.inLegalHoliday = inLegalHoliday;
+		this.outLegalHoliday = outLegalHoliday;
 	}
 }

@@ -4,7 +4,7 @@
 }
 
 #itemLst {
-	margin-left: 13px;
+	margin-left: 65px !important;
 }
 
 #B_010 {
@@ -12,15 +12,13 @@
 }
 
 .requiredCell {
- background-color: #FFC000;
+	background-color: #FFC000;
 }
 
 .notrequiredCell {
- background-color: #C7F391;
+	background-color: #C7F391;
 }
 
-.ui-iggrid table tr td {
-}
-#grid_B {
-	height: initial !important;
+#registration{
+	margin-top: 10px !important;
 }

@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -43,24 +44,25 @@ public class UpdateWorkingConditionCommandHandler extends CommandHandler<UpdateW
 	protected void handle(CommandHandlerContext<UpdateWorkingConditionCommand> context) {
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		
-		Optional<WorkingCondition> listHistBySid =  workingConditionRepository.getBySid(companyId, command.getEmployeeId());
-		
-		if (!listHistBySid.isPresent()){
-			throw new RuntimeException("Invalid item to be updated");
+			if (command.getStartDate() != null){
+			Optional<WorkingCondition> listHistBySid =  workingConditionRepository.getBySid(companyId, command.getEmployeeId());
+			
+			if (!listHistBySid.isPresent()){
+				throw new RuntimeException("Invalid item to be updated");
+			}
+			WorkingCondition workingCond = listHistBySid.get();
+			Optional<DateHistoryItem> itemToBeUpdated = workingCond.getDateHistoryItem().stream().filter(hist->hist.identifier().equals(command.getHistId())).findFirst();
+			if (!itemToBeUpdated.isPresent()){
+				throw new RuntimeException("Invalid item to be updated");
+			}
+			GeneralDate endDate = command.getEndDate() !=null? command.getEndDate() : GeneralDate.max();
+			workingCond.changeSpan(itemToBeUpdated.get(), new DatePeriod(command.getStartDate(), endDate));
+			
+			workingConditionRepository.save(workingCond);
 		}
-		WorkingCondition workingCond = listHistBySid.get();
-		Optional<DateHistoryItem> itemToBeUpdated = workingCond.getDateHistoryItem().stream().filter(hist->hist.identifier().equals(command.getHistId())).findFirst();
-		if (!itemToBeUpdated.isPresent()){
-			throw new RuntimeException("Invalid item to be updated");
-		}
-		workingCond.changeSpan(itemToBeUpdated.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
-		
-		workingConditionRepository.save(workingCond);
-		
 		WorkingConditionItem  workingCondItem = addWorkingConditionCommandAssembler.fromDTO(command);
 		
-		workingConditionItemRepository.add(workingCondItem);
+		workingConditionItemRepository.update(workingCondItem);
 		
 	}
 

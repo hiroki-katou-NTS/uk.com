@@ -1,6 +1,6 @@
 
 .from-label{
-	margin-left: 50px;
+	margin-left: 20px;
     margin-bottom: 12px;
 }
 .text{
@@ -9,6 +9,10 @@
     margin-left: 20px;
 }
 
+#table-infor {
+	table-layout: fixed;
+	width: 100%;
+}
 
 #table-infor th,#table-infor td{
 	 border: 1px solid black;

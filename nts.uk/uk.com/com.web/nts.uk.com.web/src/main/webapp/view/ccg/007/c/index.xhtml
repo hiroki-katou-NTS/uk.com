@@ -21,7 +21,7 @@
 				<div style="position: relative; top: 30%; margin: 0 auto auto 40%;">
 					<table>
 						<tr>
-							<td colspan="4" class="pad_5"><img src="CCG007_001.png" /></td>
+							<td class="pad_5" colspan="4" style="padding-bottom: 30px; padding-left: 40px"><img src="kin.gif" /></td>
 						</tr>
 						<tr>
 							<td colspan="2" class="pad_5"><div
@@ -60,7 +60,7 @@
 						<tr>
 							<td><img alt="" src="72.png" /></td>
 							<td colspan="3" class="pad_5"><div>
-									<input tabindex="3"
+									<input tabindex="3" id="password-input" 
 										data-bind="ntsTextEditor: {
 										name: '#{i18n.getText('CCG007_2')}',
 										value: password,
@@ -78,7 +78,7 @@
 						</tr>
 						<tr>
 							<td></td>
-							<td colspan="3" class="pad_5"><button tabindex="5"
+							<td colspan="3" class="pad_5"><button tabindex="5" id="search-btn"
 									data-bind="click: submitLogin"
 									class=" full_width proceed large">
 									<div data-bind="text: '#{i18n.getText('CCG007_3')}'"></div>

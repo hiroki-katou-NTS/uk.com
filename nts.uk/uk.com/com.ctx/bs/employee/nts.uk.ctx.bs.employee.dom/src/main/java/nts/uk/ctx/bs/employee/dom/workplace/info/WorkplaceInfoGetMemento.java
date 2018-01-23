@@ -35,7 +35,7 @@ public interface WorkplaceInfoGetMemento {
      *
      * @return the workplace code
      */
-    public WorkplaceCode getWorkplaceCode();
+    public WkpCode getWorkplaceCode();
 
     /**
      * Gets the workplace name.

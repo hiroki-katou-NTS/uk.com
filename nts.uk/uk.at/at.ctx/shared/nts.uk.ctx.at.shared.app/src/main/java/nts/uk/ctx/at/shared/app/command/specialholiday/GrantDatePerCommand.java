@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDatePer;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDatePerSet;
 import nts.uk.shr.com.context.AppContexts;
@@ -23,7 +24,7 @@ public class GrantDatePerCommand {
 	private String personalGrantDateName;
 
 	/*一律基準日*/
-	private int grantDate;
+	private GeneralDate grantDate;
  
 	/*付与基準日*/
 	private int grantDateAtr;

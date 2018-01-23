@@ -9,31 +9,37 @@ public enum ReflectPlanPerState {
 	 * 未反映
 	 */
 	NOTREFLECTED(0),
+	
 	/**
-	 * 差し戻し
+	 * 反映待ち
 	 */
-	REMAND(1),
+	WAITREFLECTION(1),
+	
 	/**
-	 * 取消済
+	 * 反映済
 	 */
-	CANCELED(2),
+	REFLECTED(2),
+	
 	/**
 	 * 取消待ち
 	 */
 	WAITCANCEL(3),
+	
 	/**
-	 * 反映済
+	 * 取消済
 	 */
-	REFLECTED(4),
+	CANCELED(4),
+	
 	/**
-	 * 反映待ち
+	 * 差し戻し
 	 */
-	WAITREFLECTION(5),
+	REMAND(5),
+	
 	/**
 	 * 否認
 	 */
-	
 	DENIAL(6),
+	
 	/** Other */
 	/**Status = 過去申請 */
 	PASTAPP(99)

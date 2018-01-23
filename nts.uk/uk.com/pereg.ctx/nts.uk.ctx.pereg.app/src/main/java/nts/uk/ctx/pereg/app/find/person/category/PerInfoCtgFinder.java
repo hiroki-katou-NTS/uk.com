@@ -61,12 +61,8 @@ public class PerInfoCtgFinder {
 				detailCtgInfo.setIsExistedItemLst(0);
 			}
 			detailCtgInfo.setItemLst(itemLst);
-			List<String> requiredLst = this.perInfoByCompanyRepo.getItemInfoId(categoryId, contractCd);
-			if (requiredLst.size() > 0) {
-				detailCtgInfo.setSystemRequired(1);
-			} else {
-				detailCtgInfo.setSystemRequired(0);
-			}
+			detailCtgInfo.setSystemRequired(perInfoCtg.getIsFixed().value);
+
 		}
 		return detailCtgInfo;
 	}

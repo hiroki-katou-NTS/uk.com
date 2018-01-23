@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceformat.repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly;
@@ -14,5 +13,7 @@ public interface BusinessTypeFormatMonthlyRepository {
 	void deleteExistData(List<Integer> attendanceItemIds);
 	
 	void add(List<BusinessTypeFormatMonthly> businessTypeFormatMonthlyAdds);
+	
+	boolean checkExistData(String companyId, String businessTypeCode);
 
 }

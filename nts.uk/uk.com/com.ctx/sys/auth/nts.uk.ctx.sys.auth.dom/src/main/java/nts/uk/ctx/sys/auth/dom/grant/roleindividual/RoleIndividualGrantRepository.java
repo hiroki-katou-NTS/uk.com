@@ -13,17 +13,31 @@ import nts.arc.time.GeneralDate;
  */
 public interface RoleIndividualGrantRepository {
 
-	/** Find by userID and date in range
-	 * 
-	 * @param userId
-	 * @param today Date between StartDate and EndDate
+	
+	/**
+	 * Find by user and date.
+	 *
+	 * @param userId the user id
+	 * @param today the today
+	 * @return the optional
 	 */
 	Optional<RoleIndividualGrant> findByUserAndDate(String userId, GeneralDate today);
+	
+	/**
+	 * Find list by user and date.
+	 *
+	 * @param userId the user id
+	 * @param today the today
+	 * @return the list
+	 */
+	List<RoleIndividualGrant> findListByUserAndDate(String userId, GeneralDate today);
 	
 	/** Find by user and role */
 	List<RoleIndividualGrant> findByUserAndRole(String userId, int roleType);
 
 	Optional<RoleIndividualGrant> findByUserCompanyRoleType(String userID, String companyID, int roleType);
+	
+	Optional<RoleIndividualGrant> findByUserCompanyRoleTypeDate(String userId, String companyId, int roleType, GeneralDate date);
 
 	Optional<RoleIndividualGrant> findByKey(String userId, String companyId, String roleId);
 

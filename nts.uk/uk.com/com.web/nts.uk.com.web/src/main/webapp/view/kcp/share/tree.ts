@@ -37,7 +37,12 @@ module kcp.share.tree {
         isShowAlreadySet: boolean;
 
         /**
-         * is Multi select.
+         * is Multi use (複数使用区分). Setting use multiple components?
+         */
+        isMultipleUse: boolean;
+        
+        /**
+         * is Multi select (選択モード). Setting multiple selection in grid.
          */
         isMultiSelect: boolean;
 
@@ -88,8 +93,35 @@ module kcp.share.tree {
          * set tabIndex
          */
         tabindex?: number;
+        
+        /**
+         * system type
+         */
+        systemType: SystemType;
     }
 
+    /**
+     * System type ~ システム区分
+     *
+     */
+    export class SystemType {
+               
+        // 個人情報
+        static PERSONAL_INFORMATION: number = 1;
+        
+         // 就業
+        static EMPLOYMENT: number = 2;
+        
+         // 給与
+        static SALARY: number = 3;
+        
+        // 人事
+        static HUMAN_RESOURCES: number = 4;
+                      
+        // 管理者
+        static ADMINISTRATOR: number = 5;
+    }
+    
     export class TreeType {
         static WORK_PLACE = 1;
     }
@@ -112,7 +144,8 @@ module kcp.share.tree {
         selectedWorkplaceIds: KnockoutObservable<any>;
         isShowSelectButton: boolean;
         treeComponentColumn: Array<any>;
-        isMultiple: boolean;
+        isMultipleUse: boolean;
+        isMultiSelect: boolean;
         isDialog: boolean;
         hasBaseDate: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
@@ -123,6 +156,7 @@ module kcp.share.tree {
         $input: JQuery;
         data: TreeComponentOption
         maxRows: number;
+        systemType: SystemType;
 
         isSetTabindex: KnockoutObservable<boolean>;
         tabindex: number;
@@ -149,6 +183,8 @@ module kcp.share.tree {
                 { level: 10, name: '10' }
             ];
             self.levelSelected = ko.observable(10);
+            self.isMultipleUse = false;
+            self.isMultiSelect = false;
             
             self.treeStyle = {
                 width: 410,
@@ -162,12 +198,26 @@ module kcp.share.tree {
             ko.cleanNode($input[0]);
             self.data = data;
             self.$input = $input;
-            self.isMultiple = data.isMultiSelect;
-            self.hasBaseDate(!self.isMultiple);
+            
+            // set parameter 
+            if (data.isMultipleUse) {
+                self.isMultipleUse = data.isMultipleUse;
+            }
+            if (data.isMultiSelect) {
+                self.isMultiSelect = data.isMultiSelect;
+            }
+            self.hasBaseDate(!self.isMultipleUse);
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
+            
+            if (data.systemType) {
+                self.systemType =  data.systemType;
+            } else {
+                self.systemType = SystemType.ADMINISTRATOR;
+            }
+            
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;
             }
@@ -194,16 +244,17 @@ module kcp.share.tree {
             self.backupItemList.subscribe((newData) => {
                 // data is empty, set selected work place id empty
                 if (!newData || newData.length <= 0) {
-                    self.selectedWorkplaceIds(self.isMultiple ? [] : '');
+                    self.selectedWorkplaceIds(self.isMultiSelect ? [] : '');
                 }
+                self.createGlobalVarDataList();
             });
 
             // Find data.
-            service.findWorkplaceTree(self.baseDate()).done(function(res: Array<UnitModel>) {
+            service.findWorkplaceTree(self.baseDate(), self.systemType).done(function(res: Array<UnitModel>) {
                 if (res && res.length > 0) {
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
-
+                    
                     if (data.isShowAlreadySet) {
                         // subscribe when alreadySettingList update => reload component.
                         self.alreadySettingList.subscribe((newAlreadySettings: any) => {
@@ -219,11 +270,12 @@ module kcp.share.tree {
                     self.itemList(res);
                     self.backupItemList(res);
                 }
+                // Set default value when initial component.
+                self.initSelectedValue(res);
+                
                 self.loadTreeGrid().done(function() {
                     // Special command -> remove unuse.
                     $input.find('#multiple-tree-grid_tooltips_ruler').remove();
-                    // Set default value when initial component.
-                    self.initSelectedValue(res);
 
                     dfd.resolve();
                 })
@@ -352,12 +404,12 @@ module kcp.share.tree {
             }
             switch (self.data.selectType) {
                 case SelectionType.SELECT_BY_SELECTED_CODE:
-                    if (self.isMultiple) {
+                    if (self.isMultiSelect) {
                         self.selectedWorkplaceIds = self.data.selectedWorkplaceId;
                     }
                     break;
                 case SelectionType.SELECT_ALL:
-                    if (self.isMultiple) {
+                    if (self.isMultiSelect) {
                         self.selectAll();
                     }
                     break;
@@ -479,19 +531,24 @@ module kcp.share.tree {
                 ko.applyBindings(self, self.$input[0]);
 
                 // defined function get data list.
-                $('#script-for-' + self.$input.attr('id')).remove();
-                var s = document.createElement("script");
-                s.type = "text/javascript";
-                s.innerHTML = 'var dataList' + self.$input.attr('id').replace(/-/gi, '') + ' = '
-                    + JSON.stringify(self.backupItemList());
-                s.id = 'script-for-' + self.$input.attr('id');
-                $("head").append(s);
+                self.createGlobalVarDataList();
                 $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
                     return window['dataList' + this.attr('id').replace(/-/gi, '')];
                 }
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+        
+        private createGlobalVarDataList() {
+            var self = this;
+            $('#script-for-' + self.$input.attr('id')).remove();
+            var s = document.createElement("script");
+            s.type = "text/javascript";
+            s.innerHTML = 'var dataList' + self.$input.attr('id').replace(/-/gi, '') + ' = '
+                + JSON.stringify(self.backupItemList());
+            s.id = 'script-for-' + self.$input.attr('id');
+            $("head").append(s);
         }
 
         /**
@@ -502,7 +559,7 @@ module kcp.share.tree {
             if (!self.baseDate()) {
                 return;
             }
-            service.findWorkplaceTree(self.baseDate()).done(function(res: Array<UnitModel>) {
+            service.findWorkplaceTree(self.baseDate(), self.systemType ).done(function(res: Array<UnitModel>) {
                 if (!res || res.length <= 0) {
                     self.itemList([]);
                     self.backupItemList([]);
@@ -573,7 +630,7 @@ module kcp.share.tree {
          * Select data for multiple or not
          */
         private selectData(option: TreeComponentOption, data: UnitModel): any {
-            if (this.isMultiple) {
+            if (this.isMultiSelect) {
                 return [data.workplaceId];
             }
             return data.workplaceId;
@@ -583,7 +640,7 @@ module kcp.share.tree {
          * Get selected work place id
          */
         private getSelectedWorkplace(): any {
-            if (this.isMultiple) {
+            if (this.isMultiSelect) {
                 return this.selectedWorkplaceIds() ? this.selectedWorkplaceIds() : [];
             }
             return [this.selectedWorkplaceIds()];
@@ -632,7 +689,7 @@ module kcp.share.tree {
          * Get ComId Search Box by multiple choice
          */
         private getComIdSearchBox(): string {
-            if (this.isMultiple) {
+            if (this.isMultiSelect) {
                 return 'multiple-tree-grid';
             }
             return 'single-tree-grid';
@@ -671,8 +728,8 @@ module kcp.share.tree {
         /**
          * Find workplace list.
          */
-        export function findWorkplaceTree(baseDate: Date): JQueryPromise<Array<UnitModel>> {
-            return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, { baseDate: baseDate });
+        export function findWorkplaceTree(baseDate: Date, systemType: SystemType): JQueryPromise<Array<UnitModel>> {
+            return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, { baseDate: baseDate, systemType: systemType });
         }
     }
 }

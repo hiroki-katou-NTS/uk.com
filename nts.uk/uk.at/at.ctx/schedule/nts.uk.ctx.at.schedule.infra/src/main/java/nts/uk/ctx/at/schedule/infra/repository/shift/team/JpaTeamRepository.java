@@ -23,7 +23,7 @@ public class JpaTeamRepository extends JpaRepository implements TeamRepository {
 	/**
 	 * select by WorkPlaceId
 	 */
-	private static final String GET_BY_WORK_PLACE = SELECT_NO_WHERE + " WHERE k.kscmtTeamPk.workplaceId = :workplaceId";
+	private static final String GET_BY_WORK_PLACE = SELECT_NO_WHERE + " WHERE k.kscmtTeamPk.workplaceId = :workplaceId ORDER BY k.kscmtTeamPk.teamCode ASC ";
 	/**
 	 * select by team code
 	 */

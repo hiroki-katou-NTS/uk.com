@@ -1,11 +1,13 @@
 @CHARSET "UTF-8";
-
+#contents-area{
+	width: 1340px !important;
+}
 .outer {
 	outline: 1px solid #FF6138;
 }
 
 #functions-area {
-	height: 50px;
+	height: 50px !important;
 }
 
 #reset {
@@ -80,7 +82,7 @@
 .div-right-content {
 	float: left;
 	padding: 20px;
-	width: 700px;
+	width: 650px;
 }
 
 .form-label {
@@ -153,7 +155,7 @@ input.ntsSearchBox {
 }
 
 #companyNameKana {
-	width: 360px !important;
+	width: 450px !important;
 	margin-bottom: 10px;
 	margin-left: -50px !important;
 }
@@ -203,29 +205,21 @@ input.ntsSearchBox {
 }
 
 #LBLAddress1 {
-	/* margin-left: 24px;
-	display: inline-block; */
 	height: 40px;
 	line-height: 30px;
 }
 
 #LBLAddress2 {
-	/* margin-left: 24px;
-	display: inline-block; */
 	height: 40px;
 	line-height: 30px;
 }
 
 #LBLAddressKana1 {
-	/* margin-left: 24px;
-	display: inline-block; */
 	line-height: 30px;
 	height: 40px;
 }
 
 #LBLAddressKana2 {
-	/* margin-left: 30px;
-	display: inline-block; */
 	height: 40px;
 	line-height: 30px;
 }
@@ -310,11 +304,16 @@ body>div:nth-child(4) {
 }
 
 #switchhelpbtn {
-	margin-left: 85px;
+	margin-left: 10px;
 	height: 27px;
+	z-index: 100px !important;
 }
 
 #tab-1, #tab-2, #tab-3 {
 	height: 370px;
+	overflow: visible !important;
 }
 
+#tab-1.disappear, #tab-2.disappear, #tab-3.disappear {
+	overflow: hidden !important;
+}

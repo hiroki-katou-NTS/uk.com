@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingDetailSetMemento;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingDetailSetMeme
  * The Class FlowWorkRestSettingDetailDto.
  */
 @Getter
+@Setter
 public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSetMemento {
 
 	/** The flow rest setting. */
@@ -24,6 +26,14 @@ public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSe
 	/** The use plural work rest time. */
 	private boolean usePluralWorkRestTime;
 
+	/**
+	 * Instantiates a new flow work rest setting detail dto.
+	 */
+	public FlowWorkRestSettingDetailDto() {
+		this.flowRestSetting = new FlowRestSetDto();
+		this.flowFixedRestSetting = new FlowFixedRestSetDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -33,7 +43,10 @@ public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSe
 	 */
 	@Override
 	public void setFlowRestSetting(FlowRestSet set) {
-		set.saveToMemento(this.flowRestSetting);
+		if (set != null) {
+			this.flowRestSetting = new FlowRestSetDto();
+			set.saveToMemento(this.flowRestSetting);
+		}
 	}
 
 	/*
@@ -45,7 +58,10 @@ public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSe
 	 */
 	@Override
 	public void setFlowFixedRestSetting(FlowFixedRestSet set) {
-		set.saveToMemento(this.flowFixedRestSetting);
+		if (set != null) {
+			this.flowFixedRestSetting = new FlowFixedRestSetDto();
+			set.saveToMemento(this.flowFixedRestSetting);
+		}
 	}
 
 	/*

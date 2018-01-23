@@ -31,14 +31,10 @@ function checkBox() {
         columns: columnSettings,
         width: "400px",
         height: "265px",
-        autoGenerateRows: true,
         features: [{
             name: 'Selection',
             mode: 'row',
             activation: false,
-            }, 
-            {
-                name: "RowSelectors"
             },
             {
                 name: "Updating",

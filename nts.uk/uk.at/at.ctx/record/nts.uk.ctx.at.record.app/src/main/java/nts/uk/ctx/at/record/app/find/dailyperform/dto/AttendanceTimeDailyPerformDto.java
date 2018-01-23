@@ -3,11 +3,12 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 /** 日別実績の勤怠時間 */
 @Getter
@@ -34,16 +35,43 @@ public class AttendanceTimeDailyPerformDto implements ConvertibleAttendanceItem 
 	private StayingTimeDto stayingTime;
 
 	/** 医療時間: 日別実績の医療時間 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "医療時間")
+	@AttendanceItemLayout(layout = "D", jpPropertyName = "医療時間", enumField = "dayNightAtr")
 	private MedicalTimeDailyPerformDto medicalTime;
 
 	/** 予実差異時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "E", jpPropertyName = "予実差異時間")
-	@AttendanceItemValue(itemId = 552, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer budgetTimeVariance;
 
 	/** 不就労時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "F", jpPropertyName = "不就労時間")
-	@AttendanceItemValue(itemId = 554, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private Integer unemployedTime;
+	
+	public static AttendanceTimeDailyPerformDto getDto(AttendanceTimeOfDailyPerformance domain) {
+		AttendanceTimeDailyPerformDto items = new AttendanceTimeDailyPerformDto();
+		if(domain != null){
+			items.setEmployeeID(domain.getEmployeeId());
+			items.setDate(domain.getYmd());
+			items.setActualWorkTime(ActualWorkTimeDailyPerformDto.toActualWorkTime(domain.getActualWorkingTimeOfDaily()));
+			items.setBudgetTimeVariance(domain.getBudgetTimeVariance().valueAsMinutes());
+			items.setDate(domain.getYmd());
+			items.setEmployeeID(domain.getEmployeeId());
+			items.setMedicalTime(MedicalTimeDailyPerformDto.fromMedicalCareTime(domain.getMedicalCareTime()));
+			items.setScheduleTime(WorkScheduleTimeDailyPerformDto.fromWorkScheduleTime(domain.getWorkScheduleTimeOfDaily()));
+			items.setStayingTime(StayingTimeDto.fromStayingTime(domain.getStayingTime()));
+			items.setUnemployedTime(domain.getUnEmployedTime().valueAsMinutes());
+		}
+		return items;
+	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeID;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.date;
+	}
 }

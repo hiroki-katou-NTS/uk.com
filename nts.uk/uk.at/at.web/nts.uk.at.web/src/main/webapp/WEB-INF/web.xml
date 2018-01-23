@@ -6,6 +6,10 @@
     
     <distributable/>
     
+    <session-config>
+        <session-timeout>1440</session-timeout>
+    </session-config>
+    
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -28,11 +32,14 @@
     
     <filter>
     	<filter-name>RequestPreProcessor</filter-name>
-    	<filter-class>nts.uk.shr.infra.web.request.RequestPreProcessor</filter-class>
+    	<filter-class>nts.arc.layer.ws.preprocess.RequestPreProcessor</filter-class>
     </filter>
     
     <filter-mapping>
     	<filter-name>RequestPreProcessor</filter-name>
-    	<url-pattern>/webapi/*</url-pattern>
+    	<url-pattern>*</url-pattern>
     </filter-mapping>
+    <servlet>
+    	<servlet-name>nts.uk.shr.infra.web.WebApiSetting</servlet-name>
+    </servlet>
 </web-app>

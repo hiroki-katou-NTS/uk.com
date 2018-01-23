@@ -28,7 +28,7 @@ module nts.uk.at.view.kaf002.m4 {
                 });
             }
             
-            register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
+            register(application : vmbase.Application){
                 $(".m4-time-editor").trigger("validate");
                 if (!nts.uk.ui.errors.hasError())
                 {
@@ -46,8 +46,7 @@ module nts.uk.at.view.kaf002.m4 {
                         appStampGoOutPermitCmds: null,
                         appStampWorkCmds: null, 
                         appStampCancelCmds: null,
-                        appStampOnlineRecordCmd: ko.mapping.toJS(self.appStamp()),
-                        appApprovalPhaseCmds: approvalList 
+                        appStampOnlineRecordCmd: ko.mapping.toJS(self.appStamp())
                     }
                     service.insert(command)
                     .done(() => {
@@ -63,7 +62,7 @@ module nts.uk.at.view.kaf002.m4 {
                 }
             }
             
-            update(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
+            update(application : vmbase.Application){
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let command = {
@@ -79,8 +78,7 @@ module nts.uk.at.view.kaf002.m4 {
                     appStampGoOutPermitCmds: null,
                     appStampWorkCmds: null, 
                     appStampCancelCmds: null,
-                    appStampOnlineRecordCmd: ko.mapping.toJS(self.appStamp()),
-                    appApprovalPhaseCmds: approvalList 
+                    appStampOnlineRecordCmd: ko.mapping.toJS(self.appStamp())
                 }
                 service.update(command)
                 .done(() => {

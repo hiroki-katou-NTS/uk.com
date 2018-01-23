@@ -1,6 +1,9 @@
 package nts.uk.file.com.infra.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,7 +82,7 @@ public class EmployeeUnregisterApprovalRootRepositoryImpl implements EmployeeUnr
 			return null;
 		}
 		// ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain「会社別就業承認ルート」)
-		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDateOfCommon(companyId, baseDate);
+		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDateOfCommon(companyId, baseDate).map(x -> Arrays.asList(x)).orElse(Collections.emptyList());
 		if (CollectionUtil.isEmpty(comInfo)) {
 			// TODO thuc hien khi co tra loi QA
 			// return null;

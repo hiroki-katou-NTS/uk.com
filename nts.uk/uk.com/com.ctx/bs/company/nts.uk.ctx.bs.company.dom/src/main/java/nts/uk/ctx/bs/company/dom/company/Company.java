@@ -84,7 +84,7 @@ public class Company extends AggregateRoot {
 	
 	public static Company createFromJavaType(String companyCode, String companyName, int startMonth,
 			int isAbolition, String repname, String repjob, String comNameKana, String shortComName, String contractCd,
-			BigDecimal taxNo, AddInfor addInfor) {
+			String taxNo, AddInfor addInfor) {
 		return new Company(new CompanyCode(companyCode), new Name(companyName),
 				EnumAdaptor.valueOf(startMonth, MonthStr.class),
 				EnumAdaptor.valueOf(isAbolition, AbolitionAtr.class), 

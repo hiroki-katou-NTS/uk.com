@@ -17,6 +17,9 @@
             exeEndTime :  string;
             //nameclosure
             nameClosure : string;
+            //listSid
+            listSid : Array<string>;
+            
             
             processingMonth: KnockoutObservable<number>;
             //TargetPerson 
@@ -48,7 +51,9 @@
                 self.exeStartTime = '';
                 self.exeEndTime = '';
                 self.processingMonth = ko.observable (0);
-
+                
+                //list sid
+                self.listSid = [];
 
                 //TargetPerson
                 self.listTargetPerson = ko.observableArray([]);
@@ -124,9 +129,16 @@
                 let self = this;
                 let dfd = $.Deferred();
                 service.getListTargetPersonByEmpId(empCalAndSumExeLogId).done(function(data) {
+                    _.each(data, (value) => {
+                        if (self.listSid.indexOf(value.employeeId) == -1)
+                            self.listSid.push(value.employeeId);
+                    });
                     self.listTargetPerson(data);
                     self.numberPerson(self.listTargetPerson().length);
-                    dfd.resolve();
+                    self.getListPersonInforLog(self.listSid).done(function(){
+                        dfd.resolve();    
+                    });
+                    
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
@@ -134,6 +146,33 @@
                 return dfd.promise();
 
             }//end function getListTargetPersonByEmpId
+            
+            /**
+             * get all person info 
+             */
+            getListPersonInforLog(listSid:Array<string>){
+                let self = this;
+                let dfd = $.Deferred<any>();
+                service.getListPersonInforLog(listSid).done(function(data){ 
+                   
+                    
+                    _.each(self.listTargetPerson(), (value) => {
+                            _.find(data, function(person) { 
+                                if(value.employeeId == person.employeeId){
+                                    value.personCode = person.employeeCode;
+                                    value.personName = person.namePerson;    
+                                }
+                            });
+                        }); 
+                    self.listTargetPerson.valueHasMutated();
+                    dfd.resolve(data);
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                return dfd.promise();
+                
+            }
             
             /**
              * getAllErrMessageInfoByEmpID
@@ -218,11 +257,17 @@
         export class TargetPerson {
             employeeId: string;
             empCalAndSumExecLogId: string;
+            personCode : string;
+            personName : string;
             state: Array<ComplStateOfExeContents>;
-            constructor(employeeId: string, empCalAndSumExecLogId: string, state: Array<ComplStateOfExeContents>) {
+            constructor(employeeId: string, empCalAndSumExecLogId: string, state: Array<ComplStateOfExeContents>,
+            personCode : string,
+            personName : string) {
                 this.employeeId = employeeId;
                 this.empCalAndSumExecLogId = empCalAndSumExecLogId;
                 this.state = state;
+                this.personCode = personCode;
+                this.personName = personName;
             }
         }//end class TargetPerson
 

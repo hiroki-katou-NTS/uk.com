@@ -12,14 +12,6 @@ import java.util.List;
 public interface RoleExportRepo {
 	
 	/**
-	 * Find by id.
-	 *
-	 * @param roleId the role id
-	 * @return the list
-	 */
-	List<RoleExport> findById(String roleId);
-	
-	/**
 	 * Find by list role id.
 	 *
 	 * @param companyId the company id
@@ -27,4 +19,21 @@ public interface RoleExportRepo {
 	 * @return the list
 	 */
 	List<RoleExport> findByListRoleId(String companyId,List<String> lstRoleId);
+		
+	
+	/**
+	 * Find work place id by role id.
+	 *
+	 * @param systemType the system type
+	 * @return the workplace id export
+	 */
+	WorkplaceIdExport findWorkPlaceIdByRoleId(Integer systemType);
+	
+ 	/**
+	 * Find by id.
+	 *
+	 * @param roleId the role id
+	 * @return the list
+	 */
+	List<RoleExport> findById(String roleId);
 }

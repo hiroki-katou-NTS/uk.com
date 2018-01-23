@@ -7,7 +7,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 

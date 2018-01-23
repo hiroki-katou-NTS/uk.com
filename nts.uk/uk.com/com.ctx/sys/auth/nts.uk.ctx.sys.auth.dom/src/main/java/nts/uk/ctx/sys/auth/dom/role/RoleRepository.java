@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.role;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,11 +13,10 @@ public interface RoleRepository {
 	/**
 	 * Find by id.
 	 *
-	 * @param roleId
-	 *            the role id
+	 * @param lstRoleId the lst role id
 	 * @return Role
 	 */
-	List<Role> findById(String roleId);
+	List<Role> findByListId(List<String> lstRoleId);
 
 	/**
 	 * Find by id
@@ -33,7 +33,8 @@ public interface RoleRepository {
 	 * @param RoleType
 	 * @return
 	 */
-	Optional<Role> findRoleByRoleCode(String roleCode, int roleType);
+	Optional<Role> findRoleByRoleCode(String companyId,String roleCode, int roleType);
+	
 
 	/**
 	 * Find by list role id.
@@ -84,6 +85,16 @@ public interface RoleRepository {
 	 * @return Role
 	 */
 	List<Role> findByType(String companyId, int roleType);
+	
+	/**
+	 * find by role type, RoleAtr
+	 * 
+	 * @param companyId
+	 * @param roleType
+	 * @param RoleAtr
+	 * @return Role
+	 */
+	List<Role> findByTypeAtr(String companyId, int roleType, int RoleAtr);
 
 	/**
 	 * find by role type
@@ -92,4 +103,14 @@ public interface RoleRepository {
 	 * @return Role
 	 */
 	List<Role> findByType(int roleType);
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param roleId the role id
+	 * @return the list
+	 */
+	default List<Role> findById(String roleId) {
+		return this.findByListId(Arrays.asList(roleId));
+	}
 }

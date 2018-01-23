@@ -44,7 +44,8 @@ module nts.uk.com.view.cdl008.a {
                     isDialog: true,
                     selectedWorkplaceId : null, 
                     maxRows: 12, 
-                    tabindex: 1
+                    tabindex: 1,
+                    systemType: 2
                 }
                 if (self.isMultiple) {
                     self.workplaces.selectedWorkplaceId = self.selectedMulWorkplace;

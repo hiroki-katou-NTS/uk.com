@@ -64,6 +64,8 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " ORDER BY c.startDate DESC";
+	 private final String FIND_PS_APP_LASTEST = FIN_BY_EMP
+			 + " AND c.endDate = :endDate";
 			 
 	/**
 	 * get all Person Approval Root
@@ -226,12 +228,12 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 * @param appType
 	 */
 	@Override
-	public List<PersonApprovalRoot> findByBaseDateOfCommon(String companyID, String employeeID, GeneralDate baseDate) {
+	public Optional<PersonApprovalRoot> findByBaseDateOfCommon(String companyID, String employeeID, GeneralDate baseDate) {
 		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", companyID)
 				.setParameter("employeeId", employeeID)
 				.setParameter("baseDate", baseDate)
-				.getList(c->toDomainPsApR(c));
+				.getSingle(c->toDomainPsApR(c));
 	}
 	
 	
@@ -314,5 +316,14 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				.setParameter("applicationType", applicationType)
 				.setParameter("employmentRootAtr", employmentRootAtr)
 				.getList(c->toDomainPsApR(c));
+	}
+	@Override
+	public List<PersonApprovalRoot> getPsAppRootLastest(String companyId, String employeeId, GeneralDate endDate) {
+		
+		return this.queryProxy().query(FIND_PS_APP_LASTEST,WwfmtPsApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
+				.setParameter("endDate", endDate)
+				.getList(c -> toDomainPsApR(c));
 	}
 }

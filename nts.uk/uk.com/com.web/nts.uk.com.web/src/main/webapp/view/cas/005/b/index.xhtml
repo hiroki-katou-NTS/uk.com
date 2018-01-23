@@ -37,8 +37,8 @@
 								<td style="width: 140px">
 									<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS005_103')}</div>
 								</td>
-								<td style="width: 60px"><input id="newRoleCode" style="width: 60px" data-bind="ntsTextEditor: {value: newRoleCode,constraint: 'RoleCode',required: true}" /></td>
-								<td style="width: 270px"><input style="width: 200px!important; margin-left: 10px;" data-bind="ntsTextEditor: {value: newRoleName,constraint: 'RoleName'}" /></td>
+								<td style="width: 60px"><input id="newRoleCode" style="width: 60px" data-bind="ntsTextEditor: {value: newRoleCode,name:'#{i18n.getText('CAS005_32')}', constraint: 'RoleCode',required: true}" /></td>
+								<td style="width: 270px"><input style=" margin-left: 10px;" data-bind="ntsTextEditor: {value: newRoleName,name:'#{i18n.getText('CAS005_32')}', constraint: 'RoleName'}" /></td>
 							</tr>
 						</table>
 					</div>

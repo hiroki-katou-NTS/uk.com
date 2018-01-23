@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WeeklyWorkSettingAllDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WeeklyWorkSettingDto;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,12 +29,12 @@ public class WeeklyWorkSettingFinder {
 	/** The repository. */
 	@Inject
 	private WeeklyWorkSettingRepository repository;
-	
-	
+
 	/**
 	 * Check weekly work setting.
 	 *
-	 * @param baseDate the base date
+	 * @param baseDate
+	 *            the base date
 	 * @return the weekly work setting dto
 	 */
 	public WeeklyWorkSettingDto checkWeeklyWorkSetting(GeneralDate baseDate) {
@@ -52,15 +53,48 @@ public class WeeklyWorkSettingFinder {
 		// return data
 		WeeklyWorkSettingDto dto = new WeeklyWorkSettingDto();
 		Optional<WeeklyWorkSetting> weeklyWorkSetting = this.repository.findById(companyId,
-				dayOfWeek);
+				this.converNtsDayOfWeek(dayOfWeek).value);
 		if (weeklyWorkSetting.isPresent()) {
 			weeklyWorkSetting.get().saveToMemento(dto);
 		}
 		return dto;
 	}
-	
-		
-	
+
+	/**
+	 * Conver nts day of week.
+	 *
+	 * @param dayOfWeek
+	 *            the day of week
+	 * @return the day of week
+	 */
+	private DayOfWeek converNtsDayOfWeek(int dayOfWeek) {
+		switch (dayOfWeek) {
+		case Calendar.MONDAY:
+			return DayOfWeek.MONDAY;
+
+		case Calendar.TUESDAY:
+			return DayOfWeek.TUESDAY;
+
+		case Calendar.WEDNESDAY:
+			return DayOfWeek.WEDNESDAY;
+
+		case Calendar.THURSDAY:
+			return DayOfWeek.THURSDAY;
+
+		case Calendar.FRIDAY:
+			return DayOfWeek.FRIDAY;
+
+		case Calendar.SATURDAY:
+			return DayOfWeek.SATURDAY;
+
+		case Calendar.SUNDAY:
+			return DayOfWeek.SUNDAY;
+
+		default:
+			throw new RuntimeException("Convert DayOfWeek fail!");
+		}
+	}
+
 	/**
 	 * Find all.
 	 *
@@ -76,9 +110,9 @@ public class WeeklyWorkSettingFinder {
 
 		// data all company
 		List<WeeklyWorkSetting> weeklyWorkSettings = this.repository.findAll(companyId);
-		
+
 		WeeklyWorkSettingAllDto dto = new WeeklyWorkSettingAllDto();
-		
+
 		weeklyWorkSettings.forEach(weekly -> {
 
 			switch (weekly.getDayOfWeek()) {
@@ -107,8 +141,8 @@ public class WeeklyWorkSettingFinder {
 				break;
 			}
 		});
-		
+
 		return dto;
 	}
-	
+
 }

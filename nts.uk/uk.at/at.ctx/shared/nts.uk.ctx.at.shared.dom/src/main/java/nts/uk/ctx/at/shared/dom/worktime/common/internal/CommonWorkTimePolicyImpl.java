@@ -21,7 +21,9 @@ public class CommonWorkTimePolicyImpl implements CommonWorkTimePolicy {
 		//validate LateEarlySet
 		this.validateWorkTimezoneLateEarlySet(pred, workTimezoneCommonSet.getLateEarlySet());
 		//validate SubHolTransferSet
-		this.validateSubHolTransferSet(pred, workTimezoneCommonSet.getSubHolTimeSet().getSubHolTimeSet());
+		workTimezoneCommonSet.getSubHolTimeSet().forEach(subHolTimeSet -> {
+			this.validateSubHolTransferSet(pred, subHolTimeSet.getSubHolTimeSet());
+		});
 	}
 
 	// validate 就業時間帯の遅刻・早退設定

@@ -168,7 +168,8 @@ public class PerInfoItemDefFinder {
 		return this.pernfoItemDefRep
 				.getPerInfoItemDefByListId(listItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream()
 				.map(item -> {
-					return mappingFromDomaintoDto(item, 0);
+					int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(item.getPerInfoCategoryId(), item.getPerInfoItemDefId());
+					return mappingFromDomaintoDto(item, dispOrder);
 				}).collect(Collectors.toList());
 	};
 
@@ -211,7 +212,7 @@ public class PerInfoItemDefFinder {
 	}
 
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayout(List<String> listItemDefId) {
-		List<PersonInfoItemDefinition> itemDefinition = this.pernfoItemDefRep.getPerInfoItemDefByListId(listItemDefId,
+		List<PersonInfoItemDefinition> itemDefinition = this.pernfoItemDefRep.getPerInfoItemDefByListIdv2(listItemDefId,
 				AppContexts.user().contractCode());
 		return itemDefinition.stream().map(i -> {
 			int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(), i.getPerInfoItemDefId());

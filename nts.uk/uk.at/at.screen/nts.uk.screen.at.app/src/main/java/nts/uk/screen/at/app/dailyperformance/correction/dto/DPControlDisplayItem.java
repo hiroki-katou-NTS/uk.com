@@ -38,12 +38,15 @@ public class DPControlDisplayItem {
 	private List<EnumCodeName> comboItemDoWork;
 	
 	private List<EnumCodeName> comboItemReason;
+	
+	private List<Integer> itemIds;
 
 	public DPControlDisplayItem() {
 		super();
 		this.lstSheet = new ArrayList<>();
 		this.lstHeader = new ArrayList<>();
 		this.columnSettings = new ArrayList<>();
+		this.itemIds = new ArrayList<>();
 	}
 	
 	private boolean isExistHeader(DPHeaderDto header) {

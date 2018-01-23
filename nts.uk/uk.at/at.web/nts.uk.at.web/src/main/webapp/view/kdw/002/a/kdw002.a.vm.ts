@@ -14,6 +14,7 @@ module nts.uk.at.view.kdw002.a {
             txtItemName: KnockoutObservable<any>;
             timeInputCurrentCode: KnockoutObservable<any>;
             linebreak: KnockoutObservable<any>;
+            timeInputEnable: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
                 self.headerColorValue = ko.observable('');
@@ -24,19 +25,20 @@ module nts.uk.at.view.kdw002.a {
                 self.txtItemName = ko.observable('');
                 self.attendanceItems = ko.observableArray([]);
                 self.aICurrentCode = ko.observable(null);
+                self.timeInputEnable = ko.observable(true);
                 self.aICurrentCode.subscribe(attendanceItemId => {
                     var attendanceItem = _.find(self.attendanceItems(), { attendanceItemId: Number(attendanceItemId) });
                     self.txtItemName(attendanceItem.attendanceItemName);
                     // self.txtItemName(cAttendanceItem.attandanceItemName);
-                    if (attendanceItem.dailyAttendanceAtr == 6) {
-                        self.unitRoundings([
+                     self.unitRoundings([
                             { timeInputValue: 0, timeInputName: '1分' }, { timeInputValue: 1, timeInputName: '5分' }, { timeInputValue: 2, timeInputName: '10分' },
                             { timeInputValue: 3, timeInputName: '15分' }, { timeInputValue: 4, timeInputName: '30分' }
                             , { timeInputValue: 5, timeInputName: '60分' }]);
-                        self.timeInputCurrentCode(0);
+                     self.timeInputCurrentCode(0);
+                    if (attendanceItem.dailyAttendanceAtr == 5) {
+                        self.timeInputEnable(true);
                     } else {
-                        self.unitRoundings([{ timeInputValue: -1, timeInputName: '' }]);
-                        self.timeInputCurrentCode(-1);
+                        self.timeInputEnable(false);
                     }
                     self.linebreak(attendanceItem.nameLineFeedPosition);
 
@@ -51,8 +53,8 @@ module nts.uk.at.view.kdw002.a {
                 });
 
                 self.attendanceItemColumn = ko.observableArray([
-                    { headerText: 'コード', key: 'attendanceItemId', width: 100, dataType: "number" },
-                    { headerText: '名称', key: 'attendanceItemName', width: 230, dataType: "string" },
+                    { headerText: 'コード', key: 'attendanceItemId', width: 50, dataType: "number" },
+                    { headerText: '名称', key: 'attendanceItemName', width: 230, dataType: "string",formatter: _.escape },
                     { key: 'dailyAttendanceAtr', dataType: "number", hidden: true },
                     { key: 'nameLineFeedPosition', dataType: "number", hidden: true }
                 ]);

@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.auth.dom.wkpmanager;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
+
 public interface WorkplaceManagerRepository {
 	// Get workplace manager list by workplace id
 	List<WorkplaceManager> getWkpManagerListByWkpId(String workplaceId);
@@ -17,4 +19,7 @@ public interface WorkplaceManagerRepository {
 	
 	// delete workplace manager
 	void delete(String wkpManagerId);
+	
+	
+	List<WorkplaceManager> findListWkpManagerByEmpIdAndBaseDate(String employeeId, GeneralDate baseDate);
 }

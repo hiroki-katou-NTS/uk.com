@@ -7,8 +7,18 @@ module nts.uk.com.view.cps009.a {
         var screenModel = new viewmodel.ViewModel();
         __viewContext["viewModel"] = screenModel;
         __viewContext.bind(__viewContext["viewModel"]);
-        $(".ntsSearchBox").attr("placeholder", "名称で検索…");
-        $(".search-btn").html("絞り込み");
 
+        if (window.top != window.self) {
+            $("#header").css("display", "none");
+            $(".goout").css("display", "none");
+            $("#closeBtn").css("visibility", "visible");
+        }
+        
+        $(".ntsControl .nts-input").focusout(()=>{
+            $(".ntsControl .nts-input").css("padding-top", "5px !important");
+            $(".ntsControl .nts-input").css("padding-bottom", "5px !important");
+        });
+        
+       
     });
 }

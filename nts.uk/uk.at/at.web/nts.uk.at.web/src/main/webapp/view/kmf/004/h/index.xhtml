@@ -24,7 +24,7 @@
 				<!-- H1_1: Button New -->
 				<button tabindex="1" id="btn_001"
 					class="button separate-button fix-button"
-					data-bind="click: newMode">#{i18n.getText('KMF004_1')}</button>
+					data-bind="click: newMode, enable: !check()">#{i18n.getText('KMF004_1')}</button>
 				<!-- H1_2: Button Registration -->
 				<button tabindex="2" id="btn_002"
 					class="button proceed separate-button fix-button"
@@ -69,7 +69,7 @@
 								data-bind="ntsTextEditor: { 	value: codeObject,
 									constraint: 'RelationshipCode',
 									required: true,
-									name: '#[KMF004_10]',
+									name: '#[KMF004_136]',
 									immediate: true,
 									enable: check}" />
 								<!-- H3_3: Name--> <input tabindex="7" class="nts-input"

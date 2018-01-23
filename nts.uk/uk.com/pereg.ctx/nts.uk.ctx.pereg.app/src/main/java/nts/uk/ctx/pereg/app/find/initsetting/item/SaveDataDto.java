@@ -1,7 +1,8 @@
 package nts.uk.ctx.pereg.app.find.initsetting.item;
 
-import lombok.Getter;
-import nts.arc.time.GeneralDate;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.SaveDataType;
 
 /**
@@ -9,20 +10,13 @@ import nts.uk.ctx.pereg.dom.person.setting.init.item.SaveDataType;
  *
  */
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SaveDataDto {
-	@Getter
-	protected SaveDataType saveDataType;
 
-	public static SaveDataDto createDataDto(String value) {
-		return StringDataDto.createFromJavaType(value);
-	}
+	private SaveDataType saveDataType;
 
-	public static SaveDataDto createDataDto(int value) {
-		return NumberDataDto.createFromJavaType(value);
-	}
-
-	public static SaveDataDto createDataDto(GeneralDate value) {
-		return DateDataDto.createFromJavaType(value);
-	}
+	private Object value;
 
 }

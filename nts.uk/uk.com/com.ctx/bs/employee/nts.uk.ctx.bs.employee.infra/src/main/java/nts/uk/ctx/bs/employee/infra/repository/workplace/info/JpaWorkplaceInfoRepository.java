@@ -280,6 +280,8 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
 				root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD),
 				baseDate));
+		
+		// TODO: join BsymtWkpConfigInfo, sort by hierarchyCd
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
@@ -308,18 +310,25 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 
 		// select root
 		cq.select(root);
+		
+		// Split query where in.
+		List<BsymtWorkplaceInfo> resultList = new ArrayList<>();
+		CollectionUtil.split(wkpIds, MAX_ELEMENTS, (subList) -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid).in(subList));
+			lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+					root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.strD), baseDate));
+			lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
+					root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD), baseDate));
 
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid).in(wkpIds));
-		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
-				root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.strD), baseDate));
-		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD), baseDate));
-
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		return em.createQuery(cq).getResultList().stream()
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			
+			resultList.addAll(em.createQuery(cq).getResultList());
+		}); 
+		
+		// Convert.
+		return resultList.stream()
 				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item))).collect(Collectors.toList());
 	}
 

@@ -1,303 +1,404 @@
 module a3 {
+    import TimeRoundingSettingDto = nts.uk.at.view.kmk003.a.service.model.common.TimeRoundingSettingDto;
+    import TimeZoneRoundingDto = nts.uk.at.view.kmk003.a.service.model.common.TimeZoneRoundingDto;
+    import OverTimeOfTimeZoneSetDto = nts.uk.at.view.kmk003.a.service.model.common.OverTimeOfTimeZoneSetDto;
+    import FlOTTimezoneDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlOTTimezoneDto;
+    import FlTimeSettingDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlTimeSettingDto;
+    import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
+    import FlOTTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlOTTimezoneModel;
+    import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
+    import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
+    import OvertimeWorkFrameFindDto = nts.uk.at.view.kmk003.a3.service.model.OvertimeWorkFrameFindDto;
     class ScreenModel {
 
-        fixTableOptionOvertime: any;
-        fixTableOptionMorning: any;
-        fixTableOptionAfternoon: any;
-        fixTableOptionOvertimeFlex: any;
+        fixTableOptionOnedayFixed: any;
+        fixTableOptionMorningFixed: any;
+        fixTableOptionAfternoonFixed: any;
+        fixTableOptionOnedayFlex: any;
         fixTableOptionMorningFlex: any;
         fixTableOptionAfternoonFlex: any;
         fixTableOptionOvertimeFlow: any;
-        selectedSettingMethod: KnockoutObservable<string>;
-        selectedWorkForm: KnockoutObservable<string>;
-        selectedTab: KnockoutObservable<string>;
         isFlowMode: KnockoutObservable<boolean>;
-        isFlexWorkMode: KnockoutObservable<boolean>;
-        isActiveTab: KnockoutObservable<boolean>;
-        dataSourceOvertime: KnockoutObservableArray<any>;
-        dataSourceMorning: KnockoutObservableArray<any>;
-        dataSourceAfternoon: KnockoutObservableArray<any>;
-        dataSourceOvertimeFlex: KnockoutObservableArray<any>;
+        isFlexMode: KnockoutObservable<boolean>;
+        isFixedMode: KnockoutObservable<boolean>;
+        isLoading: KnockoutObservable<boolean>;
+        isDetailMode: KnockoutObservable<boolean>;
+        isUseHalfDay: KnockoutObservable<boolean>;
+        dataSourceOnedayFixed: KnockoutObservableArray<any>;
+        dataSourceMorningFixed: KnockoutObservableArray<any>;
+        dataSourceAfternoonFixed: KnockoutObservableArray<any>;
+        dataSourceOnedayFlex: KnockoutObservableArray<any>;
         dataSourceMorningFlex: KnockoutObservableArray<any>;
         dataSourceAfternoonFlex: KnockoutObservableArray<any>;
         dataSourceOvertimeFlow: KnockoutObservableArray<any>;
         autoCalUseAttrs: KnockoutObservableArray<any>;
         selectedCodeAutoCalUse: KnockoutObservable<any>;
+        settingEnum: WorkTimeSettingEnumDto;
+        mainSettingModel: MainSettingModel;
+        lstOvertimeWorkFrame: OvertimeWorkFrameFindDto[];
+        
+        //define for 精算順序 primitive value
+        lstSettlementOrder: any[];
 
         /**
         * Constructor.
         */
-        constructor(selectedSettingMethod: any, selectedTab: any, selectedWorkForm: any) {
+        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, 
+        isLoading: KnockoutObservable<boolean>, isDetailMode: KnockoutObservable<boolean>, isUseHalfDay: KnockoutObservable<boolean>) {
             let self = this;
-            self.selectedSettingMethod = selectedSettingMethod;
-            self.selectedWorkForm = selectedWorkForm;
-            self.selectedTab = selectedTab;
-            self.isFlowMode = ko.observable(self.getFlowModeBySelected(self.selectedSettingMethod()));
-            self.isFlexWorkMode = ko.observable(self.getFlexWorkModeBySelected(self.selectedWorkForm()));
-            self.isActiveTab = ko.observable(self.getActiveTabBySelected(self.selectedTab()));
-            self.dataSourceOvertime = ko.observableArray([]);
-            self.dataSourceMorning = ko.observableArray([]);
-            self.dataSourceAfternoon = ko.observableArray([]);
-            self.dataSourceOvertimeFlex = ko.observableArray([]);
+            self.settingEnum = settingEnum;
+            self.mainSettingModel = mainSettingModel;
+            self.isLoading = isLoading;
+            self.isDetailMode = isDetailMode;
+            self.isUseHalfDay = isUseHalfDay;
+            self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
+            self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
+            self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
+            self.autoCalUseAttrs = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText("KMK003_142") },
+                { code: 1, name: nts.uk.resource.getText("KMK003_143") }
+            ]);
+            self.lstOvertimeWorkFrame = [];
+            
+            self.lstSettlementOrder = [];
+            //init list order
+            for (let i = 1; i <= 10; i++) {
+                self.lstSettlementOrder.push({
+                    settlementOrder: i,
+                    settlementOrderName: i.toString()
+                });
+            }
+            
+            self.dataSourceOvertimeFlow = ko.observableArray([]);
+            self.dataSourceOnedayFixed = ko.observableArray([]);
+            self.dataSourceMorningFixed = ko.observableArray([]);
+            self.dataSourceAfternoonFixed = ko.observableArray([]);
+            self.dataSourceOnedayFlex = ko.observableArray([]);
             self.dataSourceMorningFlex = ko.observableArray([]);
             self.dataSourceAfternoonFlex = ko.observableArray([]);
-            self.dataSourceOvertimeFlow = ko.observableArray([]);
-            self.autoCalUseAttrs = ko.observableArray([
-                { code: 1, name: nts.uk.resource.getText("KMK003_142") },
-                { code: 2, name: nts.uk.resource.getText("KMK003_143") }
-            ]);
+            self.isLoading.subscribe(function(isLoading: boolean) {
+                if (isLoading) {
+                    self.updateDataModel();
+                }
+            });
+
             self.selectedCodeAutoCalUse = ko.observable('1');
-            self.fixTableOptionOvertime = {
-                maxRow: 7,
+            
+            // update time zone flow
+            self.dataSourceOvertimeFlow.subscribe(function(dataFlow: any[]) {
+                var lstTimezone: FlOTTimezoneDto[] = [];
+                var worktimeNo: number = 0;
+                for (var dataModel of dataFlow) {
+                    worktimeNo++;
+                    lstTimezone.push(self.toModelFlowDto(dataModel, worktimeNo));
+                }
+                self.mainSettingModel.flowWorkSetting.halfDayWorkTimezone.workTimeZone.updateTimezone(lstTimezone);
+            });
+
+            // update time zone fixed 
+            self.dataSourceOnedayFixed.subscribe(function(dataFixed: any[]) {
+                var lstOTTimezone: OverTimeOfTimeZoneSetDto[] = [];
+                var workTimezoneNo: number = 0;
+                for (var dataModel of dataFixed) {
+                    workTimezoneNo++;
+                    lstOTTimezone.push(self.toModelFixedDto(dataModel, workTimezoneNo));
+                }
+                self.mainSettingModel.fixedWorkSetting.getHDWtzOneday().workTimezone.updateOvertimeZone(lstOTTimezone);
+            });
+            
+            self.dataSourceMorningFixed.subscribe(function(dataFixed: any[]) {
+                var lstOTTimezone: OverTimeOfTimeZoneSetDto[] = [];
+                var workTimezoneNo: number = 0;
+                for (var dataModel of dataFixed) {
+                    workTimezoneNo++;
+                    lstOTTimezone.push(self.toModelFixedDto(dataModel, workTimezoneNo));
+                }
+                self.mainSettingModel.fixedWorkSetting.getHDWtzMorning().workTimezone.updateOvertimeZone(lstOTTimezone);
+            });
+            
+            self.dataSourceAfternoonFixed.subscribe(function(dataFixed: any[]) {
+                var lstOTTimezone: OverTimeOfTimeZoneSetDto[] = [];
+                var workTimezoneNo: number = 0;
+                for (var dataModel of dataFixed) {
+                    workTimezoneNo++;
+                    lstOTTimezone.push(self.toModelFixedDto(dataModel, workTimezoneNo));
+                }
+                self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon().workTimezone.updateOvertimeZone(lstOTTimezone);
+            });
+            
+            // update time zone flexset
+            self.dataSourceOnedayFlex.subscribe(function(dataFlex: any[]) {
+                var lstOTTimezone: OverTimeOfTimeZoneSetDto[] = [];
+                var workTimezoneNo: number = 0;
+                for (var dataModel of dataFlex) {
+                    workTimezoneNo++;
+                    lstOTTimezone.push(self.toModelFlexDto(dataModel, workTimezoneNo));
+                }
+                self.mainSettingModel.flexWorkSetting.getHDWtzOneday().workTimezone.updateOvertimeZone(lstOTTimezone);
+            });
+            
+            self.dataSourceMorningFlex.subscribe(function(dataFlex: any[]) {
+                var lstOTTimezone: OverTimeOfTimeZoneSetDto[] = [];
+                var workTimezoneNo: number = 0;
+                for (var dataModel of dataFlex) {
+                    workTimezoneNo++;
+                    lstOTTimezone.push(self.toModelFlexDto(dataModel, workTimezoneNo));
+                }
+                self.mainSettingModel.flexWorkSetting.getHDWtzMorning().workTimezone.updateOvertimeZone(lstOTTimezone);
+            });
+            
+            self.dataSourceAfternoonFlex.subscribe(function(dataFlex: any[]) {
+                var lstOTTimezone: OverTimeOfTimeZoneSetDto[] = [];
+                var workTimezoneNo: number = 0;
+                for (var dataModel of dataFlex) {
+                    workTimezoneNo++;
+                    lstOTTimezone.push(self.toModelFlexDto(dataModel, workTimezoneNo));
+                }
+                self.mainSettingModel.flexWorkSetting.getHDWtzAfternoon().workTimezone.updateOvertimeZone(lstOTTimezone);
+            });
+        }
+        
+        public initDataModel(): void {
+            var self = this;
+            self.fixTableOptionOnedayFixed = {
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
-                dataSource: self.dataSourceOvertime,
+                dataSource: self.dataSourceOnedayFixed,
                 isMultipleSelect: true,
-                columns: self.columnSettingOvertime(),
-                tabindex: -1
+                columns: self.columnSettingFixed(),
+                tabindex: 56
             };
-            self.fixTableOptionMorning = {
-                maxRow: 7,
+            self.fixTableOptionMorningFixed = {
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
-                dataSource: self.dataSourceMorning,
+                dataSource: self.dataSourceMorningFixed,
                 isMultipleSelect: true,
-                columns: self.columnSettingMorning(),
-                tabindex: -1
+                columns: self.columnSettingFixed(),
+                tabindex: 57
             };
-            self.fixTableOptionAfternoon = {
-                maxRow: 7,
+            self.fixTableOptionAfternoonFixed = {
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
-                dataSource: self.dataSourceAfternoon,
+                dataSource: self.dataSourceAfternoonFixed,
                 isMultipleSelect: true,
-                columns: self.columnSettingAfternoon(),
-                tabindex: -1
+                columns: self.columnSettingFixed(),
+                tabindex: 58
             };
-            self.fixTableOptionOvertimeFlex = {
-                maxRow: 7,
+            self.fixTableOptionOnedayFlex = {
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
-                dataSource: self.dataSourceOvertimeFlex,
+                dataSource: self.dataSourceOnedayFlex,
                 isMultipleSelect: true,
-                columns: self.columnSettingOvertimeFlex(),
-                tabindex: -1
+                columns: self.columnSettingFlex(),
+                tabindex: 56
             };
             self.fixTableOptionMorningFlex = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceMorningFlex,
                 isMultipleSelect: true,
-                columns: self.columnSettingMorningFlex(),
-                tabindex: -1
+                columns: self.columnSettingFlex(),
+                tabindex: 57
             };
             self.fixTableOptionAfternoonFlex = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
                 maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceAfternoonFlex,
                 isMultipleSelect: true,
-                columns: self.columnSettingAfternoonFlex(),
-                tabindex: -1
+                columns: self.columnSettingFlex(),
+                tabindex: 58
             };
             self.fixTableOptionOvertimeFlow = {
-                maxRow: 7,
+                maxRow: 10,
                 minRow: 0,
-                maxRowDisplay: 5,
+                maxRowDisplay: 10,
                 isShowButton: true,
                 dataSource: self.dataSourceOvertimeFlow,
                 isMultipleSelect: true,
                 columns: self.columnSettingOvertimeFlow(),
-                tabindex: -1
+                tabindex: 59
             };
-            self.selectedTab.subscribe(function(selectedTab) {
-                self.isActiveTab(self.getActiveTabBySelected(selectedTab));
-            });
-            self.selectedSettingMethod.subscribe(function(selectedSettingMethod) {
-                self.isFlowMode(self.getFlowModeBySelected(selectedSettingMethod));
-            });
-            self.selectedWorkForm.subscribe(function(selectedWorkForm){
-                self.isFlexWorkMode(self.getFlexWorkModeBySelected(selectedWorkForm));
-            });
-            self.isFlowMode.subscribe(function(isFlowMode) {
-                if (!self.isFlexWorkMode()) {
-                    if (!isFlowMode && self.isActiveTab()) {
-                        self.updateViewByNotFlowMode();
-                    }
-                    if (isFlowMode && self.isActiveTab()) {
-                        self.updateViewByFlowMode();
-                    }
-                }
-            });
 
-            self.isActiveTab.subscribe(function(isActiveTab) {
-                if (!self.isFlexWorkMode()) {
-                    if (!self.isFlowMode() && isActiveTab) {
-                        self.updateViewByNotFlowMode();
-                    }
-                    if (self.isFlowMode() && self.isActiveTab()) {
-                        self.updateViewByFlowMode();
-                    }
+        }
+        private updateDataModel(): void {
+            var self = this;
+            if (self.isFlowMode()) {
+                var dataFlow: any[] = [];
+                for (var dataModelFlow of self.mainSettingModel.flowWorkSetting.halfDayWorkTimezone.workTimeZone.lstOTTimezone) {
+                    dataFlow.push(self.toModelFlowColumnSetting(dataModelFlow.toDto()));
                 }
-                if(self.isFlexWorkMode() && isActiveTab){
-                    self.updateViewByFlexMode();    
-                }
-            });
-            
-            self.isFlexWorkMode.subscribe(function(isFlexWorkMode){
-                if (isFlexWorkMode && self.isActiveTab()) {
-                    self.updateViewByFlexMode();
-                }
-                if (!isFlexWorkMode) {
-                    if (!self.isFlowMode() && self.isActiveTab()) {
-                        self.updateViewByNotFlowMode();
-                    }
-                    if (self.isFlowMode() && self.isActiveTab()) {
-                        self.updateViewByFlowMode();
-                    }
-                }
-            });
-            
+                self.dataSourceOvertimeFlow(dataFlow);
+            }
 
-             // Create Customs handle For event rened nts grid.
-            
+            if (self.isFixedMode()) {
+                var dataFixedOneday: any[] = [];
+                for (var dataModelFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone()) {
+                    dataFixedOneday.push(self.toModelFixedColumnSetting(dataModelFixed.toDto()));
+                }
+                self.dataSourceOnedayFixed(dataFixedOneday);
+                var dataFixedMorning: any[] = [];
+                for (var dataModelMorningFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone()) {
+                    dataFixedMorning.push(self.toModelFixedColumnSetting(dataModelMorningFixed.toDto()));
+                }
+                self.dataSourceMorningFixed(dataFixedMorning);
+                var dataFixedAfternoon: any[] = [];
+                for (var dataModelAfternoonFixed of self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone()) {
+                    dataFixedAfternoon.push(self.toModelFixedColumnSetting(dataModelAfternoonFixed.toDto()));
+                }
+                self.dataSourceAfternoonFixed(dataFixedAfternoon);
+            }
+
+            if (self.isFlexMode()) {
+                var dataFlexOneday: any[] = [];
+                for (var dataModelOnedayFlex of self.mainSettingModel.flexWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone()) {
+                    dataFlexOneday.push(self.toModelFlexColumnSetting(dataModelOnedayFlex.toDto()));
+                }
+                self.dataSourceOnedayFlex(dataFlexOneday);
+                var dataFlexMorning: any[] = [];
+                if (self.mainSettingModel.flexWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone) {
+                    for (var dataModelMorningFlex of self.mainSettingModel.flexWorkSetting.getHDWtzMorning().workTimezone.lstOTTimezone()) {
+                        dataFlexMorning.push(self.toModelFlexColumnSetting(dataModelMorningFlex.toDto()));
+                    }
+                }
+                self.dataSourceMorningFlex(dataFlexMorning);
+                var dataFlexAfternoon: any[] = [];
+                for (var dataModelAfternoonFlex of self.mainSettingModel.flexWorkSetting.getHDWtzAfternoon().workTimezone.lstOTTimezone()) {
+                    dataFlexAfternoon.push(self.toModelFlexColumnSetting(dataModelAfternoonFlex.toDto()));
+                }
+                self.dataSourceAfternoonFlex(dataFlexAfternoon);
+            }
+
+        }
+        
+        /**
+         * function convert dto to model
+         */
+        private toModelFixedColumnSetting(dataDTO: OverTimeOfTimeZoneSetDto): any {
+            return {
+                timezone: ko.observable({ startTime: dataDTO.timezone.start, endTime: dataDTO.timezone.end }),
+                rounding: ko.observable(dataDTO.timezone.rounding.rounding),
+                roundingTime: ko.observable(dataDTO.timezone.rounding.roundingTime),
+                otFrameNo: ko.observable(dataDTO.otFrameNo),
+                earlyOTUse: ko.observable(dataDTO.earlyOTUse),
+                legalOTframeNo: ko.observable(dataDTO.legalOTframeNo),
+                settlementOrder: ko.observable(dataDTO.settlementOrder)
+            }
+        }
+        
+        /**
+         * function convert data model of client to parent
+         */
+        private toModelFixedDto(dataModel: any, workTimezoneNo: number): OverTimeOfTimeZoneSetDto {
+            var rounding: TimeRoundingSettingDto = {
+                roundingTime: dataModel.roundingTime(),
+                rounding: dataModel.rounding()
+            };
+            var timezone: TimeZoneRoundingDto = {
+                rounding: rounding,
+                start: dataModel.timezone().startTime,
+                end: dataModel.timezone().endTime
+            };
+            var dataDTO: OverTimeOfTimeZoneSetDto = {
+                workTimezoneNo: workTimezoneNo,
+                restraintTimeUse: false,
+                timezone: timezone,
+                otFrameNo: dataModel.otFrameNo(),
+                earlyOTUse: dataModel.earlyOTUse(),
+                legalOTframeNo: dataModel.legalOTframeNo(),
+                settlementOrder: dataModel.settlementOrder()
+            };
+            return dataDTO;
+        }
+        /**
+         * function convert dto to model
+         */
+        private toModelFlexColumnSetting(dataDTO: OverTimeOfTimeZoneSetDto): any {
+            return {
+                timezone: ko.observable({ startTime: dataDTO.timezone.start, endTime: dataDTO.timezone.end }),
+                rounding: ko.observable(dataDTO.timezone.rounding.rounding),
+                roundingTime: ko.observable(dataDTO.timezone.rounding.roundingTime),
+                otFrameNo: ko.observable(dataDTO.otFrameNo),
+                earlyOTUse: ko.observable(dataDTO.earlyOTUse)
+            }
+        }
+        
+        /**
+         * function convert data model of client to parent
+         */
+        private toModelFlexDto(dataModel: any, workTimezoneNo: number): OverTimeOfTimeZoneSetDto {
+            var rounding: TimeRoundingSettingDto = {
+                roundingTime: dataModel.roundingTime(),
+                rounding: dataModel.rounding()
+            };
+            var timezone: TimeZoneRoundingDto = {
+                rounding: rounding,
+                start: dataModel.timezone().startTime,
+                end: dataModel.timezone().endTime
+            };
+            var dataDTO: OverTimeOfTimeZoneSetDto = {
+                workTimezoneNo: workTimezoneNo,
+                restraintTimeUse: false,
+                timezone: timezone,
+                otFrameNo: dataModel.otFrameNo(),
+                earlyOTUse: dataModel.earlyOTUse(),
+                legalOTframeNo: 1,
+                settlementOrder: 1
+            };
+            return dataDTO;
+        }
+        /**
+         * function convert dto to model
+         */
+        private toModelFlowColumnSetting(dataDTO: FlOTTimezoneDto): any {
+            return {
+                elapsedTime: ko.observable(dataDTO.flowTimeSetting.elapsedTime),
+                rounding: ko.observable(dataDTO.flowTimeSetting.rounding.rounding),
+                roundingTime: ko.observable(dataDTO.flowTimeSetting.rounding.roundingTime),
+                inLegalOTFrameNo: ko.observable(dataDTO.inLegalOTFrameNo),
+                settlementOrder: ko.observable(dataDTO.settlementOrder)
+            }
+        }
+        
+        /**
+         * function convert data model of client to parent
+         */
+        private toModelFlowDto(dataModel: any, worktimeNo: number): FlOTTimezoneDto {
+            var rounding: TimeRoundingSettingDto = {
+                roundingTime: dataModel.roundingTime(),
+                rounding: dataModel.rounding()
+            };
+            var flowTimeSetting: FlTimeSettingDto = {
+                rounding: rounding,
+                elapsedTime: dataModel.elapsedTime(),
+            };
+            var dataDTO: FlOTTimezoneDto = {
+                worktimeNo: worktimeNo,
+                restrictTime: false,
+                overtimeFrameNo: 1,
+                flowTimeSetting: flowTimeSetting,
+                inLegalOTFrameNo: dataModel.inLegalOTFrameNo(),
+                settlementOrder: dataModel.settlementOrder()
+            };
+            return dataDTO;
         }
 
-        /**
-         * function update view by selected mode fixed
-         */
-        /*public updateByFixedMode(): void {
-            var self = this;
-            (<any>ko.bindingHandlers).rended = {
-                update: function(element: any, valueAccessor: any, allBindings: KnockoutAllBindingsAccessor) {
-                   
-                }
-            }
-        }*/
         //bind data to screen items
         public bindDataToScreen(data: any) {
             let self = this;
         }
         
-        /**
-         * update view by flow mode
-         */
-        public updateViewByNotFlowMode(): void {
-            var self = this;
-            // TODO: need to check
-//            _.defer(() => {
-//                $('#nts-fix-table-a3-overtime').ntsFixTableCustom(self.fixTableOptionOvertime);
-//                $('#nts-fix-table-a3-morning').ntsFixTableCustom(self.fixTableOptionMorning);
-//                $('#nts-fix-table-a3-afternoon').ntsFixTableCustom(self.fixTableOptionAfternoon);
-//            });
-        }
-        /**
-         * update view by flow mode
-         */
-        public updateViewByFlowMode(): void {
-            var self = this;
-            // TODO: need to check
-//            _.defer(() => {
-//                $('#nts-fix-table-a3-overtime-flow').ntsFixTableCustom(self.fixTableOptionOvertime);
-//            });
-        }
-        
-        /**
-         * update view by flex mode
-         */
-        public updateViewByFlexMode(): void {
-            var self = this;
-            // TODO: need to check
-//            _.defer(() => {
-//                $('#nts-fix-table-a3-overtime-flex').ntsFixTableCustom(self.fixTableOptionOvertimeFlex);
-//                $('#nts-fix-table-a3-morning-flex').ntsFixTableCustom(self.fixTableOptionMorningFlex);
-//                $('#nts-fix-table-a3-afternoon-flex').ntsFixTableCustom(self.fixTableOptionAfternoonFlex);
-//            });
-        }
-         /**
-         * init array setting column option overtime flex mode
-         */
-         private columnSettingOvertime(): Array<any> {
-            let self = this;
-            var res: Array<any> = [
-                {
-                    headerText: nts.uk.resource.getText("KMK003_186"), 
-                    key: "columnOvertime6", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 143, 
-                    template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                },
-                {
-                    headerText: nts.uk.resource.getText("KMK003_187"), 
-                    key: "columnOvertime7", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 143, 
-                    template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                }
-            ];
-            var arrayFlex: Array<any> = self.columnSettingOvertimeFlex();
-             for(var item of res){
-                 arrayFlex.push(item);   
-             }
-             return arrayFlex;
-        }
-        /**
-         * init array setting column option overtime flex mode
-         */
-         private columnSettingOvertimeFlex(): Array<any> {
-             let self = this;
-             return [
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_54"),
-                     key: "columnOvertime1",
-                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                     width: 143,
-                     template: `<div data-bind="ntsTimeRangeEditor: { 
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_56"),
-                     key: "columnOvertime2",
-                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                     width: 143,
-                     template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_57"),
-                     key: "columnOvertime3",
-                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                     width: 143,
-                     template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_58"),
-                     key: "columnOvertime4",
-                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                     width: 143,
-                     template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                 },
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_182"),
-                     key: "columnOvertime5",
-                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                     width: 143,
-                     template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                 }
-             ];
-         }
         /**
          * init array setting column option overtime flow mode
          */
@@ -306,232 +407,210 @@ module a3 {
              return [
                  {
                      headerText: nts.uk.resource.getText("KMK003_174"),
-                     key: "columnFlowOvertime1",
-                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                     width: 143,
-                     template: `<div data-bind="ntsTimeRangeEditor: { 
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                     key: "elapsedTime",
+                     defaultValue: ko.observable(0), 
+                     width: 100, 
+                     template: `<input data-bind="ntsTimeEditor: {
+                        inputFormat: 'time'}" />`
                  },
                  {
                      headerText: nts.uk.resource.getText("KMK003_56"),
-                     key: "columnFlowOvertime2",
-                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                     width: 143,
-                     template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                     key: "roundingTime",
+                     dataSource: self.settingEnum.roundingTime,
+                     defaultValue: ko.observable(0),
+                     width: 80,
+                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'value',
+                                    visibleItemsCount: 8,
+                                    optionsText: 'localizedName',
+                                    name: '#[KMK003_201]',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'localizedName', length: 10 }]}">
+                                </div>`
                  },
                  {
                      headerText: nts.uk.resource.getText("KMK003_57"),
-                     key: "columnFlowOvertime3",
-                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                     width: 143,
-                     template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                     key: "rounding",
+                     isRoudingColumn: true,
+                     unitAttrName: 'roundingTime',
+                     dataSource: self.settingEnum.rounding,
+                     defaultValue: ko.observable(0),
+                     width: 180,
+                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
+                                    name: '#[KMK003_202]',
+                                    optionsValue: 'value',
+                                    visibleItemsCount: 3,
+                                    optionsText: 'localizedName',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'localizedName', length: 10 }]}">
+                                </div>`
                  },
                  {
                      headerText: nts.uk.resource.getText("KMK003_58"),
-                     key: "columnFlowOvertime4",
-                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                     width: 143,
-                     template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                     key: "otFrameNo",
+                     dataSource: self.lstOvertimeWorkFrame,
+                     defaultValue: ko.observable(1),
+                     width: 150,
+                     template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'overtimeWorkFrNo',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'overtimeWorkFrName',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                </div>`
                  },
                  {
                      headerText: nts.uk.resource.getText("KMK003_186"),
-                     key: "columnFlowOvertime5",
-                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                     width: 143,
-                     template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                     key: "inLegalOTFrameNo",
+                     dataSource: self.lstOvertimeWorkFrame,
+                     defaultValue: ko.observable(1),
+                     width: 120,
+                     template:  `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'overtimeWorkFrNo',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'overtimeWorkFrName',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                </div>`
                  },
                  {
                      headerText: nts.uk.resource.getText("KMK003_187"),
-                     key: "columnFlowOvertime6",
-                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                     width: 143,
-                     template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                     key: "settlementOrder",
+                     dataSource: self.lstOvertimeWorkFrame,
+                     defaultValue: ko.observable(1),
+                     width: 100,
+                     template:  `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'overtimeWorkFrNo',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'overtimeWorkFrName',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                </div>`
                  }
              ];
          }
         
         /**
-         * init array setting column option morning
+         * function get column setting fixed
          */
-         private columnSettingMorning(): Array<any> {
+         private columnSettingFixed(): Array<any> {
             let self = this;
-             var arrayMorning : Array<any> = self.columnSettingMorningFlex();
-             arrayMorning.push({
+             var arraySettingFlex : Array<any> = self.columnSettingFlex();
+             arraySettingFlex.push({
                  headerText: nts.uk.resource.getText("KMK003_186"),
-                 key: "columnA3Morning6",
-                 defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                 width: 100,
-                 template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                 key: "legalOTframeNo",
+                 dataSource: self.lstOvertimeWorkFrame,
+                 defaultValue: ko.observable(1),
+                 width: 130,
+                 template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                                    name: '#[KMK003_204]',
+                                    optionsValue: 'overtimeWorkFrNo',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'overtimeWorkFrName',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                </div>`
              });
-             arrayMorning.push({
+             arraySettingFlex.push({
                  headerText: nts.uk.resource.getText("KMK003_187"),
-                 key: "columnA3Morning7",
-                 defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                 width: 100,
-                 template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                 key: "settlementOrder",
+                 dataSource: self.lstSettlementOrder,
+                 defaultValue: ko.observable(1),
+                 width: 50,
+                 template: `<div data-key="settlementOrder" class="column-combo-box" data-bind="ntsComboBox: {
+                                    name: '#[KMK003_187]',
+                                    optionsValue: 'settlementOrder',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'settlementOrderName',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'settlementOrderName', length: 12 }]}">
+                                </div>`
              });
-            return arrayMorning;
+            return arraySettingFlex;
         }
         
         /**
          * init array setting column option morning flex
          */
-         private columnSettingMorningFlex(): Array<any> {
+         private columnSettingFlex(): Array<any> {
             let self = this;
             return [
                 {
                     headerText: nts.uk.resource.getText("KMK003_54"), 
-                    key: "columnA3Morning1", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 100, 
+                    key: "timezone",
+                    defaultValue: ko.observable({ startTime: 0, endTime: 0 }), 
+                    width: 250, 
                     template: `<div data-bind="ntsTimeRangeEditor: { 
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                        startConstraint: 'TimeWithDayAttr', endConstraint: 'TimeWithDayAttr',
+                        required: true, enable: true, inputFormat: 'time',  startTimeNameId: '#[KMK003_166]', endTimeNameId: '#[KMK003_167]',paramId:'KMK003_89'}"/>`
                 },
                 {
-                    headerText: nts.uk.resource.getText("KMK003_56"), 
-                    key: "columnA3Morning2", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 100, 
-                    template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                    headerText: nts.uk.resource.getText("KMK003_56"),
+                    key: "roundingTime",
+                    dataSource: self.settingEnum.roundingTime,
+                    defaultValue: ko.observable(0),
+                    width: 80,
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
+                                    optionsValue: 'value',
+                                    visibleItemsCount: 8,
+                                    optionsText: 'localizedName',
+                                    name: '#[KMK003_201]',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'localizedName', length: 10 }]}">
+                                </div>`
                 },
                 {
-                    headerText: nts.uk.resource.getText("KMK003_57"), 
-                    key: "columnA3Morning3", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 100, 
-                    template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                    headerText: nts.uk.resource.getText("KMK003_57"),
+                    key: "rounding",
+                    isRoudingColumn: true,
+                    unitAttrName: 'roundingTime',
+                    dataSource: self.settingEnum.rounding,
+                    defaultValue: ko.observable(0),
+                    width: 170,
+                    template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
+                                    name: '#[KMK003_202]',
+                                    optionsValue: 'value',
+                                    visibleItemsCount: 3,
+                                    optionsText: 'localizedName',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'localizedName', length: 10 }]}">
+                                </div>`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_58"), 
-                    key: "columnA3Morning4", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 100, 
-                    template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                    key: "otFrameNo",
+                    dataSource: self.lstOvertimeWorkFrame,
+                    defaultValue: ko.observable(1),
+                    width: 130,
+                    template: `<div data-key="overtimeWorkFrNo" class="column-combo-box" data-bind="ntsComboBox: {
+                                    name: '#[KMK003_203]',
+                                    optionsValue: 'overtimeWorkFrNo',
+                                    visibleItemsCount: 10,
+                                    optionsText: 'overtimeWorkFrName',
+                                    editable: false,
+                                    enable: true,
+                                    columns: [{ prop: 'overtimeWorkFrName', length: 12 }]}">
+                                </div>`
                 },
                 {
-                    headerText: nts.uk.resource.getText("KMK003_182"), 
-                    key: "columnA3Morning5", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 100, 
-                    template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
+                    headerText: nts.uk.resource.getText("KMK003_182"),
+                    key: "earlyOTUse",
+                    defaultValue: ko.observable(false),
+                    width: 50,
+                    template: `<div data-bind="ntsCheckBox: { enable: true }">`
                 }
             ];
         }
-        /**
-         * init array setting column option afternoon flex
-         */
-         private columnSettingAfternoonFlex(): Array<any> {
-            let self = this;
-            return [
-                {
-                    headerText: nts.uk.resource.getText("KMK003_54"), 
-                    key: "columnA3Afternoon1", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 143, 
-                    template: `<div data-bind="ntsTimeRangeEditor: { 
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                },
-                {
-                    headerText: nts.uk.resource.getText("KMK003_56"), 
-                    key: "columnA3Afternoon2", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 143, 
-                    template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                },
-                {
-                    headerText: nts.uk.resource.getText("KMK003_57"), 
-                    key: "columnA3Afternoon3", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 143, 
-                    template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                },
-                {
-                    headerText: nts.uk.resource.getText("KMK003_58"), 
-                    key: "columnA3Afternoon4", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 143, 
-                    template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                },
-                {
-                    headerText: nts.uk.resource.getText("KMK003_182"), 
-                    key: "columnA3Afternoon5", 
-                    defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }), 
-                    width: 143, 
-                    template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                }
-            ];
-        }
-        /**
-         * init array setting column option afternoon
-         */
-         private columnSettingAfternoon(): Array<any> {
-             let self = this;
-             var arrayAfternoon: Array<any> = self.columnSettingAfternoonFlex();
-             arrayAfternoon.push(
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_186"),
-                     key: "columnA3Afternoon6",
-                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                     width: 143,
-                     template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                 });
-             arrayAfternoon.push(
-                 {
-                     headerText: nts.uk.resource.getText("KMK003_187"),
-                     key: "columnA3Afternoon7",
-                     defaultValue: ko.observable({ startTime: "10:00", endTime: "12:00" }),
-                     width: 143,
-                     template: `<div data-bind="ntsTimeRangeEditor: {
-                        required: true, enable: true, inputFormat: 'time'}"/>`
-                 });
-             return arrayAfternoon;
-         }
-        
-         /**
-         * function get flow mode by selection ui
-         */
-        private getFlowModeBySelected(selectedSettingMethod: string): boolean {
-            return (selectedSettingMethod === '3');
-        }
-        /**
-         * function get flex work mode by selection ui
-        */
-        private getFlexWorkModeBySelected(selectedWorkForm: string): boolean {
-            return (selectedWorkForm === '2');
-        }
 
-        /**
-        * function get active tab by selection ui
-        */
-        private getActiveTabBySelected(selectedTab: string): boolean {
-            return (selectedTab === 'tab-3');
-        }
-
-    }
-    export class Item {
-        code: string;
-        name: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
     }
 
     class KMK003A3BindingHandler implements KnockoutBindingHandler {
@@ -561,24 +640,19 @@ module a3 {
                 .mergeRelativePath('/view/kmk/003/a3/index.xhtml').serialize();
             //get data
             let input = valueAccessor();
-            let selectedSettingMethod = input.settingMethod;
-            let selectedTab = input.settingTab;
-            let selectedWorkForm = input.settingWorkFrom;
-
-            let screenModel = new ScreenModel(selectedSettingMethod, selectedTab, selectedWorkForm);
-            $(element).load(webserviceLocator, function() {
-                ko.cleanNode($(element)[0]);
-                ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                if (screenModel.isFlexWorkMode()) {
-                    screenModel.updateViewByFlexMode();
-                }
-                else {
-                    if (!screenModel.isFlowMode()) {
-                        screenModel.updateViewByNotFlowMode();
-                    } else {
-                        screenModel.updateViewByFlowMode();
-                    }
-                }
+            var settingEnum: WorkTimeSettingEnumDto = input.enum;
+            var mainSettingModel: MainSettingModel = input.mainModel;
+            var isLoading:  KnockoutObservable<boolean> = input.isLoading; 
+            var isDetailMode:  KnockoutObservable<boolean> = input.isDetailMode;
+            var useHalfDay:  KnockoutObservable<boolean> = input.useHalfDay;
+            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isLoading, isDetailMode, useHalfDay);
+            nts.uk.at.view.kmk003.a3.service.findAllOvertimeWorkFrame().done(function(data) {
+                screenModel.lstOvertimeWorkFrame = data;
+                screenModel.initDataModel();
+                $(element).load(webserviceLocator, function() {
+                    ko.cleanNode($(element)[0]);
+                    ko.applyBindingsToDescendants(screenModel, $(element)[0]);
+                });
             });
         }
 

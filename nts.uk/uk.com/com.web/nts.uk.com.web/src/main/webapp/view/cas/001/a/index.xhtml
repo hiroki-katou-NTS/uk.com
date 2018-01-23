@@ -10,6 +10,10 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.pereg.dom.roles.RoleName
 			</com:ValidatorScript>
+
+			<com:stylefile path="/view/ccg/025/component/component.css" />
+			<com:scriptfile path="/view/ccg/025/component/component.service.js" />
+			<com:scriptfile path="/view/ccg/025/component/component.vm.js" />
 			<com:stylefile path="cas001.a.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile
@@ -21,6 +25,7 @@
 			<com:scriptfile path="cas001.a.start.js" />
 			<com:scriptfile path="cas001.a.service.js" />
 			<com:scriptfile path="cas001.a.vm.js" />
+
 		</ui:define>
 
 		<ui:define name="content">
@@ -41,21 +46,13 @@
 				<div id="content">
 					<div id="content-left"
 						class="bg-green caret-right caret-background">
-						<i class="icon icon-searchbox"></i>
-						<div style="margin-left: 15px;">
-							<table id="A2_001"
-								data-bind="ntsGridList: {
-						dataSource: personRoleList ,
-						primaryKey: 'roleId' ,
-						columns: [
-						{ headerText: '#{i18n.getText('CAS001_8')}', key: 'roleId', width: 50, hidden : true},
-						{ headerText: '#{i18n.getText('CAS001_8')}', key: 'roleCode', width: 50},
-				        { headerText: '#{i18n.getText('CAS001_9')}', key: 'roleName', width: 170 } ] ,
-						multiple: false,
-						value: currentRoleId,
-						rows:5 }">
-							</table>
+						<div data-bind='with:component'>
+							<div id="pannel-top"
+								data-bind="ntsPanel:{width: '220px', height: '300px', direction: '', showIcon: true, visible: true}">
+								<ui:include src="/view/ccg/025/component/index.xhtml" />
+							</div>
 						</div>
+
 						<span id="A2_001Caret" class="caret-bottom outline"></span>
 						<div>
 							<div style="width: 270px" id="A2_007"
@@ -89,7 +86,7 @@
 							<div class="div_line" style="margin-top: 0px;">
 								<div class="line_col_1 ">
 									<div class="float_left display_block"
-										data-bind="ntsFormLabel: { required:true,constraint:'RoleName' }">#{i18n.getText('CAS001_12')}</div>
+										data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_12')}</div>
 									<div>
 										<p class="ellipsis" id="A3_002"
 											data-bind="text:roleCode +' ' +roleName"></p>
@@ -102,7 +99,7 @@
 							<div class="div_line">
 								<div id="role_auth_cover">
 									<div data-bind="ntsAccordion: {active:0 }">
-										<h3>#{i18n.getText('CAS001_14')}</h3>
+										<h3>#{i18n.getText('CAS001_20')}</h3>
 										<div>
 											<table id="roleAuTable" class="auth_table">
 												<tr>
@@ -180,7 +177,7 @@
 							<!-- 	category area -->
 							<div id="category_config_arena" data-bind="with:currentCategory">
 								<div class="div_line">
-									<div class="line_col_1">
+									<div style="width: 330px" class="line_col_1">
 										<div id="A4_001" class="float_left display_block"
 											data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_21')}</div>
 										<div>
@@ -284,7 +281,8 @@
 															</tr>
 														</table>
 													</com:ko-if>
-													<com:ko-if bind="categoryType === 3">
+													<com:ko-if
+														bind="categoryType &gt; 2 &amp;&amp; categoryType &lt; 7">
 														<table id="history_auth_table" class="auth_table">
 															<tr>
 																<th></th>
@@ -319,7 +317,8 @@
 														enable: $parents[1].allowOtherRef()===1 ,
 														columns: [
 															{ prop: 'name', length: 5 },
-														]}"></div></td>
+														],
+														dropDownAttachedToBody:true}"></div></td>
 																<td><div id="A4_027"
 																		data-bind="ntsComboBox: {
 														options: $parents[1].itemListCbb,
@@ -330,7 +329,8 @@
 														enable: $parents[1].allowOtherRef()===1 ,
 														columns: [
 															{ prop: 'name', length: 5 },
-														]}"></div></td>
+														],
+														dropDownAttachedToBody:true}"></div></td>
 															</tr>
 															<tr>
 																<th>#{i18n.getText('CAS001_31')}</th>
@@ -358,7 +358,8 @@
 														enable: $parents[1].allowPersonRef() === 1 ,
 														columns: [
 															{ prop: 'name', length: 5 },
-														]}"></div></td>
+														],
+														dropDownAttachedToBody:true}"></div></td>
 																<td><div id="A4_023"
 																		data-bind="ntsComboBox: {
 														options: $parents[1].itemListCbb,
@@ -369,7 +370,9 @@
 														enable: $parents[1].allowPersonRef() === 1  ,
 														columns: [
 															{ prop: 'name', length: 5 },
-														]}"></div></td>
+														],
+														dropDownAttachedToBody:true
+														}"></div></td>
 															</tr>
 														</table>
 													</com:ko-if>

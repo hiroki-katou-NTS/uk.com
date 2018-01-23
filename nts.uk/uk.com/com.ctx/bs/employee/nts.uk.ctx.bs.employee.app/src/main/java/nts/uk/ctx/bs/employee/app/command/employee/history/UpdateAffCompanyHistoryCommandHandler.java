@@ -46,24 +46,25 @@ public class UpdateAffCompanyHistoryCommandHandler extends CommandHandler<Update
 	protected void handle(CommandHandlerContext<UpdateAffCompanyHistoryCommand> context) {
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		
-		AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(companyId,command.getSId());
-		if (listHist == null){
-			throw new RuntimeException("Invalid AffCompanyHist");
+		// In case of date period are exist in the screen
+		if (command.getStartDate() != null){
+			AffCompanyHist listHist = affCompanyHistRepository.getAffCompanyHistoryOfEmployee(companyId,command.getSId());
+			if (listHist == null){
+				throw new RuntimeException("Invalid AffCompanyHist");
+			}
+			// Get history by employeeId
+			 AffCompanyHistByEmployee listHistBySID = listHist.getAffCompanyHistByEmployee(command.getSId());
+			
+			Optional<AffCompanyHistItem> itemToBeUpdated = listHistBySID.getLstAffCompanyHistoryItem().stream()
+					.filter(h->h.identifier().equals(command.getHistoryId())).findFirst();
+			
+			if (!itemToBeUpdated.isPresent()){
+				throw new RuntimeException("Invalid AffCompanyHist");
+			}
+			// 所属期間．終了日が指定されない場合（＝退職していない）、所属期間．終了日＝9999/12/31を自動的に設定する。
+			listHistBySID.changeSpan(itemToBeUpdated.get(),new DatePeriod(command.getStartDate(),command.getEndDate()!= null? command.getEndDate():ConstantUtils.maxDate()) );
+			affCompanyHistService.update(listHistBySID, itemToBeUpdated.get());
 		}
-		// Get history by employeeId
-		 AffCompanyHistByEmployee listHistBySID = listHist.getAffCompanyHistByEmployee(command.getSId());
-		
-		Optional<AffCompanyHistItem> itemToBeUpdated = listHistBySID.getLstAffCompanyHistoryItem().stream()
-				.filter(h->h.identifier().equals(command.getHistoryId())).findFirst();
-		
-		if (!itemToBeUpdated.isPresent()){
-			throw new RuntimeException("Invalid AffCompanyHist");
-		}
-		// 所属期間．終了日が指定されない場合（＝退職していない）、所属期間．終了日＝9999/12/31を自動的に設定する。
-		listHistBySID.changeSpan(itemToBeUpdated.get(),new DatePeriod(command.getStartDate(),command.getEndDate()!= null? command.getEndDate():ConstantUtils.maxDate()) );
-		affCompanyHistService.update(listHistBySID, itemToBeUpdated.get());
-		
 		AffCompanyInfo histItem = AffCompanyInfo.createFromJavaType(command.getHistoryId(), command.getRecruitmentClassification(), command.getAdoptionDate(), command.getRetirementAllowanceCalcStartDate());
 		affCompanyInfoRepository.update(histItem);
 		

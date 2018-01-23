@@ -10,7 +10,10 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ * @author phongtq
+ * フレックス勤務の設定
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

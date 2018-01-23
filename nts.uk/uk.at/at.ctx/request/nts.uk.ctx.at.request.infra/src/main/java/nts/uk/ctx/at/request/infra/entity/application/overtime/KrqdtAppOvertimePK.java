@@ -70,7 +70,7 @@ public class KrqdtAppOvertimePK implements Serializable {
 
     @Override
     public String toString() {
-        return "javaapplication10.KrqdtAppOvertimePK[ cid=" + cid + ", appId=" + appId + " ]";
+        return "KrqdtAppOvertime.KrqdtAppOvertimePK[ cid=" + cid + ", appId=" + appId + " ]";
     }
     
 }

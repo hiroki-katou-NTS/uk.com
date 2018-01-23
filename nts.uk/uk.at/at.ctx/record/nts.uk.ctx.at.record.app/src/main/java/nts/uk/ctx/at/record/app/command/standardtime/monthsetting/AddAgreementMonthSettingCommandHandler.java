@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.app.command.standardtime.monthsetting;
 
+import java.math.BigDecimal;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
@@ -25,6 +28,11 @@ public class AddAgreementMonthSettingCommandHandler extends CommandHandler<AddAg
 	@Override
 	protected void handle(CommandHandlerContext<AddAgreementMonthSettingCommand> context) {
 		AddAgreementMonthSettingCommand command = context.getCommand();
+		
+		if(this.agreementMonthSettingRepository.checkExistData(command.getEmployeeId(), new BigDecimal(command.getYearMonthValue()))){
+			throw new BusinessException("Msg_61");
+		};
+		
 		AgreementMonthSetting agreementMonthSetting = new AgreementMonthSetting(
 				command.getEmployeeId(),
 				new YearMonth(command.getYearMonthValue()),

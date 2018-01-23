@@ -78,7 +78,7 @@ public class PersonInfoRoleAuth extends AggregateRoot {
 	public void updateFromJavaType(int allowMapUpload, int allowMapBrowse, int allowDocUpload, int allowDocRef,
 			int allowAvatarUpload, int allowAvatarRef) {
 		this.allowMapUpload = EnumAdaptor.valueOf(allowMapUpload, PersonInfoPermissionType.class);
-		this.allowAvatarRef = EnumAdaptor.valueOf(allowMapBrowse, PersonInfoPermissionType.class);
+		this.allowMapBrowse = EnumAdaptor.valueOf(allowMapBrowse, PersonInfoPermissionType.class);
 		this.allowDocUpload = EnumAdaptor.valueOf(allowDocUpload, PersonInfoPermissionType.class);
 		this.allowDocRef = EnumAdaptor.valueOf(allowDocRef, PersonInfoPermissionType.class);
 		this.allowAvatarUpload = EnumAdaptor.valueOf(allowAvatarUpload, PersonInfoPermissionType.class);

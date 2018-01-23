@@ -1,4 +1,4 @@
-#function-content {
+"src/main/webapp/view/kdw/003/a/kdw003.a.style.css"#function-content {
 	width: 1200px;
 }
 
@@ -29,7 +29,7 @@
 }
 
 #btn-signAll {
-	margin: 0px 0 0 200px;
+	margin: 3px 0 0 200px;
 }
 
 #btn-saveColumnWidth {
@@ -45,6 +45,7 @@
 
 .grid-container {
 	margin: 15px 0 0 0px;
+	margin-top: 7px;
 }
 
 .setting-container {
@@ -133,17 +134,22 @@
 #fixed-table .ui-widget-header{
 	background-color: #CFF1A5;
 	border: 1px solid #CCC;
-	margin-left: 10px;
+	text-align: center;
+	height: 29px;
 }
 #fixed-table .ui-widget-body{
 	border: 1px solid #CCC;
+	text-align: right;
+    height: 29px;
+}
+#fixed-table .ui-widget-body .text-holiday{ 
+	margin-right: 10px;
 }
 #fixed-table {
 	border: 2px solid #CCC;
 	text-align: center;
 	padding: 0 2px;
 	width: 400px;
-	height: 80px;
 }
 #numberHoliday{
     margin-left: 5px;
@@ -160,13 +166,13 @@
     border-color: white;
 }
 #content-grid{
-	top: -5px;
-    position: relative;
+	top: 244px;
+    position: absolute;
 }
 #content-grid-not{
 	height: 20px ;
 	position: relative;
-	bottom: -35px;
+	bottom: -30px;
 	margin-right: 300px;
 }
 .ui-iggrid-results{
@@ -175,5 +181,12 @@
     position: relative;
     right: -7px;
 }
+.nts-grid-wrapper table tr td.ui-state-hover, .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,  .nts-grid  tr.ui-ig-altrecord td.ui-state-hover{
+	background-color: #f5f5dc ;
+}
+/* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
+	background-color: #007fff !IMPORTANT;
+} */
+
 /* #contents-area, #function-content {width: 1280px;}
 #left-content{width: 100px; height: 500px; float: left;} */

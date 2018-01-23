@@ -1,15 +1,23 @@
 package nts.uk.shr.com.context.loginuser;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.scoped.session.SessionContextProvider;
+import nts.arc.security.ticket.DataTicket;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
 
 @Stateless
 public class DefaultLoginUserContextManager implements LoginUserContextManager {
+	
+	private static final int SECONDS_TO_EXPIRE_TICKET = 60;
 
+	@Inject
+	private SessionLowLayer sessionLowLayer;
+	
 	@Override
 	public void loggedInAsEmployee(
 			String userId,
@@ -28,6 +36,28 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 		context.setEmployeeId(employeeId);
 		context.setEmployeeCode(employeeCode);
 		
+		SessionContextProvider.get().put(LoginUserContext.KEY_SESSION_SCOPED, context);
+		
+		this.sessionLowLayer.loggedIn();
+	}
+	
+	@Override
+	public void changeCompany(
+			String userId,
+			String personId,
+			String contractCode,
+			String companyId,
+			String companyCode,
+			String employeeId,
+			String employeeCode) {
+		
+		val context = new DefaultLoginUserContext(userId, true);
+		context.setPersonId(personId);
+		context.setContractCode(contractCode);
+		context.setCompanyId(companyId);
+		context.setCompanyCode(companyCode);
+		context.setEmployeeId(employeeId);
+		context.setEmployeeCode(employeeCode);
 		SessionContextProvider.get().put(LoginUserContext.KEY_SESSION_SCOPED, context);
 	}
 
@@ -78,7 +108,40 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 
 	@Override
 	public void setLanguage(String basic, String forPersonName) {
-		// TODO Auto-generated method stub
+		DefaultLoginUserContext context = SessionContextProvider.get().get(LoginUserContext.KEY_SESSION_SCOPED);
+		context.language().changeBasicLanguage(basic);
+		context.language().changePersonNameLanguage(forPersonName);
+	}
+
+	@Override
+	public DataTicket toTicket() {
+		val context = SessionContextProvider.get().get(LoginUserContext.KEY_SESSION_SCOPED);
+		return DataTicket.issueNewTicket(context, SECONDS_TO_EXPIRE_TICKET * 1000);
+	}
+
+	@Override
+	public void restore(DataTicket ticket) {
+		if (!ticket.isValidAt(GeneralDateTime.now())) {
+			throw new RuntimeException("the ticket has been expired.");
+		}
 		
+		DefaultLoginUserContext restored = ticket.getData();
+		
+		this.loggedInAsEmployee(
+				restored.userId(),
+				restored.personId(),
+				restored.contractCode(),
+				restored.companyId(),
+				restored.companyCode(),
+				restored.employeeId(),
+				restored.employeeCode());
+		
+		DefaultLoginUserContext context = SessionContextProvider.get().get(LoginUserContext.KEY_SESSION_SCOPED);
+		((DefaultLoginUserRoles)context.roles()).restore(restored.roles());
+	}
+
+	@Override
+	public void loggedOut() {
+		this.sessionLowLayer.loggedOut();
 	}
 }

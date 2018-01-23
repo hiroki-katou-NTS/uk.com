@@ -19,16 +19,18 @@ public class JpaBPTimeItemSettingRepository extends JpaRepository implements BPT
 			+ " JOIN  KbpstBonusPayTimeItem k "
 			+ " ON c.kbpstBPTimeItemSettingPK.timeItemNo = k.kbpstBonusPayTimeItemPK.timeItemNo "
 			+ " AND c.kbpstBPTimeItemSettingPK.timeItemTypeAtr = k.kbpstBonusPayTimeItemPK.timeItemTypeAtr "
-			+ " WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId "
-			+ " AND c.kbpstBPTimeItemSettingPK.timeItemTypeAtr = 0 " + " AND k.useAtr = 1 "
+			+ " AND c.kbpstBPTimeItemSettingPK.companyId = k.kbpstBonusPayTimeItemPK.companyId "
+			+ " WHERE c.kbpstBPTimeItemSettingPK.timeItemTypeAtr = 0 " + " AND k.useAtr = 1 "
+			+ " AND c.kbpstBPTimeItemSettingPK.companyId = :companyId "
 			+ " ORDER BY k.kbpstBonusPayTimeItemPK.timeItemNo";
 
 	private final String SELECT_SPEC_BPTIMEITEMSET_BY_COMPANYID = "SELECT c " + " FROM KbpstBPTimeItemSetting c "
 			+ " JOIN KbpstBonusPayTimeItem k "
 			+ " ON c.kbpstBPTimeItemSettingPK.timeItemNo = k.kbpstBonusPayTimeItemPK.timeItemNo "
 			+ " AND c.kbpstBPTimeItemSettingPK.timeItemTypeAtr = k.kbpstBonusPayTimeItemPK.timeItemTypeAtr "
-			+ " WHERE c.kbpstBPTimeItemSettingPK.companyId = :companyId "
-			+ " AND k.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 1 " + " AND k.useAtr = 1 "
+			+ " AND c.kbpstBPTimeItemSettingPK.companyId = k.kbpstBonusPayTimeItemPK.companyId "
+			+ " WHERE k.kbpstBonusPayTimeItemPK.timeItemTypeAtr = 1 " + " AND k.useAtr = 1 "
+			+ " AND c.kbpstBPTimeItemSettingPK.companyId = :companyId "
 			+ " ORDER BY k.kbpstBonusPayTimeItemPK.timeItemNo";
 
 	@Override

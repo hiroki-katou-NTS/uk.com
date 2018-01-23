@@ -11,11 +11,16 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.facade.PeregCommandFacade;
+import nts.uk.ctx.pereg.app.find.initsetting.item.SaveDataDto;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
+import nts.uk.ctx.pereg.dom.person.info.dateitem.DateType;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
+import nts.uk.ctx.pereg.dom.person.setting.init.item.SaveDataType;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregInputContainer;
@@ -36,7 +41,7 @@ public class AddEmployeeCommandFacade {
 
 		List<ItemsByCategory> inputs = createData(command, personId, employeeId, comHistId);
 
-		updateRequiredInputs(inputs, personId, employeeId);
+		updateRequiredInputs(command, inputs, personId, employeeId);
 
 		addNoRequiredInputs(inputs, personId, employeeId);
 
@@ -63,23 +68,25 @@ public class AddEmployeeCommandFacade {
 				}
 			});
 
-			return categoryCodeList.stream()
-					.map(ctgCode -> createNewItemsByCategoryCode(dataServer, ctgCode, employeeId, personId, comHistId))
+			return categoryCodeList
+					.stream().map(ctgCode -> createNewItemsByCategoryCode(dataServer, ctgCode, employeeId, personId,
+							comHistId, command))
 					.filter(itemsByCategory -> itemsByCategory != null).collect(Collectors.toList());
 		}
-		return inputs.stream().map(c -> createNewItemsByCategoryCode(c, employeeId, personId, comHistId))
+		return inputs.stream().map(c -> createNewItemsByCategoryCode(c, employeeId, personId, comHistId, command))
 				.filter(c -> c != null).collect(Collectors.toList());
 
 	}
 
-	public void updateRequiredInputs(List<ItemsByCategory> inputs, String personId, String employeeId) {
+	public void updateRequiredInputs(AddEmployeeCommand command, List<ItemsByCategory> inputs, String personId,
+			String employeeId) {
 
 		List<ItemsByCategory> requiredInputs = inputs.stream()
 				.filter(x -> requiredCtgList.indexOf(x.getCategoryCd()) != -1).collect(Collectors.toList());
 
 		if (!CollectionUtil.isEmpty(requiredInputs)) {
 
-			updateRequiredSystemInputs(requiredInputs, personId, employeeId);
+			updateRequiredSystemInputs(requiredInputs, personId, employeeId, command);
 
 			addRequiredOptinalInputs(requiredInputs, personId, employeeId);
 
@@ -87,16 +94,18 @@ public class AddEmployeeCommandFacade {
 
 	}
 
-	private void updateRequiredSystemInputs(List<ItemsByCategory> fixedInputs, String personId, String employeeId) {
+	private void updateRequiredSystemInputs(List<ItemsByCategory> fixedInputs, String personId, String employeeId,
+			AddEmployeeCommand command) {
 		List<ItemsByCategory> updateInputs = new ArrayList<ItemsByCategory>();
 
 		fixedInputs.forEach(ctg -> {
 			List<ItemValue> lstItem = ctg.getItems().stream().filter(item -> item.itemCode().charAt(1) == 'S')
 					.collect(Collectors.toList());
+
 			if (!CollectionUtil.isEmpty(lstItem)) {
+
 				ItemsByCategory newItemCtg = new ItemsByCategory(ctg.getCategoryCd(), ctg.getRecordId(), lstItem);
 				updateInputs.add(newItemCtg);
-
 			}
 
 		});
@@ -149,21 +158,66 @@ public class AddEmployeeCommandFacade {
 		dataList.forEach(x -> {
 
 			if (x.getDataType().equals(DataTypeValue.SELECTION)) {
-				if (x.getSelectionItemRefType().intValue() == 3) {
+				if (x.getSelectionItemRefType().equals(ReferenceTypes.ENUM)) {
 					x.setDataType(DataTypeValue.NUMERIC);
 				}
 			}
 
-			ItemValue itemVal = getItemById(inputs, x.getItemCode(), x.getCategoryCode());
+			String itemCD = x.getItemCode();
+			ItemValue itemVal = getItemById(inputs, itemCD, x.getCategoryCode());
 
 			if (itemVal != null) {
-				x.setSaveData(SettingItemDto.createSaveDataDto(x.getSaveData().getSaveDataType().value,
+				x.setSaveData(new SaveDataDto(x.getSaveData().getSaveDataType(),
 						itemVal.value() != null ? itemVal.value().toString() : ""));
+				x.setDataType(getSaveDataType(x.getDataType(), x));
+				inputs.remove(itemVal);
+			} else {
+
 			}
+		});
+
+		inputs.forEach(ctg -> {
+
+			ctg.getItems().stream().forEach(item -> {
+				if (!dataList.stream().filter(i -> i.getItemDefId().equals(item.definitionId())).findFirst()
+						.isPresent()) {
+					dataList.add(new SettingItemDto(ctg.getCategoryCd(), item.definitionId(), item.itemCode(), "", 0,
+							new SaveDataDto(EnumAdaptor.valueOf(item.itemValueType().value, SaveDataType.class),
+									item.value()),
+							EnumAdaptor.valueOf(item.itemValueType().value, DataTypeValue.class), null, null,
+							DateType.YEARMONTHDAY, ""));
+				}
+			});
+
 		});
 
 		return dataList;
 
+	}
+
+	private DataTypeValue getSaveDataType(DataTypeValue dataType, SettingItemDto item) {
+
+		if (dataType.equals(DataTypeValue.SELECTION)) {
+			switch (item.getSelectionItemRefType()) {
+			case ENUM:
+				return DataTypeValue.NUMERIC;
+			case CODE_NAME:
+				return DataTypeValue.STRING;
+			case DESIGNATED_MASTER:
+
+				if (item.getSaveData().getValue().toString().chars().allMatch(Character::isDigit)) {
+					return DataTypeValue.NUMERIC;
+				} else {
+					return DataTypeValue.STRING;
+				}
+			default:
+				return dataType;
+			}
+		} else {
+
+			return dataType;
+
+		}
 	}
 
 	private ItemValue getItemById(List<ItemsByCategory> inputs, String itemCode, String ctgCode) {
@@ -183,29 +237,34 @@ public class AddEmployeeCommandFacade {
 	}
 
 	private ItemsByCategory createNewItemsByCategoryCode(List<SettingItemDto> dataList, String categoryCd,
-			String employeeId, String personId, String comHistId) {
+			String employeeId, String personId, String comHistId, AddEmployeeCommand command) {
 
 		List<ItemValue> items = new ArrayList<ItemValue>();
 		getAllItemInCategoryByCode(dataList, categoryCd).forEach(item -> {
-			items.add(new ItemValue(item.getItemDefId(), item.getItemCode(), item.getValueAsString(),
-					item.getDataType().value));
+			String value = item.getSaveData().getValue() == null ? "" : item.getSaveData().getValue().toString();
+			items.add(new ItemValue(item.getItemDefId(), item.getItemCode(), value, item.getDataType().value));
 		});
 		if (CollectionUtil.isEmpty(items)) {
 			return null;
 		}
 		String recordId = null;
 
-		if (categoryCd == "CS00001") {
+		if (categoryCd.equals("CS00001")) {
 
 			recordId = employeeId;
+			// set fixed data
+			setItemValue("IS00001", items, SaveDataType.STRING, command.getEmployeeCode());
+			;
 		}
 
-		if (categoryCd == "CS00002") {
+		if (categoryCd.equals("CS00002")) {
 			recordId = personId;
+			setItemValue("IS00003", items, SaveDataType.STRING, command.getEmployeeName());
 		}
 
-		if (categoryCd == "CS00003") {
+		if (categoryCd.equals("CS00003")) {
 			recordId = comHistId;
+			setItemValue("IS00020", items, SaveDataType.DATE, command.getHireDate().toString());
 
 		}
 
@@ -213,7 +272,7 @@ public class AddEmployeeCommandFacade {
 	}
 
 	private ItemsByCategory createNewItemsByCategoryCode(ItemsByCategory itemByCtg, String employeeId, String personId,
-			String comHistId) {
+			String comHistId, AddEmployeeCommand command) {
 
 		List<ItemValue> items = itemByCtg.getItems();
 
@@ -226,18 +285,35 @@ public class AddEmployeeCommandFacade {
 		if (categoryCd.equals("CS00001")) {
 
 			recordId = employeeId;
+			// set fixed data
+			setItemValue("IS00001", items, SaveDataType.STRING, command.getEmployeeCode());
+
 		}
 
 		if (categoryCd.equals("CS00002")) {
+
 			recordId = personId;
+
+			setItemValue("IS00003", items, SaveDataType.STRING, command.getEmployeeName());
 		}
 
 		if (categoryCd.equals("CS00003")) {
 			recordId = comHistId;
 
+			setItemValue("IS00020", items, SaveDataType.DATE, command.getHireDate().toString());
+
 		}
 
 		return new ItemsByCategory(categoryCd, recordId, items);
+	}
+
+	private void setItemValue(String itemCode, List<ItemValue> items, SaveDataType dataType, String itemData) {
+		Optional<ItemValue> itemValOpt = items.stream().filter(item -> item.itemCode().equals(itemCode)).findFirst();
+
+		if (!itemValOpt.isPresent()) {
+			items.add(new ItemValue(null, itemCode, itemData, dataType.value));
+		}
+
 	}
 
 	private List<SettingItemDto> getAllItemInCategoryByCode(List<SettingItemDto> sourceList, String categoryCode) {

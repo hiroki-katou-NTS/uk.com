@@ -6,7 +6,7 @@ module nts.uk.com.view.cmm051 {
             startDate: string;
             endDate: string;
             wkpManagerId: string;
-            employeeInfo: any = ko.observable();
+            employeeInfo: KnockoutObservable<EmployeeInfo> = ko.observable(null);
             roleList : any = ko.observableArray([]);
             nodeText : string;
             constructor(x: WorkplaceManager) {
@@ -17,7 +17,7 @@ module nts.uk.com.view.cmm051 {
                     self.startDate = x.startDate == '' ? '' : x.startDate;
                     self.endDate = x.endDate == '' ? '' : x.endDate;
                     self.wkpManagerId = x.wkpManagerId == '' ? '' : x.wkpManagerId;
-                    self.employeeInfo(x.employeeInfo || {});
+                    self.employeeInfo(new EmployeeInfo(x.employeeInfo));
                     self.roleList(x.roleList || []);
                     self.nodeText = x.startDate + ' ～ ' + x.endDate;
                 } else {
@@ -26,9 +26,34 @@ module nts.uk.com.view.cmm051 {
                     self.startDate = '';
                     self.endDate = '';
                     self.wkpManagerId = '';
-                    self.employeeInfo({});
+                    self.employeeInfo(new EmployeeInfo(null));
                     self.roleList = [];
                     self.nodeText = '';
+                }
+            }
+        }
+        
+        export interface IEmployeeInfo {
+            employeeId: string;
+            employeeCode: string;
+            namePerson: string;
+        }
+        
+        export class EmployeeInfo {
+            employeeId: string;
+            employeeCode: KnockoutObservable<string> = ko.observable('');
+            namePerson: string;
+            
+            constructor(x: IEmployeeInfo) {
+                let self = this;
+                if (x) {
+                    self.employeeId = x.employeeId == '' ? '' : x.employeeId;
+                    self.employeeCode(x.employeeCode || '');
+                    self.namePerson = x.namePerson == '' ? '' : x.namePerson;
+                } else {
+                    self.employeeId = '';
+                    self.employeeCode('');
+                    self.namePerson = '';
                 }
             }
         }

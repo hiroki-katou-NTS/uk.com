@@ -10,7 +10,7 @@
 			<div tabindex="-1">
 				<label tabindex="-1">#{i18n.getText('KSC001_21')}</label>
 			</div>
-			<div class="radioboxCaseAll" tabindex="-1" id="inputCreateMethodAtr">
+			<div class="radioboxCaseAll" tabindex="1" id="inputCreateMethodAtr">
 				<div tabindex="-1" class="radioboxCase">
 					<div tabindex="1" 
 						data-bind="ntsRadioButton: {checked: checkCreateMethodAtrPersonalInfo, 
@@ -32,9 +32,9 @@
 			</div>
 			<div class="lableCase" tabindex="-1" >
 				<label tabindex="-1" >#{i18n.getText('KSC001_26')}</label>
-				<div tabindex="3"
+				<div tabindex="3" id="copy-start-date"
 					data-bind="ntsDatePicker: {value: copyStartDate, 
-					dateFormat: 'YYYY/MM/DD', required: checkCreateMethodAtrCopyPastSchedule, 
+					dateFormat: 'YYYY/MM/DD', required: true, 
 					name: '#[KSC001_26]',enable:checkCreateMethodAtrCopyPastSchedule}"></div>
 			</div>	
 			<div tabindex="-1"  class="buttonBeginPrevious">

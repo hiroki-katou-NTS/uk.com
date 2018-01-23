@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf002.cm {
         import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
         import service = nts.uk.at.view.kaf002.shr.service;
         import kaf002 = nts.uk.at.view.kaf002;
+        import appcommon = nts.uk.at.view.kaf000.shr.model;
         export class ScreenModel {
             m1: kaf002.m1.viewmodel.ScreenModel;
             m2: kaf002.m2.viewmodel.ScreenModel;
@@ -18,10 +19,10 @@ module nts.uk.at.view.kaf002.cm {
             currentReasonText: KnockoutObservable<string> = ko.observable('');
             inputReasonsDisp: KnockoutObservable<number> = ko.observable(0);
             detailReasonDisp: KnockoutObservable<number> = ko.observable(0);
-            topComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',0)); 
-            botComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',0));
-            approvalList: Array<vmbase.AppApprovalPhase> = [];
+            topComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',false)); 
+            botComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',false));
             employeeName: KnockoutObservable<string> = ko.observable("");
+            empEditable: KnockoutObservable<boolean> = ko.observable(true);
             constructor(stampRequestMode: number, screenMode: number){
                 var self = this;
                 self.stampRequestMode(stampRequestMode);
@@ -35,7 +36,7 @@ module nts.uk.at.view.kaf002.cm {
                     default: break;
                 }    
             }
-            start(commonSet: vmbase.AppStampNewSetDto, appStampData: any, approvalList: Array<vmbase.AppApprovalPhase>){
+            start(commonSet: vmbase.AppStampNewSetDto, appStampData: any){
                 var self = this;
                 self.inputReasonsDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
                 self.detailReasonDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
@@ -83,14 +84,6 @@ module nts.uk.at.view.kaf002.cm {
                     self.application().appDate(commonSet.appCommonSettingDto.generalDate);    
                     self.employeeName(commonSet.employeeName);
                 }
-                _.forEach(approvalList, appPhase => {
-                    _.forEach(appPhase.approverDtos, appFrame => {
-                        _.forEach(appFrame.approveAcceptedCmds, appAccepted => {
-                            appAccepted.approvalDate = self.application().appDate();
-                        });    
-                    }); 
-                });
-                self.approvalList = approvalList;
             }
             
             register(errorFlag: any, errorMsg: any){
@@ -104,12 +97,15 @@ module nts.uk.at.view.kaf002.cm {
                     }else{
                         self.application().titleReason("");
                     }
+                    if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.application().titleReason()) ? self.application().titleReason() + "\n" + self.application().contentReason() : self.application().contentReason(),"#appReason")){
+                        return;
+                    }
                     switch(self.stampRequestMode()){
-                        case 0: self.m1.register(self.application(), self.approvalList);break;    
-                        case 1: self.m2.register(self.application(), self.approvalList);break;  
-                        case 2: self.m3.register(self.application(), self.approvalList);break; 
-                        case 3: self.m4.register(self.application(), self.approvalList);break; 
-                        case 4: self.m5.register(self.application(), self.approvalList);break; 
+                        case 0: self.m1.register(self.application());break;    
+                        case 1: self.m2.register(self.application());break;  
+                        case 2: self.m3.register(self.application());break; 
+                        case 3: self.m4.register(self.application());break; 
+                        case 4: self.m5.register(self.application());break; 
                         default: break;
                     }    
                 }
@@ -123,13 +119,15 @@ module nts.uk.at.view.kaf002.cm {
                 }else{
                     self.application().titleReason("");
                 }
-                           
+                 if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(self.application().titleReason()) ? self.application().titleReason() + "\n" + self.application().contentReason() : self.application().contentReason(),"#appReason")){
+                        return;
+                    }          
                 switch(self.stampRequestMode()){
-                    case 0: self.m1.update(self.application(), approvalList);break;    
-                    case 1: self.m2.update(self.application(), approvalList);break;  
-                    case 2: self.m3.update(self.application(), approvalList);break; 
-                    case 3: self.m4.update(self.application(), approvalList);break; 
-                    case 4: self.m5.update(self.application(), approvalList);break;  
+                    case 0: self.m1.update(self.application());break;    
+                    case 1: self.m2.update(self.application());break;  
+                    case 2: self.m3.update(self.application());break; 
+                    case 3: self.m4.update(self.application());break; 
+                    case 4: self.m5.update(self.application());break;  
                     default: break;
                 }    
             }

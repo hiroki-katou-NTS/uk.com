@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
@@ -21,6 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name="KRQDT_APP_STAMP_DETAILS")
+@Builder
 public class KrqdtAppStampDetail extends UkJpaEntity {
 	
 	@EmbeddedId
@@ -57,8 +59,7 @@ public class KrqdtAppStampDetail extends UkJpaEntity {
 	@ManyToOne
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"), 
-		@PrimaryKeyJoinColumn(name="APP_ID",referencedColumnName="APP_ID"),
-		@PrimaryKeyJoinColumn(name="STAMP_REQUEST_MODE",referencedColumnName="STAMP_REQUEST_MODE")
+		@PrimaryKeyJoinColumn(name="APP_ID",referencedColumnName="APP_ID")
 	})
 	private KrqdtAppStamp krqdtAppStamp;
 	

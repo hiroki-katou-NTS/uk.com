@@ -31,9 +31,9 @@ public class KshmtDayofweekTimeZonePK implements Serializable {
 	@Column(name = "PER_WORK_DAY_OFF_ATR")
 	private int perWorkDayOffAtr;
 
-	/** The start time. */
-	@Column(name = "START_TIME")
-	private int startTime;
+	/** The start cnt. */
+	@Column(name = "CNT")
+	private int cnt;
 
 	/**
 	 * Instantiates a new kshmt dayofweek time zone PK.
@@ -49,14 +49,14 @@ public class KshmtDayofweekTimeZonePK implements Serializable {
 	 *            the history id
 	 * @param perWorkDayOffAtr
 	 *            the per work day off atr
-	 * @param startTime
-	 *            the start time
+	 * @param cnt
+	 *            the cnt
 	 */
-	public KshmtDayofweekTimeZonePK(String historyId, int perWorkDayOffAtr, int startTime) {
+	public KshmtDayofweekTimeZonePK(String historyId, int perWorkDayOffAtr, int cnt) {
 		super();
 		this.historyId = historyId;
 		this.perWorkDayOffAtr = perWorkDayOffAtr;
-		this.startTime = startTime;
+		this.cnt = cnt;
 	}
 
 	/*
@@ -69,7 +69,7 @@ public class KshmtDayofweekTimeZonePK implements Serializable {
 		int hash = 0;
 		hash += (historyId != null ? historyId.hashCode() : 0);
 		hash += (int) perWorkDayOffAtr;
-		hash += (int) startTime;
+		hash += (int) cnt;
 		return hash;
 	}
 
@@ -91,7 +91,7 @@ public class KshmtDayofweekTimeZonePK implements Serializable {
 		if (this.perWorkDayOffAtr != other.perWorkDayOffAtr) {
 			return false;
 		}
-		if (this.startTime != other.startTime) {
+		if (this.cnt != other.cnt) {
 			return false;
 		}
 		return true;

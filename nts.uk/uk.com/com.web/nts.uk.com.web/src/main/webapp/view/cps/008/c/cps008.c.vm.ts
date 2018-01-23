@@ -7,18 +7,20 @@ module cps008.c.viewmodel {
 
     export class ViewModel {
         layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
-
+        overrideMode: KnockoutObservable<boolean> = ko.observable(false);
+        
         constructor() {
             let self = this,
-                layout: Layout = self.layout();
+                layout: Layout = self.layout(),
+                _data = getShared('CPS008_PARAM');
 
-            let _data = getShared('CPS008_PARAM');
             layout.id.subscribe(id => {
                 // call service for get code, name of layout
                 service.getDetails(id).done((data: any) => {
                     if (data) {
                         layout.code(data.layoutCode);
                         layout.name(data.layoutName);
+                        $("#C_INP_CODE").focus();
                     }
                 });
             });
@@ -46,7 +48,7 @@ module cps008.c.viewmodel {
                     id: layout.id,
                     code: layout.newCode,
                     name: layout.newName,
-                    action: layout.overrideMode
+                    action: self.overrideMode()
                 });
                 close();
             }
@@ -74,7 +76,7 @@ module cps008.c.viewmodel {
 
         newCode: KnockoutObservable<string> = ko.observable('');
         newName: KnockoutObservable<string> = ko.observable('');
-        overrideMode: KnockoutObservable<boolean> = ko.observable(false);
+
 
         constructor(param: ILayout) {
             let self = this;
@@ -86,7 +88,7 @@ module cps008.c.viewmodel {
 
                 self.newCode(param.newCode || '');
                 self.newName(param.newName || '');
-                self.overrideMode(param.overrideMode || false);
+                //self.overrideMode(param.overrideMode || false);
             }
         }
     }

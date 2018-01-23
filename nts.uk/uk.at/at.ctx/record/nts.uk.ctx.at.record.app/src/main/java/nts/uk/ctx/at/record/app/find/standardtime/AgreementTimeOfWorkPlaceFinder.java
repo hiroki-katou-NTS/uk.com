@@ -82,18 +82,20 @@ public class AgreementTimeOfWorkPlaceFinder {
 		// get basicSettingId of Company
 		Optional<AgreementTimeOfCompany> agreementTimeOfCompany = agreementTimeCompanyRepository.find(companyId,
 				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class));
-		// get Limit Time of company
-		Optional<BasicAgreementSetting> basicSettingOfCom = basicAgreementSettingRepository
-				.find(agreementTimeOfCompany.get().getBasicSettingId());
-		
-		// set limit time
-		agreementTimeOfWorkPlaceDto.setLimitWeek(basicSettingOfCom.get().getLimitWeek().v());
-		agreementTimeOfWorkPlaceDto.setLimitTwoWeeks(basicSettingOfCom.get().getLimitTwoWeeks().v());
-		agreementTimeOfWorkPlaceDto.setLimitFourWeeks(basicSettingOfCom.get().getLimitFourWeeks().v());
-		agreementTimeOfWorkPlaceDto.setLimitOneMonth(basicSettingOfCom.get().getLimitOneMonth().v());
-		agreementTimeOfWorkPlaceDto.setLimitTwoMonths(basicSettingOfCom.get().getLimitTwoMonths().v());
-		agreementTimeOfWorkPlaceDto.setLimitThreeMonths(basicSettingOfCom.get().getLimitThreeMonths().v());
-		agreementTimeOfWorkPlaceDto.setLimitOneYear(basicSettingOfCom.get().getLimitOneYear().v());
+		if (agreementTimeOfCompany.isPresent()) {
+			// get Limit Time of company
+			Optional<BasicAgreementSetting> basicSettingOfCom = basicAgreementSettingRepository
+					.find(agreementTimeOfCompany.get().getBasicSettingId());
+			
+			// set limit time
+			agreementTimeOfWorkPlaceDto.setLimitWeek(basicSettingOfCom.get().getLimitWeek().v());
+			agreementTimeOfWorkPlaceDto.setLimitTwoWeeks(basicSettingOfCom.get().getLimitTwoWeeks().v());
+			agreementTimeOfWorkPlaceDto.setLimitFourWeeks(basicSettingOfCom.get().getLimitFourWeeks().v());
+			agreementTimeOfWorkPlaceDto.setLimitOneMonth(basicSettingOfCom.get().getLimitOneMonth().v());
+			agreementTimeOfWorkPlaceDto.setLimitTwoMonths(basicSettingOfCom.get().getLimitTwoMonths().v());
+			agreementTimeOfWorkPlaceDto.setLimitThreeMonths(basicSettingOfCom.get().getLimitThreeMonths().v());
+			agreementTimeOfWorkPlaceDto.setLimitOneYear(basicSettingOfCom.get().getLimitOneYear().v());
+		}
 		
 		return agreementTimeOfWorkPlaceDto;
 	}

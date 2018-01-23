@@ -4,7 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeRoundingSettingDto;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTime;
@@ -13,7 +14,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSettingGetMemento;
 /**
  * The Class IntervalTimeSettingDto.
  */
-@Value
+@Getter
+@Setter
 public class IntervalTimeSettingDto implements IntervalTimeSettingGetMemento {
 
 	/** The use interval exemption time. */

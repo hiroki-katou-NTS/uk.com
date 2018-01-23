@@ -13,6 +13,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHist;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -27,8 +28,10 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 	private final String GET_BY_SID_DATE = "select h from BsymtAffJobTitleHist h"
 			+ " where h.sid = :sid and h.strDate <= :standardDate and h.endDate >= :standardDate";
 	
-	private final String GET_BY_LISTSID_DATE = "SELECT h FORM BsymtAffJobTitleHist h"
+	private final String GET_BY_LISTSID_DATE = "SELECT h FROM BsymtAffJobTitleHist h"
 			+ " where h.sid IN :lstSid AND h.strDate <= :standardDate and h.endDate >= :standardDate";
+	private final String GET_BY_HID_SID = "select h from BsymtAffJobTitleHist h"
+			+ " where h.sid = :sid and h.hisId = :hisId";
 
 	/**
 	 * Convert from domain to entity
@@ -146,6 +149,43 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 		}
 		return Optional.empty();
 	}
+
+	@Override
+	public List<AffJobTitleHistory_ver1> getAllBySid(String sid) {
+		String cid = AppContexts.user().companyId();
+		List<AffJobTitleHistory_ver1> lstAffJobTitleHistory = new ArrayList<>();
+		List<BsymtAffJobTitleHist> listHist = this.queryProxy()
+				.query(QUERY_GET_AFFJOBTITLEHIST_BYSID, BsymtAffJobTitleHist.class)
+				.setParameter("cid", cid).setParameter("sid", sid).getList();
+		if (listHist != null && !listHist.isEmpty()) {
+			for (BsymtAffJobTitleHist item : listHist) {
+				AffJobTitleHistory_ver1 domain = new AffJobTitleHistory_ver1(item.getCid(), item.getSid(), new ArrayList<>());
+				DateHistoryItem dateItem = null;
+				dateItem = new DateHistoryItem(item.getHisId(), new DatePeriod(item.getStrDate(), item.getEndDate()));
+				domain.getHistoryItems().add(dateItem);
+				lstAffJobTitleHistory.add(domain);
+			}
+		}
+		if (lstAffJobTitleHistory != null && !lstAffJobTitleHistory.isEmpty()) {
+			return lstAffJobTitleHistory;
+		}
+		return null;
+	}
+
+	// TODO: HoangDD check lại, không nhất thiết phải truyền cả SID
+	@Override
+	public Optional<AffJobTitleHistory_ver1> getListByHidSid(String hid, String sid) {
+		Optional<BsymtAffJobTitleHist> optHist = this.queryProxy()
+				.query(GET_BY_HID_SID, BsymtAffJobTitleHist.class)
+				.setParameter("hisId", hid).setParameter("sid", sid).getSingle();
+		if (optHist.isPresent()) {
+			BsymtAffJobTitleHist affJobTitleHist = optHist.get();
+			List<BsymtAffJobTitleHist> listHist = new ArrayList<>();
+			listHist.add(affJobTitleHist);
+			return Optional.of(toAffJobTitleHist(listHist)); 
+		}
+		return Optional.empty();
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -159,9 +199,14 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 		if (CollectionUtil.isEmpty(employeeIds)) {
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(GET_BY_LISTSID_DATE, BsymtAffJobTitleHist.class)
-				.setParameter("lstSid", employeeIds).setParameter("standardDate", baseDate).getList().stream()
-				.map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+		
+		// Split employee id list.
+		List<BsymtAffJobTitleHist> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			resultList.addAll(this.queryProxy().query(GET_BY_LISTSID_DATE, BsymtAffJobTitleHist.class)
+					.setParameter("lstSid", subList).setParameter("standardDate", baseDate).getList());
+		});
+		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
 
 	}
 
@@ -177,9 +222,14 @@ public class JpaAffJobTitleHistoryRepository_v1 extends JpaRepository implements
 		if (CollectionUtil.isEmpty(employeeIds)) {
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(GET_BY_LISTSID_DATE, BsymtAffJobTitleHist.class)
-				.setParameter("lstSid", employeeIds).setParameter("standardDate", baseDate).getList().stream()
-				.map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+		
+		// Split employee id list.
+		List<BsymtAffJobTitleHist> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			resultList.addAll(this.queryProxy().query(GET_BY_LISTSID_DATE, BsymtAffJobTitleHist.class)
+					.setParameter("lstSid", subList).setParameter("standardDate", baseDate).getList());
+		});
+		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
 	}
 
 }

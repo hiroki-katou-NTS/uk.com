@@ -164,6 +164,21 @@ public class WorkType extends AggregateRoot {
 	public void setWorkTypeSet(List<WorkTypeSet> workTypeList) {
 		this.workTypeSetList = workTypeList;
 	}
+	
+	
+	public AttendanceHolidayAttr getAttendanceHolidayAttr() {
+		return this.dailyWork.getAttendanceHolidayAttr();
+	}
+	
+	/**
+	 * 出勤系か判定する
+	 * @return　出勤系である
+	 */
+	public boolean isWeekDayAttendance() {
+		return this.dailyWork.isWeekDayAttendance();
+	}
+
+	
 
 	/**
 	 * Set display order
@@ -245,5 +260,13 @@ public class WorkType extends AggregateRoot {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 廃止区分.廃止する
+	 * @return
+	 */
+	public boolean isDeprecated() {
+		return DeprecateClassification.Deprecated == this.deprecate;
 	}
 }

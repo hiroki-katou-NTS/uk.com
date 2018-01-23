@@ -16,8 +16,17 @@ module nts.uk.at.view.kmk005.b {
                 self.selectedTab = ko.observable('tab-1');
                 self.timeItemList = ko.observableArray([]);
                 self.timeItemSpecList = ko.observableArray([]);
-
-
+                self.selectedTab.subscribe((tabId) => {
+                    if (tabId === "tab-1") {
+                        $(document).ready(() => {
+                            $($(".itemName[disabled!='disabled']")[0]).focus();
+                        });
+                    } else if (tabId === "tab-2") {
+                        $(document).ready(() => {
+                            $($(".specialItemName[disabled!='disabled']")[0]).focus();
+                        });
+                    }
+                });
             }
 
 
@@ -30,14 +39,13 @@ module nts.uk.at.view.kmk005.b {
                         for (i = 0; i < 10; i++) {
                             self.timeItemSpecList.push(
                                 new TimeItem(
-                                    "持定加給" + (i + 1), 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 1, ""
+                                    "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 1, ""
                                 ));
                         }
                     } else {
                         item.forEach(function(item) {
                             self.timeItemSpecList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId));
-                        })
-
+                        });
                     }
                 });
                 service.getListBonusPTimeItem().done(function(item: Array<any>) {
@@ -45,14 +53,15 @@ module nts.uk.at.view.kmk005.b {
                         for (i = 0; i < 10; i++) {
                             self.timeItemList.push(
                                 new TimeItem(
-                                    "加給" + (i + 1), 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 0, ""
+                                    "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 0, ""
                                 ));
                         }
+                        $($(".itemName[disabled!='disabled']")[0]).focus();
                     } else {
                         item.forEach(function(item) {
                             self.timeItemList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId));
                         })
-
+                        $($(".itemName[disabled!='disabled']")[0]).focus();
                     }
                 });
 
@@ -66,39 +75,39 @@ module nts.uk.at.view.kmk005.b {
             */
             submitAndCloseDialog(): void {
                 var self = this;
+                $(".premiumName").trigger("validate");
+                if (!nts.uk.ui.errors.hasError()) {
+                    let bonusPayTimeItemListCommand = [];
+                    let lstUseArt = [];
 
-                let bonusPayTimeItemListCommand = [];
-                let lstUseArt = [];
-
-                ko.utils.arrayForEach(self.timeItemList(), function(item) {
-                    lstUseArt.push(item.useAtr() == 1 ? true : false);
-                    bonusPayTimeItemListCommand.push(ko.mapping.toJS(item));
-                });
-
-                let bonusPayTimeItemSpecListCommand = [];
-
-                ko.utils.arrayForEach(self.timeItemSpecList(), function(item) {
-                    lstUseArt.push(item.useAtr() == 1 ? true : false);
-                    bonusPayTimeItemSpecListCommand.push(ko.mapping.toJS(item));
-                });
-
-                service.checkUseArt(lstUseArt).done(function() {
-                    service.getListBonusPTimeItem().done(function(res: Array<any>) {
-                        if (res === undefined || res.length == 0) {
-                            service.addListBonusPayTimeItem(bonusPayTimeItemListCommand);
-                            service.addListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
-                        } else {
-                            service.updateListBonusPayTimeItem(bonusPayTimeItemListCommand);
-                            service.updateListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
-                        }
-                self.closeDialog();
-                    })
-
-                })
-                    .fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message);
-                       // nts.uk.ui.dialog.alertError({ messageId: res.message });
+                    ko.utils.arrayForEach(self.timeItemList(), function(item) {
+                        lstUseArt.push(item.useAtr() == 1 ? true : false);
+                        bonusPayTimeItemListCommand.push(ko.mapping.toJS(item));
                     });
+
+                    let bonusPayTimeItemSpecListCommand = [];
+
+                    ko.utils.arrayForEach(self.timeItemSpecList(), function(item) {
+                        lstUseArt.push(item.useAtr() == 1 ? true : false);
+                        bonusPayTimeItemSpecListCommand.push(ko.mapping.toJS(item));
+                    });
+
+                    service.checkUseArt(lstUseArt).done(function() {
+                        service.getListBonusPTimeItem().done(function(res: Array<any>) {
+                            if (res === undefined || res.length == 0) {
+                                service.addListBonusPayTimeItem(bonusPayTimeItemListCommand);
+                                service.addListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
+                            } else {
+                                service.updateListBonusPayTimeItem(bonusPayTimeItemListCommand);
+                                service.updateListBonusPayTimeItem(bonusPayTimeItemSpecListCommand);
+                            }
+                            self.closeDialog();
+                        })
+
+                    }).fail(function(res) {
+                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    });
+                }
             }
 
             /**

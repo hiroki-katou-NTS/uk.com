@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 630, height: 680 };</script>
+			<script>var dialogSize = { width:730, height: 680 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw001.h.main.css" />
 			<com:scriptfile path="kdw001.h.start.js" />
@@ -60,11 +60,11 @@
 					
 				</div>
 				<div style="margin-left: 60px">
-					<button id="button-left" class="large" data-bind="click: printError" >#{i18n.getText('KDW001_31')}</button>
+					<!-- <button id="button-left" class="large" data-bind="click: printError" >#{i18n.getText('KDW001_31')}</button> -->
 					<div class="clear:"></div>
 					<table  id="single-list"
 						data-bind="ntsGridList: {
-	                             width: 500,
+	                             width: 600,
 	                             height: 260,
 	                             options: listErrMessageInfo,
 	                             optionsValue: 'GUID',

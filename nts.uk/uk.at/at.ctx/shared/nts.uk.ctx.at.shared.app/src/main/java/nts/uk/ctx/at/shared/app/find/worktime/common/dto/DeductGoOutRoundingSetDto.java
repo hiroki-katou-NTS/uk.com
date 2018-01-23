@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductGoOutRoundingSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingSetting;
 
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingSetting;
  * The Class DeductGoOutRoundingSetDto.
  */
 @Getter
+@Setter
 public class DeductGoOutRoundingSetDto implements DeductGoOutRoundingSetSetMemento {
 
 	/** The deduct time rounding setting. */
@@ -20,6 +22,14 @@ public class DeductGoOutRoundingSetDto implements DeductGoOutRoundingSetSetMemen
 	/** The appro time rounding setting. */
 	private GoOutTimeRoundingSettingDto approTimeRoundingSetting;
 
+	/**
+	 * Instantiates a new deduct go out rounding set dto.
+	 */
+	public DeductGoOutRoundingSetDto() {
+		this.deductTimeRoundingSetting = new GoOutTimeRoundingSettingDto();
+		this.approTimeRoundingSetting = new GoOutTimeRoundingSettingDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -12,6 +12,8 @@ public interface PerInfoItemDefRepositoty {
 	Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd);
 
 	List<PersonInfoItemDefinition> getPerInfoItemDefByListId(List<String> listItemDefId, String contractCd);
+	
+	List<PersonInfoItemDefinition> getPerInfoItemDefByListIdv2(List<String> listItemDefId, String contractCd);
 
 	List<String> getPerInfoItemsName(String perInfoCtgId, String contractCd);
 

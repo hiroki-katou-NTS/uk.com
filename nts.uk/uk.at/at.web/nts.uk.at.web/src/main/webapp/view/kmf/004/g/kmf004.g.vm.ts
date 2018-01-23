@@ -95,7 +95,8 @@ module nts.uk.at.view.kmf004.g.viewmodel {
         getData(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.findAllGrantRelationship().done((lstData: Array<viewmodel.GrantRelationship>) => {
+            let specialHolidayCode = getShared("KMF004G_SPHD_CD");
+            service.findAllGrantRelationship(specialHolidayCode).done((lstData: Array<viewmodel.GrantRelationship>) => {
                 let sortedData = _.orderBy(lstData, ['relationshipCode'], ['asc']);
                 self.lstRelationship(sortedData);
                 dfd.resolve();               
@@ -132,7 +133,6 @@ module nts.uk.at.view.kmf004.g.viewmodel {
         /** update or insert data when click button register **/
         register() {            
             let self = this;
-           
             $("#inpDay").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;    
@@ -141,17 +141,22 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             nts.uk.ui.block.invisible();
             let specialHolidayCode = getShared("KMF004G_SPHD_CD");
             let obj = new GrantRelationship(specialHolidayCode, self.selectedCode(), self.selectedName(), self.grantDay(), self.morningHour(), self.isAlreadySet());
-            _.defer(() => {
-                    service.insert(obj).done(function() {
-                        self.getData().done(function() {
-                            self.isAlreadySet(true);
-                            self.grantSelected(obj);
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        });
-                    }).fail(function(error) {
-                        alert(error.message);
+            if(!nts.uk.ui.errors.hasError()){
+                service.insert(obj).done(function() {
+                    self.getData().done(function() {
+                        self.isAlreadySet(true);
+                        self.grantSelected(obj);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     });
-            });
+                }).fail(function(error) {
+                    if (error.messageId == 'Msg_372') {
+                        $('#inpHour').addClass("error");
+                        $('#inpHour').ntsError('set', { messageId: "Msg_372" });
+                    }else{
+                        alert(error.message);                            
+                    }
+                });
+            }
             nts.uk.ui.block.clear();
         }
 
@@ -167,7 +172,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
                     self.morningHour(null);
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 })
-            }).ifCancel(() => {
+            }).ifNo(() => {
             });
         }
 
@@ -177,13 +182,13 @@ module nts.uk.at.view.kmf004.g.viewmodel {
 
     }
     export class GrantRelationship {
-        specialHolidayCode: number;
+        specialHolidayCode: string;
         relationshipCode: string;
         relationshipName: string;
         grantRelationshipDay: number;
         morningHour: number;
         isAlreadySet: boolean;
-        constructor(specialHolidayCode: number, relationshipCode: string, relationshipName: string, grantRelationshipDay: number, morningHour: number, isAlreadySet: boolean) {
+        constructor(specialHolidayCode: string, relationshipCode: string, relationshipName: string, grantRelationshipDay: number, morningHour: number, isAlreadySet: boolean) {
             this.specialHolidayCode = specialHolidayCode;
             this.relationshipCode = relationshipCode;
             this.relationshipName = relationshipName;

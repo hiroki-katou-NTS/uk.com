@@ -11,9 +11,14 @@ module cps001.a.vm {
     import clearError = nts.uk.ui.errors.clearAll;
     import liveView = nts.uk.request.liveView;
     import permision = service.getCurrentEmpPermision;
+    import permision4Cat = service.getPermision4Cat;
     import format = nts.uk.text.format;
+    import lv = nts.layout.validate;
 
-    let DEF_AVATAR = 'images/avatar.png',
+    const REPL_KEY = '__REPLACE',
+        RELOAD_KEY = "__RELOAD",
+        RELOAD_DT_KEY = "__RELOAD_DATA",
+        DEF_AVATAR = 'images/avatar.png',
         __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
         unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
@@ -33,32 +38,22 @@ module cps001.a.vm {
             isSelectAllEmployee: ko.observable(true),
             onSearchAllClicked: (dataList: Array<IEmployee>) => {
                 let self = this;
-
-                self.employees.removeAll();
                 self.employees(dataList);
             },
             onSearchOnlyClicked: (data: IEmployee) => {
                 let self = this;
-
-                self.employees.removeAll();
                 self.employees([data]);
             },
             onSearchOfWorkplaceClicked: (dataList: Array<IEmployee>) => {
                 let self = this;
-
-                self.employees.removeAll();
                 self.employees(dataList);
             },
             onSearchWorkplaceChildClicked: (dataList: Array<IEmployee>) => {
                 let self = this;
-
-                self.employees.removeAll();
                 self.employees(dataList);
             },
             onApplyEmployee: (dataList: Array<IEmployee>) => {
                 let self = this;
-
-                self.employees.removeAll();
                 self.employees(dataList);
             }
         };
@@ -83,6 +78,8 @@ module cps001.a.vm {
         // output data on category changed
         multipleData: KnockoutObservableArray<MultiData> = ko.observableArray([new MultiData()]);
 
+        saveAble: KnockoutObservable<boolean> = ko.observable(false);
+
         categories: KnockoutComputed<Array<IListData>> = ko.computed(() => {
             let self = this,
                 categories = self.multipleData().map(x => x.categories());
@@ -90,25 +87,8 @@ module cps001.a.vm {
             return categories[0] || [];
         });
 
-        combobox: KnockoutObservableArray<any> = ko.observableArray([]);
-
         // resource id for title in category mode
-        titleResource: KnockoutComputed<string> = ko.computed(() => {
-            let self = this,
-                category: any = { categoryType: () => { return 1; } };
-
-            switch (category.categoryType()) {
-                case IT_CAT_TYPE.SINGLE:
-                case IT_CAT_TYPE.DUPLICATE:
-                case IT_CAT_TYPE.NODUPLICATE:
-                    return text("CPS001_38");
-                case IT_CAT_TYPE.MULTI:
-                    return text("CPS001_39");
-                case IT_CAT_TYPE.CONTINU:
-                case IT_CAT_TYPE.CONTINUWED:
-                    return text("CPS001_41");
-            }
-        });
+        titleResource: KnockoutObservable<string> = ko.observable(text("CPS001_39"));
 
         constructor() {
             let self = this,
@@ -119,105 +99,225 @@ module cps001.a.vm {
 
             permision().done((data: IPersonAuth) => {
                 if (data) {
+                    auth.roleId(data.roleId);
                     auth.allowDocRef(!!data.allowDocRef);
                     auth.allowAvatarRef(!!data.allowAvatarRef);
                     auth.allowMapBrowse(!!data.allowMapBrowse);
                 } else {
-                    auth.allowAvatarRef(false);
+                    auth.roleId(undefined);
+                    auth.allowDocRef(false);
                     auth.allowAvatarRef(false);
                     auth.allowMapBrowse(false);
                 }
             });
 
             self.tab.subscribe(tab => {
-                self.multipleData.removeAll();
+                let loadData: IReloadData = getShared(RELOAD_DT_KEY),
+                    personId: string = person.personId(),
+                    employeeId: string = employee.employeeId(),
+                    selectFirstId = (sources: Array<any>, layoutData: any) => {
+                        if (loadData) {
+                            if (loadData.id) {
+                                if (layoutData.id() == loadData.id) {
+                                    layoutData.id.valueHasMutated();
+                                } else {
+                                    layoutData.id(loadData.id);
+                                }
+                            } else {
+                                if (layoutData.id() == sources[0].optionValue) {
+                                    layoutData.id.valueHasMutated();
+                                } else {
+                                    layoutData.id(sources[0].optionValue);
+                                }
+                            }
+                        } else {
+                            if (layoutData.id() == sources[0].optionValue) {
+                                layoutData.id.valueHasMutated();
+                            } else {
+                                layoutData.id(sources[0].optionValue);
+                            }
+                        }
+                    };
 
-                let personId: string = person.personId(),
-                    employeeId: string = employee.employeeId();
+                if (!loadData) {
+                    self.multipleData.removeAll();
+                }
+
                 if (!!employeeId) {
+                    let layoutData = _.first(self.multipleData()) || new MultiData({
+                        personId: personId,
+                        employeeId: employeeId
+                    }),
+                        layout = layoutData.layout();
+
+                    if (!loadData) {
+                        self.multipleData.push(layoutData);
+                        $.extend(layoutData, { title: self.titleResource });
+                    }
+
+                    layoutData.mode(tab);
+                    layoutData.roleId(self.auth().roleId());
+
                     switch (tab) {
                         default:
                         case TABS.LAYOUT: // layout mode
-                            {
-                                let layoutData = new MultiData({
-                                    personId: personId,
-                                    employeeId: employeeId
-                                }),
-                                    layout = layoutData.layout();
+                            service.getAllLayout(employeeId).done((data: Array<any>) => {
+                                if (data && data.length) {
+                                    let sources = data.map(x => {
+                                        return {
+                                            item: x,
+                                            optionText: x.layoutName,
+                                            optionValue: x.maintenanceLayoutID
+                                        };
+                                    });
 
-                                layoutData.mode(TABS.LAYOUT);
-                                self.multipleData.push(layoutData);
-
-                                service.getAllLayout(employeeId).done((data: Array<any>) => {
-                                    if (data && data.length) {
-                                        let sources = data.map(x => {
-                                            return {
-                                                item: x,
-                                                optionText: x.layoutName,
-                                                optionValue: x.maintenanceLayoutID
-                                            };
-                                        });
-
-                                        layoutData.gridlist(sources);
-                                        layoutData.id(sources[0].optionValue);
-                                    }
-                                });
-                            }
+                                    layoutData.gridlist(sources);
+                                    selectFirstId(sources, layoutData);
+                                }
+                            }).fail(msg => {
+                                layoutData.gridlist.removeAll();
+                                layoutData.id(undefined);
+                                setShared(RELOAD_DT_KEY, undefined);
+                            });
                             break;
                         case TABS.CATEGORY: // category mode
-                            {
-                                let layoutData = new MultiData({
-                                    personId: personId,
-                                    employeeId: employeeId
-                                }),
-                                    layout = layoutData.layout();
+                            service.getCats(employeeId).done((data: Array<ICategory>) => {
+                                if (data && data.length) {
+                                    let sources = data.map(x => {
+                                        return {
+                                            item: _.cloneDeep(x),
+                                            optionValue: x.id,
+                                            optionText: x.categoryName
+                                        };
+                                    });
 
-                                layoutData.mode(TABS.CATEGORY);
-                                self.multipleData.push(layoutData);
-
-                                service.getCats(employeeId).done((data: Array<ICategory>) => {
-                                    if (data && data.length) {
-                                        let sources = data.map(x => {
-                                            return {
-                                                item: _.cloneDeep(x),
-                                                optionValue: x.id,
-                                                optionText: x.categoryName
-                                            };
-                                        });
-                                        layoutData.combobox(sources);
-                                        layoutData.id(sources[0].optionValue);
-                                    }
-                                });
-                            }
+                                    layoutData.combobox(sources);
+                                    selectFirstId(sources, layoutData);
+                                }
+                            }).fail(msg => {
+                                layoutData.id(undefined);
+                                layoutData.combobox([]);
+                                setShared(RELOAD_DT_KEY, undefined);
+                            });
                             break;
                     }
                 }
             });
 
             employee.employeeId.subscribe(id => {
+                let reload = getShared(RELOAD_KEY);
+
                 if (id) {
+                    _.each(list(), l => {
+                        l.employeeId(id);
+                        l.personId(person.personId());
+                    });
+
+                    if (reload) {
+                        let firstData: MultiData = _.first(self.multipleData()) || new MultiData(),
+                            saveData: IReloadData = {
+                                id: firstData.id(),
+                                infoId: undefined,
+                                categoryId: firstData.categoryId()
+                            };
+
+                        if (!getShared(RELOAD_DT_KEY)) {
+                            setShared(RELOAD_DT_KEY, saveData);
+                        }
+                    }
+
                     self.tab.valueHasMutated();
                 }
             });
 
-            employee.employeeId.valueHasMutated();
-
             self.start();
+
+            setInterval(() => {
+                let aut = _(self.multipleData())
+                    .map(m => m.layout())
+                    .map(m => m.listItemCls())
+                    .flatten() // get item of all layout
+                    .map((m: any) => _.has(m, 'items') && ko.isObservable(m.items) ? ko.toJS(m.items) : undefined)
+                    .filter(x => !!x)
+                    .flatten() // flat set item
+                    .flatten() // flat list item
+                    .map((m: any) => !ko.toJS(m.readonly))
+                    .filter(x => !!x)
+                    .value();
+
+                self.saveAble(!!aut.length);
+            }, 0);
         }
 
         start() {
             let self = this,
-                employee = self.employee();
+                reload = getShared(RELOAD_KEY),
+                reloadData = getShared(RELOAD_DT_KEY),
+                employee = self.employee(),
+                params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
-                $('.btn-quick-search[tabindex=4]').click();
-                setInterval(() => {
-                    if (!employee.employeeId()) {
-                        let employees = self.employees()
-                        employee.employeeId(employees[0] ? employees[0].employeeId : undefined);
+            if (reload) {
+                let single = self.employees().length == 1,
+                    old_index = _.indexOf(self.employees().map(x => x.employeeId), employee.employeeId());
+
+                self.employees.removeAll();
+                $('.btn-quick-search[tabindex=3]').click();
+                $.when((() => {
+                    let def = $.Deferred(),
+                        int = setInterval(() => {
+                            if (self.employees().length) {
+                                clearInterval(int);
+                                def.resolve(self.employees());
+                            }
+                        }, 0);
+                    return def.promise();
+                })()).done((employees: Array<IEmployee>) => {
+                    if (single) {
+                        self.employees(_.filter(employees, m => m.employeeId == employee.employeeId()));
                     }
-                }, 0);
-            });
+
+                    let first = _.find(self.employees(), x => x.employeeId == employee.employeeId());
+                    if (first) {
+                        employee.employeeId.valueHasMutated();
+                    } else {
+                        first = _.find(self.employees(), (x, i) => i == old_index) || _.last(self.employees());
+                        if (first) {
+                            employee.employeeId(first.employeeId);
+                        } else {
+                            if (employee.employeeId()) {
+                                employee.employeeId(undefined);
+                            } else {
+                                employee.employeeId.valueHasMutated();
+                            }
+                        }
+                    }
+                });
+            } else {
+                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
+                    if (params && params.employeeId) {
+                        $('.btn-quick-search[tabindex=3]').click();
+                    } else {
+                        $('.btn-quick-search[tabindex=4]').click();
+                    }
+
+                    $.when((() => {
+                        let def = $.Deferred(),
+                            int = setInterval(() => {
+                                if (self.employees().length) {
+                                    clearInterval(int);
+                                    def.resolve(self.employees());
+                                }
+                            }, 0);
+                        return def.promise();
+                    })()).done((employees: Array<IEmployee>) => {
+                        if (params && params.employeeId) {
+                            self.employees(_.filter(employees, m => m.employeeId == params.employeeId));
+                        }
+                        employee.employeeId(self.employees()[0] ? self.employees()[0].employeeId : undefined);
+                        setShared(RELOAD_KEY, true);
+                    });
+                });
+            }
         }
 
         deleteEmployee() {
@@ -229,7 +329,10 @@ module cps001.a.vm {
                 sid: emp.employeeId(),
                 pid: person.personId()
             });
-            modal('../b/index.xhtml').onClosed(() => { });
+            modal('../b/index.xhtml').onClosed(() => {
+                self.start();
+                unblock();
+            });
         }
 
         chooseAvatar() {
@@ -242,15 +345,16 @@ module cps001.a.vm {
             }
 
             permision().done((perm: IPersonAuth) => {
-                if (!!perm.allowAvatarUpload) {
+                if (!!perm.allowAvatarRef) {
                     setShared("CPS001D_PARAMS", {
                         employeeId: iemp.employeeId
                     });
                     modal('../d/index.xhtml').onClosed(() => {
                         let data = getShared("CPS001D_VALUES");
 
-                        if (data)
+                        if (data) {
                             employee.avatar(data.fileId ? liveView(data.fileId) : undefined);
+                        }
                     });
                 }
             });
@@ -308,36 +412,38 @@ module cps001.a.vm {
                 };
 
             // trigger change of all control in layout
-            _.each(__viewContext.primitiveValueConstraints, x => {
-                if (_.has(x, "itemCode")) {
-                    $('#' + x.itemCode).trigger('change');
+            $('.drag-panel .nts-input')
+                .trigger('blur')
+                .trigger('change');
+
+            setTimeout(() => {
+                if (hasError()) {
+                    $('#func-notifier-errors').trigger('click');
+                    return;
                 }
-            })
 
-            if (hasError()) {
-                $('#func-notifier-errors').trigger('click');
-                return;
-            }
+                // push data layout to webservice
+                block();
+                service.saveCurrentLayout(command).done(() => {
+                    let firstData: MultiData = _.first(self.multipleData()) || new MultiData(),
+                        saveData: IReloadData = {
+                            id: firstData.id(),
+                            infoId: firstData.infoId(),
+                            categoryId: firstData.categoryId()
+                        };
 
-            // push data layout to webservice
-            block();
-            service.saveCurrentLayout(command).done(() => {
-                info({ messageId: "Msg_15" }).then(function() {
-                    self.start();
-                    _.each(self.multipleData(), m => {
-                        if (m.mode() == TABS.LAYOUT) {
-                            m.id.valueHasMutated();
-                        } else {
-                            m.infoId(undefined);
-                            m.category().categoryType.valueHasMutated();
-                        }
+                    setShared(RELOAD_DT_KEY, saveData);
+                    setShared(REPL_KEY, REPL_KEYS.NORMAL);
+
+                    info({ messageId: "Msg_15" }).then(function() {
+                        unblock();
+                        self.start();
                     });
+                }).fail((mes) => {
                     unblock();
+                    alert(mes.message);
                 });
-            }).fail((mes) => {
-                unblock();
-                alert(mes.message);
-            });
+            }, 100);
         }
     }
 
@@ -353,7 +459,15 @@ module cps001.a.vm {
         replace: (callback?: void) => void;
     }
 
+    interface Permisions {
+        add: KnockoutObservable<boolean>;
+        remove: KnockoutObservable<boolean>;
+        replace: KnockoutObservable<boolean>;
+    }
+
     class Layout {
+        showColor: KnockoutObservable<boolean> = ko.observable(false);
+
         outData: KnockoutObservableArray<any> = ko.observableArray([]);
 
         listItemCls: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -388,7 +502,9 @@ module cps001.a.vm {
     }
 
     class MultiData {
+        title: KnockoutObservable<string> = undefined;
         mode: KnockoutObservable<TABS> = ko.observable(undefined);
+        roleId: KnockoutObservable<string> = ko.observable(undefined);
 
         // selected value on list data
         id: KnockoutObservable<string> = ko.observable(undefined);
@@ -402,46 +518,93 @@ module cps001.a.vm {
         employeeId: KnockoutObservable<string> = ko.observable(undefined);
 
         category: KnockoutObservable<Category> = ko.observable(new Category());
-
         // event action
         events: Events = {
-            add: (callback?: void) => {
-                let self = this;
-                if (self.infoId()) {
-                    self.infoId(undefined);
-                } else {
-                    self.infoId.valueHasMutated();
-                }
-                if (callback) {
-                    callback;
-                }
-            },
-            remove: (callback?: void) => {
+            add: (callback?: any) => {
                 let self = this,
-                    category = self.category();
+                    catId: string = ko.toJS(self.id),
+                    roleId: string = ko.toJS(self.roleId),
+                    selEmId: string = self.employeeId(),
+                    logInId: string = __viewContext.user.employeeId;
 
-                confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    let query = {
-                        recordId: self.infoId(),
-                        personId: self.personId(),
-                        employeeId: self.employeeId(),
-                        categoryId: category.categoryCode()
-                    };
+                permision4Cat(roleId, catId).done((perm: ICatAuth) => {
+                    if (perm && !!(selEmId == logInId ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
+                        self.changeTitle(ATCS.ADD);
+                        setShared(REPL_KEY, REPL_KEYS.ADDNEW);
 
-                    service.removeCurrentCategoryData(query).done(x => {
-                        info({ messageId: "Msg_16" }).then(() => {
-                            self.infoId(undefined);
-                            category.categoryType.valueHasMutated();
-                        });
-                    });
+                        self.infoId(undefined);
+                        //self.id.valueHasMutated();
+
+                        if (callback && _.isFunction(callback)) {
+                            callback();
+                        }
+                    }
+                }).fail(msg => {
                 });
             },
-            replace: (callback?: void) => {
-                if (callback) {
-                    callback;
-                }
+            remove: (callback?: any) => {
+                let self = this,
+                    category = self.category(),
+                    catId: string = ko.toJS(self.id),
+                    roleId: string = ko.toJS(self.roleId),
+                    selEmId: string = self.employeeId(),
+                    logInId: string = __viewContext.user.employeeId;
+
+                permision4Cat(roleId, catId).done((perm: ICatAuth) => {
+                    if (perm && !!(selEmId == logInId ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
+                        confirm({ messageId: "Msg_18" }).ifYes(() => {
+                            let query = {
+                                recordId: self.infoId(),
+                                personId: self.personId(),
+                                employeeId: self.employeeId(),
+                                categoryId: category.categoryCode()
+                            };
+
+                            service.removeCurrentCategoryData(query).done(x => {
+                                info({ messageId: "Msg_16" }).then(() => {
+                                    self.infoId(undefined);
+                                    self.id.valueHasMutated();
+
+                                    if (callback && _.isFunction(callback)) {
+                                        callback();
+                                    }
+                                });
+                            }).fail(msg => {
+                                alert(msg);
+                            });;
+                        });
+                    }
+                }).fail(msg => {
+                });
+            },
+            replace: (callback?: any) => {
+                let self = this,
+                    catId: string = ko.toJS(self.id),
+                    roleId: string = ko.toJS(self.roleId),
+                    selEmId: string = self.employeeId(),
+                    logInId: string = __viewContext.user.employeeId;
+
+                permision4Cat(roleId, catId).done((perm: ICatAuth) => {
+                    if (perm && !!(selEmId == logInId ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
+                        self.changeTitle(ATCS.COPY);
+                        setShared(REPL_KEY, REPL_KEYS.REPLICATION);
+                        self.infoId.valueHasMutated();
+                        //self.id.valueHasMutated();
+
+                        if (callback && _.isFunction(callback)) {
+                            callback();
+                        }
+                    }
+                }).fail(msg => {
+                });
             }
         }
+
+        permisions: Permisions = {
+            add: ko.observable(false),
+            remove: ko.observable(false),
+            replace: ko.observable(false)
+        };
 
         combobox: KnockoutObservableArray<IListData> = ko.observableArray([]);
         gridlist: KnockoutObservableArray<IListData> = ko.observableArray([]);
@@ -452,8 +615,8 @@ module cps001.a.vm {
 
         constructor(data?: IMultiData) {
             let self = this,
-                layout = self.layout,
-                category = self.category();
+                layout = self.layout(),
+                cat = self.category();
 
             if (data) {
                 self.personId(data.personId);
@@ -463,114 +626,314 @@ module cps001.a.vm {
             }
 
             self.id.subscribe(id => {
-                self.infoId(undefined);
+                let mode: TABS = self.mode();
 
-                if (id && self.mode() == TABS.CATEGORY) {
-                    let option = _.find(self.combobox(), x => x.optionValue == id);
+                setShared(REPL_KEY, REPL_KEYS.NORMAL);
 
-                    if (option) {
-                        let icat: ICategory = option.item;
+                if (id) {
+                    if (mode == TABS.CATEGORY) {
+                        let option = _.find(self.combobox(), x => x.optionValue == id);
 
-                        category.categoryCode(icat.categoryCode);
-                        category.categoryType(icat.categoryType);
-                    } else {
-                        category.categoryCode(undefined);
-                        category.categoryType(undefined);
+                        if (option) {
+                            let icat: ICategory = option.item;
+
+                            cat.categoryCode(icat.categoryCode);
+                            cat.categoryType(icat.categoryType);
+                        } else {
+                            cat.categoryCode(undefined);
+                            cat.categoryType(undefined);
+                        }
+
+                        if (id) {
+                            service.getCatChilds(id).done(data => {
+                                cat.hasChildrens(data.length > 1);
+                            });
+                        }
                     }
-
-                    service.getCatChilds(id).done(data => {
-                        category.hasChildrens(data.length > 1);
-                    });
+                    self.categoryId.valueHasMutated();
                 }
-
-                self.categoryId.valueHasMutated();
             });
 
-            self.categoryId.subscribe(id => {
-                self.infoId.valueHasMutated();
-                category.categoryType.valueHasMutated();
+            cat.hasChildrens.subscribe(h => {
+                if (!h) {
+                    self.categoryId(undefined);
+                }
             });
 
-            self.infoId.subscribe(infoId => {
-                if (self.id()) {
-                    if (self.mode() == TABS.LAYOUT) {
-                        let id = self.id(),
-                            sdate = layout().standardDate(),
+            self.categoryId.subscribe(cid => {
+                let id: string = self.id(),
+                    mode: TABS = self.mode(),
+                    loadData: IReloadData = getShared(RELOAD_DT_KEY);
+
+                if (id) {
+                    if (mode == TABS.LAYOUT) {
+                        self.infoId(undefined);
+
+                        let sdate = layout.standardDate(),
                             ddate = sdate && moment.utc(sdate).toDate() || moment.utc().toDate(),
                             query: ILayoutQuery = {
                                 layoutId: id,
                                 browsingEmpId: self.employeeId(),
                                 standardDate: ddate
                             };
+
                         service.getCurrentLayout(query).done((data: any) => {
                             if (data) {
-                                layout().standardDate(data.standardDate || undefined);
-                                layout().listItemCls(data.classificationItems || []);
+                                layout.showColor(true);
+                                layout.standardDate(data.standardDate || undefined);
+
+                                _.each(data.classificationItems, x => {
+                                    if ([IT_CLA_TYPE.ITEM].indexOf(x.layoutItemType) > -1) {
+                                        _.each(x.items, m => {
+                                            if (!_.isNil(m.value) && !_.isEmpty(m.value)) {
+                                                m.showColor = true;
+                                            } else {
+                                                m.showColor = false;
+                                            }
+                                        });
+                                    }
+                                });
+
+                                lv.removeDoubleLine(data.classificationItems);
+                                layout.listItemCls(data.classificationItems || []);
+                            } else {
+                                layout.listItemCls.removeAll();
                             }
+                            setShared(RELOAD_DT_KEY, undefined);
+                        }).fail(mgs => {
+                            layout.showColor(true);
+                            layout.listItemCls.removeAll();
+                            setShared(RELOAD_DT_KEY, undefined);
                         });
-                    } else if (self.category().categoryType() != IT_CAT_TYPE.SINGLE) {
-                        let id = self.id(),
-                            catid = self.categoryId(),
+                    } else {
+                        let query = {
+                            infoId: undefined,
+                            categoryId: cid || id,
+                            personId: self.personId(),
+                            employeeId: self.employeeId(),
+                            standardDate: undefined,
+                            categoryCode: cat.categoryCode()
+                        };
+
+                        switch (cat.categoryType()) {
+                            case IT_CAT_TYPE.SINGLE:
+                                self.infoId(undefined);
+                                layout.showColor(false);
+
+                                self.changeTitle(ATCS.UPDATE);
+
+                                service.getCatData(query).done(data => {
+                                    if (data) {
+                                        lv.removeDoubleLine(data.classificationItems);
+                                        layout.listItemCls(data.classificationItems || []);
+                                    } else {
+                                        layout.listItemCls.removeAll();
+                                    }
+                                    setShared(RELOAD_DT_KEY, undefined);
+                                }).fail(mgs => {
+                                    layout.listItemCls.removeAll();
+                                    setShared(RELOAD_DT_KEY, undefined);
+                                });
+                                break;
+                            case IT_CAT_TYPE.MULTI:
+                                layout.listItemCls.removeAll();
+                                break;
+                            case IT_CAT_TYPE.CONTINU:
+                            case IT_CAT_TYPE.CONTINUWED:
+                            case IT_CAT_TYPE.DUPLICATE:
+                            case IT_CAT_TYPE.NODUPLICATE:
+                                let rep: number = getShared(REPL_KEY) || REPL_KEYS.NORMAL;
+
+                                if (rep == REPL_KEYS.NORMAL) {
+                                    service.getHistData(query).done((data: Array<any>) => {
+                                        if (data && data.length) {
+                                            self.gridlist(data);
+                                            self.changeTitle(ATCS.UPDATE);
+
+                                            if (!loadData || !loadData.infoId) {
+                                                if (self.infoId() != data[0].optionValue) {
+                                                    self.infoId(data[0].optionValue);
+                                                } else {
+                                                    self.infoId.valueHasMutated();
+                                                }
+                                            } else {
+                                                if (loadData.infoId != self.infoId()) {
+                                                    self.infoId(loadData.infoId);
+                                                } else {
+                                                    self.infoId.valueHasMutated();
+                                                }
+                                            }
+                                        } else {
+                                            self.events.add();
+                                            self.gridlist.removeAll();
+                                            self.changeTitle(ATCS.ADD);
+                                            setShared(REPL_KEY, undefined);
+
+                                            if (self.infoId()) {
+                                                self.infoId(undefined);
+                                            } else {
+                                                self.infoId.valueHasMutated();
+                                            }
+                                        }
+                                        setShared(RELOAD_DT_KEY, undefined);
+                                    }).fail(mgs => {
+                                        self.gridlist.removeAll();
+                                        self.changeTitle(ATCS.ADD);
+                                        setShared(REPL_KEY, undefined);
+                                        setShared(RELOAD_DT_KEY, undefined);
+
+                                        if (self.infoId()) {
+                                            self.infoId(undefined);
+                                        } else {
+                                            self.infoId.valueHasMutated();
+                                        }
+                                    });
+                                } else {
+                                    self.infoId.valueHasMutated();
+                                }
+                                break;
+                        }
+                    }
+                }
+            });
+
+            self.infoId.subscribe(infoId => {
+                let id = self.id(),
+                    mode: TABS = self.mode(),
+                    ctp = cat.categoryType(),
+                    layout = self.layout(),
+                    index = _.indexOf(_.map(self.gridlist(), x => x.optionValue), infoId);
+
+                if (id && mode == TABS.CATEGORY) {
+                    let catid = self.categoryId(),
+                        rep: number = getShared(REPL_KEY) || REPL_KEYS.NORMAL;
+
+                    if ([REPL_KEYS.NORMAL, REPL_KEYS.REPLICATION, REPL_KEYS.ADDNEW].indexOf(rep) > -1) {
+                        let catid = self.categoryId(),
                             query = {
-                                infoId: self.infoId(),
+                                infoId: infoId,
                                 categoryId: catid || id,
                                 personId: self.personId(),
                                 employeeId: self.employeeId(),
                                 standardDate: undefined,
-                                categoryCode: category.categoryCode()
+                                categoryCode: cat.categoryCode()
                             };
                         service.getCatData(query).done(data => {
-                            layout().listItemCls(data.classificationItems);
-                        });
-                    }
-                }
-            });
+                            if (rep == REPL_KEYS.ADDNEW) {
+                                setShared(REPL_KEY, REPL_KEYS.NORMAL);
+                                self.infoId(undefined);
+                            } else if (rep == REPL_KEYS.REPLICATION) {
+                                setShared(REPL_KEY, REPL_KEYS.OTHER);
 
-            category.categoryType.subscribe(t => {
-                if (self.id() && self.mode() == TABS.CATEGORY) {
-                    let id = self.id(),
-                        catid = self.categoryId(),
-                        query = {
-                            infoId: self.infoId(),
-                            categoryId: catid || id,
-                            personId: self.personId(),
-                            employeeId: self.employeeId(),
-                            standardDate: undefined,
-                            categoryCode: category.categoryCode()
-                        };
-                    switch (t) {
-                        case IT_CAT_TYPE.SINGLE:
-                            service.getCatData(query).done(data => {
-                                layout().listItemCls(data.classificationItems);
-                            });
-                            break;
-                        case IT_CAT_TYPE.MULTI:
-                            {
+                                self.infoId(undefined);
+
+                                let removed: Array<any> = [];
+                                _.each(data.classificationItems, (c: any, i: number) => {
+                                    if (_.has(c, "items") && _.isArray(c.items)) {
+                                        if (!removed.length) {
+                                            removed = _.filter(c.items, (x: any) => x.item && x.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE);
+                                            if (removed.length) {
+                                                _.each(c.items, m => {
+                                                    if (!_.isArray(m)) {
+                                                        m.value = undefined;
+                                                        m.recordId = undefined;
+                                                    } else {
+                                                        _.each(m, k => {
+                                                            k.recordId = undefined;
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                            } else if (self.infoId()) {
+                                self.changeTitle(ATCS.UPDATE);
                             }
-                            break;
-                        case IT_CAT_TYPE.CONTINU:
-                        case IT_CAT_TYPE.CONTINUWED:
-                        case IT_CAT_TYPE.DUPLICATE:
-                        case IT_CAT_TYPE.NODUPLICATE:
-                            service.getHistData(query).done((data: Array<any>) => {
-                                if (data && data.length) {
-                                    self.gridlist(data);
-                                    self.infoId(data[0].optionValue);
+                            layout.showColor(false);
+                            lv.removeDoubleLine(data.classificationItems);
+                            layout.listItemCls(data.classificationItems);
+
+                            let roleId = self.roleId(),
+                                catId = self.categoryId() || self.id();
+
+                            permision4Cat(roleId, catId).done((perm: ICatAuth) => {
+                                let selEmId: string = self.employeeId(),
+                                    logInId: string = __viewContext.user.employeeId;
+
+                                if (perm && !!(selEmId == logInId ? (perm.selfAllowAddHis && perm.selfFutureHisAuth == 3) : (perm.otherAllowAddHis && perm.otherFutureHisAuth == 3))) {
+                                    self.permisions.add(true);
+                                    self.permisions.replace(true);
                                 } else {
-                                    self.events.add();
-                                    self.gridlist.removeAll();
+                                    self.permisions.add(false);
+                                    self.permisions.replace(false);
                                 }
+
+                                if (perm && !!(selEmId == logInId ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
+                                    if (index > -1) {
+                                        if (index == 0) {
+                                            self.permisions.remove(true);
+                                        } else {
+                                            let cat: ICategory = ko.toJS(self.category);
+                                            if (cat.categoryType == IT_CAT_TYPE.NODUPLICATE) {
+                                                self.permisions.remove(true);
+                                            } else {
+                                                self.permisions.remove(false);
+                                            }
+                                        }
+                                    } else {
+                                        self.permisions.remove(false);
+                                    }
+                                } else {
+                                    self.permisions.remove(false);
+                                }
+                            }).fail(msg => {
+
                             });
-                            break;
+                        });
+                    } else {
+                        setShared(REPL_KEY, REPL_KEYS.NORMAL);
                     }
                 }
             });
+        }
 
-            category.hasChildrens.subscribe(h => {
-                if (!h) {
-                    self.categoryId(undefined);
-                }
-            });
+        changeTitle = (action: ATCS) => {
+            let self = this,
+                title = self.title,
+                category = self.category(),
+                categoryType = category.categoryType();
+
+            switch (categoryType) {
+                default:
+                case IT_CAT_TYPE.SINGLE:
+                    title(text('CPS001_38'));
+                    break;
+                case IT_CAT_TYPE.MULTI:
+                    switch (action) {
+                        case ATCS.ADD:
+                            title(text('CPS001_39'));
+                            break;
+                        case ATCS.UPDATE:
+                            title(text('CPS001_40'));
+                            break;
+                    }
+                    break;
+                case IT_CAT_TYPE.CONTINU:
+                case IT_CAT_TYPE.NODUPLICATE:
+                case IT_CAT_TYPE.DUPLICATE:
+                case IT_CAT_TYPE.CONTINUWED:
+                    switch (action) {
+                        case ATCS.ADD:
+                        case ATCS.COPY:
+                            title(text('CPS001_41'));
+                            break;
+                        case ATCS.UPDATE:
+                            title(text('CPS001_42'));
+                            break;
+                    }
+                    break;
+            }
         }
     }
 
@@ -589,7 +952,10 @@ module cps001.a.vm {
     }
 
     interface IEmployee {
+        pid?: string;
         employeeId: string;
+        gender?: string;
+        birthday?: string;
 
         employeeCode?: string;
         employeeName?: string;
@@ -619,7 +985,7 @@ module cps001.a.vm {
         numberOfWork: KnockoutObservable<number> = ko.observable(0);
 
         avatar: KnockoutObservable<string> = ko.observable(DEF_AVATAR);
-        personInfo: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ personId: '' }));
+        personInfo: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo());
 
         // calc days of work process
         entire: KnockoutComputed<string> = ko.computed(() => {
@@ -632,18 +998,7 @@ module cps001.a.vm {
 
         constructor(param?: IEmployee) {
             let self = this,
-                person = self.personInfo(),
-                perInfo = (data?: IPersonInfo) => {
-                    if (data) {
-                        person.personId(data.personId);
-                        person.birthDate(data.birthDate);
-                        person.fullName(data.personNameGroup ? data.personNameGroup.businessName : '');
-                    } else {
-                        person.personId('');
-                        person.birthDate(undefined);
-                        person.fullName(self.employeeName());
-                    }
-                };
+                person = self.personInfo();
 
             if (param) {
                 self.employeeId(param.employeeId);
@@ -655,15 +1010,10 @@ module cps001.a.vm {
 
             self.employeeId.subscribe(id => {
                 if (id) {
-                    service.getPerson(id).done((data: IPersonInfo) => {
-                        perInfo(data);
-                    }).fail(() => {
-                        perInfo();
-                    });
-
                     // get employee && employment info
                     service.getEmpInfo(id).done((data: IEmployee) => {
                         if (data) {
+                            person.personId(data.pid);
                             self.employeeCode(data.employeeCode);
                             self.employeeName(data.employeeName);
 
@@ -672,6 +1022,9 @@ module cps001.a.vm {
 
                             self.position(data.position);
                             self.contractType(data.contractCodeType);
+
+                            person.gender(data.gender);
+                            person.birthDate(moment.utc(data.birthday).toDate());
 
                             self.departmentCode(data.departmentCode);
                             self.departmentName(data.departmentName);
@@ -703,15 +1056,14 @@ module cps001.a.vm {
                     });
 
                     permision().done((perm: IPersonAuth) => {
-                        // Current Employee has permision view other employee avatar
-                        if (!!perm.allowAvatarRef) {
-                            service.getAvatar(id).done((data: any) => {
-                                self.avatar(data.fileId ? liveView(data.fileId) : undefined);
-                            });
-                        }
+                        service.getAvatar(id).done((data: any) => {
+                            self.avatar(data.fileId ? liveView(data.fileId) : undefined);
+                        });
                     });
                 } else {
-                    perInfo();
+                    person.gender(undefined);
+                    person.personId(undefined);
+                    person.birthDate(undefined);
                 }
             });
 
@@ -724,9 +1076,9 @@ module cps001.a.vm {
     }
 
     interface IPersonInfo {
-        personId: string;
+        pid: string;
         birthDate?: Date;
-        gender?: number;
+        gender?: string;
         countryId?: number;
         mailAddress?: string;
         personMobile?: string;
@@ -749,26 +1101,29 @@ module cps001.a.vm {
 
     class PersonInfo {
         personId: KnockoutObservable<string> = ko.observable('');
+        gender: KnockoutObservable<string> = ko.observable('');
         code: KnockoutObservable<string> = ko.observable('');
         fullName: KnockoutObservable<string> = ko.observable('');
         birthDate: KnockoutObservable<Date> = ko.observable(undefined);
-        constructor(param: IPersonInfo) {
+        constructor(param?: IPersonInfo) {
             let self = this;
 
-            self.personId(param.personId || '');
-            self.code(param.code || '');
-            self.fullName(param.personNameGroup ? param.personNameGroup.businessName : '');
+            if (param) {
+                self.personId(param.pid || '');
+                self.code(param.code || '');
+                self.fullName(param.personNameGroup ? param.personNameGroup.businessName : '');
+                self.gender(param.gender || '');
+            }
         }
 
         age: KnockoutComputed<string> = ko.computed(() => {
             let self = this,
+                now = moment.utc(),
                 birthDay = self.birthDate(),
-                duration = moment.duration(moment.utc().diff(moment.utc(birthDay))),
-                years = duration.years(),
-                months = duration.months(),
-                days = duration.days();
+                birth = moment.utc(birthDay),
+                duration = moment.duration(now.diff(birth));
 
-            return (years + Number(!!(months || days))) + text('CPS001_66');
+            return duration.years() + text('CPS001_66');
         });
     }
 
@@ -783,6 +1138,7 @@ module cps001.a.vm {
     }
 
     class PersonAuth {
+        roleId: KnockoutObservable<string> = ko.observable('');
         allowAvatarRef: KnockoutObservable<boolean> = ko.observable(false);
         allowDocRef: KnockoutObservable<boolean> = ko.observable(false);
         allowMapBrowse: KnockoutObservable<boolean> = ko.observable(false);
@@ -790,6 +1146,7 @@ module cps001.a.vm {
         constructor(param?: IPersonAuth) {
             let self = this;
             if (param) {
+                self.roleId(param.roleId);
                 self.allowAvatarRef(!!param.allowAvatarRef);
                 self.allowDocRef(!!param.allowDocRef);
                 self.allowMapBrowse(!!param.allowMapBrowse);
@@ -797,9 +1154,45 @@ module cps001.a.vm {
         }
     }
 
+    interface ICatAuth {
+        roleId: string;
+        personInfoCategoryAuthId: string;
+        allowPersonRef: number;
+        allowOtherRef: number;
+        allowOtherCompanyRef: number;
+        selfPastHisAuth: number;
+        selfFutureHisAuth: number;
+        selfAllowAddHis: number;
+        selfAllowDelHis: number;
+        otherPastHisAuth: number;
+        otherFutureHisAuth: number;
+        otherAllowAddHis: number;
+        otherAllowDelHis: number;
+        selfAllowAddMulti: number;
+        selfAllowDelMulti: number;
+        otherAllowAddMulti: number;
+        otherAllowDelMulti: number;
+    }
+
+    class CatAuth {
+
+    }
+
+    enum ATCS {
+        ADD = 0,
+        COPY = 1,
+        UPDATE = 2
+    }
+
     enum TABS {
         LAYOUT = <any>"layout",
         CATEGORY = <any>"category"
+    }
+    // define ITEM_CLASSIFICATION_TYPE
+    enum IT_CLA_TYPE {
+        ITEM = <any>"ITEM", // single item
+        LIST = <any>"LIST", // list item
+        SPER = <any>"SeparatorLine" // line item
     }
 
     // define ITEM_CATEGORY_TYPE
@@ -819,6 +1212,19 @@ module cps001.a.vm {
         TIME = 4,
         TIMEPOINT = 5,
         SELECTION = 6
+    }
+
+    enum REPL_KEYS {
+        NORMAL = 0,
+        REPLICATION = 1,
+        ADDNEW = 2,
+        OTHER = 3
+    }
+
+    interface IReloadData {
+        id: string;
+        infoId: string;
+        categoryId: string;
     }
 
     interface IPeregQuery {
@@ -858,6 +1264,7 @@ module cps001.a.vm {
     }
 
     interface IParam {
+        showAll?: boolean;
         employeeId: string;
     }
 }

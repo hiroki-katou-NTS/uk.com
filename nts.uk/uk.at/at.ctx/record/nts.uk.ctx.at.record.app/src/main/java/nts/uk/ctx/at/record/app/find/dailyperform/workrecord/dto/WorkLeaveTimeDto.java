@@ -1,10 +1,15 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 @Data
 /** 出退勤時刻 */
+@AllArgsConstructor
+@NoArgsConstructor
 public class WorkLeaveTimeDto {
 
 	private Integer workNo;

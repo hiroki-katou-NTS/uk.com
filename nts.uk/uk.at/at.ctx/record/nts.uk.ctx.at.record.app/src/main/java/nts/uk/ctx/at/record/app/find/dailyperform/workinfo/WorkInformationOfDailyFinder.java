@@ -1,18 +1,34 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workinfo;
 
-import javax.ejb.Stateless;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-public class WorkInformationOfDailyFinder extends FinderFacade{
+public class WorkInformationOfDailyFinder extends FinderFacade {
+
+	@Inject
+	private WorkInformationRepository workInfoRepo;
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public WorkInformationOfDailyDto find() {
-		// TODO Auto-generated method stub
-		return new WorkInformationOfDailyDto();
+	public WorkInformationOfDailyDto find(String employeeId, GeneralDate baseDate) {
+		return WorkInformationOfDailyDto.getDto(this.workInfoRepo.find(employeeId, baseDate).orElse(null));
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate) {
+		return (List<T>) this.workInfoRepo.findByListEmployeeId(employeeId, baseDate).stream()
+				.map(c -> WorkInformationOfDailyDto.getDto(c)).collect(Collectors.toList());
+	}
 }

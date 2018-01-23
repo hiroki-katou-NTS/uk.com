@@ -16,18 +16,21 @@ public interface IPerInfoSelectionItemRepository {
 
 	void remove(String selectionItemId);
 
-	List<PerInfoSelectionItem> getAllSelectionItemByContractCd(String contractCd);
+	List<PerInfoSelectionItem> getAllSelectionItemByContractCdAndCID(String contractCd, String companyId);
 
 	Optional<PerInfoSelectionItem> getSelectionItemBySelectionItemId(String selectionItemId);
 
 	Optional<PerInfoSelectionItem> getSelectionItemByName(String selectionItemName);
-	
+
 	/**
 	 * getAllSelection
+	 * 
 	 * @return List<PerInfoSelectionItem>
 	 */
 	List<PerInfoSelectionItem> getAllSelection(int selectionItemClsAtr);
-	
-	//Lanlt
-	
+
+	List<PerInfoSelectionItem> getAllSelectionItemByContractCd(String contractCode);
+
+	// Lanlt
+
 }

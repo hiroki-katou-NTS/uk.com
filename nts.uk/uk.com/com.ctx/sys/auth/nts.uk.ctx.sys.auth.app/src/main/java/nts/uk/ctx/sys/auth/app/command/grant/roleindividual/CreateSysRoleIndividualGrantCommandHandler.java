@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.app.command.grant.roleindividual;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -30,12 +31,12 @@ public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWi
 	@Inject
 	private UserRepository userRepo;
 
-	private final String COMPANY_ID_SYSADMIN = "00000000000000000";
+	private final String COMPANY_ID_SYSADMIN = "000000000000-0000";
 
 	@Override
 	protected CreateRoleIndividualGrantCommandResult handle(CommandHandlerContext<CreateRoleIndividualGrantCommand> context) {
 		CreateRoleIndividualGrantCommand command = context.getCommand();
-				
+		
 		if (StringUtil.isNullOrEmpty(command.getUserID(), true)) {
 			throw new BusinessException("Msg_218", "CAS012_17");
 		}
@@ -46,25 +47,29 @@ public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWi
 		if (roleIndividualGrant.isPresent()) {
 			throw new BusinessException("Msg_3");
 		}
-		String contractCD = AppContexts.user().contractCode();
-		Optional<Role> uniqueRole = roleRepository.findByContractCDRoleTypeAndCompanyID(contractCD, command.getRoleType(),command.companyID);
-		
+		List<Role> sysAdminRole = roleRepository.findByType(command.companyID, command.getRoleType());
+		if (sysAdminRole.isEmpty())
+			throw new RuntimeException("No default role exist");
 		
 		// ドメインモデル「ロール個人別付与」を新規登録する | Register a domain model "Role individual grant"
-		RoleIndividualGrant domain = command.toDomain(uniqueRole.get().getRoleId());
-		roleIndividualGrantRepo.add(domain);
+		RoleIndividualGrant domain = command.toDomain(sysAdminRole.get(0).getRoleId());
 
 		if (command.isSetRoleAdminFlag() == true) {
+			List<Role> companyManagerRole = roleRepository.findByType(command.getDecisionCompanyID(), RoleType.COMPANY_MANAGER.value);
+			if (companyManagerRole.isEmpty())
+				throw new RuntimeException("No default company manager role exist");
+			
 			RoleIndividualGrant roleIndiGrantSys = RoleIndividualGrant.createFromJavaType(
 					command.getUserID(),
-					uniqueRole.get().getRoleId(),
+					companyManagerRole.get(0).getRoleId(),
 					command.getDecisionCompanyID(),
-					command.getRoleType(),
+					RoleType.COMPANY_MANAGER.value,
 					command.getStartValidPeriod(),
 					command.getEndValidPeriod());
 			// ドメインモデル「ロール個人別付与」を新規登録する | Register a domain model "Role individual grant"
 			roleIndividualGrantRepo.add(roleIndiGrantSys);
 		}
+		roleIndividualGrantRepo.add(domain);
 		
 		Optional<User> user = userRepo.getByUserID(command.getUserID());
 		if (user.get().isDefaultUser() == true) {

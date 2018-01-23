@@ -32,7 +32,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
         search() {
             let self = this;
             if (nts.uk.text.isNullOrEmpty(self.searchValue())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_438" });
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_438", messageParams: ['検索文字列 ']});
                 return;
             }
             var key = self.searchValue();
@@ -46,11 +46,15 @@ module nts.uk.com.view.cas013.b.viewmodel {
                 nts.uk.ui.block.clear();    
             });
         }
+        
+        enterPress() {
+            this.search();   
+        }
 
         decision() {
             var self = this;
             if (nts.uk.text.isNullOrEmpty(self.selectUserID())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" , messageParams: ['ユーザー ']});
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218" , messageParams: [nts.uk.resource.getText("CAS013_19")]});
                 return;
             }
 

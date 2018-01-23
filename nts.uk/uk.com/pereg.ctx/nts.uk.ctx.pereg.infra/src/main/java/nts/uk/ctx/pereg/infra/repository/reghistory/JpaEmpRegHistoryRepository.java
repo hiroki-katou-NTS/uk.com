@@ -15,13 +15,15 @@ import nts.uk.ctx.pereg.infra.entity.reghistory.PpedtEmployeeRegistrationHistory
 public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegHistoryRepository {
 
 	private static final String SELECT_ALL = "SELECT rh,em.employeeCode FROM PpedtEmployeeRegistrationHistory rh"
-			+ " INNER JOIN BsymtEmployeeDataMngInfo em ON rh.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID = em.bsymtEmployeeDataMngInfoPk.sId";
+			+ " INNER JOIN BsymtEmployeeDataMngInfo em ON rh.lastRegEmployeeID = em.bsymtEmployeeDataMngInfoPk.sId AND em.delStatus = 0";
 
 	private static final String GET_LAST_REG_BY_COMPANY_QUERY_STRING = SELECT_ALL
 			+ " WHERE rh.companyId= :companyId  ORDER BY rh.registeredDate DESC ";
 
 	private static final String GET_LAST_REG_BY_EMPLOYEE_ID_QUERY_STRING = SELECT_ALL
 			+ " WHERE rh.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID= :employeeId";
+
+	private static final String GET_REG_HIST_BY_EMPLOYEE_ID_QUERY_STRING = "SELECT rh FROM PpedtEmployeeRegistrationHistory rh WHERE rh.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID= :employeeId";
 
 	@Override
 	public Optional<LastEmRegHistory> getLastRegHistory(String registeredEmployeeID, String companyId) {
@@ -44,6 +46,12 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 		return EmpRegHistory.createFromJavaType(regHistEntity.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID,
 				regHistEntity.companyId, regHistEntity.registeredDate, regHistEntity.lastRegEmployeeID,
 				entity[1].toString());
+	}
+
+	private EmpRegHistory toDomain(PpedtEmployeeRegistrationHistory empRegHist) {
+
+		return EmpRegHistory.createFromJavaType(empRegHist.ppedtEmployeeRegistrationHistoryPk.registeredEmployeeID,
+				empRegHist.companyId, empRegHist.registeredDate, empRegHist.lastRegEmployeeID, "");
 	}
 
 	private Optional<EmpRegHistory> getLastRegHistoryOfCompany(String companyId) {
@@ -73,7 +81,7 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 
 			if (!comHist.getLastRegEmployeeID().equals(result.getLastRegEmployeeID())) {
 
-				result.setLastRegEmployeeOfCompanyID(comHist.getRegisteredEmployeeID());
+				result.setLastRegEmployeeOfCompanyID(comHist.getLastRegEmployeeID());
 				result.setLastRegEmployeeOfCompanyCd(comHist.getLastRegEmployeeCd());
 			}
 		}
@@ -114,6 +122,13 @@ public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegH
 
 		return this.queryProxy().query(GET_LAST_REG_BY_EMPLOYEE_ID_QUERY_STRING, Object[].class)
 				.setParameter("employeeId", registeredEmployeeID).getSingle().map(x -> toDomain(x));
+	}
+
+	@Override
+	public Optional<EmpRegHistory> getRegHistById(String employeeID) {
+
+		return this.queryProxy().query(GET_REG_HIST_BY_EMPLOYEE_ID_QUERY_STRING, PpedtEmployeeRegistrationHistory.class)
+				.setParameter("employeeId", employeeID).getSingle().map(x -> toDomain(x));
 	}
 
 }

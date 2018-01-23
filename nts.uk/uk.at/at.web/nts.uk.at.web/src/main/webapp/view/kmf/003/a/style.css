@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 
 #contents-area {
-	padding: 20px;
+    padding: 19px 10px 0 20px;
 }
 
 .grid-area, .input-form, .a4_2, .a5_1 {
@@ -22,7 +22,7 @@
 
 .a4_2 {
 	padding-top: 5px;
-	padding-right: 75px;
+	padding-right: 65px;
 }
 
 .a5_1 {
@@ -40,7 +40,7 @@
 }
 
 .a9_6 {
-	margin-left: 20px;
+	margin-left: 15px;
 }
 
 .a5 {
@@ -72,4 +72,13 @@ button.nts-switch-button {
 
 table#tbl-condition tr, table#tbl-grant-hd-set tr {
     height: 20px;
+}
+
+.panel.ntsPanel.direction-right {
+    margin-right: 35px !important;
+}
+
+.input-form hr {
+	width: 90%;
+    float: left;
 }

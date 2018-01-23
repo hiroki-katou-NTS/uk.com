@@ -2,6 +2,7 @@ package nts.uk.shr.infra.arc.task.persist;
 
 import java.io.Serializable;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,6 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="CISDT_ASYNC_TASK_ABORT")
+@Cacheable(false)
 public class CisdtAsyncTaskAbort implements Serializable {
 
 	/** serialVersionUID */

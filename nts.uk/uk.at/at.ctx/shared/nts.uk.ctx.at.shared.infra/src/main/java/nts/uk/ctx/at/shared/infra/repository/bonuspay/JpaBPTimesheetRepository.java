@@ -66,7 +66,7 @@ public class JpaBPTimesheetRepository extends JpaRepository implements BPTimeshe
 			BonusPayTimesheet bonusPayTimesheet) {
 		return new KbpmtBPTimesheet(new KbpmtBPTimesheetPK(companyId, bonusPayTimesheet.getTimeSheetId(),bonusPaySettingCode),
 				new BigDecimal(bonusPayTimesheet.getUseAtr().value),
-				bonusPayTimesheet.getTimeItemId().toString(), new BigDecimal(bonusPayTimesheet.getStartTime().v()),
+				bonusPayTimesheet.getTimeItemId(), new BigDecimal(bonusPayTimesheet.getStartTime().v()),
 				new BigDecimal(bonusPayTimesheet.getEndTime().v()),
 				new BigDecimal(bonusPayTimesheet.getRoundingTimeAtr().value),
 				new BigDecimal(bonusPayTimesheet.getRoundingAtr().value));

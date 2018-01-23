@@ -143,7 +143,6 @@ public class ScheduleCreatorExecutionCommandHandler
 
 		// update command
 		command.setCompanyId(companyId);
-		command.setIsConfirm(false);
 		command.setIsDeleteBeforInsert(false);
 
 		// find execution log by id
@@ -160,6 +159,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		ScheduleCreateContent scheCreContent = this.contentRepository.findByExecutionId(command.getExecutionId()).get();
 		command.setContent(scheCreContent);
 
+		command.setConfirm(scheCreContent.getConfirm());
 		// register personal schedule
 		this.registerPersonalSchedule(command, domain, context);
 
@@ -282,6 +282,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		} else {
 			domain.setCompletionStatus(CompletionStatus.COMPLETION_ERROR);
 		}
+		domain.updateExecutionTimeEndToNow();
 		this.scheduleExecutionLogRepository.update(domain);
 	}
 	
@@ -355,12 +356,17 @@ public class ScheduleCreatorExecutionCommandHandler
 			// check exist data basic schedule
 			if (optionalBasicSchedule.isPresent()) {
 				BasicSchedule basicSchedule = optionalBasicSchedule.get();
-
-				// check parameter implementAtr recreate
+				
+				// 登録前削除区分をTrue（削除する）とする
+				command.setIsDeleteBeforInsert(true); // FIX BUG #87113
+				// check parameter implementAtr recreate (入力パラメータ「実施区分」を判断)
 				if (command.getContent().getImplementAtr().value == ImplementAtr.RECREATE.value) {
 					this.createWorkScheduleByRecreate(command, basicSchedule, workingConditionItem);
 				}
 			} else {
+				// 登録前削除区分をTrue（削除する）とする
+				command.setIsDeleteBeforInsert(false); // FIX BUG #87113
+				
 				// not exist data basic schedule
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem);
 			}
@@ -377,11 +383,12 @@ public class ScheduleCreatorExecutionCommandHandler
 	private void createWorkScheduleByRecreate(ScheduleCreatorExecutionCommand command, BasicSchedule basicSchedule,
 			WorkingConditionItem workingConditionItem) {
 
-		// check parameter ReCreateAtr onlyUnconfirm
-		if (command.getContent().getReCreateContent().getReCreateAtr().value == ReCreateAtr.ONLY_UNCONFIRM.value) {
-
+		// 入力パラメータ「再作成区分」を判断
+		// check parameter ReCreateAtr onlyUnconfirm 
+		if (command.getContent().getReCreateContent().getReCreateAtr().value == ReCreateAtr.ONLY_UNCONFIRM.value) {//［未確定データのみ］
+			// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
 			// check confirmedAtr of basic schedule
-			if (basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {
+			if (basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)) {//未確定
 				this.scheCreExeWorkTypeHandler.createWorkSchedule(command, workingConditionItem);
 			}
 		} else {

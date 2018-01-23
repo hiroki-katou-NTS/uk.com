@@ -33,6 +33,12 @@ public class OtherEmTimezoneLateEarlySetDto implements OtherEmTimezoneLateEarlyS
 	/** The late early atr. */
 	private Integer lateEarlyAtr;
 
+	public OtherEmTimezoneLateEarlySetDto() {
+		this.delTimeRoundingSet = new TimeRoundingSettingDto();
+		this.graceTimeSet = new GraceTimeSettingDto();
+		this.recordTimeRoundingSet = new TimeRoundingSettingDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

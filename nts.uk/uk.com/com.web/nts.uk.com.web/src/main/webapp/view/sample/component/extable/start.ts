@@ -149,7 +149,7 @@ __viewContext.ready(function () {
     let horzSumContentDs = [], leftHorzContentDs = [], vertSumContentDs = [], newVertSumContentDs = [];
     for (let i = 0; i < 300; i++) {
         detailContentDs.push(new ExItem(i.toString()));
-        leftmostDs.push({　empId: i.toString(), empName: "社員名" + i });
+        leftmostDs.push({　empId: i.toString(), empName: "社員名" + i + "    AAA" });
         middleDs.push({ empId: i.toString(), cert: "★", over1: 100 + i + "", over2: 1 + i + "" });
         updateMiddleDs.push({ empId: i.toString(), time: "100:00", days: "38", can: "", get: "" });
         if (i % 2 === 0) middleContentDeco.push(new CellColor("over1", i.toString(), "cell-red"));
@@ -243,7 +243,7 @@ __viewContext.ready(function () {
         }];
     
     let leftmostColumns = [{ key: "empName", headerText: "社員名", width: "160px", icon: { for: "body", class: "ui-icon ui-icon-contact", width: "35px" }, 
-        control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); } }];
+        css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); } }];
     let leftmostHeader = {
         columns: leftmostColumns,
         rowHeight: "75px",

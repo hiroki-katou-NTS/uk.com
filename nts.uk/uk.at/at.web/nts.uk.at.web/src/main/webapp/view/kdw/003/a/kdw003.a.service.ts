@@ -5,7 +5,8 @@ module nts.uk.at.view.kdw003.a.service {
         selectErrorCode: "screen/at/correctionofdailyperformance/errorCode",
         selectFormatCode: "screen/at/correctionofdailyperformance/selectCode",
         findCodeName: "screen/at/correctionofdailyperformance/findCodeName",
-        findAllCodeName: "screen/at/correctionofdailyperformance/findAllCodeName"
+        findAllCodeName: "screen/at/correctionofdailyperformance/findAllCodeName",
+        addAndUpdate: "screen/at/correctionofdailyperformance/addAndUpdate"
     }
     
     export function startScreen(param){
@@ -32,6 +33,11 @@ module nts.uk.at.view.kdw003.a.service {
     
      export function findAllCodeName(param) {
         return nts.uk.request.ajax(paths.findAllCodeName, param);
+         
+    }
+    
+     export function addAndUpdate(param) {
+        return nts.uk.request.ajax(paths.addAndUpdate, param);
          
     }
     

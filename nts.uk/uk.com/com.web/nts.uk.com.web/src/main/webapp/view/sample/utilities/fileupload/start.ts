@@ -9,6 +9,7 @@ __viewContext.ready(function() {
     });
 
     class ScreenModel {
+        stereoType: KnockoutObservable<string>;
         fileId: KnockoutObservable<string>;
         filename: KnockoutObservable<string>;
         zipEntry: KnockoutObservable<string>;
@@ -17,10 +18,12 @@ __viewContext.ready(function() {
         accept: KnockoutObservableArray<string>;
         asLink: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
+        immediate: KnockoutObservable<boolean>;
         onchange: (filename) => void;
         onfilenameclick: (filename) => void;
         
         constructor() {
+            this.stereoType = ko.observable("samplefile");
             this.fileId = ko.observable("");
             this.filename = ko.observable("");
             this.zipEntry = ko.observable("");
@@ -29,6 +32,7 @@ __viewContext.ready(function() {
             this.textId = ko.observable("KMF004_106");
             this.asLink = ko.observable(true);
             this.enable = ko.observable(true);
+            this.immediate = ko.observable(true);
             this.onchange = (filename) => {
                 console.log(filename);
             };
@@ -73,6 +77,12 @@ __viewContext.ready(function() {
             nts.uk.request.ajax("/shr/infra/file/storage/infor/" + this.fileId()).done(function(res) {
                 self.fileInfo(res);
             });
+        }
+        
+        finished(fileInfo: any) {
+            var self = this;
+            self.fileId(fileInfo.id);
+            console.log(fileInfo);
         }
 
     }

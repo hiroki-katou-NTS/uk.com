@@ -6,6 +6,8 @@ import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
+import nts.uk.ctx.pereg.dom.person.info.dateitem.DateType;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.SaveDataType;
 
@@ -30,12 +32,17 @@ public class SettingItemDto {
 
 	private DataTypeValue dataType;
 
-	private BigDecimal selectionItemRefType;
+	private ReferenceTypes selectionItemRefType;
 
 	private String itemParentCd;
 
+	private DateType dateType;
+
+	private String SelectionItemRefCd;
+
 	public SettingItemDto(String categoryCode, String itemDefId, String itemCode, String itemName, int isRequired,
-			SaveDataDto saveData, DataTypeValue dataType, BigDecimal selectionItemRefType, String itemParentCd) {
+			SaveDataDto saveData, DataTypeValue dataType, ReferenceTypes selectionItemRefType, String itemParentCd,
+			DateType dateType, String SelectionItemRefCd) {
 		super();
 		this.categoryCode = categoryCode;
 		this.itemDefId = itemDefId;
@@ -46,45 +53,25 @@ public class SettingItemDto {
 		this.dataType = dataType;
 		this.selectionItemRefType = selectionItemRefType;
 		this.itemParentCd = itemParentCd;
+		this.dateType = dateType;
+		this.SelectionItemRefCd = SelectionItemRefCd;
 	}
 
 	private static SaveDataDto createSaveDataDto(int saveDataValue, GeneralDate dateValue, BigDecimal intValue,
-			String stringValue) {
+			String stringValue, DateType dateType) {
 		SaveDataDto resultDto = new SaveDataDto();
 
 		SaveDataType saveDataType = EnumAdaptor.valueOf(saveDataValue, SaveDataType.class);
 
 		switch (saveDataType) {
 		case DATE:
-			resultDto = SaveDataDto.createDataDto(dateValue);
+			resultDto = new SaveDataDto(SaveDataType.DATE, dateValue);
 			break;
 		case NUMBERIC:
-			resultDto = SaveDataDto.createDataDto(intValue.intValueExact());
+			resultDto = new SaveDataDto(SaveDataType.NUMBERIC, intValue);
 			break;
 		case STRING:
-			resultDto = SaveDataDto.createDataDto(stringValue);
-			break;
-		}
-
-		return resultDto;
-	}
-
-	public static SaveDataDto createSaveDataDto(int saveDataValue, String value) {
-		SaveDataDto resultDto = new SaveDataDto();
-
-		SaveDataType saveDataType = EnumAdaptor.valueOf(saveDataValue, SaveDataType.class);
-
-		switch (saveDataType) {
-		case DATE:
-			resultDto = SaveDataDto.createDataDto(value != "" && value != null
-					? GeneralDate.fromString(value.toString(), "yyyy/MM/dd") : GeneralDate.min());
-			break;
-		case NUMBERIC:
-			resultDto = SaveDataDto
-					.createDataDto(value != "" && value != null ? Integer.parseInt(value.toString()) : 0);
-			break;
-		case STRING:
-			resultDto = SaveDataDto.createDataDto(value != null ? value.toString() : "");
+			resultDto = new SaveDataDto(SaveDataType.DATE, stringValue);
 			break;
 		}
 
@@ -93,23 +80,15 @@ public class SettingItemDto {
 
 	public static SettingItemDto createFromJavaType(String categoryCode, String itemDefId, String itemCode,
 			String itemName, int isRequired, int saveDataValue, GeneralDate dateValue, BigDecimal intValue,
-			String stringValue, int dataType, BigDecimal selectionItemRefType, String itemParentCd) {
+			String stringValue, int dataType, int selectionItemRefType, String itemParentCd, int dateType,
+			String SelectionItemRefCd) {
 		SettingItemDto itemDto = new SettingItemDto(categoryCode, itemDefId, itemCode, itemName, isRequired,
-				createSaveDataDto(saveDataValue, dateValue, intValue, stringValue),
-				EnumAdaptor.valueOf(dataType, DataTypeValue.class), selectionItemRefType, itemParentCd);
+				createSaveDataDto(saveDataValue, dateValue, intValue, stringValue,
+						EnumAdaptor.valueOf(dateType, DateType.class)),
+				EnumAdaptor.valueOf(dataType, DataTypeValue.class),
+				EnumAdaptor.valueOf(selectionItemRefType, ReferenceTypes.class), itemParentCd,
+				EnumAdaptor.valueOf(dateType, DateType.class), SelectionItemRefCd);
 		return itemDto;
-	}
-
-	public void setData(String value) {
-		this.saveData = StringDataDto.createDataDto(value);
-	}
-
-	public void setData(int value) {
-		this.saveData = NumberDataDto.createDataDto(value);
-	}
-
-	public void setData(GeneralDate value) {
-		this.saveData = DateDataDto.createDataDto(value);
 	}
 
 	public static SettingItemDto fromInfoDataItem(EmpInfoItemData domain) {
@@ -118,24 +97,27 @@ public class SettingItemDto {
 				domain.getItemCode().v(), domain.getItemName(), domain.getIsRequired().value,
 				domain.getDataState().getDataStateType().value, domain.getDataState().getDateValue(),
 				domain.getDataState().getNumberValue(), domain.getDataState().getStringValue(), domain.getDataType(),
-				domain.getSelectionItemRefType(), domain.getItemParentCd());
+				domain.getSelectionItemRefType(), domain.getItemParentCd(), domain.getDateType().value,
+				domain.getSelectionItemRefCd());
 
 	}
 
-	public String getValueAsString() {
+	public void setData(String value) {
+		this.setSaveData(new SaveDataDto(SaveDataType.STRING, value));
 
-		switch (this.saveData.saveDataType) {
-		case DATE:
-			DateDataDto dateData = (DateDataDto) this.saveData;
-			return dateData.getValue().toString("yyyy/MM/dd");
-		case NUMBERIC:
-			NumberDataDto numberData = (NumberDataDto) this.saveData;
-			return new Integer(numberData.getValue()).toString();
-		case STRING:
-			StringDataDto stringData = (StringDataDto) this.saveData;
-			return stringData.getValue();
+	}
+
+	public void setData(Object value) {
+		if (value.getClass().equals(Integer.class)) {
+			this.setSaveData(new SaveDataDto(SaveDataType.NUMBERIC, value));
 		}
-		return "";
+		if (value.getClass().equals(String.class)) {
+			this.setSaveData(new SaveDataDto(SaveDataType.STRING, value));
+		}
+
+		if (value.getClass().equals(GeneralDate.class)) {
+			this.setSaveData(new SaveDataDto(SaveDataType.DATE, value));
+		}
 
 	}
 

@@ -4,6 +4,7 @@
   top: 0;
   width: 100%;
   white-space: nowrap;
+  z-index: 10000000;
 }
 
 #header #menu-header #logo-area {
@@ -95,7 +96,6 @@
 	display: none;
 	position: absolute;
 	top: 30px;
-	left: -80px;
 	z-index: 20000;
 	margin-left: 0;
 	list-style: none;
@@ -106,7 +106,7 @@
 }
 
 #header #menu-header #logo-area > #user-info > #user > .user-settings > ul.user-options {
-	left: 118px;
+	right: 12px;
 }
 
 #header #menu-header #nav-area {
@@ -198,7 +198,7 @@
 
 /* Title menu */
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div {
-	width: 180px;
+	width: 192px;
 	position: absolute;
 	margin: 0px 8px 4px 2px;
 	top: 5px;
@@ -223,7 +223,7 @@
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div > li.title-item {
 	cursor: pointer;
 	padding: 8px;
-	white-space: nowrap;
+	white-space: pre-wrap;
 }
 
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div > li.title-item:hover {

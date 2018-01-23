@@ -5,8 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import java.util.List;
-
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import java.util.Optional;
 
 /**
  * The Interface PredetemineTimeSettingRepository.
@@ -20,20 +19,35 @@ public interface PredetemineTimeSettingRepository {
 	 * @param workTimeCode the work time code
 	 * @return the predetemine time setting
 	 */
-	public PredetemineTimeSetting findByWorkTimeCode(String companyId, String workTimeCode);
+	public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode);
 
 	/**
-	 * Save.
+	 * Adds the.
 	 *
 	 * @param domain the domain
 	 */
-	public void save(PredetemineTimeSetting domain);
+	public void add(PredetemineTimeSetting domain);
+	
+	/**
+	 * Update.
+	 *
+	 * @param domain the domain
+	 */
+	public void update(PredetemineTimeSetting domain);
 
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 * @param workTimeCode the work time code
+	 */
+	public void remove(String companyId,String workTimeCode);
+	
 	/**
 	 * Find by start.
 	 *
 	 * @param companyID the company ID
-	 * @param workTimeCodes the sift C ds
+	 * @param workTimeCodes the work time codes
 	 * @param startClock the start clock
 	 * @return the list
 	 */
@@ -53,14 +67,27 @@ public interface PredetemineTimeSettingRepository {
 	 * Find by start and end.
 	 *
 	 * @param companyID the company ID
-	 * @param workTimeCodes the sift C ds
+	 * @param workTimeCodes the work time codes
 	 * @param startClock the start clock
 	 * @param endClock the end clock
 	 * @return the list
 	 */
 	public List<PredetemineTimeSetting> findByStartAndEnd(String companyID, List<String> workTimeCodes, int startClock, int endClock);
 	
+	/**
+	 * Find by company ID.
+	 *
+	 * @param companyID the company ID
+	 * @return the list
+	 */
 	public List<PredetemineTimeSetting> findByCompanyID(String companyID);
 
+	/**
+	 * Find by code list.
+	 *
+	 * @param companyID the company ID
+	 * @param worktimeCodes the worktime codes
+	 * @return the list
+	 */
 	public List<PredetemineTimeSetting> findByCodeList(String companyID, List<String> worktimeCodes);
 }

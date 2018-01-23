@@ -10,4 +10,6 @@ public class PersonError {
 	String resourceID;
 	String employeeID;
 	int executionContent;
+	String personCode;
+	String personName;
 }

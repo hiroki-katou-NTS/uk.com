@@ -4,11 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
+import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -154,4 +158,26 @@ public class Formula extends AggregateRoot {
 		return true;
 	}
 
+	
+	/**
+	 * 計算設定を判定し各計算処理へ飛ばす
+	 * @param optionalItem 任意項目
+	 * @param performanceAtr 実績区分
+	 * @param resultCalcFormula 計算結果(List)
+	 * @return 計算式の結果クラス
+	 */
+	public ResultOfCalcFormula dicisionCalc(OptionalItem optionalItem ,PerformanceAtr performanceAtr,List<ResultOfCalcFormula> resultCalcFormula) {
+		int calcValue = 0;
+		if(this.getCalcAtr().isItemSelection()) {
+			//計算式による計算
+		}
+		else if(this.getCalcAtr().isFormulaSetting()) {
+			//項目選択による計算
+		}
+		else {
+			throw new RuntimeException("unknown FormulaSetting"+ this.getCalcAtr());
+		}
+		
+		return ResultOfCalcFormula.of(formulaId,this.formulaAtr, calcValue);
+	}
 }
