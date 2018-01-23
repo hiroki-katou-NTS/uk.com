@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.workplace;
 
-import java.lang.reflect.Array;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -199,8 +197,12 @@ public class WorkplacePubImp implements SyWorkplacePub {
 			// Include this wkp
 			lstWpkIds.add(item.getWorkplaceId());
 		});
+		
+		// reverse list (child -> parent)
+		Collections.reverse(lstWpkIds);
 
-		return lstWpkIds.stream().distinct().sorted((first,second) -> second.compareTo(first)).collect(Collectors.toList());
+		// Return
+		return lstWpkIds.stream().distinct().collect(Collectors.toList());
 	}
 
 	/*
