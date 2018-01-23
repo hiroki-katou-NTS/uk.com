@@ -23,7 +23,6 @@ module nts.uk.com.view.cmm021.a {
 
             useSet: KnockoutObservableArray<any>;
             selectUse: KnockoutObservable<number>;
-            selectUseScreenAC: KnockoutObservable<number>;
             
             enableSave: KnockoutObservable<boolean>;
 
@@ -98,7 +97,6 @@ module nts.uk.com.view.cmm021.a {
                     { code: '0', name: nts.uk.resource.getText("CMM021_10") },
                 ]);
                 _self.selectUse = ko.observable(1);
-                _self.selectUseScreenAC = ko.observable(1);
 
                 _self.enableSave = ko.observable(true);
                 _self.windowAcc1 = new WindowAccountDto("", "", "", 0, 0);
@@ -238,15 +236,6 @@ module nts.uk.com.view.cmm021.a {
                     }
                 });
                 
-//                _self.selectUseScreenAC.subscribe((newValue) => {
-//                    if (newValue == 1) {
-//                        _self.loadUserSettingScreenAC();
-//                    } else {
-//                        _self.loadUserUnsettingScreenAC();
-//                    }
-//                
-//                });
-
 
                 _self.listUserUnsetting = [];
                 _self.listUserUnsettingScreenAC = [];
@@ -356,7 +345,7 @@ module nts.uk.com.view.cmm021.a {
                         let winAcc4: any = data.filter(function(o: any) {return o.no == 4;});
                         let winAcc5: any = data.filter(function(o: any) {return o.no == 5;});
                         
-                        if (winAcc1.length > 0) {
+                        if (winAcc1.length > 0 && winAcc1[0].hostName != "" && winAcc1[0].userName !="") {
                             _self.hostName1(winAcc1[0].hostName);
                             _self.userName1(winAcc1[0].userName);
                             _self.enable_WinAcc1(true);
@@ -368,8 +357,8 @@ module nts.uk.com.view.cmm021.a {
                             _self.windowAcc1.isChange = true;
                         }
 
-                        if (winAcc2.length > 0) {
-                            _self.hostName2(winAcc2[0].hostName);
+                        if (winAcc2.length > 0 && winAcc2[0].hostName != "" && winAcc2[0].userName !="") {
+                            _self.hostName2(winAcc2[0].hostName); 
                             _self.userName2(winAcc2[0].userName);
                             _self.enable_WinAcc2(true);
                             _self.windowAcc2.isChange = false;
@@ -380,7 +369,7 @@ module nts.uk.com.view.cmm021.a {
                             _self.windowAcc2.isChange = true;
                         }
 
-                        if (winAcc3.length > 0) {
+                        if (winAcc3.length > 0 && winAcc3[0].hostName != "" && winAcc3[0].userName !="") {
                             _self.hostName3(winAcc3[0].hostName);
                             _self.userName3(winAcc3[0].userName);
                             _self.enable_WinAcc3(true);
@@ -392,7 +381,7 @@ module nts.uk.com.view.cmm021.a {
                             _self.windowAcc3.isChange = true;
                         }
 
-                        if (winAcc4.length > 0) {
+                        if (winAcc4.length > 0 && winAcc4[0].hostName != "" && winAcc4[0].userName !="") {
                             _self.hostName4(winAcc4[0].hostName);
                             _self.userName4(winAcc4[0].userName);
                             _self.enable_WinAcc4(true);
@@ -404,7 +393,7 @@ module nts.uk.com.view.cmm021.a {
                             _self.windowAcc4.isChange = true;
                         }
 
-                        if (winAcc5.length > 0) {
+                        if (winAcc5.length > 0 && winAcc5[0].hostName != "" && winAcc5[0].userName !="") {
                             _self.hostName5(winAcc5[0].hostName);
                             _self.userName5(winAcc5[0].userName);
                             _self.enable_WinAcc5(true);
@@ -443,6 +432,10 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 let dfd = $.Deferred<any>();
                 
+                
+                
+                
+                
                 let user = _self.listUserDto.filter(item => _self.selectedEmployeeId() == item.employeeId)[0];
 
                 let win1 = _self.windowAcc1;
@@ -450,6 +443,12 @@ module nts.uk.com.view.cmm021.a {
                 let win3 = _self.windowAcc3;
                 let win4 = _self.windowAcc4;
                 let win5 = _self.windowAcc5;
+                
+                // validate
+                if (!_self.validate()) {
+                    return;
+                }
+                
 
                 let saveCommand = new SaveWindowAccountCommand();
 
@@ -565,6 +564,67 @@ module nts.uk.com.view.cmm021.a {
                
                 _self.userId("");
                 _self.userId(_self.userIdBeChoosen());
+            }
+            
+            
+            /**
+             * validate
+             */
+            private validate() {
+                let _self = this;
+
+                // clear error
+                _self.clearError();
+
+                // validate
+                if(_self.enable_WinAcc1()){
+                     $('#focus-hostName1').ntsEditor('validate');
+                     $('#userName1').ntsEditor('validate');
+                    }
+                if(_self.enable_WinAcc2()){
+                     $('#hostName2').ntsEditor('validate');
+                     $('#userName2').ntsEditor('validate');
+                    }
+                if(_self.enable_WinAcc3()){
+                     $('#hostName3').ntsEditor('validate');
+                     $('#userName3').ntsEditor('validate');
+                    }
+                if(_self.enable_WinAcc4()){
+                     $('#hostName4').ntsEditor('validate');
+                     $('#userName4').ntsEditor('validate');
+                    }
+                if(_self.enable_WinAcc5()){
+                     $('#hostName5').ntsEditor('validate');
+                     $('#userName5').ntsEditor('validate');
+                    }
+                if(_self.enable_WinAcc5()){
+                     $('#hostName5').ntsEditor('validate');
+                     $('#userName5').ntsEditor('validate');
+                    } 
+                if(_self.enable_otherAcc()){
+                     $('#focus-CompanyCode').ntsEditor('validate');
+                     $('#userName6').ntsEditor('validate');
+                    } 
+                
+                return !$('.nts-input').ntsError('hasError');
+            }
+            
+            /**
+             * clearError
+             */
+            private clearError() {
+                $('#focus-hostName1').ntsError('clear');
+                $('#userName1').ntsError('clear');
+                $('#hostName2').ntsError('clear');
+                $('#userName2').ntsError('clear');
+                $('#hostName3').ntsError('clear');
+                $('#userName3').ntsError('clear');
+                $('#hostName4').ntsError('clear');
+                $('#userName4').ntsError('clear');
+                $('#hostName5').ntsError('clear');
+                $('#userName5').ntsError('clear');
+                $('#focus-CompanyCode').ntsError('clear');
+                $('#userName6').ntsError('clear');
             }
 
             
@@ -874,6 +934,11 @@ module nts.uk.com.view.cmm021.a {
             private SaveOtherAcc(): JQueryPromise<any> {
                 let _self = this;
                 let otherAcc = new SaveOtherSysAccountCommand();
+                
+                // validate
+                if (!_self.validate()) {
+                    return;
+                }
                 
                 if (_self.enable_otherAcc() == true && _self.companyCode6() != "" && _self.userName6() != "") {
                     otherAcc.userId = _self.userIdBeChoosen();

@@ -17,6 +17,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.person.PersonInfoAdapter;
@@ -166,11 +167,13 @@ public class UserInfoFinder {
 		}else{		
 			listUserMap.forEach(w -> {
 				List<WindowAccount> winAcc = this.windowAccountRepository.findByUserId(w.getUserId());
-				//System.out.println(winAcc.get(1).getUseAtr().value);
-				if (winAcc.size() > 1 || (winAcc.size() == 1 && winAcc.get(0).getUseAtr().value == 1 )) {
-					w.setIsSetting(true);
-				} else if (winAcc.isEmpty() || (winAcc.size() == 1 && winAcc.get(0).getUseAtr().value == 0 )) {
+				
+				// list empty
+				if (CollectionUtil.isEmpty(winAcc)) {
 					w.setIsSetting(false);
+				} else {
+					Boolean isSetting = winAcc.stream().anyMatch(item -> item.isSetting());
+					w.setIsSetting(isSetting);
 				}
 			});
 		}

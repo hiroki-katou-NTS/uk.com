@@ -67,7 +67,19 @@ public class WindowAccount extends AggregateRoot{
 		memento.setNo(this.no);
 		memento.setUseAtr(this.useAtr);
 	}
-
+	
+	/**
+	 * Checks if is setting.
+	 *
+	 * @return the boolean
+	 */
+	public Boolean isSetting() {
+		if (this.useAtr == UseAtr.NotUse) {
+			return false;
+		}
+		return true;
+	}
+	
 	/**
 	 * Instantiates a new window account.
 	 */
