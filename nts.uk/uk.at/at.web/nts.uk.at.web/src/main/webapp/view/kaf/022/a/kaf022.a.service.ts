@@ -5,9 +5,10 @@ module nts.uk.at.view.kmf022.a.service {
     let paths: any = {
         //会社別申請承認設定
         findAll: "at/request/application/requestofearch/getrequestofearch",
+        // update/insert: RequestOfEachCompanyCommandHandler
         // A4_6
         find: "at/request/application/getalldatabyclosureId",
-        updateClosure: "at/request/application/update",
+//        updateClosure: "at/request/application/update",
         addClosure: "at/request/application/add",
         // A14_3
         findJobAssign: "job/assign/setting/getjob",
@@ -15,12 +16,17 @@ module nts.uk.at.view.kmf022.a.service {
         findJobTitleSearch: "workflow/jobtitlesearchset/job/getbyId",
         // A17_5
         findAppro: "approval/setting/approval",
-        // A17_4
+        // A17_4, A9_5
         findAppSet: "at/request/application/setting/appset",
-        //A9_5
-        findAppSetting: "at/request/application/setting/appset"
+        //E14,15
+        findStamp: "at/request/application/stamprequest/findByComID" //UpdateStampRequestSettingCommandHandler
+        
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
+    }
+    
+    export function findStamp() {
+        return nts.uk.request.ajax("at", paths.findStamp); 
     }
     
     export function findAppSetting() {

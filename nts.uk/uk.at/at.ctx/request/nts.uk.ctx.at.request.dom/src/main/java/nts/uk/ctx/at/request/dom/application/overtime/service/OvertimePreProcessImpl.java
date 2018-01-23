@@ -49,10 +49,9 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.AtWorkAtr;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.DisplayBreakTime;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.DisplayFlg;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.AtWorkAtr;
+import nts.uk.ctx.at.request.dom.setting.workplace.DisplayBreakTime;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
@@ -145,33 +144,34 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			String employeeID) {
 		OvertimeInstructInfomation overtimeInstructInformation = new OvertimeInstructInfomation();
 		if (appCommonSettingOutput != null) {
-			int useAtr = appCommonSettingOutput.requestOfEachCommon.getRequestAppDetailSettings().get(0)
-					.getInstructionUseSetting().getInstructionUseDivision().value;
-			if (useAtr == UseAtr.USE.value) {
-				if (appDate != null) {
-					overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(true);
-					OverTimeInstruct overtimeInstruct = overtimeInstructRepository
-							.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
-					if (overtimeInstruct != null) {
-						TimeWithDayAttr startTime = new TimeWithDayAttr(
-								overtimeInstruct.getStartClock() == null ? -1 : overtimeInstruct.getStartClock().v());
-						TimeWithDayAttr endTime = new TimeWithDayAttr(
-								overtimeInstruct.getEndClock() == null ? -1 : overtimeInstruct.getEndClock().v());
-						overtimeInstructInformation
-								.setOvertimeInstructInfomation(overtimeInstruct.getInstructDate().toString() + " "
-										+ startTime.getDayDivision().description + " "
-										+ convert(overtimeInstruct.getStartClock().v()) + "~"
-										+ endTime.getDayDivision().description + " "
-										+ convert(overtimeInstruct.getEndClock().v()) + " "
-										+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson()) + " ("
-										+ employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
-					} else {
-						overtimeInstructInformation.setOvertimeInstructInfomation(
-								GeneralDate.fromString(appDate, DATE_FORMAT) + "の残業指示はありません。");
+			if(appCommonSettingOutput.approvalFunctionSetting != null){
+				int useAtr = appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionUseDivision().value;
+				if (useAtr == UseAtr.USE.value) {
+					if (appDate != null) {
+						overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(true);
+						OverTimeInstruct overtimeInstruct = overtimeInstructRepository
+								.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
+						if (overtimeInstruct != null) {
+							TimeWithDayAttr startTime = new TimeWithDayAttr(
+									overtimeInstruct.getStartClock() == null ? -1 : overtimeInstruct.getStartClock().v());
+							TimeWithDayAttr endTime = new TimeWithDayAttr(
+									overtimeInstruct.getEndClock() == null ? -1 : overtimeInstruct.getEndClock().v());
+							overtimeInstructInformation
+									.setOvertimeInstructInfomation(overtimeInstruct.getInstructDate().toString() + " "
+											+ startTime.getDayDivision().description + " "
+											+ convert(overtimeInstruct.getStartClock().v()) + "~"
+											+ endTime.getDayDivision().description + " "
+											+ convert(overtimeInstruct.getEndClock().v()) + " "
+											+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson()) + " ("
+											+ employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
+						} else {
+							overtimeInstructInformation.setOvertimeInstructInfomation(
+									GeneralDate.fromString(appDate, DATE_FORMAT) + "の残業指示はありません。");
+						}
 					}
+				} else {
+					overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(false);
 				}
-			} else {
-				overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(false);
 			}
 		}
 		return overtimeInstructInformation;
@@ -214,13 +214,13 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 
 	@Override
 	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, String appDate,
-			RequestAppDetailSetting requestAppDetailSetting, String siftCD) {
+			ApprovalFunctionSetting approvalFunctionSetting, String siftCD) {
 		UseAtr recordWorkDisplay = UseAtr.NOTUSE;
 		Integer startTime1 = null;
 		Integer endTime1 = null;
 		Integer startTime2 = null;
 		Integer endTime2 = null;
-		if (requestAppDetailSetting.timeCalUseAtr.equals(UseAtr.NOTUSE)) {
+		if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.NOTUSE)) {
 			return new RecordWorkOutput(recordWorkDisplay, startTime1, endTime1, startTime2, endTime2);
 		}
 		recordWorkDisplay = UseAtr.USE;
@@ -228,7 +228,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			return new RecordWorkOutput(recordWorkDisplay, startTime1, endTime1, startTime2, endTime2);
 		}
 
-		AtWorkAtr atWorkAtr = requestAppDetailSetting.getAtworkTimeBeginDisFlg();
+		AtWorkAtr atWorkAtr = approvalFunctionSetting.getApplicationDetailSetting().get().getAtworkTimeBeginDisp();
 		switch (atWorkAtr) {
 		case NOTDISPLAY: {
 			break;
@@ -257,14 +257,14 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 				}
 			}
 			if (recordWorkInfoImport.getLeaveStampTimeFirst() == null) {
-				if (requestAppDetailSetting.getTimeEndDispFlg().equals(DisplayBreakTime.SYSTEM_TIME)) {
+				if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeEndDispFlg().equals(DisplayBreakTime.SYSTEM_TIME)) {
 					endTime1 = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 				}
 			} else {
 				endTime1 = recordWorkInfoImport.getLeaveStampTimeFirst();
 			}
 			if (recordWorkInfoImport.getLeaveStampTimeSecond() == null) {
-				if (requestAppDetailSetting.getTimeEndDispFlg().equals(DisplayBreakTime.SYSTEM_TIME)) {
+				if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeEndDispFlg().equals(DisplayBreakTime.SYSTEM_TIME)) {
 					endTime2 = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 				}
 			} else {
@@ -295,9 +295,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 
 	@Override
-	public boolean getRestTime(RequestAppDetailSetting requestAppDetailSetting) {
-		if (requestAppDetailSetting != null) {
-			if (requestAppDetailSetting.getBreakInputFieldDisFlg().value == DisplayFlg.DISPLAY.value) {
+	public boolean getRestTime(ApprovalFunctionSetting approvalFunctionSetting) {
+		if (approvalFunctionSetting != null) {
+			if (approvalFunctionSetting.getApplicationDetailSetting().get().getBreakInputFieldDisp()) {
 				return true;
 			} else {
 				return false;
@@ -442,7 +442,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 
 	@Override
-	public AppOvertimeReference getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID, String appDate,RequestAppDetailSetting requestAppDetailSetting,List<CaculationTime> overtimeHours) {
+	public AppOvertimeReference getResultContentActual(int prePostAtr, String siftCode, String companyID, String employeeID, String appDate,ApprovalFunctionSetting approvalFunctionSetting,List<CaculationTime> overtimeHours) {
 		// TODO Auto-generated method stub
 		AppOvertimeReference result = new AppOvertimeReference();
 		List<CaculationTime> caculationTimes = new ArrayList<>();
@@ -485,10 +485,10 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 				
 				if(checkTimeDay(appDate,workTimeSet)){
 					// 06-04-3_当日の場合
-					caculationTimes = overtimeSixProcess.checkDuringTheDay(companyID, employeeID, appDate, requestAppDetailSetting, siftCode, overtimeHours,recordWorkInfoImport);
+					caculationTimes = overtimeSixProcess.checkDuringTheDay(companyID, employeeID, appDate, approvalFunctionSetting, siftCode, overtimeHours,recordWorkInfoImport);
 				}else{
 					// 06-04-2_当日以外の場合
-					caculationTimes = this.overtimeSixProcess.checkOutSideTimeTheDay(companyID, employeeID, appDate, requestAppDetailSetting, siftCode, overtimeHours,recordWorkInfoImport);
+					caculationTimes = this.overtimeSixProcess.checkOutSideTimeTheDay(companyID, employeeID, appDate, approvalFunctionSetting, siftCode, overtimeHours,recordWorkInfoImport);
 				}
 			}
 			result.setOverTimeInputsRefer(caculationTimes);

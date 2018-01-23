@@ -5,7 +5,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.erroralarm.dto.EmployeeDailyPe
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 public class EmployeeDailyPerErrorCommand extends DailyWorkCommonCommand {
 
