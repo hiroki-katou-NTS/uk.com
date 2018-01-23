@@ -13,9 +13,9 @@ module nts.uk.at.view.kmf002.d {
          * 
          */
         export function save(year: number, data: any, empCd: string): JQueryPromise<any> {
-            model.EmploymentMonthDaySetting employmentMonthDaySetting = new model.EmploymentMonthDaySetting(year, empCd, new Array<model.PublicHolidayMonthSettingDto>());
+            let employmentMonthDaySetting: model.EmploymentMonthDaySetting= new model.EmploymentMonthDaySetting(year, empCd, []);
             employmentMonthDaySetting.toDto(data);
-            let command = {};
+            let command: any = {};
             command.year = year;
             command.publicHolidayMonthSettings = employmentMonthDaySetting.publicHolidayMonthSettingDto;
             command.empCd = empCd;
@@ -27,8 +27,8 @@ module nts.uk.at.view.kmf002.d {
         }
         
         export function remove(year: number, employmentCode: string): JQueryPromise<any> {
-            model.EmploymentMonthDaySettingRemoveCommand employmentMonthDaySettingRemoveCommand = new model.EmploymentMonthDaySettingRemoveCommand(year, employmentCode);
-            let command = {};
+            let employmentMonthDaySettingRemoveCommand: model.EmploymentMonthDaySettingRemoveCommand= new model.EmploymentMonthDaySettingRemoveCommand(year, employmentCode);
+            let command: any = {};
             command.year = year;
             command.empCd = employmentCode;
             return nts.uk.request.ajax("com", path.remove, command);
@@ -41,10 +41,10 @@ module nts.uk.at.view.kmf002.d {
     export module model {
         export class EmploymentMonthDaySetting {
             year: number;
-            publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>;
+            publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[];
             empCd: string;
             
-            constructor(year: number, empCd: string, publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>){
+            constructor(year: number, empCd: string, publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[]){
                 let _self = this;
                 _self.year = year;
                 _self.publicHolidayMonthSettingDto = publicHolidayMonthSettingDto;
