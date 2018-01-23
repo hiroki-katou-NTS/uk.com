@@ -20,9 +20,9 @@ module nts.uk.at.view.kmf002.e {
         
         
         export function save(year: number, data: any): JQueryPromise<any> {
-            model.SystemResourceDto sysResourceDto = new model.SystemResourceDto(year, new Array<model.PublicHolidayMonthSettingDto>());
+            let sysResourceDto: model.SystemResourceDto= new model.SystemResourceDto(year, []);
             sysResourceDto.toDto(data);
-            let command = {};
+            let command: any = {};
             command.year = year;
             command.publicHolidayMonthSettings = sysResourceDto.publicHolidayMonthSettings
             return nts.uk.request.ajax("com", path.save, command);
@@ -45,9 +45,9 @@ module nts.uk.at.view.kmf002.e {
     export module model {
         export class SystemResourceDto {
             year: number;
-            publicHolidayMonthSettings: Array<PublicHolidayMonthSettingDto>;
+            publicHolidayMonthSettings: PublicHolidayMonthSettingDto[];
             
-            constructor(year: number, publicHolidayMonthSettings: Array<PublicHolidayMonthSettingDto>){
+            constructor(year: number, publicHolidayMonthSettings: PublicHolidayMonthSettingDto[]){
                 let _self = this;
                 _self.year = year;
                 _self.publicHolidayMonthSettings = publicHolidayMonthSettings;

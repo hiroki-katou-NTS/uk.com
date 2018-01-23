@@ -12,14 +12,13 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPe
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInf;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInfPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		implements AffiliationInforOfDailyPerforRepository {
 
 	private static final String REMOVE_BY_EMPLOYEE;
-	
-	private static final String DEL_BY_LIST_KEY;
 	
 	private static final String FIND_BY_KEY;
 
@@ -30,13 +29,6 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd = :ymd ");
 		REMOVE_BY_EMPLOYEE = builderString.toString();
-		
-		builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiAffiliationInf a ");
-		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd IN :ymds ");
-		DEL_BY_LIST_KEY = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -74,12 +66,6 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 	}
 
 	@Override
-	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
-		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
-		.setParameter("ymds", ymds).executeUpdate();
-	}
-
-	@Override
 	public Optional<AffiliationInforOfDailyPerfor> findByKey(String employeeId, GeneralDate ymd) {
 		return this.queryProxy().query(FIND_BY_KEY, KrcdtDaiAffiliationInf.class).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).getSingle(f -> f.toDomain());
@@ -100,5 +86,16 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		data.workplaceID = domain.getWplID();
 		data.jobtitleID = domain.getJobTitleID();
 		this.commandProxy().update(data);
+	}
+
+	@Override
+	public List<AffiliationInforOfDailyPerfor> finds(List<String> employeeId, DatePeriod ymd) {
+		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiAffiliationInf af ");
+		query.append("WHERE af.krcdtDaiAffiliationInfPK.employeeId IN :employeeId ");
+		query.append("AND af.krcdtDaiAffiliationInfPK.ymd <= :end AND af.krcdtDaiAffiliationInfPK.ymd >= :start");
+		return this.queryProxy().query(query.toString(), KrcdtDaiAffiliationInf.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("start", ymd.start())
+				.setParameter("end", ymd.end()).getList(af -> af.toDomain());
 	}
 }
