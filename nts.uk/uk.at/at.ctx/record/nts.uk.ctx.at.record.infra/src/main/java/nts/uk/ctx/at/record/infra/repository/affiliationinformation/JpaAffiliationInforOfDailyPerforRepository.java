@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.affiliationinformation;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
