@@ -220,6 +220,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	private final static String SEL_ITEM_BY_SELECTIONS = "SELECT c FROM PpemtPerInfoItemCm c "
 			+ " WHERE  c.selectionItemRefCode =:selectionItemId";
+	
+	private final static String SEL_ITEM_IS_ABOLITION = " SELECT c, i FROM PpemtPerInfoCtg c "
+			+ " INNER JOIN  PpemtPerInfoItem i"
+			+ " ON c.ppemtPerInfoCtgPK.perInfoCtgId =  i.perInfoCtgId "
+			+ " WHERE c.cid =: cid AND c.abolitionAtr = 0"
+			+ " AND i.abolitionAtr = 0";
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
