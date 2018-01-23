@@ -77,8 +77,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 								command.getDailyAlarmCheckCondition().getConditionToExtractDaily(),
 								command.getDailyAlarmCheckCondition().isAddApplication(),
 								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()),
-								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(item -> item.getFixConWorkRecordNo()).collect(Collectors.toList()),
-								command.getDailyAlarmCheckCondition().getListErrorAlarmCode().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()));
+//								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(item -> item.getFixConWorkRecordNo()).collect(Collectors.toList()),
+								command.getDailyAlarmCheckCondition().getListErrorAlarmCode());
 				break;
 			case SCHEDULE_4WEEK:
 				extractionCondition = command.getSchedule4WeekAlarmCheckCondition() == null ? null
@@ -105,14 +105,25 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			AlarmCategory category = AlarmCategory.values()[command.getCategory()];
 			switch (category) {
 			case DAILY:
+				String dailyAlarmId = IdentifierUtil.randomUniqueId();
 				extractionCondition = command.getDailyAlarmCheckCondition() == null ? null
-						: new DailyAlarmCondition(IdentifierUtil.randomUniqueId(),
+						: new DailyAlarmCondition(dailyAlarmId,
 								command.getDailyAlarmCheckCondition().getConditionToExtractDaily(),
 								command.getDailyAlarmCheckCondition().isAddApplication(),
 								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()),
-								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(c->c.getFixConWorkRecordNo()).collect(Collectors.toList()),
-								command.getDailyAlarmCheckCondition().getListErrorAlarmCode().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
+//								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(c->c.getFixConWorkRecordNo()).collect(Collectors.toList()),
+								command.getDailyAlarmCheckCondition().getListErrorAlarmCode()
 								);
+				
+				//add WorkRecordExtractCondition
+				for(WorkRecordExtraConAdapterDto workRecordExtraConAdapterDto : command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork()) {
+					this.workRecordExtraConRepo.addWorkRecordExtraConPub(workRecordExtraConAdapterDto);
+				}
+				//add FixedWorkRecordExtractCondition
+				for(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto : command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord()) {
+					fixedConWorkRecordAdapterDto.setDailyAlarmConID(dailyAlarmId);
+					this.fixedConWorkRecordRepo.addFixedConWorkRecordPub(fixedConWorkRecordAdapterDto);
+				}
 				break;
 			case SCHEDULE_4WEEK:
 				extractionCondition = command.getSchedule4WeekAlarmCheckCondition() == null ? null
@@ -135,18 +146,6 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 							command.getTargetCondition().getTargetEmployment(),
 							command.getTargetCondition().getTargetClassification()),
 					command.getAvailableRoles(), extractionCondition);
-			//Ma A hieu tra ve sau khi tao moi
-			
-			//add WorkRecordExtractCondition
-			for(WorkRecordExtraConAdapterDto workRecordExtraConAdapterDto : command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork()) {
-				this.workRecordExtraConRepo.addWorkRecordExtraConPub(workRecordExtraConAdapterDto);
-			}
-			String dailyID="abc";
-			//add FixedWorkRecordExtractCondition
-			for(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto : command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord()) {
-				fixedConWorkRecordAdapterDto.setDailyAlarmConID(dailyID);
-				this.fixedConWorkRecordRepo.addFixedConWorkRecordPub(fixedConWorkRecordAdapterDto);
-			}
 			
 			conditionRepo.add(domain);
 		}

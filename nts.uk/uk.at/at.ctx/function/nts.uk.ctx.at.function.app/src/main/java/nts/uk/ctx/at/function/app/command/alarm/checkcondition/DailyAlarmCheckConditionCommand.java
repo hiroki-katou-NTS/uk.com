@@ -25,14 +25,14 @@ public class DailyAlarmCheckConditionCommand {
 	
 	private boolean addApplication;
 	//tab 2
-	private List<ErrorAlarmWorkRecordAdapterDto> listErrorAlarmCode;
+	private List<String> listErrorAlarmCode;
 	//tab 3
 	private List<WorkRecordExtraConAdapterDto> listExtractConditionWorkRecork;
 	//tab 4
 	private List<FixedConWorkRecordAdapterDto> listFixedExtractConditionWorkRecord;
 	
 	public DailyAlarmCheckConditionCommand(int conditionToExtractDaily, boolean addApplication,
-			List<ErrorAlarmWorkRecordAdapterDto> listErrorAlarmCode, List<WorkRecordExtraConAdapterDto> listExtractConditionWorkRecork,
+			List<String> listErrorAlarmCode, List<WorkRecordExtraConAdapterDto> listExtractConditionWorkRecork,
 			List<FixedConWorkRecordAdapterDto> listFixedExtractConditionWorkRecord) {
 		super();
 		this.conditionToExtractDaily = conditionToExtractDaily;
