@@ -11,6 +11,8 @@ import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 /** 日別実績の休憩時間帯 Finder */
@@ -24,7 +26,7 @@ public class BreakTimeDailyFinder extends FinderFacade {
 	public BreakTimeDailyDto find(String employeeId, GeneralDate baseDate) {
 		List<BreakTimeOfDailyPerformance> domains = this.repo.findByKey(employeeId, baseDate);
 		if (!domains.isEmpty()) {
-			return BreakTimeDailyDto.toDto(domains.get(0));
+			return BreakTimeDailyDto.getDto(domains.get(0));
 		}
 		return new BreakTimeDailyDto();
 	}
@@ -33,7 +35,14 @@ public class BreakTimeDailyFinder extends FinderFacade {
 	@Override
 	public List<BreakTimeDailyDto> finds(String employeeId, GeneralDate baseDate) {
 		return this.repo.findByKey(employeeId, baseDate).stream().map(x -> {
-			return BreakTimeDailyDto.toDto(x);
+			return BreakTimeDailyDto.getDto(x);
 		}).collect(Collectors.toList());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate) {
+		return (List<T>) this.repo.finds(employeeId, baseDate).stream()
+				.map(c -> BreakTimeDailyDto.getDto(c)).collect(Collectors.toList());
 	}
 }

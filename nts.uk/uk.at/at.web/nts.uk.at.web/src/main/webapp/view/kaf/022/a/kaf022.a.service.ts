@@ -19,7 +19,8 @@ module nts.uk.at.view.kmf022.a.service {
         // A17_4, A9_5
         findAppSet: "at/request/application/setting/appset",
         //E14,15
-        findStamp: "at/request/application/stamprequest/findByComID"
+        findStamp: "at/request/application/stamprequest/findByComID" //UpdateStampRequestSettingCommandHandler
+        
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
     }
