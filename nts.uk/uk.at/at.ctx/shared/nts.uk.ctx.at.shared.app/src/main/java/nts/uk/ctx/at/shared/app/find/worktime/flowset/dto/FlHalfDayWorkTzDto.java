@@ -33,7 +33,10 @@ public class FlHalfDayWorkTzDto implements FlowHalfDayWtzSetMemento {
 	 */
 	@Override
 	public void setRestTimezone(FlowWorkRestTimezone tzone) {
-		tzone.saveToMemento(this.restTimezone);
+		if (tzone != null) {
+			this.restTimezone = new FlowWorkRestTimezoneDto();
+			tzone.saveToMemento(this.restTimezone);
+		}	
 	}
 
 	/*
@@ -45,6 +48,9 @@ public class FlHalfDayWorkTzDto implements FlowHalfDayWtzSetMemento {
 	 */
 	@Override
 	public void setWorkTimeZone(FlowWorkTimezoneSetting tzone) {
-		tzone.saveToMemento(this.workTimeZone);
+		if (tzone != null) {
+			this.workTimeZone = new FlWorkTzSettingDto();
+			tzone.saveToMemento(this.workTimeZone);
+		}	
 	}
 }

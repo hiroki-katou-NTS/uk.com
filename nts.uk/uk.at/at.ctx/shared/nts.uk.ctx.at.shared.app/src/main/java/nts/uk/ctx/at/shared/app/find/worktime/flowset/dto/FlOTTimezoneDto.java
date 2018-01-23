@@ -69,7 +69,10 @@ public class FlOTTimezoneDto implements FlowOTTimezoneSetMemento {
 	 */
 	@Override
 	public void setFlowTimeSetting(FlowTimeSetting ftSet) {
-		ftSet.saveToMemento(this.flowTimeSetting);
+		if (ftSet != null) {
+			this.flowTimeSetting = new FlTimeSettingDto();
+			ftSet.saveToMemento(this.flowTimeSetting);
+		}
 	}
 
 	/*

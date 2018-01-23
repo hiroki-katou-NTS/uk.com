@@ -36,7 +36,10 @@ public class FlOffdayWorkTzDto implements FlowOffdayWtzSetMemento {
 	 */
 	@Override
 	public void setRestTimeZone(FlowWorkRestTimezone tzone) {
-		tzone.saveToMemento(this.restTimeZone);
+		if (tzone != null) {
+			this.restTimeZone = new FlowWorkRestTimezoneDto();
+			tzone.saveToMemento(this.restTimeZone);
+		}		
 	}
 
 	/*
