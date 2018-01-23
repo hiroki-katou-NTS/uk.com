@@ -67,8 +67,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     self.currentRole(newPersonRole);
                 });
 
-                newPersonRole.loadRoleCategoriesList(newRoleId).done(() => {
-
+                newPersonRole.loadRoleCategoriesList(newRoleId, false).done(() => {
+                    if (!self.currentCategoryId()) {
+                        newPersonRole.setCtgSelectedId(self.RoleCategoryList());
+                    }
 
 
                 });
@@ -223,9 +225,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 if (!getShared('isCanceled')) {
                     self.reload().always(() => {
-
-
-
                     });
                 }
             });
@@ -352,7 +351,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 selectedId = self.currentCategoryId(),
                 grid = $("#item_role_table_body");;
 
-            personRole.loadRoleCategoriesList(personRole.roleId).done(function() {
+            personRole.loadRoleCategoriesList(personRole.roleId, true).done(function() {
 
                 if (self.RoleCategoryList().length > 0) {
 
@@ -557,12 +556,13 @@ module nts.uk.com.view.cas001.a.viewmodel {
         }
 
 
-        loadRoleCategoriesList(RoleId): JQueryPromise<any> {
+        loadRoleCategoriesList(RoleId, isReload): JQueryPromise<any> {
             var self = this,
                 dfd = $.Deferred();
             let screenModel = __viewContext['screenModel'];
 
             service.getCategoryRoleList(RoleId).done(function(result: Array<IPersonRoleCategory>) {
+
 
 
                 if (result.length <= 0) {
@@ -571,18 +571,16 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     dfd.resolve();
                 }
 
+                if (!isReload) {
+                    if (screenModel.currentCategoryId()) {
 
-                if (screenModel.currentCategoryId()) {
-
-                    self.setCtgSelectedId(result);
+                        self.setCtgSelectedId(result);
+                    }
                 }
-
                 screenModel.RoleCategoryList(_.map(result, x => new PersonRoleCategory(x)));
 
 
-                if (!screenModel.currentCategoryId()) {
-                    self.setCtgSelectedId(result);
-                }
+
 
                 dfd.resolve();
             });
