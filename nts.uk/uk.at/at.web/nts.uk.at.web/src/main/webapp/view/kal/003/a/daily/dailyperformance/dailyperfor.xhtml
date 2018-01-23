@@ -9,13 +9,8 @@
         <table id="AA3_1" data-bind="ntsGridList: {
 				height: 350,
 				options: listWorkRecordExtraCon,
-				optionsValue: 'errorAlarmCheckID',
-				columns: [
-	                { headerText: '#{i18n.getText('KAL003_52')}', key: 'code', width: 70 }, 
-	                { headerText: '#{i18n.getText('KAL003_53')}', key: 'classification', width: 50 }, 
-	                { headerText: '#{i18n.getText('KAL003_54')}', key: 'name', width: 150 },
-	                { headerText: '#{i18n.getText('KAL003_55')}', key: 'message', width: 150 } 
-	            ],
+				optionsValue: 'code',
+				columns: columns,
 				multiple: true,
 				value: currentCodeList
 			}"></table>
