@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPe
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInf;
 import nts.uk.ctx.at.record.infra.entity.affiliationinformation.KrcdtDaiAffiliationInfPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
@@ -100,5 +101,16 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		data.workplaceID = domain.getWplID();
 		data.jobtitleID = domain.getJobTitleID();
 		this.commandProxy().update(data);
+	}
+
+	@Override
+	public List<AffiliationInforOfDailyPerfor> finds(List<String> employeeId, DatePeriod ymd) {
+		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiAffiliationInf af ");
+		query.append("WHERE af.krcdtDaiAffiliationInfPK.employeeId IN :employeeId ");
+		query.append("AND af.krcdtDaiAffiliationInfPK.ymd <= :end AND af.krcdtDaiAffiliationInfPK.ymd >= :start");
+		return this.queryProxy().query(query.toString(), KrcdtDaiAffiliationInf.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("start", ymd.start())
+				.setParameter("end", ymd.end()).getList(af -> af.toDomain());
 	}
 }

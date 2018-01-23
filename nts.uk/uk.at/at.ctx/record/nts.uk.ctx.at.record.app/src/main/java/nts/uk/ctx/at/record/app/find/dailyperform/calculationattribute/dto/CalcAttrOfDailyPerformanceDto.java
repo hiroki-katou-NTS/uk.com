@@ -95,4 +95,14 @@ public class CalcAttrOfDailyPerformanceDto implements ConvertibleAttendanceItem 
 					domain.getCalculationAttr().value, 
 					domain.getUpperLimitSetting().value);
 	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.ymd;
+	}
 }

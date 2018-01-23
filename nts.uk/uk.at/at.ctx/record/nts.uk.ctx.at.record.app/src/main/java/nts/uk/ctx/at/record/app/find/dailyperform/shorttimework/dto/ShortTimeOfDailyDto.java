@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 @Data
 public class ShortTimeOfDailyDto implements ConvertibleAttendanceItem {
 
-	// TODO: item id not map
 	/** 社員ID: 社員ID */
 	private String employeeId;
 
@@ -38,5 +37,15 @@ public class ShortTimeOfDailyDto implements ConvertibleAttendanceItem {
 							c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes())));
 		}
 		return result;
+	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.ymd;
 	}
 }

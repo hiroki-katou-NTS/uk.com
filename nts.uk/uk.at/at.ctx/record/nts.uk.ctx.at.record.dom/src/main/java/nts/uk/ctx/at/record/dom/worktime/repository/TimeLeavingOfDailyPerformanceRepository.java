@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface TimeLeavingOfDailyPerformanceRepository {
 	
@@ -15,7 +16,8 @@ public interface TimeLeavingOfDailyPerformanceRepository {
 	List<TimeLeavingOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
 	
 	Optional<TimeLeavingOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd);
-	
+
+	List<TimeLeavingOfDailyPerformance> finds(List<String> employeeIds, DatePeriod ymd);
 
 	void add(TimeLeavingOfDailyPerformance timeLeaving);
 	

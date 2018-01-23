@@ -33,4 +33,14 @@ public class EditStateOfDailyPerformanceDto implements ConvertibleAttendanceItem
 		return new EditStateOfDailyPerformanceDto(c.getEmployeeId(), c.getAttendanceItemId(), c.getYmd(),
 				c.getEditStateSetting().value);
 	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.ymd;
+	}
 }

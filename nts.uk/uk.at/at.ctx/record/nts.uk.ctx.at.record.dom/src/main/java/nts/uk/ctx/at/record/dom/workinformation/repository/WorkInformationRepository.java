@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface WorkInformationRepository {
 	
@@ -13,6 +13,8 @@ public interface WorkInformationRepository {
 	Optional<WorkInfoOfDailyPerformance> find(String employeeId, GeneralDate ymd);
 	
 	List<WorkInfoOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
+	
+	List<WorkInfoOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, DatePeriod ymds);
 	
 	void delete(String employeeId, GeneralDate ymd);
 	

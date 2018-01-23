@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -24,4 +25,16 @@ public class SampleConvertibleAttendanceItem implements ConvertibleAttendanceIte
 	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "C")
 	private String attendanceItemB;
+
+	@Override
+	public String employeeId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

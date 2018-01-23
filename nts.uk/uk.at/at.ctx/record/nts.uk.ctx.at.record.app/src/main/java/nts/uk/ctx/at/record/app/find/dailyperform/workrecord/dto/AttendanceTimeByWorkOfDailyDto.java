@@ -59,4 +59,14 @@ public class AttendanceTimeByWorkOfDailyDto implements ConvertibleAttendanceItem
 						domain.getStampSourceInfo().value);
 
 	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.ymd;
+	}
 }

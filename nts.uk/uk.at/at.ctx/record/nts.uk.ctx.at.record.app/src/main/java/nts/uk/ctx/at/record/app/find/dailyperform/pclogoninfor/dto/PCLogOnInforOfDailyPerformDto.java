@@ -19,4 +19,14 @@ public class PCLogOnInforOfDailyPerformDto implements ConvertibleAttendanceItem 
 	//TODO: set list max value
 //	@AttendanceItemLayout(layout = "A", jpPropertyName = "ログオン・オフ時刻", isList = true, listMaxLength = ?)
 	private List<TimeSheetDto> logonTime;
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.ymd;
+	}
 }

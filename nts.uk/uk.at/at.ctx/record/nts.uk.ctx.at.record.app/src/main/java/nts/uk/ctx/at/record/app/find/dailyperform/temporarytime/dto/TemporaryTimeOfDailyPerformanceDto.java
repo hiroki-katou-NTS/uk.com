@@ -64,4 +64,14 @@ public class TemporaryTimeOfDailyPerformanceDto implements ConvertibleAttendance
 					c.getStampSourceInfo() == null ? null : c.getStampSourceInfo().value);
 
 	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.ymd;
+	}
 }

@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implements AttendanceLeavingGateOfDailyRepo {
@@ -30,6 +31,12 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 	public List<AttendanceLeavingGateOfDaily> find(String employeeId) {
 		// TODO Auto-generated method stub
 		return Collections.emptyList();
+	}
+
+	@Override
+	public List<AttendanceLeavingGateOfDaily> finds(List<String> employeeId, DatePeriod baseDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

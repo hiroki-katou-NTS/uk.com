@@ -59,4 +59,14 @@ public class TimeLeavingOfDailyPerformanceDto implements ConvertibleAttendanceIt
 					c.getLocationCode() == null ? null : c.getLocationCode().v(), c.getStampSourceInfo().value);
 
 	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.ymd;
+	}
 }

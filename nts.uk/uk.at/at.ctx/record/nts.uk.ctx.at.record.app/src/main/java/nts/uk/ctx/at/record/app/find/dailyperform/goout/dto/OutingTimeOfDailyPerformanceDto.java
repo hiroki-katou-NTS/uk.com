@@ -56,4 +56,14 @@ public class OutingTimeOfDailyPerformanceDto implements ConvertibleAttendanceIte
 				c.getLocationCode() == null ? null : c.getLocationCode().v(), 
 				c.getStampSourceInfo() == null ? null : c.getStampSourceInfo().value);
 	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.ymd;
+	}
 }

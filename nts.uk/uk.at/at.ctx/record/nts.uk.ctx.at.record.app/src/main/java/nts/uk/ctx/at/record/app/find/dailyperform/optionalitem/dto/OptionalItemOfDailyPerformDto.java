@@ -38,4 +38,14 @@ public class OptionalItemOfDailyPerformDto implements ConvertibleAttendanceItem 
 		}
 		return dto;
 	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.date;
+	}
 }

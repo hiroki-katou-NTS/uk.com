@@ -49,4 +49,14 @@ public class AffiliationInforOfDailyPerforDto implements ConvertibleAttendanceIt
 		}
 		return dto;
 	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.baseDate;
+	}
 }

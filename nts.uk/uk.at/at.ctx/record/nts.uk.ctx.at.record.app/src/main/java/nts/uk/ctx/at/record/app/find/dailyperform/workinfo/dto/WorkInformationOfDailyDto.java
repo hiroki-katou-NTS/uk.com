@@ -61,4 +61,14 @@ public class WorkInformationOfDailyDto implements ConvertibleAttendanceItem {
 				workInfo.getWorkTimeCode().v());
 	}
 
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.date;
+	}
+
 }

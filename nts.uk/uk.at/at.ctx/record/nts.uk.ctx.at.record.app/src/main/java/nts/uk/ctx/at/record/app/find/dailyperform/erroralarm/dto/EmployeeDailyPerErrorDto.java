@@ -49,4 +49,14 @@ public class EmployeeDailyPerErrorDto implements ConvertibleAttendanceItem {
 		}
 		return dto;
 	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeID;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.date;
+	}
 }
