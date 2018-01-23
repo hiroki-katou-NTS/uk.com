@@ -26,10 +26,6 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 	private static final String REMOVE_TIME_LEAVING_WORK;
 
-	private static final String DEL_BY_LIST_KEY;
-
-	private static final String FIND_BY_LIST_SID;
-
 	private static final String FIND_BY_KEY;
 
 	static {
@@ -49,20 +45,6 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		REMOVE_TIME_LEAVING_WORK = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiLeavingWork a ");
-		builderString.append("WHERE WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd IN :ymds ");
-		DEL_BY_LIST_KEY = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDaiLeavingWork a ");
-		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd IN :ymds ");
-		FIND_BY_LIST_SID = builderString.toString();
-
-		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiLeavingWork a ");
 		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
@@ -77,18 +59,6 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).executeUpdate();
 		this.getEntityManager().flush();
-	}
-
-	@Override
-	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
-		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
-				.setParameter("processingYmds", ymds).executeUpdate();
-	}
-
-	@Override
-	public List<TimeLeavingOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
-		return this.queryProxy().query(FIND_BY_LIST_SID, KrcdtDaiLeavingWork.class)
-				.setParameter("employeeIds", employeeIds).setParameter("ymds", ymds).getList(f -> f.toDomain());
 	}
 
 	@Override
