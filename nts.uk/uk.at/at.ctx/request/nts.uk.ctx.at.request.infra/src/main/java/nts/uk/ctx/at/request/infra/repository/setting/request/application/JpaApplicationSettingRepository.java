@@ -95,6 +95,8 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		entity.scheReflectFlg = domain.getScheReflectFlg().value;
 		entity.priorityTimeReflectFlg = domain.getPriorityTimeReflectFlg().value;
 		entity.attendentTimeReflectFlg = domain.getAttendentTimeReflectFlg().value;
+		entity.achievementConfirmedAtr = 0;
+		entity.scheduleConfirmedAtr = 0;
 		return entity;
 	}
 
