@@ -6,7 +6,8 @@ module nts.uk.at.view.kmf002.b {
         var path: any = {
                 save: "bs/employee/holidaysetting/workplace/save",
                 find: "bs/employee/holidaysetting/workplace/findWorkplaceMonthDaySetting",
-                remove: "bs/employee/holidaysetting/workplace/remove"
+                remove: "bs/employee/holidaysetting/workplace/remove",
+                findFirstMonth: "basic/company/beginningmonth/find",
             };
         
          export function save(year: number, data: any, workplaceId: string): JQueryPromise<any> {
@@ -28,6 +29,10 @@ module nts.uk.at.view.kmf002.b {
             command.year = year;
             command.workplaceId = workplaceId;
             return nts.uk.request.ajax("com", path.remove, command);
+        }
+        
+        export function findFirstMonth(): JQueryPromise<any>{
+            return nts.uk.request.ajax("com", path.findFirstMonth);
         }
         
     }

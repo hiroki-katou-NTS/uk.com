@@ -6,7 +6,8 @@ module nts.uk.at.view.kmf002.d {
         var path: any = {
                 save: "bs/employee/holidaysetting/employment/save",
                 find: "bs/employee/holidaysetting/employment/findEmploymentMonthDaySetting",
-                remove: "bs/employee/holidaysetting/employment/remove"
+                remove: "bs/employee/holidaysetting/employment/remove",
+                findFirstMonth: "basic/company/beginningmonth/find",
             };
         
         /**
@@ -32,6 +33,10 @@ module nts.uk.at.view.kmf002.d {
             command.year = year;
             command.empCd = employmentCode;
             return nts.uk.request.ajax("com", path.remove, command);
+        }
+        
+        export function findFirstMonth(): JQueryPromise<any>{
+            return nts.uk.request.ajax("com", path.findFirstMonth);
         }
     }
     

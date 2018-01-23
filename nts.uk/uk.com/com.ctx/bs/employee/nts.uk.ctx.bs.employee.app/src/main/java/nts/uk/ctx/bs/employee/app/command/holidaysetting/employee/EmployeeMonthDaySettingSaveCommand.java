@@ -23,7 +23,7 @@ public class EmployeeMonthDaySettingSaveCommand implements EmployeeMonthDaySetti
 	private int year;
 	
 	/** The s id. */
-	private String sId;
+	private String employeeID;
 	
 	/** The public holiday month settings. */
 	private List<PublicHolidayMonthSettingDto> publicHolidayMonthSettings;
@@ -41,7 +41,7 @@ public class EmployeeMonthDaySettingSaveCommand implements EmployeeMonthDaySetti
 	 */
 	@Override
 	public String getEmployeeId() {
-		return this.sId;
+		return this.employeeID;
 	}
 
 	/* (non-Javadoc)

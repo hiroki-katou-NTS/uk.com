@@ -6,7 +6,8 @@ module nts.uk.at.view.kmf002.c {
         var path: any = {
                 save: "bs/employee/holidaysetting/employee/save",
                 find: "bs/employee/holidaysetting/employee/findEmployeeMonthDaySetting",
-                remove: "bs/employee/holidaysetting/employee/remove"
+                remove: "bs/employee/holidaysetting/employee/remove",
+                findFirstMonth: "basic/company/beginningmonth/find",
             };
         
         /**
@@ -18,7 +19,7 @@ module nts.uk.at.view.kmf002.c {
             let command = {};
             command.year = year;
             command.publicHolidayMonthSettings = employeeMonthDaySetting.publicHolidayMonthSettingDto;
-            command.sId = sId;
+            command.employeeID = sId;
             return nts.uk.request.ajax("com", path.save, command);
         }
         
@@ -31,6 +32,10 @@ module nts.uk.at.view.kmf002.c {
             command.year = year;
             command.sId = sId;
             return nts.uk.request.ajax("com", path.remove, command);
+        }
+        
+        export function findFirstMonth(): JQueryPromise<any>{
+            return nts.uk.request.ajax("com", path.findFirstMonth);
         }
     }
     

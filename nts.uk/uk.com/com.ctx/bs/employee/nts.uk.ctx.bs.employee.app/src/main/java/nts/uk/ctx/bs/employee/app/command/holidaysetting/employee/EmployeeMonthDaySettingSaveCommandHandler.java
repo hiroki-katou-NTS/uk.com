@@ -37,7 +37,7 @@ public class EmployeeMonthDaySettingSaveCommandHandler extends CommandHandler<Em
 		// convert to domain
 		EmployeeMonthDaySetting domain = new EmployeeMonthDaySetting(command);
 		
-		Optional<EmployeeMonthDaySetting> optional = this.repository.findByYear(new CompanyId(companyId), command.getSId(), new Year(command.getYear()));
+		Optional<EmployeeMonthDaySetting> optional = this.repository.findByYear(new CompanyId(companyId), command.getEmployeeId(), new Year(command.getYear()));
 	
 		// save data
 		if(optional.isPresent()){
