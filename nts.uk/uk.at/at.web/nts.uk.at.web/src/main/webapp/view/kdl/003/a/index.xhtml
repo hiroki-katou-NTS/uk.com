@@ -97,34 +97,34 @@
 							</tr>
 							<tr>
 								<td style="padding-right: 20px"><hr/></td>
-								<td style="padding-right: 20px"><hr/></td>
-								<td style="padding-right: 20px"><hr/></td>
+								<td><hr/></td>
+								<td style="padding-left: 20px"><hr/></td>
 							</tr>
 							<tr>
 								<td style="vertical-align: top; padding-right: 20px;">
 									<div id="search-div" class="control-group valign-center">
 										<span>#{i18n.getText('KDL003_25')}</span>
 										<input id="inputStartBTime" tabindex="11"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_12]', constraint:'TimeOfDay', value: startBTime, 
+											data-bind="ntsTimeEditor: {name: '#[KDL003_26]', constraint:'TimeOfDay', value: startBTime, 
 												inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable1, readonly: readonly}" />
-										<span>#{i18n.getText('KDL003_13')}</span>
+										<span>#{i18n.getText('KDL003_27')}</span>
 										<input id="inputEndBTime" tabindex="12"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_15]', constraint:'TimeOfDay', value: endBTime,
+											data-bind="ntsTimeEditor: {name: '#[KDL003_28]', constraint:'TimeOfDay', value: endBTime,
 												 inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable1, readonly: readonly}" />
 									</div>
 									<div id="search-div" class="control-group valign-center">
 										<span>#{i18n.getText('KDL003_29')}</span>
 										<input id="inputStartBBTime" tabindex="13"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_12]', constraint:'TimeOfDay', value: startBBTime, 
+											data-bind="ntsTimeEditor: {name: '#[KDL003_30]', constraint:'TimeOfDay', value: startBBTime, 
 												inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable2, readonly: readonly}" />
-										<span>#{i18n.getText('KDL003_13')}</span>
+										<span>#{i18n.getText('KDL003_27')}</span>
 										<input id="inputEndBBTime" tabindex="14"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_15]', constraint:'TimeOfDay', value: endBBTime,
+											data-bind="ntsTimeEditor: {name: '#[KDL003_31]', constraint:'TimeOfDay', value: endBBTime,
 												 inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable2, readonly: readonly}" />
 									</div>
 								</td>
 								<td style="vertical-align: top; border-left: solid grey 1px;">
-									<div id="day-list-div" style="display: flex;">
+									<div id="day-list-div" style="display: flex; padding-left: 0px !important;">
 										<table id="list-worktype"
 										data-bind="ntsGridList: {
 											height: 180,
