@@ -43,6 +43,8 @@ public class WorkInformationOfDailyDto implements ConvertibleAttendanceItem {
 	public static WorkInformationOfDailyDto getDto(WorkInfoOfDailyPerformance workInfo) {
 		WorkInformationOfDailyDto result = new WorkInformationOfDailyDto();
 		if (workInfo != null) {
+			result.setEmployeeId(workInfo.getEmployeeId());
+			result.setDate(workInfo.getYmd());
 			result.setActualWorkInfo(createWorkInfo(workInfo.getRecordWorkInformation()));
 			result.setBackStraightAtr(workInfo.getBackStraightAtr().value);
 			result.setCalculationState(workInfo.getCalculationState().value);

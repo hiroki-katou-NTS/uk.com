@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.calculationattribute;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -219,6 +220,9 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 		List<KrcstDaiCalculationSet> calces = this.queryProxy().query(builder.toString(), KrcstDaiCalculationSet.class)
 				.setParameter("ids", employeeId).setParameter("end", baseDate.end())
 				.setParameter("start", baseDate.start()).getList();
+		if(calces.isEmpty()){
+			return new ArrayList<>();
+		}
 		List<KrcstOtAutoCalSet> ots = this.queryProxy()
 				.query(childQuery.replace("{0}", "KrcstOtAutoCalSet").replace("{1}", "overTimeWorkId"),
 						KrcstOtAutoCalSet.class)

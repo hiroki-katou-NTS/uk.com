@@ -223,7 +223,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtDaiLeavingWork a ");
 		query.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeId ");
-		query.append("AND a.krcdtDaiLeavingWorkPK.ymd <= :end AND a.krcdtDaiLeavingWorkPK.ymd >= : start");
+		query.append("AND a.krcdtDaiLeavingWorkPK.ymd <= :end AND a.krcdtDaiLeavingWorkPK.ymd >= :start");
 		return queryProxy().query(query.toString(), KrcdtDaiLeavingWork.class).setParameter("employeeId", employeeIds)
 				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
 				.collect(Collectors.groupingBy(c -> c.krcdtDaiLeavingWorkPK.employeeId + c.krcdtDaiLeavingWorkPK.ymd.toString()))
