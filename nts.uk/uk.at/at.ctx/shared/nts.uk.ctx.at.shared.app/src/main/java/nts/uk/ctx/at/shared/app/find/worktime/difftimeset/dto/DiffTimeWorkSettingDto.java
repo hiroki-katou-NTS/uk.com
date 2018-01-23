@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,16 +68,19 @@ public class DiffTimeWorkSettingDto implements DiffTimeWorkSettingSetMemento {
 
 	@Override
 	public void setRestSet(FixedWorkRestSet restSet) {
+		this.restSet = new FixedWorkRestSetDto();
 		restSet.saveToMemento(this.restSet);
 	}
 
 	@Override
 	public void setDayoffWorkTimezone(DiffTimeDayOffWorkTimezone dayoffWorkTimezone) {
+		this.dayoffWorkTimezone = new DiffTimeDayOffWorkTimezoneDto();
 		dayoffWorkTimezone.saveToMemento(this.dayoffWorkTimezone);
 	}
 
 	@Override
 	public void setCommonSet(WorkTimezoneCommonSet commonSet) {
+		this.commonSet = new WorkTimezoneCommonSetDto();
 		commonSet.saveToMemento(this.commonSet);
 	}
 
@@ -87,20 +91,23 @@ public class DiffTimeWorkSettingDto implements DiffTimeWorkSettingSetMemento {
 
 	@Override
 	public void setChangeExtent(EmTimezoneChangeExtent changeExtent) {
+		this.changeExtent = new EmTimezoneChangeExtentDto();
 		changeExtent.saveToMemento(this.changeExtent);
 	}
 
 	@Override
 	public void setHalfDayWorkTimezones(List<DiffTimeHalfDayWorkTimezone> halfDayWorkTimezones) {
-		halfDayWorkTimezones.stream().map(item -> {
+		this.halfDayWorkTimezones = new ArrayList<>();
+		this.halfDayWorkTimezones.addAll(halfDayWorkTimezones.stream().map(item -> {
 			DiffTimeHalfDayWorkTimezoneDto dto = new DiffTimeHalfDayWorkTimezoneDto();
 			item.saveToMemento(dto);
 			return dto;
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList()));
 	}
 
 	@Override
 	public void setStampReflectTimezone(DiffTimeWorkStampReflectTimezone stampReflectTimezone) {
+		this.stampReflectTimezone = new DiffTimeWorkStampReflectTimezoneDto();
 		stampReflectTimezone.saveToMemento(this.stampReflectTimezone);
 	}
 

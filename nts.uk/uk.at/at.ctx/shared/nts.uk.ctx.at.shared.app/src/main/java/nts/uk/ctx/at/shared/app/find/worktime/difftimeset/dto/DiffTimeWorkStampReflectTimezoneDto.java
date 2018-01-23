@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class DiffTimeWorkStampReflectTimezoneDto implements DiffTimeStampReflect
 
 	@Override
 	public void setStampReflectTimezone(List<StampReflectTimezone> stampReflectTimezone) {
+		this.stampReflectTimezone = new ArrayList<>();
 		stampReflectTimezone.stream().forEach(item -> {
 			StampReflectTimezoneDto dto = new StampReflectTimezoneDto();
 			item.saveToMemento(dto);

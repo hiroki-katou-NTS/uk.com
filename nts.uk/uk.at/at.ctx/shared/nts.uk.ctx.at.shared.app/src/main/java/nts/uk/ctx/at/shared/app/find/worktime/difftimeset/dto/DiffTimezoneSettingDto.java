@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,20 +30,22 @@ public class DiffTimezoneSettingDto implements DiffTimezoneSettingSetMemento {
 
 	@Override
 	public void setEmploymentTimezones(List<EmTimeZoneSet> employmentTimezones) {
-		employmentTimezones.stream().map(item -> {
+		this.employmentTimezones = new ArrayList<>();
+		this.employmentTimezones.addAll(employmentTimezones.stream().map(item -> {
 			EmTimeZoneSetDto dto = new EmTimeZoneSetDto();
 			item.saveToMemento(dto);
 			return dto;
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList()));
 	}
 
 	@Override
 	public void setOTTimezones(List<DiffTimeOTTimezoneSet> oTTimezones) {
-		oTTimezones.stream().map(item -> {
+		this.oTTimezones = new ArrayList<>();
+		this.oTTimezones.addAll(oTTimezones.stream().map(item -> {
 			DiffTimeOTTimezoneSetDto dto = new DiffTimeOTTimezoneSetDto();
 			item.saveToMemento(dto);
 			return dto;
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList()));
 	}
 
 }
