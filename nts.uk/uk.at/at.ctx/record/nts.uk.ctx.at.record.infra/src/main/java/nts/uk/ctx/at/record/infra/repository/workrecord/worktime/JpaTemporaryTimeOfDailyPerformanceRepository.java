@@ -196,7 +196,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtDaiTemporaryTime a ");
 		query.append("WHERE a.krcdtDaiTemporaryTimePK.employeeId IN :employeeId ");
-		query.append("AND a.krcdtDaiTemporaryTimePK.ymd <= :end AND a.krcdtDaiLeavingWorkPK.ymd >= : start");
+		query.append("AND a.krcdtDaiTemporaryTimePK.ymd <= :end AND a.krcdtDaiTemporaryTimePK.ymd >= :start");
 		return queryProxy().query(query.toString(), KrcdtDaiTemporaryTime.class).setParameter("employeeId", employeeId)
 				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
 				.collect(Collectors.groupingBy(c -> c.krcdtDaiTemporaryTimePK.employeeId + c.krcdtDaiTemporaryTimePK.ymd.toString()))

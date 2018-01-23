@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.dailymodify.query;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,9 @@ public class DailyModifyQueryProcessor {
 	}
 
 	public List<DailyModifyResult> initScreen(DailyMultiQuery query, List<Integer> itemIds) {
+		if(query.getEmployeeIds() == null || query.getEmployeeIds().isEmpty() || query.getPeriod() == null){
+			return new ArrayList<>();
+		}
 		return this.fullFinder.find(query.getEmployeeIds(), query.getPeriod()).stream()
 				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c, itemIds))
 						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())

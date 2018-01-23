@@ -312,7 +312,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtDaiOutingTime a ");
 		query.append("WHERE a.krcdtDaiOutingTimePK.employeeId IN :employeeId ");
-		query.append("AND a.krcdtDaiOutingTimePK.ymd <= :end AND a.krcdtDaiOutingTimePK.ymd >= : start");
+		query.append("AND a.krcdtDaiOutingTimePK.ymd <= :end AND a.krcdtDaiOutingTimePK.ymd >= :start");
 		return queryProxy().query(query.toString(), KrcdtDaiOutingTime.class).setParameter("employeeId", employeeId)
 				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
 				.collect(Collectors.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))

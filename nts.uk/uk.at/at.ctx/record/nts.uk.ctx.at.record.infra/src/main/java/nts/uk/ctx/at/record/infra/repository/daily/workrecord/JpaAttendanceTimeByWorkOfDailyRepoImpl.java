@@ -42,7 +42,7 @@ public class JpaAttendanceTimeByWorkOfDailyRepoImpl extends JpaRepository implem
 	@Override
 	public List<AttendanceTimeByWorkOfDaily> finds(List<String> employeeId, DatePeriod ymd) {
 		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 
 }
