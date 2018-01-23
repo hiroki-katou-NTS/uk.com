@@ -62,37 +62,24 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 service.getPersonRoleAuth(newRoleId).done((result: IPersonRole) => {
 
-                    newPersonRole.loadRoleCategoriesList(newRoleId).done(() => {
+                    newPersonRole.setRoleAuth(result);
 
-                        newPersonRole.setRoleAuth(result);
+                    self.currentRole(newPersonRole);
+                });
 
-                        self.currentRole(newPersonRole);
-                        self.RoleCategoryList.valueHasMutated();
-                        if (self.RoleCategoryList().length > 0) {
+                newPersonRole.loadRoleCategoriesList(newRoleId).done(() => {
 
-                            self.currentCategoryId("");
 
-                            self.currentCategoryId(self.RoleCategoryList()[0].categoryId);
 
-                        }
-                        else {
-                            dialog({ messageId: "Msg_217" });
-                        }
-
-                    })
                 });
 
             });
 
             self.currentCategoryId.subscribe((categoryId) => {
 
-                if (categoryId == "") {
+                if (!categoryId) {
                     return;
                 }
-
-                _.defer(() => {
-
-                });
 
                 let newCategory = _.find(self.RoleCategoryList(), (roleCategory) => {
 
@@ -400,7 +387,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 } else {
 
-                    dialog({ messageId: "Msg_364" }).then(function(){
+                    dialog({ messageId: "Msg_364" }).then(function() {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     });
 
@@ -544,7 +531,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
         allowDocRef: KnockoutObservable<number>;
         allowAvatarUpload: KnockoutObservable<number>;
         allowAvatarRef: KnockoutObservable<number>;
-        // RoleCategoryList: KnockoutObservableArray<PersonRoleCategory> = ko.observableArray([]);
         currentCategory: KnockoutObservable<PersonRoleCategory> = ko.observable(null);
         constructor(param: IPersonRole) {
             let self = this;
@@ -578,13 +564,42 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             service.getCategoryRoleList(RoleId).done(function(result: Array<IPersonRoleCategory>) {
 
-                screenModel.RoleCategoryList.removeAll();
+
+                if (result.length <= 0) {
+                    screenModel.RoleCategoryList(_.map(result, x => new PersonRoleCategory(x)));
+                    dialog({ messageId: "Msg_217" });
+                    dfd.resolve();
+                }
+
+
+                if (screenModel.currentCategoryId()) {
+
+                    self.setCtgSelectedId(result);
+                }
 
                 screenModel.RoleCategoryList(_.map(result, x => new PersonRoleCategory(x)));
+
+
+                if (!screenModel.currentCategoryId()) {
+                    self.setCtgSelectedId(result);
+                }
 
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+
+        setCtgSelectedId(result) {
+            let screenModel = __viewContext['screenModel'];
+            let oldValue = screenModel.currentCategoryId();
+
+            screenModel.currentCategoryId(result[0].categoryId);
+
+            if (screenModel.currentCategoryId() == oldValue) {
+
+                screenModel.currentCategoryId.valueHasMutated();
+
+            }
         }
     }
 
@@ -674,7 +689,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 grid.ntsGrid(screenModel.allowPersonRef() == 0 ? "disableNtsControls" : "enableNtsControls", "selfAuth", "SwitchButtons");
                 grid.ntsGrid(screenModel.isDisableAll() ? "disableNtsControls" : "enableNtsControls", "isChecked", "CheckBox");
 
-                screenModel.RoleCategoryList.valueHasMutated();
 
                 dfd.resolve();
 
