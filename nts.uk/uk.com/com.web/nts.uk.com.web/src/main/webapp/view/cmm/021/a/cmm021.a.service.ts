@@ -126,12 +126,12 @@ module nts.uk.com.view.cmm021.a {
                 userName: string;
                 useAtr: number;
                 
-                constructor(userId: string, companyCode: string, userName: string, useAtr: number) {
-                    this.userId = userId;
-                    this.companyCode = companyCode;
-                    this.userName = userName;
-                    this.useAtr = useAtr;
-                }
+//                constructor(userId: string, companyCode: string, userName: string, useAtr: number) {
+//                    this.userId = userId;
+//                    this.companyCode = companyCode;
+//                    this.userName = userName;
+//                    this.useAtr = useAtr;
+//                }
 
             }
 
