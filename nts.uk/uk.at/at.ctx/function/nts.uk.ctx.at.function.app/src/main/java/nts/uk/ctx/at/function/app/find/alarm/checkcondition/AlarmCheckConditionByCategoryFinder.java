@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.hamcrest.core.Is;
-
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.FixedConditionDataAdapter;
@@ -35,7 +33,7 @@ public class AlarmCheckConditionByCategoryFinder {
 
 	@Inject
 	private FixedConWorkRecordAdapter fixedConditionAdapter;
-	
+
 	@Inject
 	private FixedConditionDataAdapter fixCondDataAdapter;
 
@@ -57,8 +55,9 @@ public class AlarmCheckConditionByCategoryFinder {
 		if (domain.getCategory() == AlarmCategory.DAILY && domain.getExtractionCondition() != null) {
 			dailyAlarmCondition = (DailyAlarmCondition) domain.getExtractionCondition();
 		}
-		
-		List<FixedConWorkRecordAdapterDto> listFixedConditionWorkRecord = fixedConditionAdapter.getAllFixedConWorkRecordByListID(dailyAlarmCondition.getFixedExtractConditionWorkRecord());
+
+		List<FixedConWorkRecordAdapterDto> listFixedConditionWorkRecord = fixedConditionAdapter
+				.getAllFixedConWorkRecordByListID(dailyAlarmCondition.getFixedExtractConditionWorkRecord());
 		List<FixedConditionWorkRecordDto> listFixedConditionWkRecord = new ArrayList<>();
 		List<FixedConditionDataAdapterDto> listFixedConditionData = fixCondDataAdapter.getAllFixedConditionDataPub();
 		for (FixedConditionDataAdapterDto i : listFixedConditionData) {
@@ -66,7 +65,8 @@ public class AlarmCheckConditionByCategoryFinder {
 			if (listFixedConditionWorkRecord != null && !listFixedConditionWorkRecord.isEmpty()) {
 				for (FixedConWorkRecordAdapterDto e : listFixedConditionWorkRecord) {
 					if (e.getFixConWorkRecordNo() == i.getFixConWorkRecordNo()) {
-						FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto(e.getErrorAlarmID(), i.getFixConWorkRecordName(), i.getFixConWorkRecordNo(), e.getMessage(), e.isUseAtr());
+						FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto(e.getErrorAlarmID(),
+								i.getFixConWorkRecordName(), i.getFixConWorkRecordNo(), e.getMessage(), e.isUseAtr());
 						listFixedConditionWkRecord.add(dto);
 						check = false;
 						break;
@@ -74,12 +74,12 @@ public class AlarmCheckConditionByCategoryFinder {
 				}
 			}
 			if (check) {
-				FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto("", i.getFixConWorkRecordName(), i.getFixConWorkRecordNo(), i.getMessage(), false);
+				FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto("", i.getFixConWorkRecordName(),
+						i.getFixConWorkRecordNo(), i.getMessage(), false);
 				listFixedConditionWkRecord.add(dto);
 			}
 		}
-		
-		
+
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
 				domain.getCategory().value,
 				new AlarmCheckTargetConditionDto(domain.getExtractTargetCondition().isFilterByEmployment(),
@@ -93,7 +93,6 @@ public class AlarmCheckConditionByCategoryFinder {
 				domain.getListRoleId(), schedule4WCondition,
 				new DailyAlarmCheckConditionDto(dailyAlarmCondition.isAddApplication(),
 						dailyAlarmCondition.getConExtractedDaily().value, dailyAlarmCondition.getErrorAlarmCode(),
-						dailyAlarmCondition.getExtractConditionWorkRecord(),
-						listFixedConditionWkRecord));
+						dailyAlarmCondition.getExtractConditionWorkRecord(), listFixedConditionWkRecord));
 	}
 }
