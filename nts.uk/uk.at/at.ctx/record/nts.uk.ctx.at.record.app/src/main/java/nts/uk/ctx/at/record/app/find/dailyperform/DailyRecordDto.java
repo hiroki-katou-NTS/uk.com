@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
@@ -20,14 +21,18 @@ import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto.TemporaryTim
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeByWorkOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 @Data
 /** 日別実績（WORK） */
 @AttendanceItemRoot(isContainer = true)
 public class DailyRecordDto implements ConvertibleAttendanceItem {
+	
+	private String employeeId;
+	
+	private GeneralDate date;
 
 	/** 勤務情報： 日別実績の勤務情報 */
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "日別実績の勤務情報")
@@ -125,6 +130,9 @@ public class DailyRecordDto implements ConvertibleAttendanceItem {
 	}
 	
 	public DailyRecordDto addBreakTime(List<BreakTimeDailyDto> breakTime){
+		if(breakTime == null){
+			return this;
+		}
 		this.breakTime.addAll(breakTime);
 		return this;
 	}
@@ -175,6 +183,9 @@ public class DailyRecordDto implements ConvertibleAttendanceItem {
 	}
 	
 	public DailyRecordDto addEditStates(List<EditStateOfDailyPerformanceDto> editStates){
+		if(editStates == null){
+			return this;
+		}
 		this.editStates.addAll(editStates);
 		return this;
 	}
@@ -189,7 +200,27 @@ public class DailyRecordDto implements ConvertibleAttendanceItem {
 		return this;
 	}
 	
+	public DailyRecordDto workingDate(GeneralDate workingDate){
+		this.date = workingDate;
+		return this;
+	}
+	
+	public DailyRecordDto employeeId(String employeeId){
+		this.employeeId = employeeId;
+		return this;
+	}
+	
 	public DailyRecordDto complete(){
 		return this;
+	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.date;
 	}
 }

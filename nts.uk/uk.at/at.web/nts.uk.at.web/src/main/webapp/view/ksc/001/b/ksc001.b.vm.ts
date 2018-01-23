@@ -449,11 +449,25 @@ module nts.uk.at.view.ksc001.b {
                 }
 
             }
+
+            /**
+             * Validate copy paste schedule
+             */
+            private isInValidCopyPasteSchedule(): boolean {
+                let self = this;
+                if (self.checkCreateMethodAtrCopyPastSchedule()) {
+                    $('#copy-start-date').ntsEditor('validate');
+                }
+                return $('.nts-input').ntsError('hasError');
+            }
             /**
              * function previous page by selection employee goto page (D)
              */
             private previousPageD(): void {
                 var self = this;
+                if (self.isInValidCopyPasteSchedule()) {
+                    return;
+                }
                 self.previous();
             }
             /**
@@ -461,10 +475,7 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageD(): void {
                 var self = this;
-                if (self.checkCreateMethodAtrCopyPastSchedule()) {
-                    $('#copy-start-date').ntsEditor('validate');
-                }
-                if ($('.nts-input').ntsError('hasError')) {
+                if (self.isInValidCopyPasteSchedule()) {
                     return;
                 }
 

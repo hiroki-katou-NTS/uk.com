@@ -14,6 +14,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -28,6 +30,7 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfoPK;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfoPK_;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo_;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster_;
 
 /**
@@ -208,10 +211,11 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
 		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
+		Join<BsymtJobInfo, BsymtJobSeqMaster> joinRoot = root.join(BsymtJobInfo_.bsymtJobSeqMaster, JoinType.LEFT);
 
 		// Build query
 		cq.select(root);
-
+		
 		// add where
 		List<Predicate> listPredicate = new ArrayList<>();
 		listPredicate.add(criteriaBuilder
@@ -222,6 +226,9 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 				root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.endDate), baseDate));
 
 		cq.where(listPredicate.toArray(new Predicate[] {}));
+		
+		// Sort by disporder
+		cq.orderBy(criteriaBuilder.asc(joinRoot.get(BsymtJobSeqMaster_.disporder)));
 
 		return em.createQuery(cq).getResultList().stream()
 				.map(item -> new JobTitleInfo(new JpaJobTitleInfoGetMemento(item)))

@@ -182,6 +182,8 @@ public class EmpCtgFinder {
 		}
 		if (perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO)
 			return infoList;
+		if(perInfoCtg.getCategoryType() == CategoryType.MULTIINFO)
+			return infoList;
 		query.setCtgType(perInfoCtg.getCategoryType().value);
 		// get combobox object
 		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED) {

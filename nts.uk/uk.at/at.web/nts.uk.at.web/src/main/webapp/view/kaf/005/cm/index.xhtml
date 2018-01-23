@@ -1,7 +1,8 @@
 <div>
 	<div  data-bind="if: indicationOvertimeFlg" >
 		<div class="cf valign-center control-group"
-			style = "margin-left: -2px; background: #f8efd4; padding: 15px 10px 15px 12px; width: 778px;">
+			data-bind="style: {padding: screenModeNew()== true ? '0px 10px 15px 12px' : '15px 10px 15px 12px'}"
+			style = "margin-left: -2px; background: #f8efd4;width: 778px;">
 			<!--A2_7 時間外労働ラベル--> 			
 			<div class="pull-left">#{i18n.getText('KAF005_23')}</div>
 			<div class="pull-left">
@@ -177,8 +178,8 @@
 				<table id="fixed-table">
 					<colgroup>
 						<col width="109px" />
-						<col width="109px" />
-						<col width="109px" />
+						<col width="115px" />
+						<col width="115px" />
 					</colgroup>
 					<thead>
 						<tr>
@@ -195,10 +196,10 @@
 							<td class="header" data-bind="text: frameName"></td>
 							<!--A5_6 開始時刻--> 						
 							<td><input tabindex="12" class="right-content"
-								data-bind="attr: { id: 'restTimeStart_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF005_337]', value: startTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+								data-bind="attr: { id: 'restTimeStart_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF005_337]', value: startTime, constraint:'TimeWithDayAttr', option: {width: '85px', timeWithDay: true}}" /></td>
 							<!--A5_7 終了時刻--> 						
 							<td><input tabindex="12" class="right-content"
-								data-bind="attr: { id: 'restTimeEnd_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF005_338]', value: endTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+								data-bind="attr: { id: 'restTimeEnd_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF005_338]', value: endTime, constraint:'TimeWithDayAttr', option: {width: '85px', timeWithDay: true}}" /></td>
 						</tr>
 					</tbody>
 				</table>
