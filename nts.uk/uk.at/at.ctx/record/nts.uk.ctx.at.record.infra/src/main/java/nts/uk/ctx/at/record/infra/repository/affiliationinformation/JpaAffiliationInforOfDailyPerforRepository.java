@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.affiliationinformation;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -19,8 +18,6 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 
 	private static final String REMOVE_BY_EMPLOYEE;
 	
-	private static final String DEL_BY_LIST_KEY;
-	
 	private static final String FIND_BY_KEY;
 
 	static {
@@ -30,13 +27,6 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd = :ymd ");
 		REMOVE_BY_EMPLOYEE = builderString.toString();
-		
-		builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiAffiliationInf a ");
-		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd IN :ymds ");
-		DEL_BY_LIST_KEY = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -71,12 +61,6 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		entity.workplaceID = affiliationInforOfDailyPerfor.getWplID();
 
 		return entity;
-	}
-
-	@Override
-	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
-		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
-		.setParameter("ymds", ymds).executeUpdate();
 	}
 
 	@Override
