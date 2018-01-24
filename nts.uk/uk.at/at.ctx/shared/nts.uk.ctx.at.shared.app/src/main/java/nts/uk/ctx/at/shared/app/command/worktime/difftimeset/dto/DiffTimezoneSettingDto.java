@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.EmTimeZoneSetDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneSet;
@@ -42,12 +43,13 @@ public class DiffTimezoneSettingDto {
 
 		/** The dto. */
 		private DiffTimezoneSettingDto dto;
+		
+		private int workTimezoneNo = 0; 
 
 		/**
 		 * Instantiates a new diff timezone setting impl.
 		 *
-		 * @param diffTimezoneSettingDto
-		 *            the diff timezone setting dto
+		 * @param diffTimezoneSettingDto the diff timezone setting dto
 		 */
 		public DiffTimezoneSettingImpl(DiffTimezoneSettingDto diffTimezoneSettingDto) {
 			this.dto = diffTimezoneSettingDto;
@@ -63,12 +65,21 @@ public class DiffTimezoneSettingDto {
 
 		@Override
 		public List<DiffTimeOTTimezoneSet> getOTTimezones() {
-			if (this.dto.lstOtTimezone == null) {
+			if (CollectionUtil.isEmpty(this.dto.lstOtTimezone)) {
 				return new ArrayList<>();
 			}
-			return this.dto.lstOtTimezone.stream().map(item -> {
-				return item.toDomain();
-			}).collect(Collectors.toList());
+
+			this.dto.lstOtTimezone = this.dto.lstOtTimezone.stream().sorted((timezone1, timezone2) -> timezone1
+					.getTimezone().getStart().compareTo(timezone2.getTimezone().getStart()))
+					.collect(Collectors.toList());
+
+			workTimezoneNo = 0;
+			this.dto.lstOtTimezone.forEach(timezone -> {
+				workTimezoneNo++;
+				timezone.setWorkTimezoneNo(workTimezoneNo);
+			});
+
+			return this.dto.lstOtTimezone.stream().map(timezone -> timezone.toDomain()).collect(Collectors.toList());
 		}
 
 	}
