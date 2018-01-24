@@ -7,10 +7,10 @@ module nts.uk.at.view.kal003.a.tab {
 
     export class DailyPerformanceTab {
         listWorkRecordExtraCon: KnockoutObservableArray<model.DailyErrorAlarmCheck> = ko.observableArray([
-            new model.DailyErrorAlarmCheck('S001', 'name S001', 'AL', 'message s001'),
-            new model.DailyErrorAlarmCheck('S002', 'name S002', 'ER', 'message s002'),
-            new model.DailyErrorAlarmCheck('S003', 'name S003', 'AL', 'message s003'),
-            new model.DailyErrorAlarmCheck('S004', 'name S004', 'ER', 'message s004')
+            new model.DailyErrorAlarmCheck('S001', 'name S001', model.ERROR_CLASSIFICATION.ERROR, 'message s001'),
+            new model.DailyErrorAlarmCheck('S002', 'name S002', model.ERROR_CLASSIFICATION.ALARM, 'message s002'),
+            new model.DailyErrorAlarmCheck('S003', 'name S003', model.ERROR_CLASSIFICATION.OTHER, 'message s003'),
+            new model.DailyErrorAlarmCheck('S004', 'name S004', model.ERROR_CLASSIFICATION.ALARM, 'message s004')
         ]);
         currentCodeList: KnockoutObservableArray<string>;
         addApplication: KnockoutObservable<boolean> = ko.observable(true);

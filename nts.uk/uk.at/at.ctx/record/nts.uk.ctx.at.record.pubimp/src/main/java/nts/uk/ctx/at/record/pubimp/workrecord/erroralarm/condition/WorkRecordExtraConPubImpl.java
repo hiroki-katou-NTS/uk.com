@@ -83,10 +83,10 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 	private WorkRecordExtraConPubExport setErrorAlarmConditionPubExport(WorkRecordExtraConPubExport workRecordExtraConPubExport,
 			List<ErrorAlarmCondition> listErrorAlarmCondition) {
 		workRecordExtraConPubExport.setErrorAlarmCondition(getErrorAlarmCondition(
-				workRecordExtraConPubExport.getCheckItem(), listErrorAlarmCondition));
+				workRecordExtraConPubExport.getErrorAlarmCheckID(), listErrorAlarmCondition));
 		return workRecordExtraConPubExport;
 	}
-	private ErrorAlarmConditionPubExport getErrorAlarmCondition(int eralCheckId, List<ErrorAlarmCondition> listErrorAlarmCondition) {
+	private ErrorAlarmConditionPubExport getErrorAlarmCondition(String eralCheckId, List<ErrorAlarmCondition> listErrorAlarmCondition) {
 		Optional<ErrorAlarmCondition> optErAlCondition = 
 				listErrorAlarmCondition.stream().filter(item -> item.getErrorAlarmCheckID().equals(eralCheckId)).findFirst();
         if (!optErAlCondition.isPresent()) {

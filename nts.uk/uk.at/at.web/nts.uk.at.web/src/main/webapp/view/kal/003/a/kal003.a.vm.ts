@@ -67,6 +67,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         self.tabCheckCondition.schedule4WeekCheckCondition(item.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition());
                         self.selectedDataCondition(item.dailyAlarmCheckCondition().conditionToExtractDaily());
                         self.tabFixedCondition.listFixedConditionWorkRecord(item.dailyAlarmCheckCondition().listFixedExtractConditionWorkRecord());
+                        self.tabDailyErrorAlarm.listWorkRecordExtraCon(item.dailyAlarmCheckCondition().listErrorAlarmCheck());
+                        self.tabDailyErrorAlarm.currentCodeList(item.dailyAlarmCheckCondition().listErrorAlarmCode());
                         self.screenMode(model.SCREEN_MODE.UPDATE);
                     }
                 }
@@ -86,8 +88,9 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     let _accList: Array<model.AlarmCheckConditionByCategory> = _.map(data, acc => {
                         let category = _.find(ko.toJS(self.cbbItemList), (x: model.ItemModel) => x.code == acc.category);
                         let item = new model.AlarmCheckConditionByCategory(acc.code, acc.name, category, acc.availableRoles, new model.AlarmCheckTargetCondition(acc.targetCondition.filterByEmployment, acc.targetCondition.filterByClassification, acc.targetCondition.filterByJobTitle, acc.targetCondition.filterByBusinessType, acc.targetCondition.targetEmployment, acc.targetCondition.targetClassification, acc.targetCondition.targetJobTitle, acc.targetCondition.targetBusinessType));
-                        let _fixedList: Array<model.FixedConditionWorkRecord> = _.map(acc.dailyAlarmCheckCondition.listFixedExtractConditionWorkRecord, (fix: any) => {return new model.FixedConditionWorkRecord({dailyAlarmConID: fix.dailyAlarmConID, checkName: fix.checkName, fixConWorkRecordNo: fix.fixConWorkRecordNo, message: fix.message, useAtr: fix.useAtr})});
-                        item.dailyAlarmCheckCondition(new model.DailyAlarmCheckCondition(acc.dailyAlarmCheckCondition.conditionToExtractDaily, acc.dailyAlarmCheckCondition.addApplication, acc.dailyAlarmCheckCondition.listErrorAlarmCode, [], _fixedList));
+                        let _fixedList: Array<model.FixedConditionWorkRecord> = _.map(acc.dailyAlarmCheckCondition.listFixedExtractConditionWorkRecord, (fix: any) => { return new model.FixedConditionWorkRecord({ dailyAlarmConID: fix.dailyAlarmConID, checkName: fix.checkName, fixConWorkRecordNo: fix.fixConWorkRecordNo, message: fix.message, useAtr: fix.useAtr }) });
+                        let _dailyList: Array<model.DailyErrorAlarmCheck> = _.map(acc.dailyAlarmCheckCondition.listErrorAlarmCheck, (d: any) => { return new model.DailyErrorAlarmCheck(d.code, d.name, d.classification, d.message) });
+                        item.dailyAlarmCheckCondition(new model.DailyAlarmCheckCondition(acc.dailyAlarmCheckCondition.conditionToExtractDaily, acc.dailyAlarmCheckCondition.addApplication, acc.dailyAlarmCheckCondition.listErrorAlarmCode, _dailyList, [], _fixedList));
                         item.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(acc.schedule4WeekCondition);
                         return item;
                     });
@@ -141,6 +144,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 data.dailyAlarmCheckCondition().listErrorAlarmCode(self.tabDailyErrorAlarm.currentCodeList());
                 data.dailyAlarmCheckCondition().listExtractConditionWorkRecork(self.tabCheckCondition.listWorkRecordExtractingConditions());
                 data.dailyAlarmCheckCondition().listFixedExtractConditionWorkRecord(self.tabFixedCondition.listFixedConditionWorkRecord());
+                _.each(data.dailyAlarmCheckCondition().listExtractConditionWorkRecork(), x => x.errorAlarmCondition().alCheckTargetCondition(new model.AlCheckTargetCondition({ filterByBusinessType: data.targetCondition().filterByBusinessType(), filterByJobTitle: data.targetCondition().filterByJobTitle(), filterByEmployment: data.targetCondition().filterByEmployment(), filterByClassification: data.targetCondition().filterByClassification(), lstBusinessTypeCode: data.targetCondition().targetBusinessType(), lstJobTitleId: data.targetCondition().targetJobTitle(), lstEmploymentCode: data.targetCondition().targetEmployment(), lstClassificationCode: data.targetCondition().targetClassification() })));
             }
             if (data.category() == model.CATEGORY.SCHEDULE_4_WEEK) {
                 data.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(self.tabCheckCondition.schedule4WeekCheckCondition());
