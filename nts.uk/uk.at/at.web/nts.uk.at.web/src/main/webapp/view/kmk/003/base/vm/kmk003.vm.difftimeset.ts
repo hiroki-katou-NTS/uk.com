@@ -10,6 +10,7 @@ module nts.uk.at.view.kmk003.a {
     import DiffTimezoneSettingDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimezoneSettingDto;
     import DiffTimeHalfDayWorkTimezoneDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeHalfDayWorkTimezoneDto;
     import DiffTimeWorkStampReflectTimezoneDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeWorkStampReflectTimezoneDto;
+    import StampReflectTimezoneDto = nts.uk.at.view.kmk003.a.service.model.common.StampReflectTimezoneDto;
     import EmTimezoneChangeExtentDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.EmTimezoneChangeExtentDto;
     import DiffTimeWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeWorkSettingDto;
 
@@ -202,11 +203,11 @@ module nts.uk.at.view.kmk003.a {
                         return m;
                     }));
 
-                    self.oTTimezones(data.oTTimezones.map(item => {
+                    self.oTTimezones(data.oTTimezones?data.oTTimezones.map(item => {
                         let m = new DiffTimeOTTimezoneSetModel();
                         m.updateData(item);
                         return m;
-                    }));
+                    }):[]);
 
                 }
                 
@@ -285,18 +286,20 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateData(data: DiffTimeWorkStampReflectTimezoneDto) {
-                    this.stampReflectTimezone.updateData(data.stampReflectTimezone);
-                    this.isUpdateStartTime(data.isUpdateStartTime);
+                    this.stampReflectTimezone().forEach(function(item, index) {
+                        item.updateData(data.stampReflectTimezone[index]);
+                    })
+                    this.isUpdateStartTime(data.updateStartTime);
                 }
 
                 toDto(): DiffTimeWorkStampReflectTimezoneDto {
-                    var lstStamp = [];
+                    var lstStamp: any = [];
                     this.stampReflectTimezone().forEach(function(item, index) {
                         lstStamp.push(item.toDto());
                     });
                     var dataDTO: DiffTimeWorkStampReflectTimezoneDto = {
                         stampReflectTimezone: lstStamp,
-                        isUpdateStartTime: this.isUpdateStartTime(),
+                        updateStartTime: this.isUpdateStartTime(),
                     };
                     return dataDTO;
                 }
@@ -391,7 +394,7 @@ module nts.uk.at.view.kmk003.a {
                     this.restSet.updateData(data.restSet);
                     this.dayoffWorkTimezone.updateData(data.dayoffWorkTimezone);
                     this.commonSet.updateData(data.commonSet);
-                    this.isUseHalfDayShift(data.isUseHalfDayShift);
+                    this.isUseHalfDayShift(data.useHalfDayShift);
                     this.changeExtent.updateData(data.changeExtent);
                     this.updateListHalfDay(data.halfDayWorkTimezones);
                     this.stampReflectTimezone.updateData(data.stampReflectTimezone);
@@ -415,7 +418,7 @@ module nts.uk.at.view.kmk003.a {
                         restSet: this.restSet.toDto(),
                         dayoffWorkTimezone: this.dayoffWorkTimezone.toDto(),
                         commonSet: commonSetting.toDto(),
-                        isUseHalfDayShift: this.isUseHalfDayShift(),
+                        useHalfDayShift: this.isUseHalfDayShift(),
                         changeExtent: this.changeExtent.toDto(),
                         halfDayWorkTimezones: halfDayWorkTimezones,
                         stampReflectTimezone: this.stampReflectTimezone.toDto(),

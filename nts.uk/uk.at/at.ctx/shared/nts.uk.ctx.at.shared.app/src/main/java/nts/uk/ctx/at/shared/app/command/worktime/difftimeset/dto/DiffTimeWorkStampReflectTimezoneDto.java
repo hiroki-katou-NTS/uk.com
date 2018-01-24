@@ -22,7 +22,7 @@ public class DiffTimeWorkStampReflectTimezoneDto {
 	private List<StampReflectTimezoneDto> stampReflectTimezone;
 
 	/** The is update start time. */
-	private boolean isUpdateStartTime;
+	private boolean updateStartTime;
 
 	/**
 	 * To domain.
@@ -61,7 +61,7 @@ public class DiffTimeWorkStampReflectTimezoneDto {
 
 		@Override
 		public boolean isIsUpdateStartTime() {
-			return this.dto.isUpdateStartTime;
+			return this.dto.updateStartTime;
 		}
 
 	}

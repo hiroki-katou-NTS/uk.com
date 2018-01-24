@@ -44,7 +44,7 @@ public class DiffTimeWorkSettingDto implements DiffTimeWorkSettingGetMemento {
 	private WorkTimezoneCommonSetDto commonSet;
 
 	/** The is use half day shift. */
-	private boolean isUseHalfDayShift;
+	private boolean useHalfDayShift;
 
 	/** The change extent. */
 	private EmTimezoneChangeExtentDto changeExtent;
@@ -103,7 +103,7 @@ public class DiffTimeWorkSettingDto implements DiffTimeWorkSettingGetMemento {
 	 */
 	@Override
 	public boolean isIsUseHalfDayShift() {
-		return this.isUseHalfDayShift;
+		return this.useHalfDayShift;
 	}
 
 	/* (non-Javadoc)

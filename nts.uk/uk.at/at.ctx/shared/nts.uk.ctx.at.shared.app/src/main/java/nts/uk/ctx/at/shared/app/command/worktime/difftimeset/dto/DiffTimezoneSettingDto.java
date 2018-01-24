@@ -24,7 +24,7 @@ public class DiffTimezoneSettingDto {
 	private List<EmTimeZoneSetDto> employmentTimezones;
 
 	/** The OT timezone. */
-	private List<DiffTimeOTTimezoneSetDto> oTTimezones;
+	private List<DiffTimeOTTimezoneSetDto> lstOtTimezone;
 
 	/**
 	 * To domain.
@@ -55,17 +55,18 @@ public class DiffTimezoneSettingDto {
 
 		@Override
 		public List<EmTimeZoneSet> getEmploymentTimezones() {
-			return this.dto.employmentTimezones.stream().map(item -> {
-				return new EmTimeZoneSet(item);
-			}).collect(Collectors.toList());
+			return this.dto.employmentTimezones.stream()
+					.map(item -> {
+						return new EmTimeZoneSet(item);
+					}).collect(Collectors.toList());
 		}
 
 		@Override
 		public List<DiffTimeOTTimezoneSet> getOTTimezones() {
-			if (this.dto.oTTimezones == null) {
+			if (this.dto.lstOtTimezone == null) {
 				return new ArrayList<>();
 			}
-			return this.dto.oTTimezones.stream().map(item -> {
+			return this.dto.lstOtTimezone.stream().map(item -> {
 				return item.toDomain();
 			}).collect(Collectors.toList());
 		}

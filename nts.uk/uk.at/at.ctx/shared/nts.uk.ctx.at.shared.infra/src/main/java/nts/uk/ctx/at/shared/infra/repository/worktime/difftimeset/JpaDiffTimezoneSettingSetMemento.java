@@ -53,7 +53,7 @@ public class JpaDiffTimezoneSettingSetMemento implements DiffTimezoneSettingSetM
 		List<KshmtDtWorkTimeSet> newListEntity = new ArrayList<>();
 
 		periodNo = 0;
-		employmentTimezones.forEach(domain -> {
+		employmentTimezones.stream().forEach(domain -> {
 			periodNo++;
 			KshmtDtWorkTimeSetPK pk = new KshmtDtWorkTimeSetPK(this.entity.getKshmtDiffTimeWorkSetPK().getCid(),
 					this.entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd(), this.type, periodNo);

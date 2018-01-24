@@ -24,7 +24,7 @@ public class DiffTimeWorkStampReflectTimezoneDto implements DiffTimeStampReflect
 	private List<StampReflectTimezoneDto> stampReflectTimezone;
 
 	/** The is update start time. */
-	private boolean isUpdateStartTime;
+	private boolean updateStartTime;
 
 	@Override
 	public void setStampReflectTimezone(List<StampReflectTimezone> stampReflectTimezone) {
@@ -38,6 +38,6 @@ public class DiffTimeWorkStampReflectTimezoneDto implements DiffTimeStampReflect
 
 	@Override
 	public void setIsUpdateStartTime(boolean isUpdateStartTime) {
-		this.isUpdateStartTime = isUpdateStartTime;
+		this.updateStartTime = isUpdateStartTime;
 	}
 }

@@ -52,7 +52,7 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 		// get domain fixed work setting by client send
 		DiffTimeWorkSetting difftimeWorkSetting = command.toDomainDiffTimeWorkSetting();
 
-		// Validate
+		//TODO Validate
 		// this.fixedPolicy.canRegister(fixedWorkSetting,
 		// command.toDomainPredetemineTimeSetting());
 

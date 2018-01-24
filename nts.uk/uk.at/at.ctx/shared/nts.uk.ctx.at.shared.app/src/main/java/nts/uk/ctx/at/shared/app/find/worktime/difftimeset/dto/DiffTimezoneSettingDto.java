@@ -26,7 +26,7 @@ public class DiffTimezoneSettingDto implements DiffTimezoneSettingSetMemento {
 	private List<EmTimeZoneSetDto> employmentTimezones;
 
 	/** The OT timezone. */
-	private List<DiffTimeOTTimezoneSetDto> oTTimezones;
+	private List<DiffTimeOTTimezoneSetDto> lstOtTimezone;
 
 	@Override
 	public void setEmploymentTimezones(List<EmTimeZoneSet> employmentTimezones) {
@@ -40,8 +40,8 @@ public class DiffTimezoneSettingDto implements DiffTimezoneSettingSetMemento {
 
 	@Override
 	public void setOTTimezones(List<DiffTimeOTTimezoneSet> oTTimezones) {
-		this.oTTimezones = new ArrayList<>();
-		this.oTTimezones.addAll(oTTimezones.stream().map(item -> {
+		this.lstOtTimezone = new ArrayList<>();
+		this.lstOtTimezone.addAll(oTTimezones.stream().map(item -> {
 			DiffTimeOTTimezoneSetDto dto = new DiffTimeOTTimezoneSetDto();
 			item.saveToMemento(dto);
 			return dto;

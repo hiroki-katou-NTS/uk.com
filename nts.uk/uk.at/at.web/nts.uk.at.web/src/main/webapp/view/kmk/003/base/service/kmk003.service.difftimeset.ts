@@ -47,8 +47,8 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 export interface DiffTimeWorkStampReflectTimezoneDto {
-                    stampReflectTimezone: StampReflectTimezoneDto;
-                    isUpdateStartTime: boolean;
+                    stampReflectTimezone: StampReflectTimezoneDto[];
+                    updateStartTime: boolean;
                 }
 
                 export interface EmTimezoneChangeExtentDto {
@@ -62,7 +62,7 @@ module nts.uk.at.view.kmk003.a {
                     restSet: FixedWorkRestSetDto;
                     dayoffWorkTimezone: DiffTimeDayOffWorkTimezoneDto;
                     commonSet: WorkTimezoneCommonSetDto;
-                    isUseHalfDayShift: boolean;
+                    useHalfDayShift: boolean;
                     changeExtent: EmTimezoneChangeExtentDto;
                     halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneDto[];
                     stampReflectTimezone: DiffTimeWorkStampReflectTimezoneDto;

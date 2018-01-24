@@ -772,7 +772,6 @@ module nts.uk.at.view.kmk003.a {
                 
                 if (self.workTimeSetting.isFlex()) {
                     self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
-                    //dientx add
                     self.commonSetting.updateData(worktimeSettingInfo.flexWorkSetting.commonSetting);
 
                     // set useHalfDay to mainScreen model
@@ -780,18 +779,23 @@ module nts.uk.at.view.kmk003.a {
                 }
                 if (self.workTimeSetting.isFlow()) {
                     self.flowWorkSetting.updateData(worktimeSettingInfo.flowWorkSetting);
-                    //dientx add
                     self.commonSetting.updateData(worktimeSettingInfo.flowWorkSetting.commonSetting);
                 }
                 if (self.workTimeSetting.isFixed()) {
                     self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
-                    //dientx add
                     self.commonSetting.updateData(worktimeSettingInfo.fixedWorkSetting.commonSetting);
 
                     // set useHalfDay to mainScreen model
                     self.useHalfDay(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift);
                 }
-                //TODO update diff viewmodel
+                
+                if (self.workTimeSetting.isDiffTime()) {
+                    self.diffWorkSetting.updateData(worktimeSettingInfo.diffTimeWorkSetting);
+                    self.commonSetting.updateData(worktimeSettingInfo.diffTimeWorkSetting.commonSet);
+
+                    // set useHalfDay to mainScreen model
+                    self.useHalfDay(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift);
+                }
             }
             
             resetData(isNewMode?: boolean) {
