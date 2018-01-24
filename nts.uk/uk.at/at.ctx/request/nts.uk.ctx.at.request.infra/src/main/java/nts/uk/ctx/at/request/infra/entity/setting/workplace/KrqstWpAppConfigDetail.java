@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
- * 
+ * 職場-申請承認機能設定
  * @author Doan Duy Hung
  *
  */

@@ -3,12 +3,14 @@ package nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author hieunv
  *
  */
 @Getter
+@Setter
 public class WorkTypeConditionPubExport {
 	
 	private boolean useAtr;
@@ -33,5 +35,8 @@ public class WorkTypeConditionPubExport {
     	this.actualLstWorkType = actualLstWorkType;
     }
 	
+	public WorkTypeConditionPubExport() {
+		super();
+	}
 }
 
