@@ -24,6 +24,7 @@ module nts.uk.at.view.kmk003.a {
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
     import TimeRangeModelConverter = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModelConverter;
     import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
+    import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
 
     export module viewmodel {
         export module difftimeset {
@@ -126,30 +127,42 @@ module nts.uk.at.view.kmk003.a {
             }
 
 
-            export class DiffTimeDayOffWorkTimezoneModel {
+            export class DiffTimeDayOffWorkTimezoneModel extends OffdayWorkTimeConverter {
                 restTimezone: DiffTimeRestTimezoneModel;
-                workTimezones: DayOffTimezoneSettingModel[];
+                workTimezones: KnockoutObservableArray<HDWorkTimeSheetSettingModel>;
 
                 constructor() {
+                    super();
                     this.restTimezone = new DiffTimeRestTimezoneModel();
-                    this.workTimezones = [];
+                    this.workTimezones = this.originalList;
                 }
 
                 updateData(data: DiffTimeDayOffWorkTimezoneDto) {
                     this.restTimezone.updateData(data.restTimezone);
-                    this.workTimezones = [];
-                    for (var dataDTO of data.workTimezones) {
-                        var dataModel: DayOffTimezoneSettingModel = new DayOffTimezoneSettingModel();
-                        dataModel.updateData(dataDTO);
-                        this.workTimezones.push(dataModel);
-                    }
+                    let mapped = _.map(data.workTimezones, wtz => {
+                        let dataModel = new HDWorkTimeSheetSettingModel();
+                        dataModel.updateData(wtz);
+                        return dataModel;
+                    });
+                    this.workTimezones(mapped);
                 }
 
                 toDto(): DiffTimeDayOffWorkTimezoneDto {
                     var workTimezones: DayOffTimezoneSettingDto[] = [];
-                    for (var dataModel of this.workTimezones) {
-                        workTimezones.push(dataModel.toDto());
-                    }
+                    _.forEach(this.workTimezones(), dataModel => {
+                        let dto1 = dataModel.toDto();
+                        let dto2 = <DayOffTimezoneSettingDto>{};
+                        dto2.isUpdateStartTime = false;
+                        dto2.workTimeNo = dto1.workTimeNo;
+                        dto2.timezone = dto1.timezone;
+                        dto2.isLegalHolidayConstraintTime = dto1.isLegalHolidayConstraintTime;
+                        dto2.inLegalBreakFrameNo = dto1.inLegalBreakFrameNo;
+                        dto2.isNonStatutoryDayoffConstraintTime = dto1.isNonStatutoryDayoffConstraintTime;
+                        dto2.outLegalBreakFrameNo = dto1.outLegalBreakFrameNo;
+                        dto2.isNonStatutoryHolidayConstraintTime = dto1.isNonStatutoryHolidayConstraintTime;
+                        dto2.outLegalPubHDFrameNo = dto1.outLegalPubHDFrameNo;
+                        workTimezones.push(dto2);
+                    });
                     var dataDTO: DiffTimeDayOffWorkTimezoneDto = {
                         restTimezone: this.restTimezone.toDto(),
                         workTimezones: workTimezones,
