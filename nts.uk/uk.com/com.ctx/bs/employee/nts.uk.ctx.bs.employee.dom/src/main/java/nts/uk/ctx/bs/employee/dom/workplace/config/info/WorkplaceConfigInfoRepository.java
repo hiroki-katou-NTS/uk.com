@@ -44,6 +44,15 @@ public interface WorkplaceConfigInfoRepository {
 	 * @return the optional
 	 */
 	Optional<WorkplaceConfigInfo> find(String companyId, String historyId);
+	
+	/**
+	 * Find.
+	 *
+	 * @param companyId the company id
+	 * @param baseDate the base date
+	 * @return the optional
+	 */
+	Optional<WorkplaceConfigInfo> find(String companyId, GeneralDate baseDate);
 
 	/**
 	 * Find.
