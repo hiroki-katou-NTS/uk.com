@@ -10,19 +10,46 @@ module nts.uk.at.view.ksm001.g {
     export module viewmodel {
 
         export class ScreenModel {
-//            commonGuidelineSettingModel: CommonGuidelineSettingModel;
+            itemsSwap: KnockoutObservableArray<ItemModel>;
+            columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+            currentCodeListSwap: KnockoutObservableArray<any>;
+            test: KnockoutObservableArray<any>;
+            
+            checked1: KnockoutObservable<boolean>;
+            checked2: KnockoutObservable<boolean>;
+            checked3: KnockoutObservable<boolean>;
            
             constructor() {
-                var self = this;
-//                self.commonGuidelineSettingModel = new CommonGuidelineSettingModel();
-            }
+                var _self = this;
+                _self.itemsSwap = ko.observableArray([]);
+           
+                var array = [];
+                for (var i = 0; i < 10; i++) {
+                   array.push(new ItemModel(i, '基本給'));
+                }
+                _self.itemsSwap(array);
+    
+                _self.columns = ko.observableArray([
+                   { headerText: 'コード', key: 'code', width: 100 },
+                   { headerText: '名称', key: 'name', width: 150 }
+                ]);
+    
+                _self.currentCodeListSwap = ko.observableArray([]);
+                _self.test = ko.observableArray([]);
+                
+                _self.checked1 = ko.observable(false);
+                _self.checked2 = ko.observable(false);
+                _self.checked3 = ko.observable(false);
+             }
 
             /**
             * start page data 
             */
             public startPage(): JQueryPromise<any> {
-                var self = this;
+                var _self = this;
                 var dfd = $.Deferred();
+                
+                 dfd.resolve();
 
                 return dfd.promise();
             }
@@ -31,7 +58,7 @@ module nts.uk.at.view.ksm001.g {
              * function on click save CommonGuidelineSetting
              */
             public save(): void {
-                var self = this;
+                var _self = this;
 
                 nts.uk.ui.block.invisible();
             }
@@ -43,123 +70,19 @@ module nts.uk.at.view.ksm001.g {
                 nts.uk.ui.windows.close();
             }
 
-        }     
+        }
         
+        export class ItemModel {
+           code: number;
+           name: string;
+           constructor(code: number, name: string) {
+               this.code = code;
+               this.name = name;
+           }
+       }
         
-//        export class ReferenceConditionModel {
-//            yearlyDisplayCondition: KnockoutObservable<number>;
-//            monthlyDisplayCondition: KnockoutObservable<number>;
-//            alarmCheckCondition: KnockoutObservable<number>;
-//            lstEstimateCondition: KnockoutObservableArray<EstimatedConditionDto>;
-//
-//            constructor() {
-//                this.yearlyDisplayCondition = ko.observable(1);
-//                this.monthlyDisplayCondition = ko.observable(1);
-//                this.alarmCheckCondition = ko.observable(1);
-//                this.lstEstimateCondition = ko.observableArray([
-//                    { code: 1, name: "条件1" },
-//                    { code: 2, name: "条件2" },
-//                    { code: 3, name: "条件3" },
-//                    { code: 4, name: "条件4" },
-//                    { code: 5, name: "条件5" },
-//                ]);
-//            }
-//            
-//            updateData(dto: ReferenceConditionDto) {
-//                this.yearlyDisplayCondition(dto.yearlyDisplayCondition);
-//                this.monthlyDisplayCondition(dto.monthlyDisplayCondition);
-//                this.alarmCheckCondition(dto.alarmCheckCondition);
-//            }
-//            
-//            toDto(): ReferenceConditionDto {
-//                var dto: ReferenceConditionDto = 
-//                    {
-//                        yearlyDisplayCondition: this.yearlyDisplayCondition(),
-//                        monthlyDisplayCondition: this.monthlyDisplayCondition(),
-//                        alarmCheckCondition: this.alarmCheckCondition()
-//                    };
-//                return dto;
-//            }
-//        }
-//        export class CommonGuidelineSettingModel{
-//            estAlarmColors1st:   KnockoutObservable<string>;  
-//            estAlarmColors2nd:   KnockoutObservable<string>;  
-//            estAlarmColors3rd:   KnockoutObservable<string>;  
-//            estAlarmColors4th:   KnockoutObservable<string>;  
-//            estAlarmColors5th:   KnockoutObservable<string>;
-//
-//            /** The estimate time. */
-//            estimateTime: ReferenceConditionModel;
-//
-//            /** The estimate price. */
-//            estimatePrice: ReferenceConditionModel;
-//
-//            /** The estimate number of days. */
-//            estimateNumberOfDays: ReferenceConditionModel;
-//            
-//            
-//            
-//            constructor() {
-//                this.estAlarmColors1st = ko.observable('#0000ff');
-//                this.estAlarmColors2nd = ko.observable('#ffff00');
-//                this.estAlarmColors3rd = ko.observable('#ff9900');
-//                this.estAlarmColors4th = ko.observable('#ff00ff');
-//                this.estAlarmColors5th = ko.observable('#ff0000');
-//                this.estimateTime = new ReferenceConditionModel();
-//                this.estimatePrice = new ReferenceConditionModel();
-//                this.estimateNumberOfDays = new ReferenceConditionModel();
-//            }
-//            
-//            updateData(dto: CommonGuidelineSettingDto) {
-//                for (var color of dto.alarmColors) {
-//                    switch(color.guidelineCondition){
-//                        case EstimatedCondition.CONDITION_1ST:
-//                        this.estAlarmColors1st(color.color);
-//                        break;    
-//                        case EstimatedCondition.CONDITION_2ND:
-//                        this.estAlarmColors2nd(color.color);
-//                        break;    
-//                        case EstimatedCondition.CONDITION_3RD:
-//                        this.estAlarmColors3rd(color.color);
-//                        break;    
-//                        case EstimatedCondition.CONDITION_4TH:
-//                        this.estAlarmColors4th(color.color);
-//                        break;    
-//                        case EstimatedCondition.CONDITION_5TH:
-//                        this.estAlarmColors5th(color.color);
-//                        break;    
-//                    }
-//                }
-//                this.estimateTime.updateData(dto.estimateTime);
-//                this.estimatePrice.updateData(dto.estimatePrice);
-//                this.estimateNumberOfDays.updateData(dto.estimateNumberOfDays);
-//            }
-//            
-//            toDto(): CommonGuidelineSettingDto {
-//                var alarmColors: EstimatedAlarmColorDto[] = [];
-//                alarmColors.push(
-//                    { guidelineCondition: EstimatedCondition.CONDITION_1ST, color: this.estAlarmColors1st() });
-//                alarmColors.push(
-//                    { guidelineCondition: EstimatedCondition.CONDITION_2ND, color: this.estAlarmColors2nd() });
-//                alarmColors.push(
-//                    { guidelineCondition: EstimatedCondition.CONDITION_3RD, color: this.estAlarmColors3rd() });
-//                alarmColors.push(
-//                    { guidelineCondition: EstimatedCondition.CONDITION_4TH, color: this.estAlarmColors4th() });
-//                alarmColors.push(
-//                    { guidelineCondition: EstimatedCondition.CONDITION_5TH, color: this.estAlarmColors5th() });
-//                var dto: CommonGuidelineSettingDto =
-//                    {
-//                        alarmColors: alarmColors,
-//                        estimateTime: this.estimateTime.toDto(),
-//                        estimatePrice: this.estimatePrice.toDto(),
-//                        estimateNumberOfDays: this.estimateNumberOfDays.toDto()
-//                    };
-//                return dto;
-//            }
-//        }
-        
-        //  目安利用条件
-        export enum EstimatedCondition {
+       //  目安利用条件
+       export enum EstimatedCondition {
             // 条件1
             CONDITION_1ST = 1,
             // 条件2
