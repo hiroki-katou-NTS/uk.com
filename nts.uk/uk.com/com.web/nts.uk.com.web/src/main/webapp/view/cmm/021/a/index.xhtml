@@ -73,7 +73,7 @@
 							             searchMode: 'filter',
 										 targetKey: 'loginId', 									
 										 comId: 'single-list', 
-										 items: items,  
+										 items: listUserInfos,  
 										 selectedKey: 'loginId', 
 										 fields: ['loginId', 'employeeCode','personName','isSetting'], 
 										 mode: 'igGrid'
@@ -85,7 +85,7 @@
 					<div id="tabpanel-1" role="tabpanel" class="table-grid-list" tabindex="-1">
 						<table id="single-list" tabindex="7"
 							data-bind="ntsGridList: {								
-								dataSource: items,								
+								dataSource: listUserInfos,								
 								primaryKey: 'employeeId',
 								columns: columns,																
 								multiple: false,

@@ -19,7 +19,7 @@ module nts.uk.com.view.cmm021.a {
             columns: KnockoutObservableArray<any>;
             currentCode: KnockoutObservable<any>;
 
-            items: KnockoutObservableArray<ItemModel>;
+            listUserInfos: KnockoutObservableArray<ItemModel>;
 
             useSet: KnockoutObservableArray<any>;
             selectUse: KnockoutObservable<number>;
@@ -88,7 +88,7 @@ module nts.uk.com.view.cmm021.a {
                 _self.listUserDto = [];
                 _self.listUserDtoScreenC = [];
                 _self.checked = ko.observable(true);
-                _self.items = ko.observableArray([]);
+                _self.listUserInfos = ko.observableArray([]);
                 _self.currentCode = ko.observable();
                 _self.baseDate = ko.observable(moment(new Date()).toDate());
 
@@ -748,20 +748,20 @@ module nts.uk.com.view.cmm021.a {
 
            private loadUserDto() {
                 let _self = this;
-                _self.items([]);
+                _self.listUserInfos([]);
             // check user info loaded is not empty
             if (!_.isEmpty(_self.listUserDto)) {                
                 for (let userDto of _self.listUserDto) {
                         if (userDto.isSetting) {
-                         _self.items.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, 1));
+                         _self.listUserInfos.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, 1));
 
                         } else {
-                         _self.items.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, 0));
+                         _self.listUserInfos.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, 0));
                         }
                     }
                 // if user info loaded is empty, set default empty element   
                 }else{
-                   // _self.items.push(new ItemModel("", "", "", "", "", false, 0));
+                   // _self.listUserInfos.push(new ItemModel("", "", "", "", "", false, 0));
                     _self.unselectedMode();
                 }       
           
@@ -769,20 +769,20 @@ module nts.uk.com.view.cmm021.a {
             
              private loadUserDtoForScreenC() {
                 let _self = this;
-                _self.items([]);
+                _self.listUserInfos([]);
             // check user info loaded is not empty
             if (!_.isEmpty(_self.listUserDtoScreenC)) {                
                 for (let userDto of _self.listUserDtoScreenC) {
                         if (userDto.isSetting) {
-                         _self.items.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, 1));
+                         _self.listUserInfos.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, 1));
 
                         } else {
-                         _self.items.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, 0));
+                         _self.listUserInfos.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, 0));
                         }
                     }
                 // if user info loaded is empty, set default empty element   
                 }else{
-                   // _self.items.push(new ItemModel("", "", "", "", "", false, 0));
+                   // _self.listUserInfos.push(new ItemModel("", "", "", "", "", false, 0));
                     _self.unselectedMode();
                 }       
           
@@ -791,7 +791,7 @@ module nts.uk.com.view.cmm021.a {
 
             private loadUserUnsetting() {
                 let _self = this;
-                _self.items([]);
+                _self.listUserInfos([]);
                 for (let userDto of _self.listUserDto) {
                     if (!userDto.isSetting) {
                         _self.listUserUnsetting.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, userDto.other));
@@ -803,7 +803,7 @@ module nts.uk.com.view.cmm021.a {
                 _self.selectedEmployeeId(_self.listUserUnsetting[0].employeeId);
                 _self.newMode();
 
-                _self.items(_self.listUserUnsetting);
+                _self.listUserInfos(_self.listUserUnsetting);
                 if (_self.listUserUnsetting.length = 0) {
                     _self.unselectedMode();
                 }
@@ -812,7 +812,7 @@ module nts.uk.com.view.cmm021.a {
             
             private loadUserUnsettingScreenAC() {
                 let _self = this;
-                _self.items([]);
+                _self.listUserInfos([]);
                 for (let userDto of _self.listUserDtoScreenC) {
                     if (!userDto.isSetting) {
                         _self.listUserUnsettingScreenAC.push(new ItemModel(userDto.personName, userDto.employeeCode, userDto.loginId, userDto.employeeId, userDto.userId, userDto.isSetting, userDto.other));
@@ -823,7 +823,7 @@ module nts.uk.com.view.cmm021.a {
                 _self.selectedEmployeeId(_self.listUserUnsettingScreenAC[0].employeeId);
                 _self.newMode();
 
-                _self.items(_self.listUserUnsettingScreenAC);
+                _self.listUserInfos(_self.listUserUnsettingScreenAC);
                 if (_self.listUserUnsettingScreenAC.length = 0) {
                     _self.unselectedMode();
                 }
@@ -831,15 +831,27 @@ module nts.uk.com.view.cmm021.a {
             
             private loadUserInfo(){
             let _self = this;
-                if(_self.isScreenBSelected()){
-                    _self.loadUserInfoScreenAB();
-                }else if(_self.isScreenCSelected()){
-                    _self.loadUserInfoForOtherAcc();
-                }           
+            if (_self.isScreenBSelected()) {
+                _self.loadUserInfoScreenAB();
+
+                if (_self.selectUse() == 1) {
+                     _self.listUserInfos(_self.listUserDto);
+                } else if (_self.selectUse() == 0) {
+                    _self.loadUserUnsetting();
+                  // _self.listUserInfos(_self.listUserUnsetting);
+                }
+            } else if (_self.isScreenCSelected()) {
+                _self.loadUserInfoForOtherAcc();
+
+                if (_self.selectUse() == 1) {
+                    _self.listUserInfos(_self.listUserDtoScreenC);
+                } else if (_self.selectUse() == 0) {
+                    _self.loadUserUnsettingScreenAC();
+                    //_self.listUserInfos(_self.listUserUnsettingScreenAC);
+                }
             }
-            
-                                    
-         
+            }
+                                             
             private loadUserSetting() {
                 let _self = this;
                 _self.loadUserInfoScreenAB();
@@ -952,7 +964,7 @@ module nts.uk.com.view.cmm021.a {
 
             public onSelectScreenC() {
                 let _self = this;                
-                _self.isScreenBSelected(false);
+                _self.isScreenBSelected(false);                
                 _self.isScreenCSelected(true);
                 _self.selectUse(1);
                 _self.loadUserInfoForOtherAcc();
