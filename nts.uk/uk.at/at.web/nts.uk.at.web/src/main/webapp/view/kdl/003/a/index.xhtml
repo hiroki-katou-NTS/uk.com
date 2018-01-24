@@ -12,17 +12,15 @@
 					width : 1250,
 					height : 520
 				};
-				__viewContext.primitiveValueConstraints.TimeOfDay = {
-						valueType: 'Clock',
-						max: '71:59',
-						min: '-12:00',
-				};
 			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kdl003.a.start.js" />
 			<com:scriptfile path="kdl003.a.vm.js" />
 			<com:scriptfile path="kdl003.a.service.js" />
 			<com:stylefile path="kdl003.a.style.css" />
+			<com:ValidatorScript>
+				nts.uk.shr.com.time.TimeWithDayAttr
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
