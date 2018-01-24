@@ -204,7 +204,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // init data sample
                 self.isMultiple = data.isMutipleCheck;
                 self.isQuickSearchTab = data.isQuickSearchTab;
-                self.isAdvancedSearchTab = false;
+                self.isAdvancedSearchTab = data.isAdvancedSearchTab;
                 self.isAllReferableEmployee = data.isAllReferableEmployee;
                 self.isOnlyMe = data.isOnlyMe;
                 self.isEmployeeOfWorkplace = data.isEmployeeOfWorkplace;
@@ -235,6 +235,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     $input.find('.btn_showhide').attr('tabindex', tabindex);
                     dfd.resolve();
                 });
+                $('#ccg-component').outerHeight($('#contents-area').outerHeight());
                 
                 // init function click button ccg common
                 $(window).on('click', function(e) {
@@ -256,10 +257,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     if (self.isShow()) {
                         // Hide component.
                         self.isShow(false);
-                        $('#hor-scroll-button-hide').hide();
-                        $('#ccg-component').toggle("slide", function() {
-                            $('#hor-scroll-button-hide').show();
-                        });
+                        $('#ccg-component').toggle("slide");
                     }
                 });
                 return dfd.promise();
@@ -274,7 +272,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.isShow()) {
                     return;
                 }
-                $('#hor-scroll-button-hide').hide();
                 self.isShow(true);
                 $('#ccg-component').toggle("slide", function() {
                     if (self.isFistTimeShow) {
