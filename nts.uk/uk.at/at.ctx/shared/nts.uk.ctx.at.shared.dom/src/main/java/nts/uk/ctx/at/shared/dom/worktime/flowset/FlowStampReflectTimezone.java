@@ -7,15 +7,15 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FlowStampReflectTimezone.
  */
 // 流動打刻反映時間帯
 @Getter
-public class FlowStampReflectTimezone extends DomainObject {
+public class FlowStampReflectTimezone extends WorkTimeDomainObject {
 
 	 /** The two times work reflect basic time. */
 	// ２回目勤務の反映基準時間

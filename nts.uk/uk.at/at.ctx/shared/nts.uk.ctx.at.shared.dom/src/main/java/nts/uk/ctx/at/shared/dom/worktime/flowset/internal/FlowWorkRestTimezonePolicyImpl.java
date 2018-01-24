@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
@@ -36,12 +37,12 @@ public class FlowWorkRestTimezonePolicyImpl implements FlowWorkRestTimezonePolic
 	 * nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, FlowWorkRestTimezone flowRest) {
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, FlowWorkRestTimezone flowRest) {
 
-		this.flowRestTimezonePolicy.validate(predTime, flowRest.getFlowRestTimezone());
+		this.flowRestTimezonePolicy.validate(be, predTime, flowRest.getFlowRestTimezone());
 
 		// validate TimezoneOfFixedRestTimeSet
-		this.fixedRestPolicy.validate(predTime, flowRest.getFixedRestTimezone());
+		this.fixedRestPolicy.validate(be, predTime, flowRest.getFixedRestTimezone());
 	}
 
 }

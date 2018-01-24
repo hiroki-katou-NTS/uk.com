@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimePolicy;
@@ -34,11 +35,11 @@ public class FlexHalfDayWorkTimePolicyImpl implements FlexHalfDayWorkTimePolicy 
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting)
 	 */
 	@Override
-	public void validate(FlexHalfDayWorkTime flexHalfDay, PredetemineTimeSetting predTime) {
+	public void validate(BundledBusinessException be, FlexHalfDayWorkTime flexHalfDay, PredetemineTimeSetting predTime) {
 		// validate FixedWorkTimezoneSet
-		this.fixedWtzSetPolicy.validate(flexHalfDay.getWorkTimezone(), predTime);
+		this.fixedWtzSetPolicy.validate(be, flexHalfDay.getWorkTimezone(), predTime);
 		// validate FlowWorkRestTimezone
-		this.flowRestPolicy.validate(predTime, flexHalfDay.getRestTimezone());
+		this.flowRestPolicy.validate(be, predTime, flexHalfDay.getRestTimezone());
 	}
 
 }

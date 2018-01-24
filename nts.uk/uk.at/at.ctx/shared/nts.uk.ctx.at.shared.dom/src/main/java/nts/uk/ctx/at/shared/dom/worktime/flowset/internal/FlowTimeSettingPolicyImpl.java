@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset.internal;
 
 import javax.ejb.Stateless;
 
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -27,8 +27,8 @@ public class FlowTimeSettingPolicyImpl implements FlowTimeSettingPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predetemineTimeSetting, FlowTimeSetting flowTimeSetting) {
-		this.validateElapsedTime(predetemineTimeSetting, flowTimeSetting);
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predetemineTimeSetting, FlowTimeSetting flowTimeSetting) {
+		this.validateElapsedTime(be, predetemineTimeSetting, flowTimeSetting);
 	}
 
 	/**
@@ -37,10 +37,10 @@ public class FlowTimeSettingPolicyImpl implements FlowTimeSettingPolicy {
 	 * @param predetemineTimeSetting the predetemine time setting
 	 * @param flowTimeSetting the flow time setting
 	 */
-	private void validateElapsedTime(PredetemineTimeSetting predetemineTimeSetting, FlowTimeSetting flowTimeSetting) {
+	private void validateElapsedTime(BundledBusinessException be, PredetemineTimeSetting predetemineTimeSetting, FlowTimeSetting flowTimeSetting) {
 		// Msg_781
 		if (flowTimeSetting.getElapsedTime().greaterThan(predetemineTimeSetting.getRangeTimeDay())) {
-			throw new BusinessException("Msg_781");
+			be.addMessage("Msg_781");
 		}
 	}
 

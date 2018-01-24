@@ -5,15 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class OtherEmTimezoneLateEarlySet.
  */
 //就業時間帯の遅刻・早退別設定
 @Getter
-public class OtherEmTimezoneLateEarlySet extends DomainObject {
+public class OtherEmTimezoneLateEarlySet extends WorkTimeDomainObject {
 
 	/** The del time rounding set. */
 	//控除時間丸め設定

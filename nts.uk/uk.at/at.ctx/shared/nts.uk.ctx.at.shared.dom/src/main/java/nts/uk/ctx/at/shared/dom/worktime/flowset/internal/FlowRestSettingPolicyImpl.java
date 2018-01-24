@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset.internal;
 
 import javax.ejb.Stateless;
 
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -26,12 +26,12 @@ public class FlowRestSettingPolicyImpl implements FlowRestSettingPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, FlowRestSetting flowRestSetting) {
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, FlowRestSetting flowRestSetting) {
 
 		// Validate #Msg_781
 		if (flowRestSetting.getFlowPassageTime().greaterThanOrEqualTo(predTime.getRangeTimeDay())
 				|| flowRestSetting.getFlowRestTime().greaterThan(predTime.getRangeTimeDay())) {
-			throw new BusinessException("Msg_781");
+			be.addMessage("Msg_781");
 		}
 	}
 

@@ -6,11 +6,10 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import lombok.Getter;
 import lombok.val;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
@@ -18,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 //フレックス勤務の平日出勤用勤務時間帯
 @Getter
-public class FlexHalfDayWorkTime extends DomainObject {
+public class FlexHalfDayWorkTime extends WorkTimeDomainObject {
 
 	/** The rest timezone. */
 	// 休憩時間帯
@@ -37,13 +36,12 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 */
 	@Override
 	public void validate() {
-		super.validate();
 		if (!this.restTimezone.isFixRestTime() && this.hasNoNo1()) {
-			throw new BusinessException("Msg_847");
+			this.bundledBusinessExceptions.addMessage("Msg_847");
 		}
 
 		if (this.restTimezone.isFixRestTime() && !this.isInFixedWork(this.restTimezone)) {
-			throw new BusinessException("Msg_755");
+			this.bundledBusinessExceptions.addMessage("Msg_755");
 		}
 		
 		// validate 770 for list work
@@ -66,6 +64,8 @@ public class FlexHalfDayWorkTime extends DomainObject {
 			// validate Msg_515 for rest time
 			this.restTimezone.getFixedRestTimezone().checkOverlap("KMK003_20");
 		}
+		
+		super.validate();
 	}
 
 	/**

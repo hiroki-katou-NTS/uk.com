@@ -21,9 +21,9 @@ public class WorkTimeValidationSevice {
 	 *
 	 * @param obj the obj
 	 */
-	public static void validate(Object obj) {
+	public static void validate(WorkTimeDomainObject obj) {
 		// Create new Bundled business exception.
-		BundledBusinessException bundledBusinessException = BundledBusinessException.newInstance();
+		BundledBusinessException bundledBusinessException = obj.getBundledBusinessExceptions();
 		
 		for (Field field : obj.getClass().getDeclaredFields()) {
 			Object fieldValue = ReflectionUtil.getFieldValue(field, obj);

@@ -9,16 +9,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FlowRestTimezone.
  */
 // 流動休憩時間帯
 @Getter
-public class FlowRestTimezone extends DomainObject {
+public class FlowRestTimezone extends WorkTimeDomainObject {
 
 	/** The flow rest sets. */
 	// 流動休憩設定
@@ -34,9 +33,13 @@ public class FlowRestTimezone extends DomainObject {
 
 	/**
 	 * Constructor
-	 * @param flowRestSets  The flow rest sets.
-	 * @param useHereAfterRestSet The use here after rest set.
-	 * @param hereAfterRestSet The here after rest set.
+	 * 
+	 * @param flowRestSets
+	 *            The flow rest sets.
+	 * @param useHereAfterRestSet
+	 *            The use here after rest set.
+	 * @param hereAfterRestSet
+	 *            The here after rest set.
 	 */
 	public FlowRestTimezone(List<FlowRestSetting> flowRestSets, boolean useHereAfterRestSet,
 			FlowRestSetting hereAfterRestSet) {
@@ -45,11 +48,12 @@ public class FlowRestTimezone extends DomainObject {
 		this.useHereAfterRestSet = useHereAfterRestSet;
 		this.hereAfterRestSet = hereAfterRestSet;
 	}
-	
+
 	/**
 	 * Instantiates a new flow rest timezone.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public FlowRestTimezone(FlowRestTimezoneGetMemento memento) {
 		this.flowRestSets = memento.getFlowRestSet();
@@ -60,7 +64,8 @@ public class FlowRestTimezone extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(FlowRestTimezoneSetMemento memento) {
 		memento.setFlowRestSet(this.flowRestSets);
@@ -74,20 +79,21 @@ public class FlowRestTimezone extends DomainObject {
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
-	public void validate() {
-		super.validate();
+	public void validate() {		
 		this.validateAfterRestSetting();
 		this.validateOverlapFlowRestSets();
+		super.validate();
 	}
 
 	/**
 	 * Validate after rest setting.
 	 */
 	private void validateAfterRestSetting() {
-		// Validate hereAfterRestSet.flowPassageTime > 0 when useHereAfterRestSet is true
+		// Validate hereAfterRestSet.flowPassageTime > 0 when
+		// useHereAfterRestSet is true
 		if (this.useHereAfterRestSet) {
 			if (this.hereAfterRestSet.getFlowPassageTime().lessThanOrEqualTo(0)) {
-				throw new BusinessException("Msg_871");
+				this.bundledBusinessExceptions.addMessage("Msg_871");
 			}
 		}
 	}
@@ -98,13 +104,11 @@ public class FlowRestTimezone extends DomainObject {
 	private void validateOverlapFlowRestSets() {
 		// Validate flowRestSets.flowPassageTime must not be duplicated
 		Set<AttendanceTime> setFlowPassageTime = this.flowRestSets.stream()
-				.map(flowRestSet -> flowRestSet.getFlowPassageTime())
-				.collect(Collectors.toSet());
+				.map(flowRestSet -> flowRestSet.getFlowPassageTime()).collect(Collectors.toSet());
 		// If Set size < List size => there're duplicated value
 		if (setFlowPassageTime.size() < this.flowRestSets.size()) {
-			throw new BusinessException("Msg_869");
+			this.bundledBusinessExceptions.addMessage("Msg_869");
 		}
 	}
-
 
 }

@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWtzPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezonePolicy;
@@ -31,9 +32,9 @@ public class FlowHalfDayWtzPolicyImpl implements FlowHalfDayWtzPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlHalfDayWtz)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, FlowHalfDayWorkTimezone flowHalf) {
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, FlowHalfDayWorkTimezone flowHalf) {
 		// validate FlowWorkRestTimezone
-		this.flowRestPolicy.validate(predTime, flowHalf.getRestTimezone());
+		this.flowRestPolicy.validate(be, predTime, flowHalf.getRestTimezone());
 	}
 
 }

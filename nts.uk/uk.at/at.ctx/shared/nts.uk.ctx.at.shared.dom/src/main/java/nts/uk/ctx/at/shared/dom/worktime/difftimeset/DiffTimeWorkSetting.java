@@ -10,12 +10,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
  */
 @Getter
 // 時差勤務設定
-public class DiffTimeWorkSetting extends AggregateRoot {
+public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 
 	/** The company id. */
 	// 会社ID

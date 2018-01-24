@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
 import lombok.Builder;
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class WorkTimeDisplayName.
@@ -14,7 +14,7 @@ import nts.arc.layer.dom.DomainObject;
 //就業時間帯の表示名
 @Getter
 @Builder
-public class WorkTimeDisplayName extends DomainObject {
+public class WorkTimeDisplayName extends WorkTimeDomainObject {
 	
 	/** The work time name. */
 	//名称

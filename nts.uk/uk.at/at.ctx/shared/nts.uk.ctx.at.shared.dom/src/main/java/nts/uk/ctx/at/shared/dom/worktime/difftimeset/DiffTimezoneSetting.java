@@ -11,16 +11,16 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class DiffTimezoneSetting.
  */
 // 時差勤務時間帯設定
 @Getter
-public class DiffTimezoneSetting extends DomainObject{
+public class DiffTimezoneSetting extends WorkTimeDomainObject {
 
 	/** The employment timezone. */
 	// 就業時間帯
