@@ -15,8 +15,8 @@ module kdl003.parent.viewmodel {
             //construct codes 
             self.canSelectWorkTypeCodes = ko.observable('001,002,003,004,005,006,007,008,009,010');
             self.selectWorkTypeCode = ko.observable('002');
-            self.canSelectSiftCodes = ko.observable('001,003,005');
-            self.selectSiftCode = ko.observable('003');
+            self.canSelectSiftCodes = ko.observable('');
+            self.selectSiftCode = ko.observable('324');
 
             self.childSelectWorkTypeCode = ko.observable('');
             self.childSelectWorkTypeName = ko.observable('');

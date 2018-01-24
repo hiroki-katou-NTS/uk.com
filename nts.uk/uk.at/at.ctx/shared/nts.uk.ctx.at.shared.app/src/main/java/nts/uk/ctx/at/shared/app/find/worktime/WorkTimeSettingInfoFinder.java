@@ -9,9 +9,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.app.find.breaktime.dto.BreakTimeDayDto;
 import nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto.DiffTimeWorkSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
+import nts.uk.ctx.at.shared.app.find.worktime.fixedset.FixedWorkSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.FixedWorkSettingDto;
+import nts.uk.ctx.at.shared.app.find.worktime.flexset.FlexWorkSettingFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.flexset.dto.FlexWorkSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.flowset.dto.FlWorkSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSettingDto;
@@ -60,6 +63,16 @@ public class WorkTimeSettingInfoFinder {
 	/** The flex work setting repository. */
 	@Inject
 	private FlexWorkSettingRepository flexWorkSettingRepository;
+	
+	@Inject
+	private FixedWorkSettingFinder fixedFinder;
+	
+//	@Inject
+//	private DiffTimeWorkSettingFinder diffFinder;
+	
+	@Inject
+	private FlexWorkSettingFinder flexFinder;
+	
 
 	/**
 	 * Find.
@@ -124,5 +137,46 @@ public class WorkTimeSettingInfoFinder {
 
 		return new WorkTimeSettingInfoDto(predetemineTimeSettingDto, workTimeSettingDto, flexWorkSettingDto,
 				fixedWorkSettingDto, flowWorkSettingDto, diffTimeWorkSettingDto);
+	}
+	
+	public BreakTimeDayDto findModeMethod(String workTimeCode) {
+
+		String companyId = AppContexts.user().companyId();
+		
+		BreakTimeDayDto breakTimeDto = new BreakTimeDayDto();
+
+		Optional<WorkTimeSetting> workTimeSettingOp = workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		if (workTimeSettingOp.isPresent()) {
+			WorkTimeSetting workTimeSetting = workTimeSettingOp.get();
+			// check mode of worktime
+			if (workTimeSetting.getWorkTimeDivision().getWorkTimeDailyAtr().equals(WorkTimeDailyAtr.REGULAR_WORK)) {
+				// check WorkTimeMethodSet
+				switch (workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
+					case FIXED_WORK:
+						Optional<FixedWorkSetting> opFixedWorkSetting = this.fixedWorkSettingRepository.findByKey(companyId, workTimeCode);
+						
+						breakTimeDto = this.fixedFinder.getBreakTimeDtos(opFixedWorkSetting);
+//						break;
+//					case DIFFTIME_WORK:
+//						Optional<DiffTimeWorkSetting> diffTimeWorkSetting = this.diffTimeWorkSettingRepository
+//								.find(companyId, workTimeCode).get();
+//						breakTimeDto = this.diffFinder.getBreakTimeDtos(diffTimeWorkSetting);
+//						break;
+//					case FLOW_WORK:
+//						FlowWorkSetting flowWorkSetting = this.flowWorkSettingRepository.find(companyId, workTimeCode)
+//								.get();
+//						breakTimeDto = this.fixeFinder.getBreakTimeDtos(opFixedWorkSetting);
+//						break;
+					default:
+						break;
+				}
+			} 
+			else// case FLEX_WORK
+			{
+				FlexWorkSetting flexWorkSetting = this.flexWorkSettingRepository.find(companyId, workTimeCode).get();
+				breakTimeDto = this.flexFinder.getBreakTimeDtos(flexWorkSetting);
+			}
+		}
+		return breakTimeDto;
 	}
 }
