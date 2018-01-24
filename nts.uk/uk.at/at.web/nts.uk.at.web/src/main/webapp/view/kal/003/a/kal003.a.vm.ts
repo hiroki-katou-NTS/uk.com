@@ -28,6 +28,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
         //scope check tab
         tabScopeCheck: tab.ScopeCheckTab;
+        //daily tab
+        tabDailyErrorAlarm: tab.DailyPerformanceTab;
         //check condition tab
         tabCheckCondition: tab.CheckConditionTab;
         //tab fixed check condition
@@ -45,6 +47,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.selectedTab = ko.observable('tab-1');
 
             self.tabScopeCheck = new tab.ScopeCheckTab();
+            self.tabDailyErrorAlarm = new tab.DailyPerformanceTab();
             self.tabCheckCondition = new tab.CheckConditionTab(self.selectedCategory());
             self.tabFixedCondition = new tab.FixedCheckConditionTab();
 
@@ -83,8 +86,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     let _accList: Array<model.AlarmCheckConditionByCategory> = _.map(data, acc => {
                         let category = _.find(ko.toJS(self.cbbItemList), (x: model.ItemModel) => x.code == acc.category);
                         let item = new model.AlarmCheckConditionByCategory(acc.code, acc.name, category, acc.availableRoles, new model.AlarmCheckTargetCondition(acc.targetCondition.filterByEmployment, acc.targetCondition.filterByClassification, acc.targetCondition.filterByJobTitle, acc.targetCondition.filterByBusinessType, acc.targetCondition.targetEmployment, acc.targetCondition.targetClassification, acc.targetCondition.targetJobTitle, acc.targetCondition.targetBusinessType));
-                        let _fixedList: Array<model.FixedConditionWorkRecord> = _.map(acc.dailyAlarmCheckCondition.listFixedExtractConditionWorkRecord, (fix: any) => {return new model.FixedConditionWorkRecord({errorAlarmId: fix.errorAlarmId, checkName: fix.checkName, fixConWorkRecordNo: fix.fixConWorkRecordNo, message: fix.message, useAtr: fix.useAtr})});
-                        item.dailyAlarmCheckCondition(new model.DailyAlarmCheckCondition(acc.dailyAlarmCheckCondition.conditionToExtractDaily, acc.dailyAlarmCheckCondition.addApplication, [], [], _fixedList));
+                        let _fixedList: Array<model.FixedConditionWorkRecord> = _.map(acc.dailyAlarmCheckCondition.listFixedExtractConditionWorkRecord, (fix: any) => {return new model.FixedConditionWorkRecord({dailyAlarmConID: fix.dailyAlarmConID, checkName: fix.checkName, fixConWorkRecordNo: fix.fixConWorkRecordNo, message: fix.message, useAtr: fix.useAtr})});
+                        item.dailyAlarmCheckCondition(new model.DailyAlarmCheckCondition(acc.dailyAlarmCheckCondition.conditionToExtractDaily, acc.dailyAlarmCheckCondition.addApplication, acc.dailyAlarmCheckCondition.listErrorAlarmCode, [], _fixedList));
                         item.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(acc.schedule4WeekCondition);
                         return item;
                     });
@@ -114,15 +117,17 @@ module nts.uk.at.view.kal003.a.viewmodel {
             let self = this;
             nts.uk.ui.errors.clearAll();
             self.selectedAlarmCheckConditionCode('');
-            //self.openKAL003dDialog();
             let category = _.find(ko.toJS(self.cbbItemList), (x: model.ItemModel) => x.code == self.selectedCategory());
             self.selectedAlarmCheckCondition(new model.AlarmCheckConditionByCategory('', '', category, [], new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], [])));
             self.selectedDataCondition(model.DATA_CONDITION_TO_EXTRACT.ALL);
             self.tabScopeCheck.targetCondition(new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], []));
+            //self.tabDailyErrorAlarm.currentCodeList([]);
+            self.tabDailyErrorAlarm.addApplication(false);
             self.tabCheckCondition.category(self.selectedCategory());
             self.tabCheckCondition.listWorkRecordExtractingConditions([]);
             self.tabCheckCondition.schedule4WeekCheckCondition(model.SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY);
             self.screenMode(model.SCREEN_MODE.NEW);
+            
         }
 
         registerAlarmCheckCondition() {
@@ -132,8 +137,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
             data.action(self.screenMode());
             if (data.category() == model.CATEGORY.DAILY) {
                 data.dailyAlarmCheckCondition().conditionToExtractDaily(self.selectedDataCondition());
-                data.dailyAlarmCheckCondition().addApplication(true);
+                data.dailyAlarmCheckCondition().addApplication(self.tabDailyErrorAlarm.addApplication());
+                data.dailyAlarmCheckCondition().listErrorAlarmCode(self.tabDailyErrorAlarm.currentCodeList());
                 data.dailyAlarmCheckCondition().listExtractConditionWorkRecork(self.tabCheckCondition.listWorkRecordExtractingConditions());
+                data.dailyAlarmCheckCondition().listFixedExtractConditionWorkRecord(self.tabFixedCondition.listFixedConditionWorkRecord());
             }
             if (data.category() == model.CATEGORY.SCHEDULE_4_WEEK) {
                 data.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(self.tabCheckCondition.schedule4WeekCheckCondition());
@@ -195,18 +202,23 @@ module nts.uk.at.view.kal003.a.viewmodel {
             modal("/view/kal/003/d/index.xhtml").onClosed(() => {
                 var output = getShared("outputKAL003d");
                 if (output) {
-                    self.selectedCategory(output);
+                    //self.selectedCategory(output);
+                    self.switchCategory(output).done(() => {
+                        self.createNewAlarmCheckCondition();
+                    });
                 }
             });
         }
 
-        private switchCategory(category: number) {
-            let self = this;
+        private switchCategory(category: number): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
             block.invisible();
             self.tabCheckCondition.category(category);
-            self.startPage().always(() => {
+            $.when(self.startPage()).done(() => {
+                dfd.resolve();
                 block.clear();
             });
+            return dfd.promise();
         }
 
     }

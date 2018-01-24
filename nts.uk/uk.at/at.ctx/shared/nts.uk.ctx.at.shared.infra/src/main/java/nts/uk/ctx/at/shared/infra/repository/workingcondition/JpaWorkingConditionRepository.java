@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -135,9 +134,16 @@ public class JpaWorkingConditionRepository extends JpaRepository
 
 		// creat query
 		TypedQuery<KshmtWorkingCond> query = em.createQuery(cq);
+		
+		List<KshmtWorkingCond> result = query.getResultList();
+		
+		// Check exist
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
 
 		return Optional
-				.of(new WorkingCondition(new JpaWorkingConditionGetMemento(query.getResultList())));
+				.of(new WorkingCondition(new JpaWorkingConditionGetMemento(result)));
 	}
 
 	/*

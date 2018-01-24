@@ -30,8 +30,6 @@ public class PerInfoCtgWebservice extends WebService {
 
 	@Inject
 	private UpdatePerInfoCtgCommandHandler updatePerInfoCtgCommand;
-
-
 	
 	@POST
 	@Path("findAll")
