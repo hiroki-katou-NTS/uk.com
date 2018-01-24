@@ -10,11 +10,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveCommandHandler;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.shr.com.context.AppContexts;
@@ -35,7 +36,7 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 
 	/** The flow policy. */
 	@Inject
-	private FlWorkSettingPolicy flowPolicy;
+	private FlowWorkSettingPolicy flowPolicy;
 
 	/*
 	 * (non-Javadoc)
@@ -48,6 +49,12 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 	@Transactional
 	protected void handle(CommandHandlerContext<FlowWorkSettingSaveCommand> context) {
 		
+		try {
+			throw new BusinessException("Msg_3");
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		}
+		
 		String companyId = AppContexts.user().companyId();
 		
 		// get command
@@ -57,14 +64,14 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 		FlowWorkSetting flowWorkSetting = command.toDomainFlowWorkSetting();
 
 		// check policy
-		this.flowPolicy.validate(flowWorkSetting, command.toDomainPredetemineTimeSetting());
+		this.flowPolicy.validate(command.toDomainPredetemineTimeSetting(), flowWorkSetting);
 
 		// common handler
 		this.commonHandler.handle(command);
 
 		// call repository save flow work setting
 		if (command.isAddMode()) {
-			//TODOflowWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			flowWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			this.flowRepo.add(flowWorkSetting);
 		} else {
 			Optional<FlowWorkSetting> opFlowWorkSetting = this.flowRepo.find(companyId,

@@ -6,6 +6,8 @@ module a7 {
     import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
     import DeductionTimeModel = nts.uk.at.view.kmk003.a.viewmodel.common.DeductionTimeModel;
+    import DiffTimeDeductTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeDeductTimezoneModel;
+
     import FlowRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowRestSettingModel;
     class ScreenModel {
 
@@ -164,14 +166,28 @@ module a7 {
         private loadDataToScreen() {
             let self = this;
             self.dataSourceForFixedOrDiffTime.subscribe((newDataSource: any) => {
-                let listDeductionTimeModel: DeductionTimeModel[] = [];
-                for (let item of newDataSource) {
-                    let deduct = new DeductionTimeModel();
-                    deduct.start(item.column1().startTime);
-                    deduct.end(item.column1().endTime);
-                    listDeductionTimeModel.push(deduct);
+                if (self.mainSettingModel.workTimeSetting.isFixed()) {
+                    let listDeductionTimeModel: DeductionTimeModel[] = [];
+                    for (let item of newDataSource) {
+                        let deduct = new DeductionTimeModel();
+                        deduct.start(item.column1().startTime);
+                        deduct.end(item.column1().endTime);
+                        listDeductionTimeModel.push(deduct);
+                    }
+                    self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(listDeductionTimeModel);
                 }
-                self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(listDeductionTimeModel);
+
+                if (self.mainSettingModel.workTimeSetting.isDiffTime()) {
+                    let listDiffTimeDeductTimezoneModel: DiffTimeDeductTimezoneModel[] = [];
+                    for (let item of newDataSource) {
+                        let deduct = new DiffTimeDeductTimezoneModel();
+                        deduct.start(item.column1().startTime);
+                        deduct.end(item.column1().endTime);
+                        //is update start time ??
+                        listDiffTimeDeductTimezoneModel.push(deduct);
+                    }
+                    self.mainSettingModel.diffWorkSetting.dayoffWorkTimezone.restTimezone.restTimezones(listDiffTimeDeductTimezoneModel);
+                }
             });
             //TODO not care difftime or flow
         }
@@ -179,7 +195,7 @@ module a7 {
         private setDataFlexOrFlowToModel() {
             let self = this;
             self.isCheckFollowTime = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.useHereAfterRestSet;
-            
+
             self.dataSourceForFlowOrFlexUse.subscribe((newDataSource: any) => {
                 let listDeductionTimeModel: DeductionTimeModel[] = [];
                 for (let item of newDataSource) {
@@ -244,27 +260,35 @@ module a7 {
             else//for fixed or difftime
             {
                 let data: any = [];
-
-                for (let item of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone()) {
-                    data.push({
-                        column1: ko.observable({ startTime: item.start(), endTime: item.end() })
-                    });
+                if (self.mainSettingModel.workTimeSetting.isFixed()) {
+                    for (let item of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone()) {
+                        data.push({
+                            column1: ko.observable({ startTime: item.start(), endTime: item.end() })
+                        });
+                    }
+                }
+                if (self.mainSettingModel.workTimeSetting.isDiffTime()) {
+                    for (let item of self.mainSettingModel.diffWorkSetting.dayoffWorkTimezone.restTimezone.restTimezones()) {
+                        data.push({
+                            column1: ko.observable({ startTime: item.start(), endTime: item.end() })
+                        });
+                    }
                 }
                 self.dataSourceForFixedOrDiffTime(data);
             }
         }
 
-         /**
-         * Update column setting
-         */
+        /**
+        * Update column setting
+        */
         private refreshColumnSet() {
             let self = this;
-            self.fixTableOptionForFixedOrDiffTime.columns= self.columnSetting();
-            self.fixTableOptionForFlowOrFlexUse.columns= self.columnSetting();
-            self.fixTableOptionForFlowOrFlexNotUse1.columns= self.columnSetting2();
-            self.fixTableOptionForFlowOrFlexNotUse2.columns= self.columnSetting2();
+            self.fixTableOptionForFixedOrDiffTime.columns = self.columnSetting();
+            self.fixTableOptionForFlowOrFlexUse.columns = self.columnSetting();
+            self.fixTableOptionForFlowOrFlexNotUse1.columns = self.columnSetting2();
+            self.fixTableOptionForFlowOrFlexNotUse2.columns = self.columnSetting2();
         }
-        
+
         private columnSetting(): Array<any> {
             let self = this;
             return [

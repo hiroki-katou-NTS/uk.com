@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 
 /**
  * The Class FlowHalfDayWorkTimezone.
@@ -28,7 +27,7 @@ public class FlowHalfDayWorkTimezone extends DomainObject{
 	 *
 	 * @param memento the memento
 	 */
-	public FlowHalfDayWorkTimezone(FlHalfDayWtzGetMemento memento) {
+	public FlowHalfDayWorkTimezone(FlowHalfDayWtzGetMemento memento) {
 		this.restTimezone = memento.getRestTimezone();
 		this.workTimeZone = memento.getWorkTimeZone();
 	}
@@ -38,7 +37,7 @@ public class FlowHalfDayWorkTimezone extends DomainObject{
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(FlHalfDayWtzSetMemento memento) {
+	public void saveToMemento(FlowHalfDayWtzSetMemento memento) {
 		memento.setRestTimezone(this.restTimezone);
 		memento.setWorkTimeZone(this.workTimeZone);
 	}

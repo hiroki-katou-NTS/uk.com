@@ -29,11 +29,13 @@ public class DiffTimeHalfDayWorkTimezoneDto implements DiffTimeHalfDaySetMemento
 
 	@Override
 	public void setRestTimezone(DiffTimeRestTimezone restTimezone) {
+		this.restTimezone = new DiffTimeRestTimezoneDto();
 		restTimezone.saveToMemento(this.restTimezone);
 	}
 
 	@Override
 	public void setWorkTimezone(DiffTimezoneSetting workTimezone) {
+		this.workTimezone = new DiffTimezoneSettingDto();
 		workTimezone.saveToMemento(this.workTimezone);
 	}
 

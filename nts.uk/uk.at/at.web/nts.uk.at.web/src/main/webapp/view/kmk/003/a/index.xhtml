@@ -98,8 +98,8 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" data-bind="enable: !isNewMode(), click: enterNewMode">#{i18n.getText('KMK003_3')}</button>
-				<button tabindex="2" class="proceed" data-bind="click: save">#{i18n.getText('KMK003_4')}</button>
+				<button id="createButton" tabindex="1" data-bind="enable: !isNewMode(), click: enterNewMode">#{i18n.getText('KMK003_3')}</button>
+				<button id="saveButton" tabindex="2" class="proceed" data-bind="click: save">#{i18n.getText('KMK003_4')}</button>
 				<button tabindex="3" data-bind="enable: isUpdateMode, click: enterCopyMode">
 					#{i18n.getText('KMK003_5')}</button>
 				<button tabindex="4" class="danger" data-bind="enable: isUpdateMode, click: removeWorkTime">

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.difftimeset;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -12,6 +14,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveCommandHandler;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class DiffTimeWorkSettingSaveCommandHandler.
@@ -19,13 +22,17 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingReposito
 @Stateless
 public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTimeWorkSettingSaveCommand> {
 
-	/** The diff time work setting repository. */
+	/** The fixed work setting repository. */
 	@Inject
-	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
+	private DiffTimeWorkSettingRepository difftimeWorkSettingRepository;
 
-	/** The work time common save command handler. */
+	/** The common handler. */
 	@Inject
-	private WorkTimeCommonSaveCommandHandler workTimeCommonSaveCommandHandler;
+	private WorkTimeCommonSaveCommandHandler commonHandler;
+
+	// /** The fixed policy. */
+	// @Inject
+	// private FixedWorkSettingPolicy fixedPolicy;
 
 	/*
 	 * (non-Javadoc)
@@ -37,15 +44,35 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 	@Override
 	protected void handle(CommandHandlerContext<DiffTimeWorkSettingSaveCommand> context) {
 
+		String companyId = AppContexts.user().companyId();
+
+		// get command
 		DiffTimeWorkSettingSaveCommand command = context.getCommand();
 
-		DiffTimeWorkSetting diffTimeDomain = command.toDomainDiffTimeWorkSetting();
+		// get domain fixed work setting by client send
+		DiffTimeWorkSetting difftimeWorkSetting = command.toDomainDiffTimeWorkSetting();
 
-		// save common
-		this.workTimeCommonSaveCommandHandler.handle(command);
+		//TODO Validate
+		// this.fixedPolicy.canRegister(fixedWorkSetting,
+		// command.toDomainPredetemineTimeSetting());
 
-		// save difftime to DB
-		this.diffTimeWorkSettingRepository.save(diffTimeDomain);
+		// common handler
+		this.commonHandler.handle(command);
+
+		// call repository save fixed work setting
+		if (command.isAddMode()) {
+			// difftimeWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.));
+			this.difftimeWorkSettingRepository.add(difftimeWorkSetting);
+		} else {
+			Optional<DiffTimeWorkSetting> opDiffTimeWorkSetting = this.difftimeWorkSettingRepository.find(companyId,
+					command.getWorktimeSetting().worktimeCode);
+			if (opDiffTimeWorkSetting.isPresent()) {
+				// fixedWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
+				// command.getWorktimeSetting().getWorkTimeDivision(),
+				// opFixedWorkSetting.get());
+				this.difftimeWorkSettingRepository.update(difftimeWorkSetting);
+			}
+		}
 	}
 
 }

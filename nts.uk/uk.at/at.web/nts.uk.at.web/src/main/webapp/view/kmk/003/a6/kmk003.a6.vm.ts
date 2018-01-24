@@ -12,13 +12,16 @@ module a6 {
         fixTableOptionFlow: any;
         fixTableOptionFlex: any;
         fixTableOptionFixed: any;
+        fixTableOptionDiffTime: any;
         selectedTab: KnockoutObservable<string>;
         isFlowMode: KnockoutObservable<boolean>;
         isFlexMode: KnockoutObservable<boolean>;
         isFixedMode: KnockoutObservable<boolean>;
+        isDiffTimeMode: KnockoutObservable<boolean>;
         dataSourceFlow: KnockoutObservableArray<any>;
         dataSourceFlex: KnockoutObservableArray<any>;
         dataSourceFixed: KnockoutObservableArray<any>;
+        dataSourceDiffTime: KnockoutObservableArray<any>;
         settingEnum: WorkTimeSettingEnumDto;
         mainSettingModel: MainSettingModel;
         
@@ -73,6 +76,16 @@ module a6 {
                 columns: self.columnSettingOtherFlow(),
                 tabindex: 89
             };
+            self.fixTableOptionDiffTime = {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 10,
+                isShowButton: true,
+                dataSource: self.dataSourceDiffTime,
+                isMultipleSelect: true,
+                columns: self.columnSettingOtherFlow(),
+                tabindex: 89
+            };
         }
         /**
          * function update data by update model
@@ -82,10 +95,12 @@ module a6 {
             self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
             self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
             self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
+            self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
             //TODO chua lam flow
 
             self.dataSourceFlex = self.mainSettingModel.flexWorkSetting.offdayWorkTime.convertedList;
             self.dataSourceFixed = self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.convertedList;
+            self.dataSourceDiffTime = self.mainSettingModel.diffWorkSetting.dayoffWorkTimezone.convertedList;
         }
         /**
          * function convert dto to model
@@ -177,7 +192,7 @@ module a6 {
                     key: "outLegalPubHolFrameNo",
                     defaultValue: ko.observable(1),
                     dataSource: self.lstWorkDayOffFrame,
-                    width: 130,
+                    width: 170,
                     template: `<div data-key="workdayoffFrNo" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'workdayoffFrNo',
                                     visibleItemsCount: 10,
@@ -209,7 +224,7 @@ module a6 {
                     unitAttrName: 'roundingTime',
                     dataSource: self.settingEnum.rounding,
                     defaultValue: ko.observable(0),
-                    width: 170,
+                    width: 130,
                     template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     optionsValue: 'value',
                                     visibleItemsCount: 3,

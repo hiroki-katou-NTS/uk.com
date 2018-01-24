@@ -10,6 +10,7 @@ module nts.uk.at.view.kmk003.a {
     import DiffTimezoneSettingDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimezoneSettingDto;
     import DiffTimeHalfDayWorkTimezoneDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeHalfDayWorkTimezoneDto;
     import DiffTimeWorkStampReflectTimezoneDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeWorkStampReflectTimezoneDto;
+    import StampReflectTimezoneDto = nts.uk.at.view.kmk003.a.service.model.common.StampReflectTimezoneDto;
     import EmTimezoneChangeExtentDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.EmTimezoneChangeExtentDto;
     import DiffTimeWorkSettingDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeWorkSettingDto;
 
@@ -21,6 +22,9 @@ module nts.uk.at.view.kmk003.a {
     import InstantRoundingModel = nts.uk.at.view.kmk003.a.viewmodel.common.InstantRoundingModel;
     import FixedWorkRestSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkRestSetModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
+    import TimeRangeModelConverter = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModelConverter;
+    import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
+    import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
 
     export module viewmodel {
         export module difftimeset {
@@ -78,15 +82,31 @@ module nts.uk.at.view.kmk003.a {
             }
 
 
-            export class DiffTimeRestTimezoneModel {
-                restTimezones: DiffTimeDeductTimezoneModel[];
+            export class DiffTimeRestTimezoneModel extends TimeRangeModelConverter<DiffTimeDeductTimezoneModel>{
+                restTimezones: KnockoutObservableArray<DiffTimeDeductTimezoneModel>;
 
                 constructor() {
-                    this.restTimezones = [];
+                    super();
+                    let self = this;
+                    this.restTimezones = self.originalList;
+                }
+
+                toConvertedList(): Array<TimeRangeModel> {
+                    let self = this;
+                    return _.map(self.restTimezones(), tz => self.toTimeRangeItem(tz.start(), tz.end()));
+                }
+
+                fromConvertedList(newList: Array<TimeRangeModel>): Array<DiffTimeDeductTimezoneModel> {
+                    return _.map(newList, newVl => {
+                        let vl = new DiffTimeDeductTimezoneModel();
+                        vl.start(newVl.column1().startTime);
+                        vl.end(newVl.column1().endTime);
+                        return vl;
+                    });
                 }
 
                 updateData(data: DiffTimeRestTimezoneDto) {
-                    this.restTimezones = [];
+                    this.restTimezones([]);
                     for (var dataDTO of data.restTimezones) {
                         var dataModel: DiffTimeDeductTimezoneModel = new DiffTimeDeductTimezoneModel();
                         dataModel.updateData(dataDTO);
@@ -96,7 +116,7 @@ module nts.uk.at.view.kmk003.a {
 
                 toDto(): DiffTimeRestTimezoneDto {
                     var restTimezones: DiffTimeDeductTimezoneDto[] = [];
-                    for (var dataModel of this.restTimezones) {
+                    for (var dataModel of this.restTimezones()) {
                         restTimezones.push(dataModel.toDto());
                     }
                     var dataDTO: DiffTimeRestTimezoneDto = {
@@ -107,30 +127,42 @@ module nts.uk.at.view.kmk003.a {
             }
 
 
-            export class DiffTimeDayOffWorkTimezoneModel {
+            export class DiffTimeDayOffWorkTimezoneModel extends OffdayWorkTimeConverter {
                 restTimezone: DiffTimeRestTimezoneModel;
-                workTimezones: DayOffTimezoneSettingModel[];
+                workTimezones: KnockoutObservableArray<HDWorkTimeSheetSettingModel>;
 
                 constructor() {
+                    super();
                     this.restTimezone = new DiffTimeRestTimezoneModel();
-                    this.workTimezones = [];
+                    this.workTimezones = this.originalList;
                 }
 
                 updateData(data: DiffTimeDayOffWorkTimezoneDto) {
                     this.restTimezone.updateData(data.restTimezone);
-                    this.workTimezones = [];
-                    for (var dataDTO of data.workTimezones) {
-                        var dataModel: DayOffTimezoneSettingModel = new DayOffTimezoneSettingModel();
-                        dataModel.updateData(dataDTO);
-                        this.workTimezones.push(dataModel);
-                    }
+                    let mapped = _.map(data.workTimezones, wtz => {
+                        let dataModel = new HDWorkTimeSheetSettingModel();
+                        dataModel.updateData(wtz);
+                        return dataModel;
+                    });
+                    this.workTimezones(mapped);
                 }
 
                 toDto(): DiffTimeDayOffWorkTimezoneDto {
                     var workTimezones: DayOffTimezoneSettingDto[] = [];
-                    for (var dataModel of this.workTimezones) {
-                        workTimezones.push(dataModel.toDto());
-                    }
+                    _.forEach(this.workTimezones(), dataModel => {
+                        let dto1 = dataModel.toDto();
+                        let dto2 = <DayOffTimezoneSettingDto>{};
+                        dto2.isUpdateStartTime = false;
+                        dto2.workTimeNo = dto1.workTimeNo;
+                        dto2.timezone = dto1.timezone;
+                        dto2.isLegalHolidayConstraintTime = dto1.isLegalHolidayConstraintTime;
+                        dto2.inLegalBreakFrameNo = dto1.inLegalBreakFrameNo;
+                        dto2.isNonStatutoryDayoffConstraintTime = dto1.isNonStatutoryDayoffConstraintTime;
+                        dto2.outLegalBreakFrameNo = dto1.outLegalBreakFrameNo;
+                        dto2.isNonStatutoryHolidayConstraintTime = dto1.isNonStatutoryHolidayConstraintTime;
+                        dto2.outLegalPubHDFrameNo = dto1.outLegalPubHDFrameNo;
+                        workTimezones.push(dto2);
+                    });
                     var dataDTO: DiffTimeDayOffWorkTimezoneDto = {
                         restTimezone: this.restTimezone.toDto(),
                         workTimezones: workTimezones,
@@ -169,11 +201,11 @@ module nts.uk.at.view.kmk003.a {
 
             export class DiffTimezoneSettingModel {
                 employmentTimezones: KnockoutObservableArray<EmTimeZoneSetModel>;
-                oTTimezones: KnockoutObservableArray<DiffTimeOTTimezoneSetModel>;
+                lstOtTimezone: KnockoutObservableArray<DiffTimeOTTimezoneSetModel>;
 
                 constructor() {
                     this.employmentTimezones = ko.observableArray([]);
-                    this.oTTimezones = ko.observableArray([]);
+                    this.lstOtTimezone = ko.observableArray([]);
                 }
 
                 updateData(data: DiffTimezoneSettingDto) {
@@ -184,22 +216,33 @@ module nts.uk.at.view.kmk003.a {
                         return m;
                     }));
 
-                    self.oTTimezones(data.oTTimezones.map(item => {
+                    self.lstOtTimezone(data.lstOtTimezone?data.lstOtTimezone.map(item => {
                         let m = new DiffTimeOTTimezoneSetModel();
                         m.updateData(item);
                         return m;
-                    }));
+                    }):[]);
 
+                }
+                
+                updateOvertimeZone(lstOTTimezone: DiffTimeOTTimezoneSetDto[]) {
+                    this.lstOtTimezone([]);
+                    var dataModelTimezone: DiffTimeOTTimezoneSetModel[] = [];
+                    for (var dataDTO of lstOTTimezone) {
+                        var dataModel: DiffTimeOTTimezoneSetModel = new DiffTimeOTTimezoneSetModel();
+                        dataModel.updateData(dataDTO);
+                        dataModelTimezone.push(dataModel);
+                    }
+                    this.lstOtTimezone(dataModelTimezone);
                 }
 
                 toDto(): DiffTimezoneSettingDto {
                     let self = this;
-                    let employmentTimezones = self.employmentTimezones().map(item => item.toDto()); 
-                    let oTTimezones = self.oTTimezones().map(item => item.toDto());
+                    let employmentTimezones = self.employmentTimezones().map(item => item.toDto());
+                    let lstOtTimezone = self.lstOtTimezone().map(item => item.toDto());
 
                     var dataDTO: DiffTimezoneSettingDto = {
                         employmentTimezones: employmentTimezones,
-                        oTTimezones: oTTimezones
+                        lstOtTimezone: lstOtTimezone
                     };
                     return dataDTO;
                 }
@@ -247,23 +290,29 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class DiffTimeWorkStampReflectTimezoneModel {
-                stampReflectTimezone: StampReflectTimezoneModel;
+                stampReflectTimezone: KnockoutObservableArray<StampReflectTimezoneModel>;
                 isUpdateStartTime: KnockoutObservable<boolean>;
 
                 constructor() {
-                    this.stampReflectTimezone = new StampReflectTimezoneModel();
+                    this.stampReflectTimezone = ko.observableArray([]);
                     this.isUpdateStartTime = ko.observable(false);
                 }
 
                 updateData(data: DiffTimeWorkStampReflectTimezoneDto) {
-                    this.stampReflectTimezone.updateData(data.stampReflectTimezone);
-                    this.isUpdateStartTime(data.isUpdateStartTime);
+                    this.stampReflectTimezone().forEach(function(item, index) {
+                        item.updateData(data.stampReflectTimezone[index]);
+                    })
+                    this.isUpdateStartTime(data.updateStartTime);
                 }
 
                 toDto(): DiffTimeWorkStampReflectTimezoneDto {
+                    var lstStamp: any = [];
+                    this.stampReflectTimezone().forEach(function(item, index) {
+                        lstStamp.push(item.toDto());
+                    });
                     var dataDTO: DiffTimeWorkStampReflectTimezoneDto = {
-                        stampReflectTimezone: this.stampReflectTimezone.toDto(),
-                        isUpdateStartTime: this.isUpdateStartTime(),
+                        stampReflectTimezone: lstStamp,
+                        updateStartTime: this.isUpdateStartTime(),
                     };
                     return dataDTO;
                 }
@@ -358,7 +407,7 @@ module nts.uk.at.view.kmk003.a {
                     this.restSet.updateData(data.restSet);
                     this.dayoffWorkTimezone.updateData(data.dayoffWorkTimezone);
                     this.commonSet.updateData(data.commonSet);
-                    this.isUseHalfDayShift(data.isUseHalfDayShift);
+                    this.isUseHalfDayShift(data.useHalfDayShift);
                     this.changeExtent.updateData(data.changeExtent);
                     this.updateListHalfDay(data.halfDayWorkTimezones);
                     this.stampReflectTimezone.updateData(data.stampReflectTimezone);
@@ -372,7 +421,7 @@ module nts.uk.at.view.kmk003.a {
                     this.getHDWtzAfternoon().updateData(lstHalfDayWorkTimezone[2]);
                 }
 
-                toDto(): DiffTimeWorkSettingDto {
+                toDto(commonSetting: WorkTimezoneCommonSetModel): DiffTimeWorkSettingDto {
                     var halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneDto[] = [];
                     for (var dataModel of this.halfDayWorkTimezones) {
                         halfDayWorkTimezones.push(dataModel.toDto());
@@ -381,8 +430,8 @@ module nts.uk.at.view.kmk003.a {
                         workTimeCode: this.workTimeCode(),
                         restSet: this.restSet.toDto(),
                         dayoffWorkTimezone: this.dayoffWorkTimezone.toDto(),
-                        commonSet: this.commonSet.toDto(),
-                        isUseHalfDayShift: this.isUseHalfDayShift(),
+                        commonSet: commonSetting.toDto(),
+                        useHalfDayShift: this.isUseHalfDayShift(),
                         changeExtent: this.changeExtent.toDto(),
                         halfDayWorkTimezones: halfDayWorkTimezones,
                         stampReflectTimezone: this.stampReflectTimezone.toDto(),

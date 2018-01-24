@@ -709,7 +709,7 @@ module nts.uk.at.view.kmk003.a {
                 /**
                  * Evaluate 2 arrays
                  */
-                isNotEqual(value, other): boolean {
+                isNotEqual(value: any, other: any): boolean {
                     return !_.isEqual(value, other);
                 }
             }

@@ -34,7 +34,7 @@ public class DeductionTimePolicyImpl implements DeductionTimePolicy {
 	@Override
 	public void validate(PredetemineTimeSetting predTime, DeductionTime dedTime) {
 		// validate Msg_516 DeductionTime
-		if(this.predService.validateOneDay(predTime, dedTime.getStart(), dedTime.getEnd())){
+		if (this.predService.validateOneDay(predTime, dedTime.getStart(), dedTime.getEnd())){
 			throw new BusinessException("Msg_516", "KMK003_21");
 		}
 	}

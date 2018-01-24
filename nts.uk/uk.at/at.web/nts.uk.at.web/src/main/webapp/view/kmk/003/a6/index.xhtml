@@ -13,6 +13,9 @@
 		<com:ko tag="if"  bind="isFixedMode">
 			<div tabindex="89" id="tab6_fixtable_fixed" data-bind="ntsFixTableCustom: {option: fixTableOptionFixed}"></div>
 		</com:ko>
+		<com:ko tag="if"  bind="isDiffTimeMode">
+			<div tabindex="89" id="tab6_fixtable_difftime" data-bind="ntsFixTableCustom: {option: fixTableOptionDiffTime}"></div>
+		</com:ko>
 	</com:ko>
 	<!-- <com:ko tag="if" bind="isFlowMode">
 		<div tabindex="90" id="tab6_fixtable_flow" data-bind="ntsFixTableCustom: {option: fixTableOptionFlow}"></div>
