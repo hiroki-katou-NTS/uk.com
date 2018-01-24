@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.app.find.person.category;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,10 +70,19 @@ public class PerInfoCtgFinder {
 	}
 	
 	
-	public List<PersonCategoryData> getAllCtgUsedByCompanyId(){
+	public List<PerInfoCtgFullDto> getAllCtgUsedByCompanyId(){
 		String companyId = AppContexts.user().companyId();
-		List<PersonCategoryData> ctgLst = this.perInfoByCompanyRepo.getAllCategoryByCompanyId(companyId);
+		
+		List<PerInfoCtgFullDto> ctgLst = this.perInfoCtgRepositoty.getAllPerInfoCtgUsed(companyId).stream().map(p -> {
+			return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(), p.getCategoryName().v(),
+					p.getPersonEmployeeType().value, p.getIsAbolition().value, p.getCategoryType().value,
+					p.getIsFixed().value);
+		}).collect(Collectors.toList());;
+		
 		
 		return ctgLst;
 	}
+	
+	
+	
 }
