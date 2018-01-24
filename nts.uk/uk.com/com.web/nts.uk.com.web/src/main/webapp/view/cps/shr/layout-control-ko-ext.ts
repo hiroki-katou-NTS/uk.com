@@ -1891,14 +1891,14 @@ module nts.custombinding {
                             // map Array<IItemGroup> to Array<IItemDefinition>
                             // 「個人情報項目定義」が取得できなかった「項目グループ」以外を、画面項目「グループ一覧」に表示する
                             // remove groups when it does not contains any item definition (by hql)
-                            _.each(data, group => {
-                                opts.listbox.options.push({
+                            opts.listbox.options(_.map(data, group => {
+                                return {
                                     id: group.personInfoItemGroupID,
                                     itemName: group.fieldGroupName,
                                     itemTypeState: undefined,
                                     dispOrder: group.dispOrder
-                                });
-                            });
+                                }
+                            }));
                         }
                     });
                 }
