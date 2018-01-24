@@ -8,11 +8,14 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
@@ -38,8 +41,10 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 	
 	@Inject 
 	BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
-	@Inject 
-	StartCheckErrorService startCheckErrorService;
+	@Inject
+	private StartupErrorCheckService startupErrorCheckService;
+	@Inject
+	private CollectApprovalRootPatternService collectApprovalRootPatternService;
 	@Inject
 	IDataWorkService dataWorkService;
 	
@@ -47,8 +52,7 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 	private static final String DEFAULT_REASON_RESOURCE = "KAF009_200";
 	
 	@Override	
-	public GoBackDirectBasicData getSettingData(String SID) {
-		String companyID = AppContexts.user().companyId();
+	public GoBackDirectBasicData getSettingData(String companyID, String SID) {
 		//1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
 				companyID, 
@@ -70,8 +74,21 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(companyID, ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value, DEFAULT_REASON_RESOURCE);
 		dataSetting.setListAppReason(listReason);
 		dataSetting.setAppCommonSettingOutput(appCommonSetting);
-		//アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する
-		startCheckErrorService.checkError(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
+		// アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
+		ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(
+				companyID, 
+				SID, 
+				EmploymentRootAtr.APPLICATION, 
+				ApplicationType.WORK_CHANGE_APPLICATION, 
+				null, 
+				"", 
+				true);
+
+		// アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する
+		startupErrorCheckService.startupErrorCheck(
+				appCommonSetting.generalDate, 
+				ApplicationType.WORK_CHANGE_APPLICATION.value, 
+				approvalRootPattern.getApprovalRootContentImport());
 		//共通設定.複数回勤務
 		Optional<WorkManagementMultiple> workManagement = workManagerRepo.findByCode(companyID);
 		if(workManagement.isPresent()) {

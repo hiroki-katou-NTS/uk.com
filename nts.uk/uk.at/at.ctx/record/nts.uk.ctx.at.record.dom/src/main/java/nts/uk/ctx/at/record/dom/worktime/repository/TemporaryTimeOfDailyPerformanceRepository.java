@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface TemporaryTimeOfDailyPerformanceRepository {
 
@@ -13,7 +14,8 @@ public interface TemporaryTimeOfDailyPerformanceRepository {
 	void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
 	
 	Optional<TemporaryTimeOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd);
-	
+
+	List<TemporaryTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
 
 	void add(TemporaryTimeOfDailyPerformance temporaryTime);
 

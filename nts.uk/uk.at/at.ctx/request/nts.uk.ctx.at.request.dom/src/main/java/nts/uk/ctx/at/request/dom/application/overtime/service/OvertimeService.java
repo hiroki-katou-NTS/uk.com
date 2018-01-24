@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 
 public interface OvertimeService {
 	/**
@@ -24,7 +24,7 @@ public interface OvertimeService {
 	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public List<WorkTypeOvertime> getWorkType(String companyID,String employeeID,RequestAppDetailSetting requestAppDetailSetting,List<AppEmploymentSetting> appEmploymentSettings);
+	public List<WorkTypeOvertime> getWorkType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,List<AppEmploymentSetting> appEmploymentSettings);
 	
 	/**
 	 * 08_就業時間帯取得
@@ -34,7 +34,7 @@ public interface OvertimeService {
 	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public List<SiftType> getSiftType(String companyID,String employeeID,RequestAppDetailSetting requestAppDetailSetting,GeneralDate baseDate);
+	public List<SiftType> getSiftType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,GeneralDate baseDate);
 	
 	/**
 	 * 09_勤務種類就業時間帯の初期選択をセットする

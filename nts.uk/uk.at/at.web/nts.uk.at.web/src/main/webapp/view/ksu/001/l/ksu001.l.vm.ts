@@ -32,6 +32,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 120, formatter: _.escape },
         ]);
         onlyEmpNotTeam: KnockoutObservable<boolean> = ko.observable(false);
+        isOpenedDialogLX: boolean = false;
 
         constructor() {
             let self = this;
@@ -95,7 +96,7 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             self.getAllTeam().done(() => {
-                if (self.listTeamDB().length == 0) {
+                if (self.listTeamDB().length == 0 && !self.isOpenedDialogLX) {
                     self.openDialogLX();
                 }
                 self.getAllTeamSetting().done(() => {
@@ -118,7 +119,8 @@ module nts.uk.at.view.ksu001.l.viewmodel {
             let self = this;
             setShared("workPlaceId", self.workPlaceId);
             nts.uk.ui.windows.sub.modal("/view/ksu/001/lx/index.xhtml").onClosed(() => {
-                location.reload();
+                self.isOpenedDialogLX = true;
+                self.startPage();
             });
         }
 

@@ -13,6 +13,8 @@ public interface EmployeeDataMngInfoRepository {
 	void add(EmployeeDataMngInfo domain);
 
 	void update(EmployeeDataMngInfo domain);
+	
+	void updateAfterRemove(EmployeeDataMngInfo domain);
 
 	void remove(EmployeeDataMngInfo domain);
 

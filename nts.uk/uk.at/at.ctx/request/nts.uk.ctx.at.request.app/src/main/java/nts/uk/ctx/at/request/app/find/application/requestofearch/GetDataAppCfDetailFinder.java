@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.requestofearch;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,8 +21,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachCommon;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -64,16 +61,12 @@ public class GetDataAppCfDetailFinder {
 		String strKara = "分から。";
 		String strBunMade = "分まで。";
 		String strMade = "まで。";
-		RequestOfEachCommon requestOfEachCommon = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
+		ApprovalFunctionSetting approvalFunctionSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
 				companyID, 
 				sid, 
 				1,
 				EnumAdaptor.valueOf(metaDto.getAppType(), ApplicationType.class),
-				GeneralDate.today()).requestOfEachCommon;
-		List<RequestAppDetailSetting> requestAppDetailSettings = requestOfEachCommon.getRequestAppDetailSettings();
-		RequestAppDetailSetting appDetailSetting = requestAppDetailSettings
-				.stream()
-				.filter(x -> x.getAppType().value == metaDto.getAppType()).collect(Collectors.toList()).get(0);
+				GeneralDate.today()).approvalFunctionSetting;
 		/*
 		ドメインモデル「締め」を取得する(lấy thông tin domain「締め」)
 		*/
@@ -97,15 +90,15 @@ public class GetDataAppCfDetailFinder {
 		}
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		//「申請利用設定」．備考に内容なし &&  「申請締切設定」．利用区分が利用しない  &&  「事前の受付制限」．利用区分が利用しない  &&  「事後の受付制限」．未来日許可しないがfalse
-		if(appDetailSetting.getMemo().v().isEmpty()
+		if(approvalFunctionSetting.getAppUseSetting().getMemo().v().isEmpty()
 				&& appDeadline.getUserAtr() == UseAtr.NOTUSE
 				&& appTypeDiscreteSetting.getRetrictPreUseFlg() == UseAtr.NOTUSE
 				&& appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() != AllowAtr.NOTALLOW) {
 			return new OutputMessageDeadline("", "", false);
 		}
 		//「申請利用設定」．備考に内容あり  ||  「申請締切設定」．利用区分が利用  ||  「事前の受付制限」．利用区分が利用  ||  「事後の受付制限」．未来日許可しないがtrue
-		if(!appDetailSetting.getMemo().v().isEmpty()){
-			message = appDetailSetting.getMemo().v();
+		if(!approvalFunctionSetting.getAppUseSetting().getMemo().v().isEmpty()){
+			message = approvalFunctionSetting.getAppUseSetting().getMemo().v();
 			chkShow = true;
 		}
 		GeneralDate toDateSystem = GeneralDate.today();
@@ -137,11 +130,11 @@ public class GetDataAppCfDetailFinder {
 		}
 		
 		//全部利用する
-		if(!appDetailSetting.getMemo().v().isEmpty()
+		if(!approvalFunctionSetting.getAppUseSetting().getMemo().v().isEmpty()
 				&& appDeadline.getUserAtr() == UseAtr.USE
 				&& appTypeDiscreteSetting.getRetrictPreUseFlg() == UseAtr.USE
 				&& appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() == AllowAtr.NOTALLOW) {
-			message = appDetailSetting.getMemo().v();				
+			message = approvalFunctionSetting.getAppUseSetting().getMemo().v();				
 			//締め切り期限日
 			GeneralDate endDate =  otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyID, sid, metaDto.getAppDate()).getEndDate();
 			//「申請締切設定」．締切基準が暦日

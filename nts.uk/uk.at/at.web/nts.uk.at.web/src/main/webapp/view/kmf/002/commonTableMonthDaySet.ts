@@ -3,6 +3,11 @@ module nts.uk.at.view.kmf002 {
     import service = nts.uk.at.view.kmf002.e.service;
     
     export module viewmodel {
+        
+        var path: any = {
+                findFirstMonth: "basic/company/beginningmonth/find"
+            };
+        
         export class CommonTableMonthDaySet { 
         
             cssRangerY: any;
@@ -35,13 +40,16 @@ module nts.uk.at.view.kmf002 {
                 
                 _self.fiscalYear = ko.observable(moment().format('YYYY'));
                 _self.arrMonth = ko.observableArray([]);
-                for (let i=4; i<=12; i++) {
-                    _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(''), 'enable': ko.observable(true)});
-                }
                 
-                for (let i=1; i<=3; i++) {
-                    _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(''), 'enable': ko.observable(true)});
-                }
+                $.when(_self.findFirstMonth()).done(function(data) {
+                    for (let i=data.startMonth; i<=12; i++) {
+                        _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(''), 'enable': ko.observable(true)});
+                    }
+                    
+                    for (let i=1; i<data.startMonth; i++) {
+                        _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(''), 'enable': ko.observable(true)});
+                    } 
+                });
                 
                 // Define styles
                _self.cssRangerY = [];
@@ -52,6 +60,10 @@ module nts.uk.at.view.kmf002 {
                     newValue.day.subscribe(function(newValue) {
                     });
                 });   
+            }
+            
+            private findFirstMonth() :JQueryPromise<any> {
+                return nts.uk.request.ajax("com", path.findFirstMonth); 
             }
        }      
     }

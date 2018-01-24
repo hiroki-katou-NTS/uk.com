@@ -35,7 +35,7 @@ module nts.uk.at.view.kmf002.a {
             enableFullDate: KnockoutObservable<boolean>;
             lstCarryoverDeadline: KnockoutObservableArray<any>;
             
-            lstStartDayOfWeek: KnockoutObservableArray<any>;
+            lstStartDayOfWeek: KnockoutObservableArray<any>; 
             
             isDisableSetUnitBtn: KnockoutObservable<boolean>;
             enableCarryoverDeadline: KnockoutObservable<boolean>;
@@ -114,7 +114,9 @@ module nts.uk.at.view.kmf002.a {
                 } else if (typeStart == 1) {
                     // Process for screen A (Mother of all screen)
 //                    _self.getAllEnum();
+//                    _self.getAllData()
 //                    dfd.resolve(_self);    
+                    
                     $.when(_self.getAllEnum(), _self.getAllData()).done(function() {
                         dfd.resolve(_self);    
                     });

@@ -6,13 +6,14 @@ module nts.uk.at.view.kmf002.b {
         var path: any = {
                 save: "bs/employee/holidaysetting/workplace/save",
                 find: "bs/employee/holidaysetting/workplace/findWorkplaceMonthDaySetting",
-                remove: "bs/employee/holidaysetting/workplace/remove"
+                remove: "bs/employee/holidaysetting/workplace/remove",
+                findFirstMonth: "basic/company/beginningmonth/find",
             };
         
          export function save(year: number, data: any, workplaceId: string): JQueryPromise<any> {
-            model.WorkplaceMonthDaySetting workplaceMonthDaySetting = new model.WorkplaceMonthDaySetting(year, workplaceId, new Array<model.PublicHolidayMonthSettingDto>());
+            let workplaceMonthDaySetting: model.WorkplaceMonthDaySetting = new model.WorkplaceMonthDaySetting(year, workplaceId, []);
             workplaceMonthDaySetting.toDto(data);
-            let command = {};
+            let command: any = {};
             command.year = year;
             command.publicHolidayMonthSettings = workplaceMonthDaySetting.publicHolidayMonthSettingDto;
             command.workplaceId = workplaceId;
@@ -24,10 +25,14 @@ module nts.uk.at.view.kmf002.b {
         }
         
         export function remove(year: number, workplaceId: string): JQueryPromise<any> {
-            let command = {};
+            let command: any = {};
             command.year = year;
             command.workplaceId = workplaceId;
             return nts.uk.request.ajax("com", path.remove, command);
+        }
+        
+        export function findFirstMonth(): JQueryPromise<any>{
+            return nts.uk.request.ajax("com", path.findFirstMonth);
         }
         
     }
@@ -38,10 +43,10 @@ module nts.uk.at.view.kmf002.b {
     export module model {
         export class WorkplaceMonthDaySetting {
             year: number;
-            publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>;
+            publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[];
             workplaceId: string;
             
-            constructor(year: number, workplaceId: string, publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>){
+            constructor(year: number, workplaceId: string, publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[]){
                 let _self = this;
                 _self.year = year;
                 _self.publicHolidayMonthSettingDto = publicHolidayMonthSettingDto;
@@ -63,7 +68,7 @@ module nts.uk.at.view.kmf002.b {
             constructor(year: number, workplaceId: string){
                 let _self = this;
                 _self.year = year;
-                _self.workplaceId = empCd;
+                _self.workplaceId = workplaceId;
             }
         }
         

@@ -107,13 +107,13 @@ module nts.uk.com.view.cmm021.a {
 
                 _self.selectedEmployeeId = ko.observable(null);
                 _self.selectedEmployeeId.subscribe((newValue) => {
-                    $('.nts-input').ntsError('clear');
-                    if (newValue) {
-                        _self.findUserDtoByEmployeeId(newValue);  
-                    } else {
-                        _self.unselectedMode();
-                    }
-                                      
+                    $('.nts-input').ntsError('clear');                    
+                        if (newValue) {
+                            _self.findUserDtoByEmployeeId(newValue);
+                        } else {
+                            //_self.unselectedMode();
+                        }
+                                   
                 });
                 _self.personName = ko.observable("");
                 _self.employeeCode = ko.observable("");
@@ -338,72 +338,108 @@ module nts.uk.com.view.cmm021.a {
                 let dfd = $.Deferred<any>();
                 service.findListWindowAccByUserIdAndUseAtr(userId).done((data: any) => {
                     // check data null or empty
-                    if (data && data.length) {                        
-                        let winAcc1: any = data.filter(function(o: any) {return o.no == 1;});
-                        let winAcc2: any = data.filter(function(o: any) {return o.no == 2;});
-                        let winAcc3: any = data.filter(function(o: any) {return o.no == 3;});
-                        let winAcc4: any = data.filter(function(o: any) {return o.no == 4;});
-                        let winAcc5: any = data.filter(function(o: any) {return o.no == 5;});
+                    if (data && data.length > 0) {                        
+                        let winAcc1: any = data.filter(function(o: any) {return o.no == 1;})[0];
+                        let winAcc2: any = data.filter(function(o: any) {return o.no == 2;})[0];
+                        let winAcc3: any = data.filter(function(o: any) {return o.no == 3;})[0];
+                        let winAcc4: any = data.filter(function(o: any) {return o.no == 4;})[0];
+                        let winAcc5: any = data.filter(function(o: any) {return o.no == 5;})[0];
                         
-                        if (winAcc1.length > 0 && winAcc1[0].hostName != "" && winAcc1[0].userName !="") {
-                            _self.hostName1(winAcc1[0].hostName);
-                            _self.userName1(winAcc1[0].userName);
-                            _self.enable_WinAcc1(true);
-                            _self.windowAcc1.isChange = false;
-                        } else {
-                            _self.hostName1("");
-                            _self.userName1("");
-                            _self.enable_WinAcc1(false);
-                            _self.windowAcc1.isChange = true;
-                        }
-
-                        if (winAcc2.length > 0 && winAcc2[0].hostName != "" && winAcc2[0].userName !="") {
-                            _self.hostName2(winAcc2[0].hostName); 
-                            _self.userName2(winAcc2[0].userName);
-                            _self.enable_WinAcc2(true);
-                            _self.windowAcc2.isChange = false;
-                        } else {
-                            _self.hostName2("");
-                            _self.userName2("");
-                            _self.enable_WinAcc2(false);
-                            _self.windowAcc2.isChange = true;
-                        }
-
-                        if (winAcc3.length > 0 && winAcc3[0].hostName != "" && winAcc3[0].userName !="") {
-                            _self.hostName3(winAcc3[0].hostName);
-                            _self.userName3(winAcc3[0].userName);
-                            _self.enable_WinAcc3(true);
-                            _self.windowAcc3.isChange = false;
-                        } else {
-                            _self.hostName3("");
-                            _self.userName3("");
-                            _self.enable_WinAcc3(false);
-                            _self.windowAcc3.isChange = true;
-                        }
-
-                        if (winAcc4.length > 0 && winAcc4[0].hostName != "" && winAcc4[0].userName !="") {
-                            _self.hostName4(winAcc4[0].hostName);
-                            _self.userName4(winAcc4[0].userName);
-                            _self.enable_WinAcc4(true);
-                            _self.windowAcc4.isChange = false;
-                        } else {
-                            _self.hostName4("");
-                            _self.userName4("");
-                            _self.enable_WinAcc4(false);
-                            _self.windowAcc4.isChange = true;
-                        }
-
-                        if (winAcc5.length > 0 && winAcc5[0].hostName != "" && winAcc5[0].userName !="") {
-                            _self.hostName5(winAcc5[0].hostName);
-                            _self.userName5(winAcc5[0].userName);
-                            _self.enable_WinAcc5(true);
-                            _self.windowAcc5.isChange = false;
-                        } else {
-                            _self.hostName5("");
-                            _self.userName5("");
-                            _self.enable_WinAcc5(false);
-                            _self.windowAcc5.isChange = true;
-                        }
+                        // set no#1
+                        _self.hostName1(winAcc1.hostName);
+                        _self.userName1(winAcc1.userName);
+                        _self.enable_WinAcc1(winAcc1.useAtr == 1);
+                        _self.windowAcc1.isChange = false;
+                        
+                        // set no#2
+                        _self.hostName2(winAcc2.hostName);
+                        _self.userName2(winAcc2.userName);
+                        _self.enable_WinAcc2(winAcc2.useAtr == 1);
+                        _self.windowAcc2.isChange = false;
+                        
+                        // set no#3
+                        _self.hostName3(winAcc3.hostName);
+                        _self.userName3(winAcc3.userName);
+                        _self.enable_WinAcc3(winAcc3.useAtr == 1);
+                        _self.windowAcc3.isChange = false;
+                        
+                        // set no#4
+                        _self.hostName4(winAcc4.hostName);
+                        _self.userName4(winAcc4.userName);
+                        _self.enable_WinAcc4(winAcc4.useAtr == 1);
+                        _self.windowAcc4.isChange = false;
+                        
+                        // set no#5
+                        _self.hostName5(winAcc5.hostName);
+                        _self.userName5(winAcc5.userName);
+                        _self.enable_WinAcc5(winAcc5.useAtr == 1);
+                        _self.windowAcc5.isChange = false;
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+//                        if (winAcc1.length > 0 && winAcc1[0].hostName != "" && winAcc1[0].userName !=""  ) {
+//                            _self.hostName1(winAcc1[0].hostName);
+//                            _self.userName1(winAcc1[0].userName);
+//                            _self.enable_WinAcc1(true);
+//                            _self.windowAcc1.isChange = false;
+//                        } else {
+//                            _self.hostName1("");
+//                            _self.userName1("");
+//                            _self.enable_WinAcc1(false);
+//                            _self.windowAcc1.isChange = false;
+//                        }
+//
+//                        if (winAcc2.length > 0 && winAcc2[0].hostName != "" && winAcc2[0].userName !="") {
+//                            _self.hostName2(winAcc2[0].hostName); 
+//                            _self.userName2(winAcc2[0].userName);
+//                            _self.enable_WinAcc2(true);
+//                            _self.windowAcc2.isChange = false;
+//                        } else {
+//                            _self.hostName2("");
+//                            _self.userName2("");
+//                            _self.enable_WinAcc2(false);
+//                            _self.windowAcc2.isChange = false;
+//                        }
+//
+//                        if (winAcc3.length > 0 && winAcc3[0].hostName != "" && winAcc3[0].userName !="") {
+//                            _self.hostName3(winAcc3[0].hostName);
+//                            _self.userName3(winAcc3[0].userName);
+//                            _self.enable_WinAcc3(true);
+//                            _self.windowAcc3.isChange = false;
+//                        } else {
+//                            _self.hostName3("");
+//                            _self.userName3("");
+//                            _self.enable_WinAcc3(false);
+//                            _self.windowAcc3.isChange = false;
+//                        }
+//
+//                        if (winAcc4.length > 0 && winAcc4[0].hostName != "" && winAcc4[0].userName !="") {
+//                            _self.hostName4(winAcc4[0].hostName);
+//                            _self.userName4(winAcc4[0].userName);
+//                            _self.enable_WinAcc4(true);
+//                            _self.windowAcc4.isChange = false;
+//                        } else {
+//                            _self.hostName4("");
+//                            _self.userName4("");
+//                            _self.enable_WinAcc4(false);
+//                            _self.windowAcc4.isChange = false;
+//                        }
+//
+//                        if (winAcc5.length > 0 && winAcc5[0].hostName != "" && winAcc5[0].userName !="") {
+//                            _self.hostName5(winAcc5[0].hostName);
+//                            _self.userName5(winAcc5[0].userName);
+//                            _self.enable_WinAcc5(true);
+//                            _self.windowAcc5.isChange = false;
+//                        } else {
+//                            _self.hostName5("");
+//                            _self.userName5("");
+//                            _self.enable_WinAcc5(false);
+//                            _self.windowAcc5.isChange = false;
+//                        }
                         _self.updateMode();
 
                     } else {
@@ -421,20 +457,23 @@ module nts.uk.com.view.cmm021.a {
             // find user dto                      
             private findUserDtoByEmployeeId(selectedEmployeeId: string) {
                 let _self = this;
-                let user = _self.listUserDto.filter(item => selectedEmployeeId == item.employeeId)[0];
-                _self.personName(user.personName);
-                _self.employeeCode(user.employeeCode);
-                _self.loginId(user.loginId);
-                _self.userId(user.userId);                                            
+                //if(selectedEmployeeId != ""){
+                    let user = _self.listUserDto.filter(item => selectedEmployeeId == item.employeeId)[0];
+                    _self.personName(user.personName);
+                    _self.employeeCode(user.employeeCode);
+                    _self.loginId(user.loginId);
+                    _self.userId(user.userId);
+//                }else{
+//                    _self.personName("");
+//                    _self.employeeCode("");
+//                    _self.loginId("");
+//                    _self.userId("");
+//                }
             }                      
 
             private saveWindowAcc(): JQueryPromise<any> {
                 let _self = this;
-                let dfd = $.Deferred<any>();
-                
-                
-                
-                
+                let dfd = $.Deferred<any>(); 
                 
                 let user = _self.listUserDto.filter(item => _self.selectedEmployeeId() == item.employeeId)[0];
 
@@ -447,8 +486,7 @@ module nts.uk.com.view.cmm021.a {
                 // validate
                 if (!_self.validate()) {
                     return;
-                }
-                
+                }                
 
                 let saveCommand = new SaveWindowAccountCommand();
 
@@ -543,7 +581,7 @@ module nts.uk.com.view.cmm021.a {
                 if (saveCommand.winAcc1 != null || saveCommand.winAcc2 != null || saveCommand.winAcc3 != null || saveCommand.winAcc4 != null || saveCommand.winAcc5 != null) {
                     service.saveWindowAccount(saveCommand)
                         .done((data: any) => {
-                            _self.loadUserInfo();
+                            _self.loadUserInfoScreenAB();
                             _self.reload();
                             _self.updateMode();
                             $('#focus-hostName1').focus();
@@ -564,6 +602,8 @@ module nts.uk.com.view.cmm021.a {
                
                 _self.userId("");
                 _self.userId(_self.userIdBeChoosen());
+                _self.clearError();
+               
             }
             
             
@@ -629,13 +669,16 @@ module nts.uk.com.view.cmm021.a {
 
             
             // common function load list user info
-            private loadUserInfo(): JQueryPromise<any> {
+            private loadUserInfoScreenAB(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
 
                 service.findListUserInfo(_self.baseDate(), false)
                     .done((data: UserDto[]) => {
                         _self.listUserDto = data;
+//                        if (_.isEmpty(_self.listUserDto)) {
+//                            _self.selectedEmployeeId("");
+//                        }
                         _self.loadUserDto();
                         _self.addLockIcon();                       
                         dfd.resolve();
@@ -786,11 +829,20 @@ module nts.uk.com.view.cmm021.a {
                 }
             }
             
+            private loadUserInfo(){
+            let _self = this;
+                if(_self.isScreenBSelected()){
+                    _self.loadUserInfoScreenAB();
+                }else if(_self.isScreenCSelected()){
+                    _self.loadUserInfoForOtherAcc();
+                }           
+            }
+            
                                     
          
             private loadUserSetting() {
                 let _self = this;
-                _self.loadUserInfo();
+                _self.loadUserInfoScreenAB();
 
                 // select first item in list setting
                 _self.selectedEmployeeId("");
@@ -817,11 +869,11 @@ module nts.uk.com.view.cmm021.a {
                 _self.enable_Save(true);
                 _self.enable_Delete(false);
 
-                _self.enable_WinAcc1(true);
-                _self.enable_WinAcc2(false);
-                _self.enable_WinAcc3(false);
-                _self.enable_WinAcc4(false);
-                _self.enable_WinAcc5(false);
+//                _self.enable_WinAcc1(true);
+//                _self.enable_WinAcc2(false);
+//                _self.enable_WinAcc3(false);
+//                _self.enable_WinAcc4(false);
+//                _self.enable_WinAcc5(false);
 
             }
 
@@ -839,11 +891,11 @@ module nts.uk.com.view.cmm021.a {
                 _self.enable_Save(false);
                 _self.enable_Delete(false);
 
-                _self.enable_WinAcc1(false);
-                _self.enable_WinAcc2(false);
-                _self.enable_WinAcc3(false);
-                _self.enable_WinAcc4(false);
-                _self.enable_WinAcc5(false);
+//                _self.enable_WinAcc1(false);
+//                _self.enable_WinAcc2(false);
+//                _self.enable_WinAcc3(false);
+//                _self.enable_WinAcc4(false);
+//                _self.enable_WinAcc5(false);
 
             }
 
@@ -872,7 +924,7 @@ module nts.uk.com.view.cmm021.a {
                 let _self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.removeWindowAccount(_self.userIdBeChoosen()).done((data: any) => {
-                        _self.loadUserInfo();
+                        _self.loadUserInfoScreenAB();
                         _self.newMode();
                         _self.hostName1("");
                         _self.userName1("");
@@ -882,7 +934,7 @@ module nts.uk.com.view.cmm021.a {
                     });                                                                                   
                 }).ifNo(() => {
                     // cancel button delete
-                    _self.loadUserInfo();
+                    _self.loadUserInfoScreenAB();
                     $('#focus-hostName1').focus();
                     return;
                 });                       
@@ -895,14 +947,14 @@ module nts.uk.com.view.cmm021.a {
                 _self.isScreenBSelected(true);
                 _self.isScreenCSelected(false);
                 _self.selectUse(1);  
-                _self.loadUserInfo();              
+                _self.loadUserInfoScreenAB();              
             }
 
             public onSelectScreenC() {
-                let _self = this;
-                _self.selectUse(1);
+                let _self = this;                
                 _self.isScreenBSelected(false);
                 _self.isScreenCSelected(true);
+                _self.selectUse(1);
                 _self.loadUserInfoForOtherAcc();
             }
 
@@ -912,12 +964,17 @@ module nts.uk.com.view.cmm021.a {
 
                 service.findOtherSysAccByUserId(userId).done((data: any) => {
                     // check data null
-                    if (data.userId != null) {
+                    if (data.userId != null && data.useAtr == 1 ) {
                         _self.companyCode6(data.companyCode);
                         _self.userName6(data.userName);
                         _self.enable_otherAcc(true);
                         _self.updateMode();
-                    } else {
+                    } else if(data.userId != null && data.useAtr == 0){
+                        _self.companyCode6(data.companyCode);
+                        _self.userName6(data.userName);
+                        _self.enable_otherAcc(false);
+                        _self.updateMode();
+                    }else {
                         _self.companyCode6("");
                         _self.userName6("");
                         _self.enable_otherAcc(true);
@@ -957,6 +1014,7 @@ module nts.uk.com.view.cmm021.a {
                     service.saveOtherSysAccount(otherAcc)
                         .done((data: any) => {
                             _self.loadUserInfoForOtherAcc();
+                            _self.reload();
                             _self.updateMode();
                             $('#focus-CompanyCode').focus();
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });

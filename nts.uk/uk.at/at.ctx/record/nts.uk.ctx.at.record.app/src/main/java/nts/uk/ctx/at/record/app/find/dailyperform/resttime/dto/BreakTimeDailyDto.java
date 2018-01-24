@@ -10,9 +10,9 @@ import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の休憩時間帯")
@@ -51,7 +51,7 @@ public class BreakTimeDailyDto implements ConvertibleAttendanceItem {
 		return Arrays.asList("就業時間帯から参照", "スケジュールから参照");
 	}
 	
-	public static BreakTimeDailyDto toDto(BreakTimeOfDailyPerformance x) {
+	public static BreakTimeDailyDto getDto(BreakTimeOfDailyPerformance x) {
 		BreakTimeDailyDto dto = new BreakTimeDailyDto();
 		if(x != null){
 			dto.setEmployeeId(x.getEmployeeId());
@@ -70,5 +70,15 @@ public class BreakTimeDailyDto implements ConvertibleAttendanceItem {
 		return c == null ? null : new TimeStampDto(c.getTimeWithDay().valueAsMinutes(),
 				c.getAfterRoundingTime().valueAsMinutes(),
 				c.getLocationCode().v(), c.getStampSourceInfo().value);
+	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.ymd;
 	}
 }

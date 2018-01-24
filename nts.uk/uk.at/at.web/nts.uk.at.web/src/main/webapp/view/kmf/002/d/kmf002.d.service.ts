@@ -6,16 +6,17 @@ module nts.uk.at.view.kmf002.d {
         var path: any = {
                 save: "bs/employee/holidaysetting/employment/save",
                 find: "bs/employee/holidaysetting/employment/findEmploymentMonthDaySetting",
-                remove: "bs/employee/holidaysetting/employment/remove"
+                remove: "bs/employee/holidaysetting/employment/remove",
+                findFirstMonth: "basic/company/beginningmonth/find",
             };
         
         /**
          * 
          */
         export function save(year: number, data: any, empCd: string): JQueryPromise<any> {
-            model.EmploymentMonthDaySetting employmentMonthDaySetting = new model.EmploymentMonthDaySetting(year, empCd, new Array<model.PublicHolidayMonthSettingDto>());
+            let employmentMonthDaySetting: model.EmploymentMonthDaySetting= new model.EmploymentMonthDaySetting(year, empCd, []);
             employmentMonthDaySetting.toDto(data);
-            let command = {};
+            let command: any = {};
             command.year = year;
             command.publicHolidayMonthSettings = employmentMonthDaySetting.publicHolidayMonthSettingDto;
             command.empCd = empCd;
@@ -27,11 +28,15 @@ module nts.uk.at.view.kmf002.d {
         }
         
         export function remove(year: number, employmentCode: string): JQueryPromise<any> {
-            model.EmploymentMonthDaySettingRemoveCommand employmentMonthDaySettingRemoveCommand = new model.EmploymentMonthDaySettingRemoveCommand(year, employmentCode);
-            let command = {};
+            let employmentMonthDaySettingRemoveCommand: model.EmploymentMonthDaySettingRemoveCommand= new model.EmploymentMonthDaySettingRemoveCommand(year, employmentCode);
+            let command: any = {};
             command.year = year;
             command.empCd = employmentCode;
             return nts.uk.request.ajax("com", path.remove, command);
+        }
+        
+        export function findFirstMonth(): JQueryPromise<any>{
+            return nts.uk.request.ajax("com", path.findFirstMonth);
         }
     }
     
@@ -41,10 +46,10 @@ module nts.uk.at.view.kmf002.d {
     export module model {
         export class EmploymentMonthDaySetting {
             year: number;
-            publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>;
+            publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[];
             empCd: string;
             
-            constructor(year: number, empCd: string, publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>){
+            constructor(year: number, empCd: string, publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[]){
                 let _self = this;
                 _self.year = year;
                 _self.publicHolidayMonthSettingDto = publicHolidayMonthSettingDto;
