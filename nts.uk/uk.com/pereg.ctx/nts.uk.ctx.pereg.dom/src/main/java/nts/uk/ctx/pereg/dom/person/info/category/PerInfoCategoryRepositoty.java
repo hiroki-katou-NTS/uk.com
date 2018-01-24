@@ -30,7 +30,7 @@ public interface PerInfoCategoryRepositoty {
 	 */
 	List<PersonInfoCategory> getAllPerInfoCtg(String companyId);
 	
-	List<PersonInfoCategory> getAllPerInfoCtgOtherEmp(String companyId );
+	List<PersonInfoCategory> getAllPerInfoCtgUsed(String companyId);
 
 	void addDateRangeItemRoot(DateRangeItem dateRangeItem);
 

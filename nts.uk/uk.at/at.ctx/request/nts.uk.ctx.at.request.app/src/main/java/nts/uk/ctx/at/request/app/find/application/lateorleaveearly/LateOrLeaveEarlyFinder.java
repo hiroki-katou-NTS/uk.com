@@ -76,7 +76,7 @@ public class LateOrLeaveEarlyFinder {
 				employeeID, 
 				EmploymentRootAtr.APPLICATION, 
 				ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, 
-				null, 
+				appCommonSettingOutput.generalDate, 
 				appID, 
 				true);
 		startupErrorCheckService.startupErrorCheck(

@@ -81,6 +81,11 @@ public interface PerInfoItemDefRepositoty {
 	 * dùng cho màn hình cps016
 	 */
 	boolean checkExistedSelectionItemId(String selectionItemId);
+	
+	/**
+	 * 
+	 */
+	List<PersonInfoItemDefinition> getAllItemUsedByCtgId(List<String> ctgId);
 
 	
 }

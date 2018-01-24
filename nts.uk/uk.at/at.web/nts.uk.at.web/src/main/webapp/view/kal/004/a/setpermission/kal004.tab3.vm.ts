@@ -5,7 +5,7 @@ module nts.uk.at.view.kal004.tab3.viewmodel {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         executionAuthor: KnockoutObservable<string>;
-        listRoleID: KnockoutObservableArray<share.AlarmPermissionSettingDto> = ko.observableArray([]);
+        listRoleID: KnockoutObservableArray<string> = ko.observableArray([]);
         constructor() {
             var self = this;
             self.roundingRules = ko.observableArray([
@@ -21,17 +21,16 @@ module nts.uk.at.view.kal004.tab3.viewmodel {
 
         private changeItem(listRoleID: Array<share.AlarmPermissionSettingDto>): void {
             let self = this;
-
+            service.getListRoleName(self.listRoleID()).done(function(listRole) {
+                self.executionAuthor(_.join(_.map(listRole, "name"), ", "));
+            });
         }
 
 
         startPage(): JQueryPromise<any> {
             var self = this;
-
             var dfd = $.Deferred();
-
             dfd.resolve();
-
             return dfd.promise();
         }
 
@@ -45,12 +44,9 @@ module nts.uk.at.view.kal004.tab3.viewmodel {
             };
             nts.uk.ui.windows.setShared("paramCdl025", param);
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/025/index.xhtml").onClosed(() => {
-                let data: KnockoutObservable<string> = nts.uk.ui.windows.getShared("dataCdl025");
+                let data: Array<string> = nts.uk.ui.windows.getShared("dataCdl025");
                 if (!nts.uk.util.isNullOrUndefined(data))
                     self.listRoleID(data);
-                service.getListRoleName(data).done(function() {
-                  
-                });
             });
         }
 
