@@ -22,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -39,9 +38,6 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
-
-	@Inject
-	private ClosureService closureService;
 
 	@Inject
 	private ReflectWorkInforDomainService reflectWorkInforDomainService;
@@ -61,12 +57,9 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 		// Imported（就業）「所属雇用履歴」を取得する
 		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId, employeeId, processingDate);
-//		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId, "90000000-0000-0000-0000-000000000001", processingDate);
 		String employmentCode = employmentHisOptional.get().getEmploymentCode();
 
 		for (GeneralDate day : listDayBetween) {
-			
-//			employeeId = "90000000-0000-0000-0000-000000000001";
 			
 			// 締めIDを取得する
 			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
@@ -98,7 +91,6 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 					break;
 				}
 			}
-//			processingDate = day;
 		};
 
 		return status;
@@ -119,14 +111,6 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		/**
 		 * ロック : 1 , アンロック : 0
 		 */
-
-//		EmployeeAndClosure employeeAndClosureDto = new EmployeeAndClosure();
-
-		// // lits day between startDate and endDate
-		// List<GeneralDate> listDay = this.getDaysBetween(periodTime.start(),
-		// periodTime.end());
-
-		// アルゴリズム「当月の期間を算出する」を実行する
 
 		/**
 		 * アルゴリズム「当月の実績ロックの取得」を実行する
@@ -168,8 +152,6 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 				employeeAndClosure.setLock(0);
 			}
 		}
-
-//		employeeAndClosureDto.setLock(0);
 		return employeeAndClosure;
 	}
 

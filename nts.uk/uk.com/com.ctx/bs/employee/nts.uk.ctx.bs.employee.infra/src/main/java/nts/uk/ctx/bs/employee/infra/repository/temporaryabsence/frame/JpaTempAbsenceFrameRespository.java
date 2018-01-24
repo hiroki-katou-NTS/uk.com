@@ -28,26 +28,32 @@ import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.frame.BsystTempAbsen
  * The Class JpaTempAbsenceFrameRespository.
  */
 @Stateless
-public class JpaTempAbsenceFrameRespository extends JpaRepository implements TempAbsenceRepositoryFrame{
+public class JpaTempAbsenceFrameRespository extends JpaRepository
+		implements TempAbsenceRepositoryFrame {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame#udpate(nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrame)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.
+	 * TempAbsenceRepositoryFrame#udpate(nts.uk.ctx.bs.employee.dom.
+	 * temporaryabsence.frame.TempAbsenceFrame)
 	 */
 	@Override
 	public void udpate(TempAbsenceFrame tempAbsenceFrame) {
-		 this.commandProxy().update(this.toEntity(tempAbsenceFrame));
+		this.commandProxy().update(this.toEntity(tempAbsenceFrame));
 	}
 
 	/**
 	 * To entity.
 	 *
-	 * @param tempAbsenceFrame the temp absence frame
+	 * @param tempAbsenceFrame
+	 *            the temp absence frame
 	 * @return the bsyst temp absence frame
 	 */
 	private BsystTempAbsenceFrame toEntity(TempAbsenceFrame tempAbsenceFrame) {
 		Optional<BsystTempAbsenceFrame> optional = this.queryProxy()
-				.find(new BsystTempAbsenceFramePK(tempAbsenceFrame.getCompanyId(), 
-													tempAbsenceFrame.getTempAbsenceFrNo().v().intValue()), 
+				.find(new BsystTempAbsenceFramePK(tempAbsenceFrame.getCompanyId(),
+						tempAbsenceFrame.getTempAbsenceFrNo().v().intValue()),
 						BsystTempAbsenceFrame.class);
 		BsystTempAbsenceFrame entity = new BsystTempAbsenceFrame();
 		if (optional.isPresent()) {
@@ -57,57 +63,111 @@ public class JpaTempAbsenceFrameRespository extends JpaRepository implements Tem
 		tempAbsenceFrame.saveToMemento(memento);
 		return entity;
 	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame#findByTAFPk(java.lang.String, short)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.
+	 * TempAbsenceRepositoryFrame#findByTAFPk(java.lang.String, short)
 	 */
 	@Override
 	public TempAbsenceFrame findByTempAbsenceFramePk(String cId, int tempAbsenceFrameNo) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		
-		CriteriaQuery<BsystTempAbsenceFrame> cq = criteriaBuilder.createQuery(BsystTempAbsenceFrame.class);
+
+		CriteriaQuery<BsystTempAbsenceFrame> cq = criteriaBuilder
+				.createQuery(BsystTempAbsenceFrame.class);
 		Root<BsystTempAbsenceFrame> root = cq.from(BsystTempAbsenceFrame.class);
-		
+
 		// select root
 		cq.select(root);
-		
+
 		// add where
 		List<Predicate> lstPredicateWhere = new ArrayList<>();
-		lstPredicateWhere.add(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK)
-				.get(BsystTempAbsenceFramePK_.cid).in(cId));
+		lstPredicateWhere
+		.add(criteriaBuilder.equal(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK)
+				.get(BsystTempAbsenceFramePK_.cid), cId));
+
+		lstPredicateWhere
+		.add(criteriaBuilder.equal(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK)
+				.get(BsystTempAbsenceFramePK_.cid), cId));
 		
 		lstPredicateWhere.add(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK)
 				.get(BsystTempAbsenceFramePK_.tempAbsenceFrNo).in(tempAbsenceFrameNo));
-		
+
 		cq.where(lstPredicateWhere.toArray(new Predicate[] {}));
-		
-		return new TempAbsenceFrame(new JpaTempAbsenceFrameGetMemento(em.createQuery(cq).getSingleResult()));
+
+		return new TempAbsenceFrame(
+				new JpaTempAbsenceFrameGetMemento(em.createQuery(cq).getSingleResult()));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame#findByCid(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.
+	 * TempAbsenceRepositoryFrame#findByCid(java.lang.String)
 	 */
 	@Override
 	public List<TempAbsenceFrame> findByCid(String cId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		
-		CriteriaQuery<BsystTempAbsenceFrame> cq = criteriaBuilder.createQuery(BsystTempAbsenceFrame.class);
+
+		CriteriaQuery<BsystTempAbsenceFrame> cq = criteriaBuilder
+				.createQuery(BsystTempAbsenceFrame.class);
 		Root<BsystTempAbsenceFrame> root = cq.from(BsystTempAbsenceFrame.class);
-		
+
 		// select root
 		cq.select(root);
-		
+
 		// add where
 		List<Predicate> lstPredicateWhere = new ArrayList<>();
-		lstPredicateWhere.add(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK)
-				.get(BsystTempAbsenceFramePK_.cid).in(cId));
-		
+		lstPredicateWhere
+				.add(criteriaBuilder.equal(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK)
+						.get(BsystTempAbsenceFramePK_.cid), cId));
+
+		cq.where(lstPredicateWhere.toArray(new Predicate[] {}));
+
+		return em.createQuery(cq).getResultList().stream()
+				.map(item -> new TempAbsenceFrame(new JpaTempAbsenceFrameGetMemento(item)))
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.
+	 * TempAbsenceRepositoryFrame#findWithUseState(java.lang.String,
+	 * java.lang.Integer)
+	 */
+	@Override
+	public List<TempAbsenceFrame> findWithUseState(String cId, Integer useAtr) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsystTempAbsenceFrame> cq = criteriaBuilder
+				.createQuery(BsystTempAbsenceFrame.class);
+		Root<BsystTempAbsenceFrame> root = cq.from(BsystTempAbsenceFrame.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstPredicateWhere = new ArrayList<>();
+
+		lstPredicateWhere
+				.add(criteriaBuilder.equal(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK)
+						.get(BsystTempAbsenceFramePK_.cid), cId));
+		lstPredicateWhere
+				.add(criteriaBuilder.equal(root.get(BsystTempAbsenceFrame_.useAtr), useAtr));
+
 		cq.where(lstPredicateWhere.toArray(new Predicate[] {}));
 		
+		cq.orderBy(criteriaBuilder.asc(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK)
+				.get(BsystTempAbsenceFramePK_.tempAbsenceFrNo)));
+
 		return em.createQuery(cq).getResultList().stream()
 				.map(item -> new TempAbsenceFrame(new JpaTempAbsenceFrameGetMemento(item)))
 				.collect(Collectors.toList());

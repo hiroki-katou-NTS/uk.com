@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 /** 休出深夜時間 */
 @Data

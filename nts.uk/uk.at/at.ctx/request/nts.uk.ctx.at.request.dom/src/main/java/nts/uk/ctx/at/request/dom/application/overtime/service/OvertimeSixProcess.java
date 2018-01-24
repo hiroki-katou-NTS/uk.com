@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 
 public interface OvertimeSixProcess {
 	
@@ -16,7 +16,7 @@ public interface OvertimeSixProcess {
 	 * @param overtimeInputCaculations
 	 */
 	public List<CaculationTime> checkDisplayColor(List<CaculationTime> overTimeInputs,
-			List<OvertimeInputCaculation> overtimeInputCaculations,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID,RequestAppDetailSetting requestAppDetailSetting,String siftCD);
+			List<OvertimeInputCaculation> overtimeInputCaculations,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID,ApprovalFunctionSetting approvalFunctionSetting,String siftCD);
 	/**
 	 * 06-02_残業時間を取得
 	 * @param companyID
@@ -53,7 +53,7 @@ public interface OvertimeSixProcess {
 	/**
 	 * 06-04_計算実績超過チェック
 	 */
-	public CaculationTime checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,RequestAppDetailSetting requestAppDetailSetting,GeneralDate appDate,List<CaculationTime> overTimeInputs, String siftCD);
+	public CaculationTime checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,ApprovalFunctionSetting approvalFunctionSetting,GeneralDate appDate,List<CaculationTime> overTimeInputs, String siftCD);
 	
 	/**
 	 * 06-04-1_チェック条件
@@ -72,7 +72,7 @@ public interface OvertimeSixProcess {
 	 * @param overtimeHours
 	 * @return
 	 */
-	public List<CaculationTime> checkOutSideTimeTheDay(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport);
+	public List<CaculationTime> checkOutSideTimeTheDay(String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport);
 	
 	/**
 	 * 06-04-3_当日の場合
@@ -84,5 +84,5 @@ public interface OvertimeSixProcess {
 	 * @param overtimeHours
 	 * @return
 	 */
-	public List<CaculationTime> checkDuringTheDay(String companyID,String employeeID,String appDate,RequestAppDetailSetting requestAppDetailSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport);
+	public List<CaculationTime> checkDuringTheDay(String companyID,String employeeID,String appDate,ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport);
 }

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.worktime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiTemporaryTime;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiTemporaryTimePK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
@@ -105,16 +107,20 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  							? null : attendanceStamp.getActualStamp().getAfterRoundingTime().valueAsMinutes();
  	 				krcdtTimeLeavingWork.attendanceActualTime = attendanceStamp.getActualStamp().getTimeWithDay() == null 
  	 						? null : attendanceStamp.getActualStamp().getTimeWithDay().valueAsMinutes();
- 	 				krcdtTimeLeavingWork.attendanceActualPlaceCode = attendanceStamp.getActualStamp().getLocationCode().v();
- 	 				krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceStamp.getActualStamp().getStampSourceInfo().value;
+ 	 				krcdtTimeLeavingWork.attendanceActualPlaceCode = attendanceStamp.getActualStamp().getLocationCode() == null ? null 
+ 	 						: attendanceStamp.getActualStamp().getLocationCode().v();
+ 	 				krcdtTimeLeavingWork.attendanceActualSourceInfo = attendanceStamp.getActualStamp().getStampSourceInfo() == null ? 0 
+ 	 						: attendanceStamp.getActualStamp().getStampSourceInfo().value;
  				}
  				if(attendanceStamp.getStamp().isPresent()){
  					krcdtTimeLeavingWork.attendanceStampRoudingTime = attendanceStamp.getStamp().get().getAfterRoundingTime() == null 
  							? null : attendanceStamp.getStamp().get().getAfterRoundingTime().valueAsMinutes();
  	 				krcdtTimeLeavingWork.attendanceStampTime= attendanceStamp.getStamp().get().getTimeWithDay() == null 
  	 						? null : attendanceStamp.getStamp().get().getTimeWithDay().valueAsMinutes();
- 	 				krcdtTimeLeavingWork.attendanceStampPlaceCode = attendanceStamp.getStamp().get().getLocationCode().v();
- 	 				krcdtTimeLeavingWork.attendanceStampSourceInfo = attendanceStamp.getStamp().get().getStampSourceInfo().value;
+ 	 				krcdtTimeLeavingWork.attendanceStampPlaceCode = attendanceStamp.getStamp().get().getLocationCode() == null ? null 
+ 	 						: attendanceStamp.getStamp().get().getLocationCode().v();
+ 	 				krcdtTimeLeavingWork.attendanceStampSourceInfo = attendanceStamp.getStamp().get().getStampSourceInfo() == null ? 0 
+ 	 						: attendanceStamp.getStamp().get().getStampSourceInfo().value;
  				}
  				krcdtTimeLeavingWork.attendanceNumberStamp = attendanceStamp.getNumberOfReflectionStamp();
  			}
@@ -125,16 +131,20 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  							? null : leaveStamp.getActualStamp().getAfterRoundingTime().valueAsMinutes();
  	 				krcdtTimeLeavingWork.leaveWorkActualTime = leaveStamp.getActualStamp().getTimeWithDay() == null 
  	 						? null : leaveStamp.getActualStamp().getTimeWithDay().valueAsMinutes();
- 	 				krcdtTimeLeavingWork.leaveWorkActualPlaceCode = leaveStamp.getActualStamp().getLocationCode().v();
- 	 				krcdtTimeLeavingWork.leaveActualSourceInfo = leaveStamp.getActualStamp().getStampSourceInfo().value;
+ 	 				krcdtTimeLeavingWork.leaveWorkActualPlaceCode = leaveStamp.getActualStamp().getLocationCode() == null ? null 
+ 	 						: leaveStamp.getActualStamp().getLocationCode().v();
+ 	 				krcdtTimeLeavingWork.leaveActualSourceInfo = leaveStamp.getActualStamp().getStampSourceInfo() == null ? 0 
+ 	 						: leaveStamp.getActualStamp().getStampSourceInfo().value;
  				}
  				if(leaveStamp.getStamp().isPresent()){
  					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = leaveStamp.getStamp().get().getAfterRoundingTime() == null 
  							? null : leaveStamp.getStamp().get().getAfterRoundingTime().valueAsMinutes();
  	 				krcdtTimeLeavingWork.leaveWorkStampTime= leaveStamp.getStamp().get().getTimeWithDay() == null 
  	 						? null : leaveStamp.getStamp().get().getTimeWithDay().valueAsMinutes();
- 	 				krcdtTimeLeavingWork.leaveWorkStampPlaceCode = leaveStamp.getStamp().get().getLocationCode().v();
- 	 				krcdtTimeLeavingWork.leaveWorkStampSourceInfo = leaveStamp.getStamp().get().getStampSourceInfo().value;
+ 	 				krcdtTimeLeavingWork.leaveWorkStampPlaceCode = leaveStamp.getStamp().get().getLocationCode() == null ? null 
+ 	 						: leaveStamp.getStamp().get().getLocationCode().v();
+ 	 				krcdtTimeLeavingWork.leaveWorkStampSourceInfo = leaveStamp.getStamp().get().getStampSourceInfo() == null ? 0 
+ 	 						: leaveStamp.getStamp().get().getStampSourceInfo().value;
  				}
  				krcdtTimeLeavingWork.leaveWorkNumberStamp = leaveStamp.getNumberOfReflectionStamp();
  			}
@@ -179,6 +189,19 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		KrcdtDaiTemporaryTime entity = KrcdtDaiTemporaryTime.toEntity(temporaryTime);
 		commandProxy().insert(entity);
 		commandProxy().insertAll(entity.timeLeavingWorks);
+	}
+
+	@Override
+	public List<TemporaryTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a FROM KrcdtDaiTemporaryTime a ");
+		query.append("WHERE a.krcdtDaiTemporaryTimePK.employeeId IN :employeeId ");
+		query.append("AND a.krcdtDaiTemporaryTimePK.ymd <= :end AND a.krcdtDaiTemporaryTimePK.ymd >= :start");
+		return queryProxy().query(query.toString(), KrcdtDaiTemporaryTime.class).setParameter("employeeId", employeeId)
+				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
+				.collect(Collectors.groupingBy(c -> c.krcdtDaiTemporaryTimePK.employeeId + c.krcdtDaiTemporaryTimePK.ymd.toString()))
+				.entrySet().stream().map(c -> c.getValue().stream().map(f -> f.toDomain()).collect(Collectors.toList()))
+				.flatMap(List::stream).collect(Collectors.toList());
 	}
 
 //	@Override

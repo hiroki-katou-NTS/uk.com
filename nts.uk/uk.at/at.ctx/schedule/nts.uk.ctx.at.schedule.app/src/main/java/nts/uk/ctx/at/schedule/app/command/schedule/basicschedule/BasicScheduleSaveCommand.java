@@ -21,6 +21,8 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedul
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 
 /**
  * The Class BasicScheduleSaveCommand.
@@ -54,6 +56,38 @@ public class BasicScheduleSaveCommand {
 	/** The child care schedules. */
 	private List<ChildCareScheduleSaveCommand> childCareSchedules;
 	
+	
+	/**
+	 * Update work schedule time zones.
+	 *
+	 * @param workTimeSet the work time set
+	 */
+	public void updateWorkScheduleTimeZones(PrescribedTimezoneSetting workTimeSet) {
+		this.workScheduleTimeZones = workTimeSet.getLstTimezone().stream().filter(timezone -> timezone.isUsed())
+				.map(timezone -> this.convertTimeZoneToScheduleTimeZone(timezone)).collect(Collectors.toList());
+	}
+	
+	/**
+	 * Convert time zone to schedule time zone.
+	 *
+	 * @param timezone the timezone
+	 * @return the work schedule time zone save command
+	 */
+	// 勤務予定時間帯
+	private WorkScheduleTimeZoneSaveCommand convertTimeZoneToScheduleTimeZone(TimezoneUse timezone) {
+		WorkScheduleTimeZoneSaveCommand command = new WorkScheduleTimeZoneSaveCommand();
+
+		// 予定勤務回数 = 取得した勤務予定時間帯. 勤務NO
+		command.setScheduleCnt(timezone.getWorkNo());
+
+		// 予定開始時刻 = 取得した勤務予定時間帯. 開始
+		command.setScheduleStartClock(timezone.getStart().valueAsMinutes());
+
+		// 予定終了時刻 = 取得した勤務予定時間帯. 終了
+		command.setScheduleEndClock(timezone.getEnd().valueAsMinutes());
+
+		return command;
+	}
 	/**
 	 * To domain.
 	 *
@@ -120,7 +154,7 @@ public class BasicScheduleSaveCommand {
 		 */
 		@Override
 		public ConfirmedAtr getConfirmedAtr() {
-			return ConfirmedAtr.CONFIRMED;
+			return ConfirmedAtr.valueOf(confirmedAtr);
 		}
 
 		/*

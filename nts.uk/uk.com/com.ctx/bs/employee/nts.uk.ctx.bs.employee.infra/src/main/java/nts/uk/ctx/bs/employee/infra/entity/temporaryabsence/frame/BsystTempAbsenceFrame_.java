@@ -18,7 +18,7 @@ import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.frame.BsystTempAbsen
 public class BsystTempAbsenceFrame_ { 
 
     /** The use atr. */
-    public static volatile SingularAttribute<BsystTempAbsenceFrame, Short> useAtr;
+    public static volatile SingularAttribute<BsystTempAbsenceFrame, Integer> useAtr;
     
     /** The upd ccd. */
     public static volatile SingularAttribute<BsystTempAbsenceFrame, String> updCcd;

@@ -20,4 +20,6 @@ public class DPItemValue {
 	private String employeeId;
 	
 	private GeneralDate date;
+	
+	private Integer typeGroup;
 }

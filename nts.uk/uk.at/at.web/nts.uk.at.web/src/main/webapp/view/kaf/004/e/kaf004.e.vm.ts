@@ -97,6 +97,18 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 $("#inputdate").focus();
                 nts.uk.ui.block.clear();
                 dfd.resolve();
+            }).fail((res) =>{
+                if(res.messageId == 'Msg_426'){
+                        nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
+                            nts.uk.ui.block.clear();
+                        });
+                }else{ 
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
+                            nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");  
+                        });
+                }
+                nts.uk.ui.block.clear();
+                dfd.reject();
             });
                
             return dfd.promise();

@@ -233,7 +233,7 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 	 * @param entity
 	 * @return
 	 */
-	public AttendanceTimeOfDailyPerformance toDomain(GeneralDate ymd) {
+	public AttendanceTimeOfDailyPerformance toDomain() {
 
 		OverTimeOfDaily overTime = this.krcdtDayOvertimework == null  ? null : this.krcdtDayOvertimework.toDomain();
 		if(overTime != null) overTime.getOverTimeWorkFrameTimeSheet()
@@ -271,7 +271,7 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 		ActualWorkingTimeOfDaily actual = ActualWorkingTimeOfDaily.of(totalTime, this.midnBindTime, this.totalBindTime,
 				this.bindDiffTime, this.diffTimeWorkTime);
 		// 日別実績の勤怠時間
-		return new AttendanceTimeOfDailyPerformance(this.krcdtDayAttendanceTimePK == null ? null : this.krcdtDayAttendanceTimePK.employeeID, ymd,
+		return new AttendanceTimeOfDailyPerformance(this.krcdtDayAttendanceTimePK == null ? null : this.krcdtDayAttendanceTimePK.employeeID, this.krcdtDayAttendanceTimePK.generalDate,
 				this.krcdtDayWorkScheTime == null ? null : this.krcdtDayWorkScheTime.toDomain(), actual,
 				new StayingTimeOfDaily(new AttendanceTime(this.aftPcLogoffTime),
 						new AttendanceTime(this.bfrPcLogonTime), new AttendanceTime(this.bfrWorkTime),

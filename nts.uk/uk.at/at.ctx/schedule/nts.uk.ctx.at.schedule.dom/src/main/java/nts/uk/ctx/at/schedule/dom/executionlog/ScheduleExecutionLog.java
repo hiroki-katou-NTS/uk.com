@@ -78,6 +78,14 @@ public class ScheduleExecutionLog extends AggregateRoot {
 	public void setExecutionTimeToNow() {
 		this.executionDateTime = new ExecutionDateTime(GeneralDateTime.now(), GeneralDateTime.now());
 	}
+	
+	/**
+	 * Update execution time end to now.
+	 */
+	public void updateExecutionTimeEndToNow() {
+		GeneralDateTime startDateTime = this.executionDateTime.getExecutionStartDate();
+		this.executionDateTime = new ExecutionDateTime(startDateTime, GeneralDateTime.now());
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

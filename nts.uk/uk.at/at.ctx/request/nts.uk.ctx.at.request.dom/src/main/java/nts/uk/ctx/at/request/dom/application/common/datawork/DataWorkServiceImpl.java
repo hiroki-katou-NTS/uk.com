@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.App
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -44,23 +44,16 @@ public class DataWorkServiceImpl implements IDataWorkService {
 			AppCommonSettingOutput appCommonSetting) {
 		DataWork dataWork = new DataWork();
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する
-		List<RequestAppDetailSetting> requestAppDetailSettings = appCommonSetting.requestOfEachCommon
-				.getRequestAppDetailSettings();
-		if (CollectionUtil.isEmpty(requestAppDetailSettings)) {
-			return null;
-		}
-		List<RequestAppDetailSetting> requestAppDetailSetting = requestAppDetailSettings.stream()
-				.filter(c -> c.appType == appCommonSetting.appTypeDiscreteSettings.get(0).getAppType())
-				.collect(Collectors.toList());
-		if (CollectionUtil.isEmpty(requestAppDetailSetting)) {
+		ApprovalFunctionSetting approvalFunctionSetting = appCommonSetting.approvalFunctionSetting;
+		if (approvalFunctionSetting == null) {
 			return null;
 		}
 		List<AppEmploymentSetting> appEmploymentWorkType = appCommonSetting.appEmploymentWorkType;
 		// 勤務種類取得
-		List<String> workTypeCodes = getWorkType(companyId, sId, requestAppDetailSetting.get(0), appEmploymentWorkType);
+		List<String> workTypeCodes = getWorkType(companyId, sId, approvalFunctionSetting, appEmploymentWorkType);
 		dataWork.setWorkTypeCodes(workTypeCodes);
 		// 就業時間帯取得
-		List<String> workTimeCodes = getSiftType(companyId, sId, requestAppDetailSetting.get(0));
+		List<String> workTimeCodes = getSiftType(companyId, sId, approvalFunctionSetting);
 		dataWork.setWorkTimeCodes(workTimeCodes);
 
 		// 勤務種類就業時間帯の初期選択をセットする
@@ -79,9 +72,9 @@ public class DataWorkServiceImpl implements IDataWorkService {
 	 * @return
 	 */
 	public List<String> getWorkType(String companyID, String employeeID,
-			RequestAppDetailSetting requestAppDetailSetting, List<AppEmploymentSetting> appEmploymentSettings) {
+			ApprovalFunctionSetting approvalFunctionSetting, List<AppEmploymentSetting> appEmploymentSettings) {
 		List<String> result = new ArrayList<>();
-		if (requestAppDetailSetting == null) {
+		if (approvalFunctionSetting == null) {
 			return result;
 		}
 		// 時刻計算利用チェック
@@ -120,8 +113,8 @@ public class DataWorkServiceImpl implements IDataWorkService {
 	 * @return
 	 */
 	public List<String> getSiftType(String companyID, String employeeID,
-			RequestAppDetailSetting requestAppDetailSetting) {
-		if (requestAppDetailSetting == null) {
+			ApprovalFunctionSetting approvalFunctionSetting) {
+		if (approvalFunctionSetting == null) {
 			return Collections.emptyList();
 		}
 		// 1.職場別就業時間帯を取得

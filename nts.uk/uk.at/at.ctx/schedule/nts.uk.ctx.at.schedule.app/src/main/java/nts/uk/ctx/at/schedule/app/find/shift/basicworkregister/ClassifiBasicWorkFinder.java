@@ -92,7 +92,7 @@ public class ClassifiBasicWorkFinder {
 		List<String> workingCodeList = basicWorkSettingFindDto.stream().map(item -> {
 			return item.getWorkingCode();
 		}).distinct().filter(a -> {
-			return a.length() > 0;
+			return a != null && a.length() > 0;
 		}).collect(Collectors.toList());
 
 		// Find WorkTime
