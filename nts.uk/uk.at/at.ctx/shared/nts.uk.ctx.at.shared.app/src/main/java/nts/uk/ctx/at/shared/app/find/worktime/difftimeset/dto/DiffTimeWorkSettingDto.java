@@ -86,7 +86,7 @@ public class DiffTimeWorkSettingDto implements DiffTimeWorkSettingSetMemento {
 
 	@Override
 	public void setIsUseHalfDayShift(boolean isUseHalfDayShift) {
-		this.isUseHalfDayShift = true;
+		this.isUseHalfDayShift = isUseHalfDayShift;
 	}
 
 	@Override

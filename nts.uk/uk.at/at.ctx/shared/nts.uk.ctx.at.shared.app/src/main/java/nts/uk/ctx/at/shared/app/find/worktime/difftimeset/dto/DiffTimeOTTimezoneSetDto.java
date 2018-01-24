@@ -61,6 +61,7 @@ public class DiffTimeOTTimezoneSetDto implements DiffTimeOTTimezoneSetMemento {
 
 	@Override
 	public void setTimezone(TimeZoneRounding timezone) {
+		this.timezone = new TimeZoneRoundingDto();
 		timezone.saveToMemento(this.timezone);
 	}
 
