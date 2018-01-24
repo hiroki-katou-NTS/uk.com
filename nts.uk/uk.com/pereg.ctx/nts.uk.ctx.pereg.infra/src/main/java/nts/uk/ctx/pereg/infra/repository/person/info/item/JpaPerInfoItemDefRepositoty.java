@@ -100,18 +100,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd"
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.ppemtPerInfoItemPK.perInfoItemDefId = :perInfoCtgId";
 
-	private final static String SELECT_ITEM_BY_ITEM_ID_LIST_QUERY = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,"
-			+ " i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
-			+ " ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,"
-			+ " ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,"
-			+ " ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,"
-			+ " ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,"
-			+ " ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId"
-			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd "
-			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd"
-			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.ppemtPerInfoItemPK.perInfoItemDefId IN :perInfoCtgId";
-
 	private final static String SELECT_ITEMS_BY_LIST_ITEM_ID_QUERY = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,"
 			+ " i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
 			+ " ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,"
@@ -221,12 +209,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SEL_ITEM_BY_SELECTIONS = "SELECT c FROM PpemtPerInfoItemCm c "
 			+ " WHERE  c.selectionItemRefCode =:selectionItemId";
 	
-	private final static String SEL_ITEM_IS_ABOLITION = " SELECT c, i FROM PpemtPerInfoCtg c "
-			+ " INNER JOIN  PpemtPerInfoItem i"
-			+ " ON c.ppemtPerInfoCtgPK.perInfoCtgId =  i.perInfoCtgId "
-			+ " WHERE c.cid =: cid AND c.abolitionAtr = 0"
-			+ " AND i.abolitionAtr = 0";
-
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 

@@ -1,6 +1,5 @@
 package nts.uk.ctx.pereg.app.find.person.category;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,7 +9,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.pereg.app.find.person.info.item.PersonInfoItemDefDto;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
-import nts.uk.ctx.pereg.dom.person.info.category.PersonCategoryData;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.shr.com.context.AppContexts;
