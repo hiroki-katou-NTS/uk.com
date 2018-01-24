@@ -73,7 +73,7 @@ public class EstimateNumberOfDay extends DomainObject {
 				YearlyEstimateNumberOfDay yearlyNext = mapYearly.get(nextCond);
 
 				if (yearlyBase.getDays().v() != ZERO_VALUE && yearlyNext.getDays().v() != ZERO_VALUE
-						&& yearlyNext.getDays().v() >= yearlyBase.getDays().v()) {
+						&& yearlyNext.getDays().v() <= yearlyBase.getDays().v()) {
 					I18NText text = I18NText.main("Msg_147").addId("KSM001_25").addRaw(GUILDANCE_TEXT).build();
 					throw new BusinessException(text);
 				}
@@ -106,7 +106,7 @@ public class EstimateNumberOfDay extends DomainObject {
 
 				if (monthlyNow.getDays().v() != ZERO_VALUE
 						&& monthlyNext.getDays().v() != ZERO_VALUE
-						&& monthlyNext.getDays().v() >= monthlyNow.getDays().v()) {
+						&& monthlyNext.getDays().v() <= monthlyNow.getDays().v()) {
 					I18NText text = I18NText.main("Msg_147").addId("KSM001_25").addRaw(GUILDANCE_TEXT).build();
 					throw new BusinessException(text);
 				}
