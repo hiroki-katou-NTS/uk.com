@@ -66,6 +66,63 @@
 				</com:ko>
 			</com:ko>
 			
+			<com:ko tag="if" bind="isDiffTimeMode">
+				<com:ko tag="if" bind="isDetailMode">
+					<div class="labelSetting">
+						<div tabindex="-1" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_185')}</div>
+						<div tabindex="54"
+							data-bind="ntsSwitchButton: {
+							options: autoCalUseAttrs,
+							optionsValue: 'code',
+							optionsText: 'name',
+							name: '#[KMK003_212]',
+							value: mainSettingModel.diffWorkSetting.overtimeSetting,
+							enable: true }">
+						</div>
+						<button tabindex="55" style="margin-left: 20px;"
+							data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_1.png', position: 'right top' }">?</button>
+					</div>
+					<div tabindex="-1" class="accordion"
+						data-bind="ntsAccordion: {enable: true} ">
+						<h3>
+							<label>#{i18n.getText('KMK003_51')}</label>
+						</h3>
+						<div tabindex="-1" class="accordion-content">
+							<div tabindex="56" id="tab3_fixtable_oneday_difftime"
+								data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayDiffTime}"></div>
+						</div>
+					</div>
+				</com:ko>
+				<com:ko tag="ifnot" bind="isDetailMode">
+					<div tabindex="56" id="tab3_fixtable_oneday_difftime"
+						data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayDiffTime}"></div>
+				</com:ko>
+				<com:ko tag="if" bind="isDetailMode">
+					<com:ko tag="if" bind="isUseHalfDay">
+						<div tabindex="-1" class="accordion setting_detail_tab3"
+							data-bind="ntsAccordion: {enable: true}">
+							<h3>
+								<label>#{i18n.getText('KMK003_60')}</label>
+							</h3>
+							<div tabindex="-1" class="accordion-content">
+								<div tabindex="57" id="tab3_fixtable_morning_difftime"
+									data-bind="ntsFixTableCustom: {option: fixTableOptionMorningDiffTime}"></div>
+							</div>
+						</div>
+						<div tabindex="-1" class="accordion"
+							data-bind="ntsAccordion: {enable: true}">
+							<h3>
+								<label>#{i18n.getText('KMK003_61')}</label>
+							</h3>
+							<div tabindex="-1" class="accordion-content">
+								<div tabindex="58" id="tab3_fixtable_afternoon_difftime"
+									data-bind="ntsFixTableCustom: {option: fixTableOptionAfternoonDiffTime}"></div>
+							</div>
+						</div>
+					</com:ko>
+				</com:ko>
+			</com:ko>
+			
 			
 		</com:ko>
 		<com:ko tag="if" bind="isFlowMode">

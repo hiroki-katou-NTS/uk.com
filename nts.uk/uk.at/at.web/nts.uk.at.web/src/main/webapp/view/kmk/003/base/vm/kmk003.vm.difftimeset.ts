@@ -188,11 +188,11 @@ module nts.uk.at.view.kmk003.a {
 
             export class DiffTimezoneSettingModel {
                 employmentTimezones: KnockoutObservableArray<EmTimeZoneSetModel>;
-                oTTimezones: KnockoutObservableArray<DiffTimeOTTimezoneSetModel>;
+                lstOtTimezone: KnockoutObservableArray<DiffTimeOTTimezoneSetModel>;
 
                 constructor() {
                     this.employmentTimezones = ko.observableArray([]);
-                    this.oTTimezones = ko.observableArray([]);
+                    this.lstOtTimezone = ko.observableArray([]);
                 }
 
                 updateData(data: DiffTimezoneSettingDto) {
@@ -203,7 +203,7 @@ module nts.uk.at.view.kmk003.a {
                         return m;
                     }));
 
-                    self.oTTimezones(data.oTTimezones?data.oTTimezones.map(item => {
+                    self.lstOtTimezone(data.lstOtTimezone?data.lstOtTimezone.map(item => {
                         let m = new DiffTimeOTTimezoneSetModel();
                         m.updateData(item);
                         return m;
@@ -212,24 +212,24 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 updateOvertimeZone(lstOTTimezone: DiffTimeOTTimezoneSetDto[]) {
-                    this.oTTimezones([]);
+                    this.lstOtTimezone([]);
                     var dataModelTimezone: DiffTimeOTTimezoneSetModel[] = [];
                     for (var dataDTO of lstOTTimezone) {
                         var dataModel: DiffTimeOTTimezoneSetModel = new DiffTimeOTTimezoneSetModel();
                         dataModel.updateData(dataDTO);
                         dataModelTimezone.push(dataModel);
                     }
-                    this.oTTimezones(dataModelTimezone);
+                    this.lstOtTimezone(dataModelTimezone);
                 }
 
                 toDto(): DiffTimezoneSettingDto {
                     let self = this;
                     let employmentTimezones = self.employmentTimezones().map(item => item.toDto());
-                    let oTTimezones = self.oTTimezones().map(item => item.toDto());
+                    let lstOtTimezone = self.lstOtTimezone().map(item => item.toDto());
 
                     var dataDTO: DiffTimezoneSettingDto = {
                         employmentTimezones: employmentTimezones,
-                        oTTimezones: oTTimezones
+                        lstOtTimezone: lstOtTimezone
                     };
                     return dataDTO;
                 }

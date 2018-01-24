@@ -64,6 +64,7 @@ module a3 {
             self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
             self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
             
+            
             self.autoCalUseAttrs = ko.observableArray([
                 { code: 0, name: nts.uk.resource.getText("KMK003_142") },
                 { code: 1, name: nts.uk.resource.getText("KMK003_143") }
@@ -167,7 +168,7 @@ module a3 {
                     workTimezoneNo++;
                     lstOTTimezone.push(self.toModelDiffTimeDto(dataModel, workTimezoneNo));
                 }
-                self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon().workTimezone.updateOvertimeZone(lstOTTimezone);
+                self.mainSettingModel.diffWorkSetting.getHDWtzAfternoon().workTimezone.updateOvertimeZone(lstOTTimezone);
             });
             
             // update time zone flexset
@@ -335,17 +336,17 @@ module a3 {
             }
             if (self.isDiffTimeMode()) {
                 var dataDiffTimeOneday: any[] = [];
-                for (var dataModelOnedayDiffTime of self.mainSettingModel.diffWorkSetting.getHDWtzOneday().workTimezone.oTTimezones()) {
+                for (var dataModelOnedayDiffTime of self.mainSettingModel.diffWorkSetting.getHDWtzOneday().workTimezone.lstOtTimezone()) {
                     dataDiffTimeOneday.push(self.toModelDiffTimeColumnSetting(dataModelOnedayDiffTime.toDto()));
                 }
                 self.dataSourceOnedayDiffTime(dataDiffTimeOneday);
                 var dataDiffTimeMorning: any[] = [];
-                for (var dataModelMorningDiffTime of self.mainSettingModel.diffWorkSetting.getHDWtzMorning().workTimezone.oTTimezones()) {
+                for (var dataModelMorningDiffTime of self.mainSettingModel.diffWorkSetting.getHDWtzMorning().workTimezone.lstOtTimezone()) {
                     dataDiffTimeMorning.push(self.toModelDiffTimeColumnSetting(dataModelMorningDiffTime.toDto()));
                 }
                 self.dataSourceMorningDiffTime(dataDiffTimeMorning);
                 var dataDiffTimeAfternoon: any[] = [];
-                for (var dataModelAfternoonDiffTime of self.mainSettingModel.diffWorkSetting.getHDWtzAfternoon().workTimezone.oTTimezones()) {
+                for (var dataModelAfternoonDiffTime of self.mainSettingModel.diffWorkSetting.getHDWtzAfternoon().workTimezone.lstOtTimezone()) {
                     dataDiffTimeAfternoon.push(self.toModelDiffTimeColumnSetting(dataModelAfternoonDiffTime.toDto()));
                 }
                 self.dataSourceAfternoonDiffTime(dataDiffTimeAfternoon);

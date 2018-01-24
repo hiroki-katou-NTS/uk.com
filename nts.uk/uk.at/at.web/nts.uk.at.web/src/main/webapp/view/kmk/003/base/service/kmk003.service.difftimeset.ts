@@ -36,7 +36,7 @@ module nts.uk.at.view.kmk003.a {
 
                 export interface DiffTimezoneSettingDto {
                     employmentTimezones: EmTimeZoneSetDto[];
-                    oTTimezones: DiffTimeOTTimezoneSetDto[];
+                    lstOtTimezone: DiffTimeOTTimezoneSetDto[];
 
                 }
 
