@@ -374,7 +374,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             }
 
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
+                $("#hor-scroll-button-hide").trigger("click");
+            });
         }
 
         /**
