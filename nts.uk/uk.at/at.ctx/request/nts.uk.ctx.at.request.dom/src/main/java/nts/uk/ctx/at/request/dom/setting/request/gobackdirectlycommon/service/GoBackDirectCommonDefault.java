@@ -80,7 +80,7 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 				SID, 
 				EmploymentRootAtr.APPLICATION, 
 				ApplicationType.WORK_CHANGE_APPLICATION, 
-				null, 
+				appCommonSetting.generalDate, 
 				"", 
 				true);
 
