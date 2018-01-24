@@ -209,6 +209,17 @@ module nts.uk.at.view.kmk003.a {
                     }));
 
                 }
+                
+                updateOvertimeZone(lstOTTimezone: DiffTimeOTTimezoneSetDto[]) {
+                    this.oTTimezones([]);
+                    var dataModelTimezone: DiffTimeOTTimezoneSetModel[] = [];
+                    for (var dataDTO of lstOTTimezone) {
+                        var dataModel: DiffTimeOTTimezoneSetModel = new DiffTimeOTTimezoneSetModel();
+                        dataModel.updateData(dataDTO);
+                        dataModelTimezone.push(dataModel);
+                    }
+                    this.oTTimezones(dataModelTimezone);
+                }
 
                 toDto(): DiffTimezoneSettingDto {
                     let self = this;

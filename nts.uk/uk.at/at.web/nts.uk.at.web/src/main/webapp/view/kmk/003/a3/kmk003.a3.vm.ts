@@ -2,10 +2,11 @@ module a3 {
     import TimeRoundingSettingDto = nts.uk.at.view.kmk003.a.service.model.common.TimeRoundingSettingDto;
     import TimeZoneRoundingDto = nts.uk.at.view.kmk003.a.service.model.common.TimeZoneRoundingDto;
     import OverTimeOfTimeZoneSetDto = nts.uk.at.view.kmk003.a.service.model.common.OverTimeOfTimeZoneSetDto;
+    import DiffTimeOTTimezoneSetDto = nts.uk.at.view.kmk003.a.service.model.difftimeset.DiffTimeOTTimezoneSetDto;
     import FlOTTimezoneDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlOTTimezoneDto;
     import FlTimeSettingDto = nts.uk.at.view.kmk003.a.service.model.flowset.FlTimeSettingDto;
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
-    import FlOTTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlOTTimezoneModel;
+    import FlowOTTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlowOTTimezoneModel;
     import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
     import OvertimeWorkFrameFindDto = nts.uk.at.view.kmk003.a3.service.model.OvertimeWorkFrameFindDto;
@@ -14,6 +15,9 @@ module a3 {
         fixTableOptionOnedayFixed: any;
         fixTableOptionMorningFixed: any;
         fixTableOptionAfternoonFixed: any;
+        fixTableOptionOnedayDiffTime: any;
+        fixTableOptionMorningDiffTime: any;
+        fixTableOptionAfternoonDiffTime: any;
         fixTableOptionOnedayFlex: any;
         fixTableOptionMorningFlex: any;
         fixTableOptionAfternoonFlex: any;
@@ -21,12 +25,16 @@ module a3 {
         isFlowMode: KnockoutObservable<boolean>;
         isFlexMode: KnockoutObservable<boolean>;
         isFixedMode: KnockoutObservable<boolean>;
+        isDiffTimeMode: KnockoutObservable<boolean>;
         isLoading: KnockoutObservable<boolean>;
         isDetailMode: KnockoutObservable<boolean>;
         isUseHalfDay: KnockoutObservable<boolean>;
         dataSourceOnedayFixed: KnockoutObservableArray<any>;
         dataSourceMorningFixed: KnockoutObservableArray<any>;
         dataSourceAfternoonFixed: KnockoutObservableArray<any>;
+        dataSourceOnedayDiffTime: KnockoutObservableArray<any>;
+        dataSourceMorningDiffTime: KnockoutObservableArray<any>;
+        dataSourceAfternoonDiffTime: KnockoutObservableArray<any>;
         dataSourceOnedayFlex: KnockoutObservableArray<any>;
         dataSourceMorningFlex: KnockoutObservableArray<any>;
         dataSourceAfternoonFlex: KnockoutObservableArray<any>;
@@ -54,6 +62,8 @@ module a3 {
             self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
             self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
             self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
+            self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
+            
             self.autoCalUseAttrs = ko.observableArray([
                 { code: 0, name: nts.uk.resource.getText("KMK003_142") },
                 { code: 1, name: nts.uk.resource.getText("KMK003_143") }
@@ -73,6 +83,9 @@ module a3 {
             self.dataSourceOnedayFixed = ko.observableArray([]);
             self.dataSourceMorningFixed = ko.observableArray([]);
             self.dataSourceAfternoonFixed = ko.observableArray([]);
+            self.dataSourceOnedayDiffTime = ko.observableArray([]);
+            self.dataSourceMorningDiffTime= ko.observableArray([]);
+            self.dataSourceAfternoonDiffTime = ko.observableArray([]);
             self.dataSourceOnedayFlex = ko.observableArray([]);
             self.dataSourceMorningFlex = ko.observableArray([]);
             self.dataSourceAfternoonFlex = ko.observableArray([]);
@@ -126,6 +139,37 @@ module a3 {
                 self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon().workTimezone.updateOvertimeZone(lstOTTimezone);
             });
             
+            // update time zone diff time 
+            self.dataSourceOnedayDiffTime.subscribe(function(dataDiffTime: any[]) {
+                var lstOTTimezone: DiffTimeOTTimezoneSetDto[] = [];
+                var workTimezoneNo: number = 0;
+                for (var dataModel of dataDiffTime) {
+                    workTimezoneNo++;
+                    lstOTTimezone.push(self.toModelDiffTimeDto(dataModel, workTimezoneNo));
+                }
+                self.mainSettingModel.diffWorkSetting.getHDWtzOneday().workTimezone.updateOvertimeZone(lstOTTimezone);
+            });
+            
+            self.dataSourceMorningDiffTime.subscribe(function(dataDiffTime: any[]) {
+                var lstOTTimezone: DiffTimeOTTimezoneSetDto[] = [];
+                var workTimezoneNo: number = 0;
+                for (var dataModel of dataDiffTime) {
+                    workTimezoneNo++;
+                    lstOTTimezone.push(self.toModelDiffTimeDto(dataModel, workTimezoneNo));
+                }
+                self.mainSettingModel.diffWorkSetting.getHDWtzMorning().workTimezone.updateOvertimeZone(lstOTTimezone);
+            });
+            
+            self.dataSourceAfternoonDiffTime.subscribe(function(dataDiffTime: any[]) {
+                var lstOTTimezone: DiffTimeOTTimezoneSetDto[] = [];
+                var workTimezoneNo: number = 0;
+                for (var dataModel of dataDiffTime) {
+                    workTimezoneNo++;
+                    lstOTTimezone.push(self.toModelDiffTimeDto(dataModel, workTimezoneNo));
+                }
+                self.mainSettingModel.fixedWorkSetting.getHDWtzAfternoon().workTimezone.updateOvertimeZone(lstOTTimezone);
+            });
+            
             // update time zone flexset
             self.dataSourceOnedayFlex.subscribe(function(dataFlex: any[]) {
                 var lstOTTimezone: OverTimeOfTimeZoneSetDto[] = [];
@@ -167,7 +211,7 @@ module a3 {
                 isShowButton: true,
                 dataSource: self.dataSourceOnedayFixed,
                 isMultipleSelect: true,
-                columns: self.columnSettingFixed(),
+                columns: self.columnSettingFixedAndDiffTime(),
                 tabindex: 56
             };
             self.fixTableOptionMorningFixed = {
@@ -177,7 +221,7 @@ module a3 {
                 isShowButton: true,
                 dataSource: self.dataSourceMorningFixed,
                 isMultipleSelect: true,
-                columns: self.columnSettingFixed(),
+                columns: self.columnSettingFixedAndDiffTime(),
                 tabindex: 57
             };
             self.fixTableOptionAfternoonFixed = {
@@ -187,7 +231,37 @@ module a3 {
                 isShowButton: true,
                 dataSource: self.dataSourceAfternoonFixed,
                 isMultipleSelect: true,
-                columns: self.columnSettingFixed(),
+                columns: self.columnSettingFixedAndDiffTime(),
+                tabindex: 58
+            };
+            self.fixTableOptionOnedayDiffTime = {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: self.dataSourceOnedayDiffTime,
+                isMultipleSelect: true,
+                columns: self.columnSettingFixedAndDiffTime(),
+                tabindex: 56
+            };
+            self.fixTableOptionMorningDiffTime = {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: self.dataSourceMorningDiffTime,
+                isMultipleSelect: true,
+                columns: self.columnSettingFixedAndDiffTime(),
+                tabindex: 57
+            };
+            self.fixTableOptionAfternoonDiffTime = {
+                maxRow: 10,
+                minRow: 0,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: self.dataSourceAfternoonDiffTime,
+                isMultipleSelect: true,
+                columns: self.columnSettingFixedAndDiffTime(),
                 tabindex: 58
             };
             self.fixTableOptionOnedayFlex = {
@@ -259,6 +333,23 @@ module a3 {
                 }
                 self.dataSourceAfternoonFixed(dataFixedAfternoon);
             }
+            if (self.isDiffTimeMode()) {
+                var dataDiffTimeOneday: any[] = [];
+                for (var dataModelOnedayDiffTime of self.mainSettingModel.diffWorkSetting.getHDWtzOneday().workTimezone.oTTimezones()) {
+                    dataDiffTimeOneday.push(self.toModelDiffTimeColumnSetting(dataModelOnedayDiffTime.toDto()));
+                }
+                self.dataSourceOnedayDiffTime(dataDiffTimeOneday);
+                var dataDiffTimeMorning: any[] = [];
+                for (var dataModelMorningDiffTime of self.mainSettingModel.diffWorkSetting.getHDWtzMorning().workTimezone.oTTimezones()) {
+                    dataDiffTimeMorning.push(self.toModelDiffTimeColumnSetting(dataModelMorningDiffTime.toDto()));
+                }
+                self.dataSourceMorningDiffTime(dataDiffTimeMorning);
+                var dataDiffTimeAfternoon: any[] = [];
+                for (var dataModelAfternoonDiffTime of self.mainSettingModel.diffWorkSetting.getHDWtzAfternoon().workTimezone.oTTimezones()) {
+                    dataDiffTimeAfternoon.push(self.toModelDiffTimeColumnSetting(dataModelAfternoonDiffTime.toDto()));
+                }
+                self.dataSourceAfternoonDiffTime(dataDiffTimeAfternoon);
+            }
 
             if (self.isFlexMode()) {
                 var dataFlexOneday: any[] = [];
@@ -295,6 +386,46 @@ module a3 {
                 legalOTframeNo: ko.observable(dataDTO.legalOTframeNo),
                 settlementOrder: ko.observable(dataDTO.settlementOrder)
             }
+        }
+        /**
+         * function convert dto to model
+         */
+        private toModelDiffTimeColumnSetting(dataDTO: DiffTimeOTTimezoneSetDto): any {
+            return {
+                timezone: ko.observable({ startTime: dataDTO.timezone.start, endTime: dataDTO.timezone.end }),
+                rounding: ko.observable(dataDTO.timezone.rounding.rounding),
+                roundingTime: ko.observable(dataDTO.timezone.rounding.roundingTime),
+                otFrameNo: ko.observable(dataDTO.otFrameNo),
+                earlyOTUse: ko.observable(dataDTO.earlyOTUse),
+                legalOTframeNo: ko.observable(dataDTO.legalOTframeNo),
+                settlementOrder: ko.observable(dataDTO.settlementOrder)
+            }
+        }
+        
+        /**
+         * function convert data model of client to parent
+         */
+        private toModelDiffTimeDto(dataModel: any, workTimezoneNo: number): DiffTimeOTTimezoneSetDto {
+            var rounding: TimeRoundingSettingDto = {
+                roundingTime: dataModel.roundingTime(),
+                rounding: dataModel.rounding()
+            };
+            var timezone: TimeZoneRoundingDto = {
+                rounding: rounding,
+                start: dataModel.timezone().startTime,
+                end: dataModel.timezone().endTime
+            };
+            var dataDTO: DiffTimeOTTimezoneSetDto = {
+                workTimezoneNo: workTimezoneNo,
+                restraintTimeUse: false,
+                timezone: timezone,
+                otFrameNo: dataModel.otFrameNo(),
+                earlyOTUse: dataModel.earlyOTUse(),
+                legalOTframeNo: dataModel.legalOTframeNo(),
+                settlementOrder: dataModel.settlementOrder(),
+                isUpdateStartTime: false
+            };
+            return dataDTO;
         }
         
         /**
@@ -496,9 +627,9 @@ module a3 {
          }
         
         /**
-         * function get column setting fixed
+         * function get column setting fixed and diff time
          */
-         private columnSettingFixed(): Array<any> {
+         private columnSettingFixedAndDiffTime(): Array<any> {
             let self = this;
              var arraySettingFlex : Array<any> = self.columnSettingFlex();
              arraySettingFlex.push({
