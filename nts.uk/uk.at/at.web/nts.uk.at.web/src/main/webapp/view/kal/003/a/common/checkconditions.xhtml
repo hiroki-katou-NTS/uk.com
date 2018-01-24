@@ -52,7 +52,7 @@
 	                       <span data-bind="text: rowId"></span>
 	                   </td>
 	                   <td>
-	                       <input data-bind="ntsTextEditor: {value: nameWKRecord, 
+	                       <input data-bind="ntsTextEditor: {value: nameWKRecord, required: true, constraint: 'NameWKRecord',
 		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
 				                textmode: 'text',
 				                placeholder: '',
