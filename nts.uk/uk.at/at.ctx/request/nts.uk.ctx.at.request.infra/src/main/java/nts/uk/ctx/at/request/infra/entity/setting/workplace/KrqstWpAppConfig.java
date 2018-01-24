@@ -30,7 +30,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.SelectionFlg;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
- * 
+ * 職場別申請承認設定
  * @author Doan Duy Hung
  *
  */

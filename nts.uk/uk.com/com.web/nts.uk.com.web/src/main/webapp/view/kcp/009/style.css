@@ -68,3 +68,7 @@ td.employment-tdpad{
 #search-input{
 	width: 100px;
 }
+
+#items-list {
+	z-index: 999 !important;
+}

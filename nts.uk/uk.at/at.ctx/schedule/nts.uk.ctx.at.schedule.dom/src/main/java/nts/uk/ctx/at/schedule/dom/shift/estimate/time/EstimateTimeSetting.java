@@ -71,7 +71,7 @@ public class EstimateTimeSetting extends DomainObject {
 				YearlyEstimateTimeSetting yearlyNext = mapYearly.get(nextCond);
 
 				if (yearlyNow.getTime().v() != ZERO_VALUE && yearlyNext.getTime().v() != ZERO_VALUE
-						&& yearlyNext.getTime().v() >= yearlyNow.getTime().v()) {
+						&& yearlyNext.getTime().v() <= yearlyNow.getTime().v()) {
 					I18NText text = I18NText.main("Msg_147").addId("KSM001_23").addRaw(GUILDANCE_TEXT).build();
 					throw new BusinessException(text);
 				}
@@ -103,7 +103,7 @@ public class EstimateTimeSetting extends DomainObject {
 
 				if (monthlyNow.getTime().v() != ZERO_VALUE
 						&& monthlyNext.getTime().v() != ZERO_VALUE
-						&& monthlyNext.getTime().v() >= monthlyNow.getTime().v()) {
+						&& monthlyNext.getTime().v() <= monthlyNow.getTime().v()) {
 					I18NText text = I18NText.main("Msg_147").addId("KSM001_23").addRaw(GUILDANCE_TEXT).build();
 					throw new BusinessException(text);
 				}
