@@ -61,11 +61,9 @@
 									<div id="search-div" class="control-group valign-center">
 										<input id="inputStartTime" tabindex="5"
 										data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_12]', constraint:'TimeWithDayAttr', value: startTime, enable: true, readonly: false, required: false, option: { width: '100px' }}" />
-												inputFormat: 'time', mode: 'time', option: { width: '100px' }}" />
 										<span>#{i18n.getText('KDL003_13')}</span>
 										<input id="inputEndTime" tabindex="7"
 										data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_15]', constraint:'TimeWithDayAttr', value: endTime, enable: true, readonly: false, required: false, option: { width: '100px' }}" />
-												inputFormat: 'time', mode: 'time', option: { width: '100px' }}" />
 										<button tabindex="8" class="caret-bottom" data-bind="click: search">#{i18n.getText('KDL003_16')}</button>
 										<button tabindex="9" class="pull-right" data-bind="click: clearSearchCondition">#{i18n.getText('KDL003_17')}</button>
 									</div>
@@ -104,22 +102,22 @@
 								<td style="vertical-align: top; padding-right: 20px;">
 									<div id="search-div" class="control-group valign-center">
 										<span>#{i18n.getText('KDL003_25')}</span>
-										<input id="inputStartBTime" tabindex="11"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_26]', constraint:'TimeOfDay', value: startBTime, 
+										<input id="inputStartBTime" tabindex="11" style="text-align: center !important;"
+											data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_26]', constraint:'TimeWithDayAttr', value: startBTime, 
 												inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable1, readonly: readonly}" />
 										<span>#{i18n.getText('KDL003_27')}</span>
 										<input id="inputEndBTime" tabindex="12"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_28]', constraint:'TimeOfDay', value: endBTime,
+											data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_28]', constraint:'TimeWithDayAttr', value: endBTime,
 												 inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable1, readonly: readonly}" />
 									</div>
 									<div id="search-div" class="control-group valign-center">
 										<span>#{i18n.getText('KDL003_29')}</span>
 										<input id="inputStartBBTime" tabindex="13"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_30]', constraint:'TimeOfDay', value: startBBTime, 
+											data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_30]', constraint:'TimeWithDayAttr', value: startBBTime, 
 												inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable2, readonly: readonly}" />
 										<span>#{i18n.getText('KDL003_27')}</span>
 										<input id="inputEndBBTime" tabindex="14"
-											data-bind="ntsTimeEditor: {name: '#[KDL003_31]', constraint:'TimeOfDay', value: endBBTime,
+											data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_31]', constraint:'TimeWithDayAttr', value: endBBTime,
 												 inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable2, readonly: readonly}" />
 									</div>
 								</td>
