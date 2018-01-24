@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 /** 日別実績の外出時間 */
 @Data

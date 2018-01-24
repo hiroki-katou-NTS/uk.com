@@ -11,8 +11,8 @@ import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregul
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.AggrSettingMonthly;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.LegalTransferOrderSetOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfIrg;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfReg;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
@@ -154,6 +154,8 @@ public class MonthlyCalculation {
 		}
 		// フレックス時間勤務　の時
 		else if (workingSystem.isFlexTimeWork()){
+			
+			// フレックス集計方法を取得する
 			val aggrSetOfFlex = aggrSettingMonthly.getFlexWork();
 
 			// フレックス勤務の月別実績を集計する

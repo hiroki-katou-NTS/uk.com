@@ -1,13 +1,17 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.erroralarm;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.erroralarm.dto.EmployeeDailyPerErrorDto;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class EmployeeDailyPerErrorFinder extends FinderFacade {
@@ -18,17 +22,15 @@ public class EmployeeDailyPerErrorFinder extends FinderFacade {
 	@SuppressWarnings("unchecked")
 	@Override
 	public EmployeeDailyPerErrorDto find(String employeeId, GeneralDate baseDate) {
-		EmployeeDailyPerErrorDto dto = new EmployeeDailyPerErrorDto();
 		//TODO: confirm type return
-		EmployeeDailyPerError domain = this.repo.find(employeeId, baseDate);
-		if(domain != null){
-			dto.setAttendanceItemList(domain.getAttendanceItemList());
-			dto.setCompanyID(domain.getCompanyID());
-			dto.setDate(domain.getDate());
-			dto.setEmployeeID(domain.getEmployeeID());
-			dto.setErrorCode(domain.getErrorAlarmWorkRecordCode().v());
-		}
-		return dto;
+		return EmployeeDailyPerErrorDto.getDto(this.repo.find(employeeId, baseDate));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate) {
+		return (List<T>) this.repo.finds(employeeId, baseDate).stream()
+				.map(c -> EmployeeDailyPerErrorDto.getDto(c)).collect(Collectors.toList());
 	}
 
 }

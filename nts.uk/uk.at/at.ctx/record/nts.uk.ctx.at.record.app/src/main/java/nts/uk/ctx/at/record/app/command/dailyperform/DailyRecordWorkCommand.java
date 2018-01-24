@@ -22,8 +22,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeBy
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommand;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 
 public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	
@@ -147,13 +147,16 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		DailyRecordDto fullDto = (DailyRecordDto) item;
-		this.attendanceTimeCommand.setRecords(fullDto.getAttendanceTime().orElse(null));
 		this.workInfoCommand.setRecords(fullDto.getWorkInfo());
 		this.calcAttrCommand.setRecords(fullDto.getCalcAttr());
 		this.affiliationInfoCommand.setRecords(fullDto.getAffiliationInfo());
 		this.errorCommand.setRecords(fullDto.getErrors());
 		this.outingTimeCommand.setRecords(fullDto.getOutingTime().orElse(null));
 		fullDto.getBreakTime().stream().forEach(c -> this.breakTimeCommand.setRecords(c));
+		this.attendanceTimeCommand.setRecords(fullDto.getAttendanceTime().orElse(null));
+		this.attendanceTimeCommand.withWorkInfo(this.workInfoCommand);
+		this.attendanceTimeCommand.withAffiliationInfo(this.affiliationInfoCommand);
+		this.attendanceTimeCommand.withTimeLeaving(this.timeLeavingCommand);
 		this.attendanceTimeByWorkCommand.setRecords(fullDto.getAttendanceTimeByWork().orElse(null));
 		this.timeLeavingCommand.setRecords(fullDto.getTimeLeaving().orElse(null));
 		this.shortWorkTimeCommand.setRecords(fullDto.getShortWorkTime().orElse(null));

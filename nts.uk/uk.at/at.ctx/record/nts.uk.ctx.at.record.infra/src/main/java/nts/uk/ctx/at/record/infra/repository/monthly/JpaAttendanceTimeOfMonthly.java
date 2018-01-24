@@ -56,11 +56,12 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaAttendanceTimeOfMonthly extends JpaRepository implements AttendanceTimeOfMonthlyRepository {
 
 	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtMonAttendanceTime a "
-			+ "WHERE a.PK.employeeID = :employeeID "
-			+ "AND a.PK.yearMonth = :yearMonth ";
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.PK.yearMonth = :yearMonth "
+			+ "ORDER BY a.startYmd";
 
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonAttendanceTime a "
-			+ "WHERE a.PK.employeeID = :employeeID "
+			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.yearMonth = :yearMonth ";
 
 	/** 検索 */
@@ -84,7 +85,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	public List<AttendanceTimeOfMonthly> findByYearMonth(String employeeId, YearMonth yearMonth) {
 		
 		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonAttendanceTime.class)
-				.setParameter("employeeID", employeeId)
+				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.getList(c -> toDomain(c));
 	}
@@ -119,7 +120,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	public void removeByYearMonth(String employeeId, YearMonth yearMonth) {
 		
 		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
-		.setParameter("employeeID", employeeId)
+		.setParameter("employeeId", employeeId)
 		.setParameter("yearMonth", yearMonth.v())
 		.executeUpdate();
 	}

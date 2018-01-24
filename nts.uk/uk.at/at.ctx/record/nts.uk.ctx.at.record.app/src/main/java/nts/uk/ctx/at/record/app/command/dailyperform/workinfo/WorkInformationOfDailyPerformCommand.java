@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 public class WorkInformationOfDailyPerformCommand extends DailyWorkCommonCommand {
 

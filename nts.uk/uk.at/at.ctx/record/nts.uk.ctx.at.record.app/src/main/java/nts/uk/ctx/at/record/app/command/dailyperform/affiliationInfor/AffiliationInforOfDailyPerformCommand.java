@@ -5,7 +5,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.Affiliati
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 

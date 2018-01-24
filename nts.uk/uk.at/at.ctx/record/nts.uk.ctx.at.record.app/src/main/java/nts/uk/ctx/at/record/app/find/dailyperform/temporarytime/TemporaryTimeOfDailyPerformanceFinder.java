@@ -1,22 +1,17 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.temporarytime;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto.TemporaryTimeOfDailyPerformanceDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.WorkLeaveTimeDto;
-import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class TemporaryTimeOfDailyPerformanceFinder extends FinderFacade {
@@ -27,37 +22,14 @@ public class TemporaryTimeOfDailyPerformanceFinder extends FinderFacade {
 	@SuppressWarnings("unchecked")
 	@Override
 	public TemporaryTimeOfDailyPerformanceDto find(String employeeId, GeneralDate baseDate) {
-		TemporaryTimeOfDailyPerformanceDto dto = new TemporaryTimeOfDailyPerformanceDto();
-		TemporaryTimeOfDailyPerformance domain = this.repo.findByKey(employeeId, baseDate).orElse(null);
-		if (domain != null) {
-			dto.setEmployeeId(domain.getEmployeeId());
-			dto.setYmd(domain.getYmd());
-			dto.setWorkTimes(domain.getWorkTimes().v());
-			dto.setWorkLeaveTime(ConvertHelper.mapTo(domain.getTimeLeavingWorks(), (c) -> newWorkLeaveTime(c)));
-		}
-		return dto;
+		return TemporaryTimeOfDailyPerformanceDto.getDto(this.repo.findByKey(employeeId, baseDate).orElse(null));
 	}
-
-	private WorkLeaveTimeDto newWorkLeaveTime(TimeLeavingWork c) {
-		return new WorkLeaveTimeDto(c.getWorkNo().v(), newTimeWithActual(c.getAttendanceStamp().get()),
-					newTimeWithActual(c.getLeaveStamp().get()));
-	}
-
-	private WithActualTimeStampDto newTimeWithActual(TimeActualStamp c) {
-		return c == null ? null : new WithActualTimeStampDto(
-					newTimeStamp(c.getStamp().orElse(null)), 
-					newTimeStamp(c.getActualStamp()),
-					c.getNumberOfReflectionStamp());
-	}
-
-	private TimeStampDto newTimeStamp(WorkStamp c) {
-
-		return c == null ? null : new TimeStampDto(
-					c.getTimeWithDay() == null ? null : c.getTimeWithDay().valueAsMinutes(),
-					c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
-					c.getLocationCode() == null ? null : c.getLocationCode().v(),
-					c.getStampSourceInfo() == null ? null : c.getStampSourceInfo().value);
-
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate) {
+		return (List<T>) this.repo.finds(employeeId, baseDate).stream()
+				.map(c -> TemporaryTimeOfDailyPerformanceDto.getDto(c)).collect(Collectors.toList());
 	}
 
 }

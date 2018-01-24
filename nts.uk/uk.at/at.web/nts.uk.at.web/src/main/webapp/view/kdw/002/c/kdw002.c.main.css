@@ -93,10 +93,11 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 .leftLabel {
 	
 }
-
+/*
 .copy {
 	margin-left: 540px !important;
 }
+*/
 table#grid tbody td:nth-child(1) {
     text-align: right;
 }

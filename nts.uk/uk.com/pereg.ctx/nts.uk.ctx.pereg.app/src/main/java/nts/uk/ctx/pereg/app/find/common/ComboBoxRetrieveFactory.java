@@ -122,8 +122,8 @@ public class ComboBoxRetrieveFactory {
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
 			GeneralDate standardDate, boolean isDisplayItemCode) {
-		
-		if (standardDate == null ) {
+
+		if (standardDate == null) {
 			standardDate = GeneralDate.today();
 		}
 
@@ -139,14 +139,15 @@ public class ComboBoxRetrieveFactory {
 		case DESIGNATED_MASTER:
 			MasterRefConditionDto masterRefTypeDto = (MasterRefConditionDto) selectionItemDto;
 
-			return getMasterComboBox(masterRefTypeDto.getMasterType(), employeeId, standardDate, isDisplayItemCode, false, null);
+			return getMasterComboBox(masterRefTypeDto.getMasterType(), employeeId, standardDate, isDisplayItemCode,
+					false, null);
 
 		}
 		return new ArrayList<>();
 	}
 
 	private List<ComboBoxObject> getMasterComboBox(String masterType, String employeeId, GeneralDate standardDate,
-			boolean isDisplayItemCode, boolean cps002screen, String workplaceId) {
+			boolean isDisplayItemCode, boolean isCps002, String workplaceId) {
 		String companyId = AppContexts.user().companyId();
 		switch (masterType) {
 
@@ -206,19 +207,9 @@ public class ComboBoxRetrieveFactory {
 			}
 		case "M00006":
 			// 休職休業マスタ
-			if (isDisplayItemCode) {
-				return tempAbsFrameRepo.findByCid(companyId).stream()
-						.filter(frame -> frame.getUseClassification() == NotUseAtr.USE)
-						.map(frame -> new ComboBoxObject(frame.getTempAbsenceFrNo().v() + "",
-								frame.getTempAbsenceFrName().v()))
-						.collect(Collectors.toList());
-			} else {
-				return tempAbsFrameRepo.findByCid(companyId).stream()
-						.filter(frame -> frame.getUseClassification() == NotUseAtr.USE)
-						.map(frame -> new ComboBoxObject(frame.getTempAbsenceFrNo().v() + "",
-								frame.getTempAbsenceFrName().v()))
-						.collect(Collectors.toList());
-			}
+			return tempAbsFrameRepo.findWithUseState(companyId, NotUseAtr.USE.value).stream()
+					.map(frame -> new ComboBoxObject(frame.getTempAbsenceFrNo().v() + "", frame.getTempAbsenceFrName().v()))
+					.collect(Collectors.toList());
 		case "M00007":
 			// 勤務種別マスタ
 			if (isDisplayItemCode) {
@@ -248,22 +239,18 @@ public class ComboBoxRetrieveFactory {
 			}
 		case "M00009":
 			// 就業時間帯マスタ
-			if (!cps002screen) {
-				PeregDto resultDto = layoutingProcessor
-						.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
-				if (resultDto != null) {
-					AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
-					workplaceId = workPlaceItem.getWorkplaceCode();
-				}
+			PeregDto resultDto = layoutingProcessor
+					.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
+			if (resultDto != null) {
+				AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
+				workplaceId = workPlaceItem.getWorkplaceCode();
 			}
-			if ( workplaceId != null ) {
-				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId);
-				return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
-						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
-								workTimeSetting.getWorktimeCode() + JP_SPACE
-										+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName()))
-						.collect(Collectors.toList());
-			}
+			List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId);
+			return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
+					.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
+							workTimeSetting.getWorktimeCode() + JP_SPACE
+									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName()))
+					.collect(Collectors.toList());
 		default:
 			break;
 		}
@@ -292,15 +279,14 @@ public class ComboBoxRetrieveFactory {
 	}
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes RefType, String RefCd,
-			GeneralDate standardDate, String employeeId) {
+			GeneralDate standardDate, String employeeId, String workplaceId) {
 		switch (RefType) {
 		case ENUM:
 			return getEnumComboBox(RefCd);
 		case CODE_NAME:
 			return getCodeNameComboBox(RefCd, standardDate);
 		case DESIGNATED_MASTER:
-			// Son cần sửa 2 tham số cuối truyền vào. Sửa xong thì bỏ dòng comment này đi.
-			return getMasterComboBox(RefCd, employeeId, standardDate, false, true, null);
+			return getMasterComboBox(RefCd, employeeId, standardDate, false, true, workplaceId);
 
 		}
 		return new ArrayList<>();

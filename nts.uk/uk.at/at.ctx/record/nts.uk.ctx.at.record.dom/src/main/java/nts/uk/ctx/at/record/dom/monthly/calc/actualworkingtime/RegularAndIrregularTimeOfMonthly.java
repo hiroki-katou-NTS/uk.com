@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime;
 
 import java.util.List;
+import java.util.Random;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +13,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.AggrSettingMonthly;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.LegalTransferOrderSetOfAggrMonthly;
+import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfIrg;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.AddedVacationUseTime;
@@ -107,6 +108,10 @@ public class RegularAndIrregularTimeOfMonthly {
 		// 集計総労働時間　作成　（返却用）
 		//*****（メモ）　この方法では、値が正しく戻らないかもしれない（動作検証要）。クラスの必要な値だけコピーしたクローンを作る必要があるかも。
 		val returnClass = aggregateTotalWorkingTime;
+		//*****（テスト：仮）　値を入れてみる。
+		Random random = new Random();
+		val randomVal = random.nextInt(9) + 1;		// 1～9の乱数発生
+		returnClass.getWorkTime().setWorkTime(new AttendanceTimeMonth(120 + randomVal));
 		
 		// 週開始を取得する
 		//*****（２次）
@@ -359,16 +364,16 @@ public class RegularAndIrregularTimeOfMonthly {
 		
 		// 開始月～前月までの変形期間繰越時間を集計する
 		for (val pastYearMonth : pastYearMonths){
-			val attendanceTimeOpt = repositories.getAttendanceTimeOfMonthly().find(
-					employeeId, pastYearMonth, closureId, closureDate);
-			if (!attendanceTimeOpt.isPresent()) continue;
-			
-			val attendanceTime = attendanceTimeOpt.get();
-			val actualWorkingTime = attendanceTime.getMonthlyCalculation().getActualWorkingTime();
-			val irregularWorkingTime = actualWorkingTime.getIrregularWorkingTime();
-			val carryforwardTime = irregularWorkingTime.getIrregularPeriodCarryforwardTime();
-			
-			irregularPeriodCarryforwardsTime = irregularPeriodCarryforwardsTime.addMinutes(carryforwardTime.v());
+			val attendanceTimeList = repositories.getAttendanceTimeOfMonthly().findByYearMonth(
+					employeeId, pastYearMonth);
+			for (val attendanceTime : attendanceTimeList){
+				val actualWorkingTime = attendanceTime.getMonthlyCalculation().getActualWorkingTime();
+				val irregularWorkingTime = actualWorkingTime.getIrregularWorkingTime();
+				val carryforwardTime = irregularWorkingTime.getIrregularPeriodCarryforwardTime();
+				
+				irregularPeriodCarryforwardsTime =
+						irregularPeriodCarryforwardsTime.addMinutes(carryforwardTime.v());
+			}
 		}
 		
 		return irregularPeriodCarryforwardsTime;

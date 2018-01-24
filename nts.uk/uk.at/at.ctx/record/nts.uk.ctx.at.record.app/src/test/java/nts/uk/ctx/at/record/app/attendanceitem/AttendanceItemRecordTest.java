@@ -8,9 +8,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 public class AttendanceItemRecordTest {
 
@@ -53,7 +53,7 @@ public class AttendanceItemRecordTest {
 				726, 727, 728, 729, 730, 731, 732, 733, 734, 735, 736, 737, 738, 739, 741, 742, 743, 744, 745, 746, 747,
 				748, 749, 750, 751, 752, 753, 754, 755, 759, 760, 761, 762, 763, 764, 765, 766);
 		List<ItemValue> items = AttendanceItemUtil.toItemValues(new DailyRecordDto(), itemIds).stream()
-				.sorted((c1, c2) -> c1.getItemId().compareTo(c2.getItemId())).collect(Collectors.toList());
+				.sorted((c1, c2) -> c1.itemId() - c2.itemId() ).collect(Collectors.toList());
 		// items.stream().forEach(c -> {
 		// Logger.getLogger(this.getClass()).info(c.getItemId() + ":" +
 		// c.getLayoutCode());

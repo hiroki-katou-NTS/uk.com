@@ -43,12 +43,7 @@ module nts.uk.at.view.kaf002.b {
                             nts.uk.ui.block.clear();
                         });
                     });   
-                }).fail((res2) => { 
-                    nts.uk.ui.dialog.alertError({ messageId: res2.messageId }).then(function(){
-                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
-                        nts.uk.ui.block.clear();
-                    });
-                }); 
+                });
                 self.cm.application().appDate.subscribe(value => {
                     nts.uk.ui.block.invisible();
                     self.kaf000_a2.getAppDataDate(7, value, false)
@@ -69,10 +64,16 @@ module nts.uk.at.view.kaf002.b {
                         dfd.resolve(commonSet); 
                     })
                     .fail(function(res) { 
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){
-                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
-                            nts.uk.ui.block.clear();
-                        });
+                       if(res.messageId == 'Msg_426'){
+                                nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
+                                    nts.uk.ui.block.clear();
+                                });
+                        }else{ 
+                                nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
+                                    nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
+                                    nts.uk.ui.block.clear();  
+                                });
+                        }
                         dfd.reject(res); 
                     });
                 return dfd.promise();

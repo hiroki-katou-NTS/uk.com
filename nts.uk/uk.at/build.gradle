@@ -357,6 +357,7 @@ project (':at.ctx:record:nts.uk.ctx.at.record.ac') {
 }
 project (':at.ctx:record:nts.uk.ctx.at.record.pub') {
 	dependencies {
+		compile project(':at.ctx:record:nts.uk.ctx.at.record.dom')
 	}
 }
 project (':at.ctx:record:nts.uk.ctx.at.record.pubimp') {
@@ -629,7 +630,7 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.10.24')
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.10.24')
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.24')
-		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pubimp', version: '0.10.24')
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pubimp', version: '0.10.25')
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.ac', version: '0.10.24')
 		
 		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.app', version: '0.6.2')

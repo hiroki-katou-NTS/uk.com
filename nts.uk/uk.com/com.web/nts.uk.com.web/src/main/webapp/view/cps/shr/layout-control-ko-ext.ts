@@ -605,9 +605,9 @@ module nts.custombinding {
                                     constraint: nameid,
                                     required: required,
                                     option: {
-                                        grouplength: 3,
-                                        decimallength: 2,
-                                        textalign: 'left'
+                                        textalign: 'left',
+                                        decimallength: Number(item.decimalPart),
+                                        grouplength: Number(item.integerPart) + Number(item.decimalPart) + 1
                                     },
                                     enable: editable,
                                     readonly: readonly
@@ -1092,7 +1092,7 @@ module nts.custombinding {
                             default:
                             case ITEM_SINGLE_TYPE.STRING:
                                 constraint.valueType = "String";
-                                constraint.maxLength = dts.stringItemLength || undefined;
+                                constraint.maxLength = dts.stringItemLength || dts.maxLength;
                                 constraint.stringExpression = '';
 
                                 switch (dts.stringItemType) {
@@ -1108,12 +1108,10 @@ module nts.custombinding {
                                         break;
                                     case ITEM_STRING_TYPE.NUMERIC:
                                         constraint.charType = 'Numeric';
-                                        if (dts.decimalPart > 0) {
-                                            constraint.valueType = "Decimal";
-                                            constraint.mantissaMaxLength = dts.decimalPart;
-                                        } else {
-                                            constraint.valueType = "Integer";
-                                        }
+                                        constraint.valueType = "Integer";
+
+                                        constraint.min = 0;
+                                        constraint.max = Math.pow(10, dts.maxLength || 0) - 1;
                                         break;
                                     case ITEM_STRING_TYPE.KANA:
                                         constraint.charType = 'Kana';
@@ -1121,6 +1119,7 @@ module nts.custombinding {
                                 }
                                 break;
                             case ITEM_SINGLE_TYPE.NUMERIC:
+                                constraint.charType = 'Numeric';
                                 if (dts.decimalPart == 0) {
                                     constraint.valueType = "Integer";
                                 } else {
@@ -1129,8 +1128,6 @@ module nts.custombinding {
                                 }
 
                                 let max = (Math.pow(10, dts.integerPart) - Math.pow(10, -(dts.decimalPart || 0)));
-
-                                constraint.charType = 'Numeric';
                                 constraint.min = dts.numericItemMin || 0;
                                 constraint.max = dts.numericItemMax || max;
                                 break;
@@ -1894,14 +1891,14 @@ module nts.custombinding {
                             // map Array<IItemGroup> to Array<IItemDefinition>
                             // 「個人情報項目定義」が取得できなかった「項目グループ」以外を、画面項目「グループ一覧」に表示する
                             // remove groups when it does not contains any item definition (by hql)
-                            _.each(data, group => {
-                                opts.listbox.options.push({
+                            opts.listbox.options(_.map(data, group => {
+                                return {
                                     id: group.personInfoItemGroupID,
                                     itemName: group.fieldGroupName,
                                     itemTypeState: undefined,
                                     dispOrder: group.dispOrder
-                                });
-                            });
+                                }
+                            }));
                         }
                     });
                 }

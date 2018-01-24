@@ -1,13 +1,18 @@
 package nts.uk.ctx.at.request.app.command.application.common;
 
+import java.util.Optional;
+
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+@Stateless
+@Transactional
 public class UpdateApplicationSettingCommandHandler extends CommandHandler<ApplicationSettingCommand>{
 	@Inject
 	private ApplicationSettingRepository appRep;
@@ -31,6 +36,10 @@ public class UpdateApplicationSettingCommandHandler extends CommandHandler<Appli
 				data.getWarningDateDispAtr(), data.getAppReasonDispAtr(), 
 				data.getAppContentChangeFlg(), data.getScheReflectFlg(), 
 				data.getPriorityTimeReflectFlg(), data.getAttendentTimeReflectFlg());
-		appRep.updateSingle(appli);
+		Optional<ApplicationSetting> appSet = appRep.getApplicationSettingByComID(companyId);
+		if(appSet.isPresent()){
+			appRep.updateSingle(appli);
+		}
+		appRep.insert(appli);
 	}
 }

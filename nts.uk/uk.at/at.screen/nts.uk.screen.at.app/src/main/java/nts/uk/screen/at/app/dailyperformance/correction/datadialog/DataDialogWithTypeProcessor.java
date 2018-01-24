@@ -48,7 +48,7 @@ public class DataDialogWithTypeProcessor {
 
 	}
 
-	// 職場
+	// 職場--
 	public CodeNameType getWorkPlace(String companyId, GeneralDate date) {
 		List<CodeName> codeNames = repo.findWorkplace(companyId, date);
 		return CodeNameType.create(TypeLink.WORKPLACE.value, codeNames);
@@ -60,7 +60,7 @@ public class DataDialogWithTypeProcessor {
 		return CodeNameType.create(TypeLink.CLASSIFICATION.value, codeNames);
 	}
 
-	// 職位
+	// 職位--
 	public CodeNameType getPossition(String companyId, GeneralDate date) {
 		List<CodeName> codeNames = repo.findJobInfo(companyId, date);
 		return CodeNameType.create(TypeLink.POSSITION.value, codeNames);

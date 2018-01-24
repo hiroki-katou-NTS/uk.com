@@ -1,37 +1,36 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
-import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-/** 日別実績の所属情報 Finder*/
+/** 日別実績の所属情報 Finder */
 @Stateless
 public class AffiliationInforOfDailyPerforFinder extends FinderFacade {
 
 	@Inject
 	private AffiliationInforOfDailyPerforRepository affiliationInfoRepo;
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public AffiliationInforOfDailyPerforDto find(String employeeId, GeneralDate baseDate) {
-		AffiliationInforOfDailyPerforDto dto = new AffiliationInforOfDailyPerforDto();
-		AffiliationInforOfDailyPerfor domain = this.affiliationInfoRepo.findByKey(employeeId, baseDate).orElse(null);
-		if(domain != null){
-			dto.setClassificationCode(domain.getClsCode().v());
-			dto.setEmploymentCode(domain.getEmploymentCode().v());
-			dto.setJobId(domain.getJobTitleID());
-			dto.setSubscriptionCode(domain.getBonusPaySettingCode().v());
-			dto.setWorkplaceID(domain.getWplID());
-			dto.setBaseDate(domain.getYmd());
-			dto.setEmployeeId(domain.getEmployeeId());
-		}
-		
-		return dto;
+		return AffiliationInforOfDailyPerforDto
+				.getDto(this.affiliationInfoRepo.findByKey(employeeId, baseDate).orElse(null));
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeId, DatePeriod baseDate) {
+		return (List<T>) this.affiliationInfoRepo.finds(employeeId, baseDate).stream()
+				.map(c -> AffiliationInforOfDailyPerforDto.getDto(c)).collect(Collectors.toList());
+	}
 }

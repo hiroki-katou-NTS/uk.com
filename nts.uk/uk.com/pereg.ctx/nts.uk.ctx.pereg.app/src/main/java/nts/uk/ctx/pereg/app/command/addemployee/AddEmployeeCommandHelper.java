@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
@@ -123,8 +122,7 @@ public class AddEmployeeCommandHelper {
 	private void addEmployeeDataMngInfo(String personId, String employeeId, AddEmployeeCommand command,
 			String companyId) {
 		// check duplicate employeeCode
-		Optional<EmployeeDataMngInfo> empInfo = this.empDataRepo.getEmployeeByCidScd(AppContexts.user().companyId(),
-				command.getEmployeeCode());
+		Optional<EmployeeDataMngInfo> empInfo = this.empDataRepo.findByEmployeCD(command.getEmployeeCode(), AppContexts.user().companyId());
 
 		if (empInfo.isPresent()) {
 			throw new BusinessException("Msg_345");
@@ -171,7 +169,7 @@ public class AddEmployeeCommandHelper {
 
 		String currentEmpId = AppContexts.user().employeeId();
 
-		Optional<EmpRegHistory> optRegHist = this.empHisRepo.getLastRegHistory(currentEmpId);
+		Optional<EmpRegHistory> optRegHist = this.empHisRepo.getRegHistById(currentEmpId);
 
 		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(currentEmpId, companyId,
 				GeneralDateTime.now(), employeeId, "");

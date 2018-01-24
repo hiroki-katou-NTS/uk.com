@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTimePK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements ShortTimeOfDailyPerformanceRepository {
@@ -26,14 +27,18 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 	@Override
 	public Optional<ShortTimeOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
 		List<ShortWorkingTimeSheet> shortTimeSheets = findEntities(employeeId, ymd).getList(
-				c -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo),
-						EnumAdaptor.valueOf(c.childCareAtr, ChildCareAttribute.class), new TimeWithDayAttr(c.startTime),
-						new TimeWithDayAttr(c.endTime), new AttendanceTime(c.deductionTime),
-						new AttendanceTime(c.time)));
+				c -> shortWorkTime(c));
 		if (!shortTimeSheets.isEmpty()) {
 			return Optional.of(new ShortTimeOfDailyPerformance(employeeId, shortTimeSheets, ymd));
 		}
 		return Optional.empty();
+	}
+
+	private ShortWorkingTimeSheet shortWorkTime(KrcdtDaiShortWorkTime c) {
+		return new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo),
+				EnumAdaptor.valueOf(c.childCareAtr, ChildCareAttribute.class), new TimeWithDayAttr(c.startTime),
+				new TimeWithDayAttr(c.endTime), new AttendanceTime(c.deductionTime),
+				new AttendanceTime(c.time));
 	}
 
 	@Override
@@ -80,6 +85,22 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		query.append(" ORDER BY s.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo");
 		return queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd);
+	}
+
+	@Override
+	public List<ShortTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a FROM KrcdtDaiShortWorkTime a ");
+		query.append("WHERE a.krcdtDaiShortWorkTimePK.sid IN :employeeId ");
+		query.append("AND a.krcdtDaiShortWorkTimePK.ymd <= :end AND a.krcdtDaiShortWorkTimePK.ymd >= :start");
+		return queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class).setParameter("employeeId", employeeId)
+				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
+				.collect(Collectors.groupingBy(c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
+				.entrySet().stream().map(c -> new ShortTimeOfDailyPerformance(
+												c.getValue().get(0).krcdtDaiShortWorkTimePK.sid,
+												c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
+												c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
+				.collect(Collectors.toList());
 	}
 
 }

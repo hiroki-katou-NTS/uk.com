@@ -9,9 +9,9 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import nts.uk.ctx.at.shared.app.util.attendanceitem.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 public class AttendanceItemUtilTest {
 	

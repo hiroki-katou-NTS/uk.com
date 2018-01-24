@@ -23,7 +23,6 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workrecord.errorsetting.OutPutProcess;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.BreakTimeStampIncorrectOrderChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.BreakTimeStampLeakageChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.DoubleStampAlgorithm;
@@ -116,8 +115,6 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		// result data
 		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
-		
-		
 		
 		// after check 打刻反映時の出勤休日扱いチェック
 		// 終了状態：休日扱い - 休日系の打刻範囲を取得する
