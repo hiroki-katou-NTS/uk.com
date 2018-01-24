@@ -187,7 +187,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     });
                 self.prePostSelected.subscribe(function(value){
                     let dfd =$.Deferred();
-                    if(!nts.uk.util.isNullOrEmpty(self.appDate()){
+                    if(!nts.uk.util.isNullOrEmpty(self.appDate())){
                             service.checkConvertPrePost({
                                 prePostAtr: value,
                                 appDate:  nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
@@ -615,7 +615,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     service.getRecordWork(
                         {
                             employeeID: self.employeeID(), 
-                            appDate: moment(self.appDate()).format(self.DATE_FORMAT),
+                            appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
                             siftCD: self.siftCD(),
                             prePostAtr: self.prePostSelected(),
                             overtimeHours: ko.toJS(self.overtimeHours)

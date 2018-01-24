@@ -6,8 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.request.app.find.setting.requestofearch.RequestOfEachCompanyDto;
-import nts.uk.ctx.at.request.app.find.setting.requestofearch.RequestOfEachCompanyFinder;
+import nts.uk.ctx.at.request.app.find.setting.workplace.RequestOfEachCompanyDto;
+import nts.uk.ctx.at.request.app.find.setting.workplace.RequestOfEachCompanyFinder;
 
 @Path("at/request/application/requestofearch")
 @Produces("application/json")

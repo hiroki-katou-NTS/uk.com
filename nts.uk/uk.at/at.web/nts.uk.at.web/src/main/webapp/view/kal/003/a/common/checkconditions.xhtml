@@ -41,8 +41,8 @@
 			            <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('KAL003_25')}</th>
 			        </tr>
 		        </thead>
-		       <tbody data-bind="foreach: listWorkRecordExtractingConditions">
-		           <tr data-bind="attr: { 'data-id': rowId() }">
+		       <tbody data-bind="foreach: listWorkRecordExtractingConditions()">
+		           <tr data-bind="attr: { 'data-id': rowId }">
 		               <td style ="text-align: center;">
 		                   <div data-bind="ntsCheckBox: {checked: useAtr}"></div>
 		               </td>
@@ -62,17 +62,25 @@
 	                       <button data-bind="click: function() {$parent.btnSettingCheckCondition_click(rowId)},enable: true">#{i18n.getText('KAL003_14')}</button>
 	                   </td>
 	                   <td>
-	                       <input data-bind="ntsTextEditor: {value: errorAlarmCondition().message,
-	                           option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-	                            textmode: 'text',
-	                            placeholder: '',
-	                            width: '203px',
-	                            textalign: 'left'
-	                        }))}" />
+	                   		<div data-bind="with: errorAlarmCondition">
+	 	                       <input data-bind="ntsTextEditor: {
+	 	                       		value: displayMessage,
+	 	                            option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+	 	                            	textmode: 'text',
+	 	                            	placeholder: '',
+	 	                            	width: '203px',
+	 	                            	textalign: 'left'
+	 	                        	})
+	 	                        )}" />
+ 	                        </div>
+ 	                         <!--
+							<div data-bind = "text: errorAlarmCondition().displayMessage" class="limited-label description"></div>
+							-->
 	                   </td>
 		           </tr>
 		       </tbody>
 		   </table>
+
 		</div>
 	</div>
 	<div id="schedule4week-content" data-bind="visible: category() == 2">

@@ -8,12 +8,14 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartApprovalRootService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
@@ -33,9 +35,9 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 	@Inject
 	BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
 	@Inject
-	StartCheckErrorService startCheckErrorService;
+	private StartupErrorCheckService startupErrorCheckService;
 	@Inject
-	private StartApprovalRootService startApprovalRootService;
+	private CollectApprovalRootPatternService collectApprovalRootPatternService;
 	@Inject 
 	WorkManagementMultipleRepository workManagerRepo;	
 	@Inject
@@ -47,11 +49,20 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 				sId, 1, ApplicationType.WORK_CHANGE_APPLICATION, null);
 
 		// アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
-		startApprovalRootService.getApprovalRootPattern(companyId, sId, 1,
-				ApplicationType.WORK_CHANGE_APPLICATION.value, null);
+		/*ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(
+				companyId, 
+				sId, 
+				EmploymentRootAtr.APPLICATION, 
+				ApplicationType.WORK_CHANGE_APPLICATION, 
+				appCommonSetting.generalDate, 
+				"", 
+				true);
 
 		// アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する
-		startCheckErrorService.checkError(ApplicationType.WORK_CHANGE_APPLICATION.value);
+		startupErrorCheckService.startupErrorCheck(
+				appCommonSetting.generalDate, 
+				ApplicationType.WORK_CHANGE_APPLICATION.value, 
+				approvalRootPattern.getApprovalRootContentImport());*/
 
 		// アルゴリズム「勤務変更申請基本データ（新規）」を実行する
 		WorkChangeBasicData wcBasicData = getWorkChangeBasicData(companyId);

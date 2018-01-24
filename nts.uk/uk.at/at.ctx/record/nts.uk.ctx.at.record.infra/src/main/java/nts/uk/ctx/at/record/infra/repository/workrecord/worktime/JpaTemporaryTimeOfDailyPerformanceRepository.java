@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.worktime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiTemporaryTime;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiTemporaryTimePK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
@@ -187,6 +189,19 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		KrcdtDaiTemporaryTime entity = KrcdtDaiTemporaryTime.toEntity(temporaryTime);
 		commandProxy().insert(entity);
 		commandProxy().insertAll(entity.timeLeavingWorks);
+	}
+
+	@Override
+	public List<TemporaryTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a FROM KrcdtDaiTemporaryTime a ");
+		query.append("WHERE a.krcdtDaiTemporaryTimePK.employeeId IN :employeeId ");
+		query.append("AND a.krcdtDaiTemporaryTimePK.ymd <= :end AND a.krcdtDaiTemporaryTimePK.ymd >= :start");
+		return queryProxy().query(query.toString(), KrcdtDaiTemporaryTime.class).setParameter("employeeId", employeeId)
+				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
+				.collect(Collectors.groupingBy(c -> c.krcdtDaiTemporaryTimePK.employeeId + c.krcdtDaiTemporaryTimePK.ymd.toString()))
+				.entrySet().stream().map(c -> c.getValue().stream().map(f -> f.toDomain()).collect(Collectors.toList()))
+				.flatMap(List::stream).collect(Collectors.toList());
 	}
 
 //	@Override

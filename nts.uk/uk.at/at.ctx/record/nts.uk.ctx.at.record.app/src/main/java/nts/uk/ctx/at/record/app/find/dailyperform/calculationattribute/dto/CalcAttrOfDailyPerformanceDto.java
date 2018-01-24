@@ -7,11 +7,11 @@ import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfOverTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の計算区分")
@@ -51,6 +51,8 @@ public class CalcAttrOfDailyPerformanceDto implements ConvertibleAttendanceItem 
 	public static CalcAttrOfDailyPerformanceDto getDto(CalAttrOfDailyPerformance domain) {
 		CalcAttrOfDailyPerformanceDto result = new CalcAttrOfDailyPerformanceDto();
 		if (domain != null) {
+			result.setEmployeeId(domain.getEmployeeId());
+			result.setYmd(domain.getYmd());
 			result.setDivergenceTime(domain.getDivergenceTime().getDivergenceTime().value);
 			result.setEmployeeId(domain.getEmployeeId());
 			result.setFlexExcessTime(newAutoCalcSetting(domain.getFlexExcessTime()));
@@ -94,5 +96,15 @@ public class CalcAttrOfDailyPerformanceDto implements ConvertibleAttendanceItem 
 		return domain == null ? null : new AutoCalculationSettingDto(
 					domain.getCalculationAttr().value, 
 					domain.getUpperLimitSetting().value);
+	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.ymd;
 	}
 }
