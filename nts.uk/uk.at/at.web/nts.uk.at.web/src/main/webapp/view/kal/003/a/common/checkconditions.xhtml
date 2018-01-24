@@ -65,19 +65,8 @@
 	                   </td>
 	                   <td>
 	                   		<div data-bind="with: errorAlarmCondition">
-	 	                       <input data-bind="ntsTextEditor: {
-	 	                       		value: displayMessage,
-	 	                            option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-	 	                            	textmode: 'text',
-	 	                            	placeholder: '',
-	 	                            	width: '203px',
-	 	                            	textalign: 'left'
-	 	                        	})
-	 	                        )}" />
+								<div data-bind = "text: displayMessage" class="limited-label description"></div>
  	                        </div>
- 	                         <!--
-							<div data-bind = "text: errorAlarmCondition().displayMessage" class="limited-label description"></div>
-							-->
 	                   </td>
 		           </tr>
 		       </tbody>

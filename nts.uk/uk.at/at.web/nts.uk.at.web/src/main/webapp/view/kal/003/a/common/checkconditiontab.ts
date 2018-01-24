@@ -22,12 +22,17 @@ module nts.uk.at.view.kal003.a.tab {
             self.category = ko.observable(category);
 
             if (listWorkRecordExtractingConditions) {
-                self.listWorkRecordExtractingConditions.removeAll();
                 self.listWorkRecordExtractingConditions(listWorkRecordExtractingConditions);
+//                for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
+//                    self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
+//                }
+            }
+            
+            self.listWorkRecordExtractingConditions.subscribe(() => {
                 for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
                     self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
                 }
-            }
+            });
             // schedule4WeekCheckCondition
             self.list4weekClassEnum = ko.observableArray(__viewContext.enums.FourW4DCheckCond);
             self.schedule4WeekCheckCondition = ko.observable(0);            

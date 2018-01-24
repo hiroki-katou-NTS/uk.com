@@ -83,18 +83,19 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.listAlarmCheckCondition.removeAll();
 
             service.getAllData(self.selectedCategory()).done(function(data: Array<any>) {
-                
+
                 if (data && data.length) {
                     let _accList: Array<model.AlarmCheckConditionByCategory> = _.map(data, acc => {
                         let category = _.find(ko.toJS(self.cbbItemList), (x: model.ItemModel) => x.code == acc.category);
                         let item = new model.AlarmCheckConditionByCategory(acc.code, acc.name, category, acc.availableRoles, new model.AlarmCheckTargetCondition(acc.targetCondition.filterByEmployment, acc.targetCondition.filterByClassification, acc.targetCondition.filterByJobTitle, acc.targetCondition.filterByBusinessType, acc.targetCondition.targetEmployment, acc.targetCondition.targetClassification, acc.targetCondition.targetJobTitle, acc.targetCondition.targetBusinessType));
-                        let _fixedList: Array<model.FixedConditionWorkRecord> = _.map(acc.dailyAlarmCheckCondition.listFixedExtractConditionWorkRecord, (fix: any) => { return new model.FixedConditionWorkRecord({ dailyAlarmConID: fix.dailyAlarmConID, checkName: fix.checkName, fixConWorkRecordNo: fix.fixConWorkRecordNo, message: fix.message, useAtr: fix.useAtr }) });
+                        let _fixedList: Array<model.FixedConditionWorkRecord> = _.map(acc.dailyAlarmCheckCondition.listFixedExtractConditionWorkRecord, (fix: model.IFixedConditionWorkRecord) => { return new model.FixedConditionWorkRecord(fix) });
                         let _dailyList: Array<model.DailyErrorAlarmCheck> = _.map(acc.dailyAlarmCheckCondition.listErrorAlarmCheck, (d: any) => { return new model.DailyErrorAlarmCheck(d.code, d.name, d.classification, d.message) });
-                        item.dailyAlarmCheckCondition(new model.DailyAlarmCheckCondition(acc.dailyAlarmCheckCondition.conditionToExtractDaily, acc.dailyAlarmCheckCondition.addApplication, acc.dailyAlarmCheckCondition.listErrorAlarmCode, _dailyList, [], _fixedList));
+                        let _checkList: Array<model.WorkRecordExtractingCondition> = _.map(acc.dailyAlarmCheckCondition.listExtractConditionWorkRecork, (c: model.IWorkRecordExtractingCondition) => {return new model.WorkRecordExtractingCondition(c)});
+                        item.dailyAlarmCheckCondition(new model.DailyAlarmCheckCondition(acc.dailyAlarmCheckCondition.conditionToExtractDaily, acc.dailyAlarmCheckCondition.addApplication, acc.dailyAlarmCheckCondition.listErrorAlarmCode, _dailyList, _checkList, _fixedList));
                         item.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(acc.schedule4WeekCondition);
                         return item;
                     });
-                    
+
                     _.each(_accList, acc => self.listAlarmCheckCondition.push(acc));
                     if (code) {
                         self.selectedAlarmCheckConditionCode(code);
@@ -115,7 +116,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             });
             return dfd.promise();
         }
-        
+
         createNewAlarmCheckCondition() {
             let self = this;
             nts.uk.ui.errors.clearAll();
@@ -124,13 +125,13 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.selectedAlarmCheckCondition(new model.AlarmCheckConditionByCategory('', '', category, [], new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], [])));
             self.selectedDataCondition(model.DATA_CONDITION_TO_EXTRACT.ALL);
             self.tabScopeCheck.targetCondition(new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], []));
-            //self.tabDailyErrorAlarm.currentCodeList([]);
+            self.tabDailyErrorAlarm.currentCodeList([]);
             self.tabDailyErrorAlarm.addApplication(false);
             self.tabCheckCondition.category(self.selectedCategory());
             self.tabCheckCondition.listWorkRecordExtractingConditions([]);
-           // self.tabCheckCondition.schedule4WeekCheckCondition(model.SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY);
+            // self.tabCheckCondition.schedule4WeekCheckCondition(model.SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY);
             self.screenMode(model.SCREEN_MODE.NEW);
-            
+
         }
 
         registerAlarmCheckCondition() {
