@@ -9,12 +9,16 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.DisplayMessages;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtractingCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.WorkRecordExtraConPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.WorkRecordExtraConPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.ErrorAlarmConditionPubExport;
@@ -60,6 +64,21 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 					null
 				);
 	}
+	
+	private WorkRecordExtractingCondition convertToDomainWR(WorkRecordExtraConPubExport dto) {
+		return new  WorkRecordExtractingCondition(
+				dto.getErrorAlarmCheckID(),
+				EnumAdaptor.valueOf(dto.getCheckItem(), TypeCheckWorkRecord.class),
+				new DisplayMessages(
+						dto.isMessageBold(),
+						new ColorCode(dto.getMessageColor())),
+				dto.getSortOrderBy(),
+				dto.isUseAtr(),
+				new NameWKRecord(dto.getNameWKRecord())
+				);
+	}
+	
+	
 
 	private WorkRecordExtraConPubExport setErrorAlarmConditionPubExport(WorkRecordExtraConPubExport workRecordExtraConPubExport,
 			List<ErrorAlarmCondition> listErrorAlarmCondition) {
@@ -96,6 +115,9 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 		errorAlarmCondition.validate();
 		workRecordExtraConPubExport.setErrorAlarmCheckID(errorAlarmCheckId);
 		this.errorAlarmConditionRepository.addErrorAlarmCondition(errorAlarmCondition);
+		this.repo.addWorkRecordExtraCon(
+				convertToDomainWR(workRecordExtraConPubExport)
+				);
 	}
 
 	@Override
@@ -107,6 +129,7 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 		ErrorAlarmCondition errorAlarmCondition = errorAlarmConditionPubExport.toConditionDomain();
 		errorAlarmCondition.validate();
 		this.errorAlarmConditionRepository.updateErrorAlarmCondition(errorAlarmCondition);
+		this.repo.updateWorkRecordExtraCon(convertToDomainWR(workRecordExtraConPubExport));
 	}
 
 	@Override
@@ -114,6 +137,9 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 		// for ErrorAlarmCondition
 		if (lstErrorAlarmCheckID != null && !lstErrorAlarmCheckID.isEmpty()) {
 			this.errorAlarmConditionRepository.removeErrorAlarmCondition(lstErrorAlarmCheckID);
+			for(String eralId : lstErrorAlarmCheckID) {
+				this.repo.deleteWorkRecordExtraCon(eralId);
+			}
 		}
 	}
 	

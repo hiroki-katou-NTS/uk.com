@@ -30,9 +30,9 @@ module nts.uk.at.view.kal003.a.tab {
                     headerText: getText('KAL003_53'), key: 'classification', width: 50,
                     formatter: function(classification, record) {
                         if (record.classification.toString() === "ER") {
-                            return "<div style='width:100%;heght:100%;' class=\"bg-daily-error\"> " + classification + " </div>";
+                            return "<div style='width:110%;heght:110%;' class=\"bg-daily-error\"> " + classification + " </div>";
                         } else if (record.classification.toString() === "AL") {
-                            return "<div style='width:100%;heght:100%;' class=\"bg-daily-alarm\"> " + classification + " </div>";
+                            return "<div style='width:110%;heght:110%;' class=\"bg-daily-alarm\"> " + classification + " </div>";
                         } else {
                             return "<div>" + classification + "</div>";
                         }
