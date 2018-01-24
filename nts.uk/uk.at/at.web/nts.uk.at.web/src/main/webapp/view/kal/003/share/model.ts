@@ -483,9 +483,9 @@ module nts.uk.at.view.kal003.share.model {
         openAtdItemConditionDialog() {
             let self = this;
             let param = ko.mapping.toJS(self);
-            nts.uk.ui.windows.setShared("KAL003CParams", param, true);
-            nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c/index.xhtml", {}).onClosed(() => {
-                let output = getShared("KAL003CResult");
+            nts.uk.ui.windows.setShared("KDW007BParams", param, true);
+            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
+                let output = getShared("KDW007BResult");
                 if (output) {
                     self.targetNO(output.targetNO);
                     self.conditionAtr(output.conditionAtr);
