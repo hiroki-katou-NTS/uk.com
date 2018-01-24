@@ -54,7 +54,7 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 				sId, 
 				EmploymentRootAtr.APPLICATION, 
 				ApplicationType.WORK_CHANGE_APPLICATION, 
-				null, 
+				appCommonSetting.generalDate, 
 				"", 
 				true);
 
