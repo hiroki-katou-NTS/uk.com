@@ -39,3 +39,5 @@ div[class^="tab-content"] {
 #div_table_check_conditions .nts-fixed-table .nts-fixed-body-container {
 	overflow-x: hidden;
 }
+div.ntsControl.radio-wrapper.reset-element {display: block; margin-bottom: 5px; margin-top: 20px;}
+label.label4w4d {margin-left: 30px;}

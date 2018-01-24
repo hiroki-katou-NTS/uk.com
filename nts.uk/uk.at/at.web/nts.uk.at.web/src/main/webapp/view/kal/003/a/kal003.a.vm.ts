@@ -125,7 +125,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.tabDailyErrorAlarm.addApplication(false);
             self.tabCheckCondition.category(self.selectedCategory());
             self.tabCheckCondition.listWorkRecordExtractingConditions([]);
-            self.tabCheckCondition.schedule4WeekCheckCondition(model.SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY);
+           // self.tabCheckCondition.schedule4WeekCheckCondition(model.SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY);
             self.screenMode(model.SCREEN_MODE.NEW);
             
         }
