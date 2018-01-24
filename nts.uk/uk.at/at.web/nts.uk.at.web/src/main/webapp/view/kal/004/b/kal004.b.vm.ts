@@ -2,6 +2,7 @@ module nts.uk.com.view.kal004.b.viewmodel {
 
 
     export class ScreenModel {
+        getCategoryName: KnockoutObservable<string>;
         enable: boolean;
         txtDay: KnockoutObservable<string>;
         txtStrMonth: KnockoutObservable<string>;
@@ -31,6 +32,7 @@ module nts.uk.com.view.kal004.b.viewmodel {
             self.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             
             self.getParam = nts.uk.ui.windows.getShared("extractionDailyDto");
+            self.getCategoryName = nts.uk.ui.windows.getShared("categoryName");
             //start date
             self.strSelected = ko.observable(self.getParam.strSpecify);
             self.strDay = ko.observable(self.getParam.strDay);

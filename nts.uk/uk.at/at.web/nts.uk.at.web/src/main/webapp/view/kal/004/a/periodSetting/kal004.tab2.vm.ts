@@ -24,6 +24,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             var listCheckConditionDto = [];
             if(listCheckCode.length==0){
                 self.ListView.removeAll();
+                self.listCheckCondition.removeAll();
                 return;
             }else if(self.listStorageCheckCondition().length == 0){
                 _.forEach(listCheckCode, (category: share.CheckConditionCommand) =>{
@@ -75,6 +76,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 }
                 
                 nts.uk.ui.windows.setShared("extractionDailyDto", ExtractionDailyDto);
+                nts.uk.ui.windows.setShared("categoryName", ModelCheckConditonCode.categoryName);
                 nts.uk.ui.windows.sub.modal("../b/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("extractionDaily");
                     

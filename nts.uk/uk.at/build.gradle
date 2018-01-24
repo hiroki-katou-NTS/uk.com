@@ -357,6 +357,7 @@ project (':at.ctx:record:nts.uk.ctx.at.record.ac') {
 }
 project (':at.ctx:record:nts.uk.ctx.at.record.pub') {
 	dependencies {
+		compile project(':at.ctx:record:nts.uk.ctx.at.record.dom')
 	}
 }
 project (':at.ctx:record:nts.uk.ctx.at.record.pubimp') {
