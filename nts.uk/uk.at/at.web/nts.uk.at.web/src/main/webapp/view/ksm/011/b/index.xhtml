@@ -18,10 +18,10 @@
 					</div>
 					
 					<div class="func-btn">
-						<button tabindex="1" class="large"><i class="img-icon icon-next-all"></i></button>
-						<button tabindex="2" class="large"><i class="img-icon icon-next"></i></button>
-						<button tabindex="3" class="large"><i class="img-icon icon-prev"></i></button>
-						<button tabindex="4" class="large"><i class="img-icon icon-prev-all"></i></button>
+						<button tabindex="1" class="large" data-bind="click: addAll, enable: addAllEnable"><i class="img-icon icon-next-all"></i></button>
+						<button tabindex="2" class="large" data-bind="click: singleAdd, enable: singleAddEnable"><i class="img-icon icon-next"></i></button>
+						<button tabindex="3" class="large" data-bind="click: singleRemove, enable: singleRemoveEnable"><i class="img-icon icon-prev"></i></button>
+						<button tabindex="4" class="large" data-bind="click: removeAll, enable: removeAllEnable"><i class="img-icon icon-prev-all"></i></button>
 					</div>
 					
 					<div class="right-tbl">
@@ -37,8 +37,9 @@
 				</td>
 			</tr>
 			<tr>
-				<td><div data-bind="ntsFormLabel: { constraint: '' }">#{i18n.getText('KSM011_60')}</div></td>
-				<td><input tabindex="5" class="txtQualificationMark" data-bind="ntsTextEditor: { value: qualificationMark, enable: qualificationMarkEnable }" /></td>
+				<td><div data-bind="ntsFormLabel: { constraint: 'PersonSymbolQualify', required: true }">#{i18n.getText('KSM011_60')}</div></td>
+				<td><input tabindex="5" id="qualMark" class="txtQualificationMark" data-bind="ntsTextEditor: { value: qualificationMark, constraint: 'PersonSymbolQualify', 
+									required: qualificationMarkRequired, name: '#[KSM011_60]', enable: qualificationMarkEnable }" /></td>
 			</tr>
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_61')}</div></td>

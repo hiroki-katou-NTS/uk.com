@@ -62,17 +62,6 @@ public class KscdtExtBudgetDailyPK implements Serializable {
         this.extBudgetCd = extBudgetCd;
     }
     
-    /**
-     * Instantiates a new kscdt ext budget daily PK.
-     *
-     * @param wkpid the wkpid
-     * @param extBudgetCd the ext budget cd
-     */
-    public KscdtExtBudgetDailyPK(String wkpid, String extBudgetCd) {
-        this.wkpid = wkpid;
-        this.extBudgetCd = extBudgetCd;
-    }
-
     /*
      * (non-Javadoc)
      * 

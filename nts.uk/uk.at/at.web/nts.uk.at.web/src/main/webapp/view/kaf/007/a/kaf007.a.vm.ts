@@ -129,9 +129,15 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                               
                 dfd.resolve();
             }).fail((res) => {
-                nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
-                    nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");  
-                });
+                if(res.messageId == 'Msg_426'){
+                       dialog.alertError({messageId : res.messageId}).then(function(){
+                           
+                        });
+                }else{
+                    nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
+                        nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");  
+                    });
+                }
                 dfd.reject();
                 nts.uk.ui.block.clear();
             });

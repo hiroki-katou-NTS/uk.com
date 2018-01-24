@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -12,16 +10,12 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
-import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.DailyRecreateClassification;
-import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.sample.asyncmd.SampleCancellableAsyncCommand;
 
 @Stateless
 public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDomainService {
@@ -31,9 +25,6 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 	@Inject
 	private CreateDailyResultEmployeeDomainService createDailyResultEmployeeDomainService;
-
-	@Inject
-	private TargetPersonRepository targetPersonRepository;
 
 	@Override
 	public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,

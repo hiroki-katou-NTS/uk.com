@@ -10,4 +10,6 @@ public class CodeName {
     private String code;
     
 	private String name;
+	
+	private String id;
 }

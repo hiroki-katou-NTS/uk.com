@@ -209,6 +209,8 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SEL_ITEM_BY_SELECTIONS = "SELECT c FROM PpemtPerInfoItemCm c "
 			+ " WHERE  c.selectionItemRefCode =:selectionItemId";
 	
+	private final static String SEL_ITEM_USED = " SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.perInfoCtgId FROM PpemtPerInfoItem i WHERE i.perInfoCtgId IN :perInfoCtgId  AND i.abolitionAtr = 0";
+	
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 
@@ -481,6 +483,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 		return item;
 	}
+	
+	private PersonInfoItemDefinition toDomain(Object[] i) {
+		return  PersonInfoItemDefinition.createFromJavaType(String.valueOf(i[1]), String.valueOf(i[0]));
+		
+	}
+
 
 	private PpemtPerInfoItem createPerInfoItemDefFromDomain(PersonInfoItemDefinition perInfoItemDef) {
 		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(perInfoItemDef.getPerInfoItemDefId());
@@ -697,6 +705,15 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			}
 		}
 		return false;
+	}
+	
+	
+	@Override
+	public List<PersonInfoItemDefinition> getAllItemUsedByCtgId(List<String> ctgId) {
+		
+		return this.queryProxy().query(SEL_ITEM_USED, Object[].class)
+				.setParameter("perInfoCtgId", ctgId)
+				.getList(i-> toDomain(i));
 	}
 
 }

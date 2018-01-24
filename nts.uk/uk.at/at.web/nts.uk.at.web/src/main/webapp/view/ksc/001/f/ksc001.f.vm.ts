@@ -29,6 +29,7 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                 self.errorLogs = ko.observableArray([]);
 
                 self.columns = ko.observableArray([
+                    { headerText: '', key: 'noID', hidden: true },
                     { headerText: nts.uk.resource.getText("KSC001_56"), key: 'employeeCode', width: 150 },
                     { headerText: nts.uk.resource.getText("KSC001_57"), key: 'employeeName', width: 150 },
                     { headerText: nts.uk.resource.getText("KSC001_58"), key: 'date', width: 120 },
@@ -75,6 +76,8 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
              */
             public execution(): void {
                 var self = this;
+                // focus stop button
+                $("#btn-f-stop").focus();
                 // find task id
                 service.executionScheduleExecutionLog(self.inputData).done(function(res: any) {
                     self.taskId(res.taskInfor.id);
@@ -106,9 +109,11 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
              */
             private reloadPage(): void {
                 var self = this;
+                nts.uk.ui.block.invisible();
                 service.findScheduleExecutionLogById(self.inputData.executionId).done(function(data) {
-                    self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
                     service.findAllScheduleErrorLog(self.inputData.executionId).done(function(errorLogs){
+                        nts.uk.ui.block.clear();
+                        self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
                         // check error log
                         if (errorLogs && errorLogs.length > 0) {
                             self.isError(true);
@@ -125,6 +130,9 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                             let order = _.orderBy(errorLogs,[self.compareCode,self.compareDate],['asc','asc']);
                             let array = _.forEach(order,(object,index)=>{ object.noID = index+1;});
                             self.errorLogs(array); 
+                        } else {
+                            // focus on close button if has no errors
+                            $('#btn-f-close').focus();
                         }
                     });
                 });
@@ -165,7 +173,6 @@ import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
                             self.updateInfoStatus();
                             self.isFinish(true);
                             self.reloadPage();
-                            $('#closeDialog').focus();
                         }
                     });
                 }).while(infor => {

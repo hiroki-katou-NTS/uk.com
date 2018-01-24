@@ -3,10 +3,10 @@ package nts.uk.ctx.at.function.app.command.alarm.checkcondition;
 
 import java.util.List;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.function.dom.adapter.ErrorAlarmWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
 
@@ -25,13 +25,14 @@ public class DailyAlarmCheckConditionCommand {
 	
 	private boolean addApplication;
 	//tab 2
-	private List<WorkRecordExtraConAdapterDto> listErrorAlarmCode;
+	private List<String> listErrorAlarmCode;
 	//tab 3
-	private List<String> listExtractConditionWorkRecork;
+	private List<WorkRecordExtraConAdapterDto> listExtractConditionWorkRecork;
 	//tab 4
 	private List<FixedConWorkRecordAdapterDto> listFixedExtractConditionWorkRecord;
+	
 	public DailyAlarmCheckConditionCommand(int conditionToExtractDaily, boolean addApplication,
-			List<WorkRecordExtraConAdapterDto> listErrorAlarmCode, List<String> listExtractConditionWorkRecork,
+			List<String> listErrorAlarmCode, List<WorkRecordExtraConAdapterDto> listExtractConditionWorkRecork,
 			List<FixedConWorkRecordAdapterDto> listFixedExtractConditionWorkRecord) {
 		super();
 		this.conditionToExtractDaily = conditionToExtractDaily;
