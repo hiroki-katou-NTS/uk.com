@@ -1,0 +1,106 @@
+#a4_7, #a4_8, #a5_16 {
+	width: 80px;
+}
+
+.a4_checkbox .ntsCheckBox span.box {
+	vertical-align: baseline;
+}
+
+.a5_14 .ntsRadioBox span.label {
+	padding-right: 142px;
+}
+
+.a5_24 .ntsRadioBox span.label {
+	padding-right: 34px;
+}
+
+.a17 .ntsRadioBox span.label {
+	padding-right: 169px;
+}
+
+.a6_text {
+	display: inline-block;
+}
+
+#a7_23 {
+	width: 42px;
+}
+
+#7_27 {
+	margin-left: 30px;
+}
+
+.ui-widget-header.full-header {
+	text-overflow: inherit;
+	white-space: normal;
+	font-size: 13px;
+}
+.a9_9 .ntsRadioBox span.label {
+	padding-right: 60px;
+}
+.a12_5 .ntsRadioBox span.label {
+	padding-right: 114px;
+}
+#b19 .ntsRadioBox {
+     display: block;
+}
+.blockrow.ntsControl {
+    display: block;
+}
+.blockrow span.label {
+    padding-right: 111px;
+}
+#b29 span.label {
+    padding-right: 111px;
+}
+#fixed-table-c span.label {
+    padding-right:100px;
+}
+#e11_5 {
+	padding-left: 28px;
+}
+.e11-radio_1 .ntsRadioBox span.label {
+	padding-right: 45px;
+}
+.e11-radio_2 .ntsRadioBox span.label {
+	padding-right: 69px;
+}
+.e11-radio_3 .ntsRadioBox span.label {
+	padding-right: 118px;
+}
+.g11-radio_4 .ntsRadioBox span.label {
+	padding-right: 145px;
+}
+.g11-radio_5 .ntsRadioBox span.label {
+	padding-right: 96px;
+}
+#g24 .ntsRadioBox{
+	display: block;
+}
+#g25 .ntsRadioBox{
+	display: block;
+}
+.j4-radio_1 .ntsRadioBox span.label {
+	padding-right: 73px;
+}
+.k12-radio_1 .ntsRadioBox span.label {
+	padding-right: 90px;
+}
+.k13-radio_1 .ntsRadioBox span.label {
+	padding-right: 118px;
+}
+.k14-radio_1 .ntsRadioBox span.label {
+	padding-right: 90px;
+}
+.k16-radio_1 .ntsRadioBox span.label {
+	padding-right: 69px;
+}
+.k21-radio_1 .ntsRadioBox span.label {
+	padding-right: 69px;
+}
+.color-header{
+	background-color: #CFF1A5;
+}
+.viewmodel-a{
+	margin-bottom: 20px;
+}
