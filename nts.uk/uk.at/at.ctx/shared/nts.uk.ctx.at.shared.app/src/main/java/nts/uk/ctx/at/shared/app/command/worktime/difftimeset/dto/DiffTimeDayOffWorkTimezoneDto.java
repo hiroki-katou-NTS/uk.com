@@ -43,6 +43,9 @@ public class DiffTimeDayOffWorkTimezoneDto {
 
 		/** The dto. */
 		private DiffTimeDayOffWorkTimezoneDto dto;
+		
+		/** The work time no. */
+		private int workTimeNo = 0;
 
 		/**
 		 * Instantiates a new diff time day off work timezone impl.
@@ -68,9 +71,12 @@ public class DiffTimeDayOffWorkTimezoneDto {
 			{
 				return null;
 			}
-			return this.dto.workTimezones.stream().map(item -> {
-				return item.toDomain();
-			}).collect(Collectors.toList());
+			workTimeNo = 0;
+			return this.dto.workTimezones.stream().sorted((timezone1, timezon2) -> timezone1.getTimezone().getStart()
+					.compareTo(timezon2.getTimezone().getStart())).map(item -> {
+						item.setWorkTimeNo(++workTimeNo);
+						return item.toDomain();
+					}).collect(Collectors.toList());
 		}
 
 	}
