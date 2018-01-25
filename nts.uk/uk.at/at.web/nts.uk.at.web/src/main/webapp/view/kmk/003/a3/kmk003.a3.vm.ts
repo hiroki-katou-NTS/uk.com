@@ -311,7 +311,7 @@ module a3 {
             var self = this;
             if (self.isFlowMode()) {
                 var dataFlow: any[] = [];
-                for (var dataModelFlow of self.mainSettingModel.flowWorkSetting.halfDayWorkTimezone.workTimeZone.lstOTTimezone) {
+                for (var dataModelFlow of self.mainSettingModel.flowWorkSetting.halfDayWorkTimezone.workTimeZone.lstOTTimezone()) {
                     dataFlow.push(self.toModelFlowColumnSetting(dataModelFlow.toDto()));
                 }
                 self.dataSourceOvertimeFlow(dataFlow);
@@ -498,6 +498,7 @@ module a3 {
                 elapsedTime: ko.observable(dataDTO.flowTimeSetting.elapsedTime),
                 rounding: ko.observable(dataDTO.flowTimeSetting.rounding.rounding),
                 roundingTime: ko.observable(dataDTO.flowTimeSetting.rounding.roundingTime),
+                otFrameNo: ko.observable(dataDTO.otFrameNo),
                 inLegalOTFrameNo: ko.observable(dataDTO.inLegalOTFrameNo),
                 settlementOrder: ko.observable(dataDTO.settlementOrder)
             }
@@ -518,7 +519,7 @@ module a3 {
             var dataDTO: FlOTTimezoneDto = {
                 worktimeNo: worktimeNo,
                 restrictTime: false,
-                overtimeFrameNo: 1,
+                otFrameNo: 1,
                 flowTimeSetting: flowTimeSetting,
                 inLegalOTFrameNo: dataModel.inLegalOTFrameNo(),
                 settlementOrder: dataModel.settlementOrder()
@@ -543,7 +544,8 @@ module a3 {
                      defaultValue: ko.observable(0), 
                      width: 100, 
                      template: `<input data-bind="ntsTimeEditor: {
-                        inputFormat: 'time'}" />`
+                            mode: 'time',
+                            inputFormat: 'time'}" />`
                  },
                  {
                      headerText: nts.uk.resource.getText("KMK003_56"),

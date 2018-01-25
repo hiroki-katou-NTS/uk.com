@@ -44,6 +44,8 @@ public class DiffTimezoneSettingDto {
 		/** The dto. */
 		private DiffTimezoneSettingDto dto;
 		
+		private int otTimezoneNo = 0;
+		
 		private int workTimezoneNo = 0; 
 
 		/**
@@ -57,9 +59,19 @@ public class DiffTimezoneSettingDto {
 
 		@Override
 		public List<EmTimeZoneSet> getEmploymentTimezones() {
-			return this.dto.employmentTimezones.stream()
-					.map(item -> {
-						return new EmTimeZoneSet(item);
+			
+			this.dto.employmentTimezones = this.dto.employmentTimezones.stream()
+					.sorted((item1, item2) -> item1.getTimezone().getStart().compareTo(item2.getTimezone().getStart()))
+					.collect(Collectors.toList());
+			
+			workTimezoneNo = 0;
+			this.dto.employmentTimezones.forEach(item -> {
+				workTimezoneNo++;
+				item.setEmploymentTimeFrameNo(workTimezoneNo);
+			});
+			
+			return this.dto.employmentTimezones.stream().map(item -> {
+				return new EmTimeZoneSet(item);
 					}).collect(Collectors.toList());
 		}
 
@@ -73,10 +85,10 @@ public class DiffTimezoneSettingDto {
 					.getTimezone().getStart().compareTo(timezone2.getTimezone().getStart()))
 					.collect(Collectors.toList());
 
-			workTimezoneNo = 0;
+			otTimezoneNo = 0;
 			this.dto.lstOtTimezone.forEach(timezone -> {
-				workTimezoneNo++;
-				timezone.setWorkTimezoneNo(workTimezoneNo);
+				otTimezoneNo++;
+				timezone.setWorkTimezoneNo(otTimezoneNo);
 			});
 
 			return this.dto.lstOtTimezone.stream().map(timezone -> timezone.toDomain()).collect(Collectors.toList());

@@ -58,6 +58,13 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 
 		// Validate + common handler
 		this.validate(command, difftimeWorkSetting);
+		// Validate
+		// this.difftimePolicy.validate(command.toDomainPredetemineTimeSetting(),
+		// difftimeWorkSetting);
+		// command.toDomainPredetemineTimeSetting());
+
+		// common handler
+		//this.commonHandler.handle(command);
 
 		// call repository save fixed work setting
 		if (command.isAddMode()) {

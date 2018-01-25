@@ -40,7 +40,10 @@ public class DiffTimezoneSettingPolicyImpl implements DiffTimezoneSettingPolicy 
 	@Override
 	public void validate(BundledBusinessException be, DiffTimezoneSetting diffTzSet, PredetemineTimeSetting predSet) {
 		// validate list emTimezone
-		diffTzSet.getEmploymentTimezones().forEach(empTz -> this.emTzPolicy.validate(be, predSet, empTz));
+		diffTzSet.getEmploymentTimezones().forEach(empTz -> {
+			this.emTzPolicy.validate(be, predSet, empTz);
+			this.emTzPolicy.validateTimezone(be, predSet.getPrescribedTimezoneSetting(), empTz.getTimezone());
+		});
 
 		// validate list DiffTimeOTTimezoneSet
 		diffTzSet.getOTTimezones().forEach(otTimezone -> this.otSetPolicy.validate(be, predSet, otTimezone));

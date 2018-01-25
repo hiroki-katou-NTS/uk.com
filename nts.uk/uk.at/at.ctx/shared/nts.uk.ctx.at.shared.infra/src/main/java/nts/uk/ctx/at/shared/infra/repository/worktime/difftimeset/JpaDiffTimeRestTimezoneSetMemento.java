@@ -33,6 +33,7 @@ public class JpaDiffTimeRestTimezoneSetMemento implements DiffTimeRestTimezoneSe
 
 	@Override
 	public void setRestTimezones(List<DiffTimeDeductTimezone> restTimezone) {
+		//KSHMT_DT_HALF_REST_TIME
 		if (this.entity.getLstKshmtDtHalfRestTime() == null) {
 			this.entity.setLstKshmtDtHalfRestTime(new ArrayList<>());
 		}
