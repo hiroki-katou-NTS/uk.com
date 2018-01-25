@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
@@ -111,7 +112,7 @@ public class ApproveImpl implements ApproveService {
 			}
 			return false;
 		}
-		Optional<ApprovalFrame> opApprovalFrameIsConfirm = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(Boolean.TRUE)).findAny();
+		Optional<ApprovalFrame> opApprovalFrameIsConfirm = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
 		if(opApprovalFrameIsConfirm.isPresent()){
 			ApprovalFrame approvalFrame = opApprovalFrameIsConfirm.get();
 			if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
@@ -124,7 +125,7 @@ public class ApproveImpl implements ApproveService {
 			}
 			return false;
 		}
-		Optional<ApprovalFrame> opApprovalFrameIsApprove = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(Boolean.TRUE)).findAny();
+		Optional<ApprovalFrame> opApprovalFrameIsApprove = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
 		if(opApprovalFrameIsApprove.isPresent()){
 			return true;
 		}
