@@ -63,7 +63,7 @@ public class ErrorAlarmWorkRecordPubImpl implements ErrorAlarmWorkRecordPub {
 				domain.getMessage().getBoldAtr()?1:0,
 				domain.getMessage().getMessageColor().v(),
 				domain.getCancelableAtr()?1:0,
-				Integer.valueOf(domain.getErrorDisplayItem().intValueExact()),
+				domain.getErrorDisplayItem()==null ? 0 : Integer.valueOf(domain.getErrorDisplayItem().intValueExact()),
 				domain.getCancelRoleId(),
 				domain.getErrorAlarmCheckID(),
 				null
