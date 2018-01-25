@@ -282,6 +282,9 @@ project (':at.ctx:function:nts.uk.ctx.at.function.app') {
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.app')
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.dom')
 		compile project(':at.ctx:at.auth:nts.uk.ctx.at.auth.app')
+		compile project(':at.ctx:record:nts.uk.ctx.at.record.dom')
+		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.app')
+	 	compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 	}
 }
 project (':at.ctx:function:nts.uk.ctx.at.function.infra') {
