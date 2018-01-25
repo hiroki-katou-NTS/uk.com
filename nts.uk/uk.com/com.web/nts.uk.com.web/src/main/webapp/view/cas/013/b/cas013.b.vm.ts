@@ -48,10 +48,9 @@ module nts.uk.com.view.cas013.b.viewmodel {
                 }else{
                     for(let userId of self.paramUserIds){
                         for(let user of data){
-                            if(user.userID == userId){
-                                break;
+                            if(!(user.userID != userId)){
+                                items.push(user);
                             }
-                            items.push(user);    
                         }
                     }
                 }
