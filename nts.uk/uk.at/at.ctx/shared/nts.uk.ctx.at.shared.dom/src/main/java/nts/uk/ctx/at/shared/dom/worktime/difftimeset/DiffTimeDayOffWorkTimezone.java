@@ -55,10 +55,23 @@ public class DiffTimeDayOffWorkTimezone extends WorkTimeDomainObject {
 	}
 
 	private void checkOverlap() {
+		// validate overlap list work time
 		if (!CollectionUtil.isEmpty(this.workTimezones)) {
 			for (int i = 0; i < this.workTimezones.size(); i++) {
 				for (int j = i + 1; j < this.workTimezones.size(); j++) {
 					if (this.workTimezones.get(i).getTimezone().isOverlap(this.workTimezones.get(j).getTimezone())) {
+						throw new BusinessException("Msg_515");
+					}
+				}
+			}
+		}
+
+		// validate overlap list rest time
+		if (!CollectionUtil.isEmpty(this.restTimezone.getRestTimezones())) {
+			for (int i = 0; i < this.restTimezone.getRestTimezones().size(); i++) {
+				for (int j = i + 1; j < this.restTimezone.getRestTimezones().size(); j++) {
+					if (this.restTimezone.getRestTimezones().get(i)
+							.isOverlap(this.restTimezone.getRestTimezones().get(j))) {
 						throw new BusinessException("Msg_515");
 					}
 				}
