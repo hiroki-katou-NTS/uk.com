@@ -193,7 +193,7 @@ module nts.uk.at.view.kaf005.b {
                 self.timeStart2(data.workClockFrom2 == -1 ? null : data.workClockFrom2);
                 self.timeEnd2(data.workClockTo2 == -1 ? null : data.workClockTo2);
                 if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
-                    let reasonID = _.find(data.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID;
+                    let reasonID = data.applicationReasonDtos[0].reasonID;
                     self.selectedReason(reasonID);
                     
                     let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
@@ -204,7 +204,7 @@ module nts.uk.at.view.kaf005.b {
                 
                 if(data.divergenceReasonDtos != null && data.divergenceReasonDtos.length > 0){
                     self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
-                    let reasonID = _.find(data.divergenceReasonDtos, o => { return o.divergenceReasonIdDefault == 1 }).divergenceReasonID;
+                    let reasonID = data.divergenceReasonDtos[0].divergenceReasonID;
                     self.selectedReason2(reasonID);
                     self.multilContent2(data.divergenceReasonContent);
                 }
