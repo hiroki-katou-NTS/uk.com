@@ -618,7 +618,7 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pubimp', version: '0.11.1.9')
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.ac', version: '0.10.7.6')
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: '0.11.1.4')
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: '0.11.4.1')
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: '0.11.4.2')
 		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.infra', version: '0.10.9.8')
 		
 		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.app', version: '0.1.6')
