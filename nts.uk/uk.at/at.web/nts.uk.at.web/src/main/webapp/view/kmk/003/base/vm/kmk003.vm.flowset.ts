@@ -78,7 +78,7 @@ module nts.uk.at.view.kmk003.a {
             export class FlowOTTimezoneModel {
                 worktimeNo: KnockoutObservable<number>;
                 restrictTime: KnockoutObservable<boolean>;
-                overtimeFrameNo: KnockoutObservable<number>;
+                otFrameNo: KnockoutObservable<number>;
                 flowTimeSetting: FlowTimeSettingModel;
                 inLegalOTFrameNo: KnockoutObservable<number>;
                 settlementOrder: KnockoutObservable<number>;
@@ -86,7 +86,7 @@ module nts.uk.at.view.kmk003.a {
                 constructor() {
                     this.worktimeNo = ko.observable(0);
                     this.restrictTime = ko.observable(false);
-                    this.overtimeFrameNo = ko.observable(0);
+                    this.otFrameNo = ko.observable(0);
                     this.flowTimeSetting = new FlowTimeSettingModel();
                     this.inLegalOTFrameNo = ko.observable(0);
                     this.settlementOrder = ko.observable(0);
@@ -95,7 +95,7 @@ module nts.uk.at.view.kmk003.a {
                 updateData(data: FlOTTimezoneDto) {
                     this.worktimeNo(data.worktimeNo);
                     this.restrictTime(data.restrictTime);
-                    this.overtimeFrameNo(data.overtimeFrameNo);
+                    this.otFrameNo(data.otFrameNo);
                     this.flowTimeSetting.updateData(data.flowTimeSetting);
                     this.inLegalOTFrameNo(data.inLegalOTFrameNo);
                     this.settlementOrder(data.settlementOrder);
@@ -105,7 +105,7 @@ module nts.uk.at.view.kmk003.a {
                     var dataDTO: FlOTTimezoneDto = {
                         worktimeNo: this.worktimeNo(),
                         restrictTime: this.restrictTime(),
-                        overtimeFrameNo: this.overtimeFrameNo(),
+                        otFrameNo: this.otFrameNo(),
                         flowTimeSetting: this.flowTimeSetting.toDto(),
                         inLegalOTFrameNo: this.inLegalOTFrameNo(),
                         settlementOrder: this.settlementOrder(),
@@ -116,7 +116,7 @@ module nts.uk.at.view.kmk003.a {
                 resetData() {
                     this.worktimeNo(0);
                     this.restrictTime(false);
-                    this.overtimeFrameNo(0);
+                    this.otFrameNo(0);
                     this.flowTimeSetting.resetData();
                     this.inLegalOTFrameNo(0);
                     this.settlementOrder(0);
@@ -125,11 +125,11 @@ module nts.uk.at.view.kmk003.a {
 
             export class FlowWorkTzSettingModel {
                 workTimeRounding: TimeRoundingSettingModel;
-                lstOTTimezone: FlowOTTimezoneModel[];
+                lstOTTimezone: KnockoutObservableArray<FlowOTTimezoneModel>;
 
                 constructor() {
                     this.workTimeRounding = new TimeRoundingSettingModel();
-                    this.lstOTTimezone = [];
+                    this.lstOTTimezone = ko.observableArray([]);
                 }
 
                 updateData(data: FlWorkTzSettingDto) {
@@ -138,31 +138,25 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 updateTimezone(lstOTTimezone: FlOTTimezoneDto[]) {
+                    this.lstOTTimezone([]);
+                    var dataModelTimezone: FlowOTTimezoneModel[] = [];
                     for (var dataDTO of lstOTTimezone) {
-                        var dataModel: FlowOTTimezoneModel = this.getTimezoneByWorkNo(dataDTO.worktimeNo);
-                        if (dataModel) {
-                            dataModel.updateData(dataDTO);
-                        }
-                        else {
-                            dataModel = new FlowOTTimezoneModel();
-                            dataModel.updateData(dataDTO);
-                            this.lstOTTimezone.push(dataModel);
-                        }
+                        var dataModel: FlowOTTimezoneModel = new FlowOTTimezoneModel();
+                        dataModel.updateData(dataDTO);
+                        dataModelTimezone.push(dataModel);
                     }
+                    this.lstOTTimezone(dataModelTimezone);
                 }
                 
                 getTimezoneByWorkNo(worktimeNo: number) {
                     var self = this;
-                    return _.find(self.lstOTTimezone, timezone => timezone.worktimeNo() == worktimeNo);
+                    return _.find(self.lstOTTimezone(), timezone => timezone.worktimeNo() == worktimeNo);
                 }
 
                 toDto(): FlWorkTzSettingDto {
-
-                    var lstOTTimezone: FlOTTimezoneDto[] = [];
-                    for (var dataModel of this.lstOTTimezone) {
-                        lstOTTimezone.push(dataModel.toDto());
-                    }
-                    var dataDTO: FlWorkTzSettingDto = {
+                    let lstOTTimezone: FlOTTimezoneDto[] = _.map(this.lstOTTimezone(), (dataModel) => dataModel.toDto());
+                    
+                    let dataDTO: FlWorkTzSettingDto = {
                         workTimeRounding: this.workTimeRounding.toDto(),
                         lstOTTimezone: lstOTTimezone
                     };
@@ -171,7 +165,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 resetData() {
                     this.workTimeRounding.resetData();
-                    this.lstOTTimezone = [];
+                    this.lstOTTimezone([]);
                 }
             }
 
