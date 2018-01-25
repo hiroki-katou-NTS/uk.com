@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.command.alarm.checkcondition;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -106,19 +107,21 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			switch (category) {
 			case DAILY:
 				String dailyAlarmId = IdentifierUtil.randomUniqueId();
+				//add WorkRecordExtractCondition
+//				for(WorkRecordExtraConAdapterDto workRecordExtraConAdapterDto : command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork()) {
+				List<String> listErrorAlarmId = this.workRecordExtraConRepo.addNewListErAl(command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork());
+//				}
+				
 				extractionCondition = command.getDailyAlarmCheckCondition() == null ? null
 						: new DailyAlarmCondition(dailyAlarmId,
 								command.getDailyAlarmCheckCondition().getConditionToExtractDaily(),
 								command.getDailyAlarmCheckCondition().isAddApplication(),
-								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()),
+								listErrorAlarmId,
+//								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()),
 //								command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().stream().map(c->c.getFixConWorkRecordNo()).collect(Collectors.toList()),
 								command.getDailyAlarmCheckCondition().getListErrorAlarmCode()
 								);
 				
-				//add WorkRecordExtractCondition
-				for(WorkRecordExtraConAdapterDto workRecordExtraConAdapterDto : command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork()) {
-					this.workRecordExtraConRepo.addWorkRecordExtraConPub(workRecordExtraConAdapterDto);
-				}
 				//add FixedWorkRecordExtractCondition
 				for(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto : command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord()) {
 					fixedConWorkRecordAdapterDto.setDailyAlarmConID(dailyAlarmId);

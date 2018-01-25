@@ -88,16 +88,14 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 				domain.getConExtractedDaily().value, domain.isAddApplication() ? 1 : 0,
 				KrcmtDailyErrorCode.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()),
 //				KrcmtDailyFixExtra.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()),
-				KrcmtDailyWkRecord.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()));
+				KrcmtDailyWkRecord.toEntity(domain.getDailyAlarmConID(), domain.getExtractConditionWorkRecord()));
 	}
 
 	public DailyAlarmCondition toDomain() {
 		return new DailyAlarmCondition(this.dailyAlarmConID, this.conExtractedDaily,
 				this.addApplication == 1 ? true : false,
-				this.listErrorAlarmCode.stream().map(c -> c.krcmtDailyErrorCodePK.errorAlarmCode)
-						.collect(Collectors.toList()),
-//				this.listFixedExtractConditionWorkRecord.stream().map(c -> c.krcmtDailyFixExtraPK.errorAlarmID).collect(Collectors.toList()),
-				this.listExtractConditionWorkRecord.stream().map(c -> c.krcmtDailyWkRecordPK.errorAlarmID).collect(Collectors.toList()));
+				this.listExtractConditionWorkRecord.stream().map(c -> c.krcmtDailyWkRecordPK.errorAlarmID).collect(Collectors.toList()),
+				this.listErrorAlarmCode.stream().map(c -> c.krcmtDailyErrorCodePK.errorAlarmCode).collect(Collectors.toList()));
 	}
 
 }

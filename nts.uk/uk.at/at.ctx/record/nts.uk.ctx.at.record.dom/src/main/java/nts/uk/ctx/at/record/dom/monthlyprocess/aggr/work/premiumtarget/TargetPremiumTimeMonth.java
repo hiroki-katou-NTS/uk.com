@@ -20,12 +20,14 @@ public class TargetPremiumTimeMonth {
 	 * @param weeklyTotalPremiumTime 週割増合計時間
 	 * @param addSet 加算設定
 	 * @param aggregateTotalWorkingTime 集計総労働時間
+	 * @param statutoryWorkingTimeMonth 月間法定労働時間
 	 * @return 月割増対象時間
 	 */
 	public static AttendanceTimeMonth askTime(
 			String companyId, String employeeId, DatePeriod datePeriod,
 			AttendanceTimeMonth weeklyTotalPremiumTime,
-			AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime){
+			AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			AttendanceTimeMonth statutoryWorkingTimeMonth){
 		
 		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
 		
@@ -33,10 +35,6 @@ public class TargetPremiumTimeMonth {
 		val targetPremiumTimeMonthOfIrregular = new TargetPremiumTimeMonthOfIrregular();
 		targetPremiumTimeMonthOfIrregular.askPremiumTimeMonth(
 				companyId, employeeId, datePeriod, addSet, aggregateTotalWorkingTime);
-		
-		// 法定労働時間を取得する
-		//*****（未）　月の計算（総労働時間にメンバを置いたほうが便利？）で確認して、貰ってくる。仮置き。
-		val statutoryWorkTime = new AttendanceTimeMonth(0);
 		
 		// （実績）所定労働時間を取得する
 		val prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();
@@ -46,13 +44,13 @@ public class TargetPremiumTimeMonth {
 		// 法定労働時間と所定労働時間を比較する
 		val targetPremiumTimeMonthSrc = targetPremiumTimeMonthOfIrregular.getTargetPremiumTimeMonth();
 		AttendanceTimeMonth excessOrDificiency = new AttendanceTimeMonth(0);
-		if (statutoryWorkTime.greaterThanOrEqualTo(recordPresctibedWorkingTime.v())){
+		if (statutoryWorkingTimeMonth.greaterThanOrEqualTo(recordPresctibedWorkingTime.v())){
 
 			// 月割増対象時間と法定労働時間を比較する
-			if (targetPremiumTimeMonthSrc.lessThanOrEqualTo(statutoryWorkTime.v())) return returnTime;
+			if (targetPremiumTimeMonthSrc.lessThanOrEqualTo(statutoryWorkingTimeMonth.v())) return returnTime;
 			
 			// 月割増対象時間（過不足分）を求める
-			excessOrDificiency = targetPremiumTimeMonthSrc.minusMinutes(statutoryWorkTime.v());
+			excessOrDificiency = targetPremiumTimeMonthSrc.minusMinutes(statutoryWorkingTimeMonth.v());
 		}
 		else {
 			
