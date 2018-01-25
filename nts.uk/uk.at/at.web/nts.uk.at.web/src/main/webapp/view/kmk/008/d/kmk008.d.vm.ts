@@ -6,8 +6,8 @@ module nts.uk.at.view.kmk008.d {
             laborSystemAtr: number = 0;
             currentEmpName: KnockoutObservable<string>;
             textOvertimeName: KnockoutObservable<string>;
-    
-            maxRows : number;
+
+            maxRows: number;
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
@@ -34,7 +34,7 @@ module nts.uk.at.view.kmk008.d {
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(false);
                 self.listComponentOption = {
-                    maxRows : 15,
+                    maxRows: 15,
                     isShowAlreadySet: self.isShowAlreadySet(),
                     isMultiSelect: self.isMultiSelect(),
                     listType: 1,
@@ -52,7 +52,7 @@ module nts.uk.at.view.kmk008.d {
                         return emp.code == newValue;
                     });
                     if (empSelect) {
-                         self.currentEmpName(empSelect.name); 
+                        self.currentEmpName(empSelect.name);
                         self.isRemove(empSelect.isAlreadySetting);
                     }
                 });
@@ -87,7 +87,9 @@ module nts.uk.at.view.kmk008.d {
                     new service.Service().updateAgreementTimeOfEmployment(timeOfCompanyNew).done(listError => {
                         if (listError.length > 0) {
                             let errorCode = _.split(listError[0], ',');
-                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
+                            let periodName = nts.uk.resource.getText(errorCode[1]);
+                            let param1 = "期間: "+nts.uk.resource.getText(errorCode[1]) +"<br>" + nts.uk.resource.getText(errorCode[2]);
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
                             return;
                         }
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
@@ -98,7 +100,9 @@ module nts.uk.at.view.kmk008.d {
                 new service.Service().addAgreementTimeOfEmployment(timeOfCompanyNew).done(listError => {
                     if (listError.length > 0) {
                         let errorCode = _.split(listError[0], ',');
-                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
+                        let periodName = nts.uk.resource.getText(errorCode[1]);
+                        let param1 = "期間: "+nts.uk.resource.getText(errorCode[1]) +"<br>" + nts.uk.resource.getText(errorCode[2]);
+                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
                         return;
                     }
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" });

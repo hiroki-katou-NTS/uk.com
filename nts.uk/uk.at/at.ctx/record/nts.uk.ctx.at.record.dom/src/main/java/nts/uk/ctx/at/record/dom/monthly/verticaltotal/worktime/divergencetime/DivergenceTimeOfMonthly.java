@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 
 /**
  * 月別実績の乖離時間
@@ -14,14 +16,14 @@ import lombok.val;
 public class DivergenceTimeOfMonthly {
 
 	/** 乖離時間 */
-	private List<DivergenceTimeOfMonthly> divergenceTimeList;
+	private Map<Integer, AggregateDivergenceTime> divergenceTimeList;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public DivergenceTimeOfMonthly(){
 		
-		this.divergenceTimeList = new ArrayList<>();
+		this.divergenceTimeList = new HashMap<>();
 	}
 	
 	/**
@@ -29,10 +31,42 @@ public class DivergenceTimeOfMonthly {
 	 * @param divergenceTimeList 乖離時間
 	 * @return 月別実績の乖離時間
 	 */
-	public static DivergenceTimeOfMonthly of(List<DivergenceTimeOfMonthly> divergenceTimeList){
+	public static DivergenceTimeOfMonthly of(List<AggregateDivergenceTime> divergenceTimeList){
 		
 		val domain = new DivergenceTimeOfMonthly();
-		domain.divergenceTimeList = divergenceTimeList;
+		for (val divergenceTime : divergenceTimeList){
+			val divergenceTimeNo = Integer.valueOf(divergenceTime.getDivergenceTimeNo());
+			if (!domain.divergenceTimeList.containsKey(divergenceTimeNo)) {
+				domain.divergenceTimeList.put(divergenceTimeNo, divergenceTime);
+			}
+		}
 		return domain;
+	}
+	
+	/**
+	 * 集計
+	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
+	 */
+	public void aggregate(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+		
+		this.divergenceTimeList = new HashMap<>();
+		
+		// 日別実績の「乖離時間」「控除時間」「控除後乖離時間」を集計
+		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
+			val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val divergenceTimeOfDaily = actualWorkingTime.getDivTime();
+			for (val divergenceTime : divergenceTimeOfDaily.getDivergenceTime()){
+				val divTimeNo = Integer.valueOf(divergenceTime.getDivTimeId());
+				if (!this.divergenceTimeList.containsKey(divTimeNo)) {
+					this.divergenceTimeList.put(divTimeNo, new AggregateDivergenceTime(divTimeNo.intValue()));
+				}
+				val targetDivergenceTime = this.divergenceTimeList.get(divTimeNo);
+				
+				targetDivergenceTime.addMinutesToDivergenceTime(divergenceTime.getDivTime().v());
+				targetDivergenceTime.addMinutesToDeductionTime(divergenceTime.getDeductionTime().v());
+				targetDivergenceTime.addMinutesToDivergenceTimeAfterDeduction(
+						divergenceTime.getDivTimeAfterDeduction().v());
+			}
+		}
 	}
 }

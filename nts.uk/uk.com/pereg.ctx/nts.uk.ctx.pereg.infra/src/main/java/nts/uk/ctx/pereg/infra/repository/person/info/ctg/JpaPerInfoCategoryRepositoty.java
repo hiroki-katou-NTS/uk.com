@@ -110,6 +110,14 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE ca.cid = :cid AND co.categoryParentCd IS NULL ORDER BY po.disporder";
+	
+	private final static String SELECT_CATEGORY_BY_COMPANY_ID_USED = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
+			+ " FROM PpemtPerInfoCtg ca "
+			+ " INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE ca.cid = :cid AND ca.abolitionAtr = 0 AND co.categoryParentCd IS NULL ORDER BY po.disporder";
 
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
@@ -352,9 +360,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	 * case : Employee Selected khác với employee đang nhập
 	 */
 	@Override
-	public List<PersonInfoCategory> getAllPerInfoCtgOtherEmp(String companyId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<PersonInfoCategory> getAllPerInfoCtgUsed(String companyId) {
+		return this.queryProxy().query(SELECT_CATEGORY_BY_COMPANY_ID_USED, Object[].class)
+				.setParameter("cid", companyId).getList(c -> {
+					return createDomainPerInfoCtgFromEntity(c);
+				});
+
 	}
 
 	// mapping

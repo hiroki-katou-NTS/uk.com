@@ -11,11 +11,11 @@ public class ErrorAlarmConAdapterDto {
 	/* ID */
 	private String errorAlarmCheckID;
 	/* チェック条件*/
-	private AlarmCheckTargetConAdapterDto alarmCheckTargetCondition;
+	private AlarmCheckTargetConAdapterDto alCheckTargetCondition;
 	/* 勤務種類の条件 */
 	private WorkTypeConAdapterDto workTypeCondition;
 	/* 勤怠項目の条件 */
-	private AttendanceItemConAdapterDto attendanceItemCondition;
+	private AttendanceItemConAdapterDto atdItemCondition;
 	/* 就業時間帯の条件 */
 	private WorkTimeConAdapterDto workTimeCondition;
 	/* 表示メッセージ */
@@ -29,9 +29,9 @@ public class ErrorAlarmConAdapterDto {
 			WorkTimeConAdapterDto workTimeCondition, String displayMessage, int continuousPeriod) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
-		this.alarmCheckTargetCondition = alarmCheckTargetCondition;
+		this.alCheckTargetCondition = alarmCheckTargetCondition;
 		this.workTypeCondition = workTypeCondition;
-		this.attendanceItemCondition = attendanceItemCondition;
+		this.atdItemCondition = attendanceItemCondition;
 		this.workTimeCondition = workTimeCondition;
 		this.displayMessage = displayMessage;
 		this.continuousPeriod = continuousPeriod;
