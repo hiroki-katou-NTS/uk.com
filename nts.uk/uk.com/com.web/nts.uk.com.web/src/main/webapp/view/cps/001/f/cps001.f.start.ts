@@ -6,10 +6,13 @@ module cps001.f {
         __viewContext['viewModel'].start().done(() => {
             init();
             __viewContext.bind(__viewContext['viewModel']);
+            $('.browser-button').focus();
         });
 
+       
         // focus to first input textbox
         $('input:first').focus();
+
     });
 
 }
