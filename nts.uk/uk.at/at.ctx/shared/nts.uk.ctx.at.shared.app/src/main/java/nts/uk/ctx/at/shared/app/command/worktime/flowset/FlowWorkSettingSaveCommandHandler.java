@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.flowset;
@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -48,26 +49,16 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<FlowWorkSettingSaveCommand> context) {
-		
-		try {
-			throw new BusinessException("Msg_3");
-		} catch (BusinessException e) {
-			e.printStackTrace();
-		}
-		
-		String companyId = AppContexts.user().companyId();
-		
-		// get command
-		FlowWorkSettingSaveCommand command = context.getCommand();
 
-		// convert dto to domain
+		// Get company ID
+		String companyId = AppContexts.user().companyId();
+		// Get command
+		FlowWorkSettingSaveCommand command = context.getCommand();
+		// Convert dto to domain
 		FlowWorkSetting flowWorkSetting = command.toDomainFlowWorkSetting();
 
-		// check policy
-		this.flowPolicy.validate(command.toDomainPredetemineTimeSetting(), flowWorkSetting);
-
-		// common handler
-		this.commonHandler.handle(command);
+		// Validate + common handler
+		this.validate(command, flowWorkSetting);
 
 		// call repository save flow work setting
 		if (command.isAddMode()) {
@@ -84,4 +75,45 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 		}
 	}
 
+	/**
+	 * Validate.
+	 *
+	 * @param command
+	 *            the command
+	 * @param flowWorkSetting
+	 *            the flow work setting
+	 */
+	private void validate(FlowWorkSettingSaveCommand command, FlowWorkSetting flowWorkSetting) {
+		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+
+		// Check common handler
+		try {
+			this.commonHandler.handle(command);
+		} catch (Exception e) {
+			if (e.getCause() instanceof BundledBusinessException) {
+				bundledBusinessExceptions.addMessage(((BundledBusinessException) e.getCause()).cloneExceptions());
+			} else if (e.getCause() instanceof BusinessException) {
+				bundledBusinessExceptions.addMessage((BusinessException) e.getCause());
+			} else {
+				throw e;
+			}
+		}
+
+		// Check domain
+		try {
+			flowWorkSetting.validate();
+		} catch (BundledBusinessException e) {
+			bundledBusinessExceptions.addMessage(e.cloneExceptions());
+		} catch (BusinessException e) {
+			bundledBusinessExceptions.addMessage(e);
+		}
+
+		// Check policy
+		this.flowPolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(), flowWorkSetting);
+
+		// Throw exceptions if exist
+		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
+			throw bundledBusinessExceptions;
+		}
+	}
 }

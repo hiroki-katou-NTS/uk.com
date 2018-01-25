@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
 import lombok.Builder;
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 //就業時間帯勤務区分
 /**
@@ -14,7 +14,7 @@ import nts.arc.layer.dom.DomainObject;
  */
 @Getter
 @Builder
-public class WorkTimeDivision extends DomainObject {
+public class WorkTimeDivision extends WorkTimeDomainObject {
 
 	/** The work time daily atr. */
 	// 勤務形態区分

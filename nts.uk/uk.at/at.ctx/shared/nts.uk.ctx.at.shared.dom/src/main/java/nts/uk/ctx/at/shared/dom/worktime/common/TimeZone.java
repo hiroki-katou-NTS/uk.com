@@ -5,9 +5,8 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -15,7 +14,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 // 時間帯
 @Getter
-public class TimeZone extends DomainObject {
+public class TimeZone extends WorkTimeDomainObject {
 
 	/** The start. */
 	// 開始
@@ -54,7 +53,7 @@ public class TimeZone extends DomainObject {
 	 */
 	public void validateRange(String param) {
 		if (this.start.greaterThanOrEqualTo(this.end)) {
-			throw new BusinessException("Msg_770", param);
+			this.bundledBusinessExceptions.addMessage("Msg_770", param);
 		}
 	}
 

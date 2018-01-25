@@ -8,15 +8,15 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class TimeDiffDayOffWorkTimezone.
  */
 // 時差勤務の休日出勤用勤務時間帯
 @Getter
-public class DiffTimeDayOffWorkTimezone extends DomainObject {
+public class DiffTimeDayOffWorkTimezone extends WorkTimeDomainObject {
 
 	/** The rest timezone. */
 	// 休憩時間帯

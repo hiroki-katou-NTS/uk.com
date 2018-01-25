@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset.internal;
 
 import javax.ejb.Stateless;
 
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -28,9 +28,9 @@ public class FlowStampReflectTimezonePolicyImpl implements FlowStampReflectTimez
 	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predetemineTimeSetting,
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predetemineTimeSetting,
 			FlowStampReflectTimezone flowStampReflectTimezone) {
-		this.validateStampReflectTimezone(predetemineTimeSetting, flowStampReflectTimezone);
+		this.validateStampReflectTimezone(be, predetemineTimeSetting, flowStampReflectTimezone);
 	}
 
 	/**
@@ -41,14 +41,14 @@ public class FlowStampReflectTimezonePolicyImpl implements FlowStampReflectTimez
 	 * @param flowStampReflectTimezone
 	 *            the flow stamp reflect timezone
 	 */
-	private void validateStampReflectTimezone(PredetemineTimeSetting predetemineTimeSetting,
+	private void validateStampReflectTimezone(BundledBusinessException be, PredetemineTimeSetting predetemineTimeSetting,
 			FlowStampReflectTimezone flowStampReflectTimezone) {
 		// Msg_516
 		TimeWithDayAttr startTime = predetemineTimeSetting.getStartDateClock();
 		TimeWithDayAttr endTime = startTime.forwardByMinutes(predetemineTimeSetting.getRangeTimeDay().valueAsMinutes());
 		flowStampReflectTimezone.getStampReflectTimezones().forEach(stampReflectTz -> {
 			if (stampReflectTz.getStartTime().lessThan(startTime) || stampReflectTz.getEndTime().greaterThan(endTime)) {
-				throw new BusinessException("Msg_516");
+				be.addMessage("Msg_516");
 			}
 		});
 	}

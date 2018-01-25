@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 //流動勤務専用設定
 @Getter
-public class FlowWorkDedicateSetting extends DomainObject {
+public class FlowWorkDedicateSetting extends WorkTimeDomainObject {
 
 	/** The overtime setting. */
 	//残業設定

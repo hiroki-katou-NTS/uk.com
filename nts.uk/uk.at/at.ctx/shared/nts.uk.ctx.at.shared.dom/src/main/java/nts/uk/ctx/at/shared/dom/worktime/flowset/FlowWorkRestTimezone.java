@@ -5,15 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FlowWorkRestTimezone.
  */
 //流動勤務の休憩時間帯
 @Getter
-public class FlowWorkRestTimezone extends DomainObject{
+public class FlowWorkRestTimezone extends WorkTimeDomainObject {
 
 	/** The fix rest time. */
 	//休憩時間帯を固定にする

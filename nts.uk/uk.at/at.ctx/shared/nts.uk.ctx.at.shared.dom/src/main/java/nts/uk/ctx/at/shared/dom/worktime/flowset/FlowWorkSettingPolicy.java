@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
@@ -14,9 +15,9 @@ public interface FlowWorkSettingPolicy {
 	/**
 	 * Validate.
 	 *
-	 * @param bundledExceptions the bundled exceptions
+	 * @param bundledBusinessExceptions the bundled business exceptions
 	 * @param predetemineTimeSetting the predetemine time setting
 	 * @param flowWorkSetting the flow work setting
 	 */
-	void validate(PredetemineTimeSetting predetemineTimeSetting, FlowWorkSetting flowWorkSetting);
+	void validate(BundledBusinessException bundledBusinessExceptions, PredetemineTimeSetting predetemineTimeSetting, FlowWorkSetting flowWorkSetting);
 }

@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FlowCalculateSet.
  */
 // 流動計算設定
 @Getter
-public class FlowCalculateSet extends DomainObject {
+public class FlowCalculateSet extends WorkTimeDomainObject {
 	
 	/** The calc start time set. */
 	// 計算開始時刻を決める設定

@@ -5,15 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FlowWorkRestSetting.
  */
 // 流動勤務の休憩設定
 @Getter
-public class FlowWorkRestSetting extends DomainObject {
+public class FlowWorkRestSetting extends WorkTimeDomainObject {
 
 	/** The common rest setting. */
 	// 共通の休憩設定

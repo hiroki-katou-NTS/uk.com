@@ -7,15 +7,15 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class DiffTimeWorkStampReflectTimezone.
  */
 // 時差勤務打刻反映時間帯
 @Getter
-public class DiffTimeWorkStampReflectTimezone extends DomainObject{
+public class DiffTimeWorkStampReflectTimezone extends WorkTimeDomainObject {
 
 	/** The stamp reflect timezone. */
 	// 打刻反映時間帯

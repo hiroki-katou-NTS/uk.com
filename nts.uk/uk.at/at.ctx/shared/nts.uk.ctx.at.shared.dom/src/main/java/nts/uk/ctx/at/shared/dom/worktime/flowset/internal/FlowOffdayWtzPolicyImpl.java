@@ -7,9 +7,10 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWtzPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
@@ -31,9 +32,9 @@ public class FlowOffdayWtzPolicyImpl implements FlowOffdayWtzPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlOffdayWtz)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, FlowOffdayWorkTimezone flowOff) {
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, FlowOffdayWorkTimezone flowOff) {
 		// validate FlowWorkRestTimezone
-		this.flowRestPolicy.validate(predTime, flowOff.getRestTimeZone());
+		this.flowRestPolicy.validate(be, predTime, flowOff.getRestTimeZone());
 	}
 
 }

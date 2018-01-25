@@ -5,8 +5,8 @@
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 // 時差勤務の平日出勤用勤務時間帯
 @Getter
-public class DiffTimeHalfDayWorkTimezone extends DomainObject {
+public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 
 	/** The rest timezone. */
 	// 休憩時間帯

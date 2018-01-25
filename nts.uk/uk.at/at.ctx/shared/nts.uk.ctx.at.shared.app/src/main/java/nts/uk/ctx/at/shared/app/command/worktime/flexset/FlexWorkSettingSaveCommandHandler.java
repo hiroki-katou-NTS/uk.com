@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.flexset;
@@ -8,7 +8,10 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+import nts.arc.error.BundledBusinessException;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveCommandHandler;
@@ -31,7 +34,7 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 	/** The flex policy. */
 	@Inject
 	private FlexWorkSettingPolicy flexPolicy;
-	
+
 	/** The common handler. */
 	@Inject
 	private WorkTimeCommonSaveCommandHandler commonHandler;
@@ -44,28 +47,24 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 	 * .CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<FlexWorkSettingSaveCommand> context) {
 
+		// Get company ID
 		String companyId = AppContexts.user().companyId();
-		
-		// get command
+		// Get command
 		FlexWorkSettingSaveCommand command = context.getCommand();
-
-		// get domain flex work setting by client send
+		// Convert dto to domain
 		FlexWorkSetting flexWorkSetting = command.toDomainFlexWorkSetting();
 
-		// common handler
-		this.commonHandler.handle(command);
-
-		// validate domain
-		this.flexPolicy.canRegisterFlexWorkSetting(flexWorkSetting, command.toDomainPredetemineTimeSetting());
+		// Validate + common handler
+		this.validate(command, flexWorkSetting);
 
 		// check is add mode
 		if (command.isAddMode()) {
 			flexWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			this.flexWorkSettingRepository.add(flexWorkSetting);
-		} 
-		else {
+		} else {
 			Optional<FlexWorkSetting> opFlexWorkSetting = this.flexWorkSettingRepository.find(companyId,
 					command.getWorktimeSetting().worktimeCode);
 			if (opFlexWorkSetting.isPresent()) {
@@ -76,4 +75,45 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 		}
 	}
 
+	/**
+	 * Validate.
+	 *
+	 * @param command
+	 *            the command
+	 * @param flexWorkSetting
+	 *            the flex work setting
+	 */
+	private void validate(FlexWorkSettingSaveCommand command, FlexWorkSetting flexWorkSetting) {
+		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+
+		// Check common handler
+		try {
+			this.commonHandler.handle(command);
+		} catch (Exception e) {
+			if (e.getCause() instanceof BundledBusinessException) {
+				bundledBusinessExceptions.addMessage(((BundledBusinessException) e.getCause()).cloneExceptions());
+			} else if (e.getCause() instanceof BusinessException) {
+				bundledBusinessExceptions.addMessage((BusinessException) e.getCause());
+			} else {
+				throw e;
+			}
+		}
+
+		// Check domain
+		try {
+			flexWorkSetting.validate();
+		} catch (BundledBusinessException e) {
+			bundledBusinessExceptions.addMessage(e.cloneExceptions());
+		} catch (BusinessException e) {
+			bundledBusinessExceptions.addMessage(e);
+		}
+
+		// Check policy
+		this.flexPolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(), flexWorkSetting);
+
+		// Throw exceptions if exist
+		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
+			throw bundledBusinessExceptions;
+		}
+	}
 }

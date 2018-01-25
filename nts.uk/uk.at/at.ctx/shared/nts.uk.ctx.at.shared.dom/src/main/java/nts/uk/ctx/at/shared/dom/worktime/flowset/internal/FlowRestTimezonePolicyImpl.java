@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezonePolicy;
@@ -31,9 +32,9 @@ public class FlowRestTimezonePolicyImpl implements FlowRestTimezonePolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, FlowRestTimezone flowRestTimezone) {
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, FlowRestTimezone flowRestTimezone) {
 		flowRestTimezone.getFlowRestSets().forEach(flowRestSet -> {
-			this.flowRestSettingPolicy.validate(predTime, flowRestSet);
+			this.flowRestSettingPolicy.validate(be, predTime, flowRestSet);
 		});
 	}
 

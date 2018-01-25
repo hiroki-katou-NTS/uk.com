@@ -7,13 +7,12 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtent;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -48,26 +47,24 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 * DiffTimezoneSetting)
 	 */
 	@Override
-	public boolean canRegister(PredetemineTimeSetting pred, DiffTimeWorkSetting diffTimeWorkSetting) {
+	public void validate(BundledBusinessException be, PredetemineTimeSetting pred, DiffTimeWorkSetting diffTimeWorkSetting) {
 		// validate StampReflectTimezone 516
-		this.validateStampReflectTimezone(pred, diffTimeWorkSetting);
+		this.validateStampReflectTimezone(be, pred, diffTimeWorkSetting);
 
 		// validate HDWorkTimeSheetSetting 516
-		this.validateHDWorkTimeSheetSetting(pred, diffTimeWorkSetting);
+		this.validateHDWorkTimeSheetSetting(be, pred, diffTimeWorkSetting);
 
 		diffTimeWorkSetting.getHalfDayWorkTimezones()
-				.forEach(halfDay -> this.diffTimeHalfPolicy.validate(halfDay, pred));
+				.forEach(halfDay -> this.diffTimeHalfPolicy.validate(be, halfDay, pred));
 
 		// validate EmTimezoneChangeExtent
-		this.validateEmTimezoneChangeExtent(pred, diffTimeWorkSetting);
+		this.validateEmTimezoneChangeExtent(be, pred, diffTimeWorkSetting);
 		
 		//validate common setting
-		this.commonWorkTimePolicy.validate(pred, diffTimeWorkSetting.getCommonSet());
+		this.commonWorkTimePolicy.validate(be, pred, diffTimeWorkSetting.getCommonSet());
 
 		// validate WorkTimezoneCommonSet
-		this.wtzCommonSetPolicy.validate(pred, diffTimeWorkSetting.getCommonSet());
-		
-		return true;
+		this.wtzCommonSetPolicy.validate(be, pred, diffTimeWorkSetting.getCommonSet());
 	}
 
 	/**
@@ -80,7 +77,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 * @param diffTimeWorkSetting
 	 *            the diff time work setting
 	 */
-	private void validateStampReflectTimezone(PredetemineTimeSetting pred, DiffTimeWorkSetting diffTimeWorkSetting) {
+	private void validateStampReflectTimezone(BundledBusinessException be, PredetemineTimeSetting pred, DiffTimeWorkSetting diffTimeWorkSetting) {
 
 		// get start and end time
 		TimeWithDayAttr start = diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone().getStartTime();
@@ -100,7 +97,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 * @param diffTimeWorkSetting
 	 *            the diff time work setting
 	 */
-	private void validateHDWorkTimeSheetSetting(PredetemineTimeSetting pred, DiffTimeWorkSetting diffTimeWorkSetting) {
+	private void validateHDWorkTimeSheetSetting(BundledBusinessException be, PredetemineTimeSetting pred, DiffTimeWorkSetting diffTimeWorkSetting) {
 		diffTimeWorkSetting.getDayoffWorkTimezone().getRestTimezone().getRestTimezones().stream().forEach(item -> {
 			// this.predeteminePolicyService.validateOneDay(pred,
 			// item.getStart(), item.getEnd());
@@ -113,7 +110,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 * @param pred the pred
 	 * @param emTimezoneChangeExtent the em timezone change extent
 	 */
-	private void validateEmTimezoneChangeExtent(PredetemineTimeSetting pred,
+	private void validateEmTimezoneChangeExtent(BundledBusinessException be, PredetemineTimeSetting pred,
 			DiffTimeWorkSetting diffTimeWorkSetting) {
 
 		// validate Msg_781
@@ -129,7 +126,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 				boolean isInvalidBehindChange = behindChange + item.getTimezone().getEnd().valueAsMinutes() > endTime;
 
 				if (isInvalidAheadChange || isInvalidBehindChange) {
-					throw new BusinessException("Msg_781");
+					be.addMessage("Msg_781");
 				}
 			});
 		});
@@ -152,7 +149,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 						boolean invalidAhead = workTime.getTimezone().getEnd().valueAsMinutes()
 								- aheadChange < fixRestTimeEnd;
 						if (invalidAhead || invalidBehind) {
-							throw new BusinessException("Msg_783");
+							be.addMessage("Msg_783");
 						}
 					});
 				});
@@ -172,10 +169,10 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 				int startOfFixEnd = 0;
 				
 				if (workStart - aheadChange < endOfFixStart) {
-					throw new BusinessException("Msg_783");
+					be.addMessage("Msg_783");
 				}
 				if (workEnd + behindChange > startOfFixEnd) {
-					throw new BusinessException("Msg_783");
+					be.addMessage("Msg_783");
 				}
 			});
 		});

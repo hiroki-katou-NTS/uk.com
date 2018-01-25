@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class TotalRoundingSet.
  */
 // 合計丸め設定
 @Getter
-public class TotalRoundingSet extends DomainObject {
+public class TotalRoundingSet extends WorkTimeDomainObject {
 
 	/** The set same frame rounding. */
 	// 同じ枠内での丸め設定

@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezonePolicy;
@@ -37,14 +37,14 @@ public class FlexOffdayWorkTimePolicyImpl implements FlexOffdayWorkTimePolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, FlexOffdayWorkTime flexOffDay) {
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, FlexOffdayWorkTime flexOffDay) {
 		// validate FlowWorkRestTimezone
-		this.flowRestPolicy.validate(predTime, flexOffDay.getRestTimezone());
+		this.flowRestPolicy.validate(be, predTime, flexOffDay.getRestTimezone());
 		
 		flexOffDay.getLstWorkTimezone().forEach(workTimezone -> {
 			if (this.predeteminePolicyService.validateOneDay(predTime, workTimezone.getTimezone().getStart(),
 					workTimezone.getTimezone().getEnd())) {
-				throw new BusinessException("Msg_516", "KMK003_90");
+				be.addMessage("Msg_516", "KMK003_90");
 			}
 		});
 	}

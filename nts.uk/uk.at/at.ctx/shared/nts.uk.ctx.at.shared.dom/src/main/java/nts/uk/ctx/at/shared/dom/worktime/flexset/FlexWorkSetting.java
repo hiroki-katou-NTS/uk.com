@@ -7,11 +7,11 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
  */
 @Getter
 // フレックス勤務設定
-public class FlexWorkSetting extends AggregateRoot {
+public class FlexWorkSetting extends WorkTimeAggregateRoot {
 
 	/** The company id. */
 	// 会社ID
@@ -130,9 +130,6 @@ public class FlexWorkSetting extends AggregateRoot {
 	 */
 	public void restoreDefaultData(ScreenMode screenMode) {
 		this.commonSetting.restoreDefaultData(screenMode);
-		
-		// restore 平日勤務時間帯
-		//TODO
 	}
 	
 }

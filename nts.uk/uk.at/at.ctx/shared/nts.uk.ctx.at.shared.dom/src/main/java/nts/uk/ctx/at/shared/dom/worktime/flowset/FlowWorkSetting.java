@@ -5,10 +5,10 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
  */
 // 流動勤務設定
 @Getter
-public class FlowWorkSetting extends AggregateRoot {
+public class FlowWorkSetting extends WorkTimeAggregateRoot {
 
 	/** The company id. */
 	// 会社ID
@@ -114,6 +114,8 @@ public class FlowWorkSetting extends AggregateRoot {
 			this.halfDayWorkTimezone = other.getHalfDayWorkTimezone();
 			this.flowSetting = other.getFlowSetting();
 		}
+		
+		//TODO: tab 3 + 5
 	}
 
 	/**

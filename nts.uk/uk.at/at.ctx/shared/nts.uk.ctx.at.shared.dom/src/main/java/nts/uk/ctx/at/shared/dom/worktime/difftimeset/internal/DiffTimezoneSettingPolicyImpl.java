@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.difftimeset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSetting;
@@ -37,12 +38,12 @@ public class DiffTimezoneSettingPolicyImpl implements DiffTimezoneSettingPolicy 
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting)
 	 */
 	@Override
-	public void validate(DiffTimezoneSetting diffTzSet, PredetemineTimeSetting predSet) {
+	public void validate(BundledBusinessException be, DiffTimezoneSetting diffTzSet, PredetemineTimeSetting predSet) {
 		// validate list emTimezone
-		diffTzSet.getEmploymentTimezones().forEach(empTz -> this.emTzPolicy.validate(predSet, empTz));
+		diffTzSet.getEmploymentTimezones().forEach(empTz -> this.emTzPolicy.validate(be, predSet, empTz));
 
 		// validate list DiffTimeOTTimezoneSet
-		diffTzSet.getOTTimezones().forEach(otTimezone -> this.otSetPolicy.validate(predSet, otTimezone));
+		diffTzSet.getOTTimezones().forEach(otTimezone -> this.otSetPolicy.validate(be, predSet, otTimezone));
 	}
 
 }

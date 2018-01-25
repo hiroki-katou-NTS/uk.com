@@ -6,12 +6,10 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Getter;
 import lombok.val;
-import nts.arc.error.BundledBusinessException;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -19,7 +17,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 // 所定時間設定
 @Getter
-public class PredetemineTimeSetting extends AggregateRoot {
+public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 
 	/** The company id. */
 	// 会社ID
@@ -89,20 +87,18 @@ public class PredetemineTimeSetting extends AggregateRoot {
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
-	public void validate() {
-		super.validate();
-		
-		// validate startDateClock in -12:00 ~ 23:59
+	public void validate() {		
+		// Validate startDateClock in -12:00 ~ 23:59
 		if ((this.startDateClock.valueAsMinutes() < TimeWithDayAttr.THE_PREVIOUS_DAY_1200.valueAsMinutes())
-				|| (this.startDateClock.valueAsMinutes() >= TimeWithDayAttr.THE_NEXT_DAY_0000.valueAsMinutes())) {
-			BundledBusinessException be = BundledBusinessException.newInstance();
-			be.addMessage("Msg_785");
-			be.throwExceptions();
-		}
-		
-		this.validateOneDay();
-		
+				|| (this.startDateClock.valueAsMinutes() >= TimeWithDayAttr.THE_NEXT_DAY_0000.valueAsMinutes())) {		
+			this.bundledBusinessExceptions.addMessage("Msg_785");
+		}		
+		// Validate oneDay < rangeTimeDay
+		this.validateOneDay();			
+		// Validate PrescribedTimezone between startDate and startDate + rangeTimeDay
 		this.validatePrescribedTimezone();
+
+		super.validate();
 	}
 
 	/**
@@ -120,9 +116,9 @@ public class PredetemineTimeSetting extends AggregateRoot {
 	private void validatePrescribedTimezone() {
 		val timezones = this.prescribedTimezoneSetting.getLstTimezone();
 		// validate list time zone
-		if (timezones.stream().anyMatch(
-				tz -> tz.getUseAtr() == UseSetting.USE && this.isOutOfRangeTimeDay(tz.getStart(), tz.getEnd()))) {
-			throw new BusinessException("Msg_516" , "KMK003_216");
+		if (timezones.stream()
+				.anyMatch(tz -> tz.getUseAtr() == UseSetting.USE && this.isOutOfRangeTimeDay(tz.getStart(), tz.getEnd()))) {
+			this.bundledBusinessExceptions.addMessage("Msg_516" , "KMK003_216");
 		}
 	}
 
@@ -146,7 +142,7 @@ public class PredetemineTimeSetting extends AggregateRoot {
 		AttendanceTime oneDayRange = this.getRangeTimeDay();
 		AttendanceTime oneDayTime = this.getPredTime().getPredTime().getOneDay(); 		
 		if (oneDayTime.greaterThan(oneDayRange)) {
-			throw new BusinessException("Msg_781");
+			this.bundledBusinessExceptions.addMessage("Msg_781");
 		}
 	}
 

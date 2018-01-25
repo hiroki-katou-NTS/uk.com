@@ -10,17 +10,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FlowWorkTimezoneSetting.
  */
 // 流動勤務時間帯設定
 @Getter
-public class FlowWorkTimezoneSetting extends DomainObject {
+public class FlowWorkTimezoneSetting extends WorkTimeDomainObject {
 
 	/** The work time rounding. */
 	// 就業時間丸め
@@ -55,8 +54,8 @@ public class FlowWorkTimezoneSetting extends DomainObject {
 	 */
 	@Override
 	public void validate() {
-		super.validate();
 		this.validateOverlapElapsedTime();
+		super.validate();
 	}
 	
 	/**
@@ -69,7 +68,7 @@ public class FlowWorkTimezoneSetting extends DomainObject {
 				.collect(Collectors.toSet());
 		// If Set size < List size => there're duplicated value
 		if (setFlowPassageTime.size() < this.lstOTTimezone.size()) {
-			throw new BusinessException("Msg_869");
+			this.bundledBusinessExceptions.addMessage("Msg_869");
 		}
 	}
 	

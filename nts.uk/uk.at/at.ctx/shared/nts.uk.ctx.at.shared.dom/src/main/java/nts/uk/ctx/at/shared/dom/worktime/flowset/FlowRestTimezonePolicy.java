@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
@@ -14,8 +15,9 @@ public interface FlowRestTimezonePolicy {
 	/**
 	 * Validate.
 	 *
+	 * @param be the be
 	 * @param predTime the pred time
 	 * @param flowRestTimezone the flow rest timezone
 	 */
-	void validate(PredetemineTimeSetting predTime, FlowRestTimezone flowRestTimezone);
+	void validate(BundledBusinessException be, PredetemineTimeSetting predTime, FlowRestTimezone flowRestTimezone);
 }

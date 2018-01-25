@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWtzPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWtzPolicy;
@@ -51,23 +52,30 @@ public class FlowWorkSettingPolicyImpl implements FlowWorkSettingPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predetemineTimeSetting, FlowWorkSetting flowWorkSetting) {
+	public void validate(BundledBusinessException bundledBusinessExceptions,
+			PredetemineTimeSetting predetemineTimeSetting, FlowWorkSetting flowWorkSetting) {
+
 		// Msg_516
-		this.flowStampReflectTimezonePolicy.validate(predetemineTimeSetting, flowWorkSetting.getStampReflectTimezone());
+		this.flowStampReflectTimezonePolicy.validate(bundledBusinessExceptions, predetemineTimeSetting,
+				flowWorkSetting.getStampReflectTimezone());
 
 		// Msg_781
 		flowWorkSetting.getHalfDayWorkTimezone().getWorkTimeZone().getLstOTTimezone().forEach(flowOTTimezone -> {
-			this.flowTimeSettingPolicy.validate(predetemineTimeSetting, flowOTTimezone.getFlowTimeSetting());
+			this.flowTimeSettingPolicy.validate(bundledBusinessExceptions, predetemineTimeSetting,
+					flowOTTimezone.getFlowTimeSetting());
 		});
 
 		// validate FlowHalfDay
-		this.flowHalfPolicy.validate(predetemineTimeSetting, flowWorkSetting.getHalfDayWorkTimezone());
+		this.flowHalfPolicy.validate(bundledBusinessExceptions, predetemineTimeSetting,
+				flowWorkSetting.getHalfDayWorkTimezone());
 
 		// validate FlowOffDay
-		this.flowOffPolicy.validate(predetemineTimeSetting, flowWorkSetting.getOffdayWorkTimezone());
+		this.flowOffPolicy.validate(bundledBusinessExceptions, predetemineTimeSetting,
+				flowWorkSetting.getOffdayWorkTimezone());
 
 		// Validate WorkTimezoneCommonSet
-		this.wtzCommonSetPolicy.validate(predetemineTimeSetting, flowWorkSetting.getCommonSetting());
+		this.wtzCommonSetPolicy.validate(bundledBusinessExceptions, predetemineTimeSetting,
+				flowWorkSetting.getCommonSetting());
 	}
 
 }

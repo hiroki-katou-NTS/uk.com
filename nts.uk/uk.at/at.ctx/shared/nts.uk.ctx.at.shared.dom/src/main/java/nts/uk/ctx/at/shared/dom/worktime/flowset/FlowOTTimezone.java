@@ -5,16 +5,16 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FlowOTTimezone.
  */
 // 流動残業時間帯
 @Getter
-public class FlowOTTimezone extends DomainObject {
+public class FlowOTTimezone extends WorkTimeDomainObject {
 
 	/** The worktime no. */
 	// 就業時間帯NO

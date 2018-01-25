@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -64,11 +63,14 @@ public class TimezoneUse extends TimeZone {
 	@Override
 	public void validate() {
 		if (this.isUsed()) {
+			// Validate
 			if (this.workNo == SHIFT_TWO && (this.start == null || this.end == null)) {
-				throw new BusinessException("Msg_516", "KMK003_216");
+				this.bundledBusinessExceptions.addMessage("Msg_516", "KMK003_216");
 			}
 			this.validateRange("KMK003_216");
 		}
+		
+		super.validate();
 	}
 
 	/**
