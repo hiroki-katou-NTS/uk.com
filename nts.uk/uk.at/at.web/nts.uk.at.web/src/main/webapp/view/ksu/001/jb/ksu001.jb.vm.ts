@@ -200,9 +200,9 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                     && (moment.duration(self.time1()).asMinutes() == obj.startTime)
                     && (moment.duration(self.time2()).asMinutes() == obj.endTime)) {
                     self.listWorkTimeComboBox.push(obj);
-                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() <= obj.startTime)) {
+                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() == obj.startTime)) {
                     self.listWorkTimeComboBox.push(obj);
-                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() >= obj.endTime)) {
+                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() == obj.endTime)) {
                     self.listWorkTimeComboBox.push(obj);
                 }
             });
