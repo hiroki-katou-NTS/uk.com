@@ -181,6 +181,7 @@ module nts.uk.at.view.kal003.share {
                     dataAttItemJS.group2.lstErAlAtdItemCon[i].countableSubAtdItems = _.values(lstErAlAtdItemCon2[i].countableSubAtdItems);
                 }
             }
+            return dataAttItemJS;
 
         } 
     }
