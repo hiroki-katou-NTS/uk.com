@@ -36,4 +36,9 @@ public class DiffTimeOTTimezoneSet extends OverTimeOfTimeZoneSet {
 		memento.setIsUpdateStartTime(this.isUpdateStartTime);
 		super.saveToMemento(memento);
 	}
+
+	public void restoreData(DiffTimeOTTimezoneSet other) {
+		this.isUpdateStartTime = other.isUpdateStartTime;
+		super.restoreData(other);
+	}
 }
