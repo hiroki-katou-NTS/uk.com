@@ -8,9 +8,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.management.RuntimeErrorException;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.text.IdentifierUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.DisplayMessages;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
@@ -77,8 +79,6 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 				new NameWKRecord(dto.getNameWKRecord())
 				);
 	}
-	
-	
 
 	private WorkRecordExtraConPubExport setErrorAlarmConditionPubExport(WorkRecordExtraConPubExport workRecordExtraConPubExport,
 			List<ErrorAlarmCondition> listErrorAlarmCondition) {
@@ -107,14 +107,16 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 		ErrorAlarmConditionPubExport errorAlarmConditionPubExport = workRecordExtraConPubExport.getErrorAlarmCondition();
 		
 		// for ErrorAlarmCondition
-		if (workRecordExtraConPubExport.getCheckItem() >= TypeCheckWorkRecord.CONTINUOUS_TIME.value) {
-			validRangeOfErAlCondition(errorAlarmConditionPubExport);
-		}
+
 		ErrorAlarmCondition errorAlarmCondition = errorAlarmConditionPubExport.toConditionDomain();
-		errorAlarmCondition.setCheckId(errorAlarmCheckId);
-		errorAlarmCondition.validate();
+		
+		ErrorAlarmCondition insertErrorAlarmCondition = ErrorAlarmCondition.init();
+		//add data for insert
+		insertErrorAlarmCondition.setByCheckItem(workRecordExtraConPubExport.getCheckItem(), errorAlarmCondition);
+		
+		insertErrorAlarmCondition.setCheckId(errorAlarmCheckId);
 		workRecordExtraConPubExport.setErrorAlarmCheckID(errorAlarmCheckId);
-		this.errorAlarmConditionRepository.addErrorAlarmCondition(errorAlarmCondition);
+		this.errorAlarmConditionRepository.addErrorAlarmCondition(insertErrorAlarmCondition);
 		this.repo.addWorkRecordExtraCon(
 				convertToDomainWR(workRecordExtraConPubExport)
 				);
@@ -124,11 +126,19 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 	public void updateWorkRecordExtraConPub(WorkRecordExtraConPubExport workRecordExtraConPubExport) {
 		ErrorAlarmConditionPubExport errorAlarmConditionPubExport = workRecordExtraConPubExport.getErrorAlarmCondition();
 		
-		// for ErrorAlarmCondition
-		validRangeOfErAlCondition(errorAlarmConditionPubExport);
+		int checkItem = workRecordExtraConPubExport.getCheckItem();
+
+		Optional<ErrorAlarmCondition> optErrorAlarmCondition = errorAlarmConditionRepository.findConditionByErrorAlamCheckId(workRecordExtraConPubExport.getErrorAlarmCheckID());
+		if (!optErrorAlarmCondition.isPresent()) {
+			throw new RuntimeErrorException(new Error(), "Update but the ErrorAlarmCondition doesn't exist!!!. ErrorAlarmCheckID: " + workRecordExtraConPubExport.getErrorAlarmCheckID());
+		}
+		
 		ErrorAlarmCondition errorAlarmCondition = errorAlarmConditionPubExport.toConditionDomain();
-		errorAlarmCondition.validate();
-		this.errorAlarmConditionRepository.updateErrorAlarmCondition(errorAlarmCondition);
+		ErrorAlarmCondition updateErrorAlarmCondition = optErrorAlarmCondition.get();
+		//update data
+		updateErrorAlarmCondition.setByCheckItem(checkItem, errorAlarmCondition);
+		
+		this.errorAlarmConditionRepository.updateErrorAlarmCondition(updateErrorAlarmCondition);
 		this.repo.updateWorkRecordExtraCon(convertToDomainWR(workRecordExtraConPubExport));
 	}
 
@@ -143,23 +153,15 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 		}
 	}
 	
-	private void validRangeOfErAlCondition(ErrorAlarmConditionPubExport errorAlarmConditionPubExport) {
-		
-	}
-
 	@Override
-	public void checkUpdateListErAl(List<String> listErrorAlarmCheckID,List<WorkRecordExtraConPubExport> listErroAlarm) {
+	public void checkUpdateListErAl(List<String> oldlstErrorAlarmCheckID, List<WorkRecordExtraConPubExport> listErroAlarm) {
 		//get list gốc theo list Error AlarmCheckID
-		List<WorkRecordExtraConPubExport> data = new ArrayList<>();
-		for(String erroAlarmCheckID : listErrorAlarmCheckID) {
-			WorkRecordExtraConPubExport workRecordExtraConPubExport = getWorkRecordExtraConById(erroAlarmCheckID);
-			if(workRecordExtraConPubExport != null) {
-				data.add(workRecordExtraConPubExport);
-			}
-		}
-		List<String> listErrorAlarmID = new ArrayList<>();
+		List<WorkRecordExtraConPubExport> oldData = getAllWorkRecordExtraConByListID(oldlstErrorAlarmCheckID);
+		List<String> newListCheckIds = listErroAlarm.stream().filter(em -> !StringUtil.isNullOrEmpty(em.getErrorAlarmCheckID(), true))
+				.map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList());
 		//ktra xem có xóa phần tử nào k?
 		//lặp list gốc
+		/*
 		for(WorkRecordExtraConPubExport oldWorkRecordExtraCon :data) {
 			boolean checkExist = false;
 			//lặp list truyền vào
@@ -175,11 +177,14 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 				listErrorAlarmID.add(oldWorkRecordExtraCon.getErrorAlarmCheckID());
 			}
 		}//end lặp list gốc
-		//nếu list id có dữ liệu, tức có phần tử bị xóa đy, gọi hàm xóa
-		if(!listErrorAlarmID.isEmpty()) {
-			deleteWorkRecordExtraConPub(listErrorAlarmID);
-		}
+		*/
 		
+		List<String> listDeleteErrorAlarmID = oldData.stream().filter(item -> !isExistCheckIdInList(item.getErrorAlarmCheckID(),
+				newListCheckIds)).map(id -> id.getErrorAlarmCheckID()).collect(Collectors.toList());
+		//nếu list id có dữ liệu, tức có phần tử bị xóa đy, gọi hàm xóa
+		if(!listDeleteErrorAlarmID.isEmpty()) {
+			deleteWorkRecordExtraConPub(listDeleteErrorAlarmID);
+		}
 		
 		//ktra xem có add và update phần tử nào k?
 		//lặp list truyền vào
@@ -187,13 +192,13 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 			//check tồn tại
 			boolean checkExist1 = false;
 			//lặp list gốc
-			for(WorkRecordExtraConPubExport oldWorkRecordExtraCon : data) {
+			for(WorkRecordExtraConPubExport oldWorkRecordExtraCon : oldData) {
 				if(newWorkRecordExtraCon.getErrorAlarmCheckID().equals(oldWorkRecordExtraCon.getErrorAlarmCheckID())) {
 					if(!newWorkRecordExtraCon.equals(oldWorkRecordExtraCon)) {
 						updateWorkRecordExtraConPub(newWorkRecordExtraCon);
-						checkExist1 = true;
-						break;
 					}
+					checkExist1 = true;
+					break;
 				}
 			}//end lặp list gốc
 			//nếu checkExist1 = false, tức là phần tử thêm mới, gọi hàm thêm mới
@@ -212,6 +217,11 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 			listErrorAlarmCheckID.add(workRecordExtraCon.getErrorAlarmCheckID());
 		}
 		return listErrorAlarmCheckID;
+	}
+	
+	private boolean isExistCheckIdInList(String checkId, List<String> listCheckIds) {
+		Optional<String> optCheckId = listCheckIds.stream().filter(item->item.equals(checkId)).findFirst();
+		return optCheckId.isPresent();
 	}
 
 }
