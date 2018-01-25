@@ -1328,7 +1328,7 @@ module nts.uk.ui.exTable {
              */
             onScroll() {
                 let self = this;
-                self.$container.on(events.SCROLL_EVT, function() {
+                self.$container.off(events.SCROLL_EVT + ".detail").on(events.SCROLL_EVT + ".detail", function() {
                     let inClusterNo = self.getClusterNo();
                     if (self.currentCluster !== inClusterNo) {
                         self.currentCluster = inClusterNo;
@@ -4964,6 +4964,12 @@ module nts.uk.ui.exTable {
                 case "rowId":
                     setRowId(self, params[0], params[1]);
                     break;
+                case "saveScroll":
+                    saveScroll(self);
+                    break;
+                case "scrollBack":
+                    scrollBack(self, params[0]);
+                    break;
             }
         };
         
@@ -5586,6 +5592,41 @@ module nts.uk.ui.exTable {
                     update.pushEditHistory($(this), new selection.Cell(rowIndex, key, value, -1));
                 }
             });
+        }
+        
+        /**
+         * Save scroll.
+         */
+        function saveScroll($container: JQuery) {
+            let key = request.location.current.rawUrl + "/" + $container.attr("id") + "/scroll";
+            let scroll: any = {};
+            let tbl = helper.getMainTable($container);
+            scroll.v = tbl.scrollTop();
+            scroll.h = tbl.scrollLeft();
+            uk.localStorage.setItemAsJson(key, scroll);
+        }
+        
+        /**
+         * Scroll back.
+         */
+        function scrollBack($container: JQuery, where: number) {
+            let key = request.location.current.rawUrl + "/" + $container.attr("id") + "/scroll";
+            let item = uk.localStorage.getItem(key);
+            if (!item.isPresent()) return; 
+            let tbl = helper.getMainTable($container);
+            let scroll = JSON.parse(item.get());
+            switch (where) {
+                case 0:
+                    tbl.scrollLeft(scroll.h);
+                    break;
+                case 1: 
+                    tbl.scrollTop(scroll.v);
+                    break;
+                case 2:
+                    tbl.scrollLeft(scroll.h);
+                    tbl.scrollTop(scroll.v);
+                    break;
+            }
         }
     }
     
