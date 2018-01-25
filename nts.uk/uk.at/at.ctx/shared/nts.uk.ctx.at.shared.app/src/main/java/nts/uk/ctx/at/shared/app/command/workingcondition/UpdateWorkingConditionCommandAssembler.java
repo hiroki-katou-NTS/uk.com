@@ -24,8 +24,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 @Stateless
-public class AddWorkingConditionCommandAssembler {
-	public WorkingConditionItem fromDTO(String histId, AddWorkingConditionCommand command){
+public class UpdateWorkingConditionCommandAssembler {
+	public WorkingConditionItem fromDTO(UpdateWorkingConditionCommand command){
 		List<TimeZone> listTimeZone = new ArrayList<>();
 		// ---------------------- PersonalDayOfWeek
 		/** The monday. */
@@ -159,7 +159,6 @@ public class AddWorkingConditionCommandAssembler {
 				new AttendanceTime(command.getAfternoon() != null ? command.getAfternoon().intValue() : 0));
 		// ------------------------
 		
-		
 		// ScheduleMethod
 		// WorkScheduleBusCal - 営業日カレンダーによる勤務予定作成
 		WorkScheduleBusCal busCal = new WorkScheduleBusCal(
@@ -178,7 +177,7 @@ public class AddWorkingConditionCommandAssembler {
 		ScheduleMethod scheduleMethod = new ScheduleMethod(
 				EnumAdaptor.valueOf(command.getBasicCreateMethod()!=null?command.getBasicCreateMethod().intValue():0, WorkScheduleBasicCreMethod.class),
 				busCal, monthlySchedule);
-		WorkingConditionItem workingCond = new WorkingConditionItem(histId,
+		WorkingConditionItem workingCond = new WorkingConditionItem(command.getHistId(),
 				EnumAdaptor.valueOf(command.getScheduleManagementAtr() != null? command.getScheduleManagementAtr().intValue() : 0, NotUseAtr.class), workDayOfWeek,
 				workCategory, EnumAdaptor.valueOf(command.getAutoStampSetAtr() != null ? command.getAutoStampSetAtr().intValue(): 0, NotUseAtr.class),
 				EnumAdaptor.valueOf(command.getAutoIntervalSetAtr() != null ? command.getAutoIntervalSetAtr().intValue(): 0, NotUseAtr.class),
@@ -190,4 +189,6 @@ public class AddWorkingConditionCommandAssembler {
 		return workingCond;
 	}
 	
+	
+
 }
