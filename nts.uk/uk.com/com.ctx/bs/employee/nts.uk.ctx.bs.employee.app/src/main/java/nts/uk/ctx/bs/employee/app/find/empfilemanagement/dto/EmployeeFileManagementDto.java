@@ -23,6 +23,9 @@ public class EmployeeFileManagementDto {
 	/** The PersonalInformationCtgID */
 	private String categoryName;
 	
+	/** The file size */
+	private long originalSize;
+	
 	public EmployeeFileManagementDto(){}
 	
 	public EmployeeFileManagementDto(String sId, String fileId, int fileType, Integer uploadOder, String perInfCtgId){
@@ -33,11 +36,12 @@ public class EmployeeFileManagementDto {
 		this.personInfoCategoryId = perInfCtgId;
 	}
 	
-	public EmployeeFileManagementDto(String sId, String fileId, String fileName, Integer uploadOder){
+	public EmployeeFileManagementDto(String sId, String fileId, String fileName, Integer uploadOder , long originalSize){
 		this.employeeId = sId;
 		this.fileId = fileId;
 		this.fileName = fileName;
 		this.uploadOrder = uploadOder;
+		this.originalSize = originalSize;
 	}
 	public EmployeeFileManagementDto(String sId, String fileId, int fileType){
 		this.employeeId = sId;

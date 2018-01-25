@@ -49,6 +49,7 @@ module cps001.f.vm {
             self.onfilenameclick = (fileId) => {
                 alert(fileId);
             };
+
         }
 
         start(): JQueryPromise<any> {
@@ -59,20 +60,29 @@ module cps001.f.vm {
             var dfdGetData = service.getData(dataShare.pid);
 
 
-            $.when(dfdGetData).done((datafile: Array<IEmpFileMana>) => {
-                _.forEach(datafile, function(item) {
-                    self.items.push(new GridItem(item));
-                });
-                dfd.resolve();
-            });
-
+            $("#closebtn").focus();
             permision().done((data: IPersonAuth) => {
                 if (data) {
                     if (data.allowDocUpload != 1) {
                         $(".browser-button").attr('disabled', 'disabled');
                         $(".delete-button").attr('disabled', 'disabled');
                     }
+
                 }
+            });
+
+            $.when(dfdGetData).done((datafile: Array<IEmpFileMana>) => {
+                debugger;
+                var totalSize = 0;
+                _.forEach(datafile, function(item) {
+                    totalSize = totalSize + item.originalSize;
+                    self.items.push(new GridItem(item));
+                });
+                if (totalSize != 0) {
+                    let sum = (totalSize / 1024).toFixed(2);
+                    self.fileSize(nts.uk.resource.getText("CPS001_85", [sum]));
+                }
+                dfd.resolve();
             });
 
             return dfd.promise();
@@ -231,6 +241,7 @@ module cps001.f.vm {
         categoryName: string;
         personInfoCategoryId: string;
         uploadOrder: number;
+        originalSize: number;
     }
 
     class EmpFileMana {
