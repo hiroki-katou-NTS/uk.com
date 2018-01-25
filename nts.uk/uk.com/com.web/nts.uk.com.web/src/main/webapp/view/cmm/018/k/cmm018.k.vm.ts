@@ -149,7 +149,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     if(sID.approvalAtr === 0){
                         service.getPersonInfor(sID.id).done(function(data: any){
                             self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName, 0,sID.dispOrder));
-                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]);
+                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]));
                         })
                     }else{
                         let job = new service.model.JobtitleInfor;
@@ -162,7 +162,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                         job.endDate = moment(new Date()).toDate();
                         service.getJobTitleName(job).done(function(data: any){
                             self.approverList.push(new shrVm.ApproverDtoK(data.positionId, data.positionCode, data.positionName, 1,sID.dispOrder));
-                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]);
+                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]));
                         })    
                     }
                 })    
