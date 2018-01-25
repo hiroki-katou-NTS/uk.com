@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,18 +13,12 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 /**
  * ドメインサービス：月別実績を集計する
@@ -95,6 +88,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			attendanceTime.aggregate(companyId, employmentContract.getWorkingSystem(), this.repositories);
 			
 			// 縦計
+			attendanceTime.verticalTotal(companyId, employmentContract.getWorkingSystem(), this.repositories);
 			
 			// 時間外超過
 

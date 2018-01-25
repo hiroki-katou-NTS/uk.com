@@ -37,6 +37,14 @@ module nts.uk.at.view.kal003.share.model {
             new model.ItemModel(1, 'スケジュールと実績で4週4休をチェックする')
         ];
     }
+    
+    export function getErrorClassification(): Array<ItemModel> {
+        return [
+            new model.ItemModel(0, getText('Enum_ErrorAlarmClassification_Error')),
+            new model.ItemModel(1, getText('Enum_ErrorAlarmClassification_Alarm')),
+            new model.ItemModel(2, getText('Enum_ErrorAlarmClassification_Other'))
+        ];
+    }
 
     export class AlarmCheckConditionByCategory {
         code: KnockoutObservable<string>;
@@ -48,7 +56,7 @@ module nts.uk.at.view.kal003.share.model {
         availableRoles: KnockoutObservableArray<string>;
         targetCondition: KnockoutObservable<AlarmCheckTargetCondition>;
         displayAvailableRoles: KnockoutObservable<string>;
-        dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, false, [], [], []));
+        dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, false, [], [], [], []));
         schedule4WeekAlarmCheckCondition: KnockoutObservable<Schedule4WeekAlarmCheckCondition> = ko.observable(new Schedule4WeekAlarmCheckCondition(SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY));
         action: KnockoutObservable<number> = ko.observable(0);
 
@@ -189,15 +197,17 @@ module nts.uk.at.view.kal003.share.model {
         conditionToExtractDaily: KnockoutObservable<number>;//main screen
         addApplication: KnockoutObservable<boolean>;//tab daily
         listErrorAlarmCode: KnockoutObservableArray<string>;//tab daily
+        listErrorAlarmCheck: KnockoutObservableArray<DailyErrorAlarmCheck>;//tab daily
         listExtractConditionWorkRecork: KnockoutObservableArray<WorkRecordExtractingCondition>;//tab check condition
         listFixedExtractConditionWorkRecord: KnockoutObservableArray<FixedConditionWorkRecord>;//tab  fixed
         
-        constructor(conditionToExtractDaily: number, addApplication: boolean, listErrorAlarmCode: Array<string>, listWorkRecordExtractingConditions: Array<WorkRecordExtractingCondition>, listFixedConditionWorkRecord: Array<FixedConditionWorkRecord>) {
+        constructor(conditionToExtractDaily: number, addApplication: boolean, listErrorAlarmCode: Array<string>, listErrorAlarmCheck: Array<DailyErrorAlarmCheck>, listWorkRecordExtractingConditions: Array<WorkRecordExtractingCondition>, listFixedConditionWorkRecord: Array<FixedConditionWorkRecord>) {
             this.conditionToExtractDaily = ko.observable(conditionToExtractDaily);
             this.addApplication = ko.observable(addApplication);
             this.listErrorAlarmCode = ko.observableArray(listErrorAlarmCode);
             this.listExtractConditionWorkRecork = ko.observableArray(listWorkRecordExtractingConditions);
             this.listFixedExtractConditionWorkRecord = ko.observableArray(listFixedConditionWorkRecord);
+            this.listErrorAlarmCheck = ko.observableArray(listErrorAlarmCheck);
         } 
     }
 
@@ -240,6 +250,12 @@ module nts.uk.at.view.kal003.share.model {
     export enum SCREEN_MODE {
         NEW = 0,
         UPDATE = 1
+    }
+    
+    export enum ERROR_CLASSIFICATION {
+        ERROR = 0, 
+        ALARM = 1,
+        OTHER = 2
     }
     
     export interface IWorkRecordExtractingCondition {
@@ -483,9 +499,9 @@ module nts.uk.at.view.kal003.share.model {
         openAtdItemConditionDialog() {
             let self = this;
             let param = ko.mapping.toJS(self);
-            nts.uk.ui.windows.setShared("KAL003CParams", param, true);
-            nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c/index.xhtml", {}).onClosed(() => {
-                let output = getShared("KAL003CResult");
+            nts.uk.ui.windows.setShared("KDW007BParams", param, true);
+            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
+                let output = getShared("KDW007BResult");
                 if (output) {
                     self.targetNO(output.targetNO);
                     self.conditionAtr(output.conditionAtr);
@@ -684,15 +700,18 @@ module nts.uk.at.view.kal003.share.model {
     export class DailyErrorAlarmCheck {
         code: string;
         name: string;
-        classification: string;
+        classification: number;
+        displayClassification: string;
         message: string;
-        constructor(code: string, name: string, classification: string, message: string) {
+        constructor(code: string, name: string, classification: number, message: string) {
             this.code = code;
             this.name = name;
-            this.classification = classification;
+            let item = _.find(ko.toJS(getErrorClassification()), (x: model.ItemModel) => x.code == classification);
+            this.classification = item.code;
+            this.displayClassification = item.name;
             this.message = message;
         }
-    }//end class WorkRecordExtraCon
+    }
     
     //interface FixedConditionWorkRecord
     export interface IFixedConditionWorkRecord {

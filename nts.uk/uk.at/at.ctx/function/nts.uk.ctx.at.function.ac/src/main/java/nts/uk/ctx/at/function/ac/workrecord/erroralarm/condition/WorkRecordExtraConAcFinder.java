@@ -156,9 +156,9 @@ public class WorkRecordExtraConAcFinder implements WorkRecordExtraConAdapter {
 	private ErrorAlarmConditionPubExport convertToErrorAlarmConEx(ErrorAlarmConAdapterDto dto) {
 		return new ErrorAlarmConditionPubExport(
 				dto.getErrorAlarmCheckID(),
-				convertToAlarmCheckTargetConEx(dto.getAlarmCheckTargetCondition()),
+				convertToAlarmCheckTargetConEx(dto.getAlCheckTargetCondition()),
 				convertToWorkTypeConEx(dto.getWorkTypeCondition()),
-				convertToAttendanceItemConEx(dto.getAttendanceItemCondition()),
+				convertToAttendanceItemConEx(dto.getAtdItemCondition()),
 				convertToWorkTimeConEx(dto.getWorkTimeCondition()),
 				dto.getDisplayMessage(),
 				dto.getContinuousPeriod()
@@ -171,10 +171,10 @@ public class WorkRecordExtraConAcFinder implements WorkRecordExtraConAdapter {
 				dto.isFilterByJobTitle(),
 				dto.isFilterByEmployment(),
 				dto.isFilterByClassification(),
-				dto.getLstBusinessType(),
-				dto.getLstJobTitle(),
-				dto.getLstEmployment(),
-				dto.getLstClassification()
+				dto.getLstBusinessTypeCode(),
+				dto.getLstJobTitleId(),
+				dto.getLstEmploymentCode(),
+				dto.getLstClassificationCode()
 				);
 	}
 	
