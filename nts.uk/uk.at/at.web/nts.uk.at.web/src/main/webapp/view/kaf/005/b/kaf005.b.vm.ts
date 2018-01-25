@@ -78,6 +78,7 @@ module nts.uk.at.view.kaf005.b {
             // 参照
             referencePanelFlg: KnockoutObservable<boolean> = ko.observable(false);
             preAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
+            isRightContent: KnockoutObservable<boolean> = ko.observable(false);
             
             instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
             instructInfor : KnockoutObservable <string> = ko.observable('');
@@ -215,6 +216,7 @@ module nts.uk.at.view.kaf005.b {
                 self.preAppPanelFlg(data.preAppPanelFlg);
                 self.allPreAppPanelFlg(data.allPreAppPanelFlg);
                 self.indicationOvertimeFlg(data.extratimeDisplayFlag);
+                self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
                 // preAppOvertime
                 if(data.preAppOvertimeDto != null){
                     self.appDatePre(data.preAppOvertimeDto.appDatePre);

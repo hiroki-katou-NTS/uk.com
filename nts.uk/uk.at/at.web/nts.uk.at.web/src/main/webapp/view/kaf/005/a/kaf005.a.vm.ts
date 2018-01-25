@@ -81,6 +81,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         referencePanelFlg: KnockoutObservable<boolean> = ko.observable(false);
         preAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
         allPreAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
+        isRightContent: KnockoutObservable<boolean> = ko.observable(false);
         
         instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
         instructInfor : KnockoutObservable <string> = ko.observable('');
@@ -168,7 +169,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                             self.findBychangeAppDateData(data);
                             self.kaf000_a.getAppDataDate(0, moment(value).format(self.DATE_FORMAT), false);
                             self.convertAppOvertimeReferDto(data);
-                            self.preAppPanelFlg(data.preAppPanelFlg);
                             nts.uk.ui.block.clear(); 
                             dfd.resolve(data);
                         }).fail((res) =>{
@@ -199,6 +199,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                 self.referencePanelFlg(data.referencePanelFlg);
                                 self.allPreAppPanelFlg(data.allPreAppPanelFlg);
                                 self.preAppPanelFlg(data.preAppPanelFlg);
+                                self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
                                 self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
                                 self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
                             }).fail((res) =>{
@@ -280,6 +281,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.preAppPanelFlg(data.preAppPanelFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.indicationOvertimeFlg(data.extratimeDisplayFlag);
+            self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
             // preAppOvertime
             self.convertpreAppOvertimeDto(data);
             // 休憩時間
@@ -680,6 +682,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.instructInfor(overtimeDto.overtimeInstructInformation);
             // preAppOvertime
             self.convertpreAppOvertimeDto(overtimeDto);
+            self.referencePanelFlg(data.referencePanelFlg);
+            self.preAppPanelFlg(data.preAppPanelFlg);
+            self.allPreAppPanelFlg(data.allPreAppPanelFlg);
+            self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
            
              // 残業時間
             if (overtimeDto.overTimeInputs != null) {
