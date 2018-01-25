@@ -14,6 +14,9 @@ public interface ErrorAlarmConditionRepository {
 	// get condition by eralCheckId
 	Optional<ErrorAlarmCondition> findConditionByErrorAlamCheckId(String eralCheckId);
 
+	// get message condition by list eralCheckId
+	List<ErrorAlarmCondition> findMessageConByListErAlCheckId(List<String> listEralCheckId);
+	
 	// get condition by list eralCheckId
 	List<ErrorAlarmCondition> findConditionByListErrorAlamCheckId(List<String> listEralCheckId);
 

@@ -174,7 +174,7 @@ module nts.uk.at.view.kal003.share {
             }
             
             dataAttItemJS.group2.lstErAlAtdItemCon = _.values(attItemCondition.group2().lstErAlAtdItemCon());
-            let lstErAlAtdItemCon2 = dataAttItemJS.group2().lstErAlAtdItemCon();            
+            let lstErAlAtdItemCon2 = attItemCondition.group2().lstErAlAtdItemCon();            
             if (lstErAlAtdItemCon2) {
                 for(var i=0; i< lstErAlAtdItemCon2.length; i++) {
                     dataAttItemJS.group2.lstErAlAtdItemCon[i].countableAddAtdItems = _.values(lstErAlAtdItemCon2[i].countableAddAtdItems);
