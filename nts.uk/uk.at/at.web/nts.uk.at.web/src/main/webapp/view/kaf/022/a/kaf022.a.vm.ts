@@ -60,14 +60,14 @@ module nts.uk.at.view.kmf022 {
                         break;
                     case 'l':
                         self.currentTab('l');
-                        if (!!view.viewmodelL && typeof view.viewmodelL.start == 'function') {
-                            view.viewmodelL.start();
+                        if (!!view.viewModelL && typeof view.viewModelL.start == 'function') {
+                            view.viewModelL.start();
                         }
                         break;
                     case 'm':
                         self.currentTab('m');
-                        if (!!view.viewmodelM && typeof view.viewmodelM.start == 'function') {
-                            view.viewmodelM.start();
+                        if (!!view.viewModelM && typeof view.viewModelM.start == 'function') {
+                            view.viewModelM.start();
                         }
                         break;
                 }
