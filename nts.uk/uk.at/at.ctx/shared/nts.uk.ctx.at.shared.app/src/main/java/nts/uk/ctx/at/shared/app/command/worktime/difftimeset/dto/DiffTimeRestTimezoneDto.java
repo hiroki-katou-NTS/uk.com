@@ -52,7 +52,9 @@ public class DiffTimeRestTimezoneDto {
 
 		@Override
 		public List<DiffTimeDeductTimezone> getRestTimezones() {
-			return this.dto.restTimezones.stream().map(item -> {
+			return this.dto.restTimezones.stream()
+					.sorted((item1,item2)->item1.getStart().compareTo(item2.getStart()))
+					.map(item -> {
 				return item.toDomain();
 			}).collect(Collectors.toList());
 		}

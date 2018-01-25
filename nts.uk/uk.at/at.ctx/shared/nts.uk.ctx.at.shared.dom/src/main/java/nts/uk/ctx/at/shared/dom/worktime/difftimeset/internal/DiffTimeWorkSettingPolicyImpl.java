@@ -116,7 +116,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	private void validateHDWorkTimeSheetSetting(BundledBusinessException be, PredetemineTimeSetting pred,
 			DiffTimeWorkSetting diffTimeWorkSetting) {
 		diffTimeWorkSetting.getDayoffWorkTimezone().getRestTimezone().getRestTimezones().stream().forEach(item -> {
-			if (!this.predeteminePolicyService.validateOneDay(pred, item.getStart(), item.getEnd())) {
+			if (this.predeteminePolicyService.validateOneDay(pred, item.getStart(), item.getEnd())) {
 				be.addMessage("Msg_516");
 			}
 		});
