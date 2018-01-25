@@ -5,9 +5,13 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
 
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlConditionsAttendanceItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.PlanActualWorkTime;
@@ -17,6 +21,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanAct
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.WorkTypeCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 
@@ -243,5 +248,118 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	
 	public void setContinuousPeriod(int continuousPeriod){
 		this.continuousPeriod = new ContinuousPeriod(continuousPeriod);
+	}
+	
+	/**
+	 * Process setting data for insert, update base on checkItem
+	 * @param checkItem
+	 * @param errorAlarmCondition
+	 */
+	public void setByCheckItem(int checkItem, ErrorAlarmCondition errorAlarmCondition) {
+		if (checkItem == TypeCheckWorkRecord.TIME.value
+			|| checkItem == TypeCheckWorkRecord.TIMES.value
+			|| checkItem == TypeCheckWorkRecord.AMOUNT_OF_MONEY.value
+			|| checkItem == TypeCheckWorkRecord.TIME_OF_DAY.value) {
+			this.workTypeCondition 	= errorAlarmCondition.workTypeCondition;
+			this.atdItemCondition 	= errorAlarmCondition.atdItemCondition;
+			this.displayMessage 	= errorAlarmCondition.displayMessage;
+
+			processCompareRange();
+		} else if (checkItem == TypeCheckWorkRecord.CONTINUOUS_TIME.value) {
+			this.workTypeCondition 	= errorAlarmCondition.workTypeCondition;
+			this.atdItemCondition 	= errorAlarmCondition.atdItemCondition;
+			this.displayMessage 	= errorAlarmCondition.displayMessage;
+			this.continuousPeriod	= errorAlarmCondition.continuousPeriod;
+
+			processCompareRange();
+		} else if (checkItem == TypeCheckWorkRecord.CONTINUOUS_WORK.value) {
+			this.workTimeCondition 	= errorAlarmCondition.workTimeCondition;
+			this.displayMessage 	= errorAlarmCondition.displayMessage;
+			this.continuousPeriod	= errorAlarmCondition.continuousPeriod;
+
+		} else if (checkItem == TypeCheckWorkRecord.CONTINUOUS_TIME_ZONE.value) {
+			this.workTypeCondition 	= errorAlarmCondition.workTypeCondition;
+			this.workTimeCondition 	= errorAlarmCondition.workTimeCondition;
+			this.displayMessage 	= errorAlarmCondition.displayMessage;
+			this.continuousPeriod	= errorAlarmCondition.continuousPeriod;
+			
+		} else if (checkItem == TypeCheckWorkRecord.CONTINUOUS_CONDITION.value) {
+			this.atdItemCondition 	= errorAlarmCondition.atdItemCondition;
+			this.displayMessage 	= errorAlarmCondition.displayMessage;
+			//validate range
+			try{
+				List<ErAlAttendanceItemCondition<?>> lstErAlAttendanceItemCondition = this.atdItemCondition.getGroup1().getLstErAlAtdItemCon();
+				if (lstErAlAttendanceItemCondition != null && !lstErAlAttendanceItemCondition.isEmpty()) {
+					for(ErAlAttendanceItemCondition<?> data : lstErAlAttendanceItemCondition) {
+						validRangeOfErAlCondition(data.getCompareRange());
+					}
+				}
+				if (this.atdItemCondition.getGroup2UseAtr()) {
+					List<ErAlAttendanceItemCondition<?>> lstErAlAttendanceItemCondition2 = this.atdItemCondition.getGroup2().getLstErAlAtdItemCon();
+					if (lstErAlAttendanceItemCondition2 != null && !lstErAlAttendanceItemCondition2.isEmpty()) {
+						for(ErAlAttendanceItemCondition<?> data : lstErAlAttendanceItemCondition2) {
+							validRangeOfErAlCondition(data.getCompareRange());
+						}
+					}
+				} else {
+					List<ErAlAttendanceItemCondition<?>> lstErAlAttendanceItemCondition2 = this.atdItemCondition.getGroup2().getLstErAlAtdItemCon();
+					if (lstErAlAttendanceItemCondition2 != null && !lstErAlAttendanceItemCondition2.isEmpty()) {
+						this.atdItemCondition.getGroup2().getLstErAlAtdItemCon().clear();
+					}
+				}
+			}catch(Exception e) {
+				throw new RuntimeErrorException(new Error(), "Data is invalid");
+			}
+		} else {
+			throw new RuntimeErrorException(new Error(), "Item Check is invalid!");
+		}
+	}
+	
+	private void validRangeOfErAlCondition(CompareRange<?> compareRange) {
+		if (compareRange == null) {
+			throw new RuntimeErrorException(new Error(), "Data is invalid");
+		}
+		int comOper = compareRange.getCompareOperator().value;
+		int minValue = Integer.valueOf(compareRange.getStartValue().toString()); 
+		int maxValue = Integer.valueOf(compareRange.getEndValue().toString());
+		
+		boolean valid = true;
+		switch (comOper) {
+	        case 6: // 範囲の間（境界値を含まない）（＜＞）
+	        case 8: // 範囲の外（境界値を含まない）（＞＜）
+	        	valid = (minValue >= maxValue);
+	        case 7: // 範囲の間（境界値を含む）（≦≧）
+	        case 9: // 範囲の外（境界値を含む）（≧≦）
+	            valid = (minValue > maxValue);
+	        default:
+	            break;
+	    }
+	    if (!valid) {
+	    	throw new BusinessException("Msg_833");
+	    }
+	}
+	/**
+	 * process in case Compare Range
+	 */
+	private void processCompareRange() {
+		try{
+			List<ErAlAttendanceItemCondition<?>> lstErAlAttendanceItemCondition = this.atdItemCondition.getGroup1().getLstErAlAtdItemCon();
+			if (lstErAlAttendanceItemCondition != null && !lstErAlAttendanceItemCondition.isEmpty()) {
+				int len = lstErAlAttendanceItemCondition.size();
+				for(int i = len - 1; i > 0; i--) {
+					this.atdItemCondition.getGroup1().getLstErAlAtdItemCon().remove(i);
+				}
+			}
+			List<ErAlAttendanceItemCondition<?>> lstErAlAttendanceItemCondition2 = this.atdItemCondition.getGroup2().getLstErAlAtdItemCon();
+			if (lstErAlAttendanceItemCondition2 != null && !lstErAlAttendanceItemCondition2.isEmpty()) {
+				this.atdItemCondition.getGroup2().getLstErAlAtdItemCon().clear();
+			}
+		}catch(Exception e) {
+			throw new RuntimeErrorException(new Error(), "Data is invalid");
+		}
+		
+		//validate data range
+		CompareRange<?> compareRange = this.atdItemCondition.getGroup1().getLstErAlAtdItemCon().get(0).getCompareRange();
+		validRangeOfErAlCondition(compareRange);
 	}
 }
