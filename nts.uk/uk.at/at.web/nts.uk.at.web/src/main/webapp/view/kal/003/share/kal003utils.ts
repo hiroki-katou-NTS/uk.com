@@ -103,7 +103,7 @@ module nts.uk.at.view.kal003.share {
         }
         
         export function convertTransferDataToWorkRecordExtractingCondition(
-            workRecordExtractingCondition : workRecordExtractingCondition) : model.WorkRecordExtractingCondition {
+            workRecordExtractingCondition : model.WorkRecordExtractingCondition) : model.WorkRecordExtractingCondition {
             let convertWorkRecordExtractingCondition = new model.WorkRecordExtractingCondition(workRecordExtractingCondition);
             
             convertWorkRecordExtractingCondition.errorAlarmCondition(new model.ErrorAlarmCondition(workRecordExtractingCondition.errorAlarmCondition));
@@ -145,5 +145,43 @@ module nts.uk.at.view.kal003.share {
                 }
             }
             return convertWorkRecordExtractingCondition;
+        }
+        
+        export function convertArrayOfWorkRecordExtractingConditionToJS(dataJS : any,
+            workRecordExtractingCondition : model.WorkRecordExtractingCondition) : any {
+            let errorAlarmCondition = workRecordExtractingCondition.errorAlarmCondition();
+            dataJS.errorAlarmCondition.workTypeCondition.planLstWorkType   = _.values(errorAlarmCondition.workTypeCondition().planLstWorkType());
+            dataJS.errorAlarmCondition.workTypeCondition.actualLstWorkType = _.values(errorAlarmCondition.workTypeCondition().actualLstWorkType);
+            
+            dataJS.errorAlarmCondition.workTimeCondition.planLstWorkType   = _.values(errorAlarmCondition.workTypeCondition().planLstWorkType());
+            dataJS.errorAlarmCondition.workTimeCondition.actualLstWorkType = _.values(errorAlarmCondition.workTypeCondition().actualLstWorkType);
+            
+            dataJS.errorAlarmCondition.atdItemCondition = 
+                convertArrayOfAttendanceItemCondition(dataJS.errorAlarmCondition.atdItemCondition, errorAlarmCondition.atdItemCondition());
+            return dataJS;
+        }
+        /**
+         * Covert all data array to array data of JSon
+         */
+        export function convertArrayOfAttendanceItemCondition(dataAttItemJS, attItemCondition : model.AttendanceItemCondition) : any {
+            dataAttItemJS.group1.lstErAlAtdItemCon = _.values(attItemCondition.group1().lstErAlAtdItemCon());
+            let lstErAlAtdItemCon1 = attItemCondition.group1().lstErAlAtdItemCon();
+            if (lstErAlAtdItemCon1) {
+                for(var i=0; i< lstErAlAtdItemCon1.length; i++) {
+                    dataAttItemJS.group1.lstErAlAtdItemCon[i].countableAddAtdItems = _.values(lstErAlAtdItemCon1[i].countableAddAtdItems);
+                    dataAttItemJS.group1.lstErAlAtdItemCon[i].countableSubAtdItems = _.values(lstErAlAtdItemCon1[i].countableSubAtdItems);
+                }
+            }
+            
+            dataAttItemJS.group2.lstErAlAtdItemCon = _.values(attItemCondition.group2().lstErAlAtdItemCon());
+            let lstErAlAtdItemCon2 = dataAttItemJS.group2().lstErAlAtdItemCon();            
+            if (lstErAlAtdItemCon2) {
+                for(var i=0; i< lstErAlAtdItemCon2.length; i++) {
+                    dataAttItemJS.group2.lstErAlAtdItemCon[i].countableAddAtdItems = _.values(lstErAlAtdItemCon2[i].countableAddAtdItems);
+                    dataAttItemJS.group2.lstErAlAtdItemCon[i].countableSubAtdItems = _.values(lstErAlAtdItemCon2[i].countableSubAtdItems);
+                }
+            }
+
+        } 
     }
 }

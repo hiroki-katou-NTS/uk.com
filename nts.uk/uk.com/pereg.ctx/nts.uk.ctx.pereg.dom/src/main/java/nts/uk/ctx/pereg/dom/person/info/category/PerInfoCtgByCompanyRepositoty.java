@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PerInfoCtgByCompanyRepositoty{
-	
-	List<PersonCategoryData> getAllCategoryByCompanyId(String companyId);
+
 	Optional<PersonInfoCategory> getDetailCategoryInfo(String companyId, String categoryId,String contractCd);
 	String getNameCategoryInfo(String companyId, String categoryCd);
 	List<String> getItemInfoId(String categoryId, String contractCd);

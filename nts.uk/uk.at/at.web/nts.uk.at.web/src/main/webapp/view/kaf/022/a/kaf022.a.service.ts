@@ -6,10 +6,14 @@ module nts.uk.at.view.kmf022.a.service {
         //会社別申請承認設定
         findAll: "at/request/application/requestofearch/getrequestofearch",
         // update/insert: RequestOfEachCompanyCommandHandler
+        //A4_5: 
+        findAllClosure: "ctx/at/shared/workrule/closure/history/findAll",
         // A4_6
         find: "at/request/application/getalldatabyclosureId",
 //        updateClosure: "at/request/application/update",
         addClosure: "at/request/application/add",
+        // A5_14 -> A5_25
+        findApproSet: "at/request/application/common/setting/appcommon",
         // A14_3
         findJobAssign: "job/assign/setting/getjob",
         //A15_4
@@ -19,10 +23,24 @@ module nts.uk.at.view.kmf022.a.service {
         // A17_4, A9_5
         findAppSet: "at/request/application/setting/appset",
         //E14,15
-        findStamp: "at/request/application/stamprequest/findByComID" //UpdateStampRequestSettingCommandHandler
+        findStamp: "at/request/application/stamprequest/findByComID", //UpdateStampRequestSettingCommandHandler
+        // F10->F16
+        findDirectlycommon: "at/request/application/gobackdirectlycommon/getGoBackCommonByCid" //GoBackDirectlyCommonSettingRepository
         
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
+    }
+    
+    export function findApproSet() {
+        return nts.uk.request.ajax("at", paths.findApproSet); 
+    }
+    
+    export function findAllClosure() {
+        return nts.uk.request.ajax("at", paths.findAllClosure); 
+    }
+    
+    export function findDirectlycommon() {
+        return nts.uk.request.ajax("at", paths.findDirectlycommon); 
     }
     
     export function findStamp() {

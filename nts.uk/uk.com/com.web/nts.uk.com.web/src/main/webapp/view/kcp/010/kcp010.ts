@@ -268,7 +268,7 @@ module kcp010.viewmodel {
      */
     export module service {
         var paths: any = {
-            findWorkplaceTree: "bs/employee/workplace/config/info/findAll",
+            findWorkplaceTree: "bs/employee/workplace/config/info/findAllForKcp",
             searchWorkplace: 'screen/com/kcp010/search/',
             getWorkplaceBySid: 'screen/com/kcp010/getLoginWkp',
         }

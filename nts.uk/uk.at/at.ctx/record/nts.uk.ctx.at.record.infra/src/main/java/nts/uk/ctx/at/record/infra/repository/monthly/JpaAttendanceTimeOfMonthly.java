@@ -36,6 +36,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.Co
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.RetentionYearlyUseTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.SpecialHolidayUseTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonAggrHdwkTime;
@@ -141,6 +142,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				toDomainAggregateTotalTimeSpentAtWork(entity));
 		
 		// 月別実績の勤怠時間
+		//*****（未）　縦計は、永続化未実装。(2018/1/22 shuichi_ishida)
 		val domain = AttendanceTimeOfMonthly.of(
 				entity.PK.employeeId,
 				new YearMonth(entity.PK.yearMonth),
@@ -148,6 +150,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				new ClosureDate(entity.PK.closureDay, (entity.PK.isLastDay != 0)),
 				new DatePeriod(entity.startYmd, entity.endYmd),
 				monthlyCalculation,
+				new VerticalTotalOfMonthly(),
 				new AttendanceDaysMonth(entity.aggregateDays));
 		return domain;
 	}

@@ -172,11 +172,11 @@ module nts.uk.com.view.cas013.a.viewmodel {
         }
         openBModal(): void {
             var self = this;
-            let param = {
-                roleType: 1,
-                multiple: false
-            };
-            nts.uk.ui.windows.setShared("param", param);
+            let userIds = [];
+            for (let user of self.listRoleIndividual()) {
+                userIds.push(user.userId);                
+            }
+            nts.uk.ui.windows.setShared("userIds", userIds);
             nts.uk.ui.windows.sub.modal("../b/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("UserInfo");
                 if (data != null) {
@@ -257,6 +257,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     new service.Service().deleteRoleGrant(roleTpye, userId).done(function() {
                         self.selectedRoleIndividual('');
                         self.selectRole(self.selectedRole(), '');
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     }).always(() => {
                         block.clear();
                     });
