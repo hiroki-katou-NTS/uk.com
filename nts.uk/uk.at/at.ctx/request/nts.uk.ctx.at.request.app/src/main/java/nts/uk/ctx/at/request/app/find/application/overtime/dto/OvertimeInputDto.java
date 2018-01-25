@@ -50,6 +50,8 @@ public class OvertimeInputDto {
 	 */
 	private Integer applicationTime;
 	
+	private int errorCode;
+	
 	public static OvertimeInputDto fromDomain(OverTimeInput overTimeInput){
 		return new OvertimeInputDto(
 				overTimeInput.getCompanyID(), 
@@ -60,6 +62,6 @@ public class OvertimeInputDto {
 				"", 
 				overTimeInput.getStartTime().v(), 
 				overTimeInput.getEndTime().v(), 
-				overTimeInput.getApplicationTime().v());
+				overTimeInput.getApplicationTime().v(),0);
 	}
 }
