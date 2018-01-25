@@ -370,6 +370,9 @@ public class AppOvertimeFinder {
 		});
 		
 		overTimeDto.setOverTimeInputs(overTimeInputs);
+		if(overTimeDto.getApplication().getPrePostAtr() == InitValueAtr.POST.value){
+			overTimeDto.setReferencePanelFlg(true);
+		}
 		//01-09_事前申請を取得
 				if(overTimeDto.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
 					AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(companyID, appOverTime.getApplication().getEmployeeID(),overtimeRestAppCommonSet, appOverTime.getApplication().getAppDate().toString(DATE_FORMAT),appOverTime.getApplication().getPrePostAtr().value);
