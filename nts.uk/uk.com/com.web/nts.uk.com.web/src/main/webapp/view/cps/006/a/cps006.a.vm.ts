@@ -195,6 +195,97 @@ module nts.uk.com.view.cps006.a.viewmodel {
             return dfd.promise();
         }
 
+        reload(id: string, index: any): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            self.categoryList.removeAll();
+            if (self.isAbolished()) {
+                service.getAllCategory().done(function(data: Array<any>) {
+                    if (data.length > 0) {
+                        self.categoryList(_.map(data, x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: x.isAbolition,
+                        })));
+
+                        self.categorySourceLst(_.map(data, x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: x.isAbolition
+                        })));
+
+                        let categoryOld = _.filter(self.categoryList(), function(cate: any) { return cate.id == id });
+
+                        if (categoryOld.length == 0) {
+                            if (self.categoryList().length > index) {
+                                self.currentCategory().id(self.categoryList()[index].id);
+                            } else if (self.categoryList().length === 0) {
+                                self.currentCategory().id(self.categoryList()[0].id);
+                            } else if (self.categoryList().length > index) {
+                                self.currentCategory().id(self.categoryList()[self.categoryList().length - 1]);
+                            }
+                        } else if (categoryOld.length > 0) {
+                            self.currentCategory().id(categoryOld[0].id);
+                        }
+
+                    } else {
+
+                        dialog.alertError({ messageId: 'Msg_291' });
+
+                    }
+                    dfd.resolve();
+                });
+            } else {
+                service.getAllCategory().done(function(data: Array<any>) {
+                    if (data.length > 0) {
+                        self.categoryList(_.map(_.filter(data, x => { return x.isAbolition == 0 }), x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: x.isAbolition
+                        })));
+                        self.categorySourceLst(_.map(data, x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: x.isAbolition
+                        })));
+
+                        let categoryOld = _.filter(self.categoryList(), function(cate: any) { return cate.id == id });
+
+                        if (categoryOld.length == 0) {
+                            if (self.categoryList().length > index) {
+                                self.currentCategory().id(self.categoryList()[index].id);
+                            } else if (self.categoryList().length === 0) {
+                                self.currentCategory().id(self.categoryList()[0].id);
+                            } else if (self.categoryList().length > index) {
+                                self.currentCategory().id(self.categoryList()[self.categoryList().length - 1]);
+                            }
+                        } else if (categoryOld.length > 0) {
+                            self.currentCategory().id(categoryOld[0].id);
+                        }
+
+                    } else {
+
+                        dialog.alertError({ messageId: 'Msg_291' });
+
+                    }
+                    dfd.resolve();
+                });
+
+            }
+
+
+            return dfd.promise();
+        }
+
+
         openBModal() {
 
             let self = this;
@@ -240,7 +331,10 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
             service.updateCtgInfo(command).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                    self.start(command.categoryId);
+                    let index = _.indexOf(_.map(self.categoryList(), function(obj) { return obj.id }), command.categoryId);
+                    if (index >= 0) {
+                        self.reload(command.categoryId, index);
+                    }
                 });
             }).fail(function(res: any) {
                 if (res.messageId == "Msg_928") {

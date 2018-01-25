@@ -108,6 +108,16 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.systemRequired = SystemRequired.NONE_REQUIRED;
 		this.requireChangable = RequireChangable.REQUIRED;
 	}
+	
+	private PersonInfoItemDefinition(String ctgID,String itemId) {
+		super();
+		this.perInfoItemDefId = itemId;
+		this.perInfoCategoryId = ctgID;
+	}
+	
+	public static PersonInfoItemDefinition createFromJavaType(String ctgId, String itemId) {
+		return new PersonInfoItemDefinition(ctgId, itemId);
+	}
 
 	public static PersonInfoItemDefinition createFromJavaType(String personInfoCategoryId, String itemCode,
 			String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired) {

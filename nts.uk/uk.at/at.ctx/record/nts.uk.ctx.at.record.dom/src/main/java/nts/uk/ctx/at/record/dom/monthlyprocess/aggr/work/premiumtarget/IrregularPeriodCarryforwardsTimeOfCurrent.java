@@ -26,16 +26,18 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent {
 	 * @param weeklyTotalPremiumTime 週割増合計時間
 	 * @param addSet 加算設定
 	 * @param aggregateTotalWorkingTime 集計総労働時間
+	 * @param statutoryWorkingTimeMonth 月間法定労働時間
 	 */
 	public AddedVacationUseTime aggregate(String companyId, String employeeId, DatePeriod datePeriod,
 			AttendanceTimeMonth weeklyTotalPremiumTime,
-			AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime){
+			AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			AttendanceTimeMonth statutoryWorkingTimeMonth){
 		
 		AddedVacationUseTime addedVacationUseTime = new AddedVacationUseTime();
 		
 		// 月割増対象時間（休暇加算前）を求める
-		val beforeAddVacation = TargetPremiumTimeMonth.askTime(
-				companyId, employeeId, datePeriod, weeklyTotalPremiumTime, addSet, aggregateTotalWorkingTime);
+		val beforeAddVacation = TargetPremiumTimeMonth.askTime(companyId, employeeId, datePeriod,
+				weeklyTotalPremiumTime, addSet, aggregateTotalWorkingTime, statutoryWorkingTimeMonth);
 		
 		// 月割増対象時間（休暇加算前）を〃（休暇加算後）に入れる
 		AttendanceTimeMonth afterAddVacation = new AttendanceTimeMonth(beforeAddVacation.v());

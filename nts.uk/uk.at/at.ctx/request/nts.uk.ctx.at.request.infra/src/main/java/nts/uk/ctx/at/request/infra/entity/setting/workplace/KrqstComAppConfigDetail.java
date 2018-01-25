@@ -24,11 +24,10 @@ import nts.uk.ctx.at.request.dom.setting.workplace.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.DisplayBreakTime;
 import nts.uk.ctx.at.request.dom.setting.workplace.InstructionUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.Memo;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompany;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
- * 
+ *  会社-申請承認機能設定
  * @author Doan Duy Hung
  *
  */
