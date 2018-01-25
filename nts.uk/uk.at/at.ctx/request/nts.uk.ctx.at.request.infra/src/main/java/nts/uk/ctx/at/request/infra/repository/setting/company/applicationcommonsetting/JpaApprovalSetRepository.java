@@ -2,13 +2,15 @@ package nts.uk.ctx.at.request.infra.repository.setting.company.applicationcommon
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.ApprovalSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.ApprovalSetRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.company.applicationcommonsetting.KrqstApprovalSet;
 import nts.uk.shr.com.context.AppContexts;
-
+@Stateless
 public class JpaApprovalSetRepository extends JpaRepository implements ApprovalSetRepository{
 	/**
 	 * convert from domain to entity
