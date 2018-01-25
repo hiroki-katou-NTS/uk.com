@@ -81,27 +81,27 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 	 *            the diff time work setting
 	 */
 	// TODO Not use because not mapping to screen
-	private void validateStampReflectTimezone(BundledBusinessException be, PredetemineTimeSetting pred,
-			DiffTimeWorkSetting diffTimeWorkSetting) {
-		diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone().stream().forEach(item -> {
-			// get start and end time
-			TimeWithDayAttr start = item.getStartTime();
-			TimeWithDayAttr end = item.getEndTime();
-			// validate
-			if (!this.predeteminePolicyService.validateOneDay(pred, start, end)) {
-				// throw new BusinessException("Msg_516");
-			}
-		});
-
-		// get start and end time
-		// TimeWithDayAttr start =
-		// diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone();
-		// TimeWithDayAttr end =
-		// diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone().getEndTime();
-
-		// validate
-		// this.predeteminePolicyService.validateOneDay(pred, start, end);
-	}
+//	private void validateStampReflectTimezone(BundledBusinessException be, PredetemineTimeSetting pred,
+//			DiffTimeWorkSetting diffTimeWorkSetting) {
+//		diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone().stream().forEach(item -> {
+//			// get start and end time
+//			TimeWithDayAttr start = item.getStartTime();
+//			TimeWithDayAttr end = item.getEndTime();
+//			// validate
+//			if (!this.predeteminePolicyService.validateOneDay(pred, start, end)) {
+//				// throw new BusinessException("Msg_516");
+//			}
+//		});
+//
+//		// get start and end time
+//		// TimeWithDayAttr start =
+//		// diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone();
+//		// TimeWithDayAttr end =
+//		// diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone().getEndTime();
+//
+//		// validate
+//		// this.predeteminePolicyService.validateOneDay(pred, start, end);
+//	}
 
 	/**
 	 * Validate diff timezone set.
@@ -117,7 +117,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 			DiffTimeWorkSetting diffTimeWorkSetting) {
 		diffTimeWorkSetting.getDayoffWorkTimezone().getRestTimezone().getRestTimezones().stream().forEach(item -> {
 			if (this.predeteminePolicyService.validateOneDay(pred, item.getStart(), item.getEnd())) {
-				be.addMessage("Msg_516");
+				be.addMessage("Msg_516","KMK003_21");
 			}
 		});
 	}
