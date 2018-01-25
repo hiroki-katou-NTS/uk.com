@@ -12,6 +12,8 @@ module nts.uk.at.view.kmf022.a.service {
         find: "at/request/application/getalldatabyclosureId",
 //        updateClosure: "at/request/application/update",
         addClosure: "at/request/application/add",
+        // A5_14 -> A5_25
+        findApproSet: "at/request/application/common/setting/appcommon",
         // A14_3
         findJobAssign: "job/assign/setting/getjob",
         //A15_4
@@ -27,6 +29,10 @@ module nts.uk.at.view.kmf022.a.service {
         
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
+    }
+    
+    export function findApproSet() {
+        return nts.uk.request.ajax("at", paths.findApproSet); 
     }
     
     export function findAllClosure() {

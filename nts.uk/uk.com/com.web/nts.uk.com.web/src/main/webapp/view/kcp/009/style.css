@@ -16,6 +16,7 @@
 
 #wkp_title_text {
 	width: 50px;
+	text-align: center;
 }
 
 #wkp_text {
@@ -62,8 +63,8 @@ td.employment-tdpad{
 	padding: 3px 5px 3px 5px;
 }
 .over_text{
-	overflow: auto;
-	height: 20px;
+	/* overflow: auto; */
+	width: 120px;
 }
 #search-input{
 	width: 100px;

@@ -19,9 +19,9 @@ public class AggregatePremiumTime {
 	/**
 	 * コンストラクタ
 	 */
-	public AggregatePremiumTime(){
+	public AggregatePremiumTime(int premiumTimeItemNo){
 		
-		this.premiumTimeItemNo = 0;
+		this.premiumTimeItemNo = premiumTimeItemNo;
 		this.time = new AttendanceTimeMonth(0);
 	}
 	
@@ -35,9 +35,16 @@ public class AggregatePremiumTime {
 			int premiumTimeItemNo,
 			AttendanceTimeMonth time){
 		
-		val domain = new AggregatePremiumTime();
-		domain.premiumTimeItemNo = premiumTimeItemNo;
+		val domain = new AggregatePremiumTime(premiumTimeItemNo);
 		domain.time = time;
 		return domain;
+	}
+	
+	/**
+	 * 時間に分を加算する
+	 * @param minutes 分
+	 */
+	public void addMinutesToTime(int minutes){
+		this.time = this.time.addMinutes(minutes);
 	}
 }

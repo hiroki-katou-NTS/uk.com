@@ -33,4 +33,12 @@ public class TwoTimesWorkTimesOfMonthly {
 		domain.times = times;
 		return domain;
 	}
+	
+	/**
+	 * 集計
+	 */
+	public void aggregate(){
+		
+		this.times = new AttendanceTimesMonth(0);
+	}
 }

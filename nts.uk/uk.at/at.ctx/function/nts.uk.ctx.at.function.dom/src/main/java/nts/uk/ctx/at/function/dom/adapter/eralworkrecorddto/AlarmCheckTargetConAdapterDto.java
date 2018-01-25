@@ -19,13 +19,13 @@ public class AlarmCheckTargetConAdapterDto {
 	/* 分類でしぼり込む */
 	private boolean filterByClassification;
 	/* 対象勤務種別 */
-	private List<String> lstBusinessType;
+	private List<String> lstBusinessTypeCode;
 	/* 対象職位 */
-	private List<String> lstJobTitle;
+	private List<String> lstJobTitleId;
 	/* 対象雇用 */
-	private List<String> lstEmployment;
+	private List<String> lstEmploymentCode;
 	/* 対象分類 */
-	private List<String> lstClassification;
+	private List<String> lstClassificationCode;
 	
 	public AlarmCheckTargetConAdapterDto(boolean filterByBusinessType, boolean filterByJobTitle,
 			boolean filterByEmployment, boolean filterByClassification, List<String> lstBusinessType,
@@ -35,10 +35,10 @@ public class AlarmCheckTargetConAdapterDto {
 		this.filterByJobTitle = filterByJobTitle;
 		this.filterByEmployment = filterByEmployment;
 		this.filterByClassification = filterByClassification;
-		this.lstBusinessType = lstBusinessType;
-		this.lstJobTitle = lstJobTitle;
-		this.lstEmployment = lstEmployment;
-		this.lstClassification = lstClassification;
+		this.lstBusinessTypeCode = lstBusinessType;
+		this.lstJobTitleId = lstJobTitle;
+		this.lstEmploymentCode = lstEmployment;
+		this.lstClassificationCode = lstClassification;
 	}
 	
 	
