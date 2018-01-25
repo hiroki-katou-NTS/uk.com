@@ -52,8 +52,8 @@ module nts.uk.com.view.csa005.c {
                 this.displayName = displayName;
                 this.screenId = screenId;
                 this.programId = programId.toLowerCase();
-                this.queryString = (queryString ==null?null:queryString.toLowerCase());
-                this.url = "/nts.uk.com.web/view/" + programId.substr(0,3).toLowerCase() + "/" +programId.substr(3,6).toLowerCase() + "/" + screenId + "/index.xhtml";
+                this.queryString = queryString;
+                this.url = "/nts.uk.com.web/view/" + programId.substr(0,3).toLowerCase() + "/" +programId.substr(3,6).toLowerCase() + "/" + screenId.toLowerCase() + "/index.xhtml";
             }
        }//end class Role        
 
