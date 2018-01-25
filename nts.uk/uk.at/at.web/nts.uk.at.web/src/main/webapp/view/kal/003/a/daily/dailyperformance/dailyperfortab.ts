@@ -23,35 +23,49 @@ module nts.uk.at.view.kal003.a.tab {
                 self.listWorkRecordExtraCon.removeAll();
                 self.listWorkRecordExtraCon(listWorkRecordExtraCon);
             }
-
             self.columns = [
                 { headerText: getText('KAL003_52'), key: 'code', width: 70 },
                 {
+                    // giair thich 1 chut dc k :D
+                    
                     headerText: getText('KAL003_53'), key: 'classification', width: 50,
                     formatter: function(classification, record) {
-                        if (record.classification.toString() === "ER") {
-                            return "<div style='width:110%;heght:110%;' class=\"bg-daily-error\"> " + classification + " </div>";
-                        } else if (record.classification.toString() === "AL") {
-                            return "<div style='width:110%;heght:110%;' class=\"bg-daily-alarm\"> " + classification + " </div>";
-                        } else {
-                            return "<div>" + classification + "</div>";
+                        let id = nts.uk.util.randomId();
+                        
+                        let $div = $("<div/>", {html: classification, id: id});
+                        
+                        if (record.classification.toString() === "0") {
+                            $div.addClass("bg-daily-error");
+                        } else if (record.classification.toString() === "1") {
+                            $div.addClass("bg-daily-alarm");
                         }
+                        setTimeout(function(){
+                            let d = $("#" + id);
+                            let className = d.attr('class');
+                            if(!nts.uk.util.isNullOrEmpty(className)){
+                                let $cell = d.parent();
+                                $cell.addClass(className);
+                                d.removeClass(className);    
+                            }
+                        }, 100);
+                        return $div[0].outerHTML;
                     }
                 },
                 { headerText: getText('KAL003_54'), key: 'name', width: 150 },
                 { headerText: getText('KAL003_55'), key: 'message', width: 150 }
             ];
 
-            self.listWorkRecordExtraCon.subscribe((data: Array<model.DailyErrorAlarmCheck>) => {
-                for (var i = 1; i <= data.length; i++) {
-                    if ($("table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)").text() == "ER") {
-                        $("table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)").css("background-color", "red");
-                    }
-                    if ($("table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)").text() == "AL") {
-                        $("table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)").css("background-color", "yellow");
-                    }
-                }
-            });
+
+//            self.listWorkRecordExtraCon.subscribe((data: Array<model.DailyErrorAlarmCheck>) => {
+//                for (var i = 1; i <= data.length; i++) {
+//                    if ($("table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)").text() == "ER") {
+//                        $("table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)").css("background-color", "red");
+//                    }
+//                    if ($("table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)").text() == "AL") {
+//                        $("table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)").css("background-color", "yellow");
+//                    }
+//                }
+//            });
             this.currentCodeList = ko.observableArray([]);
             //self.listWorkRecordExtraCon.valueHasMutated();
 
