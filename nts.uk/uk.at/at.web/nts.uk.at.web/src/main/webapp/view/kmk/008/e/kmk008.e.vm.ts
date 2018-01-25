@@ -66,6 +66,7 @@ module nts.uk.at.view.kmk008.e {
                 } else {
                     self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_9}', '{#Com_Workplace}']));
                 }
+                self.selectedWorkplaceId('');
                 $('#tree-grid-screen-e').ntsTreeComponent(self.treeGrid).done(function() {
                     self.workplaceGridList($('#tree-grid-screen-e').getDataList());
                     if (self.workplaceGridList().length > 0) {
@@ -84,6 +85,7 @@ module nts.uk.at.view.kmk008.e {
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.workPlaceIds.length > 0) {
                         self.alreadySettingList(_.map(data.workPlaceIds, item => { return new UnitAlreadySettingModel(item.toString()) }));
+                        _.defer(() => self.workplaceGridList($('#tree-grid-screen-e').getDataList()));
                     }
                     self.isRemove(self.isShowAlreadySet());
                     dfd.resolve();
