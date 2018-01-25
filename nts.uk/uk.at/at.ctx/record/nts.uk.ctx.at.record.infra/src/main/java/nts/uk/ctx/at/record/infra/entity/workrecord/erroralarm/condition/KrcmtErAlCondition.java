@@ -448,10 +448,10 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 		}
 		//if (entity.fixedAtr.intValue() != 1) {
 			// Set AlCheckTargetCondition
-			condition.createAlCheckTargetCondition(entity.filterByBusinessType.intValue() == 1,
-					entity.filterByJobTitle.intValue() == 1,
-					entity.filterByEmployment.intValue() == 1,
-					entity.filterByClassification.intValue() == 1,
+			condition.createAlCheckTargetCondition((entity.filterByBusinessType != null && entity.filterByBusinessType.intValue() == 1),
+					(entity.filterByJobTitle != null && entity.filterByJobTitle.intValue() == 1),
+					(entity.filterByEmployment != null && entity.filterByEmployment.intValue() == 1),
+					(entity.filterByClassification != null && entity.filterByClassification.intValue() == 1),
 					Optional.ofNullable(entity.lstBusinessType).orElse(Collections.emptyList())
 							.stream().map(businessType -> businessType.krcstErAlBusinessTypePK.businessTypeCd)
 							.collect(Collectors.toList()),
@@ -462,39 +462,40 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 					Optional.ofNullable(entity.lstClassification).orElse(Collections.emptyList())
 							.stream().map(clss -> clss.krcstErAlClassPK.clscd).collect(Collectors.toList()));
 			// Set WorkTypeCondition
-			condition.createWorkTypeCondition(entity.workTypeUseAtr.intValue() == 1,
-					entity.wtCompareAtr.intValue());
-			if (entity.wtCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
-				condition.setWorkTypePlan(entity.wtPlanFilterAtr.intValue() == 1,
+			
+			condition.createWorkTypeCondition((entity.workTypeUseAtr != null && entity.workTypeUseAtr.intValue() == 1),
+					(entity.wtCompareAtr == null ? 0 : entity.wtCompareAtr.intValue()));
+			if (entity.wtCompareAtr != null && entity.wtCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
+				condition.setWorkTypePlan((entity.wtPlanFilterAtr != null && entity.wtPlanFilterAtr.intValue() == 1),
 						Optional.ofNullable(entity.lstWtPlan).orElse(Collections.emptyList())
 								.stream().map(wtype -> wtype.krcstErAlWtPlanPK.workTypeCode)
 								.collect(Collectors.toList()));
-				condition.setWorkTypeActual(entity.wtActualFilterAtr.intValue() == 1,
+				condition.setWorkTypeActual((entity.wtActualFilterAtr != null &&entity.wtActualFilterAtr.intValue() == 1),
 						Optional.ofNullable(entity.lstWtActual).orElse(Collections.emptyList())
 								.stream().map(wtype -> wtype.krcstErAlWtPlanActualPK.workTypeCode)
 								.collect(Collectors.toList()));
-				condition.chooseWorkTypeOperator(entity.wtPlanActualOperator.intValue());
+				condition.chooseWorkTypeOperator(entity.wtPlanActualOperator == null ? 0 : entity.wtPlanActualOperator.intValue());
 			} else {
-				condition.setWorkTypeSingle(entity.wtPlanFilterAtr.intValue() == 1,
+				condition.setWorkTypeSingle((entity.wtPlanFilterAtr != null && entity.wtPlanFilterAtr.intValue() == 1),
 						Optional.ofNullable(entity.lstWtPlan).orElse(Collections.emptyList())
 								.stream().map(wtype -> wtype.krcstErAlWtPlanPK.workTypeCode)
 								.collect(Collectors.toList()));
 			}
 			// Set WorkTimeCondtion
-			condition.createWorkTimeCondition(entity.workingHoursUseAtr.intValue() == 1,
-					entity.whCompareAtr.intValue());
-			if (entity.whCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
-				condition.setWorkTimePlan(entity.whPlanFilterAtr.intValue() == 1,
+			condition.createWorkTimeCondition((entity.workingHoursUseAtr != null && entity.workingHoursUseAtr.intValue() == 1),
+					entity.whCompareAtr == null ? 0 : entity.whCompareAtr.intValue());
+			if (entity.whCompareAtr != null && entity.whCompareAtr.intValue() != FilterByCompare.EXTRACT_SAME.value) {
+				condition.setWorkTimePlan((entity.whPlanFilterAtr != null && entity.whPlanFilterAtr.intValue() == 1),
 						Optional.ofNullable(entity.lstWhPlan).orElse(Collections.emptyList())
 								.stream().map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode)
 								.collect(Collectors.toList()));
-				condition.setWorkTimeActual(entity.whActualFilterAtr.intValue() == 1,
+				condition.setWorkTimeActual((entity.whActualFilterAtr != null && entity.whActualFilterAtr.intValue() == 1),
 						Optional.ofNullable(entity.lstWhActual).orElse(Collections.emptyList())
 								.stream().map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode)
 								.collect(Collectors.toList()));
-				condition.chooseWorkTimeOperator(entity.whPlanActualOperator.intValue());
+				condition.chooseWorkTimeOperator(entity.whPlanActualOperator == null ? 0 : entity.whPlanActualOperator.intValue());
 			} else {
-				condition.setWorkTimeSingle(entity.whPlanFilterAtr.intValue() == 1,
+				condition.setWorkTimeSingle((entity.whPlanFilterAtr != null && entity.whPlanFilterAtr.intValue() == 1),
 						Optional.ofNullable(entity.lstWhPlan).orElse(Collections.emptyList())
 								.stream().map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode)
 								.collect(Collectors.toList()));
@@ -511,8 +512,8 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 							.map(atdItemCon -> convertKrcmtErAlAtdItemConToDomain(entity, atdItemCon, companyId, errorAlarmCode))
 							.collect(Collectors.toList());
 			condition
-					.createAttendanceItemCondition(entity.operatorBetweenGroups.intValue(),
-							entity.group2UseAtr.intValue() == 1)
+					.createAttendanceItemCondition((entity.operatorBetweenGroups == null ? 0 : entity.operatorBetweenGroups.intValue()),
+							(entity.group2UseAtr != null && entity.group2UseAtr.intValue() == 1))
 					.setAttendanceItemConditionGroup1(Optional.ofNullable(entity.krcstErAlConGroup1)
 							.orElse(new KrcstErAlConGroup("", new BigDecimal(0), new ArrayList<>())).conditionOperator
 									.intValue(),
@@ -529,13 +530,14 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 			KrcmtErAlAtdItemCon atdItemCon, String companyId, String errorAlarmCode) {
 		ErAlAttendanceItemCondition<Object> atdItemConDomain = new ErAlAttendanceItemCondition<Object>(
 				companyId, errorAlarmCode,
-				atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo.intValue(), atdItemCon.conditionAtr.intValue(),
-				atdItemCon.useAtr.intValue() == 1);
+				(atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo == null ? 0 : atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo.intValue())
+				, (atdItemCon.conditionAtr == null ? 0 : atdItemCon.conditionAtr.intValue())
+				, (atdItemCon.useAtr != null && atdItemCon.useAtr.intValue() == 1));
 		// Set Target
-		if (atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
+		if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
 			atdItemConDomain.setUncountableTarget(
 					Optional.ofNullable(atdItemCon.lstAtdItemTarget).orElse(Collections.emptyList()).stream()
-							.filter(atdItemTarget -> atdItemTarget.targetAtr.intValue() == 2).findFirst()
+							.filter(atdItemTarget -> (atdItemTarget.targetAtr != null && atdItemTarget.targetAtr.intValue() == 2)).findFirst()
 							.get().krcstErAlAtdTargetPK.attendanceItemId.intValue());
 		} else {
 			atdItemConDomain.setCountableTarget(
@@ -550,45 +552,46 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 		}
 		// Set Compare
 		if (atdItemCon.erAlCompareRange != null) {
-			if (atdItemCon.conditionAtr.intValue() == ConditionAtr.AMOUNT_VALUE.value) {
+			if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.AMOUNT_VALUE.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
 						new CheckedAmountValue(atdItemCon.erAlCompareRange.startValue.intValue()),
 						new CheckedAmountValue(atdItemCon.erAlCompareRange.endValue.intValue()));
-			} else if (atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_DURATION.value) {
+			} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_DURATION.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
 						new CheckedTimeDuration(atdItemCon.erAlCompareRange.startValue.intValue()),
 						new CheckedTimeDuration(atdItemCon.erAlCompareRange.endValue.intValue()));
-			} else if (atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
+			} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
 						new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue.intValue()),
 						new TimeWithDayAttr(atdItemCon.erAlCompareRange.endValue.intValue()));
-			} else if (atdItemCon.conditionAtr.intValue() == ConditionAtr.TIMES.value) {
+			} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIMES.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr.intValue(),
 						new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue.intValue()),
 						new CheckedTimesValue(atdItemCon.erAlCompareRange.endValue.intValue()));
 			}
 		} else if (atdItemCon.erAlCompareSingle != null) {
-			if (atdItemCon.erAlCompareSingle.conditionType.intValue() == ConditionType.FIXED_VALUE.value) {
-				if (atdItemCon.conditionAtr.intValue() == ConditionAtr.AMOUNT_VALUE.value) {
+			if (atdItemCon.erAlCompareSingle.conditionType != null 
+					&& atdItemCon.erAlCompareSingle.conditionType.intValue() == ConditionType.FIXED_VALUE.value) {
+				if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.AMOUNT_VALUE.value) {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr.intValue(),
 							atdItemCon.erAlCompareSingle.conditionType.intValue(),
 							new CheckedAmountValue(atdItemCon.erAlSingleFixed.fixedValue.intValue()));
-				} else if (atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_DURATION.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-							atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							new CheckedTimeDuration(atdItemCon.erAlSingleFixed.fixedValue.intValue()));
-				} else if (atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-							atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							new TimeWithDayAttr(atdItemCon.erAlSingleFixed.fixedValue.intValue()));
-				} else if (atdItemCon.conditionAtr.intValue() == ConditionAtr.TIMES.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-							atdItemCon.erAlCompareSingle.conditionType.intValue(),
-							new CheckedTimesValue(atdItemCon.erAlSingleFixed.fixedValue.intValue()));
+				} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_DURATION.value) {
+					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr == null ? 0 : atdItemCon.erAlCompareSingle.compareAtr.intValue(),
+							atdItemCon.erAlCompareSingle.conditionType == null ? 0 : atdItemCon.erAlCompareSingle.conditionType.intValue(),
+							new CheckedTimeDuration(atdItemCon.erAlSingleFixed.fixedValue == null ? 0 : atdItemCon.erAlSingleFixed.fixedValue.intValue()));
+				} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIME_WITH_DAY.value) {
+					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr == null ? 0 : atdItemCon.erAlCompareSingle.compareAtr.intValue(),
+							atdItemCon.erAlCompareSingle.conditionType == null ? 0 : atdItemCon.erAlCompareSingle.conditionType.intValue(),
+							new TimeWithDayAttr(atdItemCon.erAlSingleFixed.fixedValue == null ? 0 : atdItemCon.erAlSingleFixed.fixedValue.intValue()));
+				} else if (atdItemCon.conditionAtr != null && atdItemCon.conditionAtr.intValue() == ConditionAtr.TIMES.value) {
+					atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr == null ? 0 : atdItemCon.erAlCompareSingle.compareAtr.intValue(),
+							atdItemCon.erAlCompareSingle.conditionType == null ? 0 : atdItemCon.erAlCompareSingle.conditionType.intValue(),
+							new CheckedTimesValue(atdItemCon.erAlSingleFixed.fixedValue == null ? 0 : atdItemCon.erAlSingleFixed.fixedValue.intValue()));
 				}
 			} else {
-				atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr.intValue(),
-						atdItemCon.erAlCompareSingle.conditionType.intValue(),
+				atdItemConDomain.setCompareSingleValue(atdItemCon.erAlCompareSingle.compareAtr == null ? 0 : atdItemCon.erAlCompareSingle.compareAtr.intValue(),
+						atdItemCon.erAlCompareSingle.conditionType == null ? 0 : atdItemCon.erAlCompareSingle.conditionType.intValue(),
 						atdItemCon.erAlSingleAtd.get(0).krcstEralSingleAtdPK.attendanceItemId.intValue());
 			}
 		}

@@ -277,7 +277,7 @@ public class EmpCtgFinder {
 		if (lstEmpInfoCtgData.size() == 0)
 			return new ArrayList<>();
 
-		Map<String, ComboBoxObject> comboBoxs = new HashMap<>();
+		List<ComboBoxObject> comboBoxs = new ArrayList<>();
 		for (EmpInfoCtgData empInfoCtgData : lstEmpInfoCtgData) {
 			// get option value value combo box
 			String value = empInfoCtgData.getRecordId();
@@ -294,12 +294,11 @@ public class EmpCtgFinder {
 				}
 				sortDate(optionText, query);
 				if (optionText.size() > 0)
-					comboBoxs.put(optionText.get(0),
-							ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
+					comboBoxs.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
 			}
 		}
-		 List<ComboBoxObject> result =  sortComboBox(comboBoxs);
-		 return result;
+		 sortComboBox(comboBoxs);
+		 return comboBoxs;
 	}
 
 	private void sortDate(List<String> optionText, PeregQuery query) {
@@ -321,14 +320,12 @@ public class EmpCtgFinder {
 				: dateValue;
 	}
 
-	private List<ComboBoxObject> sortComboBox(Map<String, ComboBoxObject> comboBoxs) {
-		List<String> strDates = comboBoxs.entrySet().stream().map(x -> x.getKey()).collect(Collectors.toList());
-		strDates.sort((a, b) -> {
-			GeneralDate before = GeneralDate.fromString(a, "yyyy/MM/dd");
-			GeneralDate after = GeneralDate.fromString(b, "yyyy/MM/dd");
-			return after.compareTo(before);
+	private void sortComboBox(List<ComboBoxObject> comboBoxs) {
+		comboBoxs.sort((a, b) -> {
+			String aStartDate = a.getOptionText().substring(0, 10);
+			String bStartDate = b.getOptionText().substring(0, 10);
+			return GeneralDate.fromString(bStartDate, "yyyy/MM/dd").compareTo(GeneralDate.fromString(aStartDate, "yyyy/MM/dd"));
 		});
-		return strDates.stream().map(x -> comboBoxs.get(x)).collect(Collectors.toList());
 	}
 
 	/**

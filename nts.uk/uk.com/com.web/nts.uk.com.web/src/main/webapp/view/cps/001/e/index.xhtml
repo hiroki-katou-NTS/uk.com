@@ -29,7 +29,11 @@
 			<div id="contents-area">
 				<div>#{i18n.getText('CPS001_78')}</div>
 				<div id="test"
-					data-bind="ntsImageEditor: {editable: false, width:600, height: 600}"></div>
+					data-bind="ntsImageEditor: {
+					editable: false,
+					 width:600, 
+					 height: 600,
+					 accept: ['.png','.jpg','.jpeg', '.bmp','.gif']}"></div>
 			</div>
 			<div id="functions-area-bottom">
 				<button  class="proceed x-large" data-bind="click: upload, enable: enaBtnSave">#{i18n.getText('CPS001_87')}</button>
