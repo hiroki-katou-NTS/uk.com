@@ -6,6 +6,7 @@ span.text{margin-left: 20px; display: inline-block;}
 #combo-box{width: 120px;}
 
 .container{width: 1300px;}
+#functions-area p.halign-right{float:right;position: relative; top:7px;}
 .cf .pull-left:nth-child(1) {margin-left: 30px;}
 .pull-left .ntsRangeButton_Container{display: none;}
 .pull-left #daterangepicker {height:28px; position: relative; top: 9px;}
