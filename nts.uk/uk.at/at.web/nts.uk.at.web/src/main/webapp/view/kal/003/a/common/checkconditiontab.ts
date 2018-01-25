@@ -11,23 +11,31 @@ module nts.uk.at.view.kal003.a.tab {
         currentRowSelected: KnockoutObservable<number> = ko.observable(0);
 
         itemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSchedule4WeekAlarmCheckCondition());
-        schedule4WeekCheckCondition: KnockoutObservable<number> = ko.observable(model.SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY);
+       // schedule4WeekCheckCondition: KnockoutObservable<number> = ko.observable(model.SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY);
+        schedule4WeekCheckCondition : KnockoutObservable<number>;
+        list4weekClassEnum : KnockoutObservableArray<any>;
 
         category: KnockoutObservable<number>;
 
         constructor(category: number, listWorkRecordExtractingConditions?: Array<model.WorkRecordExtractingCondition>, schedule4WeekCheckCondition?: number) {
             let self = this;
-
             self.category = ko.observable(category);
 
             if (listWorkRecordExtractingConditions) {
-                self.listWorkRecordExtractingConditions.removeAll();
                 self.listWorkRecordExtractingConditions(listWorkRecordExtractingConditions);
+//                for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
+//                    self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
+//                }
+            }
+            
+            self.listWorkRecordExtractingConditions.subscribe(() => {
                 for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
                     self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
                 }
-            }
-            
+            });
+            // schedule4WeekCheckCondition
+            self.list4weekClassEnum = ko.observableArray(__viewContext.enums.FourW4DCheckCond);
+            self.schedule4WeekCheckCondition = ko.observable(0);            
             if (schedule4WeekCheckCondition) {
                 self.schedule4WeekCheckCondition(schedule4WeekCheckCondition);
             }
@@ -74,7 +82,6 @@ module nts.uk.at.view.kal003.a.tab {
 
             self.listWorkRecordExtractingConditions.push(workRecordExtractingCondition);
             self.currentRowSelected(self.listWorkRecordExtractingConditions().length);
-            //let errorAlarmCondition = self.listWorkRecordExtractingConditions()[self.currentRowSelected() - 1].errorAlarmCondition();
         }
 
         /**
@@ -88,7 +95,7 @@ module nts.uk.at.view.kal003.a.tab {
             }
             let workRecordExtractingCondition = self.listWorkRecordExtractingConditions()[rowId() - 1];
             if (workRecordExtractingCondition) {
-                self.showDialogKal003B(workRecordExtractingCondition(), rowId());
+                self.showDialogKal003B(workRecordExtractingCondition, rowId());
             }
         }
 
@@ -97,16 +104,16 @@ module nts.uk.at.view.kal003.a.tab {
          * @param errorAlamCondition
          * @param rowId
          */
-        private showDialogKal003B(workRecordExtractingCondition, rowId) {
+        private showDialogKal003B(workRecordExtractingCondition: model.WorkRecordExtractingCondition, rowId: number) {
             let self = this;
-            windows.setShared('inputKal003b', workRecordExtractingCondition);
-            windows.sub.modal('/view/kal/003/b/index.xhtml', { height: 500, width: 1020 }).onClosed(function(): any {
+            windows.setShared('inputKal003b', ko.toJS(workRecordExtractingCondition));
+            windows.sub.modal('/view/kal/003/b/index.xhtml', { height: 600, width: 1020 }).onClosed(function(): any {
                 // get data from share window    
                 let data = windows.getShared('outputKal003b');
                 if (data != null && data != undefined) {
                     if (rowId > 0 && rowId <= self.listWorkRecordExtractingConditions().length) {
-                        let workRecordExtractingCondition = self.listWorkRecordExtractingConditions()[rowId - 1];
-                        workRecordExtractingCondition(data);
+                        self.listWorkRecordExtractingConditions()[rowId - 1] = shareutils.convertTransferDataToWorkRecordExtractingCondition(data);
+                        self.listWorkRecordExtractingConditions.valueHasMutated();
                     }
                 }
                 block.clear();

@@ -166,7 +166,7 @@ public class WorkplaceConfigInfoFinder {
 		String companyId = AppContexts.user().companyId();
 
 		// filter workplace infor latest
-		List<WorkplaceInfo> lstWkpInfo = this.wkpInfoRepo.findDetailLatestByWkpIds(companyId, startDWkpConfigHist);
+		List<WorkplaceInfo> lstWkpInfo = this.wkpInfoRepo.findAll(companyId, startDWkpConfigHist);
 		return this.createTree(lstHierarchy.iterator(), lstWkpInfo, new ArrayList<>());
 	}
 

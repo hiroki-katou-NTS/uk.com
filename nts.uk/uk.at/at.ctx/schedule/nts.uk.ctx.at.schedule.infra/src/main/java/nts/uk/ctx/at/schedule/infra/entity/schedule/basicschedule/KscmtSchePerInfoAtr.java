@@ -4,10 +4,12 @@ import java.io.Serializable;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 /**
  * 
  * @author trungtran
@@ -15,18 +17,27 @@ import lombok.Setter;
  */
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Getter
-@Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "KSCMT_SCHE_PER_INFO_ATR")
 public class KscmtSchePerInfoAtr extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KscmtSchePerInfoAtrPk kscmtSchePerInfoAtrPk;
 
+	@ManyToOne
+	@JoinColumns( {
+        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
+    })
+	public KscmtScheDispControl scheDispControl;
+	
 	@Override
 	protected Object getKey() {
 		return kscmtSchePerInfoAtrPk;
 	}
 
+	public KscmtSchePerInfoAtr(KscmtSchePerInfoAtrPk kscmtSchePerInfoAtrPk) {
+		
+		this.kscmtSchePerInfoAtrPk = kscmtSchePerInfoAtrPk;
+	}
 }

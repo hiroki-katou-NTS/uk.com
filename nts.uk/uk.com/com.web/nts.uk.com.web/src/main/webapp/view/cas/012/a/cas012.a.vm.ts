@@ -142,6 +142,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
         }
         
         private createRoleProcess(param: RoleIndividualGrantBaseCommand): void {
+            console.time("Create");
             var self = this;
             service.create(param).done((data: any) => {
                 self.getData().done(() => {
@@ -153,6 +154,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
             }).always(() => {
                 block.clear();
             });
+            console.timeEnd("Create");
         }
         
         private updateRole(): void {
@@ -163,10 +165,12 @@ module nts.uk.com.view.cas012.a.viewmodel {
             
             block.invisible();
             service.update(param).done(() => {
+                console.time("Update");
                 self.getData().done(() => {
                     self.selectRoleByKey(param.companyID, param.userID, param.roleType);
                 });
                 nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                console.timeEnd("Update");
             }).fail((res) => {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId });
             }).always(() => {
@@ -179,6 +183,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
             if (!nts.uk.text.isNullOrEmpty(self.currentCode())) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                     block.invisible();
+                    console.time("Delete");
                     let param: RoleIndividualGrantBaseCommand = new RoleIndividualGrantBaseCommand(self.selectRoleIndividual());
                     param.startValidPeriod = nts.uk.time.parseMoment(self.datePeriod().startDate).format();
                     param.endValidPeriod = nts.uk.time.parseMoment(self.datePeriod().endDate).format();
@@ -194,8 +199,10 @@ module nts.uk.com.view.cas012.a.viewmodel {
                     }).always(() => {
                         block.clear();
                     });
+                    console.timeEnd("Delete");
                 })
             }
+            
         }
         
         private getData(): JQueryPromise<any> {

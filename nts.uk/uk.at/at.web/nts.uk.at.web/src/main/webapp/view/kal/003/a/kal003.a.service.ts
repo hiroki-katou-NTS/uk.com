@@ -6,8 +6,7 @@ module nts.uk.at.view.kal003.a.service {
         getAllData: "at/function/alarm/checkcondition/findAll/{0}",
         registerData: "at/function/alarm/checkcondition/register",
         deleteData: "at/function/alarm/checkcondition/delete",
-        getAllFixedConData : "at/record/erroralarm/fixeddata/getallfixedcondata",
-        getFixedConWRByCode :  "at/record/erroralarm/getallfixedconwrbycode"
+        getAllFixedConData : "at/record/erroralarm/fixeddata/getallfixedcondata"
     }
 
     export function getAllData(category: number): JQueryPromise<any> {
@@ -24,17 +23,9 @@ module nts.uk.at.view.kal003.a.service {
     }
     
     /**
-     * get All Fixed Condition WorkRecord data
+     * get All Fixed Condition WorkRecord data 
      */
     export function getAllFixedConData() : JQueryPromise<Array<any>>{
         return nts.uk.request.ajax("at",paths.getAllFixedConData);
     }
-    /**
-     * get Fixed Condition WorkRecord  By errorAlarmCheckID
-     * 
-     */
-    export function getFixedConWRByCode(errorAlarmCheckID : string ) : JQueryPromise<any>{
-        return nts.uk.request.ajax("at",paths.getFixedConWRByCode+"/"+errorAlarmCheckID);
-    }
-
 }
