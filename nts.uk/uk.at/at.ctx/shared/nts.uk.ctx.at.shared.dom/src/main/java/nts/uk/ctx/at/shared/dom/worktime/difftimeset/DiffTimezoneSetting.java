@@ -13,6 +13,7 @@ import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -62,6 +63,17 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 		this.employmentTimezones.forEach(emTimezoneOther -> {
 			emTimezoneOther.restoreData(mapEmTimezone.get(emTimezoneOther.getEmploymentTimeFrameNo()));
 		});
+		
+		//restore 残業時間帯
+		Map<EmTimezoneNo, DiffTimeOTTimezoneSet> mapOTTimezone = other.getOTTimezones().stream().collect(
+				Collectors.toMap(item -> ((DiffTimeOTTimezoneSet) item).getWorkTimezoneNo(), Function.identity()));
+		for (int i = 0; i < this.oTTimezones.size(); i++) {
+			if (mapOTTimezone.get(this.oTTimezones.get(i).getWorkTimezoneNo()) == null) {
+				this.oTTimezones.remove(i);
+			} else {
+				this.oTTimezones.get(i).restoreData(mapOTTimezone.get(this.oTTimezones.get(i).getWorkTimezoneNo()));
+			}
+		}
 	}
 	
 	@Override

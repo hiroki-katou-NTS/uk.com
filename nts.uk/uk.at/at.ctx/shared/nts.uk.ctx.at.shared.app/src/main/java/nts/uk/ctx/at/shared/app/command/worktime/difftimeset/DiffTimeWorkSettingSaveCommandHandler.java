@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveComman
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -58,25 +59,17 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 
 		// Validate + common handler
 		this.validate(command, difftimeWorkSetting);
-		// Validate
-		// this.difftimePolicy.validate(command.toDomainPredetemineTimeSetting(),
-		// difftimeWorkSetting);
-		// command.toDomainPredetemineTimeSetting());
-
-		// common handler
-		//this.commonHandler.handle(command);
 
 		// call repository save fixed work setting
 		if (command.isAddMode()) {
-			// difftimeWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			difftimeWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			this.difftimeRepo.add(difftimeWorkSetting);
 		} else {
 			Optional<DiffTimeWorkSetting> opDiffTimeWorkSetting = this.difftimeRepo.find(companyId,
 					command.getWorktimeSetting().worktimeCode);
 			if (opDiffTimeWorkSetting.isPresent()) {
-				// difftimeWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
-				// command.getWorktimeSetting().getWorkTimeDivision(),
-				// opDiffTimeWorkSetting.get());
+				difftimeWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
+						command.getWorktimeSetting().getWorkTimeDivision(), opDiffTimeWorkSetting.get());
 				this.difftimeRepo.update(difftimeWorkSetting);
 			}
 		}

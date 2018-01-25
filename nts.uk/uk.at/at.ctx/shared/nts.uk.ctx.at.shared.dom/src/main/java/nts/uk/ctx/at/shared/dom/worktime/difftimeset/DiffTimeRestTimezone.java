@@ -39,4 +39,8 @@ public class DiffTimeRestTimezone extends WorkTimeDomainObject {
 	{
 		memento.setRestTimezones(this.restTimezones);
 	}
+
+	public void restoreData(DiffTimeRestTimezone restTimezone) {
+		this.restTimezones = restTimezone.restTimezones;
+	}
 }

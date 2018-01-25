@@ -79,6 +79,7 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 	private void restoreSimpleMode(DiffTimeHalfDayWorkTimezone other) {
 		if (other.getAmPmAtr() != AmPmAtr.ONE_DAY) {
 			this.workTimezone.restoreData(other.getWorkTimezone());
+			this.restTimezone.restoreData(other.getRestTimezone());
 		}
 	}
 	
@@ -92,6 +93,7 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 		// restore data of dayAtr = AM, PM
 		if (!diffTimeWorkSet.isUseHalfDayShift() && other.getAmPmAtr() != AmPmAtr.ONE_DAY) {
 			this.workTimezone.restoreData(other.getWorkTimezone());
+			this.restTimezone.restoreData(other.getRestTimezone());
 		}
 	}
 }

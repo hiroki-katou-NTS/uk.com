@@ -111,20 +111,20 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 	 * @param workTimeType the work time type
 	 * @param other the other
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, DiffTimeWorkSetting other) {
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, DiffTimeWorkSetting oldDomain) {
 		// restore 平日勤務時間帯
 		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
 				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.DIFFTIME_WORK) {
-			
+
 			// convert map
-			Map<AmPmAtr, DiffTimeHalfDayWorkTimezone> mapFixHalfWork = other.getHalfDayWorkTimezones().stream()
+			Map<AmPmAtr, DiffTimeHalfDayWorkTimezone> mapFixHalfWork = oldDomain.getHalfDayWorkTimezones().stream()
 					.collect(Collectors.toMap(item -> ((DiffTimeHalfDayWorkTimezone) item).getAmPmAtr(),
 							Function.identity()));
-			
-			this.halfDayWorkTimezones.forEach(item -> item.restoreData(screenMode, this,
-					mapFixHalfWork.get(item.getAmPmAtr())));
+
+			this.halfDayWorkTimezones
+					.forEach(item -> item.restoreData(screenMode, this, mapFixHalfWork.get(item.getAmPmAtr())));
 		} else {
-			this.halfDayWorkTimezones = other.getHalfDayWorkTimezones();
+			this.halfDayWorkTimezones = oldDomain.getHalfDayWorkTimezones();
 		}
 	}
 
@@ -163,6 +163,11 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 		} else if (!workTimeCode.equals(other.workTimeCode))
 			return false;
 		return true;
+	}
+
+	public void restoreDefaultData(ScreenMode valueOf) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
