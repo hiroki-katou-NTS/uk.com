@@ -11,23 +11,31 @@ module nts.uk.at.view.kal003.a.tab {
         currentRowSelected: KnockoutObservable<number> = ko.observable(0);
 
         itemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSchedule4WeekAlarmCheckCondition());
-        schedule4WeekCheckCondition: KnockoutObservable<number> = ko.observable(model.SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY);
+       // schedule4WeekCheckCondition: KnockoutObservable<number> = ko.observable(model.SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY);
+        schedule4WeekCheckCondition : KnockoutObservable<number>;
+        list4weekClassEnum : KnockoutObservableArray<any>;
 
         category: KnockoutObservable<number>;
 
         constructor(category: number, listWorkRecordExtractingConditions?: Array<model.WorkRecordExtractingCondition>, schedule4WeekCheckCondition?: number) {
             let self = this;
-
             self.category = ko.observable(category);
 
             if (listWorkRecordExtractingConditions) {
-                self.listWorkRecordExtractingConditions.removeAll();
                 self.listWorkRecordExtractingConditions(listWorkRecordExtractingConditions);
+//                for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
+//                    self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
+//                }
+            }
+            
+            self.listWorkRecordExtractingConditions.subscribe(() => {
                 for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
                     self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
                 }
-            }
-            
+            });
+            // schedule4WeekCheckCondition
+            self.list4weekClassEnum = ko.observableArray(__viewContext.enums.FourW4DCheckCond);
+            self.schedule4WeekCheckCondition = ko.observable(0);            
             if (schedule4WeekCheckCondition) {
                 self.schedule4WeekCheckCondition(schedule4WeekCheckCondition);
             }
