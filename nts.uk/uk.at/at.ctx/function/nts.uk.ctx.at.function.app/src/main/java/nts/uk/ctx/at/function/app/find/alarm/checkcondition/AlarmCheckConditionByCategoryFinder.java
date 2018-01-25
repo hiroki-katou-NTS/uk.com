@@ -9,11 +9,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.adapter.ErrorAlarmWorkRecordAdapter;
+import nts.uk.ctx.at.function.dom.adapter.ErrorAlarmWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.FixedConditionDataAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConditionDataAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
+import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
@@ -41,6 +43,9 @@ public class AlarmCheckConditionByCategoryFinder {
 
 	@Inject
 	private WorkRecordExtraConAdapter workRecordExtractConditionAdapter;
+	
+	@Inject
+	private ErrorAlarmWorkRecordAdapter errorAlarmWkRcAdapter;
 
 	public List<AlarmCheckConditionByCategoryDto> getAllData(int category) {
 		String companyId = AppContexts.user().companyId();
@@ -54,6 +59,9 @@ public class AlarmCheckConditionByCategoryFinder {
 		DailyAlarmCondition dailyAlarmCondition = new DailyAlarmCondition("", ConExtractedDaily.ALL.value, false,
 				Collections.emptyList(), Collections.emptyList());
 		List<FixedConditionWorkRecordDto> listFixedConditionWkRecord = new ArrayList<>();
+		List<WorkRecordExtraConAdapterDto> lstWorkRecordExtraCon = new ArrayList<>();
+		List<ErrorAlarmWorkRecordAdapterDto> listErrorAlarm = new ArrayList<>();
+		List<DailyErrorAlarmCheckDto> listErrorAlarmCheck = new ArrayList<>();
 		if (domain.getCategory() == AlarmCategory.SCHEDULE_4WEEK && domain.getExtractionCondition() != null) {
 			AlarmCheckCondition4W4D schedule4WeekCondition = (AlarmCheckCondition4W4D) domain.getExtractionCondition();
 			schedule4WCondition = schedule4WeekCondition.getFourW4DCheckCond().value;
@@ -83,6 +91,17 @@ public class AlarmCheckConditionByCategoryFinder {
 					listFixedConditionWkRecord.add(dto);
 				}
 			}
+			lstWorkRecordExtraCon = workRecordExtractConditionAdapter.getAllWorkRecordExtraConByListID(dailyAlarmCondition.getExtractConditionWorkRecord());
+			listErrorAlarm = errorAlarmWkRcAdapter.findByListErrorAlamCheckId(dailyAlarmCondition.getExtractConditionWorkRecord());
+			listErrorAlarmCheck = new ArrayList<>();
+			for (WorkRecordExtraConAdapterDto w : lstWorkRecordExtraCon) {
+				for (ErrorAlarmWorkRecordAdapterDto e : listErrorAlarm) {
+					if (w.getErrorAlarmCheckID().equals(e.getErrorAlarmCheckID())) {
+						DailyErrorAlarmCheckDto dto = new DailyErrorAlarmCheckDto(e.getCode(), w.getNameWKRecord(), e.getTypeAtr(), w.getErrorAlarmCondition().getDisplayMessage());
+						listErrorAlarmCheck.add(dto);
+					}
+				}
+			}
 		}
 		
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
@@ -98,8 +117,9 @@ public class AlarmCheckConditionByCategoryFinder {
 				domain.getListRoleId(), schedule4WCondition,
 				new DailyAlarmCheckConditionDto(dailyAlarmCondition.isAddApplication(),
 						dailyAlarmCondition.getConExtractedDaily().value,
-						dailyAlarmCondition.getErrorAlarmCode(),
-						workRecordExtractConditionAdapter.getAllWorkRecordExtraConByListID(dailyAlarmCondition.getExtractConditionWorkRecord()), 
+						dailyAlarmCondition.getErrorAlarmCode(), 
+						listErrorAlarmCheck,
+						lstWorkRecordExtraCon, 
 						listFixedConditionWkRecord));
 	}
 }

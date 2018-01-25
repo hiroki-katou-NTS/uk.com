@@ -59,7 +59,7 @@ public class ScheDispControlDto {
 		return new ScheDispControlDto(
 				domain.getCompanyId(),
 				domain.getPersonSyQualify().v(),
-				domain.getPubHolidayShortageAtr().value,
+				domain.getSymbolHalfDayAtr().value,
 				domain.getSymbolAtr().value,
 				domain.getPubHolidayExcessAtr().value,
 				domain.getPubHolidayShortageAtr().value,

@@ -145,5 +145,6 @@ module nts.uk.at.view.kal003.share {
                 }
             }
             return convertWorkRecordExtractingCondition;
+        }
     }
 }
