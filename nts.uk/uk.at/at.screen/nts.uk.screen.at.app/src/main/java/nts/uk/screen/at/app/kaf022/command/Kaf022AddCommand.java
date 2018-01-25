@@ -12,4 +12,5 @@ import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineComm
 public class Kaf022AddCommand {
 	private ApplicationDeadlineCommand appDead;
 	private ApplicationSettingCommand appSet; 
+	private JobAssignSettingCommand df;
 }
