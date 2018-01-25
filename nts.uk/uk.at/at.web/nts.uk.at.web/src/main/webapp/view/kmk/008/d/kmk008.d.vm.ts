@@ -66,6 +66,7 @@ module nts.uk.at.view.kmk008.d {
                 } else {
                     self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_9}', '{#Com_Employment}']));
                 }
+                self.selectedCode('');
                 self.getalreadySettingList();
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
                     self.employmentList($('#empt-list-setting').getDataList());
@@ -118,6 +119,7 @@ module nts.uk.at.view.kmk008.d {
                         new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
                             self.getalreadySettingList();
                             self.getDetail(self.selectedCode());
+                            self.isRemove(false);
                         });
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                     });
@@ -131,6 +133,7 @@ module nts.uk.at.view.kmk008.d {
                         self.alreadySettingList(_.map(data.employmentCategoryCodes, item => {
                             return new UnitAlreadySettingModel(item.toString(), true);
                         }));
+                        _.defer(() => self.employmentList($('#empt-list-setting').getDataList()));
                     }
                 })
                 self.isRemove(self.isShowAlreadySet());

@@ -21,4 +21,14 @@ public class AttendanceDaysMonth extends HalfIntegerPrimitiveValue<AttendanceDay
 		
 		super(days);
 	}
+	
+	/**
+	 * 日数を加算する
+	 * @param days 日数
+	 * @return 加算後の勤怠月間時間
+	 */
+	public AttendanceDaysMonth addDays(Double days){
+		
+		return new AttendanceDaysMonth(this.v() + days);
+	}
 }

@@ -158,7 +158,12 @@ table th, table td {
 	box-shadow: 1px 1px 5px 2px #888 !important;
 	padding: 12px;
 	background-color: #F8EFD4 !important;
-	visibility: hidden;
+	display: none;
+}
+
+#popup-area8 {
+	z-index: 100;
+	top: 100px !important;
 }
 
 #multi-list {
@@ -302,4 +307,12 @@ table th, table td {
 	left: 1px !important;
 	top: 4px !important;
 	margin-top: 0px !important
+}
+
+.mb-5 {
+	margin-bottom: 5px
+}
+
+.ml-15 {
+	margin-left: 15px
 }

@@ -98,10 +98,12 @@ public class MonthlyCalculation {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 日別実績の勤怠時間　取得　（対象：期間の間の日別実績）
-		//*****（未）　日別実績の勤怠時間を、期間指定で複数取ってくる。
-		List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys = new ArrayList<>();	// 受け仮
-		//*****（未）　日別実績の勤怠時間リポジトリに、期間指定で取ってくるfindメソッドが必要
-		//attendanceTimeOfDailys = repositories.getAttendanceTimeOfDaily().findAllOf(employeeId, ymd);
+		//*****（未）　適切なメソッドがまだない。仮に、1日だけ取る。正式には、期間で取ってくる。
+		List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys = new ArrayList<>();
+		val attendanceTimeOfDailyOpt = repositories.getAttendanceTimeOfDaily().find(employeeId, datePeriod.start());
+		if (attendanceTimeOfDailyOpt.isPresent()){
+			attendanceTimeOfDailys.add(attendanceTimeOfDailyOpt.get());
+		}
 		
 		// 期間終了日時点の個人関連情報を取得する
 		//*****（未）　所属職場履歴から、期間終了日の職場IDを取る
@@ -119,20 +121,15 @@ public class MonthlyCalculation {
 		}
 
 		// 法定内振替順設定　取得
-		//*****（未）　リポジトリ実装、未作成。仮にインスタンスのみ実装。
-		val legalTransferOrderSet = new LegalTransferOrderSetOfAggrMonthly(companyId);
+		val legalTransferOrderSetOpt = repositories.getLegalTransferOrderSetOfAggrMonthly().find(companyId);
+		LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet = new LegalTransferOrderSetOfAggrMonthly(companyId);
+		if (legalTransferOrderSetOpt.isPresent()){
+			legalTransferOrderSet = legalTransferOrderSetOpt.get();
+		}
 		
 		// （休暇）加算設定　取得
 		//*****（未）　休暇加算設定は、会社単位なので、ここで取得し、必要な処理に引き継ぐ。仮に空設定。
 		AddSet addSet = new AddSet();
-		
-		// 週、月の法定労働時間　取得
-		//*****（未）　日次での実装位置を確認して、合わせて実装させる。結果は、総労働時間の中に置くのもよいかも。
-		//*****（未）　参考（日次用）。このクラスか、別のクラスに、月・週用のメソッドを追加。仮に0設定。
-		/*
-		repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(WorkingSystem.RegularWork,
-				companyId, workplaceId, employmentCd, employeeId, datePeriod.end());
-		*/
 		
 		// 共有項目を集計する
 		this.totalWorkingTime.aggregateSharedItem(datePeriod, attendanceTimeOfDailys);
