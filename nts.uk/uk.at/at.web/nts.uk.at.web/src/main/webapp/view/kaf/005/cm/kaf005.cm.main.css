@@ -149,3 +149,7 @@ div.form-label.broken {
 .cm-column2 {
 	width: 145px;
 }
+.overlay-reason {
+	position: relative;
+	z-index: 1;
+}
