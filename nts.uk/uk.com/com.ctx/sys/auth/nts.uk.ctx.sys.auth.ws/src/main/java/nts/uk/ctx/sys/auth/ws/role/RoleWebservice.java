@@ -51,7 +51,7 @@ public class RoleWebservice extends WebService {
 	}
 	
 	@POST
-	@Path("getrolebylistroleid")
+	@Path("get/rolename/by/roleids")
 	public List<RoleDto> getRoleByListRoleId(List<String>  data) {
 		return this.personInforRoleFinder.findByListRoleID(data);
 	}

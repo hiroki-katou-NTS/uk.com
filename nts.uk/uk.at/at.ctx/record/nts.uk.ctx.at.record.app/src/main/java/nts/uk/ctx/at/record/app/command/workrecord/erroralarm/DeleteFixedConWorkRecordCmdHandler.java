@@ -20,7 +20,7 @@ public class DeleteFixedConWorkRecordCmdHandler extends CommandHandler<DeleteFix
 	@Override
 	protected void handle(CommandHandlerContext<DeleteFixedConWorkRecordCmd> context) {
 		DeleteFixedConWorkRecordCmd command = context.getCommand();
-		Optional<FixedConditionWorkRecord> checkData = repo.getFixedConWRByCode(command.getDailyAlarmConID());
+		Optional<FixedConditionWorkRecord> checkData = repo.getFixedConWRByCode(command.getDailyAlarmConID(),command.getFixConWorkRecordNo());
 		if(checkData.isPresent()) {
 			repo.deleteFixedConWorkRecord(command.getDailyAlarmConID());
 		} else {

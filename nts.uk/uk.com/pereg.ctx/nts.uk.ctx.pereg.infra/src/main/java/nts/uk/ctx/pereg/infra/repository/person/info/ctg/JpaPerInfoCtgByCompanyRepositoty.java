@@ -57,7 +57,6 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 		entity.cid = domain.getCompanyId();
 		entity.disporder = domain.getDisorder();
 		return entity;
-
 	}
 
 	// mapping
@@ -74,7 +73,8 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 				categoryParentCd, categoryName, personEmployeeType, abolitionAtr, categoryType, fixedAtr);
 
 	}
-
+	
+	
 	@Override
 	public void update(PersonInfoCategory domain) {
 		try {

@@ -113,7 +113,7 @@ module nts.uk.at.view.kmf022 {
             isEnable: KnockoutObservable<boolean>;
             isEditable: KnockoutObservable<boolean>;
             dataA4Display: KnockoutObservableArray<ItemA4>;
-            dataA4Serivce:KnockoutObservableArray<ItemA4>;
+            sizeArrayA4: KnockoutObservable<number>;
 
             //a5
             itemListA5_14: KnockoutObservableArray<any>;
@@ -646,8 +646,8 @@ module nts.uk.at.view.kmf022 {
                 self.selectedCodeA4_8 = ko.observable(1);
                 self.isEnable = ko.observable(true);
                 self.isEditable = ko.observable(true);
-                self.dataA4Display= ko.observableArray([]);
-                self.dataA4Serivce= ko.observableArray([]);
+                self.dataA4Display = ko.observableArray([]);
+                self.sizeArrayA4 = ko.observable(0);
 
                 //a5
                 self.itemListA5_14 = ko.observableArray([
@@ -1112,8 +1112,8 @@ module nts.uk.at.view.kmf022 {
 
                 //a14
                 self.itemListA14_3 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_82'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_75')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_82'))
                 ]);
                 self.selectedIdA14_3 = ko.observable(1);
 
@@ -1801,26 +1801,66 @@ module nts.uk.at.view.kmf022 {
             }
             initData(): void {
                 let self = this;
+                self.initDataA4();
+                self.initDataA14();
+                //self.initDataA17();
+                self.initDataF();
+            }
+            initDataA4(): void {
+                let self = this;
                 // init data A4
                 self.dataA4Display([]);
-                self.dataA4Serivce([]);
+                self.sizeArrayA4(0);
+                let dataA4 = [];
                 service.findAllClosure().done(data => {
-                     self.dataA4Serivce(data);
-                    _.forEach(data, (element) => {
-                        let name = element.id + "." + element.name;
-                        service.findApp(element.id).done(obj=>{
-                             self.dataA4Display.push(new ItemA4(name, obj.userAtr, obj.deadlineCriteria, obj.deadline));
-                        });
-                    });
-                    if(data.length <7){
-                        for(let i=0;i<7-data.length;i++){
-                           self.dataA4Display.push(new ItemA4('', 0, 0, 0));
-                        }    
+                    self.sizeArrayA4(data.length);
+                    for (let i = 0; i < 5; i++) {
+                        if (data[i]) {
+                            let name = data[i].id + "." + data[i].name;
+                            service.findApp(data[i].id).done(obj => {
+                                self.dataA4Display.push(new ItemA4(data[i].id, name, obj.userAtr, obj.deadlineCriteria, obj.deadline));
+                            });
+                        } else {
+                            self.dataA4Display.push(new ItemA4(i + 1, (i + 1) + ".", 0, 0, 0));
+                        }
                     }
                 });
-
+                //self.dataA4Display(_.sortBy(self.dataA4Display(),['index']));
             }
-
+            initDataA14(): void {
+                let self = this;
+                service.findJobAssign().done((data) => {
+                    self.selectedIdA14_3(data.isConcurrently ? 1 : 0);
+                });
+            }
+            initDataA17(): void {
+                let self = this;
+                service.findAppro().done(data => {
+                    self.selectedIdA17_5(data.prinFlg);
+                });
+                service.findAppSetting().done(data => {
+                    self.selectedIdA17_4(data.appContentChangeFlg);
+                    self.selectedIdA9_5(data.appContentChangeFlg);
+                });
+            }
+            initDataF(): void {
+                let self = this;
+                service.findDirectlycommon().done(data => {
+                    self.selectedIdF10(data.workType);
+                    self.selectedIdF11(data.performanceDisplayAtr);
+                    self.selectedIdF12(data.contraditionCheckAtr);
+                    self.selectedValueF13(data.workChangeTimeAtr);
+                    // self.checkedF13_1()
+                    self.enableF13_1 = ko.observable(false);
+                    self.selectedIdF14 = ko.observable(1);
+                    self.texteditorF15.value(data.commentContent1) ;
+                    self.valueF15(data.commentFontColor1);
+                    self.enableF15(data.commentFontWeight1==1 ? true : false);
+                    self.texteditorF16.value(data.commentContent2) ;
+                    self.valueF15_1(data.commentFontColor2);
+                    self.enableF15_1(data.commentFontWeight2==1 ? true : false);
+                });
+            }
 
         }
 
@@ -1834,13 +1874,15 @@ module nts.uk.at.view.kmf022 {
             }
         }
         class ItemA4 {
+            index: number;
             a4_5: KnockoutObservable<string>;
             a4_6: KnockoutObservable<boolean>;
             a4_7: KnockoutObservable<number>;
             a4_8: KnockoutObservable<number>;
-            constructor(a4_5: string, a4_6: number, a4_7: number, a4_8: number) {
+            constructor(index: number, a4_5: string, a4_6: number, a4_7: number, a4_8: number) {
+                this.index = index;
                 this.a4_5 = ko.observable(nts.uk.resource.getText(a4_5));
-                this.a4_6 = ko.observable(a4_6==1 ? true : false);
+                this.a4_6 = ko.observable(a4_6 == 1 ? true : false);
                 this.a4_7 = ko.observable(a4_7);
                 this.a4_8 = ko.observable(a4_8);
             }
