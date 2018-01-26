@@ -12,3 +12,11 @@
 .default-input-width input {
 	width: 80px;
 }
+
+.tab_5_checkbox {
+	padding: 20px 0px 10px 0px;
+}
+
+.tab_5_td_cell {
+	padding: 10px 0px 10px 0px;
+}

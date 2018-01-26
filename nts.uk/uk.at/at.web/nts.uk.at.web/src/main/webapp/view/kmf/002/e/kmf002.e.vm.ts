@@ -4,10 +4,14 @@ module nts.uk.at.view.kmf002.e {
     
     export module viewmodel {
         export class ScreenModel {
-            commonTableMonthDaySet: KnockoutObservable<any>;
+            commonTableMonthDaySet: KnockoutObservable<nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet>;
+            enableSave: KnockoutObservable<boolean>;
+            enableDelete: KnockoutObservable<boolean>;
             
             constructor(){
                 let _self = this;
+                _self.enableSave = ko.observable(true);
+                _self.enableDelete= ko.observable(true);
                 _self.commonTableMonthDaySet = new nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet();
                 _self.commonTableMonthDaySet.fiscalYear.subscribe(function(newValue) {
                     // change year
@@ -20,6 +24,7 @@ module nts.uk.at.view.kmf002.e {
                let _self = this;
 //               var dfd = $.Deferred<void>();
                 service.save(_self.commonTableMonthDaySet.fiscalYear(), _self.commonTableMonthDaySet.arrMonth()).done((data) => {
+                    _self.enableDelete(true);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
             }
@@ -52,17 +57,19 @@ module nts.uk.at.view.kmf002.e {
                         _.forEach(_self.commonTableMonthDaySet.arrMonth(), function(value) {
                             value.day('');
                         });
+                        _self.enableDelete(false);
                     } else {
                         for (let i=0; i<data.publicHolidayMonthSettings.length; i++) {
                             _self.commonTableMonthDaySet.arrMonth()[i].day(data.publicHolidayMonthSettings[i].inLegalHoliday);
                         }
+                        _self.enableDelete(true);
                     }
                     dfd.resolve();
                 });
                 
-                service.findFirstMonth().done((data) => {
-                    dfd.resolve();
-                });
+//                service.findFirstMonth().done((data) => {
+//                    dfd.resolve();
+//                });
                 
                 nts.uk.ui.errors.clearAll();
             

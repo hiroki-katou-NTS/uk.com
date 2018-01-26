@@ -1,6 +1,9 @@
 package nts.uk.ctx.bs.employee.app.command.holidaysetting.configuration;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementClassification;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementStartDate;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySettingGetMemento;
@@ -9,7 +12,10 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class PublicHolidaySettingCommandDto.
  */
-@Data
+//@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class PublicHolidaySettingCommandDto implements PublicHolidaySettingGetMemento {
 	
 	/** The Constant TRUE_VALUE. */

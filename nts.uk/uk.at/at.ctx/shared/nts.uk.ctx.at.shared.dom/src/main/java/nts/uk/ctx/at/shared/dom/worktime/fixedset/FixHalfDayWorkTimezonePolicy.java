@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
@@ -14,8 +15,9 @@ public interface FixHalfDayWorkTimezonePolicy {
 	/**
 	 * Validate.
 	 *
+	 * @param be the be
 	 * @param fixedWorkSetting the fixed work setting
 	 * @param predTime the pred time
 	 */
-	void validate(FixedWorkSetting fixedWorkSetting, PredetemineTimeSetting predTime);
+	void validate(BundledBusinessException be, FixedWorkSetting fixedWorkSetting, PredetemineTimeSetting predTime);
 }

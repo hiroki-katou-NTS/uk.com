@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class HolidayFramset.
  */
 // 臨時勤務時の休出枠設定
 @Getter
-public class HolidayFramset extends DomainObject {
+public class HolidayFramset extends WorkTimeDomainObject {
 
 	/** The in legal breakout frame no. */
 	// 法定内休出枠NO

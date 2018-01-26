@@ -8,6 +8,13 @@ import java.util.Optional;
 public interface WorkingConditionItemGetMemento {
 	
 	/**
+	 * Gets the hourly payment atr.
+	 *
+	 * @return the hourly payment atr
+	 */
+	HourlyPaymentAtr getHourlyPaymentAtr();
+	
+	/**
 	 * Gets the schedule management atr.
 	 *
 	 * @return the schedule management atr
@@ -90,4 +97,18 @@ public interface WorkingConditionItemGetMemento {
 	 * @return the holiday add time set
 	 */
 	Optional<BreakdownTimeDay> getHolidayAddTimeSet();
+	
+	/**
+	 * Gets the time apply.
+	 *
+	 * @return the time apply
+	 */
+	Optional<BonusPaySettingCode> getTimeApply();
+	
+	/**
+	 * Gets the monthly pattern.
+	 *
+	 * @return the monthly pattern
+	 */
+	Optional<MonthlyPatternCode> getMonthlyPattern();
 }

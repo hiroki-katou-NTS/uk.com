@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
+import java.util.List;
+
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 
 /**
@@ -16,7 +18,7 @@ public interface DiffTimeStampReflectSetMemento {
 	 *
 	 * @param stampReflectTimezone the new stamp reflect timezone
 	 */
-	public void setStampReflectTimezone(StampReflectTimezone stampReflectTimezone);
+	public void setStampReflectTimezone(List<StampReflectTimezone> stampReflectTimezone);
 
 	/**
 	 * Sets the checks if is update start time.

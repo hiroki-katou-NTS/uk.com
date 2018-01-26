@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
@@ -31,10 +31,10 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 
 	@Inject
-	private AffJobTitleHistoryItemRepository_ver1 affJobTitleItemRepo;
+	private AffJobTitleHistoryItemRepository affJobTitleItemRepo;
 
 	@Inject
-	private AffJobTitleHistoryRepository_ver1 affJobTitleRepo;
+	private AffJobTitleHistoryRepository affJobTitleRepo;
 
 	@Override
 	public String targetCategoryCode() {
@@ -54,7 +54,7 @@ public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 	@Override
 	public PeregDomainDto getSingleData(PeregQuery query) {
 		
-		Optional<AffJobTitleHistory_ver1> historyOpt;
+		Optional<AffJobTitleHistory> historyOpt;
 		if ( query.getInfoId() != null ) {
 			historyOpt = affJobTitleRepo.getByHistoryId(query.getInfoId());
 		} else {
@@ -62,7 +62,7 @@ public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 		}
 		
 		if ( historyOpt.isPresent()) {
-			Optional<AffJobTitleHistoryItem_ver1> histItemOpt = affJobTitleItemRepo
+			Optional<AffJobTitleHistoryItem> histItemOpt = affJobTitleItemRepo
 					.findByHitoryId(historyOpt.get().getHistoryItems().get(0).identifier());
 			if ( histItemOpt.isPresent()) {
 				return AffJobTitleDto.createFromDomain(histItemOpt.get(), historyOpt.get());
@@ -87,7 +87,7 @@ public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
-		Optional<AffJobTitleHistory_ver1> historyOpt = affJobTitleRepo.getListBySidDesc(AppContexts.user().companyId(),
+		Optional<AffJobTitleHistory> historyOpt = affJobTitleRepo.getListBySidDesc(AppContexts.user().companyId(),
 				query.getEmployeeId());
 		if (historyOpt.isPresent()) {
 			return historyOpt.get().getHistoryItems().stream()

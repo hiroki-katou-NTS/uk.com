@@ -10,16 +10,15 @@ import java.util.Iterator;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FixRestTimezoneSet.
  */
 // 固定勤務の休憩時間帯
 @Getter
-public class FixRestTimezoneSet extends DomainObject {
+public class FixRestTimezoneSet extends WorkTimeDomainObject {
 
 	/** The lst timezone. */
 	// 時間帯
@@ -61,7 +60,7 @@ public class FixRestTimezoneSet extends DomainObject {
 			}
 			DeductionTime next = iterator.next();
 			if (current.getEnd().greaterThan(next.getStart())) {
-				throw new BusinessException("Msg_515",param);
+				this.bundledBusinessExceptions.addMessage("Msg_515", param);
 			}
 		}
 	}
