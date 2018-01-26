@@ -4075,7 +4075,8 @@ var nts;
                         }
                         if (!util.isNullOrUndefined(this.constraint.mantissaMaxLength)) {
                             mantissaMaxLength = this.constraint.mantissaMaxLength;
-                            var parts = String(value).split(".");
+                            var parts = inputText.split(".");
+                            split(".");
                             if (parts[1] !== undefined && parts[1].length > mantissaMaxLength)
                                 validateFail = true;
                         }
