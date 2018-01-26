@@ -227,6 +227,10 @@ module ccg030.a.viewmodel {
 
         /** Open ccg030 B Dialog */
         open030B_Dialog() {
+            var self = this;
+            if(self.selectedFlowMenu().fileName() == '未設定'){
+                return;    
+            }
             nts.uk.ui.block.invisible();
             nts.uk.ui.windows.setShared("flowmenu", ko.mapping.toJS(this.selectedFlowMenu()), false);
             nts.uk.ui.windows.setShared("fileID", this.selectedFlowMenu().fileID(), false);

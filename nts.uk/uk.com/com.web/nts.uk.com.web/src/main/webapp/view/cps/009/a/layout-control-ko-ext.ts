@@ -59,8 +59,6 @@ module CPS009Constraint {
                     let max = (Math.pow(10, dts.numberIntegerPart) - Math.pow(10, -(dts.numberDecimalPart || 0)));
 
                     constraint.charType = 'Numeric';
-                    constraint.max = dts.numericItemMax || '';
-                    constraint.min = dts.numericItemMin || 0;
                     constraint.max = dts.numericItemMax || max;
                     constraint.min = dts.numericItemMin || -max;
                     break;

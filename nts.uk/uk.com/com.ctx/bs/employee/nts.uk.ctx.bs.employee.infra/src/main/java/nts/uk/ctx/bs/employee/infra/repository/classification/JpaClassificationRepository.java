@@ -126,6 +126,13 @@ public class JpaClassificationRepository extends JpaRepository
 	 */
 	private BsymtClassification toEntity(Classification domain){
 		BsymtClassification entity = new BsymtClassification();
+
+		Optional<BsymtClassification> bsymtClassificationOpt = this.queryProxy().find(
+				new BsymtClassificationPK(domain.getCompanyId().v(), domain.getClassificationCode().v()),
+				BsymtClassification.class);
+		if (bsymtClassificationOpt.isPresent()) {
+			entity = bsymtClassificationOpt.get();
+		}
 		domain.saveToMemento(new JpaClassificationSetMemento(entity));
 		return entity;
 	}

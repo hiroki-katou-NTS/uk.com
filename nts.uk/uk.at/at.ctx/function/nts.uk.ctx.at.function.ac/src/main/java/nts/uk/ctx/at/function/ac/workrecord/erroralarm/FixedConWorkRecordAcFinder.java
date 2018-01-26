@@ -18,21 +18,21 @@ public class FixedConWorkRecordAcFinder implements FixedConWorkRecordAdapter {
 	private FixedConWorkRecordPub fixedConWorkRecordPub;
 
 	@Override
-	public List<FixedConWorkRecordAdapterDto> getAllFixedConWorkRecordByListID(List<String> listErrorAlarmID) {
-		List<FixedConWorkRecordAdapterDto> data = fixedConWorkRecordPub.getAllFixedConWorkRecordByListID(listErrorAlarmID)
+	public List<FixedConWorkRecordAdapterDto> getAllFixedConWorkRecordByID(String dailyAlarmConID) {
+		List<FixedConWorkRecordAdapterDto> data = fixedConWorkRecordPub.getAllFixedConWorkRecordByID(dailyAlarmConID)
 				.stream().map(c->convertToImport(c)).collect(Collectors.toList());
 		return data;
 	}
 
 	@Override
-	public FixedConWorkRecordAdapterDto getFixedConWRByCode(String errorAlarmID) {
-		FixedConWorkRecordAdapterDto data = convertToImport(fixedConWorkRecordPub.getFixedConWRByCode(errorAlarmID));
+	public FixedConWorkRecordAdapterDto getFixedConWRByCode(String dailyAlarmConID,int fixConWorkRecordNo) {
+		FixedConWorkRecordAdapterDto data = convertToImport(fixedConWorkRecordPub.getFixedConWRByCode(dailyAlarmConID,fixConWorkRecordNo));
 		return data;
 	}
 	
 	private FixedConWorkRecordAdapterDto convertToImport(FixedConWorkRecordPubExport export) {
 		return new FixedConWorkRecordAdapterDto(
-				export.getErrorAlarmID(),
+				export.getDailyAlarmConID(),
 				export.getFixConWorkRecordNo(),
 				export.getMessage(),
 				export.isUseAtr()
@@ -41,7 +41,7 @@ public class FixedConWorkRecordAcFinder implements FixedConWorkRecordAdapter {
 	
 	private FixedConWorkRecordPubExport convertToExport(FixedConWorkRecordAdapterDto dto) {
 		return new FixedConWorkRecordPubExport(
-				dto.getErrorAlarmID(),
+				dto.getDailyAlarmConID(),
 				dto.getFixConWorkRecordNo(),
 				dto.getMessage(),
 				dto.isUseAtr()
@@ -59,8 +59,8 @@ public class FixedConWorkRecordAcFinder implements FixedConWorkRecordAdapter {
 	}
 
 	@Override
-	public void deleteFixedConWorkRecordPub(List<String> errorAlarmID) {
-		this.fixedConWorkRecordPub.deleteFixedConWorkRecordPub(errorAlarmID);
+	public void deleteFixedConWorkRecordPub(String dailyAlarmConID) {
+		this.fixedConWorkRecordPub.deleteFixedConWorkRecordPub(dailyAlarmConID);
 	}
 	
 	

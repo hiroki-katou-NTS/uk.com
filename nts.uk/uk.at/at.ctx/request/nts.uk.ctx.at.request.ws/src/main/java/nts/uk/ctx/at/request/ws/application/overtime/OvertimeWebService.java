@@ -62,7 +62,6 @@ public class OvertimeWebService extends WebService{
 		return this.overtimeFinder.getCaculationValue(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate(),param.getSiftCD());
 	}
 	
-	
 	@POST
 	@Path("create")
 	public JavaTypeResult<String> createOvertime(CreateOvertimeCommand command){

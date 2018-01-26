@@ -74,13 +74,13 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(companyID, ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value, DEFAULT_REASON_RESOURCE);
 		dataSetting.setListAppReason(listReason);
 		dataSetting.setAppCommonSettingOutput(appCommonSetting);
-		// アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
+		/*// アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
 		ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(
 				companyID, 
 				SID, 
 				EmploymentRootAtr.APPLICATION, 
 				ApplicationType.WORK_CHANGE_APPLICATION, 
-				null, 
+				appCommonSetting.generalDate, 
 				"", 
 				true);
 
@@ -88,7 +88,7 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 		startupErrorCheckService.startupErrorCheck(
 				appCommonSetting.generalDate, 
 				ApplicationType.WORK_CHANGE_APPLICATION.value, 
-				approvalRootPattern.getApprovalRootContentImport());
+				approvalRootPattern.getApprovalRootContentImport());*/
 		//共通設定.複数回勤務
 		Optional<WorkManagementMultiple> workManagement = workManagerRepo.findByCode(companyID);
 		if(workManagement.isPresent()) {

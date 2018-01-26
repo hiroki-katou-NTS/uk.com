@@ -42,8 +42,16 @@ public class ErrorAlarmWorkRecordAcFinder implements ErrorAlarmWorkRecordAdapter
 				export.getCancelableAtr(),
 				export.getErrorDisplayItem(),
 				export.getCancelRoleId(),
-				export.getErrorAlarmCheckID()
+				export.getErrorAlarmCheckID(),
+				export.getDisplayMessage()
 				);
+	}
+
+	@Override
+	public List<ErrorAlarmWorkRecordAdapterDto> getAllErrorAlarmWorkRecord(String companyID) {
+		List<ErrorAlarmWorkRecordAdapterDto> data = repo.getAllErrorAlarmWorkRecord(companyID)
+				.stream().map(c->convertToImport(c)).collect(Collectors.toList());
+		return data;
 	}
 	
 

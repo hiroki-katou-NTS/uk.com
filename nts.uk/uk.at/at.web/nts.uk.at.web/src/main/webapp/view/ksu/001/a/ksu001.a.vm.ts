@@ -66,7 +66,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         ]);
         selectedIds: KnockoutObservableArray<number> = ko.observableArray([1, 2]);
         popupVal: KnockoutObservable<string> = ko.observable('');
-        selectedDate: KnockoutObservable<string> = ko.observable('');
+        selectedDate: KnockoutObservable<string> = ko.observable('2017/01/01');
 
         //Date time
         currentDate: Date = new Date();
@@ -374,7 +374,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             }
 
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
+                $("#hor-scroll-button-hide").trigger("click");
+            });
         }
 
         /**
@@ -421,8 +423,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             //create leftMost Header and Content
             let leftmostColumns = [{
-                headerText: nts.uk.resource.getText("KSU001_56"), key: "empName", width: "160px", icon: "ui-icon ui-icon-contact",
-                iconWidth: "35px", control: "link", handler: function(rData, rowIdx, key) { }
+                headerText: nts.uk.resource.getText("KSU001_56"), key: "empName", width: "160px"
             }];
 
             let leftmostHeader = {
@@ -611,48 +612,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
                     .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
                     .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent).create();
-            });
 
-            /**
-             * update text for row 2 of detailHeader
-             */
-            $("#popup-set").click(function() {
-                $("#extable").exTable("popupValue", self.popupVal());
-            });
+                /**
+                 * update text for row 2 of detailHeader
+                 */
+                $("#popup-set").click(function() {
+                    $("#extable").exTable("popupValue", self.popupVal());
+                });
 
-            /**
-             * close popup
-             */
-            $(".close-popup").click(function() {
-                $('#popup-area8').css('display', 'none');
-            });
-
-            /**
-             * validate when stick data in cell
-             */
-            $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
-                let stateWorkTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
-                // if workTypeCode is not required( state = 2) worktime is needless
-                if (stateWorkTypeCd && stateWorkTypeCd.state == 2 && data.workTimeCode !== null && data.workTimeCode !== '000') {
-                    return function() {
-                        alertError({ messageId: 'Msg_434' });
-                    };
-                }
-                // if workTypeCode is required( state = 0) worktime is need
-                if (stateWorkTypeCd && stateWorkTypeCd.state == 0 && (data.workTimeCode === null || data.workTimeCode === '000')) {
-                    return function() {
-                        alertError({ messageId: 'Msg_435' });
-                    };
-                }
-
-                return true;
+                /**
+                 * close popup
+                 */
+                $(".close-popup").click(function() {
+                    $('#popup-area8').css('display', 'none');
+                });
             });
         }
 
         /**
          *  update extable
          *  create new dataSource for some part of exTable
-         *   set color for extable
+         *  set color for extable
          */
         updateExTable(): void {
             let self = this;
@@ -710,9 +690,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
 
             let leftmostContentDeco = [], detailHeaderDeco = [], detailContentDeco = [];
+            let leftmostColumns = [{
+                key: "empName", headerText: "", width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { }
+            }];
 
             self.setColor(detailHeaderDeco, detailContentDeco).done(() => {
                 let updateLeftmostContent = {
+                    columns: leftmostColumns,
                     dataSource: newLeftMostDs,
                     features: [{
                         name: "BodyCellStyle",
@@ -785,6 +770,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 $("#extable").on("extablecellupdated", function() { });
                 $("#extable").on("extablerowupdated", function() { });
+
+                /**
+                 * validate when stick data in cell
+                 */
+                $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
+                    let stateWorkTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
+                    // if workTypeCode is not required( state = 2) worktime is needless
+                    if (stateWorkTypeCd && stateWorkTypeCd.state == 2 && data.workTimeCode !== null && data.workTimeCode !== '000') {
+                        return function() {
+                            alertError({ messageId: 'Msg_434' });
+                        };
+                    }
+                    // if workTypeCode is required( state = 0) worktime is need
+                    if (stateWorkTypeCd && stateWorkTypeCd.state == 0 && (data.workTimeCode === null || data.workTimeCode === '000')) {
+                        return function() {
+                            alertError({ messageId: 'Msg_435' });
+                        };
+                    }
+
+                    return true;
+                });
             }).always(() => {
                 self.stopRequest(true);
             });
@@ -1073,7 +1079,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         setDataToDisplaySymbol(dataS): void {
             let self = this;
-            if (+self.dataScheduleDisplayControl().symbolAtr == 1) {
+            if (self.dataScheduleDisplayControl() && +self.dataScheduleDisplayControl().symbolAtr == 1) {
                 _.each(dataS, (x) => {
                     let workEmpCombine = _.find(self.dataWorkEmpCombine(), { 'workTypeCode': x.workTypeCode, 'workTimeCode': x.workTimeCode });
                     if (workEmpCombine) {
@@ -1104,11 +1110,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': item.workTypeCode });
             if (stateWorkTypeCode) {
                 let state = stateWorkTypeCode.state;
-                if (state == 1 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
+                if (state == 1 && self.dataScheduleDisplayControl() && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
                     item.symbolName = symbolName + self.dataScheduleDisplayControl().symbolHalfDayName;
                 }
 
-                if (state == 2 && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
+                if (state == 2 && self.dataScheduleDisplayControl() && +self.dataScheduleDisplayControl().symbolHalfDayAtr == 1) {
                     item.symbolName = self.dataScheduleDisplayControl().symbolHalfDayName + symbolName;
                 }
 

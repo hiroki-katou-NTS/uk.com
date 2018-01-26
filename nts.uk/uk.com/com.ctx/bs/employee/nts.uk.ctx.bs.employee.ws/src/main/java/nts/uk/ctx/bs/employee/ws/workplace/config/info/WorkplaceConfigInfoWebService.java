@@ -57,4 +57,14 @@ public class WorkplaceConfigInfoWebService extends WebService {
 		
 		return this.wkpConfigInfoFinder.findAllByBaseDate(findObject);
 	}
+	
+	@Path("findAllForKcp")
+	@POST
+	public List<WorkplaceHierarchyDto> findAllByBaseDateForKcp010(WkpConfigInfoFindObject findObject) {
+		if(findObject.getSystemType() == null) {
+			findObject.setSystemType(5);
+		}
+		
+		return this.wkpConfigInfoFinder.findAllByBaseDateForKcp010(findObject);
+	}
 }
