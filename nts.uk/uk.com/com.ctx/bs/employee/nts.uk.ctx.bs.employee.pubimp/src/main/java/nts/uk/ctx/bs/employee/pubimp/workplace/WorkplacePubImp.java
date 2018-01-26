@@ -315,7 +315,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	@Override
 	public List<WorkPlaceHistExport> GetWplByListSidAndPeriod(List<String> sids, DatePeriod datePeriod) {
 
-		if (sids.isEmpty() || datePeriod.start() == null ||  datePeriod.end() == null)
+		if (sids.isEmpty() || datePeriod.start() == null || datePeriod.end() == null)
 			return null;
 
 		List<AffWorkplaceHistory_ver1> lstAffWkpHist = affWorkplaceHistoryRepository_v1.getByListSid(sids);
@@ -330,45 +330,50 @@ public class WorkplacePubImp implements SyWorkplacePub {
 			workPlaceHistExport.setEmployeeId(affWkp.getEmployeeId());
 
 			if (!affWkp.getHistoryItems().isEmpty()) {
-
-				List<WorkPlaceIdAndPeriod> lstWkpIdAndPeriod = new ArrayList<>();
-
-				affWkp.getHistoryItems().forEach(itemHist -> {
-
-					WorkPlaceIdAndPeriod workPlaceIdAndPeriod = new WorkPlaceIdAndPeriod();
-
-					boolean check = (itemHist.start().afterOrEquals(datePeriod.start())
-									&& itemHist.start().beforeOrEquals(datePeriod.end())
-									&& itemHist.end().afterOrEquals(datePeriod.start())
-									&& itemHist.end().beforeOrEquals(datePeriod.end()))
-									|| (itemHist.start().afterOrEquals(datePeriod.start())
-											&& itemHist.start().beforeOrEquals(datePeriod.end())
-											&& itemHist.end().after(datePeriod.end()))
-									|| (itemHist.end().afterOrEquals(datePeriod.start())
-											&& itemHist.end().beforeOrEquals(datePeriod.end())
-											&& itemHist.start().before(datePeriod.start()));
-
-					if (check) {
-						DatePeriod date = new DatePeriod(itemHist.start(), itemHist.end());
-
-						AffWorkplaceHistoryItem affWkpHisItem = affWorkplaceHistoryItemRepository_v1
-								.getByHistId(itemHist.identifier()).get();
-
-						workPlaceIdAndPeriod.setWorkplaceId(affWkpHisItem.getWorkplaceId());
-
-						workPlaceIdAndPeriod.setDateRange(date);
-
-						lstWkpIdAndPeriod.add(workPlaceIdAndPeriod);
-
-					}
-
-				});
-				workPlaceHistExport.setLstWkpIdAndPeriod(lstWkpIdAndPeriod);
+				workPlaceHistExport.setLstWkpIdAndPeriod(getLstWkpIdAndPeriod(affWkp, datePeriod));
 			}
+			
 			result.add(workPlaceHistExport);
 		});
 
 		return result;
 	}
+
+	
+	private List<WorkPlaceIdAndPeriod> getLstWkpIdAndPeriod(AffWorkplaceHistory_ver1 affWkp, DatePeriod datePeriod) {
+		
+		List<WorkPlaceIdAndPeriod> result = new ArrayList<>();
+
+		affWkp.getHistoryItems().forEach(itemHist -> {
+
+			WorkPlaceIdAndPeriod workPlaceIdAndPeriod = new WorkPlaceIdAndPeriod();
+
+			boolean check = (itemHist.start().afterOrEquals(datePeriod.start())
+					&& itemHist.start().beforeOrEquals(datePeriod.end())
+					&& itemHist.end().afterOrEquals(datePeriod.start())
+					&& itemHist.end().beforeOrEquals(datePeriod.end()))
+					|| (itemHist.start().afterOrEquals(datePeriod.start())
+							&& itemHist.start().beforeOrEquals(datePeriod.end())
+							&& itemHist.end().after(datePeriod.end()))
+					|| (itemHist.end().afterOrEquals(datePeriod.start())
+							&& itemHist.end().beforeOrEquals(datePeriod.end())
+							&& itemHist.start().before(datePeriod.start()));
+
+			if (check) {
+				DatePeriod date = new DatePeriod(itemHist.start(), itemHist.end());
+
+				AffWorkplaceHistoryItem affWkpHisItem = affWorkplaceHistoryItemRepository_v1
+						.getByHistId(itemHist.identifier()).get();
+
+				workPlaceIdAndPeriod.setWorkplaceId(affWkpHisItem.getWorkplaceId());
+
+				workPlaceIdAndPeriod.setDatePeriod(date);
+
+				result.add(workPlaceIdAndPeriod);
+
+			}
+		});
+		return result;
+	};
 
 }
