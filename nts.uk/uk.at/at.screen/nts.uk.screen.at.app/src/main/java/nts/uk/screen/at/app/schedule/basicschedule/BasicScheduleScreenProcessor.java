@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.schedule.basicschedule;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,14 +10,17 @@ import javax.inject.Inject;
 
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
-import nts.uk.ctx.at.shared.dom.worktype.DisplayAtr;
+import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
+import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.shift.workpairpattern.ComPatternScreenDto;
 import nts.uk.screen.at.app.shift.workpairpattern.WkpPatternScreenDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * Get data DB BASIC_SCHEDULE, WORKTIME, WORKTYPE not through dom layer
+ * Get data DB BASIC_SCHEDULE, WORKTIME, WORKTYPE, CLOSURE not through dom layer
  * 
  * @author sonnh1
  *
@@ -31,8 +35,10 @@ public class BasicScheduleScreenProcessor {
 	@Inject
 	private BasicScheduleService bScheduleService;
 
+	@Inject
+	private ShClosurePub shClosurePub;
+
 	/**
-	 * 
 	 * @param params
 	 * @return
 	 */
@@ -41,17 +47,29 @@ public class BasicScheduleScreenProcessor {
 	}
 
 	/**
+	 * get list workTime with abolishAtr = NOT_ABOLISH (in contrast to DISPLAY)
 	 * 
 	 * @return
 	 */
 	public List<WorkTimeScreenDto> getListWorkTime() {
 		String companyId = AppContexts.user().companyId();
-		return this.bScheduleScreenRepo.getListWorkTime(companyId, DisplayAtr.DisplayAtr_Display.value);
+		return this.bScheduleScreenRepo.getListWorkTime(companyId, AbolishAtr.NOT_ABOLISH.value);
 	}
 
 	/**
-	 * Find by companyId and DeprecateClassification = Deprecated (added by
-	 * sonnh1)
+	 * getPresentClosingPeriodExport to get startDate and endDate for screen
+	 * KSU001.A
+	 * 
+	 * @return
+	 */
+	public PresentClosingPeriodExport getPresentClosingPeriodExport() {
+		String companyId = AppContexts.user().companyId();
+		int closureId = 1;
+		return shClosurePub.find(companyId, closureId).get();
+	}
+
+	/**
+	 * find by companyId and DeprecateClassification = Deprecated
 	 * 
 	 * @return List WorkTypeDto
 	 */
@@ -68,9 +86,26 @@ public class BasicScheduleScreenProcessor {
 	 * @return List StateWorkTypeCodeDto
 	 */
 	public List<StateWorkTypeCodeDto> checkStateWorkTypeCode(List<String> lstWorkTypeCode) {
+		List<StateWorkTypeCodeDto> lstStateWorkTypeCode = new ArrayList<StateWorkTypeCodeDto>();
+		lstWorkTypeCode.forEach(workTypeCode -> {
+			WorkStyle workStyle = bScheduleService.checkWorkDay(workTypeCode);
+			if (workStyle != null) {
+				lstStateWorkTypeCode.add(new StateWorkTypeCodeDto(workTypeCode, workStyle.value));
+			}
+		});
+		return lstStateWorkTypeCode;
+	}
+
+	/**
+	 * check Needed Of WorkTimeSetting
+	 * 
+	 * @param lstWorkTypeCode
+	 * @return List StateWorkTypeCodeDto
+	 */
+	public List<StateWorkTypeCodeDto> checkNeededOfWorkTimeSetting(List<String> lstWorkTypeCode) {
 		List<StateWorkTypeCodeDto> lstStateWorkTypeCode = lstWorkTypeCode.stream()
-				.filter(x -> bScheduleService.checkWorkDay(x) != null)
-				.map(x -> new StateWorkTypeCodeDto(x, bScheduleService.checkWorkDay(x).value))
+				.map(workTypeCode -> new StateWorkTypeCodeDto(workTypeCode,
+						bScheduleService.checkNeededOfWorkTimeSetting(workTypeCode).value))
 				.collect(Collectors.toList());
 		return lstStateWorkTypeCode;
 	}
@@ -82,7 +117,8 @@ public class BasicScheduleScreenProcessor {
 	 */
 	public List<WorkEmpCombineScreenDto> getListWorkEmpCombine(ScheduleScreenSymbolParams params) {
 		String companyId = AppContexts.user().companyId();
-		return this.bScheduleScreenRepo.getListWorkEmpCobine(companyId, params.lstWorkTypeCode, params.lstWorkTypeCode);
+		return this.bScheduleScreenRepo.getListWorkEmpCobine(companyId, params.getLstWorkTypeCode(),
+				params.getLstWorkTimeCode());
 	}
 
 	/**

@@ -1,11 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.lateorleaveearly;
 
-import java.util.List;
-
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.AppApprovalPhaseCmd;
-
 
 /**
  * 
@@ -60,7 +56,5 @@ public class CreateLateOrLeaveEarlyCommand {
 	
 	/** 申請理由 appReason */
 	private String appReason;
-	
-	private List<AppApprovalPhaseCmd> appApprovalPhaseCmds;
 
 }

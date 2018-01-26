@@ -34,13 +34,13 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 	private final String REPORT_ID = "MASTER_LIST";
 
-	// private final String REPORT_FILE_NAME = "マスターリスト_{TYPE}_{DATE}";
+	// private final String REPORT_FILE_NAME = "マスタリスト_{TYPE}_{DATE}";
 
 	private final int HEADER_INFOR_START_ROW = 0;
 
 	private final int START_COLUMN = 0;
 
-	private int MASTERLIST_DATA_START_ROW = 9;
+	private final int MASTERLIST_DATA_START_ROW = 7;
 	
 	private final int TABLE_DISTANCE = 3;
 
@@ -62,16 +62,16 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 		List<MasterHeaderColumn> columns = getViewColumn(dataSource.getHeaderColumns());
 
-		sheet.setName("マスターリスト");
+		sheet.setName("マスタリスト");
 
 		String reportName = this.fillHeader(cells, dataSource, columns.size() <= 1 ? 1 : columns.size() - 1);
 
 		if (!columns.isEmpty()) {
 			this.setCommonStyle(cells);
 
-			drawATable(cells, columns, dataSource.getMasterList());
+			int startNextTable = drawATable(cells, columns, dataSource.getMasterList(), this.MASTERLIST_DATA_START_ROW);
 
-			drawExtraTable(cells, dataSource.getExtraHeaderColumns(), dataSource.getExtraMasterList());
+			drawExtraTable(cells, startNextTable, dataSource.getExtraHeaderColumns(), dataSource.getExtraMasterList());
 
 			try {
 				AutoFitterOptions options = new AutoFitterOptions();
@@ -100,41 +100,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		}
 
 	}
-
-	private void drawATable(final com.aspose.cells.Cells cells, List<MasterHeaderColumn> columns,
-			List<MasterData> datas) {
-		this.drawTableHeader(cells, columns);
-		this.drawTableBody(cells, columns, datas);
-		this.MASTERLIST_DATA_START_ROW += datas.size() + this.TABLE_DISTANCE;
-	}
-
-	private void drawExtraTable(final com.aspose.cells.Cells cells,
-			Map<String, List<MasterHeaderColumn>> extraTableColumns, Map<String, List<MasterData>> extraTableDatas) {
-		if (!extraTableColumns.isEmpty()) {
-			for (Entry<String, List<MasterHeaderColumn>> extraTable : extraTableColumns.entrySet()) {
-				List<MasterHeaderColumn> columns = getViewColumn(extraTable.getValue());
-				List<MasterData> extraData = extraTableDatas.get(extraTable.getKey());
-				drawATable(cells, columns, extraData);
-			}
-
-		}
-	}
-
-	private List<MasterHeaderColumn> getViewColumn(List<MasterHeaderColumn> original) {
-		return original.stream().filter(c -> c.isDisplay()).collect(Collectors.toList());
-	}
-
-	private String getCreateReportTime(String createDate) {
-		return GeneralDateTime.fromString(createDate, "yyyy/MM/dd HH:mm:ss").localDateTime()
-				.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-	}
-
-	private void setCommonStyle(Cells cells) {
-
-		cells.setStandardWidthPixels(this.STANDARD_WIDTH);
-		cells.setStandardHeightPixels(this.STANDARD_HEIGHT);
-	}
-
+	
 	private String fillHeader(Cells cells, MasterListExportSource dataSource, int columnSize) {
 		Map<String, String> headerData = dataSource.getHeaders();
 		int i = this.HEADER_INFOR_START_ROW;
@@ -161,24 +127,51 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		return reportType == ReportType.CSV;
 	}
 
-	private void drawTableHeader(Cells cells, List<MasterHeaderColumn> columns) {
+	private String getCreateReportTime(String createDate) {
+		return GeneralDateTime.fromString(createDate, "yyyy/MM/dd HH:mm:ss").localDateTime()
+				.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+	}
+
+	private int drawATable(final Cells cells, List<MasterHeaderColumn> columns,
+			List<MasterData> datas, int startRow) {
+		this.drawTableHeader(cells, columns, startRow);
+		this.drawTableBody(cells, columns, datas, startRow);
+		return startRow + datas.size() + this.TABLE_DISTANCE;
+	}
+
+	private int drawExtraTable(final Cells cells, int startRow,
+			Map<String, List<MasterHeaderColumn>> extraTableColumns, Map<String, List<MasterData>> extraTableDatas) {
+		if (!extraTableColumns.isEmpty()) {
+			for (Entry<String, List<MasterHeaderColumn>> extraTable : extraTableColumns.entrySet()) {
+				List<MasterHeaderColumn> columns = getViewColumn(extraTable.getValue());
+				List<MasterData> extraData = extraTableDatas.get(extraTable.getKey());
+				startRow = drawATable(cells, columns, extraData, startRow);
+			}
+		}
+		return startRow;
+	}
+
+	private List<MasterHeaderColumn> getViewColumn(List<MasterHeaderColumn> original) {
+		return original.stream().filter(c -> c.isDisplay()).collect(Collectors.toList());
+	}
+
+	private void drawTableHeader(Cells cells, List<MasterHeaderColumn> columns, int startRow) {
 		int columnIndex = 0;
 
 		for (MasterHeaderColumn c : columns) {
-			Cell cell = cells.get(this.MASTERLIST_DATA_START_ROW - 1, columnIndex);
+			Cell cell = cells.get(startRow - 1, columnIndex);
 			cell.setStyle(this.getCellStyle(cell.getStyle(), c));
 			cell.setValue(c.getColumnText());
 			columnIndex++;
 		}
 	}
 
-	private void drawTableBody(Cells cells, List<MasterHeaderColumn> columns, List<MasterData> datas) {
-
+	private void drawTableBody(Cells cells, List<MasterHeaderColumn> columns, List<MasterData> datas, int startRow) {
 		for (int i = 0; i < datas.size(); i++) {
 			MasterData data = datas.get(i);
 			int j = this.START_COLUMN;
 			for (MasterHeaderColumn column : columns) {
-				Cell cell = cells.get(this.MASTERLIST_DATA_START_ROW + i, j);
+				Cell cell = cells.get(startRow + i, j);
 				// TODO: format date with format
 				Style style = this.getCellStyle(cell.getStyle(), column);
 				cell.setValue(data.getDatas().get(column.getColumnId()));
@@ -222,5 +215,10 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		Font font = style.getFont();
 		font.setSize(FONT_SIZE);
 		font.setName(FONT_FAMILY);
+	}
+
+	private void setCommonStyle(Cells cells) {
+		cells.setStandardWidthPixels(this.STANDARD_WIDTH);
+		cells.setStandardHeightPixels(this.STANDARD_HEIGHT);
 	}
 }

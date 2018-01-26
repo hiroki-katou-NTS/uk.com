@@ -19,7 +19,7 @@
 				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '/view/kmk/013/a/index.xhtml' }"
 					tabindex="1"> #{i18n.getText('KMK013_224')} </a>
-				<button class="proceed save">#{i18n.getText('KMK013_225')}</button>
+				<button class="proceed save" data-bind="click: saveData">#{i18n.getText('KMK013_225')}</button>
 			</div>
 			<div id="contents-area" class="table">
 				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_226')}</div>

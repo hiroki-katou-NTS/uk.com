@@ -33,6 +33,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 //        atdItem: DailyAttendanceItemDto;
         attendanceModel: AttendanceModel;
         enableAtdBtn: KnockoutObservable<boolean>;
+        checkedCountAtr: KnockoutObservable<boolean>;
         
         constructor() {
             var self = this;
@@ -96,20 +97,48 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             //subscribe upper Limit
             self.selectUppper.subscribe(function(isUpper) {
                 self.loadBySelectUse(self.checkSelectUse(), self.selectUnder(), isUpper);
+                self.setRequiredTargetItem();
             });
 
             //subscribe under Limit
             self.selectUnder.subscribe(function(isUnder) {
                 self.loadBySelectUse(self.checkSelectUse(), isUnder, self.selectUppper());
+                self.setRequiredTargetItem();
             });
+            
+            self.checkedCountAtr = ko.observable();
+            self.checkedCountAtr.subscribe(function() {
+                if (typeof self.checkedCountAtr() != "undefined") {
+                   if (self.checkedCountAtr() == true) {
+                        self.itemTotalTimesDetail.countAtr(0);                    
+                    } else {
+                        self.itemTotalTimesDetail.countAtr(1);
+                    }    
+                } else {
+                    self.switchCheckbox(self.itemTotalTimesDetail.countAtr());    
+                }
+            }); 
 
         }
 
         /**
+         * set required text editor
+         */
+        private setRequiredTargetItem(): void {
+            let self = this;
+            // set label is optional
+            if (self.selectUppper() == 0 && self.selectUnder() == 0) { 
+                $('#targetItemLb').css("border-color", "#97D155");
+            } 
+            // set label is required
+            else {
+                $('#targetItemLb').css("border-color", "#FAC002");
+            }    
+        }
+        
+        /**
          * check select use by use
          */
-
-
         private checkSelectUse(): boolean {
             var self = this;
             return ((self.selectUse() === "1") || self.selectUse() === 1);
@@ -166,6 +195,27 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                         self.loadAllTotalTimesDetail(self.currentCode()).done(() => {
                             if (self.totalClsEnums.length > 0) {
                                 self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail.summaryAtr()].value);
+                                self.switchCheckbox(self.itemTotalTimesDetail.countAtr());
+                            }
+                            
+                            $(document).on("keydown", function(e) {
+                                var x = document.getElementsByClassName("check-focus"); 
+                                if (e.which === 8 && !$(e.target).is("input, textarea")) {
+                                    $('.check-focus').focus();                                                                                                                                                                                                                                                                                  
+                                    e.preventDefault();                                   
+                                }
+                            });
+                            
+                            $('.check-focus').keydown(function(event) { return cancelBackspace(event) });
+                            function cancelBackspace(event) {
+                                if (event.keyCode == 8) {
+                                    return false;
+                                }
+                            }
+                            
+                            function no_backspaces(event) {
+                                backspace = 8;
+                                if (event.keyCode == backspace) event.preventDefault();
                             }
                             dfd.resolve();
                         });
@@ -237,25 +287,27 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     
                     self.attendanceModel.attendanceItemId(data.totalCondition.attendanceItemId);
                     
+                    self.switchCheckbox(data.countAtr);
+                    
                     self.loadListWorkType().done(function() {
                         self.loadListWorkTimes().done(function() {
-                                $.when( self.loadTotalClsEnum(), service.findAllDailyAttendanceItem()).done(function( a1, dataRes: Array<DailyAttendanceItemDto> ) {
+                                $.when( self.loadTotalClsEnum(), service.findAllDailyAttendanceItem()).done(function( a1, dataRes: Array<DailyAttendanceItemDto>) {
                                     // load all data  Enum
                                     if (self.totalClsEnums.length > 0) {
                                         self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail.summaryAtr()].value);
                                     } 
-                                    
-//                                    let list: Array<string> = dataRes.map(item => item.attendanceItemId);
-                                    let selectID: Array<any> = _.filter(dataRes, function (item) {
-                                        return item.attendanceItemId == self.attendanceModel.attendanceItemId();
-                                    })
-                                    
-                                    if (selectID.length > 0) {
-                                        self.attendanceModel.update(selectID[0].attendanceItemId, selectID[0].attendanceItemName);
-                                        nts.uk.ui.windows.setShared('SelectedAttendanceId', selectID[0].attendanceItemId, true);
+                                    if (_.isUndefined(self.attendanceModel.attendanceItemId()) 
+                                            || _.isNull(self.attendanceModel.attendanceItemId())) {
+                                        self.attendanceModel.update(null, null);
+                                        nts.uk.ui.windows.setShared('SelectedAttendanceId', "", true);        
                                     } else {
-                                        self.attendanceModel.update(0, null);
-                                        nts.uk.ui.windows.setShared('SelectedAttendanceId', 1, true);
+                                        let selectID: Array<any> = _.filter(dataRes, function (item) {
+                                            return item.attendanceItemId == self.attendanceModel.attendanceItemId();
+                                        })
+                                        if(!_.isEmpty(selectID)) {
+                                            self.attendanceModel.update(selectID[0].attendanceItemId, selectID[0].attendanceItemName);
+                                            nts.uk.ui.windows.setShared('SelectedAttendanceId', selectID[0].attendanceItemId, true);    
+                                        }
                                     }
                                 });
                                 
@@ -374,18 +426,22 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             //trim() name
             self.itemTotalTimesDetail.totalTimesName($.trim(self.itemTotalTimesDetail.totalTimesName()));
             self.itemTotalTimesDetail.totalTimesABName($.trim(self.itemTotalTimesDetail.totalTimesABName()));
-            if (self.itemTotalTimesDetail.countAtr()) {
-                self.itemTotalTimesDetail.countAtr(0);
-            } else {
-                self.itemTotalTimesDetail.countAtr(1);
-            }
             // save enum
             self.itemTotalTimesDetail.summaryAtr(self.valueEnum());
             // define dataDto
 
             // Get data to save
             self.getSaveData();
-
+            if (!self.itemTotalTimesDetail.workTypeInfo() && self.enableWorkType()) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_10' });
+                nts.uk.ui.block.clear();
+                return;
+            }
+            if (!self.itemTotalTimesDetail.workingInfo() && self.enableWorkTime()) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_29' });
+                nts.uk.ui.block.clear();
+                return;
+            }
             service.saveAllTotalTimes(self.itemTotalTimesDetail.toDto()).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     // Focus grid list
@@ -486,31 +542,27 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         public openKDL002Dialog_A3_28() {
             var self = this;
             nts.uk.ui.block.invisible();
-            // check worktype or worktime send to KDL002Dialog
-//            var listWorkType = [];
-//            var listWorkCode = [];
-//            for (let i = 0; i < self.itemTotalTimesDetail.listTotalSubjects().length; i++) {
-//                if (self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeAtr() == 0) {
-//                    listWorkType[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
-//                } else {
-//                    listWorkCode[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
-//                }
-//            }
 
-            service.findAllDailyAttendanceItem().done(function(dataRes: Array<DailyAttendanceItemDto>) {
-                //list All workType
-                let list: Array<string> = dataRes.map(item => item.attendanceItemId);
-                let dataRes: Array<any> = dataRes;
-//                nts.uk.ui.windows.setShared('KDL002_Multiple', false);
-                nts.uk.ui.windows.setShared('AllAttendanceObj', list);
-                nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.attendanceModel.attendanceItemId()], true);
+            service.findAllAttendanceItem().done(function(dataRes: Array<number>) {
+                // nts.uk.ui.windows.setShared('KDL002_Multiple', false);
+                nts.uk.ui.windows.setShared('AllAttendanceObj', dataRes);
+                if (_.isNull(self.attendanceModel.attendanceItemId()) ) {
+                    nts.uk.ui.windows.setShared('SelectedAttendanceId', "", true);    
+                } else {
+                    nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.attendanceModel.attendanceItemId()], true);    
+                }
+                
                 nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml', { title: nts.uk.resource.getText('KDL021') }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
                     let atdSelected: Array<any> = nts.uk.ui.windows.getShared('selectedChildAttendace');
-                    let dailyAttendanceItem: Array<DailyAttendanceItemDto> = _.filter(dataRes, function(obj){ return obj.attendanceItemId == atdSelected });
-                    if (typeof dailyAttendanceItem[0] != 'undefined') {
-                        self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);
-                    }
+                    $.when( service.findAllDailyAttendanceItem()).done(function( dataRes: Array<DailyAttendanceItemDto>) {
+                        let dailyAttendanceItem: Array<DailyAttendanceItemDto> = _.filter(dataRes, function(obj){ return obj.attendanceItemId == atdSelected });
+                        if (_.isUndefined(atdSelected) || _.isEmpty(atdSelected) || _.isUndefined(dailyAttendanceItem)) {
+                            self.attendanceModel.update(null, null);                        
+                        } else {
+                            self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);    
+                        }  
+                    });
                 });
             });
         }
@@ -588,14 +640,19 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             if (self.selectUse() == SelectUseConst.Use && ( self.enableUnder() == true || self.enableUpper() == true) && _.isNumber(self.attendanceModel.attendanceItemId())) {
                 saveData.totalCondition.attendanceItemId(self.attendanceModel.attendanceItemId());
             } else {
-                saveData.totalCondition.attendanceItemId(1);
+                saveData.totalCondition.attendanceItemId(SelectUseConst.NO_SELECT);
             }
         }
+        
+        private switchCheckbox(value: number): void {
+            let self = this;
+            if (value == 0) {
+                self.checkedCountAtr(true);   
+            } else {
+                self.checkedCountAtr(false);
+            }    
+        }      
     }
-
-
-
-
 
     export class TotalTimesModel {
         totalCountNo: number;
@@ -776,6 +833,6 @@ module nts.uk.at.view.kmk009.a.viewmodel {
     export enum SelectUseConst {
         Use = "1",
         NoUse = "0",
+        NO_SELECT = -1,
     }
-
 }

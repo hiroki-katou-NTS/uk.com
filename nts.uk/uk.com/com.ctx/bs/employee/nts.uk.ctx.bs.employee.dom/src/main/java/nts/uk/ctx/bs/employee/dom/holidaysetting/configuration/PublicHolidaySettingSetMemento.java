@@ -29,4 +29,18 @@ public interface PublicHolidaySettingSetMemento {
 	 * @param publicHdManagementClassification the new public hd management classification
 	 */
 	void setPublicHdManagementClassification(PublicHolidayManagementClassification publicHdManagementClassification);
+	
+	/**
+	 * Sets the checks if is weekly hd check.
+	 *
+	 * @param isWeeklyHdCheck the new checks if is weekly hd check
+	 */
+	void setIsWeeklyHdCheck(boolean isWeeklyHdCheck);
+	
+	/**
+	 * Sets the public holiday management start date.
+	 *
+	 * @param publicHolidayManagementStartDate the new public holiday management start date
+	 */
+	void setPublicHolidayManagementStartDate(PublicHolidayManagementStartDate publicHolidayManagementStartDate);
 }

@@ -29,22 +29,22 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWor
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworkTime.DailyCalculationPersonalInformation;
-import nts.uk.ctx.at.shared.dom.worktime.commonsetting.BreakSetOfCommon;
-import nts.uk.ctx.at.shared.dom.worktime.commonsetting.overworkset.StatutoryOverTimeWorkSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixOffdayWorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.OverTimeHourSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FlowRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -128,20 +128,19 @@ public class CalculationRangeOfOneDay {
 	 * @param prioritySet
 	 */
 	public void createWithinWorkTimeSheet(WorkingSystem workingSystem, WorkTimeMethodSet setMethod,
-			RestClockManageAtr clockManage, OutingTimeOfDailyPerformance dailyGoOutSheet, BreakSetOfCommon commonSet,
-			FixRestCalcMethod fixedCalc, WorkTimeDivision workTimeDivision, FlowRestCalcMethod fluidSet,
-			BreakTimeManagement breakmanage, Optional<FluRestTime> fluRestTime,
-			FluidPrefixBreakTimeSet fluidPrefixBreakTimeSet, WorkTimeSet predetermineTimeSet,
-			FixedWorkSetting fixedWorkSetting, WorkTimeCommonSet workTimeCommonSet, BonusPaySetting bonusPaySetting,
-			List<OverTimeHourSet> overTimeHourSetList, FixOffdayWorkTime fixOff, OverDayEndCalcSet dayEndSet,
+			RestClockManageAtr clockManage, OutingTimeOfDailyPerformance dailyGoOutSheet, CommonRestSetting commonSet,
+			FixedRestCalculateMethod fixedCalc, WorkTimeDivision workTimeDivision, FlowRestCalcMethod fluidSet,
+			BreakTimeManagement breakmanage, Optional<FlowWorkRestTimezone> fluRestTime,
+			FlowFixedRestSet fluidPrefixBreakTimeSet, PredetemineTimeSetting predetermineTimeSet,
+			FixedWorkSetting fixedWorkSetting, WorkTimezoneCommonSet workTimeCommonSet, BonusPaySetting bonusPaySetting,
+			List<OverTimeOfTimeZoneSet> overTimeHourSetList, FixOffdayWorkTimezone fixOff, OverDayEndCalcSet dayEndSet,
 			List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay, WorkType toDay, WorkType afterDay,
 			BreakdownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
-			StatutoryOverTimeWorkSet statutorySet, StatutoryPrioritySet prioritySet, WorkTime workTime) {
+			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet, WorkTimeSetting workTime) {
 		/* 固定控除時間帯の作成 */
 		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createDedctionTimeSheet(AcquisitionConditionsAtr.All,
 				setMethod, clockManage, dailyGoOutSheet, this.oneDayOfRange, commonSet, attendanceLeavingWork,
-				fixedCalc, workTimeDivision, fluidPrefixBreakTimeSet, fluidSet, breakmanage, setMethod, fluRestTime,
-				fluidPrefixBreakTimeSet);
+				fixedCalc, workTimeDivision, fluidPrefixBreakTimeSet, fluidSet, breakmanage, setMethod, fluRestTime);
 		this.temporaryDeductionTimeSheet = Optional.of(deductionTimeSheet);
 		theDayOfWorkTimesLoop(workingSystem, predetermineTimeSet, fixedWorkSetting, workTimeCommonSet, bonusPaySetting,
 				overTimeHourSetList, fixOff, dayEndSet, holidayTimeWorkItem, beforeDay, toDay, afterDay,
@@ -191,13 +190,13 @@ public class CalculationRangeOfOneDay {
 	 * @param deductionTimeSheet
 	 *            控除時間帯
 	 */
-	public void theDayOfWorkTimesLoop(WorkingSystem workingSystem, WorkTimeSet predetermineTimeSet,
-			FixedWorkSetting fixedWorkSetting, WorkTimeCommonSet workTimeCommonSet, BonusPaySetting bonusPaySetting,
-			List<OverTimeHourSet> overTimeHourSetList, FixOffdayWorkTime fixOff, OverDayEndCalcSet dayEndSet,
+	public void theDayOfWorkTimesLoop(WorkingSystem workingSystem, PredetemineTimeSetting predetermineTimeSet,
+			FixedWorkSetting fixedWorkSetting, WorkTimezoneCommonSet workTimeCommonSet, BonusPaySetting bonusPaySetting,
+			List<OverTimeOfTimeZoneSet> overTimeHourSetList, FixOffdayWorkTimezone fixOff, OverDayEndCalcSet dayEndSet,
 			List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay, WorkType toDay, WorkType afterDay,
 			BreakdownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
-			StatutoryOverTimeWorkSet statutorySet, StatutoryPrioritySet prioritySet,
-			DeductionTimeSheet deductionTimeSheet, WorkTime workTime) {
+			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,
+			DeductionTimeSheet deductionTimeSheet, WorkTimeSetting workTime) {
 		if (!workingSystem.isExcludedWorkingCalculate()) {
 			/* 計算対象外の処理 */
 			return;
@@ -291,15 +290,15 @@ public class CalculationRangeOfOneDay {
 	 */
 	public void decisionWorkClassification(WorkTimeDivision workTimeDivision,
 			DailyCalculationPersonalInformation personalInfo, WorkTimeMethodSet setMethod,
-			RestClockManageAtr clockManage, OutingTimeOfDailyPerformance dailyGoOutSheet, BreakSetOfCommon commonSet,
-			FixRestCalcMethod fixedCalc, FlowRestCalcMethod fluidSet, BreakTimeManagement breakmanage,
-			Optional<FluRestTime> fluRestTime, FluidPrefixBreakTimeSet fluidprefixBreakTimeSet,
-			WorkTimeSet predetermineTimeSet, FixedWorkSetting fixedWorkSetting, WorkTimeCommonSet workTimeCommonSet,
-			BonusPaySetting bonusPaySetting, List<OverTimeHourSet> overTimeHourSetList, FixOffdayWorkTime fixOff,
+			RestClockManageAtr clockManage, OutingTimeOfDailyPerformance dailyGoOutSheet, CommonRestSetting commonSet,
+			FixedRestCalculateMethod fixedCalc, FlowRestCalcMethod fluidSet, BreakTimeManagement breakmanage,
+			Optional<FlowWorkRestTimezone> fluRestTime, FlowFixedRestSet fluidprefixBreakTimeSet,
+			PredetemineTimeSetting predetermineTimeSet, FixedWorkSetting fixedWorkSetting, WorkTimezoneCommonSet workTimeCommonSet,
+			BonusPaySetting bonusPaySetting, List<OverTimeOfTimeZoneSet> overTimeHourSetList, FixOffdayWorkTimezone fixOff,
 			OverDayEndCalcSet dayEndSet, List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay,
 			WorkType toDay, WorkType afterDay, BreakdownTimeDay breakdownTimeDay, DailyTime dailyTime,
-			AutoCalculationOfOverTimeWork autoCalculationSet, StatutoryOverTimeWorkSet statutorySet,
-			StatutoryPrioritySet prioritySet, WorkTime workTime) {
+			AutoCalculationOfOverTimeWork autoCalculationSet, LegalOTSetting statutorySet,
+			StatutoryPrioritySet prioritySet, WorkTimeSetting workTime) {
 		if (workTimeDivision.getWorkTimeDailyAtr().isFlex()) {
 			/* フレックス勤務 */
 		} else {

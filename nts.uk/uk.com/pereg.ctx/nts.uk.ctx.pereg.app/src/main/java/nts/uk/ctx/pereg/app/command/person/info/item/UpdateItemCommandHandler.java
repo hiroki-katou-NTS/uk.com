@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.app.command.person.info.item;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pereg.app.command.person.info.category.CheckNameSpace;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
@@ -31,7 +33,9 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		UpdateItemCommand itemCommand = context.getCommand();
 		// String mess = "Msg_233";
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;
-
+		if (CheckNameSpace.checkName(itemCommand.getItemName())){
+			throw new BusinessException(new RawErrorMessage("Msg_928"));
+		}
 		if (itemCommand.getSingleItem().getDataType() == 6) {
 
 			List<Selection> selection = new ArrayList<>();
@@ -49,6 +53,7 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 			}
 
 		}
+		
 		if (!this.pernfoItemDefRep.checkItemNameIsUnique(itemCommand.getPerInfoCtgId(), itemCommand.getItemName(),
 				itemCommand.getPerInfoItemDefId())) {
 			throw new BusinessException(new RawErrorMessage("Msg_358"));
@@ -61,7 +66,8 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		oldItem.setItemName(itemCommand.getItemName());
 		PersonInfoItemDefinition newItem = MappingDtoToDomain.mappingFromDomaintoCommandForUpdate(itemCommand, oldItem);
 		// if (!checkQuantityItemData()) {
-		// newItem = MappingDtoToDomain.mappingFromDomaintoCommandForUpdate(itemCommand,
+		// newItem =
+		// MappingDtoToDomain.mappingFromDomaintoCommandForUpdate(itemCommand,
 		// oldItem);
 		// mess = null;
 		// }

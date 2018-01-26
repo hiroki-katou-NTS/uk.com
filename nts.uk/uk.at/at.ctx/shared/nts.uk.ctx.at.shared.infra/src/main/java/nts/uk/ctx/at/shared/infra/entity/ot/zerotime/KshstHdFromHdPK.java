@@ -22,6 +22,6 @@ public class KshstHdFromHdPK implements Serializable{
 	
 	/**変更前の休出枠NO*/
 	@Column(name = "BREAK_FRAME_NO")
-	public int breakFrameNo;
+	public int holidayWorkFrameNo;
 }
 

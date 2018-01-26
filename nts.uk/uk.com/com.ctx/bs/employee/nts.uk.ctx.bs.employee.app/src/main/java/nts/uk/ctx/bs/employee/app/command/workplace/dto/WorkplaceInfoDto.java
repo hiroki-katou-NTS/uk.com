@@ -6,7 +6,7 @@ package nts.uk.ctx.bs.employee.app.command.workplace.dto;
 
 import lombok.Data;
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceCode;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WkpCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceGenericName;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
@@ -133,8 +133,8 @@ public class WorkplaceInfoDto {
          * getWorkplaceCode()
          */
         @Override
-        public WorkplaceCode getWorkplaceCode() {
-            return new WorkplaceCode(this.dto.workplaceCode);
+        public WkpCode getWorkplaceCode() {
+            return new WkpCode(this.dto.workplaceCode);
         }
 
         /*

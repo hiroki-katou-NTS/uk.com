@@ -312,7 +312,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
             let dfd = $.Deferred<void>();
             service.getAllWorkType().done(function(list: Array<WorkType>) {
-                if (list && list.length > 0) {
+                if (list && list.length > 0) {                             
                     self.listWorkType(list);
                 } else {
                     self.isDataEmpty = true;
@@ -561,7 +561,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     listText: [
                         self.getWorktypeNameByCode(self.reflectionSetting.holidaySetting.workTypeCode())
                     ]
-                };
+                }
             }
 
             // Is statutory holiday
@@ -573,7 +573,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     listText: [
                         self.getWorktypeNameByCode(self.reflectionSetting.statutorySetting.workTypeCode())
                     ]
-                };
+                }
             }
 
             // Is non-statutory holiday
@@ -585,25 +585,42 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     listText: [
                         self.getWorktypeNameByCode(self.reflectionSetting.nonStatutorySetting.workTypeCode())
                     ]
-                };
+                }
             }
 
             // Is working day.
-            let noSetting = nts.uk.resource.getText('KSM005_43'); // display this if no data found.
             let worktype = self.getWorktypeNameByCode(dailyPatternValue.workTypeSetCd);
             let worktime = self.getWorktimeNameByCode(dailyPatternValue.workingHoursCd);
-            if (!worktype || !worktime) {
+            if (!worktype) {
                 self.isMasterDataUnregisterd(true);
+                return {
+                    start: currentDate.format('YYYY-MM-DD'),
+                    textColor: 'blue',
+                    backgroundColor: 'white',
+                    listText: [
+                        nts.uk.resource.getText('KSM005_43') // display no master data
+                    ]
+                }
+            } else if (worktime) { // work time is set => work day
+                return {
+                    start: currentDate.format('YYYY-MM-DD'),
+                    textColor: 'blue',
+                    backgroundColor: 'white',
+                    listText: [
+                        worktype,
+                        worktime
+                    ]
+                }
+            } else { // worktime not set => day off
+                return {
+                    start: currentDate.format('YYYY-MM-DD'),
+                    textColor: 'red',
+                    backgroundColor: 'white',
+                    listText: [
+                        worktype
+                    ]
+                }
             }
-            return {
-                start: currentDate.format('YYYY-MM-DD'),
-                textColor: 'blue',
-                backgroundColor: 'white',
-                listText: [
-                    worktype ? worktype : noSetting,
-                    worktime ? worktime : noSetting
-                ]
-            };
         }
 
         /**
@@ -627,7 +644,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         /**
          * Get worktype name by code.
          */
-        private getWorktypeNameByCode(code: string): any {
+        private getWorktypeNameByCode(code: string): string {
             let self = this;
             let result = _.find(self.listWorkType(), wt => wt.workTypeCode == code);
             if (result) {
@@ -639,12 +656,17 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         /**
          * Get worktime name by code.
          */
-        private getWorktimeNameByCode(code: string): any {
+        private getWorktimeNameByCode(code: string): string {
             let self = this;
-            let result = _.find(self.listWorkTime(), wt => wt.code == code);
-            if (result) {
-                return result.name;
+            if (code) {
+                // worktime is set => work day
+                let result = _.find(self.listWorkTime(), wt => wt.code == code);
+                if (result) {
+                    return result.name;
+                }
+                return nts.uk.resource.getText('KSM005_43'); // display this if no data found
             }
+            // worktime not set => off day
             return '';
         }
 
@@ -656,7 +678,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let resultList = [];
             let currentDate = moment(self.calendarStartDate);
             while (currentDate.isSameOrBefore(self.calendarEndDate)) {
-                resultList.push(currentDate.format('YYYYMMDD'));
+                resultList.push(currentDate.format('YYYY/MM/DD'));
                 currentDate.add(1, 'days');
             }
             return resultList;

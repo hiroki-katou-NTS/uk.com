@@ -18,6 +18,7 @@
             </ui:define>
             
             <ui:define name="content">
+            	<div id="functions-area"></div>
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
@@ -28,6 +29,8 @@
 							</div>
 							<div style="float: left; padding-left: 50px;">
 								<button data-bind="click: upload">Upload File</button><br/>
+								<button data-bind="click: uploadOriginal">Upload Original File</button><br/>
+								<button data-bind="click: getOriginalImage">Show Original File Uploaded</button><br/>
 								<button data-bind="click: getImage">Show File Uploaded</button><br/>
 								<input data-bind="ntsTextEditor: {value: url}"></input><button data-bind="click: show">Show By URL</button><br/>
 								<button data-bind="click: clear">Clear Crop Area</button><br/>
@@ -166,6 +169,12 @@
 									                
 									            });</h4></th>
 												<th><h4>Upload Image to Server and when done will return a StoredFileInfo object for file information</h4></th>
+											</tr>
+											<tr>
+												<th><h4>$("#test").ntsImageEditor("upload", {stereoType: "uploadOriginal"}).done( function(data){
+									                
+									            });</h4></th>
+												<th><h4>Upload Original Image to Server and when done will return a StoredFileInfo object for file information</h4></th>
 											</tr>
 											<tr>
 												<th><h4>$("#test").ntsImageEditor("selectByFileId", this.uploaded.id); </h4></th>

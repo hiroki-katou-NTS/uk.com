@@ -1,0 +1,14 @@
+.tbl-after-restset td, .tbl-after-restset th {
+	border: 1px solid #CCC;
+	padding: 2px;
+	text-align: center;
+}
+.tbl-after-restset th {
+	font-weight: bold;
+	color: #000;
+	background-color: #CFF1A5;
+	font-size: 14px;
+}
+.default-input-width input {
+	width: 80px;
+}

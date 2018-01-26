@@ -115,6 +115,49 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		return Optional
 				.of(new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(lstEntity)));
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.info.
+	 * WorkplaceConfigInfoRepository#find(java.lang.String,
+	 * nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public Optional<WorkplaceConfigInfo> find(String companyId, GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWkpConfigInfo> cq = criteriaBuilder
+				.createQuery(BsymtWkpConfigInfo.class);
+		Root<BsymtWkpConfigInfo> root = cq.from(BsymtWkpConfigInfo.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid),
+				companyId));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(BsymtWkpConfigInfo_.bsymtWkpConfig).get(BsymtWkpConfig_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
+				root.get(BsymtWkpConfigInfo_.bsymtWkpConfig).get(BsymtWkpConfig_.endD), baseDate));
+		
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		cq.orderBy(criteriaBuilder.asc(root.get(BsymtWkpConfigInfo_.hierarchyCd)));
+
+		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
+
+		if (lstEntity.isEmpty()) {
+			return Optional.empty();
+		}
+
+		return Optional
+				.of(new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(lstEntity)));
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -211,7 +254,14 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 	@Override
 	public Optional<WorkplaceConfigInfo> findAllByParentWkpId(String companyId,
 			GeneralDate baseDate, String parentWkpId) {
-		WorkplaceConfigInfo parentWkpConfigInfo = this.find(companyId, baseDate, parentWkpId).get();
+		Optional<WorkplaceConfigInfo> optParentWkpConfigInfo = this.find(companyId, baseDate, parentWkpId);
+		
+		// check empty
+		if (!optParentWkpConfigInfo.isPresent()) {
+			return Optional.empty();
+		}
+
+		WorkplaceConfigInfo parentWkpConfigInfo = optParentWkpConfigInfo.get();
 
 		String prHierarchyCode = parentWkpConfigInfo.getLstWkpHierarchy().get(FIRST_ITEM_INDEX)
 				.getHierarchyCode().v();
@@ -289,7 +339,13 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 	@Override
 	public Optional<WorkplaceConfigInfo> findAllParentByWkpId(String companyId,
 			GeneralDate baseDate, String wkpId) {
-		WorkplaceConfigInfo wkpConfigInfo = this.find(companyId, baseDate, wkpId).get();
+		Optional<WorkplaceConfigInfo> optWkpConfigInfo = this.find(companyId, baseDate, wkpId);
+		
+		if(!optWkpConfigInfo.isPresent()) {
+			return Optional.empty();
+		}
+		
+		WorkplaceConfigInfo wkpConfigInfo = optWkpConfigInfo.get();
 
 		String prHierarchyCode = wkpConfigInfo.getLstWkpHierarchy().get(FIRST_ITEM_INDEX)
 				.getHierarchyCode().v();

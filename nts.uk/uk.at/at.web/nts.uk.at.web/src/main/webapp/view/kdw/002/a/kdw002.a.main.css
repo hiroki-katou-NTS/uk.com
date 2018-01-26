@@ -52,6 +52,9 @@
 .leftpanel {
 	float: left;
 }
-.clear-btn, th {
+.clear-btn {
 	display: none !important;
+}
+table#gridList tbody td:nth-child(1) {
+    text-align: right;
 }

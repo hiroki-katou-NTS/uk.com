@@ -130,4 +130,11 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 				.setParameter("companyId", companyId).getSingle().isPresent();
 	}
 
+	@Override
+	public boolean isNewLayout(String cpmpanyId, String layoutId) {
+		PpemtMaintenanceLayout entity = this.queryProxy().query(getDetailLayout, PpemtMaintenanceLayout.class)
+				.setParameter("layoutId", layoutId).setParameter("companyId", cpmpanyId).getSingleOrNull();
+		return entity.getUpdDate() == null ? true: false;
+	}
+
 }

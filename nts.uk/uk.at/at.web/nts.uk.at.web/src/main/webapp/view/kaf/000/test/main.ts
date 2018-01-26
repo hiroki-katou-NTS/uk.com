@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf000.test.viewmodel {
     import windows = nts.uk.ui.windows;
     import model = nts.uk.at.view.kaf000.b.viewmodel.model;
     export class ScreenModel {
-        startDate: KnockoutObservable<any> = ko.observable('2017/01/01');
+        startDate: KnockoutObservable<any> = ko.observable('2018/01/01');
         endDate: KnockoutObservable<any> = ko.observable(new Date());
         listAppMeta: Array<model.ApplicationMetadata>;
         currentApp: model.ApplicationMetadata;

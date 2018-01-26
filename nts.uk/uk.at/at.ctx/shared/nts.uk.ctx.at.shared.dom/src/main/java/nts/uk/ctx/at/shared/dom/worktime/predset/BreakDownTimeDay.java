@@ -31,15 +31,6 @@ public class BreakDownTimeDay extends DomainObject{
 	private AttendanceTime afternoon;
 	
 	
-	/** The Constant TOTAL_ONE_DAY_MINUTES. */
-	// 24:00
-	public static final int TOTAL_ONE_DAY_MINUTES = 1440;
-	
-	/** The Constant ZERO_MINUTES. */
-	// 00:00
-	public static final int ZERO_MINUTES = 0;
-	
-	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
@@ -47,23 +38,17 @@ public class BreakDownTimeDay extends DomainObject{
 	public void validate() {
 		super.validate();
 		
-		// 1日＞午前 => Msg_518 
-		// 1日＞午後 => Msg_518
-		if (this.oneDay.valueAsMinutes() > this.morning.valueAsMinutes()
-				|| this.oneDay.valueAsMinutes() > this.afternoon.valueAsMinutes()) {
-			throw new BusinessException("Msg_518");
+		// if 1日<午前 => Msg_518 
+		
+		if (this.oneDay.lessThan(this.morning)) {
+			throw new BusinessException("Msg_518", "KMK003_217");
+		}
+
+		// 1日<午後 => Msg_518
+		if (this.oneDay.lessThan(this.afternoon)) {
+			throw new BusinessException("Msg_518", "KMK003_218");
 		}
 		
-		// １日の範囲時間内であること => Msg_781
-		if(this.oneDay.valueAsMinutes() >= TOTAL_ONE_DAY_MINUTES){
-			throw new BusinessException("Msg_518"); 
-		}
-		
-		// < 0:01 => Msg_778
-		if (this.oneDay.valueAsMinutes() <= ZERO_MINUTES || this.morning.valueAsMinutes() <= ZERO_MINUTES
-				|| this.afternoon.valueAsMinutes() <= ZERO_MINUTES) {
-			throw new BusinessException("Msg_778"); 
-		}
 	}
 
 
@@ -74,8 +59,14 @@ public class BreakDownTimeDay extends DomainObject{
 	 * @param morning the morning
 	 * @param afternoon the afternoon
 	 */
-	public BreakDownTimeDay(int oneDay, int morning, int afternoon) {
+	public BreakDownTimeDay(Integer oneDay, Integer morning, Integer afternoon) {
 		super();
+		if (morning == null) {
+			throw new BusinessException("Msg_518", "KMK003_217");
+		}
+		if (afternoon == null) {
+			throw new BusinessException("Msg_518", "KMK003_218");
+		}
 		this.oneDay = new AttendanceTime(oneDay);
 		this.morning = new AttendanceTime(morning);
 		this.afternoon = new AttendanceTime(afternoon);

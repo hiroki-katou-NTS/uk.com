@@ -7,7 +7,6 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<title>#{i18n.getText('CPS005_36')}</title>
 			<com:ValidatorScript>
 				nts.uk.ctx.pereg.dom.person.info.category.CategoryName
 			</com:ValidatorScript>
@@ -46,6 +45,8 @@
 						comId: 'category_grid',
 						items: categoryList ,  
 						selectedKey: 'id',
+						placeHolder: '名称で検索…',
+						searchText: '絞り込み',
 						fields: ['categoryName']}" />
 					<table id="category_grid"
 						data-bind="ntsGridList: {	
@@ -76,6 +77,7 @@
 								value: categoryName ,
 								constraint:'CategoryName',
 								enable: true,
+								required: true,
 								immediate: false}"></input>
 							<com:ko-if bind="displayIsAbolished === 0">
 								<div data-bind="ntsCheckBox: { checked: isAbolition }">#{i18n.getText('CPS006_11')}</div>
@@ -101,8 +103,8 @@
 									<label id="continue">#{i18n.getText('CPS006_48')}</label>
 								</com:ko-if>
 								<button
-									data-bind="ntsHelpButton: {image: '/view/cps/005/image/single-multi-select.PNG', 
-									position: 'right+50 top',
+									data-bind="ntsHelpButton: {image: '/view/cps/005/image/singe_multi.png', 
+									position: 'right+100 top',
 									enable: true }">?</button>
 							</com:ko-if>
 
@@ -133,7 +135,7 @@
 								</com:ko-if>
 
 								<button
-									data-bind="ntsHelpButton: {image: '/view/cps/005/image/history-type.PNG', position: 'right+50 top', enable: true }">?</button>
+									data-bind="ntsHelpButton: {image: '/view/cps/005/image/history_type.png', position: 'right+100 top', enable: true }">?</button>
 							</com:ko-if>
 						</div>
 					</div>

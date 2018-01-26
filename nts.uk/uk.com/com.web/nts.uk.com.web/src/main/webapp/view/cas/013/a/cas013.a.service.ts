@@ -5,7 +5,7 @@ module nts.uk.com.view.cas013.a {
         export class Service {
             paths = {
                 getRoleType: "ctx/sys/auth/grant/roleindividual/getRoleType",
-                getRole: "ctx/sys/auth/grant/roleindividual/getRoles",
+                getRole: "ctx/sys/auth/grant/roleindividual/getRoles/incharge",
                 getRoleGrants: "ctx/sys/auth/grant/roleindividual/getRoleGrants",
                 getRoleGrant: "ctx/sys/auth/grant/roleindividual/getRoleGrant",
                 insertRoleGrant: "ctx/sys/auth/grant/roleindividual/insertRoleGrant",

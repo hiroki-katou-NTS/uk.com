@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTimePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -32,8 +33,10 @@ public class DeductionTimePolicyImpl implements DeductionTimePolicy {
 	 */
 	@Override
 	public void validate(PredetemineTimeSetting predTime, DeductionTime dedTime) {
-		// validate Msg_516
-		this.predService.validateOneDay(predTime, dedTime.getStart(), dedTime.getEnd());
+		// validate Msg_516 DeductionTime
+		if(this.predService.validateOneDay(predTime, dedTime.getStart(), dedTime.getEnd())){
+			throw new BusinessException("Msg_516", "KMK003_21");
+		}
 	}
 
 }

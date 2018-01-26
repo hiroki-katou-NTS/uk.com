@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtion;
@@ -28,8 +29,18 @@ public class AddHolidayAddtimeCommandHandler extends  CommandHandler<AddHolidayA
 		String companyId = AppContexts.user().companyId();
 		// convert to domain
 		HolidayAddtion holidayAddtime = command.toDomain(companyId);
+		if(holidayAddtime.getReferComHolidayTime() == 0){
+			int morning = holidayAddtime.getMorning().intValue();
+			int afternoon = holidayAddtime.getAfternoon().intValue();
+			
+			if(morning + afternoon <=1440){
+				throw new BusinessException("Msg_143");
+			}
+		}
+		
 		holidayAddtime.validate();
 		Optional<HolidayAddtion> optionalHoliday = this.repository.findByCId(companyId);
+		
 		if (optionalHoliday.isPresent()) {
 			// update Holiday Addtime
 			this.repository.update(holidayAddtime);

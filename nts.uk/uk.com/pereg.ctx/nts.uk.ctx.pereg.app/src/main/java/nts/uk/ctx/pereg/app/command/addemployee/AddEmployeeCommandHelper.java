@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
@@ -86,14 +85,14 @@ public class AddEmployeeCommandHelper {
 		addAffCompanyHist(personId, employeeId, command, companyId, comHistId);
 
 		// add new User
-		addNewUser(employeeId, command, userId);
+		addNewUser(personId, command, userId);
 
 		// register avatar
 
 		addAvatar(personId, command);
 
 		// for test
-		//addAffHist(companyId, employeeId);
+		// addAffHist(companyId, employeeId);
 
 		// Update employee registration history
 		updateEmployeeRegHist(companyId, employeeId);
@@ -123,15 +122,14 @@ public class AddEmployeeCommandHelper {
 	private void addEmployeeDataMngInfo(String personId, String employeeId, AddEmployeeCommand command,
 			String companyId) {
 		// check duplicate employeeCode
-		List<EmployeeDataMngInfo> infoList = this.empDataRepo
-				.getEmployeeNotDeleteInCompany(AppContexts.user().companyId(), command.getEmployeeCode());
+		Optional<EmployeeDataMngInfo> empInfo = this.empDataRepo.findByEmployeCD(command.getEmployeeCode(), AppContexts.user().companyId());
 
-		if (!CollectionUtil.isEmpty(infoList)) {
+		if (empInfo.isPresent()) {
 			throw new BusinessException("Msg_345");
 		}
 		// add system data
 		this.empDataRepo.add(EmployeeDataMngInfo.createFromJavaType(companyId, personId, employeeId,
-				command.getEmployeeCode(), EmployeeDeletionAttr.NOTDELETED.value, GeneralDateTime.min(), "", ""));
+				command.getEmployeeCode(), EmployeeDeletionAttr.NOTDELETED.value, null, "", ""));
 
 	}
 
@@ -171,10 +169,10 @@ public class AddEmployeeCommandHelper {
 
 		String currentEmpId = AppContexts.user().employeeId();
 
-		Optional<EmpRegHistory> optRegHist = this.empHisRepo.getLastRegHistory(currentEmpId);
+		Optional<EmpRegHistory> optRegHist = this.empHisRepo.getRegHistById(currentEmpId);
 
-		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(currentEmpId, companyId, GeneralDate.today(),
-				employeeId, "");
+		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(currentEmpId, companyId,
+				GeneralDateTime.now(), employeeId, "");
 
 		if (optRegHist.isPresent()) {
 
@@ -188,12 +186,12 @@ public class AddEmployeeCommandHelper {
 
 	}
 
-	private void addNewUser(String employeeId, AddEmployeeCommand command, String userId) {
+	private void addNewUser(String personId, AddEmployeeCommand command, String userId) {
 		// add new user
 		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
 		User newUser = User.createFromJavatype(userId, false, passwordHash, command.getLoginId(),
 				AppContexts.user().contractCode(), GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), 0, 0, "",
-				command.getEmployeeName(), employeeId);
+				command.getEmployeeName(), personId);
 
 		this.userRepository.addNewUser(newUser);
 

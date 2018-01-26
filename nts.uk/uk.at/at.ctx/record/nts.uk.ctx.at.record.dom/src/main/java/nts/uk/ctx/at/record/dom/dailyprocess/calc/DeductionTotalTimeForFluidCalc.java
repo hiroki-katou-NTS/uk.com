@@ -12,9 +12,9 @@ import nts.uk.ctx.at.record.dom.daily.calcset.RelationSetOfGoOutAndFluBreakTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktimeset.common.FlowRestClockCalcMethod;
@@ -111,14 +111,14 @@ public class DeductionTotalTimeForFluidCalc {
 	public void collectDeductionTotalTime(
 			List<TimeSheetOfDeductionItem> list,/*外出時間帯リスト*/
 			AttendanceTime getGoOutStartClock,/*intで渡せばよくね？*/
-			FluidWorkSetting fluidWorkSetting,
+			FixedWorkSetting fluidWorkSetting,
 			int roopNo,
 			RelationSetOfGoOutAndFluBreakTime relation
 			) {
 		
 //		//経過時間を取得（一時的に作成、後々削除予定）
-		AttendanceTime elpsedTime = fluidWorkSetting.getWeekdayWorkTime().getWorkTimeSheet().
-				getMatchWorkNoOverTimeWorkSheet(roopNo).get().getFluidWorkTimeSetting().getElapsedTime();	
+		AttendanceTime elpsedTime = new AttendanceTime(0);//fluidWorkSetting.getLstHalfDayWorkTimezone().getWorkTimeSheet().
+				//getMatchWorkNoOverTimeWorkSheet(roopNo).get().getFluidWorkTimeSetting().getElapsedTime();	
 //		//流動休憩開始時刻の作成
 		AttendanceTime startTime = new AttendanceTime(getGoOutStartClock.valueAsMinutes() + elpsedTime.valueAsMinutes() + this.totalTime.valueAsMinutes());
 //		//外出時間帯リスト作成に使用する時間帯の作成
@@ -186,7 +186,7 @@ public class DeductionTotalTimeForFluidCalc {
 		
 		List<TimeSheetOfDeductionItem> duplicateList = new ArrayList<>();
 		for(TimeSheetOfDeductionItem timeSheetOfDeductionItem : list) {
-			TimeSpanForCalc t = timeSpan.getDuplicatedWith(timeSheetOfDeductionItem.getTimeSheet()).orElse(null);
+			TimeSpanForCalc t = timeSpan.getDuplicatedWith(timeSheetOfDeductionItem.getTimeSheet().timeSpan()).orElse(null);
 			if(t!=null) {
 				duplicateList.add(timeSheetOfDeductionItem);
 			}
@@ -211,7 +211,7 @@ public class DeductionTotalTimeForFluidCalc {
 											FluidFixedAtr fluidFixedAtr,	
 											WorkTimeDailyAtr workTimeDailyAtr){
 		//休憩時間帯と重複している控除時間帯を取得
-		List<TimeSheetOfDeductionItem> duplicateList = deductionTimeList.stream().filter(ts -> timeSheetOfDeductionItem.getTimeSheet().getSpan().checkDuplication(ts.calcrange) != TimeSpanDuplication.NOT_DUPLICATE ).collect(Collectors.toList());
+		List<TimeSheetOfDeductionItem> duplicateList = deductionTimeList.stream().filter(ts -> timeSheetOfDeductionItem.getTimeSheet().timeSpan().checkDuplication(ts.calcrange) != TimeSpanDuplication.NOT_DUPLICATE ).collect(Collectors.toList());
 		while(true) {
 			//控除時間帯分ループ
 			for(int itemNumber = 0 ; itemNumber < duplicateList.size();itemNumber++) { //TimeSheetOfDeductionItem goOutTime : duplicateList) {
@@ -310,7 +310,7 @@ public class DeductionTotalTimeForFluidCalc {
 		if(breakTime.greaterThan(0)) {
 			//前を休憩へ
 			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
-					   new TimeSpanWithRounding(deductionItem.timeSheet.getStart(), baseTime, deductionItem.timeSheet.getRounding())
+					   new TimeZoneRounding(deductionItem.timeSheet.getStart(), baseTime, deductionItem.timeSheet.getRounding())
 					  ,new TimeSpanForCalc(deductionItem.calcrange.getStart(), baseTime)
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, true)
 					  ,deductionItem.recreateBonusPayListBeforeBase(baseTime, true)
@@ -321,7 +321,7 @@ public class DeductionTotalTimeForFluidCalc {
 					 ,DeductionClassification.BREAK));
 			//後ろを外出のままに
 			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed( 
-					   new TimeSpanWithRounding(baseTime, deductionItem.timeSheet.getEnd(), deductionItem.timeSheet.getRounding())
+					   new TimeZoneRounding(baseTime, deductionItem.timeSheet.getEnd(), deductionItem.timeSheet.getRounding())
 					  ,new TimeSpanForCalc(baseTime, deductionItem.calcrange.getEnd())
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, false)
 					  ,deductionItem.recreateBonusPayListBeforeBase(baseTime, false)

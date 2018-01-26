@@ -15,7 +15,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.ChildCareScheduleSaveCommand;
-import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.WorkScheduleTimeZoneSaveCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
@@ -23,8 +22,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.Timezone;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
@@ -76,7 +74,7 @@ public class ScheCreExeBasicScheduleHandler {
 		commandSave.setEmployeeId(employeeId);
 		commandSave.setWorktimeCode(workTimeCode);
 		commandSave.setYmd(command.getToDate());
-		
+
 		if (optionalShortTime.isPresent()) {
 			commandSave
 					.setChildCareSchedules(
@@ -86,7 +84,7 @@ public class ScheCreExeBasicScheduleHandler {
 									.collect(Collectors.toList()));
 		}
 
-		// check not exist error 
+		// check not exist error
 		if (!this.scheCreExeErrorLogHandler.checkExistError(command.toBaseCommand(), employeeId)) {
 
 			WorkTimeSetGetterCommand commandGetter = new WorkTimeSetGetterCommand();
@@ -94,21 +92,15 @@ public class ScheCreExeBasicScheduleHandler {
 			commandGetter.setCompanyId(command.getCompanyId());
 			commandGetter.setWorkingCode(workTimeCode);
 
-			Optional<WorkTimeSet> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
+			Optional<PrescribedTimezoneSetting> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
 					.getScheduleWorkHour(commandGetter);
 			if (optionalWorkTimeSet.isPresent()) {
-				WorkTimeSet workTimeSet = optionalWorkTimeSet.get();
-				commandSave.setWorkScheduleTimeZones(
-						workTimeSet.getPrescribedTimezoneSetting().getTimezone().stream().map(timezone -> {
-							WorkScheduleTimeZoneSaveCommand commandWorkTime = this
-									.convertTimeZoneToScheduleTimeZone(timezone);
-							commandWorkTime.setBounceAtr(this.getBounceAtr(worktypeDto.getWorktypeSet()).value);
-							return commandWorkTime;
-						}).collect(Collectors.toList()));
+				PrescribedTimezoneSetting workTimeSet = optionalWorkTimeSet.get();
+				commandSave.updateWorkScheduleTimeZones(workTimeSet);
 			}
 		}
 		// update is confirm
-		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getIsConfirm(), ConfirmedAtr.CONFIRMED).value);
+		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
 
 		// check parameter is delete before insert
 		if (command.getIsDeleteBeforInsert()) {
@@ -199,27 +191,6 @@ public class ScheCreExeBasicScheduleHandler {
 		return command;
 	}
 	
-	/**
-	 * Convert time zone to schedule time zone.
-	 *
-	 * @param timezone the timezone
-	 * @return the work schedule time zone save command
-	 */
-	// 勤務予定時間帯
-	private WorkScheduleTimeZoneSaveCommand convertTimeZoneToScheduleTimeZone(Timezone timezone) {
-		WorkScheduleTimeZoneSaveCommand command = new WorkScheduleTimeZoneSaveCommand();
-		
-		// 予定勤務回数 = 取得した勤務予定時間帯. 勤務NO
-		command.setScheduleCnt(timezone.getWorkNo());
-		
-		// 予定開始時刻 = 取得した勤務予定時間帯. 開始
-		command.setScheduleStartClock(timezone.getStart().valueAsMinutes());
-		
-		// 予定終了時刻 = 取得した勤務予定時間帯. 終了
-		command.setScheduleEndClock(timezone.getEnd().valueAsMinutes());
-		
-		return command;
-	}
 	
 	
 	/**
@@ -236,7 +207,7 @@ public class ScheCreExeBasicScheduleHandler {
 		commandSave.setYmd(toDate);
 		commandSave = this.resetCreatedData(command, commandSave);
 		// update is confirm
-		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.CONFIRMED).value);
+		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
 
 		// save command
 		this.saveBasicSchedule(commandSave);;
@@ -331,15 +302,15 @@ public class ScheCreExeBasicScheduleHandler {
 			commandGetter.setWorktypeCode(command.getWorkTypeCode());
 			commandGetter.setCompanyId(command.getCompanyId());
 			commandGetter.setWorkingCode(command.getWorkingCode());
-			Optional<WorkTimeSet> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
+			Optional<PrescribedTimezoneSetting> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
 					.getScheduleWorkHour(commandGetter);
 			if (optionalWorkTimeSet.isPresent()) {
-				WorkTimeSet workTimeSet = optionalWorkTimeSet.get();
-				commandSave.setWorkScheduleTimeZones(workTimeSet.getPrescribedTimezoneSetting().getTimezone().stream()
-						.map(timezone -> this.convertTimeZoneToScheduleTimeZone(timezone))
-						.collect(Collectors.toList()));
+				PrescribedTimezoneSetting workTimeSet = optionalWorkTimeSet.get();
+				commandSave.updateWorkScheduleTimeZones(workTimeSet);
 			}
 		}
 		return commandSave;
 	}
+	
+	
 }

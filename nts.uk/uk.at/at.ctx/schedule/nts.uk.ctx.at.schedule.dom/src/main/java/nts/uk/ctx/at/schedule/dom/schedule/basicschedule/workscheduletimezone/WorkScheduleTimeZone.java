@@ -68,4 +68,23 @@ public class WorkScheduleTimeZone extends DomainObject {
 		memento.setScheduleEndClock(this.scheduleEndClock);
 		memento.setBounceAtr(this.bounceAtr);
 	}
+
+	public WorkScheduleTimeZone(int scheduleCnt, TimeWithDayAttr scheduleStartClock, TimeWithDayAttr scheduleEndClock,
+			BounceAtr bounceAtr) {
+		super();
+		this.scheduleCnt = scheduleCnt;
+		this.scheduleStartClock = scheduleStartClock;
+		this.scheduleEndClock = scheduleEndClock;
+		this.bounceAtr = bounceAtr;
+	}
+	
+	/**
+	 * Update again start time and end time
+	 * @param scheduleStartClock
+	 * @param scheduleEndClock
+	 */
+	public void updateTime(TimeWithDayAttr scheduleStartClock, TimeWithDayAttr scheduleEndClock) {
+		this.scheduleStartClock = scheduleStartClock;
+		this.scheduleEndClock = scheduleEndClock;
+	}
 }

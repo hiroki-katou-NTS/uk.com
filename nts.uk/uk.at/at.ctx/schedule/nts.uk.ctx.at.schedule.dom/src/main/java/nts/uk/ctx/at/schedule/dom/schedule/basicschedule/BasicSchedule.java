@@ -17,7 +17,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedul
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 
 /**
  * The Class BasicSchedule. 勤務予定基本情報
@@ -44,10 +43,6 @@ public class BasicSchedule extends AggregateRoot {
 	/** The confirmed atr. */
 	// 確定区分
 	private ConfirmedAtr confirmedAtr;
-
-	/** The work day atr. */
-	// 稼働日区分
-	private WorkdayDivision workDayAtr;
 
 	/** The work schedule time zones. */
 	// 勤務予定時間帯
@@ -79,9 +74,8 @@ public class BasicSchedule extends AggregateRoot {
 		this.date = memento.getDate();
 		this.workTypeCode = memento.getWorkTypeCode();
 		this.workTimeCode = StringUtil.isNullOrEmpty(memento.getWorkTimeCode(), true)
-				|| ("000").equals(memento.getWorkTimeCode()) ? "   " : memento.getWorkTimeCode();
+				|| ("000").equals(memento.getWorkTimeCode()) ? null : memento.getWorkTimeCode();
 		this.confirmedAtr = memento.getConfirmedAtr();
-		this.workDayAtr = memento.getWorkDayAtr();
 		this.workScheduleTimeZones = memento.getWorkScheduleTimeZones();
 		this.workScheduleBreaks = memento.getWorkScheduleBreaks();
 		this.workScheduleTime = memento.getWorkScheduleTime();
@@ -97,16 +91,14 @@ public class BasicSchedule extends AggregateRoot {
 	 * @param workTypeCode
 	 * @param workTimeCode
 	 * @param confirmedAtr
-	 * @param workDayAtr
 	 */
 	public BasicSchedule(String employeeId, GeneralDate date, String workTypeCode, String workTimeCode,
-			ConfirmedAtr confirmedAtr, WorkdayDivision workDayAtr) {
+			ConfirmedAtr confirmedAtr) {
 		this.employeeId = employeeId;
 		this.date = date;
 		this.workTypeCode = workTypeCode;
 		this.workTimeCode = workTimeCode;
 		this.confirmedAtr = confirmedAtr;
-		this.workDayAtr = workDayAtr;
 	}
 
 	/**
@@ -122,17 +114,14 @@ public class BasicSchedule extends AggregateRoot {
 	 *            the work time code
 	 * @param confirmedAtr
 	 *            the confirmed atr
-	 * @param workDayAtr
-	 *            the work day atr
 	 * @return the basic schedule
 	 */
 	public static BasicSchedule createFromJavaType(String sId, GeneralDate date, String workTypeCode,
-			String workTimeCode, int confirmedAtr, int workDayAtr) {
+			String workTimeCode, int confirmedAtr) {
 		return new BasicSchedule(sId, date, workTypeCode, workTimeCode,
-				EnumAdaptor.valueOf(confirmedAtr, ConfirmedAtr.class),
-				EnumAdaptor.valueOf(workDayAtr, WorkdayDivision.class));
+				EnumAdaptor.valueOf(confirmedAtr, ConfirmedAtr.class));
 	}
-
+	
 	/**
 	 * Save to memento.
 	 *
@@ -145,7 +134,6 @@ public class BasicSchedule extends AggregateRoot {
 		memento.setWorkTypeCode(this.workTypeCode);
 		memento.setWorkTimeCode(this.workTimeCode);
 		memento.setConfirmedAtr(this.confirmedAtr);
-		memento.setWorkDayAtr(this.workDayAtr);
 		memento.setWorkScheduleTimeZones(this.workScheduleTimeZones);
 		memento.setWorkScheduleBreaks(this.workScheduleBreaks);
 		memento.setWorkScheduleTime(this.workScheduleTime);
@@ -164,7 +152,6 @@ public class BasicSchedule extends AggregateRoot {
 		int result = 1;
 		result = prime * result + ((childCareSchedules == null) ? 0 : childCareSchedules.hashCode());
 		result = prime * result + ((confirmedAtr == null) ? 0 : confirmedAtr.hashCode());
-		result = prime * result + ((workDayAtr == null) ? 0 : workDayAtr.hashCode());
 		result = prime * result + ((workScheduleBreaks == null) ? 0 : workScheduleBreaks.hashCode());
 		result = prime * result + ((workSchedulePersonFees == null) ? 0 : workSchedulePersonFees.hashCode());
 		result = prime * result + ((workScheduleTime == null) ? 0 : workScheduleTime.hashCode());
@@ -194,8 +181,6 @@ public class BasicSchedule extends AggregateRoot {
 		} else if (!childCareSchedules.equals(other.childCareSchedules))
 			return false;
 		if (confirmedAtr != other.confirmedAtr)
-			return false;
-		if (workDayAtr != other.workDayAtr)
 			return false;
 		if (workScheduleBreaks == null) {
 			if (other.workScheduleBreaks != null)
@@ -228,6 +213,10 @@ public class BasicSchedule extends AggregateRoot {
 		} else if (!workTypeCode.equals(other.workTypeCode))
 			return false;
 		return true;
+	}
+
+	public void setWorkScheduleTimeZones(List<WorkScheduleTimeZone> workScheduleTimeZones) {
+		this.workScheduleTimeZones = workScheduleTimeZones;
 	}
 
 }

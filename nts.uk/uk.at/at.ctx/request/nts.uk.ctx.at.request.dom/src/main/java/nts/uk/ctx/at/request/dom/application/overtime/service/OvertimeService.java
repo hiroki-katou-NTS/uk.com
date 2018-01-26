@@ -3,11 +3,10 @@ package nts.uk.ctx.at.request.dom.application.overtime.service;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 
 public interface OvertimeService {
 	/**
@@ -25,7 +24,7 @@ public interface OvertimeService {
 	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public List<WorkTypeOvertime> getWorkType(String companyID,String employeeID,RequestAppDetailSetting requestAppDetailSetting,List<AppEmploymentSetting> appEmploymentSettings);
+	public List<WorkTypeOvertime> getWorkType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,List<AppEmploymentSetting> appEmploymentSettings);
 	
 	/**
 	 * 08_就業時間帯取得
@@ -35,7 +34,7 @@ public interface OvertimeService {
 	 * @param requestAppDetailSetting
 	 * @return
 	 */
-	public List<SiftType> getSiftType(String companyID,String employeeID,RequestAppDetailSetting requestAppDetailSetting);
+	public List<SiftType> getSiftType(String companyID,String employeeID,ApprovalFunctionSetting approvalFunctionSetting,GeneralDate baseDate);
 	
 	/**
 	 * 09_勤務種類就業時間帯の初期選択をセットする
@@ -49,5 +48,5 @@ public interface OvertimeService {
 	public WorkTypeAndSiftType getWorkTypeAndSiftTypeByPersonCon(String companyID,String employeeID,GeneralDate baseDate,List<WorkTypeOvertime> workTypes, List<SiftType> siftTypes);
 	
 	
-	void CreateOvertime(AppOverTime domain, Application newApp);
+	void CreateOvertime(AppOverTime domain, Application_New newApp);
 }

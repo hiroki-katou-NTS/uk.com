@@ -12,11 +12,12 @@ module nts.uk.com.view.cmm018.shr {
             addHist: IData;
             lstAppType: Array<ApplicationType>;
             root: Array<CompanyAppRootADto>;
+            checkMode: number;
             constructor(rootType: number, checkAddHist: boolean,
                 workpplaceId: string,
                 employeeId: string, startDate: string, endDate: string,
                 addHist: IData,lstAppType: Array<ApplicationType>,
-                root: Array<CompanyAppRootADto>){
+                root: Array<CompanyAppRootADto>,checkMode: number){
                     this.rootType = rootType;
                     this.checkAddHist = checkAddHist;
                     this.workpplaceId = workpplaceId;
@@ -26,6 +27,7 @@ module nts.uk.com.view.cmm018.shr {
                     this.addHist = addHist;
                     this.lstAppType = lstAppType;
                     this.root = root;
+                    this.checkMode = checkMode;
             }
         }
         //data root delete
@@ -121,6 +123,7 @@ module nts.uk.com.view.cmm018.shr {
             /** まとめて設定モード(0) - 申請個別設定モード(1)*/
             mode: number;
             lstAppType: Array<ApplicationType>;
+            overLap: boolean;
         }
         //ScreenI
         export class IData{
@@ -135,18 +138,21 @@ module nts.uk.com.view.cmm018.shr {
             /** 履歴から引き継ぐか、初めから作成するかを選択する*/
             copyDataFlag: boolean;
             lstAppType: Array<ApplicationType>;
+            overLap: boolean;
             constructor(startDate: string,
                 startDateOld: string,
                 check: number,
                 mode: number,
                 copyDataFlag: boolean,
-                lstAppType: Array<ApplicationType>){
+                lstAppType: Array<ApplicationType>,
+                overLap: boolean){
                     this.startDate = startDate;
                     this.startDateOld = startDateOld;
                     this.check = check;
                     this.mode = mode;
                     this.copyDataFlag = copyDataFlag;
                     this.lstAppType = lstAppType;
+                    this.overLap = overLap;
             }
         }
         //ScreenJ
@@ -167,6 +173,7 @@ module nts.uk.com.view.cmm018.shr {
             startDatePrevious: string;
             /** list history and approvalId */
             lstUpdate: Array<UpdateHistoryDto>;
+            checkMode: number;
             constructor(startDate: string,
             endDate: string,
             workplaceId: string,
@@ -174,7 +181,8 @@ module nts.uk.com.view.cmm018.shr {
             check: number,
             editOrDelete: number,
             startDatePrevious: string,
-            lstUpdate: Array<UpdateHistoryDto>){
+            lstUpdate: Array<UpdateHistoryDto>,
+            checkMode: number){
                 this.startDate = startDate;
                 this.endDate = endDate;
                 this.workplaceId = workplaceId;
@@ -183,6 +191,7 @@ module nts.uk.com.view.cmm018.shr {
                 this.editOrDelete = editOrDelete;
                 this.startDatePrevious = startDatePrevious;
                 this.lstUpdate = lstUpdate;
+                this.checkMode = checkMode;
             }
         }
         //ScrenJ
@@ -547,7 +556,7 @@ module nts.uk.com.view.cmm018.shr {
                         lstC.push(obj);
                     }
                     if(obj.employRootAtr == 3){//anyItem
-                        lstC.push(obj);
+                        lstD.push(obj);
                     }
                 });
                 let sortByA =  _.orderBy(lstA, ["appTypeValue"], ["asc"]);
@@ -614,11 +623,13 @@ module nts.uk.com.view.cmm018.shr {
             name: string;
             /**区分  0: 個人(person) - 1: 職位(jobTitle)*/
             approvalAtr: number;
-            constructor(id: string, code: string, name: string , approvalAtr: number){
+            dispOrder: number;
+            constructor(id: string, code: string, name: string , approvalAtr: number,dispOrder: number){
                 this.id = id;
                 this.code = code;
                 this.name = name;    
                 this.approvalAtr = approvalAtr;
+                this.dispOrder = dispOrder;
             }
         } 
         //__________KCP009_________

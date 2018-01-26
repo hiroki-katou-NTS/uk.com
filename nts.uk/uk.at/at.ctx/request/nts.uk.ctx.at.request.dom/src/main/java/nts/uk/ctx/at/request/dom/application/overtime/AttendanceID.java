@@ -7,7 +7,7 @@ package nts.uk.ctx.at.request.dom.application.overtime;
 public enum AttendanceID {
 	
 	/**
-	 * 休憩時間
+	 * 休出時間
 	 */
 	RESTTIME(0),
 	
@@ -17,7 +17,7 @@ public enum AttendanceID {
 	NORMALOVERTIME(1),
 	
 	/**
-	 * 休出時間
+	 * 休憩時間
 	 */
 	BREAKTIME(2),
 	

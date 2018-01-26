@@ -7,7 +7,7 @@ module nts.uk.at.view.kmk008.f {
             currentClassificationName: KnockoutObservable<string>;
             textOvertimeName: KnockoutObservable<string>;
 
-            maxRows : number;
+            maxRows: number;
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
@@ -34,10 +34,10 @@ module nts.uk.at.view.kmk008.f {
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(false);
                 self.listComponentOption = {
-                    maxRows : 15,
+                    maxRows: 15,
                     isShowAlreadySet: self.isShowAlreadySet(),
                     isMultiSelect: self.isMultiSelect(),
-                    listType: 1,
+                    listType: 2,
                     selectType: 1,
                     selectedCode: self.selectedCode,
                     isDialog: self.isDialog(),
@@ -51,10 +51,10 @@ module nts.uk.at.view.kmk008.f {
                     let empSelect = _.find(self.classificationList(), emp => {
                         return emp.code == newValue;
                     });
-                    if (empSelect) { 
+                    if (empSelect) {
                         self.currentClassificationName(empSelect.name);
-                        self.isRemove(empSelect.isAlreadySetting); 
-                    }                    
+                        self.isRemove(empSelect.isAlreadySetting);
+                    }
 
                 });
             }
@@ -67,6 +67,7 @@ module nts.uk.at.view.kmk008.f {
                 } else {
                     self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_9}', '{#Com_Class}']));
                 }
+                self.selectedCode('');
                 self.getalreadySettingList();
                 $('#empt-list-setting-screen-f').ntsListComponent(self.listComponentOption).done(function() {
                     self.classificationList($('#empt-list-setting-screen-f').getDataList());
@@ -84,6 +85,7 @@ module nts.uk.at.view.kmk008.f {
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.classificationCodes.length > 0) {
                         self.alreadySettingList(_.map(data.classificationCodes, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
+                        _.defer(() => self.classificationList($('#empt-list-setting-screen-f').getDataList()));
                     }
                 })
                 self.isRemove(self.isShowAlreadySet());
@@ -94,28 +96,33 @@ module nts.uk.at.view.kmk008.f {
                 let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.code == self.selectedCode() });
                 let timeOfClassificationNew = new UpdateInsertTimeOfClassificationModel(self.timeOfClassification(), self.laborSystemAtr, self.selectedCode());
 
-                if (indexCodealreadySetting != -1) {
-                    new service.Service().updateAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
+                if (self.selectedCode() != "") {
+                    if (indexCodealreadySetting != -1) {
+                        new service.Service().updateAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
+                            if (listError.length > 0) {
+                                let errorCode = _.split(listError[0], ',');
+                                nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
+                                return;
+                            }
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                            self.getDetail(self.selectedCode());
+
+                        });
+                        return;
+                    }
+                    new service.Service().addAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
                         if (listError.length > 0) {
                             let errorCode = _.split(listError[0], ',');
-                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
+                            let periodName = nts.uk.resource.getText(errorCode[1]);
+                            let param1 = "期間: "+nts.uk.resource.getText(errorCode[1]) +"<br>"+nts.uk.resource.getText(errorCode[2]);
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
                             return;
                         }
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        self.getalreadySettingList();
                         self.getDetail(self.selectedCode());
                     });
-                    return;
                 }
-                new service.Service().addAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
-                    if (listError.length > 0) {
-                        let errorCode = _.split(listError[0], ',');
-                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: errorCode.slice(-(errorCode.length - 1)) });
-                        return;
-                    }
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                    self.getalreadySettingList();
-                    self.getDetail(self.selectedCode());
-                });
             }
 
             removeDataClassification() {
@@ -126,6 +133,7 @@ module nts.uk.at.view.kmk008.f {
                         new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
                             self.getalreadySettingList();
                             self.getDetail(self.selectedCode());
+                            self.isRemove(false);
                         });
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                     });

@@ -22,6 +22,8 @@ module nts.uk.at.view.kdw001.f {
             listClosure : KnockoutObservableArray<any>;
             //list sid
             listSid : Array<string>;
+            //list obj by sid
+            listInfoPerson :  KnockoutObservableArray<any>;
 
             constructor() {
                 let self = this;
@@ -48,11 +50,14 @@ module nts.uk.at.view.kdw001.f {
                 self.listClosure =  ko.observableArray([]);
                 //listSid
                 self.listSid = [];
-
+                //list obj by sid
+                self.listInfoPerson =  ko.observableArray([]);
                 self.columns = [
                     { headerText: getText('KDW001_73'), key: 'executionDate', width: 100 },
-                    { headerText: getText('KDW001_74'), key: 'empCalAndSumExecLogID', width: 120 },
-                    { headerText: getText('KDW001_75'), key: 'caseSpecExeContentID', width: 100 },
+                    { headerText: '', key: 'empCalAndSumExecLogID', width: 1, hidden: true},
+                    
+                    { headerText: getText('KDW001_74'), key: 'personCode', width: 120 },
+                    { headerText: getText('KDW001_75'), key: 'personName', width: 100 },
                     { headerText: getText('KDW001_76'), key: 'processingMonthName', width: 150 },
                     //doi mau
                     { headerText: getText('KDW001_77'), key: 'executedMenuName', width: 200,
@@ -85,8 +90,10 @@ module nts.uk.at.view.kdw001.f {
                 let dfdAllClosure = self.getAllClosure();
                 $.when(dfdAllCaseSpecExeContent,dfdAllClosure).done((dfdAllCaseSpecExeContentData,dfdAllClosureData) => {
                      //get all EmpCalAndSumExeLog by date
-                    self.getAllEmpCalAndSumExeLog(self.inputEmpCalAndSumByDate());
-                    dfd.resolve();
+                    self.getAllEmpCalAndSumExeLog(self.inputEmpCalAndSumByDate()).done(() => {
+                        dfd.resolve();
+                    });
+                    
                 });
 
                 return dfd.promise();
@@ -116,7 +123,12 @@ module nts.uk.at.view.kdw001.f {
                         // set name closure by date
                         _.find(self.listClosure(), function(closure) { 
                             if (closure.closureId == item.closureID) {
+                                //id
                                 item.changeName(_.find(closure.listClosureHistoryForLog, (historyClosure: any) => {
+                                    return item.processingMonth >= historyClosure.startYearMonth && item.processingMonth <= historyClosure.endYearMonth;
+                                }).closureId,
+                                //name
+                                _.find(closure.listClosureHistoryForLog, (historyClosure: any) => {
                                     return item.processingMonth >= historyClosure.startYearMonth && item.processingMonth <= historyClosure.endYearMonth;
                                 }).closureName);
                             }
@@ -144,9 +156,10 @@ module nts.uk.at.view.kdw001.f {
                         });
                         temp.push(item);
                     });
-                    self.getListPersonInforLog(self.listSid);
                     self.empCalAndSumExeLog(temp);
-                    dfd.resolve(data);
+                    self.getListPersonInforLog(self.listSid).done(function(){
+                        dfd.resolve();    
+                    });
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
@@ -208,11 +221,22 @@ module nts.uk.at.view.kdw001.f {
             getListPersonInforLog(listSid:Array<string>){
                 let self = this;
                 let dfd = $.Deferred<any>();
-                service.getListPersonInforLog(listSid).done(function(data){
+                service.getListPersonInforLog(listSid).done(function(data){ 
+                    self.listInfoPerson(data);
+                    
+                    _.each(self.empCalAndSumExeLog(), (value) => {
+                            _.find(self.listInfoPerson(), function(person) { 
+                                if(value.employeeID == person.employeeId){
+                                    value.personCode = person.employeeCode;
+                                    value.personName = person.namePerson;    
+                                }
+                            });
+                        }); 
 //                    _.find(data, function(personInforLog) { 
-//                      
+//                      listInfoPerson s
 //                    
 //                    });
+                    self.empCalAndSumExeLog.valueHasMutated();
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -237,9 +261,10 @@ module nts.uk.at.view.kdw001.f {
             openDialogI() {
                 let self = this;
                 var param = {
-                    nameClosure : _.find(self.empCalAndSumExeLog(), function(o){return o.empCalAndSumExecLogID == self.currentSelectedRow() }).closureName,
+                    nameClosure : _.find(self.empCalAndSumExeLog(), function(o){return o.empCalAndSumExecLogID == self.currentSelectedRow() }) == undefined?"": 
+                            _.find(self.empCalAndSumExeLog(), function(o){return o.empCalAndSumExecLogID == self.currentSelectedRow() }).closureName,
                     empCalAndSumExecLogID : self.currentSelectedRow(),
-                    executedMenuName :  _.find(self.empCalAndSumExeLog(), function(o){return o.empCalAndSumExecLogID == self.currentSelectedRow() }).executedMenuName
+                    executedMenuName : _.find(self.empCalAndSumExeLog(), function(o){return o.empCalAndSumExecLogID == self.currentSelectedRow() }) == undefined?"": _.find(self.empCalAndSumExeLog(), function(o){return o.empCalAndSumExecLogID == self.currentSelectedRow() }).executedMenuName
                     
                 };
                 nts.uk.ui.windows.setShared("openI", param);
@@ -271,6 +296,8 @@ module nts.uk.at.view.kdw001.f {
             caseSpecExeContentID: string;
             executionLogs: Array<IExecutionLog>;
             isTextRed : boolean;
+            personCode : string;
+            personName : string;
         }
 
         export interface IExecutionLog {
@@ -313,10 +340,13 @@ module nts.uk.at.view.kdw001.f {
             caseSpecExeContentID: string;
             executionLogs: Array<ExecutionLog>;
             isTextRed : boolean;
+            personCode : string;
+            personName : string;
+            
             constructor(data: IEmpCalAndSumExeLog) {
                 this.empCalAndSumExecLogID = data.empCalAndSumExecLogID;
                 this.processingMonth = data.processingMonth;
-                this.processingMonthName = data.processingMonth%100 + "月度" + data.closureName;
+                this.processingMonthName = data.processingMonth%100 + "月度" + (data.closureName ==undefined?"":data.closureName);
                 this.executedMenu = data.executedMenu;
                 if (data.executedMenu == 0) {
                     this.executedMenuName = "詳細実行";
@@ -332,15 +362,22 @@ module nts.uk.at.view.kdw001.f {
                 this.caseSpecExeContentID = data.caseSpecExeContentID;
                 this.executionLogs = data.executionLogs;
                 this.isTextRed = data.isTextRed;
+                this.personCode = data.personCode;
+                this.personName = data.personName;
             }
             
-            public changeName(name: string): void {
+            public changeName(id : any,name: string): void {
                 this.closureName = name;
-                this.processingMonthName = this.processingMonth%100 + "月度     " + name;
+                this.processingMonthName = this.processingMonth%100 +"月度  " + ((id==undefined ||name==undefined)?"":id+":"+name);
             }
             
             public changeIsTextRed(isTextRed: boolean): void {
                 this.isTextRed = isTextRed;
+            }
+            
+            public changeNameAndCode(personCode: string,personName : string): void {
+                this.personCode = personCode;
+                this.personName = personName;
             }
         }//end class EmpCalAndSumExeLog
 

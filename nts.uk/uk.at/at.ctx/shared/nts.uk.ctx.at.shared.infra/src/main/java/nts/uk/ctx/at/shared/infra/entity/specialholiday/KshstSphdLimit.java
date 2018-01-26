@@ -12,9 +12,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.specialholiday.SphdLimit;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_SPHD_LIMIT")
@@ -25,20 +25,20 @@ public class KshstSphdLimit extends UkJpaEntity implements Serializable {
 		public KshstSphdLimitPK kshstSphdLimitPK;
 		
 		/* 月数 */
-		@Column(name = "SPECIAL_VACATION_MONTHS")
-		public int specialVacationMonths;
+		@Column(name = "SPECIAL_VACATION_MONTHS", nullable=true)
+		public Integer specialVacationMonths;
 		
 		/* 年数 */
-		@Column(name = "SPECIAL_VACATION_YEARS")
-		public int specialVacationYears;
+		@Column(name = "SPECIAL_VACATION_YEARS", nullable=true)
+		public Integer specialVacationYears;
 	
 		/* 付与日数を繰り越す */
 		@Column(name = "GRANT_CARRY_FORWARD")
 		public int grantCarryForward;
 		
 		/* 繰越上限日数 */
-		@Column(name = "LIMIT_CARRYOVER_DAYS")
-		public int limitCarryoverDays;
+		@Column(name = "LIMIT_CARRYOVER_DAYS", nullable=true)
+		public Integer limitCarryoverDays;
 		
 		/* 特別休暇の期限方法 */
 		@Column(name = "SPECIAL_VACATION_METHOD")
@@ -55,5 +55,25 @@ public class KshstSphdLimit extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return kshstSphdLimitPK;
+	}
+
+	public KshstSphdLimit(KshstSphdLimitPK kshstSphdLimitPK, Integer specialVacationMonths, Integer specialVacationYears,
+			int grantCarryForward, Integer limitCarryoverDays, int specialVacationMethod) {
+		super();
+		this.kshstSphdLimitPK = kshstSphdLimitPK;
+		this.specialVacationMonths = specialVacationMonths;
+		this.specialVacationYears = specialVacationYears;
+		this.grantCarryForward = grantCarryForward;
+		this.limitCarryoverDays = limitCarryoverDays;
+		this.specialVacationMethod = specialVacationMethod;
+	}
+	
+	public static KshstSphdLimit toEntity(SphdLimit domain){
+		return new KshstSphdLimit(new KshstSphdLimitPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()),
+				domain.getSpecialVacationMonths() != null ? domain.getSpecialVacationMonths().v() : null, 
+				domain.getSpecialVacationYears() != null ? domain.getSpecialVacationYears().v() : null, 
+				domain.getGrantCarryForward().value,
+				domain.getLimitCarryoverDays() != null ? domain.getLimitCarryoverDays().v() : null,
+				domain.getSpecialVacationMethod().value);
 	}
 }

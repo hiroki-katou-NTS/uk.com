@@ -143,25 +143,29 @@ module cmm044.a.viewmodel {
             self.histSelectedItem.subscribe(function(requestId) {
                 if (requestId) {
                     $.when(self.getAgen(self.selectedItem(), requestId)).done(function() {
-                        $("#daterangepicker").find(".ntsStartDatePicker").blur();
                         nts.uk.ui.errors.clearAll();
                         self.isEnableDelete(true);
                         self.isEnableAdd(true);
-                        service.findEmployeeName(self.currentItem().agentSid1()).done(function(response) {
-                            self.employeeNameScreen1(response);
-                        });
-                        
-                        service.findEmployeeName(self.currentItem().agentSid2()).done(function(response) {
-                            self.employeeNameScreen2(response);
-                        });
-                        
-                        service.findEmployeeName(self.currentItem().agentSid3()).done(function(response) {
-                            self.employeeNameScreen3(response);
-                        });
-                        
-                        service.findEmployeeName(self.currentItem().agentSid4()).done(function(response) {
-                            self.employeeNameScreen4(response);
-                        });
+                        if (!nts.uk.text.isNullOrEmpty(self.currentItem().agentSid1())) {
+                            service.findEmployeeName(self.currentItem().agentSid1()).done(function(response) {
+                                self.employeeNameScreen1(response);
+                            });
+                        }
+                        if (!nts.uk.text.isNullOrEmpty(self.currentItem().agentSid2())) {
+                            service.findEmployeeName(self.currentItem().agentSid2()).done(function(response) {
+                                self.employeeNameScreen2(response);
+                            });
+                        }
+                        if (!nts.uk.text.isNullOrEmpty(self.currentItem().agentSid3())) {
+                            service.findEmployeeName(self.currentItem().agentSid3()).done(function(response) {
+                                self.employeeNameScreen3(response);
+                            });
+                        }
+                        if (!nts.uk.text.isNullOrEmpty(self.currentItem().agentSid4())) {
+                            service.findEmployeeName(self.currentItem().agentSid4()).done(function(response) {
+                                self.employeeNameScreen4(response);
+                            });
+                        }
                     });
                 }
             });
@@ -205,9 +209,6 @@ module cmm044.a.viewmodel {
                     nts.uk.ui.dialog.alertError(error);
                 });
             }
-            _.defer(() => {
-                $("#daterangepicker").find(".ntsStartDatePicker").focus();
-            });
             dfd.resolve();
             return dfd.promise();
 
@@ -384,9 +385,11 @@ module cmm044.a.viewmodel {
                         } else {
                             requestId = self.histItems()[index_of_itemDelete].requestId;
                         }
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16"));
-                        self.histSelectedItem(requestId);
-                        $("#daterangepicker").find(".ntsStartDatePicker").focus();
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16")).then(() => {
+                            nts.uk.ui.errors.clearAll();
+                            self.histSelectedItem(requestId);
+                            $("#daterangepicker").find(".ntsStartDatePicker").focus();
+                        });
                     });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
@@ -428,7 +431,7 @@ module cmm044.a.viewmodel {
             let self = this;
             nts.uk.ui.block.invisible();
             nts.uk.ui.windows.setShared('CMM044_TABS', self.tabs());
-            nts.uk.ui.windows.sub.modal('/view/cmm/044/d/index.xhtml', { title: '代行リスト', height: 600, width: 1100, dialogClass: 'no-close' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/cmm/044/d/index.xhtml').onClosed(function(): any {
                 nts.uk.ui.block.clear();
             });
 

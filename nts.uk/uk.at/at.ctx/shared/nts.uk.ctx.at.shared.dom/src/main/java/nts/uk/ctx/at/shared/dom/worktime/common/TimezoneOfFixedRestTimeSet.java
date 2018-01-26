@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import lombok.Getter;
@@ -27,20 +29,31 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 	@Override
 	public void validate() {
 		super.validate();
-		this.checkOverlap();
+//		this.checkOverlap();
 	}
 
 	/**
+	 * Constructor
+	 * @param timezones the timezone
+	 */
+	public TimezoneOfFixedRestTimeSet(List<DeductionTime> timezones) {
+		super();
+		this.timezones = timezones;
+	}
+	
+	/**
 	 * Check overlap.
 	 */
-	private void checkOverlap() {
+	public void checkOverlap(String param) {
+		Collections.sort(this.timezones, Comparator.comparing(DeductionTime::getStart));
+		
 		for (int i = 0; i < this.timezones.size(); i++) {
 			DeductionTime deduct1 = this.timezones.get(i);
 			for (int j = i + 1; j < this.timezones.size(); j++) {
 				DeductionTime deduct2 = this.timezones.get(j);
 				// check overlap
 				if (deduct1.isOverlap(deduct2)) {
-					throw new BusinessException("Msg_515");
+					throw new BusinessException("Msg_515",param);
 				}
 			}
 		}
@@ -63,5 +76,7 @@ public class TimezoneOfFixedRestTimeSet extends DomainObject{
 	public void saveToMemento(TimezoneOfFixedRestTimeSetSetMemento memento) {
 		memento.setTimezones(this.timezones);
 	}
+
+
 	
 }

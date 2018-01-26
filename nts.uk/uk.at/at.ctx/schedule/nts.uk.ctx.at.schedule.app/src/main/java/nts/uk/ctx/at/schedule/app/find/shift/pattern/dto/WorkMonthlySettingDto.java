@@ -4,10 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.find.shift.pattern.dto;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
@@ -39,7 +38,7 @@ public class WorkMonthlySettingDto implements WorkMonthlySettingSetMemento{
 	private String workingName;
 	
 	/** The date. */
-	private int ymdk;
+	private GeneralDate ymdk;
 	
 	/** The monthly pattern code. */
 	private String monthlyPatternCode;
@@ -89,8 +88,8 @@ public class WorkMonthlySettingDto implements WorkMonthlySettingSetMemento{
 	 * setDate(nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public void setYmdK(BigDecimal ymdk) {
-		this.ymdk = ymdk.intValue();
+	public void setYmdK(GeneralDate ymdk) {
+		this.ymdk = ymdk;
 	}
 
 	/*

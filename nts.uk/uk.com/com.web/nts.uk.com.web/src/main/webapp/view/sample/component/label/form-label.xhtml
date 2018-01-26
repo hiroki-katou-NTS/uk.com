@@ -22,6 +22,7 @@
             </ui:define>
             
             <ui:define name="content">
+            	<div id="functions-area"></div>
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
@@ -32,6 +33,9 @@
 		            	<div data-bind="ntsFormLabel: { cssClass: css, constraint: 'ResidenceCode', enable: false, text: text }"></div><br /><br />
 		            	<div data-bind="ntsFormLabel: { constraint: constraint, required: true }">レイアウトコード</div><br /><br />
 		            	<div data-bind="ntsFormLabel: { constraint: 'ResidenceCode', inline: inline, required: required, enable: enable}">レイアウトコード</div><br />
+						<p>
+							<a href="./form-label-list.xhtml">FormLabel List</a>
+						</p>
 						<article class="cf">
 							<div class="tabs">
 								<ol>

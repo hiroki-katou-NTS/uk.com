@@ -19,8 +19,7 @@
 
 #content-left {
 	width: 270px;
-	height: 490px;
-	padding-top: 25px;
+	height: 745px;
 }
 
 #content-right {
@@ -170,7 +169,7 @@
 	width: 70px;
 }
 
-#A2_008_headers_v, #A2_008_virtualContainer td:FIRST-CHILD,
+#A2_008_headers_v, #A2_008_virtualContainer td:LAST-CHILD,
 	#A2_008_setting {
 	overflow: visible !important;
 }
@@ -192,7 +191,7 @@
 }
 
 .line_col_1 {
-	width: 250px;
+	width: 480px;
 	float: left;
 }
 

@@ -42,7 +42,9 @@ module nts.uk.at.view.kaf007.b {
             //勤務就業ダイアログ用データ取得
             workTypeCodes:KnockoutObservableArray<string> = ko.observableArray( [] );
             workTimeCodes:KnockoutObservableArray<string> = ko.observableArray( [] );
-        
+            //画面モード(表示/編集)
+            editable: KnockoutObservable<boolean> = ko.observable( true );
+            
             constructor( listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata ) {
                 super( listAppMetadata, currentApp );
                 let self = this;
@@ -108,6 +110,25 @@ module nts.uk.at.view.kaf007.b {
                             self.multilContent( self.appWorkChange().application().applicationReason() );
                             self.workTypeCodes = detailData.workTypeCodes;
                             self.workTimeCodes = detailData.workTimeCodes;
+                            //画面モード(表示/編集)
+                            //self.editable = ko.observable(detailData.OutMode == 0 ? true: false);                            
+                            
+                            //実績の内容
+                            service.getRecordWorkInfoByDate(moment(self.appWorkChange().application().applicationDate()).format(self.dateFormat)).done((recordWorkInfo) => {
+                                //Binding data
+                                ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
+                                 //Focus process
+                                self.selectedReason.subscribe(value => {  $("#inpReasonTextarea").focus(); });
+                                //フォーカス制御
+                                self.changeFocus('#inpStartTime1'); 
+                                
+                                dfd.resolve();
+                            }).fail((res) => {
+                                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                                nts.uk.ui.block.clear();
+                                dfd.reject();
+                            });
+                            
                             dfd.resolve();
                             nts.uk.ui.block.clear();
                         } ).fail(( res ) => {
@@ -117,19 +138,22 @@ module nts.uk.at.view.kaf007.b {
                             } );
                             dfd.reject();
                         } );
-                        //実績の内容
-                        service.getRecordWorkInfoByDate(moment(self.appWorkChange().application().applicationDate()).format(self.dateFormat)).done((recordWorkInfo) => {
-                            //Binding data
-                            ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
-                            dfd.resolve();
-                        }).fail((res) => {
-                            dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                            nts.uk.ui.block.clear();
-                            dfd.reject();
-                        });
+                        
                         dfd.resolve();
                     }
-                } );
+                }).fail((res) => {
+                    if(res.messageId == 'Msg_426'){
+                       nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
+                            
+                        });
+                    }else{ 
+                        nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
+                            nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");  
+                        });
+                    }
+                    nts.uk.ui.block.clear();
+                     dfd.reject();
+                });
                 return dfd.promise();
             }
 
@@ -152,6 +176,9 @@ module nts.uk.at.view.kaf007.b {
                     self.displayAppReasonContentFlg(),
                     self.multilContent()
                 );
+                if(!appcommon.CommonProcess.checklenghtReason(appReason,"#inpReasonTextarea")){
+                        return;
+                }
                 let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.typicalReasonDisplayFlg(), self.displayAppReasonContentFlg(), appReason);
                 if(appReasonError){
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' }).then(function(){nts.uk.ui.block.clear();});    

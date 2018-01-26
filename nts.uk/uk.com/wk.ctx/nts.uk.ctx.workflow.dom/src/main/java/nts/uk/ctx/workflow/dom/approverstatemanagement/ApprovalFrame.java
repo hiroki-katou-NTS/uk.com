@@ -41,8 +41,10 @@ public class ApprovalFrame extends DomainObject {
 	@Setter
 	private String representerID;
 	
+	@Setter
 	private GeneralDate approvalDate;
 	
+	@Setter
 	private String approvalReason;
 	
 	public static ApprovalFrame firstCreate(String rootStateID, Integer phaseOrder, Integer frameOrder, ConfirmPerson confirmPerson, List<ApproverState> listApproverState){

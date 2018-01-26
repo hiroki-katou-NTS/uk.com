@@ -5,9 +5,8 @@ import java.util.List;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeSheetDto;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 @AttendanceItemRoot(rootName="日別実績のPCログオン情報")
 @Data
@@ -17,6 +16,17 @@ public class PCLogOnInforOfDailyPerformDto implements ConvertibleAttendanceItem 
 	
 	private GeneralDate ymd;
 	
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "ログオン・オフ時刻", isList = true)
+	//TODO: set list max value
+//	@AttendanceItemLayout(layout = "A", jpPropertyName = "ログオン・オフ時刻", isList = true, listMaxLength = ?)
 	private List<TimeSheetDto> logonTime;
+
+	@Override
+	public String employeeId() {
+		return this.employeeId;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.ymd;
+	}
 }

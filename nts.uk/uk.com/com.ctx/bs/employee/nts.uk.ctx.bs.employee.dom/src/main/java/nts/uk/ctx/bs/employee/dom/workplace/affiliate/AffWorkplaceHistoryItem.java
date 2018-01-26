@@ -24,7 +24,7 @@ public class AffWorkplaceHistoryItem {
 	private String employeeId;
 	
 	/** The workplaceId. */
-	// 職場コード
+	// 職場ID
 	private String  workplaceId;
 	
 	/** The normalWorkplaceCode. */

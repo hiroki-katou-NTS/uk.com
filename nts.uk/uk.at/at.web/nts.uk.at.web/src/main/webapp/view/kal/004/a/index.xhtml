@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+		    <com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode
+				nts.uk.ctx.at.function.dom.alarm.AlarmPatternName
+            </com:ValidatorScript>
+            <com:EnumScript>
+            	nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification
+				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth
+				nts.uk.ctx.at.function.dom.alarm.AlarmCategory
+			</com:EnumScript>
+            <com:scriptfile set="IGNITE" />
+            <com:scriptfile path="../share/model.js" />
+            <!-- Tab2 -->
+            <com:stylefile path="periodSetting/kal004.a.tab2.style.css" />
+            <com:scriptfile path="periodSetting/kal004.tab2.vm.js" />
+            <!--End Tab2 -->
+            <com:scriptfile path="setpermission/kal004.tab3.vm.js" />
+            <com:scriptfile path="setpermission/kal004.tab3.service.js" />
+			<com:stylefile path="kal004.a.style.css" />
+			<com:scriptfile path="kal004.a.service.js" />
+			<com:scriptfile path="kal004.a.vm.js" />
+			<com:scriptfile path="kal004.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div class="container">
+					<a class="goback link-button" data-bind="ntsLinkButton: { jump: '../../002/a/index.xhtml' }">#{i18n.getText('KAL004_3')}</a>
+					<button id="new"  tabindex="1" data-bind="click: createAlarm">#{i18n.getText('KAL004_4')}</button>
+					<button id="registration"  class="proceed" tabindex="2" data-bind="click: saveAlarm , enable : $root.errors.isEmpty">#{i18n.getText('KAL004_5')}</button>
+					<button id="delete" class="danger" data-bind="click: removeAlarm, enable: !createMode()" tabindex="3">#{i18n.getText('KAL004_6')}</button>
+				</div>
+			</div>
+			<div id="contents-area" >
+				<div class="container">
+					<div id="left-content" class ="bg-green caret-right caret-background">
+						<table id="single-list" data-bind="ntsGridList: {								
+								height: 350,
+								dataSource: alarmSource,
+								primaryKey: 'alarmPatternCD',
+								columns: alarmHeader,
+								value: currentCode
+							}"></table>				
+					</div>
+					
+					<div id="right-content" >
+						<table class="control-group">						
+								<tr>
+									<td>
+										<div data-bind="ntsFormLabel: {required: true, constraint: ['AlarmPatternCode' , 'AlarmPatternName']}">#{i18n.getText('KAL004_9')}</div>									
+									</td>
+									<td>
+										<input tabindex="7" id="alarmCode"
+			                                 data-bind="ntsTextEditor: {
+			                                 name: '#[KAL004_10]',
+			                                 constraint: 'AlarmPatternCode',
+			                                 value: alarmCode,
+			                                 required: true,
+			                                 enable: createMode,
+			                                 immediate: true }, hasFocus: createMode()"/>
+										<input tabindex="8" id="alarmName"
+			                                 data-bind="ntsTextEditor: {
+			                                 name: '#[KAL004_11]',
+			                                 value: alarmName,
+			                                 constraint: 'AlarmPatternName',
+			                                 required: true,
+			                                 immediate: true}, hasFocus: !createMode()"/>		                                 
+									</td>
+								</tr>
+						</table>
+						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+							<div class="tab-content-1 tab-content-fixsize" >
+								<div>						
+									<div id='check-condition-text'> 
+										<div id = 'select-text'><span>#{i18n.getText('KAL004_15')}</span></div>
+										<div id='selected-text'><span>#{i18n.getText('KAL004_16')}</span></div>									
+									</div>
+
+
+								</div>
+								<div id="swap-list" data-bind="ntsSwapList: {
+									showSearchBox: { showLeft : true, showRight: true},
+									height: 300,
+									dataSource: checkConditionList,
+									primaryKey: 'GUID',
+									columns: checkHeader,
+									value: currentCodeListSwap,
+									searchMode: 'highlight',
+									multiple: true,
+						            searchCriterion:['checkConditonCode','checkConditionName'],
+						            enableRowNumbering: false ,
+						            showSort:{ showLeft : false, showRight: false}									
+								  }"></div>
+							</div>
+							<div class="tab-content-2 tab-content-fixsize" data-bind="with: periodSetting" >
+								<ui:include src="periodSetting/index.xhtml" /> 
+							</div>
+							<div class="tab-content-3 tab-content-fixsize" data-bind="with: setPermissionModel" >
+							<ui:include src="setpermission/index.xhtml" />
+							</div>
+						</div>											
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

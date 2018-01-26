@@ -5,7 +5,11 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 @AllArgsConstructor
 public class StampReflectionManagementCommand {

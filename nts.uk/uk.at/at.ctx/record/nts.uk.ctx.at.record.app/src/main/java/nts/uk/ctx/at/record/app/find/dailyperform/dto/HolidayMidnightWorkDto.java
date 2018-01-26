@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 
 /** 休出深夜 */
@@ -33,12 +36,32 @@ public class HolidayMidnightWorkDto {
 	private CalcAttachTimeDto publicHolidayWork;
 	
 	public static HolidayMidnightWorkDto fromHolidayMidnightWork(HolidayMidnightWork domain){
-		return domain == null ? null : new HolidayMidnightWorkDto(getWorkTime(domain.getHolidayWorkMidNightTime(), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork), 
+		return domain == null ? null : new HolidayMidnightWorkDto(getWorkTime(
+				domain.getHolidayWorkMidNightTime(), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork), 
 				getWorkTime(domain.getHolidayWorkMidNightTime(), StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork), 
 				getWorkTime(domain.getHolidayWorkMidNightTime(), StaturoryAtrOfHolidayWork.PublicHolidayWork));
 	}
 	
 	private static CalcAttachTimeDto getWorkTime(List<HolidayWorkMidNightTime> source, StaturoryAtrOfHolidayWork type){
-		return source.stream().filter(c -> c.getStatutoryAtr() == type).findFirst().map(c -> new CalcAttachTimeDto(c.getTime().getCalcTime().valueAsMinutes(), c.getTime().getTime().valueAsMinutes())).orElse(null);
+		return source.stream().filter(c -> c.getStatutoryAtr() == type).findFirst().map(c -> 
+			new CalcAttachTimeDto(c.getTime().getCalcTime() == null ? null : c.getTime().getCalcTime().valueAsMinutes(), 
+					c.getTime().getTime() == null ? null : c.getTime().getTime().valueAsMinutes())).orElse(null);
+	}
+	
+	public HolidayMidnightWork toDomain() {
+		return withinPrescribedHolidayWork == null ? null : new HolidayMidnightWork(Arrays.asList(
+				newMidNightTime(withinPrescribedHolidayWork, StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork),
+				newMidNightTime(excessOfStatutoryHolidayWork, StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork),
+				newMidNightTime(publicHolidayWork, StaturoryAtrOfHolidayWork.PublicHolidayWork)));
+	}
+
+	public HolidayWorkMidNightTime newMidNightTime(CalcAttachTimeDto time, StaturoryAtrOfHolidayWork attr) {
+		return new HolidayWorkMidNightTime(TimeWithCalculation.createTimeWithCalculation(toAttendanceTime(time.getTime()),
+				toAttendanceTime(time.getCalcTime())),
+		attr);
+	}
+	
+	private AttendanceTime toAttendanceTime(Integer time) {
+		return time == null ? null : new AttendanceTime(time);
 	}
 }

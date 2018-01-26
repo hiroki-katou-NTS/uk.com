@@ -27,24 +27,24 @@
 					data-bind="ntsHelpButton: {image: '../image/IMG_KSC001_3.png', position: 'right top', enable: true }">?</button>
 			</div>
 			<div class="selectionCase" tabindex="-1">
-				<div class="radioboxCase" tabindex="3">
-					<div id="inputCheckReCreateBox" 
+				<div class="radioboxCase" >
+					<div tabindex="3" id="inputCheckReCreateBox" 
 						data-bind="ntsRadioButton: {checked: checkReCreateAtrAllCase, 
 						name: '#[KSC001_82]', enable: isReCreate, optionText: '#{i18n.getText('KSC001_4')}' }" />
 				</div>
-				<div class="radioboxCase" tabindex="3">
-					<div data-bind="ntsRadioButton: {checked: checkReCreateAtrOnlyUnConfirm, name: '#[KSC001_82]', 
+				<div class="radioboxCase" >
+					<div tabindex="3" data-bind="ntsRadioButton: {checked: checkReCreateAtrOnlyUnConfirm, name: '#[KSC001_82]', 
 						enable: isReCreate, optionText: '#{i18n.getText('KSC001_5')}' }" />
 				</div>	
 				<div class="radioboxCase"  tabindex="-1">
 					<label>#{i18n.getText('KSC001_6')}</label>
 				</div>
-				<div class="radioboxProcessExecutionAtr"  tabindex="4">
-					<div data-bind="ntsRadioButton: {checked: checkProcessExecutionAtrRebuild, 
+				<div class="radioboxProcessExecutionAtr"  >
+					<div tabindex="4" data-bind="ntsRadioButton: {checked: checkProcessExecutionAtrRebuild, 
 						name: '#[KSC001_83]', enable: isReCreate, optionText: '#{i18n.getText('KSC001_7')}' }" />
 				</div>
-				<div class="radioboxProcessExecutionAtr" tabindex="4">
-					<div data-bind="ntsRadioButton: {checked: checkProcessExecutionAtrReconfig, 
+				<div class="radioboxProcessExecutionAtr" >
+					<div tabindex="4" data-bind="ntsRadioButton: {checked: checkProcessExecutionAtrReconfig, 
 						name: '#[KSC001_83]', enable: isReCreate, optionText: '#{i18n.getText('KSC001_8')}' }" />
 				</div>	
 				

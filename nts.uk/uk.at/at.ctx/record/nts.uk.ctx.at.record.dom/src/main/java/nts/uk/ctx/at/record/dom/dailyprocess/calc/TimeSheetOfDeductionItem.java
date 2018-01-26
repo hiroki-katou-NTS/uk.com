@@ -13,9 +13,9 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.commonsetting.CalcMethodIfLeaveWorkDuringBreakTime;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -41,7 +41,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 * @param deductionAtr
 	 * @param withinStatutoryAtr
 	 */
-	private TimeSheetOfDeductionItem(TimeSpanWithRounding withRounding
+	private TimeSheetOfDeductionItem(TimeZoneRounding withRounding
 									,TimeSpanForCalc timeSpan
 									,List<TimeSheetOfDeductionItem> deductionTimeSheets
 									,List<BonusPayTimesheet> bonusPayTimeSheet
@@ -65,7 +65,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 * @param withinStatutoryAtr
 	 * @return
 	 */
-	public static TimeSheetOfDeductionItem createTimeSheetOfDeductionItemAsFixed(TimeSpanWithRounding withRounding
+	public static TimeSheetOfDeductionItem createTimeSheetOfDeductionItemAsFixed(TimeZoneRounding withRounding
 			,TimeSpanForCalc timeSpan
 			,List<TimeSheetOfDeductionItem> deductionTimeSheets
 			,List<BonusPayTimesheet> bonusPayTimeSheet
@@ -94,7 +94,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 */
 	public TimeSheetOfDeductionItem replaceTimeSpan(TimeSpanForCalc timeSpan) {
 		return new TimeSheetOfDeductionItem(
-											new TimeSpanWithRounding(timeSpan.getStart(), timeSpan.getEnd(), this.timeSheet.getRounding()),
+											new TimeZoneRounding(timeSpan.getStart(), timeSpan.getEnd(), this.timeSheet.getRounding()),
 											timeSpan,
 											this.deductionTimeSheet,
 											this.bonusPayTimeSheet,
@@ -158,7 +158,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 				TimeSpanForCalc duplicationSpan = this.getCalcrange().getDuplicatedWith(compareTimeSheet.getCalcrange()).get();
 				map.add(this.replaceTimeSpan(this.calcrange.getNotDuplicationWith(compareTimeSheet.calcrange).get()));
 				//List<TimeSheetOfDeductionItem> replaceDeductionItemList = new ArrayList();//this.deductionTimeSheets;
-				compareTimeSheet.deductionTimeSheet.add(new TimeSheetOfDeductionItem(new TimeSpanWithRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), Finally.empty())
+				compareTimeSheet.deductionTimeSheet.add(new TimeSheetOfDeductionItem(new TimeZoneRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), null)
 																		 , duplicationSpan
 																		 , Collections.emptyList()
 																		 , Collections.emptyList()
@@ -189,7 +189,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 			if(!fluidFixedAtr.isFluidWork()) {
 				TimeSpanForCalc duplicationSpan = compareTimeSheet.getCalcrange().getDuplicatedWith(this.getCalcrange()).get();
 				map.add(compareTimeSheet.replaceTimeSpan(compareTimeSheet.calcrange.getNotDuplicationWith(this.calcrange).get()));
-				this.deductionTimeSheet.add(new TimeSheetOfDeductionItem(new TimeSpanWithRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), Finally.empty())
+				this.deductionTimeSheet.add(new TimeSheetOfDeductionItem(new TimeZoneRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), null)
 																		, duplicationSpan
 																		, Collections.emptyList()
 																		, Collections.emptyList()
@@ -331,7 +331,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 * @param deplicateoneTimeRange 1日の範囲と控除時間帯の重複部分
 	 * @return
 	 */
-	public List<TimeSpanForCalc> getBreakCalcRange(List<TimeLeavingWork> timeList,CalcMethodIfLeaveWorkDuringBreakTime calcMethod,Optional<TimeSpanForCalc> deplicateOneTimeRange) {
+	public List<TimeSpanForCalc> getBreakCalcRange(List<TimeLeavingWork> timeList,RestTimeOfficeWorkCalcMethod calcMethod,Optional<TimeSpanForCalc> deplicateOneTimeRange) {
 		if(deplicateOneTimeRange.isPresent()) {
 			return null;
 		}
@@ -352,28 +352,28 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 * @param oneDayRange 1日の範囲
 	 * @return
 	 */
-	public Optional<TimeSpanForCalc> getIncludeAttendanceOrLeaveDuplicateTimeSheet(TimeLeavingWork time,CalcMethodIfLeaveWorkDuringBreakTime calcMethod,TimeSpanForCalc oneDayRange) {
+	public Optional<TimeSpanForCalc> getIncludeAttendanceOrLeaveDuplicateTimeSheet(TimeLeavingWork time,RestTimeOfficeWorkCalcMethod calcMethod,TimeSpanForCalc oneDayRange) {
 		
 		TimeWithDayAttr newStart = oneDayRange.getStart();
 		TimeWithDayAttr newEnd = oneDayRange.getEnd();
 		
 		//退勤時間を含んでいるかチェック
-		if(oneDayRange.contains(time.getLeaveStamp().getStamp().get().getTimeWithDay())) {
+		if(oneDayRange.contains(time.getLeaveStamp().get().getStamp().get().getTimeWithDay())) {
 			//出勤時間を含んでいるチェック
-			if(oneDayRange.contains(time.getAttendanceStamp().getStamp().get().getTimeWithDay())){
-				newStart = time.getAttendanceStamp().getStamp().get().getTimeWithDay();
+			if(oneDayRange.contains(time.getAttendanceStamp().get().getStamp().get().getTimeWithDay())){
+				newStart = time.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
 			}
 		
 			switch(calcMethod) {
 				//計上しない
-				case NotRecordAll:
+				case NOT_APPROP_ALL:
 					return Optional.empty();
 				//全て計上
-				case RecordAll:
+				case APPROP_ALL:
 					return Optional.of(new TimeSpanForCalc(newStart,newEnd));
 				//退勤時間まで計上
-				case RecordUntilLeaveWork:
-					return Optional.of(new TimeSpanForCalc(newStart,time.getLeaveStamp().getStamp().get().getTimeWithDay()));
+				case OFFICE_WORK_APPROP_ALL:
+					return Optional.of(new TimeSpanForCalc(newStart,time.getLeaveStamp().get().getStamp().get().getTimeWithDay()));
 				default:
 					throw new RuntimeException("unknown CalcMethodIfLeaveWorkDuringBreakTime:" + calcMethod);
 			}
@@ -381,7 +381,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		else
 		{
 			//1日の計算範囲と出退勤の重複範囲取得
-			return Optional.of(oneDayRange.getDuplicatedWith(new TimeSpanForCalc(time.getAttendanceStamp().getStamp().get().getTimeWithDay(),time.getLeaveStamp().getStamp().get().getTimeWithDay())).get());
+			return Optional.of(oneDayRange.getDuplicatedWith(new TimeSpanForCalc(time.getAttendanceStamp().get().getStamp().get().getTimeWithDay(),time.getLeaveStamp().get().getStamp().get().getTimeWithDay())).get());
 		}
 	}
 }

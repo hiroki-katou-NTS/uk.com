@@ -33,38 +33,10 @@
 								value: searchOption,
 								enable: true }"></span>
 					</div>	
-					<div id="search-div" class="control-group valign-center">
-<!-- 						<span data-bind="ntsComboBox: { -->
-<!-- 								options: ko.observableArray([ -->
-<!-- 					                { code: -1, name: '前日' }, -->
-<!-- 					                { code: 0, name: '当日' }, -->
-<!-- 					                { code: 1, name: '翌日' }, -->
-<!-- 					                { code: 2, name: '翌々日' } -->
-<!-- 					            ]), -->
-<!-- 								optionsValue: 'code', -->
-<!-- 								value: startTimeOption, -->
-<!-- 								optionsText: 'name', -->
-<!-- 								enable: true, -->
-<!-- 								columns: [ -->
-<!-- 									{ prop: 'name', length: 3 }, -->
-<!-- 								]}"></span>	 -->
-						<input id="inputStartTime" data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_21]', value: startTime, constraint:'TimeWithDayAttr',enable: true, readonly: false, required: false}" />
-						<span class="label">～<!-- #{i18n.getText('KML001_20')} --></span>
-<!-- 						<span data-bind="ntsComboBox: { -->
-<!-- 								options: ko.observableArray([ -->
-<!-- 					                { code: -1, name: '前日' }, -->
-<!-- 					                { code: 0, name: '当日' }, -->
-<!-- 					                { code: 1, name: '翌日' }, -->
-<!-- 					                { code: 2, name: '翌々日' } -->
-<!-- 					            ]), -->
-<!-- 								optionsValue: 'code', -->
-<!-- 								value: endTimeOption, -->
-<!-- 								optionsText: 'name', -->
-<!-- 								enable: true, -->
-<!-- 								columns: [ -->
-<!-- 									{ prop: 'name', length: 3 }, -->
-<!-- 								]}"></span>	 -->
-						<input data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_22]', value: endTime, constraint:'TimeWithDayAttr',enable: true, readonly: false, required: false}" />
+					<div id="search-div" class="control-group valign-center">					
+						<input class= "inputTime" id="inputStartTime" data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_21]', value: startTime, constraint:'TimeWithDayAttr',enable: true, readonly: false, required: false}" />
+						<span class="label">～</span>
+						<input class ="inputTime" data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_22]', value: endTime, constraint:'TimeWithDayAttr',enable: true, readonly: false, required: false}" />
 						<button class="caret-bottom" data-bind="click: search">#{i18n.getText('KDL001_10')}</button>
 						<button data-bind="click: returnData">#{i18n.getText('KDL001_11')}</button>	
 					</div>		

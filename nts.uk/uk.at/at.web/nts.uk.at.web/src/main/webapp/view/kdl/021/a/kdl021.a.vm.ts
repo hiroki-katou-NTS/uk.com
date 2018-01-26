@@ -58,7 +58,7 @@ module kdl021.a.viewmodel {
         //event When click to 設定 ボタン
         register() {
             var self = this;
-            if (self.currentCodeList().length == 0) {
+            if (self.currentCodeList().length == 0 && self.isMulti) {
                 nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_78'));
             } else {
                 nts.uk.ui.windows.setShared('selectedChildAttendace', self.currentCodeList());

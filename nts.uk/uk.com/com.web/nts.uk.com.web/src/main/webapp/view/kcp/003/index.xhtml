@@ -48,6 +48,7 @@
 														enable: true }"></div>
 						</div>
 						<div style="margin-left: 10px; padding-top: 10px">
+							<div data-bind="ntsCheckBox:{checked: isMultipleUse}">Multiple use (複数使用区分)</div>
 							<div data-bind="ntsCheckBox:{checked: isAlreadySetting}">Show Already Setting</div>
 							<div data-bind="ntsCheckBox:{checked: isDialog}">Show As Dialog</div>
 							<div data-bind="ntsCheckBox:{checked: isShowNoSelectionItem}">Show NoSelection Item</div>
@@ -168,6 +169,7 @@
 													self.listComponentOption = {
 														baseDate: self.baseDate,
 														isShowAlreadySet: self.isShowAlreadySet(),
+														isMultipleUse: false,
 														isMultiSelect: self.isMultiSelect(),
 														listType: ListType.JOB_TITLE,
 														selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -234,6 +236,13 @@
 											<td>
 												<b>Type:</b> boolean<br/>
 												<label>Show/hide column "Already Setting"</label>
+											</td>
+										</tr>
+										<tr>
+											<td>isMultipleUse</td>
+											<td>
+												<b>Type:</b> boolean<br/>
+												<label>Use multiple component ?. if single component, show base date.</label>
 											</td>
 										</tr>
 										<tr>

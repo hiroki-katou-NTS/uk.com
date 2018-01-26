@@ -48,7 +48,9 @@ module nts.uk.at.view.kmk013.d {
                 })
                 self.selectedId310.subscribe(newValue => {
                     if (newValue == 1) {
-                        self.selectedId34(1);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_827" }).then(() => {
+                            self.selectedId34(1);
+                        });
                     }
                 });
                 self.selectedId44.subscribe(newValue => {
@@ -58,7 +60,9 @@ module nts.uk.at.view.kmk013.d {
                 })
                 self.selectedId410.subscribe(newValue => {
                     if (newValue == 1) {
-                        self.selectedId44(1);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_827" }).then(() => {
+                            self.selectedId44(1);
+                        });
                     }
                 });
             }
@@ -109,3 +113,4 @@ module nts.uk.at.view.kmk013.d {
             }
         }
     }
+}

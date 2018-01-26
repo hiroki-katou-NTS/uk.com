@@ -3,10 +3,10 @@ package nts.uk.ctx.at.shared.app.command.bonuspay;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
 
 @AllArgsConstructor
-@Value
+@Data
 public class BPSettingAddCommand {
 	public String code;
 	public String name;

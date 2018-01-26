@@ -8,12 +8,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
+import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrder;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrderRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 
 /**
  * 
@@ -28,6 +31,10 @@ public class SelectionFinder {
 
 	@Inject
 	private SelectionItemOrderRepository selectionOrderRpo;
+	
+	@Inject
+	private ComboBoxRetrieveFactory comboBoxFactory;
+
 
 	// アルゴリズム「選択肢履歴選択時処理」を実行する(Thực thi xử lý chọn 選択肢履歴)
 	public List<SelectionDto> getAllSelection() {
@@ -110,4 +117,22 @@ public class SelectionFinder {
 		return selectionLst;
 
 	}
+	
+	public List<ComboBoxObject>  getAllComboxByHistoryId(SelectionQuery dto) {
+		GeneralDate baseDateConvert = GeneralDate.fromString(dto.getBaseDate(), "yyyy-MM-dd");
+		SelectionItemDto selectionItemDto =  null;
+		String companyId = AppContexts.user().companyId();
+		if(dto.getSelectionItemRefType() == 2) {
+		return this.selectionRepo.getAllSelectionByCompanyId(
+				companyId , dto.getSelectionItemId(), baseDateConvert).stream()
+				.map(c -> new ComboBoxObject(c.getSelectionID(), c.getSelectionName().toString())).collect(Collectors.toList());
+		} else if(dto.getSelectionItemRefType() == 1) {
+			selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId());
+			return this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), baseDateConvert , true);
+			
+		}
+		return new ArrayList<>();
+
+	}
+
 }

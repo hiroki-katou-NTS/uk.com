@@ -24,6 +24,9 @@
 						<b>Update 2017/07/10</b>
 						<br />
 						- Add attributed maxRows.<br />
+						<b>Update 2017/28/12</b>
+						<br />
+						- Add employment closure date selection function.<br />
 						</note>
 					</div>
 					<div id="function-area" style="margin: 40px; margin-bottom: 10px">
@@ -58,6 +61,21 @@
 											value: selectedType,
 											enable: true}"></div>
 											
+						</div>
+						
+						<div style="margin-left: 10px; padding-top: 10px">
+							<div data-bind="ntsCheckBox:{checked: isDisplayClosureSelection}">Display Closure Selection</div>
+							<br></br>
+							<com:ko tag="if" bind="isDisplayClosureSelection()">
+								<div data-bind="ntsCheckBox:{checked: isDisplayFullClosureOption}">Display Full Closure Option</div>
+								<br></br>
+								<div id="selection-type" data-bind="ntsRadioBoxGroup: {
+											options: selectClosureTypeList,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: closureSelectionType,
+											enable: true}"></div>
+							</com:ko>
 						</div>
 
 						<div style="margin-left: 10px; padding-top: 10px">
@@ -144,7 +162,11 @@
 												isShowNoSelectRow: KnockoutObservable<boolean>;
 												isMultiSelect: KnockoutObservable<boolean>;
 												employmentList: KnockoutObservableArray<UnitModel>;
-												
+												//Upgrade
+												isDisplayClosureSelection: KnockoutObservable<boolean>;
+												isDisplayFullClosureOption: KnockoutObservable<boolean>;
+												closureSelectionType: KnockoutObservable<number>;
+												selectClosureTypeList: KnockoutObservableArray<any>;
 												
 												constructor() {
 													let self = this;
@@ -158,6 +180,15 @@
 													self.isDialog = ko.observable(false);
 													self.isShowNoSelectRow = ko.observable(false);
 													self.isMultiSelect = ko.observable(false);
+													self.isDisplayClosureSelection = ko.observable(false);
+													self.isDisplayFullClosureOption = ko.observable(false);
+													self.closureSelectionType = ko.observable(1);
+													self.selectClosureTypeList = ko.observableArray([
+													{ code: 1, name: 'Select Full Closure option' },
+													{ code: 2, name: 'Select by selected closure code'},
+													{ code: 3, name: 'Nothing (Select first option)' },
+													]);
+													
 													self.listComponentOption = {
 														isShowAlreadySet: self.isShowAlreadySet(),
 														isMultiSelect: self.isMultiSelect(),
@@ -315,6 +346,41 @@
 											<td>
 												<b>Type:</b> number<br/>
 												<b>Default:</b><i> If not set, tabindex will same as spec of KCPs.</i><br/>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<lable>isDisplayClosureSelection</lable> <br/>
+											</td>
+											<td>
+												<b>Type:</b> boolean<br/>
+												<b>Describe:</b><i> Show/Hide EmploymentClosure</i><br/>
+												<b>Default:</b><i> If not set, isDisplayClosureSelection will be set to [false].</i><br/>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<lable>isDisplayFullClosureOption</lable> <br/>
+											</td>
+											<td>
+												<b>Type:</b> boolean<br/>
+												<b>Describe:</b><i> Show/Hide FullEmploymentClosure item in search opt</i><br/>
+												<b>Default:</b><i> If not set, isDisplayFullClosureOption will be set to [true].</i><br/>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<lable>closureSelectionType</lable> <br/>
+											</td>
+											<td>
+												<b>Type:</b> number<br/>
+												<b>Describe:</b><i> Select Extraction Closure Type</i><br/>
+												<b>Default:</b><i> 3</i><br/>
+												<pre><![CDATA[Full EmploymentClosure = 1
+By Selected Closure Id = 2
+None = 3
+}]]></pre>
 											</td>
 										</tr>
 									</table>

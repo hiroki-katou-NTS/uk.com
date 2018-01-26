@@ -20,10 +20,13 @@ import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.sys.auth.pub.grant.RoleSetGrantedEmployeePub;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class EmployeeApproveAdapterImpl.
@@ -39,14 +42,12 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	@Inject
 	private SyWorkplacePub workplacePub;
 
-	/** The employment pub. */
-	@Inject
-	private SyEmploymentPub employmentPub;
 	@Inject
 	private PersonAdapter psInfor;
 	@Inject
 	private EmployeeInfoPub emInfor;
-
+	@Inject
+	private RoleSetGrantedEmployeePub roleSetPub;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -56,30 +57,23 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	 */
 	public List<EmployeeImport> findByWpkIds(String companyId, List<String> workplaceIds,
 			GeneralDate baseDate) {
-		List<EmployeeImport> empDto = employeePub.findByWpkIds(companyId, workplaceIds, baseDate)
-				.stream().map(x -> new EmployeeImport(x.getCompanyId(),
-				x.getPId(), 
-				x.getSId(), 
-				x.getSCd(),
-				psInfor.getPersonInfo(x.getSId()).getEmployeeName(),
-				"", 
-				"",
-				x.getSMail(),
-				x.getRetirementDate(),
-				x.getJoinDate())).collect(Collectors.toList());
-		
-		return empDto;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.
-	 * EmployeeApproveAdapter#getEmploymentCode(java.lang.String,
-	 * java.lang.String, nts.arc.time.GeneralDate)
-	 */
-	public String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate) {
-		return employmentPub.getEmploymentCode(companyId, employeeId, baseDate);
+		//
+		DatePeriod period = new DatePeriod(baseDate,baseDate);
+		List<String> lstEmpId = new ArrayList<>();
+		for (String wkpId : workplaceIds) {
+			List<String> empId = roleSetPub.findEmpGrantedInWorkplace(wkpId, period);
+			lstEmpId.addAll(empId);
+		}
+		List<EmployeeImport> lstEmpDto = lstEmpId.stream().map(x -> {
+			PersonImport perInfo = psInfor.getPersonInfo(x);
+			return new EmployeeImport(companyId,
+					"",
+					x,
+					perInfo.getEmployeeCode(),
+					perInfo.getEmployeeName(),
+					"","","",null,null);
+		    }).collect(Collectors.toList());
+		return lstEmpDto;
 	}
 
 	@Override

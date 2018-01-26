@@ -30,7 +30,7 @@ public class GoBackDirectlyDto {
 	/**
 	 * 勤務を変更する
 	 */
-	int workChangeAtr;
+	Integer workChangeAtr;
 	/**
 	 * 勤務直行1
 	 */
@@ -42,11 +42,11 @@ public class GoBackDirectlyDto {
 	/**
 	 * 勤務時間開始1
 	 */
-	int workTimeStart1;
+	Integer workTimeStart1;
 	/**
 	 * 勤務時間終了1
 	 */
-	int workTimeEnd1;
+	Integer workTimeEnd1;
 	/**
 	 * 勤務場所選択1
 	 */
@@ -62,11 +62,11 @@ public class GoBackDirectlyDto {
 	/**
 	 * 勤務時間開始2
 	 */
-	int workTimeStart2;
+	Integer workTimeStart2;
 	/**
 	 * 勤務時間終了2
 	 */
-	int workTimeEnd2;
+	Integer workTimeEnd2;
 	/**
 	 * 勤務場所選択２
 	 */
@@ -86,13 +86,13 @@ public class GoBackDirectlyDto {
 				domain.getWorkChangeAtr().value, 
 				domain.getGoWorkAtr1().value,
 				domain.getBackHomeAtr1().value, 
-				domain.getWorkTimeStart1().v(), 
-				domain.getWorkTimeEnd1().v(),
+				domain.getWorkTimeStart1() == null ? null : domain.getWorkTimeStart1().v(), 
+				domain.getWorkTimeEnd1() == null ? null : domain.getWorkTimeEnd1().v(),
 				domain.getWorkLocationCD1(), 
 				domain.getGoWorkAtr2().value, 
 				domain.getBackHomeAtr2().value,
-				domain.getWorkTimeStart2().v(), 
-				domain.getWorkTimeEnd2().v(), 
+				domain.getWorkTimeStart2() == null ? null : domain.getWorkTimeStart2().v(), 
+				domain.getWorkTimeEnd2() == null ? null : domain.getWorkTimeEnd2().v(),
 				domain.getWorkLocationCD2());
 	}
 }

@@ -31,7 +31,7 @@ public class JpaAutoCalOvertimeSettingSetMemento implements AutoCalOvertimeSetti
 	@Override
 	public void setEarlyOtTime(AutoCalSetting earlyOtTime) {
 		this.entity.setEarlyOtTimeAtr(earlyOtTime.getCalAtr().value);
-		this.entity.setEarlyOtTimeLimit(earlyOtTime.getUpLimitOtSet().value);
+		this.entity.setEarlyOtTimeLimit(earlyOtTime.getUpLimitORtSet().value);
 	}
 
 	/* (non-Javadoc)
@@ -40,7 +40,7 @@ public class JpaAutoCalOvertimeSettingSetMemento implements AutoCalOvertimeSetti
 	@Override
 	public void setEarlyMidOtTime(AutoCalSetting earlyMidOtTime) {
 		this.entity.setEarlyMidOtTimeAtr(earlyMidOtTime.getCalAtr().value);
-		this.entity.setEarlyMidOtTimeLimit(earlyMidOtTime.getUpLimitOtSet().value);
+		this.entity.setEarlyMidOtTimeLimit(earlyMidOtTime.getUpLimitORtSet().value);
 	}
 
 	/* (non-Javadoc)
@@ -49,7 +49,7 @@ public class JpaAutoCalOvertimeSettingSetMemento implements AutoCalOvertimeSetti
 	@Override
 	public void setNormalOtTime(AutoCalSetting normalOtTime) {
 		this.entity.setNormalOtTimeAtr(normalOtTime.getCalAtr().value);
-		this.entity.setNormalOtTimeLimit(normalOtTime.getUpLimitOtSet().value);
+		this.entity.setNormalOtTimeLimit(normalOtTime.getUpLimitORtSet().value);
 	}
 
 	/* (non-Javadoc)
@@ -58,7 +58,7 @@ public class JpaAutoCalOvertimeSettingSetMemento implements AutoCalOvertimeSetti
 	@Override
 	public void setNormalMidOtTime(AutoCalSetting normalMidOtTime) {
 		this.entity.setNormalMidOtTimeAtr(normalMidOtTime.getCalAtr().value);
-		this.entity.setNormalMidOtTimeLimit(normalMidOtTime.getUpLimitOtSet().value);
+		this.entity.setNormalMidOtTimeLimit(normalMidOtTime.getUpLimitORtSet().value);
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +67,7 @@ public class JpaAutoCalOvertimeSettingSetMemento implements AutoCalOvertimeSetti
 	@Override
 	public void setLegalOtTime(AutoCalSetting legalOtTime) {
 		this.entity.setLegalOtTimeAtr(legalOtTime.getCalAtr().value);
-		this.entity.setLegalOtTimeLimit(legalOtTime.getUpLimitOtSet().value);
+		this.entity.setLegalOtTimeLimit(legalOtTime.getUpLimitORtSet().value);
 		
 	}
 
@@ -77,7 +77,7 @@ public class JpaAutoCalOvertimeSettingSetMemento implements AutoCalOvertimeSetti
 	@Override
 	public void setLegalMidOtTime(AutoCalSetting legalMidOtTime) {
 		this.entity.setLegalMidOtTimeAtr(legalMidOtTime.getCalAtr().value);
-		this.entity.setLegalMidOtTimeLimit(legalMidOtTime.getUpLimitOtSet().value);
+		this.entity.setLegalMidOtTimeLimit(legalMidOtTime.getUpLimitORtSet().value);
 	}
 
 	
@@ -101,37 +101,37 @@ public class JpaAutoCalOvertimeSettingSetMemento implements AutoCalOvertimeSetti
 //	@Override
 //	public void setEarlyOtTime(AutoCalSetting earlyOtTime) {
 //		this.entity.setEarlyOtTimeAtr(earlyOtTime.getCalAtr().value);
-//		this.entity.setEarlyOtTimeLimit(earlyOtTime.getUpLimitOtSet().value);
+//		this.entity.setEarlyOtTimeLimit(earlyOtTime.getUpLimitORtSet().value);
 //	}
 //
 //	@Override
 //	public void setEarlyMidOtTime(AutoCalSetting earlyMidOtTime) {
 //		this.entity.setEarlyMidOtTimeAtr(earlyMidOtTime.getCalAtr().value);
-//		this.entity.setEarlyMidOtTimeLimit(earlyMidOtTime.getUpLimitOtSet().value);
+//		this.entity.setEarlyMidOtTimeLimit(earlyMidOtTime.getUpLimitORtSet().value);
 //	}
 //
 //	@Override
 //	public void setNormalOtTime(AutoCalSetting normalOtTime) {
 //		this.entity.setNormalOtTimeAtr(normalOtTime.getCalAtr().value);
-//		this.entity.setNormalOtTimeLimit(normalOtTime.getUpLimitOtSet().value);
+//		this.entity.setNormalOtTimeLimit(normalOtTime.getUpLimitORtSet().value);
 //	}
 //
 //	@Override
 //	public void setNormalMidOtTime(AutoCalSetting normalMidOtTime) {
 //		this.entity.setNormalMidOtTimeAtr(normalMidOtTime.getCalAtr().value);
-//		this.entity.setNormalMidOtTimeLimit(normalMidOtTime.getUpLimitOtSet().value);
+//		this.entity.setNormalMidOtTimeLimit(normalMidOtTime.getUpLimitORtSet().value);
 //	}
 //
 //	@Override
 //	public void setLegalOtTime(AutoCalSetting legalOtTime) {
 //		this.entity.setLegalOtTimeAtr(legalOtTime.getCalAtr().value);
-//		this.entity.setLegalOtTimeLimit(legalOtTime.getUpLimitOtSet().value);
+//		this.entity.setLegalOtTimeLimit(legalOtTime.getUpLimitORtSet().value);
 //	}
 //
 //	@Override
 //	public void setLegalMidOtTime(AutoCalSetting legalMidOtTime) {
 //		this.entity.setLegalMidOtTimeAtr(legalMidOtTime.getCalAtr().value);
-//		this.entity.setLegalMidOtTimeLimit(legalMidOtTime.getUpLimitOtSet().value);
+//		this.entity.setLegalMidOtTimeLimit(legalMidOtTime.getUpLimitORtSet().value);
 //	}
 
 }

@@ -13,14 +13,15 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforeAppCommonSetting;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.PrelaunchAppSetting;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.adapter.WorkLocationAdapter;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -40,7 +41,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 	private WorkLocationAdapter workLocationAdapter;
 
 	@Inject
-	private WorkTimeRepository workTimeRepo;
+	private WorkTimeSettingRepository workTimeRepo;
 
 	@Inject
 	private WorkTypeRepository workTypeRepo;
@@ -48,8 +49,8 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 	@Inject
 	private ApplicationRepository_New appRepo;
 
-	//@Inject 
-	//private BeforePreBootMode beforePreBootMode;
+	@Inject 
+	private BeforePreBootMode beforePreBootMode;
 	
 	@Inject 
 	private BeforeAppCommonSetting beforeAppCommonSetting;
@@ -70,8 +71,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		Application_New application = applicationOpt.get();
 		data.setEmployeeName(employeeAdapter.getEmployeeName(application.getEmployeeID()));
 		//14-2.詳細画面起動前モードの判断
-		//TODO: waiting for Update common
-		DetailedScreenPreBootModeOutput preBootOuput = new DetailedScreenPreBootModeOutput(null, null, false, null, false, false);//beforePreBootMode.judgmentDetailScreenMode(application, application.getAppDate());
+		DetailedScreenPreBootModeOutput preBootOuput = beforePreBootMode.judgmentDetailScreenMode(companyID, application.getEmployeeID(), appID, application.getAppDate());
 		data.detailedScreenPreBootModeOutput = preBootOuput;
 		//14-1.詳細画面起動前申請共通設定を取得する
 		PrelaunchAppSetting prelaunchAppSetting = beforeAppCommonSetting.getPrelaunchAppSetting(appID);
@@ -82,6 +82,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		//アルゴリズム「直行直帰基本データ」を実行する
 		GoBackDirectly goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
 		data.goBackDirectly = goBackDirect;
+		data.goBackDirectly.setVersion(application.getVersion());
 		if(Strings.isNotBlank(goBackDirect.getWorkLocationCD1())) {
 			data.workLocationName1 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD1())
 					.getWorkLocationName();
@@ -98,7 +99,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 			}
 		}
 		if (!StringUtils.isEmpty(goBackDirect.getSiftCD().v())) {
-			Optional<WorkTime> workTime = workTimeRepo.findByCode(companyID, goBackDirect.getSiftCD().v());
+			Optional<WorkTimeSetting> workTime = workTimeRepo.findByCode(companyID, goBackDirect.getSiftCD().v());
 			if(workTime.isPresent()) {
 				data.workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
 			}

@@ -5,10 +5,12 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppDeadline;
+import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppDeadlinePK;
 
 @Stateless
 public class JpaApplicationDeadlineRepository extends JpaRepository implements ApplicationDeadlineRepository{
@@ -52,6 +54,35 @@ public class JpaApplicationDeadlineRepository extends JpaRepository implements A
 
 		return data;
 	}
-
-
+	
+	private static KrqstAppDeadline toEntityDeadline(ApplicationDeadline domain){
+		val entity = new KrqstAppDeadline();
+		entity.krqstAppDeadlinePK = new KrqstAppDeadlinePK(domain.getCompanyId(), domain.getClosureId());
+		entity.deadline = domain.getDeadline().v();
+		entity.deadlineCriteria = domain.getDeadlineCriteria().value;
+		entity.useAtr = domain.getUserAtr().value;
+		return entity;
+	}
+	
+	/**
+	 * update deadline
+	 * @author yennth
+	 */
+	@Override
+	public void update(ApplicationDeadline appDeadline) {
+		KrqstAppDeadline entity = toEntityDeadline(appDeadline);
+		KrqstAppDeadline oldentity = this.queryProxy().find(entity.krqstAppDeadlinePK, KrqstAppDeadline.class).get();
+		oldentity.deadline = entity.deadline;
+		oldentity.deadlineCriteria = entity.deadlineCriteria;
+		oldentity.useAtr = entity.useAtr;
+	}
+	/**
+	 * insert deadline
+	 * @author yennth
+	 */
+	@Override
+	public void insert(ApplicationDeadline appDeadline) {
+		KrqstAppDeadline entity = toEntityDeadline(appDeadline);
+		this.commandProxy().insert(entity);
+	}
 }

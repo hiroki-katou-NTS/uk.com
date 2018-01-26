@@ -33,7 +33,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id="side-menu" class="cf"></div>
-				<div style="margin-left: 30px" id="content" class="cf">
+				<div id="content" class="cf">
 					<!-- BEGIN ORVERVIEW -->
 					<div>
 						<h1>KCP004 職場リスト（共通部品）Workplace List</h1>
@@ -45,7 +45,7 @@
 						</div>
 						<div>
 							<div>
-								<h4>Tree grid type:</h4>
+								<h4>Tree select grid type:</h4>
 								<div data-bind="ntsRadioBoxGroup: {
 									options: listTreeType,
 									optionsValue: 'code',
@@ -64,6 +64,7 @@
 							</div>
 							<h4>Other option:</h4>
 							<div style="margin-left: 17px;">
+								<div data-bind="ntsCheckBox:{checked: isMultipleUse}">Multiple use (複数使用区分)</div>
 								<div data-bind="ntsCheckBox:{checked: isDialog}">Dialog</div>
 								<div data-bind="ntsCheckBox:{checked: isShowAlreadySet}">Show Already Setting</div>
 								<div data-bind="ntsCheckBox:{checked: isShowSelectButton, enable: enableShowSelectButton}">Show SelectAll/SelectSubParent button</div>
@@ -146,6 +147,7 @@ export class ScreenModel {
 				self.alreadySettingList = ko.observableArray([]);
 				self.treeGrid = {
 						isShowAlreadySet: true,
+						isMultipleUse: false,
 						isMultiSelect: true,
 						treeType: TreeType.WORK_PLACE,
 						selectedWorkplaceId: self.multiSelectedWorkplaceId,
@@ -176,6 +178,13 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 											<td>
 												<b>Type:</b> boolean<br/>
 												<label><i>Description:</i>Show/hide icon flag/tick of column 名称</label>
+											</td>
+										</tr>
+										<tr>
+											<td>isMultipleUse (複数使用区分)</td>
+											<td>
+												<b>Type:</b> boolean<br/>
+												<label><i>Description:</i>Use multiple component ?. if single component, show base date.</label>
 											</td>
 										</tr>
 										<tr>

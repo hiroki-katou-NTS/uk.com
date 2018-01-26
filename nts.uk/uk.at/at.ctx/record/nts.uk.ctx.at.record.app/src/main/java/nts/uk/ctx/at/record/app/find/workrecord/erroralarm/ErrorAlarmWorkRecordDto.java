@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.ErAlAtdItem
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkTimeConditionDto;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkTypeConditionDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.PlanActualWorkTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.SingleWorkTime;
@@ -57,7 +58,7 @@ public class ErrorAlarmWorkRecordDto {
 	/* エラーアラームを解除できる */
 	private int cancelableAtr;
 	/* エラー表示項目 */
-	private int errorDisplayItem;
+	private Integer errorDisplayItem;
 	/* チェック条件 */
 	private AlarmCheckTargetConditionDto alCheckTargetCondition;
 	/* 勤務種類の条件 */
@@ -152,7 +153,7 @@ public class ErrorAlarmWorkRecordDto {
 	}
 
 	public ErrorAlarmWorkRecordDto(String companyId, String code, String name, int fixedAtr, int useAtr, int typeAtr,
-			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, int errorDisplayItem,
+			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, Integer errorDisplayItem,
 			int operatorBetweenPlanActual, List<Integer> lstApplicationTypeCode, int operatorBetweenGroups,
 			int operatorGroup1, int operatorGroup2, boolean group2UseAtr) {
 		super();
@@ -176,7 +177,7 @@ public class ErrorAlarmWorkRecordDto {
 	}
 
 	public ErrorAlarmWorkRecordDto(String companyId, String code, String name, int fixedAtr, int useAtr, int typeAtr,
-			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, int errorDisplayItem,
+			String displayMessage, int boldAtr, String messageColor, int cancelableAtr, Integer errorDisplayItem,
 			AlarmCheckTargetConditionDto alCheckTargetCondition, WorkTypeConditionDto workTypeCondition,
 			WorkTimeConditionDto workTimeCondition, int operatorBetweenPlanActual, List<Integer> lstApplicationTypeCode,
 			int operatorBetweenGroups, int operatorGroup1, int operatorGroup2,
@@ -206,101 +207,107 @@ public class ErrorAlarmWorkRecordDto {
 		this.erAlAtdItemConditionGroup2 = erAlAtdItemConditionGroup2;
 	}
 
-	public static ErrorAlarmWorkRecordDto fromDomain(ErrorAlarmWorkRecord domain) {
+	public static ErrorAlarmWorkRecordDto fromDomain(ErrorAlarmWorkRecord domain, ErrorAlarmCondition conditionDomain) {
 		// Create to DTO root
 		ErrorAlarmWorkRecordDto errorAlarmWorkRecordDto = new ErrorAlarmWorkRecordDto(domain.getCompanyId(),
 				domain.getCode().v(), domain.getName().v(), domain.getFixedAtr() ? 1 : 0, domain.getUseAtr() ? 1 : 0,
-				domain.getTypeAtr().value, domain.getErrorAlarmCondition().getDisplayMessage().v(),
+				domain.getTypeAtr().value,
+				conditionDomain != null ? conditionDomain.getDisplayMessage().v() : "",
 				domain.getMessage().getBoldAtr() ? 1 : 0, domain.getMessage().getMessageColor().v(),
-				domain.getCancelableAtr() ? 1 : 0, domain.getErrorDisplayItem().intValue(), 0,
+				domain.getCancelableAtr() ? 1 : 0,
+				domain.getErrorDisplayItem() != null ? domain.getErrorDisplayItem().intValue() : null, 0,
 				domain.getLstApplication(),
-				domain.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups().value,
-				domain.getErrorAlarmCondition().getAtdItemCondition().getGroup1().getConditionOperator().value,
-				domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2().getConditionOperator().value,
-				domain.getErrorAlarmCondition().getAtdItemCondition().getGroup2UseAtr());
-		// Set AlarmCheckTargetConditionDto
-		errorAlarmWorkRecordDto.setAlCheckTargetCondition(new AlarmCheckTargetConditionDto(
-				domain.getErrorAlarmCondition().getCheckTargetCondtion().getFilterByBusinessType(),
-				domain.getErrorAlarmCondition().getCheckTargetCondtion().getFilterByJobTitle(),
-				domain.getErrorAlarmCondition().getCheckTargetCondtion().getFilterByEmployment(),
-				domain.getErrorAlarmCondition().getCheckTargetCondtion().getFilterByClassification(),
-				domain.getErrorAlarmCondition().getCheckTargetCondtion().getLstBusinessTypeCode().stream()
-						.map(lstCode -> lstCode.v()).collect(Collectors.toList()),
-				domain.getErrorAlarmCondition().getCheckTargetCondtion().getLstJobTitleId(),
-				domain.getErrorAlarmCondition().getCheckTargetCondtion().getLstEmploymentCode().stream()
-						.map(lstCode -> lstCode.v()).collect(Collectors.toList()),
-				domain.getErrorAlarmCondition().getCheckTargetCondtion().getLstClassificationCode().stream()
-						.map(lstCode -> lstCode.v()).collect(Collectors.toList())));
-		WorkTypeConditionDto wtypeConditionDto = new WorkTypeConditionDto();
-		WorkTimeConditionDto wtimeConditionDto = new WorkTimeConditionDto();
-		// Set WorkTypeConditionDto
-		if (domain.getErrorAlarmCondition().getWorkTypeCondition()
-				.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
-			PlanActualWorkType wtypeConditionDomain = (PlanActualWorkType) domain.getErrorAlarmCondition()
-					.getWorkTypeCondition();
-			wtypeConditionDto.setActualFilterAtr(wtypeConditionDomain.getWorkTypeActual().getFilterAtr());
-			wtypeConditionDto.setActualLstWorkType(wtypeConditionDomain.getWorkTypeActual().getLstWorkType().stream()
-					.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-			wtypeConditionDto.setUseAtr(wtypeConditionDomain.getUseAtr());
-			wtypeConditionDto.setPlanFilterAtr(wtypeConditionDomain.getWorkTypePlan().getFilterAtr());
-			wtypeConditionDto.setPlanLstWorkType(wtypeConditionDomain.getWorkTypePlan().getLstWorkType().stream()
-					.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-			errorAlarmWorkRecordDto
-					.setOperatorBetweenPlanActual(wtypeConditionDomain.getOperatorBetweenPlanActual().value);
-		} else {
-			SingleWorkType wtypeConditionDomain = (SingleWorkType) domain.getErrorAlarmCondition()
-					.getWorkTypeCondition();
-			wtypeConditionDto.setUseAtr(wtypeConditionDomain.getUseAtr());
-			wtypeConditionDto.setPlanFilterAtr(wtypeConditionDomain.getTargetWorkType().getFilterAtr());
-			wtypeConditionDto.setPlanLstWorkType(wtypeConditionDomain.getTargetWorkType().getLstWorkType().stream()
-					.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
+				domain.getFixedAtr() ? 0
+						: conditionDomain.getAtdItemCondition().getOperatorBetweenGroups().value,
+				domain.getFixedAtr() ? 0
+						: conditionDomain.getAtdItemCondition().getGroup1()
+								.getConditionOperator().value,
+				domain.getFixedAtr() ? 0
+						: conditionDomain.getAtdItemCondition().getGroup2()
+								.getConditionOperator().value,
+				domain.getFixedAtr() ? false : conditionDomain.getAtdItemCondition().getGroup2UseAtr());
+		if (!domain.getFixedAtr()) {
+			// Set AlarmCheckTargetConditionDto
+			errorAlarmWorkRecordDto.setAlCheckTargetCondition(new AlarmCheckTargetConditionDto(
+					conditionDomain.getCheckTargetCondtion().getFilterByBusinessType(),
+					conditionDomain.getCheckTargetCondtion().getFilterByJobTitle(),
+					conditionDomain.getCheckTargetCondtion().getFilterByEmployment(),
+					conditionDomain.getCheckTargetCondtion().getFilterByClassification(),
+					conditionDomain.getCheckTargetCondtion().getLstBusinessTypeCode().stream()
+							.map(lstCode -> lstCode.v()).collect(Collectors.toList()),
+					conditionDomain.getCheckTargetCondtion().getLstJobTitleId(),
+					conditionDomain.getCheckTargetCondtion().getLstEmploymentCode().stream()
+							.map(lstCode -> lstCode.v()).collect(Collectors.toList()),
+					conditionDomain.getCheckTargetCondtion().getLstClassificationCode().stream()
+							.map(lstCode -> lstCode.v()).collect(Collectors.toList())));
+			WorkTypeConditionDto wtypeConditionDto = new WorkTypeConditionDto();
+			WorkTimeConditionDto wtimeConditionDto = new WorkTimeConditionDto();
+			// Set WorkTypeConditionDto
+			if (conditionDomain.getWorkTypeCondition()
+					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
+				PlanActualWorkType wtypeConditionDomain = (PlanActualWorkType) conditionDomain
+						.getWorkTypeCondition();
+				wtypeConditionDto.setActualFilterAtr(wtypeConditionDomain.getWorkTypeActual().getFilterAtr());
+				wtypeConditionDto.setActualLstWorkType(wtypeConditionDomain.getWorkTypeActual().getLstWorkType()
+						.stream().map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
+				wtypeConditionDto.setUseAtr(wtypeConditionDomain.getUseAtr());
+				wtypeConditionDto.setPlanFilterAtr(wtypeConditionDomain.getWorkTypePlan().getFilterAtr());
+				wtypeConditionDto.setPlanLstWorkType(wtypeConditionDomain.getWorkTypePlan().getLstWorkType().stream()
+						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
+				errorAlarmWorkRecordDto
+						.setOperatorBetweenPlanActual(wtypeConditionDomain.getOperatorBetweenPlanActual().value);
+			} else {
+				SingleWorkType wtypeConditionDomain = (SingleWorkType) conditionDomain
+						.getWorkTypeCondition();
+				wtypeConditionDto.setUseAtr(wtypeConditionDomain.getUseAtr());
+				wtypeConditionDto.setPlanFilterAtr(wtypeConditionDomain.getTargetWorkType().getFilterAtr());
+				wtypeConditionDto.setPlanLstWorkType(wtypeConditionDomain.getTargetWorkType().getLstWorkType().stream()
+						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
+			}
+			wtypeConditionDto.setComparePlanAndActual(
+					conditionDomain.getWorkTypeCondition().getComparePlanAndActual().value);
+			errorAlarmWorkRecordDto.setWorkTypeCondition(wtypeConditionDto);
+			// Set WorkTimeConditionDto
+			if (conditionDomain.getWorkTimeCondition()
+					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
+				PlanActualWorkTime wtimeConditionDomain = (PlanActualWorkTime) conditionDomain
+						.getWorkTimeCondition();
+				wtimeConditionDto.setActualFilterAtr(wtimeConditionDomain.getWorkTimeActual().getFilterAtr());
+				wtimeConditionDto.setActualLstWorkTime(wtimeConditionDomain.getWorkTimeActual().getLstWorkTime()
+						.stream().map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
+				wtimeConditionDto.setUseAtr(wtimeConditionDomain.getUseAtr());
+				wtimeConditionDto.setPlanFilterAtr(wtimeConditionDomain.getWorkTimePlan().getFilterAtr());
+				wtimeConditionDto.setPlanLstWorkTime(wtimeConditionDomain.getWorkTimePlan().getLstWorkTime().stream()
+						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
+			} else {
+				SingleWorkTime wtimeConditionDomain = (SingleWorkTime) conditionDomain
+						.getWorkTimeCondition();
+				wtimeConditionDto.setUseAtr(wtimeConditionDomain.getUseAtr());
+				wtimeConditionDto.setPlanFilterAtr(wtimeConditionDomain.getTargetWorkTime().getFilterAtr());
+				wtimeConditionDto.setPlanLstWorkTime(wtimeConditionDomain.getTargetWorkTime().getLstWorkTime().stream()
+						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
+			}
+			wtimeConditionDto.setComparePlanAndActual(
+					conditionDomain.getWorkTimeCondition().getComparePlanAndActual().value);
+			errorAlarmWorkRecordDto.setWorkTimeCondition(wtimeConditionDto);
+			// Set ErAlAtdItemConditionDto
+			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1 = new ArrayList<>();
+			List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2 = new ArrayList<>();
+			List<ErAlAttendanceItemCondition<?>> atdItemConditionDomain1 = conditionDomain
+					.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon();
+			for (ErAlAttendanceItemCondition<?> itemDomain : atdItemConditionDomain1) {
+				ErAlAtdItemConditionDto erAlAtdItemConditionDto = convertItemDomainToDto(itemDomain);
+				erAlAtdItemConditionGroup1.add(erAlAtdItemConditionDto);
+			}
+			errorAlarmWorkRecordDto.setErAlAtdItemConditionGroup1(erAlAtdItemConditionGroup1);
+			List<ErAlAttendanceItemCondition<?>> atdItemConditionDomain2 = conditionDomain
+					.getAtdItemCondition().getGroup2().getLstErAlAtdItemCon();
+			for (ErAlAttendanceItemCondition<?> itemDomain : atdItemConditionDomain2) {
+				ErAlAtdItemConditionDto erAlAtdItemConditionDto = convertItemDomainToDto(itemDomain);
+				erAlAtdItemConditionGroup2.add(erAlAtdItemConditionDto);
+			}
+			errorAlarmWorkRecordDto.setErAlAtdItemConditionGroup2(erAlAtdItemConditionGroup2);
 		}
-		wtypeConditionDto.setComparePlanAndActual(
-				domain.getErrorAlarmCondition().getWorkTypeCondition().getComparePlanAndActual().value);
-		errorAlarmWorkRecordDto.setWorkTypeCondition(wtypeConditionDto);
-		// Set WorkTimeConditionDto
-		if (domain.getErrorAlarmCondition().getWorkTimeCondition()
-				.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
-			PlanActualWorkTime wtimeConditionDomain = (PlanActualWorkTime) domain.getErrorAlarmCondition()
-					.getWorkTimeCondition();
-			wtimeConditionDto.setActualFilterAtr(wtimeConditionDomain.getWorkTimeActual().getFilterAtr());
-			wtimeConditionDto.setActualLstWorkTime(wtimeConditionDomain.getWorkTimeActual().getLstWorkTime().stream()
-					.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-			wtimeConditionDto.setUseAtr(wtimeConditionDomain.getUseAtr());
-			wtimeConditionDto.setPlanFilterAtr(wtimeConditionDomain.getWorkTimePlan().getFilterAtr());
-			wtimeConditionDto.setPlanLstWorkTime(wtimeConditionDomain.getWorkTimePlan().getLstWorkTime().stream()
-					.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-			errorAlarmWorkRecordDto.setOperatorBetweenPlanActual(
-					((PlanActualWorkType) domain.getErrorAlarmCondition().getWorkTypeCondition())
-							.getOperatorBetweenPlanActual().value);
-		} else {
-			SingleWorkTime wtimeConditionDomain = (SingleWorkTime) domain.getErrorAlarmCondition()
-					.getWorkTimeCondition();
-			wtimeConditionDto.setUseAtr(wtimeConditionDomain.getUseAtr());
-			wtimeConditionDto.setPlanFilterAtr(wtimeConditionDomain.getTargetWorkTime().getFilterAtr());
-			wtimeConditionDto.setPlanLstWorkTime(wtimeConditionDomain.getTargetWorkTime().getLstWorkTime().stream()
-					.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-		}
-		wtimeConditionDto.setComparePlanAndActual(
-				domain.getErrorAlarmCondition().getWorkTimeCondition().getComparePlanAndActual().value);
-		errorAlarmWorkRecordDto.setWorkTimeCondition(wtimeConditionDto);
-		// Set ErAlAtdItemConditionDto
-		List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1 = new ArrayList<>();
-		List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2 = new ArrayList<>();
-		List<ErAlAttendanceItemCondition<?>> atdItemConditionDomain1 = domain.getErrorAlarmCondition()
-				.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon();
-		for (ErAlAttendanceItemCondition<?> itemDomain : atdItemConditionDomain1) {
-			ErAlAtdItemConditionDto erAlAtdItemConditionDto = convertItemDomainToDto(itemDomain);
-			erAlAtdItemConditionGroup1.add(erAlAtdItemConditionDto);
-		}
-		errorAlarmWorkRecordDto.setErAlAtdItemConditionGroup1(erAlAtdItemConditionGroup1);
-		List<ErAlAttendanceItemCondition<?>> atdItemConditionDomain2 = domain.getErrorAlarmCondition()
-				.getAtdItemCondition().getGroup2().getLstErAlAtdItemCon();
-		for (ErAlAttendanceItemCondition<?> itemDomain : atdItemConditionDomain2) {
-			ErAlAtdItemConditionDto erAlAtdItemConditionDto = convertItemDomainToDto(itemDomain);
-			erAlAtdItemConditionGroup2.add(erAlAtdItemConditionDto);
-		}
-		errorAlarmWorkRecordDto.setErAlAtdItemConditionGroup2(erAlAtdItemConditionGroup2);
 		return errorAlarmWorkRecordDto;
 	}
 

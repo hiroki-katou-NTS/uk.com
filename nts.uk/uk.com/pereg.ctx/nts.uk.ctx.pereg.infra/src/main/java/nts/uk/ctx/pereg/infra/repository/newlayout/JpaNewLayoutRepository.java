@@ -14,18 +14,23 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutReposotory {
-
 	private static final String GET_FIRST_LAYOUT = "SELECT l FROM  PpemtNewLayout l WHERE l.companyId = :companyId";
 
 	@Override
 	public void update(NewLayout domain) {
+		String companyId = AppContexts.user().companyId();
 		Optional<NewLayout> update = this.getLayout(true);
-		if (update.isPresent()) {
-			NewLayout _update = update.get();
-			_update.setLayoutCode(domain.getLayoutCode());
-			_update.setLayoutName(domain.getLayoutName());
 
-			this.commandProxy().update(toEntity(_update));
+		if (update.isPresent()) {
+			PpemtNewLayout entity = this.queryProxy().query(GET_FIRST_LAYOUT, PpemtNewLayout.class)
+					.setParameter("companyId", companyId).getSingleOrNull();
+
+			if (entity != null) {
+				entity.layoutCode = domain.getLayoutCode().v();
+				entity.layoutName = domain.getLayoutName().v();
+
+				this.commandProxy().update(entity);
+			}
 		}
 	}
 
@@ -45,24 +50,16 @@ public class JpaNewLayoutRepository extends JpaRepository implements INewLayoutR
 						.setParameter("companyId", companyId).getSingleOrNull();
 			}
 		}
+
 		if (entity == null) {
 			return Optional.empty();
 		} else {
-
 			return Optional.of(toDomain(entity));
 		}
-
 	}
 
 	private NewLayout toDomain(PpemtNewLayout entity) {
 		return NewLayout.createFromJavaType(entity.companyId, entity.ppemtNewLayoutPk.layoutId, entity.layoutCode,
 				entity.layoutName);
-	}
-
-	private PpemtNewLayout toEntity(NewLayout domain) {
-		PpemtNewLayoutPk primary = new PpemtNewLayoutPk(domain.getLayoutID());
-
-		return new PpemtNewLayout(primary, domain.getCompanyId(), domain.getLayoutCode().v(),
-				domain.getLayoutName().v());
 	}
 }

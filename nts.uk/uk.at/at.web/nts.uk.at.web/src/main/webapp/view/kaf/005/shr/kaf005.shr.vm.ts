@@ -178,7 +178,6 @@ module nts.uk.at.view.kaf005.share {
             prePostAtr: number;
             applicantSID: string;
             applicationReason: string;
-            appApprovalPhaseCmds: Array<any>;
             workType: string;
             siftType: string;
             workClockFrom1: number;
@@ -208,6 +207,7 @@ module nts.uk.at.view.kaf005.share {
             endTime: KnockoutObservable<number>;
             applicationTime: KnockoutObservable<number>;
             nameID: KnockoutObservable<string>;
+            
             constructor(
                 companyID: string,
                 appID: string,
@@ -219,7 +219,7 @@ module nts.uk.at.view.kaf005.share {
                 startTime: number,
                 endTime: number,
                 applicationTime: number,
-                nameID: string) {
+                nameID: string, color : string) {
                 this.companyID = ko.observable(companyID);
                 this.appID = ko.observable(appID);
                 this.attendanceID = ko.observable(attendanceID);
@@ -231,10 +231,11 @@ module nts.uk.at.view.kaf005.share {
                 this.endTime = ko.observable(endTime);
                 this.applicationTime = ko.observable(applicationTime);
                 this.nameID = ko.observable(nameID);
+                
             }
         } 
         export class OvertimeCaculation{
-             companyID: KnockoutObservable<string>;
+            companyID: KnockoutObservable<string>;
             appID: KnockoutObservable<string>;
             attendanceID: KnockoutObservable<number>;
             attendanceName: KnockoutObservable<string>;
@@ -245,6 +246,8 @@ module nts.uk.at.view.kaf005.share {
             preAppTime: KnockoutObservable<string>;
             caculationTime: KnockoutObservable<string>;
             nameID: KnockoutObservable<string>;
+            itemName: string;
+            color : KnockoutObservable<string>;
             constructor(
                 companyID: string,
                 appID: string,
@@ -256,7 +259,9 @@ module nts.uk.at.view.kaf005.share {
                 applicationTime: number,
                 preAppTime: string,
                 caculationTime: string,
-                nameID: string) {
+                nameID: string,
+                itemName: string,
+                color :string) {
                 this.companyID = ko.observable(companyID);
                 this.appID = ko.observable(appID);
                 this.attendanceID = ko.observable(attendanceID);
@@ -268,6 +273,8 @@ module nts.uk.at.view.kaf005.share {
                 this.preAppTime = ko.observable(preAppTime);
                 this.caculationTime = ko.observable(caculationTime);
                 this.nameID = ko.observable(nameID);
+                this.itemName = nts.uk.resource.getText("KAF005_85",[frameName]);
+                this.color = ko.observable(color);
             }
         }  
 		export class overtimeWork {
@@ -322,6 +329,40 @@ module nts.uk.at.view.kaf005.share {
                 this.nameID = ko.observable(nameID);
             }
         }
-
+        /**
+         * 勤務内容
+         */
+         export class WorkContent{
+             //申請日
+             applicationDate: string;
+             //勤務種類
+             workType: string;
+             //就業時間帯
+             siftType: string;
+             //勤務時間
+             workClockFrom1: number;
+             workClockTo1: number;
+             workClockFrom2: number;
+             workClockTo2: number;
+             //休憩時間
+             breakTimes: Array<any>;
+            constructor(
+                applicationDate: string,
+                workType: string,
+                siftType: string,
+                workClockFrom1: number,
+                workClockTo1: number,
+                workClockFrom2: number,
+                workClockTo2: number,
+                breakTimes: Array<any>) {
+                this.applicationDate = applicationDate;
+                this.workType = workType;
+                this.breakTimes = breakTimes;
+                this.workClockFrom1 = workClockFrom1;
+                this.workClockTo1 = workClockTo1;
+                this.workClockFrom2 = workClockFrom2;
+                this.workClockTo2 = workClockTo2;
+            }
+        }
     }
 }

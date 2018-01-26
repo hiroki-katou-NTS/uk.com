@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.breakorgoout;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -24,5 +23,5 @@ public class KrcdtDaiOutingTimePK implements Serializable {
 	public GeneralDate ymd;
 
 	@Column(name = "OUTING_FRAME_NO")
-	public BigDecimal outingFrameNo;
+	public int outingFrameNo;
 }

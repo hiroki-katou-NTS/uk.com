@@ -89,10 +89,10 @@ public class AddHolidayAddtimeCommand {
 		if (this.irregularWork == null) {
 			return null;
 		}
-		return WorkDepLabor.createFromJavaType(companyId, this.irregularWork.getCalcActualOperation1(),
-				this.irregularWork.getExemptTaxTime1(), this.irregularWork.getIncChildNursingCare1(), this.irregularWork.getAdditionTime1(),
-				this.irregularWork.getNotDeductLateleave1(),this.irregularWork.getDeformatExcValue(), this.irregularWork.getExemptTaxTime2(),
-				this.irregularWork.getMinusAbsenceTime2(), this.irregularWork.getCalcActualOperation2(),
-				this.irregularWork.getIncChildNursingCare2(), this.irregularWork.getNotDeductLateleave2(),this.irregularWork.getAdditionTime2());
+		return WorkDepLabor.createFromJavaType(companyId, this.irregularWork.getCalcActualOperationPre(),
+				this.irregularWork.getExemptTaxTimePre(), this.irregularWork.getIncChildNursingCarePre(), this.irregularWork.getAdditionTimePre(),
+				this.irregularWork.getNotDeductLateleavePre(),this.irregularWork.getDeformatExcValue(), this.irregularWork.getExemptTaxTimeWork(),
+				this.irregularWork.getMinusAbsenceTimeWork(), this.irregularWork.getCalcActualOperationWork(),
+				this.irregularWork.getIncChildNursingCareWork(), this.irregularWork.getNotDeductLateleaveWork(),this.irregularWork.getAdditionTimeWork());
 	}
 }

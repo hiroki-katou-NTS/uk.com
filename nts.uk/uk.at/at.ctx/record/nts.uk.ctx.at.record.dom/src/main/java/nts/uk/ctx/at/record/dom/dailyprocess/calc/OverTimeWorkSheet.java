@@ -9,8 +9,8 @@ import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidOverTimeWorkSheet;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidWorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -115,18 +115,18 @@ public class OverTimeWorkSheet {
 	 * @return
 	 */
 	public AttendanceTime getnextElapsedTime(
-			FluidOverTimeWorkSheet fluidOverTimeWorkSheet,
-			FluidWorkTimeSetting fluidWorkTimeSetting,
+			FlowOTTimezone fluidOverTimeWorkSheet,
+			FlowWorkTimezoneSetting fluidWorkTimeSetting,
 			AttendanceTime timeOfCalcRange) {
-		int nextOverWorkTimeNo = fluidOverTimeWorkSheet.getOverWorkTimeNo() + 1;
+		int nextOverWorkTimeNo = fluidOverTimeWorkSheet.getWorktimeNo() + 1;
 		AttendanceTime nextlapsedTime;
-		Optional<FluidOverTimeWorkSheet> nextFluidOverTimeWorkSheet = 
+		Optional<FlowOTTimezone> nextFluidOverTimeWorkSheet = 
 				fluidWorkTimeSetting.getMatchWorkNoOverTimeWorkSheet(nextOverWorkTimeNo);
 		if(nextFluidOverTimeWorkSheet==null) {
 			nextlapsedTime = timeOfCalcRange;
 			return nextlapsedTime;
 		}
-		nextlapsedTime = nextFluidOverTimeWorkSheet.get().getFluidWorkTimeSetting().getElapsedTime();
+		nextlapsedTime = nextFluidOverTimeWorkSheet.get().getFlowTimeSetting().getElapsedTime();
 		return nextlapsedTime;
 	}
 	

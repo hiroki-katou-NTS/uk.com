@@ -13,10 +13,13 @@ module nts.uk.com.view.cps006.a.viewmodel {
         currentCategory: KnockoutObservable<CategoryInfoDetail> = ko.observable((new CategoryInfoDetail({
             id: '', categoryNameDefault: '',
             categoryName: '', categoryType: 4, isAbolition: "",
-             personEmployeeType : 0, itemList: [] 
+            personEmployeeType: 0, itemList: []
         })));
         // nếu sử dụng thì bằng true và ngược lại __viewContext["viewModel"].currentCategory().personEmployeeType
         isAbolished: KnockoutObservable<boolean> = ko.observable(false);
+
+        isFiltered: boolean = false;
+        ctgLstFilter: Array<any> = [];
 
         constructor() {
             let self = this;
@@ -25,39 +28,73 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 self.getDetailCategory(value);
             });
             self.isAbolished.subscribe(function(value) {
-                self.categoryList.removeAll();
                 if (value) {
-                    service.getAllCategory().done(function(data: Array<any>) {
-                        if (data.length > 0) {
-                            self.categoryList(_.map(data, x => new CategoryInfo({
-                                id: x.id,
-                                categoryCode: x.categoryCode,
-                                categoryName: x.categoryName,
-                                categoryType: x.categoryType,
-                                isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
-                            })));
-                            $("#category_grid").igGrid("option", "dataSource", self.categoryList());
-                        }
-                    });
+                    if (!self.isFiltered) {
+                        self.categoryList.removeAll();
+                        service.getAllCategory().done(function(data: Array<any>) {
+                            if (data.length > 0) {
+
+                                self.categoryList(_.map(data, x => new CategoryInfo({
+                                    id: x.id,
+                                    categoryCode: x.categoryCode,
+                                    categoryName: x.categoryName,
+                                    categoryType: x.categoryType,
+                                    isAbolition: x.isAbolition
+                                })));
+
+                                $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                            }
+                        });
+                    } else {
+
+                        service.getAllCategory().done(function(data: Array<any>) {
+                            if (data.length > 0) {
+
+                                self.categoryList(data);
+
+                                $("#category_grid").igGrid("option", "dataSource", self.categoryList());
+                                $('.search-btn').trigger('click');
+                            }
+                        });
+
+                        $("#category_grid").igGrid("option", "dataSource", self.ctgLstFilter);
+                    }
 
                 } else {
+                    if (self.isFiltered) {
+                        $("#category_grid").igGrid("option", "dataSource", _.filter(self.ctgLstFilter, x => { return x.isAbolition == 0 }));
 
-                    service.getAllCategory().done(function(data: Array<any>) {
-                        if (data.length > 0) {
-                            self.categoryList(_.map(_.filter(data, x => { return x.isAbolition == 0 }), x => new CategoryInfo({
-                                id: x.id,
-                                categoryCode: x.categoryCode,
-                                categoryName: x.categoryName,
-                                categoryType: x.categoryType,
-                                isAbolition: ""
-                            })));
-                            let category = _.find(self.categoryList(), x => { return x.id == self.currentCategory().id() });
-                            if (category === undefined) {
-                                self.currentCategory().id(self.categoryList()[0].id);
+                    } else {
+                        let oldlst: Array<any> = _.map(ko.toJS(self.categoryList), x => x);
+
+                        self.categoryList.removeAll();
+                        service.getAllCategory().done(function(data: Array<any>) {
+                            if (data.length > 0) {
+                                self.categoryList(_.map(_.filter(data, x => { return x.isAbolition == 0 }), x => new CategoryInfo({
+                                    id: x.id,
+                                    categoryCode: x.categoryCode,
+                                    categoryName: x.categoryName,
+                                    categoryType: x.categoryType,
+                                    isAbolition: x.isAbolition
+                                })));
+                                let category = _.find(self.categoryList(), x => { return x.id == self.currentCategory().id() });
+                                if (category === undefined) {
+                                    let oldIndex = oldlst.indexOf(_.find(oldlst, x => { return x.id == self.currentCategory().id() }));
+                                    for (var i = oldIndex; i >= 0; i--) {
+                                        let curCtg = oldlst[i];
+                                        let newctg = _.find(self.categoryList(), x => { return x.id == curCtg.id })
+                                        if (newctg != undefined) {
+                                            self.currentCategory().id(newctg.id);
+                                            break;
+                                        }
+                                    }
+
+                                }
+                                $("#category_grid").igGrid("option", "dataSource", self.categoryList());
                             }
-                            $("#category_grid").igGrid("option", "dataSource", self.categoryList());
-                        }
-                    });
+                        });
+
+                    }
 
                 }
 
@@ -71,7 +108,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 if (data) {
                     self.currentCategory().setData({
                         categoryNameDefault: data.categoryNameDefault, categoryName: data.categoryName,
-                        categoryType: data.categoryType, isAbolition: data.abolition, 
+                        categoryType: data.categoryType, isAbolition: data.abolition,
                         personEmployeeType: data.personEmployeeType, itemList: data.itemLst
                     }, data.systemRequired, data.isExistedItemLst);
                     if (data.itemLst.length > 0) {
@@ -96,7 +133,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             categoryCode: x.categoryCode,
                             categoryName: x.categoryName,
                             categoryType: x.categoryType,
-                            isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : "",
+                            isAbolition: x.isAbolition,
                         })));
 
                         self.categorySourceLst(_.map(data, x => new CategoryInfo({
@@ -104,7 +141,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             categoryCode: x.categoryCode,
                             categoryName: x.categoryName,
                             categoryType: x.categoryType,
-                            isAbolition: ""
+                            isAbolition: x.isAbolition
                         })));
 
                         if (id === undefined) {
@@ -115,7 +152,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
                     } else {
 
-                        dialog.alert('Msg_291');
+                        dialog.alertError({ messageId: 'Msg_291' });
 
                     }
                     dfd.resolve();
@@ -128,14 +165,14 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             categoryCode: x.categoryCode,
                             categoryName: x.categoryName,
                             categoryType: x.categoryType,
-                            isAbolition: ""
+                            isAbolition: x.isAbolition
                         })));
                         self.categorySourceLst(_.map(data, x => new CategoryInfo({
                             id: x.id,
                             categoryCode: x.categoryCode,
                             categoryName: x.categoryName,
                             categoryType: x.categoryType,
-                            isAbolition: ""
+                            isAbolition: x.isAbolition
                         })));
 
                         if (id === undefined) {
@@ -146,7 +183,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
                     } else {
 
-                        dialog.alert('Msg_291');
+                        dialog.alertError({ messageId: 'Msg_291' });
 
                     }
                     dfd.resolve();
@@ -158,10 +195,101 @@ module nts.uk.com.view.cps006.a.viewmodel {
             return dfd.promise();
         }
 
+        reload(id: string, index: any): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            self.categoryList.removeAll();
+            if (self.isAbolished()) {
+                service.getAllCategory().done(function(data: Array<any>) {
+                    if (data.length > 0) {
+                        self.categoryList(_.map(data, x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: x.isAbolition,
+                        })));
+
+                        self.categorySourceLst(_.map(data, x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: x.isAbolition
+                        })));
+
+                        let categoryOld = _.filter(self.categoryList(), function(cate: any) { return cate.id == id });
+
+                        if (categoryOld.length == 0) {
+                            if (self.categoryList().length > index) {
+                                self.currentCategory().id(self.categoryList()[index].id);
+                            } else if (self.categoryList().length === 0) {
+                                self.currentCategory().id(self.categoryList()[0].id);
+                            } else if (self.categoryList().length > index) {
+                                self.currentCategory().id(self.categoryList()[self.categoryList().length - 1]);
+                            }
+                        } else if (categoryOld.length > 0) {
+                            self.currentCategory().id(categoryOld[0].id);
+                        }
+
+                    } else {
+
+                        dialog.alertError({ messageId: 'Msg_291' });
+
+                    }
+                    dfd.resolve();
+                });
+            } else {
+                service.getAllCategory().done(function(data: Array<any>) {
+                    if (data.length > 0) {
+                        self.categoryList(_.map(_.filter(data, x => { return x.isAbolition == 0 }), x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: x.isAbolition
+                        })));
+                        self.categorySourceLst(_.map(data, x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: x.isAbolition
+                        })));
+
+                        let categoryOld = _.filter(self.categoryList(), function(cate: any) { return cate.id == id });
+
+                        if (categoryOld.length == 0) {
+                            if (self.categoryList().length > index) {
+                                self.currentCategory().id(self.categoryList()[index].id);
+                            } else if (self.categoryList().length === 0) {
+                                self.currentCategory().id(self.categoryList()[0].id);
+                            } else if (self.categoryList().length > index) {
+                                self.currentCategory().id(self.categoryList()[self.categoryList().length - 1]);
+                            }
+                        } else if (categoryOld.length > 0) {
+                            self.currentCategory().id(categoryOld[0].id);
+                        }
+
+                    } else {
+
+                        dialog.alertError({ messageId: 'Msg_291' });
+
+                    }
+                    dfd.resolve();
+                });
+
+            }
+
+
+            return dfd.promise();
+        }
+
+
         openBModal() {
 
             let self = this;
-            setShared('categoryInfo', self.currentCategory());
+            setShared('categoryInfo', ko.toJS(self.currentCategory()));
             block.invisible();
             nts.uk.ui.windows.sub.modal('/view/cps/006/b/index.xhtml', { title: '' }).onClosed(function(): any {
                 self.getDetailCategory(self.currentCategory().id());
@@ -203,10 +331,22 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
             service.updateCtgInfo(command).done(function(data) {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                    self.start(command.categoryId);
+                    let index = _.indexOf(_.map(self.categoryList(), function(obj) { return obj.id }), command.categoryId);
+                    if (index >= 0) {
+                        self.reload(command.categoryId, index);
+                    }
                 });
             }).fail(function(res: any) {
-                dialog.alertError({ messageId: res.messageId });
+                if (res.messageId == "Msg_928") {
+                    dialog.alertError({
+                        messageId: res.messageId,
+                        messageParams: ["個人情報カテゴリ"]
+                    }).then(() => {
+                        $('#ctgName').focus();
+                    })
+                } else {
+                    dialog.alertError({ messageId: res.messageId });
+                }
             });
 
         }
@@ -218,7 +358,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: string;
         categoryCode: string;
         categoryType: number;
-        isAbolition: string;
+        isAbolition: number;
     }
 
     export class CategoryInfo {
@@ -226,7 +366,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryCode: string;
         categoryName: string;
         categoryType: number;
-        isAbolition: string;
+        isAbolition: number;
         constructor(params: ICategoryInfo) {
             this.id = params.id;
             this.categoryName = params.categoryName;
@@ -284,12 +424,18 @@ module nts.uk.com.view.cps006.a.viewmodel {
         itemColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
             { headerText: text('CPS006_16'), key: 'itemName', width: 250 },
-            { headerText: text('CPS006_17'), key: 'isAbolition', width: 50, formatter: makeIcon }
+            {
+                headerText: text('CPS006_17'), key: 'isAbolition', width: 50,
+                template: '{{if ${isAbolition} == 1}} <img src="images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'
+            }
         ]);
         ctgColums: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'id', key: 'id', width: 100, hidden: true },
             { headerText: text('CPS006_6'), key: 'categoryName', width: 230 },
-            { headerText: text('CPS006_7'), key: 'isAbolition', width: 50 }
+            {
+                headerText: text('CPS006_7'), key: 'isAbolition', width: 50,
+                template: '{{if ${isAbolition} == 1}} <img src="images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />{{else }} <span></span> {{/if}}'
+            }
         ]);
         constructor(params: ICategoryInfoDetail) {
             this.id = ko.observable("");
@@ -312,9 +458,5 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.itemList(params.itemList);
         }
     }
-    function makeIcon(value, row) {
-        if (value == '1')
-            return "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>";
-        return '';
-    }
+
 }

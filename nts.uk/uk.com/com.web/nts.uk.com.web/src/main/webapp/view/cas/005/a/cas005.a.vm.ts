@@ -145,12 +145,14 @@ module nts.uk.com.view.cas005.a {
                 //table right
                 self.component = new ccg.component.viewmodel.ComponentModel({
                     roleType: 3,
-                    multiple: false
+                    multiple: false,
+                    tabindex: 6
                 });
                 //ccg026
                 self.componentCcg026 = new ccg026.component.viewmodel.ComponentModel({
                     classification: 1,
-                    maxRow: 3
+                    maxRow: 3,
+                    tabindex: 17
                 });
                 self.componentCcg026.listPermissions.subscribe((value) => {
                     self.listWorkPlaceAuthorityCommand([]);
@@ -460,7 +462,6 @@ module nts.uk.com.view.cas005.a {
                 self.listWpkAuthoritySelect();
                 self.enableRoleCode(true);
                 self.isCopy(false);
-                errors.clearAll();
                 self.isRegister(true);
                 self.isDelete(false);
                 self.bookingScreen(0);
@@ -481,6 +482,7 @@ module nts.uk.com.view.cas005.a {
                     self.listWpkAuthoritySelect.push(temp);
                 }
                 $("#roleTypeCd").focus();
+                errors.clearAll();
             }
 
             /**
@@ -607,7 +609,7 @@ module nts.uk.com.view.cas005.a {
                 let dfd = $.Deferred<any>();
                 service.addRoleCas005(command).done(function() {
                     self.enableRoleCode(false);
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -624,7 +626,7 @@ Role screen Cas005
                 let self = this;
                 let dfd = $.Deferred<any>();
                 service.updateRoleCas005(command).done(function() {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -640,7 +642,7 @@ Role screen Cas005
                 let self = this;
                 let dfd = $.Deferred<any>();
                 service.deleteRoleCas005(command).done(function() {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     dfd.resolve();
                 }).fail(function(res: any) {
                     dfd.reject();

@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexStampReflect;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexStampReflectPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexStampReflect;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexStampReflectPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -32,40 +32,32 @@ public class JpaFlexStampReflectTZGetMemento implements StampReflectTimezoneGetM
 		this.entity = entity;
 	}
 
-	/**
-	 * Gets the work no.
-	 *
-	 * @return the work no
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento#getWorkNo()
 	 */
 	@Override
 	public WorkNo getWorkNo() {
 		return new WorkNo(this.entity.getKshmtFlexStampReflectPK().getWorkNo());
 	}
 
-	/**
-	 * Gets the classification.
-	 *
-	 * @return the classification
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento#getClassification()
 	 */
 	@Override
 	public GoLeavingWorkAtr getClassification() {
-		return GoLeavingWorkAtr.valueOf(this.entity.getClass1());
+		return GoLeavingWorkAtr.valueOf(this.entity.getAtr());
 	}
 
-	/**
-	 * Gets the end time.
-	 *
-	 * @return the end time
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento#getEndTime()
 	 */
 	@Override
 	public TimeWithDayAttr getEndTime() {
 		return new TimeWithDayAttr(this.entity.getEndTime());
 	}
 
-	/**
-	 * Gets the start time.
-	 *
-	 * @return the start time
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento#getStartTime()
 	 */
 	@Override
 	public TimeWithDayAttr getStartTime() {

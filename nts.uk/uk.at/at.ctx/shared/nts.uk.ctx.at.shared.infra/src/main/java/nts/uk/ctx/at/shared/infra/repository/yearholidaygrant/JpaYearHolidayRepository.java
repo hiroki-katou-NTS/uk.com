@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.ConditionValue;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantCondition;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
@@ -29,7 +30,7 @@ import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblSetPK;
 public class JpaYearHolidayRepository extends JpaRepository implements YearHolidayRepository {
 	
 	private final String findAllByCompanyID = "SELECT a FROM KshstGrantHdTblSet a "
-			+ "WHERE a.kshstGrantHdTblSetPK.companyId = :companyId";
+			+ "WHERE a.kshstGrantHdTblSetPK.companyId = :companyId ORDER BY a.kshstGrantHdTblSetPK.yearHolidayCode ASC";
 	private final String DELETE_CONDITION = "DELETE FROM KshstGrantCondition c "
 			+ "WHERE c.kshstGrantConditionPK.companyId =:companyId "
 			+ "AND c.kshstGrantConditionPK.yearHolidayCode =:yearHolidayCode ";
@@ -70,7 +71,7 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 		List<KshstGrantCondition> grantCoditionList = yearHoliday.getGrantConditions().stream()
 				.map(x -> {
 					KshstGrantConditionPK conditionKey = new KshstGrantConditionPK(yearHoliday.getCompanyId(), yearHoliday.getYearHolidayCode().v(), x.getConditionNo());
-					return new KshstGrantCondition(conditionKey, x.getConditionValue().v(), x.getUseConditionAtr().value);
+					return new KshstGrantCondition(conditionKey, x.getConditionValue() != null ? x.getConditionValue().v() : null, x.getUseConditionAtr().value);
 				}).collect(Collectors.toList());
 		
 		kshstYearHoliday.grantConditions = grantCoditionList;
@@ -110,8 +111,9 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 			return new 	GrantCondition(t.kshstGrantConditionPK.companyId, 
 					new YearHolidayCode(t.kshstGrantConditionPK.yearHolidayCode), 
 					t.kshstGrantConditionPK.conditionNo, 
-					new ConditionValue(t.conditionValue), 
-					EnumAdaptor.valueOf(t.useConditionAtr, UseConditionAtr.class));
+					t.conditionValue != null ? new ConditionValue(t.conditionValue) : null, 
+					EnumAdaptor.valueOf(t.useConditionAtr, UseConditionAtr.class),
+					!CollectionUtil.isEmpty(t.yearHolidayGrants));
 		}).collect(Collectors.toList());
 		
 		return GrantHdTblSet.createFromJavaType(x.kshstGrantHdTblSetPK.companyId, 
@@ -134,7 +136,7 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 		List<KshstGrantCondition> grantCoditionList = yearHoliday.getGrantConditions().stream()
 				.map(x -> {
 					KshstGrantConditionPK key = new KshstGrantConditionPK(yearHoliday.getCompanyId(), yearHoliday.getYearHolidayCode().v(), x.getConditionNo());
-					return new KshstGrantCondition(key, x.getConditionValue().v(), x.getUseConditionAtr().value);
+					return new KshstGrantCondition(key, x.getConditionValue() != null ? x.getConditionValue().v() : null, x.getUseConditionAtr().value);
 				}).collect(Collectors.toList());
 		
 		return new KshstGrantHdTblSet(

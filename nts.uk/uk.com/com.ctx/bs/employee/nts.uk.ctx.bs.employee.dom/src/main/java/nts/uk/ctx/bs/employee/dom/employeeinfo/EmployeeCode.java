@@ -5,13 +5,16 @@
 package nts.uk.ctx.bs.employee.dom.employeeinfo;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * The Class EmployeeCode.
  */
-//社員CD
-@StringMaxLength(12)
+// 社員CD
+@StringCharType(CharType.ANY_HALF_WIDTH)
+@StringMaxLength(6)
 public class EmployeeCode extends StringPrimitiveValue<EmployeeCode> {
 
 	/** The Constant serialVersionUID. */
@@ -20,7 +23,8 @@ public class EmployeeCode extends StringPrimitiveValue<EmployeeCode> {
 	/**
 	 * Instantiates a new employee code.
 	 *
-	 * @param rawValue the raw value
+	 * @param rawValue
+	 *            the raw value
 	 */
 	public EmployeeCode(String rawValue) {
 		super(rawValue);

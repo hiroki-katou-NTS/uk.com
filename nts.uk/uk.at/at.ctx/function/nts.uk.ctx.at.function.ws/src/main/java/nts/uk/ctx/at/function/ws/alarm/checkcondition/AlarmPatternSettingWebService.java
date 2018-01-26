@@ -14,6 +14,7 @@ import nts.uk.ctx.at.function.app.command.alarm.UpdateAlarmPatternSettingCommand
 import nts.uk.ctx.at.function.app.find.alarm.AlarmCheckConditonCodeDto;
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingDto;
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingFinder;
+import nts.uk.ctx.at.function.app.find.alarm.extractionrange.SpecifiedMonthDto;
 
 /**
  * Web Service for function KAL004_パターン設定
@@ -67,5 +68,10 @@ public class AlarmPatternSettingWebService extends WebService{
 		deleteCommandHandler.handle(command);
 	}
 	
+	@POST
+	@Path("getSpecifiedMonth")
+	public List<SpecifiedMonthDto> getSpecifiedMonth() {
+		return finder.getSpecifiedMonth();
+	}
 	
 }

@@ -241,6 +241,7 @@ module nts.uk.at.view.kmk004.a {
                 self.isEmploymentSelected(true);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(false);
+                self.employmentWTSetting.year(self.companyWTSetting.year());
 
                 // Load component.
                 $('#list-employment').ntsListComponent(this.employmentComponentOption).done(() => {
@@ -274,6 +275,7 @@ module nts.uk.at.view.kmk004.a {
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(true);
+                self.workplaceWTSetting.year(self.companyWTSetting.year());
 
                 // Load component.
                 $('#list-workplace').ntsTreeComponent(this.workplaceComponentOption).done(() => {
@@ -652,12 +654,13 @@ module nts.uk.at.view.kmk004.a {
                     isMultiSelect: false, // is multiselect.
                     isShowSelectButton: false, // Show button select all and selected sub parent
                     treeType: 1, // workplace tree.
-                    selectType: 3, // select first item.
+                    selectType: 2, // select first item.
                     maxRows: 12, // maximum rows can be displayed.
                     selectedWorkplaceId: self.selectedWorkplaceId,
                     baseDate: self.baseDate,
                     isDialog: false,
-                    alreadySettingList: self.alreadySettingWorkplaces
+                    alreadySettingList: self.alreadySettingWorkplaces,
+                    systemType: 2
                 };
             }
 

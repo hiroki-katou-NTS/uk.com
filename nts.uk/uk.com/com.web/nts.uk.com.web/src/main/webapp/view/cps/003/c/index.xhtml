@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 580,
+					height : 540
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cps003.c.style.css" />
+			<!-- 			<com:scriptfile path="cps003.c.service.js" /> -->
+			<!-- 			<com:scriptfile path="cps003.c.vm.js" /> -->
+			<!-- 			<com:scriptfile path="cps003.c.start.js" /> -->
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="" class="proceed">#{i18n.getText('CPS003_45')}</button>
+				<button tabindex="" id="">#{i18n.getText('CPS003_46')}</button>
+				<button tabindex="" id="">#{i18n.getText('CPS003_47')}</button>
+				<button id="" class="danger" tabindex="">#{i18n.getText('CPS003_48')}</button>
+				<button tabindex="" id="">#{i18n.getText('CPS003_49')}</button>
+			</div>
+
+			<div id="contents-area">
+				<div id="left-content"
+					class="relative bg-green caret-right caret-background">
+					<i class="icon icon-searchbox"></i>
+					<div class="cf">
+						<div style="float: left"></div>
+					</div>
+				</div>
+
+				<div id="right-content">
+					<div id="right-content" class="form-group">
+						<div class="row">
+							<div class="coll">Test01</div>
+						</div>
+
+						<div class="row">
+							<div class="coll">Test02</div>
+						</div>
+						
+						<div class="row">
+							<div class="coll">Test03</div>
+						</div>
+
+						<div class="row">
+							<div class="coll">Test04</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

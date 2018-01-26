@@ -12,9 +12,9 @@ module nts.uk.at.view.kdw008.c {
                 this.businessTypeSortedList = ko.observableArray([]);
 
                 this.columns = ko.observableArray([
-                    { headerText: '', key: 'dislayNumber', width: 100 },
+                    { headerText: 'コード', key: 'dislayNumber', width: 100 },
                     { headerText: '', key: 'attendanceItemId', hidden: true, width: 150 },
-                    { headerText: '', key: 'attendanceItemName', width: 150 }
+                    { headerText: '名称', key: 'attendanceItemName', width: 150 }
                 ]);
                 this.testSingle = ko.observable(null);
             }

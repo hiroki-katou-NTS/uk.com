@@ -8,7 +8,7 @@ public class BPTimesheetAddCommand {
 		public int timeSheetNO;
 		public int useAtr;
 		public String bonusPaySettingCode;
-		public String timeItemId;
+		public int timeItemID;
 		public int startTime;
 		public int endTime;
 		public int roundingTimeAtr;

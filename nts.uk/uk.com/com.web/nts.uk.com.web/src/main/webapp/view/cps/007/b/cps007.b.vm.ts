@@ -57,7 +57,7 @@ module cps007.b.vm {
                 data: Array<IItemDefinition> = ko.unwrap(self.chooseItems);
 
             if (!data.length) {
-                alert(text('Msg_203'));
+                alert({ messageId: 'Msg_203' });
                 return;
             }
 

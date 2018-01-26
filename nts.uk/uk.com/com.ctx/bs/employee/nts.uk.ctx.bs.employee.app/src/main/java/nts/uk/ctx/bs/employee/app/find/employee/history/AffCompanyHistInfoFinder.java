@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
@@ -90,7 +91,10 @@ public class AffCompanyHistInfoFinder implements PeregFinder<AffCompanyHistInfoD
 
 			return affCompanyHist.getLstAffCompanyHistByEmployee().get(0).getLstAffCompanyHistoryItem().stream()
 					.filter(x -> aciFinder.getAffCompanyInfoByHistId(x.identifier()) != null)
-					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), 
+							x.end().equals(GeneralDate.max())
+							//&& query.getCtgType() == 3 
+							? "" :x.end().toString()))
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();

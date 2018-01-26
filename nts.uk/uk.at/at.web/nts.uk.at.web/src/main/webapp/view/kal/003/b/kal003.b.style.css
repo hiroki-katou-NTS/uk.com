@@ -1,28 +1,7 @@
 @CHARSET "UTF-8";
-#left-content {
-    margin-left: 30px;
-    margin-top: 20px;
-    padding: 25px;
-    float: left;
-    max-height: 300px;
-}
-
-#right-content {
-    margin-left: 30px;
-    float: left;
-    margin-top: 20px;
-}
-
-.line {
-    display: inline-block;
-}
-
-.left-line {
-    width: 120px;
-}
 
 .row {
-    height: 40px;
+    height: 50px;
 }
 
 #single-list-dataSource tr td {
@@ -32,13 +11,6 @@
 #content-area{
     width: 1260px;
 }
-#inpDialog{
-    margin-left: 30px;
-}
-
-.lab_txt_width{
-    width: 256px;
-}
 
 .pad_left_5px {
     padding-left: 5px;
@@ -47,10 +19,36 @@
 .pad_left_10px {
     padding-left: 10px;
 }
-.pad_top_12px {
-    padding-top: 12px;
-}
 .nts-switch-button {
 	width:80px;
 
+}
+#conditionAtr-cbb {width: 10px;}
+.table-template td{padding: 3px;}
+.display-list-label{width: 139px;}
+#compareOperator-cbb{width: 200px;}
+.value-input {width: 70px}
+.nts-editor-wrapped {display: initial !IMPORTANT;}
+
+.ntsRadioBox {
+	margin-right: 0px;
+    margin-left: 24px;
+}
+.ntsRadioBox span.label {
+  display: inline-block;
+  padding-left: 5px;
+}
+
+.tx_radiobox_right {
+	text-align:right;
+}
+
+.div_radiobox_right {
+	float: right;
+}
+.ntsControl.symbol:after {
+  position: absolute;
+  content: attr(data-content);
+  top: 0px;
+  color: #999;
 }

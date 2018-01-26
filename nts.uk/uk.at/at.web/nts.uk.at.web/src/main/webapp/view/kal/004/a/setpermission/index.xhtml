@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<div class="valign-center control-group" style="margin-top: 40px;">
+			<label>#{i18n.getText('KAL004_111')}</label>
+			<div class="cf" style="margin-left: 20px;"
+				data-bind="ntsSwitchButton: {
+					options: roundingRules,
+					optionsValue: 'code',
+					optionsText: 'name',
+					value: selectedRuleCode}"></div>
+		</div>
+		<div class="valign-center control-group" style="margin-top: 40px;">
+			<label>#{i18n.getText('KAL004_114')}</label> <input
+				style="margin-left: 59px;"
+				data-bind="ntsTextEditor: {value : executionAuthor , readonly : true}" />
+			<button data-bind="click : openCDL025">#{i18n.getText('KAL004_115')}</button>
+		</div>
+	</ui:composition>
+</body>
+</html>

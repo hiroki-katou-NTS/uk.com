@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +22,10 @@ public class OutingTimeZoneDto {
 	private WithActualTimeStampDto comeBack;
 
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "外出理由")
-	@AttendanceItemValue(itemId = { 86, 149, 93, 100, 107, 114, 121, 128, 135, 142 }, type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	private int reason;
+	
+	private int outTimeCalc;
+	
+	private int outTIme;
 }

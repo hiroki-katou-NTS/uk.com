@@ -7,15 +7,16 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<title>#{i18n.getText('CPS001_2')}</title>
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 620,
 					height : 900
 				};
 			</script>
-			<com:scriptfile path="/lib/generic/cropper/cropper.js" of="/nts.uk.com.js.web" />
-			<com:stylefile path="/lib/generic/cropper/cropper.css" of="/nts.uk.com.js.web" />
+			<com:scriptfile path="/lib/generic/cropper/cropper.js"
+				of="/nts.uk.com.js.web" />
+			<com:stylefile path="/lib/generic/cropper/cropper.css"
+				of="/nts.uk.com.js.web" />
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps001.d.style.css" />
 			<com:scriptfile path="cps001.d.service.js" />
@@ -26,10 +27,17 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div style="padding-left: 10px">#{i18n.getText('CPS001_70')}</div>
-				<div id="test" data-bind="ntsImageEditor: {editable: true, width:600, height: 600, freeResize: false, resizeRatio: 0.75}"></div>
+				<div id="test"
+					data-bind="ntsImageEditor: { editable: true, 
+															width:600, 
+															height: 600, 
+															freeResize: false, 
+															resizeRatio: 0.75,
+															accept: ['.png','.jpg','.jpeg', '.bmp','.gif'] }"></div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: upload,  enable: enaBtnSave">#{i18n.getText('CPS001_72')}</button>
+				<button class="proceed x-large"
+					data-bind="click: upload,  enable: enaBtnSave">#{i18n.getText('CPS001_72')}</button>
 				<button class="" data-bind="click: close">#{i18n.getText('CPS001_73')}</button>
 			</div>
 		</ui:define>

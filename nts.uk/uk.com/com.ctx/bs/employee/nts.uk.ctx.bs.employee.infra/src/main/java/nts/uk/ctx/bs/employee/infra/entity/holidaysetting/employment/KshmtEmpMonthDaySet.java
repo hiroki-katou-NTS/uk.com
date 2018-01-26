@@ -40,10 +40,6 @@ public class KshmtEmpMonthDaySet extends UkJpaEntity implements Serializable {
     /** The in legal hd. */
     @Column(name = "IN_LEGAL_HD")
     private BigDecimal inLegalHd;
-   
-    /** The out legal hd. */
-    @Column(name = "OUT_LEGAL_HD")
-    private BigDecimal outLegalHd;
 
     /**
      * Instantiates a new kshmt emp month day set.

@@ -124,8 +124,8 @@ module nts.uk.at.view.kmk005.f {
                     self.currentSpecBonusPayTimesheets.removeAll();
                     if (nts.uk.util.isNullOrEmpty(dfdTimesheetListData) || nts.uk.util.isNullOrEmpty(dfdGetSpecTimesheetListData)) {
                         for (let i = 0; i < 10; i++) {
-                            self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, 0, (i + 1).toString(), (i + 1).toString(), 0, 0, 0, 0));
-                            self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, 0, (i + 1).toString(), (i + 1).toString(), 0, 0, 0, 0, 0));
+                            self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, 0, (i + 1).toString(), self.bonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0));
+                            self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, 0, (i + 1).toString(), self.specBonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0, 0));
                         }
                     } else {
                         dfdTimesheetListData.forEach(function(item) {
@@ -134,7 +134,7 @@ module nts.uk.at.view.kmk005.f {
                                 item.timeSheetNO,
                                 item.useAtr,
                                 item.bonusPaySettingCode,
-                                item.timeItemId,
+                                item.timeItemID,
                                 item.startTime,
                                 item.endTime,
                                 item.roundingTimeAtr,
@@ -147,7 +147,7 @@ module nts.uk.at.view.kmk005.f {
                                 item.timeSheetNO,
                                 item.useAtr,
                                 item.bonusPaySettingCode,
-                                item.timeItemId,
+                                item.timeItemID,
                                 item.startTime,
                                 item.endTime,
                                 item.roundingTimeAtr,
@@ -173,8 +173,8 @@ module nts.uk.at.view.kmk005.f {
                 self.currentBonusPayTimesheets.removeAll();
                 self.currentSpecBonusPayTimesheets.removeAll();
                 for (let i = 0; i < 10; i++) {
-                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, 0, (i + 1).toString(), (i + 1).toString(), 0, 0, 0, 0));
-                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, 0, (i + 1).toString(), (i + 1).toString(), 0, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, 0, (i + 1).toString(), self.bonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, 0, (i + 1).toString(), self.specBonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0, 0));
                 }
             }
 
@@ -243,11 +243,14 @@ module nts.uk.at.view.kmk005.f {
                             self.createCommand(self.currentBonusPaySetting(), self.currentBonusPayTimesheets(), self.currentSpecBonusPayTimesheets())
                         ).done((data) => {
                             self.getBonusPaySetting();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                             nts.uk.ui.block.clear();
                         }).fail((res) => {
                             nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                         });
-                    });
+                    }).ifNo(() => {
+                        nts.uk.ui.block.clear();
+                    });;
 
             }
 
@@ -286,14 +289,12 @@ module nts.uk.at.view.kmk005.f {
 
         export class BonusPayTimeItem {
             companyId: string;
-            timeItemId: string;
             useAtr: number;
             timeItemName: string;
             timeItemNo: number;
             timeItemTypeAtr: number;
-            constructor(companyId: string, timeItemId: string, useAtr: number, timeItemName: string, timeItemNo: number, timeItemTypeAtr: number) {
+            constructor(companyId: string, useAtr: number, timeItemName: string, timeItemNo: number, timeItemTypeAtr: number) {
                 this.companyId = companyId;
-                this.timeItemId = timeItemId;
                 this.useAtr = useAtr;
                 this.timeItemName = timeItemName;
                 this.timeItemNo = timeItemNo;
@@ -319,18 +320,18 @@ module nts.uk.at.view.kmk005.f {
             timeSheetNO: KnockoutObservable<number>;
             useAtr: KnockoutObservable<number>;
             bonusPaySettingCode: KnockoutObservable<string>;
-            timeItemId: KnockoutObservable<string>;
+            timeItemID: KnockoutObservable<number>;
             startTime: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
             roundingTimeAtr: KnockoutObservable<number>;
             roundingAtr: KnockoutObservable<number>;
-            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemId: string,
+            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemID: number,
                 startTime: number, endTime: number, roundingTimeAtr: number, roundingAtr: number) {
                 this.companyId = ko.observable(companyId);
                 this.timeSheetNO = ko.observable(timeSheetNO);
                 this.useAtr = ko.observable(useAtr);
                 this.bonusPaySettingCode = ko.observable(bonusPaySettingCode);
-                this.timeItemId = ko.observable(timeItemId);
+                this.timeItemID = ko.observable(timeItemID);
                 this.startTime = ko.observable(startTime);
                 this.endTime = ko.observable(endTime);
                 this.roundingTimeAtr = ko.observable(roundingTimeAtr);
@@ -343,19 +344,19 @@ module nts.uk.at.view.kmk005.f {
             timeSheetNO: KnockoutObservable<number>;
             useAtr: KnockoutObservable<number>;
             bonusPaySettingCode: KnockoutObservable<string>;
-            timeItemId: KnockoutObservable<string>;
+            timeItemID: KnockoutObservable<number>;
             startTime: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
             roundingTimeAtr: KnockoutObservable<number>;
             roundingAtr: KnockoutObservable<number>;
             specialDateItemNO: KnockoutObservable<number>;
-            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemId: string,
+            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemID: number,
                 startTime: number, endTime: number, roundingTimeAtr: number, roundingAtr: number, specialDateItemNO: number) {
                 this.companyId = ko.observable(companyId);
                 this.timeSheetNO = ko.observable(timeSheetNO);
                 this.useAtr = ko.observable(useAtr);
                 this.bonusPaySettingCode = ko.observable(bonusPaySettingCode);
-                this.timeItemId = ko.observable(timeItemId);
+                this.timeItemID = ko.observable(timeItemID);
                 this.startTime = ko.observable(startTime);
                 this.endTime = ko.observable(endTime);
                 this.roundingTimeAtr = ko.observable(roundingTimeAtr);

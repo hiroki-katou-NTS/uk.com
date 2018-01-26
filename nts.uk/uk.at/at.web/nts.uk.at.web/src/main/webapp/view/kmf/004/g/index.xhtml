@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 850, height: 540 };</script>
+			<script>var dialogSize = { width: 870, height: 540 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.primitives.GrantRelationshipDay
 				nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.primitives.MorningHour
@@ -69,7 +69,7 @@
 								<div><input tabindex="5" class="nts-input" id="inpDay" data-bind="ntsNumberEditor: { 	value: grantDay,
 																												constraint: 'GrantRelationshipDay',
 																												required: true,
-																												name: '#[KMF004_128]',
+																												name: '#[KMF004_31]',
 																												immediate: true,
 																												enable: true,
 																												option: ko.mapping.fromJS({
@@ -87,7 +87,7 @@
 								<!-- G5_2: MORNING_HOUR--> 
 								<div><input tabindex="6" class="nts-input" id="inpHour"  data-bind="ntsNumberEditor: { value: morningHour,
 																												constraint: 'MorningHour',
-																												name: '#[KMF004_31]',
+																												name: '#[KMF004_128]',
 																												required: checkRequired,
 																												enable: true,
 																												option: ko.mapping.fromJS({

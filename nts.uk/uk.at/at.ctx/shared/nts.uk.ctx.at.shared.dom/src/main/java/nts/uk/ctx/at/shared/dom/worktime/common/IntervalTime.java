@@ -24,7 +24,6 @@ public class IntervalTime extends DomainObject {
 	//丸め
 	private TimeRoundingSetting rounding;
 	
-	
 	/**
 	 * Instantiates a new interval time.
 	 *

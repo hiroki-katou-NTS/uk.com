@@ -1,4 +1,4 @@
-module kmk003.base.fixedtable {
+module nts.fixedtable {
 
     /************************************************ PARAMETERS INITIAL FIXTABLE **********************************
     ***************************************************************************************************************/
@@ -42,6 +42,18 @@ module kmk003.base.fixedtable {
          * list columns table
          */
         columns: Array<FixColumn>;
+
+        /**
+         * Show/hide multiple select checkbox
+         */
+        isMultipleSelect: boolean;
+        
+        /**
+        * Set width table
+        */
+        width?: number;
+        
+        helpImageUrl?: string;
     }
 
     /**
@@ -109,6 +121,15 @@ module kmk003.base.fixedtable {
          * class JQuery
          */
         cssClassName?: string;
+        
+        /**
+         * Enable column
+         */
+        enable?: boolean;
+        
+        isRoudingColumn?: boolean;
+        
+        unitAttrName?: string;
     }
 
     /************************************************ SCREEN MODEL ************************************************
@@ -144,17 +165,24 @@ module kmk003.base.fixedtable {
         maxRow: number;
         minRow: number;
         maxRowDisplay: number;
+        width: number;
         tableStyle: TableStyle;
         
-        $element: any;
+        $element: JQuery;
         $tableSelector: any;
         mapControl: Array<IControl>;
         tabindex: number;
-        
+        isEnableAllControl: KnockoutObservable<boolean>;
+        roudingDataSource: KnockoutObservableArray<any>;
+        isSelectSpecialUnit: KnockoutObservable<boolean>;
+        specialRoudingDataSource: KnockoutObservableArray<any>;
+        helpImageUrl: string;
+        isMultipleSelect: boolean;
         tableId: string;
         
-        constructor(data: FixTableOption) {
+        constructor(data: FixTableOption, isDisableAll?: any) {
             let self = this;
+            self.isMultipleSelect = data.isMultipleSelect ? data.isMultipleSelect : false;
             
             // set data parameter
             self.isShowButton = data.isShowButton;
@@ -169,9 +197,19 @@ module kmk003.base.fixedtable {
             if (!self.tabindex) {
                 self.tabindex = -1;
             }
+            self.helpImageUrl = data.helpImageUrl;
             self.itemList = data.dataSource;
-            
-            self.sortTimeASC();
+            self.isEnableAllControl = ko.observable(isDisableAll ? isDisableAll() : true);
+            self.roudingDataSource = ko.observableArray([
+                { value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down' },
+                { value: 1, localizedName: '切り上げ', fieldName: 'Enum_Rounding_Up' },
+                { value: 2, localizedName: '未満切捨、以上切上', fieldName: 'Enum_Rounding_Down_Over' }
+            ]);
+            self.specialRoudingDataSource = ko.observableArray([
+                { value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down' },
+                { value: 1, localizedName: '切り上げ', fieldName: 'Enum_Rounding_Up' }
+            ]);
+
             
             // add properties isChecked when multiple select
             self.addCheckBoxItemAtr();
@@ -198,10 +236,11 @@ module kmk003.base.fixedtable {
             self.isSelectAll.subscribe(newValue => {
                 self.computedChange(newValue);
             });
+            
             // subscribe itemList
             self.itemList.subscribe((newList) => {
                 if (!newList) {
-                     self.isSelectAll(false);
+                    self.isSelectAll(false);
                     return;
                 }
                 
@@ -216,6 +255,7 @@ module kmk003.base.fixedtable {
                 // add properties isChecked when multiple select
                 self.addCheckBoxItemAtr();
                 self.subscribeChangeCheckbox();
+                self.initEventChangeComboBox(self.$element);
             });
         }
 
@@ -238,6 +278,11 @@ module kmk003.base.fixedtable {
             // calculate height table
             self.calStyleTable();
             
+            // update width table
+            if (!self.width) {
+                self.width = self.tableStyle.width;
+            }
+            
             // render html table
             return self.renderTable();
         }
@@ -249,9 +294,19 @@ module kmk003.base.fixedtable {
             let self = this;
             let row: any = {};
             _.forEach(self.columns, (column: FixColumn) => {
-                row[column.key] = ko.observable(ko.utils.unwrapObservable(column.defaultValue));
+                let value: any = JSON.parse(JSON.stringify(ko.unwrap(column.defaultValue)));
+                row[column.key] = ko.observable(value);
+                
+                // Subscriber columns
+                row[column.key].subscribe((newValue: any) => {
+                    self.itemList.valueHasMutated();
+                });
             });
             self.itemList.push(row);
+            self.$element.find('.time-range-editor').ntsError('clear');
+            self.$element.find('.time-range-editor').each((index, element) => {
+                $('#' + element.id).validateTimeRange();
+            });
         }
         
         /**
@@ -265,45 +320,26 @@ module kmk003.base.fixedtable {
             if (lstItemChecked.length <= 0) {
                 return;
             }
-            self.itemList(self.itemList().filter(item => item.isChecked() == false));
-        }
-        
-        /**
-         * Sort Time editor ASC
-         */
-        private sortTimeASC() {
-            let self = this;
-            let firstColumn: FixColumn = self.columns[0];
-            
-            self.itemList().sort(function(a, b) {
+            self.$element.find('.nts-editor').ntsError('clear');
+            self.$element.find('.ntsControl').ntsError('clear');
+            self.$element.find('.time-range-editor').ntsError('clear');
+            _.defer(() => {
+                self.itemList(self.itemList().filter(item => item.isChecked() == false));
+                self.$element.find('.nts-editor').each((index, element) => {
+                    if (!element.id) {
+                        element.id = nts.uk.util.randomId();
+                    } 
+                    
+                    $('#' + element.id).ntsEditor('validate');
+                });
+                self.$element.find('.time-range-editor').each((index, element) => {
+                    $('#' + element.id).validateTimeRange();
+                });
                 
-                // get & unwrap value
-                let rawValue1: any = ko.utils.unwrapObservable(a[firstColumn.key]);
-                if (!rawValue1) {
-                    return;
+                // Focus check box default last item of table after remove.
+                if (self.itemList().length > 0) {
+                    self.$element.find('.column-checkbox-header').last().focus();
                 }
-                if (typeof rawValue1 == 'object') {
-                    rawValue1 = rawValue1.startTime ? rawValue1.startTime : null;
-                }
-                
-                let rawValue2: any = ko.utils.unwrapObservable(b[firstColumn.key]);
-                if (!rawValue2) {
-                    return;
-                }
-                if (typeof rawValue2 == 'object') {
-                    rawValue2 = rawValue2.startTime ? rawValue2.startTime : null;
-                }
-                
-                // convert time to minutes
-                let value1: any = nts.uk.time.parseTime(rawValue1).toValue();
-                let value2: any = nts.uk.time.parseTime(rawValue2).toValue();
-                
-                if (value1 < value2) {
-                    return -1;
-                } else if (value1 > value2) {
-                    return 1;
-                }
-                return 0;
             });
         }
         
@@ -312,10 +348,10 @@ module kmk003.base.fixedtable {
          */
         public calStyleTable() {
             let self = this;
-            let heigthCell = 35;
-            self.tableStyle.height = heigthCell * self.maxRowDisplay + 1;
+            let heigthCell = 33;
+            self.tableStyle.height = heigthCell * self.maxRowDisplay + 31;
             
-            self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0);
+            self.tableStyle.width = self.columns.map(column => column.width).reduce((a, b) => a + b, 0) + 30;
         }
         
         /**
@@ -359,7 +395,7 @@ module kmk003.base.fixedtable {
             let dfd = $.Deferred<void>();
             
             // add tbody table
-            self.$tableSelector.append("<tbody data-bind='foreach: itemList'>");
+            self.$tableSelector.append("<tbody data-bind='rended: itemList, foreach: itemList'>");
             
             // add html row
             self.renderRowHtml();
@@ -376,11 +412,31 @@ module kmk003.base.fixedtable {
             let rowHtml: string = "";
             
             // mode multiple
-            rowHtml += "<td style='text-align: center;'><div data-bind=\"visible: $index() >= $parent.minRow, ntsCheckBox: { checked: isChecked, "
+            if (self.isMultipleSelect) {
+                rowHtml += "<td class='check-box-column' style='text-align: center;'><div class='column-checkbox-header' data-bind=\"attr: {tabindex: $parent.tabindex}, "
+                    + "visible: $index() >= $parent.minRow, ntsCheckBox: { checked: isChecked, "
                     + "enable: true, text:''}\"></div></td>";
+            }
             
             // add html column base setting
             _.forEach(self.columns, (item: FixColumn) => {
+                
+                // set width fixed control TimeRange
+                if (item.template.indexOf('ntsTimeRangeEditor') != -1) {
+                    item.width = 203;
+                }
+                if (item.template.indexOf('ntsComboBox') != -1) {
+                    item.width = item.width < 70 ? 70 : item.width;
+                }
+                if (item.isRoudingColumn) {
+                    rowHtml += '<!-- ko if: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
+                                    + self.generateColumnHtml(item, false)
+                                    + '<!-- /ko -->'
+                                    + '<!-- ko ifnot: '+ item.unitAttrName +'() == 4 || '+ item.unitAttrName +'() == 6 -->'
+                                    + self.generateColumnHtml(item, true)
+                                    + '<!-- /ko -->';
+                    return;
+                }
                 rowHtml += self.generateColumnHtml(item);
             });
             
@@ -399,11 +455,6 @@ module kmk003.base.fixedtable {
                 // if not has property isChecked
                 if (!row.hasOwnProperty('isChecked')) {
                     row.isChecked = ko.observable(false);
-                    
-                    // subscribe
-                    row.isChecked.subscribe(() => {
-                        self.subscribeChangeCheckbox();
-                    });
                 }
             });
         }
@@ -428,7 +479,7 @@ module kmk003.base.fixedtable {
         /**
          * Generate control html
          */
-        private generateColumnHtml(columnSetting: FixColumn): string {
+        private generateColumnHtml(columnSetting: FixColumn, isSpecialUnit?: boolean): string {
             let self = this;
             
             // get template
@@ -449,25 +500,52 @@ module kmk003.base.fixedtable {
             let newProperties: string = oldProperties.replace(/\s/g, '');
             
             // insert key value of control
-            newProperties = self.updateElement(newProperties, keyValue, columnSetting.key);
+            newProperties = self.updateElement(newProperties, keyValue, columnSetting.key, columnSetting.enable);
             
             // insert option value of control if has
             let keyOptionValue: string = infoControl.keyOptionValue;
             if (keyOptionValue) {
-                // add data source for control
-                self.lstDataSource[columnSetting.key] = columnSetting.dataSource;
-                
-                // update option cotrol html
-                newProperties = self.updateElement(newProperties, keyOptionValue,
-                    "$parent.lstDataSource." + columnSetting.key);
+                if (columnSetting.isRoudingColumn) {
+                    newProperties = self.updateElement(newProperties, keyOptionValue,
+                    isSpecialUnit ? "$parent.specialRoudingDataSource" : '$parent.roudingDataSource', columnSetting.enable);
+                } else {
+                    // add data source for control
+                    self.lstDataSource[columnSetting.key] = columnSetting.dataSource;
+
+                    // update option cotrol html
+                    newProperties = self.updateElement(newProperties, keyOptionValue,
+                        "$parent.lstDataSource." + columnSetting.key, columnSetting.enable);
+                }
             }
 
+            // update tabindex
+            let idxSpace: number = template.indexOf(' ');
+            template = template.substring(0, idxSpace) + " tabindex=\"" + self.tabindex + "\" "
+                + template.substring(idxSpace + 1, template.length);
+            
+            // ==== add tabindex for ntsTimeRangeEditor ====
+            if (template.indexOf('ntsTimeRangeEditor') != -1) {
+                newProperties = newProperties + ",tabindex:" + self.tabindex;
+            }
+            
             template = template.replace(oldProperties, newProperties.replace(/"/g, "'"));
             
             // update width control
             template = self.updateWidthControl(template, newProperties, columnSetting.width);
             
-            return "<td style='text-align: center;' class='" + columnSetting.cssClassName + "'>" + template + "</td>";
+            // Add enable attr to control.
+            template = template.replace('enable: true', 'enable: $parent.isEnableAllControl');
+            template = template.replace('enable:true', 'enable: $parent.isEnableAllControl');
+            
+            // get cssClassName
+            let cssClassName: string = '';
+            if (!nts.uk.text.isNullOrEmpty(columnSetting.cssClassName)) {
+                cssClassName = columnSetting.cssClassName;
+            }
+            if (template.indexOf('ntsCheckBox') > -1) {
+                cssClassName += 'center-align check-box-column';
+            }
+            return "<td class='" + cssClassName + "'>" + template + "</td>";
         }
         
         /**
@@ -479,7 +557,7 @@ module kmk003.base.fixedtable {
             // ======================================== ntsComboBox ===================================
             if (template.indexOf('ntsComboBox') > -1) {
                 let idx: number = template.indexOf('data-bind');
-                return template.substring(0, idx-1) + " style='width: " + (width - 5) + "px;' "
+                return template.substring(0, idx-1) + " style='width: " + (width - 5) + "px;float:left;' "
                     + template.substring(idx, template.length);
             }
 
@@ -495,7 +573,7 @@ module kmk003.base.fixedtable {
 
             // no option
             if (idx == -1) {
-                return template.replace(properties, properties + ",option:{width:'" + width + "'}");
+                return template.replace(properties, properties + ",option:{width:'" + width + "', textalign: 'center'}");
             }
             // has option 
             let oldOption: string = properties.substring(properties.indexOf("{") + 1, properties.lastIndexOf("}"));
@@ -522,7 +600,7 @@ module kmk003.base.fixedtable {
         /**
          * update element html
          */
-        private updateElement(input: string, keyValue: string, value: string): string {
+        private updateElement(input: string, keyValue: string, value: string, enable: boolean): string {
             let self = this;
             
             // get index
@@ -534,6 +612,14 @@ module kmk003.base.fixedtable {
             } else {
                 input = input.replace(self.subString(input, idxKey), keyValue + "" + value);
             }
+            
+            //=================== Update Enable/Disable column ===================
+            if (enable == undefined) {
+                enable = true;
+            }
+            let keyEnable: string = "enable:true";
+            let keyDisable: string = "enable:false";
+            
             return input;
         }
         
@@ -554,55 +640,96 @@ module kmk003.base.fixedtable {
             }
             return result;
         }
-    }
-    
-    /**
-     * FixTableBindingHandler
-     */
-    class FixTableBindingHandler implements KnockoutBindingHandler {
-        
-        /**
-         * Constructor.
-         */
-        constructor() {
-        }
 
-        /**
-         * Init.
-         */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
-            bindingContext: KnockoutBindingContext): void {
-            
-        }
-
-        /**
-         * Update
-         */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
-            bindingContext: KnockoutBindingContext): void {
-            
-            let webserviceLocator: any = nts.uk.request.location.siteRoot
-                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
-                .mergeRelativePath('/view/kmk/003/base/fixedtable/fixedtable.xhtml').serialize();
-            
-            //get data
-            let input: any = valueAccessor();
-            let data: FixTableOption = input.option;
-
-            let screenModel = new FixTableScreenModel(data);
-            screenModel.$element = $(element);
-            $(element).load(webserviceLocator, function() {
-                screenModel.initialScreen().done(() => {
-                    ko.cleanNode($(element)[0]);
-                    ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                    
-                    // set height table
-                    screenModel.$tableSelector.height(screenModel.tableStyle.height);
+        public initEventChangeComboBox(element: JQuery) {
+            var self = this;
+            if (element) {
+                element.delegate('.ui-igcombo-wrapper', "igcomboselectionchanged", function(evt, ui) {
+                    var key = $(this).data('key');
+                    var newValue = ui.items[0].data[key];
+                    var oldValue = $(this).data('value');
+                    if (!oldValue || oldValue != newValue) {
+                        _.defer(() => self.itemList.valueHasMutated());
+                        $(this).data('value', newValue);
+                    }
                 });
+            }
+        }
+    }
+}
+/**
+    * FixTableBindingHandler
+    */
+class FixTableBindingHandler implements KnockoutBindingHandler {
+
+    /**
+     * Constructor.
+     */
+    constructor() {
+    }
+
+    /**
+     * Init.
+     */
+    init = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
+        bindingContext: KnockoutBindingContext) => {
+        let input: any = valueAccessor();
+    }
+
+    /**
+     * Update
+     */
+    update = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
+        bindingContext: KnockoutBindingContext) => {
+
+        let webserviceLocator: any = nts.uk.request.location.siteRoot
+            .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
+            .mergeRelativePath('/view/kmk/003/base/fixedtable/fixedtable.xhtml').serialize();
+
+        //get data
+        let input: any = valueAccessor();
+        let data: nts.fixedtable.FixTableOption = input.option;
+
+        let screenModel = new nts.fixedtable.FixTableScreenModel(data,input.isEnableAllControl);
+        if (input.isEnableAllControl) {
+            input.isEnableAllControl.subscribe(function(value: boolean) {
+                screenModel.isEnableAllControl(value);
             });
         }
+        $(element).load(webserviceLocator, function() {
+            screenModel.$element = $(element);
+            screenModel.initialScreen().done(() => {
+                ko.cleanNode($(element)[0]);
+                ko.applyBindingsToDescendants(screenModel, $(element)[0]);
 
+                // set height table
+                //screenModel.$tableSelector.height(screenModel.tableStyle.height);
+
+                if (document.getElementById($(element)[0].id)) {
+                    document.getElementById($(element)[0].id).addEventListener('timerangedatachange', function(event) {
+                        screenModel.itemList.valueHasMutated();
+                    });
+                }
+                screenModel.initEventChangeComboBox($(element));
+                screenModel.$element.find('.table-fixed-kmk003').ntsFixedTable({height: screenModel.tableStyle.height})
+                //screenModel.$tableSelector.ntsFixedTable({ height: 120, width: 814 });
+                screenModel.$element.on('click', '.check-box-column > div', function(event){
+                    _.defer(() => screenModel.itemList.valueHasMutated());
+                })
+                screenModel.$element.on('keypress', '.check-box-column > div', function(event){
+                    if (event.keyCode === 0 || event.keyCode === 32) {
+                        event.preventDefault();
+                        _.defer(() => screenModel.itemList.valueHasMutated());
+                    }
+                })
+                
+                screenModel.$element.on('change', '.time-edior-column', function(event){
+                    _.defer(() => screenModel.itemList.valueHasMutated());
+                })
+            });
+        });
     }
-    
-    ko.bindingHandlers['ntsFixTableCustom'] = new FixTableBindingHandler();
+
 }
+
+ko.bindingHandlers['ntsFixTableCustom'] = new FixTableBindingHandler();

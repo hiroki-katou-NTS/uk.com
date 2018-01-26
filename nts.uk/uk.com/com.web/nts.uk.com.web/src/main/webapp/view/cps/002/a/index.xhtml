@@ -20,13 +20,14 @@
 			<com:scriptfile path="cps002.a.service.js" />
 			<com:scriptfile path="cps002.a.vm.js" />
 			<com:scriptfile path="cps002.a.start.js" />
-			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
+			<com:scriptfile path="/view/cps/shr/layout-control-ko-ext.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
 				nts.uk.ctx.sys.gateway.dom.login.UserName
 				nts.uk.ctx.at.record.dom.stamp.CardNumber
 				nts.uk.ctx.sys.gateway.dom.login.LoginId
 				nts.uk.ctx.sys.gateway.dom.login.RawPassword
+				nts.uk.ctx.bs.person.dom.person.info.fullnameset.FullName
 			</com:ValidatorScript>
 
 		</ui:define>
@@ -103,13 +104,13 @@
 									<div class="div_line">
 										<div class="step1_top_left_col1">
 											<div
-												data-bind="ntsFormLabel: {  required: true,constraint:'UserName' }">#{i18n.getText('CPS002_105')}</div>
+												data-bind="ntsFormLabel: {  required: true,constraint:'FullName' }">#{i18n.getText('CPS002_105')}</div>
 										</div>
 										<div class="step1_top_left_col2">
 											<input class="form_step1"
 												data-bind="ntsTextEditor: {
 											value: employeeName ,
-											constraint:'UserName',
+											constraint:'FullName',
 											required:true,
 											name: '#{i18n.getText('CPS002_105')}',
 											option: {
@@ -131,8 +132,8 @@
 												 	width: '160' 
 												 }
 												 }" />
-											<button
-												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
+											<!-- <button
+												data-bind="click:$parent.openEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button> -->
 										</div>
 									</div>
 									<div class="div_line">
@@ -181,8 +182,9 @@
 										<hr id="top_right_hr" />
 										<com:ko-if bind="lastRegEmployee">
 											<div class="div_line" data-bind="with:lastRegEmployee">
+
 												<div class="last_reg_title">
-													<b>#{i18n.getText('CPS002_20')}</b>
+													<b>#{i18n.getText('CPS002_20')} </b>
 												</div>
 												<div style="display: inline-block; float: left;">
 													<label><b>#{i18n.getText('CPS002_21')}</b></label> <label><b
@@ -254,25 +256,23 @@
 
 
 						<div class="step-2">
+							<div id="step2_title" class="div_line">
+								<com:ko-if bind="createTypeId()===1">
+									<label id="step2_des">#{i18n.getText('CPS002_32')}</label>
+								</com:ko-if>
+								<com:ko-if bind="createTypeId()===2">
+									<label id="step2_des">#{i18n.getText('CPS002_39')}</label>
+								</com:ko-if>
+							</div>
 							<div id="step2_content">
-								<div class="div_line">
-									<com:ko-if bind="createTypeId()===1">
-										<label id="step2_des">#{i18n.getText('CPS002_32')}</label>
-									</com:ko-if>
-									<com:ko-if bind="createTypeId()===2">
-										<label id="step2_des">#{i18n.getText('CPS002_39')}</label>
-									</com:ko-if>
-								</div>
-
-								<div class="float_left " id="initSettingPanel">
-									<div id="search_box" class="bg-green">
-										<i class="icon icon-searchbox"></i>
-										<div class="div_line">
-											<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_40')}</div>
-										</div>
-										<div class="div_line">
-											<div style="width: 190px" id="initSearchBox"
-												data-bind="ntsSearchBox: {
+								<div id="search_box" class="float_left bg-green">
+									<i class="icon icon-searchbox"></i>
+									<div class="div_line">
+										<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_40')}</div>
+									</div>
+									<div class="div_line">
+										<div style="width: 260px" id="initSearchBox"
+											data-bind="ntsSearchBox: {
 															targetKey: 'itemCode',
 															mode:'igGrid', 
 															comId:'init_list', 
@@ -283,25 +283,25 @@
 															placeHolder:'#{i18n.getText('CPS002_41')}'
 															}" />
 
-										</div>
-										<div class="div_line">
-											<table id="init_list"
-												data-bind="ntsGridList: {								
+									</div>
+									<div class="div_line">
+										<table id="init_list"
+											data-bind="ntsGridList: {								
 															height: 350,
 															dataSource: initValueList ,
 															primaryKey: 'itemCode',
 															columns:[
-																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'itemCode', width: 40},
-															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'itemName', width: 130 } ]  ,
+																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'itemCode', width: 80},
+															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'itemName', width: 160 } ]  ,
 															multiple: false,
 															value: initSettingSelectedCode ,
 															rows:15
 														}">
-											</table>
+										</table>
 
-										</div>
 									</div>
 								</div>
+
 								<div class="float_left" id="value_item">
 									<div class="div_line">
 										<div class="step2_col1">
@@ -363,7 +363,8 @@
 													<tr>
 														<td
 															data-bind="text: itemName , css:{requiredCell: isRequired , notRequiredCell:  !isRequired}"></td>
-														<td class="disabledCell" data-bind="text: saveData.value "></td>
+														<td class="disabledCell"><div class="valueCell"
+																data-bind="text:saveData.value"></div></td>
 													</tr>
 												</tbody>
 											</table>
@@ -377,6 +378,7 @@
 									</div>
 								</div>
 							</div>
+
 						</div>
 						<!-- step2 end -->
 
@@ -400,8 +402,10 @@
 											</tr>
 											<tr>
 												<td class="bg-green">#{i18n.getText('CPS002_106')}</td>
-												<td
-													data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></td>
+												<td>
+													<div class='ellipsis_step3_title'
+														data-bind="text:currentEmployee().employeeCode()+' '+currentEmployee().employeeName()"></div>
+												</td>
 											</tr>
 											<tr>
 												<td class="bg-green">#{i18n.getText('CPS002_18')}</td>

@@ -227,8 +227,12 @@ module ccg030.a.viewmodel {
 
         /** Open ccg030 B Dialog */
         open030B_Dialog() {
+            var self = this;
+            if(self.selectedFlowMenu().fileName() == '未設定'){
+                return;    
+            }
             nts.uk.ui.block.invisible();
-            nts.uk.ui.windows.setShared("flowmenu", this.selectedFlowMenu(), false);
+            nts.uk.ui.windows.setShared("flowmenu", ko.mapping.toJS(this.selectedFlowMenu()), false);
             nts.uk.ui.windows.setShared("fileID", this.selectedFlowMenu().fileID(), false);
             nts.uk.ui.windows.sub.modal("/view/ccg/030/b/index.xhtml", { title: nts.uk.resource.getText("CCG030_4"), dialogClass: "no-close" }).onClosed(() => {
                 nts.uk.ui.block.clear();
@@ -245,7 +249,7 @@ module ccg030.a.viewmodel {
                 self.selectedFlowMenu(new model.FlowMenu(selectedFlowmenu.toppagePartID,
                     selectedFlowmenu.topPageCode, selectedFlowmenu.topPageName,
                     selectedFlowmenu.fileID,
-                    selectedFlowmenu.fileName.lenght === 0 ? '未設定' : selectedFlowmenu.fileName,
+                    nts.uk.text.isNullOrEmpty(selectedFlowmenu.fileName) ? '未設定' : selectedFlowmenu.fileName,
                     selectedFlowmenu.defClassAtr,
                     selectedFlowmenu.widthSize, selectedFlowmenu.heightSize));
                 if(flowmenuCD !== null){
@@ -315,6 +319,19 @@ module ccg030.a.viewmodel {
     }
 
     export module model {
+        
+        export interface FlowMenuDto {
+            toppagePartID: string;
+            topPageCode: string;
+            topPageName?: string;
+            fileID: string;
+            fileName: string;
+            defClassAtr: number;
+            widthSize: number;
+            heightSize: number;
+            "type": number;
+        }
+        
         export class FlowMenu {
             toppagePartID: KnockoutObservable<string>;
             topPageCode: KnockoutObservable<string>;
@@ -335,6 +352,17 @@ module ccg030.a.viewmodel {
                 this.widthSize = ko.observable(widthSize);
                 this.heightSize = ko.observable(heightSize);
                 this.type = 2;
+            }
+            
+            fromDTO(dto: FlowMenuDto) {
+                this.toppagePartID = ko.observable(dto.toppagePartID);
+                this.fileID = ko.observable(dto.fileID);
+                this.fileName = ko.observable(dto.fileName);
+                this.defClassAtr = ko.observable(dto.defClassAtr);
+                this.topPageCode = ko.observable(dto.topPageCode);
+                this.topPageName = ko.observable(dto.topPageName || "");
+                this.widthSize = ko.observable(dto.widthSize);
+                this.heightSize = ko.observable(dto.heightSize);
             }
         }
     }

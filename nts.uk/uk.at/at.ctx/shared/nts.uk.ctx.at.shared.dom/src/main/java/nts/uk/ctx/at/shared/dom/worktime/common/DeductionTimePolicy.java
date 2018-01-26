@@ -16,6 +16,7 @@ public interface DeductionTimePolicy {
 	 *
 	 * @param predTime the pred time
 	 * @param dedTime the ded time
+	 * @return true, if successful
 	 */
 	void validate(PredetemineTimeSetting predTime, DeductionTime dedTime);
 }

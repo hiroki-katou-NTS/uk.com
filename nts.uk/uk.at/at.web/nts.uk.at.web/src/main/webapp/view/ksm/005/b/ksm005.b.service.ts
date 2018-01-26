@@ -7,6 +7,7 @@ module nts.uk.at.view.ksm005.b {
             updateMonthlyPattern: "ctx/at/schedule/pattern/monthly/update",
             deleteMonthlyPattern: "ctx/at/schedule/pattern/monthly/delete",
             findByMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/findByMonth",
+            getItemOfMonth: "ctx/at/schedule/pattern/work/monthly/setting/getItemOfMonth",
             saveMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/saveMonth"
         }
         
@@ -16,11 +17,19 @@ module nts.uk.at.view.ksm005.b {
         export function findAllMonthlyPattern(): JQueryPromise<model.MonthlyPatternDto[]> {
             return nts.uk.request.ajax('at', paths.findAllMonthlyPattern);
         }
-        /**
+        
+         /**
          * call service find by month of work monthly setting
          */
         export function findByMonthWorkMonthlySetting(monthlyPatternCode: string, month: number): JQueryPromise<model.WorkMonthlySettingDto[]> {
             return nts.uk.request.ajax('at', paths.findByMonthWorkMonthlySetting, { monthlyPatternCode: monthlyPatternCode, yearMonth: month });
+        }
+        
+        /**
+         * call service find by month of work monthly setting
+         */
+        export function getItemOfMonth(monthlyPatternCode: string, month: number): JQueryPromise<model.WorkMonthlySettingDto[]> {
+            return nts.uk.request.ajax('at', paths.getItemOfMonth, { monthlyPatternCode: monthlyPatternCode, yearMonth: month });
         }
         /**
          * call service find by id of monthly pattern
@@ -66,7 +75,7 @@ module nts.uk.at.view.ksm005.b {
             export interface WorkMonthlySettingDto {
                 workTypeCode: string;
                 workingCode: string;
-                ymdk: number;
+                ymdk: string;
                 monthlyPatternCode: string;
                 workTypeName: string;
                 typeColor: number;

@@ -57,11 +57,11 @@ public class LateOrLeaveEarlyDto {
 				
 		public static LateOrLeaveEarlyDto fromDomain(LateOrLeaveEarly domain){
 			return new LateOrLeaveEarlyDto(
-					domain.getCompanyID(),
-					domain.getAppID(),
+					domain.getApplication().getCompanyID(),
+					domain.getApplication().getAppID(),
 					domain.getVersion(),
-					domain.getPrePostAtr().value,
-					domain.getApplicationDate(),
+					domain.getApplication().getPrePostAtr().value,
+					domain.getApplication().getAppDate(),
 					domain.getActualCancelAtr(),
 					domain.getEarly1().value,
 					domain.getEarlyTime1().v(),
@@ -71,6 +71,6 @@ public class LateOrLeaveEarlyDto {
 					domain.getEarlyTime2().v(),
 			    	domain.getLate2().value,
 			    	domain.getLateTime2().v(),
-			    	domain.getApplicationReason().v());
+			    	domain.getApplication().getAppReason().v());
 		}
 }

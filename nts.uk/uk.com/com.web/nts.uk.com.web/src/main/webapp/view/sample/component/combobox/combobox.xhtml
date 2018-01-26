@@ -18,6 +18,7 @@
             </ui:define>
             
             <ui:define name="content">
+            	<div id="functions-area"></div>
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
@@ -42,10 +43,12 @@
 												optionsText: 'name',
 												editable: isEditable,
 												enable: isEnable,
+												dropDownAttachedToBody: true,
 												columns: [
 														{ prop: 'code', length: 4 },
 														{ prop: 'name', length: 10 },
-													]}"></div>
+													]}
+												"></div>
 						</div>
 						<div class="status">
 							<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
@@ -54,6 +57,22 @@
 						<div>
 							Your selected code: <span data-bind="text:selectedCode"></span>
 						</div>
+						
+						<h2>Expand width when dropped down</h2>
+						<div class="control-group valign-center">
+							<div id="combo-box2" data-bind="ntsComboBox: {options: itemList,
+ 												optionsValue: 'code',
+ 												visibleItemsCount: 5,
+ 												value: selectedCode,
+ 												optionsText: 'name',
+ 												editable: isEditable,
+ 												enable: isEnable,
+ 												columns: [
+ 														{ prop: 'code', length: 4 },
+ 														{ prop: 'name', length: 10, lengthDropDown: 20 },
+ 													]}"></div>
+						</div>
+						
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -78,6 +97,15 @@
 		{ prop: 'code', length: 4 },
 		{ prop: 'name', length: 10 },
 	]}"></div>]]></pre>
+
+
+									<h3>Expand width when dropped down</h3>
+									<pre><![CDATA[<div id="combo-box2" data-bind="ntsComboBox: {
+	...
+	columns: [
+		{ prop: 'code', length: 4 },
+		{ prop: 'name', length: 10, lengthDropDown: 20 },
+	]}"></div>]]></pre>
 									<h2>TypeScript</h2>
 <pre><![CDATA[class ScreenModel {
     itemList: KnockoutObservableArray<ItemModel>;
@@ -93,7 +121,7 @@
         self.itemList = ko.observableArray([
             new ItemModel('1', '基本給'),
             new ItemModel('2', '役職手当'),
-            new ItemModel('3', '基本給')
+            new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
         ]);
 
         self.selectedCode = ko.observable('1');
@@ -182,7 +210,8 @@ class ItemModel {
 													<b>Type:</b> array&lt;column&gt;<br/>
 													Array of column object will be displayed in drop down part.<br/>
 													<i>prop:</i> field name of data<br/>
-													<i>length:</i> length of character for this field 
+													<i>length:</i> length of character for this field <br />
+													<i>lengthDropDown:</i> (optional) length of character when ComboBox is dropped down<br/>
 												</td>
 											</tr>
 											<tr>

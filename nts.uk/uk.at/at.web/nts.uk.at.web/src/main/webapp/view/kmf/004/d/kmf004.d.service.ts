@@ -3,13 +3,18 @@ module nts.uk.at.view.kmf004.d.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        find: "at/shared/yearserviceset/findAll",
+        find: "at/shared/yearserviceset/findAll/",
+        findCom: "at/shared/yearservicecom/findAll/",
         add: 'at/shared/yearservicecom/add',
         update: 'at/shared/yearservicecom/update'
     }
 
-    export function findAll() {
-        return nts.uk.request.ajax(paths.find); 
+    export function findAll(specialHolidayCode: String) : JQueryPromise<any>{
+        return nts.uk.request.ajax(paths.find + specialHolidayCode);
+    }
+    
+    export function findCom(specialHolidayCode: String) : JQueryPromise<any>{
+        return nts.uk.request.ajax(paths.findCom + specialHolidayCode);
     }
 
     export function add(command: Array<d.viewmodel.Item>): JQueryPromise<void>{

@@ -5,9 +5,13 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="/master/noheader.xhtml">
+	<ui:composition template="/master/freelayout.xhtml">
 		<ui:define name="htmlHead">
 			<title></title>
+			<script>
+				var dialogSize = { width: 800, height: 300 };
+				var dialogCloseButton = true;
+			</script>
 			<com:scriptfile set="IGNITE" />
 
 			<com:stylefile path="../common.error.style.css" />
@@ -21,6 +25,8 @@
 					管理者へご連絡ください。
 				</div>
 				<button class="large" data-bind="click: gotoLogin">ログイン画面へ</button>
+				
+				<pre data-bind="text:details" style="text-align: left"></pre>
 			</div>
 		</ui:define>
 	</ui:composition>

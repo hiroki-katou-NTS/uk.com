@@ -12,6 +12,7 @@ import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItem;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Stateless
@@ -38,7 +39,7 @@ public class PerInfoInitValueSetItemFinder {
 						selectionItemDto = SelectionItemDto.createEnumRefDto(dto.getSelectionItemId());
 					}
 					
-					List<ComboBoxObject> selectionDto =this.comboBoxFactory.getComboBox(selectionItemDto,  GeneralDate.today(), false);
+					List<ComboBoxObject> selectionDto =this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), GeneralDate.today(), true);
 					
 					dto.setSelection(selectionDto);
 					return dto;

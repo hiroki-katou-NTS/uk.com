@@ -3,9 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 /** 日別実績の早退時間 */
 @Data
@@ -19,7 +17,6 @@ public class LeaveEarlyTimeDailyPerformDto {
 
 	/** 早退控除時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = "B", jpPropertyName="早退控除時間")
-	@AttendanceItemValue(type = ValueType.INTEGER)
 	private CalcAttachTimeDto LeaveEarlyDeductionTime;
 
 	/** 休暇使用時間/休憩使用時間: 日別実績の時間休暇使用時間 */
@@ -34,5 +31,5 @@ public class LeaveEarlyTimeDailyPerformDto {
 	/** 勤務NO/勤務回数: 勤務NO */
 //	@AttendanceItemLayout(layout = "E")
 //	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
-	private Integer workTimes;
+	private Integer workNo;
 }

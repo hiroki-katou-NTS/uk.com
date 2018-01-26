@@ -27,9 +27,9 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id='role'>
-					<div class='flex' data-bind="with: currentRole">
+					<div data-bind="with: currentRole">
 						<div
-							data-bind="ntsFormLabel: {constraint: ['RoleCode' , 'RoleName'],required:true}"
+							data-bind="ntsFormLabel:{ required:true}"
 							class='distane'>
 							<label id="codeName">#{i18n.getText('CAS001_12')}</label>
 						</div>
@@ -51,7 +51,8 @@
 						comId: 'grid',
 						items: categoryList ,  
 						selectedKey: 'categoryId',
-						fields: ['categoryCode', 'categoryName']}" />
+						fields: ['categoryName'],
+						placeHolder:'#{i18n.getText('CAS001_76')}'}" />
 					</div>
 					<table id="grid">
 

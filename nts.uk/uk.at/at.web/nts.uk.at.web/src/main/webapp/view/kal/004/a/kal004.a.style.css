@@ -1,0 +1,41 @@
+#left-content {
+	padding: 27px 0px 0px 10px;
+	float: left;
+	background-color: #E0F59E;
+	width: 240px;
+    height: 410px;
+    margin-top: 40px;
+	border-radius: 7px;
+    box-sizing: border-box;
+}
+
+#right-content {
+	margin-left: 28px;
+	float: left;
+	margin-top: 13px;
+}
+
+#check-condition-text{
+	width: 855px;
+	margin-bottom: 10px;
+	display: inline-block;
+}
+
+#select-text{
+	float: left;
+    border-bottom: 1px solid;
+    width: 380px;
+    padding-bottom: 3px;
+}
+#selected-text{
+	float: right;
+    margin-right: 0px;
+    border-bottom: 1px solid;
+    width: 380px;
+    padding-bottom: 3px;
+}
+
+.tab-content-fixsize{
+	width: 871px;
+	height: 345px;
+}

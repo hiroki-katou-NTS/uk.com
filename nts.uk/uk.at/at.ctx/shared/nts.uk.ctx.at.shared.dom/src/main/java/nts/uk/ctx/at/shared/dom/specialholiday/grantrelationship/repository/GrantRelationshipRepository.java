@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.repository;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.GrantRelationship;
 /**
  * 
@@ -16,6 +17,14 @@ public interface GrantRelationshipRepository {
 	 * @return
 	 */
 	List<GrantRelationship> findAll(String companyId);
+	
+	/**
+	 * get data by special code
+	 * @param companyId
+	 * @param specialHolidayCode
+	 * @return
+	 */
+	List<GrantRelationship> findBySPCode(String companyId, String specialHolidayCode);
 	
 	/**
 	 * update item 
@@ -33,7 +42,7 @@ public interface GrantRelationshipRepository {
 	 * delete a item
 	 * @param grantRelationship
 	 */
-	void delete(String companyId, int specialHolidayCode, String relationshipCode);
+	void delete(String companyId, String specialHolidayCode, String relationshipCode);
 	
 	/**
 	 * find a item by code
@@ -43,5 +52,5 @@ public interface GrantRelationshipRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	Optional<GrantRelationship> findByCode(String companyId, int specialHolidayCode, String relationshipCode);
+	Optional<GrantRelationship> findByCode(String companyId, String specialHolidayCode, String relationshipCode);
 }

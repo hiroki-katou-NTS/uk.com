@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexFixRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaFixRest;
 
 /**
  * The Class JpaFlexTimezoneOfFixedRestTimeSetGetMemento.
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexFixRestSet;
 public class JpaFlexTimezoneOfFixedRestTimeSetGetMemento implements TimezoneOfFixedRestTimeSetGetMemento{
 	
 	/** The entitys. */
-	private List<KshmtFlexFixRestSet> entitys;
+	private List<KshmtFlexHaFixRest> entitys;
 	
 
 	/**
@@ -27,10 +27,12 @@ public class JpaFlexTimezoneOfFixedRestTimeSetGetMemento implements TimezoneOfFi
 	 *
 	 * @param entitys the entitys
 	 */
-	public JpaFlexTimezoneOfFixedRestTimeSetGetMemento(List<KshmtFlexFixRestSet> entitys) {
+	public JpaFlexTimezoneOfFixedRestTimeSetGetMemento(List<KshmtFlexHaFixRest> entitys) {
 		super();
 		this.entitys = entitys;
 	}
+
+
 
 
 
@@ -43,7 +45,7 @@ public class JpaFlexTimezoneOfFixedRestTimeSetGetMemento implements TimezoneOfFi
 			return new ArrayList<>();
 		}
 
-		return this.entitys.stream().map(entity -> new DeductionTime(new JpaFlexDeductionTimeGetMemento(entity)))
+		return this.entitys.stream().map(entity -> new DeductionTime(new JpaFlexHADeductionTimeGetMemento(entity)))
 				.collect(Collectors.toList());
 
 	}

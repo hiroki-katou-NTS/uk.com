@@ -10,6 +10,10 @@ module nts.uk.at.view.kmk008.b {
             viewmodelE: any;
             viewmodelF: any;
             laborSystemAtr: number = 0;
+
+            useEmployment: KnockoutObservable<boolean>;
+            useWorkPlace: KnockoutObservable<boolean>;
+            useClasss: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
                 self.show = ko.observable(true);
@@ -31,6 +35,11 @@ module nts.uk.at.view.kmk008.b {
                         $("#sidebar").ntsSideBar("disable", 2);
                     }
                 });
+
+                self.useEmployment = ko.observable(true);
+                self.useWorkPlace = ko.observable(true);
+                self.useClasss = ko.observable(true);
+
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: 'Tab Title 1', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: 'Tab Title 2', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
@@ -49,6 +58,29 @@ module nts.uk.at.view.kmk008.b {
                 self.viewmodelE = new kmk008.e.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.viewmodelF = new kmk008.f.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.viewmodelC.startPage();
+
+                service.getData().done(function(item) {
+                    if (item) {
+                        if (item.employmentUseAtr == 0) {
+                            $("#sidebar").ntsSideBar("hide", 1);
+                        }
+
+                        if (item.workPlaceUseAtr == 0) {
+                            $("#sidebar").ntsSideBar("hide", 2);
+                        }
+
+                        if (item.classificationUseAtr == 0) {
+                            
+                            $("#sidebar").ntsSideBar("hide", 3);
+                        }
+                    } else {
+                        self.useEmployment(true);
+                        self.useWorkPlace(true);
+                        self.useClasss(true);
+                    }
+                    dfd.resolve();
+                });
+
                 dfd.resolve();
                 return dfd.promise();
             }

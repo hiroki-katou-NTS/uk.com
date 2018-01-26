@@ -45,25 +45,26 @@ public class UpdateEmploymentHistoryCommandHandler extends CommandHandler<Update
 	protected void handle(CommandHandlerContext<UpdateEmploymentHistoryCommand> context) {
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		
-		Optional<EmploymentHistory> existHist = employmentHistoryRepository.getByEmployeeId(companyId,command.getEmployeeId());
-		if (!existHist.isPresent()) {
-			throw new RuntimeException("invalid employmentHistory");
+		// In case of date period are exist in the screen
+		if (command.getStartDate() != null){
+			Optional<EmploymentHistory> existHist = employmentHistoryRepository.getByEmployeeId(companyId,command.getEmployeeId());
+			if (!existHist.isPresent()) {
+				throw new RuntimeException("invalid employmentHistory");
+			}
+	
+			Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getHistoryItems().stream()
+					.filter(h -> h.identifier().equals(command.getHistoryId())).findFirst();
+	
+			if (!itemToBeUpdate.isPresent()) {
+				throw new RuntimeException("invalid employmentHistory");
+			}
+			existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
+			employmentHistoryService.update(existHist.get(), itemToBeUpdate.get());
 		}
-
-		Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getHistoryItems().stream()
-				.filter(h -> h.identifier().equals(command.getHistoryId())).findFirst();
-
-		if (!itemToBeUpdate.isPresent()) {
-			throw new RuntimeException("invalid employmentHistory");
-		}
-		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
-		employmentHistoryService.update(existHist.get(), itemToBeUpdate.get());
-
 		// Update detail table
 		EmploymentHistoryItem histItem = EmploymentHistoryItem.createFromJavaType(command.getHistoryId(),
 				command.getEmployeeId(), command.getEmploymentCode(),
-				command.getSalarySegment() != null ? command.getSalarySegment().intValue() : 0);
+				command.getSalarySegment() != null ? command.getSalarySegment().intValue() : ConstantUtils.ENUM_UNDEFINE_VALUE);
 		employmentHistoryItemRepository.update(histItem);
 	}
 

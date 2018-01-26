@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityDailyPerformanceFormat;
@@ -47,6 +48,10 @@ public class UpdateAutDaiFormatCommandHandler extends CommandHandler<UpdateAutho
 		String companyId = login.companyId();
 
 		UpdateAuthorityDailyFormatCommand command = context.getCommand();
+		
+		if (command.getAuthorityDailyCommand().getDailyAttendanceAuthorityDetailDtos().isEmpty()) {
+			throw new BusinessException("Msg_920");
+		}
 
 		// update daily
 		// List attendanceItemId in DB

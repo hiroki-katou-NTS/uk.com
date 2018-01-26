@@ -1,13 +1,11 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 
 /**
  * 
@@ -18,17 +16,17 @@ import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
 public class ProcessCancelImpl implements ProcessCancel {
 
 	@Inject
-	private ApplicationRepository appRepo;
+	private ApplicationRepository_New appRepo;
 	
 	@Override
 	public void detailScreenCancelProcess(String companyID, String appID, Long version) {
 		//get application by appID
-		Application app = appRepo.getAppById(companyID, appID).get();
+		Application_New app = appRepo.findByID(companyID, appID).get();
 		app.setVersion(version);
 		//change ReflectPlanPerState = WAITCANCEL
-		app.setReflectPerState(ReflectPlanPerState.WAITCANCEL);
+		app.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITCANCEL);
 		//update application
-		appRepo.updateApplication(app);
+		appRepo.updateWithVersion(app);
 	}
 
 }

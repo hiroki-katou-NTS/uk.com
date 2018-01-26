@@ -3,7 +3,6 @@ package nts.uk.ctx.pereg.app.find.layout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,6 +29,7 @@ import nts.uk.ctx.pereg.app.find.person.setting.init.category.PerInfoInitValueSe
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
 import nts.uk.ctx.pereg.dom.person.layout.NewLayout;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
@@ -98,36 +98,27 @@ public class RegisterLayoutFinder {
 
 		if (command.getCreateType() != 3) {
 			dataServer = this.getAllSettingItemList(command);
-
-			if (CollectionUtil.isEmpty(dataServer)) {
-
-				return null;
-			}
 		}
-		setData(dataServer, listItemCls, command.getCreateType());
-
-		if (command.getCreateType() == 2) {
-
-			return listItemCls.stream().filter(itemCls -> !CollectionUtil.isEmpty(itemCls.getItems()))
-					.collect(Collectors.toList());
-		}
+		setData(dataServer, listItemCls, command);
 
 		return listItemCls;
 	}
 
-	private void setData(List<SettingItemDto> dataServer, List<LayoutPersonInfoClsDto> listItemCls, int createType) {
+	private void setData(List<SettingItemDto> dataServer, List<LayoutPersonInfoClsDto> listItemCls,
+			AddEmployeeCommand command) {
 
 		listItemCls.forEach(itemCls -> {
-			createInfoValueDtoByItemCls(dataServer, itemCls, createType);
+			createInfoValueDtoByItemCls(dataServer, itemCls, command);
 		});
 
 	}
 
 	private void createInfoValueDtoByItemCls(List<SettingItemDto> dataServer, LayoutPersonInfoClsDto itemCls,
-			int createType) {
+			AddEmployeeCommand command) {
 		List<PerInfoItemDefDto> itemDefList = itemCls.getListItemDf();
+		List<Object> itemDataList = new ArrayList<Object>();
 		if (!CollectionUtil.isEmpty(itemDefList)) {
-			List<Object> itemDataList = new ArrayList<Object>();
+
 			itemDefList.forEach(itemDef -> {
 				Optional<SettingItemDto> setItemOpt = dataServer.stream()
 						.filter(item -> item.getItemDefId().equals(itemDef.getId())).findFirst();
@@ -135,16 +126,15 @@ public class RegisterLayoutFinder {
 				LayoutPersonInfoValueDto infoValue = null;
 				if (setItemOpt.isPresent()) {
 					SettingItemDto setItem = setItemOpt.get();
-					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value, itemCls);
+					infoValue = createPersonInfoValueDtoFromDef(setItem, itemDef, ActionRole.EDIT.value, itemCls,
+							command);
 				} else {
-					if (itemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM.value || createType != 2) {
-						infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value, itemCls);
-					}
+
+					infoValue = createPersonInfoValueDtoFromDef(null, itemDef, ActionRole.EDIT.value, itemCls, command);
+
 				}
 
-				if (infoValue != null) {
-					itemDataList.add(infoValue);
-				}
+				itemDataList.add(infoValue);
 
 			});
 			itemCls.getListItemDf().clear();
@@ -163,10 +153,15 @@ public class RegisterLayoutFinder {
 			itemCls.setItems(itemDataList);
 		}
 
+		if (!CollectionUtil.isEmpty(itemDataList)) {
+
+			itemCls.setItems(itemDataList);
+		}
+
 	}
 
 	private LayoutPersonInfoValueDto createPersonInfoValueDtoFromDef(SettingItemDto setItem, PerInfoItemDefDto itemDef,
-			int actionRole, LayoutPersonInfoClsDto itemCls) {
+			int actionRole, LayoutPersonInfoClsDto itemCls, AddEmployeeCommand command) {
 
 		LayoutPersonInfoValueDto dataObject = new LayoutPersonInfoValueDto();
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
@@ -184,7 +179,7 @@ public class RegisterLayoutFinder {
 			if (dataTypeValue == 6) {
 				SelectionItemDto selectionItemDto = (SelectionItemDto) dataObject.getItem();
 				List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
-						GeneralDate.today(), true);
+						AppContexts.user().employeeId(), command.getHireDate(), true);
 				dataObject.setLstComboBoxValue(lstComboBox);
 			}
 		}

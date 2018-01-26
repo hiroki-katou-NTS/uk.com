@@ -16,11 +16,11 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkRepository;
-import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime_old.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -42,7 +42,7 @@ public class WorkplaceBWSaveCommandHandler extends CommandHandler<WorkplaceBWSav
 
 	/** The monthly pattern repository. */
 	@Inject
-	private WorkTimeRepository workTimeRepository;
+	private WorkTimeSettingRepository workTimeRepository;
 
 	/** The monthly pattern repository. */
 	@Inject
@@ -158,7 +158,7 @@ public class WorkplaceBWSaveCommandHandler extends CommandHandler<WorkplaceBWSav
 
 		// check setting work time
 		if (!StringUtil.isNullOrEmpty(workingCode, true)) {
-			Optional<WorkTime> worktime = this.workTimeRepository.findByCode(companyId,
+			Optional<WorkTimeSetting> worktime = this.workTimeRepository.findByCode(companyId,
 					workingCode);
 
 			// not exist data
@@ -167,7 +167,7 @@ public class WorkplaceBWSaveCommandHandler extends CommandHandler<WorkplaceBWSav
 			}
 
 			// not use
-			if (worktime.get().getDispAtr().value == UseSetting.UseAtr_NotUse.value) {
+			if (worktime.get().getAbolishAtr().value == AbolishAtr.ABOLISH.value) {
 				throw new BusinessException("Msg_417");
 			}
 		}

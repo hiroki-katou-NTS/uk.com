@@ -44,5 +44,5 @@ public class KrcdtMonAggrOverTimePK implements Serializable {
 
 	/** 残業枠NO */
 	@Column(name = "OVER_TIME_FRAME_NO")
-	public Integer overTimeFrameNo;
+	public int overTimeFrameNo;
 }

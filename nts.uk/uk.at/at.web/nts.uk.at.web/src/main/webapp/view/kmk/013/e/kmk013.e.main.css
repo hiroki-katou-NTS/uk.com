@@ -1,14 +1,19 @@
 .panel.panel-gray-bg {
-	width: 609px;
+	width: 700px;
 }
 
 #unit-combo-box {
 	min-width: 0 !important;
 	width: 90px !important;
-	margin-left: 60px;
-	margin-right: 10px;
 }
+
 #rounding-combo-box {
 	min-width: 0 !important;
 	width: 170px !important;
 }
+
+.nts-fixed-table .nts-fixed-body-container {
+    height: 558px;
+    max-width: 654px !important;
+}
+

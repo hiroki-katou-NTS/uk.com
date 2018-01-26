@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon;
 
 import lombok.Value;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.request.application.comment.CommentContent;
+import nts.uk.ctx.at.request.dom.setting.request.application.comment.CommentFontColor;
+import nts.uk.ctx.at.request.dom.setting.request.application.comment.FontWeightFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentContent;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CommentFontColor;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.FontWeightFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.GoBackWorkType;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
 /**
@@ -88,5 +89,21 @@ public class GoBackDirectlyCommonSetting {
 		this.commentFontWeight2 = commentFontWeight2;
 		this.commentFontColor2 = commentFontColor2;
 	}
-
+	public static GoBackDirectlyCommonSetting createFromJavaType(String companyID, int workChangeFlg,
+			int workChangeTimeAtr, int performanceDisplayAtr, int contraditionCheckAtr,
+			int goBackWorkType, int lateLeaveEarlySettingAtr, String commentContent1,
+			int commentFontWeight1, String commentFontColor1, String commentContent2,
+			int commentFontWeight2, String commentFontColor2){
+		return new GoBackDirectlyCommonSetting(companyID, EnumAdaptor.valueOf(workChangeFlg, WorkChangeFlg.class),
+				EnumAdaptor.valueOf(workChangeTimeAtr, UseAtr.class), 
+				EnumAdaptor.valueOf(performanceDisplayAtr, AppDisplayAtr.class),
+				EnumAdaptor.valueOf(contraditionCheckAtr, CheckAtr.class),
+				EnumAdaptor.valueOf(goBackWorkType, GoBackWorkType.class), 
+				EnumAdaptor.valueOf(lateLeaveEarlySettingAtr, CheckAtr.class),
+				new CommentContent(commentContent1), 
+				EnumAdaptor.valueOf(commentFontWeight1, FontWeightFlg.class),
+				new CommentFontColor(commentFontColor1), new CommentContent(commentContent2),
+				EnumAdaptor.valueOf(commentFontWeight2, FontWeightFlg.class),
+				new CommentFontColor(commentFontColor2));
+	}
 }

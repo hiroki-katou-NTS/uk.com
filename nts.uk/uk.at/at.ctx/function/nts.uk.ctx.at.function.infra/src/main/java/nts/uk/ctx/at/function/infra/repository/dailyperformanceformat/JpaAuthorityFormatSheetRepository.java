@@ -113,7 +113,7 @@ public class JpaAuthorityFormatSheetRepository extends JpaRepository implements 
 		entity.kfnmtAuthorityFormSheetPK.dailyPerformanceFormatCode = authorityFormatSheet
 				.getDailyPerformanceFormatCode().v();
 		entity.kfnmtAuthorityFormSheetPK.sheetNo = authorityFormatSheet.getSheetNo();
-		entity.sheetName = !authorityFormatSheet.getSheetName().isEmpty() ? authorityFormatSheet.getSheetName() : "　";
+		entity.sheetName = authorityFormatSheet.getSheetName();
 
 		return entity;
 	}

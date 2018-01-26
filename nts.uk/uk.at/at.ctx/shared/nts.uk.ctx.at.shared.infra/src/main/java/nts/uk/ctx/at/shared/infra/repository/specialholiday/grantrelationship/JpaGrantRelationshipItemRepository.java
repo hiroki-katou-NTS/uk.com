@@ -21,7 +21,8 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship.KshstG
 public class JpaGrantRelationshipItemRepository extends JpaRepository implements GrantRelationshipRepository{
 	
 	private final String SELECT_NO_WHERE = "SELECT c FROM KshstGrantRelationshipItem c ";
-	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstGrantRelationshipPK.companyId = :companyId";
+	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstGrantRelationshipPK.companyId = :companyId ";
+	private final String SELECT_BY_CODE = SELECT_ITEM + "AND c.kshstGrantRelationshipPK.specialHolidayCode = :specialHolidayCode";
 	
 	/**
 	 * change from entity to domain
@@ -61,6 +62,18 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 	}
 	
 	/**
+	 * get data by special code
+	 * @author yennth
+	 */
+	@Override
+	public List<GrantRelationship> findBySPCode(String companyId, String specialHolidayCode) {
+		return this.queryProxy().query(SELECT_BY_CODE, KshstGrantRelationshipItem.class)
+								.setParameter("companyId", companyId)
+								.setParameter("specialHolidayCode", specialHolidayCode)
+								.getList(c -> toDomain(c));
+	}
+	
+	/**
 	 * update grant relationship
 	 * author: Hoang Yen
 	 */
@@ -87,7 +100,7 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 	 * author: Hoang Yen
 	 */
 	@Override
-	public Optional<GrantRelationship> findByCode(String companyId, int specialHolidayCode, String relationshipCode) {
+	public Optional<GrantRelationship> findByCode(String companyId, String specialHolidayCode, String relationshipCode) {
 		return this.queryProxy().find(new KshstGrantRelationshipPK(companyId, specialHolidayCode, relationshipCode), KshstGrantRelationshipItem.class).map(c-> toDomain(c));
 	}
 	
@@ -96,8 +109,10 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 	 * author: Hoang Yen
 	 */
 	@Override
-	public void delete(String companyId, int specialHolidayCode, String relationshipCode) {
+	public void delete(String companyId, String specialHolidayCode, String relationshipCode) {
 		KshstGrantRelationshipPK kshstGrantRelationshipPK = new KshstGrantRelationshipPK(companyId, specialHolidayCode, relationshipCode);
 		this.commandProxy().remove(KshstGrantRelationshipItem.class, kshstGrantRelationshipPK);
 	}
+
+	
 }

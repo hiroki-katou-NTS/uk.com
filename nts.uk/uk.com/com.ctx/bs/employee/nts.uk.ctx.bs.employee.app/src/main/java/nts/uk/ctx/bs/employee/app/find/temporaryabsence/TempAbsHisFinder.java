@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
@@ -86,7 +87,10 @@ public class TempAbsHisFinder implements PeregFinder<TempAbsHisItemDto> {
 		if (history.isPresent()) {
 			return history.get().getDateHistoryItems().stream()
 					.filter(item -> tempAbsItemRepo.getItemByHitoryID(item.identifier()).isPresent())
-					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), 
+							x.end().equals(GeneralDate.max()) 
+							//&& query.getCtgType() == 3 
+							? "" : x.end().toString()))
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();

@@ -22,8 +22,8 @@ public class FlStampReflectTzDto implements FlStampReflectTzGetMemento {
 	/** The two times work reflect basic time. */
 	private Integer twoTimesWorkReflectBasicTime;
 
-	/** The stamp reflect timezone. */
-	private List<StampReflectTimezoneDto> stampReflectTimezone;
+	/** The stamp reflect timezones. */
+	private List<StampReflectTimezoneDto> stampReflectTimezones;
 
 	/*
 	 * (non-Javadoc)
@@ -46,7 +46,7 @@ public class FlStampReflectTzDto implements FlStampReflectTzGetMemento {
 	 */
 	@Override
 	public List<StampReflectTimezone> getStampReflectTimezone() {
-		return this.stampReflectTimezone.stream().map(item -> new StampReflectTimezone(item))
+		return this.stampReflectTimezones.stream().map(item -> new StampReflectTimezone(item))
 				.collect(Collectors.toList());
 	}
 

@@ -8,14 +8,12 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 

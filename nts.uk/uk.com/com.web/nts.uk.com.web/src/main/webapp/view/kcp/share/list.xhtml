@@ -22,6 +22,23 @@
 			<div class="base-date-editor" style="margin-left: 20px;" data-bind="attr: {tabindex: tabIndex.baseDateInput}, ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name: getItemNameForBaseDate(), required: true}"></div>
 			<button data-bind="attr: {tabindex: tabIndex.decideButton}, click: reload" style="width: 100px">#{i18n.getText('KCP003_3')}</button>
 		</com:ko>
+		<!-- Upgrade: Search By closureId-->
+		<com:ko tag="if" bind="isDisplayClosureSelection">
+		<div style="margin-bottom: 10px">
+			<div data-bind="ntsFormLabel: {required: true}" style="float: left; margin-left: 10px; margin-right: 15px;">#{i18n.getText('CCG001_28')}</div>
+			<div id="combo-box" style="min-width: 160px; height: 37px" data-bind="ntsComboBox: {
+										options: closureList,
+										optionsValue: 'id',
+										visibleItemsCount: 5,
+										value: selectedClosureId,
+										optionsText: 'name',
+										enable: true,
+										columns: [
+											{ prop: 'name', length: 4 },
+										]}"></div>
+		</div>
+		</com:ko>
+		<!-- End of Upgrade -->
 		<div style="width: 350px; margin-bottom: 10px;"
 			data-bind="attr: {tabindex: tabIndex.searchBox}, css: {'float-left': isHasButtonSelectAll}, ntsSearchBox: searchOption">
 		</div>
@@ -36,7 +53,7 @@
 				dataSource: itemList,
 				primaryKey: targetKey,
 				columns: listComponentColumn,
-				multiple: isMultiple,
+				multiple: isMultipleSelect,
 				value: selectedCodes,
 				name: getItemNameForList(),
 				rows: maxRows}">

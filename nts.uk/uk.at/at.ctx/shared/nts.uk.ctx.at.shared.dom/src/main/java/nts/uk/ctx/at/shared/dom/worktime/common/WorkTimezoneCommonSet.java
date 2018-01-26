@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class WorkTimezoneCommonSet.
@@ -27,13 +28,13 @@ public class WorkTimezoneCommonSet extends DomainObject {
 
 	/** The sub hol time set. */
 	// 代休時間設定
-	private WorkTimezoneOtherSubHolTimeSet subHolTimeSet;
+	private List<WorkTimezoneOtherSubHolTimeSet> subHolTimeSet;
 
 	/** The raising salary set. */
 	// 加給設定
 	private BonusPaySettingCode raisingSalarySet;
 
-	/** The medical set. */
+	/** The medical sets. */
 	// 医療設定
 	private List<WorkTimezoneMedicalSet> medicalSets;
 
@@ -97,5 +98,27 @@ public class WorkTimezoneCommonSet extends DomainObject {
 		memento.setShortTimeWorkSet(this.shortTimeWorkSet);
 		memento.setExtraordTimeSet(this.extraordTimeSet);
 		memento.setLateEarlySet(this.lateEarlySet);
+	}
+
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, WorkTimezoneCommonSet oldDomain) {
+		this.goOutSet.restoreData(screenMode, oldDomain.getGoOutSet());
+		this.subHolTimeSet.forEach(item -> item.restoreData(screenMode, oldDomain.getSubHolTimeSet().stream()
+				.filter(oldItem -> oldItem.getOriginAtr().equals(item.getOriginAtr())).findFirst().orElse(null)));
+	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		this.goOutSet.restoreDefaultData(screenMode);
+		this.subHolTimeSet.forEach(item -> item.restoreDefaultData(screenMode));
 	}
 }

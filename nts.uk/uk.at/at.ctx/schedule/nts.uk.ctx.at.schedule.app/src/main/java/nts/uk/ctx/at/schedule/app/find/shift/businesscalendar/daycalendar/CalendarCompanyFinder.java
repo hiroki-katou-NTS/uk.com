@@ -15,9 +15,10 @@ public class CalendarCompanyFinder {
 	@Inject
 	private CalendarCompanyRepository calendarCompanyRepo;
 	
-	String companyId = AppContexts.user().companyId();
+	
 	
 	public List<CalendarCompanyDto> getAllCalendarCompany(){
+		String companyId = AppContexts.user().companyId();
 		List<CalendarCompanyDto> list = this.calendarCompanyRepo.getAllCalendarCompany(companyId)
 				.stream()
 				.map(c->CalendarCompanyDto.fromDomain(c))
@@ -26,6 +27,7 @@ public class CalendarCompanyFinder {
 	}
 	
 	public List<Integer> getCalendarCompanySetByYear(String yearMonth){
+		String companyId = AppContexts.user().companyId();
 		return this.calendarCompanyRepo.getCalendarCompanySetByYear(companyId, yearMonth.substring(0, 4));
 	}
 	

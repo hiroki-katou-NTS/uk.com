@@ -11,6 +11,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectOnHolidayOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRangeOutput;
@@ -21,7 +23,6 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTypeCode;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workrecord.errorsetting.OutPutProcess;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.BreakTimeStampIncorrectOrderChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.BreakTimeStampLeakageChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.DoubleStampAlgorithm;
@@ -33,6 +34,7 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.StampIncorrect
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryDoubleStampChecking;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.TemporaryStampOrderChecking;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
+import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -102,7 +104,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	public ReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, String empCalAndSumExecLogID,
-			ExecutionType reCreateAttr) {
+			ExecutionType reCreateAttr, BreakTimeOfDailyPerformance breakTimeOfDailyPerformance) {
 
 		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getRecordWorkInformation().getWorkTypeCode();
 
@@ -113,8 +115,6 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		// result data
 		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
-		
-		
 		
 		// after check 打刻反映時の出勤休日扱いチェック
 		// 終了状態：休日扱い - 休日系の打刻範囲を取得する
@@ -138,15 +138,27 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		List<StampItem> lstStampItem = this.stampDomainService.handleData(stampReflectRangeOutput, reCreateAttr,
 				empCalAndSumExecLogID, processingDate, employeeID, companyID);
 		ReflectStampOutput reflectStamp = null;
+		if (lstStampItem == null) {
+			reflectStamp = null;
+		}
+		
 		if (lstStampItem != null && !lstStampItem.isEmpty()) {
 			reflectStamp = this.ReflectEmbossingDomainService.reflectStamp(workInfoOfDailyPerformance,
 					timeLeavingOfDailyPerformance, lstStampItem, stampReflectRangeOutput, processingDate, employeeID,
 					companyID);
+			// エラーチェック
+			this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
+					reflectStamp.getTimeLeavingOfDailyPerformance(), reflectStamp.getOutingTimeOfDailyPerformance(), 
+					reflectStamp.getTemporaryTimeOfDailyPerformance(), breakTimeOfDailyPerformance);
 		}
-
-		// エラーチェック
-		this.errorCheck(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
-				timeLeavingOfDailyPerformance);
+		
+		if(lstStampItem != null && lstStampItem.isEmpty()){
+			reflectStamp = new ReflectStampOutput();
+			reflectStamp.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
+//			reflectStamp.setLstStamp(lstStampItem);
+//			reflectStamp.setOutingTimeOfDailyPerformance(outingTimeOfDailyPerformance);
+//			reflectStamp.setTemporaryTimeOfDailyPerformance(temporaryTimeOfDailyPerformance);
+		}
 		
 		return reflectStamp;
 	}
@@ -447,15 +459,15 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	 * エラーチェック
 	 */
 	private void errorCheck(String companyID, String employeeID, GeneralDate processingDate,
-			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
-			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformance, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance,
+			OutingTimeOfDailyPerformance outingTimeOfDailyPerformance, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance,
+			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance) {
 
 		// 出勤系打刻漏れをチェックする
-		OutPutProcess outPutLackOfStamping = this.lackOfStamping.lackOfStamping(companyID, employeeID, processingDate, workInfoOfDailyPerformance, timeLeavingOfDailyPerformance);
+		this.lackOfStamping.lackOfStamping(companyID, employeeID, processingDate, workInfoOfDailyPerformance, timeLeavingOfDailyPerformance);
 
 		// 出勤系打刻順序不正をチェックする
-		OutPutProcess outPutIncorrectOrder = this.stampIncorrectOrderAlgorithm.stampIncorrectOrder(companyID,
-				employeeID, processingDate, timeLeavingOfDailyPerformance);
+		this.stampIncorrectOrderAlgorithm.stampIncorrectOrder(companyID, employeeID, processingDate, timeLeavingOfDailyPerformance);
 
 		// 出勤系二重打刻をチェックする
 		this.doubleStampAlgorithm.doubleStamp(companyID, employeeID, processingDate, timeLeavingOfDailyPerformance);
@@ -467,26 +479,25 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		if (useAtr == UseAtr.USE) {
 
 			// 臨時系打刻漏れをチェックする
-			missingOfTemporaryStampChecking.missingOfTemporaryStampChecking(companyID, employeeID, processingDate);
+			// missingOfTemporaryStampChecking.missingOfTemporaryStampChecking(companyID, employeeID, processingDate, temporaryTimeOfDailyPerformance);
 
 			// 臨時系打刻順序不正をチェックする
-			temporaryStampOrderChecking.temporaryStampOrderChecking(employeeID, companyID, processingDate);
+			// temporaryStampOrderChecking.temporaryStampOrderChecking(employeeID, companyID, processingDate, temporaryTimeOfDailyPerformance);
 
 			// 臨時系二重打刻をチェックする
-			temporaryDoubleStampChecking.temporaryDoubleStampChecking(companyID, employeeID, processingDate);
+			// temporaryDoubleStampChecking.temporaryDoubleStampChecking(companyID, employeeID, processingDate, temporaryTimeOfDailyPerformance);
 		}
 		// 外出系打刻漏れをチェックする
-		goingOutStampLeakageChecking.goingOutStampLeakageChecking(companyID, employeeID, processingDate);
+		// goingOutStampLeakageChecking.goingOutStampLeakageChecking(companyID, employeeID, processingDate, outingTimeOfDailyPerformance);
 
 		// 外出系打刻順序不正をチェックする
-		goingOutStampOrderChecking.goingOutStampOrderChecking(companyID, employeeID, processingDate);
+		// goingOutStampOrderChecking.goingOutStampOrderChecking(companyID, employeeID, processingDate, outingTimeOfDailyPerformance, timeLeavingOfDailyPerformance, temporaryTimeOfDailyPerformance);
 
 		// 休憩系打刻漏れをチェックする
-		breakTimeStampLeakageChecking.breakTimeStampLeakageChecking(companyID, employeeID, processingDate);
+		// breakTimeStampLeakageChecking.breakTimeStampLeakageChecking(companyID, employeeID, processingDate, breakTimeOfDailyPerformance);
 
 		// 休憩系打刻順序不正をチェックする
-		breakTimeStampIncorrectOrderChecking.breakTimeStampIncorrectOrderChecking(companyID, employeeID,
-				processingDate);
+		// breakTimeStampIncorrectOrderChecking.breakTimeStampIncorrectOrderChecking(companyID, employeeID, processingDate, breakTimeOfDailyPerformance);
 	}
 
 	/*

@@ -15,29 +15,62 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Entity
-@Table(name = "KSHMT_WORK_TIME_SHEET_SET")
+/**
+ * The Class KshmtWorkTimeSheetSet.
+ */
 @Getter
 @Setter
+@Entity
+@Table(name = "KSHMT_WORK_TIME_SHEET_SET")
 public class KshmtWorkTimeSheetSet extends UkJpaEntity implements Serializable {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The kshmt work time sheet set PK. */
 	@EmbeddedId
 	protected KshmtWorkTimeSheetSetPK kshmtWorkTimeSheetSetPK;
 
+	/** The exclus ver. */
+	@Column(name = "EXCLUS_VER")
+	private int exclusVer;
+
+	/** The use atr. */
 	@Column(name = "USE_ATR")
-	private Integer useAtr;
+	private int useAtr;
 
+	/** The start time. */
 	@Column(name = "START_TIME")
-	private Integer startTime;
+	private int startTime;
 
+	/** The end time. */
 	@Column(name = "END_TIME")
-	private Integer endTime;
+	private int endTime;
 
+	/**
+	 * Instantiates a new kshmt work time sheet set.
+	 */
 	public KshmtWorkTimeSheetSet() {
+		super();
 	}
 
+
+	/**
+	 * Instantiates a new kshmt work time sheet set.
+	 *
+	 * @param kshmtWorkTimeSheetSetPK the kshmt work time sheet set PK
+	 */
+	public KshmtWorkTimeSheetSet(KshmtWorkTimeSheetSetPK kshmtWorkTimeSheetSetPK) {
+		super();
+		this.kshmtWorkTimeSheetSetPK = kshmtWorkTimeSheetSetPK;
+	}
+	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		int hash = 0;
@@ -45,6 +78,11 @@ public class KshmtWorkTimeSheetSet extends UkJpaEntity implements Serializable {
 		return hash;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof KshmtWorkTimeSheetSet)) {
@@ -59,14 +97,15 @@ public class KshmtWorkTimeSheetSet extends UkJpaEntity implements Serializable {
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return "javaapplication1.KshmtWorkTimeSheetSet[ kshmtWorkTimeSheetSetPK=" + kshmtWorkTimeSheetSetPK + " ]";
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
 	@Override
 	protected Object getKey() {
 		return this.kshmtWorkTimeSheetSetPK;
 	}
+
 
 }

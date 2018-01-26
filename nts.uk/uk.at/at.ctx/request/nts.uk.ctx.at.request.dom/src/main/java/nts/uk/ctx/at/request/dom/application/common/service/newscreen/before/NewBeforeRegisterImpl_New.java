@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,16 +8,16 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
@@ -54,6 +53,9 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
+	@Inject
+	private ApprovalRootStateAdapter approvalRootStateAdapter;
+	
 	public void processBeforeRegister(Application_New application){
 		// アルゴリズム「未入社前チェック」を実施する
 		retirementCheckBeforeJoinCompany(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
@@ -82,28 +84,31 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 			}
 		}		
 		
-		// キャッシュから承認ルートを取得する(Lấy comfirm root từ cache)		
-		List<ApprovalRootImport> approvalRootOutputs = approvalRootService.getApprovalRootOfSubjectRequest(
+		// キャッシュから承認ルートを取得する(Lấy comfirm root từ cache)	
+		ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(
 				application.getCompanyID(), 
 				application.getEmployeeID(), 
-				1, 
 				application.getAppType().value, 
-				application.getAppDate());
-		if(!CollectionUtil.isEmpty(approvalRootOutputs)){
-			ApprovalRootImport approvalRootOutput = approvalRootOutputs.get(0);
-			if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON)) {
-				throw new BusinessException("Msg_238");
-			} 
-			if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10)) {
-				throw new BusinessException("Msg_238");
-			}
-			if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER)) {
-				throw new BusinessException("Msg_324");
-			}
+				application.getAppDate(), 
+				application.getAppID(),
+				true);
+		switch (approvalRootContentImport.getErrorFlag()) {
+		case NO_CONFIRM_PERSON:
+			throw new BusinessException("Msg_238");
+		case APPROVER_UP_10:
+			throw new BusinessException("Msg_237");
+		case NO_APPROVER:
+			throw new BusinessException("Msg_324");
+		default:
+			break;
 		}
 		
 		// アルゴリズム「申請の締め切り期限をチェック」を実施する
-		String employmentCD = employeeAdaptor.getEmploymentCode(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+		if(empHistImport==null || empHistImport.getEmploymentCode()==null){
+			throw new BusinessException("Msg_426");
+		}
+		String employmentCD = empHistImport.getEmploymentCode();
 		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(application.getCompanyID(), employmentCD);
 		if(!closureEmployment.isPresent()){
 			throw new RuntimeException("Not found ClosureEmployment in table KCLMT_CLOSURE_EMPLOYMENT, employment =" + employmentCD);

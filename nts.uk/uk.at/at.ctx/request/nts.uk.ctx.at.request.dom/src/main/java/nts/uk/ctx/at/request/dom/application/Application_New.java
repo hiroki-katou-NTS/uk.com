@@ -19,7 +19,7 @@ import nts.gul.text.IdentifierUtil;
 @AllArgsConstructor
 @Builder
 public class Application_New extends DomainObject {
-	
+	@Setter
 	private Long version;
 	
 	private String companyID; 
@@ -69,18 +69,19 @@ public class Application_New extends DomainObject {
 	
 	public static Application_New firstCreate(String companyID, PrePostAtr prePostAtr, GeneralDate appDate, ApplicationType appType, String employeeID, AppReason appReason){
 		return Application_New.builder()
+				.version(0L)
 				.companyID(companyID)
 				.appID(IdentifierUtil.randomUniqueId())
 				.prePostAtr(prePostAtr)
 				.inputDate(GeneralDateTime.now())
-				.enteredPersonID("")
+				.enteredPersonID(employeeID)
 				.reversionReason(new AppReason(""))
 				.appDate(appDate)
 				.appReason(appReason)
 				.appType(appType)
 				.employeeID(employeeID)
-				.startDate(Optional.empty())
-				.endDate(Optional.empty())
+				.startDate(Optional.ofNullable(appDate))
+				.endDate(Optional.ofNullable(appDate))
 				.reflectionInformation(ReflectionInformation_New.firstCreate())
 				.build();
 	}

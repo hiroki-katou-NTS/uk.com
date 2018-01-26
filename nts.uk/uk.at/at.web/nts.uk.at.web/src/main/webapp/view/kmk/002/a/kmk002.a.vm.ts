@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk002.a {
                 let dfd = $.Deferred<void>();
 
                 // set ntsFixedTable style
-                $("#tbl-calc-formula").ntsFixedTable({ height: 250, width: 814 });
+                $("#tbl-calc-formula").ntsFixedTable({ height: 250 });
 
                 // Load data.
                 self.loadEnum()
@@ -1595,7 +1595,8 @@ module nts.uk.at.view.kmk002.a {
              * @param vl: selected time rounding unit
              */
             private isTimeUnit15or30(vl: number): boolean {
-                return vl === 15 || vl === 30;
+                return vl === EnumAdaptor.valueOf('ROUNDING_TIME_15MIN', Enums.ENUM_OPT_ITEM.timeRounding.unit)
+                    || vl === EnumAdaptor.valueOf('ROUNDING_TIME_30MIN', Enums.ENUM_OPT_ITEM.timeRounding.unit);
             }
 
             /**

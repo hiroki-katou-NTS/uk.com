@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,17 +25,20 @@ public class MissingOfTemporaryStampChecking {
 	@Inject
 	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 	
-	public void missingOfTemporaryStampChecking(String companyID, String employeeID, GeneralDate processingDate) {
-//		OutPutProcess outPutProcess = OutPutProcess.NO_ERROR;
-		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOfDailyPerformance = this.temporaryTimeOfDailyPerformanceRepository.findByKey(employeeID, processingDate);
-		if (temporaryTimeOfDailyPerformance.isPresent()) {
-			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.get().getTimeLeavingWorks();
+	public void missingOfTemporaryStampChecking(String companyID, String employeeID, GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
+		
+//		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOfDailyPerformance = this.temporaryTimeOfDailyPerformanceRepository.findByKey(employeeID, processingDate);
+		
+		if (temporaryTimeOfDailyPerformance != null && !temporaryTimeOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
 
 			List<Integer> attendanceItemIds = new ArrayList<>();
 			
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
-				if (timeLeavingWork.getAttendanceStamp() == null || (timeLeavingWork.getAttendanceStamp() != null
-						&& timeLeavingWork.getAttendanceStamp().getStamp() == null)) {
+				if (timeLeavingWork.getAttendanceStamp() == null
+						|| !timeLeavingWork.getAttendanceStamp().isPresent()
+						|| (timeLeavingWork.getAttendanceStamp().isPresent() && timeLeavingWork.getAttendanceStamp().get().getStamp() == null)
+						|| (timeLeavingWork.getAttendanceStamp().isPresent() && !timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())) {
 					if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 						attendanceItemIds.add(51);
 					} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
@@ -45,8 +47,10 @@ public class MissingOfTemporaryStampChecking {
 						attendanceItemIds.add(67);
 					}
 				}
-				if (timeLeavingWork.getLeaveStamp() == null || (timeLeavingWork.getLeaveStamp() != null
-						&& timeLeavingWork.getLeaveStamp().getStamp() == null)) {
+				if (timeLeavingWork.getLeaveStamp() == null 
+						|| !timeLeavingWork.getLeaveStamp().isPresent() 
+						|| (timeLeavingWork.getLeaveStamp().isPresent() && timeLeavingWork.getLeaveStamp().get().getStamp() != null)
+						|| (timeLeavingWork.getLeaveStamp().isPresent() && !timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())) {
 					if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 						attendanceItemIds.add(53);
 					} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
@@ -58,7 +62,5 @@ public class MissingOfTemporaryStampChecking {
 				createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate, new ErrorAlarmWorkRecordCode("S001"), attendanceItemIds);
 			}
 		}
-
-//		return outPutProcess;
 	}
 }

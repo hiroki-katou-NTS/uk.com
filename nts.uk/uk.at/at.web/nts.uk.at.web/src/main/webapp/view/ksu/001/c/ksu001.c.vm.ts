@@ -53,7 +53,7 @@ module nts.uk.at.view.ksu001.c {
                 nts.uk.ui.block.grayout();
                 service.saveAsExcel(ko.toJS(self.inforError())).done(function() {
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error.message);
+                    nts.uk.ui.dialog.alertError(error.messageId);
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });

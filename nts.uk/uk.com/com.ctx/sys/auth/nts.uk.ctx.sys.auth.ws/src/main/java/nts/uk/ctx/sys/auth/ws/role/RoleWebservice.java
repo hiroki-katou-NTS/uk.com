@@ -51,6 +51,13 @@ public class RoleWebservice extends WebService {
 	}
 	
 	@POST
+	@Path("get/rolename/by/roleids")
+	public List<RoleDto> getRoleByListRoleId(List<String>  data) {
+		return this.personInforRoleFinder.findByListRoleID(data);
+	}
+
+	
+	@POST
 	@Path("save/person/infor")
 	public void savePersonInfo(SavePersonRoleCommand command){
 		savePersonRoleHandler.handle(command);

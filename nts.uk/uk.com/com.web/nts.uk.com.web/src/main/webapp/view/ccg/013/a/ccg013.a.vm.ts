@@ -503,11 +503,24 @@ module ccg013.a.viewmodel {
 
         openDdialog(titleMenu: TitleMenu): void {
             let self = this;
+            let mang = [];
+            for(let i = 0; i < titleMenu.treeMenu().length; i++){
+                let treeMenus = {
+                    classification: titleMenu.treeMenu()[i].classification(),
+                    code: titleMenu.treeMenu()[i].code(),
+                    displayOrder: titleMenu.treeMenu()[i].displayOrder(),
+                    name: titleMenu.treeMenu()[i].name(),
+                    system: titleMenu.treeMenu()[i].system(),
+                    titleMenuId: titleMenu.treeMenu()[i].titleMenuId(),
+                    treeMenuId: titleMenu.treeMenu()[i].treeMenuId()
+                }
+                mang.push(treeMenus);
+            }
             let titleBar = {
                 name: titleMenu.titleMenuName(),
                 backgroundColor: titleMenu.backgroundColor(),
                 textColor: titleMenu.textColor(),
-                treeMenus: titleMenu.treeMenu()
+                treeMenus: mang
             };
             setShared("titleBar", titleBar);
             modal("/view/ccg/013/d/index.xhtml").onClosed(function() {
@@ -534,7 +547,7 @@ module ccg013.a.viewmodel {
 
         optionEDialog(): void {
             var self = this;
-            var data = self.currentWebMenu();
+            var data = ko.toJS(self.currentWebMenu());
             setShared("CCG013E_COPY", data);
             modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
                 let newWebMenuCode = getShared("CCG013E_WEB_CODE_COPY");

@@ -44,7 +44,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 isShowSelectButton: true,
                 baseDate: ko.observable(this.standardDate()),
                 selectedWorkplaceId: ko.observableArray(_.map(this.currentCalendarWorkPlace(), o => o.key)),
-                alreadySettingList: ko.observableArray([])
+                alreadySettingList: ko.observableArray([]),
+                systemType : 2
         };
         //選択可能な職位一覧
         //承認者の登録(個人別)
@@ -130,7 +131,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             var self = this;
             //add item in  dropdownlist
             self.itemListCbb.removeAll();
-            self.itemListCbb.push(new shrVm.ApproverDtoK('','','指定しない',0));
+            self.itemListCbb.push(new shrVm.ApproverDtoK('','','指定しない',0,0));
             if(self.approverList().length > 0){
                 _.forEach(self.approverList(),function(item: shrVm.ApproverDtoK){
                     self.itemListCbb.push(item);    
@@ -147,8 +148,9 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 _.forEach(data.approverInfor, function(sID){
                     if(sID.approvalAtr === 0){
                         service.getPersonInfor(sID.id).done(function(data: any){
-                            self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName, 0));
-                        })                            
+                            self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName, 0,sID.dispOrder));
+                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]));
+                        })
                     }else{
                         let job = new service.model.JobtitleInfor;
                         job.positionId = sID.id;
@@ -159,7 +161,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                         job.sequenceCode = "";
                         job.endDate = moment(new Date()).toDate();
                         service.getJobTitleName(job).done(function(data: any){
-                            self.approverList.push(new shrVm.ApproverDtoK(data.positionId, data.positionCode, data.positionName, 1));
+                            self.approverList.push(new shrVm.ApproverDtoK(data.positionId, data.positionCode, data.positionName, 1,sID.dispOrder));
+                            self.approverList(_.orderBy(self.approverList(),["dispOrder"], ["asc"]));
                         })    
                     }
                 })    
@@ -172,16 +175,17 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         //set data in swap-list
         setDataForSwapList(selectTypeSet: number){
             var self = this;
-            
+            //clear data before push employee new
+            self.employeeList([]);
             //個人設定 (employee setting)
             if(selectTypeSet === self.personSetting){                
                 var employeeSearch = new service.model.EmployeeSearchInDto();
                 employeeSearch.baseDate = self.standardDate();
-                employeeSearch.workplaceCodes = self.treeGrid.selectedWorkplaceId();
+                employeeSearch.workplaceIds = self.treeGrid.selectedWorkplaceId();
                 service.searchModeEmployee(employeeSearch).done(function(data: any){
                     let lstTmp = self.toUnitModelList(data);
                     _.each(lstTmp, function(item){
-                        self.employeeList.push(new shrVm.ApproverDtoK(item.id, item.code, item.name, item.approvalAtr))
+                        self.employeeList.push(new shrVm.ApproverDtoK(item.id, item.code, item.name, item.approvalAtr,0))
                     });
                 }).fail(function(res: any){
                     nts.uk.ui.dialog.alert(res.messageId);
@@ -190,7 +194,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             }else{
                 service.getJobTitleInfor(self.standardDate()).done(function(data: string){
                     _.forEach(data, function(value: service.model.JobtitleInfor){
-                        var job = new shrVm.ApproverDtoK(value.positionId,value.positionCode,value.positionName, 1);
+                        var job = new shrVm.ApproverDtoK(value.positionId,value.positionCode,value.positionName, 1,0);
                         self.employeeList.push(job);
                     })    
                 }).fail(function(res: any){
@@ -267,6 +271,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             baseDate: KnockoutObservable<any>;
             selectedWorkplaceId: KnockoutObservable<any>;
             alreadySettingList: KnockoutObservableArray<any>;
+            systemType : number;
         }
     class SimpleObject {
             key: KnockoutObservable<string>;

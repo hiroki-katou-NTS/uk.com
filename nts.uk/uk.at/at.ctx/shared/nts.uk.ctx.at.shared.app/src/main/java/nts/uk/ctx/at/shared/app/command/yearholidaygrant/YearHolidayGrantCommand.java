@@ -50,8 +50,8 @@ public class YearHolidayGrantCommand {
 		String companyId = AppContexts.user().companyId();
 		
 		List<GrantCondition> grantConditionList = this.grantConditions.stream().map(x-> {
-			return new GrantCondition(companyId, new YearHolidayCode(yearHolidayCode), x.getConditionNo(), new ConditionValue(x.getConditionValue()), 
-					EnumAdaptor.valueOf(x.getUseConditionAtr(), UseConditionAtr.class));
+			return new GrantCondition(companyId, new YearHolidayCode(yearHolidayCode), x.getConditionNo(), x.getConditionValue() != null ? new ConditionValue(x.getConditionValue()) : null, 
+					EnumAdaptor.valueOf(x.getUseConditionAtr(), UseConditionAtr.class), false);
 		}).collect(Collectors.toList());
 		
 		return  GrantHdTblSet.createFromJavaType(companyId, yearHolidayCode, yearHolidayName, calculationMethod, standardCalculation,

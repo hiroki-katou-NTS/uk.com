@@ -111,7 +111,9 @@ module nts.uk.at.view.kmk007.b.viewmodel {
          */
         register() {
             var self = this;
-            
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             if(self.frameId() == Cls_Of_Duty.SpecialHolidayFrame){
                 var holidayFrame = new HolidayFrameDto(self.selectedCode(), self.frameName(), self.frameEliminationSelectedCode());
                 
@@ -150,7 +152,7 @@ module nts.uk.at.view.kmk007.b.viewmodel {
             this.frameNo = frameNo;
             this.name = name;
             this.abolition = abolition;
-             if (abolition == 0) {
+             if (abolition == 1) {
                 this.icon = "";
             } else {
                 this.icon = '<i class="icon icon-dot"></i>';

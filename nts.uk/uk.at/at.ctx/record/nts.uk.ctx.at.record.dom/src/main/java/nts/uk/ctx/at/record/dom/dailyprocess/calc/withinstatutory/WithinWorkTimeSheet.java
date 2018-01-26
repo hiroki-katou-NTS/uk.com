@@ -30,12 +30,11 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeOfTimeSheetSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeOfTimeSheetSetList;
-import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
-import nts.uk.ctx.at.shared.dom.worktimeset_old.WorkTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -72,9 +71,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @return 就業時間内時間帯
 	 */
 	public static WithinWorkTimeSheet createAsFixed(WorkType workType,
-													WorkTimeSet predetermineTimeSet,
+													PredetemineTimeSetting predetermineTimeSet,
 													FixedWorkSetting fixedWorkSetting,
-													WorkTimeCommonSet workTimeCommonSet,
+													WorkTimezoneCommonSet workTimeCommonSet,
 													DeductionTimeSheet deductionTimeSheet,
 													BonusPaySetting bonusPaySetting) {
 		
@@ -95,9 +94,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 */
 	private static List<WithinWorkTimeFrame> isWeekDayProcess(
 			WorkType workType,
-			WorkTimeSet predetermineTimeSet,
+			PredetemineTimeSetting predetermineTimeSet,
 			FixedWorkSetting fixedWorkSetting,
-			WorkTimeCommonSet workTimeCommonSet,
+			WorkTimezoneCommonSet workTimeCommonSet,
 			DeductionTimeSheet deductionTimeSheet,
 			BonusPaySetting bonusPaySetting
 			) {
@@ -118,12 +117,12 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			List<BonusPayTimesheet> bonusPayTimeSheet = new ArrayList<>();
 			List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet = new ArrayList<>();
 			Optional<MidNightTimeSheet> midNightTimeSheet;
-			for(WorkTimeOfTimeSheetSet duplicateTimeSheet :workingHourSet) {
+			for(EmTimeZoneSet duplicateTimeSheet :workingHourSet) {
 				//DeductionTimeSheet deductionTimeSheet = /*控除時間を分割する*/
-				timeFrame = new WithinWorkTimeFrame(frameNo, duplicateTimeSheet.getTimeSpan(),duplicateTimeSheet.getTimeSpan(),deductionTimeSheet.getForDeductionTimeZoneList(),Collections.emptyList(),Optional.empty(),Collections.emptyList());
+				timeFrame = new WithinWorkTimeFrame(frameNo, duplicateTimeSheet.getTimezone(),duplicateTimeSheet.getTimezone().timeSpan(),deductionTimeSheet.getForDeductionTimeZoneList(),Collections.emptyList(),Optional.empty(),Collections.emptyList());
 				/*加給*/
-				bonusPayTimeSheet = bonusPaySetting.createDuplicationBonusPayTimeSheet(duplicateTimeSheet.getTimeSpan());
-				specifiedBonusPayTimeSheet = bonusPaySetting.createDuplicationSpecifyBonusPay(duplicateTimeSheet.getTimeSpan());
+				bonusPayTimeSheet = bonusPaySetting.createDuplicationBonusPayTimeSheet(duplicateTimeSheet.getTimezone().timeSpan());
+				specifiedBonusPayTimeSheet = bonusPaySetting.createDuplicationSpecifyBonusPay(duplicateTimeSheet.getTimezone().timeSpan());
 				/*深夜*/
 				midNightTimeSheet = timeFrame.createMidNightTimeSheet();
 				
@@ -162,33 +161,48 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param fixedWorkSetting 固定勤務設定クラス
 	 * @return 所定時間と重複している時間帯
 	 */
-	public static List<WorkTimeOfTimeSheetSet> createWorkingHourSet(WorkType workType, PredetermineTimeSetForCalc predetermineTimeSet,
+	public static List<EmTimeZoneSet> createWorkingHourSet(WorkType workType, PredetermineTimeSetForCalc predetermineTimeSet,
 			FixedWorkSetting fixedWorkSetting) {
 		
 		val attendanceHolidayAttr = workType.getAttendanceHolidayAttr();
-		return getWorkingHourSetByAmPmClass(fixedWorkSetting, attendanceHolidayAttr).extractBetween(
+		val emTimeZoneSet = getWorkingHourSetByAmPmClass(fixedWorkSetting, attendanceHolidayAttr);
+		return extractBetween(
+				emTimeZoneSet,
 				new TimeWithDayAttr(predetermineTimeSet.getStartOneDayTime().valueAsMinutes()),
 				new TimeWithDayAttr(predetermineTimeSet.getStartOneDayTime().valueAsMinutes() + predetermineTimeSet.getOneDayRange().valueAsMinutes()));
 	}
 
+	/**
+	 * 所定時間帯と重複している就業時間帯設定時間を取り出す。
+	 * @param start 開始時刻
+	 * @param end　終了時刻
+	 */
+	private static List<EmTimeZoneSet> extractBetween(List<EmTimeZoneSet> timeZoneList,TimeWithDayAttr start,TimeWithDayAttr end){
+		List<EmTimeZoneSet> returnList = new ArrayList<>();
+		timeZoneList.forEach(source ->{ source.getTimezone().timeSpan().getDuplicatedWith(new TimeSpanForCalc(start, end)).ifPresent(duplicated -> {
+											returnList.add(source.newSpanWith(duplicated.getStart(), duplicated.getEnd()));
+										});
+									});
+		return returnList;
+	}
 	/**
 	 * 平日出勤の出勤時間帯を取得
 	 * @param fixedWorkSetting 固定勤務設定クラス
 	 * @param attendanceHolidayAttr 出勤休日区分
 	 * @return 出勤時間帯
 	 */
-	private static WorkTimeOfTimeSheetSetList getWorkingHourSetByAmPmClass(
+	private static List<EmTimeZoneSet> getWorkingHourSetByAmPmClass(
 			FixedWorkSetting fixedWorkSetting,
 			AttendanceHolidayAttr attendanceHolidayAttr) {
 		
 		switch (attendanceHolidayAttr) {
 		case FULL_TIME:
 		case HOLIDAY:
-			return fixedWorkSetting.getWorkingHourSet(AmPmClassification.ONE_DAY);
+			return fixedWorkSetting.getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.ONE_DAY)).collect(Collectors.toList()).get(0).getWorkTimezone().getLstWorkingTimezone();
 		case MORNING:
-			return fixedWorkSetting.getWorkingHourSet(AmPmClassification.AM);
+			return fixedWorkSetting.getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.AM)).collect(Collectors.toList()).get(0).getWorkTimezone().getLstWorkingTimezone();
 		case AFTERNOON:
-			return fixedWorkSetting.getWorkingHourSet(AmPmClassification.PM);
+			return fixedWorkSetting.getLstHalfDayWorkTimezone().stream().filter(tc -> tc.getDayAtr().equals(AmPmAtr.PM)).collect(Collectors.toList()).get(0).getWorkTimezone().getLstWorkingTimezone();
 		default:
 			throw new RuntimeException("unknown attendanceHolidayAttr" + attendanceHolidayAttr);
 		}

@@ -2,15 +2,16 @@ package nts.uk.ctx.at.function.app.find.alarm;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionName;
+import nts.arc.enums.EnumConstant;
 
 @Data
 @AllArgsConstructor
 public class AlarmCheckConditonCodeDto {
 	// カテゴリ
-	private int category;
+	private EnumConstant category;
 
 	// コード
 	private String checkConditonCode;

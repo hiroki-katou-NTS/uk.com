@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 
 /** 日別実績の遅刻時間 */
 @Data
@@ -21,7 +21,7 @@ public class LateTimeDto {
 
 	/** 休暇使用時間/休憩使用時間: 日別実績の時間年休使用時間 */
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "時間休暇使用時間")
-	private HolidayUseDto breakUse;
+	private ValicationUseDto breakUse;
 
 	/** インターバル免除時間/インターバル時間: インターバル免除時間 */
 //	@AttendanceItemLayout(layout = "D")

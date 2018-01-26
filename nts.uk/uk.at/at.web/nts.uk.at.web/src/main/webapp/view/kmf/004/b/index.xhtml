@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/sidebar.xhtml">
+	<ui:composition template="../../../../master/dialogsidebar.xhtml">
 		<ui:define name="sidebar-head">
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.specialholiday.grantdate.PersonalGrantDateCode
@@ -51,9 +51,9 @@
 				</com:ko-if>
 				<com:ko-if bind="currentTab()=='C'">
 					<!-- Buttons for C screen -->
-					<button tab-index="1" class="newBtn" data-bind="click: $parent.viewmodelC.newBtn.bind($parent.viewmodelC), hasfocus: true">#{i18n.getText('KMF004_1')}</button>
+					<button tab-index="1" class="newBtn" data-bind="click: $parent.viewmodelC.newBtn.bind($parent.viewmodelC), hasfocus: true, enable: !$parent.viewmodelC.editMode()">#{i18n.getText('KMF004_1')}</button>
 					<button tab-index="2" class="registerBtn proceed" data-bind="click: $parent.viewmodelC.registerBtn.bind($parent.viewmodelC)">#{i18n.getText('KMF004_2')}</button>
-					<button tab-index="3" class="deleteBtn danger" data-bind="click: $parent.viewmodelC.deleteBtn.bind($parent.viewmodelC), enable: $parent.viewmodelC.items().length>0">#{i18n.getText('KMF004_3')}</button>
+					<button tab-index="3" class="deleteBtn danger" data-bind="click: $parent.viewmodelC.deleteBtn.bind($parent.viewmodelC), enable: $parent.viewmodelC.items().length > 0 &amp;&amp; !$parent.viewmodelC.editMode()">#{i18n.getText('KMF004_3')}</button>
 					<button tab-index="4" class="closeBtn" data-bind="click: $parent.viewmodelC.closeBtn.bind($parent.viewmodelC)">#{i18n.getText('KMF004_4')}</button>
 				</com:ko-if>
 			</div>
@@ -71,7 +71,9 @@
 														value: selectedId,
 														enable: true}">
 					</div>
-					<div id="monthdays" data-bind="ntsMonthDays: {value: value, enable: enable}"/>
+					<div id="monthdays">
+						<div id="month-day-input" class="cal-value" data-bind="ntsDatePicker: { value: value, dateFormat: 'YYYY/MM/DD', enable: enable, name: '#[KMF004_75]', required: monthDaysReq }"></div>
+					</div>					
 				</div>
 				
 				<span class="setting-title">#{i18n.getText('KMF004_79')}</span>
@@ -87,7 +89,7 @@
 					<thead>
 						<tr>
 							<td width="19"></td>
-							<td colspan="2" width="153">#{i18n.getText('KMF003_43')}</td>
+							<td colspan="2" width="160">#{i18n.getText('KMF004_80')}</td>
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: items">
@@ -95,7 +97,9 @@
 							<td data-bind="text: $index() + 1"></td>
 							<td class="hidden-right-border">
 								<input id="year" data-bind="ntsNumberEditor: {
+										name: '#[KMF004_81]',
 										value: year, 
+										constraint: 'GrantDateYear',
 										option: ko.mapping.fromJS({
 											unitID: 'YEARS',
 											width: '50'
@@ -103,7 +107,9 @@
 							</td>
 							<td>
 								<input id="month" data-bind="ntsNumberEditor: {
+										name: '#[KMF004_82]',
 										value: month, 
+										constraint: 'GrantDateMonth',
 										option: ko.mapping.fromJS({
 											unitID: 'MONTHS',
 											width: '60'

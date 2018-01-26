@@ -11,12 +11,16 @@ import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.ctx.at.shared.infra.entity.relationship.KshstRelationshipItem;
 import nts.uk.ctx.at.shared.infra.entity.relationship.KshstRelationshipPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship.KshstGrantRelationshipItem;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship.KshstGrantRelationshipPK;
 
 @Stateless
 public class JpaRelationshipItemRepository extends JpaRepository implements RelationshipRepository{
 	
 	private final String SELECT_NO_WHERE = "SELECT c FROM KshstRelationshipItem c ";
 	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstRelationshipPK.companyId = :companyId";
+	private final String DELETE_GRANT = "DELETE FROM KshstGrantRelationshipItem c WHERE c.kshstGrantRelationshipPK.companyId = :companyId AND c.kshstGrantRelationshipPK.relationshipCode = :relationshipCode";
+			
 	/**
 	 * change from entity to domain
 	 * @param entity
@@ -72,6 +76,8 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 	public void delete(String companyId, String relationshipCd) {
 		KshstRelationshipPK kshstRelationshipPK = new KshstRelationshipPK(companyId, relationshipCd);
 		this.commandProxy().remove(KshstRelationshipItem.class, kshstRelationshipPK);
+		this.getEntityManager().createQuery(DELETE_GRANT).setParameter("companyId", companyId)
+								.setParameter("relationshipCode", relationshipCd).executeUpdate();
 	}
 	/**
 	 * get relationship by code

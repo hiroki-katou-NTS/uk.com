@@ -11,8 +11,8 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AcquisitionConditionsAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTime;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidPrefixBreakTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 
 /**
@@ -39,12 +39,12 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	 * @return
 	 */
 	public List<TimeSheetOfDeductionItem> getGoOutTimeSheet(AcquisitionConditionsAtr acqAtr ,WorkTimeMethodSet workTimeMethodSet
-												 		  ,Optional<FluRestTime> fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet){
+												 		  ,Optional<FlowWorkRestTimezone> fluRestTime,FlowFixedRestSet fluidprefixBreakTimeSet){
 		val goOutTimeSheetList = removeUnuseItemBaseOnAtr(acqAtr,workTimeMethodSet,fluRestTime,fluidprefixBreakTimeSet);
 		switch(workTimeMethodSet) {
 		case FLOW_WORK:
 			if(fluRestTime.isPresent()) {
-				if(fluRestTime.get().getUseFixedRestTime()) {
+				if(fluRestTime.get().isFixRestTime()) {
 					return convertFromgoOutTimeToBreakTime(fluidprefixBreakTimeSet, goOutTimeSheetList);
 				}
 			}
@@ -67,7 +67,7 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	 * @param 取得条件区分 
 	 * @return 不要な項目を削除した時間帯
 	 */
-	public List<TimeSheetOfDeductionItem> removeUnuseItemBaseOnAtr(AcquisitionConditionsAtr acqAtr ,WorkTimeMethodSet workTimeMethodSet,Optional<FluRestTime> fluRestTime,FluidPrefixBreakTimeSet fluidprefixBreakTimeSet) {
+	public List<TimeSheetOfDeductionItem> removeUnuseItemBaseOnAtr(AcquisitionConditionsAtr acqAtr ,WorkTimeMethodSet workTimeMethodSet,Optional<FlowWorkRestTimezone> fluRestTime,FlowFixedRestSet fluidprefixBreakTimeSet) {
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
 //		if(/*流動勤務の場合*/) {
 //			if((fluidprefixBreakTimeSet.getCalcMethod().isStampWithoutReference() && fluRestTime.get().getUseFixedRestTime())
@@ -87,7 +87,7 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	 * 外出時間帯から休憩時間帯への変換
 	 * @return 控除項目の時間帯
 	 */
-	public List<TimeSheetOfDeductionItem> convertFromgoOutTimeToBreakTime(FluidPrefixBreakTimeSet fluidprefixBreakTimeSet,List<TimeSheetOfDeductionItem> deductionList){
+	public List<TimeSheetOfDeductionItem> convertFromgoOutTimeToBreakTime(FlowFixedRestSet fluidprefixBreakTimeSet,List<TimeSheetOfDeductionItem> deductionList){
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
 		
 		for(TimeSheetOfDeductionItem deductionItem : deductionList) {

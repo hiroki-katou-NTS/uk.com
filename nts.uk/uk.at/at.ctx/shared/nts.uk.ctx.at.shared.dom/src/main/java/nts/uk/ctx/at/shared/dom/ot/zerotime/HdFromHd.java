@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.shared.dom.ot.zerotime;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime.common.BreakoutFrameNo;
 /**
  * @author phongtq
  * 休日から休日への0時跨ぎ設定
@@ -16,16 +17,16 @@ public class HdFromHd extends DomainObject{
 	private String companyId;
 
 	/**変更前の休出枠NO*/
-	private BreakoutFrameNo breakFrameNo;
+	private int holidayWorkFrameNo;
 	
 	/** 変更後の法定内休出NO*/
-	private BreakoutFrameNo legalHdNo;
+	private int calcOverDayEnd;
 	
 	/** 変更後の法定外休出NO */
-	private BreakoutFrameNo nonLegalHdNo;
+	private int statutoryHd;
 	
 	/** 変更後の祝日休出NO */
-	private BreakoutFrameNo nonLegalPublicHdNo;
+	private int excessHd;
 	
 	/**
 	 * Create from Java Type of Hd From Hd
@@ -36,7 +37,7 @@ public class HdFromHd extends DomainObject{
 	 * @param excessHd
 	 * @return
 	 */
-	public static HdFromHd createFromJavaType( String companyId, int breakFrameNo, int legalHdNo, int nonLegalHdNo, int nonLegalPublicHdNo){
-		return new HdFromHd(companyId, new BreakoutFrameNo(breakFrameNo), new BreakoutFrameNo(legalHdNo), new BreakoutFrameNo(nonLegalHdNo), new BreakoutFrameNo(nonLegalPublicHdNo));
+	public static HdFromHd createFromJavaType( String companyId, int holidayWorkFrameNo, int calcOverDayEnd, int statutoryHd, int excessHd){
+		return new HdFromHd(companyId, holidayWorkFrameNo,calcOverDayEnd, statutoryHd, excessHd);
 	}
 }

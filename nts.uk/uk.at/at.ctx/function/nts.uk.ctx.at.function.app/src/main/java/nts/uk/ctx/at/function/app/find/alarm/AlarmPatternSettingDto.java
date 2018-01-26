@@ -14,7 +14,7 @@ public class AlarmPatternSettingDto {
 	/**
 	 * アラームリストパターン名称
 	 */
-	private String alarmPatterName;
+	private String alarmPatternName;
 	
 	/**
 	 * アラームリスト権限設定

@@ -78,8 +78,10 @@ module nts.uk.at.view.kmk013.b {
             enableB74: KnockoutObservable<boolean>;
             enableB79: KnockoutObservable<boolean>;
             enableB715: KnockoutObservable<boolean>;
+            oldData:KnockoutObservable<any>;
             constructor() {
                 var self = this;
+                self.oldData = ko.observable();
                 self.itemsB23 = ko.observableArray([
                     new BoxModel(1, nts.uk.resource.getText('KMK013_5')),
                     new BoxModel(0, nts.uk.resource.getText('KMK013_6')),
@@ -92,9 +94,9 @@ module nts.uk.at.view.kmk013.b {
                     new BoxModel(1, nts.uk.resource.getText('KMK013_13')),
                     new BoxModel(0, nts.uk.resource.getText('KMK013_14')),
                 ]);
-                self.selectedB23 = ko.observable(0);
-                self.selectedB29 = ko.observable(0);
-                self.selectedB215 = ko.observable(0);
+                self.selectedB23 = ko.observable(1);
+                self.selectedB29 = ko.observable(1);
+                self.selectedB215 = ko.observable(1);
                 self.enableB29 = ko.observable(false);
                 self.enableB215 = ko.observable(false);
                 self.enableB217 = ko.observable(false);
@@ -202,14 +204,18 @@ module nts.uk.at.view.kmk013.b {
                         self.enableB215(false);
                         self.enableB217(false);
                     } else {
-                        self.enableB215(true);
+                        if(self.enableB29()==true){
+                             self.enableB215(true);
+                          }
                     }
                 });
                 self.selectedB215.subscribe((newValue) => {
                     if (newValue == 1) {
                         self.enableB217(false);
                     } else {
-                        self.enableB217(true);
+                        if(self.enableB215()==true){
+                             self.enableB217(true);
+                          }
                     }
                 });
                 //B5
@@ -217,6 +223,9 @@ module nts.uk.at.view.kmk013.b {
                     if (newValue == 1) {
                         self.selectedValueB515(1);
                         self.enableB54(true);
+                        if(self.checkedB57()==true){
+                            self.enableB59(true);    
+                        }
                     } else {
                         self.enableB54(false);
                     }
@@ -239,7 +248,9 @@ module nts.uk.at.view.kmk013.b {
                 self.checkedB57.subscribe(newValue => {
                     if (newValue == true) {
                         self.checkedB518(true);
-                        self.enableB59(true);
+                        if(self.enableB54()==true){
+                           self.enableB59(true);
+                        }
                     } else {
                         self.enableB59(false);
                     }
@@ -290,6 +301,9 @@ module nts.uk.at.view.kmk013.b {
                     if (newValue == 1) {
                         self.selectedValueB612(1);
                         self.enableB64(true);
+                        if(self.checkedB67() ==true){
+                            self.enableB68(true);
+                        }
                     } else {
                         self.enableB64(false);
                     }
@@ -304,6 +318,9 @@ module nts.uk.at.view.kmk013.b {
                         nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
                             self.selectedValueB64(0);
                             self.enableB612(false);
+                            if(self.checkedB616() == true){
+                                self.enableB616(true);    
+                            }
                         });
                     } else {
                         self.enableB612(true);
@@ -312,7 +329,9 @@ module nts.uk.at.view.kmk013.b {
                 self.checkedB67.subscribe(newValue => {
                     if (newValue == true) {
                         self.checkedB615(true);
-                        self.enableB68(true);
+                        if(self.enableB64()==true){
+                            self.enableB68(true);
+                        }
                     } else {
                         self.enableB68(false);
                     }
@@ -322,7 +341,9 @@ module nts.uk.at.view.kmk013.b {
                         self.checkedB67(false);
                         self.enableB616(false);
                     } else {
-                        self.enableB616(true);
+                        if(self.enableB612()==true){
+                            self.enableB616(true);
+                        } 
                     }
                 });
                 self.checkedB68.subscribe(newValue => {
@@ -376,6 +397,9 @@ module nts.uk.at.view.kmk013.b {
                     if (newValue == 1) {
                         self.selectedValueB715(1);
                         self.enableB74(true);
+                        if(self.checkedB77()==true){
+                            self.enableB79(true);    
+                        }
                     } else {
                         self.enableB74(false);
                     }
@@ -398,7 +422,9 @@ module nts.uk.at.view.kmk013.b {
                 self.checkedB77.subscribe(newValue => {
                     if (newValue == true) {
                         self.checkedB718(true);
-                        self.enableB79(true);
+                        if(self.enableB74() == true){
+                            self.enableB79(true);
+                        }
                     } else {
                         self.enableB79(false);
                     }
@@ -460,6 +486,7 @@ module nts.uk.at.view.kmk013.b {
                     if (data[0] == null) {
                         return;
                     }
+                    self.oldData(data[0]);
                     let obj = data[0];
                     //実績の就業時間帯を参照する
                     self.selectedB23(obj.referActualWorkHours);
@@ -467,7 +494,7 @@ module nts.uk.at.view.kmk013.b {
                     self.selectedB29(obj.notReferringAch);
                     //会社単位の休暇時間を参照する
                     self.selectedB215(obj.referComHolidayTime);
-                    if (obj.referComHolidayTime != 1) {
+                    if (obj.referComHolidayTime == 1) {
                         self.enableB217(false);
                     }
                     //加算時間.1日
@@ -491,46 +518,46 @@ module nts.uk.at.view.kmk013.b {
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.休暇分を含める設定.通常、変形の所定超過時
                     self.selectedIdB59(obj.regularWork.deformatExcValuePre);
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB512(convertToBoolean(obj.regularWork.calcIncludCarePre));
+                    self.checkedB512(convertToBoolean(obj.regularWork.incChildNursingCarePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない
                     self.checkedB513(convertToBoolean(obj.regularWork.notDeductLateleavePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB514(convertToBoolean(obj.regularWork.calcIntervalTimePre));
+                    self.checkedB514(convertToBoolean(obj.regularWork.exemptTaxTimePre));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.実働のみで計算する
-                    self.selectedValueB515(obj.regularWork.calcActualOperaWork);
+                    self.selectedValueB515(obj.regularWork.calcActualOperationWork);
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.休暇分を含める設定.加算する
                     self.checkedB518(convertToBoolean(obj.regularWork.additionTimeWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB519(convertToBoolean(obj.regularWork.calcIncludCareWork));
+                    self.checkedB519(convertToBoolean(obj.regularWork.incChildNursingCareWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除しない
                     self.checkedB520(convertToBoolean(obj.regularWork.notDeductLateleaveWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB521(convertToBoolean(obj.regularWork.calsIntervalTimeWork));
+                    self.checkedB521(convertToBoolean(obj.regularWork.exemptTaxTimeWork));
 
                     //休暇の計算方法の設定.休暇の割増計算方法.実働のみで計算する
                     self.selectedValueB64(obj.flexWork.calcActualOperationPre);
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.休暇分を含める設定.加算する
                     self.checkedB67(convertToBoolean(obj.flexWork.additionTimePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.休暇分を含める設定.フレックスの所定超過時
-                    self.checkedB68(convertToBoolean(obj.flexWork.predExcessTimeflexPre));
+                    self.checkedB68(convertToBoolean(obj.flexWork.predeterminedOvertimePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB69(convertToBoolean(obj.flexWork.calcIncludCarePre));
+                    self.checkedB69(convertToBoolean(obj.flexWork.incChildNursingCarePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない
                     self.checkedB610(convertToBoolean(obj.flexWork.notDeductLateleavePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB611(convertToBoolean(obj.flexWork.calcIntervalTimePre));
+                    self.checkedB611(convertToBoolean(obj.flexWork.exemptTaxTimePre));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.実働のみで計算する
-                    self.selectedValueB612(obj.flexWork.calcActualOperaWork);
+                    self.selectedValueB612(obj.flexWork.calcActualOperationWork);
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.休暇分を含める設定.加算する
                     self.checkedB615(convertToBoolean(obj.flexWork.additionTimeWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.休暇分を含める設定.フレックスの所定不足時
-                    self.checkedB616(convertToBoolean(obj.flexWork.predeterminDeficiency));
+                    self.checkedB616(convertToBoolean(obj.flexWork.predeterminDeficiencyWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB617(convertToBoolean(obj.flexWork.calcIncludCareWork));
+                    self.checkedB617(convertToBoolean(obj.flexWork.incChildNursingCareWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除しない
                     self.checkedB618(convertToBoolean(obj.flexWork.notDeductLateleaveWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB619(convertToBoolean(obj.flexWork.calsIntervalTimeWork));
+                    self.checkedB619(convertToBoolean(obj.flexWork.exemptTaxTimeWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.欠勤時間をマイナスする
                     self.checkedB620(convertToBoolean(obj.flexWork.minusAbsenceTimeWork));
 
@@ -541,30 +568,35 @@ module nts.uk.at.view.kmk013.b {
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.休暇分を含める設定.通常、変形の所定超過時
                     self.selectedIdB79(obj.irregularWork.deformatExcValue);
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB712(convertToBoolean(obj.irregularWork.calcIncludCarePre));
+                    self.checkedB712(convertToBoolean(obj.irregularWork.incChildNursingCarePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.遅刻・早退を控除しない
                     self.checkedB713(convertToBoolean(obj.irregularWork.notDeductLateleavePre));
                     //休暇の計算方法の設定.休暇の割増計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB714(convertToBoolean(obj.irregularWork.calcIntervalTimePre));
+                    self.checkedB714(convertToBoolean(obj.irregularWork.exemptTaxTimePre));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.実働のみで計算する
-                    self.selectedValueB715(obj.irregularWork.calcActualOperaWork);
+                    self.selectedValueB715(obj.irregularWork.calcActualOperationWork);
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.休暇分を含める設定.加算する
                     self.checkedB718(convertToBoolean(obj.irregularWork.additionTimeWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.育児・介護時間を含めて計算する
-                    self.checkedB719(convertToBoolean(obj.irregularWork.calcIncludCareWork));
+                    self.checkedB719(convertToBoolean(obj.irregularWork.incChildNursingCareWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除しない
                     self.checkedB720(convertToBoolean(obj.irregularWork.notDeductLateleaveWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.インターバル免除時間を含めて計算する
-                    self.checkedB721(convertToBoolean(obj.irregularWork.calsIntervalTimeWork));
+                    self.checkedB721(convertToBoolean(obj.irregularWork.exemptTaxTimeWork));
                     //休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.欠勤時間をマイナスする
                     self.checkedB722(convertToBoolean(obj.irregularWork.minusAbsenceTimeWork));
                 });
             }
             save(): void {
                 let self = this;
-                let obj = {};
+                let obj :any = {};
 
                 obj.referActualWorkHours = self.selectedB23();
+                obj.notReferringAch = self.oldData().notReferringAch;
+                obj.referComHolidayTime = self.oldData().referComHolidayTime;
+                obj.oneDay = self.oldData().oneDay;
+                obj.morning = self.oldData().morning;
+                obj.afternoon = self.oldData().afternoon;
                 if (self.selectedB23() == 0) {
                     obj.notReferringAch = self.selectedB29();
                     if (self.selectedB29() == 0) {
@@ -575,12 +607,6 @@ module nts.uk.at.view.kmk013.b {
                             obj.afternoon = self.timeB223()
                         }
                     }
-                } else {
-                    obj.notReferringAch = 1;
-                    obj.referComHolidayTime = 1;
-                    obj.oneDay = 0;
-                    obj.morning = 0;
-                    obj.afternoon = 0;
                 }
                 obj.annualHoliday = convertToInt(self.checkedB33());
                 obj.specialHoliday = convertToInt(self.checkedB35());
@@ -591,32 +617,32 @@ module nts.uk.at.view.kmk013.b {
                 obj.regularWork.calcActualOperationPre = self.selectedValueB54();
                 if (self.selectedValueB54() == 1) {
                     obj.regularWork.additionTimePre = convertToInt(self.checkedB57());
-                    obj.regularWork.calcIncludCarePre = convertToInt(self.checkedB512());
+                    obj.regularWork.incChildNursingCarePre = convertToInt(self.checkedB512());
                     obj.regularWork.notDeductLateleavePre = convertToInt(self.checkedB513());
-                    obj.regularWork.calcIntervalTimePre = convertToInt(self.checkedB514());
+                    obj.regularWork.exemptTaxTimePre = convertToInt(self.checkedB514());
                 } else {
-                    obj.regularWork.calcIntervalTimePre = 0;
-                    obj.regularWork.calcIncludCarePre = 0;
-                    obj.regularWork.additionTimePre = 0;
-                    obj.regularWork.notDeductLateleavePre = 0;
-                    obj.regularWork.deformatExcValuePre = 0;
+                    obj.regularWork.exemptTaxTimePre = self.oldData().regularWork.exemptTaxTimePre;
+                    obj.regularWork.incChildNursingCarePre =self.oldData().regularWork.incChildNursingCarePre;
+                    obj.regularWork.additionTimePre = self.oldData().regularWork.additionTimePre;
+                    obj.regularWork.notDeductLateleavePre = self.oldData().regularWork.notDeductLateleavePre;
+                    obj.regularWork.deformatExcValuePre = self.oldData().regularWork.deformatExcValuePre;
                 }
                 if (self.enableB59() == true) {
-                    obj.regularWork.deformatExcValuePre = convertToInt(self.enableB59());
+                    obj.regularWork.deformatExcValuePre = self.selectedIdB59();
                 } else {
-                    obj.regularWork.deformatExcValuePre = 0;
+                    obj.regularWork.deformatExcValuePre = self.oldData().regularWork.deformatExcValuePre;
                 }
-                obj.regularWork.calcActualOperaWork = self.selectedValueB515();
+                obj.regularWork.calcActualOperationWork = self.selectedValueB515();
                 if (self.selectedValueB515() == 1) {
                     obj.regularWork.additionTimeWork = convertToInt(self.checkedB518());
-                    obj.regularWork.calcIncludCareWork = convertToInt(self.checkedB519());
+                    obj.regularWork.incChildNursingCareWork = convertToInt(self.checkedB519());
                     obj.regularWork.notDeductLateleaveWork = convertToInt(self.checkedB520());
-                    obj.regularWork.calsIntervalTimeWork = convertToInt(self.checkedB521());
+                    obj.regularWork.exemptTaxTimeWork = convertToInt(self.checkedB521());
                 } else {
-                    obj.regularWork.additionTimeWork = 0;
-                    obj.regularWork.calcIncludCareWork = 0;
-                    obj.regularWork.notDeductLateleaveWork = 0;
-                    obj.regularWork.calsIntervalTimeWork = 0;
+                    obj.regularWork.additionTimeWork = self.oldData().regularWork.additionTimeWork;
+                    obj.regularWork.incChildNursingCareWork = self.oldData().regularWork.incChildNursingCareWork;
+                    obj.regularWork.notDeductLateleaveWork = self.oldData().regularWork.notDeductLateleaveWork;
+                    obj.regularWork.exemptTaxTimeWork =self.oldData().regularWork.exemptTaxTimeWork;
                 }
 
                 //flexWork
@@ -625,38 +651,38 @@ module nts.uk.at.view.kmk013.b {
                 obj.flexWork.calcActualOperationPre = self.selectedValueB64();
                 if (self.selectedValueB64() == 1) {
                     obj.flexWork.additionTimePre = convertToInt(self.checkedB67());
-                    obj.flexWork.calcIncludCarePre = convertToInt(self.checkedB69());
+                    obj.flexWork.incChildNursingCarePre = convertToInt(self.checkedB69());
                     obj.flexWork.notDeductLateleavePre = convertToInt(self.checkedB610());
-                    obj.flexWork.calcIntervalTimePre = convertToInt(self.checkedB611());
+                    obj.flexWork.exemptTaxTimePre = convertToInt(self.checkedB611());
                 } else {
-                    obj.flexWork.additionTimePre = 0;
-                    obj.flexWork.calcIncludCarePre = 0;
-                    obj.flexWork.notDeductLateleavePre = 0;
-                    obj.flexWork.calcIntervalTimePre = 0;
+                    obj.flexWork.additionTimePre = self.oldData().flexWork.additionTimePre;
+                    obj.flexWork.incChildNursingCarePre = self.oldData().flexWork.incChildNursingCarePre;
+                    obj.flexWork.notDeductLateleavePre = self.oldData().flexWork.notDeductLateleavePre;
+                    obj.flexWork.exemptTaxTimePre = self.oldData().flexWork.exemptTaxTimePre;
                 }
                 if (self.enableB68() == true) {
-                    obj.flexWork.predExcessTimeflexPre = convertToInt(self.enableB68());
+                    obj.flexWork.predeterminedOvertimePre = convertToInt(self.enableB68());
                 } else {
-                    obj.flexWork.predExcessTimeflexPre = 0;
+                    obj.flexWork.predeterminedOvertimePre = self.oldData().flexWork.predeterminedOvertimePre;
                 }
-                obj.flexWork.calcActualOperaWork = self.selectedValueB612();
+                obj.flexWork.calcActualOperationWork = self.selectedValueB612();
                 if (self.selectedValueB612() == 1) {
                     obj.flexWork.additionTimeWork = convertToInt(self.checkedB615());
-                    obj.flexWork.calcIncludCareWork = convertToInt(self.checkedB617());
+                    obj.flexWork.incChildNursingCareWork = convertToInt(self.checkedB617());
                     obj.flexWork.notDeductLateleaveWork = convertToInt(self.checkedB618());
-                    obj.flexWork.calsIntervalTimeWork = convertToInt(self.checkedB619());
+                    obj.flexWork.exemptTaxTimeWork = convertToInt(self.checkedB619());
                     obj.flexWork.minusAbsenceTimeWork = convertToInt(self.checkedB620());
                 } else {
-                    obj.flexWork.additionTimeWork = 0;
-                    obj.flexWork.calcIncludCareWork = 0;
-                    obj.flexWork.notDeductLateleaveWork = 0;
-                    obj.flexWork.calsIntervalTimeWork = 0;
-                    obj.flexWork.minusAbsenceTimeWork = 0;
+                    obj.flexWork.additionTimeWork = self.oldData().flexWork.additionTimeWork;
+                    obj.flexWork.incChildNursingCareWork = self.oldData().flexWork.incChildNursingCareWork;
+                    obj.flexWork.notDeductLateleaveWork = self.oldData().flexWork.notDeductLateleaveWork;
+                    obj.flexWork.exemptTaxTimeWork = self.oldData().flexWork.exemptTaxTimeWork;
+                    obj.flexWork.minusAbsenceTimeWork = self.oldData().flexWork.minusAbsenceTimeWork;
                 }
                 if (self.enableB616() == true) {
-                    obj.flexWork.predeterminDeficiency = convertToInt(self.checkedB616());
+                    obj.flexWork.predeterminDeficiencyWork = convertToInt(self.checkedB616());
                 } else {
-                    obj.flexWork.predeterminDeficiency = 0;
+                    obj.flexWork.predeterminDeficiencyWork = self.oldData().flexWork.predeterminDeficiencyWork;
                 }
                 //irregularWork
                 obj.irregularWork = {};
@@ -664,35 +690,41 @@ module nts.uk.at.view.kmk013.b {
                 obj.irregularWork.calcActualOperationPre = self.selectedValueB74();
                 if (self.selectedValueB74() == 1) {
                     obj.irregularWork.additionTimePre = convertToInt(self.checkedB57());
-                    obj.irregularWork.calcIncludCarePre = convertToInt(self.checkedB512());
+                    obj.irregularWork.incChildNursingCarePre = convertToInt(self.checkedB512());
                     obj.irregularWork.notDeductLateleavePre = convertToInt(self.checkedB513());
-                    obj.irregularWork.calcIntervalTimePre = convertToInt(self.checkedB514());
+                    obj.irregularWork.exemptTaxTimePre = convertToInt(self.checkedB514());
                 } else {
-                    obj.irregularWork.additionTimePre = 0;
-                    obj.irregularWork.calcIncludCarePre = 0;
-                    obj.irregularWork.notDeductLateleavePre = 0;
-                    obj.irregularWork.calcIntervalTimePre = 0;
+                    obj.irregularWork.additionTimePre = self.oldData().irregularWork.additionTimePre;
+                    obj.irregularWork.incChildNursingCarePre = self.oldData().irregularWork.incChildNursingCarePre;
+                    obj.irregularWork.notDeductLateleavePre = self.oldData().irregularWork.notDeductLateleavePre;
+                    obj.irregularWork.exemptTaxTimePre = self.oldData().irregularWork.exemptTaxTimePre;
                 }
                 if (self.enableB79() == true) {
-                    obj.irregularWork.deformatExcValue = convertToInt(self.enableB79());
+                    obj.irregularWork.deformatExcValue = convertToInt(self.selectedIdB79());
                 } else {
-                    obj.irregularWork.deformatExcValuePre = 0;
+                    obj.irregularWork.deformatExcValue = self.oldData().irregularWork.deformatExcValue;
                 }
-                obj.irregularWork.calcActualOperaWork = self.selectedValueB715();
+                obj.irregularWork.calcActualOperationWork = self.selectedValueB715();
                 if (self.selectedValueB715() == 1) {
                     obj.irregularWork.additionTimeWork = convertToInt(self.checkedB718());
-                    obj.irregularWork.calcIncludCareWork = convertToInt(self.checkedB719());
+                    obj.irregularWork.incChildNursingCareWork = convertToInt(self.checkedB719());
                     obj.irregularWork.notDeductLateleaveWork = convertToInt(self.checkedB720());
-                    obj.irregularWork.calsIntervalTimeWork = convertToInt(self.checkedB721());
+                    obj.irregularWork.exemptTaxTimeWork = convertToInt(self.checkedB721());
                     obj.irregularWork.minusAbsenceTimeWork = convertToInt(self.checkedB722());
                 } else {
-                    obj.irregularWork.additionTimeWork = 0;
-                    obj.irregularWork.calcIncludCareWork = 0;
-                    obj.irregularWork.notDeductLateleaveWork = 0;
-                    obj.irregularWork.calsIntervalTimeWork = 0;
-                    obj.irregularWork.minusAbsenceTimeWork = 0;
+                    obj.irregularWork.additionTimeWork = self.oldData().irregularWork.additionTimeWork;
+                    obj.irregularWork.incChildNursingCareWork = self.oldData().irregularWork.incChildNursingCareWork;
+                    obj.irregularWork.notDeductLateleaveWork = self.oldData().irregularWork.notDeductLateleaveWork;
+                    obj.irregularWork.exemptTaxTimeWork = self.oldData().irregularWork.exemptTaxTimeWork;
+                    obj.irregularWork.minusAbsenceTimeWork = self.oldData().irregularWork.minusAbsenceTimeWork;
                 }
-                service.save(obj).done();
+                service.save(obj).done(() => {
+                    self.initData();
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                }
+                ).fail((error) => {
+                   nts.uk.ui.dialog.alertError(error.message);
+                });
             }
 
 

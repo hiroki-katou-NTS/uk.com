@@ -291,7 +291,7 @@ module nts.uk.ui.validation {
                 if (!validateResult.isValid) {
                     result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, 
                                 [ this.name, (!util.isNullOrUndefined(this.constraint.maxLength) 
-                                    ? this.constraint.maxLength : 9999) ]), validateResult.errorCode);
+                                    ? this.charType.getViewLength(this.constraint.maxLength) : 9999) ]), validateResult.errorCode);
                     return result;
                 }
             }
@@ -299,7 +299,7 @@ module nts.uk.ui.validation {
             if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
             	let maxLength = this.constraint.maxLength;
             	if (this.constraint.charType == "Any")
-            		maxLength = maxLength/2;
+            		maxLength = nts.uk.text.getCharTypeByType("Any").getViewLength(maxLength);
                 result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
                             [ this.name, maxLength ]), validateResult.errorCode);
                 return result;
@@ -355,10 +355,6 @@ module nts.uk.ui.validation {
             } else if (!ntsNumber.isNumber(inputText, isDecimalNumber, undefined, message)) {
                 validateFail = true;
             }
-            if(!(/^-?\d*(\.\d+)?$/).test(inputText)){
-                result.fail(nts.uk.resource.getMessage(message.id, [ this.name, min, max, mantissaMaxLength ]), message.id);  
-                return result;
-            }
             var value = isDecimalNumber ?
                 ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
 
@@ -374,6 +370,9 @@ module nts.uk.ui.validation {
                 mantissaMaxLength = this.constraint.mantissaMaxLength;
                 let parts = String(value).split(".");
                 if (parts[1] !== undefined && parts[1].length > mantissaMaxLength) validateFail = true;
+            }
+            if(!(/^-?\d*(\.\d+)?$/).test(inputText)){
+                validateFail = true;
             }
             
             if (validateFail) {
@@ -564,15 +563,18 @@ module nts.uk.ui.validation {
             var minValue: any = time.minutesBased.clock.dayattr.MIN_VALUE;
             var maxValue: any = time.minutesBased.clock.dayattr.MAX_VALUE;
             
-            minValue = time.minutesBased.clock.dayattr.create(
-                time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
-            maxValue = time.minutesBased.clock.dayattr.create(
-                time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);            
-            
+            if (!util.isNullOrUndefined(this.constraint.min)) { 
+                minValue = time.minutesBased.clock.dayattr.create(
+                    time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
+            }
+            if (!util.isNullOrUndefined(this.constraint.max)) {
+                maxValue = time.minutesBased.clock.dayattr.create(
+                    time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);            
+            }
             
             var parsed = time.minutesBased.clock.dayattr.parseString(inputText);
             if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
-                result.fail(nts.uk.resource.getMessage("FND_E_TIME", [ this.name, minValue.fullText, maxValue.fullText ]), "FND_E_TIME");
+                result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [ this.name, minValue.fullText, maxValue.fullText ]), "FND_E_CLOCK");
             } else {
                 result.success(parsed.asMinutes);
             }

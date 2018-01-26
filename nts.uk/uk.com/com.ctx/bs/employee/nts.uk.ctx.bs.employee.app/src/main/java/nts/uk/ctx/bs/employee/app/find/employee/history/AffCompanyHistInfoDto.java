@@ -32,7 +32,7 @@ public class AffCompanyHistInfoDto extends PeregDomainDto {
 			GeneralDate adoptionDate, String recruitmentClassification, GeneralDate retirementAllowanceCalcStartDate) {
 		super(recordId);
 		this.jobEntryDate = jobEntryDate;
-		this.retirementDate = retirementDate;
+		this.retirementDate = retirementDate.equals(GeneralDate.max())?null:retirementDate;
 		this.adoptionDate = adoptionDate;
 		this.recruitmentClassification = recruitmentClassification;
 		this.retirementAllowanceCalcStartDate = retirementAllowanceCalcStartDate;

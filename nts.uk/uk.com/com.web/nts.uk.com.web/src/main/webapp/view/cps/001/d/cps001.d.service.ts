@@ -11,8 +11,8 @@ module cps001.d.service {
         permision: 'ctx/pereg/roles/auth/get-self-auth'
     };
 
-    export function getAvatar(sid) {
-        return ajax(format(parentPath + paths.getAvaOrMap, sid, 0));
+    export function getFullAvatar(sid) {
+        return ajax(format(parentPath + paths.getAvaOrMap, sid, 3));
     }
 
     export function checkEmpFileMnExist(sid) {

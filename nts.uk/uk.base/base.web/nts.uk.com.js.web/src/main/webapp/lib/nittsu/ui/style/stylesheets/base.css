@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -1042,31 +1043,37 @@ button .icon {
   outline: none;
   box-shadow: 0 0 1px 1px #0096f2;
 }
-/* line 18, ../sass/components/_editor.scss */
+/* line 16, ../sass/components/_editor.scss */
+.ntsControl .nts-input.enterkey {
+  background-image: url("images/icons/enter_mark.png");
+  background-position: right;
+  background-repeat: no-repeat;
+}
+/* line 24, ../sass/components/_editor.scss */
 .ntsControl.symbol {
   position: relative;
 }
-/* line 21, ../sass/components/_editor.scss */
+/* line 27, ../sass/components/_editor.scss */
 .ntsControl.symbol:after {
   position: absolute;
   content: attr(data-content);
   top: 6px;
   color: #999;
 }
-/* line 29, ../sass/components/_editor.scss */
+/* line 35, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-left .nts-input {
   padding-left: 20px;
 }
-/* line 31, ../sass/components/_editor.scss */
+/* line 37, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-left:after {
   left: 5px;
   text-align: left;
 }
-/* line 38, ../sass/components/_editor.scss */
+/* line 44, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-right .nts-input {
   padding-right: 20px;
 }
-/* line 40, ../sass/components/_editor.scss */
+/* line 46, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-right:after {
   right: 5px;
   text-align: right;
@@ -2434,16 +2441,21 @@ button.nts-switch-button[disabled]:hover {
   display: block !important;
 }
 /* line 37, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs > .ui-tabs-panel.disappear > div {
+  height: 100% !important;
+  overflow: hidden !important;
+}
+/* line 44, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical {
   display: flex;
 }
-/* line 40, ../sass/components/_tabpanel.scss */
+/* line 47, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical > .ui-tabs-nav {
   float: left;
   padding: .4em 0;
   border-radius: 0;
 }
-/* line 45, ../sass/components/_tabpanel.scss */
+/* line 52, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical > .ui-tabs-nav > li {
   clear: left;
   width: 100%;
@@ -2451,13 +2463,13 @@ button.nts-switch-button[disabled]:hover {
   border-radius: 0;
   border-width: 1px 0;
 }
-/* line 52, ../sass/components/_tabpanel.scss */
+/* line 59, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical > .ui-tabs-nav > li.ui-tabs-active {
   padding: 0;
   margin: 0;
   border-color: #00B050;
 }
-/* line 59, ../sass/components/_tabpanel.scss */
+/* line 66, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs.vertical > .ui-tabs-panel {
   width: 100%;
   overflow: hidden;
@@ -2627,12 +2639,14 @@ button.nts-switch-button[disabled]:hover {
   display: inline-block;
   margin-right: 5px;
   margin: .1em 0;
+  /* 繧｢繧､繧ｳ繝ｳ縺梧ｱｺ縺ｾ繧九∪縺ｧ髱櫁｡ｨ遉ｺ縺ｫ縺励※縺翫￥ */
+  display: none;
 }
-/* line 33, ../sass/components/_dialog.scss */
+/* line 36, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-titlebar-container {
   width: 100%;
 }
-/* line 36, ../sass/components/_dialog.scss */
+/* line 39, ../sass/components/_dialog.scss */
 .ui-dialog .ui-resizable-se {
   width: 14px;
   height: 14px;
@@ -2640,25 +2654,25 @@ button.nts-switch-button[disabled]:hover {
   bottom: 3px;
   background-position: -80px -224px;
 }
-/* line 44, ../sass/components/_dialog.scss */
+/* line 47, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-titlebar-close:active {
   top: calc(50% + 3px);
 }
-/* line 48, ../sass/components/_dialog.scss */
+/* line 51, ../sass/components/_dialog.scss */
 .ui-dialog.no-close-btn .ui-dialog-titlebar-close {
   display: none;
 }
-/* line 52, ../sass/components/_dialog.scss */
+/* line 55, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content {
   padding: 20px;
 }
-/* line 55, ../sass/components/_dialog.scss */
+/* line 58, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog {
   min-width: 250px;
   padding: 0;
   position: relative;
 }
-/* line 60, ../sass/components/_dialog.scss */
+/* line 63, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog > .text {
   display: inline-block;
   margin: 20px;
@@ -2668,14 +2682,14 @@ button.nts-switch-button[disabled]:hover {
   overflow-y: auto;
   line-height: 22px;
 }
-/* line 69, ../sass/components/_dialog.scss */
+/* line 72, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog > .control {
   right: 10px;
   bottom: 0px;
   position: absolute;
   color: gray;
 }
-/* line 78, ../sass/components/_dialog.scss */
+/* line 81, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane {
   padding: 10px 0;
   margin: 0px;
@@ -2683,11 +2697,11 @@ button.nts-switch-button[disabled]:hover {
   text-align: center;
   position: relative;
 }
-/* line 85, ../sass/components/_dialog.scss */
+/* line 88, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane .ui-dialog-buttonset {
   float: none;
 }
-/* line 89, ../sass/components/_dialog.scss */
+/* line 92, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane > .ui-dialog-buttonpane-resize {
   right: 0px;
   bottom: 0px;
@@ -2695,23 +2709,23 @@ button.nts-switch-button[disabled]:hover {
   max-width: 20px;
   max-height: 20px;
 }
-/* line 97, ../sass/components/_dialog.scss */
+/* line 100, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane button {
   margin: 0 10px;
   min-width: 80px;
   font-family: "Meiryo UI";
 }
-/* line 104, ../sass/components/_dialog.scss */
+/* line 107, ../sass/components/_dialog.scss */
 .ui-dialog #error-board {
   overflow: hidden;
 }
-/* line 107, ../sass/components/_dialog.scss */
+/* line 110, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table {
   border-collapse: collapse;
   width: 100%;
   margin: 0;
 }
-/* line 113, ../sass/components/_dialog.scss */
+/* line 116, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,
 .ui-dialog #error-board table td {
   border: solid 1px #bbb;
@@ -2722,20 +2736,20 @@ button.nts-switch-button[disabled]:hover {
   box-sizing: border-box;
   cursor: pointer;
 }
-/* line 124, ../sass/components/_dialog.scss */
+/* line 127, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,
 .ui-dialog #error-board table td:first-child {
   background-color: #A4EEB0;
 }
-/* line 129, ../sass/components/_dialog.scss */
+/* line 132, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table thead tr {
   position: relative;
 }
-/* line 134, ../sass/components/_dialog.scss */
+/* line 137, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table tbody {
   overflow: auto;
 }
-/* line 138, ../sass/components/_dialog.scss */
+/* line 141, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table tbody tr td:last-child {
   color: gray;
 }
@@ -3178,7 +3192,10 @@ button.nts-switch-button[disabled]:hover {
 /* line 29, ../sass/components/_searchbox.scss */
 .nts-searchbbox-wrapper div.input-wrapper {
   display: inline-block;
-  line-height: 32px;
+}
+/* line 32, ../sass/components/_searchbox.scss */
+.nts-searchbbox-wrapper div {
+  vertical-align: middle !important;
 }
 
 /*!
@@ -3606,7 +3623,7 @@ button.nts-switch-button[disabled]:hover {
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,
 .nts-grid tr td.ui-state-hover,
 .nts-grid tr.ui-ig-altrecord td.ui-state-hover {
-  background-color: aqua;
+  background-color: #C5F1F7;
   border-color: #AAB7B8;
 }
 
@@ -3623,12 +3640,31 @@ button.nts-switch-button[disabled]:hover {
   color: gray;
 }
 
-/* line 30, ../sass/components/_ntsgrid.scss */
+/* line 31, ../sass/components/_ntsgrid.scss */
+.nts-grid-wrapper td.currency-symbol:before,
+.nts-grid td.currency-symbol:before {
+  content: '\00a5';
+  top: 6px;
+  color: #999;
+  padding-right: 4px;
+}
+
+/* line 39, ../sass/components/_ntsgrid.scss */
+.nts-grid-wrapper span.input-currency-symbol:before,
+.nts-grid span.input-currency-symbol:before {
+  position: absolute;
+  content: '\00a5';
+  top: 4px;
+  left: 2px;
+  color: #999;
+}
+
+/* line 48, ../sass/components/_ntsgrid.scss */
 .ui-iggrid .ui-iggrid-tablebody td {
   height: 21px;
 }
 
-/* line 33, ../sass/components/_ntsgrid.scss */
+/* line 51, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-calc,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-calc,
 .nts-grid-wrapper table tr td.ntsgrid-calc.ntsgrid-disable,
@@ -3644,7 +3680,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: purple;
 }
 
-/* line 48, ../sass/components/_ntsgrid.scss */
+/* line 66, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-reflect,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-reflect,
 .nts-grid-wrapper table tr td.ntsgrid-reflect.ntsgrid-calc,
@@ -3664,7 +3700,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: green;
 }
 
-/* line 67, ../sass/components/_ntsgrid.scss */
+/* line 85, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-other,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-other.ntsgrid-reflect,
@@ -3688,7 +3724,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: orange;
 }
 
-/* line 90, ../sass/components/_ntsgrid.scss */
+/* line 108, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-manual-edit-target,
 .nts-grid-wrapper table tr td.ntsgrid-manual-edit-target.ntsgrid-manual-edit-other,
@@ -3716,7 +3752,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: pink;
 }
 
-/* line 117, ../sass/components/_ntsgrid.scss */
+/* line 135, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-alarm,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-alarm,
 .nts-grid-wrapper table tr td.ntsgrid-alarm.ntsgrid-manual-edit-target,
@@ -3748,7 +3784,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: yellow;
 }
 
-/* line 148, ../sass/components/_ntsgrid.scss */
+/* line 166, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ntsgrid-error,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ntsgrid-error,
 .nts-grid-wrapper table tr td.ntsgrid-error.ntsgrid-alarm,
@@ -3784,7 +3820,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: red;
 }
 
-/* line 183, ../sass/components/_ntsgrid.scss */
+/* line 201, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-iggrid-selectedcell,
 .nts-grid-wrapper table tr td.ui-iggrid-selectedcell.ntsgrid-error,
@@ -3824,30 +3860,30 @@ button.nts-switch-button[disabled]:hover {
   background-color: #007fff;
 }
 
-/* line 222, ../sass/components/_ntsgrid.scss */
+/* line 240, ../sass/components/_ntsgrid.scss */
 .nts-image-container, .nts-fleximage-container {
   height: 100%;
   text-align: center;
 }
 
-/* line 227, ../sass/components/_ntsgrid.scss */
+/* line 245, ../sass/components/_ntsgrid.scss */
 .nts-editor-container {
   height: 100%;
   margin-left: -1px;
 }
 
-/* line 232, ../sass/components/_ntsgrid.scss */
+/* line 250, ../sass/components/_ntsgrid.scss */
 .nts-editor-wrapper {
   width: 100%;
   margin: 1px;
 }
 
-/* line 241, ../sass/components/_ntsgrid.scss */
+/* line 259, ../sass/components/_ntsgrid.scss */
 .nts-grid-wrapper table tr td .nts-grid.control {
   height: 35px;
 }
 
-/* line 249, ../sass/components/_ntsgrid.scss */
+/* line 267, ../sass/components/_ntsgrid.scss */
 .text-limited {
   white-space: nowrap;
 }
@@ -4584,6 +4620,7 @@ body * {
   top: 0;
   width: 100%;
   white-space: nowrap;
+  z-index: 10000000;
 }
 
 #header #menu-header #logo-area {
@@ -4675,7 +4712,6 @@ body * {
 	display: none;
 	position: absolute;
 	top: 30px;
-	left: -124px;
 	z-index: 20000;
 	margin-left: 0;
 	list-style: none;
@@ -4686,7 +4722,7 @@ body * {
 }
 
 #header #menu-header #logo-area > #user-info > #user > .user-settings > ul.user-options {
-	left: 71px;
+	right: 12px;
 }
 
 #header #menu-header #nav-area {
@@ -4778,7 +4814,7 @@ body * {
 
 /* Title menu */
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div {
-	width: 180px;
+	width: 192px;
 	position: absolute;
 	margin: 0px 8px 4px 2px;
 	top: 5px;
@@ -4803,7 +4839,7 @@ body * {
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div > li.title-item {
 	cursor: pointer;
 	padding: 8px;
-	white-space: nowrap;
+	white-space: pre-wrap;
 }
 
 #header #menu-header #nav-area #menu-nav > li.category > ul.menu-items > div.title-menu > div.title-div > li.title-item:hover {

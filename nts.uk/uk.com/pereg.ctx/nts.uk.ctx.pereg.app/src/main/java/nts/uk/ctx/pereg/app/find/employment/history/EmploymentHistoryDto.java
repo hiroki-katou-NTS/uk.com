@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.app.find.employment.history;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
+import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
@@ -42,7 +43,7 @@ public class EmploymentHistoryDto extends PeregDomainDto {
 	public static EmploymentHistoryDto createFromDomain(DateHistoryItem dateHistoryItem,
 			EmploymentHistoryItem historyItem) {
 		return new EmploymentHistoryDto(historyItem.getHistoryId(), dateHistoryItem.start(), dateHistoryItem.end(),
-				historyItem.getEmploymentCode().v(), historyItem.getSalarySegment().value);
+				historyItem.getEmploymentCode().v(), historyItem.getSalarySegment() != null? historyItem.getSalarySegment().value: ConstantUtils.ENUM_UNDEFINE_VALUE );
 	}
 
 }

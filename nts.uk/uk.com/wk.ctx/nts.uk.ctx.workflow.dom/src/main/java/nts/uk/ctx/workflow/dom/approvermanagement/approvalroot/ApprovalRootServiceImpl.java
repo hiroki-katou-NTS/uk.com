@@ -102,8 +102,8 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 			if (!perAppRootsOfCommon.isPresent()) {
 				// 所属職場を含む上位職場を取得
 				List<String> wpkList = this.employeeAdapter.findWpkIdsBySid(cid, sid, baseDate);
-				for (String wｋｐId : wpkList) {
-					Optional<WorkplaceApprovalRoot> wkpAppRoots = this.wkpApprovalRootRepository.findByBaseDate(cid, wｋｐId,
+				for (String wkpId : wpkList) {
+					Optional<WorkplaceApprovalRoot> wkpAppRoots = this.wkpApprovalRootRepository.findByBaseDate(cid, wkpId,
 							baseDate, applicationType, rootAtr);
 					if (wkpAppRoots.isPresent()) {
 						// 2.承認ルートを整理する
@@ -114,7 +114,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 					}
 
 					Optional<WorkplaceApprovalRoot> wkpAppRootsOfCom = this.wkpApprovalRootRepository
-							.findByBaseDateOfCommon(cid, wｋｐId, baseDate);
+							.findByBaseDateOfCommon(cid, wkpId, baseDate);
 					if (wkpAppRootsOfCom.isPresent()) {
 						// 2.承認ルートを整理する
 						result = Arrays.asList(wkpAppRootsOfCom.get()).stream().map(x -> ApprovalRootOutput.convertFromWkpData(x))

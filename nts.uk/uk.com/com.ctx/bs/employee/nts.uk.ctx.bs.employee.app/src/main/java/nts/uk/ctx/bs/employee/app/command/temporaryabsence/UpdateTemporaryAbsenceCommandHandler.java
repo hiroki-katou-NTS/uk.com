@@ -47,21 +47,23 @@ public class UpdateTemporaryAbsenceCommandHandler extends CommandHandler<UpdateT
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		// Update history table
-		Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getByEmployeeId(companyId,
-				command.getEmployeeId());
-		if (!existHist.isPresent()) {
-			throw new RuntimeException("invalid TempAbsenceHistory");
+		// In case of date period are exist in the screen
+		if (command.getStartDate() != null){
+			Optional<TempAbsenceHistory> existHist = temporaryAbsenceHistRepository.getByEmployeeId(companyId,
+					command.getEmployeeId());
+			if (!existHist.isPresent()) {
+				throw new RuntimeException("invalid TempAbsenceHistory");
+			}
+	
+			Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getDateHistoryItems().stream()
+					.filter(h -> h.identifier().equals(command.getHistoyId())).findFirst();
+	
+			if (!itemToBeUpdate.isPresent()) {
+				throw new RuntimeException("invalid TempAbsenceHistory");
+			}
+			existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
+			tempAbsHistoryService.update(existHist.get(), itemToBeUpdate.get());
 		}
-
-		Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getDateHistoryItems().stream()
-				.filter(h -> h.identifier().equals(command.getHistoyId())).findFirst();
-
-		if (!itemToBeUpdate.isPresent()) {
-			throw new RuntimeException("invalid TempAbsenceHistory");
-		}
-		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()));
-		tempAbsHistoryService.update(existHist.get(), itemToBeUpdate.get());
-
 		BigDecimal falseValue = new BigDecimal(0);
 		Boolean multiple = null;
 		if (command.getMultiple() != null) {

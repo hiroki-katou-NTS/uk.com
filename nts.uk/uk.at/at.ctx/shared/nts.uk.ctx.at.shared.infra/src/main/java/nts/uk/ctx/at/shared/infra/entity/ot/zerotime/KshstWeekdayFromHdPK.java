@@ -24,5 +24,5 @@ public class KshstWeekdayFromHdPK implements Serializable {
 
 	/** 変更前の残業枠NO */
 	@Column(name = "OVERTIME_FRAME_NO")
-	public BigDecimal overTimeFrameNo;
+	public BigDecimal overworkFrameNo;
 }

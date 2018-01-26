@@ -706,9 +706,9 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// current month between startMonth and endMonth
-		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
 				root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.strYM), closureYm.v()));
-		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(KclmtClosureHist_.endYM), closureYm.v()));
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KclmtClosureHist_.endYM), closureYm.v()));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

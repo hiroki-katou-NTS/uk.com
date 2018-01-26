@@ -24,7 +24,7 @@
 }
 /*Set margin button */
 .location-button-009 {
-	margin: 0px 0px 0px -150px;
+	margin: 0px 0px 0px -130px;
 }
 
 .link-label {
@@ -121,4 +121,15 @@ div.form-label.broken {
 }
 .clsWorkType{
 	margin-left: 50px !important;
+}
+
+.overlay-reason {
+	position: relative;
+	z-index: 1;
+}
+.mode-style{
+	display: inline-block;
+}
+.inputTime-kaf009 {
+	width: 85px !important;	
 }

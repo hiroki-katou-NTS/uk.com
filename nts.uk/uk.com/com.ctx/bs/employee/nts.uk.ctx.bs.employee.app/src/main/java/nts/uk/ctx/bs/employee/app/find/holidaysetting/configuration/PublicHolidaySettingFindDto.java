@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.find.holidaysetting.configuration;
 
 import lombok.Data;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementClassification;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementStartDate;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySettingSetMemento;
 
 /**
@@ -21,6 +22,21 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 	
 	/** The public hd management classification. */
 	private int publicHdManagementClassification;
+	
+	/** The is weekly hd check. */
+	private int isWeeklyHdCheck;
+	
+	/** The period. */
+	private int period;
+	
+	/** The full date. */
+	private String fullDate;
+	
+	/** The day month. */
+	private int dayMonth;
+	
+	/** The determine start D. */
+	private int determineStartD;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySettingSetMemento#setCompanyID(java.lang.String)
@@ -48,6 +64,23 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 	public void setPublicHdManagementClassification(
 			PublicHolidayManagementClassification publicHdManagementClassification) {
 		this.publicHdManagementClassification = publicHdManagementClassification.value;
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySettingSetMemento#setIsWeeklyHdCheck(boolean)
+	 */
+	@Override
+	public void setIsWeeklyHdCheck(boolean isWeeklyHdCheck) {
+		if(isWeeklyHdCheck){
+			this.isWeeklyHdCheck = TRUE_VALUE;
+		}
+		this.isWeeklyHdCheck = FALSE_VALUE;
+	}
+
+	@Override
+	public void setPublicHolidayManagementStartDate(PublicHolidayManagementStartDate publicHolidayManagementStartDate) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

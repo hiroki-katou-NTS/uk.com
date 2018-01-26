@@ -6,7 +6,7 @@ module nts.uk.at.view.kdw001.h {
             listClassification: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;//nts.uk.ui.NtsGridListColumn
             currentSelectedRow: KnockoutObservable<any>;
-
+            listSid : Array<any>;
             //param
             empCalAndSumExecLogID: string;
             executionStartTime: string;
@@ -41,10 +41,10 @@ module nts.uk.at.view.kdw001.h {
                 }
                 //list
                 self.currentSelectedRow = ko.observable(null);
-
+                self.listSid = [];
                 self.columns = ko.observableArray([
-                    { headerText: getText('KDW001_33'), key: 'employeeID', width: 100 },
-                    { headerText: getText('KDW001_35'), key: 'resourceID', width: 100 },
+                    { headerText: getText('KDW001_33'), key: 'personCode', width: 200 },
+                    { headerText: getText('KDW001_35'), key: 'personName', width: 100 },
                     { headerText: getText('KDW001_36'), key: 'disposalDay', width: 100 },
                     { headerText: getText('KDW001_37'), key: 'messageError', width: 199 },
                     { headerText: '', key: 'GUID', width: 1 ,hirren :true },
@@ -75,6 +75,10 @@ module nts.uk.at.view.kdw001.h {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getAllErrMessageInfoByEmpID(empCalAndSumExeLogId).done(function(data) {
+                    _.each(data, (value) => {
+                        if (self.listSid.indexOf(value.employeeID) == -1)
+                            self.listSid.push(value.employeeID);
+                    });
                     //lọc lấy theo executionContent
                     let temp = [];
                     for (let i = 0; i < data.length; i++) {
@@ -85,19 +89,49 @@ module nts.uk.at.view.kdw001.h {
                                     data[i].resourceID,
                                     data[i].executionContent,
                                     data[i].disposalDay,
-                                    data[i].messageError
+                                    data[i].messageError,
+                                    "",
+                                    ""
                                 );
                             temp.push(item);
                         }
                     }
                     self.listErrMessageInfo(_.orderBy(temp, ["employeeID", "disposalDay"], ["asc", "asc"]));
-                    dfd.resolve();
+                    self.getListPersonInforLog(self.listSid).done(function(){
+                        dfd.resolve();    
+                    });
                 }).fail(function(res: any) {
                     dfd.reject();
                     nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                 });
                 return dfd.promise();
             }
+            
+            /**
+             * get all person info 
+             */
+            getListPersonInforLog(listSid:Array<string>){
+                let self = this;
+                let dfd = $.Deferred<any>();
+                service.getListPersonInforLog(listSid).done(function(data){ 
+                    _.each(self.listErrMessageInfo(), (value) => {
+                            _.find(data, function(person) { 
+                                if(value.employeeID == person.employeeId){
+                                    value.personCode = person.employeeCode;
+                                    value.personName = person.namePerson;    
+                                }
+                            });
+                        }); 
+                    self.listErrMessageInfo.valueHasMutated();
+                    dfd.resolve(data);
+                }).fail(function(res: any) {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                });
+                return dfd.promise();
+                
+            }
+            
             closeDialog(): void {
                 nts.uk.ui.windows.close();
             }
@@ -118,8 +152,11 @@ module nts.uk.at.view.kdw001.h {
             executionContent :number;
             disposalDay :string;
             messageError :string;
+            personCode : string;
+            personName : string;
             constructor(employeeID: string,empCalAndSumExecLogID : string,resourceID : string,
-            executionContent:number,disposalDay:string,messageError:string){
+            executionContent:number,disposalDay:string,messageError:string,
+            personCode : string,personName : string){
                 this.employeeID = employeeID;
                 this.empCalAndSumExecLogID = empCalAndSumExecLogID;
                 this.resourceID = resourceID;
@@ -127,6 +164,8 @@ module nts.uk.at.view.kdw001.h {
                 this.disposalDay = disposalDay;
                 this.messageError = messageError;    
                 this.GUID = nts.uk.util.randomId();
+                this.personCode = personCode;
+                this.personName = personName;
             }
         }//end classSetInforReflAprResult
     }

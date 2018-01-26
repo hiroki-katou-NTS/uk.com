@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -23,7 +23,7 @@ public class MidNightTimeSheet extends CalculationTimeSheet{
 //	private TimeWithDayAttr end;
 //	private TimeSpanForCalc timeSpan;
 	
-	public MidNightTimeSheet(TimeSpanWithRounding timeSheet, TimeSpanForCalc calculationTimeSheet,List<TimeSheetOfDeductionItem> deductionSheets,
+	public MidNightTimeSheet(TimeZoneRounding timeSheet, TimeSpanForCalc calculationTimeSheet,List<TimeSheetOfDeductionItem> deductionSheets,
 			List<BonusPayTimesheet> bonusPayTimeSheet,List<SpecBonusPayTimesheet> specifiedBonusPayTimeSheet,Optional<MidNightTimeSheet> midNighttimeSheet) {
 		super(timeSheet, calculationTimeSheet,deductionSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 	}

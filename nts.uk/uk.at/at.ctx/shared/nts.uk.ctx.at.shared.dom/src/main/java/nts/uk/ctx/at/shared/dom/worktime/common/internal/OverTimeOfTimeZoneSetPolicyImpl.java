@@ -9,11 +9,11 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 
 /**
  * The Class OverTimeOfTimeZoneSetPolicyImpl.
@@ -34,18 +34,22 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 	 * nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet, EmTimeZoneSet emTimezone) {
+	public void validate(PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet) {
 		val otTimezone = otSet.getTimezone();
 		val shift1Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftOne();
 		val shift2Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftTwo();
 
 		// validate msg_516
-		this.tzrPolicy.validateRange(predTime, otSet.getTimezone());
+		if (this.tzrPolicy.validateRange(predTime, otSet.getTimezone())) {
+			throw new BusinessException("Msg_516", "KMK003_89");
+		}
+			
 
 		// validate msg_519
 		if (!predTime.isPredetermine() && predTime.getPrescribedTimezoneSetting().getLstTimezone().stream()
-				.anyMatch(shift -> otTimezone.isBetweenOrEqual(shift))) {
-			throw new BusinessException("Msg_519");
+				.filter(shift -> shift.getUseAtr().equals(UseSetting.USE))
+				.anyMatch(shift -> otTimezone.isOverlap(shift))) {
+			throw new BusinessException("Msg_519","KMK003_89");
 		}
 
 		// validate msg_779

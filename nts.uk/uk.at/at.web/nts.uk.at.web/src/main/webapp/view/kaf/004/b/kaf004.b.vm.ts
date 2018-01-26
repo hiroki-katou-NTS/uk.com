@@ -1,13 +1,15 @@
 module nts.uk.at.view.kaf004.b.viewmodel {
     import kaf002 = nts.uk.at.view.kaf002;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     
     const employmentRootAtr: number = 1; // EmploymentRootAtr: Application
     const applicationType: number = 9; // Application Type: Stamp Application
     
     export class ScreenModel {
+        dateType: string = 'YYYY/MM/DD';
         // date editor
-        date: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
+        date: KnockoutObservable<string> = ko.observable(moment().format(this.dateType));
         //latetime editor
         lateTime1: KnockoutObservable<number> = ko.observable(null);
         lateTime2: KnockoutObservable<number> = ko.observable(null);
@@ -33,7 +35,6 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         showScreen: string;
         employeeID: string = '';
         applicantName: KnockoutObservable<string> = ko.observable("");
-        approvalList: Array<vmbase.AppApprovalPhase> = [];
         kaf000_a2: nts.uk.at.view.kaf000.a.viewmodel.ScreenModel;
 
         //Chua lay dc thong tin  fix cứng time
@@ -53,16 +54,20 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     self.employeeID,
                     employmentRootAtr,
                     applicationType,
-                    moment.utc().format("YYYY/MM/DD")).done(() => {
+                    moment.utc().format(self.dateType)).done(() => {
                         nts.uk.ui.block.clear();    
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                     });
             });
             self.date.subscribe(value => {
-                self.kaf000_a2.objApprovalRootInput().standardDate = moment(value).format("YYYY/MM/DD");
-                self.kaf000_a2.getAllApprovalRoot();
-                self.kaf000_a2.getMessageDeadline(9, value);
+                nts.uk.ui.block.invisible();
+                self.kaf000_a2.getAppDataDate(9, moment(value).format(self.dateType), false)
+                .done(()=>{
+                    nts.uk.ui.block.clear();         
+                }).fail(()=>{
+                    nts.uk.ui.block.clear();    
+                });
             });
         }
 
@@ -88,7 +93,13 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                 self.early2.subscribe(value => { $("#inpEarlyTime2").trigger("validate"); });
                 dfd.resolve(data);
             }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                if (res.messageId == 'Msg_426') {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function () {
+                        nts.uk.ui.block.clear();
+                    });
+                }else {
+                    nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                }
                 dfd.reject(res);
             });
             return dfd.promise();
@@ -133,7 +144,9 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         let reasonText = _.find(self.ListTypeReason(),function(data){return data.reasonID == self.selectedCode()});
                         txtReasonTmp = reasonText.reasonTemp;
                     }
-                    
+                    if(!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(txtReasonTmp) ? txtReasonTmp + "\n" + self.appreason() : self.appreason(),"#appReason")){
+                        return;
+                    }
                     let lateOrLeaveEarly: LateOrLeaveEarly = {
                         prePostAtr: prePostAtr, 
                         applicationDate: self.date(),
@@ -147,8 +160,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         early2: self.early2() ? 1 : 0,
                         earlyTime2: self.earlyTime2(),
                         reasonTemp: txtReasonTmp,
-                        appReason: self.appreason(),
-                        appApprovalPhaseCmds: self.kaf000_a2.approvalList
+                        appReason: self.appreason()
                     };
                     service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){

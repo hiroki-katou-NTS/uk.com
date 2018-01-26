@@ -1,12 +1,9 @@
 package nts.uk.ctx.at.request.app.command.application.gobackdirectly;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.AppApprovalPhaseCmd;
 
 @Getter
 @Setter
@@ -36,11 +33,11 @@ public class InsertGoBackDirectlyCommand {
 	/**
 	 * 勤務時間開始1
 	 */
-	int workTimeStart1;
+	Integer workTimeStart1;
 	/**
 	 * 勤務時間終了1
 	 */
-	int workTimeEnd1;
+	Integer workTimeEnd1;
 	/**
 	 * 勤務場所選択1
 	 */
@@ -56,11 +53,11 @@ public class InsertGoBackDirectlyCommand {
 	/**
 	 * 勤務時間開始2
 	 */
-	int workTimeStart2;
+	Integer workTimeStart2;
 	/**
 	 * 勤務時間終了2
 	 */
-	int workTimeEnd2;
+	Integer workTimeEnd2;
 	/**
 	 * 勤務場所選択２
 	 */

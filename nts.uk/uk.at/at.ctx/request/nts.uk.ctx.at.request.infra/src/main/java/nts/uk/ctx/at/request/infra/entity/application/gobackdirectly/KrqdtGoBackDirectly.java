@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.infra.entity.application.gobackdirectly;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -20,8 +22,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name="KRQDT_GO_BACK_DIRECTLY")
-public class KrqdtGoBackDirectly extends UkJpaEntity{
+public class KrqdtGoBackDirectly extends UkJpaEntity implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@EmbeddedId
 	public KrqdtGoBackDirectlyPK krqdtGoBackDirectlyPK;
 	
@@ -39,10 +46,10 @@ public class KrqdtGoBackDirectly extends UkJpaEntity{
 	public int workChangeAtr;
 	
 	@Column(name="WORK_TIME_START1")
-	public int workTimeStart1;
+	public Integer workTimeStart1;
 	
 	@Column(name="WORK_TIME_END1")
-	public int workTimeEnd1;
+	public Integer workTimeEnd1;
 	
 	@Column(name="WORK_LOCATION_CD1")
 	public String workLocationCd1;
@@ -54,10 +61,10 @@ public class KrqdtGoBackDirectly extends UkJpaEntity{
 	public int backHomeAtr1;
 	
 	@Column(name="WORK_TIME_START2")
-	public int workTimeStart2;
+	public Integer workTimeStart2;
 	
 	@Column(name="WORK_TIME_END2")
-	public int workTimeEnd2;
+	public Integer workTimeEnd2;
 
 	@Column(name="WORK_LOCATION_CD2")
 	public String workLocationCd2;

@@ -12,4 +12,5 @@ public class PerInfoCtgWithItemsNameDto {
 	private int isFixed;
 	private int personEmployeeType;
 	private List<String> itemNameList;
+	private boolean isChangeAbleCtgType;
 }

@@ -26,6 +26,8 @@ import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -54,6 +56,9 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 
 	@Inject
 	private BPTimeItemRepository bPTimeItemRepository;
+
+	@Inject
+	private OvertimeWorkFrameRepository overtimeFrameRepository;
 
 	@Inject
 	private OptionalItemAdapter optionalItemAdapter;
@@ -88,19 +93,13 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 				.getByAttendanceId(dailyAttendanceItemIds);
 
 		// // get list frame No 0
-		// Map<Integer, AttendanceItemLinking> frameNoOverTimeMap =
-		// attendanceItemAndFrameNos.stream()
-		// .filter(item -> item.getFrameCategory().value == 0 &&
-		// item.getTypeOfAttendanceItem().value == 1)
-		// .collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId,
-		// x -> x));
+		Map<Integer, AttendanceItemLinking> frameNoOverTimeMap = attendanceItemAndFrameNos.stream()
+				.filter(item -> item.getFrameCategory().value == 0 && item.getTypeOfAttendanceItem().value == 1)
+				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// // get list frame No 1
-		// Map<Integer, AttendanceItemLinking> frameNoOverTimeTransferMap =
-		// attendanceItemAndFrameNos.stream()
-		// .filter(item -> item.getFrameCategory().value == 1 &&
-		// item.getTypeOfAttendanceItem().value == 1)
-		// .collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId,
-		// x -> x));
+		Map<Integer, AttendanceItemLinking> frameNoOverTimeTransferMap = attendanceItemAndFrameNos.stream()
+				.filter(item -> item.getFrameCategory().value == 1 && item.getTypeOfAttendanceItem().value == 1)
+				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// get list frame No 2
 		Map<Integer, AttendanceItemLinking> frameNoLeaveMap = attendanceItemAndFrameNos.stream()
 				.filter(item -> item.getFrameCategory().value == 2 && item.getTypeOfAttendanceItem().value == 1)
@@ -149,18 +148,12 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 				return attendanceItem;
 			}).collect(Collectors.toList());
 		}
-		// 残業 0
-		// waiting New wave - TODO
-		// Map<Integer, OvertimeFrame> overTimes = this.overtimeFrameRepository
-		// .getOvertimeFrameByFrameNos(companyId, frameNos).stream()
-		// .collect(Collectors.toMap(OvertimeFrame::getOtFrameNo, x -> x));
-
-		// 残業振替 1
-		// waiting New wave - TODO
-		// Map<Integer, OvertimeFrame> overTimeTransfers =
-		// this.overtimeFrameRepository
-		// .getOvertimeFrameByFrameNos(companyId, frameNos).stream()
-		// .collect(Collectors.toMap(OvertimeFrame::getOtFrameNo, x -> x));
+		
+		List<OvertimeWorkFrame> overtimeWorkFrames = this.overtimeFrameRepository
+				.getOvertimeWorkFrameByFrameNos(companyId, frameNos);
+		Function<OvertimeWorkFrame, Integer> function = overTime -> overTime.getOvertimeWorkFrNo().v().intValue();
+		// 残業 0 + 残業振替 1
+		Map<Integer, OvertimeWorkFrame> overTimes = overtimeWorkFrames.stream().collect(Collectors.toMap(function, x -> x));
 
 		List<WorkdayoffFrame> workdayoffFrames = this.workdayoffFrameRepository
 				.getWorkdayoffFrameBy(new CompanyId(companyId), frameNos);
@@ -203,36 +196,29 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 			attendanceDto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
 			attendanceDto.setAttendanceItemId(item.getAttendanceItemId());
 			attendanceDto.setAttendanceItemName(item.getAttendanceName());
-			// if (frameNoOverTimeMap.containsKey(item.getAttendanceItemId())
-			// &&
-			// overTimes.containsKey(frameNoOverTimeMap.get(item.getAttendanceItemId()).getFrameNo().v()))
-			// {
-			// attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-			// overTimes.get(frameNoOverTimeMap.get(item.getAttendanceItemId()).getFrameNo().v())
-			// .getOvertimeFrameName()));
-			// attendanceDto
-			// .setFrameCategory(frameNoOverTimeMap.get(item.getAttendanceItemId()).getFrameCategory().value);
-			// attendanceDto.setTypeOfAttendanceItem(
-			// frameNoOverTimeMap.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
-			// } else if
-			// (frameNoOverTimeTransferMap.containsKey(item.getAttendanceItemId())
-			// && overTimeTransfers
-			// .containsKey(frameNoOverTimeTransferMap.get(item.getAttendanceItemId()).getFrameNo().v()))
-			// {
-			// attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-			// overTimeTransfers
-			// .get(frameNoOverTimeTransferMap.get(item.getAttendanceItemId()).getFrameNo().v())
-			// .getOvertimeFrameName()));
-			// attendanceDto.setFrameCategory(
-			// frameNoOverTimeTransferMap.get(item.getAttendanceItemId()).getFrameCategory().value);
-			// attendanceDto.setTypeOfAttendanceItem(
-			// frameNoOverTimeTransferMap.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
-			// }
-			// else
+			if (frameNoOverTimeMap.containsKey(item.getAttendanceItemId())
+					&& overTimes.containsKey(frameNoOverTimeMap.get(item.getAttendanceItemId()).getFrameNo().v())) {
+				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
+						overTimes.get(frameNoOverTimeMap.get(item.getAttendanceItemId()).getFrameNo().v())
+								.getOvertimeWorkFrName()));
+				attendanceDto
+						.setFrameCategory(frameNoOverTimeMap.get(item.getAttendanceItemId()).getFrameCategory().value);
+				attendanceDto.setTypeOfAttendanceItem(
+						frameNoOverTimeMap.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
+			} else if (frameNoOverTimeTransferMap.containsKey(item.getAttendanceItemId()) && overTimes
+					.containsKey(frameNoOverTimeTransferMap.get(item.getAttendanceItemId()).getFrameNo().v())) {
+				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
+						overTimes.get(frameNoOverTimeTransferMap.get(item.getAttendanceItemId()).getFrameNo().v())
+								.getTransferFrName()));
+				attendanceDto.setFrameCategory(
+						frameNoOverTimeTransferMap.get(item.getAttendanceItemId()).getFrameCategory().value);
+				attendanceDto.setTypeOfAttendanceItem(
+						frameNoOverTimeTransferMap.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
+			} else
 			if (frameNoLeaveMap.containsKey(item.getAttendanceItemId())
 					&& leave.containsKey(frameNoLeaveMap.get(item.getAttendanceItemId()).getFrameNo().v())) {
 				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(), leave
-						.get(frameNoLeaveMap.get(item.getAttendanceItemId()).getFrameNo().v()).getTransferFrName()));
+						.get(frameNoLeaveMap.get(item.getAttendanceItemId()).getFrameNo().v()).getWorkdayoffFrName()));
 				attendanceDto
 						.setFrameCategory(frameNoLeaveMap.get(item.getAttendanceItemId()).getFrameCategory().value);
 				attendanceDto.setTypeOfAttendanceItem(
@@ -292,8 +278,8 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 						frameNoOptionalItemMap.get(item.getAttendanceItemId()).getFrameCategory().value);
 				attendanceDto.setTypeOfAttendanceItem(
 						frameNoOptionalItemMap.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
-			} else if(frameNoSpecificDateMap.containsKey(item.getAttendanceItemId()) && specificDates
-					.containsKey(frameNoSpecificDateMap.get(item.getAttendanceItemId()).getFrameNo().v())){
+			} else if (frameNoSpecificDateMap.containsKey(item.getAttendanceItemId()) && specificDates
+					.containsKey(frameNoSpecificDateMap.get(item.getAttendanceItemId()).getFrameNo().v())) {
 				attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
 						specificDates.get(frameNoSpecificDateMap.get(item.getAttendanceItemId()).getFrameNo().v())
 								.getSpecificName()));
@@ -301,8 +287,7 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 						frameNoSpecificDateMap.get(item.getAttendanceItemId()).getFrameCategory().value);
 				attendanceDto.setTypeOfAttendanceItem(
 						frameNoSpecificDateMap.get(item.getAttendanceItemId()).getTypeOfAttendanceItem().value);
-			} 
-			else {
+			} else {
 				attendanceDto.setFrameCategory(0);
 				attendanceDto.setTypeOfAttendanceItem(0);
 			}

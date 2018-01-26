@@ -264,13 +264,13 @@ module cmm001.a {
                         $('#companyName').focus();
                     });
                     self.start().then(function() {
+                        self.display.valueHasMutated();
                         self.currentCompanyCode(code);
                     });
                 }).fail(function(error) {
                     if (error.messageId == 'Msg_810') {
                         $('#checked2').addClass("error");
                         $('#checked2').ntsError('set', { messageId: "Msg_810" });
-                        //                           $('#checked2').focus();
                     }
                 }).always(() => {
                     nts.uk.ui.block.clear();
@@ -282,8 +282,9 @@ module cmm001.a {
                         $('#companyName').focus();
                     });
                     self.start().then(function() {
-                        self.currentCompanyCode(code);
                         $('#companyName').focus();
+                        self.display.valueHasMutated();
+                        self.currentCompanyCode(code);
                     });
                 }).fail(function(error) {
                     if (error.messageId == 'Msg_809') {
@@ -304,24 +305,27 @@ module cmm001.a {
             let self = this;
             // if don't have post code to find
             if (self.currentCompany().addinfor().postCd() == "") {
-                $('#postal').ntsError('set', { messageId: "Msg_438", messageParams: [nts.uk.resource.getText("CMM001_22")] });
-                nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_438", messageParams: [nts.uk.resource.getText("CMM001_22")]}).then(() => { 
+                    $("#postal").focus();
+                    nts.uk.ui.block.clear();
+                });
                 return;
             }
             // search by post code 
             service.findPostCd(self.currentCompany().addinfor().postCd()).done((item) => {
                 if (item.length == 0) {
-                    $('#postal').ntsError('set', { messageId: "Msg_818" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_818" }).then(() => { 
+                        $("#postal").focus();
+                        nts.uk.ui.block.clear();
+                    });
                     return;
                 }
                 // address_1 after finded
-                //                item[0].stateProvince = item[0].stateProvince;
                 item[0].city = item[0].city;
                 item[0].townArea = item[0].townArea;
                 // address kana 1 after finded
                 item[0].townAreaKana = item[0].townAreaKana;
                 item[0].cityKanaName = item[0].cityKanaName;
-                //                item[0].townAreaKana = item[0].townAreaKana;
                 self.currentCompany().addinfor().add_1(item[0].city + item[0].townArea);
                 self.currentCompany().addinfor().addKana_1(item[0].cityKanaName + item[0].townAreaKana);
             }).always(() => {

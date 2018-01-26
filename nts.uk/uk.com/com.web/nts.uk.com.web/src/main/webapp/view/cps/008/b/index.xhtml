@@ -7,16 +7,16 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<title>#{i18n.getText('CPS008_41')}</title>
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 1260,
-					height : 750
+					width : 1275,
+					height : 748
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps008.b.style.css" />
-			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
+			<com:scriptfile path="/view/cps/shr/layout-control-validation.js" />
+			<com:scriptfile path="/view/cps/shr/layout-control-ko-ext.js" />
 			<com:scriptfile path="cps008.b.service.js" />
 			<com:scriptfile path="cps008.b.vm.js" />
 			<com:scriptfile path="cps008.b.start.js" />

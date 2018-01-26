@@ -26,10 +26,10 @@ public interface GoOutTimezoneRoundingSetGetMemento {
 	
 	
 	/**
-	 * Gets the OT timezone.
+	 * Gets the ottimezone.
 	 *
-	 * @return the OT timezone
+	 * @return the ottimezone
 	 */
-	GoOutTypeRoundingSet getOTTimezone();
+	GoOutTypeRoundingSet getOttimezone();
 
 }

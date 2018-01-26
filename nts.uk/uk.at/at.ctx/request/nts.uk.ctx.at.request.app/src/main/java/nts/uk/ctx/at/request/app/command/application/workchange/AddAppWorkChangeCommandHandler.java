@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.request.app.command.application.workchange;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -14,23 +16,17 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
-import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.AppApprovalPhaseCmd;
 import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.ReflectPlanScheReason;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 
 @Stateless
 @Transactional
 public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<AddAppWorkChangeCommand, String> {
 
-	private static final String EMPTY_STRING = "";
 	private static final String COLON_STRING = ":";
 	@Inject
 	private IWorkChangeRegisterService workChangeRegisterService;
@@ -43,9 +39,6 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		CreateApplicationCommand appCommand = addCommand.getApplication();
 		// Work change command
 		AppWorkChangeCommand workChangeCommand = addCommand.getWorkChange();
-		// Phase command
-		List<AppApprovalPhaseCmd> approvalPhaseCommand = addCommand.getAppApprovalPhases();
-
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請ID
@@ -53,31 +46,22 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 		// 入力者 = 申請者
 		// 申請者
 		String applicantSID = AppContexts.user().employeeId();
-
-		// Phase list
-		List<AppApprovalPhase> pharseList = ApprovalPhaseUtils.convertToDomain(approvalPhaseCommand, companyId, appID);
-
 		// 申請
-		Application app = new Application(companyId, appID,
+		Application_New app = new Application_New(
+				0L, 
+				companyId, 
+				appID,
 				EnumAdaptor.valueOf(appCommand.getPrePostAtr(), PrePostAtr.class), 
 				GeneralDateTime.now(), 
 				applicantSID,
-				new AppReason(EMPTY_STRING), 
-				appCommand.getApplicationDate(),
-				new AppReason(appCommand.getApplicationReason().replaceFirst(COLON_STRING, System.lineSeparator())), 
-				ApplicationType.WORK_CHANGE_APPLICATION, applicantSID,
-				ReflectPlanScheReason.NOTPROBLEM, 
-				null,
-				ReflectPlanPerState.NOTREFLECTED, 
-				ReflectPlanPerEnforce.NOTTODO,
-				ReflectPerScheReason.NOTPROBLEM, 
-				null,
-				ReflectPlanPerState.NOTREFLECTED, 
-				ReflectPlanPerEnforce.NOTTODO,
-				appCommand.getStartDate(), 
-				appCommand.getEndDate(), 
-				pharseList);
-
+				new AppReason(Strings.EMPTY), 
+				appCommand.getStartDate(),
+				new AppReason(appCommand.getApplicationReason().replaceFirst(COLON_STRING, System.lineSeparator())),
+				ApplicationType.WORK_CHANGE_APPLICATION, 
+				applicantSID, 
+				Optional.of(appCommand.getStartDate()),
+				Optional.of(appCommand.getEndDate()), 
+				ReflectionInformation_New.firstCreate());		
 		// 勤務変更申請
 		AppWorkChange workChangeDomain = AppWorkChange.createFromJavaType(
 				companyId, 

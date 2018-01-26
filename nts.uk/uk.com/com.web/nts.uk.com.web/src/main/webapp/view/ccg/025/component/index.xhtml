@@ -6,9 +6,9 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-			<div style="width: 350px" data-bind="ntsSearchBox: {searchMode: searchMode, targetKey: 'roleCode', comId: 'multi-list', 
-				items: listRole,  selectedKey: 'roleCode', fields: ['name', 'roleCode'], mode: 'igGrid'}" />																																														
-			<table id="multi-list" data-bind="ntsGridList: {
+			<!-- <div style="width: 350px" data-bind="ntsSearchBox: {searchMode: searchMode, targetKey: 'roleCode', comId: 'multi-list', 
+				items: listRole,  selectedKey: 'roleCode', fields: ['name', 'roleCode'], mode: 'igGrid'}" /> -->																																														
+			<table id="multi-list" data-bind="attr: {tabindex: setting.tabindex}, ntsGridList: {
 					height: 320,
 					options: listRole ,
 					optionsValue: 'roleId',

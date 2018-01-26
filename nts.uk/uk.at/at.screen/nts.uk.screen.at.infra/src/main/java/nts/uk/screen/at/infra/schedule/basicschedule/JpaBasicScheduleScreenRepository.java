@@ -40,17 +40,19 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 
 	private static final String SEL_BY_LIST_SID_AND_DATE = "SELECT c FROM KscdtBasicSchedule c"
 			+ " WHERE c.kscdpBSchedulePK.sId IN :sId AND c.kscdpBSchedulePK.date >= :startDate AND c.kscdpBSchedulePK.date <= :endDate";
-	private static final String GET_WORK_TIME_AND_WT_DAY = "SELECT NEW " + WorkTimeScreenDto.class.getName()
-			+ " (a.kwtmpWorkTimePK.siftCD, a.workTimeName, a.workTimeAbName, a.workTimeSymbol, a.workTimeDailyAtr, a.workTimeMethodSet, a.displayAtr, a.note,"
-			+ " b.start, b.end, b.kwtdpWorkTimeDayPK.timeNumberCnt)"
-			+ " FROM KwtmtWorkTime a JOIN KwtdtWorkTimeDay b ON a.kwtmpWorkTimePK.siftCD = b.kwtdpWorkTimeDayPK.siftCD"
-			+ " JOIN KshmtWorkTimeOrder c ON a.kwtmpWorkTimePK.siftCD = c.kshmpWorkTimeOrderPK.workTimeCode"
-			+ " WHERE a.kwtmpWorkTimePK.companyID = :companyId" + " AND a.displayAtr = :displayAtr"
-			+ " ORDER BY c.dispOrder ASC";
+	private static final String GET_WTIME_SET_AND_WTIME_SHEET_SET = "SELECT NEW " + WorkTimeScreenDto.class.getName()
+			+ " (a.kshmtWorkTimeSetPK.worktimeCd, a.name, a.abname, a.symbol, a.dailyWorkAtr, a.worktimeSetMethod, a.abolitionAtr, a.color, a.memo, a.note,"
+			+ " b.kshmtWorkTimeSheetSetPK.workNo, b.useAtr, b.startTime, b.endTime)"
+			+ " FROM KshmtWorkTimeSet a JOIN KshmtWorkTimeSheetSet b ON a.kshmtWorkTimeSetPK.worktimeCd = b.kshmtWorkTimeSheetSetPK.worktimeCd"
+			+ " AND a.kshmtWorkTimeSetPK.cid = b.kshmtWorkTimeSheetSetPK.cid"
+			+ " WHERE a.kshmtWorkTimeSetPK.cid = :companyId" + " AND a.abolitionAtr = :abolitionAtr"
+			+ " ORDER BY a.kshmtWorkTimeSetPK.worktimeCd ASC";
 	private static final String SELECT_BY_CID_DEPRECATE_CLS = "SELECT NEW " + WorkTypeScreenDto.class.getName()
 			+ " (c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.memo)"
-			+ " FROM KshmtWorkType c" + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
-			+ " AND c.deprecateAtr = :deprecateClassification";
+			+ " FROM KshmtWorkType c LEFT JOIN KshmtWorkTypeOrder o "
+			+ "ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode "
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId " + " AND c.deprecateAtr = :deprecateClassification "
+			+ " ORDER BY  CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC ";
 	private static final String GET_WORK_EMP_COMBINE = "SELECT c FROM KscmtWorkEmpCombine c"
 			+ " WHERE c.kscmtWorkEmpCombinePK.companyId = :companyId " + " AND c.workTypeCode IN :workTypeCode"
 			+ " OR c.workTimeCode IN :workTimeCode";
@@ -61,7 +63,7 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			+ " AND a.kscdtWorkScheduleTimeZonePk.scheduleCnt = 1";
 	private static final String GET_COM_PATTERN = "SELECT a FROM KscmtComPattern a"
 			+ " WHERE a.kscmtComPatternPk.companyId =:companyId";
-	
+
 	private static final String GET_WPK_PATTERN = "SELECT a FROM KscmtWkpPattern a"
 			+ " WHERE a.kscmtWkpPatternPk.workplaceId =:workplaceId";
 
@@ -130,13 +132,13 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	}
 
 	/**
-	 * get list WorkTime by CompanyId and DisplayAtr = DISPLAY Join with table
-	 * WorkTimeDay Join with table ORDER to sort workTimeCode
+	 * get list WorkTimeSet by companyId and abolitionAtr = ABOLISH join with
+	 * table WorkTimeSheetSet, sort by workTimeCode
 	 */
 	@Override
-	public List<WorkTimeScreenDto> getListWorkTime(String companyId, int displayAtr) {
-		return this.queryProxy().query(GET_WORK_TIME_AND_WT_DAY, WorkTimeScreenDto.class)
-				.setParameter("companyId", companyId).setParameter("displayAtr", displayAtr).getList();
+	public List<WorkTimeScreenDto> getListWorkTime(String companyId, int abolitionAtr) {
+		return this.queryProxy().query(GET_WTIME_SET_AND_WTIME_SHEET_SET, WorkTimeScreenDto.class)
+				.setParameter("companyId", companyId).setParameter("abolitionAtr", abolitionAtr).getList();
 	}
 
 	/**

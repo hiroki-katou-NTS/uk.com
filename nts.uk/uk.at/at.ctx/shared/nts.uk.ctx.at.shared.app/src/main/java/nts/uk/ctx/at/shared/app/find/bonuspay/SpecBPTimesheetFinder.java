@@ -30,7 +30,7 @@ public class SpecBPTimesheetFinder {
 			SpecBonusPayTimesheet specBonusPayTimesheet) {
 		return new SpecBPTimesheetDto(companyId, specBonusPayTimesheet.getTimeSheetId(),
 				specBonusPayTimesheet.getUseAtr().value, bonusPaySettingCode,
-				specBonusPayTimesheet.getTimeItemId().toString(), specBonusPayTimesheet.getStartTime().minute(),
+				specBonusPayTimesheet.getTimeItemId(), specBonusPayTimesheet.getStartTime().minute(),
 				specBonusPayTimesheet.getEndTime().minute(), specBonusPayTimesheet.getRoundingTimeAtr().value,
 				specBonusPayTimesheet.getRoundingAtr().value, specBonusPayTimesheet.getDateCode());
 	}

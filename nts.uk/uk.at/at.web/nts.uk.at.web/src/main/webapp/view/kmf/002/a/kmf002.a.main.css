@@ -1,0 +1,62 @@
+#scrA .content-row-A {
+	width: 300px;
+}
+
+#scrA.contents-area {
+	padding-left: 30px;
+	padding-top: 30px;
+	margin-bottom: 60px;
+}
+
+#scrA .weekHDCheck_A > div > span:NTH-CHILD(1) {
+	width: 90px;
+}
+
+#scrA .weekHDCheck_A > div > span:NTH-CHILD(3) {
+	padding-left: 30px;
+}
+
+#scrA .managePeriod_A, .dayOfPubHD_A {
+	padding-left: 35px
+}
+
+#scrA .managePeriod_A > div, .dayOfPubHD_A > div > div:NTH-CHILD(1) {
+	width: 265px;
+}
+
+#scrA #absent_4_day_4_week table tr {
+	height: 40px;
+}
+
+#scrA #absent_4_day_4_week table tr th {
+	padding-left:40px
+}
+
+#scrA #one_week_scrA, #scrA #four_week_scrA {
+	padding-left: 70px;
+}  
+
+.ntsRadioBox span.box {
+    border: 2px solid black;
+}
+
+.ntsRadioBox span.box:after {
+    width: 15px;
+    height: 15px;
+    top: 0px;
+    left: 0px;
+    background: black;
+}
+
+.sidebar-content-header {
+	display: flex;
+	align-items: center;	
+}
+
+.sidebar-content-header > button:nth-child(1) {
+	margin-left: 100px;
+}
+
+.sidebar-content-header > button:nth-child(2) {
+	margin-left: 60px;
+} 

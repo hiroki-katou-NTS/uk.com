@@ -1,5 +1,6 @@
 package nts.uk.ctx.pereg.infra.repository.roles.auth.category;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +42,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " INNER JOIN PpemtPerInfoItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId"
 			+ " INNER JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPersonRole pr" + " ON pr.ppemtPersonRolePk.roleId = p.ppemtPersonCategoryAuthPk.roleId"
+			+ " INNER JOIN SacmtPersonRole pr" + " ON pr.roleId = p.ppemtPersonCategoryAuthPk.roleId"
 			+ " WHERE c.cid = :companyId" + " AND c.abolitionAtr = 0" + " AND p.allowOtherRef = 1"
 			+ "	AND c.ppemtPerInfoCtgPK.perInfoCtgId IN :perInfoCtgIdlst" + "	ORDER BY co.disporder ";
 
@@ -165,6 +166,11 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 
 	@Override
 	public Map<String, PersonInfoCategoryAuth> getByRoleIdAndCategories(String roleId, List<String> categoryIdList) {
+		
+		if  (categoryIdList.isEmpty()) {
+			return new HashMap<>();
+		}
+		
 		return this.queryProxy().query(SEE_BY_ROLEID_AND_CTG_ID_LIST, PpemtPersonCategoryAuth.class)
 				.setParameter("roleId", roleId).setParameter("categoryIdList", categoryIdList).getList().stream()
 				.collect(Collectors.toMap(c -> c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId, c -> toDomain(c)));

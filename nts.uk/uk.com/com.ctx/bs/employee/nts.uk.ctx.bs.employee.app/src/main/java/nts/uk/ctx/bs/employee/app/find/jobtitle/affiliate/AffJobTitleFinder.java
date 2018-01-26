@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
@@ -91,7 +92,10 @@ public class AffJobTitleFinder implements PeregFinder<AffJobTitleDto> {
 		if (historyOpt.isPresent()) {
 			return historyOpt.get().getHistoryItems().stream()
 					.filter(x -> affJobTitleItemRepo.findByHitoryId(x.identifier()).isPresent())
-					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), 
+							x.end().equals(GeneralDate.max()) 
+							//&& query.getCtgType() == 3 
+							? "" : x.end().toString()))
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();

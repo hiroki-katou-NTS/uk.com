@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pub.workplace;
 
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,5 +84,15 @@ public interface SyWorkplacePub {
 	
 	// RequestList #154
 	List<String> findListWorkplaceIdByCidAndWkpIdAndBaseDate(String companyId, String workplaceId, GeneralDate baseDate);
+	
+	
+	// RequestList #120
+	/**
+	 * 
+	 * @param workplaceId
+	 * @param period
+	 * @return List EmployeeId
+	 */
+	List<String> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,GeneralDate endDate);
 	
 }

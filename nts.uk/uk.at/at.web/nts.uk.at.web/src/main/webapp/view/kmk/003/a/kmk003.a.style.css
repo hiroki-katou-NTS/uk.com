@@ -3,7 +3,8 @@
 }
 
 .checkbox_display {
-	padding-left: 170px;
+	float: right;
+	margin-bottom: 10px;
 }
 
 .screen-content-left {
@@ -35,6 +36,7 @@
 
 .setting_header {
 	margin-left: 10px;
+	width: 910px;
 }
 
 .setting_header_br {
@@ -42,3 +44,21 @@
 	margin-top: 15px;
 	display: inline-flex;
 }
+.icon-x {
+	background: url("img/x.png");
+	width: 10px;
+	height: 10px;
+	background-size: 10px 10px;
+}
+
+.cf .nts-switch-button {
+	min-width: 80px;
+} 
+
+.control-group {
+	display: inline-flex;
+} 
+.center-align {
+	text-align: center;
+}
+

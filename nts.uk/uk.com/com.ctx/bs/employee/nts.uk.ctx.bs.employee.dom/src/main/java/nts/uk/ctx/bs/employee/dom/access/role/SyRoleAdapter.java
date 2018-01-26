@@ -16,4 +16,12 @@ public interface SyRoleAdapter {
 	 * @return the list
 	 */
 	WorkplaceIDImport findListWkpIdByRoleId(Integer systemType);
+	
+
+	/**
+	 *
+	 * @param systemType the system type
+	 * @return the list
+	 */
+	WorkplaceIDImport findListWkpId(Integer systemType);
 }

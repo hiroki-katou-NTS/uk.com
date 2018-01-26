@@ -5,9 +5,11 @@ import java.util.Optional;
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.VacationAddTimeSet;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
 import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -27,10 +29,10 @@ public class VacationClass {
 	public static AttendanceTime vacationTimeOfcalcDaily(WorkType workType,
 														 VacationCategory vacationCategory,
 														 PredetermineTimeSetForCalc predetermineTimeSet,
-														 Optional<nts.uk.ctx.at.shared.dom.worktime_old.SiftCode> siftCode,
+														 Optional<WorkTimeCode> siftCode,
 			 											 Optional<PersonalLaborCondition> personalCondition,
 			 											 VacationAddTimeSet vacationAddTimeSet) {
-		BreakdownTimeDay breakDownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode, personalCondition, vacationAddTimeSet);
+		BreakDownTimeDay breakDownTimeDay = getVacationAddSet(predetermineTimeSet, siftCode, personalCondition, vacationAddTimeSet);
 		switch(workType.getDailyWork().decisionMatchWorkType(vacationCategory.convertWorkTypeClassification())) {
 			case FULL_TIME:
 				return breakDownTimeDay.getOneDay();
@@ -47,7 +49,7 @@ public class VacationClass {
 	 * 休暇加算設定の取得
 	 * @return
 	 */
-	private static BreakdownTimeDay getVacationAddSet(PredetermineTimeSetForCalc predetermineTimeSet,Optional<nts.uk.ctx.at.shared.dom.worktime_old.SiftCode> siftCode
+	private static BreakDownTimeDay getVacationAddSet(PredetermineTimeSetForCalc predetermineTimeSet,Optional<WorkTimeCode> siftCode
 											 ,Optional<PersonalLaborCondition> personalCondition
 											 ,VacationAddTimeSet vacationAddTimeSet) {
 		if(siftCode.isPresent()) {

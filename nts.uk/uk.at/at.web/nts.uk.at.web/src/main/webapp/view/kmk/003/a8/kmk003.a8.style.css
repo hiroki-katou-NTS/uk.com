@@ -1,44 +1,30 @@
-.labelSetting {
+.tab_8_setting_rows {
 	margin-top: 20px;
+	width: 100%;
+	display: flex;
+    align-items: center;
 }
 
-.roundSetting {
-	width: 300px;
-}
-
-.timeoutSetting {
-	width: 610px;
-}
-
-.deductionTimeSetting {
-	width: 500px;
+.tab_8_setting_header {
+	width: 180px;
 	margin-left: 20px;
 }
 
-.radioSetting {
-	margin-top: 10px;
+.tab_8_inline_item {
+	padding: 0px 10px 0px 10px;
+	display: inline-block;
 }
 
-.roundingSet {
-	display: inline-flex;
+.tab_8_round_setting {
+	width: 300px;
+	display: inline-block;
+	overflow: hidden;
 }
 
-.settingArrangement {
-	display: inline-flex;
+.tab_8_radio_setting {
+    margin-top: 10px;
 }
 
-.tabArrangement-1 {
-	width: 1100px;
-}
-
-.radioBreakTime {
-	width: 135px;
-}
-
-.roundingCombox {
-	width: 60px;
-}
-
-.groubSetting {
-	margin-top: 20px;
+.tab_8_radio_cell {
+	width: 200px;
 }

@@ -19,16 +19,15 @@
 }
 
 #oViewModel #switch-o {
-	margin-left: 30px;
+	margin-left: 10px;
 }
 
 #oViewModel #combo-box2 {
 	margin-left: 16px;
-	min-width: 425px !important;
+	min-width: 520px !important;
 }
 
 #oViewModel #combo-box1 {
-	min-width: 310px !important;
 	margin-left: 31px;
 }
 
@@ -37,7 +36,7 @@
 }
 
 #oViewModel #image100 {
-	margin-left: 230px;
+	margin-left: 217px;
 	vertical-align: middle;
 	background: url(../image/image100.png) no-repeat center;
 	background-size: 20px 20px;

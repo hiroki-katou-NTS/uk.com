@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+    
+    <div>
+    	<div data-bind="ntsCheckBox: { checked: addApplication, enable: true }">#{i18n.getText('KAL003_66')}</div>
+        <table id="AA3_1" data-bind="ntsGridList: {
+				height: 350,
+				options: listWorkRecordExtraCon,
+				optionsValue: 'code',
+				columns: columns,
+				multiple: true,
+				value: currentCodeList
+			}"></table>
+    </div>
+</ui:composition>

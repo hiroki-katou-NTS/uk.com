@@ -11,6 +11,7 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class FlexHalfDayWorkTime.
@@ -44,6 +45,27 @@ public class FlexHalfDayWorkTime extends DomainObject {
 		if (this.restTimezone.isFixRestTime() && !this.isInFixedWork(this.restTimezone)) {
 			throw new BusinessException("Msg_755");
 		}
+		
+		// validate 770 for list work
+		this.workTimezone.getLstWorkingTimezone().stream().forEach(item -> {
+			item.getTimezone().validateRange("KMK003_86");
+		});
+		
+		// validate 770 for list ot
+		this.workTimezone.getLstOTTimezone().stream().forEach(item -> {
+			item.getTimezone().validateRange("KMK003_89");
+		});
+		
+		
+		if (this.restTimezone.isFixRestTime()) {
+			// validate Msg_770 for rest time
+			this.restTimezone.getFixedRestTimezone().getTimezones().stream().forEach(item -> {
+				item.validateRange("KMK003_20");
+			});
+			
+			// validate Msg_515 for rest time
+			this.restTimezone.getFixedRestTimezone().checkOverlap("KMK003_20");
+		}
 	}
 
 	/**
@@ -74,9 +96,9 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 * @param memento the memento
 	 */
 	public FlexHalfDayWorkTime(FlexHalfDayWorkTimeGetMemento memento) {
+		this.ampmAtr = memento.getAmpmAtr();
 		this.restTimezone = memento.getRestTimezone();
 		this.workTimezone = memento.getWorkTimezone();
-		this.ampmAtr = memento.getAmpmAtr();
 	}
 	
 	/**
@@ -85,8 +107,54 @@ public class FlexHalfDayWorkTime extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(FlexHalfDayWorkTimeSetMemento memento){
+		memento.setAmpmAtr(this.ampmAtr);
 		memento.setRestTimezone(this.restTimezone);
 		memento.setWorkTimezone(this.workTimezone);
-		memento.setAmpmAtr(this.ampmAtr);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param workTimeType the work time type
+	 * @param fixedWorkSet the fixed work set
+	 * @param other the other
+	 */
+	public void restoreData(ScreenMode screenMode, FlexWorkSetting flexWorkSet,
+			FlexHalfDayWorkTime other) {
+		switch (screenMode) {
+		case SIMPLE:
+			this.restoreSimpleMode(other);
+			break;
+		case DETAIL:
+			this.restoreDetailMode(flexWorkSet, other);;
+			break;
+		default:
+			throw new RuntimeException("ScreenMode not found.");
+		}
+	}
+	
+	/**
+	 * Restore simple mode.
+	 *
+	 * @param other the other
+	 */
+	private void restoreSimpleMode(FlexHalfDayWorkTime other) {
+		if (other.getAmpmAtr() != AmPmAtr.ONE_DAY) {
+			this.workTimezone.restoreData(other.getWorkTimezone());
+		}
+	}
+	
+	/**
+	 * Restore detail mode.
+	 *
+	 * @param flexWorkSet the flex work set
+	 * @param other the other
+	 */
+	private void restoreDetailMode(FlexWorkSetting flexWorkSet, FlexHalfDayWorkTime other) {
+		// restore data of dayAtr = AM, PM
+		if (!flexWorkSet.isUseHalfDayShift() && other.getAmpmAtr() != AmPmAtr.ONE_DAY) {
+			this.workTimezone.restoreData(other.getWorkTimezone());
+		}
 	}
 }

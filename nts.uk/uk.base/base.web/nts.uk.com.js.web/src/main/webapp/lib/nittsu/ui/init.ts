@@ -14,11 +14,22 @@ module nts.uk.ui {
     
     // Kiban ViewModel
     export class KibanViewModel {
-        title: KnockoutObservable<string>;
+        systemName: KnockoutObservable<string>;
+        programName: KnockoutObservable<string>;
+        title: KnockoutComputed<string>;
         errorDialogViewModel: errors.ErrorsViewModel;
         
         constructor(dialogOptions?: any){
-            this.title = ko.observable('');
+            this.systemName = ko.observable("");
+            this.programName = ko.observable("");
+            this.title = ko.computed(() => {
+                let pgName = this.programName();
+                if (pgName === "" || pgName === undefined || pgName === null) {
+                    return this.systemName();
+                }
+                
+                return this.programName() + " - " + this.systemName();
+            });
             this.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel(dialogOptions);
         }
     }
@@ -42,7 +53,11 @@ module nts.uk.ui {
                 }
             };
             
-            kiban.title(__viewContext.title || 'THIS IS TITLE');
+            kiban.title.subscribe(newTitle => {
+                document.title = newTitle;
+            });
+            
+            kiban.systemName(__viewContext.env.systemName);
             
             viewModelBuilt.fire(_viewModel);
             
@@ -76,8 +91,9 @@ module nts.uk.ui {
             _.defer(() => _start.call(__viewContext));
             
             // Menu
-            if ($(document).find("#header").length > 0)
-                nts.uk.ui.menu.request();
+            if ($(document).find("#header").length > 0) {
+                menu.request();
+            }
         });
     }
 }

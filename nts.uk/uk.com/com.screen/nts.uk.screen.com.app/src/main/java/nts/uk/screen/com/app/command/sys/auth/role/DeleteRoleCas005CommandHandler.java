@@ -68,12 +68,12 @@ public class DeleteRoleCas005CommandHandler extends CommandHandler<DeleteRoleCas
 				DefaultRoleSet rolesetDefault = defaultRoleSetRepository.findByCompanyId(companyId).get();
 				boolean isSetAsDefault = listRoleset.stream().anyMatch(c -> c.getRoleSetCd().equals(rolesetDefault.getRoleSetCd()));
 				if(isSetAsDefault) {
-					throw new BusinessException("MSG_586");
+					throw new BusinessException("Msg_586");
 				}
 			}else {
 				List<RoleIndividualGrant> roleIndivi = roleIndividualGrantRepository.findByRoleId(roleId);
 				if(!roleIndivi.isEmpty()) {
-					throw new BusinessException("MSG_584");
+					throw new BusinessException("Msg_584");
 				}	
 			}
 			//delete Role

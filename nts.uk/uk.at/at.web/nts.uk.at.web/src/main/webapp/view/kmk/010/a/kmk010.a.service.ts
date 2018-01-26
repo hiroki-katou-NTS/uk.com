@@ -17,9 +17,7 @@ module nts.uk.at.view.kmk010.a {
             findAllOutsideOTBRDItem : "ctx/at/shared/outsideot/breakdown/findAll",
             findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
             checkManageSixtyHourVacationSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/com/check/manage",
-            exportOutsideOTSettingExcel: "at/shared/outsideot/export/excel"
-            
-            
+            exportOutsideOTSettingExcelMasterList: "/masterlist/report/print"
         }
 
         /**
@@ -117,19 +115,21 @@ module nts.uk.at.view.kmk010.a {
         }
         
         /**
-         * export file excel outside overtime setting
-         */
-        export function exportOutsideOTSettingExcel(languageId: string, manage: boolean): JQueryPromise<any> {
-            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcel, { languageId: languageId, manage: manage });
-        }
-        
-        /**
          * call service find all attendance item overtime
          */
         export function findAllAttendanceItemOvertime(): JQueryPromise<number[]> {
             return nts.uk.request.ajax('at', paths.findAllAttendanceItemOvertime);
         }
         
+        /**
+         * function call service export
+         */
+        
+        export function exportOutsideOTSettingExcelMasterList(languageId: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcelMasterList, { domainId: "outsideot", domainType: "時間外超過設定", languageId: languageId, reportType: 0, data: [] });
+        }
+
+
         /**
          * Init tooltip service.
          */

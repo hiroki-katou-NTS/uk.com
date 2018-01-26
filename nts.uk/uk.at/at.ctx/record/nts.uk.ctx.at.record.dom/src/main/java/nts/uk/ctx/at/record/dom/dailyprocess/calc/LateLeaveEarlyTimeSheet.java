@@ -6,7 +6,6 @@ import java.util.Optional;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 
 /**
  * 遅刻早退時間帯

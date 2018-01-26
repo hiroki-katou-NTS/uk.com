@@ -18,6 +18,7 @@
 			</ui:define>
 			
 			<ui:define name="content">
+				<div id="functions-area"></div>
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
@@ -67,6 +68,28 @@
 										<p>Fusce vitae libero non sem blandit pharetra a vel mi. Integer euismod pellentesque hendrerit. Nam interdum maximus lacus. Mauris dapibus pulvinar quam vitae maximus. Morbi dapibus vitae ligula at facilisis. Quisque rhoncus magna ut enim scelerisque, venenatis tempus lacus volutpat. Sed ut tellus erat. Morbi sollicitudin luctus condimentum. Sed malesuada hendrerit dignissim.</p>
 										<p>Vestibulum sodales nisl tellus, a bibendum ligula eleifend vitae. Proin dictum eget mi ac mattis. Integer ex lectus, dapibus vitae nibh sit amet, bibendum porta urna. Suspendisse quis iaculis mauris. Integer efficitur bibendum dolor nec posuere. Integer blandit ante eu dolor ullamcorper accumsan. Fusce imperdiet mattis augue sed finibus. Nunc condimentum mollis magna, a euismod risus dapibus ut. Sed dolor nisl, iaculis quis ante sed, pretium tincidunt augue. Fusce sed sapien sapien. Cras suscipit, urna vitae maximus scelerisque, est dolor rutrum elit, id luctus est metus quis nunc. Pellentesque facilisis nibh ut libero scelerisque, non dapibus velit aliquet.</p>
 										<p>Aliquam pharetra tempor neque sed feugiat. Morbi velit quam, porttitor ac metus quis, sodales efficitur dui. Praesent convallis ligula dui. Duis placerat dignissim egestas. Fusce fermentum eleifend risus quis fermentum. Nullam vel dolor arcu. Vivamus id varius arcu. Ut commodo risus erat, quis tincidunt nisl tristique vitae. Maecenas in pulvinar odio. Sed feugiat viverra congue.</p>
+										<div id="x-tab-panel" data-bind="ntsTabPanel: { dataSource: tabs2, active: selectedTab2 }">
+											<div class="x-tab-content-1">
+												<span>Tab Content 1</span><br/>
+											</div>
+											<div class="x-tab-content-2">
+												<table id="multi-list" data-bind="ntsGridList: {
+												 		height: 350,
+												 		options: items,
+												 		optionsValue: 'code',
+												 		columns: columns,
+												 		multiple: true,
+												 		value: currentCodeList }"></table>
+											</div>
+											<div class="x-tab-content-3">
+												<table id="grid"></table>
+											</div>
+											<div class="x-tab-content-4">
+												<p>Fusce vitae libero non sem blandit pharetra a vel mi. Integer euismod pellentesque hendrerit. Nam interdum maximus lacus. Mauris dapibus pulvinar quam vitae maximus. Morbi dapibus vitae ligula at facilisis. Quisque rhoncus magna ut enim scelerisque, venenatis tempus lacus volutpat. Sed ut tellus erat. Morbi sollicitudin luctus condimentum. Sed malesuada hendrerit dignissim.</p>
+												<p>Vestibulum sodales nisl tellus, a bibendum ligula eleifend vitae. Proin dictum eget mi ac mattis. Integer ex lectus, dapibus vitae nibh sit amet, bibendum porta urna. Suspendisse quis iaculis mauris. Integer efficitur bibendum dolor nec posuere. Integer blandit ante eu dolor ullamcorper accumsan. Fusce imperdiet mattis augue sed finibus. Nunc condimentum mollis magna, a euismod risus dapibus ut. Sed dolor nisl, iaculis quis ante sed, pretium tincidunt augue. Fusce sed sapien sapien. Cras suscipit, urna vitae maximus scelerisque, est dolor rutrum elit, id luctus est metus quis nunc. Pellentesque facilisis nibh ut libero scelerisque, non dapibus velit aliquet.</p>
+												<p>Aliquam pharetra tempor neque sed feugiat. Morbi velit quam, porttitor ac metus quis, sodales efficitur dui. Praesent convallis ligula dui. Duis placerat dignissim egestas. Fusce fermentum eleifend risus quis fermentum. Nullam vel dolor arcu. Vivamus id varius arcu. Ut commodo risus erat, quis tincidunt nisl tristique vitae. Maecenas in pulvinar odio. Sed feugiat viverra congue.</p>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>

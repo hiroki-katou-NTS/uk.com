@@ -1,8 +1,8 @@
 module nts.uk.at.view.kdl001.a {
     export module service {
         var paths: any = {
-            findByCodeList: "at/shared/worktime/findByCodeList",
-            findByTime: "at/shared/worktime/findByTime",
+            findByCodeList: "at/shared/worktimesetting/findByCodes",
+            findByTime: "at/shared/worktimesetting/findByTime",
         }
         
         export function findByCodeList(command): JQueryPromise<any> {

@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.record.dom.worktime.enums.TimeLeavingType;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 
@@ -23,12 +26,21 @@ public class TimeLeavingWork extends DomainObject{
 	 */
 	private WorkNo workNo;
 	
-	private TimeActualStamp attendanceStamp;
+	private Optional<TimeActualStamp> attendanceStamp;
 	
-	private TimeActualStamp leaveStamp;
+	private Optional<TimeActualStamp> leaveStamp;
 	
-
-	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp) {
+//	private TimeLeavingType timeLeavingType;
+//	
+//	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp, TimeLeavingType timeLeavingType) {
+//		super();
+//		this.workNo = workNo;
+//		this.attendanceStamp = attendanceStamp;
+//		this.leaveStamp = leaveStamp;
+//		this.timeLeavingType = timeLeavingType;
+//	}
+	
+	public TimeLeavingWork(WorkNo workNo, Optional<TimeActualStamp> attendanceStamp, Optional<TimeActualStamp> leaveStamp) {
 		super();
 		this.workNo = workNo;
 		this.attendanceStamp = attendanceStamp;
@@ -40,8 +52,8 @@ public class TimeLeavingWork extends DomainObject{
 	 * @return　計算用時間帯クラス
 	 */
 	public TimeSpanForCalc getTimeSpan() {
-		return new TimeSpanForCalc(attendanceStamp.getStamp().get().getTimeWithDay()
-								  ,leaveStamp.getStamp().get().getTimeWithDay());
+		return new TimeSpanForCalc(attendanceStamp.get().getStamp().get().getTimeWithDay()
+								  ,leaveStamp.get().getStamp().get().getTimeWithDay());
 	}
 
 	
@@ -52,18 +64,18 @@ public class TimeLeavingWork extends DomainObject{
 	 * @return　調整後の処理
 	 */
 	public TimeLeavingWork correctJustTime(boolean isJustTimeLateAttendance,boolean isJustEarlyLeave) {
-		TimeActualStamp newAttendance = attendanceStamp;
-		TimeActualStamp newLeave = leaveStamp;
+		TimeActualStamp newAttendance = attendanceStamp.get();
+		TimeActualStamp newLeave = leaveStamp.get();
 		if(isJustEarlyLeave) {
-			newAttendance = attendanceStamp.moveBackStampTime(1);
+			newAttendance = attendanceStamp.get().moveBackStampTime(1);
 		}
 		if(isJustTimeLateAttendance) {
-			newLeave = leaveStamp.moveAheadStampTime(1);
+			newLeave = leaveStamp.get().moveAheadStampTime(1);
 		}
-		return new TimeLeavingWork(this.workNo,newAttendance,newLeave);
+		return new TimeLeavingWork(this.workNo,Optional.ofNullable(newAttendance) , Optional.ofNullable(newLeave));
 	}
 
-	public void setTimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp){
+	public void setTimeLeavingWork(WorkNo workNo, Optional<TimeActualStamp> attendanceStamp, Optional<TimeActualStamp> leaveStamp){
 		this.workNo = workNo;
 		this.attendanceStamp = attendanceStamp;
 		this.leaveStamp = leaveStamp;

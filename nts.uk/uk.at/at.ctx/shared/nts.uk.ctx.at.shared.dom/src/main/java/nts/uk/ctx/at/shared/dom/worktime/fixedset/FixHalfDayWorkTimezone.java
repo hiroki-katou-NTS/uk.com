@@ -7,8 +7,9 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
-import nts.uk.ctx.at.shared.dom.worktime_old.AmPmClassification;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class FixHalfDayWorkTimezone.
@@ -27,7 +28,7 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 
 	/** The day atr. */
 	// 午前午後区分
-	private AmPmClassification dayAtr;
+	private AmPmAtr dayAtr;
 
 	/**
 	 * Instantiates a new fix half day work timezone.
@@ -52,6 +53,51 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 		memento.setWorkTimezone(this.workTimezone);
 		memento.setDayAtr(this.dayAtr);
 	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param fixedWorkSet the fixed work set
+	 * @param other the other
+	 */
+	public void restoreData(ScreenMode screenMode, FixedWorkSetting fixedWorkSet,
+			FixHalfDayWorkTimezone other) {
+		switch (screenMode) {
+		case SIMPLE:
+			this.restoreSimpleMode(other);
+			break;
+		case DETAIL:
+			this.restoreDetailMode(fixedWorkSet, other);;
+			break;
+		default:
+			throw new RuntimeException("ScreenMode not found.");
+		}
+	}
+	
+	/**
+	 * Restore simple mode.
+	 *
+	 * @param other the other
+	 */
+	private void restoreSimpleMode(FixHalfDayWorkTimezone other) {
+		if (other.getDayAtr() != AmPmAtr.ONE_DAY) {
+			this.workTimezone.restoreData(other.getWorkTimezone());
+		}
+	}
+	
+	/**
+	 * Restore detail mode.
+	 *
+	 * @param fixedWorkSet the fixed work set
+	 * @param other the other
+	 */
+	private void restoreDetailMode(FixedWorkSetting fixedWorkSet, FixHalfDayWorkTimezone other) {
+		// restore data of dayAtr = AM, PM
+		if (!fixedWorkSet.getUseHalfDayShift() && other.getDayAtr() != AmPmAtr.ONE_DAY) {
+			this.workTimezone.restoreData(other.getWorkTimezone());
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -62,29 +108,37 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 	public void validate() {
 		super.validate();
 
-		// Validate #Msg_755
-		this.restTimezone.getLstTimezone().forEach((timezone) -> {
-			// Is timezone in WorkingTimezone - 就業時間帯.時間帯
-			boolean isHasWorkTime = this.workTimezone.getLstWorkingTimezone().stream()
-					.map(item -> item.getTimezone())
-					.anyMatch((timeZoneRounding) -> {
-						return timezone.getStart().greaterThanOrEqualTo(timeZoneRounding.getStart())
-								&& timezone.getEnd().lessThanOrEqualTo(timeZoneRounding.getEnd());
-					});
-
-			// Is timezone in OTTimezone - 残業時間帯.時間帯
-			boolean isHasOTTTime = this.workTimezone.getLstOTTimezone().stream()
-					.map(item -> item.getTimezone())
-					.anyMatch((timeZoneRounding) -> {
-						return timezone.getStart().greaterThanOrEqualTo(timeZoneRounding.getStart())
-								&& timezone.getEnd().lessThanOrEqualTo(timeZoneRounding.getEnd());
-					});
-
-			// Throw exception if not match any condition
-			if (!isHasWorkTime && !isHasOTTTime) {
-				throw new BusinessException("Msg_755");
-			}
+		if (!this.isInFixedWork()) {
+			throw new BusinessException("Msg_755");
+		}
+		
+		//validate Msg_770 for list work
+		this.workTimezone.getLstWorkingTimezone().stream().forEach(item->{
+			item.getTimezone().validateRange("KMK003_86");
 		});
+		
+		// validate Msg_770 for list ot
+		this.workTimezone.getLstOTTimezone().stream().forEach(item -> {
+			item.getTimezone().validateRange("KMK003_89");
+		});
+		
+		// validate Msg_770 for rest time
+		this.restTimezone.getLstTimezone().stream().forEach(item -> {
+			item.validateRange("KMK003_20");
+		});
+
+		//validate Msg_515 for rest time
+		this.restTimezone.validOverlap("KMK003_20");
+	}
+
+	/**
+	 * Checks if is in fixed work.
+	 *
+	 * @return true, if is in fixed work
+	 */
+	private boolean isInFixedWork() {
+		return this.restTimezone.getLstTimezone().stream().allMatch(
+				dedTime -> this.workTimezone.isInEmTimezone(dedTime) || this.workTimezone.isInOverTimezone(dedTime));
 	}
 
 }

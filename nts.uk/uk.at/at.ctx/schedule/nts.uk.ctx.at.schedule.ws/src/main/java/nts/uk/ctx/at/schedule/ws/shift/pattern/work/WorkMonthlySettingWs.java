@@ -52,6 +52,19 @@ public class WorkMonthlySettingWs {
 		return this.finder.findByMonth(input.getMonthlyPatternCode(), input.getYearMonth());
 	}
 	
+	
+	/**
+	 * Gets the item of month.
+	 *
+	 * @param input the input
+	 * @return the item of month
+	 */
+	@POST
+	@Path("getItemOfMonth")
+	public List<WorkMonthlySettingDto> getItemOfMonth(WorkMonthlySettingFindDto input) {
+		return this.finder.getDefaultItemOfMonth(input.getYearMonth());
+	}
+	
 	/**
 	 * Sets the ting batch.
 	 *

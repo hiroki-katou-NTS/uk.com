@@ -26,8 +26,8 @@ public class PersonErrorListExportImpl implements MasterListData {
 		List<LinkedHashMap<String, String>> personErrors = (List<LinkedHashMap<String, String>>) query.getData();
 		personErrors.forEach(personError -> {
 			Map<String, Object> data = new HashMap<>();
-			data.put("社員コード", personError.get("employeeID"));
-			data.put("名称", personError.get("empCalAndSumExecLogID"));
+			data.put("社員コード", personError.get("personCode"));
+			data.put("名称", personError.get("personName"));
 			data.put("処理日", personError.get("disposalDay"));
 			data.put("エラー内容内", personError.get("messageError"));			
 			datas.add(new MasterData(data, null, ""));
@@ -41,7 +41,7 @@ public class PersonErrorListExportImpl implements MasterListData {
 		columns.add(
 				new MasterHeaderColumn("社員コード", TextResource.localize("KDW001_33"), ColumnTextAlign.CENTER, "", true));
 		columns.add(
-				new MasterHeaderColumn("名称	", TextResource.localize("KDW001_35"), ColumnTextAlign.CENTER, "", true));
+				new MasterHeaderColumn("名称", TextResource.localize("KDW001_35"), ColumnTextAlign.CENTER, "", true));
 		columns.add(
 				new MasterHeaderColumn("処理日", TextResource.localize("KDW001_36"), ColumnTextAlign.CENTER, "", true));
 		columns.add(

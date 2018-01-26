@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.setting;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +18,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.WeeklyWorkSettingFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WeeklyWorkSettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
@@ -109,7 +109,8 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		}
 		
 		// startDate
-		Date toStartDate = this.toDate(command.getStartYearMonth() * MONTH_MUL + NEXT_DAY);
+		YearMonth startYearMonth = new YearMonth(command.getStartYearMonth());
+		GeneralDate toStartDate = GeneralDate.ymd(startYearMonth.year(), startYearMonth.month(), 1);
 		
 		// data update setting batch
 		List<WorkMonthlySetting> updateWorkMonthlySettings = new ArrayList<>();
@@ -119,31 +120,20 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		
 		
 		// check by next day of begin end
-		while (this.getYearMonth(toStartDate) <= command.getEndYearMonth()) {
-			
-			// get ymd to day
-			int ymdk = this.getYearMonthDate(toStartDate);
-			
-			int year = ymdk/10000;
-			
-			int month = (ymdk - year*10000)/100;
-			
-			int day = (ymdk - year*10000 - month*100);
-			
-			GeneralDate date = GeneralDate.ymd(year, month, day);
+		while (toStartDate.yearMonth().v() <= command.getEndYearMonth()) {
 			
 			// check public holiday by base date
-			Optional<PublicHoliday> publicHoliday = this.publicHolidayRepository.getHolidaysByDate(companyId, date);
+			Optional<PublicHoliday> publicHoliday = this.publicHolidayRepository.getHolidaysByDate(companyId, toStartDate);
 
 			// find by id
 			Optional<WorkMonthlySetting> workMonthlySetting = this.workMonthlySettingRepository
-					.findById(companyId, command.getMonthlyPatternCode(), ymdk);
+					.findById(companyId, command.getMonthlyPatternCode(), toStartDate);
 			
 			// check day is public holiday
 			if (publicHoliday.isPresent()) {
 
 				// data public holiday setting
-				WorkMonthlySetting dataPublic = command.toDomainPublicHolidays(companyId, ymdk);
+				WorkMonthlySetting dataPublic = command.toDomainPublicHolidays(companyId, toStartDate);
 				
 				// check exist data
 				if (!workMonthlySetting.isPresent()) {
@@ -153,13 +143,13 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 				}
 			} else {
 				WeeklyWorkSettingDto dto = this.weeklyWorkSettingFinder
-						.checkWeeklyWorkSetting(this.getBaseDate(toStartDate));
+						.checkWeeklyWorkSetting(toStartDate);
 				
 				// is work day
 				switch (EnumAdaptor.valueOf(dto.getWorkdayDivision(), WorkdayDivision.class)) {
 				case WORKINGDAYS:
 					// data working day setting
-					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId, ymdk);
+					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId, toStartDate);
 					
 					// check exist data
 					if (!workMonthlySetting.isPresent()) {
@@ -175,7 +165,7 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					
 					// data none statutory holiday setting
 					WorkMonthlySetting dataNoneStatutory = command
-							.toDomainNoneStatutoryHolidays(companyId, ymdk);
+							.toDomainNoneStatutoryHolidays(companyId, toStartDate);
 					
 					// check exist data
 					if (!workMonthlySetting.isPresent()) {
@@ -191,7 +181,7 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					
 					// data none statutory holiday setting
 					WorkMonthlySetting dataStatutory = command.toDomainStatutoryHolidays(companyId,
-							ymdk);
+							toStartDate);
 					
 					// check exist data
 					if (!workMonthlySetting.isPresent()) {
@@ -203,7 +193,7 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					break;
 				}
 			}
-			toStartDate = this.nextDay(toStartDate);
+			toStartDate = toStartDate.nextValue(true);
 		}
 		// add all data setting
 		this.workMonthlySettingRepository.addAll(addWorkMonthlySettings);

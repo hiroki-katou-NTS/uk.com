@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -42,7 +43,7 @@ public class KscmtWkpPatternItem extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "GROUP_NO", referencedColumnName = "GROUP_NO", insertable = false, updatable = false) })
 	private KscmtWkpPattern kscmtWkpPattern;
 
-	@OneToMany
+	@OneToMany(targetEntity=KscmtWkpWorkPairSet.class, cascade = CascadeType.ALL, mappedBy = "kscmtWkpPatternItem", orphanRemoval = true)
 	@JoinTable(name = "KSCMT_WKP_WORK_PAIR_SET")
 	public List<KscmtWkpWorkPairSet> kscmtWkpWorkPairSet;
 
@@ -51,4 +52,11 @@ public class KscmtWkpPatternItem extends UkJpaEntity implements Serializable {
 		return this.kscmtWkpPatternItemPk;
 	}
 
+	public KscmtWkpPatternItem(KscmtWkpPatternItemPK kscmtWkpPatternItemPk, String patternName,
+			List<KscmtWkpWorkPairSet> kscmtWkpWorkPairSet) {
+		super();
+		this.kscmtWkpPatternItemPk = kscmtWkpPatternItemPk;
+		this.patternName = patternName;
+		this.kscmtWkpWorkPairSet = kscmtWkpWorkPairSet;
+	}
 }

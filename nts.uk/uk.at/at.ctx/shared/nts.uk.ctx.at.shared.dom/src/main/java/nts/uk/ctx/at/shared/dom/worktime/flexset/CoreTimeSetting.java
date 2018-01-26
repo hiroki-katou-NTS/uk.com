@@ -60,11 +60,26 @@ public class CoreTimeSetting extends DomainObject {
 	 */
 	@Override
 	public void validate(){
-		
+		super.validate();
+		// コアタイム時間帯.開始時刻 >= コアタイム時間帯.終了時刻 => Msg_770
+		if (this.isUseTimeSheet()
+				&& this.coreTimeSheet.getStartTime().greaterThanOrEqualTo(this.coreTimeSheet.getEndTime())) {
+			throw new BusinessException("Msg_770", "KMK003_157");
+		}
+
 		// 使用区分 = 使用しない AND 最低勤務時間 <= 0
-		if (this.timesheet.equals(ApplyAtr.NOT_USE) && this.minWorkTime.valueAsMinutes() <= ZERO_MINUTES) {
+		if (this.minWorkTime != null && !this.isUseTimeSheet() && this.minWorkTime.valueAsMinutes() <= ZERO_MINUTES) {
 			throw new BusinessException("Msg_776");
 		}
-				
+
+	}
+	
+	/**
+	 * Checks if is use time sheet.
+	 *
+	 * @return true, if is use time sheet
+	 */
+	public boolean isUseTimeSheet(){
+		return this.timesheet == ApplyAtr.USE;
 	}
 }

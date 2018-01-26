@@ -20,31 +20,31 @@ public class RecordWorkInfoImport {
 	private String workTimeCode;
 	
 	// 開始時刻1
-	private int attendanceStampTimeFirst;
+	private Integer attendanceStampTimeFirst;
 	
 	// 終了時刻1
-	private int leaveStampTimeFirst;
+	private Integer leaveStampTimeFirst;
 	
 	// 開始時刻2
-	private int attendanceStampTimeSecond;
+	private Integer attendanceStampTimeSecond;
 	
 	// 終了時刻2
-	private int leaveStampTimeSecond;
+	private Integer leaveStampTimeSecond;
 	
 	// 日別実績の勤怠時間．実働時間．総労働時間．遅刻時間．遅刻時間
-	private int time1;
+	private Integer time1;
 	
 	// 日別実績の勤怠時間．実働時間．総労働時間．早退時間．早退時間
-	private int time2;
+	private Integer time2;
 	
 	// 日別実績の勤怠時間．実働時間．総労働時間．遅刻時間．遅刻時間
-	private int time3;
+	private Integer time3;
 	
 	// 日別実績の勤怠時間．実働時間．総労働時間．早退時間．早退時間
-	private int time4;
+	private Integer time4;
 
 	//日別実績の勤怠時間．実働時間．総労働時間．短時間勤務時間
-	private int time5;
+	private Integer time5;
 	
 	/**
 	 * 計算フレックス
@@ -71,9 +71,9 @@ public class RecordWorkInfoImport {
 	/**
 	 * 計算就業外深夜
 	 */
-	private int shiftNightCaculation;
+	private Integer shiftNightCaculation;
 	/**
 	 * 休出深夜
 	 */
-	private int breakLateNight;
+	private Integer breakLateNight;
 }

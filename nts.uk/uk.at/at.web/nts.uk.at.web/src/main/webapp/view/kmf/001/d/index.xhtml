@@ -35,14 +35,14 @@
 					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<button  data-bind="click: backToHistorySelection" tabindex="2">#{i18n.getText('KMF001_27')}</button>
 					<button class="proceed" data-bind="click: registerWholeCompany, enable: isManaged" tabindex="3">#{i18n.getText('KMF001_28')}</button>
-					<div class="register-annual-holiday-table"><a href="#register-annual-holiday-table" tabindex="4">#{i18n.getText('KMF001_29')}</a></div>
+					<!-- <div class="register-annual-holiday-table"><a href="#register-annual-holiday-table" tabindex="4">#{i18n.getText('KMF001_29')}</a></div> -->
 				</div>
 				<div class="ruledLine"></div>
 				
 				<div id="whole-company-content">
 					<div id="whole-company-content-detail">
 						<div class="label warning" id="label-warning"
-							data-bind="style: {display: isManaged()? 'inlineBlock': 'none'}">#{i18n.getText('KMF001_136')}</div>
+							data-bind="style: {display: !isManaged()? 'inlineBlock': 'none'}">#{i18n.getText('KMF001_136')}</div>
 						<div id="form-lbl" data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_58')}</div>
 						<div id="ruledLine1"></div>
 						<table id="whole-company-tbl">
@@ -58,6 +58,7 @@
 											<input id="year-amount-company"
 												data-bind="ntsNumberEditor: {
 												value: retentionYearsAmount,
+												name: '#[KMF001_60]',
 												constraint: 'RetentionYearsAmount',
 												option: {
 										width: '50px',
@@ -83,6 +84,7 @@
 											<input id="max-days-company"
 												data-bind="ntsNumberEditor: {
 												value: maxDaysCumulation,
+												name: '#[KMF001_61]',
 												constraint: 'MaxDaysRetention',
 												option: {
 										width: '50px',
@@ -125,7 +127,7 @@
 					<span class="title">#{i18n.getText('Com_Employment')}</span>
 					<button data-bind="click: backToHistorySelection">#{i18n.getText('KMF001_27')}</button>
 					<button class="proceed" data-bind="click: registerByEmployment, enable: enableRegister">#{i18n.getText('KMF001_28')}</button>
-					<div class="register-annual-holiday-table"><a href="#register-annual-holiday-table">#{i18n.getText('KMF001_29')}</a></div>
+					<!-- <div class="register-annual-holiday-table"><a href="#register-annual-holiday-table">#{i18n.getText('KMF001_29')}</a></div> -->
 					
 				</div>
 				<div class="ruledLine"></div>
@@ -167,6 +169,7 @@
 											<div>
 												<input id='year-amount-emp' data-bind="ntsNumberEditor: {
 													value: yearsAmountByEmp,
+													name: '#[KMF001_73]',
 													constraint: 'RetentionYearsAmount',
 													constraint: 'RetentionYearsAmount',
 												option: {
@@ -183,13 +186,14 @@
 									<tr>
 										<td class="td-style">
 											<div>
-												<span>#{i18n.getText('KMF001_73')}</span>
+												<span>#{i18n.getText('KMF001_74')}</span>
 											</div>
 										</td>
 										<td class="padding-left-5px">
 											<div>
 												<input id='max-days-emp' data-bind="ntsNumberEditor: {
 													value: maxDaysCumulationByEmp,
+													name: '#[KMF001_74]',
 													constraint: 'MaxDaysRetention',
 													option: {
 										width: '50px',

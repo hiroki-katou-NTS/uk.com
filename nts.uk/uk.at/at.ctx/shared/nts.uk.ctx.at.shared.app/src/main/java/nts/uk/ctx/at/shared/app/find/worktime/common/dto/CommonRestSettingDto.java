@@ -19,6 +19,11 @@ public class CommonRestSettingDto implements CommonRestSettingSetmemento{
 	/** The calculate method. */
 	private Integer calculateMethod;
 
+	/**
+	 * Instantiates a new common rest setting dto.
+	 */
+	public CommonRestSettingDto() {}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -29,8 +34,7 @@ public class CommonRestSettingDto implements CommonRestSettingSetmemento{
 	 */
 	@Override
 	public void setCalculateMethod(RestTimeOfficeWorkCalcMethod method) {
-		this.calculateMethod = method.value;
-		
+		this.calculateMethod = method.value;		
 	}
 
 }

@@ -5,7 +5,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
-import nts.uk.ctx.at.shared.dom.worktime_old.SiftCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -31,7 +31,7 @@ public class GoBackDirectly extends AggregateRoot {
 	/**
 	 * 就業時間帯
 	 */
-	private SiftCode siftCD;
+	private WorkTimeCode siftCD;
 	/**
 	 * 勤務を変更する
 	 */
@@ -78,12 +78,12 @@ public class GoBackDirectly extends AggregateRoot {
 	private String workLocationCD2;
 
 	public GoBackDirectly(String companyID, String appID, String workTypeCD, String siftCD, int workChangeAtr,
-			int goWorkAtr1, int backHomeAtr1, int workTimeStart1, int workTimeEnd1, String workLocationCD1,
-			int goWorkAtr2, int backHomeAtr2, int workTimeStart2, int workTimeEnd2, String workLocationCD2) {
+			int goWorkAtr1, int backHomeAtr1, Integer workTimeStart1, Integer workTimeEnd1, String workLocationCD1,
+			int goWorkAtr2, int backHomeAtr2, Integer workTimeStart2, Integer workTimeEnd2, String workLocationCD2) {
 		this.companyID = companyID;
 		this.appID = appID;
 		this.workTypeCD = new WorkTypeCode(workTypeCD);
-		this.siftCD = new SiftCode(siftCD);
+		this.siftCD = new WorkTimeCode(siftCD);
 		this.workChangeAtr = EnumAdaptor.valueOf(workChangeAtr, UseAtr.class);
 		this.goWorkAtr1 = EnumAdaptor.valueOf(goWorkAtr1, UseAtr.class);
 		this.backHomeAtr1 = EnumAdaptor.valueOf(backHomeAtr1, UseAtr.class);
@@ -98,8 +98,8 @@ public class GoBackDirectly extends AggregateRoot {
 	}
 
 	public GoBackDirectly createFromJavaType(String companyID, String appID, String workTypeCD, String siftCD,
-			int workChangeAtr, int goWorkAtr1, int backHomeAtr1, int workTimeStart1, int workTimeEnd1,
-			String workLocationCD1, int goWorkAtr2, int backHomeAtr2, int workTimeStart2, int workTimeEnd2,
+			int workChangeAtr, int goWorkAtr1, int backHomeAtr1, Integer workTimeStart1, Integer workTimeEnd1,
+			String workLocationCD1, int goWorkAtr2, int backHomeAtr2, Integer workTimeStart2, Integer workTimeEnd2,
 			String workLocationCD2) {
 		return new GoBackDirectly(companyID, appID, workTypeCD, siftCD, workChangeAtr, goWorkAtr1, backHomeAtr1,
 				workTimeStart1, workTimeEnd1, workLocationCD1, goWorkAtr2, backHomeAtr2, workTimeStart2, workTimeEnd2,

@@ -17,7 +17,7 @@ public class AutoCalSetting extends ValueObject {
 
 	/** The up limit ot set. */
 	// 上限残業時間の設定
-	private TimeLimitUpperLimitSetting upLimitOtSet;
+	private TimeLimitUpperLimitSetting upLimitORtSet;
 
 	/** The cal atr. */
 	/// 計算区分
@@ -33,7 +33,7 @@ public class AutoCalSetting extends ValueObject {
 	 */
 	public AutoCalSetting(TimeLimitUpperLimitSetting upLimitOtSet, AutoCalAtrOvertime calAtr) {
 		super();
-		this.upLimitOtSet = upLimitOtSet;
+		this.upLimitORtSet = upLimitOtSet;
 		this.calAtr = calAtr;
 	}
 

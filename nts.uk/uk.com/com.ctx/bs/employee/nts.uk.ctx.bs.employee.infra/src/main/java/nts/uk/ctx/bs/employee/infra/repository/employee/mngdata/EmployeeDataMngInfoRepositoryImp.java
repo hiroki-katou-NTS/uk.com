@@ -5,11 +5,15 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.mngdata;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+
+import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -20,6 +24,8 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfoPk;
 import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
+import nts.uk.ctx.bs.person.dom.person.info.Person;
+import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 
 @Stateless
 public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements EmployeeDataMngInfoRepository {
@@ -63,7 +69,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	private static final String GET_ALL_BY_CID = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ORDER BY  e.employeeCode ASC";
 
 	private static final String SELECT_BY_EMP_CODE = String.join(" ", SELECT_NO_PARAM,
-			"WHERE e.delStatus = 0 AND e.employeeCode = :empcode AND e.companyId = :cid");
+			"WHERE e.employeeCode = :empcode AND e.companyId = :cid");
 
 	// duongtv start code
 	/** The select by list emp code. */
@@ -88,6 +94,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	public final String SELECT_BY_CID_SID = SELECT_NO_PARAM
 			+ " WHERE e.companyId = :cid AND e.bsymtEmployeeDataMngInfoPk.sId = :sid ";
 
+	/** The select by cid and sid. */
+	public final String SELECT_BY_SIDS = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :listSid";
+
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
 		commandProxy().insert(toEntity(domain));
@@ -101,10 +110,10 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.getSingleOrNull();
 
 		if (entity != null) {
-			if (domain.getEmployeeCode() != null) {
+			if (domain.getEmployeeCode() != null && !domain.getEmployeeCode().v().equals("")) {
 				entity.employeeCode = domain.getEmployeeCode().v();
 			}
-			if (domain.getExternalCode() != null) {
+			if (domain.getExternalCode() != null && !domain.getExternalCode().v().equals("")) {
 				entity.extCode = domain.getExternalCode().v();
 			}
 			commandProxy().update(entity);
@@ -171,11 +180,11 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			}
 
 			if (entity[1] != null) {
-				emp.setEmployeeName(entity[1].toString());
+				emp.setPersonName(entity[1].toString());
 			}
 
 			if (entity[2] != null) {
-				emp.setPersonName(entity[2].toString());
+				emp.setEmployeeName(entity[2].toString());
 			}
 
 			if (entity[3] != null) {
@@ -233,7 +242,8 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	@Override
 	public void updateRemoveReason(EmployeeDataMngInfo domain) {
-		this.commandProxy().update(toEntity(domain));
+		
+		this.updateAfterRemove(domain);
 	}
 
 	@Override
@@ -334,7 +344,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		if (CollectionUtil.isEmpty(listSid)) {
 			return new ArrayList<>();
 		}
-		
+
 		// Split query.
 		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
 		CollectionUtil.split(listSid, 1000, (subList) -> {
@@ -342,8 +352,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 					.setParameter("listSid", subList).getList());
 		});
 
-		return resultList.stream().map(entity -> this.toDomain(entity))
-				.collect(Collectors.toList());
+		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -379,11 +388,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	// sonnlb code start
 	@Override
-	public String findLastEml(String companyId, String startLetters) {
-		if (startLetters == null)
-			startLetters = " ";
+	public String findLastEml(String companyId, String startLetters) {		
 		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId)
-				.setParameter("emlCode", Character.toString(startLetters.charAt(0))).getList();
+				.setParameter("emlCode", StringUtils.isEmpty(startLetters) ? "" : Character.toString(startLetters.charAt(0))).getList();
 		String returnStr = "";
 		if (lst.size() > 0) {
 			Object obj = lst.get(0);
@@ -395,4 +402,45 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	// sonnlb code end
 
+	// laitv code start
+
+	@Override
+	public List<EmployeeDataMngInfo> getByListEmployeeId(List<String> listSid) {
+		// check exist input
+		if (CollectionUtil.isEmpty(listSid)) {
+			return Collections.emptyList();
+		}
+
+		List<EmployeeDataMngInfo> result = this.queryProxy().query(SELECT_BY_SIDS, BsymtEmployeeDataMngInfo.class)
+				.setParameter("listSid", listSid).getList(c -> toDomain(c));
+
+		return result;
+	}
+
+	@Override
+	public void updateAfterRemove(EmployeeDataMngInfo domain) {
+		BsymtEmployeeDataMngInfo entity = queryProxy().query(SELECT_BY_ID, BsymtEmployeeDataMngInfo.class)
+				.setParameter("sId", domain.getEmployeeId()).setParameter("pId", domain.getPersonId())
+				.getSingleOrNull();
+
+		if (entity != null) {
+			if (domain.getEmployeeCode() != null && !domain.getEmployeeCode().v().equals("")) {
+				entity.employeeCode = domain.getEmployeeCode().v();
+			}
+			if (domain.getExternalCode() != null && !domain.getExternalCode().v().equals("")) {
+				entity.extCode = domain.getExternalCode().v();
+			}
+			
+			entity.removeReason = domain.getRemoveReason() != null ? domain.getRemoveReason().v() : null;
+			entity.delStatus = domain.getDeletedStatus().value;
+			entity.delDateTmp = domain.getDeleteDateTemporary();
+			
+			
+			
+			commandProxy().update(entity);
+		}
+		
+	}
+
+	// laitv code end
 }

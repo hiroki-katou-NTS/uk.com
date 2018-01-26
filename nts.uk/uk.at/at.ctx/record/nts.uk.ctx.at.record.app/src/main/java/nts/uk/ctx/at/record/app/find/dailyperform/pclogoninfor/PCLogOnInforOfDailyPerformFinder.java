@@ -34,7 +34,8 @@ public class PCLogOnInforOfDailyPerformFinder extends FinderFacade {
 							new TimeStampDto(c.getLogOff().getTimeWithDay().valueAsMinutes(),
 									c.getLogOff().getAfterRoundingTime().valueAsMinutes(),
 									c.getLogOff().getLocationCode().v(),
-									c.getLogOff().getStampSourceInfo().value)
+									c.getLogOff().getStampSourceInfo().value),
+							0
 					)));
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());

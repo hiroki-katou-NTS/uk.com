@@ -20,8 +20,8 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTi
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidworktimesheet.FluWorkHolidayTimeSheet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -53,7 +53,7 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 	 * @param holidayWorkTimeSheetNo
 	 */
 	public HolidayWorkFrameTimeSheet(
-			TimeSpanWithRounding timeSheet,
+			TimeZoneRounding timeSheet,
 			TimeSpanForCalc calculationTimeSheet,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			List<BonusPayTimesheet> bonusPayTimeSheet, 
@@ -95,14 +95,14 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 	 * @return
 	 */
 	public HolidayWorkFrameTimeSheet collectHolidayWorkFrameTimeSheet(
-			FluWorkHolidayTimeSheet fluWorkHolidayTimeSheet,
+			FlowWorkHolidayTimeZone fluWorkHolidayTimeSheet,
 			WorkType workType,
 			DeductionTimeSheet deductionTimeSheet,/*事前処理で作成した控除時間帯で良い？*/
 			TimeSpanForCalc collectCalcRange,/*計算範囲*/
 			AttendanceTime previousElapsedTime/*前回の経過時間*/
 			) {
 		//今回の処理の経過時間
-		AttendanceTime elapsedTime = fluWorkHolidayTimeSheet.getFluidTimeSetting().getElapsedTime();
+		AttendanceTime elapsedTime = fluWorkHolidayTimeSheet.getFlowTimeSetting().getElapsedTime();
 		//休出枠の時間を計算する (今回処理する経過時間-前回の経過時間)
 		AttendanceTime holidayWorkFrameTime =  new AttendanceTime(elapsedTime.valueAsMinutes()-previousElapsedTime.valueAsMinutes());
 		//休出枠時間から終了時刻を計算する
@@ -111,7 +111,7 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 		TimeSpanForCalc holidayWorkFrameTimeSheet = new TimeSpanForCalc(collectCalcRange.getStart(),endClock);
 		//控除時間帯分ループ
 		for(TimeSheetOfDeductionItem timeSheetOfDeductionItem : deductionTimeSheet.getForDeductionTimeZoneList()) {
-			TimeSpanForCalc duplicateTime = holidayWorkFrameTimeSheet.getDuplicatedWith(timeSheetOfDeductionItem.getTimeSheet().getSpan()).orElse(null);
+			TimeSpanForCalc duplicateTime = holidayWorkFrameTimeSheet.getDuplicatedWith(timeSheetOfDeductionItem.getTimeSheet().timeSpan()).orElse(null);
 			if(duplicateTime!=null) {//重複している場合の処理
 				//控除項目の時間帯に法定内区分をセット
 				//TODO: createBreakTimeSheetAsFixed
@@ -122,9 +122,9 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 //						timeSheetOfDeductionItem.getDeductionAtr(),
 //						WithinStatutoryAtr.WithinStatutory);
 				//控除時間分、終了時刻を遅くする
-				TimeSpanForCalc collectTimeSheet = this.timeSheet.shiftEndBack(duplicateTime.lengthAsMinutes());
-				TimeSpanWithRounding newTimeSheet = this.timeSheet;
-				newTimeSheet.newTimeSpan(collectTimeSheet);
+				TimeSpanForCalc collectTimeSheet = this.timeSheet.timeSpan().shiftEndBack(duplicateTime.lengthAsMinutes());
+				TimeZoneRounding newTimeSheet = this.timeSheet;
+				// ここはベトナムへ連絡後コメントアウトを外すnewTimeSheet.newTimeSpan(collectTimeSheet);
 			}	
 		}
 		

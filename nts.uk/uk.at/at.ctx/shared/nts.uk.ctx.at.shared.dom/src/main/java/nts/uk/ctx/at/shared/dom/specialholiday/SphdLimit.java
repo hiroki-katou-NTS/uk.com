@@ -30,7 +30,7 @@ public class SphdLimit extends DomainObject {
 	/* 繰越上限日数 */
 	private LimitCarryoverDays limitCarryoverDays;
 
-	/* 特別休暇の期限方法 */
+	/*特別休暇の期限方法 */
 	private SpecialVacationMethod specialVacationMethod;
 
 	@Override
@@ -47,9 +47,9 @@ public class SphdLimit extends DomainObject {
 				throw new BusinessException("Msg_98");
 			}
 		}
-		if (this.limitCarryoverDays == null || this.limitCarryoverDays.v() < 1) {
-			throw new BusinessException("Msg_104");
-		}
+//		if (this.limitCarryoverDays == null || this.limitCarryoverDays.v() < 0) {
+//			throw new BusinessException("Msg_104");
+//		}
 	}
 
 	/**

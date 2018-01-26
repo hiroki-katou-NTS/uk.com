@@ -45,7 +45,7 @@
 					<div
 						data-bind="ntsPanel:{width: '300px', height: '430px', direction: 'right', showIcon: false, visible: true}">
 						<div tabindex="5" style="width: 300px"
-							data-bind="ntsSearchBox: {placeHolder:'名称で検索…',searchMode: 'filter',targetKey: 'id', comId: 'item-info-list', 
+							data-bind="ntsSearchBox: {placeHolder:'名称で検索…',searchText: '絞り込み',searchMode: 'filter',targetKey: 'id', comId: 'item-info-list', 
 									items: personInfoItemList, selected: perInfoItemSelectCode, selectedKey: 'id', fields: ['itemName'], mode: 'igGrid'}" />
 						<table id="item-info-list"
 							data-bind="ntsGridList: {								
@@ -133,6 +133,7 @@
 											optionsText: 'localizedName',
 											editable: false,
 											enable: true,
+											dropDownAttachedToBody:true,
 											columns: [
 												{ prop: 'localizedName', length: 10 },
 											]}">
@@ -267,7 +268,8 @@
 											<span data-bind="text: '#{i18n.getText('CPS005_35')}' "></span>
 										</div>
 										<com:ko-if bind="$parents[2].isNotsetOrnull(decimalPart)">
-											<input
+											<com:ko-if bind="numericItemAmount() === 0">
+											<input id="numericItemMin"
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_38]',
 												value: numericItemMin,
@@ -284,7 +286,7 @@
 												tabindex="16" 
 												/>
 											<span class="label">～</span>
-											<input
+											<input id="numericItemMax"
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_39]',
 												value: numericItemMax,
@@ -299,11 +301,10 @@
 												enable: true,
 												readonly: false}" 
 												tabindex="17"/>
+											</com:ko-if>
 
-										</com:ko-if>
-
-										<com:ko-if bind="!$parents[2].isNotsetOrnull(decimalPart)">
-											<input
+											<com:ko-if bind="numericItemAmount() === 1">
+											<input id="numericItemMin"
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_38]',
 												value: numericItemMin,
@@ -321,7 +322,7 @@
 												readonly: false}" 
 												tabindex="16"/>
 											<span class="label">～</span>
-											<input
+											<input id="numericItemMax"
 												data-bind="ntsNumberEditor: {
 												name: '#[CPS005_39]',
 												value: numericItemMax,
@@ -338,6 +339,85 @@
 												enable: true,
 												readonly: false}"
 												tabindex="17" />
+												
+										</com:ko-if>
+										</com:ko-if>
+
+										<com:ko-if bind="!$parents[2].isNotsetOrnull(decimalPart)">
+											
+											<com:ko-if bind="numericItemAmount() === 1">
+											<input id="numericItemMin"
+												data-bind="ntsNumberEditor: {
+												name: '#[CPS005_38]',
+												value: numericItemMin,
+												constraint: 'NumericItemMin',
+												option:  new nts.uk.ui.option.CurrencyEditorOption({
+													grouplength: 3,
+									            	decimallength: decimalPart>8?8:decimalPart,
+									            	width: '70px',
+									            	textalign: 'left',
+									            	currencyformat: 'JPY',
+									            	currencyposition:'right'
+									            }),
+												required: false,
+												enable: true,
+												readonly: false}" 
+												tabindex="16"/>
+											<span class="label">～</span>
+											<input id="numericItemMax"
+												data-bind="ntsNumberEditor: {
+												name: '#[CPS005_39]',
+												value: numericItemMax,
+												constraint: 'NumericItemMax',
+												option:  new nts.uk.ui.option.CurrencyEditorOption({
+													grouplength: 3,
+									            	decimallength: decimalPart>8?8:decimalPart ,
+									            	width: '70px',
+									            	textalign: 'left',
+									            	currencyformat: 'JPY',
+									            	currencyposition:'right'
+									            }),
+												required: false,
+												enable: true,
+												readonly: false}"
+												tabindex="17" />
+												
+										</com:ko-if>
+										
+											<com:ko-if bind="numericItemAmount() === 0">
+											<input id="numericItemMin"
+												data-bind="ntsNumberEditor: {
+												name: '#[CPS005_38]',
+												value: numericItemMin,
+												constraint: 'NumericItemMin',
+												option: new nts.uk.ui.option.NumberEditorOption({
+							                        grouplength: 3,
+							                        decimallength: decimalPart>8?8:decimalPart,
+							                        width: '75px',
+							                        textalign: 'left'
+							                    }),
+												required: false,
+												enable: true,
+												readonly: false}" 
+												tabindex="16"/>
+											<span class="label">～</span>
+											<input id="numericItemMax" 
+												data-bind="ntsNumberEditor: {
+												name: '#[CPS005_39]',
+												value: numericItemMax,
+												constraint: 'NumericItemMax',
+												option:  new nts.uk.ui.option.NumberEditorOption({
+							                        grouplength: 3,
+							                        decimallength: decimalPart>8?8:decimalPart,
+							                        width: '75px',
+							                        textalign: 'left'
+							                    }),
+												required: false,
+												enable: true,
+												readonly: false}"
+												tabindex="17" />
+												
+										</com:ko-if>
 
 										</com:ko-if>
 

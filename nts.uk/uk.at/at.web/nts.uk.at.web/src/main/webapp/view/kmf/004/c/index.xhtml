@@ -19,37 +19,38 @@
 		</div>
 	</div>
 	
-	<div class="right-contents">
-	
-		<table class="form-input-tbl">
-			<tr>
-				<td><div data-bind="ntsFormLabel: { required: true, constraint:['PersonalGrantDateCode','PersonalGrantDateName'] }">#{i18n.getText('KMF004_91')}</div></td>
-				<td>
-					<input class="input-code" id="input-code" data-bind="ntsTextEditor: { value: code, enable: editMode, constraint: 'PersonalGrantDateCode', required: true, 
-																							name: '#[KMF004_87]', immediate: true, option: {autofill:true, filldirection:'left'} }, hasfocus: true" /> 
-					<input class="input-name" id="input-name" data-bind="ntsTextEditor: { value: name, constraint: 'PersonalGrantDateName', required: true, name: '#[KMF004_88]' }" />
-				</td>
-			</tr>
-			<tr></tr>
-			<tr>
-				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF004_73')}</div></td>
-				<td>
-					<div class="base-date-inputs">
-						<div id="radio" style=""
-							data-bind="ntsRadioBoxGroup: {
-															options: itemList,
-															optionsValue: 'code',
-															optionsText: 'name',
-															value: selectedBaseDateId,
-															enable: true}">
-						</div>
-						
-						<div id="monthdays" class="standardDate" data-bind="ntsMonthDays: {value: standardDate, enable: standardDateEnable}"/>
+	<table class="form-input-tbl">
+		<tr>
+			<td><div data-bind="ntsFormLabel: { required: true, constraint:['PersonalGrantDateCode','PersonalGrantDateName'] }">#{i18n.getText('KMF004_91')}</div></td>
+			<td>
+				<input class="input-code" id="input-code" data-bind="ntsTextEditor: { value: code, enable: editMode, constraint: 'PersonalGrantDateCode', required: true, 
+																						name: '#[KMF004_87]', immediate: true, option: {autofill:true, filldirection:'left'} }, hasfocus: true" /> 
+				<input class="input-name" id="input-name" data-bind="ntsTextEditor: { value: name, constraint: 'PersonalGrantDateName', required: true, name: '#[KMF004_88]' }" />
+			</td>
+		</tr>
+		<tr></tr>
+		<tr>
+			<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF004_73')}</div></td>
+			<td>
+				<div class="base-date-inputs">
+					<div id="radio" style=""
+						data-bind="ntsRadioBoxGroup: {
+														options: itemList,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: selectedBaseDateId,
+														enable: true}">
 					</div>
-				</td>
-			</tr>
-		</table>
-		
+					
+					<div id="monthdays">
+						<div id="standard-date-input" class="cal-value" data-bind="ntsDatePicker: { value: standardDate, dateFormat: 'YYYY/MM/DD', enable: standardDateEnable, name: '#[KMF004_75]',required: standardDateReq }"></div>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+	
+	<div class="bot-form">
 		<div class="left-text-header">#{i18n.getText('KMF004_79')}</div>
 		
 		<div class="left-help-btn">
@@ -57,7 +58,7 @@
 						data-bind="ntsHelpButton: {image: 'IMG_KMF004_1.png', position: 'left top', enable: true }">?</button>
 		</div>
 		
-		<hr/>
+		<hr class="nav" />
 		
 		<table class="data-setting-time">
 			<thead>
@@ -93,7 +94,6 @@
 				</tr>
 			</tbody>
 		</table>
-		
 	</div>
 	
 </div>

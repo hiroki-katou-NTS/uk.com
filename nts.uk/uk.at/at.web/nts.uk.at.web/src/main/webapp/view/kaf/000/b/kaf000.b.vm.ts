@@ -45,6 +45,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         displayButtonControl: KnockoutObservable<model.DisplayButtonControl> = ko.observable(new model.DisplayButtonControl());
         
         approvalRootState: any = ko.observableArray([]);
+        empEditable: KnockoutObservable<boolean> = ko.observable(true);
+        
         constructor(listAppMetadata: Array<shrvm.model.ApplicationMetadata>, currentApp: shrvm.model.ApplicationMetadata) {
             let self = this;
             //reason input event
@@ -76,29 +78,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             self.inputDetail().baseDate = baseDate;
             let dfd = $.Deferred<any>();
-            // let dfdMessageDeadline = self.getMessageDeadline(self.appID(), self.appType());
-//            let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
-//            let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
-//
-//            $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
-//                // let data = self.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
-//                let data = new shrvm.model.ApplicationMetadata(self.dataApplication().applicationID, self.dataApplication().applicationType, new Date(self.dataApplication().applicationDate));
-//                self.getDetailCheck(self.inputDetail());
-//                self.getMessageDeadline({
-//                    appID: data.appID,
-//                    appType: data.appType,
-//                    appDate: moment(data.appDate)   
-//                });
-//                nts.uk.ui.block.clear();
-//                dfd.resolve();
-//            });
-            
             nts.uk.at.view.kaf000.b.service.getAppDataDate({
                 appTypeValue: self.appType(),
                 appDate: baseDate,
                 isStartup: true,
                 appID: self.appID()})
             .done((data)=>{
+                self.inputCommandEvent().version = data.applicationDto.version;
+                self.dataApplication(data.applicationDto);
+                self.appType(data.applicationDto.applicationType);
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
                 let deadlineMsg = data.outputMessageDeadline;
                 if(!nts.uk.text.isNullOrEmpty(deadlineMsg.message)){
@@ -129,6 +117,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             if (self.outputDetailCheck() != null) {
                 //※5
                 let user = self.outputDetailCheck().user;
+                switch(user){
+                    case 0: self.empEditable(true); break;
+                    case 1: self.empEditable(false); break;
+                    case 2: self.empEditable(true); break;
+                    default: self.empEditable(false);    
+                }
+                
                 switch(user){                    
                     case 1:{ //承認者 
                         //登録  ×
@@ -274,11 +269,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         checkDisplayAction() {
             let self = this;
             let Status = {NOTREFLECTED: 0, // 未反映
-                            REMAND: 1,//差し戻し
-                            CANCELED: 2, //取消済
+                            WAITREFLECTION: 1, //反映待ち
+                            REFLECTED: 2, //反映済
                             WAITCANCEL: 3, //取消待ち
-                            REFLECTED: 4, //反映済
-                            WAITREFLECTION: 5, //反映待ち
+                            CANCELED: 4, //取消済
+                            REMAND: 5,//差し戻し
                             DENIAL: 6, //否認
                             PASTAPP: 99 //過去申請 
                             };
@@ -399,81 +394,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             //承認コメント
             self.displayButtonControl().enableMessageComment(false);    
         }
-
-        // getMessageDeadline
-        getMessageDeadline(inputMessageDeadline: any) {
-            let self = this;
-            let dfd = $.Deferred<any>();
-            service.getMessageDeadline(inputMessageDeadline).done(function(data) {
-                if(!nts.uk.util.isNullOrEmpty(data.message)){
-                    self.messageDeadlineTop(self.reasonAppMess + '　' + data.message);    
-                }
-                if(!nts.uk.util.isNullOrEmpty(data.deadline)){
-                    self.messageDeadlineBottom(self.reasonAppMessDealine + '　' + data.deadline);
-                }
-                self.outputMessageDeadline(data);
-                dfd.resolve(data);
-                //補足1 表示か非表示
-                if(data.chkShow){
-                    self.displayButtonControl().displayMessageArea(false);    
-                }else{
-                    self.displayButtonControl().displayMessageArea(true);
-                }
-            }).fail(function(res: any) {
-                dfd.reject();
-                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-            }); 
-            return dfd.promise();
-        }
-
-        //getAll data by App ID
-        getAllDataByAppID(appID: any) {
-            let self = this;
-            let dfd = $.Deferred<any>();
-            service.getAllDataByAppID(appID).done(function(data) {
-                self.inputCommandEvent().version = data.version;
-                self.dataApplication(data);
-                self.appType(data.applicationType);
-                let listPhase = self.dataApplication().listPhase; 
-                let approvalList = [];
-                for(let x = 1; x <= listPhase.length; x++){
-                    let phaseLoop = listPhase[x-1];
-                    let appPhase = new vmbase.AppApprovalPhase(
-                        phaseLoop.phaseID,
-                        phaseLoop.approvalForm,
-                        phaseLoop.dispOrder,
-                        phaseLoop.approvalATR,
-                        []); 
-                    for(let y = 1; y <= phaseLoop.listFrame.length; y++){
-                        let frameLoop = phaseLoop.listFrame[y-1];
-                        let appFrame = new vmbase.ApprovalFrame(
-                            frameLoop.frameID,
-                            frameLoop.dispOrder,
-                            []);
-                        for(let z = 1; z <= frameLoop.listApproveAccepted.length; z++){
-                            let acceptedLoop = frameLoop.listApproveAccepted[z-1];
-                            let appAccepted = new vmbase.ApproveAccepted(
-                                acceptedLoop.appAcceptedID,
-                                acceptedLoop.approverSID,
-                                acceptedLoop.approvalATR,
-                                acceptedLoop.confirmATR,
-                                acceptedLoop.approvalDate,
-                                acceptedLoop.reason,
-                                acceptedLoop.representerSID);
-                            appFrame.listApproveAccepted.push(appAccepted);
-                        }
-                        appPhase.listFrame.push(appFrame);   
-                    };
-                    approvalList.push(appPhase);    
-                };
-                self.approvalList = approvalList;
-                dfd.resolve(data);
-            }).fail(function(res: any) {
-                dfd.reject();
-                nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
-            }); 
-            return dfd.promise();
-        }
+        
         //get all reason by app ID
         getAllReasonByAppID(appID: string) {
             let self = this;
@@ -521,7 +442,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
             if (index > 0) {
-                return new shrvm.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index - 1].appType, self.listAppMeta[index - 1].appDate);
+                return new shrvm.model.ApplicationMetadata(self.listAppMeta[index - 1].appID, self.listAppMeta[index -1].appType, self.listAppMeta[index -1].appDate);
             }
             return null;
         }
@@ -539,7 +460,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let index = _.findIndex(self.listAppMeta, ["appID", self.appID()]);
             if (index < self.listAppMeta.length - 1) {
-                return new shrvm.model.ApplicationMetadata(self.listAppMeta[index + 1].appID, self.listAppMeta[index + 1].appType, self.listAppMeta[index + 1].appDate);
+                return new shrvm.model.ApplicationMetadata(self.listAppMeta[index+1].appID, self.listAppMeta[index + 1].appType, self.listAppMeta[index +1].appDate);
             }
             return null;
         }
@@ -562,13 +483,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     }
                 });
             }).fail(function(res: any) {
-                if(res.optimisticLock == true){
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
-                        location.reload();
-                    });    
-                } else {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
-                }
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
             });
         }
         /**
@@ -588,14 +503,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         location.reload();    
                     }
                 });
-           }).fail(function(res: any) {
-                if(res.optimisticLock == true){
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
-                        location.reload();
-                    });    
-                } else {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
-                }
+            }).fail(function(res: any) {
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
             }); 
         }
 
@@ -612,13 +521,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         location.reload();    
                     });
                 }).fail(function(res: any) {
-                    if(res.optimisticLock == true){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
-                            location.reload();
-                        });    
-                    } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
-                    }
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() { nts.uk.ui.block.clear(); });
                 }); 
             }).ifNo(()=>{
                 nts.uk.ui.block.clear();        
@@ -660,21 +563,18 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         //kiểm tra list người xác nhận, nếu khác null thì show info 392
                         if (!nts.uk.util.isNullOrEmpty(data)) {
                             nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [data] }).then(function(){
-                                self.setScreenAfterDelete();    
+                                //self.setScreenAfterDelete();    
                             });
-                        }else{
-                            self.setScreenAfterDelete();
                         }
-                        
+//                        else{
+//                            //self.setScreenAfterDelete();
+//                        }
+                         nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
                     });
                 }).fail(function(res: any) {
-                    if(res.optimisticLock == true){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){
-                            location.reload();
-                        });    
-                    } else {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
-                    }
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                        nts.uk.request.jump("../test/index.xhtml");
+                    }); 
                 }); 
             }).ifNo(function(){
                 nts.uk.ui.block.clear();    
@@ -690,6 +590,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }
             
             self.listAppMeta.splice(index, 1);
+            //if list # null    
+            if (self.listAppMeta.length == 0) {
+                //nếu list null thì trả về màn hình mẹ
+                nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
+            }
+            
             if(self.listAppMeta.length == 1){
                 nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
                     'listAppMeta': self.listAppMeta, 
@@ -698,19 +604,22 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 return;
             }
             //nếu vị trí vừa xóa khác vị trí cuối
-            if (index != self.listAppMeta.length - 1) {
+            if (index != self.listAppMeta.length) {
                 //gán lại appId mới tại vị trí chính nó
-                self.btnAfter();
+                //self.btnAfter();
+                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
+                    'listAppMeta': self.listAppMeta, 
+                    'currentApp': new shrvm.model.ApplicationMetadata(self.listAppMeta[index].appID, self.listAppMeta[index].appType, self.listAppMeta[index].appDate)
+                });
             } else {
                 //nếu nó ở vị trí cuối thì lấy appId ở vị trí trước nó
-                self.btnBefore();
+//                self.btnBefore();
+                nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 
+                    'listAppMeta': self.listAppMeta, 
+                    'currentApp': new shrvm.model.ApplicationMetadata(self.listAppMeta[self.listAppMeta.length -1].appID, self.listAppMeta[self.listAppMeta.length -1].appType, self.listAppMeta[self.listAppMeta.length -1].appDate)
+                });
             }
             
-            //if list # null    
-            if (self.listAppMeta.length == 0) {
-                //nếu list null thì trả về màn hình mẹ
-                nts.uk.request.jump("/view/kaf/000/test/index.xhtml");
-            }
         }
         
         /**
@@ -734,6 +643,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();}); 
                     }
                 }); 
+            }).ifNo(function(){
+                nts.uk.ui.block.clear();    
             });
         }
 

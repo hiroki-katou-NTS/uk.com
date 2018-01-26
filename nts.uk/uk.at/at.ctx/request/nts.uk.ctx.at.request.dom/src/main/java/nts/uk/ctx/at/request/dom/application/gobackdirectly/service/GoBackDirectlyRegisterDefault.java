@@ -1,16 +1,16 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.SettingFlg;
+import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -37,13 +37,11 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Inject
 	GoBackDirectlyRepository goBackDirectRepo;
 	@Inject
-	ApplicationRepository_New appRepo;
+	ApplicationApprovalService_New appRepo;
 	@Inject
 	NewBeforeRegister_New processBeforeRegister;
 	@Inject
 	GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
-	@Inject
-	AppApprovalPhaseRepository appApprovalPhaseRepository;
 	@Inject 
 	NewAfterRegister_New newAfterRegister;
 	@Inject
@@ -55,9 +53,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Override
 	public void register(GoBackDirectly goBackDirectly, Application_New application) {
 		String employeeID = application.getEmployeeID();
-		//アルゴリズム「直行直帰登録」を実行する
-		//2-2.新規画面登録時承認反映情報の整理 
-		registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
+		//アルゴリズム「直行直帰登録」を実行する		
 		goBackDirectRepo.insert(goBackDirectly);
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(goBackDirectly.getCompanyID());
@@ -67,6 +63,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			throw new BusinessException("Msg_115");
 		}
 		appRepo.insert(application);
+		// 2-2.新規画面登録時承認反映情報の整理
+		registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
 		newAfterRegister.processAfterRegister(application);
 		
@@ -181,14 +179,14 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		if (line == 1) {
 			// MERGE NODE 1
 			// 勤務直行の確認
-			if (goBackDirectly.getGoWorkAtr1() == UseAtr.USE && goBackDirectly.getWorkTimeStart1().v() != 0) {
+			if (goBackDirectly.getGoWorkAtr1() == UseAtr.USE && goBackDirectly.getWorkTimeStart1() != null) {
 				// 入力する
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeStart(null);
 			}
 			// 勤務直帰の確認
-			if (goBackDirectly.getBackHomeAtr1() == UseAtr.USE && goBackDirectly.getWorkTimeEnd1().v() != 0) {
+			if (goBackDirectly.getBackHomeAtr1() == UseAtr.USE && goBackDirectly.getWorkTimeEnd1() != null) {
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeEnd(null);
@@ -196,14 +194,14 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		} else {
 			// MERGE NODE 1
 			// 勤務直行の確認
-			if (goBackDirectly.getGoWorkAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeStart2().v() != 0) {
+			if (goBackDirectly.getGoWorkAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeStart2() != null) {
 				// 入力する
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeStart(null);
 			}
 			// 勤務直帰の確認
-			if (goBackDirectly.getBackHomeAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeEnd2().v() != 0) {
+			if (goBackDirectly.getBackHomeAtr2() == UseAtr.USE && goBackDirectly.getWorkTimeEnd2() != null) {
 				result.setCheckValid(true);
 			} else {
 				result.setWorkTimeEnd(null);

@@ -24,6 +24,8 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 	private static final String UPDATE_BY_KEY;
 
 	private static final String REMOVE_EXIST_DATA;
+	
+	private static final String IS_EXIST_DATA;
 
 	private final static String SEL_FORMAT_BY_ATD_ITEM = "SELECT f FROM KrcmtBusinessTypeDaily f WHERE f.krcmtBusinessTypeDailyPK.companyId = :companyId AND f.krcmtBusinessTypeDailyPK.attendanceItemId IN :lstItem";
 	
@@ -57,6 +59,15 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 		builderString.append("FROM KrcmtBusinessTypeDaily a ");
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.attendanceItemId IN :attendanceItemIds ");
 		REMOVE_EXIST_DATA = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM KrcmtBusinessTypeDaily a ");
+		builderString
+				.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
+		IS_EXIST_DATA = builderString.toString();
 	}
 
 	@Override
@@ -94,6 +105,13 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 				.setParameter("sheetNo", businessTypeFormatDaily.getSheetNo())
 				.setParameter("columnWidth", businessTypeFormatDaily.getColumnWidth())
 				.setParameter("order", businessTypeFormatDaily.getOrder()).executeUpdate();
+	}
+
+	@Override
+	public boolean checkExistData(String companyId, String businessTypeCode, BigDecimal sheetNo) {
+		return this.queryProxy().query(IS_EXIST_DATA, long.class).setParameter("companyId", companyId)
+				.setParameter("businessTypeCode", businessTypeCode)
+				.setParameter("sheetNo", sheetNo).getSingle().get() > 0;
 	}
 
 	private static BusinessTypeFormatDaily toDomain(KrcmtBusinessTypeDaily krcmtBusinessTypeDaily) {

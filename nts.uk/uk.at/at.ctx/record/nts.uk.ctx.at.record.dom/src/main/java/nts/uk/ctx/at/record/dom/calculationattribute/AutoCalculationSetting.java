@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.calculationattribute;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LimitOfOverTimeSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 
@@ -11,6 +13,8 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategory
  *
  */
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AutoCalculationSetting {
 	
 	//計算区分

@@ -42,7 +42,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             ]);
             self.columnsIndividual = ko.observableArray([
                 { headerText: '', key: 'userId', hidden: true },
-                { headerText: nts.uk.resource.getText("CAS013_15"), key: 'loginId', width: 100 },
+                { headerText: nts.uk.resource.getText("CAS013_15"), key: 'loginId', width: 120 },
                 { headerText: nts.uk.resource.getText("CAS013_16"), key: 'name', width: 120 },
                 { headerText: nts.uk.resource.getText("CAS013_17"), key: 'datePeriod', width: 210 },
             ]);
@@ -115,6 +115,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
         private selectRole(roleId: string, userIdSelected: string): void {
             var self = this;
             if (roleId != '') {
+                self.selectedRoleIndividual('');
                 new service.Service().getRoleGrants(roleId).done(function(data: any) {
                     if (data != null && data.length > 0) {
                         let items = [];
@@ -171,11 +172,11 @@ module nts.uk.com.view.cas013.a.viewmodel {
         }
         openBModal(): void {
             var self = this;
-            let param = {
-                roleType: 1,
-                multiple: false
-            };
-            nts.uk.ui.windows.setShared("param", param);
+            let userIds = [];
+            for (let user of self.listRoleIndividual()) {
+                userIds.push(user.userId);                
+            }
+            nts.uk.ui.windows.setShared("userIds", userIds);
             nts.uk.ui.windows.sub.modal("../b/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("UserInfo");
                 if (data != null) {
@@ -199,7 +200,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     self.upDate();
                 }
             } else if (nts.uk.text.isNullOrEmpty(self.userName())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_218", messageParams: ['ユーザー '] });
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_218", messageParams: [nts.uk.resource.getText("CAS013_19")] });
             } else if (nts.uk.util.isNullOrUndefined(self.dateValue().startDate) || nts.uk.util.isNullOrUndefined(self.dateValue().endDate)) {
                 $(".nts-input").trigger("validate");
             }
@@ -256,6 +257,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     new service.Service().deleteRoleGrant(roleTpye, userId).done(function() {
                         self.selectedRoleIndividual('');
                         self.selectRole(self.selectedRole(), '');
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     }).always(() => {
                         block.clear();
                     });

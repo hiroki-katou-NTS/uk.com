@@ -13,6 +13,8 @@ public interface EmployeeDataMngInfoRepository {
 	void add(EmployeeDataMngInfo domain);
 
 	void update(EmployeeDataMngInfo domain);
+	
+	void updateAfterRemove(EmployeeDataMngInfo domain);
 
 	void remove(EmployeeDataMngInfo domain);
 
@@ -101,4 +103,11 @@ public interface EmployeeDataMngInfoRepository {
 	
 	//sonnlb end
 
+	/**
+	 * Get List EmployeeDataMngInfo By List Sid
+	 * 
+	 * @param listSid
+	 * @return
+	 */
+	List<EmployeeDataMngInfo> getByListEmployeeId(List<String> listSid);
 }

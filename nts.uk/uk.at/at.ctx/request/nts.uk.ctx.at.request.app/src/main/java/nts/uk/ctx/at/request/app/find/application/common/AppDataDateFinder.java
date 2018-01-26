@@ -1,12 +1,10 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.Column;
 
 import org.apache.logging.log4j.util.Strings;
 
@@ -14,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
@@ -24,7 +21,6 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
@@ -62,15 +58,17 @@ public class AppDataDateFinder {
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate appGeneralDate = GeneralDate.fromString(appDate, DATE_FORMAT);
 		OutputMessageDeadline outputMessageDeadline = getDataAppCfDetailFinder.getDataConfigDetail(new ApplicationMetaDto("", appTypeValue, appGeneralDate));
-		ApprovalRootPattern approvalRootPattern = approvalRootPatternService.getApprovalRootPatternService(
-				companyID, 
-				employeeID, 
-				EmploymentRootAtr.APPLICATION, 
-				EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
-				appGeneralDate,
-				appID);
+		ApprovalRootPattern approvalRootPattern = null;
 		ApplicationDto_New applicationDto = null;
 		if(Strings.isNotBlank(appID)){
+			approvalRootPattern = approvalRootPatternService.getApprovalRootPatternService(
+					companyID, 
+					employeeID, 
+					EmploymentRootAtr.APPLICATION, 
+					EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
+					appGeneralDate,
+					appID,
+					false);
 			Application_New application = applicationRepository_New.findByID(companyID, appID).get();
 			applicationDto = ApplicationDto_New.builder()
 					.version(application.getVersion())
@@ -93,9 +91,18 @@ public class AppDataDateFinder {
 					.reflectPlanTime(application.getReflectionInformation().getDateTimeReflection().map(x -> x.toString(DATE_FORMAT)).orElse(null))
 					.reflectPerTime(application.getReflectionInformation().getDateTimeReflectionReal().map(x -> x.toString(DATE_FORMAT)).orElse(null))
 					.build();
+		} else {
+			approvalRootPattern = approvalRootPatternService.getApprovalRootPatternService(
+					companyID, 
+					employeeID, 
+					EmploymentRootAtr.APPLICATION, 
+					EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
+					appGeneralDate,
+					appID,
+					true);
 		}
 		if(isStartUp.equals(Boolean.TRUE)){
-			startupErrorCheckService.startupErrorCheck(appGeneralDate, approvalRootPattern.getApprovalRootContentImport());
+			startupErrorCheckService.startupErrorCheck(appGeneralDate, appTypeValue, approvalRootPattern.getApprovalRootContentImport());
 		}
 		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appGeneralDate);
 		return new AppDateDataDto(
@@ -178,14 +185,14 @@ class RecordWorkDto_New {
 	private String workTimeCode;
 	
 	// 開始時刻1
-	private int attendanceStampTimeFirst;
+	private Integer attendanceStampTimeFirst;
 	
 	// 終了時刻1
-	private int leaveStampTimeFirst;
+	private Integer leaveStampTimeFirst;
 	
 	// 開始時刻2
-	private int attendanceStampTimeSecond;
+	private Integer attendanceStampTimeSecond;
 	
 	// 終了時刻2
-	private int leaveStampTimeSecond;
+	private Integer leaveStampTimeSecond;
 }

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
@@ -81,8 +82,10 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 				query.getEmployeeId());
 		if (optHis.isPresent()) {
 			return optHis.get().getHistoryItems().stream()
-					.filter(x -> empHistItemRepo.getByHistoryId(x.identifier()).isPresent())
-					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), x.end().toString()))
+					.map(x -> ComboBoxObject.toComboBoxObject(x.identifier(), x.start().toString(), 
+							x.end().equals(GeneralDate.max()) 
+							//&& query.getCtgType() == 3 
+							? "" : x.end().toString()))
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();

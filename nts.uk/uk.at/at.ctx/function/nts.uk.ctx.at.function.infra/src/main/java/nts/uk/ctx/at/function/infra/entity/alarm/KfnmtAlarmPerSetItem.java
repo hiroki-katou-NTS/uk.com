@@ -39,4 +39,7 @@ public class KfnmtAlarmPerSetItem extends UkJpaEntity implements Serializable {
 		this.pk = pk;
 	}
 	
+	public void fromEnity(KfnmtAlarmPerSetItem newEntity) {
+		this.pk.roleID = newEntity.pk.roleID;
+	}
 }

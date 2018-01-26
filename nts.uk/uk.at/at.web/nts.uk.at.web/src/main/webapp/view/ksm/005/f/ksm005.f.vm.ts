@@ -31,7 +31,7 @@ module nts.uk.at.view.ksm005.f {
                 service.findAllMonthlyPattern().done(function(data) {
                     self.lstMonthlyPattern(data);
                     if (!self.selectMonthlyPattern() && data && data.length > 0) {
-                        self.selectMonthlyPattern(data[0].code);
+                        self.selectMonthlyPattern('');
                     }
                     dfd.resolve(self);
                 });

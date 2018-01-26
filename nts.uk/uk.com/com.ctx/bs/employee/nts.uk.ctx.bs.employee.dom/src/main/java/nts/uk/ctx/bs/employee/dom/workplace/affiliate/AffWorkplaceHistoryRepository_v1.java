@@ -64,4 +64,6 @@ public interface AffWorkplaceHistoryRepository_v1 {
 	List<AffWorkplaceHistory_ver1> getWorkplaceHistoryByWorkplaceIdAndDate(GeneralDate baseDate, String workplaceId);
 	
 	List<AffWorkplaceHistory_ver1> getWorkplaceHistoryByWkpIdsAndEmpIdsAndDate(GeneralDate baseDate, List<String> employeeIds, List<String> workplaceIds);
+	
+	List<String> getByWplIdAndPeriod(String workplaceId,GeneralDate startDate, GeneralDate endDate);
 }

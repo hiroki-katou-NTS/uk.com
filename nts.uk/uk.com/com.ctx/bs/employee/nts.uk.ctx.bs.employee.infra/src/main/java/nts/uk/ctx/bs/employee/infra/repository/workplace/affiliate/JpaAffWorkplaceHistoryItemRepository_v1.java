@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+
+import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -27,7 +29,7 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	
 	private static final String SELECT_BY_LIST_EMPID_BASEDATE = "SELECT awit FROM BsymtAffiWorkplaceHistItem awit"
 			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
-			+ " WHERE aw.sid IN (:employeeIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 	
 	private static final String SELECT_BY_EMPID_BASEDATE = "SELECT awit FROM BsymtAffiWorkplaceHistItem awit"
 			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
@@ -35,7 +37,7 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	
 	private static final String SELECT_BY_LIST_WKPID_BASEDATE = "SELECT awit FROM BsymtAffiWorkplaceHistItem awit"
 			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
-			+ " WHERE awit.workPlaceId IN (:workplaceIds) AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+			+ " WHERE awit.workPlaceId IN :workplaceIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
 	
 	/** The Constant SELECT_BY_HISTIDS. */
 	private static final String SELECT_BY_HISTIDS = "SELECT aw FROM BsymtAffiWorkplaceHistItem aw"
@@ -66,10 +68,10 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	}
 	
 	private void updateEntity(AffWorkplaceHistoryItem domain, BsymtAffiWorkplaceHistItem entity) {
-		if (domain.getWorkplaceId() != null){
+		if (StringUtils.isNotEmpty(domain.getWorkplaceId())){
 			entity.setWorkPlaceId(domain.getWorkplaceId());
 		}
-		if (domain.getNormalWorkplaceId() != null){
+		if (StringUtils.isNotEmpty(domain.getNormalWorkplaceId())){
 			entity.setNormalWkpId(domain.getNormalWorkplaceId());
 		}
 	}
@@ -127,14 +129,27 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 		}).collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.affiliate.
+	 * AffWorkplaceHistoryItemRepository_v1#getAffWrkplaHistItemByEmpIdAndDate(
+	 * nts.arc.time.GeneralDate, java.lang.String)
+	 */
 	@Override
-	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpIdAndDate(GeneralDate basedate, String employeeId) {
-		List<BsymtAffiWorkplaceHistItem> listHistItem = this.queryProxy().query(SELECT_BY_EMPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
+	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpIdAndDate(GeneralDate basedate,
+			String employeeId) {
+		List<BsymtAffiWorkplaceHistItem> listHistItem = this.queryProxy()
+				.query(SELECT_BY_EMPID_BASEDATE, BsymtAffiWorkplaceHistItem.class)
 				.setParameter("employeeId", employeeId).setParameter("standDate", basedate)
 				.getList();
-		if(listHistItem.isEmpty()){
+
+		// Check exist items
+		if (listHistItem.isEmpty()) {
 			return Collections.emptyList();
 		}
+
+		// Return
 		return listHistItem.stream().map(e -> {
 			AffWorkplaceHistoryItem domain = this.toDomain(e);
 			return domain;

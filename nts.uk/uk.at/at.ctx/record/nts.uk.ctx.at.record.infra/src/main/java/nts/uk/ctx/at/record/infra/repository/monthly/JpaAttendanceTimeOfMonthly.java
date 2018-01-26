@@ -6,10 +6,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonthly;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
@@ -26,25 +27,20 @@ import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.WorkTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayusetime.AnnualLeaveUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayusetime.CompensatoryLeaveUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayusetime.HolidayUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayusetime.RetentionYearlyUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayusetime.SpecialHolidayUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.AggregateHolidayWorkTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.HolidayWorkTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.AnnualLeaveUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.CompensatoryLeaveUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.RetentionYearlyUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.SpecialHolidayUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAggrTotalSpt;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtMonRegIrregTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.flex.KrcdtMonFlexTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.KrcdtMonAggrTotalWrk;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtMonAggrHdwkTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.holidayworkandcompensatoryleave.KrcdtMonHdwkTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonAggrHdwkTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonAggrOverTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonOverTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -61,13 +57,14 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaAttendanceTimeOfMonthly extends JpaRepository implements AttendanceTimeOfMonthlyRepository {
 
 	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtMonAttendanceTime a "
-			+ "WHERE a.PK.employeeID = :employeeID "
-			+ "AND a.PK.yearMonth = :yearMonth ";
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.PK.yearMonth = :yearMonth "
+			+ "ORDER BY a.startYmd";
 
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonAttendanceTime a "
-			+ "WHERE a.PK.employeeID = :employeeID "
+			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.yearMonth = :yearMonth ";
-	
+
 	/** 検索 */
 	@Override
 	public Optional<AttendanceTimeOfMonthly> find(String employeeId, YearMonth yearMonth,
@@ -89,7 +86,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	public List<AttendanceTimeOfMonthly> findByYearMonth(String employeeId, YearMonth yearMonth) {
 		
 		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonAttendanceTime.class)
-				.setParameter("employeeID", employeeId)
+				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.getList(c -> toDomain(c));
 	}
@@ -97,31 +94,13 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	/** 追加 */
 	@Override
 	public void insert(AttendanceTimeOfMonthly attendanceTimeOfMonthly){
-		this.commandProxy().insert(toEntity(attendanceTimeOfMonthly));
+		this.commandProxy().insert(toEntity(attendanceTimeOfMonthly, false));
 	}
 
 	/** 更新 */
 	@Override
 	public void update(AttendanceTimeOfMonthly attendanceTimeOfMonthly){
-
-		// 締め日付
-		ClosureDate closureDate = attendanceTimeOfMonthly.getClosureDate();
-		
-		// キー
-		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthly.getEmployeeId(),
-				attendanceTimeOfMonthly.getYearMonth().v(),
-				attendanceTimeOfMonthly.getClosureId().value,
-				closureDate.getClosureDay().v(),
-				(closureDate.getLastDayOfMonth() ? 1 : 0));
-
-		// 月別実績の月の計算
-		MonthlyCalculation monthlyCalculation = attendanceTimeOfMonthly.getMonthlyCalculation();
-		
-		KrcdtMonAttendanceTime entity = this.queryProxy().find(key, KrcdtMonAttendanceTime.class).get();
-		entity.aggregateDays = attendanceTimeOfMonthly.getAggregateDays().v();
-		entity.statutoryWorkingTime = monthlyCalculation.getStatutoryWorkingTime().v();
-		this.commandProxy().update(entity);
+		this.toEntity(attendanceTimeOfMonthly, true);
 	}
 	
 	/** 削除 */
@@ -142,7 +121,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	public void removeByYearMonth(String employeeId, YearMonth yearMonth) {
 		
 		this.getEntityManager().createQuery(DELETE_BY_YEAR_MONTH)
-		.setParameter("employeeID", employeeId)
+		.setParameter("employeeId", employeeId)
 		.setParameter("yearMonth", yearMonth.v())
 		.executeUpdate();
 	}
@@ -155,7 +134,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	private static AttendanceTimeOfMonthly toDomain(KrcdtMonAttendanceTime entity){
 
 		// 月別実績の月の計算
-		MonthlyCalculation monthlyCalculation = MonthlyCalculation.of(
+		val monthlyCalculation = MonthlyCalculation.of(
 				toDomainRegularAndIrregularTimeOfMonthly(entity),
 				toDomainFlexTimeOfMonthly(entity),
 				new AttendanceTimeMonth(entity.statutoryWorkingTime),
@@ -163,101 +142,105 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				toDomainAggregateTotalTimeSpentAtWork(entity));
 		
 		// 月別実績の勤怠時間
-		AttendanceTimeOfMonthly domain = AttendanceTimeOfMonthly.of(
+		//*****（未）　縦計は、永続化未実装。(2018/1/22 shuichi_ishida)
+		val domain = AttendanceTimeOfMonthly.of(
 				entity.PK.employeeId,
 				new YearMonth(entity.PK.yearMonth),
 				ClosureId.valueOf(entity.PK.closureId),
 				new ClosureDate(entity.PK.closureDay, (entity.PK.isLastDay != 0)),
 				new DatePeriod(entity.startYmd, entity.endYmd),
 				monthlyCalculation,
-				new AttendanceDaysMonthly(entity.aggregateDays));
+				new VerticalTotalOfMonthly(),
+				new AttendanceDaysMonth(entity.aggregateDays));
 		return domain;
 	}
 	
 	/**
 	 * エンティティ→ドメイン　（月別実績の通常変形時間）
-	 * @param entity エンティティ：月別実績の勤怠時間
+	 * @param paretEntity エンティティ：月別実績の勤怠時間
 	 * @return ドメイン：月別実績の通常変形時間
 	 */
-	private static RegularAndIrregularTimeOfMonthly toDomainRegularAndIrregularTimeOfMonthly(KrcdtMonAttendanceTime entity){
+	private static RegularAndIrregularTimeOfMonthly toDomainRegularAndIrregularTimeOfMonthly(KrcdtMonAttendanceTime paretEntity){
 
-		KrcdtMonRegIrregTime targetEntity = entity.krcdtMonRegIrregTime;
+		val entity = paretEntity.krcdtMonRegIrregTime;
+		if (entity == null) return new RegularAndIrregularTimeOfMonthly();
 
 		// 月別実績の変形労働時間
-		IrregularWorkingTimeOfMonthly irregularWorkingTime = IrregularWorkingTimeOfMonthly.of(
-				new AttendanceTimeMonth(targetEntity.multiMonthIrregularMiddleTime),
-				new AttendanceTimeMonth(targetEntity.irregularPeriodCarryforwardTime),
-				new AttendanceTimeMonth(targetEntity.irregularWorkingShortageTime),
+		val irregularWorkingTime = IrregularWorkingTimeOfMonthly.of(
+				new AttendanceTimeMonth(entity.multiMonthIrregularMiddleTime),
+				new AttendanceTimeMonth(entity.irregularPeriodCarryforwardTime),
+				new AttendanceTimeMonth(entity.irregularWorkingShortageTime),
 				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(targetEntity.irregularLegalOverTime),
-						new AttendanceTimeMonth(targetEntity.calcIrregularLegalOverTime))
+						new AttendanceTimeMonth(entity.irregularLegalOverTime),
+						new AttendanceTimeMonth(entity.calcIrregularLegalOverTime))
 				);
 		
 		// 月別実績の通常変形時間
-		RegularAndIrregularTimeOfMonthly domain = RegularAndIrregularTimeOfMonthly.of(
-				new AttendanceTimeMonth(targetEntity.monthlyTotalPremiumTime),
-				new AttendanceTimeMonth(targetEntity.weeklyTotalPremiumTime),
+		val domain = RegularAndIrregularTimeOfMonthly.of(
+				new AttendanceTimeMonth(entity.monthlyTotalPremiumTime),
+				new AttendanceTimeMonth(entity.weeklyTotalPremiumTime),
 				irregularWorkingTime);
 		return domain;
 	}
 
 	/**
 	 * エンティティ→ドメイン　（月別実績のフレックス時間）
-	 * @param entity エンティティ：月別実績の勤怠時間
+	 * @param parentEntity エンティティ：月別実績の勤怠時間
 	 * @return ドメイン：月別実績のフレックス時間
 	 */
-	private static FlexTimeOfMonthly toDomainFlexTimeOfMonthly(KrcdtMonAttendanceTime entity){
+	private static FlexTimeOfMonthly toDomainFlexTimeOfMonthly(KrcdtMonAttendanceTime parentEntity){
 		
-		KrcdtMonFlexTime targetEntity = entity.krcdtMonFlexTime;
+		val entity = parentEntity.krcdtMonFlexTime;
+		if (entity == null) return new FlexTimeOfMonthly();
 		
-		FlexTimeOfMonthly domain = FlexTimeOfMonthly.of(
+		val domain = FlexTimeOfMonthly.of(
 				FlexTime.of(
 						new TimeMonthWithCalculationAndMinus(
-								new AttendanceTimeMonthWithMinus(targetEntity.flexTime),
-								new AttendanceTimeMonthWithMinus(targetEntity.calcFlexTime)),
-						new AttendanceTimeMonthWithMinus(targetEntity.beforeFlexTime),
-						new AttendanceTimeMonthWithMinus(targetEntity.legalFlexTime),
-						new AttendanceTimeMonthWithMinus(targetEntity.illegalFlexTime)),
-				new AttendanceTimeMonth(targetEntity.flexExcessTime),
-				new AttendanceTimeMonth(targetEntity.flexShortageTime),
-				new AttendanceTimeMonth(targetEntity.beforeFlexTime),
+								new AttendanceTimeMonthWithMinus(entity.flexTime),
+								new AttendanceTimeMonthWithMinus(entity.calcFlexTime)),
+						new AttendanceTimeMonth(entity.beforeFlexTime),
+						new AttendanceTimeMonthWithMinus(entity.legalFlexTime),
+						new AttendanceTimeMonthWithMinus(entity.illegalFlexTime)),
+				new AttendanceTimeMonth(entity.flexExcessTime),
+				new AttendanceTimeMonth(entity.flexShortageTime),
 				FlexCarryforwardTime.of(
-						new AttendanceTimeMonth(targetEntity.flexCarryforwardWorkTime),
-						new AttendanceTimeMonth(targetEntity.flexCarryforwardTime),
-						new AttendanceTimeMonth(targetEntity.flexCarryforwardShortageTime)),
+						new AttendanceTimeMonth(entity.flexCarryforwardWorkTime),
+						new AttendanceTimeMonth(entity.flexCarryforwardTime),
+						new AttendanceTimeMonth(entity.flexCarryforwardShortageTime)),
 				FlexTimeOfExcessOutsideTime.of(
-						EnumAdaptor.valueOf(targetEntity.excessFlexAtr, ExcessFlexAtr.class),
-						new AttendanceTimeMonth(targetEntity.principleTime),
-						new AttendanceTimeMonth(targetEntity.forConvenienceTime)));
+						EnumAdaptor.valueOf(entity.excessFlexAtr, ExcessFlexAtr.class),
+						new AttendanceTimeMonth(entity.principleTime),
+						new AttendanceTimeMonth(entity.forConvenienceTime)));
 		return domain;
 	}
 	
 	/**
 	 * エンティティ→ドメイン　（集計総労働時間）
-	 * @param entity エンティティ：月別実績の勤怠時間
+	 * @param parentEntity エンティティ：月別実績の勤怠時間
 	 * @return ドメイン：集計総労働時間
 	 */
-	private static AggregateTotalWorkingTime toDomainAggregateTotalWorkingTime(KrcdtMonAttendanceTime entity){
+	private static AggregateTotalWorkingTime toDomainAggregateTotalWorkingTime(KrcdtMonAttendanceTime parentEntity){
 
-		KrcdtMonAggrTotalWrk targetEntity = entity.krcdtMonAggrTotalWrk;
+		val entity = parentEntity.krcdtMonAggrTotalWrk;
+		if (entity == null) return new AggregateTotalWorkingTime();
 
 		// 月別実績の就業時間
-		WorkTimeOfMonthly workTime = WorkTimeOfMonthly.of(
-				new AttendanceTimeMonth(targetEntity.workTime),
-				new AttendanceTimeMonth(targetEntity.withinPrescribedPremiumTime));
+		val workTime = WorkTimeOfMonthly.of(
+				new AttendanceTimeMonth(entity.workTime),
+				new AttendanceTimeMonth(entity.withinPrescribedPremiumTime));
 
 		// 月別実績の所定労働時間
-		PrescribedWorkingTimeOfMonthly prescribedWorkingTime = PrescribedWorkingTimeOfMonthly.of(
-				new AttendanceTimeMonth(targetEntity.schedulePrescribedWorkingTime),
-				new AttendanceTimeMonth(targetEntity.recordPrescribedWorkingTime));
+		val prescribedWorkingTime = PrescribedWorkingTimeOfMonthly.of(
+				new AttendanceTimeMonth(entity.schedulePrescribedWorkingTime),
+				new AttendanceTimeMonth(entity.recordPrescribedWorkingTime));
 		
 		// 集計総労働時間
-		AggregateTotalWorkingTime domain = AggregateTotalWorkingTime.of(
+		val domain = AggregateTotalWorkingTime.of(
 				workTime,
-				toDomainOverTimeOfMonthly(entity),
-				toDomainHolidayUseTimeOfMonthly(entity),
-				toDomainHolidayWorkTimeOfMonthly(entity),
-				new AttendanceTimeMonth(targetEntity.totalWorkingTime),
+				toDomainOverTimeOfMonthly(parentEntity),
+				toDomainHolidayWorkTimeOfMonthly(parentEntity),
+				toDomainVacationUseTimeOfMonthly(parentEntity),
+				new AttendanceTimeMonth(entity.totalWorkingTime),
 				prescribedWorkingTime);
 		return domain;
 	}
@@ -265,21 +248,23 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	/**
 	 * エンティティ→ドメイン　（月別実績の残業時間）
 	 * @param entity エンティティ：月別実績の勤怠時間
+	 * @param entityAggrs エンティティ：集計残業時間
 	 * @return ドメイン：月別実績の残業時間
 	 */
-	private static OverTimeOfMonthly toDomainOverTimeOfMonthly(KrcdtMonAttendanceTime entity){
+	private static OverTimeOfMonthly toDomainOverTimeOfMonthly(KrcdtMonAttendanceTime parentEntity){
 		
-		KrcdtMonOverTime targetEntity = entity.krcdtMonOverTime;
+		val entity = parentEntity.krcdtMonOverTime;
+		if (entity == null) return new OverTimeOfMonthly();
 		
-		OverTimeOfMonthly domain = OverTimeOfMonthly.of(
+		val domain = OverTimeOfMonthly.of(
 				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(targetEntity.totalOverTime),
-						new AttendanceTimeMonth(targetEntity.calcTotalOverTime)),
-				new AttendanceTimeMonth(targetEntity.beforeOverTime),
+						new AttendanceTimeMonth(entity.totalOverTime),
+						new AttendanceTimeMonth(entity.calcTotalOverTime)),
+				new AttendanceTimeMonth(entity.beforeOverTime),
 				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(targetEntity.totalTransferOverTime),
-						new AttendanceTimeMonth(targetEntity.calcTotalTransferOverTime)),
-				entity.krcdtMonAggrOverTimes.stream()
+						new AttendanceTimeMonth(entity.totalTransferOverTime),
+						new AttendanceTimeMonth(entity.calcTotalTransferOverTime)),
+				parentEntity.krcdtMonAggrOverTimes.stream()
 					.map(c -> toDomainAggregateOverTime(c)).collect(Collectors.toList()));
 		return domain;
 	}
@@ -291,7 +276,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	 */
 	private static AggregateOverTime toDomainAggregateOverTime(KrcdtMonAggrOverTime entity){
 		
-		AggregateOverTime domain = AggregateOverTime.of(
+		val domain = AggregateOverTime.of(
 				new OverTimeFrameNo(entity.PK.overTimeFrameNo),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(entity.overTime),
@@ -307,22 +292,23 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	
 	/**
 	 * エンティティ→ドメイン　（月別実績の休出時間）
-	 * @param entity エンティティ：月別実績の勤怠時間
+	 * @param parentEntity エンティティ：月別実績の勤怠時間
 	 * @return ドメイン：月別実績の休出時間
 	 */
-	private static HolidayWorkTimeOfMonthly toDomainHolidayWorkTimeOfMonthly(KrcdtMonAttendanceTime entity){
+	private static HolidayWorkTimeOfMonthly toDomainHolidayWorkTimeOfMonthly(KrcdtMonAttendanceTime parentEntity){
 		
-		KrcdtMonHdwkTime targetEntity = entity.krcdtMonHdwkTime;
+		val entity = parentEntity.krcdtMonHdwkTime;
+		if (entity == null) return new HolidayWorkTimeOfMonthly();
 		
-		HolidayWorkTimeOfMonthly domain = HolidayWorkTimeOfMonthly.of(
+		val domain = HolidayWorkTimeOfMonthly.of(
 				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(targetEntity.totalHolidayWorkTime),
-						new AttendanceTimeMonth(targetEntity.calcTotalHolidayWorkTime)),
-				new AttendanceTimeMonth(targetEntity.beforeHolidayWorkTime),
+						new AttendanceTimeMonth(entity.totalHolidayWorkTime),
+						new AttendanceTimeMonth(entity.calcTotalHolidayWorkTime)),
+				new AttendanceTimeMonth(entity.beforeHolidayWorkTime),
 				new TimeMonthWithCalculation(
-						new AttendanceTimeMonth(targetEntity.totalTransferTime),
-						new AttendanceTimeMonth(targetEntity.calcTotalTransferTime)),
-				entity.krcdtMonAggrHdwkTimes.stream()
+						new AttendanceTimeMonth(entity.totalTransferTime),
+						new AttendanceTimeMonth(entity.calcTotalTransferTime)),
+				parentEntity.krcdtMonAggrHdwkTimes.stream()
 					.map(c -> toDomainAggregateHolidayWorkTime(c)).collect(Collectors.toList()));
 		return domain;
 	}
@@ -334,7 +320,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	 */
 	private static AggregateHolidayWorkTime toDomainAggregateHolidayWorkTime(KrcdtMonAggrHdwkTime entity){
 		
-		AggregateHolidayWorkTime domain = AggregateHolidayWorkTime.of(
+		val domain = AggregateHolidayWorkTime.of(
 				new HolidayWorkFrameNo(entity.PK.holidayWorkFrameNo),
 				new TimeMonthWithCalculation(
 						new AttendanceTimeMonth(entity.holidayWorkTime),
@@ -350,63 +336,80 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	
 	/**
 	 * エンティティ→ドメイン　（月別実績の休暇使用時間）
-	 * @param entity エンティティ：月別実績の勤怠時間
+	 * @param parentEntity エンティティ：月別実績の勤怠時間
 	 * @return ドメイン：月別実績の休暇使用時間
 	 */
-	private static HolidayUseTimeOfMonthly toDomainHolidayUseTimeOfMonthly(KrcdtMonAttendanceTime entity){
-		HolidayUseTimeOfMonthly domain = HolidayUseTimeOfMonthly.of(
+	private static VacationUseTimeOfMonthly toDomainVacationUseTimeOfMonthly(KrcdtMonAttendanceTime parentEntity){
+		
+		val entity = parentEntity.krcdtMonVactUseTime;
+		if (entity == null) return new VacationUseTimeOfMonthly();
+		
+		val domain = VacationUseTimeOfMonthly.of(
 				AnnualLeaveUseTimeOfMonthly.of(
-						new AttendanceTimeMonth(entity.krcdtMonHldyUseTime.annualLeaveUseTime)),
+						new AttendanceTimeMonth(entity.annualLeaveUseTime)),
 				RetentionYearlyUseTimeOfMonthly.of(
-						new AttendanceTimeMonth(entity.krcdtMonHldyUseTime.retentionYearlyUseTime)),
+						new AttendanceTimeMonth(entity.retentionYearlyUseTime)),
 				SpecialHolidayUseTimeOfMonthly.of(
-						new AttendanceTimeMonth(entity.krcdtMonHldyUseTime.specialHolidayUseTime)),
+						new AttendanceTimeMonth(entity.specialHolidayUseTime)),
 				CompensatoryLeaveUseTimeOfMonthly.of(
-						new AttendanceTimeMonth(entity.krcdtMonHldyUseTime.compensatoryLeaveUseTime)));
+						new AttendanceTimeMonth(entity.compensatoryLeaveUseTime)));
 		return domain;
 	}
 	
 	/**
 	 * エンティティ→ドメイン　（集計総拘束時間）
-	 * @param entity エンティティ：月別実績の勤怠時間
+	 * @param parentEntity エンティティ：月別実績の勤怠時間
 	 * @return ドメイン：集計総拘束時間
 	 */
-	private static AggregateTotalTimeSpentAtWork toDomainAggregateTotalTimeSpentAtWork(KrcdtMonAttendanceTime entity){
-		KrcdtMonAggrTotalSpt targetEntity = entity.krcdtMonAggrTotalSpt;
-		AggregateTotalTimeSpentAtWork domain = AggregateTotalTimeSpentAtWork.of(
-				new AttendanceTimeMonth(targetEntity.overTimeSpentAtWork),
-				new AttendanceTimeMonth(targetEntity.midnightTimeSpentAtWork),
-				new AttendanceTimeMonth(targetEntity.holidayTimeSpentAtWork),
-				new AttendanceTimeMonth(targetEntity.varienceTimeSpentAtWork),
-				new AttendanceTimeMonth(targetEntity.totalTimeSpentAtWork));
+	private static AggregateTotalTimeSpentAtWork toDomainAggregateTotalTimeSpentAtWork(KrcdtMonAttendanceTime parentEntity){
+		
+		val entity = parentEntity.krcdtMonAggrTotalSpt;
+		if (entity == null) return new AggregateTotalTimeSpentAtWork();
+		
+		val domain = AggregateTotalTimeSpentAtWork.of(
+				new AttendanceTimeMonth(entity.overTimeSpentAtWork),
+				new AttendanceTimeMonth(entity.midnightTimeSpentAtWork),
+				new AttendanceTimeMonth(entity.holidayTimeSpentAtWork),
+				new AttendanceTimeMonth(entity.varienceTimeSpentAtWork),
+				new AttendanceTimeMonth(entity.totalTimeSpentAtWork));
 		return domain;
 	}
 
 	/**
 	 * ドメイン→エンティティ
-	 * @param attendanceTimeOfMonthly ドメイン：月別実績の勤怠時間
+	 * @param domain ドメイン：月別実績の勤怠時間
+	 * @param execUpdate 更新を実行する
 	 * @return エンティティ：月別実績の勤怠時間
 	 */
-	private static KrcdtMonAttendanceTime toEntity(AttendanceTimeOfMonthly attendanceTimeOfMonthly){
+	private KrcdtMonAttendanceTime toEntity(AttendanceTimeOfMonthly domain, boolean execUpdate){
 
 		// 締め日付
-		ClosureDate closureDate = attendanceTimeOfMonthly.getClosureDate();
+		val closureDate = domain.getClosureDate();
 		
 		// キー
-		KrcdtMonAttendanceTimePK key = new KrcdtMonAttendanceTimePK(
-				attendanceTimeOfMonthly.getEmployeeId(),
-				attendanceTimeOfMonthly.getYearMonth().v(),
-				attendanceTimeOfMonthly.getClosureId().value,
+		val key = new KrcdtMonAttendanceTimePK(
+				domain.getEmployeeId(),
+				domain.getYearMonth().v(),
+				domain.getClosureId().value,
 				closureDate.getClosureDay().v(),
 				(closureDate.getLastDayOfMonth() ? 1 : 0));
 
 		// 月別実績の月の計算
-		MonthlyCalculation monthlyCalculation = attendanceTimeOfMonthly.getMonthlyCalculation();
+		val monthlyCalculation = domain.getMonthlyCalculation();
 		
-		KrcdtMonAttendanceTime entity = new KrcdtMonAttendanceTime();
-		entity.PK = key;
-		entity.aggregateDays = attendanceTimeOfMonthly.getAggregateDays().v();
+		KrcdtMonAttendanceTime entity;
+		if (execUpdate){
+			entity = this.queryProxy().find(key, KrcdtMonAttendanceTime.class).get();
+		}
+		else {
+			entity = new KrcdtMonAttendanceTime();
+			entity.PK = key;
+		}
+		entity.startYmd = domain.getDatePeriod().start();
+		entity.endYmd = domain.getDatePeriod().end();
+		entity.aggregateDays = domain.getAggregateDays().v();
 		entity.statutoryWorkingTime = monthlyCalculation.getStatutoryWorkingTime().v();
+		if (execUpdate) this.commandProxy().update(entity);
 		return entity;
 	}
 }

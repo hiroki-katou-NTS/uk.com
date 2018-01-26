@@ -8,11 +8,24 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategoryPk;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategoryRole;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckTargetBusinessType;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckTargetClassification;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckTargetEmployment;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckTargetJobTitle;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyErrorCode;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyErrorCodePK;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyFixExtra;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyFixExtraPK;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyWkRecord;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyWkRecordPK;
 
 /**
  * 
@@ -25,8 +38,8 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckC
 public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 		implements AlarmCheckConditionByCategoryRepository {
 
-	private final String GET_All_BY_COMPANY = "SELECT c FROM KfnmtAlarmCheckConditionCategory c WHERE c.companyId = :companyId ";
-	private final String GET_All_BY_COMPANY_CATEGORY = "SELECT c FROM KfnmtAlarmCheckConditionCategory c WHERE c.companyId = :companyId AND c.category = :category ";
+	private final String GET_All_BY_COMPANY = "SELECT c FROM KfnmtAlarmCheckConditionCategory c WHERE c.pk.companyId = :companyId ";
+	private final String GET_All_BY_COMPANY_CATEGORY = "SELECT c FROM KfnmtAlarmCheckConditionCategory c WHERE c.pk.companyId = :companyId AND c.pk.category = :category ";
 
 	@Override
 	public Optional<AlarmCheckConditionByCategory> find(String companyId, int category, String code) {
@@ -86,19 +99,114 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 			entity.targetCondition.filterByEmployment = domain.getExtractTargetCondition().isFilterByEmployment() ? 1 : 0;
 			entity.targetCondition.filterByJobTitle = domain.getExtractTargetCondition().isFilterByJobTitle() ? 1 : 0;
 
+			List<KfnmtAlarmCheckTargetEmployment> oldListTargetEmployment = entity.targetCondition.listEmployment;
+			List<KfnmtAlarmCheckTargetEmployment> newListTargetEmployment = domain.getExtractTargetCondition().getLstEmploymentCode().stream().map(item -> new KfnmtAlarmCheckTargetEmployment(domain.getExtractTargetCondition().getId(), item)).collect(Collectors.toList());
+			for (KfnmtAlarmCheckTargetEmployment newTarget : newListTargetEmployment) {
+				for (KfnmtAlarmCheckTargetEmployment oldTarget : oldListTargetEmployment) {
+					if (oldTarget.pk.equals(newTarget.pk)) {
+						newListTargetEmployment.set(newListTargetEmployment.indexOf(newTarget), oldTarget);
+						break;
+					}
+				}
+			}
+			entity.targetCondition.listEmployment = newListTargetEmployment;
+			
+			List<KfnmtAlarmCheckTargetClassification> oldListTargetClassification = entity.targetCondition.listClassification;
+			List<KfnmtAlarmCheckTargetClassification> newListTargetClassification = domain.getExtractTargetCondition().getLstClassificationCode().stream().map(item -> new KfnmtAlarmCheckTargetClassification(domain.getExtractTargetCondition().getId(), item)).collect(Collectors.toList());
+			for (KfnmtAlarmCheckTargetClassification newTarget : newListTargetClassification) {
+				for (KfnmtAlarmCheckTargetClassification oldTarget : oldListTargetClassification) {
+					if (oldTarget.pk.equals(newTarget.pk)) {
+						newListTargetClassification.set(newListTargetClassification.indexOf(newTarget), oldTarget);
+						break;
+					}
+				}
+			}
+			entity.targetCondition.listClassification = newListTargetClassification;
+			
+			List<KfnmtAlarmCheckTargetJobTitle> oldListTargetJobTitle = entity.targetCondition.listJobTitle;
+			List<KfnmtAlarmCheckTargetJobTitle> newListTargetJobTitle = domain.getExtractTargetCondition().getLstJobTitleId().stream().map(item -> new KfnmtAlarmCheckTargetJobTitle(domain.getExtractTargetCondition().getId(), item)).collect(Collectors.toList());
+			for (KfnmtAlarmCheckTargetJobTitle newTarget : newListTargetJobTitle) {
+				for (KfnmtAlarmCheckTargetJobTitle oldTarget : oldListTargetJobTitle) {
+					if (oldTarget.pk.equals(newTarget.pk)) {
+						newListTargetJobTitle.set(newListTargetJobTitle.indexOf(newTarget), oldTarget);
+						break;
+					}
+				}
+			}
+			entity.targetCondition.listJobTitle = newListTargetJobTitle;
+			
+			List<KfnmtAlarmCheckTargetBusinessType> oldListTargetBusinessType = entity.targetCondition.listBusinessType;
+			List<KfnmtAlarmCheckTargetBusinessType> newListTargetBusinessType = domain.getExtractTargetCondition().getLstBusinessTypeCode().stream().map(item -> new KfnmtAlarmCheckTargetBusinessType(domain.getExtractTargetCondition().getId(), item)).collect(Collectors.toList());
+			for (KfnmtAlarmCheckTargetBusinessType newTarget : newListTargetBusinessType) {
+				for (KfnmtAlarmCheckTargetBusinessType oldTarget : oldListTargetBusinessType) {
+					if (oldTarget.pk.equals(newTarget.pk)) {
+						newListTargetBusinessType.set(newListTargetBusinessType.indexOf(newTarget), oldTarget);
+						break;
+					}
+				}
+			}
+			entity.targetCondition.listBusinessType = newListTargetBusinessType;
+			
+			if (entity.pk.category == AlarmCategory.DAILY.value) {
+				DailyAlarmCondition dailyAlarmCondition = (DailyAlarmCondition) domain.getExtractionCondition();
+				entity.dailyAlarmCondition.addApplication = dailyAlarmCondition.isAddApplication() ? 1 : 0;
+				entity.dailyAlarmCondition.conExtractedDaily = dailyAlarmCondition.getConExtractedDaily().value;
+				
+				List<KrcmtDailyErrorCode> oldListErrorAlarmCode = entity.dailyAlarmCondition.listErrorAlarmCode;
+				List<KrcmtDailyErrorCode> newListErrorAlarmCode = dailyAlarmCondition.getErrorAlarmCode().stream().map(item -> new KrcmtDailyErrorCode(new KrcmtDailyErrorCodePK(dailyAlarmCondition.getDailyAlarmConID(), item))).collect(Collectors.toList());
+				for (KrcmtDailyErrorCode newTarget : newListErrorAlarmCode) {
+					for (KrcmtDailyErrorCode oldTarget : oldListErrorAlarmCode) {
+						if (oldTarget.krcmtDailyErrorCodePK.equals(newTarget.krcmtDailyErrorCodePK)) {
+							newListErrorAlarmCode.set(newListErrorAlarmCode.indexOf(newTarget), oldTarget);
+							break;
+						}
+					}
+				}
+				entity.dailyAlarmCondition.listErrorAlarmCode = newListErrorAlarmCode;
+				
+				List<KrcmtDailyWkRecord> oldListWorkRecord = entity.dailyAlarmCondition.listExtractConditionWorkRecord;
+				List<KrcmtDailyWkRecord> newListWorkRecord = dailyAlarmCondition.getExtractConditionWorkRecord().stream().map(item -> new KrcmtDailyWkRecord(new KrcmtDailyWkRecordPK(dailyAlarmCondition.getDailyAlarmConID(), item))).collect(Collectors.toList());
+				for (KrcmtDailyWkRecord newTarget : newListWorkRecord) {
+					for (KrcmtDailyWkRecord oldTarget : oldListWorkRecord) {
+						if (oldTarget.krcmtDailyWkRecordPK.equals(newTarget.krcmtDailyWkRecordPK)) {
+							newListWorkRecord.set(newListWorkRecord.indexOf(newTarget), oldTarget);
+							break;
+						}
+					}
+				}
+				entity.dailyAlarmCondition.listExtractConditionWorkRecord = newListWorkRecord;
+				
+//				List<KrcmtDailyFixExtra> oldListFixedWkRecord = entity.dailyAlarmCondition.listFixedExtractConditionWorkRecord;
+//				List<KrcmtDailyFixExtra> newListFixedWkRecord = dailyAlarmCondition.getErrorAlarmCode().stream().map(item -> new KrcmtDailyFixExtra(new KrcmtDailyFixExtraPK(dailyAlarmCondition.getDailyAlarmConID(), item))).collect(Collectors.toList());
+//				for (KrcmtDailyFixExtra newTarget : newListFixedWkRecord) {
+//					for (KrcmtDailyFixExtra oldTarget : oldListFixedWkRecord) {
+//						if (oldTarget.krcmtDailyFixExtraPK.equals(newTarget.krcmtDailyFixExtraPK)) {
+//							newListFixedWkRecord.set(newListErrorAlarmCode.indexOf(newTarget), oldTarget);
+//							break;
+//						}
+//					}
+//				}
+//				entity.dailyAlarmCondition.listFixedExtractConditionWorkRecord = newListFixedWkRecord;
+			}
+			
+			if (entity.pk.category == AlarmCategory.SCHEDULE_4WEEK.value) {
+				AlarmCheckCondition4W4D schedule4Week = (AlarmCheckCondition4W4D) domain.getExtractionCondition();
+				entity.schedule4W4DAlarmCondition.fourW4DCheckCond = schedule4Week.getFourW4DCheckCond().value;
+			}
+			
 			this.commandProxy().update(entity);
 		}
 
 	}
 
 	// When alarm check condition by category is deleted
-	// Delete the "time item check of work record (勤務実績の勤怠項目チェック)" and "error
-	// item condition of time item (勤怠項目のエラーアラーム条件)"
+	// Delete the "time item check of work record (勤務実績の勤怠項目チェック)"
+	// and "error item condition of time item (勤怠項目のエラーアラーム条件)"
 	// linked to error work alarm check ID of work record
 	@Override
-	public void delete(AlarmCheckConditionByCategory domain) {
-		// TODO Auto-generated method stub
-
+	public void delete(String companyId, int category, String alarmConditionCode) {
+		this.commandProxy().remove(KfnmtAlarmCheckConditionCategory.class, new KfnmtAlarmCheckConditionCategoryPk(
+				companyId, category, alarmConditionCode));
 	}
 
 	@Override

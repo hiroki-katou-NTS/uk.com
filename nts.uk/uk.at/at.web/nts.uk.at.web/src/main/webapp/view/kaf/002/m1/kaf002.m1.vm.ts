@@ -7,7 +7,7 @@ module nts.uk.at.view.kaf002.m1 {
             extendsMode: KnockoutObservable<boolean> = ko.observable(false);
             extendsModeDisplay: KnockoutObservable<boolean> = ko.observable(true);
             appStampList: KnockoutObservableArray<vmbase.AppStampGoOutPermit> = ko.observableArray([]);
-            supFrameNo: number = 1;
+            supFrameNo: number = 3;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             stampAtrList: KnockoutObservableArray<vmbase.SimpleObject> = ko.observableArray([]);
             stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -54,6 +54,7 @@ module nts.uk.at.view.kaf002.m1 {
                     });
                 }
                 self.stampAtr.subscribe((value)=>{ 
+                    nts.uk.ui.errors.clearAll();
                     if(value == 1){
                         self.displayItemNo = self.extendsMode() ? 10 : self.supFrameNo;   
                         self.extendsModeDisplay(!self.extendsMode() && (self.stampAtr() == 1));      
@@ -120,7 +121,9 @@ module nts.uk.at.view.kaf002.m1 {
                     appStampCancelCmds: null,
                     appStampOnlineRecordCmd: null  
                 }
-                if(!nts.uk.util.isNullOrEmpty(command.appStampGoOutPermitCmds)){
+                if(nts.uk.util.isNullOrEmpty(command.appStampGoOutPermitCmds)){
+                    $('.m1-time-editor').first().ntsError('set', {messageId:"Msg_308"});        
+                } else {
                     nts.uk.ui.block.invisible();
                     service.insert(command)
                     .done((data) => {

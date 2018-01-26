@@ -71,17 +71,17 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	@Override
 	public void setNormalOTTime(AutoCalOvertimeSetting normalOTTime) {
 		this.entity.setEarlyOtTimeAtr(normalOTTime.getEarlyOtTime().getCalAtr().value);
-		this.entity.setEarlyOtTimeLimit(normalOTTime.getEarlyOtTime().getUpLimitOtSet().value);
+		this.entity.setEarlyOtTimeLimit(normalOTTime.getEarlyOtTime().getUpLimitORtSet().value);
 		this.entity.setEarlyMidOtTimeAtr(normalOTTime.getEarlyMidOtTime().getCalAtr().value);
-		this.entity.setEarlyMidOtTimeLimit(normalOTTime.getEarlyMidOtTime().getUpLimitOtSet().value);
+		this.entity.setEarlyMidOtTimeLimit(normalOTTime.getEarlyMidOtTime().getUpLimitORtSet().value);
 		this.entity.setNormalOtTimeAtr(normalOTTime.getNormalOtTime().getCalAtr().value);
-		this.entity.setNormalOtTimeLimit(normalOTTime.getNormalOtTime().getUpLimitOtSet().value);
+		this.entity.setNormalOtTimeLimit(normalOTTime.getNormalOtTime().getUpLimitORtSet().value);
 		this.entity.setNormalMidOtTimeAtr(normalOTTime.getNormalMidOtTime().getCalAtr().value);
-		this.entity.setNormalMidOtTimeLimit(normalOTTime.getNormalMidOtTime().getUpLimitOtSet().value);
+		this.entity.setNormalMidOtTimeLimit(normalOTTime.getNormalMidOtTime().getUpLimitORtSet().value);
 		this.entity.setLegalOtTimeAtr(normalOTTime.getLegalOtTime().getCalAtr().value);
-		this.entity.setLegalOtTimeLimit(normalOTTime.getLegalOtTime().getUpLimitOtSet().value);
+		this.entity.setLegalOtTimeLimit(normalOTTime.getLegalOtTime().getUpLimitORtSet().value);
 		this.entity.setLegalMidOtTimeAtr(normalOTTime.getLegalMidOtTime().getCalAtr().value);
-		this.entity.setLegalMidOtTimeLimit(normalOTTime.getLegalMidOtTime().getUpLimitOtSet().value);	
+		this.entity.setLegalMidOtTimeLimit(normalOTTime.getLegalMidOtTime().getUpLimitORtSet().value);	
 	}
 
 	/* (non-Javadoc)
@@ -90,7 +90,7 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	@Override
 	public void setFlexOTTime(AutoCalFlexOvertimeSetting flexOTTime) {
 		this.entity.setFlexOtTimeAtr(flexOTTime.getFlexOtTime().getCalAtr().value);
-		this.entity.setFlexOtTimeLimit(flexOTTime.getFlexOtTime().getUpLimitOtSet().value);	
+		this.entity.setFlexOtTimeLimit(flexOTTime.getFlexOtTime().getUpLimitORtSet().value);	
 	}
 
 	/* (non-Javadoc)
@@ -99,9 +99,9 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	@Override
 	public void setRestTime(AutoCalRestTimeSetting restTime) {
 		this.entity.setRestTimeAtr(restTime.getRestTime().getCalAtr().value);
-		this.entity.setRestTimeLimit(restTime.getRestTime().getUpLimitOtSet().value);
+		this.entity.setRestTimeLimit(restTime.getRestTime().getUpLimitORtSet().value);
 		this.entity.setLateNightTimeAtr(restTime.getLateNightTime().getCalAtr().value);	
-		this.entity.setLateNightTimeLimit(restTime.getLateNightTime().getUpLimitOtSet().value);
+		this.entity.setLateNightTimeLimit(restTime.getLateNightTime().getUpLimitORtSet().value);
 	}
 
 

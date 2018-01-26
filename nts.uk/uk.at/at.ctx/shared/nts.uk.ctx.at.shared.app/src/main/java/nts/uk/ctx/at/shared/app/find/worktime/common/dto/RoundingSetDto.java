@@ -31,7 +31,10 @@ public class RoundingSetDto implements RoundingSetSetMemento {
 	 */
 	@Override
 	public void setRoundingSet(InstantRounding rounding) {
-		rounding.saveToMememto(this.roundingSet);
+		if (rounding != null) {
+			this.roundingSet = new InstantRoundingDto();
+			rounding.saveToMememto(this.roundingSet);
+		}
 	}
 
 	/*

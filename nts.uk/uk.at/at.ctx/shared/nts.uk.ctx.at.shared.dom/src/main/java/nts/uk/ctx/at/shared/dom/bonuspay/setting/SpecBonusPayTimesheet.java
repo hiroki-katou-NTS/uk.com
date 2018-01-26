@@ -4,21 +4,14 @@
 package nts.uk.ctx.at.shared.dom.bonuspay.setting;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.RoundingAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UnitAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.SpecBonusPayNumber;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Unit;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -34,7 +27,7 @@ public class SpecBonusPayTimesheet {
 
 	private UseAtr useAtr;
 
-	private String timeItemId;
+	private int timeItemId;
 
 	private AttendanceClock startTime;
 
@@ -49,7 +42,7 @@ public class SpecBonusPayTimesheet {
 	private SpecBonusPayNumber specBonusPayNumber;
 
 	private SpecBonusPayTimesheet(
-			int timeSheetId, UseAtr useAtr, String timeItemId,
+			int timeSheetId, UseAtr useAtr, int timeItemId,
 			AttendanceClock startTime, AttendanceClock endTime, UnitAtr roundingTimeAtr,
 			RoundingAtr roundingAtr, int dateCode,SpecBonusPayNumber specBonusPayNumber) {
 		//super(timeSheetId, useAtr, timeItemId, startTime, endTime, roundingTimeAtr, roundingAtr);
@@ -64,7 +57,7 @@ public class SpecBonusPayTimesheet {
 		this.specBonusPayNumber = specBonusPayNumber;
 	}
 
-	public static SpecBonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId,
+	public static SpecBonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, int timeItemId,
 			int startTime, int endTime, int roundingTimeAtr, int roundingAtr, int dateCode) {
 		return new SpecBonusPayTimesheet(
 				timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class),

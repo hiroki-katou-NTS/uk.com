@@ -112,79 +112,79 @@
 						<tr>
 							<td width="200"></td>
 							<td width="20"></td>
-							<td width="80"><input class="a7_7"
-								data-bind="ntsNumberEditor: { value: conditionValue01, constraint: 'ConditionValue', name: '#[KMF003_23]', required: true }" /></td>
+							<td width="80"><input id="cond01" class="a7_7"
+								data-bind="ntsNumberEditor: { value: conditionValue01, enable: conditionValue01Enable, constraint: 'ConditionValue', name: '#[KMF003_23]' }" /></td>
 							<td width="120"><label class="a7_8"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue01"></span><span
 									data-bind="text: symbols"></span></label></td>
 							<td width="100"><button id="a7_9"
-									data-bind="click: openBDialog.bind($data, 1)">#{i18n.getText('KMF003_29')}</button></td>
-							<td width="100"><label class="a9_1">#{i18n.getText('KMF003_31')}</label></td>
+									data-bind="click: openBDialog.bind($data, 1), enable: !editMode()">#{i18n.getText('KMF003_29')}</button></td>
+							<td width="100" data-bind="if: !showLblSet01()"><label class="a9_1">#{i18n.getText('KMF003_31')}</label></td>
 							<td width="200"></td>
 						</tr>
 						<tr></tr>
 						<tr>
 							<td></td>
 							<td><div class="a7_10"
-									data-bind="ntsCheckBox: { checked: useCls02, enable: true }"></div></td>
-							<td><input class="a7_11"
+									data-bind="ntsCheckBox: { checked: useCls02, enable: useCls02Enable }"></div></td>
+							<td><input id="cond02" class="a7_11"
 								data-bind="ntsNumberEditor: { value: conditionValue02, enable: conditionValue02Enable, constraint: 'ConditionValue', name: '#[KMF003_24]', required: useCls02 }" /></td>
 							<td><label class="a7_12"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue02"></span><span
 									data-bind="text: symbols"></span></label></td>
 							<td><button id="a7_13"
-									data-bind="click: openBDialog.bind($data, 2), enable: btnSetting02Enable()">#{i18n.getText('KMF003_29')}</button></td>
-							<td><label class="a9_2">#{i18n.getText('KMF003_31')}</label></td>
+									data-bind="click: openBDialog.bind($data, 2), enable: btnSetting02Enable">#{i18n.getText('KMF003_29')}</button></td>
+							<td data-bind="if: !showLblSet02()"><label class="a9_2">#{i18n.getText('KMF003_31')}</label></td>
 							<td></td>
 						</tr>
 						<tr></tr>
 						<tr>
 							<td></td>
 							<td><div class="a7_14"
-									data-bind="ntsCheckBox: { checked: useCls03, enable: true }"></div></td>
-							<td><input class="a7_15"
+									data-bind="ntsCheckBox: { checked: useCls03, enable: useCls03Enable }"></div></td>
+							<td><input id="cond03" class="a7_15"
 								data-bind="ntsNumberEditor: { value: conditionValue03, enable: conditionValue03Enable, constraint: 'ConditionValue', name: '#[KMF003_25]', required: useCls03 }" /></td>
 							<td><label class="a7_16"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue03"></span><span
 									data-bind="text: symbols"></span></label></td>
 							<td><button id="a7_17"
-									data-bind="click: openBDialog.bind($data, 3), enable: btnSetting03Enable()">#{i18n.getText('KMF003_29')}</button></td>
-							<td><label class="a9_3">#{i18n.getText('KMF003_31')}</label></td>
+									data-bind="click: openBDialog.bind($data, 3), enable: btnSetting03Enable">#{i18n.getText('KMF003_29')}</button></td>
+							<td data-bind="if: !showLblSet03()"><label class="a9_3">#{i18n.getText('KMF003_31')}</label></td>
 							<td></td>
 						</tr>
 						<tr></tr>
 						<tr>
 							<td></td>
 							<td><div class="a7_18"
-									data-bind="ntsCheckBox: { checked: useCls04, enable: true }"></div></td>
-							<td><input class="a7_19"
+									data-bind="ntsCheckBox: { checked: useCls04, enable: useCls04Enable }"></div></td>
+							<td><input id="cond04" class="a7_19"
 								data-bind="ntsNumberEditor: { value: conditionValue04, enable: conditionValue04Enable, constraint: 'ConditionValue', name: '#[KMF003_26]', required: useCls04 }" /></td>
 							<td><label class="a7_20"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue04"></span><span
 									data-bind="text: symbols"></span></label></td>
 							<td><button id="a7_21"
-									data-bind="click: openBDialog.bind($data, 4), enable: btnSetting04Enable()">#{i18n.getText('KMF003_29')}</button></td>
-							<td><label class="a9_4">#{i18n.getText('KMF003_31')}</label></td>
+									data-bind="click: openBDialog.bind($data, 4), enable: btnSetting04Enable">#{i18n.getText('KMF003_29')}</button></td>
+							<td data-bind="if: !showLblSet04()"><label class="a9_4">#{i18n.getText('KMF003_31')}</label></td>
 							<td></td>
 						</tr>
 						<tr></tr>
 						<tr>
 							<td></td>
 							<td><div class="a7_22"
-									data-bind="ntsCheckBox: { checked: useCls05, enable: true }"></div></td>
-							<td><input class="a7_23"
+									data-bind="ntsCheckBox: { checked: useCls05, enable: useCls05Enable }"></div></td>
+							<td><input id="cond05" class="a7_23"
 								data-bind="ntsNumberEditor: { value: conditionValue05, enable: conditionValue05Enable, constraint: 'ConditionValue', name: '#[KMF003_27]', required: useCls05 }" /></td>
 							<td><label class="a7_24"><span
 									data-bind="text: symbols"></span> ~ <span
 									data-bind="text: limitedValue05"></span><span
 									data-bind="text: symbols"></span></label></td>
 							<td><button id="a7_25"
-									data-bind="click: openBDialog.bind($data, 5), enable: btnSetting05Enable()">#{i18n.getText('KMF003_29')}</button></td>
-							<td><label class="a9_5">#{i18n.getText('KMF003_31')}</label></td>
+									data-bind="click: openBDialog.bind($data, 5), enable: btnSetting05Enable">#{i18n.getText('KMF003_29')}</button></td>
+							<td data-bind="if: !showLblSet05()"><label class="a9_5">#{i18n.getText('KMF003_31')}</label></td>
 							<td></td>
 						</tr>
 						<tr></tr>

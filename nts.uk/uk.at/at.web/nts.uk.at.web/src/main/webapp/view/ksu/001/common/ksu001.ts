@@ -24,56 +24,63 @@ module nts.uk.at.view.ksu001.common.viewmodel {
             this.symbolicName = params.symbolicName;
             this.name = params.name;
             this.abbreviationName = params.abbreviationName;
-            this.memo = params.memo;
+            this.memo = nts.uk.text.isNullOrEmpty(params.memo) ? "" : params.memo;
             this.displayAtr = params.displayAtr;
         }
     }
 
     export interface IWorkTime {
-        siftCd: string,
+        workTimeCode: string,
         name: string,
         abName: string,
         symbolName: string,
         dailyWorkAtr: number,
-        methodAtr: number,
-        displayAtr: number,
+        worktimeSetMethod: number,
+        abolitionAtr: number,
+        color: string,
         note: string,
-        start: number,
-        end: number,
-        timeNumberCnt: number,
+        startTime: number,
+        endTime: number,
+        workNo: number,
+        useAtr: number
     }
 
     export class WorkTime {
-        siftCd: string;
+        workTimeCode: string;
         name: string;
         abName: string;
         symbolName: string;
         dailyWorkAtr: number;
-        methodAtr: number;
-        displayAtr: number;
+        worktimeSetMethod: number;
+        abolitionAtr: number;
+        color: string;
         note: string;
         codeName: string;
-        start: number;
-        end: number;
-        timeNumberCnt: number;
+        startTime: number;
+        endTime: number;
+        workNo: number;
+        useAtr: number;
         timeZone1: string;
         timeZone2: string;
 
         constructor(params: IWorkTime) {
-            this.siftCd = params.siftCd;
+            this.workTimeCode = params.workTimeCode;
             this.name = params.name;
             this.abName = params.abName;
             this.symbolName = params.symbolName || '';
             this.dailyWorkAtr = params.dailyWorkAtr;
-            this.methodAtr = params.methodAtr;
-            this.displayAtr = params.displayAtr;
+            this.worktimeSetMethod = params.worktimeSetMethod;
+            this.abolitionAtr = params.abolitionAtr;
             this.note = params.note || '';
-            this.codeName = this.siftCd + this.name;
-            this.start = params.start;
-            this.end = params.end;
-            this.timeNumberCnt = params.timeNumberCnt;
-            this.timeZone1 = this.timeNumberCnt == 1 ? nts.uk.time.parseTime(this.start, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.end, true).format() : '';
-            this.timeZone2 = this.timeNumberCnt == 2 ? nts.uk.time.parseTime(this.start, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.end, true).format() : '';
+            this.codeName = this.workTimeCode + this.name;
+            this.startTime = params.startTime;
+            this.endTime = params.endTime;
+            this.workNo = params.workNo;
+            this.useAtr = params.useAtr;
+            this.timeZone1 = this.workNo == 1 ? nts.uk.time.parseTime(this.startTime, true).format()
+                + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.endTime, true).format() : '';
+            this.timeZone2 = this.useAtr == 1 ? (this.workNo == 2 ? nts.uk.time.parseTime(this.startTime, true).format()
+                + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.endTime, true).format() : '') : '';
         }
     }
 

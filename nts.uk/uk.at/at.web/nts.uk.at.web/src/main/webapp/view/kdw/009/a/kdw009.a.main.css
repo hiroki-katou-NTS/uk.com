@@ -1,3 +1,7 @@
+#content-area{
+	width: 1000px;
+}
+
 #left-content{
 	float: left;
 	margin-left: 40px !important;	

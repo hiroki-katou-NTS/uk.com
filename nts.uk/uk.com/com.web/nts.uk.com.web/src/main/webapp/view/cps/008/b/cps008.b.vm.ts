@@ -12,6 +12,31 @@ module cps008.b.vm {
                 layout = self.layout();
 
             self.start();
+
+            var currentDialog = nts.uk.ui.windows.getSelf();
+            var doit;
+            $(currentDialog.parent.globalContext).resize(function() {
+                clearTimeout(doit);
+                doit = setTimeout(self.resizedw(), 1000);
+            });
+        }
+
+        resizedw() {
+            let self = this,
+                currentDialog = nts.uk.ui.windows.getSelf();
+           // $(currentDialog.parent.globalContext).css("overflow", "hidden");
+
+            if (currentDialog.parent.globalContext.innerWidth <= 1275) {
+                currentDialog.setWidth(currentDialog.parent.globalContext.innerWidth - 50);
+            } else {
+                currentDialog.setWidth(1275);
+            }
+
+            if (currentDialog.parent.globalContext.innerHeight <= 750) {
+                currentDialog.setHeight(currentDialog.parent.globalContext.innerHeight - 50);
+            } else {
+                currentDialog.setHeight(750);
+            }
         }
 
         start() {
@@ -24,32 +49,32 @@ module cps008.b.vm {
             layout.name = dto.name;
             // lấy list items classification ra theo layoutid của maintainece layout truyền từ màn a lên
             // Không có thì gọi service dưới lấy list items classification của new layout rồi truyền vào layout ở view model
-            service.getListCls(dto.id).done((x: any) => {
-                let initData = (arr: Array<any>) => {
-                    // remove all sibling sperators
-                    let maps = _(arr)
-                        .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
-                        .filter(x => x != -1).value();
 
-                    _.each(maps, (t, i) => {
-                        if (maps[i + 1] == t + 1) {
-                            _.remove(arr, (m: IItemClassification) => {
-                                let item: IItemClassification = ko.unwrap(arr)[maps[i + 1]];
-                                return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
-                            });
-                        }
-                    });
-                    return arr;
-                };
+            let cls: Array<any> = dto.classifications;
 
-                if (x.listItemClsDto && x.listItemClsDto.length) {
-                    layout.itemsClassification(initData(x.listItemClsDto));
-                } else {
-                    service.getData().done((x: ILayout) => {
-                        layout.itemsClassification(initData(x.itemsClassification));
-                    });
-                }
-            });
+            let initData = (arr: Array<any>) => {
+                // remove all sibling sperators
+                let maps = _(arr)
+                    .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
+                    .filter(x => x != -1).value();
+
+                _.each(maps, (t, i) => {
+                    if (maps[i + 1] == t + 1) {
+                        _.remove(arr, (m: IItemClassification) => {
+                            let item: IItemClassification = ko.unwrap(arr)[maps[i + 1]];
+                            return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
+                        });
+                    }
+                });
+                return arr;
+            };
+
+            if (cls && cls.length) {
+                layout.itemsClassification.removeAll();
+                _.each(cls, x => layout.itemsClassification.push(_.omit(x, ["items"])));
+            } else{
+                 layout.itemsClassification([]);
+            }
         }
 
         pushData() {
@@ -62,15 +87,18 @@ module cps008.b.vm {
                 return;
             }
 
-            let listItemIds = _(layout.itemsClassification).map(x => x.listItemDf).flatten().filter(x => !!x).map((m: IItemDefinition) => m.id).orderBy(m => m).value();
-
-
+            let listItemIds = _(layout.itemsClassification)
+                .map(x => _.map(x.listItemDf, m => m))
+                .flatten()
+                .filter(x => !!x)
+                .groupBy((x: any) => x.id)
+                .pickBy(x => x.length > 1)
+                .keys()
+                .value();
             // エラーメッセージ（#Msg_289#,２つ以上配置されている項目名）を表示する
-            for (let i = 0; i < listItemIds.length - 2; i++) {
-                if (listItemIds[i] === listItemIds[i + 1]) {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_289" });
-                    return;
-                }
+            if (!!listItemIds.length) {
+                nts.uk.ui.dialog.alert({ messageId: "Msg_289" });
+                return;
             }
 
             setShared("CPS008B_VALUE", layout.itemsClassification);
@@ -114,7 +142,7 @@ module cps008.b.vm {
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
         editable: KnockoutObservable<boolean> = ko.observable(true);
-        itemsClassification: KnockoutObservableArray<IItemClassification> = ko.observableArray([]);
+        itemsClassification: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor(param: ILayout) {
             let self = this;

@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.auth.app.find.grant.rolesetperson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -60,11 +61,14 @@ public class RoleSetGrantedPersonFinder {
 		if (listRoleSetPerson != null && !listRoleSetPerson.isEmpty()) {
 			List<RoleSetGrantedPersonDto> listRoleSetPersonDto = new ArrayList<>();
 			for (RoleSetGrantedPerson rp : listRoleSetPerson) {
-				EmployeeImport empInfo = employeeAdapter.findByEmpId(rp.getEmployeeID());
-				RoleSetGrantedPersonDto dto = new RoleSetGrantedPersonDto(rp.getRoleSetCd().v(), rp.getEmployeeID(),
-						empInfo.getEmployeeCode(), empInfo.getPersonalName(), rp.getValidPeriod().start(),
-						rp.getValidPeriod().end());
-				listRoleSetPersonDto.add(dto);
+				Optional<EmployeeImport> optEmpInfo = employeeAdapter.findByEmpId(rp.getEmployeeID());
+				if (optEmpInfo.isPresent()) {
+					EmployeeImport empInfo = optEmpInfo.get();
+					RoleSetGrantedPersonDto dto = new RoleSetGrantedPersonDto(rp.getRoleSetCd().v(), rp.getEmployeeID(),
+							empInfo.getEmployeeCode(), empInfo.getPersonalName(), rp.getValidPeriod().start(),
+							rp.getValidPeriod().end());
+					listRoleSetPersonDto.add(dto);
+				}
 			}
 			// sort by empCd (SCD) asc
 			listRoleSetPersonDto.sort((rsp1, rsp2) -> rsp1.getEmployeeCd().compareTo(rsp2.getEmployeeCd()));
@@ -74,6 +78,9 @@ public class RoleSetGrantedPersonFinder {
 	}
 
 	public EmployeeImport getEmployeeInfo(String employeeId) {
-		return employeeAdapter.findByEmpId(employeeId);
+		Optional<EmployeeImport> optEmpInfo = employeeAdapter.findByEmpId(employeeId);
+		if (optEmpInfo.isPresent())
+			return optEmpInfo.get();
+		return null;
 	}
 }

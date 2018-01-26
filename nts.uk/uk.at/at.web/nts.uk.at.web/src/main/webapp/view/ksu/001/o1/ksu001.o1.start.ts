@@ -5,5 +5,6 @@ module nts.uk.at.view.ksu001.o1 {
     __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
+        $("#combo-box1").focus();
     });
 }

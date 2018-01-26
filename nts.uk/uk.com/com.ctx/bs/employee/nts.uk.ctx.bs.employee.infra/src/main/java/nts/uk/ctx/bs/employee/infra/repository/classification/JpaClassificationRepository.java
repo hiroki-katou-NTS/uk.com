@@ -107,6 +107,8 @@ public class JpaClassificationRepository extends JpaRepository
 				.get(BsymtClassificationPK_.cid), companyId));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		// order by no id asc
+		cq.orderBy(criteriaBuilder.asc(root.get(BsymtClassification_.bsymtClassificationPK).get(BsymtClassificationPK_.clscd)));
 
 		// creat query
 		TypedQuery<BsymtClassification> query = em.createQuery(cq);
@@ -124,6 +126,13 @@ public class JpaClassificationRepository extends JpaRepository
 	 */
 	private BsymtClassification toEntity(Classification domain){
 		BsymtClassification entity = new BsymtClassification();
+
+		Optional<BsymtClassification> bsymtClassificationOpt = this.queryProxy().find(
+				new BsymtClassificationPK(domain.getCompanyId().v(), domain.getClassificationCode().v()),
+				BsymtClassification.class);
+		if (bsymtClassificationOpt.isPresent()) {
+			entity = bsymtClassificationOpt.get();
+		}
 		domain.saveToMemento(new JpaClassificationSetMemento(entity));
 		return entity;
 	}

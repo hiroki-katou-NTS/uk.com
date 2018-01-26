@@ -26,6 +26,8 @@ module nts.uk.ui.koExtentions {
             }
             $input.addClass('nts-editor nts-input');
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+            
+            setEnterHandlerIfRequired($input, data);
 
             $input.on(valueUpdate, (e) => {
                 var newText = $input.val();
@@ -153,6 +155,8 @@ module nts.uk.ui.koExtentions {
             $input.addClass('nts-editor nts-input');
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
 
+            setEnterHandlerIfRequired($input, data);
+            
             $input.on("keyup", (e) => {
                 var code = e.keyCode || e.which;
                 if (!readonly && code.toString() !== '9') {
@@ -172,9 +176,21 @@ module nts.uk.ui.koExtentions {
                     let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText,{ isCheckExpression: true });
-                    $input.ntsError('clear');
+                    
                     if (!result.isValid) {
-                        $input.ntsError('set', result.errorMessage, result.errorCode);
+                        let oldError = $("#companyCode").ntsError('getError');
+                        if(nts.uk.util.isNullOrUndefined(oldError)){
+                           $input.ntsError('set', result.errorMessage, result.errorCode);
+                        } else {
+                            if(oldError.errorCode !== result.errorCode){
+                                $input.ntsError('clear');
+                                setTimeout(function() {
+                                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                                }, 10);
+                            }
+                        }
+                    } else {
+                        $input.ntsError('clear');
                     }
                 }
             });
@@ -596,6 +612,19 @@ module nts.uk.ui.koExtentions {
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             new TimeWithDayAttrEditorProcessor().update($(element), valueAccessor());
+        }
+    }
+    
+    function setEnterHandlerIfRequired($input: JQuery, data: any) {
+    
+        var handlesEnterKey = (typeof data.enterkey === "function");
+        var onEnterKey = handlesEnterKey ? data.enterkey : $.noop;
+        if (handlesEnterKey) {
+            $input.addClass("enterkey")
+                .onkey("down", uk.KeyCodes.Enter, e => {
+                    $input.change();
+                    onEnterKey.call(ko.dataFor(e.target), e);
+                });
         }
     }
 

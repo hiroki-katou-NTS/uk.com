@@ -6,7 +6,7 @@ module nts.uk.at.view.ksm003.a {
             getPatternValByPatternCd: "ctx/at/schedule/shift/pattern/daily/find",
             deleteDailyPattern: "ctx/at/schedule/shift/pattern/daily/delete",
             findByIdWorkType: "at/share/worktype/findById",
-            findByIdWorkTime: "at/shared/worktime/findById"
+            findByIdWorkTime: "at/shared/worktimesetting/findById"
 
         }
 

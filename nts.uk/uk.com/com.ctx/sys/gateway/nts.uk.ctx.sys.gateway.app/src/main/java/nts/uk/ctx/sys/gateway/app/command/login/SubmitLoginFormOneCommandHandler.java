@@ -14,8 +14,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.sys.gateway.dom.login.User;
-import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
 
 /**
  * The Class SubmitLoginFormOneCommandHandler.
@@ -25,7 +25,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 
 	/** The user repository. */
 	@Inject
-	private UserRepository userRepository;
+	private UserAdapter userAdapter;
 	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -42,7 +42,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		this.reCheckContract(command.getContractCode(), command.getContractPassword());
 		
 		// find user by login id
-		Optional<User> user = userRepository.getByLoginId(loginId);
+		Optional<UserImport> user = userAdapter.findUserByContractAndLoginId(command.getContractCode(), loginId);
 		if (!user.isPresent()) {
 			throw new BusinessException("Msg_301");
 		}
@@ -80,8 +80,8 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	 * @param user the user
 	 * @param password the password
 	 */
-	private void compareHashPassword(Optional<User> user, String password) {
-		if (!PasswordHash.verifyThat(password, user.get().getUserId()).isEqualTo(user.get().getPassword().v())) {
+	private void compareHashPassword(Optional<UserImport> user, String password) {
+		if (!PasswordHash.verifyThat(password, user.get().getUserId()).isEqualTo(user.get().getPassword())) {
 			throw new BusinessException("Msg_302");
 		}
 	}
@@ -91,7 +91,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	 *
 	 * @param user the user
 	 */
-	private void checkLimitTime(Optional<User> user) {
+	private void checkLimitTime(Optional<UserImport> user) {
 		if (user.get().getExpirationDate().before(GeneralDate.today())) {
 			throw new BusinessException("Msg_316");
 		}

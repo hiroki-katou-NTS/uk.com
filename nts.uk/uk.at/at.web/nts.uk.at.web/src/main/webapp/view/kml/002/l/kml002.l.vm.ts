@@ -16,6 +16,11 @@ module kml002.l.viewmodel {
                 { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 1, hidden: true }
             ]);
             self.currentCodeList = ko.observableArray([]);
+            self.currentCodeList.subscribe((newList) => {
+                let sortedList = _.sortBy(newList, ["primaryKey"]);
+                if (!_.isEqual(newList, sortedList))
+                    self.currentCodeList(sortedList);
+            });
             self.fixVerticalId = ko.observable(getShared("KML002H_VERTICAL_ID"))();
         }
         start() {
@@ -48,13 +53,17 @@ module kml002.l.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.findAll().done(function(totalTimeArr: Array<ItemModel>) {
+                let lstRootItems = [];
                 _.forEach(totalTimeArr, function(res: IItemModel) {
-                    var totalTime: IItemModel = {
-                        totalCountNo: res.totalCountNo,
-                        totalTimesName: res.totalTimesName
-                    };
-                    self.rootItems.push(new ItemModel(totalTime));
+                    if (res.useAtr == 1) {
+                        var totalTime: IItemModel = {
+                            totalCountNo: res.totalCountNo,
+                            totalTimesName: res.totalTimesName
+                        };
+                        lstRootItems.push(new ItemModel(totalTime));
+                    }
                 });
+                self.rootItems(lstRootItems);
                 dfd.resolve();
             });
             return dfd.promise();
@@ -99,13 +108,13 @@ module kml002.l.viewmodel {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
-                }).always(()=>{
-                    nts.uk.ui.block.clear();    
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
                 return dfd.promise();
             }
-            
+
             dfd.resolve();
             nts.uk.ui.block.clear();
             return dfd.promise();

@@ -27,8 +27,8 @@ public class EmployeeInfoDtoExport {
 	private String employeeId;
 
 	/** The person Id. */
-	private String personId;
+	private String personId = "";
 	
-	private String perName;
+	private String perName = "";
 
 }

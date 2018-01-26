@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
@@ -32,7 +32,8 @@ public class FixHalfDayWorkTimezonePolicyImpl implements FixHalfDayWorkTimezoneP
 	 * nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting)
 	 */
 	@Override
-	public void validate(FixHalfDayWorkTimezone fixHalfDay, PredetemineTimeSetting predTime) {
-		this.fixedWtzPolicy.validate(fixHalfDay.getWorkTimezone(), predTime);
+	public void validate(FixedWorkSetting fixedWorkSetting, PredetemineTimeSetting predTime) {
+		fixedWorkSetting.getLstHalfDayWorkTimezone().forEach(item -> this.fixedWtzPolicy
+				.validate(item.getWorkTimezone(), predTime));
 	}
 }

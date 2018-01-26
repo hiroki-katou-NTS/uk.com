@@ -21,6 +21,7 @@ public class MaintenanceLayoutDto {
 	String maintenanceLayoutID;
 	List<LayoutPersonInfoClsDto> listItemClsDto;
 
+
 	public MaintenanceLayoutDto(String companyId, String layoutCode, String layoutName, String maintenanceLayoutID) {
 		super();
 		this.companyId = companyId;

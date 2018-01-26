@@ -14,6 +14,7 @@
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.ja.main.css" />
+			<com:scriptfile path="ksu001.ja.service.js" />
 			<com:scriptfile path="ksu001.ja.vm.js" />
 			<com:scriptfile path="ksu001.ja.start.js" />
 		</ui:define>
@@ -22,7 +23,8 @@
 			<div id="functions-area">
 				<button class="proceed"
 					data-bind="enable: $root.errors.isEmpty, click: saveData">#{i18n.getText('KSU001_901')}</button>
-				<button class="danger" data-bind="click: deletePatternItem, enable: isDeleteEnable">#{i18n.getText('KSU001_902')}</button>
+				<button class="danger"
+					data-bind="click: deletePatternItem, enable: isDeleteEnable">#{i18n.getText('KSU001_902')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_903')}</button>
 			</div>
 			<div id="contents-area">
@@ -53,8 +55,7 @@
 				</div>
 				<div class="mt-10">
 					<div style="margin-right: 38px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_906')}</div>
-					<input id="note"
-						data-bind="ntsTextEditor: {value: note}" />
+					<input id="note" data-bind="ntsTextEditor: {value: note}" />
 				</div>
 				<div>
 					<button id="bt-clear" data-bind="click: clear">#{i18n.getText('KSU001_907')}</button>

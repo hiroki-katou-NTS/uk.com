@@ -56,14 +56,14 @@ public class GrantHdTblSet extends AggregateRoot {
 
 			// 付与日数の計算対象」が「出勤率」の場合、条件値<=100
 			if (CalculationMethod.WORKING_DAY.equals(this.calculationMethod)) {
-				if (currentCondition.getConditionValue().v() > 100) {
+				if (currentCondition.getConditionValue() != null && currentCondition.getConditionValue().v() > 100) {
 					throw new BusinessException("Msg_262");
 				}
 			}
 			
 			// 付与日数の計算対象」が「労働日数」の場合、条件値<=366
 			if (CalculationMethod.ATTENDENCE_RATE.equals(this.calculationMethod)) {
-				if (currentCondition.getConditionValue().v() > 366) {
+				if (currentCondition.getConditionValue() != null && currentCondition.getConditionValue().v() > 366) {
 					throw new BusinessException("Msg_263");
 				}
 			}
@@ -79,10 +79,16 @@ public class GrantHdTblSet extends AggregateRoot {
 			}
 
 			// 条件NO：1、条件値 > 条件NO：2、条件値 > 条件NO：3、条件値 > 条件NO：4、条件値 > 条件NO：5、条件値
-			int firstValue = this.grantConditions.get(i - 1).getConditionValue().v();
-			int secondValue = currentCondition.getConditionValue().v();
-			if (firstValue <= secondValue) {
-				throw new BusinessException("Msg_264");
+			if(this.grantConditions.get(i - 1).getConditionValue() != null) {
+				int firstValue = this.grantConditions.get(i - 1).getConditionValue().v();
+				
+				if(currentCondition.getConditionValue() != null) {
+					int secondValue = currentCondition.getConditionValue().v();
+					
+					if (firstValue <= secondValue) {
+						throw new BusinessException("Msg_264");
+					}
+				}				
 			}
 		}
 	}

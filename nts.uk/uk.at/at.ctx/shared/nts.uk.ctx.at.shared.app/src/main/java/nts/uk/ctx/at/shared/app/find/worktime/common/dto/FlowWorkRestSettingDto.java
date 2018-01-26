@@ -15,34 +15,52 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingSetMemento;
  */
 @Getter
 @Setter
-public class FlowWorkRestSettingDto implements FlowWorkRestSettingSetMemento{
-	
+public class FlowWorkRestSettingDto implements FlowWorkRestSettingSetMemento {
+
 	/** The common rest setting. */
 	private CommonRestSettingDto commonRestSetting;
 
 	/** The flow rest setting. */
 	private FlowWorkRestSettingDetailDto flowRestSetting;
-
+	
 	/**
-	 * Sets the common rest setting.
-	 *
-	 * @param commonRest the new common rest setting
+	 * Instantiates a new flow work rest setting dto.
+	 */
+	public FlowWorkRestSettingDto() {
+		this.commonRestSetting = new CommonRestSettingDto();
+		this.flowRestSetting = new FlowWorkRestSettingDetailDto();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingSetMemento#
+	 * setCommonRestSetting(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * CommonRestSetting)
 	 */
 	@Override
 	public void setCommonRestSetting(CommonRestSetting commonRest) {
-		commonRest.saveToMemento(this.commonRestSetting);
+		if (commonRest != null) {
+			this.commonRestSetting = new CommonRestSettingDto();
+			commonRest.saveToMemento(this.commonRestSetting);
+		}
 	}
 
-	/**
-	 * Sets the flow rest setting.
-	 *
-	 * @param flowRest the new flow rest setting
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingSetMemento#
+	 * setFlowRestSetting(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * FlowWorkRestSettingDetail)
 	 */
 	@Override
 	public void setFlowRestSetting(FlowWorkRestSettingDetail flowRest) {
-		flowRest.saveToMemento(this.flowRestSetting);
+		if (flowRest != null) {
+			this.flowRestSetting = new FlowWorkRestSettingDetailDto();
+			flowRest.saveToMemento(this.flowRestSetting);
+		}
 	}
-	
-	
 
 }

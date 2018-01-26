@@ -72,11 +72,12 @@ public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 	}
 	
 	public String getInDayTimeWithFormat(){
-		return this.hour() + ":" + this.minute();
+		return this.hour() + ":" + (this.minute() < 10 ? "0" + this.minute() : this.minute());
 	}
 	
 	public String getRawTimeWithFormat(){
-		return (this.v() / 60) + ":" + Math.abs((this.v() % 60));
+		int rawMinutes = Math.abs(this.v() % 60);
+		return (this.v() / 60) + ":" + (rawMinutes < 10 ? "0" + rawMinutes : rawMinutes);
 	}
 	
 	/**

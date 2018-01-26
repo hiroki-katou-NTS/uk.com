@@ -20,7 +20,7 @@ public class WeekdayHolidayCommand {
 	/** 変更前の残業枠NO */
 	private BigDecimal overworkFrameNo;
 
-	/** 変更後の残業枠NO */
+	/** 変更後の法定内休出NO */
 	private int weekdayNo;
 
 	/** 変更後の法定外休出NO */

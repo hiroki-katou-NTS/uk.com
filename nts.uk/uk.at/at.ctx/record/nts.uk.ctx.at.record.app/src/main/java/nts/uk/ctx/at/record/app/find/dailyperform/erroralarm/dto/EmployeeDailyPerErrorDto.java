@@ -6,11 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 @AttendanceItemRoot(rootName = "社員の日別実績エラー一覧")
 @Data
@@ -18,6 +16,8 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
 @NoArgsConstructor
 public class EmployeeDailyPerErrorDto implements ConvertibleAttendanceItem {
 
+	//TODO: item id not map
+	
 	/** 会社ID: 会社ID */
 	private String companyID;
 
@@ -28,12 +28,35 @@ public class EmployeeDailyPerErrorDto implements ConvertibleAttendanceItem {
 	private GeneralDate date;
 
 	/** エラー: 勤務実績のエラーアラームコード */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "")
-	@AttendanceItemValue()
+//	@AttendanceItemLayout(layout = "A", jpPropertyName = "")
+//	@AttendanceItemValue()
 	private String errorCode;
 
 	/** 項目一覧: 勤怠項目ID */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "", isList = true)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	//TODO: set list max value
+//	@AttendanceItemLayout(layout = "A", jpPropertyName = "", isList = true, listMaxLength = ?)
+//	@AttendanceItemValue(type = ValueType.INTEGER)
 	private List<Integer> attendanceItemList;
+	
+	public  static EmployeeDailyPerErrorDto getDto(EmployeeDailyPerError domain){
+		EmployeeDailyPerErrorDto dto = new EmployeeDailyPerErrorDto();
+		if(domain != null){
+			dto.setAttendanceItemList(domain.getAttendanceItemList());
+			dto.setCompanyID(domain.getCompanyID());
+			dto.setDate(domain.getDate());
+			dto.setEmployeeID(domain.getEmployeeID());
+			dto.setErrorCode(domain.getErrorAlarmWorkRecordCode().v());
+		}
+		return dto;
+	}
+
+	@Override
+	public String employeeId() {
+		return this.employeeID;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		return this.date;
+	}
 }

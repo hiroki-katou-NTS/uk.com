@@ -64,6 +64,8 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " ORDER BY c.startDate DESC";
+	 private final String FIND_PS_APP_LASTEST = FIN_BY_EMP
+			 + " AND c.endDate = :endDate";
 			 
 	/**
 	 * get all Person Approval Root
@@ -314,5 +316,14 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				.setParameter("applicationType", applicationType)
 				.setParameter("employmentRootAtr", employmentRootAtr)
 				.getList(c->toDomainPsApR(c));
+	}
+	@Override
+	public List<PersonApprovalRoot> getPsAppRootLastest(String companyId, String employeeId, GeneralDate endDate) {
+		
+		return this.queryProxy().query(FIND_PS_APP_LASTEST,WwfmtPsApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
+				.setParameter("endDate", endDate)
+				.getList(c -> toDomainPsApR(c));
 	}
 }

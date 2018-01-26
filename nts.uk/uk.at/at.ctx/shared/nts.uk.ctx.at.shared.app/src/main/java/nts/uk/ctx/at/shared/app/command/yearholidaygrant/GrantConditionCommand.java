@@ -18,7 +18,7 @@ public class GrantConditionCommand {
 	private int conditionNo;
 	
 	/* 条件値 */
-	private int conditionValue;
+	private Integer conditionValue;
 	
 	/* 条件利用区分 */
 	private int useConditionAtr;

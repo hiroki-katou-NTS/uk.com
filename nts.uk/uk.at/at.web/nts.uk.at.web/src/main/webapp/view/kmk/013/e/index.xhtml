@@ -25,10 +25,16 @@
 				<div class="panel panel-gray-bg">
 					<div class="label">#{i18n.getText('KMK013_200')}</div>
 					<hr />
-					<table id="fixed-table" data-bind="foreach: listData">
-						<tbody>
+					<table id="fixed-table" >
+						<colgroup>
+							<col width="200px" />
+							<col width="100px" />
+							<col width="160px" />
+							<col width="180px" />
+						</colgroup>
+						<tbody data-bind="foreach: listData">
 							<tr>
-								<td>月次項目<span class="label" data-bind="text:timeItemId"></span></td>
+								<td><span class="label" data-bind="text:attendanceItemName"></span></td>
 								<td><div id="unit-combo-box"
 										data-bind="ntsComboBox: {
 								    name:'#{i18n.getText('KMK013_201')}',

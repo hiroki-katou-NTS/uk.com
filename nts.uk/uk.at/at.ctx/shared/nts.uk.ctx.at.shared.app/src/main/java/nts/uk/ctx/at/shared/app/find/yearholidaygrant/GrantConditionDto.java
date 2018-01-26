@@ -20,18 +20,22 @@ public class GrantConditionDto {
 	private int conditionNo;
 	
 	/* 条件値 */
-	private int conditionValue;
+	private Integer conditionValue;
 	
 	/* 条件利用区分 */
 	private int useConditionAtr;
+	
+	/** 未設定 **/
+	private boolean hadSet;
 	
 	public static GrantConditionDto fromDomain(GrantCondition domain){
 		return new GrantConditionDto(
 			domain.getCompanyId(),
 			domain.getYearHolidayCode().v(),
 			domain.getConditionNo(),
-			domain.getConditionValue().v(),
-			domain.getUseConditionAtr().value
+			domain.getConditionValue() != null ? domain.getConditionValue().v() : null,
+			domain.getUseConditionAtr().value,
+			domain.isHadSet()
 		);
 	}
 }

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class WorkTimezoneGoOutSet.
@@ -40,5 +41,36 @@ public class WorkTimezoneGoOutSet extends DomainObject{
 	public void saveToMemento(WorkTimezoneGoOutSetSetMemento memento) {
 		memento.setTotalRoundingSet(this.totalRoundingSet);
 		memento.setDiffTimezoneSetting(this.diffTimezoneSetting);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, WorkTimezoneGoOutSet oldDomain) {
+		// Simple mode
+		if (screenMode == ScreenMode.SIMPLE) {
+			this.totalRoundingSet.restoreData(oldDomain.getTotalRoundingSet());			
+		} 
+		
+		// Go deeper
+		this.diffTimezoneSetting.restoreData(screenMode, oldDomain.getDiffTimezoneSetting());
+	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		// Simple mode
+		if (screenMode == ScreenMode.SIMPLE) {
+			this.totalRoundingSet.restoreDefaultData();			
+		} 
+		
+		// Go deeper
+		this.diffTimezoneSetting.restoreDefaultData(screenMode);
 	}
 }

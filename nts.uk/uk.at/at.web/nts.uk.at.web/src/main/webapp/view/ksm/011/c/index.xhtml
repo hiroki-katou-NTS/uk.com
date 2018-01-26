@@ -1,0 +1,25 @@
+<div class="contents-area-c cf">
+	<div class="block-1">
+		<label class="basic-label">#{i18n.getText('KSM011_68')}</label>
+		<hr />
+		<table class="symbol-control">
+			<tr>
+				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_69')}</div></td>
+				<td><div tabindex="2" class="cf" data-bind="ntsSwitchButton: {
+							options: controlUseCls,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedControlUse,
+							enable: true }"></div>
+				</td>
+			</tr>
+			<tr>
+				<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_1')}</div></td>
+				<td>
+					<button tabindex="3" data-bind="click: openDialog, enable: openDialogEnable">#{i18n.getText('KSM011_45')}</button>
+					<input tabindex="-1" class="txtWorkTypeList" data-bind="ntsTextEditor: { value: workTypeList, readonly: true, enable: workTypeListEnable }" />
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>

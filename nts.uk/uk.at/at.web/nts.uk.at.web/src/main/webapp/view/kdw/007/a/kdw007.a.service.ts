@@ -10,7 +10,7 @@ module nts.uk.at.view.kdw007.a.service {
         getBusinessTypeByCode: "at/record/businesstype/findByCode",
         getAllWorkType: "at/share/worktype/findAll",
         getWorkTypeByListCode: "at/share/worktype/getpossibleworktype",
-        getAllWorkTime: "at/shared/worktime/findAll",
+        getAllWorkTime: "at/shared/worktimeset/findAll",
         getWorkTimeByListCode: "at/shared/worktime/findByCodes",
         getAttendanceItemByCodes: "at/record/divergencetime/AttendanceDivergenceName",
         getAllAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems"

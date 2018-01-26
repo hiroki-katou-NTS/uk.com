@@ -1,13 +1,19 @@
 package nts.uk.ctx.sys.portal.app.command.webmenu;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class ChangeCompanyCommand {
 	
 	private String companyId;
+	
+	private String companyName;
+	
+	private String personName;
+	
+	public ChangeCompanyCommand(String companyId) {
+		this.companyId = companyId;
+	}
 }

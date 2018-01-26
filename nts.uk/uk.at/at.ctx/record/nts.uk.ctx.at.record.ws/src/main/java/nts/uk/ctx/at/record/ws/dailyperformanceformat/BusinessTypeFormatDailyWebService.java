@@ -36,8 +36,8 @@ public class BusinessTypeFormatDailyWebService extends WebService {
 	@Inject
 	private SheetNoFinder sheetNoFinder;
 
-	@Inject
-	private DailyPerformanceFinder dailyPerformanceFinder;
+//	@Inject
+//	private DailyPerformanceFinder dailyPerformanceFinder;
 
 	@POST
 	@Path("findBusinessTypeDailyDetail/{businessTypeCode}/{sheetNo}")
@@ -64,10 +64,10 @@ public class BusinessTypeFormatDailyWebService extends WebService {
 		return this.sheetNoFinder.getSheetNo(businessTypeCode);
 	}
 
-	@POST
-	@Path("find/businessTypeDetail/{businessTypeCode}/{sheetNo}")
-	public BusinessTypeDetailDto getBusinessTypeDetail(@PathParam("businessTypeCode") String businessTypeCode,
-			@PathParam("sheetNo") BigDecimal sheetNo) {
-		return this.dailyPerformanceFinder.findAll(businessTypeCode, sheetNo);
-	}
+//	@POST
+//	@Path("find/businessTypeDetail/{businessTypeCode}/{sheetNo}")
+//	public BusinessTypeDetailDto getBusinessTypeDetail(@PathParam("businessTypeCode") String businessTypeCode,
+//			@PathParam("sheetNo") BigDecimal sheetNo) {
+//		return this.dailyPerformanceFinder.findAll(businessTypeCode, sheetNo);
+//	}
 }

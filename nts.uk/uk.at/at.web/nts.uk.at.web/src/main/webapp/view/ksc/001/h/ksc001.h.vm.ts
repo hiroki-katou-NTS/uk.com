@@ -14,6 +14,7 @@ module nts.uk.at.view.ksc001.h {
             executionNumber: KnockoutObservable<string>;
             errorNumber: KnockoutObservable<string>;
             countError: KnockoutObservable<number>;
+            countexecutionNumber: KnockoutObservable<number>;
             controlExecution :KnockoutObservable<boolean>;
             controlError :KnockoutObservable<boolean>;
             constructor() {
@@ -32,6 +33,7 @@ module nts.uk.at.view.ksc001.h {
                 self.countError = ko.observable(0);
                 self.controlExecution = ko.observable(true);
                 self.controlError = ko.observable(true);
+                self.countexecutionNumber = ko.observable(0);
             }
 
             /**
@@ -66,14 +68,15 @@ module nts.uk.at.view.ksc001.h {
                         self.targetRange = ko.observable(nts.uk.resource.getText("KSC001_46", [data.startDate, data.endDate]));
                         self.detailContentMethod = ko.observableArray(self.loadDetailCreateMethod(data));
                         self.executionContent = ko.observableArray(self.loadDetailContentString(data));
-                        self.exeStart = ko.observable(moment(data.executionStart).format(dateTimeFormat));
-                        self.exeEnd = ko.observable(moment(data.executionEnd).format(dateTimeFormat));
+                        self.exeStart = ko.observable(moment.utc(data.executionStart).format(dateTimeFormat));
+                        self.exeEnd = ko.observable(moment.utc(data.executionEnd).format(dateTimeFormat));
                         //get diff time execution
-                        let diffTime = moment.utc(moment(data.executionEnd, dateTimeFormat).diff(moment(data.executionStart, dateTimeFormat))).format(timeFormat);
+                        let diffTime = moment.utc(moment.utc(data.executionEnd, dateTimeFormat).diff(moment.utc(data.executionStart, dateTimeFormat))).format(timeFormat);
                         self.executionDateTime = ko.observable(diffTime);
                         self.executionNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countExecution]));
                         self.errorNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countError]));
                         self.countError(data.countError);
+                        self.countexecutionNumber(data.countExecution);
                         data.countExecution==0?self.controlExecution(false):self.controlExecution(true);
                         data.countError==0?self.controlError(false):self.controlError(true);
                     }
@@ -200,9 +203,15 @@ module nts.uk.at.view.ksc001.h {
                     return str;
                 }
                 if (!((data.implementAtr == ImplementAtr.RECREATE) && (data.processExecutionAtr == ProcessExecutionAtr.RECONFIG))) {
-                    str.push(nts.uk.resource.getText("KSC001_22"));
-                    str.push(nts.uk.resource.getText("KSC001_23"));
-                    str.push(nts.uk.resource.getText("KSC001_39", [data.copyStartDate]));
+                    if (data.createMethodAtr == 0) {
+                        str.push(nts.uk.resource.getText("KSC001_22"));
+                    }
+                    if (data.createMethodAtr == 1) {
+                        str.push(nts.uk.resource.getText("KSC001_23"));
+                    }
+                    if (data.createMethodAtr == 2) {
+                        str.push(nts.uk.resource.getText("KSC001_39", [data.copyStartDate]));
+                    }
                 }
                 return str;
             }

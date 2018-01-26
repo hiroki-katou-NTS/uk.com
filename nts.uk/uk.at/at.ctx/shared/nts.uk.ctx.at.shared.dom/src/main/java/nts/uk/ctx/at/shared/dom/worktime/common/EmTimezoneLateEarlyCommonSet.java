@@ -20,7 +20,19 @@ public class EmTimezoneLateEarlyCommonSet {
 	/**
 	 * Instantiates a new em timezone late early common set.
 	 *
-	 * @param memento the memento
+	 * @param delFromEmTime
+	 *            the del from em time
+	 */
+	public EmTimezoneLateEarlyCommonSet(boolean delFromEmTime) {
+		super();
+		this.delFromEmTime = delFromEmTime;
+	}
+
+	/**
+	 * Instantiates a new em timezone late early common set.
+	 *
+	 * @param memento
+	 *            the memento
 	 */
 	public EmTimezoneLateEarlyCommonSet(EmTimezoneLateEarlyCommonSetGetMemento memento) {
 		this.delFromEmTime = memento.getDelFromEmTime();
@@ -29,9 +41,11 @@ public class EmTimezoneLateEarlyCommonSet {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(EmTimezoneLateEarlyCommonSetSetMemento memento) {
 		memento.setDelFromEmTime(this.delFromEmTime);
 	}
+
 }

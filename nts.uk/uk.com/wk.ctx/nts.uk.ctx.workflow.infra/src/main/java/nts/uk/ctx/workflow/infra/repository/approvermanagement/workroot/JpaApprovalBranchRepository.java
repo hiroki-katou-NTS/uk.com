@@ -67,4 +67,12 @@ public class JpaApprovalBranchRepository extends JpaRepository implements Approv
 		entity.number = domain.getNumber();
 		return entity;
 	}
+	/**
+	 * delete Branch
+	 * @param branchId
+	 */
+	@Override
+	public void deleteBranch(String companyId, String branchId) {
+		this.commandProxy().remove(WwfmtBranch.class, new WwfmtBranchPK(companyId,branchId));
+	}
 }

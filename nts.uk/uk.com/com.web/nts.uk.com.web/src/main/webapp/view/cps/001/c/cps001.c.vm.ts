@@ -6,6 +6,7 @@ module cps001.c.vm {
     import showDialog = nts.uk.ui.dialog;
     import confirm = nts.uk.ui.dialog.confirm;
     import close = nts.uk.ui.windows.close;
+    import setShared = nts.uk.ui.windows.setShared;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -101,6 +102,12 @@ module cps001.c.vm {
                     };
                 block();
                 service.restoreData(objToRestore).done(() => {
+
+                    setShared('CPS001A_PARAMS', {
+                        showAll: false,
+                        employeeId: emp.id
+                    });
+
                     if (itemListLength === 1) {
                         self.start();
                     } else if (itemListLength - 1 === indexItemDelete) {
@@ -126,7 +133,7 @@ module cps001.c.vm {
                 listItem: Array<IEmployee> = ko.toJS(self.listEmployee());
 
             if (nts.uk.ui.errors.hasError()) {
-                return;
+                nts.uk.ui.block.clear();
             }
 
 

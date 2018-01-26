@@ -4,14 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.shift.pattern.work;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternDto;
-import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
@@ -116,8 +115,8 @@ public class WorkMonthlySettingBatchSaveCommand {
 		 * @see nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingGetMemento#getYmdK()
 		 */
 		@Override
-		public BigDecimal getYmdK() {
-			return BigDecimal.valueOf(this.dto.getYmdk());
+		public GeneralDate getYmdK() {
+			return GeneralDate.fromString(this.dto.getYmdk(), "yyyy/MM/dd");
 		}
 
 		/*
@@ -144,6 +143,9 @@ public class WorkMonthlySettingBatchSaveCommand {
 		return new MonthlyPattern(new MonthlyPatternGetMementoImpl(this, companyId));
 	}
 	
+	public WorkMonthlySettingBatchSaveCommand() {
+		super();
+	}
 	/**
 	 * The Class MonthlyPatternGetMementoImpl.
 	 */

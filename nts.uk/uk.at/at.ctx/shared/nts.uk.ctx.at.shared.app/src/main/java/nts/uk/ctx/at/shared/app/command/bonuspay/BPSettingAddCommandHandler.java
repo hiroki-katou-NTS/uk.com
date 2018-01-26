@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.services.BonusPaySettingService;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
@@ -52,6 +53,12 @@ public class BPSettingAddCommandHandler extends CommandHandlerWithResult<BPSetti
 			}
 		});
 		if(errorLists.isEmpty()) {
+			bpSettingAddCommand.setLstBonusPayTimesheet(bpSettingAddCommand.getLstBonusPayTimesheet().stream()
+				.map(x -> new BPTimesheetAddCommand(x.timeSheetNO, x.useAtr, x.bonusPaySettingCode, 
+						x.timeItemID, x.startTime, x.endTime, x.roundingTimeAtr, x.roundingAtr)).collect(Collectors.toList()));
+			bpSettingAddCommand.setLstSpecBonusPayTimesheet(bpSettingAddCommand.getLstSpecBonusPayTimesheet().stream()
+					.map(x -> new SpecBPTimesheetAddCommand(x.timeSheetNO, x.useAtr, x.bonusPaySettingCode, 
+							x.timeItemID, x.startTime, x.endTime, x.roundingTimeAtr, x.roundingAtr, x.specialDateItemNO)).collect(Collectors.toList()));
 			bonusPaySettingService.addBonusPaySetting(this.ToBonusPaySettingDomain(bpSettingAddCommand,companyId));			
 		}
 		return errorLists;
@@ -74,14 +81,14 @@ public class BPSettingAddCommandHandler extends CommandHandlerWithResult<BPSetti
 
 	private BonusPayTimesheet toBonusPayTimesheetDomain(BPTimesheetAddCommand bpTimesheetAddCommand) {
 		return BonusPayTimesheet.createFromJavaType(bpTimesheetAddCommand.timeSheetNO, bpTimesheetAddCommand.useAtr,
-				bpTimesheetAddCommand.timeItemId, bpTimesheetAddCommand.startTime,
+				bpTimesheetAddCommand.timeItemID, bpTimesheetAddCommand.startTime,
 				bpTimesheetAddCommand.endTime, bpTimesheetAddCommand.roundingTimeAtr,
 				bpTimesheetAddCommand.roundingAtr);
 	}
 
 	private SpecBonusPayTimesheet toSpecBonusPayTimesheetDomain(SpecBPTimesheetAddCommand specBPTimesheetAddCommand) {
 		return SpecBonusPayTimesheet.createFromJavaType(specBPTimesheetAddCommand.timeSheetNO,
-				specBPTimesheetAddCommand.useAtr, specBPTimesheetAddCommand.timeItemId,
+				specBPTimesheetAddCommand.useAtr, specBPTimesheetAddCommand.timeItemID,
 				specBPTimesheetAddCommand.startTime, specBPTimesheetAddCommand.endTime,
 				specBPTimesheetAddCommand.roundingTimeAtr, specBPTimesheetAddCommand.roundingAtr,
 				specBPTimesheetAddCommand.specialDateItemNO);

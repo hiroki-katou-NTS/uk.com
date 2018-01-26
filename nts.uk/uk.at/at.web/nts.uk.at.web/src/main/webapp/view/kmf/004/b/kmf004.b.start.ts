@@ -11,5 +11,6 @@ module nts.uk.at.view.kmf004.b {
         __viewContext.bind(__viewContext.viewModel);
         // show active tab panel 
         $('.navigator li a.active').trigger('click');
+        $('#radio').focus();
     });
 }

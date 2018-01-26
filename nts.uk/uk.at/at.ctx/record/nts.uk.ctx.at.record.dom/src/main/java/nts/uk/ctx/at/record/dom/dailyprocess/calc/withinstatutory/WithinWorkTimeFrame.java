@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
-import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 
 /**
@@ -47,7 +47,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 */
 	public WithinWorkTimeFrame(
 			int workingHoursTimeNo,
-			TimeSpanWithRounding timeSheet,
+			TimeZoneRounding timeSheet,
 			TimeSpanForCalc calculationTimeSheet,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			List<BonusPayTimesheet> bonusPayTimeSheet,
@@ -61,7 +61,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	
 
 	
-	public TimeSpanWithRounding getTimeSheet() {
+	public TimeZoneRounding getTimeSheet() {
 		return this.timeSheet;
 	}
 	
@@ -238,7 +238,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 */
 	public AttendanceTime calcActualWorkTimeAndWorkTime(HolidayAdditionAtr holidayAdditionAtr,DeductionTimeSheet dedTimeSheet) {
 		AttendanceTime actualTime = calcActualTime(); 
-		actualTime = actualTime.minusMinutes(dedTimeSheet.calcDeductionAllTimeSheet(DeductionAtr.Deduction, ((CalculationTimeSheet)this).getTimeSheet()).valueAsMinutes());
+		actualTime = actualTime.minusMinutes(dedTimeSheet.calcDeductionAllTimeSheet(DeductionAtr.Deduction, ((CalculationTimeSheet)this).getTimeSheet().timeSpan()).valueAsMinutes());
 		AttendanceTime workTime = calcWorkTime(actualTime);
 		/*就業時間算出ロジックをここに*/
 		
@@ -259,7 +259,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 * @return　実働時間
 	 */
 	public AttendanceTime calcActualTime() {
-		return new AttendanceTime(((CalculationTimeSheet)this).getTimeSheet().lengthAsMinutes());
+		return new AttendanceTime(((CalculationTimeSheet)this).getTimeSheet().timeSpan().lengthAsMinutes());
 	}
 
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊↓高須

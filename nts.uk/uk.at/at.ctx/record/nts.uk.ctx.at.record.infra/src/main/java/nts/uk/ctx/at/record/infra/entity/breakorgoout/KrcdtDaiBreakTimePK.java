@@ -24,8 +24,8 @@ public class KrcdtDaiBreakTimePK implements Serializable {
 	public GeneralDate ymd;
 	
 	@Column(name = "BREAK_TYPE")
-	public BigDecimal breakType;
+	public int breakType;
 
 	@Column(name = "BREAK_FRAME_NO")
-	public BigDecimal breakFrameNo;
+	public int breakFrameNo;
 }

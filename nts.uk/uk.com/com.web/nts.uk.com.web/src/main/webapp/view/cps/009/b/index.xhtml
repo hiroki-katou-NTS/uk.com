@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 420,
-					height :600
+					height :700
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -34,9 +34,20 @@
 					<label id="itemSel">#{i18n.getText('CPS009_32')}</label>
 				</div>
 				<!-- B004: table -->
-				<div id="itemLst" style="margin-left: 80px">
+<!-- 				<div id="itemLst" style="margin-left: 80px">
 					<div id="grid_B" style="background-color: #F3F3F3; width: 260px;"></div>
-				</div>
+				</div> -->
+				<div id="itemLst" style="margin-left: 80px">
+						<table id="grid_B" data-bind="ntsGridList: {
+								height: 350,
+								dataSource: itemInitLst,
+								optionsValue: 'id',
+								columns: itemColumns,
+								multiple: true,
+								value: currentItem,
+								rows: 15
+							}"></table>				
+				</div>				
 				<!-- B009: label 一括指定する区分 -->
 				<div data-bind="ntsFormLabel: {}" class='distane'>
 					<label id="itemSel">#{i18n.getText('CPS009_34')}</label>
@@ -48,14 +59,14 @@
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: selectedRuleCode,
-											enable: true }">
+											enable: true }" tab-index ="4">
 				</div>
 			</div>
 			<div id='functions-area-bottom'>
 				<!-- B011: button 決定 -->
-				<button id="registration" class="proceed x-large" data-bind="click: registerItems">#{i18n.getText('CPS009_29')}</button>
+				<button id="registration" class="proceed large" data-bind="click: registerItems" tab-index="5">#{i18n.getText('CPS009_29')}</button>
 				<!-- B012: button キャンセル -->
-				<button id="cancel" data-bind="click: closeDialog">#{i18n.getText('CPS009_30')}</button>
+				<button id="cancel" data-bind="click: closeDialog" tab-index="6">#{i18n.getText('CPS009_30')}</button>
 
 			</div>
 

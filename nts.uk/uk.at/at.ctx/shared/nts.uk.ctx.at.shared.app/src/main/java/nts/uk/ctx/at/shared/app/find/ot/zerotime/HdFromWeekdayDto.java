@@ -13,9 +13,9 @@ import lombok.Data;
 public class HdFromWeekdayDto {
 
 	/** 変更前の休出枠NO */
-	private int hdFrameNo;
+	private int holidayWorkFrameNo;
 
 	/** 変更後の残業枠NO */
-	private BigDecimal overtimeFrameNo;
+	private BigDecimal overWorkNo;
 
 }

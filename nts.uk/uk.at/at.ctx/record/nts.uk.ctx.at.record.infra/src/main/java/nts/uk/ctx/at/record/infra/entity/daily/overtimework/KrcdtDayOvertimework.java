@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.infra.entity.daily.overtimework;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -224,77 +223,99 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 	public static KrcdtDayOvertimework create(String employeeId, GeneralDate generalDate, OverTimeOfDaily overTimeOfDaily) {
 		val entity = new KrcdtDayOvertimework();
 		entity.krcdtDayOvertimeworkPK = new KrcdtDayOvertimeworkPK(employeeId, generalDate);
-		//残業時間
-		entity.overTime1  = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 1).findFirst().get().getOverTimeWork().getTime().valueAsMinutes();
-		entity.overTime2  = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 2).findFirst().get().getOverTimeWork().getTime().valueAsMinutes();
-		entity.overTime3  = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 3).findFirst().get().getOverTimeWork().getTime().valueAsMinutes();
-		entity.overTime4  = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 4).findFirst().get().getOverTimeWork().getTime().valueAsMinutes();
-		entity.overTime5  = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 5).findFirst().get().getOverTimeWork().getTime().valueAsMinutes();
-		entity.overTime6  = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 6).findFirst().get().getOverTimeWork().getTime().valueAsMinutes();
-		entity.overTime7  = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 7).findFirst().get().getOverTimeWork().getTime().valueAsMinutes();
-		entity.overTime8  = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 8).findFirst().get().getOverTimeWork().getTime().valueAsMinutes();
-		entity.overTime9  = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 9).findFirst().get().getOverTimeWork().getTime().valueAsMinutes();
-		entity.overTime10 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 10).findFirst().get().getOverTimeWork().getTime().valueAsMinutes();
-		//振替時間
-		entity.transTime1 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 1).findFirst().get().getTransferTime().getTime().valueAsMinutes();
-		entity.transTime2 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 2).findFirst().get().getTransferTime().getTime().valueAsMinutes();
-		entity.transTime3 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 3).findFirst().get().getTransferTime().getTime().valueAsMinutes();
-		entity.transTime4 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 4).findFirst().get().getTransferTime().getTime().valueAsMinutes();
-		entity.transTime5 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 5).findFirst().get().getTransferTime().getTime().valueAsMinutes();
-		entity.transTime6 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 6).findFirst().get().getTransferTime().getTime().valueAsMinutes();
-		entity.transTime7 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 7).findFirst().get().getTransferTime().getTime().valueAsMinutes();
-		entity.transTime8 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 8).findFirst().get().getTransferTime().getTime().valueAsMinutes();
-		entity.transTime9 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 9).findFirst().get().getTransferTime().getTime().valueAsMinutes();
-		entity.transTime10= overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 10).findFirst().get().getTransferTime().getTime().valueAsMinutes();
-		//計算残業時間
-		entity.calcOverTime1 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 1).findFirst().get().getOverTimeWork().getCalcTime().valueAsMinutes();
-		entity.calcOverTime2 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 2).findFirst().get().getOverTimeWork().getCalcTime().valueAsMinutes();
-		entity.calcOverTime3 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 3).findFirst().get().getOverTimeWork().getCalcTime().valueAsMinutes();
-		entity.calcOverTime4 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 4).findFirst().get().getOverTimeWork().getCalcTime().valueAsMinutes();
-		entity.calcOverTime5 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 5).findFirst().get().getOverTimeWork().getCalcTime().valueAsMinutes();
-		entity.calcOverTime6 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 6).findFirst().get().getOverTimeWork().getCalcTime().valueAsMinutes();
-		entity.calcOverTime7 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 7).findFirst().get().getOverTimeWork().getCalcTime().valueAsMinutes();
-		entity.calcOverTime8 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 8).findFirst().get().getOverTimeWork().getCalcTime().valueAsMinutes();
-		entity.calcOverTime9 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 9).findFirst().get().getOverTimeWork().getCalcTime().valueAsMinutes();
-		entity.calcOverTime10= overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 10).findFirst().get().getOverTimeWork().getCalcTime().valueAsMinutes();
-		//計算振替時間
-		entity.calcTransTime1 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 1).findFirst().get().getTransferTime().getCalcTime().valueAsMinutes();
-		entity.calcTransTime2 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 2).findFirst().get().getTransferTime().getCalcTime().valueAsMinutes();
-		entity.calcTransTime3 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 3).findFirst().get().getTransferTime().getCalcTime().valueAsMinutes();
-		entity.calcTransTime4 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 4).findFirst().get().getTransferTime().getCalcTime().valueAsMinutes();
-		entity.calcTransTime5 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 5).findFirst().get().getTransferTime().getCalcTime().valueAsMinutes();
-		entity.calcTransTime6 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 6).findFirst().get().getTransferTime().getCalcTime().valueAsMinutes();
-		entity.calcTransTime7 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 7).findFirst().get().getTransferTime().getCalcTime().valueAsMinutes();
-		entity.calcTransTime8 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 8).findFirst().get().getTransferTime().getCalcTime().valueAsMinutes();
-		entity.calcTransTime9 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 9).findFirst().get().getTransferTime().getCalcTime().valueAsMinutes();
-		entity.calcTransTime10= overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 10).findFirst().get().getTransferTime().getCalcTime().valueAsMinutes();
-		//事前残業申請
-		entity.preOverTimeAppTime1 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 1).findFirst().get().getBeforeApplicationTime().valueAsMinutes();
-		entity.preOverTimeAppTime2 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 2).findFirst().get().getBeforeApplicationTime().valueAsMinutes();
-		entity.preOverTimeAppTime3 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 3).findFirst().get().getBeforeApplicationTime().valueAsMinutes();
-		entity.preOverTimeAppTime4 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 4).findFirst().get().getBeforeApplicationTime().valueAsMinutes();
-		entity.preOverTimeAppTime5 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 5).findFirst().get().getBeforeApplicationTime().valueAsMinutes();
-		entity.preOverTimeAppTime6 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 6).findFirst().get().getBeforeApplicationTime().valueAsMinutes();
-		entity.preOverTimeAppTime7 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 7).findFirst().get().getBeforeApplicationTime().valueAsMinutes();
-		entity.preOverTimeAppTime8 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 8).findFirst().get().getBeforeApplicationTime().valueAsMinutes();
-		entity.preOverTimeAppTime9 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 9).findFirst().get().getBeforeApplicationTime().valueAsMinutes();
-		entity.preOverTimeAppTime10 = overTimeOfDaily.getOverTimeWorkFrameTime().stream().filter(tc -> tc.getOverWorkFrameNo().v() == 10).findFirst().get().getBeforeApplicationTime().valueAsMinutes();
-		//法定外
-		entity.ileglMidntOverTime = overTimeOfDaily.getExcessOverTimeWorkMidNightTime().get().getTime().getTime().valueAsMinutes();
-		//計算法定外
-		entity.calcIleglMidNOverTime = overTimeOfDaily.getExcessOverTimeWorkMidNightTime().get().getTime().getCalcTime().valueAsMinutes();
-		//拘束時間
-		entity.overTimeBindTime = overTimeOfDaily.getOverTimeWorkSpentAtWork().valueAsMinutes();
-		//変形法定内残業
-		entity.deformLeglOverTime = overTimeOfDaily.getIrregularWithinPrescribedOverTimeWork().valueAsMinutes();
-		//フレックス時間
-		entity.flexTime = overTimeOfDaily.getFlexTime().getFlexTime().getTime().valueAsMinutes();
-		//計算フレックス時間
-		entity.calcFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getCalcTime().valueAsMinutes();
-		//事前フレックス時間
-		entity.preAppFlexTime = overTimeOfDaily.getFlexTime().getBeforeApplicationTime().valueAsMinutes();
-		
+		entity.setData(overTimeOfDaily);
 		return entity;
+	}
+	
+	public void setData(OverTimeOfDaily overTimeOfDaily){
+		OverTimeFrameTime frame1 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 1);
+		OverTimeFrameTime frame2 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 2);
+		OverTimeFrameTime frame3 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 3);
+		OverTimeFrameTime frame4 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 4);
+		OverTimeFrameTime frame5 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 5);
+		OverTimeFrameTime frame6 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 6);
+		OverTimeFrameTime frame7 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 7);
+		OverTimeFrameTime frame8 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 8);
+		OverTimeFrameTime frame9 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 9);
+		OverTimeFrameTime frame10 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 10);
+		
+		//残業時間
+		this.overTime1  = frame1.getOverTimeWork().getTime() == null ? 0 : frame1.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime2  = frame2.getOverTimeWork().getTime() == null ? 0 : frame2.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime3  = frame3.getOverTimeWork().getTime() == null ? 0 : frame3.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime4  = frame4.getOverTimeWork().getTime() == null ? 0 : frame4.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime5  = frame5.getOverTimeWork().getTime() == null ? 0 : frame5.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime6  = frame6.getOverTimeWork().getTime() == null ? 0 : frame6.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime7  = frame7.getOverTimeWork().getTime() == null ? 0 : frame7.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime8  = frame8.getOverTimeWork().getTime() == null ? 0 : frame8.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime9  = frame9.getOverTimeWork().getTime() == null ? 0 : frame9.getOverTimeWork().getTime().valueAsMinutes();
+		this.overTime10 = frame10.getOverTimeWork().getTime() == null ? 0 : frame10.getOverTimeWork().getTime().valueAsMinutes();
+		//振替時間
+		this.transTime1 = frame1.getTransferTime().getTime() == null ? 0 : frame1.getTransferTime().getTime().valueAsMinutes();
+		this.transTime2 = frame2.getTransferTime().getTime() == null ? 0 : frame2.getTransferTime().getTime().valueAsMinutes();
+		this.transTime3 = frame3.getTransferTime().getTime() == null ? 0 : frame3.getTransferTime().getTime().valueAsMinutes();
+		this.transTime4 = frame4.getTransferTime().getTime() == null ? 0 : frame4.getTransferTime().getTime().valueAsMinutes();
+		this.transTime5 = frame5.getTransferTime().getTime() == null ? 0 : frame5.getTransferTime().getTime().valueAsMinutes();
+		this.transTime6 = frame6.getTransferTime().getTime() == null ? 0 : frame6.getTransferTime().getTime().valueAsMinutes();
+		this.transTime7 = frame7.getTransferTime().getTime() == null ? 0 : frame7.getTransferTime().getTime().valueAsMinutes();
+		this.transTime8 = frame8.getTransferTime().getTime() == null ? 0 : frame8.getTransferTime().getTime().valueAsMinutes();
+		this.transTime9 = frame9.getTransferTime().getTime() == null ? 0 : frame9.getTransferTime().getTime().valueAsMinutes();
+		this.transTime10= frame10.getTransferTime().getTime() == null ? 0 : frame10.getTransferTime().getTime().valueAsMinutes();
+		//計算残業時間
+		this.calcOverTime1 = frame1.getOverTimeWork().getCalcTime() == null ? 0 : frame1.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime2 = frame2.getOverTimeWork().getCalcTime() == null ? 0 : frame2.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime3 = frame3.getOverTimeWork().getCalcTime() == null ? 0 : frame3.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime4 = frame4.getOverTimeWork().getCalcTime() == null ? 0 : frame4.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime5 = frame5.getOverTimeWork().getCalcTime() == null ? 0 : frame5.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime6 = frame6.getOverTimeWork().getCalcTime() == null ? 0 : frame6.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime7 = frame7.getOverTimeWork().getCalcTime() == null ? 0 : frame7.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime8 = frame8.getOverTimeWork().getCalcTime() == null ? 0 : frame8.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime9 = frame9.getOverTimeWork().getCalcTime() == null ? 0 : frame9.getOverTimeWork().getCalcTime().valueAsMinutes();
+		this.calcOverTime10= frame10.getOverTimeWork().getCalcTime() == null ? 0 : frame10.getOverTimeWork().getCalcTime().valueAsMinutes();
+		//計算振替時間
+		this.calcTransTime1 = frame1.getTransferTime().getCalcTime() == null ? 0 : frame1.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime2 = frame2.getTransferTime().getCalcTime() == null ? 0 : frame2.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime3 = frame3.getTransferTime().getCalcTime() == null ? 0 : frame3.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime4 = frame4.getTransferTime().getCalcTime() == null ? 0 : frame4.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime5 = frame5.getTransferTime().getCalcTime() == null ? 0 : frame5.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime6 = frame6.getTransferTime().getCalcTime() == null ? 0 : frame6.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime7 = frame7.getTransferTime().getCalcTime() == null ? 0 : frame7.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime8 = frame8.getTransferTime().getCalcTime() == null ? 0 : frame8.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime9 = frame9.getTransferTime().getCalcTime() == null ? 0 : frame9.getTransferTime().getCalcTime().valueAsMinutes();
+		this.calcTransTime10= frame10.getTransferTime().getCalcTime() == null ? 0 : frame10.getTransferTime().getCalcTime().valueAsMinutes();
+		//事前残業申請
+		this.preOverTimeAppTime1 = frame1.getBeforeApplicationTime() == null ? 0 : frame1.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime2 = frame2.getBeforeApplicationTime() == null ? 0 : frame2.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime3 = frame3.getBeforeApplicationTime() == null ? 0 : frame3.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime4 = frame4.getBeforeApplicationTime() == null ? 0 : frame4.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime5 = frame5.getBeforeApplicationTime() == null ? 0 : frame5.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime6 = frame6.getBeforeApplicationTime() == null ? 0 : frame6.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime7 = frame7.getBeforeApplicationTime() == null ? 0 : frame7.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime8 = frame8.getBeforeApplicationTime() == null ? 0 : frame8.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime9 = frame9.getBeforeApplicationTime() == null ? 0 : frame9.getBeforeApplicationTime().valueAsMinutes();
+		this.preOverTimeAppTime10 = frame10.getBeforeApplicationTime() == null ? 0 : frame10.getBeforeApplicationTime().valueAsMinutes();
+		
+		ExcessOverTimeWorkMidNightTime excessOver = overTimeOfDaily.getExcessOverTimeWorkMidNightTime().get();
+		if(excessOver.getTime() != null){
+			//法定外
+			this.ileglMidntOverTime = excessOver.getTime().getTime() == null ? 0 : excessOver.getTime().getTime().valueAsMinutes();
+			//計算法定外
+			this.calcIleglMidNOverTime = excessOver.getTime().getCalcTime() == null ? 0 : excessOver.getTime().getCalcTime().valueAsMinutes();
+		}
+		//拘束時間
+		this.overTimeBindTime = overTimeOfDaily.getOverTimeWorkSpentAtWork() == null ? 0 : overTimeOfDaily.getOverTimeWorkSpentAtWork().valueAsMinutes();
+		//変形法定内残業
+		this.deformLeglOverTime = overTimeOfDaily.getIrregularWithinPrescribedOverTimeWork() == null ? 0 : overTimeOfDaily.getIrregularWithinPrescribedOverTimeWork().valueAsMinutes();
+		//フレックス時間
+		this.flexTime = overTimeOfDaily.getFlexTime().getFlexTime().getTime().valueAsMinutes();
+		//計算フレックス時間
+		this.calcFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getCalcTime().valueAsMinutes();
+		//事前フレックス時間
+		this.preAppFlexTime = overTimeOfDaily.getFlexTime().getBeforeApplicationTime().valueAsMinutes();
+	}
+
+	private OverTimeFrameTime getOverTimeFrame(List<OverTimeFrameTime> overTimeFrame, int frameNo) {
+		return overTimeFrame.stream().filter(tc -> tc.getOverWorkFrameNo().v() == frameNo).findFirst().get();
 	}
 
 	public OverTimeOfDaily toDomain() {
@@ -353,7 +374,7 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 				   new AttendanceTime(this.preOverTimeAppTime9),
 				   new AttendanceTime(0)));
 		
-		list.add(new OverTimeFrameTime(new OverTimeFrameNo(100),
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(10),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.overTime10), new AttendanceTime(this.calcOverTime10)),
 				   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.transTime10), new AttendanceTime(this.calcTransTime10)),
 				   new AttendanceTime(this.preOverTimeAppTime10),

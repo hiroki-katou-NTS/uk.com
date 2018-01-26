@@ -8,7 +8,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofeach.RequestOfEachCommon;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 /**
  * 
  * @author Doan Duy Hung
@@ -20,7 +20,7 @@ public class AppCommonSettingOutput {
 	
 	public ApplicationSetting applicationSetting;  
 
-	public RequestOfEachCommon requestOfEachCommon;
+	public ApprovalFunctionSetting approvalFunctionSetting;
 	
 	public List<AppTypeDiscreteSetting> appTypeDiscreteSettings;  
 	
@@ -34,7 +34,7 @@ public class AppCommonSettingOutput {
 		super();
 		this.generalDate = null;
 		this.applicationSetting = null;
-		this.requestOfEachCommon = null;
+		this.approvalFunctionSetting = null;
 		this.appTypeDiscreteSettings = new ArrayList<>();
 		this.applicationDeadlines = new ArrayList<>();
 	}

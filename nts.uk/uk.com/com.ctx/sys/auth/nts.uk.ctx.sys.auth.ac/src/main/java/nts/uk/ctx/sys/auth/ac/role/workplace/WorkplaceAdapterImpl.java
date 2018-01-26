@@ -58,4 +58,10 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 		return syWorkplacePub.findListWorkplaceIdByCidAndWkpIdAndBaseDate(companyId, workplaceId, baseDate);
 	}
 
+	@Override
+	public List<String> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
+			GeneralDate endDate) {
+		return syWorkplacePub.findListSIdByCidAndWkpIdAndPeriod(workplaceId, startDate, endDate);
+	}
+
 }

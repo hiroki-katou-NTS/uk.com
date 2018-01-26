@@ -31,25 +31,27 @@ module nts.uk.at.view.kaf002.b {
                         true)
                     .done(()=>{
                         if(nts.uk.util.isNullOrEmpty(self.kaf000_a2.approvalRootState())){
-                            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml");
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_324" }).then(function(){
+                                nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                            });
                         } else {
                             self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode });  
                         }  
-                    }).fail(function(res) { 
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){
+                    }).fail((res1) => { 
+                        nts.uk.ui.dialog.alertError({ messageId: res1.messageId }).then(function(){
                             nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
                             nts.uk.ui.block.clear();
                         });
                     });   
-                    self.kaf000_a2.getMessageDeadline(applicationType, moment(new Date()).format("YYYY/MM/DD"));
-                }).fail(function(res) { 
-                    nts.uk.ui.dialog.alertError(res.message).then(function(){
-                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
-                        nts.uk.ui.block.clear();
-                    });
-                }); 
+                });
                 self.cm.application().appDate.subscribe(value => {
-                    self.kaf000_a2.getAppDataDate(7, value, false);
+                    nts.uk.ui.block.invisible();
+                    self.kaf000_a2.getAppDataDate(7, value, false)
+                    .done(()=>{
+                        nts.uk.ui.block.clear();         
+                    }).fail(()=>{
+                        nts.uk.ui.block.clear();    
+                    });
                 });
             }
             
@@ -62,10 +64,16 @@ module nts.uk.at.view.kaf002.b {
                         dfd.resolve(commonSet); 
                     })
                     .fail(function(res) { 
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){
-                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"); 
-                            nts.uk.ui.block.clear();
-                        });
+                       if(res.messageId == 'Msg_426'){
+                                nts.uk.ui.dialog.alertError({messageId : res.messageId}).then(function(){
+                                    nts.uk.ui.block.clear();
+                                });
+                        }else{ 
+                                nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
+                                    nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
+                                    nts.uk.ui.block.clear();  
+                                });
+                        }
                         dfd.reject(res); 
                     });
                 return dfd.promise();

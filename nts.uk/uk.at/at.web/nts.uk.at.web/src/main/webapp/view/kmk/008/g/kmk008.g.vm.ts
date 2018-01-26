@@ -153,8 +153,8 @@ module nts.uk.at.view.kmk008.g {
                 }
 
                 self.tabs = ko.observableArray([
-                    { id: 'tab-1', title: '年度', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-2', title: '年月', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
+                    { id: 'tab-1', title: '年月', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-2', title: '年度', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.selectedTab = ko.observable('tab-1');
 
@@ -172,13 +172,13 @@ module nts.uk.at.view.kmk008.g {
                 self.selectedCode.subscribe(newValue => {
 
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
-                    let data = $('#component-items-list').getDataList();
+                    let data = self.selectedEmployee();
                     let employee = _.find(data, function(o) {
-                        return o.code == self.selectedCode();
+                        return o.employeeCode == self.selectedCode();
                     });
                     self.getDetail(employee.employeeId);
                     self.selectedId(employee.employeeId);
-                    self.employeeName(employee.name);
+                    self.employeeName(employee.employeeName);
 
                 });
 
@@ -186,7 +186,7 @@ module nts.uk.at.view.kmk008.g {
                     if (self.selectedId()) {
                         return self.getDetail(self.selectedId());
                     } else {
-                        if (self.selectedTab() == "tab-2") {
+                        if (self.selectedTab() == "tab-1") {
                             self.items2([]);
                             self.items2.push(new ItemModel("", "", ""));
                         } else {
@@ -213,9 +213,9 @@ module nts.uk.at.view.kmk008.g {
 
             openDiaglog() {
                 let self = this;
-                let isYearMonth = true;
+                let isYearMonth = false;
                 if (self.selectedTab() == "tab-1") {
-                    isYearMonth = false;
+                    isYearMonth = true;
                 }
                 setShared("KMK_008_PARAMS", { employeeCode: self.selectedCode(), employeeId: self.selectedId(), employeeName: self.employeeName(), isYearMonth: isYearMonth });
                 modal('../../../kmk/008/k/index.xhtml').onClosed(() => {
@@ -229,7 +229,7 @@ module nts.uk.at.view.kmk008.g {
             getDetail(employmentCategoryCode: string) {
                 var self = this;
                 self.isShowButton(true);
-                if (self.selectedTab() == "tab-2") {
+                if (self.selectedTab() == "tab-1") {
                     service.getMonth(employmentCategoryCode).done(function(monthData: Array<model.MonthDto>) {
                         if (monthData) {
                             self.items2([]);

@@ -12,10 +12,12 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
 import nts.uk.ctx.bs.employee.pub.classification.SClsHistExport;
 import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * The Class ClassificationPubImp.
@@ -23,13 +25,17 @@ import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 @Stateless
 public class ClassificationPubImp implements SyClassificationPub {
 
-	/** The employment repository. */
+	/** The classification repository. */
 	@Inject
 	private ClassificationRepository classificationRepository;
 
-	/** The employment history repository. */
+	/** The aff class hist item repository ver 1. */
 	@Inject
-	private AffClassHistoryRepository affClassHistoryRepository;
+	private AffClassHistItemRepository_ver1 affClassHistItemRepository_ver1;
+
+	/** The aff class history repository ver 1. */
+	@Inject
+	private AffClassHistoryRepository_ver1 affClassHistoryRepository_ver1;
 
 	/*
 	 * (non-Javadoc)
@@ -41,20 +47,29 @@ public class ClassificationPubImp implements SyClassificationPub {
 	@Override
 	public Optional<SClsHistExport> findSClsHistBySid(String companyId, String employeeId,
 			GeneralDate baseDate) {
-		// Query
-		Optional<AffClassHistory> optAffEmploymentHist = affClassHistoryRepository
-				.getAssignedClassificationBy(employeeId, baseDate);
+
+		Optional<DateHistoryItem> dateHistoryItem = affClassHistoryRepository_ver1
+				.getByEmpIdAndStandardDate(employeeId, baseDate);
 
 		// Check exist
-		if (!optAffEmploymentHist.isPresent()) {
+		if (!dateHistoryItem.isPresent()) {
 			return Optional.empty();
 		}
 
-		AffClassHistory empHist = optAffEmploymentHist.get();
+		Optional<AffClassHistItem_ver1> opAffClassHistItem_ver1 = affClassHistItemRepository_ver1
+				.getByHistoryId(dateHistoryItem.get().identifier());
+
+		if (!opAffClassHistItem_ver1.isPresent()) {
+			return Optional.empty();
+		}
 
 		// Find emp by empCd
-		Optional<Classification> optClassification = classificationRepository
-				.findClassification(companyId, empHist.getClassificationCode().v());
+		Optional<Classification> optClassification = classificationRepository.findClassification(
+				companyId, opAffClassHistItem_ver1.get().getClassificationCode().v());
+
+		if (!optClassification.isPresent()) {
+			return Optional.empty();
+		}
 
 		// Get employment info
 		Classification classification = optClassification.get();
@@ -63,7 +78,7 @@ public class ClassificationPubImp implements SyClassificationPub {
 		return Optional.of(SClsHistExport.builder().employeeId(employeeId)
 				.classificationCode(classification.getClassificationCode().v())
 				.classificationName(classification.getClassificationName().v())
-				.period(empHist.getPeriod()).build());
+				.period(dateHistoryItem.get().span()).build());
 	}
 
 }

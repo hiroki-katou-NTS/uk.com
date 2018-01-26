@@ -115,6 +115,7 @@ module nts.uk.at.view.kdl003.a {
                     service.findWorkTimeByCodes(self.callerParameter.workTimeCodes)
                         .done(function(data) {
                             self.addFirstItem(data);
+//                            self.listWorkTime(data);
                             dfd.resolve();
                         });
                 } else {
@@ -122,6 +123,7 @@ module nts.uk.at.view.kdl003.a {
                     service.findAllWorkTime()
                         .done(function(data) {
                             self.addFirstItem(data);
+//                            self.listWorkTime(data);
                             dfd.resolve();
                         });
                 }

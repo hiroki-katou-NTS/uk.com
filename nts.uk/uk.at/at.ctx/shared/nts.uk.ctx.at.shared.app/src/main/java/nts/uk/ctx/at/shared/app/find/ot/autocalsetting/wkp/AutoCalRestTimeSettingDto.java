@@ -28,7 +28,7 @@ public class AutoCalRestTimeSettingDto implements AutoCalRestTimeSettingSetMemen
 	 */
 	@Override
 	public void setRestTime(AutoCalSetting restTime) {
-		this.restTime = new AutoCalSettingDto(restTime.getUpLimitOtSet().value, restTime.getCalAtr().value);
+		this.restTime = new AutoCalSettingDto(restTime.getUpLimitORtSet().value, restTime.getCalAtr().value);
 
 	}
 
@@ -37,7 +37,7 @@ public class AutoCalRestTimeSettingDto implements AutoCalRestTimeSettingSetMemen
 	 */
 	@Override
 	public void setLateNightTime(AutoCalSetting lateNightTime) {
-		this.lateNightTime = new AutoCalSettingDto(lateNightTime.getUpLimitOtSet().value, lateNightTime.getCalAtr().value);
+		this.lateNightTime = new AutoCalSettingDto(lateNightTime.getUpLimitORtSet().value, lateNightTime.getCalAtr().value);
 
 	}
 

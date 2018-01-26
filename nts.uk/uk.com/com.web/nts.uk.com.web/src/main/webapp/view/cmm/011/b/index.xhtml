@@ -51,7 +51,7 @@
 				<div id="right-content">
 					<div style="margin-left: 35px;margin-right: 20px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM011_23')}</div>
 					<div tabindex="5" id="startDate"
-						data-bind="ntsDatePicker: {name: '#[CMM011_24]', required: true, value: startDate, dateFormat: 'YYYY/MM/DD'}"></div>
+						data-bind="ntsDatePicker: {name: '#[CMM011_24]', required: true, value: startDate, dateFormat: 'YYYY/MM/DD', enable: enable}"></div>
 					<span style="margin: 20px;">#{i18n.getText('CMM011_26')}</span> 
 					<span data-bind="text: endDate"></span>
 				</div>

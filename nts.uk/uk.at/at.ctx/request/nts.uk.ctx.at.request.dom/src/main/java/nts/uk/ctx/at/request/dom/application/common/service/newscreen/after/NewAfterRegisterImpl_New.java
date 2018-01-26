@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.after;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -11,6 +11,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
@@ -29,6 +30,9 @@ public class NewAfterRegisterImpl_New implements NewAfterRegister_New {
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
 	
+	@Inject
+	private ApprovalRootStateAdapter approvalRootStateAdapter;
+	
 	public String processAfterRegister(Application_New application){
 		
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする
@@ -41,8 +45,14 @@ public class NewAfterRegisterImpl_New implements NewAfterRegister_New {
 			return null;
 		}
 		// アルゴリズム「送信先リストの取得」を実行する
-		//TODO: Wait for common pub
-		List<String> destinationList = new ArrayList<>();//acquireDestinationList(application);
+		List<String> destinationList = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(
+				application.getCompanyID(), 
+				application.getAppID(), 
+				1, 
+				true, 
+				application.getEmployeeID(), 
+				application.getAppType().value, 
+				application.getAppDate());
 		
 		// 送信先リストに項目がいるかチェックする 
 		if(destinationList.size() < 1) return null;

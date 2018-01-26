@@ -10,12 +10,19 @@
 			<title>#{i18n.getText('KAL003_1')}</title>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
+			<com:scriptfile path="../share/kal003utils.js" />
+			<com:scriptfile path="common/scopecheck.js" />
+			<com:scriptfile path="common/checkconditiontab.js" />
+			<com:scriptfile path="daily/dailyperformance/dailyperfortab.js" />
+			<com:scriptfile path="daily/fixedcheckcondition/fixedchecktab.js" />
 			<com:stylefile path="kal003.a.style.css" />
-			<!-- 			<com:scriptfile path="cas014.a.service.js" /> -->
+			<com:scriptfile path="kal003.a.service.js" />
 			<com:scriptfile path="kal003.a.vm.js" />
 
-			<!-- 			<com:scriptfile path="../b/cas014.b.vm.js" /> -->
-			<!-- 			<com:scriptfile path="../b/cas014.b.service.js" /> -->
+			<com:ValidatorScript>
+		        nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode
+		        nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionName
+		    </com:ValidatorScript>
 
 			<com:scriptfile path="kal003.a.start.js" />
 			
@@ -24,17 +31,17 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button tabindex="1" data-bind="click: createNewAlarmCheckCondition">#{i18n.getText('KAL003_5')}</button>
+					<button tabindex="1" data-bind="click: openKAL003dDialog">#{i18n.getText('KAL003_5')}</button>
 					<button tabindex="2" data-bind="click: registerAlarmCheckCondition, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KAL003_6')}</button>
 					<button tabindex="2" data-bind="enable: screenMode() == 1">#{i18n.getText('KAL003_7')}</button>
-					<button tabindex="3" data-bind="enable: screenMode() == 1" class="danger">#{i18n.getText('KAL003_8')}</button>
+					<button tabindex="3" data-bind="click: deleteAlarmCheckCondition, enable: screenMode() == 1" class="danger">#{i18n.getText('KAL003_8')}</button>
 				</div>
 			</div>
 			<div class="contents-area">
 				<div class="container">
 					<div class="left-content">
 						<div
-							data-bind="ntsPanel:{width: '300px', height: '500px', direction: 'right', showIcon: false, visible: true}">
+							data-bind="ntsPanel:{width: '300px', height: '450px', direction: 'right', showIcon: false, visible: true}">
 							<div class="valign-center control-group">
 								<label>#{i18n.getText('KAL003_48')}</label>
 								<div id="combo-box" data-bind="ntsComboBox: {
@@ -64,25 +71,25 @@
  								}"></table> 
 						</div>
 					</div>
-					<div class="right-content" data-bind="with: selectedAlarmCheckCondition">
-						<div>
+					<div class="right-content">
+						<div data-bind="with: selectedAlarmCheckCondition">
 							<div class="valign-center control-group">
-								<label>#{i18n.getText('KAL003_11')}</label> 
-								<input data-bind="ntsTextEditor: {value: code, required: true, enable: $parent.screenMode() == 0}" /> 
-								<label>#{i18n.getText('KAL003_12')}</label>
-								<input data-bind="ntsTextEditor: {value: name, required: true}" />
+								<label class="flabel">#{i18n.getText('KAL003_11')}</label> 
+								<input data-bind="ntsTextEditor: {value: code, required: true, constraint: 'AlarmCheckConditionCode', enable: $parent.screenMode() == 0, option: {width: '80px'}}" /> 
+								<label style="padding-left: 50px">#{i18n.getText('KAL003_12')}</label>
+								<input data-bind="ntsTextEditor: {value: name, required: true, constraint: 'AlarmCheckConditionName'}" />
 							</div>
 							<div class="valign-center control-group">
-								<label>#{i18n.getText('KAL003_9')}</label> 
+								<label class="flabel">#{i18n.getText('KAL003_9')}</label> 
 								<label data-bind="text: displayCategory"></label>
 							</div>
 							<div class="valign-center control-group">
-								<label>#{i18n.getText('KAL003_13')}</label> 
+								<label class="flabel">#{i18n.getText('KAL003_13')}</label> 
 								<input data-bind="ntsTextEditor: {value: displayAvailableRoles, readonly: true}" />
 								<button tabindex="9">#{i18n.getText('KAL003_14')}</button>
 							</div>
-							<div class="valign-center control-group" id="AA1">
-								<label>#{i18n.getText('KAL003_50')}</label>
+							<div class="valign-center control-group" data-bind="visible: category() == 5">
+								<label class="flabel">#{i18n.getText('KAL003_50')}</label>
 								<div data-bind="ntsRadioBoxGroup: {
 									options: $parent.radioItemList,
 									optionsValue: 'code',
@@ -92,21 +99,20 @@
 							</div>
 						</div>
 						<div id="tab-panel"
-							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab}">
-							<div class="tab-content-1" data-bind="with: targetCondition">
-								<ui:include src="common/scopecheck.xhtml" />
+							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+							<div class="tab-content-1" data-bind="with: tabScopeCheck">
+								<div data-bind="with: targetCondition">
+									<ui:include src="common/scopecheck.xhtml"/>
+								</div>
 							</div>
-							<div class="tab-content-2">
-								<span>Tab Content 2</span><br />
-<!-- 								<ui:include src="../b/index.xhtml" /> -->
+							<div class="tab-content-2" data-bind="with: tabDailyErrorAlarm">
+								<ui:include src="daily/dailyperformance/dailyperfor.xhtml" />
 							</div>
-							<div class="tab-content-3">
-								<span>Tab Content 3</span><br />
-<!-- 								<ui:include src="../b/index.xhtml" /> -->
+							<div class="tab-content-3" data-bind="with: tabCheckCondition">
+ 								<ui:include src="common/checkconditions.xhtml" />
 							</div>
-							<div class="tab-content-4">
-								<span>Tab Content 4</span><br />
-<!-- 								<ui:include src="../b/index.xhtml" /> -->
+							<div class="tab-content-4" data-bind="with: tabFixedCondition">
+								<ui:include src="daily/fixedcheckcondition/fixedcheck.xhtml" />
 							</div>
 						</div>
 					</div>

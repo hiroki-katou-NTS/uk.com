@@ -12,63 +12,94 @@ import javax.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
 
-@Embeddable
+/**
+ * The Class KshmtWorkTimeSheetSetPK.
+ */
 @Getter
 @Setter
+@Embeddable
 public class KshmtWorkTimeSheetSetPK implements Serializable {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The cid. */
 	@Column(name = "CID")
 	private String cid;
 
+	/** The worktime cd. */
 	@Column(name = "WORKTIME_CD")
 	private String worktimeCd;
 
-	@Column(name = "TIME_NUMBER_CNT")
-	private Integer timeNumberCnt;
+	/** The work no. */
+	@Column(name = "WORK_NO")
+	private Integer workNo;
 
+	/**
+	 * Instantiates a new kshmt work time sheet set PK.
+	 */
 	public KshmtWorkTimeSheetSetPK() {
+		super();
 	}
 	
-	public KshmtWorkTimeSheetSetPK(String cid, String worktimeCd, Integer timeNumberCnt) {
+
+	/**
+	 * Instantiates a new kshmt work time sheet set PK.
+	 *
+	 * @param cid the cid
+	 * @param worktimeCd the worktime cd
+	 * @param workNo the work no
+	 */
+	public KshmtWorkTimeSheetSetPK(String cid, String worktimeCd, Integer workNo) {
+		super();
 		this.cid = cid;
 		this.worktimeCd = worktimeCd;
-		this.timeNumberCnt = timeNumberCnt;
+		this.workNo = workNo;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		int hash = 0;
 		hash += (cid != null ? cid.hashCode() : 0);
 		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-		hash += (int) timeNumberCnt;
+		hash += (int) workNo;
 		return hash;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof KshmtWorkTimeSheetSetPK)) {
 			return false;
 		}
 		KshmtWorkTimeSheetSetPK other = (KshmtWorkTimeSheetSetPK) object;
-		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
 		if ((this.worktimeCd == null && other.worktimeCd != null)
 				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
 			return false;
 		}
-		if (this.timeNumberCnt != other.timeNumberCnt) {
+		if (this.workNo != other.workNo) {
 			return false;
 		}
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return "javaapplication1.KshmtWorkTimeSheetSetPK[ cid=" + cid + ", worktimeCd=" + worktimeCd
-				+ ", timeNumberCnt=" + timeNumberCnt + " ]";
-	}
+
+
+
+
+
 
 }

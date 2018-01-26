@@ -1,7 +1,13 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
+import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /**
  * 時系列のフレックス時間
@@ -11,27 +17,34 @@ import nts.arc.time.GeneralDate;
 public class FlexTimeOfTimeSeries {
 
 	/** 年月日 */
-	private GeneralDate ymd;
+	private final GeneralDate ymd;
+	
 	/** フレックス時間（日別実績） */
-	//private FlexTime flexTime;
+	@Setter
+	private FlexTime flexTime;
 	
 	/**
 	 * コンストラクタ
+	 * @param ymd 年月日
 	 */
-	public FlexTimeOfTimeSeries(){
+	public FlexTimeOfTimeSeries(GeneralDate ymd){
 		
-		//this.flexTime = new FlexTime();
+		this.ymd = ymd;
+		this.flexTime = new FlexTime(
+				TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),
+				new AttendanceTime(0));
 	}
 	
 	/**
 	 * ファクトリー
 	 * @param ymd 年月日
-	 * @return 時系列の休出時間
+	 * @param flexTime フレックス時間（日別実績）
+	 * @return 時系列のフレックス時間
 	 */
-	public static FlexTimeOfTimeSeries of(GeneralDate ymd){
+	public static FlexTimeOfTimeSeries of(GeneralDate ymd, FlexTime flexTime){
 		
-		FlexTimeOfTimeSeries domain = new FlexTimeOfTimeSeries();
-		domain.ymd = ymd;
+		val domain = new FlexTimeOfTimeSeries(ymd);
+		domain.flexTime = flexTime;
 		return domain;
 	}
 }

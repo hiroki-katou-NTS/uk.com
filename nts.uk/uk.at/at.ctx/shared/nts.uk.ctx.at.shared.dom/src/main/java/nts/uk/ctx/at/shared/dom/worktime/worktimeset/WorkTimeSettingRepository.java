@@ -21,14 +21,6 @@ public interface WorkTimeSettingRepository {
 	public List<WorkTimeSetting> findByCompanyId(String companyId);
 
 	/**
-	 * Find all.
-	 *
-	 * @param companyId the company id
-	 * @return the list
-	 */
-	public List<WorkTimeSetting> findAll(String companyId);
-
-	/**
 	 * Find by codes.
 	 *
 	 * @param companyId the company id
@@ -47,19 +39,41 @@ public interface WorkTimeSettingRepository {
 	public Optional<WorkTimeSetting> findByCode(String companyId, String workTimeCode);
 
 	/**
-	 * Find by code list.
+	 * Find with condition.
 	 *
 	 * @param companyId the company id
-	 * @param worktimeCode the worktime code
+	 * @param condition the condition
 	 * @return the list
 	 */
-	public List<WorkTimeSetting> findByCodeList(String companyId, List<String> worktimeCode);
-	
+	public List<WorkTimeSetting> findWithCondition(String companyId, WorkTimeSettingCondition condition);
 	
 	/**
-	 * Save.
+	 * Gets the list work time set by list code.
+	 *
+	 * @param workTimeCodes the work time codes
+	 * @return the list work time set by list code
+	 */
+	public List<WorkTimeSetting> getListWorkTimeSetByListCode(String companyId, List<String> workTimeCodes);
+
+	/**
+	 * Insert.
 	 *
 	 * @param domain the domain
 	 */
-	public void save(WorkTimeSetting domain);
+	public void add(WorkTimeSetting domain);
+
+	/**
+	 * Update.
+	 *
+	 * @param domain the domain
+	 */
+	public void update(WorkTimeSetting domain);
+
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 * @param workTimeCode the work time code
+	 */
+	public void remove(String companyId,String workTimeCode);
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.raisesalarytime;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemN
  *
  */
 @Getter
+@AllArgsConstructor
 public class SpecificDateAttrSheet {
 	
 	//特定日項目NO

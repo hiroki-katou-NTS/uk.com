@@ -10,6 +10,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 
 /**
  * The Class FlowWorkSetting.
@@ -36,7 +40,6 @@ public class FlowWorkSetting extends AggregateRoot {
 
 	/** The stamp reflect timezone. */
 	// 打刻反映時間帯
-	// TODO: NOT USE IN UI
 	private FlowStampReflectTimezone stampReflectTimezone;
 
 	/** The designated setting. */
@@ -89,5 +92,22 @@ public class FlowWorkSetting extends AggregateRoot {
 		memento.setStampReflectTimezone(this.stampReflectTimezone);
 		memento.setLegalOTSetting(this.legalOTSetting);
 		memento.setFlowSetting(this.flowSetting);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlowWorkSetting other) {
+		// restore 平日勤務時間帯
+		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
+				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
+			this.flowSetting.restoreData(screenMode, other.getFlowSetting());
+		} else {
+			this.halfDayWorkTimezone = other.getHalfDayWorkTimezone();
+			this.flowSetting = other.getFlowSetting();
+		}
 	}
 }

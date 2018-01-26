@@ -1,3 +1,24 @@
+#functions-area button ~ .ntsControl {
+	margin-left: 15px;
+}
+
+#functions-area button+.ntsControl {
+	margin-left: 645px;
+}
+
+#functions-area, #contents-area {
+	min-width: 1260px;
+}
+
+@media ( min-width : 1260px) {
+	#functions-area, #contents-area {}
+}
+
+#contents-area {
+	overflow-x: auto;
+	overflow-y: auto;
+}
+
 .valign-center {
 	vertical-align: middle !important;
 }
@@ -6,29 +27,8 @@
 	margin: 5px;
 }
 
-#A_BTN_NEW {
-	margin-left: 19px;
-	width: 85px;
-}
-
-#A_BTN_REGISTER {
-	margin-left: 10px;
-	width: 85px;
-}
-
-#A_BTN_COPPY {
-	margin-left: 15px;
-	width: 85px;
-}
-
-#functions-area button.danger {
-	margin-left: 205px;
-	margin-right: 380px;
-}
-
 #A_BTN_DELETE {
-	margin-left: 100px;
-	width: 80px;
+	margin-left: 45px !important;
 }
 
 #left-content {
@@ -86,16 +86,16 @@ i.icon.icon-searchbox {
 	top: 8px;
 }
 
-.layout-control .drag-panel{
+.layout-control .drag-panel {
 	height: 500px !important;
 }
 
 .nosetarea {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    width: 810px;
-    height: 500px;
-    padding: 10px;
-    padding-top: 10px;
-    box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	width: 810px;
+	height: 500px;
+	padding: 10px;
+	padding-top: 10px;
+	box-sizing: border-box;
 }

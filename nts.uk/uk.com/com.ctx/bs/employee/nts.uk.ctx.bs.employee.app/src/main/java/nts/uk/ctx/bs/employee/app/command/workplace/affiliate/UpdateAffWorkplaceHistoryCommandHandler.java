@@ -47,23 +47,25 @@ public class UpdateAffWorkplaceHistoryCommandHandler extends CommandHandler<Upda
 	protected void handle(CommandHandlerContext<UpdateAffWorkplaceHistoryCommand> context) {
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		Optional<AffWorkplaceHistory_ver1> existHist = affWorkplaceHistoryRepository.getByEmployeeId(companyId, command.getEmployeeId());
-		
-		if (!existHist.isPresent()){
-			throw new RuntimeException("invalid AffWorkplaceHistory"); 
-		}
+		// In case of date period are exist in the screen
+		if (command.getStartDate() != null){
+			Optional<AffWorkplaceHistory_ver1> existHist = affWorkplaceHistoryRepository.getByEmployeeId(companyId, command.getEmployeeId());
 			
-		Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getHistoryItems().stream()
-                .filter(h -> h.identifier().equals(command.getHistoryId()))
-                .findFirst();
-		
-		if (!itemToBeUpdate.isPresent()){
-			throw new RuntimeException("invalid AffWorkplaceHistory");
+			if (!existHist.isPresent()){
+				throw new RuntimeException("invalid AffWorkplaceHistory"); 
+			}
+				
+			Optional<DateHistoryItem> itemToBeUpdate = existHist.get().getHistoryItems().stream()
+	                .filter(h -> h.identifier().equals(command.getHistoryId()))
+	                .findFirst();
+			
+			if (!itemToBeUpdate.isPresent()){
+				throw new RuntimeException("invalid AffWorkplaceHistory");
+			}
+			existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
+			
+			affWorkplaceHistoryService.update(existHist.get(), itemToBeUpdate.get());
 		}
-		existHist.get().changeSpan(itemToBeUpdate.get(), new DatePeriod(command.getStartDate(), command.getEndDate()!= null? command.getEndDate():  ConstantUtils.maxDate()));
-		
-		affWorkplaceHistoryService.update(existHist.get(), itemToBeUpdate.get());
-		
 		AffWorkplaceHistoryItem histItem = AffWorkplaceHistoryItem.createFromJavaType(command.getHistoryId(), command.getEmployeeId(), command.getWorkplaceId(), command.getNormalWorkplaceId());
 		affWorkplaceHistoryItemRepository.update(histItem);
 	}

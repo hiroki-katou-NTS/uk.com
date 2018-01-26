@@ -17,6 +17,6 @@ public class BsymtClassificationPK_ {
 	public static volatile SingularAttribute<BsymtClassificationPK, String> cid;
 
 	/** The code. */
-	public static volatile SingularAttribute<BsymtClassificationPK, String> code;
+	public static volatile SingularAttribute<BsymtClassificationPK, String> clscd;
 
 }

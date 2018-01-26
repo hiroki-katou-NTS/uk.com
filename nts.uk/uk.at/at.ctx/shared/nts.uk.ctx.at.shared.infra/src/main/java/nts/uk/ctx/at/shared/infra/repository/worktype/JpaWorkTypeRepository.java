@@ -27,6 +27,11 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	private static final String SELECT_ALL_WORKTYPE = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId";
+	
+	private static final String SELECT_ALL_NOT_DEPRECATED_WORKTYPE = "SELECT c FROM KshmtWorkType c" 
+			+ " LEFT JOIN KshmtWorkTypeOrder o ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.deprecateAtr = 0"
+			+ " ORDER BY CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC, c.kshmtWorkTypePK.workTypeCode ASC";
 
 	private static final String SELECT_FROM_WORKTYPESET = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
 			+ " AND a.kshmtWorkTypeSetPK.workTypeCode = :workTypeCode";
@@ -41,7 +46,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 			+ " LEFT JOIN KshmtWorkTypeOrder o"
 			+ " ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId"
-			+ " AND c.kshmtWorkTypePK.workTypeCode IN :codes AND c.deprecateAtr = 0" + " ORDER BY o.dispOrder ASC";
+			+ " AND c.kshmtWorkTypePK.workTypeCode IN :codes AND c.deprecateAtr = 0" + " ORDER BY c.kshmtWorkTypePK.workTypeCode ASC";
 
 	private static final String FIND_NOT_DEPRECATED = SELECT_FROM_WORKTYPE + " LEFT JOIN KshmtWorkTypeOrder o"
 			+ " ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
@@ -61,8 +66,8 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		builder.append(" WHERE c.kshmtWorkTypePK.companyId = :companyId");
 		builder.append(" AND c.deprecateAtr = :abolishAtr");
 		builder.append(" AND c.oneDayAtr IN :oneDayAtrs");
-		builder.append(" OR c.morningAtr IN :morningAtrs");
-		builder.append(" OR c.afternoonAtr IN :afternoonAtrs");
+		builder.append(" AND (c.morningAtr IN :morningAtrs");
+		builder.append(" OR c.afternoonAtr IN :afternoonAtrs)");
 		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
 		FIND_WORKTYPE_ALLDAY_AND_HALFDAY = builder.toString();
 	}
@@ -129,6 +134,12 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public List<WorkType> findByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_ALL_WORKTYPE, KshmtWorkType.class).setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public List<WorkType> findNotDeprecateByCompanyId(String companyId) {
+		return this.queryProxy().query(SELECT_ALL_NOT_DEPRECATED_WORKTYPE, KshmtWorkType.class)
+				.setParameter("companyId", companyId).getList(c -> toDomain(c));
 	}
 
 	@Override

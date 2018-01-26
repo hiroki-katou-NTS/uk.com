@@ -1,6 +1,12 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
+    
+    const FILES_CACHE_FOR_CANCEL = "files-cache-for-cancel";
+    const IS_RESTORED_BY_CANCEL = "restored-by-cancel";
+    const SELECTED_FILE_NAME = "selected-file-name";
+    const STEREOTYPE = "stereotype";
+    const IMMEDIATE_UPLOAD = "immediate-upload";
 
     /**
      * CheckBox binding handler
@@ -24,9 +30,7 @@ module nts.uk.ui.koExtentions {
             let uploadFinished: (fileInfo: any) => void = (data.uploadFinished !== undefined) ? data.uploadFinished : $.noop;
             
             // Container
-            let container = $(element)
-                .data("stereotype", ko.unwrap(data.stereoType))
-                .data("immediate-upload", ko.unwrap(data.immediateUpload) === true);
+            let $container = $(element)
             
             let $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
             let $fileBrowserButton = $("<button class='browser-button'></button>");
@@ -40,30 +44,39 @@ module nts.uk.ui.koExtentions {
             $fileuploadContainer.append($fileNameWrap);
             $fileuploadContainer.append($fileNameLabel);
             $fileuploadContainer.append($fileInput);
-            $fileuploadContainer.appendTo(container);
+            $fileuploadContainer.appendTo($container);
 
             $fileBrowserButton.attr("tabindex", -1).click(function() {
                 $fileInput.click();
             });
             
             $fileInput.change(function() {
+                if ($container.data(IS_RESTORED_BY_CANCEL) === true) {
+                    $container.data(IS_RESTORED_BY_CANCEL, false)
+                    return;
+                }
+                
                 var selectedFilePath = $(this).val();
+                
+                // canceled on selecting file dialog
                 if (nts.uk.util.isNullOrEmpty(selectedFilePath)) {
-                    if (!nts.uk.util.isNullOrUndefined(container.data("file"))) {
-                        this.files = (container.data("file"));
+                    if (!nts.uk.util.isNullOrUndefined($container.data(FILES_CACHE_FOR_CANCEL))) {
+                        $container.data(IS_RESTORED_BY_CANCEL, true);
+                        this.files = ($container.data(FILES_CACHE_FOR_CANCEL));
                     }
                     return;
                 }
                 
-                container.data("file", this.files);
-                var getSelectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
-                container.data("file-name", getSelectedFileName);
-                fileName(getSelectedFileName);
-                onchange(getSelectedFileName);
+                $container.data(FILES_CACHE_FOR_CANCEL, this.files);
                 
-                if (container.data("immediate-upload")) {
+                var selectedFileName = selectedFilePath.substring(selectedFilePath.lastIndexOf("\\") + 1, selectedFilePath.length);
+                $container.data(SELECTED_FILE_NAME, selectedFileName);
+                fileName(selectedFileName);
+                onchange(selectedFileName);
+                
+                if ($container.data(IMMEDIATE_UPLOAD)) {
                     nts.uk.ui.block.grayout();
-                    $fileInput.ntsFileUpload({ stereoType: container.data("stereotype") })
+                    $fileInput.ntsFileUpload({ stereoType: $container.data(STEREOTYPE) })
                         .done(data => {
                             uploadFinished.call(bindingContext.$data, data[0]);
                         })
@@ -92,25 +105,24 @@ module nts.uk.ui.koExtentions {
             let text: string = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参照";
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             
-            let container = $(element)
-                .data("stereotype", ko.unwrap(data.stereoType))
-                .data("immediate-upload", ko.unwrap(data.immediateUpload) === true);
+            let $container = $(element)
+                .data(STEREOTYPE, ko.unwrap(data.stereoType))
+                .data(IMMEDIATE_UPLOAD, ko.unwrap(data.immediateUpload) === true);
             
-            container.find("input[type='file']").attr("accept", accept.toString());
-            let $fileNameWrap = container.find(".nts-editor-wrapped");
-            let $fileNameInput = container.find(".nts-input");
-            let $fileNameLabel = container.find(".filenamelabel");
+            $container.find("input[type='file']").attr("accept", accept.toString());
+            let $fileNameWrap = $container.find(".nts-editor-wrapped");
+            let $fileNameInput = $container.find(".nts-input");
+            let $fileNameLabel = $container.find(".filenamelabel");
             
-            if (container.data("file-name") !== fileName) {
-                container.data( "file-name", "" );
-                $fileNameInput.val("");
-                $fileNameLabel.text("");
-                container.find("input[type='file']").val(null);
-                data.filename("");
-            } else {
-                $fileNameLabel.text(fileName);   
-                $fileNameInput.val(fileName); 
-            }   
+            // when change just only filename, file in input must be cleared
+            if ($container.data(SELECTED_FILE_NAME) !== fileName) {
+                $container.data(SELECTED_FILE_NAME, "");
+                $container.find("input[type='file']").val(null);
+            }
+            
+            $fileNameInput.val(fileName);
+            $fileNameLabel.text(fileName);
+
             if (asLink == true) {
                 $fileNameLabel.removeClass("hidden");
                 $fileNameWrap.addClass("hidden");
@@ -119,7 +131,7 @@ module nts.uk.ui.koExtentions {
                 $fileNameWrap.removeClass("hidden");
             }
             
-            let $fileBrowserButton = container.find(".browser-button");
+            let $fileBrowserButton = $container.find(".browser-button");
             $fileBrowserButton.text(text);
             $fileBrowserButton.prop("disabled", !enable);
             $fileNameInput.prop("disabled", !enable);

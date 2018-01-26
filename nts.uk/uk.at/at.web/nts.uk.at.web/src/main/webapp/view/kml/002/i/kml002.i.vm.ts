@@ -109,7 +109,7 @@ module kml002.i.viewmodel {
                 )
             }
             service.addVerticalTime(data).done(function(any) {
-                nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             });
             nts.uk.ui.block.clear();
             return dfd.promise();

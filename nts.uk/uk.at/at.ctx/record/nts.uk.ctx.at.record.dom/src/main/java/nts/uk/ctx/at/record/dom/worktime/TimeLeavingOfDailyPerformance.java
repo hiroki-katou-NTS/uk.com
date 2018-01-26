@@ -52,7 +52,7 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 */
 	public TimeActualStamp getLeavingWork() {
 		TimeLeavingWork targetAttendanceLeavingWorkTime = this.getAttendanceLeavingWork(new WorkNo(this.workTimes.v()));
-		return targetAttendanceLeavingWorkTime.getLeaveStamp();
+		return targetAttendanceLeavingWorkTime.getLeaveStamp().get();
 	}
 	
 	/**

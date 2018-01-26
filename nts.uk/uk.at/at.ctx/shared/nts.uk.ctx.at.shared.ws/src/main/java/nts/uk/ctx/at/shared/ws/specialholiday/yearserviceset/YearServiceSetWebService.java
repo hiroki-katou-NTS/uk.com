@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -24,9 +25,9 @@ public class YearServiceSetWebService extends WebService{
 	 * @return
 	 */
 	@POST
-	@Path("findAll") 
-	public List<YearServiceSetDto> finder(){
-		return this.finder.finder();
+	@Path("findAll/{specialHolidayCode}") 
+	public List<YearServiceSetDto> finder(@PathParam("specialHolidayCode") String specialHolidayCode){
+		return this.finder.finder(specialHolidayCode);
 	}
 //	@POST
 //	@Path("add")

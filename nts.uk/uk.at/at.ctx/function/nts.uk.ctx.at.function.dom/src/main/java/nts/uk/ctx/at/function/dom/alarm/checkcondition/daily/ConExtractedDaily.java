@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.checkcondition.daily;
 /**
- * 日次の抽出するデータの条件
+ * 
  * @author tutk
  *
  */

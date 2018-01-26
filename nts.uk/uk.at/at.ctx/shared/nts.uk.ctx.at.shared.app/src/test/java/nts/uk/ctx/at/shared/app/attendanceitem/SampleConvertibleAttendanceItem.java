@@ -4,11 +4,12 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.annotation.AttendanceItemValue;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.type.ValueType;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 @Getter
 @Setter
@@ -18,10 +19,22 @@ public class SampleConvertibleAttendanceItem implements ConvertibleAttendanceIte
 	@AttendanceItemLayout(layout = "A", jpPropertyName = "A")
 	private SampleObject attendanceItem;
 
-	@AttendanceItemLayout(layout = "B", isList = true, jpPropertyName = "B")
+	@AttendanceItemLayout(layout = "B", jpPropertyName = "B", listMaxLength = 2)
 	private List<SampleConvertibleAttendanceItem> attendanceItems;
 
-	@AttendanceItemValue(type = ValueType.INTEGER, itemId = {2, 2, 2})
+	@AttendanceItemValue(type = ValueType.INTEGER)
 	@AttendanceItemLayout(layout = "C", jpPropertyName = "C")
 	private String attendanceItemB;
+
+	@Override
+	public String employeeId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public GeneralDate workingDate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

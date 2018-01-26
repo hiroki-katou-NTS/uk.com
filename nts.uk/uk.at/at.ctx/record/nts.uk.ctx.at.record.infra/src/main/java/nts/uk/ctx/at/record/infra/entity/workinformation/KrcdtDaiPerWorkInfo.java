@@ -64,6 +64,11 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	@OneToMany(mappedBy = "daiPerWorkInfo", cascade = CascadeType.ALL)
 	public List<KrcdtWorkScheduleTime> scheduleTimes;
 
+	public KrcdtDaiPerWorkInfo(KrcdtDaiPerWorkInfoPK krcdtDaiPerWorkInfoPK) {
+		super();
+		this.krcdtDaiPerWorkInfoPK = krcdtDaiPerWorkInfoPK;
+	}
+	
 	@Override
 	protected Object getKey() {
 		return this.krcdtDaiPerWorkInfoPK;
@@ -72,7 +77,7 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	public WorkInfoOfDailyPerformance toDomain() {
 		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(this.krcdtDaiPerWorkInfoPK.employeeId,
 				new WorkInformation(this.recordWorkWorktimeCode, this.recordWorkWorktypeCode),
-				new WorkInformation(this.scheduleWorkWorktimeCode, this.recordWorkWorktypeCode),
+				new WorkInformation(this.scheduleWorkWorktimeCode, this.scheduleWorkWorktypeCode),
 				EnumAdaptor.valueOf(this.calculationState, CalculationState.class),
 				EnumAdaptor.valueOf(this.goStraightAttribute, NotUseAttribute.class),
 				EnumAdaptor.valueOf(this.backStraightAttribute, NotUseAttribute.class), this.krcdtDaiPerWorkInfoPK.ymd,

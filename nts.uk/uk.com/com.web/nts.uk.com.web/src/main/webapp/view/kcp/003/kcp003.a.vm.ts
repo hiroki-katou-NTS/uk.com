@@ -12,6 +12,7 @@ module kcp003.a.viewmodel {
         isDialog: KnockoutObservable<boolean>;
         isShowNoSelectionItem: KnockoutObservable<boolean>;
         isMultiSelect: KnockoutObservable<boolean>;
+        isMultipleUse: KnockoutObservable<boolean>;
 
         multiSelectedCode: KnockoutObservableArray<string>;
         multiBySelectedCode: KnockoutObservableArray<string>;
@@ -51,6 +52,7 @@ module kcp003.a.viewmodel {
             self.multiBySelectedCode = ko.observableArray([]);
             self.multiSelectedCode = ko.observableArray([]);
 
+            self.isMultipleUse =  ko.observable(false);
             self.isMultiSelect = ko.observable(false);
             // isMultiSelect Subscribe
             self.isMultiSelect.subscribe(function(data: boolean) {
@@ -72,6 +74,9 @@ module kcp003.a.viewmodel {
                 }
                 self.reloadComponent();
             });
+            self.isMultipleUse.subscribe(function(code) {
+                self.reloadComponent();
+            });
 
             self.alreadySettingList = ko.observableArray([]);
             self.jobTitleList = ko.observableArray<UnitModel>([]);
@@ -84,6 +89,7 @@ module kcp003.a.viewmodel {
             self.listComponentOption = {
                 baseDate: self.baseDate,
                 isShowAlreadySet: self.isAlreadySetting(),
+                isMultipleUse: self.isMultipleUse(),
                 isMultiSelect: self.isMultiSelect(),
                 listType: ListType.JOB_TITLE,
                 selectType: self.selectedType(),
@@ -239,6 +245,7 @@ module kcp003.a.viewmodel {
             self.listComponentOption.isDialog = self.isDialog();
             self.listComponentOption.isShowNoSelectRow = self.isShowNoSelectionItem();
             self.listComponentOption.alreadySettingList = self.alreadySettingList;
+            self.listComponentOption.isMultipleUse = self.isMultipleUse();
             self.listComponentOption.isMultiSelect = self.isMultiSelect();
             self.listComponentOption.selectType = self.selectedType();
             $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {

@@ -5,6 +5,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.pereg.dom.common.ConstantEnum;
 import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoPermissionType;
 
 @Getter
@@ -103,12 +104,16 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 				EnumAdaptor.valueOf(allowPersonRef, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(allowOtherCompanytRef, PersonInfoPermissionType.class),
-				EnumAdaptor.valueOf(selfPastHisAuth, PersonInfoAuthType.class),
-				EnumAdaptor.valueOf(selfFutureHisAuth, PersonInfoAuthType.class),
+				EnumAdaptor.valueOf(ConstantEnum.getEnumValue(selfPastHisAuth, PersonInfoAuthType.class),
+						PersonInfoAuthType.class),
+				EnumAdaptor.valueOf(ConstantEnum.getEnumValue(selfFutureHisAuth, PersonInfoAuthType.class),
+						PersonInfoAuthType.class),
 				EnumAdaptor.valueOf(selfAllowAddHis, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(selfAllowDelHis, PersonInfoPermissionType.class),
-				EnumAdaptor.valueOf(otherPastHisAuth, PersonInfoAuthType.class),
-				EnumAdaptor.valueOf(otherFutureHisAuth, PersonInfoAuthType.class),
+				EnumAdaptor.valueOf(ConstantEnum.getEnumValue(otherPastHisAuth, PersonInfoAuthType.class),
+						PersonInfoAuthType.class),
+				EnumAdaptor.valueOf(ConstantEnum.getEnumValue(otherFutureHisAuth, PersonInfoAuthType.class),
+						PersonInfoAuthType.class),
 				EnumAdaptor.valueOf(otherAllowAddHis, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(otherAllowDelHis, PersonInfoPermissionType.class),
 				EnumAdaptor.valueOf(selfAllowAddMulti, PersonInfoPermissionType.class),
@@ -158,6 +163,13 @@ public class PersonInfoCategoryAuth extends AggregateRoot {
 		this.selfAllowDelMulti = EnumAdaptor.valueOf(selfAllowDelMulti, PersonInfoPermissionType.class);
 		this.otherAllowAddMulti = EnumAdaptor.valueOf(otherAllowAddMulti, PersonInfoPermissionType.class);
 		this.otherAllowDelMulti = EnumAdaptor.valueOf(otherAllowDelMulti, PersonInfoPermissionType.class);
+
+	}
+	
+	public void updateFromJavaType(int allowPersonRef, int allowOtherRef) {
+
+		this.allowPersonRef = EnumAdaptor.valueOf(allowPersonRef, PersonInfoPermissionType.class);
+		this.allowOtherRef = EnumAdaptor.valueOf(allowOtherRef, PersonInfoPermissionType.class);
 
 	}
 

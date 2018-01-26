@@ -30,6 +30,10 @@ public class SubHolTransferSetDto implements SubHolTransferSetSetMemento{
 	/** The sub hol transfer set atr. */
 	private Integer subHolTransferSetAtr;
 
+	public SubHolTransferSetDto() {
+		this.designatedTime = new DesignatedTimeDto();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -23,7 +23,7 @@
 					<h2>CCG025 Testing page</h2>
 					<h3>roleType: 1, multiple: false</h3><br/>
 					<div data-bind="with: componentViewmodel">
-						<div id="pannel-top" data-bind="ntsPanel:{width: '350px', height: '370px', direction: '', showIcon: true, visible: true}">
+						<div id="pannel-top" data-bind="ntsPanel:{width: '350px', height: '320px', direction: '', showIcon: true, visible: true}">
 							<ui:include src="component/index.xhtml" />
 						</div>
 						<div><b>CurrentCode:</b> <span data-bind="text: ko.toJSON(currentCode)"></span></div>
@@ -107,6 +107,12 @@
 											<td><b>Type:</b> KnockoutObservable&lt;string&gt; | KnockoutObservableArray&lt;string&gt;<br/>
 											<b>Default:</b> Null<br/>
 											Set selected item when init. If <i>Null</i> select first item</td>
+										</tr>
+										<tr>
+											<td>tabindex<br/><i>(optional)</i></td>
+											<td><b>Type:</b> number<br/>
+											<b>Default:</b> 0<br/>
+											Set tabindex for component</td>
 										</tr>
 									</tbody>
 								</table>

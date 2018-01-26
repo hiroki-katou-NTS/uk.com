@@ -4,6 +4,12 @@ module nts.uk.pr.view.ccg007.c {
         screenModel.start().done(function() {
             __viewContext.bind(screenModel);
             $('#company-code-inp').focus();
+            $("#password-input").keyup(function(event) {
+                if (event.keyCode == 13) {
+                    screenModel.password($('#password-input').val());
+                    $("#search-btn").click();
+                }
+            });
         });
     });
 }

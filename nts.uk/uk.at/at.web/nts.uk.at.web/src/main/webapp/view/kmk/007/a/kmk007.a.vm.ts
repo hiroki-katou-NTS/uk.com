@@ -11,7 +11,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         listSpecialHlFrame: KnockoutObservableArray<any>;
         listAbsenceFrame: KnockoutObservableArray<any>;
         oneDay: KnockoutObservable<WorkTypeSet>;
-
         currentOneDayCls: KnockoutObservable<number>;
         currentMorningCls: KnockoutObservable<number>;
         currentAfternoonCls: KnockoutObservable<number>;
@@ -21,7 +20,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         itemHodidayAtr: KnockoutObservableArray<ItemModel>;
         itemCloseAtr: KnockoutObservableArray<ItemModel>;
         itemListHaftDay: KnockoutObservableArray<ItemModel>;
-        itemCalculatorMethod: KnockoutObservableArray<ItemModel>;
+        itemCalculatorMethod: KnockoutObservableArray<any>;
         enableMethod: KnockoutObservable<boolean>;
         isCreated: KnockoutObservable<boolean>;
         index: KnockoutObservable<number>;
@@ -124,17 +123,17 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             //休業区分
             self.itemCloseAtr = ko.observableArray([
                 new ItemModel(0, nts.uk.resource.getText('Enum_CloseAtr_PRENATAL'), 0),
-                new ItemModel(1, nts.uk.resource.getText('Enum_CloseAtr_ POSTPARTUM'), 0),
+                new ItemModel(1, nts.uk.resource.getText('Enum_CloseAtr_POSTPARTUM'), 0),
                 new ItemModel(2, nts.uk.resource.getText('Enum_CloseAtr_CHILD_CARE'), 0),
                 new ItemModel(3, nts.uk.resource.getText('Enum_CloseAtr_CARE'), 0)
             ]);
 
             //出勤率の計算方法
             self.itemCalculatorMethod = ko.observableArray([
-                new ItemModel(0, nts.uk.resource.getText('Enum_CalculateMethod_DO_NOT_GO_TO_WORK'), 0),
-                new ItemModel(1, nts.uk.resource.getText('Enum_CalculateMethod_MAKE_ATTENDANCE_DAY'), 0),
-                new ItemModel(2, nts.uk.resource.getText('Enum_CalculateMethod_EXCLUDE_FROM_WORK_DAY'), 0),
-                new ItemModel(3, nts.uk.resource.getText('Enum_CalculateMethod_TIME_DIGEST_VACATION'), 0),
+                {code: 0, name: nts.uk.resource.getText('Enum_CalculateMethod_DO_NOT_GO_TO_WORK')},
+                {code: 1, name: nts.uk.resource.getText('Enum_CalculateMethod_MAKE_ATTENDANCE_DAY')},
+                {code: 2, name: nts.uk.resource.getText('Enum_CalculateMethod_EXCLUDE_FROM_WORK_DAY')},
+                {code: 3, name: nts.uk.resource.getText('Enum_CalculateMethod_TIME_DIGEST_VACATION')}
             ]);
 
             self.roundingRules = ko.observableArray([
@@ -356,6 +355,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             workType.name(workType.dispName());
             workType.abbreviationName(workType.dispAbName());
             workType.oneDay().workTypeCode(workType.workTypeCode());
+
             workType.morning().workTypeCode(workType.workTypeCode());
             workType.afternoon().workTypeCode(workType.workTypeCode());
 
@@ -375,7 +375,18 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-
+            if ((workType.oneDayCls() == 4 && workType.oneDay().sumSpHodidayNo() == "") ||
+                (workType.morningCls() == 4 && workType.morning().sumSpHodidayNo() == "") ||
+                (workType.afternoonCls() == 4 && workType.afternoon().sumSpHodidayNo() == "")) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_921" });
+                return;
+            }
+            if ((workType.oneDayCls() == 5 && workType.oneDay().sumAbsenseNo() == "")
+                || (workType.morningCls() == 5 && workType.morning().sumAbsenseNo() == "") ||
+                (workType.afternoonCls() == 5 && workType.afternoon().sumAbsenseNo() == "")) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_922" });
+                return;
+            }
             nts.uk.ui.block.invisible();
             service.addWorkType(self.isCreated(), command).done(function() {
                 self.isCreated(false);
@@ -443,25 +454,51 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             if (self.langId() != 'ja') {
                 self.enableMethod(false);
             } else {
-                if (workTypeSetCode == WorkTypeCls.Holiday || workTypeSetCode == WorkTypeCls.Pause || workTypeSetCode == WorkTypeCls.LeaveOfAbsence || workTypeSetCode == WorkTypeCls.Closure|| workTypeSetCode == WorkTypeCls.ContinuousWork) {
+                if (workTypeSetCode == WorkTypeCls.Attendance) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
+                    self.enableMethod(false);
+                } if (workTypeSetCode == WorkTypeCls.Holiday) {
                     self.currentWorkType().calculatorMethod(CalculatorMethod.DO_NOT_GO_TO_WORK);
                     self.enableMethod(false);
-                } else if (workTypeSetCode == WorkTypeCls.Attendance || workTypeSetCode == WorkTypeCls.AnnualHoliday || workTypeSetCode == WorkTypeCls.YearlyReserved || workTypeSetCode == WorkTypeCls.Shooting) {
+                } if (workTypeSetCode == WorkTypeCls.AnnualHoliday) {
                     self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
                     self.enableMethod(false);
-                } else if (workTypeSetCode == WorkTypeCls.SubstituteHoliday) {
-                    self.currentWorkType().calculatorMethod(CalculatorMethod.EXCLUDE_FROM_WORK_DAY);
-                    self.enableMethod(false);
-                } else if (workTypeSetCode == WorkTypeCls.TimeDigestVacation) {
-                    self.currentWorkType().calculatorMethod(CalculatorMethod.TIME_DIGEST_VACATION);
-                    self.enableMethod(false);
-                } else if (workTypeSetCode == WorkTypeCls.SpecialHoliday) {
+                } if (workTypeSetCode == WorkTypeCls.YearlyReserved) {
                     self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
                     self.enableMethod(true);
-                } else {
+                } if (workTypeSetCode == WorkTypeCls.SpecialHoliday) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
+                    self.enableMethod(true);
+                } if (workTypeSetCode == WorkTypeCls.Absence) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.DO_NOT_GO_TO_WORK);
+                    self.enableMethod(true);
+                } if (workTypeSetCode == WorkTypeCls.SubstituteHoliday) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.EXCLUDE_FROM_WORK_DAY);
+                    self.enableMethod(false);
+                } if (workTypeSetCode == WorkTypeCls.Shooting) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
+                    self.enableMethod(false);
+                } if (workTypeSetCode == WorkTypeCls.Pause) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.DO_NOT_GO_TO_WORK);
+                    self.enableMethod(false);
+                } if (workTypeSetCode == WorkTypeCls.TimeDigestVacation) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.TIME_DIGEST_VACATION);
+                    self.enableMethod(false);
+                } if (workTypeSetCode == WorkTypeCls.ContinuousWork) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
+                    self.enableMethod(false);
+                } if (workTypeSetCode == WorkTypeCls.HolidayWork) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.DO_NOT_GO_TO_WORK);
+                    self.enableMethod(true);
+                } if (workTypeSetCode == WorkTypeCls.LeaveOfAbsence) {
                     self.currentWorkType().calculatorMethod(CalculatorMethod.DO_NOT_GO_TO_WORK);
                     self.enableMethod(true);
                 }
+                if (workTypeSetCode == WorkTypeCls.Closure){
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
+                    self.enableMethod(true);
+                }    
+                
             }
         }
 
@@ -488,7 +525,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             cwt.oneDayCls(0);
             cwt.morningCls(0);
             cwt.afternoonCls(0);
-            cwt.calculatorMethod(0);
+            cwt.calculatorMethod(1);
 
             od.workTypeCode('');
             od.workAtr(0);

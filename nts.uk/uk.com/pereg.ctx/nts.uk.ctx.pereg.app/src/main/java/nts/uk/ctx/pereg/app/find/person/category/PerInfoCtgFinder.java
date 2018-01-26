@@ -11,6 +11,7 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -61,13 +62,32 @@ public class PerInfoCtgFinder {
 				detailCtgInfo.setIsExistedItemLst(0);
 			}
 			detailCtgInfo.setItemLst(itemLst);
-			List<String> requiredLst = this.perInfoByCompanyRepo.getItemInfoId(categoryId, contractCd);
-			if (requiredLst.size() > 0) {
-				detailCtgInfo.setSystemRequired(1);
-			} else {
-				detailCtgInfo.setSystemRequired(0);
-			}
+			detailCtgInfo.setSystemRequired(perInfoCtg.getIsFixed().value);
+
 		}
 		return detailCtgInfo;
 	}
+
+	public List<PerInfoCtgDataDto> getAllCtgUsedByCompanyId(){
+		String companyId = AppContexts.user().companyId();
+		
+		List<String> ctgLst = this.perInfoCtgRepositoty.getAllPerInfoCtgUsed(companyId).stream().map(p -> {
+			return p.getPersonInfoCategoryId();
+		}).collect(Collectors.toList());;
+		
+		List<PersonInfoItemDefinition> itemList = this.pernfoItemDefRep.getAllItemUsedByCtgId(ctgLst);
+		
+		List<PerInfoCtgDataDto> ctg =  ctgLst.stream().map(c -> {
+			PerInfoCtgDataDto ctgDto = new PerInfoCtgDataDto();
+			ctgDto.setCtgId(c);
+			List<PersonInfoItemDefinition> item = itemList.stream()
+					.filter(p -> p.getPerInfoCategoryId().equals(c))
+					.collect(Collectors.toList());
+			ctgDto.setItemList(item.stream().map(p -> { return p.getPerInfoItemDefId();}).collect(Collectors.toList()));
+			itemList.removeAll(item);
+			return ctgDto;
+		}).collect(Collectors.toList());
+		return ctg;
+	}
+
 }

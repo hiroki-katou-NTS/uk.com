@@ -6,6 +6,7 @@ module nts.uk.com.view.ccg025.a.component {
         multiple?: boolean;
         currentCode?: any;
         showEmptyItem?: boolean;
+        tabindex?: number;
     }
 
     export module viewmodel {

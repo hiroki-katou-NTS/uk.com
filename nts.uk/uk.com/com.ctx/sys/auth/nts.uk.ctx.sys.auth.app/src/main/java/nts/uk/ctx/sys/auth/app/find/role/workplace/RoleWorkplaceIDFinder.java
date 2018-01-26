@@ -49,8 +49,7 @@ public class RoleWorkplaceIDFinder {
 	 */
 	public WorkplaceIdDto findListWokplaceId(Integer systemType) {
 
-
-		String roleId = this.findRoleId(systemType);
+		String roleId = this.findRoleIdBySystemType(systemType);
 
 		Optional<Role> opRole = roleRepository.findByRoleId(roleId);
 		GeneralDate referenceDate = GeneralDate.today();
@@ -128,35 +127,30 @@ public class RoleWorkplaceIDFinder {
 	 * @param systemType the system type
 	 * @return the string
 	 */
-	public String findRoleId(Integer systemType) {
+	public String findRoleIdBySystemType(Integer systemType) {
 		LoginUserRoles loginUserRoles = AppContexts.user().roles();
 
 		// Mock data
 		switch (SystemType.valueOf(systemType)) {
 		case PERSONAL_INFORMATION:
-			// return loginUserRoles.forPersonalInfo();
 			// EmployeeReferenceRange = 0
-			return "085d32db-7809-4769-8cd2-c61d69fd1b51";
+			return loginUserRoles.forPersonalInfo();
 
 		case EMPLOYMENT:
-			// return loginUserRoles.forAttendance();
 			// EmployeeReferenceRange = 2
-			return "32c67880-ff0a-4969-9056-9b49135d37d5";
+			return loginUserRoles.forAttendance();
 
 		case SALARY:
-			// return loginUserRoles.forPayroll();
 			// EmployeeReferenceRange = 1
-			return "c4cf39ca-6f04-47bb-95a5-24f4943d66547";
+			return loginUserRoles.forPayroll();
 
 		case HUMAN_RESOURCES:
-			// return loginUserRoles.forPersonnel();
 			// EmployeeReferenceRange = 1
-			return "004";
+			return loginUserRoles.forPersonnel();
 
 		case ADMINISTRATOR:
-			// return loginUserRoles.forCompanyAdmin();
 			// EmployeeReferenceRange = 0
-			return "f73d4feb-4f2f-41e8-96a2-44681cdd24eb";
+			return loginUserRoles.forCompanyAdmin();
 
 		default:
 			break;
@@ -227,5 +221,21 @@ public class RoleWorkplaceIDFinder {
 			return null;
 		}
 	}
+    
+	/**
+	 * Find list wokplace id.
+	 *
+	 * @param systemType the system type
+	 * @return the list
+	 */
+	public WorkplaceIdDto findListWokplaceIdNoCheckRole(Integer systemType) {
+		GeneralDate referenceDate = GeneralDate.today();
+		List<String> listWkpId = new ArrayList<>();
+		WorkplaceIdDto workplaceIdDto = new WorkplaceIdDto();
+		listWkpId = workplaceAdapter.findListWkpIdByBaseDate(referenceDate);
+		workplaceIdDto.setListWorkplaceIds(listWkpId);
+		workplaceIdDto.setIsAllEmp(true);
+		return workplaceIdDto;
 
+	}
 }

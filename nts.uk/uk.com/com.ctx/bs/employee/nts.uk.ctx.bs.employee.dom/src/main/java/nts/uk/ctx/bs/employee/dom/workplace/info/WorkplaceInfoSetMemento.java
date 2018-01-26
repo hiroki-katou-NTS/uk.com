@@ -35,7 +35,7 @@ public interface WorkplaceInfoSetMemento {
      *
      * @param workplaceCode the new workplace code
      */
-    public void setWorkplaceCode(WorkplaceCode workplaceCode);
+    public void setWorkplaceCode(WkpCode workplaceCode);
 
 	/**
      * Sets the workplace name.

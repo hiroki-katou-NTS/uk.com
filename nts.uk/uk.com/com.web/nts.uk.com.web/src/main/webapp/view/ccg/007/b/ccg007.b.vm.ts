@@ -82,6 +82,7 @@ module nts.uk.pr.view.ccg007.b {
                 blockUI.invisible();
                 if (!nts.uk.ui.errors.hasError()) {
                     service.submitLogin(submitData).done(function() {
+                        nts.uk.request.login.keepUsedLoginPage();
                         nts.uk.characteristics.remove("form1LoginInfo").done(function() {
                             if (self.isSaveLoginInfo()) {
                                 nts.uk.characteristics.save("form1LoginInfo", { loginId: _.escape(self.loginId()) }).done(function() {

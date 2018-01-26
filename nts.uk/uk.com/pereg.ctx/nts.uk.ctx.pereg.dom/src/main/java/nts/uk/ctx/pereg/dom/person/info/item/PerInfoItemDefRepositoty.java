@@ -12,6 +12,8 @@ public interface PerInfoItemDefRepositoty {
 	Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd);
 
 	List<PersonInfoItemDefinition> getPerInfoItemDefByListId(List<String> listItemDefId, String contractCd);
+	
+	List<PersonInfoItemDefinition> getPerInfoItemDefByListIdv2(List<String> listItemDefId, String contractCd);
 
 	List<String> getPerInfoItemsName(String perInfoCtgId, String contractCd);
 
@@ -79,6 +81,11 @@ public interface PerInfoItemDefRepositoty {
 	 * dùng cho màn hình cps016
 	 */
 	boolean checkExistedSelectionItemId(String selectionItemId);
+	
+	/**
+	 * 
+	 */
+	List<PersonInfoItemDefinition> getAllItemUsedByCtgId(List<String> ctgId);
 
 	
 }

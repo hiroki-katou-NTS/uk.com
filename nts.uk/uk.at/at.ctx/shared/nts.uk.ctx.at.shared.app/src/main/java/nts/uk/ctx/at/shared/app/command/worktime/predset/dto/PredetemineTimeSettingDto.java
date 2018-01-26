@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -19,9 +20,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 @Setter
 public class PredetemineTimeSettingDto implements PredetemineTimeSettingGetMemento {
-
-	/** The company id. */
-	public String companyId;
 
 	/** The range time day. */
 	public int rangeTimeDay;
@@ -52,7 +50,7 @@ public class PredetemineTimeSettingDto implements PredetemineTimeSettingGetMemen
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.companyId;
+		return AppContexts.user().companyId();
 	}
 
 	/*

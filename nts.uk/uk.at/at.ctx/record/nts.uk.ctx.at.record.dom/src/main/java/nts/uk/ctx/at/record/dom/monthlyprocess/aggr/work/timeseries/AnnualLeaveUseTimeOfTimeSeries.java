@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -30,7 +31,7 @@ public class AnnualLeaveUseTimeOfTimeSeries {
 	 */
 	public static AnnualLeaveUseTimeOfTimeSeries of(GeneralDate ymd){
 		
-		AnnualLeaveUseTimeOfTimeSeries domain = new AnnualLeaveUseTimeOfTimeSeries();
+		val domain = new AnnualLeaveUseTimeOfTimeSeries();
 		domain.ymd = ymd;
 		return domain;
 	}

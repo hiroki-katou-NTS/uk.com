@@ -26,13 +26,7 @@ module nts.uk.ui.jqueryExtentions {
                         row = $grid.igGrid("selectedRow");
                     }
                     if (row) {
-                        let rowScrollTop = row.index * row.element.height();
-                        let scrollContainer = $($grid.igGrid("container")).find("#" + $grid.igGrid("id") + "_scrollContainer");
-                        if (isNaN(rowScrollTop) // In case virtualization not render row 
-                            || rowScrollTop < scrollContainer.scrollTop()
-                            || rowScrollTop > scrollContainer.scrollTop() + scrollContainer.height() - row.element.height()) {
-                            $grid.igGrid("virtualScrollTo", row.index === undefined ? getSelectRowIndex($grid, row.id) : row.index);
-                        }
+                        ui.ig.grid.virtual.expose(row, $grid);
                     }
                 });
             } else {
@@ -45,10 +39,7 @@ module nts.uk.ui.jqueryExtentions {
                         row = $grid.igGrid("selectedRow");
                     }
                     if (row) {
-                        var index = row.index;
-                        var height = row.element[0].scrollHeight;
-                        var gridId = $grid.attr('id');
-                        $("#" + gridId + "_scrollContainer").scrollTop(index * height);
+                        ui.ig.grid.expose(row, $grid);
                     }
                 });
             }
@@ -73,9 +64,7 @@ module nts.uk.ui.jqueryExtentions {
                     row = $treegrid.igTreeGridSelection("selectedRow");
                 }
                 if (row) {
-                    var index = row.index;
-                    var height = row.element[0].scrollHeight;
-                    $("#" + id + "_scroll").scrollTop(index * height);
+                    ui.ig.tree.grid.expandTo(row.id, $treegrid);
                 }
             });
             return $treegrid;

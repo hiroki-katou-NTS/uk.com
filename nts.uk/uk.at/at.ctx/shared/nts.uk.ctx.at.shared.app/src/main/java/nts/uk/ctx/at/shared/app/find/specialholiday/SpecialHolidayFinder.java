@@ -157,7 +157,7 @@ public class SpecialHolidayFinder {
 			sphdLimitDto.setSpecialVacationYears(sphdLimit.getSpecialVacationYears().v());
 		}
 		sphdLimitDto.setGrantCarryForward(sphdLimit.getGrantCarryForward().value);
-		sphdLimitDto.setLimitCarryoverDays(sphdLimit.getLimitCarryoverDays().v());
+		sphdLimitDto.setLimitCarryoverDays(sphdLimit.getLimitCarryoverDays() != null ? sphdLimit.getLimitCarryoverDays().v() : null);
 		sphdLimitDto.setSpecialVacationMethod(sphdLimit.getSpecialVacationMethod().value);
 		return sphdLimitDto;
 	}
@@ -186,6 +186,8 @@ public class SpecialHolidayFinder {
 		subConditionDto.setAgeCriteriaAtr(subCondition.getAgeCriteriaAtr().value);
 		subConditionDto.setAgeBaseYearAtr(subCondition.getAgeBaseYearAtr().value);
 		subConditionDto.setAgeBaseDates(subCondition.getAgeBaseDates().v());
+		subConditionDto.setEmploymentList(subCondition.getEmploymentList());
+		subConditionDto.setClassificationList(subCondition.getClassificationList());
 		return subConditionDto;
 	}
 	
