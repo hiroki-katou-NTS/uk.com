@@ -1,9 +1,10 @@
 /**
  * 
  */
-package nts.uk.ctx.bs.employee.infra.repository.classification.affiliate_ver1;
+package nts.uk.ctx.bs.employee.infra.repository.classification.affiliate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,50 +20,50 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
-import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate_ver1.BsymtAffClassHistItem_Ver1;
-import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate_ver1.BsymtAffClassHistItem_Ver1_;
-import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate_ver1.BsymtAffClassHistory_Ver1_;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItemRepository;
+import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistItem;
+import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistItem_;
+import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistory_;
 
 /**
  * @author danpv
  *
  */
 @Stateless
-public class JpaAffClassHistItem extends JpaRepository implements AffClassHistItemRepository_ver1 {
+public class JpaAffClassHistItemRepository extends JpaRepository implements AffClassHistItemRepository {
 
 	@Override
-	public Optional<AffClassHistItem_ver1> getByHistoryId(String historyId) {
-		Optional<BsymtAffClassHistItem_Ver1> optionData = this.queryProxy().find(historyId,
-				BsymtAffClassHistItem_Ver1.class);
+	public Optional<AffClassHistItem> getByHistoryId(String historyId) {
+		Optional<BsymtAffClassHistItem> optionData = this.queryProxy().find(historyId,
+				BsymtAffClassHistItem.class);
 		if (optionData.isPresent()) {
 			return Optional.of(toDomain(optionData.get()));
 		}
 		return Optional.empty();
 	}
 
-	private AffClassHistItem_ver1 toDomain(BsymtAffClassHistItem_Ver1 entity) {
-		return AffClassHistItem_ver1.createFromJavaType(entity.sid, entity.historyId, entity.classificationCode);
+	private AffClassHistItem toDomain(BsymtAffClassHistItem entity) {
+		return AffClassHistItem.createFromJavaType(entity.sid, entity.historyId, entity.classificationCode);
 	}
 
 	@Override
-	public void add(AffClassHistItem_ver1 item) {
-		BsymtAffClassHistItem_Ver1 entity = new BsymtAffClassHistItem_Ver1(item.getHistoryId(), item.getEmployeeId(),
+	public void add(AffClassHistItem item) {
+		BsymtAffClassHistItem entity = new BsymtAffClassHistItem(item.getHistoryId(), item.getEmployeeId(),
 				item.getClassificationCode().v());
 		this.commandProxy().insert(entity);
 
 	}
 
 	@Override
-	public void update(AffClassHistItem_ver1 item) {
-		Optional<BsymtAffClassHistItem_Ver1> entityOpt = this.queryProxy().find(item.getHistoryId(),
-				BsymtAffClassHistItem_Ver1.class);
+	public void update(AffClassHistItem item) {
+		Optional<BsymtAffClassHistItem> entityOpt = this.queryProxy().find(item.getHistoryId(),
+				BsymtAffClassHistItem.class);
 
 		if (!entityOpt.isPresent()) {
 			throw new RuntimeException("invalid TempAbsenceHisItem");
 		}
-		BsymtAffClassHistItem_Ver1 ent = entityOpt.get();
+		BsymtAffClassHistItem ent = entityOpt.get();
 		if (item.getClassificationCode() != null && !item.getClassificationCode().v().equals("")){
 			ent.classificationCode = item.getClassificationCode().v();
 		}
@@ -72,17 +73,17 @@ public class JpaAffClassHistItem extends JpaRepository implements AffClassHistIt
 
 	@Override
 	public void delete(String historyId) {
-		Optional<BsymtAffClassHistItem_Ver1> entityOpt = this.queryProxy().find(historyId,
-				BsymtAffClassHistItem_Ver1.class);
+		Optional<BsymtAffClassHistItem> entityOpt = this.queryProxy().find(historyId,
+				BsymtAffClassHistItem.class);
 
 		if (!entityOpt.isPresent()) {
 			throw new RuntimeException("invalid TempAbsenceHisItem");
 		}
-		this.commandProxy().remove(BsymtAffClassHistItem_Ver1.class, historyId);
+		this.commandProxy().remove(BsymtAffClassHistItem.class, historyId);
 	}
 	
 	@Override
-	public List<AffClassHistItem_ver1> searchClassification(GeneralDate baseDate,
+	public List<AffClassHistItem> searchClassification(GeneralDate baseDate,
 			List<String> classificationCodes) {
 
 		if (CollectionUtil.isEmpty(classificationCodes)) {
@@ -94,11 +95,11 @@ public class JpaAffClassHistItem extends JpaRepository implements AffClassHistIt
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMNMT_CLASSIFICATION_HIST (KmnmtClassificationHist SQL)
-		CriteriaQuery<BsymtAffClassHistItem_Ver1> cq = criteriaBuilder
-				.createQuery(BsymtAffClassHistItem_Ver1.class);
+		CriteriaQuery<BsymtAffClassHistItem> cq = criteriaBuilder
+				.createQuery(BsymtAffClassHistItem.class);
 
 		// root data
-		Root<BsymtAffClassHistItem_Ver1> root = cq.from(BsymtAffClassHistItem_Ver1.class);
+		Root<BsymtAffClassHistItem> root = cq.from(BsymtAffClassHistItem.class);
 
 		// select root
 		cq.select(root);
@@ -108,24 +109,24 @@ public class JpaAffClassHistItem extends JpaRepository implements AffClassHistIt
 
 		// classification in data classification
 		lstpredicateWhere.add(criteriaBuilder
-				.and(root.get(BsymtAffClassHistItem_Ver1_.classificationCode)
+				.and(root.get(BsymtAffClassHistItem_.classificationCode)
 						.in(classificationCodes)));
 
 		// start date <= base date
 		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(BsymtAffClassHistItem_Ver1_.bsymtAffClassHistory)
-						.get(BsymtAffClassHistory_Ver1_.startDate), baseDate));
+				.lessThanOrEqualTo(root.get(BsymtAffClassHistItem_.bsymtAffClassHistory)
+						.get(BsymtAffClassHistory_.startDate), baseDate));
 
 		// endDate >= base date
 		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(BsymtAffClassHistItem_Ver1_.bsymtAffClassHistory)
-						.get(BsymtAffClassHistory_Ver1_.endDate), baseDate));
+				.greaterThanOrEqualTo(root.get(BsymtAffClassHistItem_.bsymtAffClassHistory)
+						.get(BsymtAffClassHistory_.endDate), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// create query
-		TypedQuery<BsymtAffClassHistItem_Ver1> query = em.createQuery(cq);
+		TypedQuery<BsymtAffClassHistItem> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(category -> toDomain(category))
@@ -140,12 +141,12 @@ public class JpaAffClassHistItem extends JpaRepository implements AffClassHistIt
 	 * nts.arc.time.GeneralDate, java.util.List)
 	 */
 	@Override
-	public List<AffClassHistItem_ver1> searchClassification(List<String> employeeIds,
+	public List<AffClassHistItem> searchClassification(List<String> employeeIds,
 			GeneralDate baseDate, List<String> classificationCodes) {
 
 		// check not data
 		if (CollectionUtil.isEmpty(classificationCodes) || CollectionUtil.isEmpty(employeeIds)) {
-			return new ArrayList<>();
+			return Collections.emptyList();
 		}
 
 		// get entity manager
@@ -153,16 +154,16 @@ public class JpaAffClassHistItem extends JpaRepository implements AffClassHistIt
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMNMT_CLASSIFICATION_HIST (KmnmtClassificationHist SQL)
-		CriteriaQuery<BsymtAffClassHistItem_Ver1> cq = criteriaBuilder
-				.createQuery(BsymtAffClassHistItem_Ver1.class);
+		CriteriaQuery<BsymtAffClassHistItem> cq = criteriaBuilder
+				.createQuery(BsymtAffClassHistItem.class);
 
 		// root data
-		Root<BsymtAffClassHistItem_Ver1> root = cq.from(BsymtAffClassHistItem_Ver1.class);
+		Root<BsymtAffClassHistItem> root = cq.from(BsymtAffClassHistItem.class);
 
 		// select root
 		cq.select(root);
 		
-		List<BsymtAffClassHistItem_Ver1> resultList = new ArrayList<>();
+		List<BsymtAffClassHistItem> resultList = new ArrayList<>();
 		CollectionUtil.split(employeeIds, 1000, subList -> {
 			CollectionUtil.split(classificationCodes, 1000, classSubList -> {
 				// add where
@@ -170,34 +171,35 @@ public class JpaAffClassHistItem extends JpaRepository implements AffClassHistIt
 
 				// employee id in data employee id
 				lstpredicateWhere.add(criteriaBuilder
-						.and(root.get(BsymtAffClassHistItem_Ver1_.sid).in(employeeIds)));
+						.and(root.get(BsymtAffClassHistItem_.sid).in(subList)));
 
 				// classification in data classification
 				lstpredicateWhere.add(
-						criteriaBuilder.and(root.get(BsymtAffClassHistItem_Ver1_.classificationCode)
-								.in(classificationCodes)));
+						criteriaBuilder.and(root.get(BsymtAffClassHistItem_.classificationCode)
+								.in(classSubList)));
 
 				// start date <= base date
 				lstpredicateWhere
 						.add(criteriaBuilder
 								.lessThanOrEqualTo(
-										root.get(BsymtAffClassHistItem_Ver1_.bsymtAffClassHistory)
-												.get(BsymtAffClassHistory_Ver1_.startDate),
+										root.get(BsymtAffClassHistItem_.bsymtAffClassHistory)
+												.get(BsymtAffClassHistory_.startDate),
 										baseDate));
 
 				// endDate >= base date
 				lstpredicateWhere
 						.add(criteriaBuilder
 								.greaterThanOrEqualTo(
-										root.get(BsymtAffClassHistItem_Ver1_.bsymtAffClassHistory)
-												.get(BsymtAffClassHistory_Ver1_.endDate),
+										root.get(BsymtAffClassHistItem_.bsymtAffClassHistory)
+												.get(BsymtAffClassHistory_.endDate),
 										baseDate));
 
 				// set where to SQL
 				cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 				// create query
-				TypedQuery<BsymtAffClassHistItem_Ver1> query = em.createQuery(cq);
+				TypedQuery<BsymtAffClassHistItem> query = em.createQuery(cq);
+				
 				resultList.addAll(query.getResultList());
 			});
 		});

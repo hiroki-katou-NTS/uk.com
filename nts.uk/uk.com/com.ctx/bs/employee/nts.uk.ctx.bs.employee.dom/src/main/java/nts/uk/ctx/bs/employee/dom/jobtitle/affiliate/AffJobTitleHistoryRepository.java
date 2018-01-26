@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1;
+package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,14 +6,14 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.history.DateHistoryItem;
 
-public interface AffJobTitleHistoryRepository_ver1 {
+public interface AffJobTitleHistoryRepository {
 	
 	/**
 	 * get with primary key
 	 * @param historyId
 	 * @return
 	 */
-	Optional<AffJobTitleHistory_ver1> getByHistoryId(String historyId);
+	Optional<AffJobTitleHistory> getByHistoryId(String historyId);
 	
 	/**
 	 * get with employeeId and standard date
@@ -21,12 +21,12 @@ public interface AffJobTitleHistoryRepository_ver1 {
 	 * @param standardDate
 	 * @return
 	 */
-	Optional<AffJobTitleHistory_ver1> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate);
+	Optional<AffJobTitleHistory> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate);
 	
 	// get listbypid
-	Optional<AffJobTitleHistory_ver1> getListBySid(String cid, String sid);
+	Optional<AffJobTitleHistory> getListBySid(String cid, String sid);
 	
-	Optional<AffJobTitleHistory_ver1> getListBySidDesc(String cid, String sid);
+	Optional<AffJobTitleHistory> getListBySidDesc(String cid, String sid);
 
 	/**
 	 * ドメインモッ�「�務�位」を新規登録する
@@ -51,9 +51,9 @@ public interface AffJobTitleHistoryRepository_ver1 {
 	 */
 	void delete(String histId);
 	
-	List<AffJobTitleHistory_ver1> getAllBySid(String sid);
+	List<AffJobTitleHistory> getAllBySid(String sid);
 	
-	Optional<AffJobTitleHistory_ver1> getListByHidSid(String hid, String sid);
+	Optional<AffJobTitleHistory> getListByHidSid(String hid, String sid);
 	
 	/**
 	 * Search job title history.
@@ -62,7 +62,7 @@ public interface AffJobTitleHistoryRepository_ver1 {
 	 * @param employeeId the employee id
 	 * @return the list
 	 */
-	List<AffJobTitleHistory_ver1> searchJobTitleHistory(GeneralDate baseDate, List<String> employeeId);
+	List<AffJobTitleHistory> searchJobTitleHistory(GeneralDate baseDate, List<String> employeeId, List<String> jobTitleIds);
 	
 	 /**
  	 * Find all job title history.
@@ -71,5 +71,5 @@ public interface AffJobTitleHistoryRepository_ver1 {
  	 * @param employeeIds the employee ids
  	 * @return the list
  	 */
- 	List<AffJobTitleHistory_ver1> findAllJobTitleHistory(GeneralDate baseDate, List<String> employeeIds) ;
+ 	List<AffJobTitleHistory> findAllJobTitleHistory(GeneralDate baseDate, List<String> employeeIds) ;
 }

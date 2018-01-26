@@ -18,11 +18,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHistItem;
 
 @Stateless
-public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository implements AffWorkplaceHistoryItemRepository_v1{
+public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implements AffWorkplaceHistoryItemRepository{
 	
 	private static final String SELECT_BY_HISTID = "SELECT aw FROM BsymtAffiWorkplaceHistItem aw"
 			+ " WHERE aw.hisId = :historyId";
@@ -100,12 +100,6 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	}
 
 	@Override
-	public List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpId(String employeeId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Optional<AffWorkplaceHistoryItem> getByHistId(String historyId) {
 		return this.queryProxy().query(SELECT_BY_HISTID, BsymtAffiWorkplaceHistItem.class)
 				.setParameter("historyId", historyId).getSingle(x -> toDomain(x));
@@ -133,7 +127,7 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.bs.employee.dom.workplace.affiliate.
-	 * AffWorkplaceHistoryItemRepository_v1#getAffWrkplaHistItemByEmpIdAndDate(
+	 * AffWorkplaceHistoryItemRepository#getAffWrkplaHistItemByEmpIdAndDate(
 	 * nts.arc.time.GeneralDate, java.lang.String)
 	 */
 	@Override
@@ -175,7 +169,7 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	}
 	
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository
 	 * #findByHistIds(java.util.List)
 	 */
 	@Override
@@ -193,7 +187,7 @@ public class JpaAffWorkplaceHistoryItemRepository_v1 extends JpaRepository imple
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository
 	 * #findeByWplIDs(java.util.List)
 	 */
 	@Override

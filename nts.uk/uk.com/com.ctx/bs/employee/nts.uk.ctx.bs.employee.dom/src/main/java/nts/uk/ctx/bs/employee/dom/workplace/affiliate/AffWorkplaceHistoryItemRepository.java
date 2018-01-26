@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
-public interface AffWorkplaceHistoryItemRepository_v1 {
+public interface AffWorkplaceHistoryItemRepository {
 	/**
 	 * ドメインモッ�「所属�場」を新規登録する
 	 * @param domain
@@ -22,8 +22,6 @@ public interface AffWorkplaceHistoryItemRepository_v1 {
 	 * @param domain
 	 */
 	void update(AffWorkplaceHistoryItem domain);
-	
-	List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpId(String employeeId);
 	
 	Optional<AffWorkplaceHistoryItem> getByHistId(String historyId);
 	

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.infra.entity.classification.affiliate_ver1;
+package nts.uk.ctx.bs.employee.infra.entity.classification.affiliate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,17 +12,15 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
-import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class BsymtAffClassHistory_Ver1.
+ * The Class BsymtAffClassHistory.
  */
 @Entity
 @Table(name = "BSYMT_AFF_CLASS_HISTORY")
-@NoArgsConstructor
-public class BsymtAffClassHistory_Ver1 extends UkJpaEntity{
+public class BsymtAffClassHistory extends UkJpaEntity{
 
 	/** The history id. */
 	@Id
@@ -45,6 +43,18 @@ public class BsymtAffClassHistory_Ver1 extends UkJpaEntity{
 	@Column(name = "END_DATE")
 	public GeneralDate endDate;
 	
+	/** The bsymt aff class hist item. */
+	@OneToOne
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
+	public BsymtAffClassHistItem bsymtAffClassHistItem;
+	
+	/**
+	 * Instantiates a new bsymt aff class history.
+	 */
+	public BsymtAffClassHistory() {
+		super();
+	}
+	
 	/**
 	 * Instantiates a new bsymt aff class history ver 1.
 	 *
@@ -54,7 +64,7 @@ public class BsymtAffClassHistory_Ver1 extends UkJpaEntity{
 	 * @param startDate the start date
 	 * @param endDate the end date
 	 */
-	public BsymtAffClassHistory_Ver1(String historyId, String cid, String sid,
+	public BsymtAffClassHistory(String historyId, String cid, String sid,
 			GeneralDate startDate, GeneralDate endDate) {
 		super();
 		this.historyId = historyId;
@@ -64,12 +74,6 @@ public class BsymtAffClassHistory_Ver1 extends UkJpaEntity{
 		this.endDate = endDate;
 	}
 	
-	/** The bsymt aff class hist item. */
-	// Add by ThanhNC
-	@OneToOne
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
-	public BsymtAffClassHistItem_Ver1 bsymtAffClassHistItem;
-	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
@@ -77,5 +81,7 @@ public class BsymtAffClassHistory_Ver1 extends UkJpaEntity{
 	protected Object getKey() {
 		return historyId;
 	}
+
+	
 
 }

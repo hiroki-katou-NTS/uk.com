@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 @AllArgsConstructor
-public class AffJobTitleHistory_ver1Export {
+public class AffJobTitleHistoryExport {
 
 	/** 会社ID */
 	public String companyId;

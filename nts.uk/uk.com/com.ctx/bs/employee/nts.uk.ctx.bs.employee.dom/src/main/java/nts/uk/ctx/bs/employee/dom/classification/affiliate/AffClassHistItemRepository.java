@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1;
+package nts.uk.ctx.bs.employee.dom.classification.affiliate;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +10,9 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Interface AffClassHistItemRepository_ver1.
+ * The Interface AffClassHistItemRepository.
  */
-public interface AffClassHistItemRepository_ver1 {
+public interface AffClassHistItemRepository {
 	
 	/**
 	 * Gets the by history id.
@@ -20,21 +20,21 @@ public interface AffClassHistItemRepository_ver1 {
 	 * @param historyId the history id
 	 * @return the by history id
 	 */
-	Optional<AffClassHistItem_ver1> getByHistoryId(String historyId);
+	Optional<AffClassHistItem> getByHistoryId(String historyId);
 	
 	/**
 	 * Adds the.
 	 *
 	 * @param item the item
 	 */
-	void add(AffClassHistItem_ver1 item); 
+	void add(AffClassHistItem item); 
 	
 	/**
 	 * Update.
 	 *
 	 * @param item the item
 	 */
-	void update(AffClassHistItem_ver1 item); 
+	void update(AffClassHistItem item); 
 	
 	/**
 	 * Delete.
@@ -50,7 +50,7 @@ public interface AffClassHistItemRepository_ver1 {
 	 * @param classificationCodes the classification codes
 	 * @return the list
 	 */
-	List<AffClassHistItem_ver1> searchClassification(GeneralDate baseDate,
+	List<AffClassHistItem> searchClassification(GeneralDate baseDate,
 			List<String> classificationCodes);
 	
 	/**
@@ -61,7 +61,7 @@ public interface AffClassHistItemRepository_ver1 {
 	 * @param classificationCodes the classification codes
 	 * @return the list
 	 */
-	List<AffClassHistItem_ver1> searchClassification(List<String> employeeIds,
+	List<AffClassHistItem> searchClassification(List<String> employeeIds,
 			GeneralDate baseDate, List<String> classificationCodes);
 
 }

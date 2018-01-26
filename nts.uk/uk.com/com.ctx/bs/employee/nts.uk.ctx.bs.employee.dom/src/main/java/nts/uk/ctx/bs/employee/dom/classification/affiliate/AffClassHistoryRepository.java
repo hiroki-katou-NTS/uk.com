@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1;
+package nts.uk.ctx.bs.employee.dom.classification.affiliate;
 
 import java.util.Optional;
 
@@ -13,7 +13,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
  * @author hop.nt
  *
  */
-public interface AffClassHistoryRepository_ver1 {
+public interface AffClassHistoryRepository {
 	
 	/**
 	 * return historyDomain with one period
@@ -35,7 +35,7 @@ public interface AffClassHistoryRepository_ver1 {
 	 * @param employeeId
 	 * @return
 	 */
-	Optional<AffClassHistory_ver1> getByEmployeeId(String cid, String employeeId);
+	Optional<AffClassHistory> getByEmployeeId(String cid, String employeeId);
 	
 	/**
 	 * return historyDomain with periods descending
@@ -43,7 +43,7 @@ public interface AffClassHistoryRepository_ver1 {
 	 * @param employeeId
 	 * @return
 	 */
-	Optional<AffClassHistory_ver1> getByEmployeeIdDesc(String cid, String employeeId);
+	Optional<AffClassHistory> getByEmployeeIdDesc(String cid, String employeeId);
 	
 	/**
 	 * add domain history

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1;
+package nts.uk.ctx.bs.employee.dom.classification.affiliate;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AffClassHistory_ver1 extends AggregateRoot
+public class AffClassHistory extends AggregateRoot
 		implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
 	
 	/**

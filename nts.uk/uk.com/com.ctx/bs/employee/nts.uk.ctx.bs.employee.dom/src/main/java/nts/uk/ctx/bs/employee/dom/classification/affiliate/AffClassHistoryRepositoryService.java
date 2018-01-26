@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1;
+package nts.uk.ctx.bs.employee.dom.classification.affiliate;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,8 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
 
 /**
  * 
@@ -18,13 +18,13 @@ import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryR
 public class AffClassHistoryRepositoryService {
 	
 	@Inject
-	private AffClassHistoryRepository_ver1 affClassHistoryRepo;
+	private AffClassHistoryRepository affClassHistoryRepo;
 	/**
 	 * add domain history
 	 * add last item and update before items
 	 * @param history
 	 */
-	public void add(AffClassHistory_ver1 history){
+	public void add(AffClassHistory history){
 		if (history.getPeriods().isEmpty()) {
 			return;
 		}
@@ -40,7 +40,7 @@ public class AffClassHistoryRepositoryService {
 	 * update item and nearly item
 	 * @param history
 	 */
-	public void update(AffClassHistory_ver1 history, DateHistoryItem item){
+	public void update(AffClassHistory history, DateHistoryItem item){
 		affClassHistoryRepo.update(item);
 		// Update item before and after
 		updateItemBefore(history, item);
@@ -52,7 +52,7 @@ public class AffClassHistoryRepositoryService {
 	 * @param history
 	 * @param item
 	 */
-	public void delete(AffClassHistory_ver1 history, DateHistoryItem item){
+	public void delete(AffClassHistory history, DateHistoryItem item){
 		affClassHistoryRepo.delete(item.identifier());
 		
 		if (!history.getPeriods().isEmpty()) {
@@ -61,7 +61,7 @@ public class AffClassHistoryRepositoryService {
 		}
 	}
 	
-	private void updateItemBefore(AffClassHistory_ver1 history, DateHistoryItem item) {
+	private void updateItemBefore(AffClassHistory history, DateHistoryItem item) {
 		// Update item before
 		Optional<DateHistoryItem> beforeItemOpt = history.immediatelyBefore(item);
 

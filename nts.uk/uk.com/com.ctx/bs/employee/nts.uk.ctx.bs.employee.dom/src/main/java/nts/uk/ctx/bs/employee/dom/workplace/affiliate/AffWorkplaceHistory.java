@@ -21,7 +21,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AffWorkplaceHistory_ver1 extends AggregateRoot implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
+public class AffWorkplaceHistory extends AggregateRoot implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
 	/** 会社ID */
 	private String companyId;
 	
