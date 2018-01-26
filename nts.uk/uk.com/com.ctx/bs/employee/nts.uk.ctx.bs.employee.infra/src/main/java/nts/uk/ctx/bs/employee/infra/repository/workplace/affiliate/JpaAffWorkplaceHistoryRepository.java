@@ -67,7 +67,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 
 	/**
 	 * Convert from domain to entity
-	 * 
+	 *
 	 * @param employeeID
 	 * @param item
 	 * @return
@@ -78,7 +78,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 
 	/**
 	 * Update entity from domain
-	 * 
+	 *
 	 * @param employeeID
 	 * @param item
 	 * @return
@@ -90,7 +90,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 
 	/**
 	 * Convert from entity to domain
-	 * 
+	 *
 	 * @param entity
 	 * @return
 	 */
@@ -275,11 +275,11 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	@Override
 	public List<AffWorkplaceHistory> searchWorkplaceHistory(GeneralDate baseDate,
 			List<String> employeeIds, List<String> workplaceIds) {
-		
+
 		if (CollectionUtil.isEmpty(employeeIds) || CollectionUtil.isEmpty(workplaceIds)) {
 			return Collections.emptyList();
 		}
-		
+
 		List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
 		CollectionUtil.split(employeeIds, 1000, empSubList -> {
 			CollectionUtil.split(workplaceIds, 1000, wplSubList -> {
@@ -289,7 +289,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 						.setParameter("standDate", baseDate).getList());
 			});
 		});
-		
+
 		return resultList.stream().map(e ->  this.toDomain(e)).collect(Collectors.toList());
 	}
 

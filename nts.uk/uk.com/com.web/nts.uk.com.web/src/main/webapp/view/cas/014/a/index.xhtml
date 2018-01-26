@@ -47,7 +47,7 @@
 							<button tabindex="5" class="caret-bottom" data-bind="click : startPage, enable: $root.errors.isEmpty">#{i18n.getText('CAS014_23')}</button>
 						</div>
 						<br />
-						<table class="fixed-table" tabindex="6" data-bind="with: roleSetJobTitle" id="A4">
+						<table class="fixed-table jobtitle-table" tabindex="6" data-bind="with: roleSetJobTitle" id="A4">
 							<colgroup>
 								<col width="100px" />
 								<col width="150px" />
@@ -63,7 +63,7 @@
 							<tbody data-bind = "foreach: details">
 								<tr>
 									<td><div data-bind = "text: jobTitle.code" style="display: inline-block;"></div></td>
-									<td><div data-bind = "text: jobTitle.name" style="display: inline-block;"></div></td>
+									<td><div class="limited-label" data-bind = "text: jobTitle.name" style="display: inline-block;"></div></td>
 									<td>
 										<div class="combo-box" tabindex="7"
 											data-bind="ntsComboBox: {
