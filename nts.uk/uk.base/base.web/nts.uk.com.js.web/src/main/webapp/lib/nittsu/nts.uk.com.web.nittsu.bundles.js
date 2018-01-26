@@ -3341,6 +3341,20 @@ var nts;
                     if ($(document).find("#header").length > 0) {
                         ui.menu.request();
                     }
+                    else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
+                        var header = "<div id='header'><div id='menu-header'>"
+                            + "<div id='logo-area' class='cf'>"
+                            + "<div id='logo'>勤次郎</div>"
+                            + "<div id='user-info' class='cf'>"
+                            + "<div id='company' class='cf' />"
+                            + "<div id='user' class='cf' />"
+                            + "</div></div>"
+                            + "<div id='nav-area' class='cf' />"
+                            + "<div id='pg-area' class='cf' />"
+                            + "</div></div>";
+                        $("#master-wrapper").prepend(header);
+                        ui.menu.request();
+                    }
                 });
             })(init || (init = {}));
         })(ui = uk.ui || (uk.ui = {}));
