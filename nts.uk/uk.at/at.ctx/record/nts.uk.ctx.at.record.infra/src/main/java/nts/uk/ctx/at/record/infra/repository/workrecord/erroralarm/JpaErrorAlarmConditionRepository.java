@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -21,6 +22,7 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
 
 	private final String FIND_BY_ERROR_ALARM_CHECK_ID = "SELECT a FROM KrcmtErAlCondition a WHERE a.eralCheckId = :eralCheckId ";
 	private final String DELETE_BY_ERROR_ALARM_CHECK_IDS = "DELETE FROM KrcmtErAlCondition a WHERE a.eralCheckId IN :erAlCheckIds ";
+	private final String FIND_BY_ERROR_ALARM_CHECK_IDS = "SELECT a  FROM KrcmtErAlCondition a WHERE a.eralCheckId IN :erAlCheckIds ";
 	
 	@Override
 	public void addErrorAlarmCondition(ErrorAlarmCondition conditionDomain) {
@@ -95,13 +97,15 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
     }
 	@Override
 	public List<ErrorAlarmCondition> findConditionByListErrorAlamCheckId(List<String> listEralCheckId) {
-		List<ErrorAlarmCondition> data = new ArrayList<>();
-		for(String eralCheckId : listEralCheckId ) {
-			Optional<ErrorAlarmCondition> errorAlarmWorkRecord = this.findConditionByErrorAlamCheckId(eralCheckId);
-			if(errorAlarmWorkRecord.isPresent()) {
-				data.add(errorAlarmWorkRecord.get());
-			}
-		}
-		return data;
+		return this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_ID, KrcmtErAlCondition.class)
+                .setParameter("erAlCheckIds", listEralCheckId).getList().stream().map(item -> 
+                KrcmtErAlCondition.toDomain(item, "", "")).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ErrorAlarmCondition> findMessageConByListErAlCheckId(List<String> listEralCheckId) {
+		return this.queryProxy().query(FIND_BY_ERROR_ALARM_CHECK_ID, KrcmtErAlCondition.class)
+                .setParameter("erAlCheckIds", listEralCheckId).getList().stream().map(item -> 
+                	new ErrorAlarmCondition(item.eralCheckId, item.messageDisplay)).collect(Collectors.toList());
 	}
 }

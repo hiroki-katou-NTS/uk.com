@@ -67,6 +67,10 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		return new ErrorAlarmCondition();
 	}
 
+	public ErrorAlarmCondition(String errorAlarmCheckID, String displayMessage) {
+		this.errorAlarmCheckID = errorAlarmCheckID;
+		this.displayMessage = new DisplayMessage(displayMessage);
+	}
 	/**
 	 * Set display message
 	 * 
