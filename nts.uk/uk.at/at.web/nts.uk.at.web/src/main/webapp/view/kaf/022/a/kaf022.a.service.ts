@@ -25,6 +25,8 @@ module nts.uk.at.view.kmf022.a.service {
         findJobTitleSearch: "workflow/jobtitlesearchset/job/getbyId",
         // A16_7, A16_8
         findMail: "at/request/application/mail/holiday",
+        // A16_9, A16_10
+        findOt: "at/request/application/mail/ot",
         // A16_11
         findTemp: "at/request/application/mail/template",
         // A17_5
@@ -38,6 +40,9 @@ module nts.uk.at.view.kmf022.a.service {
         
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
+    }
+    export function findOt() {
+        return nts.uk.request.ajax("at", paths.findOt); 
     }
     
     export function findTemp() {
