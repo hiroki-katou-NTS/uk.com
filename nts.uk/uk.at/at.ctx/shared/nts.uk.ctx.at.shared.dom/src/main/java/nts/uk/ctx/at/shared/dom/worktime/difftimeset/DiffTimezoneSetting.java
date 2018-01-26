@@ -53,7 +53,8 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 	/**
 	 * Restore data.
 	 *
-	 * @param other the other
+	 * @param other
+	 *            the other
 	 */
 	public void restoreData(DiffTimezoneSetting other) {
 		// restore 就業時間帯
@@ -62,6 +63,9 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 		this.employmentTimezones.forEach(emTimezoneOther -> {
 			emTimezoneOther.restoreData(mapEmTimezone.get(emTimezoneOther.getEmploymentTimeFrameNo()));
 		});
+
+		// restore 残業時間帯
+		this.oTTimezones = other.getOTTimezones();
 	}
 	
 	@Override

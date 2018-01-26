@@ -79,6 +79,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.isUpdateStartTime(false);
+                    super.resetData();
+                }
             }
 
 
@@ -124,6 +129,10 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.restTimezones([]);
+                }
             }
 
 
@@ -168,6 +177,11 @@ module nts.uk.at.view.kmk003.a {
                         workTimezones: workTimezones,
                     };
                     return dataDTO;
+                }
+                
+                resetData() {
+                    this.restTimezone.resetData();
+                    this.workTimezones([]);
                 }
             }
 
@@ -246,6 +260,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.employmentTimezones([]);
+                    this.lstOtTimezone([]);
+                }
             }
 
             export class DiffTimeHalfDayWorkTimezoneModel {
@@ -287,6 +306,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.restTimezone.resetData();
+                    this.workTimezone.resetData();
+                }
             }
 
             export class DiffTimeWorkStampReflectTimezoneModel {
@@ -316,6 +340,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData(){
+                    this.isUpdateStartTime(false);
+                    this.stampReflectTimezone([]);
+                }
             }
 
             export class EmTimezoneChangeExtentModel {
@@ -329,11 +358,11 @@ module nts.uk.at.view.kmk003.a {
                     this.behindChange = ko.observable(0);
                 }
 
-                //TODO chua lam
                 public resetData(): void {
                     let self = this;
                     self.aheadChange(0);
-                    //self.unit.resetData();
+                    //TODO
+//                    self.unit.resetData();
                     self.behindChange(0);
                 }
 
@@ -389,16 +418,17 @@ module nts.uk.at.view.kmk003.a {
                     return _.find(self.halfDayWorkTimezones, time => time.amPmAtr() == 2);
                 }
 
-                //TODO chua lam
                 public resetData(): void {
                     let self = this;
-                    //self.restSet.resetData();
-                    //self.dayoffWorkTimezone.resetData();
-                    //self.commonSet.resetData();
+                    self.restSet.resetData();
+                    self.dayoffWorkTimezone.resetData();
+                    self.commonSet.resetData();
                     self.isUseHalfDayShift(false);
                     self.changeExtent.resetData();
-                    //self.updateListHalfDay();
-                    //self.stampReflectTimezone.resetData();
+                    self.halfDayWorkTimezones.forEach(function(item: DiffTimeHalfDayWorkTimezoneModel, index: number) {
+                        item.resetData();
+                    });
+                    self.stampReflectTimezone.resetData();
                     self.overtimeSetting(0);
                 }
 
@@ -415,7 +445,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateListHalfDay(lstHalfDayWorkTimezone: DiffTimeHalfDayWorkTimezoneDto[]): void {
-                    lstHalfDayWorkTimezone.sort(item => item.amPmAtr);
+                    lstHalfDayWorkTimezone = lstHalfDayWorkTimezone.sort((item1, item2) => item1.amPmAtr - item2.amPmAtr);
                     this.getHDWtzOneday().updateData(lstHalfDayWorkTimezone[0]);
                     this.getHDWtzMorning().updateData(lstHalfDayWorkTimezone[1]);
                     this.getHDWtzAfternoon().updateData(lstHalfDayWorkTimezone[2]);

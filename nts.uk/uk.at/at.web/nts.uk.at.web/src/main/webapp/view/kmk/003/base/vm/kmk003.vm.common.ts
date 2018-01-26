@@ -855,6 +855,11 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.start(0);
+                    this.end(0);
+                }
             }
 
             export class TimezoneOfFixedRestTimeSetModel extends TimeRangeModelConverter<DeductionTimeModel> {

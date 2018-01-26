@@ -19,6 +19,7 @@ module nts.uk.at.view.kmk003.a {
     import StampReflectTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.StampReflectTimezoneModel;
     import FlowWorkRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowWorkRestSettingModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
+    import FixedTableDataConverter = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverter;
 
     export module viewmodel {
 
@@ -257,11 +258,11 @@ module nts.uk.at.view.kmk003.a {
 
             export class FlowOffdayWorkTzModel {
                 restTimeZone: FlowWorkRestTimezoneModel;
-                lstWorkTimezone: FlowWorkHdTimeZoneModel[];
+                lstWorkTimezone: KnockoutObservableArray<FlowWorkHdTimeZoneModel>;
 
                 constructor() {
                     this.restTimeZone = new FlowWorkRestTimezoneModel();
-                    this.lstWorkTimezone = [];
+                    this.lstWorkTimezone = ko.observableArray([]);
                 }
 
                 updateData(data: FlOffdayWorkTzDto) {
@@ -269,27 +270,23 @@ module nts.uk.at.view.kmk003.a {
                     this.updateHDTimezone(data.lstWorkTimezone);
                 }
                 
-                updateHDTimezone(lstWorkTimezone: FlWorkHdTimeZoneDto[]) {
-                    for (var dataDTO of lstWorkTimezone) {
-                        var dataModel: FlowWorkHdTimeZoneModel = this.getHDTimezoneByWorktimeNo(dataDTO.worktimeNo);
-                        if (dataModel) {
-                            dataModel.updateData(dataDTO);
-                        }
-                        else {
-                            dataModel = new FlowWorkHdTimeZoneModel();
-                            dataModel.updateData(dataDTO);
-                            this.lstWorkTimezone.push(dataModel);
-                        }
+                updateHDTimezone(lstWorkTimezone: FlWorkHdTimeZoneDto[]) {                   
+                    let dataModelWorktimezone: FlowWorkHdTimeZoneModel[] = [];
+                    for (let dataDTO of lstWorkTimezone) {
+                        let dataModel: FlowWorkHdTimeZoneModel = new FlowWorkHdTimeZoneModel();
+                        dataModel.updateData(dataDTO);
+                        dataModelWorktimezone.push(dataModel);
                     }
+                    this.lstWorkTimezone(dataModelWorktimezone);
                 }
                 
                 getHDTimezoneByWorktimeNo(worktimeNo: number) {
-                    return _.find(this.lstWorkTimezone, hdtimezone => hdtimezone.worktimeNo() == worktimeNo);
+                    return _.find(this.lstWorkTimezone(), hdtimezone => hdtimezone.worktimeNo() == worktimeNo);
                 }
 
                 toDto(): FlOffdayWorkTzDto {
                     var lstWorkTimezone: FlWorkHdTimeZoneDto[] = [];
-                    for (var dataModel of this.lstWorkTimezone) {
+                    for (var dataModel of this.lstWorkTimezone()) {
                         lstWorkTimezone.push(dataModel.toDto());
                     }
                     var dataDTO: FlOffdayWorkTzDto = {
@@ -301,7 +298,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 resetData() {
                     this.restTimeZone.resetData();
-                    this.lstWorkTimezone = [];
+                    this.lstWorkTimezone([]);
                 }
             }
 
@@ -451,7 +448,7 @@ module nts.uk.at.view.kmk003.a {
                     this.flowSetting.resetData();
                 }
             }
-
+            
         }
     }
 }

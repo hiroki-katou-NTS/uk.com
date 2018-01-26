@@ -33,9 +33,15 @@ public class FlowRestTimezonePolicyImpl implements FlowRestTimezonePolicy {
 	 */
 	@Override
 	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, FlowRestTimezone flowRestTimezone) {
+		// validate FlowRestSets
 		flowRestTimezone.getFlowRestSets().forEach(flowRestSet -> {
 			this.flowRestSettingPolicy.validate(be, predTime, flowRestSet);
 		});
+		
+		//validate HereAfterRestSet
+		if (flowRestTimezone.isUseHereAfterRestSet()) {
+			this.flowRestSettingPolicy.validate(be, predTime, flowRestTimezone.getHereAfterRestSet());
+		}
 	}
 
 }

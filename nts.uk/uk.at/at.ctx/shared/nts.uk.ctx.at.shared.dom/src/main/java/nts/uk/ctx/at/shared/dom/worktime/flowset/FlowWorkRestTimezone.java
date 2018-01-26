@@ -63,5 +63,10 @@ public class FlowWorkRestTimezone extends WorkTimeDomainObject {
 		memento.setFlowRestTimezone(this.flowRestTimezone);
 	}
 
+	@Override
+	public void validate() {
+		this.fixedRestTimezone.checkOverlap("#KMK003_20");
+		super.validate();
+	}
 	
 }

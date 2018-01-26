@@ -570,7 +570,7 @@ module a3 {
                      unitAttrName: 'roundingTime',
                      dataSource: self.settingEnum.rounding,
                      defaultValue: ko.observable(0),
-                     width: 180,
+                     width: 160,
                      template: `<div data-key="value" class="column-combo-box" data-bind="ntsComboBox: {
                                     name: '#[KMK003_202]',
                                     optionsValue: 'value',

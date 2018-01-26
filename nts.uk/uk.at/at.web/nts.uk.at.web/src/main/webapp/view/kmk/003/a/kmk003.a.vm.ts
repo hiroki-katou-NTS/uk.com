@@ -804,13 +804,13 @@ module nts.uk.at.view.kmk003.a {
                 self.predetemineTimeSetting.resetData();
                 self.fixedWorkSetting.resetData();
                 self.flowWorkSetting.resetData();
-                self.flexWorkSetting.resetData();             
+                self.flexWorkSetting.resetData();
+                self.diffWorkSetting.resetData();             
                 self.commonSetting.resetData();
                 if (!isNewMode) {
                     self.workTimeSetting.resetData();
                     self.workTimeSetting.resetWorkTimeDivision();
                 }
-                //TODO update diff viewmodel
             }
         }
 
