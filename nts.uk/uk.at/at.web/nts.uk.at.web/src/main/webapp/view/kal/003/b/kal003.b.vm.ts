@@ -45,7 +45,8 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 self.workRecordExtractingCondition().checkItem
                 , erAlAtdItemCondition.compareOperator
                 , erAlAtdItemCondition.compareStartValue()
-                , erAlAtdItemCondition.compareEndValue()));
+                , erAlAtdItemCondition.compareEndValue()
+            ));
                 
             // change select item check
             self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
@@ -53,6 +54,9 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
                     self.initialScreen();
                 }
+            });
+            self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0].compareOperator.subscribe((operN) => {
+                self.settingEnableComparisonMaxValueField();
             });
         }
 
