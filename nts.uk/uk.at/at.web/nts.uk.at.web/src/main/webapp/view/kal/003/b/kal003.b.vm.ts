@@ -256,6 +256,8 @@ module nts.uk.at.view.kal003.b.viewmodel{
                             self.displayAttendanceItemSelections_BA2_3(names);
                 });
                 
+                // initial default data of ErAlAtdItemCon
+                self.initialDataOfErAlAtdItemCon();
                 //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
                 self.initialWorkTypes();
             });
@@ -276,6 +278,8 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     self.displayAttendanceItemSelections_BA2_3(names);
                 });
                 
+                // initial default data of ErAlAtdItemCon
+                self.initialDataOfErAlAtdItemCon();
                 //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
                 self.initialWorkTypes();
             });
@@ -395,6 +399,36 @@ module nts.uk.at.view.kal003.b.viewmodel{
             }
         }
         
+        //initial default data of ErAlAtdItemCon
+        private initialDataOfErAlAtdItemCon() {
+            let self = this, workRecordExtractingCondition = self.workRecordExtractingCondition();
+            let conditionAtr = 0;
+            switch (workRecordExtractingCondition.checkItem()) {
+                case enItemCheck.Time:          //時間
+                case enItemCheck.CountinuousTime:   //連続時間
+                    conditionAtr = 1;
+                    break;
+                case enItemCheck.Times:         //回数
+                    conditionAtr = 0;
+                    break;
+                case enItemCheck.AmountOfMoney: //金額
+                    conditionAtr = 3;
+                    break;
+                case enItemCheck.TimeOfDate:    //時刻の場合
+                    conditionAtr = 2;
+                    break;
+            }
+            let lstErAlAtdItemCon1 = workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon();
+            for(var i=0; i< lstErAlAtdItemCon1.length; i++) {
+                lstErAlAtdItemCon1[i].conditionAtr(conditionAtr);
+                lstErAlAtdItemCon1[i].conditionType(1); //1: 勤怠項目 - AttendanceItem, 0: fix
+            }
+            let lstErAlAtdItemCon2 = workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon();
+            for(var i=0; i< lstErAlAtdItemCon2.length; i++) {
+                lstErAlAtdItemCon2[i].conditionAtr(conditionAtr);
+                lstErAlAtdItemCon2[i].conditionType(1); //1: 勤怠項目 - AttendanceItem, 0: fix
+            }
+        }
         /**
          * Get list of attendance id from list Dtos
          * @param itemAttendances

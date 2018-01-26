@@ -321,8 +321,9 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	
 	private void validRangeOfErAlCondition(CompareRange<?> compareRange) {
 		if (compareRange == null) {
-			throw new RuntimeErrorException(new Error(), "Data is invalid");
+			return;
 		}
+
 		int comOper = compareRange.getCompareOperator().value;
 		int minValue = Integer.valueOf(compareRange.getStartValue().toString()); 
 		int maxValue = Integer.valueOf(compareRange.getEndValue().toString());
