@@ -41,11 +41,12 @@ module nts.uk.at.view.kal003.share {
          * @param itemcheck
          */
         export function getDefaultAttendanceItemCondition() : model.AttendanceItemCondition {
-            let conditions : Array<model.ErAlAtdItemCondition> = [getDefaultCondition(0), getDefaultCondition(1), getDefaultCondition(2)];
+            let conditions1 : Array<model.ErAlAtdItemCondition> = [getDefaultCondition(0), getDefaultCondition(1), getDefaultCondition(2)];
+            let conditions2 : Array<model.ErAlAtdItemCondition> = [getDefaultCondition(0), getDefaultCondition(1), getDefaultCondition(2)];
             return new model.AttendanceItemCondition({
-                group1: getDefaultGroupCondition(conditions)
+                group1: getDefaultGroupCondition(conditions1)
                 , group2UseAtr: false
-                , group2: getDefaultGroupCondition(conditions)
+                , group2: getDefaultGroupCondition(conditions2)
                 , operatorBetweenGroups: 0
             });
         }
@@ -103,7 +104,7 @@ module nts.uk.at.view.kal003.share {
         }
         
         export function convertTransferDataToWorkRecordExtractingCondition(
-            workRecordExtractingCondition : model.WorkRecordExtractingCondition) : model.WorkRecordExtractingCondition {
+            workRecordExtractingCondition) : model.WorkRecordExtractingCondition {
             let convertWorkRecordExtractingCondition = new model.WorkRecordExtractingCondition(workRecordExtractingCondition);
             
             convertWorkRecordExtractingCondition.errorAlarmCondition(new model.ErrorAlarmCondition(workRecordExtractingCondition.errorAlarmCondition));
@@ -164,21 +165,22 @@ module nts.uk.at.view.kal003.share {
          * Covert all data array to array data of JSon
          */
         export function convertArrayOfAttendanceItemCondition(dataAttItemJS, attItemCondition : model.AttendanceItemCondition) : any {
-            dataAttItemJS.group1.lstErAlAtdItemCon = _.values(attItemCondition.group1().lstErAlAtdItemCon());
             let lstErAlAtdItemCon1 = attItemCondition.group1().lstErAlAtdItemCon();
+            dataAttItemJS.group1.lstErAlAtdItemCon = _.values(attItemCondition.group1().lstErAlAtdItemCon());           
             if (lstErAlAtdItemCon1) {
                 for(var i=0; i< lstErAlAtdItemCon1.length; i++) {
-                    dataAttItemJS.group1.lstErAlAtdItemCon[i].countableAddAtdItems = _.values(lstErAlAtdItemCon1[i].countableAddAtdItems);
-                    dataAttItemJS.group1.lstErAlAtdItemCon[i].countableSubAtdItems = _.values(lstErAlAtdItemCon1[i].countableSubAtdItems);
+                    dataAttItemJS.group1.lstErAlAtdItemCon[i].countableAddAtdItems = _.values(lstErAlAtdItemCon1[i].countableAddAtdItems());
+                    dataAttItemJS.group1.lstErAlAtdItemCon[i].countableSubAtdItems = _.values(lstErAlAtdItemCon1[i].countableSubAtdItems());
                 }
             }
             
+            let lstErAlAtdItemCon2 = attItemCondition.group2().lstErAlAtdItemCon();
             dataAttItemJS.group2.lstErAlAtdItemCon = _.values(attItemCondition.group2().lstErAlAtdItemCon());
-            let lstErAlAtdItemCon2 = attItemCondition.group2().lstErAlAtdItemCon();            
+
             if (lstErAlAtdItemCon2) {
                 for(var i=0; i< lstErAlAtdItemCon2.length; i++) {
-                    dataAttItemJS.group2.lstErAlAtdItemCon[i].countableAddAtdItems = _.values(lstErAlAtdItemCon2[i].countableAddAtdItems);
-                    dataAttItemJS.group2.lstErAlAtdItemCon[i].countableSubAtdItems = _.values(lstErAlAtdItemCon2[i].countableSubAtdItems);
+                    dataAttItemJS.group2.lstErAlAtdItemCon[i].countableAddAtdItems = _.values(lstErAlAtdItemCon2[i].countableAddAtdItems());
+                    dataAttItemJS.group2.lstErAlAtdItemCon[i].countableSubAtdItems = _.values(lstErAlAtdItemCon2[i].countableSubAtdItems());
                 }
             }
             return dataAttItemJS;

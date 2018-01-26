@@ -387,9 +387,9 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 workRecordExtractingCondition = self.workRecordExtractingCondition();
             let lstErAlAtdItemCon = workRecordExtractingCondition.errorAlarmCondition()
                 .atdItemCondition().group1().lstErAlAtdItemCon();
-            let listWorkTimeItemSelectedCode = lstErAlAtdItemCon[0].countableAddAtdItems() || [];//勤怠項目の加算減算式
+            let listAttendanceItemSelectedCode = lstErAlAtdItemCon[0].countableAddAtdItems() || [];//勤怠項目の加算減算式
             
-            return listWorkTimeItemSelectedCode;
+            return listAttendanceItemSelectedCode;
         }
         private setListAttendanceItemCode(listWorkTimeItemSelectedCode : Array<any>) {
             let self = this,
