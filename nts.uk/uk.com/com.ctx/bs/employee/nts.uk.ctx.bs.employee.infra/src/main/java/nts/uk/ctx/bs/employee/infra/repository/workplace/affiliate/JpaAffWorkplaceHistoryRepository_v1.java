@@ -5,7 +5,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +18,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
+import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.BsymtAffiWorkplaceHist;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -61,6 +61,10 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	private static final String SELECT_BY_EMPIDS = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
 			+ " WHERE aw.sid IN :employeeIds AND aw.strDate <= :standDate AND :standDate <= aw.endDate";
+	
+	private static final String SELECT_BY_LISTSID = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
+			+ " WHERE aw.sid IN :listSid ";
 
 	private static final String SELECT_BY_WKPID_PERIOD = "SELECT DISTINCT  a.sid FROM BsymtAffiWorkplaceHist a"
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem b ON a.hisId = b.hisId"
@@ -176,7 +180,7 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 	}
 
 	@Override
-	public List<AffWorkplaceHistory_ver1> findByEmployees(List<String> employeeIds, GeneralDate date) {
+	public List<AffWorkplaceHistory_ver1> findByEmployees(List<String> employeeIds, GeneralDate date) { 
 		if (CollectionUtil.isEmpty(employeeIds)) {
 			return new ArrayList<>();
 		}
@@ -197,6 +201,25 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 			return this.toDomainTemp(resultMap.get(key));
 		}).collect(Collectors.toList());
 	}
+	
+	
+
+	@Override
+	public List<AffWorkplaceHistory_ver1> getByListSid(List<String> listSid) {
+		
+		// Split query.
+		List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(listSid, 1000, (subList) -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LISTSID, BsymtAffiWorkplaceHist.class)
+					.setParameter("listSid", subList).getList());
+		});
+
+		return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+	}
+	
+	
+	
 
 	@Override
 	public Optional<AffWorkplaceHistory_ver1> getByHistIdAndBaseDate(String histId, GeneralDate date) {
@@ -317,4 +340,5 @@ public class JpaAffWorkplaceHistoryRepository_v1 extends JpaRepository implement
 			return Collections.emptyList();
 		}
 	}
+
 }
