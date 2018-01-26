@@ -1,31 +1,16 @@
 package nts.uk.shr.pereg.app;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 
-@Getter
-@AllArgsConstructor
+@Value
 public class ComboBoxObject {
 	
 	private String optionValue;
 	
 	private String optionText;
-	
-	@Setter
-	private String firstItemName;
-	
-	public ComboBoxObject(String value, String optionText) {
-		this.optionText = optionText;
-		this.optionValue = value;
-	}
-	
-	private static ComboBoxObject getComBox(String value, String optionText) {
-		return new ComboBoxObject(value, optionText, "");
-	}
 		
 	public static ComboBoxObject toComboBoxObject(String value, String leftSymbolText, String rightSymbolText){
 		String optionText = leftSymbolText + " ~ " + rightSymbolText;
-		return getComBox(value, optionText);
+		return new ComboBoxObject(value, optionText);
 	};
 }

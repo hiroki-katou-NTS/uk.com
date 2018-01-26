@@ -204,7 +204,7 @@ public class EmpCtgFinder {
 			return checkRole(ctgAuth, roleId, query.getCategoryId(), isSelf, isSameCom);
 		}).collect(Collectors.toList());
 		List<ComboBoxObject> resultList = fiterOfContHist(ctgAuth, infoList, roleId, isSelf);
-		resultList.stream().forEach(x -> x.setFirstItemName(lstItemDef.get(0).getItemName().v()));
+		resultList.add(new ComboBoxObject(null, lstItemDef.get(0).getItemName().v()));
 		return resultList ;
 	}
 
