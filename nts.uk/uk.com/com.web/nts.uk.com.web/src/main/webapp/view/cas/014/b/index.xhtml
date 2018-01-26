@@ -70,7 +70,7 @@
 						<button tabindex="7" id="B5_1_1"
 							data-bind="click: openDialogCDL009, enable: screenMode() == 0">#{i18n.getText('CAS014_39')}</button>
 						<label data-bind="text: roleSetPerson().employeeCd" style="padding-left: 15px"></label>
-						<label data-bind="text: roleSetPerson().employeeName" style="padding-left: 15px"></label>
+						<label class="limited-label" data-bind="text: roleSetPerson().employeeName" style="padding-left: 15px"></label>
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_40')}</div>
