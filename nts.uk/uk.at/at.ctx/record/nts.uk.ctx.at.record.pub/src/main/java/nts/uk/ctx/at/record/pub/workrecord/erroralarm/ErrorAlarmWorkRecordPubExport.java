@@ -31,10 +31,20 @@ public class ErrorAlarmWorkRecordPubExport {
 	private String cancelRoleId;
 	
 	private String errorAlarmCheckID;
+	
+	private String displayMessage;
 
-	public ErrorAlarmWorkRecordPubExport(String companyId, String code, String name, int fixedAtr, int useAtr, int typeAtr,
-			int boldAtr, String messageColor, int cancelableAtr, int errorDisplayItem, String cancelRoleId,
-			String errorAlarmCheckID) {
+
+	
+	public void setDisplayMessage(String displayMessage) {
+		this.displayMessage = displayMessage;
+	}
+
+
+
+	public ErrorAlarmWorkRecordPubExport(String companyId, String code, String name, int fixedAtr, int useAtr,
+			int typeAtr, int boldAtr, String messageColor, int cancelableAtr, int errorDisplayItem, String cancelRoleId,
+			String errorAlarmCheckID, String displayMessage) {
 		super();
 		this.companyId = companyId;
 		this.code = code;
@@ -48,6 +58,7 @@ public class ErrorAlarmWorkRecordPubExport {
 		this.errorDisplayItem = errorDisplayItem;
 		this.cancelRoleId = cancelRoleId;
 		this.errorAlarmCheckID = errorAlarmCheckID;
+		this.displayMessage = displayMessage;
 	}
 
 	

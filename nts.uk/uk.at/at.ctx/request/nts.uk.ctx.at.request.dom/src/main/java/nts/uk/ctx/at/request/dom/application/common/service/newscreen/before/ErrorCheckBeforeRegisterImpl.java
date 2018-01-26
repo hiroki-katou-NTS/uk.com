@@ -103,7 +103,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// 否認以外：
 		// 反映情報.実績反映状態＝ 否認、差し戻し
 		ReflectedState_New refPlan = beforeApplication.get(0).getReflectionInformation().getStateReflectionReal();
-		if (!refPlan.equals(ReflectedState_New.DENIAL) && !refPlan.equals(ReflectedState_New.REMAND)) {
+		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
 			// 背景色を設定する
 			result.setErrorCode(1);
 			return result;

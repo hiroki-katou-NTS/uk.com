@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
@@ -91,7 +92,7 @@ public class DenyImpl implements DenyService {
 				break;
 			}
 			Optional<ApprovalFrame> opConfirmApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
-			 	.filter(x -> x.getConfirmAtr().equals(Boolean.TRUE)).findAny();
+			 	.filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
 			if(opConfirmApprovalFrame.isPresent()){
 				ApprovalFrame confirmApprovalFrame = opConfirmApprovalFrame.get();
 				if(confirmApprovalFrame.getApproverID().equals(employeeID)||confirmApprovalFrame.getRepresenterID().equals(employeeID)){
