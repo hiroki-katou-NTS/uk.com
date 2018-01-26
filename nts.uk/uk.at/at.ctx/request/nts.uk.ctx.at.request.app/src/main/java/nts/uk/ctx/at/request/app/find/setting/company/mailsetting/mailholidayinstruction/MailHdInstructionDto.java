@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.find.setting.company.mailsetting;
+package nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailholidayinstruction;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

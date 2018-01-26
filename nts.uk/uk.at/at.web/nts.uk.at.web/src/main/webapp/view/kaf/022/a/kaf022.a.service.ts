@@ -25,6 +25,8 @@ module nts.uk.at.view.kmf022.a.service {
         findJobTitleSearch: "workflow/jobtitlesearchset/job/getbyId",
         // A16_7, A16_8
         findMail: "at/request/application/mail/holiday",
+        // A16_11
+        findTemp: "at/request/application/mail/template",
         // A17_5
         findAppro: "approval/setting/approval",
         // A17_4, A9_5
@@ -37,9 +39,19 @@ module nts.uk.at.view.kmf022.a.service {
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
     }
+    
+    export function findTemp() {
+        return nts.uk.request.ajax("at", paths.findTemp); 
+    }
+    
+    export function findMail() {
+        return nts.uk.request.ajax("at", paths.findMail); 
+    }
+    
     export function findAppCom() {
         return nts.uk.request.ajax("at", paths.findAppCom); 
     }
+    
     export function findProByApp(appType: number): JQueryPromise<void>{
         return nts.uk.request.ajax("at", paths.findProByApp + "/" + appType);     
     }
