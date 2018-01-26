@@ -24,7 +24,7 @@
 		<jar-file>lib/nts.uk.ctx.at.record.infra-0.3.7.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.at.request.infra-0.3.3.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.at.schedule.infra-0.4.2.jar</jar-file>
-		<jar-file>lib/nts.uk.ctx.at.shared.infra-0.5.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.shared.infra-0.5.1.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.pr.core.infra-0.2.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.pr.formula.infra-0.2.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.pr.report.infra-0.2.jar</jar-file>
