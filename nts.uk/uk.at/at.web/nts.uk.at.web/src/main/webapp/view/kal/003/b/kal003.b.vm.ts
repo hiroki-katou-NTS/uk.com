@@ -646,8 +646,9 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 
                 erAlAtdItemCondition.compareStartValue(self.comparisonRange().minValue());
                 erAlAtdItemCondition.compareEndValue(self.comparisonRange().maxValue());
-                
-                windows.setShared('outputKal003b', ko.toJS(workRecordExtractingCondition));
+                let retData = ko.toJS(workRecordExtractingCondition);
+                retData = shareutils.convertArrayOfWorkRecordExtractingConditionToJS(retData, workRecordExtractingCondition);
+                windows.setShared('outputKal003b', retData);
                 windows.close();
             }
         }

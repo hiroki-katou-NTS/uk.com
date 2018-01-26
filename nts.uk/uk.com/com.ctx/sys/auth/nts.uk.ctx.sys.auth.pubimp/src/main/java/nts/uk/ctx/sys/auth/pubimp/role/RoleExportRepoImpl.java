@@ -77,4 +77,15 @@ public class RoleExportRepoImpl implements RoleExportRepo{
 		return null;
 	}
 
+	@Override
+	public WorkplaceIdExport findWorkPlaceIdNoRole(Integer systemType) {
+		WorkplaceIdDto workplaceIdDto = roleWorkplaceIDFinder.findListWokplaceIdNoCheckRole(systemType);
+
+		WorkplaceIdExport workplaceIdExport = new WorkplaceIdExport();
+		workplaceIdExport.setIsAllEmp(workplaceIdDto.getIsAllEmp());
+		workplaceIdExport.setListWorkplaceIds(workplaceIdDto.getListWorkplaceIds());
+
+		return workplaceIdExport;
+	}
+
 }
