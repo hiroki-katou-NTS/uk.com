@@ -69,5 +69,10 @@ public class FlowFixedRestSet extends WorkTimeDomainObject {
 		memento.setCalculateMethod(this.calculateMethod);
 	}
 
-
+	/*:
+	 * 流動固定休憩の計算方法を「予定を参照する」に変更
+	 */
+	public void changeCalcMethodToSchedule() {
+		this.calculateMethod = FlowFixedRestCalcMethod.REFER_SCHEDULE;
+	}
 }
