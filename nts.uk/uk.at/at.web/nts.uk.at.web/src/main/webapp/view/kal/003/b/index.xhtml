@@ -182,7 +182,7 @@
 	                                                options: $parent.listCompareTypes,
 	                                                optionsValue: 'value',
 	                                                visibleItemsCount: 5,
-	                                                value: errorAlarmCondition().atdItemCondition().group1().conditionOperator,
+	                                                value: errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0].compareOperator,
 	                                                optionsText: 'localizedName',
 	                                                editable: false,
 	                                                enable: true,
@@ -397,7 +397,7 @@
 					                   <th class="ui-widget-header" colspan="6" style ="text-align: center;">#{i18n.getText('KAL003_33')}</th>
 					               </tr>
 					            </thead>
-					            <tbody data-bind = "foreach: group1().lstErAlAtdItemCon">
+					            <tbody data-bind = "foreach: group1().lstErAlAtdItemCon()">
 					                <tr>
 					                  <!-- B5_6 -->
 					                    <com:ko-if bind="$data.compareOperator() == 6 || $data.compareOperator() == 7">
@@ -476,7 +476,7 @@
                                           <th class="ui-widget-header"  colspan="6" style ="text-align: center;">#{i18n.getText('KAL003_33')}</th>
                                       </tr>
                                    </thead>
-                                   <tbody data-bind = "foreach: group2().lstErAlAtdItemCon">
+                                   <tbody data-bind = "foreach: group2().lstErAlAtdItemCon()">
                                        <tr>
                                         <!-- B16_3 -->
 						                    <com:ko-if bind="$data.compareOperator() &gt; 5">

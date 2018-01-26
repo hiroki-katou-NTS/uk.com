@@ -1,5 +1,6 @@
 module nts.uk.at.view.kal003.a.tab {
     import windows = nts.uk.ui.windows;
+    import dialog = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import model = nts.uk.at.view.kal003.share.model;
@@ -74,7 +75,8 @@ module nts.uk.at.view.kal003.a.tab {
             if (self.listWorkRecordExtractingConditions == null || self.listWorkRecordExtractingConditions == undefined) {
                 self.listWorkRecordExtractingConditions = ko.observableArray([]);
             }
-            if (self.listWorkRecordExtractingConditions().length == 50) {
+            if (self.listWorkRecordExtractingConditions().length > 50) {
+                dialog.alertError({ messageId: "Msg_833" });
                 return;
             }
             let workRecordExtractingCondition = shareutils.getDefaultWorkRecordExtractingCondition(0);

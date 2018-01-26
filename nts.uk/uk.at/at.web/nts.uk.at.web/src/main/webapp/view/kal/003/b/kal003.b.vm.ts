@@ -45,7 +45,8 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 self.workRecordExtractingCondition().checkItem
                 , erAlAtdItemCondition.compareOperator
                 , erAlAtdItemCondition.compareStartValue()
-                , erAlAtdItemCondition.compareEndValue()));
+                , erAlAtdItemCondition.compareEndValue()
+            ));
                 
             // change select item check
             self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
@@ -53,6 +54,9 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
                     self.initialScreen();
                 }
+            });
+            self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0].compareOperator.subscribe((operN) => {
+                self.settingEnableComparisonMaxValueField();
             });
         }
 
@@ -369,33 +373,20 @@ module nts.uk.at.view.kal003.b.viewmodel{
             });
         }
         
-        //TODO
-        private initialDailyItemChkCompound() {
-            let self = this,
-            workRecordExtractingCondition = self.workRecordExtractingCondition();
-            //アルゴリズム「複合条件の項目取得」を実行する - Execute the algorithm "item acquisition of compound condition"
-            service.getAttendCompound(workRecordExtractingCondition.errorAlarmCheckID).done((data) => {
-                if (data) {
-                    //TODO
-                }
-                //self.getAttendanceItemName();
-            });
-        }
-
         private getListAttendanceItemCode() : Array<any> {
             let self = this,
                 workRecordExtractingCondition = self.workRecordExtractingCondition();
             let lstErAlAtdItemCon = workRecordExtractingCondition.errorAlarmCondition()
                 .atdItemCondition().group1().lstErAlAtdItemCon();
-            let listWorkTimeItemSelectedCode = lstErAlAtdItemCon[0].countableAddAtdItems() || [];//勤怠項目の加算減算式
+            let listAttendanceItemSelectedCode = lstErAlAtdItemCon[0].countableAddAtdItems() || [];//勤怠項目の加算減算式
             
-            return listWorkTimeItemSelectedCode;
+            return listAttendanceItemSelectedCode;
         }
         private setListAttendanceItemCode(listWorkTimeItemSelectedCode : Array<any>) {
             let self = this,
                 workRecordExtractingCondition = self.workRecordExtractingCondition();
-            let lstErAlAtdItemCon = workRecordExtractingCondition.errorAlarmCondition()
-                .atdItemCondition().group1().lstErAlAtdItemCon(listWorkTimeItemSelectedCode || []);//勤怠項目の加算減算式
+            workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1()
+                .lstErAlAtdItemCon()[0].countableAddAtdItems(listWorkTimeItemSelectedCode || []);//勤怠項目の加算減算式
         }
         /**
          * アルゴリズム「勤怠項目に対応する名称を生成する」を実行する - Execute algorithm "Generate name corresponding to attendance item"

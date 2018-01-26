@@ -60,19 +60,7 @@ module cps001.f.vm {
             var dfdGetData = service.getData(dataShare.pid);
 
 
-            $("#closebtn").focus();
-            permision().done((data: IPersonAuth) => {
-                if (data) {
-                    if (data.allowDocUpload != 1) {
-                        $(".browser-button").attr('disabled', 'disabled');
-                        $(".delete-button").attr('disabled', 'disabled');
-                    }
-
-                }
-            });
-
             $.when(dfdGetData).done((datafile: Array<IEmpFileMana>) => {
-                debugger;
                 var totalSize = 0;
                 _.forEach(datafile, function(item) {
                     totalSize = totalSize + item.originalSize;
@@ -180,11 +168,10 @@ module cps001.f.vm {
         }
 
         restart() {
-            //__viewContext['viewModel'] = new vm.ViewModel();
 
             __viewContext['viewModel'].start().done(() => {
                 init();
-                //__viewContext.bind(__viewContext['viewModel']);
+                $('.browser-button').focus();
             });
         }
 
