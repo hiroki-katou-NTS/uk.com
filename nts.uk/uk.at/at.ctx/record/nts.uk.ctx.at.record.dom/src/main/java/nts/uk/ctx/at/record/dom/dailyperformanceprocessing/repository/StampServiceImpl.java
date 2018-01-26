@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
+import nts.uk.shr.com.i18n.TextResource;
 @Stateless
 public class StampServiceImpl implements StampDomainService{
 	@Inject
@@ -37,9 +38,9 @@ public class StampServiceImpl implements StampDomainService{
 	public List<StampItem> handleData(StampReflectRangeOutput s, ExecutionType reCreateAttr,
 			String empCalAndSumExecLogID, GeneralDate date, String employeeId, String companyId) {
 		if (s == null) {
-			ErrMessageInfo employmentErrMes = new ErrMessageInfo(companyId, empCalAndSumExecLogID,
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 					new ErrMessageResource("009"), EnumAdaptor.valueOf(0, ExecutionContent.class), date,
-					new ErrMessageContent("Msg_466"));
+					new ErrMessageContent(TextResource.localize("Msg_466")));
 			errRepo.add(employmentErrMes);
 			return null;
 		}
@@ -59,9 +60,9 @@ public class StampServiceImpl implements StampDomainService{
 		}
 
 		if (stampNumber == null || stampNumber.isEmpty()) {
-			ErrMessageInfo employmentErrMes = new ErrMessageInfo(companyId, empCalAndSumExecLogID,
+			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 					new ErrMessageResource("008"), EnumAdaptor.valueOf(0, ExecutionContent.class), date,
-					new ErrMessageContent("Msg_433"));
+					new ErrMessageContent(TextResource.localize("Msg_433")));
 			errRepo.add(employmentErrMes);
 			return null;
 		}
