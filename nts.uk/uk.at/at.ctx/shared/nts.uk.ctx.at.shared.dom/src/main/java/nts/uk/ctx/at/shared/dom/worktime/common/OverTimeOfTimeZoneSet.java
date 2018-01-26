@@ -71,14 +71,4 @@ public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject {
 		memento.setLegalOTframeNo(this.legalOTframeNo);
 		memento.setSettlementOrder(this.settlementOrder);
 	}
-
-	public void restoreData(OverTimeOfTimeZoneSet other) {
-		this.workTimezoneNo = other.getWorkTimezoneNo();
-		this.restraintTimeUse = other.isRestraintTimeUse();
-		this.earlyOTUse = other.isEarlyOTUse();
-		this.timezone = other.getTimezone();
-		this.otFrameNo = other.getOtFrameNo();
-		this.legalOTframeNo = other.getLegalOTframeNo();
-		this.settlementOrder = other.getSettlementOrder();
-	}
 }
