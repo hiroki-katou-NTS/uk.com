@@ -340,12 +340,12 @@ module nts.uk.at.view.kal003.share.model {
         constructor(NO, param : IErAlAtdItemCondition) {
             let self = this;
             self.targetNO = ko.observable(NO);
-            self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(1); //1: 勤怠項目 - AttendanceItem, 0: fix
+            self.conditionAtr = param ? ko.observable(param.conditionAtr) : ko.observable(0);
             self.useAtr = param ? ko.observable(param.useAtr) : ko.observable(false);
             self.uncountableAtdItem = param ? ko.observable(param.uncountableAtdItem) : ko.observable(null);
             self.countableAddAtdItems(param && param.countableAddAtdItems ? param.countableAddAtdItems : []);
             self.countableSubAtdItems(param && param.countableSubAtdItems ? param.countableSubAtdItems : []);
-            self.conditionType = param ? ko.observable(param.conditionType) : ko.observable(0);
+            self.conditionType = param ? ko.observable(param.conditionType) : ko.observable(1);   //1: 勤怠項目 - AttendanceItem, 0: fix
             self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
             self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(0);
             self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(0);
@@ -499,6 +499,7 @@ module nts.uk.at.view.kal003.share.model {
         openAtdItemConditionDialog() {
             let self = this;
             let param = ko.mapping.toJS(self);
+
             nts.uk.ui.windows.setShared("KAL003CParams", param, true);
             nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
                 let output = getShared("KAL003CResult");
@@ -548,9 +549,9 @@ module nts.uk.at.view.kal003.share.model {
         lstErAlAtdItemCon: KnockoutObservableArray<ErAlAtdItemCondition>;// max 3 item, B16-1 -> B16-4
         constructor(param: IErAlConditionsAttendanceItem) {
             let self = this;
-            self.atdItemConGroupId = ko.observable(param.atdItemConGroupId || '');
-            self.conditionOperator = ko.observable(param.conditionOperator || 0);
-            self.lstErAlAtdItemCon = ko.observableArray(param.lstErAlAtdItemCon || []);
+            self.atdItemConGroupId = ko.observable(param ? param.atdItemConGroupId || '' : '');
+            self.conditionOperator = ko.observable(param ? param.conditionOperator || 0 : 0);
+            self.lstErAlAtdItemCon = ko.observableArray(param ? param.lstErAlAtdItemCon || [] : []);
         }
     }
 
@@ -568,10 +569,10 @@ module nts.uk.at.view.kal003.share.model {
         operatorBetweenGroups: KnockoutObservable<number>                   = ko.observable(0);
         constructor(param : IAttendanceItemCondition) {
             let self = this;
-            self.group1    = ko.observable(param.group1);
-            self.group2UseAtr   (param.group2UseAtr || false);
-            self.group2    = ko.observable(param.group2);
-            self.operatorBetweenGroups(param.operatorBetweenGroups);
+            self.group1    = ko.observable(param ? param.group1 : null);
+            self.group2UseAtr   (param ? param.group2UseAtr || false : false);
+            self.group2    = ko.observable(param ? param.group2 : null);
+            self.operatorBetweenGroups(param ? param.operatorBetweenGroups || 0 : 0);
         }
     }
 

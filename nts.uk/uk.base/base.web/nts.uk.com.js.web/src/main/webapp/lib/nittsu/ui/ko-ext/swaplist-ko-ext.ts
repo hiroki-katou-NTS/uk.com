@@ -251,6 +251,19 @@ module nts.uk.ui.koExtentions {
             this.swapper.Model.$container.bind("swaplistgridsizeexceed", function(evt, data){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_887" });
             });
+    
+            $swap.find(".ntsSwapGrid").bind("listfilterred", function(evt, data){
+                let $gridX = $(this);
+                let currentDataSource = $gridX.igGrid('option', 'dataSource');
+                let selected = $gridX.ntsGridList('getSelected');
+                let selectItems = _.filter(currentDataSource, function (itemFilterd: any){
+                    return _.find(selected, function (item: any){
+                        let itemVal = itemFilterd[primaryKey];
+                        return itemVal === item["id"];        
+                    }) !== undefined;            
+                }); 
+                $gridX.ntsGridList("setSelected",  _.map(selectItems, primaryKey));
+            });
         }
 
         /**
@@ -658,6 +671,7 @@ module nts.uk.ui.koExtentions {
                 var results: SearchResult = this.search();
                 if (results === null) return;
                 this.bindData(results.data);
+                this.$listControl.trigger("listfilterred");
             } else {
                 this.highlightSearch();
             }

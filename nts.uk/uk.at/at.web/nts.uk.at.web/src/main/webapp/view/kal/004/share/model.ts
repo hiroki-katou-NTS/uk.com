@@ -152,15 +152,15 @@ module nts.uk.at.view.kal004.share.model {
                     strMakeToDay: null,
                     strDay: null,
                     strPreviousMonth: 0,
-                    strCurrentMonth: 0,
-                    strMonth: 2,
+                    strCurrentMonth: 1,
+                    strMonth: 0,
                     endSpecify: 1,
                     endPreviousDay: null,
                     endMakeToDay: null,
                     endDay: null,
                     endPreviousMonth: 0,
-                    endCurrentMonth: 0,
-                    endMonth: 1
+                    endCurrentMonth: 1,
+                    endMonth: 0
                 });
             } else {
                 this.extractionPeriodDaily = extractionPeriodDaily;

@@ -6,10 +6,15 @@ package nts.uk.ctx.sys.gateway.app.command.singlesignon;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
@@ -43,16 +48,12 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 		if (command.getWinAcc1() == null && command.getWinAcc2() == null && command.getWinAcc3() == null
 				&& command.getWinAcc4() == null && command.getWinAcc5() == null) {
 			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getUserId());
-
 			for (WindowAccount wd : listWindowAcc) {
-				windowAccountRepository.remove(wd.getUserId(), wd.getUserName(), wd.getHostName());
+					windowAccountRepository.remove(wd.getUserId(), wd.getNo());
 			}
-
 		} else {
-
 			List<WindowAccountDto> listWinAccDto = new ArrayList<>();
-			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getWinAcc1().getUserId());
-			
+						
 			// TODO: need refactor
 			if (command.getWinAcc1() != null) {
 				if (command.getWinAcc1().getIsChange()) {
@@ -90,17 +91,44 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 				listWinAccDto.add(command.getWinAcc5());
 			}
 			
-			// remove old domain 
-			for (WindowAccount windowAcc : listWindowAcc) {
-				windowAccountRepository.remove(windowAcc.getUserId(), windowAcc.getUserName(), windowAcc.getHostName());
-			}			
+			// remove old domain
+			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getUserId());
+		
+			// add and update data to db
+			save(listWindowAcc,listWinAccDto );
 
-			// Save new domain
-			listWinAccDto.forEach(winAcc -> this.windowAccountRepository.add(new WindowAccount(winAcc)));
-			
 		}
 	}
-
+	
+	private void save(List<WindowAccount> listWindowAccDB, List<WindowAccountDto> listWinAccDto) {
+		List<WindowAccount> lstWindAccCommand = listWinAccDto.stream().map(item -> new WindowAccount(item)).collect(Collectors.toList());
+		
+		Map<Integer, WindowAccount> mapWinAcc = listWindowAccDB.stream()
+				.collect(Collectors.toMap(item -> ((WindowAccount) item).getNo(), Function.identity()));
+		
+		List<Integer> lstWinAccSaved = new ArrayList<>();
+		
+		lstWindAccCommand.forEach(domain -> {
+			lstWinAccSaved.add(domain.getNo());
+			
+			WindowAccount winAccDb = mapWinAcc.get(domain.getNo());
+			
+			// not existed, insert DB
+			if (winAccDb == null) {
+				this.windowAccountRepository.add(domain);
+			} else {
+				this.windowAccountRepository.update(domain, winAccDb);
+			}
+		});
+		
+		// remove item not setting
+		listWindowAccDB.stream()
+		.filter(domain -> domain.getNo() != null && !lstWinAccSaved.contains(domain.getNo()))
+		.forEach(domain -> {
+			this.windowAccountRepository.remove(domain.getUserId(), domain.getNo());
+		});
+	}
+	
 	/**
 	 * Validate.
 	 *
@@ -112,19 +140,21 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 		boolean isError = false;
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
-		Optional<WindowAccount> opWindowAccount = windowAccountRepository.findbyUserNameAndHostName(dto.getUserName(),
-				dto.getHostName());
+		if (!StringUtils.isEmpty(dto.getHostName().v()) && !StringUtils.isEmpty(dto.getUserName().v())) {
+			Optional<WindowAccount> opWindowAccount = windowAccountRepository
+					.findbyUserNameAndHostName(dto.getUserName().v(), dto.getHostName().v());
 
-		// Check condition
-		if (opWindowAccount.isPresent()) {
-			// Has error, throws message
-			isError = true;
-			exceptions.addMessage("Msg_616");
-		}
+			// Check condition
+			if (opWindowAccount.isPresent()) {
+				// Has error, throws message
+				isError = true;
+				exceptions.addMessage("Msg_616");
+			}
 
-		if (isError) {			
-			//show error list
-			exceptions.throwExceptions();
+			if (isError) {
+				// show error list
+				exceptions.throwExceptions();
+			}
 		}
 	}
 		

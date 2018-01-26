@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.fixedset;
@@ -8,7 +8,10 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+import nts.arc.error.BundledBusinessException;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveCommandHandler;
@@ -27,34 +30,35 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 	/** The fixed work setting repository. */
 	@Inject
 	private FixedWorkSettingRepository fixedWorkSettingRepository;
-	
+
 	/** The common handler. */
 	@Inject
 	private WorkTimeCommonSaveCommandHandler commonHandler;
-	
+
 	/** The fixed policy. */
 	@Inject
 	private FixedWorkSettingPolicy fixedPolicy;
-	
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<FixedWorkSettingSaveCommand> context) {
 
+		// Get company ID
 		String companyId = AppContexts.user().companyId();
-
-		// get command
+		// Get command
 		FixedWorkSettingSaveCommand command = context.getCommand();
-
-		// get domain fixed work setting by client send
+		// Convert dto to domain
 		FixedWorkSetting fixedWorkSetting = command.toDomainFixedWorkSetting();
 
-		// Validate
-		this.fixedPolicy.canRegister(fixedWorkSetting, command.toDomainPredetemineTimeSetting());
-
-		// common handler
-		this.commonHandler.handle(command);
+		// Validate + common handler
+		this.validate(command, fixedWorkSetting);
 
 		// call repository save fixed work setting
 		if (command.isAddMode()) {
@@ -71,4 +75,46 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 		}
 	}
 
+	/**
+	 * Validate.
+	 *
+	 * @param command
+	 *            the command
+	 * @param fixedWorkSetting
+	 *            the fixed work setting
+	 */
+	private void validate(FixedWorkSettingSaveCommand command, FixedWorkSetting fixedWorkSetting) {
+		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+
+		// Check common handler
+		try {
+			this.commonHandler.handle(command);
+		} catch (Exception e) {
+			if (e.getCause() instanceof BundledBusinessException) {
+				bundledBusinessExceptions.addMessage(((BundledBusinessException) e.getCause()).cloneExceptions());
+			} else if (e.getCause() instanceof BusinessException) {
+				bundledBusinessExceptions.addMessage((BusinessException) e.getCause());
+			} else {
+				throw e;
+			}
+		}
+
+		// Check domain
+		try {
+			fixedWorkSetting.validate();
+		} catch (BundledBusinessException e) {
+			bundledBusinessExceptions.addMessage(e.cloneExceptions());
+		} catch (BusinessException e) {
+			bundledBusinessExceptions.addMessage(e);
+		}
+
+		// Check policy
+		this.fixedPolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(),
+				fixedWorkSetting);
+
+		// Throw exceptions if exist
+		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
+			throw bundledBusinessExceptions;
+		}
+	}
 }

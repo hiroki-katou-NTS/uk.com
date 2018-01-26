@@ -69,7 +69,7 @@
 			<div id="functions-area-bottom" class="bottom_area_style">
 				<div data-bind="ntsCheckBox: { checked: check, enable: true}" style ="background-color: #F7EFD4; padding: 10px 25px; margin-bottom: 10px;">#{i18n.getText('CCG015_38')}</div>
 				<br/>
-				<button data-bind=" click: copyTopPage"
+				<button data-bind=" click: copyTopPage, enable: $root.errors.isEmpty"
 					class="btn-default proceed x-large copy_btn">#{i18n.getText('CCG015_37')}</button>
 				<button onclick="nts.uk.ui.windows.close()">#{i18n.getText('CCG015_31')}</button>
 			</div>

@@ -63,7 +63,7 @@ public class ErrorAlarmWorkRecordPubImpl implements ErrorAlarmWorkRecordPub {
 				domain.getMessage().getBoldAtr()?1:0,
 				domain.getMessage().getMessageColor().v(),
 				domain.getCancelableAtr()?1:0,
-				Integer.valueOf(domain.getErrorDisplayItem().intValueExact()),
+				domain.getErrorDisplayItem()==null ? 0 : Integer.valueOf(domain.getErrorDisplayItem().intValueExact()),
 				domain.getCancelRoleId(),
 				domain.getErrorAlarmCheckID(),
 				null
@@ -112,14 +112,19 @@ public class ErrorAlarmWorkRecordPubImpl implements ErrorAlarmWorkRecordPub {
 	public List<ErrorAlarmWorkRecordPubExport> getAllErrorAlarmWorkRecord(String companyID) {
 		List<ErrorAlarmWorkRecordPubExport> data = repo.getListErrorAlarmWorkRecord(companyID)
 				.stream().map(c->convertToExport(c)).collect(Collectors.toList());
-		
 		if(data.isEmpty())
 			return Collections.emptyList();
+		List<String> listErrorAlarmID = data.stream().map(c -> c.getErrorAlarmCheckID()).collect(Collectors.toList());
+		List<ErrorAlarmCondition> listErrorAlarmCon =  this.errorAlarmConditionRepo.findMessageConByListErAlCheckId(listErrorAlarmID);
+		
 		for(ErrorAlarmWorkRecordPubExport errorAlarmWorkRecordPubExport :data) {
-			Optional<ErrorAlarmCondition> errorAlarmCon =  this.errorAlarmConditionRepo.findConditionByErrorAlamCheckId(errorAlarmWorkRecordPubExport.getErrorAlarmCheckID());
-			if(errorAlarmCon.isPresent()) {
-				errorAlarmWorkRecordPubExport.setDisplayMessage(errorAlarmCon.get().getDisplayMessage().v());
+			for(ErrorAlarmCondition errorAlarmCondition:listErrorAlarmCon) {
+				if(errorAlarmWorkRecordPubExport.getErrorAlarmCheckID().equals(errorAlarmCondition.getErrorAlarmCheckID())) {
+					errorAlarmWorkRecordPubExport.setDisplayMessage(errorAlarmCondition.getDisplayMessage().v());
+					break;
+				}
 			}
+			
 		}
 		return data;
 	}

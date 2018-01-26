@@ -6,10 +6,10 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 
 /**
  * The Interface FlexWorkSettingGetMemento.

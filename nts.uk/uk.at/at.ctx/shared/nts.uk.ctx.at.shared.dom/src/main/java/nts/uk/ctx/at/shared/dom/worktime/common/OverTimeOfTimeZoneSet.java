@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class OverTimeOfTimeZoneSet.
  */
 // 残業時間の時間帯設定
 @Getter
-public class OverTimeOfTimeZoneSet extends DomainObject {
+public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject {
 
 	/** The work timezone no. */
 	// 就業時間帯NO
@@ -70,11 +70,5 @@ public class OverTimeOfTimeZoneSet extends DomainObject {
 		memento.setOTFrameNo(this.otFrameNo);
 		memento.setLegalOTframeNo(this.legalOTframeNo);
 		memento.setSettlementOrder(this.settlementOrder);
-	}
-	
-	@Override
-	public void validate()
-	{
-		super.validate();
 	}
 }

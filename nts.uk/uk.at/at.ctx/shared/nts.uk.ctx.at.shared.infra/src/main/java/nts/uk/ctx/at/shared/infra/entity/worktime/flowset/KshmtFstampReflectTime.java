@@ -48,9 +48,8 @@ public class KshmtFstampReflectTime extends UkJpaEntity implements Serializable 
 	/** The lst kshmt flow stamp reflect. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false)
-	})
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = true, updatable = true) })
 	private List<KshmtFlowStampReflect> lstKshmtFlowStampReflect;
 	
 	/**

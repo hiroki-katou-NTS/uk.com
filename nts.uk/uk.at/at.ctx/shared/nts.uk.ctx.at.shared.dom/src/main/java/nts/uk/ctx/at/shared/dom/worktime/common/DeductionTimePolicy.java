@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
@@ -14,9 +15,9 @@ public interface DeductionTimePolicy {
 	/**
 	 * Validate.
 	 *
+	 * @param be the be
 	 * @param predTime the pred time
 	 * @param dedTime the ded time
-	 * @return true, if successful
 	 */
-	void validate(PredetemineTimeSetting predTime, DeductionTime dedTime);
+	void validate(BundledBusinessException be, PredetemineTimeSetting predTime, DeductionTime dedTime);
 }

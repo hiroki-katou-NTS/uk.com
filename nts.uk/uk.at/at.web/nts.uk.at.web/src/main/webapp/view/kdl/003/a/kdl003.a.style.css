@@ -60,3 +60,17 @@ table.bottom_tbl td {
 .bg-green-kdl-003 {
 	background-color: #C7F391;
 }
+
+.kdl003-border::after {
+	position: absolute;
+    /* margin: unset; */
+    left: 50%;
+    border-top-width: 1em;
+    border-right-width: 5.5em;
+    border-left-width: 5.5em;
+    transform: translate(-50%, 0);
+    color: #888888;
+    margin-top: 3px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
