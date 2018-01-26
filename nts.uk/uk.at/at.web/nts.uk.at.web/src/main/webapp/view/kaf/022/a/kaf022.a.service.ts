@@ -15,7 +15,7 @@ module nts.uk.at.view.kmf022.a.service {
         // A5_14 -> A5_25
         findApproSet: "at/request/application/common/setting/appcommon",
         // A10_3
-        findAppCom: "at/request/application/common/setting/appset"
+        findAppCom: "at/request/application/common/setting/appset",
         // A13_4 có 2 sự lựa chọn, anh có thể lấy list cty đang đăng nhập rồi lên ui lọc, hoặc lấy thẳng 1 object nhớ truyền apptype 
         findAllPro: "at/request/application/setting/proxy/findAll",
         findProByApp: "at/request/application/setting/proxy/findApp",
@@ -23,6 +23,8 @@ module nts.uk.at.view.kmf022.a.service {
         findJobAssign: "job/assign/setting/getjob",
         //A15_4
         findJobTitleSearch: "workflow/jobtitlesearchset/job/getbyId",
+        // A16_7, A16_8
+        findMail: "at/request/application/mail/holiday",
         // A17_5
         findAppro: "approval/setting/approval",
         // A17_4, A9_5
@@ -35,7 +37,7 @@ module nts.uk.at.view.kmf022.a.service {
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
     }
-    export function findAllPro() {
+    export function findAppCom() {
         return nts.uk.request.ajax("at", paths.findAppCom); 
     }
     export function findProByApp(appType: number): JQueryPromise<void>{
