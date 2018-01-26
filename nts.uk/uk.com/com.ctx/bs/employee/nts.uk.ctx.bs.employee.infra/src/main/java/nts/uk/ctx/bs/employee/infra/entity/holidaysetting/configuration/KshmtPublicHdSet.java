@@ -30,32 +30,20 @@ public class KshmtPublicHdSet extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
-   
+    
     /** The exclus ver. */
     @Column(name = "EXCLUS_VER")
     private int exclusVer;
-
+    
     /** The cid. */
     @Id
     @Column(name = "CID")
     private String cid;
-
+   
     /** The is manage com public hd. */
     @Column(name = "IS_MANAGE_COM_PUBLIC_HD")
     private int isManageComPublicHd;
     
-    /** The is manage S pub hd. */
-    @Column(name = "IS_MANAGE_S_PUB_HD")
-    private int isManageSPubHd;
-   
-    /** The is manage wkp pub hd. */
-    @Column(name = "IS_MANAGE_WKP_PUB_HD")
-    private int isManageWkpPubHd;
-   
-    /** The is manage emp pub hd. */
-    @Column(name = "IS_MANAGE_EMP_PUB_HD")
-    private int isManageEmpPubHd;
-   
     /** The public hd manage atr. */
     @Column(name = "PUBLIC_HD_MANAGE_ATR")
     private int publicHdManageAtr;
@@ -63,20 +51,20 @@ public class KshmtPublicHdSet extends UkJpaEntity implements Serializable {
     /** The period. */
     @Column(name = "PERIOD")
     private int period;
-   
+    
     /** The full date. */
     @Column(name = "FULL_DATE")
     @Temporal(TemporalType.DATE)
     private Date fullDate;
-   
+    
     /** The day month. */
     @Column(name = "DAY_MONTH")
-    private int dayMonth;
+    private Integer dayMonth;
     
     /** The determine start D. */
     @Column(name = "DETERMINE_START_D")
     private int determineStartD;
-    
+
     /** The is weekly hd check. */
     @Column(name = "IS_WEEKLY_HD_CHECK")
     private int isWeeklyHdCheck;
@@ -111,6 +99,14 @@ public class KshmtPublicHdSet extends UkJpaEntity implements Serializable {
             return false;
         }
         return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "entities.KshmtPublicHdSet[ cid=" + cid + " ]";
     }
 
 	/* (non-Javadoc)

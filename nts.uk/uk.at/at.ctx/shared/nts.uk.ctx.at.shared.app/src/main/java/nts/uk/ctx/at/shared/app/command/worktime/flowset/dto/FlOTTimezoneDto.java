@@ -25,7 +25,7 @@ public class FlOTTimezoneDto implements FlowOTTimezoneGetMemento {
 	private Boolean restrictTime;
 
 	/** The OT frame no. */
-	private BigDecimal overtimeFrameNo;
+	private BigDecimal otFrameNo;
 
 	/** The flow time setting. */
 	private FlTimeSettingDto flowTimeSetting;
@@ -66,7 +66,7 @@ public class FlOTTimezoneDto implements FlowOTTimezoneGetMemento {
 	 */
 	@Override
 	public OvertimeWorkFrameNo getOTFrameNo() {
-		return new OvertimeWorkFrameNo(this.overtimeFrameNo);
+		return new OvertimeWorkFrameNo(this.otFrameNo);
 	}
 
 	/*

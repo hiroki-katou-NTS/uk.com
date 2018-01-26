@@ -13,6 +13,7 @@ module cps001.a.vm {
     import permision = service.getCurrentEmpPermision;
     import permision4Cat = service.getPermision4Cat;
     import format = nts.uk.text.format;
+    import lv = nts.layout.validate;
 
     const REPL_KEY = '__REPLACE',
         RELOAD_KEY = "__RELOAD",
@@ -538,6 +539,7 @@ module cps001.a.vm {
                             callback();
                         }
                     }
+                }).fail(msg => {
                 });
             },
             remove: (callback?: any) => {
@@ -572,6 +574,7 @@ module cps001.a.vm {
                             });;
                         });
                     }
+                }).fail(msg => {
                 });
             },
             replace: (callback?: any) => {
@@ -592,6 +595,7 @@ module cps001.a.vm {
                             callback();
                         }
                     }
+                }).fail(msg => {
                 });
             }
         }
@@ -690,6 +694,7 @@ module cps001.a.vm {
                                     }
                                 });
 
+                                lv.removeDoubleLine(data.classificationItems);
                                 layout.listItemCls(data.classificationItems || []);
                             } else {
                                 layout.listItemCls.removeAll();
@@ -719,6 +724,7 @@ module cps001.a.vm {
 
                                 service.getCatData(query).done(data => {
                                     if (data) {
+                                        lv.removeDoubleLine(data.classificationItems);
                                         layout.listItemCls(data.classificationItems || []);
                                     } else {
                                         layout.listItemCls.removeAll();
@@ -730,6 +736,9 @@ module cps001.a.vm {
                                 });
                                 break;
                             case IT_CAT_TYPE.MULTI:
+                                // http://192.168.50.4:3000/issues/87571
+                                self.infoId(undefined);
+                                self.gridlist.removeAll();
                                 layout.listItemCls.removeAll();
                                 break;
                             case IT_CAT_TYPE.CONTINU:
@@ -845,6 +854,7 @@ module cps001.a.vm {
                                 self.changeTitle(ATCS.UPDATE);
                             }
                             layout.showColor(false);
+                            lv.removeDoubleLine(data.classificationItems);
                             layout.listItemCls(data.classificationItems);
 
                             let roleId = self.roleId(),
@@ -863,7 +873,6 @@ module cps001.a.vm {
                                 }
 
                                 if (perm && !!(selEmId == logInId ? perm.selfAllowDelHis : perm.otherAllowDelHis)) {
-                                    debugger;
                                     if (index > -1) {
                                         if (index == 0) {
                                             self.permisions.remove(true);
@@ -881,6 +890,8 @@ module cps001.a.vm {
                                 } else {
                                     self.permisions.remove(false);
                                 }
+                            }).fail(msg => {
+
                             });
                         });
                     } else {

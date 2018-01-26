@@ -6,9 +6,10 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Builder;
 import lombok.Getter;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class BreakDownTimeDay.
@@ -16,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Builder
 @Getter
 //１日の時間内訳
-public class BreakDownTimeDay extends DomainObject{
+public class BreakDownTimeDay extends WorkTimeDomainObject {
 
 	/** The one day. */
 	// 1日
@@ -38,17 +39,21 @@ public class BreakDownTimeDay extends DomainObject{
 	public void validate() {
 		super.validate();
 		
-		// if 1日<午前 => Msg_518 
+		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
 		
+		// if 1日<午前 => Msg_518 
 		if (this.oneDay.lessThan(this.morning)) {
-			throw new BusinessException("Msg_518", "KMK003_217");
+			bundledBusinessExceptions.addMessage("Msg_518", "KMK003_217");
 		}
 
 		// 1日<午後 => Msg_518
 		if (this.oneDay.lessThan(this.afternoon)) {
-			throw new BusinessException("Msg_518", "KMK003_218");
+			bundledBusinessExceptions.addMessage("Msg_518", "KMK003_218");
 		}
 		
+		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
+			throw bundledBusinessExceptions;
+		}
 	}
 
 

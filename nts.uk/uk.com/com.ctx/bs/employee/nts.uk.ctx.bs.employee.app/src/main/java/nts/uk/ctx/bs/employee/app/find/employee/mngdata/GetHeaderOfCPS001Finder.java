@@ -20,8 +20,8 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
@@ -40,7 +40,7 @@ public class GetHeaderOfCPS001Finder {
 	private AffDepartmentHistoryItemRepository historyItemRepo;
 
 	@Inject
-	private AffJobTitleHistoryItemRepository_ver1 jobTitleHisRepo;
+	private AffJobTitleHistoryItemRepository jobTitleHisRepo;
 
 	@Inject
 	private JobTitleInfoRepository jobTitleInfoRepo;
@@ -88,7 +88,7 @@ public class GetHeaderOfCPS001Finder {
 											: LocalDate.now()))
 							.mapToInt(m -> Math.abs(m.intValue())).sum());
 
-					Optional<AffJobTitleHistoryItem_ver1> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid,
+					Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid,
 							date);
 
 					if (jobTitleHisItem.isPresent()) {

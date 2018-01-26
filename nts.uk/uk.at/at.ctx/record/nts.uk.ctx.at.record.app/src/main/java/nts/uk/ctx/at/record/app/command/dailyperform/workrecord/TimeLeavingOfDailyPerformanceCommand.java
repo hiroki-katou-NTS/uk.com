@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class TimeLeavingOfDailyPerformanceCommand extends DailyWorkCommonCommand {
@@ -34,7 +34,7 @@ public class TimeLeavingOfDailyPerformanceCommand extends DailyWorkCommonCommand
 	@Override
 	public TimeLeavingOfDailyPerformance toDomain() {
 		return !data.isPresent() ? null : new TimeLeavingOfDailyPerformance(
-				getEmployeeId(), new WorkTimes(data.get().getWorkTimes()), 
+				getEmployeeId(), data.get().getWorkTimes() == null ? null : new WorkTimes(data.get().getWorkTimes()),
 				data.get().getWorkAndLeave() == null ? new ArrayList<>() : 
 					ConvertHelper.mapTo(data.get().getWorkAndLeave(), c ->  toTimeLeaveWork(c)),
 				getWorkDate());

@@ -66,6 +66,7 @@ module nts.uk.at.view.kmk008.e {
                 } else {
                     self.textOvertimeName(nts.uk.resource.getText("KMK008_12", ['{#KMK008_9}', '{#Com_Workplace}']));
                 }
+                self.selectedWorkplaceId('');
                 $('#tree-grid-screen-e').ntsTreeComponent(self.treeGrid).done(function() {
                     self.workplaceGridList($('#tree-grid-screen-e').getDataList());
                     if (self.workplaceGridList().length > 0) {
@@ -84,6 +85,7 @@ module nts.uk.at.view.kmk008.e {
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.workPlaceIds.length > 0) {
                         self.alreadySettingList(_.map(data.workPlaceIds, item => { return new UnitAlreadySettingModel(item.toString()) }));
+                        _.defer(() => self.workplaceGridList($('#tree-grid-screen-e').getDataList()));
                     }
                     self.isRemove(self.isShowAlreadySet());
                     dfd.resolve();
@@ -116,7 +118,9 @@ module nts.uk.at.view.kmk008.e {
                     new service.Service().updateAgreementTimeOfWorkplace(timeOfWorkPlaceNew).done(listError => {
                         if (listError.length > 0) {
                             let errorCode = _.split(listError[0], ',');
-                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
+                            let periodName = nts.uk.resource.getText(errorCode[1]);
+                            let param1 = "期間: "+nts.uk.resource.getText(errorCode[1]) +"<br>"+nts.uk.resource.getText(errorCode[2]);
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
                             return;
                         }
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
@@ -127,7 +131,9 @@ module nts.uk.at.view.kmk008.e {
                 new service.Service().addAgreementTimeOfWorkPlace(timeOfWorkPlaceNew).done(listError => {
                     if (listError.length > 0) {
                         let errorCode = _.split(listError[0], ',');
-                        nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
+                      let  periodName = nts.uk.resource.getText(errorCode[1]);
+                            let param1 = "期間: "+nts.uk.resource.getText(errorCode[1]) +"<br>"+nts.uk.resource.getText(errorCode[2]);
+                            nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [param1, nts.uk.resource.getText(errorCode[3])] });
                         return;
                     }
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" });

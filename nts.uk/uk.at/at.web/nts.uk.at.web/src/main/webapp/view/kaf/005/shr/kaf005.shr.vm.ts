@@ -207,6 +207,7 @@ module nts.uk.at.view.kaf005.share {
             endTime: KnockoutObservable<number>;
             applicationTime: KnockoutObservable<number>;
             nameID: KnockoutObservable<string>;
+            
             constructor(
                 companyID: string,
                 appID: string,
@@ -218,7 +219,7 @@ module nts.uk.at.view.kaf005.share {
                 startTime: number,
                 endTime: number,
                 applicationTime: number,
-                nameID: string) {
+                nameID: string, color : string) {
                 this.companyID = ko.observable(companyID);
                 this.appID = ko.observable(appID);
                 this.attendanceID = ko.observable(attendanceID);
@@ -230,10 +231,11 @@ module nts.uk.at.view.kaf005.share {
                 this.endTime = ko.observable(endTime);
                 this.applicationTime = ko.observable(applicationTime);
                 this.nameID = ko.observable(nameID);
+                
             }
         } 
         export class OvertimeCaculation{
-             companyID: KnockoutObservable<string>;
+            companyID: KnockoutObservable<string>;
             appID: KnockoutObservable<string>;
             attendanceID: KnockoutObservable<number>;
             attendanceName: KnockoutObservable<string>;
@@ -245,6 +247,7 @@ module nts.uk.at.view.kaf005.share {
             caculationTime: KnockoutObservable<string>;
             nameID: KnockoutObservable<string>;
             itemName: string;
+            color : KnockoutObservable<string>;
             constructor(
                 companyID: string,
                 appID: string,
@@ -256,7 +259,9 @@ module nts.uk.at.view.kaf005.share {
                 applicationTime: number,
                 preAppTime: string,
                 caculationTime: string,
-                nameID: string) {
+                nameID: string,
+                itemName: string,
+                color :string) {
                 this.companyID = ko.observable(companyID);
                 this.appID = ko.observable(appID);
                 this.attendanceID = ko.observable(attendanceID);
@@ -269,6 +274,7 @@ module nts.uk.at.view.kaf005.share {
                 this.caculationTime = ko.observable(caculationTime);
                 this.nameID = ko.observable(nameID);
                 this.itemName = nts.uk.resource.getText("KAF005_85",[frameName]);
+                this.color = ko.observable(color);
             }
         }  
 		export class overtimeWork {

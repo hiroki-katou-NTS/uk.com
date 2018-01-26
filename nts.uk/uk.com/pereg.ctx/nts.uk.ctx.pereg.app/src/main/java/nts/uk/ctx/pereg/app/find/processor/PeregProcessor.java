@@ -229,7 +229,9 @@ public class PeregProcessor {
 			case SINGLEINFO:
 				setOptionData(perInfoCtg, classItemList, query);
 				break;
+			case DUPLICATEHISTORY:
 			case CONTINUOUSHISTORY:
+			case CONTINUOUS_HISTORY_FOR_ENDDATE:
 			case NODUPLICATEHISTORY:
 				String recordId = query.getInfoId();
 				setOptionalDataByRecordId(recordId, perInfoCtg.getPersonEmployeeType(), classItemList);
@@ -315,7 +317,7 @@ public class PeregProcessor {
 		if(infoId == null) {
 			if((perInfoCtgAuth.getOtherAllowAddHis() == PersonInfoPermissionType.NO && !isSelf)
 					||(perInfoCtgAuth.getSelfAllowAddHis() == PersonInfoPermissionType.NO && isSelf)) {
-				returnObject.isViewOnly =  true;
+				returnObject.isViewOnly = false;
 				return returnObject;
 			}
 		}else {

@@ -6,9 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+@Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -132,6 +133,14 @@ public class KrqstApplicationSetting extends UkJpaEntity {
 	@Column(name = "ATTENDENT_TIME_REFLECT_FLG")
 	public int attendentTimeReflectFlg;
 
+	/**スケジュールが確定されている場合*/
+	@Column(name = "ACHIEVEMENT_CONFIRM_ATR")
+	public int achievementConfirmedAtr;
+	
+	/**実績が確定されている場合*/
+	@Column(name = "SCHEDULE_CONFIRM_ATR")
+	public int scheduleConfirmedAtr;
+	
 	@Override
 	protected Object getKey() {
 		return krqstApplicationSettingPK;

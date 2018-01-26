@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlStampReflectTzSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTzSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectReferenceTwoWorkTime;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowStampReflect;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowStampReflectPK;
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFstampReflectTime
 /**
  * The Class JpaFlowStampReflectTimezoneSetMemento.
  */
-public class JpaFlowStampReflectTimezoneSetMemento implements FlStampReflectTzSetMemento {
+public class JpaFlowStampReflectTimezoneSetMemento implements FlowStampReflectTzSetMemento {
 
 	/** The entity. */
 	private KshmtFstampReflectTime entity;

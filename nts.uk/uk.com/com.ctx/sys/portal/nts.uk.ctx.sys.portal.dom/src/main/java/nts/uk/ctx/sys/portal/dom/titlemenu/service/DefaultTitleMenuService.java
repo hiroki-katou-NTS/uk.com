@@ -1,6 +1,8 @@
 package nts.uk.ctx.sys.portal.dom.titlemenu.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -27,8 +29,9 @@ public class DefaultTitleMenuService implements TitleMenuService  {
 	
 	@Override
 	public boolean isExist(String companyID, String titleMenuCD) {
-		Optional<TitleMenu> titleMenu = titleMenuRepository.findByCode(companyID, titleMenuCD);
-		return titleMenu.isPresent();
+		List<TitleMenu> lstTitleMenu = titleMenuRepository.findAll(companyID);
+		List<TitleMenu> lstTmp = lstTitleMenu.stream().filter(x -> x.getTitleMenuCD().toString().equals(titleMenuCD)).collect(Collectors.toList());
+		return !lstTmp.isEmpty();
 	}
 
 	@Override
@@ -43,14 +46,13 @@ public class DefaultTitleMenuService implements TitleMenuService  {
 	@Override
 	public void copyTitleMenu(String companyID, String sourceTitleMenuCD, String targetTitleMenuCD, String targetTitleMenuName, Boolean overwrite) {
 		TitleMenu oldTitleMenu = titleMenuRepository.findByCode(companyID, sourceTitleMenuCD).get();
-		
-		if (isExist(companyID, targetTitleMenuCD)) {
-			if (overwrite)
+		if(isExist(companyID, targetTitleMenuCD)) {
+			if(overwrite) {
 				titleMenuRepository.remove(companyID, targetTitleMenuCD);
-			else
+			}else {
 				throw new BusinessException("Msg_3");
+			}
 		}
-		
 		// Create new TitleMenu's Layout
 		String newLayoutId = layoutService.copyTitleMenuLayout(oldTitleMenu.getLayoutID());
 		// Create new TitleMenu				

@@ -10,14 +10,14 @@ import java.util.stream.Collectors;
 import lombok.Value;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlStampReflectTzGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTzGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectReferenceTwoWorkTime;
 
 /**
  * The Class FlStampReflectTzDto.
  */
 @Value
-public class FlStampReflectTzDto implements FlStampReflectTzGetMemento {
+public class FlStampReflectTzDto implements FlowStampReflectTzGetMemento {
 
 	/** The two times work reflect basic time. */
 	private Integer twoTimesWorkReflectBasicTime;

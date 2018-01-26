@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements EmployeeDailyPerErrorRepository {
@@ -46,24 +47,42 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		builderString.append("FROM KrcdtSyainDpErList a ");
 		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtSyainDpErListPK.processingDate = :ymd ");
-		List<KrcdtSyainDpErList> result = this.queryProxy()
-				.query(builderString.toString(), KrcdtSyainDpErList.class).setParameter("employeeId", employeeID)
-				.setParameter("ymd", processingDate).getList();
+		List<KrcdtSyainDpErList> result = this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
+				.setParameter("employeeId", employeeID).setParameter("ymd", processingDate).getList();
 		if (!result.isEmpty()) {
-			return new EmployeeDailyPerError(result.get(0).krcdtSyainDpErListPK.companyID,
-					result.get(0).krcdtSyainDpErListPK.employeeId, result.get(0).krcdtSyainDpErListPK.processingDate,
-					new ErrorAlarmWorkRecordCode(result.get(0).krcdtSyainDpErListPK.errorCode),
-					result.stream().map(c -> c.attendanceItemId).collect(Collectors.toList()),
-					result.get(0).errorCancelable);
+			return toDomain(result);
 		}
 
 		return null;
+	}
+
+	public EmployeeDailyPerError toDomain(List<KrcdtSyainDpErList> result) {
+		return new EmployeeDailyPerError(result.get(0).krcdtSyainDpErListPK.companyID,
+				result.get(0).krcdtSyainDpErListPK.employeeId, result.get(0).krcdtSyainDpErListPK.processingDate,
+				new ErrorAlarmWorkRecordCode(result.get(0).krcdtSyainDpErListPK.errorCode),
+				result.stream().map(c -> c.attendanceItemId).collect(Collectors.toList()),
+				result.get(0).errorCancelable);
 	}
 
 	@Override
 	public void update(EmployeeDailyPerError employeeDailyPerformanceError) {
 		this.commandProxy().updateAll(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<EmployeeDailyPerError> finds(List<String> employeeID, DatePeriod processingDate) {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId IN :employeeId ");
+		builderString.append("AND a.krcdtSyainDpErListPK.processingDate <= :end ");
+		builderString.append("AND a.krcdtSyainDpErListPK.processingDate >= :start ");
+		return this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
+				.setParameter("employeeId", employeeID).setParameter("end", processingDate.end())
+				.setParameter("start", processingDate.start()).getList().stream().collect(Collectors.groupingBy(
+						c -> c.krcdtSyainDpErListPK.employeeId + c.krcdtSyainDpErListPK.processingDate.toString()))
+				.entrySet().stream().map(c -> toDomain(c.getValue())).collect(Collectors.toList());
 	}
 
 }

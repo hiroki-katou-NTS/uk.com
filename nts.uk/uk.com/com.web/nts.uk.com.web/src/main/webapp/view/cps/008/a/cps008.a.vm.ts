@@ -4,6 +4,7 @@ module cps008.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
     import Text = nts.uk.resource.getText;
+    import lv = nts.layout.validate;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -32,18 +33,7 @@ module cps008.a.viewmodel {
                             layout.name(data.layoutName);
 
                             // remove all sibling sperators
-                            let maps = _(data.listItemClsDto)
-                                .map((x, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
-                                .filter(x => x != -1).value();
-
-                            _.each(maps, (t, i) => {
-                                if (maps[i + 1] == t + 1) {
-                                    _.remove(data.listItemClsDto, (m: IItemClassification) => {
-                                        let item: IItemClassification = ko.unwrap(data.listItemClsDto)[maps[i + 1]];
-                                        return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
-                                    });
-                                }
-                            });
+                            lv.removeDoubleLine(data.itemsClassification);
 
                             layout.classifications(data.listItemClsDto || []);
                             layout.action(LAYOUT_ACTION.UPDATE);

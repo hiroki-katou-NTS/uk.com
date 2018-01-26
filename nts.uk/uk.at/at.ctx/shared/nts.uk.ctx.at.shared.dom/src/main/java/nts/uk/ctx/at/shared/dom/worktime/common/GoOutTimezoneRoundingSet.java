@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 //時間帯別外出丸め設定
 @Getter
-public class GoOutTimezoneRoundingSet extends DomainObject {
+public class GoOutTimezoneRoundingSet extends WorkTimeDomainObject {
 	
 	/** The pub hol work timezone. */
 	//休日出勤時間帯

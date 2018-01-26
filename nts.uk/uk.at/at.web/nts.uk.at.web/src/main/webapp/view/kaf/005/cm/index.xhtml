@@ -1,7 +1,8 @@
 <div>
 	<div  data-bind="if: indicationOvertimeFlg" >
 		<div class="cf valign-center control-group"
-			style = "margin-left: -2px; background: #f8efd4; padding: 15px 10px 15px 12px; width: 778px;">
+			data-bind="style: {padding: screenModeNew()== true ? '0px 10px 15px 12px' : '15px 10px 15px 12px'}"
+			style = "margin-left: -2px; background: #f8efd4;width: 778px;">
 			<!--A2_7 時間外労働ラベル--> 			
 			<div class="pull-left">#{i18n.getText('KAF005_23')}</div>
 			<div class="pull-left">
@@ -177,8 +178,8 @@
 				<table id="fixed-table">
 					<colgroup>
 						<col width="109px" />
-						<col width="109px" />
-						<col width="109px" />
+						<col width="115px" />
+						<col width="115px" />
 					</colgroup>
 					<thead>
 						<tr>
@@ -195,10 +196,10 @@
 							<td class="header" data-bind="text: frameName"></td>
 							<!--A5_6 開始時刻--> 						
 							<td><input tabindex="12" class="right-content"
-								data-bind="attr: { id: 'restTimeStart_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF005_337]', value: startTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+								data-bind="attr: { id: 'restTimeStart_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF005_337]', value: startTime, constraint:'TimeWithDayAttr', option: {width: '85px', timeWithDay: true}}" /></td>
 							<!--A5_7 終了時刻--> 						
 							<td><input tabindex="12" class="right-content"
-								data-bind="attr: { id: 'restTimeEnd_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF005_338]', value: endTime, constraint:'TimeWithDayAttr', option: {width: '80px', timeWithDay: true}}" /></td>
+								data-bind="attr: { id: 'restTimeEnd_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF005_338]', value: endTime, constraint:'TimeWithDayAttr', option: {width: '85px', timeWithDay: true}}" /></td>
 						</tr>
 					</tbody>
 				</table>
@@ -237,8 +238,8 @@
 							<!--A6_7 残業時間名称--> 						
 							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
 							<!--A6_8 残業申請時間入力--> 						
-							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="15" class="right-content"
-								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()},  ntsTimeEditor: {name: nameID ,value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
+							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }"><input tabindex="15" class="right-content"
+								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }, ntsTimeEditor: {name: nameID ,value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
 							<!--A6_9 残業事前申請時間--> 						
 							<td class="right-content" data-bind="text: preAppTime"></td>
 							<!--A6_11 実績時間--> 						
@@ -326,7 +327,7 @@
 			</div>
 		</div>
 		<!--定型理由 -->
-		<div class="valign-center control-group"
+		<div class="valign-center control-group overlay-reason"
 			data-bind="if: typicalReasonDisplayFlg">
 			<!--A9_1 定型理由ラベル--> 			
 			<div class="lblTitle cm-column" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF005_86')}</div>
@@ -361,7 +362,7 @@
 			</div>
 		</div>
 		<!--定型理由 -->
-		<div class="valign-center control-group"
+		<div class="valign-center control-group overlay-reason"
 			data-bind="if: displayDivergenceReasonForm">
 			<!--A9_5 乖離定型理由ラベル--> 
 			<div class="lblTitle cm-column" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF005_90')}</div>

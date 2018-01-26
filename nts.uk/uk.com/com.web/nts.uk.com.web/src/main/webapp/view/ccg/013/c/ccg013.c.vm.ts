@@ -41,8 +41,8 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             });
 
             //color picker
-            self.letterColor = ko.observable('');
-            self.backgroundColor = ko.observable('');
+            self.letterColor = ko.observable('#FFFFFF');
+            self.backgroundColor = ko.observable('#FF9900');
             //GridList
             self.listTitleMenu = ko.observableArray([]);
             self.columns = ko.observableArray([

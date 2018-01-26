@@ -24,6 +24,18 @@ module nts.uk.at.view.kal003.share {
             });
         }
     
+        export function getDefaultAlCheckTargetCondition() : model.AlCheckTargetCondition {
+            return new model.AlCheckTargetCondition ({
+                filterByBusinessType    : false,
+                filterByJobTitle        : false,
+                filterByEmployment      : false,
+                filterByClassification  : false,
+                lstBusinessTypeCode     : [],
+                lstJobTitleId           : [],
+                lstEmploymentCode       : [],
+                lstClassificationCode   : []
+                });
+        }
         /**
          * initial default value for CompoundConditio Object
          * @param itemcheck
@@ -63,7 +75,7 @@ module nts.uk.at.view.kal003.share {
             return new model.ErrorAlarmCondition({
                 errorAlarmCheckID       : '',
                 displayMessage          : '',
-                alCheckTargetCondition  : null,
+                alCheckTargetCondition  : getDefaultAlCheckTargetCondition(),
                 workTypeCondition       : getDefaultWorkTypeCondition(),
                 workTimeCondition       : getDefaultWorkTimeCondition(),
                 atdItemCondition        : getDefaultAttendanceItemCondition(),
@@ -71,36 +83,7 @@ module nts.uk.at.view.kal003.share {
             });
         }
             
-        /**
-         * initial default value for IKAL003BModel Object
-         * @param checkItem
-         */
-        /*
-        export function getDefaultIKAL003BModel(checkItem : number) : model.IKAL003BModel {
-            let self = this;
-            let defaultAtdItemCondition = getDefaultAtdItemCondition();
-            let kal003BModel = new model.KAL003BModel({
-                category:                   0
-                , erAlCheckId:              ''
-                , checkItem:                checkItem || 0
-                , workTypeSelections:       []
-                , workTimeItemSelections:   []
-                , comparisonOperator:       0
-                , minimumValue:             ''
-                , maximumValue:             ''
-                , continuousPeriodInput:    ''
-                , workingTimeZoneSelections: []
-                , color:                    ''
-                , message:                  ''
-                , isBold:                   false
-                , workTypeCondition:        1
-                , workTimeCondition:        0
-                , atdItemCondition:         defaultAtdItemCondition
-            });
-            return kal003BModel;
-        }
-        */
-        /**
+         /**
          * initial default value for WorkRecordExtractingCondition Object
          * @param checkItem
          */
@@ -118,36 +101,88 @@ module nts.uk.at.view.kal003.share {
             });
             return workRecordExtractingCondition;
         }
-        /*
-        export function transformDataFromA2B(category: number, 
-            workRecordExtractingCondition : WorkRecordExtractingCondition,  ) : model.IKAL003BModel {
-            errorAlarmCondition : model.ErrorAlarmCondition = workRecordExtractingCondition.errorAlarmCondition;
-            return model.IErrorAlarmWorkRecordDto ({
-                category            : category,
-                erAlCheckId         : workRecordExtractingCondition.errorAlarmCheckID,
-                checkItem           : workRecordExtractingCondition.checkItem,
-                workTypeSelections  : errorAlarmCondition.workTypeCondition.planLstWorkType,
-                workTimeItemSelections:errorAlarmCondition.workTimeCondition.planLstWorkType,
-                comparisonOperator  : errorAlarmCondition.workTimeCondition.comparisonOperator,
-                minimumValue        : errorAlarmCondition.workTimeCondition.minimumValue,
-                maximumValue        : errorAlarmCondition.workTimeCondition.maximumValue,
-                continuousPeriod    : errorAlarmCondition.continuousPeriod,
-                workingTimeZoneSelections: errorAlarmCondition.workTimeZoneCondition.workTimeZoneCode,
-                color               : workRecordExtractingCondition.messageColor,
-                message             : errorAlarmCondition.displayMessage,
-                isBold              : workRecordExtractingCondition.messageBoldboolean,
-                workTypeCondition: errorAlarmCondition.workTypeCondition.comparePlanAndActual,
-                workTimeZoneCondition: errorAlarmCondition.workZoneCondition.comparePlanAndActual,
-                atdItemCondition: errorAlarmCondition.atdItemCondition,
-            });
-        }
         
-        export function transformDataFromB2A() : model.IErrorAlarmCondition {
-        
-            return model.IErrorAlarmCondition ({
+        export function convertTransferDataToWorkRecordExtractingCondition(
+            workRecordExtractingCondition : model.WorkRecordExtractingCondition) : model.WorkRecordExtractingCondition {
+            let convertWorkRecordExtractingCondition = new model.WorkRecordExtractingCondition(workRecordExtractingCondition);
+            
+            convertWorkRecordExtractingCondition.errorAlarmCondition(new model.ErrorAlarmCondition(workRecordExtractingCondition.errorAlarmCondition));
+            convertWorkRecordExtractingCondition.errorAlarmCondition()
+                .alCheckTargetCondition(new model.AlCheckTargetCondition(workRecordExtractingCondition.errorAlarmCondition.alCheckTargetCondition));
+            
+            convertWorkRecordExtractingCondition.errorAlarmCondition()
+                .workTypeCondition(new model.WorkTypeCondition(workRecordExtractingCondition.errorAlarmCondition.workTypeCondition));
+            convertWorkRecordExtractingCondition.errorAlarmCondition()
+                .workTimeCondition(new model.WorkTimeCondition(workRecordExtractingCondition.errorAlarmCondition.workTimeCondition));
+            convertWorkRecordExtractingCondition.errorAlarmCondition()
+                .atdItemCondition(new model.AttendanceItemCondition(workRecordExtractingCondition.errorAlarmCondition.atdItemCondition));
+            //group 1
+            convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition()
+                .group1(new model.ErAlConditionsAttendanceItem(workRecordExtractingCondition.errorAlarmCondition.atdItemCondition.group1));
+            //ErAlAtdItemCondition
+            let lstErAlAtdItemCon1 = workRecordExtractingCondition.errorAlarmCondition.atdItemCondition.group1.lstErAlAtdItemCon;
+            convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon = ko.observableArray([]);
+            if (lstErAlAtdItemCon1) {
+                for(var i=0; i< lstErAlAtdItemCon1.length; i++) {
+                    var erAlAtdItemCondition1 = new model.ErAlAtdItemCondition(lstErAlAtdItemCon1[i].targetNO, lstErAlAtdItemCon1[i]);
+                    convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon().push(erAlAtdItemCondition1);
+                }
                 
-            });
+
+            }
+            
+            //group 2
+            convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition()
+                .group2(new model.ErAlConditionsAttendanceItem(workRecordExtractingCondition.errorAlarmCondition.atdItemCondition.group2));
+            //ErAlAtdItemCondition
+            let lstErAlAtdItemCon2 = workRecordExtractingCondition.errorAlarmCondition.atdItemCondition.group2.lstErAlAtdItemCon;
+            convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon = ko.observableArray([]);
+            
+            if (lstErAlAtdItemCon2) {
+                for(var i=0; i< lstErAlAtdItemCon2.length; i++) {
+                   var  erAlAtdItemCondition2 = new model.ErAlAtdItemCondition(lstErAlAtdItemCon2[i].targetNO, lstErAlAtdItemCon2[i]);
+                    convertWorkRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon().push(erAlAtdItemCondition2);
+                }
+            }
+            return convertWorkRecordExtractingCondition;
         }
-        */
+        
+        export function convertArrayOfWorkRecordExtractingConditionToJS(dataJS : any,
+            workRecordExtractingCondition : model.WorkRecordExtractingCondition) : any {
+            let errorAlarmCondition = workRecordExtractingCondition.errorAlarmCondition();
+            dataJS.errorAlarmCondition.workTypeCondition.planLstWorkType   = _.values(errorAlarmCondition.workTypeCondition().planLstWorkType());
+            dataJS.errorAlarmCondition.workTypeCondition.actualLstWorkType = _.values(errorAlarmCondition.workTypeCondition().actualLstWorkType);
+            
+            dataJS.errorAlarmCondition.workTimeCondition.planLstWorkType   = _.values(errorAlarmCondition.workTypeCondition().planLstWorkType());
+            dataJS.errorAlarmCondition.workTimeCondition.actualLstWorkType = _.values(errorAlarmCondition.workTypeCondition().actualLstWorkType);
+            
+            dataJS.errorAlarmCondition.atdItemCondition = 
+                convertArrayOfAttendanceItemCondition(dataJS.errorAlarmCondition.atdItemCondition, errorAlarmCondition.atdItemCondition());
+            return dataJS;
+        }
+        /**
+         * Covert all data array to array data of JSon
+         */
+        export function convertArrayOfAttendanceItemCondition(dataAttItemJS, attItemCondition : model.AttendanceItemCondition) : any {
+            dataAttItemJS.group1.lstErAlAtdItemCon = _.values(attItemCondition.group1().lstErAlAtdItemCon());
+            let lstErAlAtdItemCon1 = attItemCondition.group1().lstErAlAtdItemCon();
+            if (lstErAlAtdItemCon1) {
+                for(var i=0; i< lstErAlAtdItemCon1.length; i++) {
+                    dataAttItemJS.group1.lstErAlAtdItemCon[i].countableAddAtdItems = _.values(lstErAlAtdItemCon1[i].countableAddAtdItems);
+                    dataAttItemJS.group1.lstErAlAtdItemCon[i].countableSubAtdItems = _.values(lstErAlAtdItemCon1[i].countableSubAtdItems);
+                }
+            }
+            
+            dataAttItemJS.group2.lstErAlAtdItemCon = _.values(attItemCondition.group2().lstErAlAtdItemCon());
+            let lstErAlAtdItemCon2 = attItemCondition.group2().lstErAlAtdItemCon();            
+            if (lstErAlAtdItemCon2) {
+                for(var i=0; i< lstErAlAtdItemCon2.length; i++) {
+                    dataAttItemJS.group2.lstErAlAtdItemCon[i].countableAddAtdItems = _.values(lstErAlAtdItemCon2[i].countableAddAtdItems);
+                    dataAttItemJS.group2.lstErAlAtdItemCon[i].countableSubAtdItems = _.values(lstErAlAtdItemCon2[i].countableSubAtdItems);
+                }
+            }
+            return dataAttItemJS;
+
+        } 
     }
 }

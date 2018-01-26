@@ -21,7 +21,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
         listAllWorkingTime  : Array<string> = ([]);
 
         displayWorkTypeSelections_BA1_4         : KnockoutObservable<string> = ko.observable('');
-        displayAttendanceItemSelections_BA2_3     : KnockoutObservable<string> = ko.observable('');
+        displayAttendanceItemSelections_BA2_3   : KnockoutObservable<string> = ko.observable('');
         displayWorkingTimeSelections_BA5_3  : KnockoutObservable<string> = ko.observable('');
                
         private setting : sharemodel.WorkRecordExtractingCondition;
@@ -35,9 +35,11 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let self = this;
             let option = windows.getShared('inputKal003b');
             self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option);
-            self.workRecordExtractingCondition = ko.observable(self.setting);
-            // setting comparison value range
             
+            let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+            self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+            // setting comparison value range
+
             let erAlAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
             self.comparisonRange = ko.observable(new model.ComparisonValueRange(
                 self.workRecordExtractingCondition().checkItem
@@ -52,16 +54,6 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     self.initialScreen();
                 }
             });
-
-            /*
-            self.currentErrAlaCheckCondition().minimumValue.subscribe((minimumValue) => {
-                
-                self.checkValidOfRange(0); //min
-            });
-            self.currentErrAlaCheckCondition().maximumValue.subscribe((maximumValue) => {
-                self.checkValidOfRange(1); //max
-            });
-            */
         }
 
         //initial screen
@@ -89,7 +81,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
         private settingEnableComparisonMaxValueField() {
             let self = this;
             self.enableComparisonMaxValue(
-                self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon[0]().compareOperator() > 5);
+                self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0].compareOperator() > 5);
         }
         
         /**
@@ -370,7 +362,8 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let self = this;
             //ドメインモデル「就業時間帯の設定」を取得する - Acquire domain model "WorkTimeSetting"
             service.getAttendCoutinousTimeZone().done((settingTimeZones) => {
-                self.initialWorkTimeCodesFromDtos(settingTimeZones);
+                self.getListAttendanceIdFromDtos(settingTimeZones);
+                //self.initialWorkTimeCodesFromDtos(settingTimeZones);
               //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
                 self.initialWorkTypes();
             });
@@ -636,68 +629,6 @@ module nts.uk.at.view.kal003.b.viewmodel{
         }
         
         /**
-         * Open dialog C for group condition 1
-         */
-        /*
-        btnSettingB5_7_click () {
-            let self = this,
-                workRecordExtractingCondition = self.workRecordExtractingCondition();
-
-            alert("open dialog B5_7");
-
-            block.invisible();
-
-            let lstSelectedCode = workRecordExtractingCondition.workTypeSelections();
-            let lstSelectableCode = [];
-            
-            windows.setShared('KAL003C_Multiple',false,true);
-            //all possible items
-            windows.setShared('KAL003C_AllItemObj',lstSelectableCode,true);
-            //selected items
-            windows.setShared('KAL003C_SelectedItemId',lstSelectedCode,true);
-            
-            windows.sub.modal('/view/kal/003/c/index.xhtml', { title: '乖離時間の登録＞対象項目'}).onClosed(function(): any {
-              //get data from share window
-                let listCds = windows.getShared('KAL003C_SelectedNewItem');
-                if (listCds != null && listCds != undefined) {
-                    //
-                }
-                block.clear();
-            });
-        }
-        */
-        /**
-         * Open dialog C for group condition 2
-         */
-        /*
-        btnSettingB16_5_click () {
-            let self = this,
-                workRecordExtractingCondition = self.workRecordExtractingCondition();
-
-            alert("open dialog B16_5");
-
-            block.invisible();
-
-            let lstSelectedCode = workRecordExtractingCondition.workTypeSelections();
-            let lstSelectableCode = [];
-            
-            windows.setShared('KAL003C_Multiple',false,true);
-            //all possible items
-            windows.setShared('KAL003C_AllItemObj',lstSelectableCode,true);
-            //selected items
-            windows.setShared('KAL003C_SelectedItemId',lstSelectedCode,true);
-            windows.sub.modal('/view/kal/003/c/index.xhtml', { title: '乖離時間の登録＞対象項目'}).onClosed(function(): any {
-              //get data from share window
-                let listCds = windows.getShared('KAL003C_SelectedNewItem');
-                if (listCds != null && listCds != undefined) {
-                    //
-                }
-                block.clear();
-            });
-        }
-        
-        */
-        /**
          * close dialog B and return result
          */
         btnDecision() {
@@ -715,8 +646,9 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 
                 erAlAtdItemCondition.compareStartValue(self.comparisonRange().minValue());
                 erAlAtdItemCondition.compareEndValue(self.comparisonRange().maxValue());
-                
-                windows.setShared('outputKal003b', workRecordExtractingCondition);
+                let retData = ko.toJS(workRecordExtractingCondition);
+                retData = shareutils.convertArrayOfWorkRecordExtractingConditionToJS(retData, workRecordExtractingCondition);
+                windows.setShared('outputKal003b', retData);
                 windows.close();
             }
         }
@@ -774,111 +706,31 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 self.localizedName = param.localizedName || '';
             }
         }
-        /*
-        export interface IAttdItemDto {
-            attendanceItemId            : number;
-            attendanceItemName          : string;
-            attendanceItemDisplayNumber : number;
-            nameLineFeedPosition        : number;
-            dailyAttendanceAtr          : number;
-        }
-        export class AttdItemDto {
-            attendanceItemId            : number;
-            attendanceItemName          : string;
-            attendanceItemDisplayNumber : number;
-            nameLineFeedPosition        : number;
-            dailyAttendanceAtr          : number;
-            constructor(param : IAttdItemDto) {
-                let self = this;
-                self.attendanceItemId           = param.attendanceItemId    || 0;
-                self.attendanceItemName         = param.attendanceItemName  || '';
-                self.attendanceItemDisplayNumber = param.attendanceItemDisplayNumber || 0;
-                self.nameLineFeedPosition       = param.nameLineFeedPosition || 0;
-                self.dailyAttendanceAtr         = param.dailyAttendanceAtr  || 0;
-            }
-        }
-        
-        export interface IWorkTypeDto {
-            workTypeCode        : string;
-            name                : string;
-            abbreviationName    : string;
-            symbolicName        : string;
-            abolishAtr          : number;
-            workAtr             : number;
-            oneDayCls           : number;
-            morningCls          : number;
-            afternoonCls        : number;
-            calculatorMethod    : number;
-        }
 
-        export class WorkTypeDto {
-            workTypeCode        : string;
-            name                : string;
-            abbreviationName    : string;
-            symbolicName        : string;
-            abolishAtr          : number;
-            workAtr             : number;
-            oneDayCls           : number;
-            morningCls          : number;
-            afternoonCls        : number;
-            calculatorMethod    : number;
-            constructor(param   : IWorkTypeDto) {
-                let self = this;
-                self.workTypeCode       = param.workTypeCode    || '';
-                self.name               = param.name            || '';
-                self.abbreviationName   = param.abbreviationName || '';
-                self.symbolicName       = param.symbolicName    || '';
-                self.abolishAtr         = param.abolishAtr      || 0;
-                self.workAtr            = param.workAtr         || 0;
-                self.oneDayCls          = param.oneDayCls       || 0;
-                self.morningCls         = param.morningCls      || 0;
-                self.afternoonCls       = param.afternoonCls    || 0;
-                self.calculatorMethod   = param.calculatorMethod || 0;
-            }
-        }
-        
-        export interface IDailyAttendanceNameDto {
-            attendanceItemId    : number;
-            attendanceItemName  : string;
-            attendanceItemDisplayNumber : number;
-        }
-        
-        export class DailyAttendanceNameDto {
-            attendanceItemId    : number;
-            attendanceItemName  : string;
-            attendanceItemDisplayNumber : number;
-            constructor(param : IDailyAttendanceNameDto) {
-                let self = this;
-                self.attendanceItemId   = param.attendanceItemId || 0;
-                self.attendanceItemName = param.attendanceItemName || '';
-                self.attendanceItemDisplayNumber = param.attendanceItemDisplayNumber || 0;
-            }
-        }
-        */
         /**
          * ComparisonValueRange
          */
         export class ComparisonValueRange {
-            minTimeValue: KnockoutObservable<string> =  ko.observable('');
-            maxTimeValue: KnockoutObservable<string> =  ko.observable('');
+            minTimeValue: KnockoutObservable<number> =  ko.observable(0);
+            maxTimeValue: KnockoutObservable<number> =  ko.observable(0);
             
-            minTimesValue: KnockoutObservable<string> =  ko.observable('0');
-            maxTimesValue: KnockoutObservable<string> =  ko.observable('0');
+            minTimesValue: KnockoutObservable<number> =  ko.observable(0);
+            maxTimesValue: KnockoutObservable<number> =  ko.observable(0);
             
-            minAmountOfMoneyValue: KnockoutObservable<string> =  ko.observable('0');
-            maxAmountOfMoneyValue: KnockoutObservable<string> =  ko.observable('0');
+            minAmountOfMoneyValue: KnockoutObservable<number> =  ko.observable(0);
+            maxAmountOfMoneyValue: KnockoutObservable<number> =  ko.observable(0);
             
-            minTimeWithinDayValue: KnockoutObservable<string> =  ko.observable('0');
-            maxTimeWithinDayValue: KnockoutObservable<string> =  ko.observable('0');
-            minValue : KnockoutObservable<string> =  ko.observable('');
-            maxValue : KnockoutObservable<string> =  ko.observable('');
+            minTimeWithinDayValue: KnockoutObservable<number> =  ko.observable(0);
+            maxTimeWithinDayValue: KnockoutObservable<number> =  ko.observable(0);
+            minValue : KnockoutObservable<number> =  ko.observable(0);
+            maxValue : KnockoutObservable<number> =  ko.observable(0);
             
             checkItem : KnockoutObservable<number> =  ko.observable(0);
             comparisonOperator : KnockoutObservable<number> =  ko.observable(0);
-            constructor(checkItem : KnockoutObservable<number>, comOper : KnockoutObservable<number>, minValue : string, maxValue: string) {
+            constructor(checkItem : KnockoutObservable<number>, comOper : KnockoutObservable<number>, minValue : number, maxValue: number) {
                 let self = this;
-                self.minValue(minValue || '');
-                self.maxTimeValue(maxValue || '');
+                self.minValue(minValue || 0);
+                self.maxTimeValue(maxValue || 0);
                 self.comparisonOperator = checkItem;
                 self.comparisonOperator = comOper;
                 switch(checkItem()) {
@@ -892,12 +744,12 @@ module nts.uk.at.view.kal003.b.viewmodel{
                         self.maxTimesValue(maxValue);
                         break;
                     case enItemCheck.AmountOfMoney: //金額 - 2: check amount of money
-                        self.minAmountOfMoneyValue(minValue);
-                        self.maxAmountOfMoneyValue(maxValue);
+                        self.minAmountOfMoneyValue(minValue || 0);
+                        self.maxAmountOfMoneyValue(maxValue || 0);
                         break;
                     case enItemCheck.TimeOfDate:    //時刻の場合 - 3: time within day
-                        self.minTimeWithinDayValue(minValue);
-                        self.maxTimeWithinDayValue(maxValue);
+                        self.minTimeWithinDayValue(minValue || 0);
+                        self.maxTimeWithinDayValue(maxValue || 0);
                         break;
                     default:
                         break;
@@ -961,7 +813,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
             }
             
             /**
-             * valid range of comparision 
+             * valid range of comparison 
              */
             checkValidOfRange(checkItem: number, comOper: number, textBox : number) : boolean {
                 let self = this;
@@ -977,12 +829,12 @@ module nts.uk.at.view.kal003.b.viewmodel{
                             maxValue = nts.uk.time.parseTime(self.maxTimeValue()).toValue();
                             break;
                         case enItemCheck.Times:         //回数 - 1: check times
-                            minValue = parseInt(self.minTimesValue());
-                            maxValue = parseInt(self.maxTimesValue());
+                            minValue = self.minTimesValue();
+                            maxValue = self.maxTimesValue();
                             break;
                         case enItemCheck.AmountOfMoney: //金額 - 2: check amount of money
-                            minValue = parseFloat(self.minAmountOfMoneyValue());
-                            maxValue = parseFloat(self.maxAmountOfMoneyValue());
+                            minValue = self.minAmountOfMoneyValue();
+                            maxValue = self.maxAmountOfMoneyValue();
                             break;
                         case enItemCheck.TimeOfDate:    //時刻の場合 - 3: time within day
                             minValue = nts.uk.time.parseTimeOfTheDay(self.minTimeWithinDayValue()).toValue();

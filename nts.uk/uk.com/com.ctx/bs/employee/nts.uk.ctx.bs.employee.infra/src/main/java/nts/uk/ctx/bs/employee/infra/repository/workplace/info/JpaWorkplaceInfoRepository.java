@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.info;
@@ -36,14 +36,15 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 	/** The Constant MAX_ELEMENTS. */
 	private static final Integer MAX_ELEMENTS = 1000;
 	
-	/** The Constant FIND_WKP_DETAIL_LATEST. */
-	private static final String FIND_WKP_DETAIL_LATEST = "SELECT wkpInfor FROM BsymtWorkplaceHist AS wkp "
-			+ "INNER JOIN BsymtWorkplaceInfo AS wkpInfor ON wkp.bsymtWorkplaceHistPK.cid = wkpInfor.bsymtWorkplaceInfoPK.cid "
-			+ "AND wkp.bsymtWorkplaceHistPK.wkpid = wkpInfor.bsymtWorkplaceInfoPK.wkpid "
-			+ "AND wkp.bsymtWorkplaceHistPK.historyId = wkpInfor.bsymtWorkplaceInfoPK.historyId "
-			+ "WHERE wkp.bsymtWorkplaceHistPK.cid = :cid "
-			+ "AND wkp.strD <= :strDWkpConfigHist "
-			+ "AND wkp.endD >= :strDWkpConfigHist";
+	/** The Constant FIND_WKP_DETAIL_HIERARCHY_ORDER. */
+	private static final String FIND_WKP_DETAIL_HIERARCHY_ORDER = "SELECT C FROM BsymtWorkplaceInfo AS C "
+			+ "LEFT JOIN BsymtWkpConfig AS B ON A.bsymtWkpConfigInfoPK.historyId = B.bsymtWkpConfigPK.historyId "
+			+ "LEFT JOIN BsymtWkpConfigInfo AS A ON A.bsymtWkpConfigInfoPK.wkpid = C.bsymtWorkplaceInfoPK.wkpid "
+			+ "LEFT JOIN BsymtWorkplaceHist AS D ON C.bsymtWorkplaceInfoPK.historyId = D.bsymtWorkplaceHistPK.historyId "
+			+ "WHERE A.bsymtWkpConfigInfoPK.cid = :cid "
+			+ "AND B.strD <= :baseDate AND B.endD >= :baseDate "
+			+ "AND D.strD <= :baseDate AND D.endD >= :baseDate " 
+			+ "ORDER BY A.hierarchyCd ASC";
 	
 	/*
 	 * (non-Javadoc)
@@ -258,32 +259,13 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 	 */
 	@Override
 	public List<WorkplaceInfo> findAll(String companyId, GeneralDate baseDate) {
-		// get entity manager
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-		CriteriaQuery<BsymtWorkplaceInfo> cq = criteriaBuilder
-				.createQuery(BsymtWorkplaceInfo.class);
-		Root<BsymtWorkplaceInfo> root = cq.from(BsymtWorkplaceInfo.class);
-
-		// select root
-		cq.select(root);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.cid),
-				companyId));
-		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
-				root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.strD),
-				baseDate));
-		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD),
-				baseDate));
-
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		return em.createQuery(cq).getResultList().stream()
+		
+		List<BsymtWorkplaceInfo> resultList = this.queryProxy().query(FIND_WKP_DETAIL_HIERARCHY_ORDER, BsymtWorkplaceInfo.class)
+				.setParameter("cid", companyId)
+				.setParameter("baseDate", baseDate)
+				.getList();
+		
+		return resultList.stream()
 				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
 				.collect(Collectors.toList());
 	}
@@ -376,19 +358,6 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 				.collect(Collectors.toList());
 	}
 	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#findDetailLatestByWkpIds(java.lang.String)
-	 */
-	@Override
-	public List<WorkplaceInfo> findDetailLatestByWkpIds(String companyId, GeneralDate startDWkpConfigHist) {
-		
-		List<BsymtWorkplaceInfo> resultList = this.queryProxy().query(FIND_WKP_DETAIL_LATEST, BsymtWorkplaceInfo.class)
-				.setParameter("cid", companyId)
-				.setParameter("strDWkpConfigHist", startDWkpConfigHist)
-				.getList();
-		return resultList.stream()
-				.map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
-				.collect(Collectors.toList());
-	}
+
 
 }

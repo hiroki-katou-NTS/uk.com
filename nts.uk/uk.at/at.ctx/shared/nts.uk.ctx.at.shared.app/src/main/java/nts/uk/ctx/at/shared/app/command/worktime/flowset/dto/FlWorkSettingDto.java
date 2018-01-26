@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.app.command.worktime.flowset.dto;
 import lombok.Value;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.FlowWorkRestSettingDto;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.WorkTimezoneCommonSetDto;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -15,14 +14,15 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkDedicateSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingGetMemento;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class FlWorkSettingDto.
  */
 @Value
-public class FlWorkSettingDto implements FlWorkSettingGetMemento {
+public class FlWorkSettingDto implements FlowWorkSettingGetMemento {
 
 	/** The working code. */
 	private String workingCode;

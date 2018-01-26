@@ -243,16 +243,17 @@
 					</div>
 				</div>
 
-				<div id="popup-area8" class="popup-area popup-panel"
-					style="z-index: 100">
-					<div style="margin-bottom: 10px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_342')}</div>
-					<span data-bind="text: selectedDate"></span><br /> <span>#{i18n.getText('KSU001_343')}</span>
+				<div id="popup-area8" class="popup-area popup-panel">
+					<div class="mb-5" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_342')}</div>
+					<span data-bind="text: selectedDate"></span><br /> <span
+						class="ml-15">#{i18n.getText('KSU001_343')}</span>
 					<hr />
-					<div>
-						<input style="width: 130px"
+					<div class="mb-5">
+						<input style="width: 170px"
 							data-bind="ntsTextEditor: {value: popupVal, enable: false}" />
 					</div>
-					<span>#{i18n.getText('KSU001_344')}</span> <span>#{i18n.getText('KSU001_344')}</span>
+					<span class="ml-15">#{i18n.getText('KSU001_344')}</span> <span
+						class="ml-15"></span>
 					<hr />
 					<div>
 						<input
@@ -261,14 +262,14 @@
 								option:  ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
 					            	textmode: 'text',
 					            	placeholder: '',
-					            	width: '130px',
+					            	width: '170px',
 					            	textalign: 'left'
 					            })),
 								enable: true,
 								readonly: false}" />
 					</div>
 					<div style="margin-top: 10px">
-						<button id="popup-set" class="proceed" style="margin-left: 25px">#{i18n.getText('KSU001_1')}</button>
+						<button id="popup-set" class="proceed" style="margin-left: 35px">#{i18n.getText('KSU001_1')}</button>
 						<button class="close-popup">#{i18n.getText('KSU001_84')}</button>
 					</div>
 				</div>

@@ -4,7 +4,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSetting;
@@ -29,11 +28,11 @@ public class AddJobAssignSettingCommandHandler extends CommandHandler<JobAssignS
 		JobAssignSettingCommand data = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		JobAssignSetting job = jobRep.findById(companyId);
-		if(job == null){
-			throw new BusinessException("Msg_3");
-		}
 		JobAssignSetting jobSet = data.toDomain(companyId);
 		jobSet.validate();
-		jobRep.insertJob(jobSet);
+		if(job == null){
+			jobRep.insertJob(jobSet);
+		}
+		jobRep.updateJob(jobSet);
 	}
 }

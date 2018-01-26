@@ -12,6 +12,7 @@
 					nts.uk.ctx.pereg.dom.person.layout.LayoutName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/cps/shr/layout-control-validation.js" />
 			<com:scriptfile path="/view/cps/shr/layout-control-ko-ext.js" />
 			<com:stylefile path="cps008.a.style.css" />
 			<com:scriptfile path="cps008.a.service.js" />
@@ -89,6 +90,7 @@
 											<input id="A_INP_CODE" style="width: 80px"
 												data-bind="ntsTextEditor: {
 															value: code,
+															name: '#[CPS008_12]',
 															constraint: 'LayoutCode',
 															required:true,
 															enable: $parent.layout().id() == undefined }" />
@@ -98,6 +100,7 @@
 											<input id="A_INP_NAME" style="width: 180px"
 												data-bind="ntsTextEditor: {
 															value: name,
+															name: '#[CPS008_13]',
 															constraint: 'LayoutName',
 															required:true,
 															enable: true

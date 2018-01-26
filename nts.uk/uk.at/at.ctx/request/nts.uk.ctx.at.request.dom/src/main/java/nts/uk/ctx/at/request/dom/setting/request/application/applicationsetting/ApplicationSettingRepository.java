@@ -16,6 +16,12 @@ public interface ApplicationSettingRepository {
 	 * @param applicationSetting
 	 */
 	void updateSingle(ApplicationSetting applicationSetting);
+	/**
+	 * insert application setting
+	 * @param applicationSetting
+	 * @author yennth
+	 */
+	void insert(ApplicationSetting applicationSetting);
 
 	/**
 	 * @param lstApplicationSetting

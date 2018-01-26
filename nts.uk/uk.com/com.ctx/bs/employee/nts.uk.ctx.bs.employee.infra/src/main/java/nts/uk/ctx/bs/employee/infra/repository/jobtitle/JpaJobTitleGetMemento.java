@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
 import java.util.List;
@@ -13,19 +17,25 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
  */
 public class JpaJobTitleGetMemento implements JobTitleGetMemento {
 
-	/** The list job title hist. */
+	/** The cid. */
+	private String cid;
+	
+	/** The job title id. */
+	private String jobTitleId;
+	
+	/** The list job title history. */
 	private List<BsymtJobHist> listJobTitleHistory;
-
-	/** The Constant ELEMENT_FIRST. */
-	private static final Integer ELEMENT_FIRST = 0;
 
 	/**
 	 * Instantiates a new jpa job title get memento.
 	 *
-	 * @param listJobTitleHistory
-	 *            the list job title history
+	 * @param cid the cid
+	 * @param jobTitleId the job title id
+	 * @param listJobTitleHistory the list job title history
 	 */
-	public JpaJobTitleGetMemento(List<BsymtJobHist> listJobTitleHistory) {
+	public JpaJobTitleGetMemento(String cid, String jobTitleId, List<BsymtJobHist> listJobTitleHistory) {
+		this.cid = cid;
+		this.jobTitleId = jobTitleId;
 		this.listJobTitleHistory = listJobTitleHistory;
 	}
 
@@ -37,7 +47,7 @@ public class JpaJobTitleGetMemento implements JobTitleGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.listJobTitleHistory.get(ELEMENT_FIRST).getBsymtJobHistPK().getCid());
+		return new CompanyId(this.cid);
 	}
 
 	/*
@@ -48,7 +58,7 @@ public class JpaJobTitleGetMemento implements JobTitleGetMemento {
 	 */
 	@Override
 	public String getJobTitleId() {
-		return this.listJobTitleHistory.get(ELEMENT_FIRST).getBsymtJobHistPK().getJobId();
+		return this.jobTitleId;
 	}
 
 	/*

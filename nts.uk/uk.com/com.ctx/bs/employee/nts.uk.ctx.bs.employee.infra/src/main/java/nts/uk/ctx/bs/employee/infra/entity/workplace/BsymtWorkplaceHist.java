@@ -13,7 +13,9 @@ import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -49,8 +51,11 @@ public class BsymtWorkplaceHist extends UkJpaEntity implements Serializable {
 	private GeneralDate endD;
 
 	/** The bsymt wkp config info. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bsymtWorkplaceHist", fetch = FetchType.LAZY)
-	private List<BsymtWorkplaceInfo> lstBsymtWorkplaceInfo;
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "WKPID", referencedColumnName = "WKPID"),
+			@PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
+	private List<BsymtWorkplaceInfo> bsymtWorkplaceInfo;
 
 	/*
 	 * (non-Javadoc)
