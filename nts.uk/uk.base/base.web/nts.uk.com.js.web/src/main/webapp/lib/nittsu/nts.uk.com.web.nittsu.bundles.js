@@ -21188,7 +21188,7 @@ var nts;
                          */
                         Cloud.prototype.onScroll = function () {
                             var self = this;
-                            self.$container.on(events.SCROLL_EVT, function () {
+                            self.$container.off(events.SCROLL_EVT + ".detail").on(events.SCROLL_EVT + ".detail", function () {
                                 var inClusterNo = self.getClusterNo();
                                 if (self.currentCluster !== inClusterNo) {
                                     self.currentCluster = inClusterNo;
@@ -24937,6 +24937,12 @@ var nts;
                             case "rowId":
                                 setRowId(self, params[0], params[1]);
                                 break;
+                            case "saveScroll":
+                                saveScroll(self);
+                                break;
+                            case "scrollBack":
+                                scrollBack(self, params[0]);
+                                break;
                         }
                     };
                     /**
@@ -25560,6 +25566,40 @@ var nts;
                                 update.pushEditHistory($(this), new selection.Cell(rowIndex, key, value, -1));
                             }
                         });
+                    }
+                    /**
+                     * Save scroll.
+                     */
+                    function saveScroll($container) {
+                        var key = uk.request.location.current.rawUrl + "/" + $container.attr("id") + "/scroll";
+                        var scroll = {};
+                        var tbl = helper.getMainTable($container);
+                        scroll.v = tbl.scrollTop();
+                        scroll.h = tbl.scrollLeft();
+                        uk.localStorage.setItemAsJson(key, scroll);
+                    }
+                    /**
+                     * Scroll back.
+                     */
+                    function scrollBack($container, where) {
+                        var key = uk.request.location.current.rawUrl + "/" + $container.attr("id") + "/scroll";
+                        var item = uk.localStorage.getItem(key);
+                        if (!item.isPresent())
+                            return;
+                        var tbl = helper.getMainTable($container);
+                        var scroll = JSON.parse(item.get());
+                        switch (where) {
+                            case 0:
+                                tbl.scrollLeft(scroll.h);
+                                break;
+                            case 1:
+                                tbl.scrollTop(scroll.v);
+                                break;
+                            case 2:
+                                tbl.scrollLeft(scroll.h);
+                                tbl.scrollTop(scroll.v);
+                                break;
+                        }
                     }
                 })(func || (func = {}));
                 var internal;
