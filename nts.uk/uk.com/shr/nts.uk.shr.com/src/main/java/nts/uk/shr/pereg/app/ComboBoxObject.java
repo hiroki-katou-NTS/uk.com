@@ -13,7 +13,7 @@ public class ComboBoxObject {
 	private String optionText;
 	
 	@Setter
-	private String firstCtgName;
+	private String firstItemName;
 	
 	public ComboBoxObject(String value, String optionText) {
 		this.optionText = optionText;
