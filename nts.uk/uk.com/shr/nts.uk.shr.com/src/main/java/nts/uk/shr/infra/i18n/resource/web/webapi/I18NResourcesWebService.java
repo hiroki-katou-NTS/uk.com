@@ -17,6 +17,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import lombok.val;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.constants.DefaultSettingKeys;
@@ -24,6 +25,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.LanguageConsts;
 import nts.uk.shr.infra.i18n.resource.I18NResourceType;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
+import nts.uk.shr.infra.i18n.resource.container.I18NResourcesRepository;
 
 @Path("i18n/resources")
 @Produces("text/javascript")
@@ -36,6 +38,9 @@ public class I18NResourcesWebService {
 	@Inject
 	private I18NResourcesForUK i18n;
 	
+	@Inject
+	private I18NResourcesRepository resourceRepository;
+	
 	@POST
 	@Path("rawcontent/{resourceId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -45,6 +50,19 @@ public class I18NResourcesWebService {
 	
 	public static String getHtmlToLoadResources() {
 		return "<script src=\"/nts.uk.com.web/webapi/i18n/resources/screen?v=" + VERSION + "\"></script>";
+	}
+	
+	@POST
+	@Path("refresh/default")
+	public void refreshDefaultResource() {
+		this.i18n.refreshDefaultResource();
+	}
+	
+	@POST
+	@Path("refresh/currentcompany")
+	public void refreshCurrentCompany() {
+		val user = AppContexts.user();
+		this.resourceRepository.refreshResource(user.companyId(), user.language().basicLanguageId(), GeneralDateTime.now());
 	}
 	
 	@GET
