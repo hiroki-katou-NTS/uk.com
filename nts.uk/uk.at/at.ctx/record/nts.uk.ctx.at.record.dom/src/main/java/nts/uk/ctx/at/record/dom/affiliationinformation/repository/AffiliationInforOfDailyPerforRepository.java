@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.affiliationinformation.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
