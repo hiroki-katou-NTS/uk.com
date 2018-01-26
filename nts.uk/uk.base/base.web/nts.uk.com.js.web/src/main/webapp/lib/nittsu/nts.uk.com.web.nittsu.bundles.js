@@ -4373,6 +4373,11 @@ var nts;
                             return error.$control.is($element);
                         });
                     };
+                    ErrorsViewModel.prototype.removeErrorByCode = function ($element, errorCode) {
+                        this.errors.remove(function (error) {
+                            return error.$control.is($element) && error.errorCode === errorCode;
+                        });
+                    };
                     ErrorsViewModel.prototype.getErrorByElement = function ($element) {
                         return _.find(this.errors(), function (e) {
                             return e.$control.is($element);
@@ -4501,6 +4506,10 @@ var nts;
                     errorsViewModel().removeErrorByElement($control);
                 }
                 errors_1.removeByElement = removeByElement;
+                function removeByCode($control, errorCode) {
+                    errorsViewModel().removeErrorByCode($control, errorCode);
+                }
+                errors_1.removeByCode = removeByCode;
                 function getErrorByElement($element) {
                     return errorsViewModel().getErrorByElement($element);
                 }
@@ -12054,6 +12063,8 @@ var nts;
                                 return setError($control, message, errorCode);
                             case 'clear':
                                 return clearErrors($control);
+                            case 'clearByCode':
+                                return clearErrorByCode($control, message);
                         }
                     }
                     function getErrorByElement($control) {
@@ -12074,6 +12085,15 @@ var nts;
                         $control.data(DATA_HAS_ERROR, false);
                         ui.errors.removeByElement($control);
                         $control.parent().removeClass('error');
+                        return $control;
+                    }
+                    function clearErrorByCode($control, errorCode) {
+                        ui.errors.removeByElement($control);
+                        var remainErrors = ui.errors.getErrorByElement($control);
+                        if (uk.util.isNullOrUndefined(remainErrors)) {
+                            $control.data(DATA_HAS_ERROR, false);
+                            $control.parent().removeClass('error');
+                        }
                         return $control;
                     }
                     function hasError($control) {
