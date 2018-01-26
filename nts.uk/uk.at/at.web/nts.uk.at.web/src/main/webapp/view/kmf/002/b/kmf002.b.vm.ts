@@ -10,13 +10,17 @@ module nts.uk.at.view.kmf002.b {
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             treeGrid: TreeComponentOption;
             workplaceNameSelected: KnockoutObservable<string>;
+            enableSave: KnockoutObservable<boolean>;
+            enableDelete: KnockoutObservable<boolean>;
 
             constructor(){
                 let _self = this;
                 _self.commonTableMonthDaySet = new nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet();
                 _self.commonTableMonthDaySet.visibleInfoSelect(true);
                 _self.commonTableMonthDaySet.infoSelect1(nts.uk.resource.getText("Com_Workplace"));
-                
+                _self.enableSave = ko.observable(true);
+                _self.enableDelete = ko.observable(true)
+                _self.workplaceNameSelected = ko.observable();;
                 
                 _self.baseDate = ko.observable(new Date());
                 _self.multiSelectedWorkplaceId = ko.observableArray([]);
@@ -33,7 +37,7 @@ module nts.uk.at.view.kmf002.b {
                         alreadySettingList: _self.alreadySettingList,
                         maxRows: 10,
                         tabindex: 1,
-                        systemType : SystemType.EMPLOYMENT
+                        systemType : SystemType.HUMAN_RESOURCES
                 };
                 
                 _self.multiSelectedWorkplaceId.subscribe(function(newValue) {
@@ -51,7 +55,10 @@ module nts.uk.at.view.kmf002.b {
                     
                 });
                 
-                _self.workplaceNameSelected = ko.observable();
+                _self.commonTableMonthDaySet.fiscalYear.subscribe(function(newValue) {
+                    // change year
+                    _self.getDataFromService();
+                });
             }
             
             private getNameWkpSelect(data: any, codeSelect: string): string {
@@ -77,12 +84,11 @@ module nts.uk.at.view.kmf002.b {
                 var dfd = $.Deferred<void>();
                 var _self = this;
                $('#tree-grid').ntsTreeComponent(_self.treeGrid).done(() => {
-                    _self.getDataFromService();   
+                    _self.getDataFromService();
+                    nts.uk.ui.errors.clearAll();
+                    dfd.resolve();    
                });
-                
-                nts.uk.ui.errors.clearAll();
-                dfd.resolve();
-                return dfd.promise();
+               return dfd.promise();   
             }
             
             public saveWorkpalce(): void {
@@ -110,7 +116,23 @@ module nts.uk.at.view.kmf002.b {
             public getDataFromService(): void {
                 let _self = this;
                 if ($('#tree-grid').getRowSelected()[0] != null) {
-                    service.find(_self.commonTableMonthDaySet.fiscalYear(), $('#tree-grid').getRowSelected()[0].workplaceId).done((data) => {
+//                    service.find(_self.commonTableMonthDaySet.fiscalYear(), $('#tree-grid').getRowSelected()[0].workplaceId).done((data) => {
+//                        if (typeof data === "undefined") {
+//                            /** 
+//                             *   create value null for prepare create new 
+//                            **/
+//                            _.forEach(_self.commonTableMonthDaySet.arrMonth(), function(value) {
+//                                value.day('');
+//                            });
+//                        } else {
+//                            for (let i=0; i<data.publicHolidayMonthSettings.length; i++) {
+//                                _self.commonTableMonthDaySet.arrMonth()[i].day(data.publicHolidayMonthSettings[i].inLegalHoliday);
+//                            }
+//                        }
+//                    });  
+                    
+                    $.when(service.find(_self.commonTableMonthDaySet.fiscalYear(), $('#tree-grid').getRowSelected()[0].workplaceId), service.findFirstMonth()).done(function(data, data2) {
+                     
                         if (typeof data === "undefined") {
                             /** 
                              *   create value null for prepare create new 
@@ -118,14 +140,29 @@ module nts.uk.at.view.kmf002.b {
                             _.forEach(_self.commonTableMonthDaySet.arrMonth(), function(value) {
                                 value.day('');
                             });
+                            _self.enableDelete(false);
                         } else {
-                            for (let i=0; i<data.publicHolidayMonthSettings.length; i++) {
-                                _self.commonTableMonthDaySet.arrMonth()[i].day(data.publicHolidayMonthSettings[i].inLegalHoliday);
+    //                        for (let i=0; i<=12-data2.startMonth; i++) {
+    //                            _self.commonTableMonthDaySet.arrMonth()[i].day(data.publicHolidayMonthSettings[i + data2.startMonth - 1].inLegalHoliday);
+    //                        }
+    //                        
+    //                        for (let i=data2.startMonth-1; i<12; i++) {
+    //                            _self.commonTableMonthDaySet.arrMonth()[i].day(data.publicHolidayMonthSettings[i-data2.startMonth + 1].inLegalHoliday);
+    //                        }
+                            _self.commonTableMonthDaySet.arrMonth.removeAll();
+                            for (let i=data2.startMonth-1; i<12; i++) {
+                                _self.commonTableMonthDaySet.arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 'enable': ko.observable(true)});    
                             }
-                        }
-                    });    
+                            for (let i=0; i<data2.startMonth-1; i++) {
+                                _self.commonTableMonthDaySet.arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 'enable': ko.observable(true)});    
+                            } 
+                            _self.enableDelete(true);
+                        }            
+                    });
+                    
                 } else {
                     _self.dataDefault();
+                    _self.enableDelete(false);
                 }
             }
             

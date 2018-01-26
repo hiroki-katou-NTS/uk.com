@@ -16,7 +16,7 @@ public enum PublicHolidayPeriod {
 
 	/** The first day to last day. */
 	// １日～末日
-	FIRST_DAY_TO_LAST_DAY(1, "Enum_firstDayToLastDay");
+	FIRST_DAY_TO_LAST_DAY(1, "Enum_FirstDayToLastDay");
 
 	/** The value. */
 	public final int value;

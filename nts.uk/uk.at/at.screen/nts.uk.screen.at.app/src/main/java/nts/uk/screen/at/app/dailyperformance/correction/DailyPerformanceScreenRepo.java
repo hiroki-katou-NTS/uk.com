@@ -132,11 +132,17 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<CodeName> findJobInfo(String companyId, GeneralDate baseDate);
 	
+	Optional<CodeName> findJobInfoId(String companyId, GeneralDate baseDate, String id);
+	
 	List<CodeName> findClassification(String companyId);
 	
 	List<CodeName> findWorkplace(String companyId, GeneralDate date);
 	
+	Optional<CodeName> findWorkplaceId(String companyId, GeneralDate date, String id);
+	
 	List<CodeName> findWorkplaceLocation(String companyId);
+	
+	List<CodeName> findReason(String companyId);
 	
 	ClosureEmploymentDto findByEmploymentCD(String companyID, String employmentCD);
 	

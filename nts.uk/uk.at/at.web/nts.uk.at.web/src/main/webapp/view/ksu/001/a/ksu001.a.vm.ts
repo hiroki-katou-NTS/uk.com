@@ -691,7 +691,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             let leftmostContentDeco = [], detailHeaderDeco = [], detailContentDeco = [];
             let leftmostColumns = [{
-                key: "empId", headerText: "", width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+                key: "empName", headerText: "", width: "160px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { }
             }];
 

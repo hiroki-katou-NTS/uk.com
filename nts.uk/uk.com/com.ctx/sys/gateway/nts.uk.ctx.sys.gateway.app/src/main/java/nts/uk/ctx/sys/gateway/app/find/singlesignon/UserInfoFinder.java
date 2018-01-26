@@ -17,6 +17,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.person.PersonInfoAdapter;
@@ -62,7 +63,7 @@ public class UserInfoFinder {
 	 *            the base date
 	 * @return the list
 	 */
-	public List<UserDto> findListUserInfo(GeneralDate baseDate) {
+	public List<UserDto> findListUserInfo(GeneralDate baseDate, Boolean isScreenC) {
 
 		// Get Company Id
 		String companyId = AppContexts.user().companyId();
@@ -147,21 +148,35 @@ public class UserInfoFinder {
 			}
 		});
 
-		return loadUserSetting(listUserMap);
+		return loadUserSetting(listUserMap, isScreenC);
 				
 	}
 	
-	public List<UserDto> loadUserSetting(List<UserDto> listUserMap){		
-		listUserMap.forEach(w -> {			
-			List<WindowAccount> winAcc = this.windowAccountRepository.findByUserId(w.getUserId());
-			Optional<OtherSysAccount> opOtherSysAcc = otherSysAccountRepository.findByUserId(w.getUserId());
-			if(winAcc.isEmpty() && !opOtherSysAcc.isPresent()){
-				w.setIsSetting(false);
-			}else{
-				w.setIsSetting(true);
-			}
-		});	
+	public List<UserDto> loadUserSetting(List<UserDto> listUserMap, Boolean isScreenC){	
 		
+		if(isScreenC == true){		
+			listUserMap.forEach(w -> {			
+				Optional<OtherSysAccount> opOtherSysAcc = otherSysAccountRepository.findByUserId(w.getUserId());				
+				if(opOtherSysAcc.isPresent() && opOtherSysAcc.get().getUseAtr().value == 1 ){
+					w.setIsSetting(true);
+				}else if(!opOtherSysAcc.isPresent() || opOtherSysAcc.get().getUseAtr().value == 0){
+					w.setIsSetting(false);
+				}
+			});	
+				
+		}else{		
+			listUserMap.forEach(w -> {
+				List<WindowAccount> winAcc = this.windowAccountRepository.findByUserId(w.getUserId());
+				
+				// list empty
+				if (CollectionUtil.isEmpty(winAcc)) {
+					w.setIsSetting(false);
+				} else {
+					Boolean isSetting = winAcc.stream().anyMatch(item -> item.isSetting());
+					w.setIsSetting(isSetting);
+				}
+			});
+		}
 		return listUserMap;
 	}	
 }

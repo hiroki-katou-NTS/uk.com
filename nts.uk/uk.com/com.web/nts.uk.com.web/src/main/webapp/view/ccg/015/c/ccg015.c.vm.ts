@@ -29,29 +29,23 @@ module nts.uk.pr.view.ccg015.c {
             }
             private copyTopPage() {
                 var self = this;
-                $('.nts-input').ntsEditor('validate');
-                if ($('.nts-input').ntsError('hasError')) {
-
-                }
-                else {
-                    nts.uk.ui.windows.setShared("codeOfNewTopPage", _.escape(self.newTopPageCode()));
-                    var data: service.TopPageDto = {
-                        topPageCode: _.escape(self.newTopPageCode()),
-                        topPageName: _.escape(self.newTopPageName()),
-                        layoutId: self.parentLayoutId(),
-                        languageNumber: 0,
-                        isCheckOverwrite: self.check(),
-                        copyCode: self.parentTopPageCode()
-                    };
-                    service.copyTopPage(data).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function() {
-                            nts.uk.ui.windows.close();
-                        }); 
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds});
-//                        nts.uk.ui.dialog.alert(res.message);
-                    });
-                }
+                nts.uk.ui.windows.setShared("codeOfNewTopPage", _.escape(self.newTopPageCode()));
+                var data: service.TopPageDto = {
+                    topPageCode: _.escape(self.newTopPageCode()),
+                    topPageName: _.escape(self.newTopPageName()),
+                    layoutId: self.parentLayoutId(),
+                    languageNumber: 0,
+                    isCheckOverwrite: self.check(),
+                    copyCode: self.parentTopPageCode()
+                };
+                service.copyTopPage(data).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function() {
+                        nts.uk.ui.windows.close();
+                    }); 
+                }).fail(function(res: any) {
+                    $("#inp-code").focus();
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds});
+                });
 
             }
         }

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDto;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -16,14 +15,15 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkDedicateSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingSetMemento;
 
 /**
  * The Class FlowWorkSettingDto.
  */
 @Getter
 @Setter
-public class FlWorkSettingDto implements FlWorkSettingSetMemento {
+public class FlWorkSettingDto implements FlowWorkSettingSetMemento {
 
 	/** The working code. */
 	private String workingCode;
@@ -80,7 +80,10 @@ public class FlWorkSettingDto implements FlWorkSettingSetMemento {
 	 */
 	@Override
 	public void setRestSetting(FlowWorkRestSetting restSet) {
-		restSet.saveToMemento(this.restSetting);
+		if (restSet != null) {
+			this.restSetting = new FlowWorkRestSettingDto();
+			restSet.saveToMemento(this.restSetting);
+		}
 	}
 
 	/*
@@ -92,7 +95,10 @@ public class FlWorkSettingDto implements FlWorkSettingSetMemento {
 	 */
 	@Override
 	public void setOffdayWorkTimezone(FlowOffdayWorkTimezone offDayWtz) {
-		offDayWtz.saveToMemento(this.offdayWorkTimezone);
+		if (offDayWtz != null) {
+			this.offdayWorkTimezone = new FlOffdayWorkTzDto();
+			offDayWtz.saveToMemento(this.offdayWorkTimezone);
+		}
 	}
 
 	/*
@@ -104,7 +110,10 @@ public class FlWorkSettingDto implements FlWorkSettingSetMemento {
 	 */
 	@Override
 	public void setCommonSetting(WorkTimezoneCommonSet cmnSet) {
-		cmnSet.saveToMemento(this.commonSetting);
+		if (cmnSet != null) {
+			this.commonSetting = new WorkTimezoneCommonSetDto();
+			cmnSet.saveToMemento(this.commonSetting);
+		}
 	}
 
 	/*
@@ -116,7 +125,10 @@ public class FlWorkSettingDto implements FlWorkSettingSetMemento {
 	 */
 	@Override
 	public void setHalfDayWorkTimezone(FlowHalfDayWorkTimezone halfDayWtz) {
-		halfDayWtz.saveToMemento(this.halfDayWorkTimezone);
+		if (halfDayWtz != null) {
+			this.halfDayWorkTimezone = new FlHalfDayWorkTzDto();
+			halfDayWtz.saveToMemento(this.halfDayWorkTimezone);
+		}		
 	}
 
 	/*
@@ -128,7 +140,10 @@ public class FlWorkSettingDto implements FlWorkSettingSetMemento {
 	 */
 	@Override
 	public void setStampReflectTimezone(FlowStampReflectTimezone stampRefTz) {
-		stampRefTz.saveToMemento(this.stampReflectTimezone);
+		if (stampRefTz != null) {
+			this.stampReflectTimezone = new FlStampReflectTzDto();
+			stampRefTz.saveToMemento(this.stampReflectTimezone);
+		}
 	}
 
 	/*
@@ -152,6 +167,9 @@ public class FlWorkSettingDto implements FlWorkSettingSetMemento {
 	 */
 	@Override
 	public void setFlowSetting(FlowWorkDedicateSetting flowSet) {
-		flowSet.saveToMemento(this.flowSetting);
+		if (flowSet != null) {
+			this.flowSetting = new FlWorkDedSettingDto();
+			flowSet.saveToMemento(this.flowSetting);
+		}
 	}
 }

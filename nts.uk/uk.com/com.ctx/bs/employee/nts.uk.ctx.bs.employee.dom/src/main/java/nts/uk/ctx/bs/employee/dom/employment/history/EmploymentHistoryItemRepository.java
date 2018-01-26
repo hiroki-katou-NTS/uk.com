@@ -53,8 +53,8 @@ public interface EmploymentHistoryItemRepository {
 	 * @param employmentCodes the employment codes
 	 * @return the list
 	 */
-	List<EmploymentHistoryItem> searchEmployee(List<String> employeeIds, 
-			GeneralDate baseDate, List<String> employmentCodes );
+	List<EmploymentHistoryItem> searchEmployee(GeneralDate baseDate, List<String> employeeIds, 
+			 List<String> employmentCodes );
 
 	/**
 	 * Search employment of sids.

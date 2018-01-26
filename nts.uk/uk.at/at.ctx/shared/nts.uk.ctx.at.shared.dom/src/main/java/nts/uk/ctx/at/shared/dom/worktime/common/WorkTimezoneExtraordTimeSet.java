@@ -5,15 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class WorkTimezoneExtraordTimeSet.
  */
 // 就業時間帯の臨時時間設定
 @Getter
-public class WorkTimezoneExtraordTimeSet extends DomainObject {
+public class WorkTimezoneExtraordTimeSet extends WorkTimeDomainObject {
 
 	/** The holiday frame set. */
 	// 休出枠設定

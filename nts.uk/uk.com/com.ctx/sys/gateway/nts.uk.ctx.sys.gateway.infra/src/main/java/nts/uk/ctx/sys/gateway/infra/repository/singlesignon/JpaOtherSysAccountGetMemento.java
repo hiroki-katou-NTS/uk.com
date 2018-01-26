@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.infra.repository.singlesignon;
 
+import nts.uk.ctx.sys.gateway.dom.singlesignon.CompanyCode;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountGetMemento;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAcc;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAccPK;
 
@@ -41,16 +43,16 @@ public class JpaOtherSysAccountGetMemento implements OtherSysAccountGetMemento {
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountGetMemento#getCompanyCode()
 	 */
 	@Override
-	public String getCompanyCode() {
-		return this.typedValue.getSgwmtOtherSysAccPK().getCcd();
+	public CompanyCode getCompanyCode() {
+		return new CompanyCode(this.typedValue.getCcd());
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountGetMemento#getUserName()
 	 */
 	@Override
-	public String getUserName() {
-		return this.typedValue.getSgwmtOtherSysAccPK().getUserName();
+	public UserName getUserName() {
+		return new UserName(this.typedValue.getUserName());
 	}
 
 	/* (non-Javadoc)

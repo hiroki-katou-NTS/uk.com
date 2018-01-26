@@ -5,8 +5,8 @@ package nts.uk.ctx.bs.employee.app.find.jobtitle.affiliate;
 
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -55,7 +55,7 @@ public class AffJobTitleDto extends PeregDomainDto {
 		super(recordId);
 	}
 
-	public static AffJobTitleDto createFromDomain(AffJobTitleHistoryItem_ver1 histItem, AffJobTitleHistory_ver1 history) {
+	public static AffJobTitleDto createFromDomain(AffJobTitleHistoryItem histItem, AffJobTitleHistory history) {
 		AffJobTitleDto dto = new AffJobTitleDto(histItem.getHistoryId());
 		dto.setStartDate(history.getHistoryItems().get(0).start());
 		dto.setEndDate(history.getHistoryItems().get(0).end());

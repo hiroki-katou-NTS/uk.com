@@ -5,16 +5,16 @@
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class EmTimezoneChangeExtent.
  */
 // 就業時間帯変動可能範囲
 @Getter
-public class EmTimezoneChangeExtent extends DomainObject {
+public class EmTimezoneChangeExtent extends WorkTimeDomainObject {
 
 	/** The ahead change. */
 	// 前に変動

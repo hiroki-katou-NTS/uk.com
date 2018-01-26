@@ -23,6 +23,9 @@ module ccg014.a.viewmodel {
             self.listTitleMenu = ko.observableArray([]);
             self.selectedTitleMenuCD = ko.observable(null);
             self.selectedTitleMenuCD.subscribe((value) => {
+                if(value === '' && !self.isCreate()){
+                    return;
+                }
                 self.findSelectedTitleMenu(value);
                 self.changePreviewIframe(self.selectedTitleMenu().layoutID());
             });
@@ -87,15 +90,15 @@ module ccg014.a.viewmodel {
                         self.reloadData().done(() => {
                             self.selectTitleMenuByCode(titleMenuCD);
                         });
-                    }).fail((res) => {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
+                    }).fail((res: any) => {
+                        nts.uk.ui.dialog.alert({ messageId: res.messageId });
                     }).always(() => {
                         block.clear();
                     });
                 }
                 else {
                     service.updateTitleMenu(titleMenu).done((data) => {
-                        nts.uk.ui.dialog.infot({ messageId: "Msg_15" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         console.log(data);
                         self.reloadData();
                     }).always(() => {
@@ -118,7 +121,7 @@ module ccg014.a.viewmodel {
                             self.selectTitleMenuByIndex(index);
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         });
-                    }).fail((res) => {
+                    }).fail((res: any) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     }).always(() => {
                         block.clear();
@@ -138,7 +141,6 @@ module ccg014.a.viewmodel {
                 if (copiedTitleMenuCD) {
                     self.reloadData().done(() => {
                         self.selectTitleMenuByCode(copiedTitleMenuCD);
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_20" });
                     });
                 }
                 block.clear();
@@ -217,7 +219,7 @@ module ccg014.a.viewmodel {
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.fail();
-                alert(error.message);
+                nts.uk.ui.dialog.alertError(error.message);
             });
             return dfd.promise();
         }

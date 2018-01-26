@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KscmtWorkMonthSet.
@@ -22,7 +22,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCMT_WORK_MONTH_SET")
-public class KscmtWorkMonthSet extends JpaEntity implements Serializable {
+public class KscmtWorkMonthSet extends UkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     

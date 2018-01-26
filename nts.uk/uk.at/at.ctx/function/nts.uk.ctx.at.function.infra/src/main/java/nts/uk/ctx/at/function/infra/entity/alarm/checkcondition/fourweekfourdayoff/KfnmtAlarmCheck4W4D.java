@@ -41,7 +41,7 @@ public class KfnmtAlarmCheck4W4D extends UkJpaEntity implements Serializable {
 	@Column(name = "AL_CHECK_COND_CATE_CD")
 	public String alCheckCondCateCD;
 
-	@Column(name = "4W4D_CHECK_COND")
+	@Column(name = "W4D4_CHECK_COND")
 	public int fourW4DCheckCond;
 
 	@OneToOne

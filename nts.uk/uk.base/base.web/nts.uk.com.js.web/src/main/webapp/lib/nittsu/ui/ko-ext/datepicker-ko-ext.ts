@@ -77,7 +77,7 @@ module nts.uk.ui.koExtentions {
                 let $yearType = $("<label/>").attr("for", idString)
                                                 .css({ "position": "absolute",
                                                       "line-height": "30px",
-                                                      "right": "42px"});
+                                                      "right": "5px"});
                 let labelText = fiscalYear ? "年度" : "年"; 
                 $yearType.text(labelText);
                 container.append($yearType);
