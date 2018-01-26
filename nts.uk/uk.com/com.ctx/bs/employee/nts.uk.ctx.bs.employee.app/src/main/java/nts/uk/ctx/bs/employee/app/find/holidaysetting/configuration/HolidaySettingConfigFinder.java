@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.app.find.holidaysetting.configuration;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -68,10 +69,13 @@ public class HolidaySettingConfigFinder {
 			weekHdSetDomain.saveToMemento(weekHdSetDto);
 		}
 		
-		Optional<PublicHolidaySetting> optionalPubHdSet = this.pubHdSetRepo.findByCID(companyId);
-		if(optionalPubHdSet.isPresent()){
-			PublicHolidaySetting pubHdSetDomain = optionalPubHdSet.get();
-			pubHdSetDomain.saveToMemento(pubHdSetDto);
+		List<PublicHolidaySetting> lstPubHdSet = this.pubHdSetRepo.findByCIDToList(companyId);
+		if(lstPubHdSet != null && !lstPubHdSet.isEmpty()){
+			PublicHolidaySetting pubHdSetDomain = lstPubHdSet.get(0);
+			pubHdSetDomain.saveToMemento(pubHdSetDto, 0);
+			
+			pubHdSetDomain = lstPubHdSet.get(1);
+			pubHdSetDomain.saveToMemento(pubHdSetDto, 1);
 		}
 		
 		HolidaySettingConfigDto dto = new HolidaySettingConfigDto(forwardSetOfPubHdDto, fourWeekfourHdNumbSetDto, weekHdSetDto, pubHdSetDto);

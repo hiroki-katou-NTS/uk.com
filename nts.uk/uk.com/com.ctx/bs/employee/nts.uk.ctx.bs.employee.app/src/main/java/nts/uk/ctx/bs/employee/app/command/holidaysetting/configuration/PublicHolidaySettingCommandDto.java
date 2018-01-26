@@ -1,11 +1,15 @@
 package nts.uk.ctx.bs.employee.app.command.holidaysetting.configuration;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.DayOfPublicHoliday;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHoliday;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayGrantDate;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementClassification;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementStartDate;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayPeriod;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySettingGetMemento;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -84,9 +88,18 @@ public class PublicHolidaySettingCommandDto implements PublicHolidaySettingGetMe
 	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySettingGetMemento#getPublicHolidayManagementStartDate()
 	 */
 	@Override
-	public PublicHolidayManagementStartDate getPublicHolidayManagementStartDate() {
+	public PublicHolidayManagementStartDate getPublicHolidayManagementStartDate(Integer publicHdManageAtr) {
 		// TODO Auto-generated method stub
-		return null;
+		if (this.publicHdManagementClassification == 0) {
+			return new PublicHolidayGrantDate(PublicHolidayPeriod.valueOf(this.period));
+		}
+		if (fullDate.length() < 8) {
+			fullDate = "0" + fullDate;
+		}
+		int year = Integer.parseInt(fullDate.substring(4));
+		int month= Integer.parseInt(fullDate.substring(0, 2));
+		int day = Integer.parseInt(fullDate.substring(2, 4));
+		return new PublicHoliday(GeneralDate.ymd(year, month, day), this.dayMonth, DayOfPublicHoliday.valueOf(this.determineStartD));
 	}
 
 }

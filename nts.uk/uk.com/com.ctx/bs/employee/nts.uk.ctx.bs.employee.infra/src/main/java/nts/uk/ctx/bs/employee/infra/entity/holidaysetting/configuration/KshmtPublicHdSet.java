@@ -17,6 +17,7 @@ import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -55,7 +56,7 @@ public class KshmtPublicHdSet extends UkJpaEntity implements Serializable {
     /** The full date. */
     @Column(name = "FULL_DATE")
     @Temporal(TemporalType.DATE)
-    private Date fullDate;
+    private GeneralDate fullDate;
     
     /** The day month. */
     @Column(name = "DAY_MONTH")
