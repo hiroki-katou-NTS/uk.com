@@ -23,6 +23,9 @@ module ccg014.a.viewmodel {
             self.listTitleMenu = ko.observableArray([]);
             self.selectedTitleMenuCD = ko.observable(null);
             self.selectedTitleMenuCD.subscribe((value) => {
+                if(value === '' && !self.isCreate()){
+                    return;
+                }
                 self.findSelectedTitleMenu(value);
                 self.changePreviewIframe(self.selectedTitleMenu().layoutID());
             });
