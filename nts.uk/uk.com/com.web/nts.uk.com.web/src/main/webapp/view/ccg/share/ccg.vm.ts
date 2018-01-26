@@ -204,7 +204,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // init data sample
                 self.isMultiple = data.isMutipleCheck;
                 self.isQuickSearchTab = data.isQuickSearchTab;
-                self.isAdvancedSearchTab = data.isAdvancedSearchTab;
+                self.isAdvancedSearchTab = false;//data.isAdvancedSearchTab
                 self.isAllReferableEmployee = data.isAllReferableEmployee;
                 self.isOnlyMe = data.isOnlyMe;
                 self.isEmployeeOfWorkplace = data.isEmployeeOfWorkplace;

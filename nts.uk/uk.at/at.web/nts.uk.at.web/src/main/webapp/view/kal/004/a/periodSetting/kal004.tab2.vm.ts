@@ -54,8 +54,9 @@ module nts.uk.at.view.kal004.tab2.viewModel {
 
         private openDialog(ModelCheckConditonCode): void {
             var self = this;
-            if(ModelCheckConditonCode.extractionPeriodDaily.extractionRange == 0){
-                var param = ModelCheckConditonCode.extractionPeriodDaily;
+            var param = ModelCheckConditonCode.extractionPeriodDaily;
+            var categoryId = ModelCheckConditonCode.categoryId;
+            if(categoryId == 0 || categoryId == 8 || categoryId == 5 || categoryId == 13){
                 var ExtractionDailyDto = {
                     extractionId: param.extractionId,
                     extractionRange: param.extractionRange,
@@ -74,14 +75,14 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     endCurrentMonth: param.endCurrentMonth,
                     endMonth: param.endMonth
                 }
-                
                 nts.uk.ui.windows.setShared("extractionDailyDto", ExtractionDailyDto);
+                nts.uk.ui.windows.setShared("categoryId", categoryId);
                 nts.uk.ui.windows.setShared("categoryName", ModelCheckConditonCode.categoryName);
                 nts.uk.ui.windows.sub.modal("../b/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("extractionDaily");
                     
                     if(!nts.uk.util.isNullOrUndefined(data)){
-                        self.changeExtractionDaily(data,ModelCheckConditonCode.categoryId);
+                        self.changeExtractionDaily(data,categoryId);
                     }
                 });
             }
@@ -108,6 +109,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         categoryName: string;
         extractionPeriod: string;
         ListSpecifiedMonth:Array<any> = __viewContext.enums.SpecifiedMonth;
+        PreviousClassification: Array<any> = __viewContext.enums.PreviousClassification
         ListAlarmCategory:Array<any> = __viewContext.enums.AlarmCategory;
         
         extractionPeriodDaily: share.ExtractionPeriodDailyCommand;
@@ -117,13 +119,13 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             this.categoryName = _.find(self.ListAlarmCategory, ['value', CheckCondition.alarmCategory]).name;
             var str, end;
             if(CheckCondition.extractionPeriodDaily.strSpecify == 0){ 
-                str = CheckCondition.extractionPeriodDaily.strDay + getText('KAL004_34') + getText('KAL004_35');
+                str = getText('KAL004_32') + CheckCondition.extractionPeriodDaily.strDay + getText('KAL004_34') + _.find(self.PreviousClassification, ['value', CheckCondition.extractionPeriodDaily.strPreviousDay]).name;
             }else{
                 let strMonth = _.find(self.ListSpecifiedMonth, ['value' , CheckCondition.extractionPeriodDaily.strMonth]);
                 str = strMonth.name + getText('KAL004_37');
             }
             if(CheckCondition.extractionPeriodDaily.endSpecify == 0){ 
-                end = CheckCondition.extractionPeriodDaily.endDay + getText('KAL004_34') + getText('KAL004_35');
+                end = getText('KAL004_32') + CheckCondition.extractionPeriodDaily.endDay + getText('KAL004_34') + _.find(self.PreviousClassification, ['value', CheckCondition.extractionPeriodDaily.endPreviousDay]).name;
             }else{
                 let endMonth = _.find(self.ListSpecifiedMonth, ['value' , CheckCondition.extractionPeriodDaily.endMonth]);
                 end = endMonth.name + getText('KAL004_43');
