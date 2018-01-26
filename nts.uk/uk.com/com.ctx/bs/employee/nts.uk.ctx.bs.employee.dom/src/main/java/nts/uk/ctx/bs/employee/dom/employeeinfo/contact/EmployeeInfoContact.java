@@ -2,24 +2,8 @@ package nts.uk.ctx.bs.employee.dom.employeeinfo.contact;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.person.dom.person.contact.MailAddress;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.AddressSet1;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.AddressSet2;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.CurrentAddress;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.HomeSituationType;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.HouseRent;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.HouseType;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.NearestStation;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.PersonAddress1;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.PersonAddress2;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.PersonAddressKana1;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.PersonAddressKana2;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.PostalCode;
-import nts.uk.ctx.bs.person.dom.person.currentaddress.Prefectures;
-import nts.uk.ctx.bs.person.dom.person.info.PersonMailAddress;
-import nts.uk.ctx.bs.person.dom.person.info.PersonMobile;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The class EmployeeInfoContact 社員連絡先
@@ -29,7 +13,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @AllArgsConstructor
 @Getter
-public class EmployeeInfoContact {
+public class EmployeeInfoContact extends AggregateRoot{
 	//社員ID
 	private String sid;
 	
