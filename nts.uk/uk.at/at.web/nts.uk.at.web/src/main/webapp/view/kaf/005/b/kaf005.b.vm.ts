@@ -442,11 +442,13 @@ module nts.uk.at.view.kaf005.b {
                         }
                     } else if (data.errorCode == 1){
                         if(data.frameNo == -1){
+                            let frameName = [];
                             //Setting color for item error
                             for (let i = 0; i < self.overtimeHours().length; i++) {
                                 self.changeColor( self.overtimeHours()[i].attendanceID(), self.overtimeHours()[i].frameNo());
+                                frameName.push(self.overtimeHours()[i].frameName());
                             }
-                            dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(), moment(self.appDate()).format(self.DATEFORMART)]}) .then(function() { nts.uk.ui.block.clear(); }); 
+                            dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(), moment(self.appDate()).format(self.DATEFORMART),frameName]}) .then(function() { nts.uk.ui.block.clear(); }); 
                         }else{
                           //Change background color
                             self.changeColor( data.attendanceId, data.frameNo);
