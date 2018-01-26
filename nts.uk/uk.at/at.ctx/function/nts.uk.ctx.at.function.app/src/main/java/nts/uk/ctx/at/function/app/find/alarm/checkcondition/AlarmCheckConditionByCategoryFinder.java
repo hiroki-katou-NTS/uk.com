@@ -91,9 +91,9 @@ public class AlarmCheckConditionByCategoryFinder {
 			}
 			lstWorkRecordExtraCon = workRecordExtractConditionAdapter
 					.getAllWorkRecordExtraConByListID(dailyAlarmCondition.getExtractConditionWorkRecord());
-//			listErrorAlarmCheck = errorAlarmWkRcAdapter.getAllErrorAlarmWorkRecord(AppContexts.user().companyId())
-//					.stream().map(item -> new DailyErrorAlarmCheckDto(item.getCode(), item.getName(), item.getTypeAtr(),
-//							item.getDisplayMessage())).collect(Collectors.toList());
+			listErrorAlarmCheck = errorAlarmWkRcAdapter.getAllErrorAlarmWorkRecord(AppContexts.user().companyId())
+					.stream().map(item -> new DailyErrorAlarmCheckDto(item.getCode(), item.getName(), item.getTypeAtr(),
+							item.getDisplayMessage())).collect(Collectors.toList());
 		}
 		
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
