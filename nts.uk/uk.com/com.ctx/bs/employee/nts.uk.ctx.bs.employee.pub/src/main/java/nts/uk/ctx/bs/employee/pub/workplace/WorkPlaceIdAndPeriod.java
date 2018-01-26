@@ -13,7 +13,7 @@ public class WorkPlaceIdAndPeriod {
 
 	/** The date range. */
 	// 配属期間
-	private DatePeriod dateRange;
+	private DatePeriod datePeriod;
 
 	/** The workplace id. */
 	// 職場ID
