@@ -43,14 +43,13 @@ public class DefaultTitleMenuService implements TitleMenuService  {
 	@Override
 	public void copyTitleMenu(String companyID, String sourceTitleMenuCD, String targetTitleMenuCD, String targetTitleMenuName, Boolean overwrite) {
 		TitleMenu oldTitleMenu = titleMenuRepository.findByCode(companyID, sourceTitleMenuCD).get();
-		
-		if (isExist(companyID, targetTitleMenuCD)) {
-			if (overwrite)
-				titleMenuRepository.remove(companyID, targetTitleMenuCD);
-			else
+		if (overwrite) {
+			titleMenuRepository.remove(companyID, targetTitleMenuCD);
+		}else {
+			if (isExist(companyID, targetTitleMenuCD)) {
 				throw new BusinessException("Msg_3");
+			}
 		}
-		
 		// Create new TitleMenu's Layout
 		String newLayoutId = layoutService.copyTitleMenuLayout(oldTitleMenu.getLayoutID());
 		// Create new TitleMenu				

@@ -154,7 +154,6 @@ public class PerInfoItemDefFinder {
 		return item;
 	}
 
-	// lanrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
 	public PerInfoItemChangeDefDto getPerInfoItemDefById(String perInfoItemDefId, int personEmployeeType) {
 		PerInfoItemChangeDefDto itemDto = this.pernfoItemDefRep
 				.getPerInfoItemDefById(perInfoItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).map(item -> {
@@ -178,6 +177,20 @@ public class PerInfoItemDefFinder {
 		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep
 				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream()
 				.filter(e -> e.getItemParentCode().equals("")) // filter set
+																// item or
+																// single item
+																// (has'nt
+																// parent item)
+				.collect(Collectors.toList());
+		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
+		return mappingItemAndOrder(itemDefs, itemOrders);
+	};
+	
+	// Function get item used for Layout
+	public List<PerInfoItemDefDto> getAllPerInfoItemUsedByCtgIdForLayout(String perInfoCtgId) {
+		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep
+				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream()
+				.filter(e -> (e.getItemParentCode().equals("") && e.getIsAbolition().value == 0)) // filter set
 																// item or
 																// single item
 																// (has'nt

@@ -13,9 +13,9 @@ module nts.uk.at.view.kmf002.c {
          * 
          */
         export function save(year: number, data: any, sId: string): JQueryPromise<any> {
-            model.EmployeeMonthDaySetting employeeMonthDaySetting = new model.EmployeeMonthDaySetting(year, sId, new Array<model.PublicHolidayMonthSettingDto>());
+            let employeeMonthDaySetting: model.EmployeeMonthDaySetting= new model.EmployeeMonthDaySetting(year, sId, []);
             employeeMonthDaySetting.toDto(data);
-            let command = {};
+            let command: any = {};
             command.year = year;
             command.publicHolidayMonthSettings = employeeMonthDaySetting.publicHolidayMonthSettingDto;
             command.sId = sId;
@@ -27,7 +27,7 @@ module nts.uk.at.view.kmf002.c {
         }
         
         export function remove(year: number, sId: string): JQueryPromise<any> {
-            let command = {};
+            let command: any = {};
             command.year = year;
             command.sId = sId;
             return nts.uk.request.ajax("com", path.remove, command);
@@ -40,10 +40,10 @@ module nts.uk.at.view.kmf002.c {
     export module model {
         export class EmployeeMonthDaySetting {
             year: number;
-            publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>;
+            publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[];
             sId: string;
             
-            constructor(year: number, sId: string, publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>){
+            constructor(year: number, sId: string, publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[]){
                 let _self = this;
                 _self.year = year;
                 _self.publicHolidayMonthSettingDto = publicHolidayMonthSettingDto;

@@ -49,12 +49,12 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 				sId, 1, ApplicationType.WORK_CHANGE_APPLICATION, null);
 
 		// アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
-		ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(
+		/*ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(
 				companyId, 
 				sId, 
 				EmploymentRootAtr.APPLICATION, 
 				ApplicationType.WORK_CHANGE_APPLICATION, 
-				null, 
+				appCommonSetting.generalDate, 
 				"", 
 				true);
 
@@ -62,7 +62,7 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 		startupErrorCheckService.startupErrorCheck(
 				appCommonSetting.generalDate, 
 				ApplicationType.WORK_CHANGE_APPLICATION.value, 
-				approvalRootPattern.getApprovalRootContentImport());
+				approvalRootPattern.getApprovalRootContentImport());*/
 
 		// アルゴリズム「勤務変更申請基本データ（新規）」を実行する
 		WorkChangeBasicData wcBasicData = getWorkChangeBasicData(companyId);

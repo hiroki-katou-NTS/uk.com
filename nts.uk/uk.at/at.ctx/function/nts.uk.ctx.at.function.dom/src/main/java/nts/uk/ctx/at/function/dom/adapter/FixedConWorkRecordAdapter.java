@@ -7,22 +7,22 @@ import java.util.List;
 public interface FixedConWorkRecordAdapter {
 
 	/**
-	 * get all fixed condition work record by list errorAlarmID
+	 * get all fixed condition work record by list dailyAlarmConID
 	 * @return
 	 */
-	List<FixedConWorkRecordAdapterDto> getAllFixedConWorkRecordByListID(List<String> listErrorAlarmID);
+	List<FixedConWorkRecordAdapterDto> getAllFixedConWorkRecordByID(String dailyAlarmConID);
 
 	/**
 	 * get fixed condition work record by dailyAlarmConID and fixConWorkRecordNo
-	 * @param errorAlarmID
+	 * @param dailyAlarmConID
 	 * @param fixConWorkRecordNo
 	 * @return
 	 */
-	FixedConWorkRecordAdapterDto getFixedConWRByCode(String errorAlarmID);
+	FixedConWorkRecordAdapterDto getFixedConWRByCode(String dailyAlarmConID,int fixConWorkRecordNo);
 	
 	void addFixedConWorkRecordPub(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto);
 	
 	void updateFixedConWorkRecordPub(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto);
 	
-	void deleteFixedConWorkRecordPub(List<String> errorAlarmID);
+	void deleteFixedConWorkRecordPub(String dailyAlarmConID);
 }

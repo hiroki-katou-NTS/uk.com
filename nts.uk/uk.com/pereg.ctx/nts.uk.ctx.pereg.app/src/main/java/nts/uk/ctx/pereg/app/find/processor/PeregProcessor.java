@@ -229,7 +229,9 @@ public class PeregProcessor {
 			case SINGLEINFO:
 				setOptionData(perInfoCtg, classItemList, query);
 				break;
+			case DUPLICATEHISTORY:
 			case CONTINUOUSHISTORY:
+			case CONTINUOUS_HISTORY_FOR_ENDDATE:
 			case NODUPLICATEHISTORY:
 				String recordId = query.getInfoId();
 				setOptionalDataByRecordId(recordId, perInfoCtg.getPersonEmployeeType(), classItemList);

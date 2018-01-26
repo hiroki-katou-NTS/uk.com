@@ -1,17 +1,14 @@
-module nts.uk.com.view.kal003.c.service {
-    var paths: any = {
-        searchUser : "ctx/sys/auth/user/findByKey",
+module nts.uk.at.view.kal003.c.service {
+    var paths = {
+        getAttendanceItemByCodes: "at/record/divergencetime/AttendanceDivergenceName",
+        getAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListByAttendanceAtr/"
     }
 
-    export function searchUser(key: string, Special: boolean, Multi: boolean): JQueryPromise<any> {
-        var userKeyDto = {
-                    key: key,
-                    Special: Special,
-                    Multi: Multi
-                };
-        return nts.uk.request.ajax("com", paths.searchUser, userKeyDto);
+    export function getAttendanceItemByCodes(codes) {
+        return nts.uk.request.ajax("at", paths.getAttendanceItemByCodes, codes);
     }
 
-
-
+    export function getAttendanceItemByAtr(atr) {
+        return nts.uk.request.ajax("at", paths.getAttendanceItemByAtr + atr);
+    }
 }

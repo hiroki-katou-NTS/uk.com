@@ -14,6 +14,7 @@ import nts.uk.ctx.pereg.app.command.person.info.category.UpdateNamePerInfoCtgCom
 import nts.uk.ctx.pereg.app.command.person.info.category.UpdatePerInfoCategoryOrderCommand;
 import nts.uk.ctx.pereg.app.command.person.info.category.UpdatePerInfoCategoryOrderCommandHandler;
 import nts.uk.ctx.pereg.app.find.person.category.PerCtgInfoDto;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgDataDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -38,7 +39,7 @@ public class PerInfoCategoryWebservice extends WebService {
 
 	@POST
 	@Path("findAll")
-	public List<PerInfoCtgFullDto> getAllPerInfoCtg() {
+	public List<PerInfoCtgFullDto> getAllPerInfoCtg1() {
 		String companyId = AppContexts.user().companyId();
 		return this.finder.getAllPerInfoCtg(companyId);
 	}

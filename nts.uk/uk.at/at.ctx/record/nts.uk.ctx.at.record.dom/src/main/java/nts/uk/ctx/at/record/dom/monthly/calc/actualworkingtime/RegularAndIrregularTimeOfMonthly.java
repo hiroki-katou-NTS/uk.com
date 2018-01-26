@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime;
 
 import java.util.List;
-import java.util.Random;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -106,12 +105,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 集計総労働時間　作成　（返却用）
-		//*****（メモ）　この方法では、値が正しく戻らないかもしれない（動作検証要）。クラスの必要な値だけコピーしたクローンを作る必要があるかも。
 		val returnClass = aggregateTotalWorkingTime;
-		//*****（テスト：仮）　値を入れてみる。
-		Random random = new Random();
-		val randomVal = random.nextInt(9) + 1;		// 1～9の乱数発生
-		returnClass.getWorkTime().setWorkTime(new AttendanceTimeMonth(120 + randomVal));
 		
 		// 週開始を取得する
 		//*****（２次）
@@ -196,6 +190,16 @@ public class RegularAndIrregularTimeOfMonthly {
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
 			RepositoriesRequiredByMonthlyAggr repositories){
 
+		// 週間、月間法定労働時間　取得
+		//*****（未）　日次での実装位置を確認して、合わせて実装する。
+		//*****（未）　参考（日次用）。このクラスか、別のクラスに、月・週用のメソッドを追加。仮に0設定。
+		/*
+		repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(WorkingSystem.RegularWork,
+				companyId, workplaceId, employmentCd, employeeId, datePeriod.end());
+		*/
+		//AttendanceTimeMonth statutoryWorkingTimeWeek = new AttendanceTimeMonth(0);
+		AttendanceTimeMonth statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
+		
 		// 通常勤務の時
 		if (workingSystem.isRegularWork()){
 			
@@ -206,7 +210,8 @@ public class RegularAndIrregularTimeOfMonthly {
 			
 				// 通常勤務の月単位の時間を集計する
 				this.aggregateTimePerMonthOfRegular(companyId, employeeId, yearMonth, datePeriod,
-						workplaceId, employmentCd, addSet, aggregateTotalWorkingTime, repositories);
+						workplaceId, employmentCd, addSet, aggregateTotalWorkingTime,
+						statutoryWorkingTimeMonth, repositories);
 			}
 		}
 		
@@ -216,7 +221,8 @@ public class RegularAndIrregularTimeOfMonthly {
 			// 変形労働勤務の月単位の時間を集計する
 			this.aggregateTimePerMonthOfIrregular(companyId, employeeId,
 					yearMonth, closureId, closureDate, datePeriod,
-					aggrSettingMonthly.getIrregularWork(), addSet, aggregateTotalWorkingTime, repositories);
+					aggrSettingMonthly.getIrregularWork(), addSet, aggregateTotalWorkingTime,
+					statutoryWorkingTimeMonth, repositories);
 		}
 	}
 	
@@ -230,6 +236,7 @@ public class RegularAndIrregularTimeOfMonthly {
 	 * @param employmentCd 雇用コード
 	 * @param addSet 加算設定
 	 * @param aggregateTotalWorkingTime 集計総労働時間
+	 * @param statutoryWorkingTimeMonth 月間法定労働時間
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	private void aggregateTimePerMonthOfRegular(
@@ -241,6 +248,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			String employmentCd,
 			AddSet addSet,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			AttendanceTimeMonth statutoryWorkingTimeMonth,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 通常勤務の月割増時間の対象となる時間を求める
@@ -249,16 +257,12 @@ public class RegularAndIrregularTimeOfMonthly {
 				companyId, employeeId, datePeriod, addSet, aggregateTotalWorkingTime);
 		val targetPremiumTimeMonth = targetPremiumTimeMonthOfRegular.getTargetPremiumTimeMonth();
 		
-		// 月の法定労働時間を取得する
-		//*****（未）　月の計算（総労働時間にメンバを置いたほうが便利？）で確認して、貰ってくる。
-		AttendanceTimeMonth statutoryWorkTime = new AttendanceTimeMonth(0);
-		
 		// 通常勤務の月割増対象時間　≦　法定労働時間　なら、処理終了
-		if (targetPremiumTimeMonth.lessThanOrEqualTo(statutoryWorkTime.v())) return;
+		if (targetPremiumTimeMonth.lessThanOrEqualTo(statutoryWorkingTimeMonth.v())) return;
 		
 		// 通常勤務の月割増対象時間が法定労働時間を超えた分を「月割増対象時間超過分」とする
 		val excessTargetPremiumTimeMonth = new AttendanceTimeMonth(targetPremiumTimeMonth.v());
-		excessTargetPremiumTimeMonth.minusMinutes(statutoryWorkTime.v());
+		excessTargetPremiumTimeMonth.minusMinutes(statutoryWorkingTimeMonth.v());
 		
 		// 月割増対象時間超過分－週割増合計時間を月割増合計時間とする
 		this.monthlyTotalPremiumTime = new AttendanceTimeMonth(excessTargetPremiumTimeMonth.v());
@@ -280,6 +284,7 @@ public class RegularAndIrregularTimeOfMonthly {
 	 * @param legalAggrSetOfIrg 変形労働時間勤務の法定内集計設定
 	 * @param addSet 加算設定
 	 * @param aggregateTotalWorkingTime 集計総労働時間
+	 * @param statutoryWorkingTimeMonth 月間法定労働時間
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	private void aggregateTimePerMonthOfIrregular(
@@ -292,13 +297,14 @@ public class RegularAndIrregularTimeOfMonthly {
 			LegalAggrSetOfIrg legalAggrSetOfIrg,
 			AddSet addSet,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			AttendanceTimeMonth statutoryWorkingTimeMonth,
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 当月の変形期間繰越時間を集計する
 		val irregularPeriodCarryforwardsTime = new IrregularPeriodCarryforwardsTimeOfCurrent();
 		this.addedVacationUseTime = irregularPeriodCarryforwardsTime.aggregate(
 				companyId, employeeId, datePeriod,
-				this.weeklyTotalPremiumTime, addSet, aggregateTotalWorkingTime);
+				this.weeklyTotalPremiumTime, addSet, aggregateTotalWorkingTime, statutoryWorkingTimeMonth);
 		
 		// 該当精算期間の開始月～前月の変形期間繰越時間を集計する
 		val pastIrregularPeriodCarryforwardsTime = this.aggregatePastIrregularPeriodCarryforwardsTime(

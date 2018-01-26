@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FixedConWorkRecordPubExport {
 	/** 日次のアラームチェック条件ID */
-	private String errorAlarmID;
+	private String dailyAlarmConID;
 	/** No */
 	private int fixConWorkRecordNo;
 	/** メッセージ */
@@ -15,9 +15,9 @@ public class FixedConWorkRecordPubExport {
 	/** 使用区分 */
 	private boolean useAtr;
 	
-	public FixedConWorkRecordPubExport(String errorAlarmID, int fixConWorkRecordNo, String message, boolean useAtr) {
+	public FixedConWorkRecordPubExport(String dailyAlarmConID, int fixConWorkRecordNo, String message, boolean useAtr) {
 		super();
-		this.errorAlarmID = errorAlarmID;
+		this.dailyAlarmConID = dailyAlarmConID;
 		this.fixConWorkRecordNo = fixConWorkRecordNo;
 		this.message = message;
 		this.useAtr = useAtr;
