@@ -22,6 +22,9 @@ module nts.uk.at.view.kdl003.a {
             
             startBBTime: KnockoutObservable<number>;
             endBBTime: KnockoutObservable<number>;
+            
+            timeZone1: KnockoutObservable<any>;
+            timeZone2: KnockoutObservable<any>;
 
             // Data list & selected code.
             listWorkTime: KnockoutObservableArray<WorkTimeSet>;
@@ -68,6 +71,9 @@ module nts.uk.at.view.kdl003.a {
                 self.endBTime = ko.observable(null);
                 self.startBBTime = ko.observable(null);
                 self.endBBTime = ko.observable(null);
+                
+                self.timeZone1 = ko.observable(null);
+                self.timeZone2 = ko.observable(null);
                 
                 self.styleWorkTime = ko.observable(null);
 
@@ -238,10 +244,12 @@ module nts.uk.at.view.kdl003.a {
                             self.startBTime(array[0].substring(2));
                             self.endBTime(array[1].substring(2));
                             self.enable1(true);
+                            self.timeZone1(codeTime);
                         } else {
                             self.startBTime(":");
                             self.endBTime(":");
                             self.enable1(false);
+                            self.timeZone1('');
                         };
                         if (!nts.uk.util.isNullOrEmpty(data[key].workTime2)){
                             let codeTime = data[key].workTime2;
@@ -249,10 +257,12 @@ module nts.uk.at.view.kdl003.a {
                             self.startBBTime(array[0].substring(2));
                             self.endBBTime(array[1].substring(2));
                             self.enable2(true);
+                            self.timeZone2(codeTime);
                         } else {
                             self.startBBTime(":");
                             self.endBBTime(":");
                             self.enable2(false);
+                            self.timeZone2('');
                         };
                         
                         self.styleWorkTime(data[key].workAtr);
@@ -459,6 +469,8 @@ module nts.uk.at.view.kdl003.a {
 
                 let workTypeCode = self.selectedWorkTypeCode();
                 let workTimeCode = self.selectedWorkTimeCode();
+                let time1 =  self.timeZone1();
+                let time2 =  self.timeZone2();
 
                 if (!workTypeCode) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_10" });
@@ -487,7 +499,9 @@ module nts.uk.at.view.kdl003.a {
                         selectedWorkTypeCode: workTypeCode,
                         selectedWorkTypeName: workTypeName,
                         selectedWorkTimeCode: workTimeCode,
-                        selectedWorkTimeName: workTimeName
+                        selectedWorkTimeName: workTimeName,
+                        firstTime: time1,
+                        secondTime: time2
                     };
                     nts.uk.ui.windows.setShared("childData", returnedData, false);
 
@@ -570,6 +584,8 @@ module nts.uk.at.view.kdl003.a {
             selectedWorkTypeName: string;
             selectedWorkTimeCode: string;
             selectedWorkTimeName: string;
+            firstTime: string;
+            secondTime: string;
         }
         enum SetupType {
             REQUIRED = 0,
