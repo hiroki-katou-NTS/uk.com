@@ -59,10 +59,10 @@
 				<div class="left-area">
 					<div class="bg-green caret-right caret-background"
 						data-bind="let: { emp: employee() }">
-						<div id="employees"
-							data-bind="template: {	
+						<div data-bind="template: {	
 								name: 'list-data',
 								data: {
+									rows: 10,
 									value: emp.employeeId,
 									dataSource: employees,
 									primaryKey: 'employeeId',
@@ -71,8 +71,9 @@
 			                			{ headerText: text('CPS001_10'), key: 'employeeCode', width: 115, hidden: false },
 			                			{ headerText: '', key: 'employeeName', width: 125, hidden: false }
 									],
+									NameID: text('CPS001_09')
 								}
-							},attr: { NameID: text('CPS001_09')} "></div>
+							}"></div>
 					</div>
 					<div id="lefttabs"
 						data-bind="ntsTabPanel: {
@@ -108,18 +109,20 @@
 										fields: ['optionText'], 
 										mode: 'igGrid'
 									}" tabindex="8"></div>
-								<table id="layout-data"
-									data-bind="ntsGridList: {							
-										rows: 10,
-										multiple: false,
-										columns: [
-											{ headerText: 'コード', key: 'optionValue', width: 100, hidden: true },
-				                			{ headerText: text('CPS001_26'), key: 'optionText', width: 232, hidden: false }
-										],
-										primaryKey: 'optionValue',
-										value: id,
-										dataSource: gridlist
-									},attr: { NameID: text('CPS001_25')}"></table>
+								<div data-bind="template: {	
+										name: 'list-data',
+										data: {
+											rows: 10,
+											value: id,
+											dataSource: gridlist,
+											primaryKey: 'optionValue',
+											columns: [
+												{ headerText: 'コード', key: 'optionValue', width: 100, hidden: true },
+					                			{ headerText: text('CPS001_26'), key: 'optionText', width: 232, hidden: false }
+											],
+											nameID: text('CPS001_25')
+										}
+									}"></div>
 							</div>
 						</div>
 						<div class="categorytab" data-bind="if: tab() == TABS.CATEGORY">
@@ -128,8 +131,7 @@
 									<div class="form-group search-box">
 										<button type="button"
 											data-bind="click: function() { multiple.id.valueHasMutated() }" tabindex="8">#{i18n.getText('CPS001_27')}</button>
-										<div id="combo-box"
-											data-bind="ntsDropDownList: {
+										<div data-bind="attr: {id: nts.uk.util.randomId().replace(/-/g, '')}, ntsDropDownList: {
 												value: multiple.id,
 												dataSource: multiple.combobox,
 												textKey: 'optionText',
@@ -302,9 +304,9 @@
                			{ headerText: '名称', key: 'name', width: 232, hidden: false }
 					],
 				}">
-				<table id="grid-data"
-					data-bind="ntsGridList: {								
-						rows: 10,
+				<table
+					data-bind="attr: { NameID: $data.NameID, id: $data.id || nts.uk.util.randomId().replace(/-/g, '')}, ntsGridList: {								
+						rows: $data.rows || 10,
 						multiple: false,
 						columns: $data.columns || [
 							{ headerText: 'コード', key: 'id', width: 100, hidden: true },
@@ -345,6 +347,7 @@
 				<div data-bind="template: {
 						name: 'list-data',
 						data: {
+							rows: 8,
 							value: $data.list.value,
 							dataSource: $data.list.dataSource,
 							primaryKey: $data.list.primaryKey || 'id',
@@ -383,6 +386,7 @@
 				<div data-bind="template: {
 						name: 'list-data',
 						data: {
+							rows: 8,
 							value: $data.list.value,
 							dataSource: $data.list.dataSource,
 							primaryKey: $data.list.primaryKey || 'id',
