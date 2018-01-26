@@ -1,19 +1,18 @@
-package nts.uk.ctx.bs.person.dom.person.info;
+package nts.uk.ctx.bs.employee.dom.employeeinfo.contact;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
-
-@StringCharType(CharType.ANY_HALF_WIDTH)
-@StringMaxLength(80)
-public class PersonMailAddress extends StringPrimitiveValue<PersonMailAddress>{
+@StringMaxLength(20)
+@StringCharType(CharType.ALPHA_NUMERIC)
+public class CellPhoneNumber extends StringPrimitiveValue<CellPhoneNumber>{
 
 	private static final long serialVersionUID = 1L;
 
-	public PersonMailAddress(String rawValue) {
+	public CellPhoneNumber(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
+
 
 }
