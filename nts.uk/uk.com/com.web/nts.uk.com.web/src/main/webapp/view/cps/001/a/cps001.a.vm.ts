@@ -736,6 +736,9 @@ module cps001.a.vm {
                                 });
                                 break;
                             case IT_CAT_TYPE.MULTI:
+                                // http://192.168.50.4:3000/issues/87571
+                                self.infoId(undefined);
+                                self.gridlist.removeAll();
                                 layout.listItemCls.removeAll();
                                 break;
                             case IT_CAT_TYPE.CONTINU:

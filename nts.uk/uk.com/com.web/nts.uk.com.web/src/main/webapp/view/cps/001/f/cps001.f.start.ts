@@ -6,10 +6,20 @@ module cps001.f {
         __viewContext['viewModel'].start().done(() => {
             init();
             __viewContext.bind(__viewContext['viewModel']);
+            service.getCurrentEmpPermision().done((data: IPersonAuth) => {
+                if (data && data.allowDocUpload != 1) {
+                    $(".browser-button").attr('disabled', 'disabled');
+                    $(".delete-button").attr('disabled', 'disabled');
+                }
+            });
+
+            $('.browser-button').focus();
         });
+
 
         // focus to first input textbox
         $('input:first').focus();
+
     });
 
 }

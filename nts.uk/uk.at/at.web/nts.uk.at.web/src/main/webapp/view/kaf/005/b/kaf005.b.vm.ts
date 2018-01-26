@@ -7,6 +7,7 @@ module nts.uk.at.view.kaf005.b {
     export module viewmodel {
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
             DATE_FORMAT: string = "YYYY/MM/DD";
+            datatest : any;
             screenModeNew: KnockoutObservable<boolean> = ko.observable(false);
             //current Data
             //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
@@ -127,7 +128,11 @@ module nts.uk.at.view.kaf005.b {
                 $("#fixed-table-indicate").ntsFixedTable({ height: 120 });
                 $("#fixed-table").ntsFixedTable({ height: 120 });
                 $('.nts-fixed-table.cf').first().find('.nts-fixed-body-container.ui-iggrid').css('border-left','1px solid #CCC');
-                self.startPage(self.appID());
+                self.startPage(self.appID()).done(function(){
+//                    for(let i =0 ; i < self.datatest.length; i++){
+//                         self.changeColor(1,self.datatest[i].frameNo,self.datatest[i].errorCode);
+//                    }
+                });
             }
             
             startPage(appID: string): JQueryPromise<any> {
@@ -188,7 +193,7 @@ module nts.uk.at.view.kaf005.b {
                 self.timeStart2(data.workClockFrom2 == -1 ? null : data.workClockFrom2);
                 self.timeEnd2(data.workClockTo2 == -1 ? null : data.workClockTo2);
                 if(data.applicationReasonDtos != null && data.applicationReasonDtos.length > 0){
-                    let reasonID = _.find(data.applicationReasonDtos, o => { return o.defaultFlg == 1 }).reasonID;
+                    let reasonID = data.applicationReasonDtos[0].reasonID;
                     self.selectedReason(reasonID);
                     
                     let lstReasonCombo = _.map(data.applicationReasonDtos, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
@@ -199,7 +204,7 @@ module nts.uk.at.view.kaf005.b {
                 
                 if(data.divergenceReasonDtos != null && data.divergenceReasonDtos.length > 0){
                     self.reasonCombo2(_.map(data.divergenceReasonDtos, o => { return new common.ComboReason(o.divergenceReasonID, o.reasonTemp); }));
-                    let reasonID = _.find(data.divergenceReasonDtos, o => { return o.divergenceReasonIdDefault == 1 }).divergenceReasonID;
+                    let reasonID = data.divergenceReasonDtos[0].divergenceReasonID;
                     self.selectedReason2(reasonID);
                     self.multilContent2(data.divergenceReasonContent);
                 }
@@ -241,13 +246,14 @@ module nts.uk.at.view.kaf005.b {
                 let dataOverTime = _.filter(data.overTimeInputs, {'attendanceID': 1});
                 let dataBreakTime = _.filter(data.overTimeInputs, {'attendanceID': 2});
                 let dataBonusTime = _.filter(data.overTimeInputs, {'attendanceID': 3});
+                self.datatest = dataOverTime;
                 self.restTime.removeAll();
                 self.overtimeHours.removeAll();
                 self.breakTimes.removeAll();
                 self.bonusTimes.removeAll();
                 if(nts.uk.util.isNullOrEmpty(dataRestTime)){
                     for (let i = 0; i < 11; i++) {
-                        self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i.toString(), null, null, null,""));
+                        self.restTime.push(new common.OverTimeInput("", "", 0, "", i,0, i.toString(), null, null, null,"", ""));
                     }    
                 } else {
                     _.forEach(dataRestTime, (item) => { 
@@ -265,9 +271,20 @@ module nts.uk.at.view.kaf005.b {
                                 item.applicationTime, ""));
                     });
                 };
-                _.forEach(dataOverTime, (item) => { 
+                _.forEach(dataOverTime, (item : any) => { 
+                    let color: string = "";
+                    if (item.errorCode == 1) {
+                        color = '#FD4D4D';
+                    }
+                    if (item.errorCode == 2) {
+                        color = '#F6F636';
+                    }
+                    if (item.errorCode == 3) {
+                        color = '#F69164';
+                    }
                     if(item.frameNo == 11){
                             if (data.appOvertimeNightFlg == 1) {
+                                if(item.errorCode)
                                 self.overtimeHours.push(new common.OvertimeCaculation(
                                     item.companyID, 
                                     item.appID, 
@@ -278,7 +295,7 @@ module nts.uk.at.view.kaf005.b {
                                     nts.uk.resource.getText("KAF005_63"), 
                                     item.applicationTime, 
                                     null, 
-                                    null,"#[KAF005_64]"));
+                                    null,"#[KAF005_64]","",color));
                              }
                     }else if(item.frameNo == 12){
                                 self.overtimeHours.push(new common.OvertimeCaculation(
@@ -291,7 +308,7 @@ module nts.uk.at.view.kaf005.b {
                                     nts.uk.resource.getText("KAF005_65"), 
                                     item.applicationTime, 
                                     null, 
-                                    null,"#[KAF005_66]"));
+                                    null,"#[KAF005_66]","",color));
                      }else{
                                 self.overtimeHours.push(new common.OvertimeCaculation(
                                     item.companyID, 
@@ -303,10 +320,11 @@ module nts.uk.at.view.kaf005.b {
                                     item.frameName, 
                                     item.applicationTime, 
                                     null, 
-                                    null, "#[KAF005_55]"));
+                                    null, "#[KAF005_55]","",color));
                     }
+                   
                 }); 
-                _.forEach(dataBreakTime, (item) => { 
+                _.forEach(dataBreakTime, (item :any) => { 
                     self.breakTimes.push(new common.OvertimeCaculation(
                         item.companyID, 
                         item.appID, 
@@ -317,7 +335,7 @@ module nts.uk.at.view.kaf005.b {
                         item.frameName, 
                         item.applicationTime, 
                         null, 
-                        null, ""));
+                        null, "","",""));
                 }); 
                 _.forEach(dataBonusTime, (item) => { 
                     self.bonusTimes.push(new common.OvertimeCaculation(
@@ -330,7 +348,7 @@ module nts.uk.at.view.kaf005.b {
                         item.frameName, 
                         item.applicationTime, 
                         null, 
-                        null, ""));
+                        null, "","",""));
                 }); 
             }
             
@@ -476,7 +494,7 @@ module nts.uk.at.view.kaf005.b {
                     null,
                     null,
                     param.applicationTime(),
-                    param.nameID()    
+                    param.nameID(), ""    
                 );        
             } 
             
@@ -579,12 +597,24 @@ module nts.uk.at.view.kaf005.b {
                             breakTimes:  ko.toJS(self.breakTimes())
                         }
                     service.getCaculationResult(param).done(function(data){
+                           
+                    
                        self.overtimeHours.removeAll();
                        self.bonusTimes.removeAll();
-                        if(data != null){
+                         if(data != null){
                          for(let i =0; i < data.length; i++){
                              //残業時間
-                               if(data[i].attendanceID == 1){
+                             if (data[i].attendanceID == 1) {
+                                 let color: string = "";
+                                 if (data[i].errorCode == 1) {
+                                     color = '#FD4D4D';
+                                 }
+                                 if (data[i].errorCode == 2) {
+                                     color = '#F6F636';
+                                 }
+                                 if (data[i].errorCode == 3) {
+                                     color = '#F69164';
+                                 }
                                     
                                    if(data[i].frameNo != 11 && data[i].frameNo != 12){
                                        self.overtimeHours.push(new common.OvertimeCaculation("", "",
@@ -595,7 +625,7 @@ module nts.uk.at.view.kaf005.b {
                                          data[i].frameName,
                                          data[i].applicationTime,
                                          self.convertIntToTime(data[i].preAppTime),
-                                         self.convertIntToTime(data[i].caculationTime),"#[KAF005_55]"));
+                                         self.convertIntToTime(data[i].caculationTime),"#[KAF005_55]","",color));
                                    }else if(data[i].frameNo == 11){
                                        self.overtimeHours.push(new common.OvertimeCaculation("", "",
                                          data[i].attendanceID,
@@ -605,7 +635,7 @@ module nts.uk.at.view.kaf005.b {
                                          nts.uk.resource.getText("KAF005_63"),
                                          data[i].applicationTime,
                                          self.convertIntToTime(data[i].preAppTime),
-                                         self.convertIntToTime(data[i].caculationTime),"#[KAF005_64]"));
+                                         self.convertIntToTime(data[i].caculationTime),"#[KAF005_64]","",color));
                                    }else if(data[i].frameNo == 12){
                                         self.overtimeHours.push(new common.OvertimeCaculation("", "",
                                           data[i].attendanceID,
@@ -615,7 +645,7 @@ module nts.uk.at.view.kaf005.b {
                                           nts.uk.resource.getText("KAF005_65"),
                                           data[i].applicationTime,
                                           self.convertIntToTime(data[i].preAppTime),
-                                          self.convertIntToTime(data[i].caculationTime),"#[KAF005_66]"));
+                                          self.convertIntToTime(data[i].caculationTime),"#[KAF005_66]","",color));
                                    }
                                    self.changeColor(1,data[i].frameNo,data[i].errorCode);
                                }
@@ -625,7 +655,7 @@ module nts.uk.at.view.kaf005.b {
                                     "", data[i].frameNo,
                                     data[i].timeItemTypeAtr ,
                                     data[i].frameName, data[i].applicationTime,
-                                    self.convertIntToTime(data[i].preAppTime), null,""));
+                                    self.convertIntToTime(data[i].preAppTime), null,"","#F69164"));
                            }   
                          }   
                         }
