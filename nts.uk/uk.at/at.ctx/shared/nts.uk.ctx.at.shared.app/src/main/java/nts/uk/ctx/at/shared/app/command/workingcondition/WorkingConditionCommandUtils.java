@@ -96,14 +96,6 @@ public class WorkingConditionCommandUtils {
 	public static List<TimeZone> getTimeZone(BigDecimal startTime1, BigDecimal endTime1, BigDecimal startTime2, BigDecimal endTime2){
 		List<TimeZone> listTimeZone = new ArrayList<>();
 		if (startTime1 != null && endTime1 != null){
-			TimeZone item = new TimeZone(EnumAdaptor.valueOf(1,NotUseAtr.class), 1, startTime1.intValue(), endTime1.intValue());
-			listTimeZone.add(item);
-		}
-		if (startTime2 != null && endTime2 != null){
-			TimeZone item = new TimeZone(EnumAdaptor.valueOf(1,NotUseAtr.class), 2, startTime2.intValue(), endTime2.intValue());
-			listTimeZone.add(item);
-		}
-		if (startTime1 != null && endTime1 != null){
 			if (startTime1.intValue() >= endTime1.intValue()){
 				throw new BusinessException("Msg_857");
 			}
