@@ -6386,7 +6386,7 @@ var nts;
                             var $yearType = $("<label/>").attr("for", idString)
                                 .css({ "position": "absolute",
                                 "line-height": "30px",
-                                "right": "42px" });
+                                "right": "5px" });
                             var labelText = fiscalYear ? "年度" : "年";
                             $yearType.text(labelText);
                             container.append($yearType);
@@ -8041,7 +8041,7 @@ var nts;
                         var HEADER_HEIGHT = 27;
                         var ROW_HEIGHT = 23;
                         var DIFF_NUMBER = 2;
-                        var $grid = $(element);
+                        var $grid = $(element).addClass("nts-gridlist");
                         var gridId = $grid.attr('id');
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             throw new Error('the element NtsGridList must have id attribute.');
@@ -8070,7 +8070,12 @@ var nts;
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         if (data.multiple || showNumbering) {
-                            features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });
+                            features.push({
+                                name: 'RowSelectors',
+                                enableCheckBoxes: data.multiple,
+                                enableRowNumbering: false,
+                                rowSelectorColumnWidth: 25
+                            });
                         }
                         var tabIndex = $grid.attr("tabindex");
                         $grid.data("tabindex", nts.uk.util.isNullOrEmpty(tabIndex) ? "0" : tabIndex);
@@ -9584,6 +9589,18 @@ var nts;
                         this.swapper.Model.$container.bind("swaplistgridsizeexceed", function (evt, data) {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_887" });
                         });
+                        $swap.find(".ntsSwapGrid").bind("listfilterred", function (evt, data) {
+                            var $gridX = $(this);
+                            var currentDataSource = $gridX.igGrid('option', 'dataSource');
+                            var selected = $gridX.ntsGridList('getSelected');
+                            var selectItems = _.filter(currentDataSource, function (itemFilterd) {
+                                return _.find(selected, function (item) {
+                                    var itemVal = itemFilterd[primaryKey];
+                                    return itemVal === item["id"];
+                                }) !== undefined;
+                            });
+                            $gridX.ntsGridList("setSelected", _.map(selectItems, primaryKey));
+                        });
                     };
                     /**
                      * Update
@@ -9935,6 +9952,7 @@ var nts;
                             if (results === null)
                                 return;
                             this.bindData(results.data);
+                            this.$listControl.trigger("listfilterred");
                         }
                         else {
                             this.highlightSearch();
@@ -10645,8 +10663,13 @@ var nts;
                                 }
                                 else {
                                     if (ko.isObservable(data.value)) {
-                                        data.value(selectedRows.length <= 0 ? undefined : ui.row.id);
-                                        data.value.valueHasMutated();
+                                        var valueX = selectedRows.length <= 0 ? undefined : ui.row.id;
+                                        if (data.value() === valueX) {
+                                            data.value.valueHasMutated();
+                                        }
+                                        else {
+                                            data.value(selectedRows.length <= 0 ? undefined : ui.row.id);
+                                        }
                                     }
                                 }
                             }
@@ -10654,7 +10677,7 @@ var nts;
                         features.push({
                             name: "RowSelectors",
                             enableCheckBoxes: showCheckBox,
-                            rowSelectorColumnWidth: showCheckBox ? 40 : 0,
+                            rowSelectorColumnWidth: showCheckBox ? 25 : 0,
                             enableRowNumbering: false,
                             checkBoxMode: "biState"
                         });
@@ -12102,7 +12125,7 @@ var nts;
                         return $control;
                     }
                     function clearErrorByCode($control, errorCode) {
-                        ui.errors.removeByElement($control);
+                        ui.errors.removeByCode($control, errorCode);
                         var remainErrors = ui.errors.getErrorByElement($control);
                         if (uk.util.isNullOrUndefined(remainErrors)) {
                             $control.data(DATA_HAS_ERROR, false);
@@ -12430,7 +12453,7 @@ var nts;
                         var dragSelectRange = [];
                         // used to auto scrolling when dragged above/below grid)
                         var mousePos = null;
-                        $grid.bind('mousedown', function (e) {
+                        $grid.bind('pointerdown', function (e) {
                             // グリッド内がマウスダウンされていない場合は処理なしで終了
                             var $container = $grid.closest('.ui-iggrid-scrolldiv');
                             if ($(e.target).closest('.ui-iggrid-table').length === 0) {
@@ -12457,7 +12480,7 @@ var nts;
                                 $grid.igGrid('virtualScrollTo', (currentScrolls + delta) + 'px');
                             }, 20);
                             // handle mousemove on window while dragging (unhandle when mouseup)
-                            $(window).bind('mousemove.NtsGridListDragging', function (e) {
+                            $(window).bind('pointermove.NtsGridListDragging', function (e) {
                                 var newPointedRowIndex = ui_18.ig.grid.getRowIndexFrom($(e.target));
                                 // selected range is not changed
                                 if (mousePos.rowIndex === newPointedRowIndex) {
@@ -12474,10 +12497,10 @@ var nts;
                                 updateSelections();
                             });
                             // stop dragging
-                            $(window).one('mouseup', function (e) {
+                            $(window).one('pointerup', function (e) {
                                 mousePos = null;
                                 dragSelectRange = [];
-                                $(window).unbind('mousemove.NtsGridListDragging');
+                                $(window).unbind('pointermove.NtsGridListDragging');
                                 if ($grid.data("selectUpdated") === true) {
                                     $grid.triggerHandler('selectionchanged');
                                 }
@@ -12527,7 +12550,7 @@ var nts;
                         //            });
                     }
                     function unsetupDragging($grid) {
-                        $grid.unbind('mousedown');
+                        $grid.unbind('pointerdown');
                     }
                     function unsetupSelectingEvents($grid) {
                         $grid.unbind('iggridselectionrowselectionchanged');

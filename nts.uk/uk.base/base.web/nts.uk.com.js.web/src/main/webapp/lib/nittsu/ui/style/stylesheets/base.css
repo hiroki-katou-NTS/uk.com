@@ -2719,6 +2719,11 @@ button.nts-switch-button[disabled]:hover {
   background-image: url(../images/ui-icons_444444_256x240.png);
 }
 
+/* line 11, ../sass/components/_gridlist.scss */
+.nts-gridlist .ui-icon-triangle-1-e {
+  display: none;
+}
+
 /* line 1, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs {
   border: none;
@@ -2889,6 +2894,11 @@ button.nts-switch-button[disabled]:hover {
 /* line 13, ../sass/components/_treegridview.scss */
 .ui-igtreegrid table .ui-ig-altrecord {
   background-color: #FFFFFF;
+}
+
+/* line 20, ../sass/components/_treegridview.scss */
+.nts-treegridview .ui-icon-triangle-1-e {
+  display: none;
 }
 
 /* line 2, ../sass/components/_combobox.scss */
