@@ -27,6 +27,9 @@ module nts.uk.com.view.ccg015.a {
                 ]);
                 self.isNewMode = ko.observable(true);
                 self.toppageSelectedCode.subscribe(function(selectedTopPageCode: string) {
+                    if(!self.isNewMode() && selectedTopPageCode === ''){
+                        return;    
+                    }
                     if (selectedTopPageCode && selectedTopPageCode != "") {
                         service.loadDetailTopPage(selectedTopPageCode).done(function(data: TopPageDto) {
                             self.loadTopPageItemDetail(data);

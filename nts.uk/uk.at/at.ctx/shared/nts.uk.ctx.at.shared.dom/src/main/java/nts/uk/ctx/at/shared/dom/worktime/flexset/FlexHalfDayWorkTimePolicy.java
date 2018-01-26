@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
@@ -14,8 +15,9 @@ public interface FlexHalfDayWorkTimePolicy {
 	/**
 	 * Validate.
 	 *
+	 * @param be the be
 	 * @param flexHalfDay the flex half day
 	 * @param predTime the pred time
 	 */
-	void validate(FlexHalfDayWorkTime flexHalfDay, PredetemineTimeSetting predTime);
+	void validate(BundledBusinessException be, FlexHalfDayWorkTime flexHalfDay, PredetemineTimeSetting predTime);
 }

@@ -37,9 +37,14 @@ module ccg014.b.viewmodel {
             service.copyTitleMenu(self.titlecode(), self.copyTitleCD(), self.copyName(), self.checkOverwritting()).done(() => {
                 nts.uk.ui.block.invisible();
                 nts.uk.ui.windows.setShared("copyTitleMenuCD", self.copyTitleCD(), false);
-                self.cancel_Dialog();
-            }).fail((res) => {
-                nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(() =>{
+                    self.cancel_Dialog();    
+                })
+                
+            }).fail((res: any) => {
+                $("#copycode").focus();
+                nts.uk.ui.dialog.alert({ messageId: res.messageId });
+                
             }).always(() => {
                 nts.uk.ui.block.clear();
             });

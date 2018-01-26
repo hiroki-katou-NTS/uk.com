@@ -10,9 +10,9 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
@@ -24,10 +24,10 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistItemDto> {
 
 	@Inject
-	private AffWorkplaceHistoryItemRepository_v1 affWrkplcHistItemRepo;
+	private AffWorkplaceHistoryItemRepository affWrkplcHistItemRepo;
 
 	@Inject
-	private AffWorkplaceHistoryRepository_v1 affWrkplcHistRepo;
+	private AffWorkplaceHistoryRepository affWrkplcHistRepo;
 
 	@Override
 	public String targetCategoryCode() {
@@ -57,7 +57,7 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 	}
 
 	public AffWorlplaceHistItemDto getByEmpIdAndStandDate(String employeeId, GeneralDate standDate) {
-		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getByEmpIdAndStandDate(employeeId,
+		Optional<AffWorkplaceHistory> affWrkplcHist = affWrkplcHistRepo.getByEmpIdAndStandDate(employeeId,
 				standDate);
 		if (affWrkplcHist.isPresent()) {
 
@@ -71,7 +71,7 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 	}
 
 	private PeregDomainDto getByHistId(String historyId) {
-		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo.getByHistId(historyId);
+		Optional<AffWorkplaceHistory> affWrkplcHist = affWrkplcHistRepo.getByHistId(historyId);
 		if (affWrkplcHist.isPresent()) {
 			Optional<AffWorkplaceHistoryItem> affWrkplcHistItem = affWrkplcHistItemRepo
 					.getByHistId(affWrkplcHist.get().getHistoryItems().get(0).identifier());
@@ -86,7 +86,7 @@ public class AffWorlplaceHistItemFinder implements PeregFinder<AffWorlplaceHistI
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 		
-		Optional<AffWorkplaceHistory_ver1> affWrkplcHist = affWrkplcHistRepo
+		Optional<AffWorkplaceHistory> affWrkplcHist = affWrkplcHistRepo
 				.getByEmployeeIdDesc(AppContexts.user().companyId(), query.getEmployeeId());
 		
 		if (affWrkplcHist.isPresent()) {

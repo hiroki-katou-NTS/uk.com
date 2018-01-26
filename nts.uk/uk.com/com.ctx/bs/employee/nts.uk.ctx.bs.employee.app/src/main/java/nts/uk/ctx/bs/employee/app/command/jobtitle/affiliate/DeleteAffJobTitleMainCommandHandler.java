@@ -8,10 +8,10 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryService;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
@@ -20,10 +20,10 @@ public class DeleteAffJobTitleMainCommandHandler extends CommandHandler<DeleteAf
 	implements PeregDeleteCommandHandler<DeleteAffJobTitleMainCommand>{
 
 	@Inject
-	private AffJobTitleHistoryRepository_ver1 affJobTitleHistoryRepository_ver1;
+	private AffJobTitleHistoryRepository affJobTitleHistoryRepository;
 	
 	@Inject
-	private AffJobTitleHistoryItemRepository_ver1 affJobTitleHistoryItemRepository_v1;
+	private AffJobTitleHistoryItemRepository affJobTitleHistoryItemRepository;
 	
 	@Inject 
 	private AffJobTitleHistoryService affJobTitleHistoryService;
@@ -43,7 +43,7 @@ public class DeleteAffJobTitleMainCommandHandler extends CommandHandler<DeleteAf
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		
-		Optional<AffJobTitleHistory_ver1> existHist = affJobTitleHistoryRepository_ver1.getListBySid(companyId, command.getEmployeeId());
+		Optional<AffJobTitleHistory> existHist = affJobTitleHistoryRepository.getListBySid(companyId, command.getEmployeeId());
 		
 		if (!existHist.isPresent()){
 			throw new RuntimeException("invalid AffWorkplaceHistory"); 
@@ -59,7 +59,7 @@ public class DeleteAffJobTitleMainCommandHandler extends CommandHandler<DeleteAf
 		
 		affJobTitleHistoryService.delete(existHist.get(), itemToBeDelete.get());
 		
-		affJobTitleHistoryItemRepository_v1.delete(command.getHistId());
+		affJobTitleHistoryItemRepository.delete(command.getHistId());
 	}
 
 }

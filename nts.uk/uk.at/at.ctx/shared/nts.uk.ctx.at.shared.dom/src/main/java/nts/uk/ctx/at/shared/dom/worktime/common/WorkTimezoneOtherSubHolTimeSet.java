@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 //就業時間帯別代休時間設定
 @Getter
-public class WorkTimezoneOtherSubHolTimeSet extends DomainObject {
+public class WorkTimezoneOtherSubHolTimeSet extends WorkTimeDomainObject {
 
 	/** The sub hol time set. */
 	// 代休時間設定

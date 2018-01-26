@@ -5,13 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FixedWorkRestSet.
  */
 //固定勤務の休憩設定
 @Getter
-public class FixedWorkRestSet {
+public class FixedWorkRestSet extends WorkTimeDomainObject {
 
 	/** The common rest set. */
 	//共通の休憩設定

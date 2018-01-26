@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlyPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetPolicy;
@@ -32,9 +33,9 @@ public class WorkTimezoneLateEarlySetPolicyImpl implements WorkTimezoneLateEarly
 	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, WorkTimezoneLateEarlySet wtzLateEarly) {
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, WorkTimezoneLateEarlySet wtzLateEarly) {
 		// validate list OtherEmTimezoneLateEarlySet
-		wtzLateEarly.getOtherClassSets().forEach(item -> this.otherEmPolicy.validLateTime(predTime, item));
+		wtzLateEarly.getOtherClassSets().forEach(item -> this.otherEmPolicy.validLateTime(be, predTime, item));
 	}
 
 }

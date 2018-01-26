@@ -14,22 +14,22 @@ public class WorkTimeOfTimeSeries {
 
 	/** 年月日 */
 	private GeneralDate ymd;
-	/** 日別実績の法定内時間 */
-	private WithinStatutoryTimeOfDaily legalTimeOfDaily;
+	/** 法定内時間 */
+	private WithinStatutoryTimeOfDaily legalTime;
 	
 	/**
 	 * ファクトリー
 	 * @param ymd 年月日
-	 * @param legalTimeOfDaily 日別実績の法定内時間
+	 * @param legalTime 法定内時間
 	 * @return 時系列の就業時間
 	 */
 	public static WorkTimeOfTimeSeries of(
 			GeneralDate ymd,
-			WithinStatutoryTimeOfDaily legalTimeOfDaily){
+			WithinStatutoryTimeOfDaily legalTime){
 		
 		val domain = new WorkTimeOfTimeSeries();
 		domain.ymd = ymd;
-		domain.legalTimeOfDaily = legalTimeOfDaily;
+		domain.legalTime = legalTime;
 		return domain;
 	}
 }

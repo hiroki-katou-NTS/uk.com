@@ -6,16 +6,16 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.val;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class GraceTimeSetting.
  */
 // 猶予時間設定
 @Getter
-public class GraceTimeSetting extends DomainObject {
+public class GraceTimeSetting extends WorkTimeDomainObject {
 
 	/** The include working hour. */
 	// 就業時間に含める

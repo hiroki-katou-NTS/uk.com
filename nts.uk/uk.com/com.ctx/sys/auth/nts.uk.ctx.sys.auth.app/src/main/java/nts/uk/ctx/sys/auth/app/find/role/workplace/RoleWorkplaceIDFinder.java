@@ -221,5 +221,21 @@ public class RoleWorkplaceIDFinder {
 			return null;
 		}
 	}
+    
+	/**
+	 * Find list wokplace id.
+	 *
+	 * @param systemType the system type
+	 * @return the list
+	 */
+	public WorkplaceIdDto findListWokplaceIdNoCheckRole(Integer systemType) {
+		GeneralDate referenceDate = GeneralDate.today();
+		List<String> listWkpId = new ArrayList<>();
+		WorkplaceIdDto workplaceIdDto = new WorkplaceIdDto();
+		listWkpId = workplaceAdapter.findListWkpIdByBaseDate(referenceDate);
+		workplaceIdDto.setListWorkplaceIds(listWkpId);
+		workplaceIdDto.setIsAllEmp(true);
+		return workplaceIdDto;
 
+	}
 }

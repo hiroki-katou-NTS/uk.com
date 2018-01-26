@@ -4,7 +4,10 @@ import java.util.List;
 
 
 public interface ErrorAlarmWorkRecordPub {
-	//get error by eralCheckId
+		//	get all error by companyID
+		List<ErrorAlarmWorkRecordPubExport> getAllErrorAlarmWorkRecord(String companyID);
+	
+		//get error by eralCheckId
 		ErrorAlarmWorkRecordPubExport findByErrorAlamCheckId(String eralCheckId);
 		
 		//get error by list eralCheckId

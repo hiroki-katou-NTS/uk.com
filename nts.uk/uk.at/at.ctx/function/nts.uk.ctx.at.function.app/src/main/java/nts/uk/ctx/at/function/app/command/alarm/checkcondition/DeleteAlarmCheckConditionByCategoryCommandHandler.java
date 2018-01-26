@@ -41,8 +41,8 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 				// and "error item condition of time item (勤怠項目のエラーアラーム条件)"
 				// linked to error work alarm check ID of work record
 		//TODO: delete List Work Record Extract Condition by list Error Alarm Code
-		List<String> listErrorAlarmCode =  command.getDailyAlarmCheckCondition().getListErrorAlarmCode();
-		this.workRecordExtraConRepo.deleteWorkRecordExtraConPub(listErrorAlarmCode);
+		List<String> listErrorAlarmCheckId =  command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList());
+		this.workRecordExtraConRepo.deleteWorkRecordExtraConPub(listErrorAlarmCheckId);
 		
 		//TODO: delete List Fixed Work Record Extract Condition by list Error Alarm Code
 		String dailyAlarmConID =  command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().get(0).getDailyAlarmConID();

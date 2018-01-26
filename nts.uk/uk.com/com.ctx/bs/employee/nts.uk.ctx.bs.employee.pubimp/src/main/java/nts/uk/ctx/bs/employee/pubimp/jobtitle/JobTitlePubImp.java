@@ -21,17 +21,17 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
-import nts.uk.ctx.bs.employee.pub.jobtitle.AffJobTitleHistory_ver1Export;
+import nts.uk.ctx.bs.employee.pub.jobtitle.AffJobTitleHistoryExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SimpleJobTitleExport;
@@ -62,10 +62,10 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	private SequenceMasterRepository sequenceMasterRepository;
 
 	@Inject
-	private AffJobTitleHistoryRepository_ver1 affJobTitleHisRepo_ver1;
+	private AffJobTitleHistoryRepository affJobTitleHisRepo;
 
 	@Inject
-	private AffJobTitleHistoryItemRepository_ver1 affJobTitleHisItemRepo_ver1;
+	private AffJobTitleHistoryItemRepository affJobTitleHisItemRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -95,14 +95,14 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		 * }).collect(Collectors.toList());
 		 */
 
-		List<AffJobTitleHistory_ver1> affJobTitleHistories = this.affJobTitleHisRepo_ver1.getAllBySid(employeeId);
-		List<AffJobTitleHistoryItem_ver1> affJobTitleHistoryItem = this.affJobTitleHisItemRepo_ver1
+		List<AffJobTitleHistory> affJobTitleHistories = this.affJobTitleHisRepo.getAllBySid(employeeId);
+		List<AffJobTitleHistoryItem> affJobTitleHistoryItem = this.affJobTitleHisItemRepo
 				.getAllBySid(employeeId);
 
 		Map<String, List<Object>> mapMerge = new HashMap<>();
 		Map<String, DatePeriod> mapHisIDDate = new HashMap<>();
 
-		/* Change list AffJobTitleHistory_ver1 to map */
+		/* Change list AffJobTitleHistory to map */
 		affJobTitleHistories.stream().forEach((jobEmp) -> {
 			jobEmp.getHistoryItems().stream().forEach((dateHistory) -> {
 				mapHisIDDate.put(dateHistory.identifier(), dateHistory.span());
@@ -135,14 +135,14 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	@Override
 	public Optional<EmployeeJobHistExport> findBySid(String employeeId, GeneralDate baseDate) {
 		// Query
-		Optional<AffJobTitleHistory_ver1> optAffJobTitleHist = this.affJobTitleHisRepo_ver1
+		Optional<AffJobTitleHistory> optAffJobTitleHist = this.affJobTitleHisRepo
 				.getByEmpIdAndStandardDate(employeeId, baseDate);
 
 		if (optAffJobTitleHist.isPresent()) {
 
 			DateHistoryItem dateHistoryItem = optAffJobTitleHist.get().getHistoryItems().get(0);
 
-			AffJobTitleHistoryItem_ver1 affJobTitleHistItem = affJobTitleHisItemRepo_ver1
+			AffJobTitleHistoryItem affJobTitleHistItem = affJobTitleHisItemRepo
 					.findByHitoryId(dateHistoryItem.identifier()).get();
 
 			// Get information of employee
@@ -248,7 +248,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		 */
 
 		// Query
-		Optional<AffJobTitleHistoryItem_ver1> optAffJobTitleHistoryItem = affJobTitleHisItemRepo_ver1
+		Optional<AffJobTitleHistoryItem> optAffJobTitleHistoryItem = affJobTitleHisItemRepo
 				.getByEmpIdAndReferDate(employeeId, baseDate);
 
 		// Check exist
@@ -256,13 +256,13 @@ public class JobTitlePubImp implements SyJobTitlePub {
 			return Optional.empty();
 		}
 
-		AffJobTitleHistoryItem_ver1 affJobTitleHist = optAffJobTitleHistoryItem.get();
+		AffJobTitleHistoryItem affJobTitleHist = optAffJobTitleHistoryItem.get();
 
 		// Query
-		Optional<AffJobTitleHistory_ver1> optAffJobTitleHistory = affJobTitleHisRepo_ver1
+		Optional<AffJobTitleHistory> optAffJobTitleHistory = affJobTitleHisRepo
 				.getListByHidSid(affJobTitleHist.getHistoryId(), employeeId);
 
-		AffJobTitleHistory_ver1 affJobTitleHistory = optAffJobTitleHistory.get();
+		AffJobTitleHistory affJobTitleHistory = optAffJobTitleHistory.get();
 
 		// Query
 		Optional<JobTitleInfo> optJobTitleInfo = this.jobTitleInfoRepository.find(affJobTitleHist.getJobTitleId(),
@@ -307,23 +307,23 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	}
 
 	@Override
-	public Optional<AffJobTitleHistory_ver1Export> gerBySidAndBaseDate(String employeeId, GeneralDate baseDate) {
+	public Optional<AffJobTitleHistoryExport> gerBySidAndBaseDate(String employeeId, GeneralDate baseDate) {
 		// TODO Auto-generated method stub
-		Optional<AffJobTitleHistory_ver1> optAffJobtitle = affJobTitleHisRepo_ver1.getByEmpIdAndStandardDate(employeeId,
+		Optional<AffJobTitleHistory> optAffJobtitle = affJobTitleHisRepo.getByEmpIdAndStandardDate(employeeId,
 				baseDate);
 		if (!optAffJobtitle.isPresent())
 			return Optional.empty();
 
-		AffJobTitleHistory_ver1 affJob = optAffJobtitle.get();
+		AffJobTitleHistory affJob = optAffJobtitle.get();
 
 		if (affJob.getHistoryItems().isEmpty())
 			return Optional.empty();
 
 		String hisId = affJob.getHistoryItems().get(0).identifier();
 
-		AffJobTitleHistoryItem_ver1 optAffJobtitleItem = affJobTitleHisItemRepo_ver1.findByHitoryId(hisId).get();
+		AffJobTitleHistoryItem optAffJobtitleItem = affJobTitleHisItemRepo.findByHitoryId(hisId).get();
 
-		return Optional.of(new AffJobTitleHistory_ver1Export(affJob.getCompanyId(), affJob.getEmployeeId(), optAffJobtitleItem.getJobTitleId(), affJob.getHistoryItems()));
+		return Optional.of(new AffJobTitleHistoryExport(affJob.getCompanyId(), affJob.getEmployeeId(), optAffJobtitleItem.getJobTitleId(), affJob.getHistoryItems()));
 
 	}
 

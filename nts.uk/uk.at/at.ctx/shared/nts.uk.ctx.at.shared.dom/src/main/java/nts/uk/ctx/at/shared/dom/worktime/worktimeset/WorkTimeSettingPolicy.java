@@ -1,8 +1,10 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
+
+import nts.arc.error.BundledBusinessException;
 
 /**
  * The Interface WorkTimeSettingPolicy.
@@ -10,10 +12,10 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 public interface WorkTimeSettingPolicy {
 
 	/**
-	 * Can register.
+	 * Validate exist.
 	 *
+	 * @param bundledBusinessExceptions the bundled business exceptions
 	 * @param wtSet the wt set
-	 * @return true, if successful
 	 */
-	boolean canRegister(WorkTimeSetting wtSet);
+	void validateExist(BundledBusinessException bundledBusinessExceptions, WorkTimeSetting wtSet);
 }

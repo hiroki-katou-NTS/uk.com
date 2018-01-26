@@ -6,9 +6,9 @@ package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestSettingDetailGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetailGetMemento;
 
 /**
  * The Class FlowWorkRestSettingDetailDto.

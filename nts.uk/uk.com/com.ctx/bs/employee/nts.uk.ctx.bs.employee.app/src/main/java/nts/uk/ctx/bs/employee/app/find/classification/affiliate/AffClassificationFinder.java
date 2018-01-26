@@ -12,10 +12,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItemRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -32,10 +32,10 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 public class AffClassificationFinder implements PeregFinder<AffClassificationDto> {
 
 	@Inject
-	private AffClassHistoryRepository_ver1 affClassHistRepo;
+	private AffClassHistoryRepository affClassHistRepo;
 
 	@Inject
-	private AffClassHistItemRepository_ver1 affClassHistItemRepo;
+	private AffClassHistItemRepository affClassHistItemRepo;
 
 	@Override
 	public String targetCategoryCode() {
@@ -54,7 +54,7 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 
 	@Override
 	public AffClassificationDto getSingleData(PeregQuery query) {
-		Optional<AffClassHistItem_ver1> histItem;
+		Optional<AffClassHistItem> histItem;
 		Optional<DateHistoryItem> history;
 		if (query.getInfoId() != null) {
 			history = affClassHistRepo.getByHistoryId(query.getInfoId());
@@ -86,7 +86,7 @@ public class AffClassificationFinder implements PeregFinder<AffClassificationDto
 	@Override
 	public List<ComboBoxObject> getListFirstItems(PeregQuery query) {
 
-		Optional<AffClassHistory_ver1> affClassHistory = affClassHistRepo
+		Optional<AffClassHistory> affClassHistory = affClassHistRepo
 				.getByEmployeeIdDesc(AppContexts.user().companyId(), query.getEmployeeId());
 
 		if (affClassHistory.isPresent()) {

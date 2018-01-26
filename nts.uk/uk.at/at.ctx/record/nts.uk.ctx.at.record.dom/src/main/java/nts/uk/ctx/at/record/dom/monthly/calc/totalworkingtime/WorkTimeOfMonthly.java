@@ -110,7 +110,7 @@ public class WorkTimeOfMonthly {
 		
 		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
 		for (val timeSeriesWork : this.timeSeriesWorks){
-			returnTime = returnTime.addMinutes(timeSeriesWork.getLegalTimeOfDaily().getWorkTime().v());
+			returnTime = returnTime.addMinutes(timeSeriesWork.getLegalTime().getWorkTime().v());
 		}
 		return returnTime;
 	}
@@ -134,9 +134,10 @@ public class WorkTimeOfMonthly {
 		this.workTime = new AttendanceTimeMonth(0);
 		this.withinPrescribedPremiumTime = new AttendanceTimeMonth(0);
 		for (val timeSeriesWork : this.timeSeriesWorks){
-			val legalTime = timeSeriesWork.getLegalTimeOfDaily();
-			this.workTime.addMinutes(legalTime.getWorkTime().v());
-			this.withinPrescribedPremiumTime.addMinutes(legalTime.getWithinPrescribedPremiumTime().v());
+			val legalTime = timeSeriesWork.getLegalTime();
+			this.workTime = this.workTime.addMinutes(legalTime.getWorkTime().v());
+			this.withinPrescribedPremiumTime = this.withinPrescribedPremiumTime.addMinutes(
+					legalTime.getWithinPrescribedPremiumTime().v());
 		}
 		
 		// 就業時間に法定内残業時間を加算する

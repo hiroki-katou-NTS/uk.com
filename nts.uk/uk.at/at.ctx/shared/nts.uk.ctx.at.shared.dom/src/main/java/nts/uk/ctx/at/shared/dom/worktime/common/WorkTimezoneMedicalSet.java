@@ -5,15 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class WorkTimezoneMedicalSet.
  */
 // 就業時間帯の医療設定
 @Getter
-public class WorkTimezoneMedicalSet extends DomainObject {
+public class WorkTimezoneMedicalSet extends WorkTimeDomainObject {
 
 	/** The rounding set. */
 	// 丸め設定

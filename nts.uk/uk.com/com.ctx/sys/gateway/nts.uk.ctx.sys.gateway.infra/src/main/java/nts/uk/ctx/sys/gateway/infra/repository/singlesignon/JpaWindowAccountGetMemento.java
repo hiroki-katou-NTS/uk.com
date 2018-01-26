@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.infra.repository.singlesignon;
 
+import nts.uk.ctx.sys.gateway.dom.singlesignon.HostName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountGetMemento;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAcc;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAccPK;
@@ -41,16 +43,16 @@ public class JpaWindowAccountGetMemento implements WindowAccountGetMemento{
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountGetMemento#getHotName()
 	 */
 	@Override
-	public String getHostName() {
-		return this.typedValue.getSgwmtWindowAccPK().getHostName();
+	public HostName getHostName() {
+		return new HostName(this.typedValue.getHostName());
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountGetMemento#getUserName()
 	 */
 	@Override
-	public String getUserName() {
-		return this.typedValue.getSgwmtWindowAccPK().getUserName();
+	public UserName getUserName() {
+		return new UserName(this.typedValue.getUserName());
 	}
 
 	/* (non-Javadoc)
@@ -66,7 +68,7 @@ public class JpaWindowAccountGetMemento implements WindowAccountGetMemento{
 	 */
 	@Override
 	public Integer getNo() {
-		return this.typedValue.getNo();
+		return this.typedValue.getSgwmtWindowAccPK().getNo();
 	}
 
 }

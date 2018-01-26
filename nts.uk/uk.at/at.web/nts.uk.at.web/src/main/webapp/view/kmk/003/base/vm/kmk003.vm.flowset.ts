@@ -19,12 +19,13 @@ module nts.uk.at.view.kmk003.a {
     import StampReflectTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.StampReflectTimezoneModel;
     import FlowWorkRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowWorkRestSettingModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
+    import FixedTableDataConverter = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverter;
 
     export module viewmodel {
 
         export module flowset {
 
-            export class FlCalcSetModel {
+            export class FlowCalcSetModel {
                 calcStartTimeSet: KnockoutObservable<number>;
 
                 constructor() {
@@ -41,9 +42,13 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.calcStartTimeSet(0);
+                }
             }
 
-            export class FlTimeSettingModel {
+            export class FlowTimeSettingModel {
                 rounding: TimeRoundingSettingModel;
                 elapsedTime: KnockoutObservable<number>;
 
@@ -64,21 +69,26 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.rounding.resetData();
+                    this.elapsedTime(0);
+                }
             }
 
-            export class FlOTTimezoneModel {
+            export class FlowOTTimezoneModel {
                 worktimeNo: KnockoutObservable<number>;
                 restrictTime: KnockoutObservable<boolean>;
-                overtimeFrameNo: KnockoutObservable<number>;
-                flowTimeSetting: FlTimeSettingModel;
+                otFrameNo: KnockoutObservable<number>;
+                flowTimeSetting: FlowTimeSettingModel;
                 inLegalOTFrameNo: KnockoutObservable<number>;
                 settlementOrder: KnockoutObservable<number>;
 
                 constructor() {
                     this.worktimeNo = ko.observable(0);
                     this.restrictTime = ko.observable(false);
-                    this.overtimeFrameNo = ko.observable(0);
-                    this.flowTimeSetting = new FlTimeSettingModel();
+                    this.otFrameNo = ko.observable(0);
+                    this.flowTimeSetting = new FlowTimeSettingModel();
                     this.inLegalOTFrameNo = ko.observable(0);
                     this.settlementOrder = ko.observable(0);
                 }
@@ -86,7 +96,7 @@ module nts.uk.at.view.kmk003.a {
                 updateData(data: FlOTTimezoneDto) {
                     this.worktimeNo(data.worktimeNo);
                     this.restrictTime(data.restrictTime);
-                    this.overtimeFrameNo(data.overtimeFrameNo);
+                    this.otFrameNo(data.otFrameNo);
                     this.flowTimeSetting.updateData(data.flowTimeSetting);
                     this.inLegalOTFrameNo(data.inLegalOTFrameNo);
                     this.settlementOrder(data.settlementOrder);
@@ -96,22 +106,31 @@ module nts.uk.at.view.kmk003.a {
                     var dataDTO: FlOTTimezoneDto = {
                         worktimeNo: this.worktimeNo(),
                         restrictTime: this.restrictTime(),
-                        overtimeFrameNo: this.overtimeFrameNo(),
+                        otFrameNo: this.otFrameNo(),
                         flowTimeSetting: this.flowTimeSetting.toDto(),
                         inLegalOTFrameNo: this.inLegalOTFrameNo(),
                         settlementOrder: this.settlementOrder(),
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.worktimeNo(0);
+                    this.restrictTime(false);
+                    this.otFrameNo(0);
+                    this.flowTimeSetting.resetData();
+                    this.inLegalOTFrameNo(0);
+                    this.settlementOrder(0);
+                }
             }
 
-            export class FlWorkTzSettingModel {
+            export class FlowWorkTzSettingModel {
                 workTimeRounding: TimeRoundingSettingModel;
-                lstOTTimezone: FlOTTimezoneModel[];
+                lstOTTimezone: KnockoutObservableArray<FlowOTTimezoneModel>;
 
                 constructor() {
                     this.workTimeRounding = new TimeRoundingSettingModel();
-                    this.lstOTTimezone = [];
+                    this.lstOTTimezone = ko.observableArray([]);
                 }
 
                 updateData(data: FlWorkTzSettingDto) {
@@ -120,45 +139,44 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 updateTimezone(lstOTTimezone: FlOTTimezoneDto[]) {
+                    this.lstOTTimezone([]);
+                    var dataModelTimezone: FlowOTTimezoneModel[] = [];
                     for (var dataDTO of lstOTTimezone) {
-                        var dataModel: FlOTTimezoneModel = this.getTimezoneByWorkNo(dataDTO.worktimeNo);
-                        if (dataModel) {
-                            dataModel.updateData(dataDTO);
-                        }
-                        else {
-                            dataModel = new FlOTTimezoneModel();
-                            dataModel.updateData(dataDTO);
-                            this.lstOTTimezone.push(dataModel);
-                        }
+                        var dataModel: FlowOTTimezoneModel = new FlowOTTimezoneModel();
+                        dataModel.updateData(dataDTO);
+                        dataModelTimezone.push(dataModel);
                     }
+                    this.lstOTTimezone(dataModelTimezone);
                 }
                 
                 getTimezoneByWorkNo(worktimeNo: number) {
                     var self = this;
-                    return _.find(self.lstOTTimezone, timezone => timezone.worktimeNo() == worktimeNo);
+                    return _.find(self.lstOTTimezone(), timezone => timezone.worktimeNo() == worktimeNo);
                 }
 
                 toDto(): FlWorkTzSettingDto {
-
-                    var lstOTTimezone: FlOTTimezoneDto[] = [];
-                    for (var dataModel of this.lstOTTimezone) {
-                        lstOTTimezone.push(dataModel.toDto());
-                    }
-                    var dataDTO: FlWorkTzSettingDto = {
+                    let lstOTTimezone: FlOTTimezoneDto[] = _.map(this.lstOTTimezone(), (dataModel) => dataModel.toDto());
+                    
+                    let dataDTO: FlWorkTzSettingDto = {
                         workTimeRounding: this.workTimeRounding.toDto(),
                         lstOTTimezone: lstOTTimezone
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.workTimeRounding.resetData();
+                    this.lstOTTimezone([]);
+                }
             }
 
-            export class FlHalfDayWorkTzModel {
+            export class FlowHalfDayWorkTzModel {
                 restTimezone: FlowWorkRestTimezoneModel;
-                workTimeZone: FlWorkTzSettingModel;
+                workTimeZone: FlowWorkTzSettingModel;
 
                 constructor() {
                     this.restTimezone = new FlowWorkRestTimezoneModel();
-                    this.workTimeZone = new FlWorkTzSettingModel();
+                    this.workTimeZone = new FlowWorkTzSettingModel();
                 }
 
                 updateData(data: FlHalfDayWorkTzDto) {
@@ -173,9 +191,14 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.restTimezone.resetData();
+                    this.workTimeZone.resetData();
+                }
             }
 
-            export class FlWorkHdTimeZoneModel {
+            export class FlowWorkHdTimeZoneModel {
                 worktimeNo: KnockoutObservable<number>;
                 useInLegalBreakRestrictTime: KnockoutObservable<boolean>;
                 inLegalBreakFrameNo: KnockoutObservable<number>;
@@ -183,7 +206,7 @@ module nts.uk.at.view.kmk003.a {
                 outLegalBreakFrameNo: KnockoutObservable<number>;
                 useOutLegalPubHolRestrictTime: KnockoutObservable<boolean>;
                 outLegalPubHolFrameNo: KnockoutObservable<number>;
-                flowTimeSetting: FlTimeSettingModel;
+                flowTimeSetting: FlowTimeSettingModel;
 
                 constructor() {
                     this.worktimeNo = ko.observable(0);
@@ -193,7 +216,7 @@ module nts.uk.at.view.kmk003.a {
                     this.outLegalBreakFrameNo = ko.observable(0);
                     this.useOutLegalPubHolRestrictTime = ko.observable(false);
                     this.outLegalPubHolFrameNo = ko.observable(0);
-                    this.flowTimeSetting = new FlTimeSettingModel();
+                    this.flowTimeSetting = new FlowTimeSettingModel();
                 }
 
                 updateData(data: FlWorkHdTimeZoneDto) {
@@ -220,15 +243,26 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.worktimeNo(0);
+                    this.useInLegalBreakRestrictTime(false);
+                    this.inLegalBreakFrameNo(0);
+                    this.useOutLegalBreakRestrictTime(false);
+                    this.outLegalBreakFrameNo(0);
+                    this.useOutLegalPubHolRestrictTime(false);
+                    this.outLegalPubHolFrameNo(0);
+                    this.flowTimeSetting.resetData();
+                }
             }
 
-            export class FlOffdayWorkTzModel {
+            export class FlowOffdayWorkTzModel {
                 restTimeZone: FlowWorkRestTimezoneModel;
-                lstWorkTimezone: FlWorkHdTimeZoneModel[];
+                lstWorkTimezone: KnockoutObservableArray<FlowWorkHdTimeZoneModel>;
 
                 constructor() {
                     this.restTimeZone = new FlowWorkRestTimezoneModel();
-                    this.lstWorkTimezone = [];
+                    this.lstWorkTimezone = ko.observableArray([]);
                 }
 
                 updateData(data: FlOffdayWorkTzDto) {
@@ -236,27 +270,23 @@ module nts.uk.at.view.kmk003.a {
                     this.updateHDTimezone(data.lstWorkTimezone);
                 }
                 
-                updateHDTimezone(lstWorkTimezone: FlWorkHdTimeZoneDto[]) {
-                    for (var dataDTO of lstWorkTimezone) {
-                        var dataModel: FlWorkHdTimeZoneModel = this.getHDTimezoneByWorktimeNo(dataDTO.worktimeNo);
-                        if (dataModel) {
-                            dataModel.updateData(dataDTO);
-                        }
-                        else {
-                            dataModel = new FlWorkHdTimeZoneModel();
-                            dataModel.updateData(dataDTO);
-                            this.lstWorkTimezone.push(dataModel);
-                        }
+                updateHDTimezone(lstWorkTimezone: FlWorkHdTimeZoneDto[]) {                   
+                    let dataModelWorktimezone: FlowWorkHdTimeZoneModel[] = [];
+                    for (let dataDTO of lstWorkTimezone) {
+                        let dataModel: FlowWorkHdTimeZoneModel = new FlowWorkHdTimeZoneModel();
+                        dataModel.updateData(dataDTO);
+                        dataModelWorktimezone.push(dataModel);
                     }
+                    this.lstWorkTimezone(dataModelWorktimezone);
                 }
                 
                 getHDTimezoneByWorktimeNo(worktimeNo: number) {
-                    return _.find(this.lstWorkTimezone, hdtimezone => hdtimezone.worktimeNo() == worktimeNo);
+                    return _.find(this.lstWorkTimezone(), hdtimezone => hdtimezone.worktimeNo() == worktimeNo);
                 }
 
                 toDto(): FlOffdayWorkTzDto {
                     var lstWorkTimezone: FlWorkHdTimeZoneDto[] = [];
-                    for (var dataModel of this.lstWorkTimezone) {
+                    for (var dataModel of this.lstWorkTimezone()) {
                         lstWorkTimezone.push(dataModel.toDto());
                     }
                     var dataDTO: FlOffdayWorkTzDto = {
@@ -265,9 +295,14 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.restTimeZone.resetData();
+                    this.lstWorkTimezone([]);
+                }
             }
 
-            export class FlOTSetModel {
+            export class FlowOTSetModel {
                 fixedChangeAtr: KnockoutObservable<number>;
 
                 constructor() {
@@ -284,10 +319,14 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.fixedChangeAtr(0);
+                }
             }
 
 
-            export class FlStampReflectTzModel {
+            export class FlowStampReflectTzModel {
                 twoTimesWorkReflectBasicTime: KnockoutObservable<number>;
                 stampReflectTimezones: StampReflectTimezoneModel[];
 
@@ -317,15 +356,20 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.twoTimesWorkReflectBasicTime(0);
+                    this.stampReflectTimezones = [];
+                }
             }
 
-            export class FlWorkDedSettingModel {
-                overtimeSetting: FlOTSetModel;
-                calculateSetting: FlCalcSetModel;
+            export class FlowWorkDedSettingModel {
+                overtimeSetting: FlowOTSetModel;
+                calculateSetting: FlowCalcSetModel;
 
                 constructor() {
-                    this.overtimeSetting = new FlOTSetModel();
-                    this.calculateSetting = new FlCalcSetModel();
+                    this.overtimeSetting = new FlowOTSetModel();
+                    this.calculateSetting = new FlowCalcSetModel();
                 }
 
                 updateData(data: FlWorkDedSettingDto) {
@@ -340,28 +384,33 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.overtimeSetting.resetData();
+                    this.calculateSetting.resetData();
+                }
             }
 
 
-            export class FlWorkSettingModel {
+            export class FlowWorkSettingModel {
                 workingCode: KnockoutObservable<string>;
                 restSetting: FlowWorkRestSettingModel;
-                offdayWorkTimezone: FlOffdayWorkTzModel;
+                offdayWorkTimezone: FlowOffdayWorkTzModel;
                 commonSetting: WorkTimezoneCommonSetModel;
-                halfDayWorkTimezone: FlHalfDayWorkTzModel;
-                stampReflectTimezone: FlStampReflectTzModel;
+                halfDayWorkTimezone: FlowHalfDayWorkTzModel;
+                stampReflectTimezone: FlowStampReflectTzModel;
                 designatedSetting: KnockoutObservable<number>;
-                flowSetting: FlWorkDedSettingModel;
+                flowSetting: FlowWorkDedSettingModel;
 
                 constructor() {
                     this.workingCode = ko.observable('');
                     this.restSetting = new FlowWorkRestSettingModel();
-                    this.offdayWorkTimezone = new FlOffdayWorkTzModel();
+                    this.offdayWorkTimezone = new FlowOffdayWorkTzModel();
                     this.commonSetting = new WorkTimezoneCommonSetModel();
-                    this.halfDayWorkTimezone = new FlHalfDayWorkTzModel();
-                    this.stampReflectTimezone = new FlStampReflectTzModel();
+                    this.halfDayWorkTimezone = new FlowHalfDayWorkTzModel();
+                    this.stampReflectTimezone = new FlowStampReflectTzModel();
                     this.designatedSetting = ko.observable(0);
-                    this.flowSetting = new FlWorkDedSettingModel();
+                    this.flowSetting = new FlowWorkDedSettingModel();
                 }
 
                 updateData(data: FlWorkSettingDto) {
@@ -375,12 +424,12 @@ module nts.uk.at.view.kmk003.a {
                     this.flowSetting.updateData(data.flowSetting);
                 }
 
-                toDto(): FlWorkSettingDto {
-                    var dataDTO: FlWorkSettingDto = {
-                        workingCode: this.workingCode(),
-                        restSetting: this.restSetting.toDto(),
+                toDto(commonSetting: WorkTimezoneCommonSetModel): FlWorkSettingDto {
+                    let dataDTO: FlWorkSettingDto = {
+                        workingCode: this.workingCode(),         
+                        restSetting: this.restSetting.toDto(),              
                         offdayWorkTimezone: this.offdayWorkTimezone.toDto(),
-                        commonSetting: this.commonSetting.toDto(),
+                        commonSetting: commonSetting.toDto(),
                         halfDayWorkTimezone: this.halfDayWorkTimezone.toDto(),
                         stampReflectTimezone: this.stampReflectTimezone.toDto(),
                         designatedSetting: this.designatedSetting(),
@@ -388,8 +437,18 @@ module nts.uk.at.view.kmk003.a {
                     };
                     return dataDTO;
                 }
+                
+                resetData() {
+                    this.restSetting.resetData();
+                    this.offdayWorkTimezone.resetData();
+                    this.commonSetting.resetData();
+                    this.halfDayWorkTimezone.resetData();
+                    this.stampReflectTimezone.resetData();
+                    this.designatedSetting(0);
+                    this.flowSetting.resetData();
+                }
             }
-
+            
         }
     }
 }
