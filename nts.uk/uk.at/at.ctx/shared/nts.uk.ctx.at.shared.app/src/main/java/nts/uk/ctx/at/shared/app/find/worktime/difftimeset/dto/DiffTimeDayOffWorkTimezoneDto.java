@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,15 +29,17 @@ public class DiffTimeDayOffWorkTimezoneDto implements DiffTimeDayOffWorkTimezone
 
 	@Override
 	public void setRestTimezone(DiffTimeRestTimezone restTimezone) {
+		this.restTimezone = new DiffTimeRestTimezoneDto();
 		restTimezone.saveToMemento(this.restTimezone);
 	}
 
 	@Override
 	public void setWorkTimezones(List<DayOffTimezoneSetting> workTimezone) {
-		workTimezone.stream().map(item -> {
+		this.workTimezones = new ArrayList<DayOffTimezoneSettingDto>();
+		this.workTimezones.addAll(workTimezone.stream().map(item -> {
 			DayOffTimezoneSettingDto dto = new DayOffTimezoneSettingDto();
 			item.saveToMemento(dto);
 			return dto;
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList()));
 	}
 }

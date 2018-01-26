@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.DeductionTimeDto;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezoneGetMemento;
@@ -12,6 +14,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * The Class DiffTimeDeductTimezoneDto.
  */
+
+@Getter
+@Setter
 public class DiffTimeDeductTimezoneDto extends DeductionTimeDto {
 
 	/** The is update start time. */

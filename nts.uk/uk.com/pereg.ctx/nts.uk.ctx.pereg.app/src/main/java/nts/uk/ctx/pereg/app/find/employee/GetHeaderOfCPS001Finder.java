@@ -20,8 +20,8 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
@@ -43,7 +43,7 @@ public class GetHeaderOfCPS001Finder {
 	private AffDepartmentHistoryItemRepository historyItemRepo;
 
 	@Inject
-	private AffJobTitleHistoryItemRepository_ver1 jobTitleHisRepo;
+	private AffJobTitleHistoryItemRepository jobTitleHisRepo;
 
 	@Inject
 	private JobTitleInfoRepository jobTitleInfoRepo;
@@ -74,6 +74,48 @@ public class GetHeaderOfCPS001Finder {
 			Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(cid, sid);
 
 			if (tempHist.isPresent()) {
+<<<<<<< HEAD
+				_emp.setNumberOfTempHist(tempHist
+						.get().items().stream().filter(
+								f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
+						.map(m -> ChronoUnit.DAYS.between(m.start().localDate(),
+								m.end().localDate().compareTo(LocalDate.now()) < 0 ? m.end().localDate()
+										: LocalDate.now()))
+						.mapToInt(m -> Math.abs(m.intValue())).sum());
+			}
+
+			if (comHist != null) {
+				AffCompanyHistByEmployee emp = comHist.getAffCompanyHistByEmployee(sid);
+				if (emp != null) {
+					_emp.setNumberOfWork(emp.getLstAffCompanyHistoryItem().stream()
+							.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
+							.map(m -> ChronoUnit.DAYS.between(m.start().localDate(),
+									m.end().localDate().compareTo(LocalDate.now()) <= 0 ? m.end().localDate()
+											: LocalDate.now()))
+							.mapToInt(m -> Math.abs(m.intValue())).sum());
+
+					Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid,
+							date);
+
+					if (jobTitleHisItem.isPresent()) {
+						Optional<JobTitleInfo> jobInfo = this.jobTitleInfoRepo
+								.find(jobTitleHisItem.get().getJobTitleId(), date);
+
+						if (jobInfo.isPresent()) {
+							_emp.setPosition(jobInfo.get().getJobTitleName().toString());
+						}
+					} else {
+						_emp.setPosition(" ");
+					}
+
+					Optional<EmploymentInfo> employment = this.employmentHisItemRepo
+							.getDetailEmploymentHistoryItem(companyId, sid, date);
+
+					if (employment.isPresent()) {
+						_emp.setContractCodeType(employment.get().getEmploymentName());
+					}
+				}
+=======
 				_emp.setNumberOfTempHist(
 						tempHist.get().items().stream()
 								.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0).map(
@@ -81,6 +123,7 @@ public class GetHeaderOfCPS001Finder {
 												m.end().localDate().compareTo(LocalDate.now()) < 0 ? m.end().localDate()
 														: LocalDate.now()))
 								.mapToInt(m -> Math.abs(m.intValue())).sum());
+>>>>>>> ed15f25076eb7f1133f475dd5d9325ca16347c40
 			}
 
 			Optional<AffDepartmentHistory> department = this.departmentRepo.getAffDeptHistByEmpHistStandDate(sid, date);

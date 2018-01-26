@@ -74,7 +74,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		}
 		KrcdtDaiLeavingWork entity = getDailyLeaving(domain.getEmployeeId(), domain.getYmd());
 		List<KrcdtTimeLeavingWork> timeWorks = entity.timeLeavingWorks;
-		entity.workTimes = domain.getWorkTimes().v();
+		entity.workTimes = domain.getWorkTimes() == null ? null : domain.getWorkTimes().v();
 		domain.getTimeLeavingWorks().stream().forEach(c -> {
 			KrcdtTimeLeavingWork krcdtTimeLeavingWork = timeWorks.stream()
 					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()).findFirst().orElse(null);

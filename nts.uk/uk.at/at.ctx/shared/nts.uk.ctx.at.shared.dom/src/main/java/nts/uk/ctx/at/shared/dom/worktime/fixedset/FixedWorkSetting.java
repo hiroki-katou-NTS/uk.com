@@ -10,13 +10,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
  */
 @Getter
 // 固定勤務設定
-public class FixedWorkSetting extends AggregateRoot {
+public class FixedWorkSetting extends WorkTimeAggregateRoot {
 
 	/** The company id. */
 	// 会社ID
@@ -157,6 +157,8 @@ public class FixedWorkSetting extends AggregateRoot {
 		} else {
 			this.lstHalfDayWorkTimezone = oldDomain.getLstHalfDayWorkTimezone();
 		}
+		
+		//TODO tab 3 + 5
 	}
 	
 	/**
@@ -166,8 +168,5 @@ public class FixedWorkSetting extends AggregateRoot {
 	 */
 	public void restoreDefaultData(ScreenMode screenMode) {
 		this.commonSetting.restoreDefaultData(screenMode);
-		
-		// restore 平日勤務時間帯
-		//TODO
 	}
 }

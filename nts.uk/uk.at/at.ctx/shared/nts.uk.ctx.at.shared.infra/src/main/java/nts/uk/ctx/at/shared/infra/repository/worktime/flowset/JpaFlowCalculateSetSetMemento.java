@@ -4,14 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlCalcSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowCalculateSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 
 /**
  * The Class JpaFlowCalculateSetSetMemento.
  */
-public class JpaFlowCalculateSetSetMemento implements FlCalcSetMemento {
+public class JpaFlowCalculateSetSetMemento implements FlowCalculateSetMemento {
 
 	/** The entity. */
 	private KshmtFlowWorkSet entity;

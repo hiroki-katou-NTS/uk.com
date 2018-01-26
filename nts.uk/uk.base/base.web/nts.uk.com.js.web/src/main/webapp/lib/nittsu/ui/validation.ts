@@ -368,7 +368,7 @@ module nts.uk.ui.validation {
             }
             if (!util.isNullOrUndefined(this.constraint.mantissaMaxLength)) {
                 mantissaMaxLength = this.constraint.mantissaMaxLength;
-                let parts = String(value).split(".");
+                let parts = inputText.split(".");.split(".");
                 if (parts[1] !== undefined && parts[1].length > mantissaMaxLength) validateFail = true;
             }
             if(!(/^-?\d*(\.\d+)?$/).test(inputText)){

@@ -5,13 +5,16 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<div class="screen-c-mode">
-		
+	<com:ValidatorScript>
+				nts.uk.ctx.sys.gateway.dom.singlesignon.UserName				
+				nts.uk.ctx.sys.gateway.dom.singlesignon.CompanyCode
+	</com:ValidatorScript>
+	<div class="screen-c-mode">		
 		<table>	
 			<tr>
 				<!-- C1_1 -->
 				<td class="padding-checkbox">
-					<div data-bind="ntsCheckBox: { checked: enable_otherAcc }">#{i18n.getText('CMM021_37')}</div>
+					<div tabindex="-1" data-bind="ntsCheckBox: { checked: enable_otherAcc }">#{i18n.getText('CMM021_37')}</div>
 				</td>
 			</tr>
 			<!-- C1_2 -->
@@ -22,14 +25,15 @@
 					<div>#{i18n.getText('CMM021_38')}</div>
 				</td>
 				<!-- C1_4 -->
-				<td class="padding-scr-c"><input id="focus-CompanyCode" tabindex="1"
+				<td class="padding-scr-c"><input id="focus-CompanyCode" tabindex="8"
 					data-bind="ntsTextEditor: {
 									value: companyCode6,
 									name: '#[CMM021_38]',
 									option: {
-										width: '200px',
+										width: '250px',
 									},
 									enable: enable_otherAcc,
+									constraint: 'CompanyCode',
 									required: true
 								}" />
 				</td>
@@ -40,14 +44,15 @@
 					<div>#{i18n.getText('CMM021_39')}</div>
 				</td>
 				<!-- C1_6 -->
-				<td class="padding-scr-c"><input id="" tabindex="2"
+				<td class="padding-scr-c"><input id="userName6" tabindex="9"
 					data-bind="ntsTextEditor: {
 									value: userName6,
 									name: '#[CMM021_39]',
 									option: {
-										width: '200px',
+										width: '250px',
 									},
 									enable: enable_otherAcc,
+									constraint: 'UserName',									
 									required: true
 								}" />
 				</td>

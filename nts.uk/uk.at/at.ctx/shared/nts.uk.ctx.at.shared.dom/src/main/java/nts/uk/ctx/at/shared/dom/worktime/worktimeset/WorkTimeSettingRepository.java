@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 import java.util.List;
 import java.util.Optional;
 
+
 /**
  * The Interface WorkTimeSettingRepository.
  */
@@ -50,6 +51,7 @@ public interface WorkTimeSettingRepository {
 	/**
 	 * Gets the list work time set by list code.
 	 *
+	 * @param companyId the company id
 	 * @param workTimeCodes the work time codes
 	 * @return the list work time set by list code
 	 */

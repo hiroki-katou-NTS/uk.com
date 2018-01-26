@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class RoundingTime.
  */
 // 時刻丸め
 @Getter
-public class InstantRounding extends DomainObject {
+public class InstantRounding extends WorkTimeDomainObject {
 
 	/** The font rear section. */
 	// 前後区分

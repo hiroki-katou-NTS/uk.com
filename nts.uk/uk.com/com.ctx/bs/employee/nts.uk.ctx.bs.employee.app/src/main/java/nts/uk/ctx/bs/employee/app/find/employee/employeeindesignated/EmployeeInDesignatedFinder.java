@@ -27,9 +27,9 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsItemRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.LeaveHolidayType;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository_v1;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
@@ -44,11 +44,11 @@ public class EmployeeInDesignatedFinder {
 
 	/** The aff workplace history repo ver 1. */
 	@Inject
-	private AffWorkplaceHistoryRepository_v1 affWorkplaceHistoryRepo_ver1;
+	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepo;
 	
 	/** The aff workplace history item repo v 1. */
 	@Inject
-	private AffWorkplaceHistoryItemRepository_v1 affWorkplaceHistoryItemRepo_v1;
+	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepo;
 	
 	/** The employee data repo. */
 	@Inject
@@ -97,20 +97,13 @@ public class EmployeeInDesignatedFinder {
 		// Employee Id List from Employees In Designated
 		List<String> empIdList = empListInDesignated.stream().map(EmployeeInDesignatedDto::getEmployeeId)
 				.collect(Collectors.toList());
-		
-		// Get All AffWorkplaceHistory - old
-		//List<AffWorkplaceHistory> affWorkplaceHistList = this.affWorkplaceHistoryRepo
-		//		.searchWorkplaceOfCompanyId(empIdList, input.getReferenceDate());
-		
+				
 		List<AffWorkplaceHistoryItem> affWorkplaceHistItemList = 
-				this.affWorkplaceHistoryItemRepo_v1.getAffWrkplaHistItemByListEmpIdAndDate(input.getReferenceDate(),empIdList);
+				this.affWorkplaceHistoryItemRepo.getAffWrkplaHistItemByListEmpIdAndDate(input.getReferenceDate(),empIdList);
+		
 		if (CollectionUtil.isEmpty(affWorkplaceHistItemList)) {
 			return Collections.emptyList();
 		}
-		// Get Workplace Id list from All AffWorkplaceHistory acquired above - old
-		//List<String> workplaceList = affWorkplaceHistList.stream().map(a -> {
-		//	return a.getWorkplaceId().v();
-		//}).collect(Collectors.toList());
 		
 		List<String> workplaceList = affWorkplaceHistItemList.stream().map(a -> {
 			return a.getWorkplaceId();
@@ -128,9 +121,9 @@ public class EmployeeInDesignatedFinder {
 		// Get All Person Domain from PersonIds above
 		List<Person> personList = this.personRepo.getPersonByPersonIds(personIds);
 
-		// update use AffWorkplaceHistory_ver1
-		List<AffWorkplaceHistory_ver1> affWorkplaceHistList = 
-				this.affWorkplaceHistoryRepo_ver1.getWorkplaceHistoryByEmpIdsAndDate(input.getReferenceDate(), empIdList);
+		// update use AffWorkplaceHistory
+		List<AffWorkplaceHistory> affWorkplaceHistList = 
+				this.affWorkplaceHistoryRepo.getWorkplaceHistoryByEmpIdsAndDate(input.getReferenceDate(), empIdList);
 					
 		// Add Employee Data
 		employeeList.stream().forEach(employeeInfo -> {
@@ -143,12 +136,12 @@ public class EmployeeInDesignatedFinder {
 			}
 
 			// Get AffWorkplaceHistory
-			AffWorkplaceHistory_ver1 affWkpHist = affWorkplaceHistList.stream().filter(aff -> {
+			AffWorkplaceHistory affWkpHist = affWorkplaceHistList.stream().filter(aff -> {
 				return employeeInfo.getEmployeeId().equals(aff.getEmployeeId());
 			}).findFirst().orElse(null);
 			
 			AffWorkplaceHistoryItem affWkpHistItem = 
-					this.affWorkplaceHistoryItemRepo_v1.getByHistId(affWkpHist.getHistoryItems().get(0).identifier()).get();
+					this.affWorkplaceHistoryItemRepo.getByHistId(affWkpHist.getHistoryItems().get(0).identifier()).get();
 			
 			// Get WorkplaceInfo
 			WorkplaceInfo wkpInfo = workplaceInfoList.stream().filter(wkp -> {
@@ -187,14 +180,14 @@ public class EmployeeInDesignatedFinder {
 	public List<EmployeeInDesignatedDto> getEmpInDesignated(List<String> workplaceIds, GeneralDate referenceDate,
 			List<Integer> empStatus) {
 		
-		List<AffWorkplaceHistory_ver1> affWorkplaceHistList = this.affWorkplaceHistoryRepo_ver1.getWorkplaceHistoryByWkpIdsAndDate(referenceDate, workplaceIds);
+		List<AffWorkplaceHistory> affWorkplaceHistList = this.affWorkplaceHistoryRepo.getWorkplaceHistoryByWkpIdsAndDate(referenceDate, workplaceIds);
 		
 		// check exist data
 		if (CollectionUtil.isEmpty(affWorkplaceHistList)) {
 			Collections.emptyList();
 		}
 		// Get List of Employee Id
-		List<String> empIdList = affWorkplaceHistList.stream().map(AffWorkplaceHistory_ver1::getEmployeeId)
+		List<String> empIdList = affWorkplaceHistList.stream().map(AffWorkplaceHistory::getEmployeeId)
 				.collect(Collectors.toList());
 		
 		// Output List
