@@ -10,15 +10,15 @@
 	
 	<!-- DETAIL MODE -->
 	<com:ko tag="if" bind="isDetailMode()">
-	<div class="tab_11_setting_rows">
-		<div class="tab_11_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_104')}</div>		
+	<div class="tab-rows">
+		<div style="width: 300px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_104')}</div>		
 	</div>
 	
-	<div style="width: 330px; margin-left: 20px;">		
+	<div style="width: 330px;">		
 		<hr/>
 	</div>
 	
-	<div class="tab_11_setting_rows">
+	<div class="tab-rows">
 		<table style="margin-left: 20px;">
 			<tbody>
 				<!-- BEGIN A40_3 ~ A40_11 -->
@@ -36,7 +36,7 @@
 								<span class="box"></span><span class="label">#{i18n.getText('KMK003_106')}</span>
 							</label>
 							<div class="padding-time">
-								<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 									<label>#{i18n.getText('KMK003_42')}</label>
 								</div>
 								<input id="oneDayTimeHol" tabindex="141" style="width: 60px;" data-bind="ntsTimeEditor: {
@@ -49,7 +49,7 @@
 									required: false}" />
 							</div>
 							<div class="padding-time">
-								<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 									<label>#{i18n.getText('KMK003_107')}</label>
 								</div>
 								<input id="haflDayTimeHol" tabindex="142" style="width: 60px;" data-bind="ntsTimeEditor: {
@@ -71,7 +71,7 @@
 								<span class="box"></span><span class="label">#{i18n.getText('KMK003_108')}</span>
 							</label>
 							<div class="padding-time">
-								<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 								</div>
 								<input id="certainDayTimeHol" tabindex="143" style="width: 60px;" data-bind="ntsTimeEditor: {
 									name:'#[KMK003_108]',
@@ -99,7 +99,7 @@
 								<span class="box"></span><span class="label">#{i18n.getText('KMK003_106')}</span>
 							</label>
 							<div class="padding-time">
-								<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 									<label>#{i18n.getText('KMK003_42')}</label>
 								</div>
 								<input id="oneDayTimeOT" tabindex="146" style="width: 60px;" data-bind="ntsTimeEditor: {
@@ -112,7 +112,7 @@
 									required: false}" />
 							</div>
 							<div class="padding-time">
-								<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 									<label>#{i18n.getText('KMK003_107')}</label>
 								</div>
 								<input id="haflDayTimeOT" tabindex="147" style="width: 60px;" data-bind="ntsTimeEditor: {
@@ -134,7 +134,7 @@
 								<span class="box"></span><span class="label">#{i18n.getText('KMK003_108')}</span>
 							</label>
 							<div class="padding-time">
-								<div class="tab_11_inline_item" style="width: 60px; text-align: center;">
+								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 								</div>
 								<input id="certainDayTimeOT" tabindex="148" style="width: 60px;" data-bind="ntsTimeEditor: {
 									name:'#[KMK003_108]',
@@ -155,21 +155,21 @@
 	
 	<!-- SIMPLE MODE -->
 	<com:ko tag="ifnot" bind="isDetailMode()">
-	<div class="tab_11_setting_rows">
-		<div class="tab_11_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_104')}</div>		
+	<div class="tab-rows">
+		<div style="width: 300px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_104')}</div>		
 	</div>
 	
-	<div style="width: 330px; margin-left: 20px;">		
+	<div style="width: 330px;">		
 		<hr/>
 	</div>
 	
-	<div style="margin-left: 40px;">		
-		<div class="tab_11_setting_rows">
+	<div class="tab-block">		
+		<div class="tab-rows">
 			<label>#{i18n.getText('KMK003_105')}</label>
 		</div>
 		<div style="margin-top: 10px;">
 			<div style="padding: 5px 0px;">
-				<div class="tab_11_inline_item" style="width: 50px;">
+				<div class="tab-inline-item" style="width: 50px;">
 					<label>#{i18n.getText('KMK003_42')}</label>
 				</div>
 				<input id="oneDayTimeHol" tabindex="2" style="width: 60px;" data-bind="ntsTimeEditor: {
@@ -181,7 +181,7 @@
 						required: false}" />
 			</div>
 			<div style="padding: 5px 0px;">
-				<div class="tab_11_inline_item" style="width: 50px;">
+				<div class="tab-inline-item" style="width: 50px;">
 					<label>#{i18n.getText('KMK003_107')}</label>
 				</div>				
 				<input id="haflDayTimeHol" tabindex="3" style="width: 60px;" data-bind="ntsTimeEditor: {

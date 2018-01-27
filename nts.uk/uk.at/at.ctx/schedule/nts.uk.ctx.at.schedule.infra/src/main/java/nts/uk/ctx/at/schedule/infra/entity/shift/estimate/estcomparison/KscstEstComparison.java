@@ -36,21 +36,6 @@ public class KscstEstComparison extends UkJpaEntity implements Serializable {
     @Column(name = "COMPARISON_ATR")
     private int comparisonAtr;
 
-    /**
-     * Instantiates a new kscst est comparison.
-     */
-    public KscstEstComparison() {
-    }
-
-    /**
-     * Instantiates a new kscst est comparison.
-     *
-     * @param cid the cid
-     */
-    public KscstEstComparison(String cid) {
-        this.cid = cid;
-    }
-
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */

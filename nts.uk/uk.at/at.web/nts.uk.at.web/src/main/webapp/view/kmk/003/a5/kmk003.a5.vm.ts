@@ -112,10 +112,18 @@ module a5 {
             let self = this;
 
             let flex = self.mainSettingModel.flexWorkSetting;
+            let flow = self.mainSettingModel.flowWorkSetting;
+            let diff = self.mainSettingModel.diffWorkSetting;
 
+            // Flex
             let flexOneday = flex.getHDWtzOneday();
             let flexMorning = flex.getHDWtzMorning();
             let flexAfternoon = flex.getHDWtzAfternoon();
+            
+            // Diff
+            let diffOneday = diff.getHDWtzOneday();
+            let diffMorning = diff.getHDWtzMorning();
+            let diffAfternoon = diff.getHDWtzAfternoon();
 
             let fixedOneday = self.mainSettingModel.fixedWorkSetting.getHDWtzOneday();
             let fixedMorning = self.mainSettingModel.fixedWorkSetting.getHDWtzMorning();
@@ -123,8 +131,9 @@ module a5 {
 
             // set switch button value
             self.flexFixedRestTime = flex.fixRestTime;
-            self.flowFixedRestTime = ko.observable(true); // TODO chua lam flow
+            self.flowFixedRestTime = flow.halfDayWorkTimezone.restTimezone.fixRestTime;
 
+            //=================== TIMEZONE ===================
             // set flex timezones
             self.oneDayFlexTimezones = flexOneday.restTimezone.fixedRestTimezone.convertedList;
             self.morningFlexTimezones = flexMorning.restTimezone.fixedRestTimezone.convertedList;
@@ -134,15 +143,24 @@ module a5 {
             self.oneDayFixedTimezones = fixedOneday.restTimezone.convertedList;
             self.morningFixedTimezones = fixedMorning.restTimezone.convertedList;
             self.afternoonFixedTimezones = fixedAfternoon.restTimezone.convertedList;
+            
+            // difftime timezone option
+            self.oneDayDiffTimezones = diffOneday.restTimezone.convertedList;
+            self.morningDiffTimezones = diffMorning.restTimezone.convertedList;;
+            self.afternoonDiffTimezones = diffAfternoon.restTimezone.convertedList;;
+            
+            // flow timezone option
+            self.flowTimezones = flow.halfDayWorkTimezone.restTimezone.fixedRestTimezone.convertedList;
 
+            //=================== RESTSET ===================
             // set flex rest set value
             self.oneDayFlexRestSet = flexOneday.restTimezone.flowRestTimezone;
             self.morningFlexRestSet = flexMorning.restTimezone.flowRestTimezone;
             self.afternoonFlexRestSet = flexAfternoon.restTimezone.flowRestTimezone;
 
             // set flow rest set value
-            //TODO: chua lam
-
+            self.flowRestSet = flow.halfDayWorkTimezone.restTimezone.flowRestTimezone;
+            
             // computed value initial
             self.initComputed();
         }
@@ -161,12 +179,10 @@ module a5 {
             self.isDiffTime = workTimeSetting.isDiffTime;
 
             self.isFlowTimezone = ko.computed(() => {
-                //return self.isFlow() && self.flowFixedRestTime() == 1;//TODO: hien tai chi lam flex va fixed.
-                return false;
+                return self.isFlow() && self.flowFixedRestTime();
             });
             self.isFlowRestTime = ko.computed(() => {
-                //return self.isFlow() && self.flowFixedRestTime() == 0; //TODO: hien tai chi lam flex va fixed.
-                return false;
+                return self.isFlow() && !self.flowFixedRestTime();
             });
             self.isFlexTimezone = ko.computed(() => {
                 return self.isFlex() && self.flexFixedRestTime() == true;
@@ -182,14 +198,51 @@ module a5 {
         public forceAddFixedTableEvent(): void {
             let self = this;
             self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.valueHasMutated();
+            
+            // set tabindex
+            self.setTabIndexTable();
         }
 
+        private setTabIndexTable() {
+            let self = this;
+            
+            
+            //=================== TIMEZONE ===================
+            // flex timezone
+            self.oneDayFlexTimezoneOption.tabindex = 71;
+            self.morningFlexTimezoneOption.tabindex = 72;
+            self.afternoonFlexTimezoneOption.tabindex = 73;
+            
+            // diff
+            self.oneDayDiffTimezoneOption.tabindex = 71;
+            self.morningDiffTimezoneOption.tabindex = 72;
+            self.afternoonDiffTimezoneOption.tabindex = 73;
+            
+            // fixed
+            self.oneDayFixedTimezoneOption.tabindex = 71;
+            self.morningFixedTimezoneOption.tabindex = 72;
+            self.afternoonFixedTimezoneOption.tabindex = 73;
+            
+            // flow timezone
+            self.flowTimezoneOption.tabindex = 83;
+            
+            //=================== RESTSET ===================
+            // flex rest set
+            self.oneDayFlexRestSetOption.tabindex = 74;
+            self.morningFlexRestSetOption.tabindex = 77;
+            self.afternoonFlexRestSetOption.tabindex = 80;
+            
+            // flow rest set
+            self.flowRestSetOption.tabindex = 85;
+        }
+        
         /**
          * Set fixed table option
          */
         private setFixedTableOption(): void {
             let self = this;
 
+            //=================== TIMEZONE ===================
             // flex timezone option
             self.oneDayFlexTimezoneOption = self.getDefaultTimezoneOption();
             self.oneDayFlexTimezoneOption.dataSource = self.oneDayFlexTimezones;
@@ -214,6 +267,11 @@ module a5 {
             self.afternoonFixedTimezoneOption = self.getDefaultTimezoneOption();
             self.afternoonFixedTimezoneOption.dataSource = self.afternoonFixedTimezones;
 
+            // flow timezone option
+            self.flowTimezoneOption = self.getDefaultTimezoneOption();
+            self.flowTimezoneOption.dataSource = self.flowTimezones;
+            
+            //=================== RESTSET ===================
             // flex restSet option
             self.oneDayFlexRestSetOption = self.getDefaultRestSetOption();
             self.oneDayFlexRestSetOption.dataSource = self.oneDayFlexRestSet.convertedList;
@@ -222,13 +280,9 @@ module a5 {
             self.afternoonFlexRestSetOption = self.getDefaultRestSetOption();
             self.afternoonFlexRestSetOption.dataSource = self.afternoonFlexRestSet.convertedList;
 
-            // flow timezone option
-            self.flowTimezoneOption = self.getDefaultTimezoneOption();
-            self.flowTimezoneOption.dataSource = self.flowTimezones;
-
             // flow restSet option
-            //self.flowRestSetOption = self.getDefaultRestSetOption();
-            //self.flowRestSetOption.dataSource = self.flowRestSet.flowRestSets;
+            self.flowRestSetOption = self.getDefaultRestSetOption();
+            self.flowRestSetOption.dataSource = self.flowRestSet.convertedList;
         }
 
         private getDefaultTimezoneOption(): FixTableOption {

@@ -67,8 +67,12 @@ module nts.uk.ui.koExtentions {
                         }
                     } else {
                         if (ko.isObservable(data.value)) {
-                            data.value(selectedRows.length <= 0 ? undefined : ui.row.id);
-                            data.value.valueHasMutated(); 
+                            let valueX = selectedRows.length <= 0 ? undefined : ui.row.id;
+                            if(data.value() === valueX){
+                                data.value.valueHasMutated(); 
+                            } else {
+                                data.value(selectedRows.length <= 0 ? undefined : ui.row.id)
+                            } 
                         }
                     }
                 }
@@ -76,7 +80,7 @@ module nts.uk.ui.koExtentions {
             features.push({
                 name: "RowSelectors",
                 enableCheckBoxes: showCheckBox,
-                rowSelectorColumnWidth: showCheckBox ? 40 : 0,
+                rowSelectorColumnWidth: showCheckBox ? 25 : 0,
                 enableRowNumbering: false,
                 checkBoxMode: "biState"
             })

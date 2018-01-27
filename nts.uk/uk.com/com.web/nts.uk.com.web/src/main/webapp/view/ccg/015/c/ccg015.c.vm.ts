@@ -43,6 +43,7 @@ module nts.uk.pr.view.ccg015.c {
                         nts.uk.ui.windows.close();
                     }); 
                 }).fail(function(res: any) {
+                    $("#inp-code").focus();
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds});
                 });
 

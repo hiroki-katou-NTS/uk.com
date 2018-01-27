@@ -4,11 +4,12 @@
 
 #scrC table th, #scrC table td{
 	border: 1px solid  black;
+	padding: 5px;
 }
 
 #scrC table td > span > input{
-	background-color:transparent;
-    border: 0px solid;
+	/* background-color:transparent;
+    border: 0px solid; */
     text-align: center;
 }
 

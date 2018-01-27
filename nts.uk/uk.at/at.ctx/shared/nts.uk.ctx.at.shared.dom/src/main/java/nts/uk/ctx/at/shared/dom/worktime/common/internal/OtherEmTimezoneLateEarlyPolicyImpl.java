@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common.internal;
 
 import javax.ejb.Stateless;
 
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlyPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -27,9 +27,9 @@ public class OtherEmTimezoneLateEarlyPolicyImpl implements OtherEmTimezoneLateEa
 	 * nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet)
 	 */
 	@Override
-	public void validLateTime(PredetemineTimeSetting predTime, OtherEmTimezoneLateEarlySet otSet) {
+	public void validLateTime(BundledBusinessException be, PredetemineTimeSetting predTime, OtherEmTimezoneLateEarlySet otSet) {
 		if (otSet.getGraceTimeSet().getGraceTime().v() >= predTime.getRangeTimeDay().v()) {
-			throw new BusinessException("Msg_517");
+			be.addMessage("Msg_517");
 		}
 	}
 

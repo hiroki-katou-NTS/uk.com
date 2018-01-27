@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class ExtraordWorkOTFrameSet.
  */
 // 臨時勤務時の残業枠設定
 @Getter
-public class ExtraordWorkOTFrameSet extends DomainObject {
+public class ExtraordWorkOTFrameSet extends WorkTimeDomainObject {
 
 	/** The ot frame no. */
 	// 残業枠NO

@@ -191,7 +191,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	 * nts.arc.time.GeneralDate, java.util.List)
 	 */
 	@Override
-	public List<EmploymentHistoryItem> searchEmployee(List<String> employeeIds, GeneralDate baseDate,
+	public List<EmploymentHistoryItem> searchEmployee(GeneralDate baseDate, List<String> employeeIds, 
 			List<String> employmentCodes) {
 		if (CollectionUtil.isEmpty(employeeIds) || CollectionUtil.isEmpty(employmentCodes)) {
 			return new ArrayList<>();

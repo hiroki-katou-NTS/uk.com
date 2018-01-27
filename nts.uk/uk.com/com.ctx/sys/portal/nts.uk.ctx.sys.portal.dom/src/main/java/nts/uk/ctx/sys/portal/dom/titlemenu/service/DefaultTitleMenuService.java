@@ -31,7 +31,7 @@ public class DefaultTitleMenuService implements TitleMenuService  {
 	public boolean isExist(String companyID, String titleMenuCD) {
 		List<TitleMenu> lstTitleMenu = titleMenuRepository.findAll(companyID);
 		List<TitleMenu> lstTmp = lstTitleMenu.stream().filter(x -> x.getTitleMenuCD().toString().equals(titleMenuCD)).collect(Collectors.toList());
-		return lstTmp.isEmpty();
+		return !lstTmp.isEmpty();
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class DefaultTitleMenuService implements TitleMenuService  {
 	@Override
 	public void copyTitleMenu(String companyID, String sourceTitleMenuCD, String targetTitleMenuCD, String targetTitleMenuName, Boolean overwrite) {
 		TitleMenu oldTitleMenu = titleMenuRepository.findByCode(companyID, sourceTitleMenuCD).get();
-		if(!isExist(companyID, targetTitleMenuCD)) {
+		if(isExist(companyID, targetTitleMenuCD)) {
 			if(overwrite) {
 				titleMenuRepository.remove(companyID, targetTitleMenuCD);
 			}else {

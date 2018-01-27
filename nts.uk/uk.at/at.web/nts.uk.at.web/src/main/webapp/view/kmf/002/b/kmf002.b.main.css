@@ -4,11 +4,12 @@
 
 #scrB table th, #scrB table td{
 	border: 1px solid  black;
+	padding: 5px;
 }
 
 #scrB table td > span > input{
-	background-color:transparent;
-    border: 0px solid;
+	/* background-color:transparent;
+    border: 0px solid; */
     text-align: center;
 }
 

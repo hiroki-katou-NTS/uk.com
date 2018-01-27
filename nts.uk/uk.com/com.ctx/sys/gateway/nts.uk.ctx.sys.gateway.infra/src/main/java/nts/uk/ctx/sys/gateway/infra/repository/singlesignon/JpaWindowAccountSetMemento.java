@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.infra.repository.singlesignon;
 
+import nts.uk.ctx.sys.gateway.dom.singlesignon.HostName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountSetMemento;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAcc;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAccPK;
@@ -42,16 +44,16 @@ public class JpaWindowAccountSetMemento implements WindowAccountSetMemento {
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountSetMemento#setHotName(java.lang.String)
 	 */
 	@Override
-	public void setHostName(String hostName) {
-		this.typedValue.getSgwmtWindowAccPK().setHostName(hostName);
+	public void setHostName(HostName hostName) {
+		this.typedValue.setHostName(hostName.v());
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.WindowAccountSetMemento#setUserName(java.lang.String)
 	 */
 	@Override
-	public void setUserName(String userName) {
-		this.typedValue.getSgwmtWindowAccPK().setUserName(userName);
+	public void setUserName(UserName userName) {
+		this.typedValue.setUserName(userName.v());
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +69,7 @@ public class JpaWindowAccountSetMemento implements WindowAccountSetMemento {
 	 */
 	@Override
 	public void setNo(Integer no) {
-		this.typedValue.setNo(no);
+		this.typedValue.getSgwmtWindowAccPK().setNo(no);
 	}
 
 }

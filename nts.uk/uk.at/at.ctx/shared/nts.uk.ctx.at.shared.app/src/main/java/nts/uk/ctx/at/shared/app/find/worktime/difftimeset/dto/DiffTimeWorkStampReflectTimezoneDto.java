@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.StampReflectTimezoneDto;
@@ -18,18 +21,23 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeStampReflectSetMeme
 public class DiffTimeWorkStampReflectTimezoneDto implements DiffTimeStampReflectSetMemento {
 
 	/** The stamp reflect timezone. */
-	private StampReflectTimezoneDto stampReflectTimezone;
+	private List<StampReflectTimezoneDto> stampReflectTimezone;
 
 	/** The is update start time. */
-	private boolean isUpdateStartTime;
+	private boolean updateStartTime;
 
 	@Override
-	public void setStampReflectTimezone(StampReflectTimezone stampReflectTimezone) {
-		stampReflectTimezone.saveToMemento(this.stampReflectTimezone);
+	public void setStampReflectTimezone(List<StampReflectTimezone> stampReflectTimezone) {
+		this.stampReflectTimezone = new ArrayList<>();
+		stampReflectTimezone.stream().forEach(item -> {
+			StampReflectTimezoneDto dto = new StampReflectTimezoneDto();
+			item.saveToMemento(dto);
+			this.stampReflectTimezone.add(dto);
+		});
 	}
 
 	@Override
 	public void setIsUpdateStartTime(boolean isUpdateStartTime) {
-		this.isUpdateStartTime = isUpdateStartTime;
+		this.updateStartTime = isUpdateStartTime;
 	}
 }
