@@ -1,7 +1,21 @@
 #contents-area {
 	padding: 10px;
-	overflow-y:auto;
+	overflow-y: auto;
+	
+	&.fixed-flex-layout {
+		display: flex;
+		
+		> .fixed-flex-layout-left {
+			margin-right: 30px;
+			
+			/* specify width each screens */
+		}
+		
+		> .fixed-flex-layout-right {
+			flex: 1;
+		}
+	}
 }
-#master-wrapper{
-	height:100vh;
+#master-wrapper {
+	height: 100vh;
 }
