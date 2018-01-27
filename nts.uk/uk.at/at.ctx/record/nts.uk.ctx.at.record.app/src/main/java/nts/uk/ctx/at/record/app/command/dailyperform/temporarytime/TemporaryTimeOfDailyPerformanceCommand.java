@@ -34,8 +34,13 @@ public class TemporaryTimeOfDailyPerformanceCommand extends DailyWorkCommonComma
 	@Override
 	public TemporaryTimeOfDailyPerformance toDomain() {
 		return !data.isPresent() ? null : new TemporaryTimeOfDailyPerformance(getEmployeeId(), 
-				data.get().getWorkTimes() == null ? null : new WorkTimes(data.get().getWorkTimes()),
-				data.get().getWorkLeaveTime() == null ? new ArrayList<>() : ConvertHelper.mapTo(data.get().getWorkLeaveTime(), (c) -> toTimeLeaveWork(c)), getWorkDate());
+				new WorkTimes(toWorkTimes(data.get())),
+				data.get().getWorkLeaveTime() == null ? new ArrayList<>() : 
+					ConvertHelper.mapTo(data.get().getWorkLeaveTime(), (c) -> toTimeLeaveWork(c)), getWorkDate());
+	}
+
+	private int toWorkTimes(TemporaryTimeOfDailyPerformanceDto dto) {
+		return dto.getWorkTimes() == null ? (dto.getWorkLeaveTime() == null ? 0 : dto.getWorkLeaveTime().size()) : dto.getWorkTimes();
 	}
 
 	private TimeLeavingWork toTimeLeaveWork(WorkLeaveTimeDto c) {
