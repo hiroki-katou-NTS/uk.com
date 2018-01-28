@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の残業時間
@@ -469,15 +470,17 @@ public class OverTimeOfMonthly {
 	
 	/**
 	 * 法定内残業時間を取得する
+	 * @param datePeriod 期間
 	 * @return 法定内残業時間
 	 */
-	public AttendanceTimeMonth getLegalOverTime(){
+	public AttendanceTimeMonth getLegalOverTime(DatePeriod datePeriod){
 		
 		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
 
 		// 法定内残業時間．残業時間　＋　法定内残業時間．振替時間　の合計
 		for (val aggregateOverTime : this.aggregateOverTimeMap.values()){
 			for (val timeSeriesWork : aggregateOverTime.getTimeSeriesWorks().values()){
+				if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 				val legalOverTime = timeSeriesWork.getLegalOverTime();
 				returnTime = returnTime.addMinutes(legalOverTime.getOverTimeWork().getTime().v());
 				returnTime = returnTime.addMinutes(legalOverTime.getTransferTime().getTime().v());
@@ -489,15 +492,16 @@ public class OverTimeOfMonthly {
 	
 	/**
 	 * 残業合計時間を集計する
+	 * @param datePeriod 期間
 	 */
-	public void aggregateTotal(){
+	public void aggregateTotal(DatePeriod datePeriod){
 		
 		this.totalOverTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.beforeOverTime = new AttendanceTimeMonth(0);
 		this.totalTransferOverTime = TimeMonthWithCalculation.ofSameTime(0);
 		
 		for (val aggregateOverTime : this.aggregateOverTimeMap.values()){
-			aggregateOverTime.aggregate();
+			aggregateOverTime.aggregate(datePeriod);
 			this.totalOverTime = this.totalOverTime.addMinutes(
 					aggregateOverTime.getOverTime().getTime().v(),
 					aggregateOverTime.getOverTime().getCalcTime().v());
