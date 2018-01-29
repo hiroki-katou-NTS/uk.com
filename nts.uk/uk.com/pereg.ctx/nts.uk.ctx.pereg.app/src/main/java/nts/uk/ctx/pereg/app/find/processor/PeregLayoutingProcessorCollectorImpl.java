@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
+import find.person.contact.PersonContactDto;
 import find.person.info.PersonDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.BusinessTypeDto;
 import nts.uk.ctx.at.shared.app.find.shortworktime.ShortWorkTimeDto;
@@ -54,6 +55,8 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			new TypeLiteral<PeregFinder<WorkingConditionDto>>(){},
 			// CS00021 勤務種別
 			new TypeLiteral<PeregFinder<BusinessTypeDto>>(){},
+			// CS00022 個人連絡先
+			new TypeLiteral<PeregFinder<PersonContactDto>>(){},
 			// CS00023 社員連絡先
 			new TypeLiteral<PeregFinder<EmpInfoContactDto>>(){}
 			);
