@@ -827,7 +827,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 /* The hourly ppayment atr. */
 	 // 時給者区分
 	 @PeregItem("IS00259")
-	 private int hourlyPaymentAtr;
+	 private Integer hourlyPaymentAtr;
 
 	 /* The time apply. */
 	 // 加給時間帯
@@ -850,7 +850,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 		dto.setStartDate(dateHistoryItem.start());
 		dto.setEndDate(dateHistoryItem.end());
 		
-		dto.setHourlyPaymentAtr(workingConditionItem.getHourlyPaymentAtr().value);
+		if(workingConditionItem.getHourlyPaymentAtr() != null)dto.setHourlyPaymentAtr(workingConditionItem.getHourlyPaymentAtr().value);
 		if(workingConditionItem.getTimeApply().isPresent())
 			dto.setTimeApply(workingConditionItem.getTimeApply().get().v());
 		if(workingConditionItem.getMonthlyPattern().isPresent())
