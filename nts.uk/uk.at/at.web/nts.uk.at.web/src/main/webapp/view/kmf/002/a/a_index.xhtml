@@ -6,6 +6,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
+		
 	<ui:composition>
 		<div class="sidebar-content-header">
    			<!-- A2_1 -->
@@ -176,7 +177,8 @@
 					</div>
 					<div style="display: flex; padding-top: 30px; align-items: center;">
 						<!-- A16_5 -->
-						<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_49')}</div>
+						<div tabindex="-1" data-bind="ntsFormLabel: {required: true,
+																	constraint: 'WeekNumberOfDay' }">#{i18n.getText('KMF002_49')}</div>
 						<!-- A16_6 -->
 						<div tabindex="16">
 							<input name="#[KMF002_54]" data-bind="ntsTextEditor: {
@@ -194,7 +196,8 @@
 					</div>
 					<div style="display: flex; padding-top: 30px; align-items: center;">
 						<!-- A16_7 -->
-						<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_50')}</div>
+						<div tabindex="-1" data-bind="ntsFormLabel: {required: true,
+																	constraint: 'WeekNumberOfDay' }">#{i18n.getText('KMF002_50')}</div>
 						<!-- A16_8 -->
 						<div tabindex="17">
 							<input name="#[KMF002_54]" data-bind="ntsTextEditor: {
@@ -267,7 +270,8 @@
 					<div style="padding-left: 70px;">
 						<div>
 							<!-- A13_1 -->
-							<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_19')}</div>
+							<div tabindex="-1" data-bind="ntsFormLabel: {required: true, 
+																		constraint: 'WeekNumberOfDay' }">#{i18n.getText('KMF002_19')}</div>
 						</div>
 						<div>
 							<table>
@@ -352,7 +356,8 @@
 					<div id="four_week_scrA">
 						<div>
 							<!-- A14_1 -->
-							<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_19')}</div>
+							<div tabindex="-1" data-bind="ntsFormLabel: {required: true,
+																		constraint: 'FourWeekDay'}">#{i18n.getText('KMF002_19')}</div>
 						</div>
 						<div>
 							<table>
