@@ -8,9 +8,9 @@
 <body>
 	<ui:composition>
 		<div class="sidebar-content-header">
-   			<!-- A1_1 -->
-   			<button tabindex="1" data-bind="click: DataServiceForDto, attr : {'disabled' : false}, ">#{i18n.getText('KMF002_2')}</button>
-   			<!-- A1_2 -->
+   			<!-- A2_1 -->
+   			<button tabindex="1" data-bind="click: save, attr : {'disabled' : false}, ">#{i18n.getText('KMF002_2')}</button>
+   			<!-- A2_2 -->
    			<button tabindex="2" data-bind="click: settingOfUsageUnit, attr : {'disabled' : isDisableSetUnitBtn}">#{i18n.getText('KMF002_26')}</button>
 		</div>
 		
@@ -18,25 +18,24 @@
 			<div style="display: flex">
 				<div class="content-row-A">
 					<!-- A3_1 -->
-					<span tabindex="-1">#{i18n.getText('KMF002_3')}</span>
+					<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_3')}</div>
 				</div>
 				<!-- A3_2 -->
-				<div name="#[KMF002_3]">
+				<div tabindex="3" name="#[KMF002_3]">
 					<!-- A3_3, A3_4 -->
-					<div data-bind="ntsRadioBoxGroup: { options: companyManageClassification,
+					<div tabindex="-1" data-bind="ntsRadioBoxGroup: { options: companyManageClassification,
 														optionsText: 'name',
 														optionsValue: 'id',
 														value: publicHolidaySetting().isManageComPublicHd,
 														enable: true }"></div>
 														<!-- value: valDefaultcompanyManageClassification, -->
-														
 				</div>
 			</div>
 			
 			<div style="display: flex; align-items: center; padding-top: 52px;">
 				<div class="content-row-A">
 					<!-- A3_6 -->
-					<span tabindex="-1">#{i18n.getText('KMF002_4')}</span>
+					<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_4')}</div>
 				</div>
 				<div>
 					<!-- A3_7 -->
@@ -56,31 +55,31 @@
 				</div>
 				<!-- A3_9 -->
 				<div tabindex="5" data-bind="ntsCheckBox: { checked: forwardSetOfPubHD().isTransferWhenPublicHdIsMinus, 
-														enable: enableTransferWhenPublicHdIsMinus }">#{i18n.getText('KMF002_7')}</div>
+															enable: enableTransferWhenPublicHdIsMinus 
+															}" name='#[KMF002_7]'>#{i18n.getText('KMF002_7')}</div>
 			</div>
 			
 			<div style="display: flex; padding-top: 30px">
 				<div class="content-row-A">
 					<!-- A4_1 -->
-					<span tabindex="-1">#{i18n.getText('KMF002_5')}</span>
+					<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_5')}</div>
 				</div>
 				
 				<!-- A4_2 -->
-				<div tabindex="6">
+				<div tabindex="6" name='#[KMF002_7]'>
 					<!-- A4_3, A4_4 -->
 					<div tabindex="-1" data-bind="ntsRadioBoxGroup: { options: publicHDPeriod,
 														optionsText: 'name',
 														optionsValue: 'id',
 														value: publicHolidaySetting().publicHdManagementClassification,
 														enable: enablePublicHdManagementClassification}"></div>
-														<!-- selectedValue: 'id' -->
 				</div>
 			</div>
 			
 			<div style="display: flex; padding-top: 30px" class="managePeriod_A">
 				<div class="">
 					<!-- A4_5 -->
-					<span tabindex="-1">#{i18n.getText('KMF002_6')}</span>
+					<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_6')}</div>
 				</div>
 				
 				<!-- A4_6 -->
@@ -100,44 +99,48 @@
 				<div style="display: flex; padding-top: 30px;">
 					<div class="">
 						<!-- A9_1 -->
-						<span tabindex="-1">#{i18n.getText('KMF002_15')}</span>
+						<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_15')}</div>
 					</div>
 					<!-- A9_2 -->
 					<div tabindex="8">
 						<!-- A9_3, A9_4 -->
-						<div data-bind="ntsRadioBoxGroup: { options: dayOfPublicHoliday,
+						<div tabindex="-1" data-bind="ntsRadioBoxGroup: { options: dayOfPublicHoliday,
 															optionsText: 'name',
 															optionsValue: 'id',
 															value: publicHolidaySetting().pubHD().determineStartDate,
 															enable: enableDetermineStartDate}"></div>
-															<!-- selectedValue: 'id' -->
 					</div>
 				</div>
 				<div style="display:flex; padding-top: 30px;">
 					<div class="">
 						<!-- A9_5 -->
-						<span tabindex="-1">#{i18n.getText('KMF002_16')}</span>
+						<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_16')}</div>
 					</div>
 					<div>
 						<!-- A9_6 -->
-						<div tabindex="9" data-bind="css: {'hidden-element': enableFullDate() == true}">
+						<!-- <div tabindex="9" data-bind="css: {'hidden-element': enableFullDate() == true}">
 							<input data-bind="ntsTextEditor: {
-								value: publicHolidaySetting().pubHD().date,
-								constraint: '',
-								option: {width: '120px'}, 
-								required: true,
-								enable: enablePubHDDateAndDayMonth,
-								readonly: false}" />
+																value: publicHolidaySetting().pubHD().date,
+																constraint: '',
+																option: {width: '120px'}, 
+																required: true,
+																enable: enablePubHDDateAndDayMonth,
+																readonly: false}" name='#[KMF002_16]'/>
+						</div> -->
+						<div  tabindex="9" data-bind="ntsDatePicker: {value: publicHolidaySetting().pubHD().date, 
+																      dateFormat: 'YYYY/MM/DD',
+																      enable: enablePubHDDateAndDayMonth}, 
+														css: {'hidden-element': enableFullDate() == false}">
 						</div>
 						<!-- A9_7 -->
-						<div tabindex="10" data-bind="css: {'hidden-element': enableFullDate() == false}">
+						<div tabindex="10" data-bind="css: {'hidden-element': enableFullDate() == true}">
 							<input data-bind="ntsTextEditor: {
 								value: publicHolidaySetting().pubHD().dayMonth,
 								constraint: '',
 								option: {width: '120px'}, 
 								required: true,
 								enable: enablePubHDDateAndDayMonth,
-								readonly: false}" />
+								readonly: false}" name='#[KMF002_16]'/>
 						</div>
 					</div>
 				</div>
@@ -145,7 +148,7 @@
 			
 			<div style="display: flex; flex-direction: column; padding-top: 30px">
 				<!-- A16_1 -->
-				<div class="minimalist" tabindex="" data-bind="ntsCheckBox: { 
+				<div tabindex="-1" data-bind="ntsCheckBox: { 
 																				checked: publicHolidaySetting().isWeeklyHdCheck, 
 																				enable: enableIsWeeklyHdCheck, 
 																				text: '#{i18n.getText('KMF002_46')}' 
@@ -153,7 +156,7 @@
 				<div style="padding-left: 50px" class="weekHDCheck_A">
 					<div style="display: flex; padding-top: 30px; align-items: center;">
 						<!-- A16_2 -->
-						<span tabindex="-1">#{i18n.getText('KMF002_47')}</span>
+						<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_47')}</div>
 						<!-- A16_3 -->
 						<div tabindex="15" id="" style="width: 125px;" data-bind="ntsComboBox: { 
 																									options: lstStartDayOfWeek,
@@ -173,35 +176,35 @@
 					</div>
 					<div style="display: flex; padding-top: 30px; align-items: center;">
 						<!-- A16_5 -->
-						<span tabindex="-1">#{i18n.getText('KMF002_49')}</span>
+						<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_49')}</div>
 						<!-- A16_6 -->
 						<div tabindex="16">
 							<input name="#[KMF002_54]" data-bind="ntsTextEditor: {
 																					value: weekHDSet().inLegalHoliday,
-																					constraint: '',
+																					constraint: 'WeekNumberOfDay',
 																					option: {width: '85px'}, 
 																					required: true,
 																					enable: enableWeekHDSetInLegalHoliday,
 																					readonly: false,
 																					name: '#[KMF002_54]'
-																					}"/>
+																					}" class="validateInput"/>
 								<span>日</span>
 						</div>
 						
 					</div>
 					<div style="display: flex; padding-top: 30px; align-items: center;">
 						<!-- A16_7 -->
-						<span tabindex="-1">#{i18n.getText('KMF002_50')}</span>
+						<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_50')}</div>
 						<!-- A16_8 -->
 						<div tabindex="17">
 							<input name="#[KMF002_54]" data-bind="ntsTextEditor: {
 																					value: weekHDSet().outLegalHoliday,
-																					constraint: '',
+																					constraint: 'WeekNumberOfDay',
 																					option: {width: '85px'}, 
 																					required: true,
 																					enable: enableWeekHDSetOutLegalHoliday,
 																					readonly: false,
-																				}" />
+																				}" class="validateInput"/>
 								<span>日</span>
 						</div>
 						
@@ -212,50 +215,50 @@
 			<div id="absent_4_day_4_week">
 				<div style="padding-top: 40px">
 					<!-- A10_1 -->
-					<span>#{i18n.getText('KMF002_51')}</span>
+					<span tabindex="-1" >#{i18n.getText('KMF002_51')}</span>
 				</div>
 				<div style="padding-top: 25px">
 					<div>
 						<!-- A11_1 -->
-						<div tabindex="" data-bind="ntsCheckBox: { 
-																						checked: fourWkFourHDNumSet().isOneWeekHoliday, 
-																						enable: enable4Weeks4HDSet, 
-																						text: '#{i18n.getText('KMF002_17')}' 
-																					}"></div>
+						<div tabindex="-1" data-bind="ntsCheckBox: { 
+																		checked: fourWkFourHDNumSet().isOneWeekHoliday, 
+																		enable: enable4Weeks4HDSet, 
+																		text: '#{i18n.getText('KMF002_17')}' 
+																	}"></div>
 					</div>
 					<div style="padding-left: 70px">
 						<table>
 							<tr>
 								<th>
 									<!-- A11_2 -->
-									<span>#{i18n.getText('KMF002_13')}</span>
+									<span tabindex="-1" >#{i18n.getText('KMF002_13')}</span>
 								</th>
 								<th>
 									<!-- A11_3 -->
-									<span>#{i18n.getText('KMF002_14')}</span>
+									<span tabindex="-1" >#{i18n.getText('KMF002_14')}</span>
 								</th>
 							</tr>
 							<tr>
 								<th>
 									<!-- A11_5 -->
-									<input tabindex="18" name="#[]" data-bind="ntsTextEditor: {
+									<input tabindex="18" name="#[KMF002_37]" data-bind="ntsTextEditor: {
 																		value: fourWkFourHDNumSet().oneWeek().inLegalHoliday,
-																		constraint: '',
+																		constraint: 'WeekNumberOfDay',
 																		option: {width: '85px'}, 
 																		required: true,
 																		enable: enableOneWeekPubHDInLegalHD,
-																		readonly: false}" />
+																		readonly: false}" class="validateInput"/>
 									<span>日</span>
 								</th>
 								<th>
 									<!-- A11_6 -->
-									<input tabindex="19" name="#[]" data-bind="ntsTextEditor: {
+									<input tabindex="19" name="#[KMF002_38]" data-bind="ntsTextEditor: {
 																		value: fourWkFourHDNumSet().oneWeek().outLegalHoliday,
-																		constraint: '',
+																		constraint: 'WeekNumberOfDay',
 																		option: {width: '85px'}, 
 																		required: true,
 																		enable: enableOneWeekPubHDOutLegalHD,
-																		readonly: false}" />
+																		readonly: false}" class="validateInput"/>
 									<span>日</span>
 								</th>
 							</tr>
@@ -264,31 +267,31 @@
 					<div style="padding-left: 70px;">
 						<div>
 							<!-- A13_1 -->
-							<span>#{i18n.getText('KMF002_19')}</span>
+							<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_19')}</div>
 						</div>
 						<div>
 							<table>
 								<tr>
 									<th>
 										<!-- A13_5 -->
-										<input tabindex="20" name="#[]" data-bind="ntsTextEditor: {
+										<input tabindex="20" name="#[KMF002_37]" data-bind="ntsTextEditor: {
 																		value: fourWkFourHDNumSet().oneWeek().lastWeekAddedDays().inLegalHoliday,
-																		constraint: '',
+																		constraint: 'WeekNumberOfDay',
 																		option: {width: '85px'}, 
 																		required: true,
 																		enable: enableLastPeriod1WeekPubHD,
-																		readonly: false}" />
+																		readonly: false}" class="validateInput"/>
 										<span>日</span>
 									</th>
 									<th>
 										<!-- A13_6 -->
-										<input tabindex="21" name="#[]" data-bind="ntsTextEditor: {
+										<input tabindex="21" name="#[KMF002_38]" data-bind="ntsTextEditor: {
 																		value: fourWkFourHDNumSet().oneWeek().lastWeekAddedDays().outLegalHoliday,
-																		constraint: '',
+																		constraint: 'WeekNumberOfDay',
 																		option: {width: '85px'}, 
 																		required: true,
 																		enable: enableLastPeriod1WeekPubHD,
-																		readonly: false}" />
+																		readonly: false}" class="validateInput"/>
 										<span>日</span>
 									</th>
 								</tr>
@@ -300,47 +303,47 @@
 				<div>
 					<div>
 						<!-- A12_1 -->
-						<div tabindex="" data-bind="ntsCheckBox: { 
-																						checked: fourWkFourHDNumSet().isFourWeekHoliday, 
-																						enable: enable4Weeks4HDSet, 
-																						text: '#{i18n.getText('KMF002_18')}' 
-																					}"></div>
+						<div tabindex="-1" data-bind="ntsCheckBox: { 
+																		checked: fourWkFourHDNumSet().isFourWeekHoliday, 
+																		enable: enable4Weeks4HDSet, 
+																		text: '#{i18n.getText('KMF002_18')}' 
+																	}" name='#[KMF002_18]'></div>
 					</div>
 					<div id="one_week_scrA">
 						<table>
 							<tr>
 								<th>
 									<!-- A12_2 -->
-									<span>#{i18n.getText('KMF002_13')}</span>
+									<span tabindex="-1" >#{i18n.getText('KMF002_13')}</span>
 								</th>
 								<th>
 									<!-- A12_3 -->
-									<span>#{i18n.getText('KMF002_14')}</span>
+									<span tabindex="-1" >#{i18n.getText('KMF002_14')}</span>
 								</th>
 							</tr>
 							<tr>
 								<th>
 									<!-- A12_5 -->
-									<input tabindex="22" name="#[]" data-bind="ntsTextEditor: {
-																									value: fourWkFourHDNumSet().fourWeek().inLegalHoliday,
-																									constraint: '',
-																									option: {width: '85px'}, 
-																									required: true,
-																									enable: enable4WeeksPubHDInLegalHD,
-																									readonly: false
-																								}" />
+									<input tabindex="22" data-bind="ntsTextEditor: {
+																						value: fourWkFourHDNumSet().fourWeek().inLegalHoliday,
+																						constraint: 'FourWeekDay',
+																						option: {width: '85px'}, 
+																						required: true,
+																						enable: enable4WeeksPubHDInLegalHD,
+																						readonly: false
+																					}" name="#[KMF002_39]" class="validateInput"/>
 									<span>日</span>
 								</th>
 								<th>
 									<!-- A12_6 -->
-									<input tabindex="23" name="#[]" data-bind="ntsTextEditor: {
+									<input tabindex="23" name="#[KMF002_40]" data-bind="ntsTextEditor: {
 																									value: fourWkFourHDNumSet().fourWeek().outLegalHoliday,
-																									constraint: '',
+																									constraint: 'FourWeekDay',
 																									option: {width: '85px'}, 
 																									required: true,
 																									enable: enable4WeeksPubHDOutLegalHD,
 																									readonly: false
-																								}" />
+																								}" class="validateInput"/>
 									<span>日</span>
 								</th>
 							</tr>
@@ -349,33 +352,33 @@
 					<div id="four_week_scrA">
 						<div>
 							<!-- A14_1 -->
-							<span>#{i18n.getText('KMF002_19')}</span>
+							<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_19')}</div>
 						</div>
 						<div>
 							<table>
 								<tr>
 									<th>
 										<!-- A14_5 -->
-										<input tabindex="24" name="#[]" data-bind="ntsTextEditor: {
+										<input tabindex="24" name="#[KMF002_52]" data-bind="ntsTextEditor: {
 																										value: fourWkFourHDNumSet().fourWeek().lastWeekAddedDays().inLegalHoliday,
-																										constraint: '',
+																										constraint: 'FourWeekDay',
 																										option: {width: '85px'}, 
 																										required: true,
 																										enable: enableLastPeriod4WeekPubHD,
 																										readonly: false
-																									}" />
+																									}" class="validateInput"/>
 										<span>日</span>
 									</th>
 									<th>
 										<!-- A14_6 -->
-										<input tabindex="25" name="#[]" data-bind="ntsTextEditor: {
+										<input tabindex="25" name="#[KMF002_53]" data-bind="ntsTextEditor: {
 																										value: fourWkFourHDNumSet().fourWeek().lastWeekAddedDays().outLegalHoliday,
-																										constraint: '',
+																										constraint: 'FourWeekDay',
 																							            option: {width: '85px'}, 
 																										required: true,
 																										enable: enableLastPeriod4WeekPubHD,
 																										readonly: false
-																									}" />
+																									}" class="validateInput"/>
 										<span>日</span>
 									</th>
 								</tr>

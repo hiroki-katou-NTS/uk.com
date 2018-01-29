@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,12 +71,8 @@ public class VerticalTotalOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 日別実績の勤務情報　取得
-		//*****（未）　適切なメソッドがまだない。仮に、1日だけ取る。正式には、期間で取ってくる。
-		List<WorkInfoOfDailyPerformance> workInfoOfDailys = new ArrayList<>();
-		val workInfoOfDailyOpt = repositories.getWorkInformationOfDaily().find(employeeId, datePeriod.start());
-		if (workInfoOfDailyOpt.isPresent()){
-			workInfoOfDailys.add(workInfoOfDailyOpt.get());
-		}
+		List<WorkInfoOfDailyPerformance> workInfoOfDailys =
+				repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
 		Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap = new HashMap<>();
 		for (val workInfoOfDaily : workInfoOfDailys){
 			val ymd = workInfoOfDaily.getYmd();
@@ -85,28 +80,16 @@ public class VerticalTotalOfMonthly {
 		}
 		
 		// 日別実績の勤怠時間　取得
-		//*****（未）　適切なメソッドがまだない。仮に、1日だけ取る。正式には、期間で取ってくる。
-		List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys = new ArrayList<>();
-		val attendanceTimeOfDailyOpt = repositories.getAttendanceTimeOfDaily().find(employeeId, datePeriod.start());
-		if (attendanceTimeOfDailyOpt.isPresent()){
-			attendanceTimeOfDailys.add(attendanceTimeOfDailyOpt.get());
-		}
+		List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys =
+				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
 		
 		// 日別実績の出退勤
-		//*****（未）　適切なメソッドがまだない。仮に、1日だけ取る。正式には、期間で取ってくる。
-		List<TimeLeavingOfDailyPerformance> timeLeaveingOfDailys = new ArrayList<>();
-		val timeLeaveOfDailyOpt = repositories.getTimeLeavingOfDaily().findByKey(employeeId, datePeriod.start());
-		if (timeLeaveOfDailyOpt.isPresent()){
-			timeLeaveingOfDailys.add(timeLeaveOfDailyOpt.get());
-		}
+		List<TimeLeavingOfDailyPerformance> timeLeaveingOfDailys =
+				repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, datePeriod);
 		
 		// 日別実績の特定日区分
-		//*****（未）　適切なメソッドがまだない。仮に、1日だけ取る。正式には、期間で取ってくる。
-		List<SpecificDateAttrOfDailyPerfor> specificDateAtrOfDailys = new ArrayList<>();
-		val specificDateAtrOfDailyOpt = repositories.getSpecificDateAtrOfDaily().find(employeeId, datePeriod.start());
-		if (specificDateAtrOfDailyOpt.isPresent()){
-			specificDateAtrOfDailys.add(specificDateAtrOfDailyOpt.get());
-		}
+		List<SpecificDateAttrOfDailyPerfor> specificDateAtrOfDailys =
+				repositories.getSpecificDateAtrOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
 		
 		// 勤務情報　取得
 		val workTypes = repositories.getWorkType().findByCompanyId(companyId);

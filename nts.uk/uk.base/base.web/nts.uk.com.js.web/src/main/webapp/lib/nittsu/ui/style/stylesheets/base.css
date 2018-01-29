@@ -971,8 +971,7 @@ div.popup-panel {
 /* line 175, ../sass/components/_commons.scss */
 #func-notifier-errors {
   position: absolute;
-  display: inline-block;
-  visibility: hidden;
+  display: none;
   z-index: 10;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -986,51 +985,51 @@ div.popup-panel {
   color: #dd3a3a;
   cursor: pointer;
 }
-/* line 190, ../sass/components/_commons.scss */
+/* line 189, ../sass/components/_commons.scss */
 #func-notifier-errors:hover {
   background-color: #ffcccc;
   color: #cc2222;
   border-color: #cc2222;
 }
-/* line 196, ../sass/components/_commons.scss */
+/* line 195, ../sass/components/_commons.scss */
 #func-notifier-errors.shown {
-  visibility: visible;
+  display: inline-block;
 }
 
 /*****************************
   Label
 *****************************/
-/* line 205, ../sass/components/_commons.scss */
+/* line 204, ../sass/components/_commons.scss */
 .label {
   display: inline-block;
   box-sizing: border-box;
 }
-/* line 209, ../sass/components/_commons.scss */
+/* line 208, ../sass/components/_commons.scss */
 .label.warning {
   padding: 15px 10px;
   font-size: 1.2rem;
   background-color: #F7EFD4;
   color: #C12017;
 }
-/* line 216, ../sass/components/_commons.scss */
+/* line 215, ../sass/components/_commons.scss */
 .label.with-image {
   padding: 5px 10px 5px 5px;
   border-radius: 5px;
   background-color: #E0F59E;
   color: #00B050;
 }
-/* line 222, ../sass/components/_commons.scss */
+/* line 221, ../sass/components/_commons.scss */
 .label.with-image .image {
   vertical-align: middle;
   margin-right: 10px;
 }
 
-/* line 228, ../sass/components/_commons.scss */
+/* line 227, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
 }
 
-/* line 231, ../sass/components/_commons.scss */
+/* line 230, ../sass/components/_commons.scss */
 .pre {
   white-space: pre-wrap;
 }
@@ -4653,11 +4652,25 @@ div .ex-area-line.x-stay {
 
 /* line 1, ../sass/frame/_contents.scss */
 #contents-area {
+  position: relative;
   padding: 10px;
   overflow-y: auto;
 }
+/* line 6, ../sass/frame/_contents.scss */
+#contents-area.fixed-flex-layout {
+  display: flex;
+}
+/* line 9, ../sass/frame/_contents.scss */
+#contents-area.fixed-flex-layout > .fixed-flex-layout-left {
+  margin-right: 30px;
+  /* specify width each screens */
+}
+/* line 15, ../sass/frame/_contents.scss */
+#contents-area.fixed-flex-layout > .fixed-flex-layout-right {
+  flex: 1;
+}
 
-/* line 5, ../sass/frame/_contents.scss */
+/* line 20, ../sass/frame/_contents.scss */
 #master-wrapper {
   height: 100vh;
 }

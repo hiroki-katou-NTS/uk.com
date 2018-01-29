@@ -27,7 +27,7 @@ module cps001.d.vm {
             let self = this,
                 params: IEmpFileMn = getShared("CPS001D_PARAMS");
             $('input[type=checkbox]').prop('checked', false);
-
+            $(".comfirm-checkbox").hide();
 
             self.empFileMn().employeeId = params.employeeId;
             //get employee file management domain by employeeId
