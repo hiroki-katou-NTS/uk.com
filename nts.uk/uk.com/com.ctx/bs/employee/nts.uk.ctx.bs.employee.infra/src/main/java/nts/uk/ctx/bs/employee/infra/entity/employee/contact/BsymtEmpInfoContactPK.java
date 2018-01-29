@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Embeddable
 public class BsymtEmpInfoContactPK implements Serializable{
+	
 	private static final long serialVersionUID = 1L;
 
 	@Basic(optional = false)

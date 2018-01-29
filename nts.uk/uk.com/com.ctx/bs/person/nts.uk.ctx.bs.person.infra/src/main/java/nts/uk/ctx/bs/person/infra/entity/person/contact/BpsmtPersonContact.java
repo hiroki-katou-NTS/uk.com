@@ -25,6 +25,10 @@ public class BpsmtPersonContact  extends UkJpaEntity implements Serializable {/*
 	public BpsmtPersonContactPK bpsmtPersonContactPK;
 
 	@Basic(optional = true)
+	@Column(name = "CELL_PHONE_NO")
+	public String cellPhoneNumber;
+	
+	@Basic(optional = true)
 	@Column(name = "MAIL_ADDRESS")
 	public String mailAdress;
 
@@ -32,11 +36,6 @@ public class BpsmtPersonContact  extends UkJpaEntity implements Serializable {/*
 	@Column(name = "MOBILE_MAIL_ADDRESS")
 	public String mobileMailAdress;
 	
-	@Basic(optional = true)
-	@Column(name = "CELL_PHONE_NO")
-	public String cellPhoneNumber;
-
-
 	@Basic(optional = true)
 	@Column(name = "MEMO1")
 	public String memo1;
@@ -60,10 +59,6 @@ public class BpsmtPersonContact  extends UkJpaEntity implements Serializable {/*
 	@Basic(optional = true)
 	@Column(name = "PHONE_NO_2")
 	public String phoneNo2;	
-	
-	
-	
-
 
 @Override
 protected Object getKey() {
