@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.service.PredeteminePolicyService;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class DiffTimeWorkSettingPolicyImpl.

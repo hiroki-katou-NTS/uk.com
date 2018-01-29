@@ -12,38 +12,24 @@
 				optionsText: 'name',
 				value: useFixedRestTime,
 				enable: true }"></div>
-	</div>		
-	
-	<div class="tab-seperator">	
-		<table>
-			<tr data-bind="visible: !isFlowOrFlex()">
-				<td>
-					<div tabindex ="92" id="nts-fix-table-a7-fixed-difftime"
-						data-bind="ntsFixTableCustom: {option: fixTableOptionForFixedOrDiffTime }"></div>
-				</td>
-			</tr>
-			
-			<tr data-bind="visible: isFixedRestTime()">
-				<td colspan="2">
-					<div tabindex="94" id="nts-fix-table-a7-flow-flex-use"
-						data-bind="ntsFixTableCustom: {option: fixTableOptionForFlowOrFlexUse }"></div>
-				</td>
-			</tr>
-	
-			<tr data-bind="visible: isFlexOrFlowNotUse()">
-				<td colspan ="2">
-	 				<div tabindex="95" id="nts-fix-table-a7-flow-flex-notuse-1"
-						data-bind="ntsFixTableCustom: {option: fixTableOptionForFlowOrFlexNotUse1 }"></div>
-				</td>
-			</tr>
-			<tr data-bind="visible: isFlexOrFlowNotUse()">
-				<td colspan ="2" class="tab-7-td-cell">
-					<div tabindex="96"
-						data-bind="ntsCheckBox: { checked: isCheckFollowTime,text: '#{i18n.getText('KMK003_144')}'}"></div>
-					<div tabindex="97" id="nts-fix-table-a7-flow-flex-notuse-2"
-						data-bind="ntsFixTableCustom: {option: fixTableOptionForFlowOrFlexNotUse2,isEnableAllControl: isCheckFollowTime}"></div>
-				</td>
-			</tr>
-		</table>
+	</div>
+
+	<div class="tab-seperator">
+		<com:ko tag="if" bind="!isFlowOrFlex()">
+			<div tabindex="92" id="nts-fix-table-a7-fixed-difftime"
+				data-bind="ntsFixTableCustom: {option: fixTableOptionForFixedOrDiffTime }"></div>
+		</com:ko>
+		<com:ko tag="if" bind="isFixedRestTime()">
+			<div tabindex="94" id="nts-fix-table-a7-flow-flex-use"
+				data-bind="ntsFixTableCustom: {option: fixTableOptionForFlowOrFlexUse }"></div>
+		</com:ko>
+		<com:ko tag="if" bind="isFlexOrFlowNotUse()">
+			<div tabindex="95" id="nts-fix-table-a7-flow-flex-notuse-1"
+				data-bind="visible: isFlexOrFlowNotUse(),ntsFixTableCustom: {option: fixTableOptionForFlowOrFlexNotUse1 }"></div>
+			<div tabindex="96"
+				data-bind="ntsCheckBox: { checked: isCheckFollowTime,text: '#{i18n.getText('KMK003_144')}'}"></div>
+			<div tabindex="97" id="nts-fix-table-a7-flow-flex-notuse-2"
+				data-bind="ntsFixTableCustom: {option: fixTableOptionForFlowOrFlexNotUse2,isEnableAllControl: isCheckFollowTime}"></div>
+		</com:ko>
 	</div>
 </ui:composition>
