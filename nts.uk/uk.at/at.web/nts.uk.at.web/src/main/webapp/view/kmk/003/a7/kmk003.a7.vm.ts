@@ -99,9 +99,9 @@ module a7 {
             /////////////
             self.dataSourceForFlowOrFlexNotUse2 = ko.observableArray([]);
             self.fixTableOptionForFlowOrFlexNotUse2 = {
-                maxRow: 7,
+                maxRow: 1,
                 minRow: 0,
-                maxRowDisplay: 5,
+                maxRowDisplay: 1,
                 isShowButton: false,
                 dataSource: self.dataSourceForFlowOrFlexNotUse2,
                 isMultipleSelect: false,
