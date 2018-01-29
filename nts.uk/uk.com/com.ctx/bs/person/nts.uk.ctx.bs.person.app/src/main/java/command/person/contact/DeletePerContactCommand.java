@@ -1,11 +1,11 @@
 package command.person.contact;
 
 import lombok.Getter;
-import nts.uk.shr.pereg.app.PeregPersonId;
+import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
 public class DeletePerContactCommand{
 	//個人ID
-	@PeregPersonId
+	@PeregRecordId
 	private String personId;
 }

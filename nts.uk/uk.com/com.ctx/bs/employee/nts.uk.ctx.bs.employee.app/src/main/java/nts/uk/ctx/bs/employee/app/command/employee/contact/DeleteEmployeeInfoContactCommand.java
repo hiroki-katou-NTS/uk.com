@@ -1,11 +1,11 @@
 package nts.uk.ctx.bs.employee.app.command.employee.contact;
 
 import lombok.Getter;
-import nts.uk.shr.pereg.app.PeregEmployeeId;
+import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
 public class DeleteEmployeeInfoContactCommand {
 	//社員ID
-	@PeregEmployeeId
+	@PeregRecordId
 	private String sid;
 }

@@ -4,13 +4,13 @@ import lombok.Getter;
 import nts.uk.ctx.bs.employee.dom.employee.contact.CellPhoneNumber;
 import nts.uk.ctx.bs.employee.dom.employee.contact.SeatNo;
 import nts.uk.ctx.bs.person.dom.person.contact.MailAddress;
-import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
+import nts.uk.shr.pereg.app.PeregRecordId;
 
 @Getter
 public class UpdateEmployeeInfoContactCommand {
 	//社員ID
-	@PeregEmployeeId
+	@PeregRecordId
 	private String sid;
 	
 	//メールアドレス
