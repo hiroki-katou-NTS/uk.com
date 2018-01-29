@@ -11,6 +11,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
@@ -73,17 +74,18 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			AlarmCategory category = AlarmCategory.values()[command.getCategory()];
 			switch (category) {
 			case DAILY:
+				//update WorkRecordExtractCondition
+				DailyAlarmCondition dailyAlramCondition = (DailyAlarmCondition) domain.getExtractionCondition();
+				List<String> listErrorAlarmId = this.workRecordExtraConRepo.checkUpdateListErAl(
+						dailyAlramCondition.getExtractConditionWorkRecord(),
+						command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork());
+				
 				extractionCondition = command.getDailyAlarmCheckCondition() == null ? null
 						: new DailyAlarmCondition(IdentifierUtil.randomUniqueId(),
 								command.getDailyAlarmCheckCondition().getConditionToExtractDaily(),
 								command.getDailyAlarmCheckCondition().isAddApplication(),
-								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()),
+								listErrorAlarmId,
 								command.getDailyAlarmCheckCondition().getListErrorAlarmCode());
-				//update WorkRecordExtractCondition
-				DailyAlarmCondition dailyAlramCondition = (DailyAlarmCondition) domain.getExtractionCondition();
-				this.workRecordExtraConRepo.checkUpdateListErAl(
-						dailyAlramCondition.getExtractConditionWorkRecord(),
-						command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork());
 
 				// update FixedWorkRecordExtractCondition
 				for(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto : command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord()) {

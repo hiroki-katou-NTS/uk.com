@@ -9,6 +9,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import tab = nts.uk.at.view.kal003.a.tab;
+    import shareutils = nts.uk.at.view.kal003.share.kal003utils;
 
     export class ScreenModel {
         tabs: KnockoutObservableArray<any>;
@@ -92,7 +93,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         let item = new model.AlarmCheckConditionByCategory(acc.code, acc.name, category, acc.availableRoles, new model.AlarmCheckTargetCondition(acc.targetCondition.filterByEmployment, acc.targetCondition.filterByClassification, acc.targetCondition.filterByJobTitle, acc.targetCondition.filterByBusinessType, acc.targetCondition.targetEmployment, acc.targetCondition.targetClassification, acc.targetCondition.targetJobTitle, acc.targetCondition.targetBusinessType));
                         let _fixedList: Array<model.FixedConditionWorkRecord> = _.map(acc.dailyAlarmCheckCondition.listFixedExtractConditionWorkRecord, (fix: model.IFixedConditionWorkRecord) => { return new model.FixedConditionWorkRecord(fix) });
                         let _dailyList: Array<model.DailyErrorAlarmCheck> = _.map(acc.dailyAlarmCheckCondition.listErrorAlarmCheck, (d: any) => { return new model.DailyErrorAlarmCheck(d.code, d.name, d.classification, d.message) });
-                        let _checkList: Array<model.WorkRecordExtractingCondition> = _.map(acc.dailyAlarmCheckCondition.listExtractConditionWorkRecork, (c: model.IWorkRecordExtractingCondition) => {return new model.WorkRecordExtractingCondition(c)});
+                        let _checkList: Array<model.WorkRecordExtractingCondition> = _.map(acc.dailyAlarmCheckCondition.listExtractConditionWorkRecork, (c: model.IWorkRecordExtractingCondition) => {return shareutils.convertTransferDataToWorkRecordExtractingCondition(c)});
                         item.dailyAlarmCheckCondition(new model.DailyAlarmCheckCondition(acc.dailyAlarmCheckCondition.conditionToExtractDaily, acc.dailyAlarmCheckCondition.addApplication, acc.dailyAlarmCheckCondition.listErrorAlarmCode, _dailyList, _checkList, _fixedList));
                         item.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(acc.schedule4WeekCondition);
                         return item;
@@ -232,10 +233,12 @@ module nts.uk.at.view.kal003.a.viewmodel {
             let self = this;
             modal("/view/kal/003/d/index.xhtml").onClosed(() => {
                 var output = getShared("outputKAL003d");
-                if (output) {
+                if (!nts.uk.util.isNullOrUndefined(output)) {
                     self.selectCategoryFromDialog(true);
-                    self.selectedCategory(output);
-                    self.selectedCategory.valueHasMutated();
+                    if (self.selectedCategory() != output)
+                        self.selectedCategory(output);
+                    else
+                        self.selectedCategory.valueHasMutated();
                 }
             });
         }

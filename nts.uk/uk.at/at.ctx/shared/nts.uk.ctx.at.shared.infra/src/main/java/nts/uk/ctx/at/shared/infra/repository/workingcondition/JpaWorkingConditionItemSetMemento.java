@@ -226,9 +226,12 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 			return;
 		}
 
-		this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning().v());
-		this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon().v());
-		this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay().v());
+		this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning() != null
+				? holidayAddTimeSet.get().getMorning().v() : null);
+		this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon() != null
+				? holidayAddTimeSet.get().getAfternoon().v() : null);
+		this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay() != null
+				? holidayAddTimeSet.get().getOneDay().v() : null);
 	}
 
 	@Override

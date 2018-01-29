@@ -33,7 +33,7 @@ module nts.uk.at.view.kal003.a.tab {
                         let id = nts.uk.util.randomId();
                         
                         let $div = $("<div/>", {html: classification, id: id});
-                        
+                        $div.hide();
                         if (record.classification.toString() === "0") {
                             $div.addClass("bg-daily-error");
                         } else if (record.classification.toString() === "1") {
@@ -51,8 +51,8 @@ module nts.uk.at.view.kal003.a.tab {
                         return $div[0].outerHTML;
                     }
                 },
-                { headerText: getText('KAL003_54'), key: 'name', width: 150 },
-                { headerText: getText('KAL003_55'), key: 'message', width: 150 }
+                { headerText: getText('KAL003_54'), key: 'name', width: 200 },
+                { headerText: getText('KAL003_55'), key: 'message', width: 200 }
             ];
 
 
