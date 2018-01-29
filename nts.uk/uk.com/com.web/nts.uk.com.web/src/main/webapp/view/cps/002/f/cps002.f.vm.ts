@@ -10,7 +10,7 @@ module cps002.f.vm {
 
     export class ViewModel {
         lstCategory: KnockoutObservableArray<PerInfoCtg>;
-        currentPerInfoCtg: KnockoutObservable<string> = ko.observable("");
+        selectedCtgId: KnockoutObservable<string> = ko.observable("");
         lstPerInfoItemDef: KnockoutObservableArray<PerInforItemDef>;
         columns: KnockoutObservableArray<any>;
         columnPerInfoItemDef: KnockoutObservableArray<any>;
@@ -35,7 +35,7 @@ module cps002.f.vm {
             ]);
 
 
-            self.currentPerInfoCtg.subscribe(id => {
+            self.selectedCtgId.subscribe(id => {
                 service.getPerInfoItemDef(id).done(function(data) {
                     //contant all item
                     self.lstItem(data);
@@ -55,7 +55,7 @@ module cps002.f.vm {
             let self = this;
             // let dataBind = self.lstPerInfoItemDef();
             let itemIds = self.checkedIds();
-            let categoryId = self.currentPerInfoCtg();
+            let categoryId = self.selectedCtgId();
             _.forEach(self.lstItem(), function(item: IPerInfoItemDef) {
 
                 if (_.find(self.checkedIds(), function(o) { return o == item.id; })) {
@@ -68,7 +68,7 @@ module cps002.f.vm {
             service.updatePerInfoItemCopy(categoryId, self.lstItem()).done(() => {
 
                 dialog({ messageId: "Msg_15" }).then(() => {
-                    self.start(self.currentPerInfoCtg());
+                    self.start(self.selectedCtgId());
                 });
             })
 
@@ -86,7 +86,7 @@ module cps002.f.vm {
             service.getPerInfoCtgHasItems(ctgName).done(function(data: Array<any>) {
                 if (data.length > 0) {
                     self.lstCategory(data);
-                    self.currentPerInfoCtg(ctgid ? ctgid : data[0].id);
+                    self.selectedCtgId(ctgid ? ctgid : data[0].id);
                     $("#searchCtg input").focus();
                 } else {
                     alertError({ messageId: "Msg_352" });
