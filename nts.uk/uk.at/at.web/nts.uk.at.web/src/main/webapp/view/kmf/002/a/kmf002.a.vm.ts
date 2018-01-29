@@ -57,6 +57,8 @@ module nts.uk.at.view.kmf002.a {
             isManageWkpPublicHd: KnockoutObservable<number>;
             isManageEmpPublicHd: KnockoutObservable<number>;
             
+            date: KnockoutObservable<string>;
+            
             constructor(){
                 let _self = this;
                 _self.screenC = ko.observable(new viewModelTabC.ScreenModel());
@@ -87,11 +89,12 @@ module nts.uk.at.view.kmf002.a {
                 _self.isManageWkpPublicHd = ko.observable(1);
                 _self.isManageEmpPublicHd = ko.observable(1);
                 
+                _self.date = ko.observable('20000101');
                 /** 
                   *    main define variable code 
                 **/
                 _self.publicHolidaySetting = ko.observable(new PublicHolidaySetting(0, 0, new PublicHolidayGrantDate(0),
-                                                                                    new PublicHoliday(01012018, 1111, 0), 0));
+                                                                                    new PublicHoliday('', '', 0), 0));
                 _self.forwardSetOfPubHD = ko.observable(new ForwardSettingOfPublicHoliday(0, 0));
                 _self.weekHDSet = ko.observable(new WeekHolidaySetting(0, 0, 0));
                 _self.fourWkFourHDNumSet = ko.observable(new FourWeekFourHolidayNumberSetting(1, new OneWeekPublicHoliday(0, 0, new LastWeekHolidayNumberOfOneWeek(0, 0)), 1, new FourWeekPublicHoliday(0, 0, new LastWeekHolidayNumberOfFourWeek(0, 0))));
@@ -100,7 +103,7 @@ module nts.uk.at.view.kmf002.a {
                 _self.publicHDPeriod = ko.observableArray();
                 _self.lstManagementPeriod = ko.observableArray();
                 _self.dayOfPublicHoliday = ko.observableArray();
-                _self.enableFullDate = ko.observable(false);
+                _self.enableFullDate = ko.observable(true);
                 _self.lstCarryoverDeadline = ko.observableArray();
                 _self.lstStartDayOfWeek = ko.observableArray();
                 
@@ -113,7 +116,7 @@ module nts.uk.at.view.kmf002.a {
             
                 _self.publicHolidaySetting().publicHdManagementClassification.subscribe(function(newValue) {
                     // setting for button Setting Unit
-                    if (newValue == 0 && _self.publicHolidaySetting().isManageComPublicHd() == 1) {
+                    if (newValue == 0 && _self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE) {
                         _self.isDisableSetUnitBtn(true);
                     } else {
                         _self.isDisableSetUnitBtn(false);
@@ -151,33 +154,33 @@ module nts.uk.at.view.kmf002.a {
             
                 _self.forwardSetOfPubHD().isTransferWhenPublicHdIsMinus.subscribe(function(newValue) {
                     if (newValue == true) {
-                        _self.forwardSetOfPubHD().isTransferWhenPublicHdIsMinus(1);        
+                        _self.forwardSetOfPubHD().isTransferWhenPublicHdIsMinus(BoolValue.TRUE);        
                     } else {
-                        _self.forwardSetOfPubHD().isTransferWhenPublicHdIsMinus(0);
+                        _self.forwardSetOfPubHD().isTransferWhenPublicHdIsMinus(BoolValue.FALSE);
                     }
                 });
                 
                 _self.publicHolidaySetting().isWeeklyHdCheck.subscribe(function(newValue) {
                     if (newValue == true) {
-                        _self.publicHolidaySetting().isWeeklyHdCheck(1);
+                        _self.publicHolidaySetting().isWeeklyHdCheck(BoolValue.TRUE);
                     } else {
-                        _self.publicHolidaySetting().isWeeklyHdCheck(0);    
+                        _self.publicHolidaySetting().isWeeklyHdCheck(BoolValue.FALSE);
                     }
                 });
                 
                 _self.fourWkFourHDNumSet().isOneWeekHoliday.subscribe(function(newValue) {
                     if (newValue == true) {
-                        _self.fourWkFourHDNumSet().isOneWeekHoliday(1);    
+                        _self.fourWkFourHDNumSet().isOneWeekHoliday(BoolValue.TRUE);    
                     } else {
-                        _self.fourWkFourHDNumSet().isOneWeekHoliday(0);    
+                        _self.fourWkFourHDNumSet().isOneWeekHoliday(BoolValue.FALSE);
                     }
                 });
                 
                 _self.fourWkFourHDNumSet().isFourWeekHoliday.subscribe(function(newValue) {
                     if (newValue == true) {
-                        _self.fourWkFourHDNumSet().isFourWeekHoliday(1);    
+                        _self.fourWkFourHDNumSet().isFourWeekHoliday(BoolValue.TRUE);    
                     } else {
-                        _self.fourWkFourHDNumSet().isFourWeekHoliday(0);
+                        _self.fourWkFourHDNumSet().isFourWeekHoliday(BoolValue.FALSE);
                     }
                 });
                 
@@ -186,7 +189,7 @@ module nts.uk.at.view.kmf002.a {
                 });
                 
                 _self.isManageEmployeePublicHd.subscribe(function(newValue) {
-                    _self.conditionSideBar5();
+                    _self.conditionSideBar4();
                 });
                 
                 _self.isManageWkpPublicHd.subscribe(function(newValue) {
@@ -291,6 +294,7 @@ module nts.uk.at.view.kmf002.a {
                 if (!nts.uk.ui.errors.hasError()) {
                     $.when(service.save(_self.publicHolidaySetting(), _self.forwardSetOfPubHD(), _self.weekHDSet(), _self.fourWkFourHDNumSet())).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        _self.getAllData();
                     });    
                 }
             }
@@ -359,37 +363,37 @@ module nts.uk.at.view.kmf002.a {
             
             private conditionSideBar1(): void {
                 let _self = this;
-                if (_self.publicHolidaySetting().publicHdManagementClassification() == 0) {
-                    $("#sidebar").ntsSideBar("show", 1);        
+                if (_self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.ONE_MONTH) {
+                    $("#sidebar").ntsSideBar("show", SideBarTabIndex.SECOND);        
                 } else {
-                    $("#sidebar").ntsSideBar("hide", 1);    
+                    $("#sidebar").ntsSideBar("hide", SideBarTabIndex.SECOND);    
                 }
             }
             
             private conditionSideBar2(): void {
                 let _self = this;
-                if (_self.publicHolidaySetting().publicHdManagementClassification() == 0 && _self.isManageWkpPublicHd() == 1 ) {
-                    $("#sidebar").ntsSideBar("show", 2);
+                if (_self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.ONE_MONTH && _self.isManageWkpPublicHd() == BoolValue.TRUE ) {
+                    $("#sidebar").ntsSideBar("show", SideBarTabIndex.THIRD);
                 } else {
-                    $("#sidebar").ntsSideBar("hide", 2);
+                    $("#sidebar").ntsSideBar("hide", SideBarTabIndex.THIRD);
                 }
             }
             
             private conditionSideBar3(): void {
                 let _self = this;
-                if (_self.publicHolidaySetting().publicHdManagementClassification() == 0 && _self.isManageEmpPublicHd() == 1) {
-                    $("#sidebar").ntsSideBar("show", 3);
+                if (_self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.ONE_MONTH && _self.isManageEmpPublicHd() == BoolValue.TRUE) {
+                    $("#sidebar").ntsSideBar("show", SideBarTabIndex.FOURTH);
                 } else {
-                    $("#sidebar").ntsSideBar("hide", 3);
+                    $("#sidebar").ntsSideBar("hide", SideBarTabIndex.FOURTH);
                 }
             }
             
             private conditionSideBar4(): void {
                 let _self = this;
-                if (_self.publicHolidaySetting().publicHdManagementClassification() == 0 && _self.isManageEmployeePublicHd () == 1) {
-                    $("#sidebar").ntsSideBar("show", 4);
+                if (_self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.ONE_MONTH && _self.isManageEmployeePublicHd() == BoolValue.TRUE) {
+                    $("#sidebar").ntsSideBar("show", SideBarTabIndex.FIFTH);
                 } else {
-                    $("#sidebar").ntsSideBar("hide", 4);
+                    $("#sidebar").ntsSideBar("hide", SideBarTabIndex.FIFTH);
                 }
             }
             
@@ -410,9 +414,10 @@ module nts.uk.at.view.kmf002.a {
             
             private condition7(): void {
                 let _self = this;
-                if (_self.publicHolidaySetting().isManageComPublicHd() == 1 && _self.publicHolidaySetting().publicHdManagementClassification() == 1
-                        && (_self.fourWkFourHDNumSet().isOneWeekHoliday() == true || _self.fourWkFourHDNumSet().isOneWeekHoliday() == 1)
-                        && _self.publicHolidaySetting().pubHD().determineStartDate() == 1) {
+                if (_self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE 
+                        && _self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.FOUR_WEEK_FOUR_DAYOFF
+                        && (_self.fourWkFourHDNumSet().isOneWeekHoliday() == true || _self.fourWkFourHDNumSet().isOneWeekHoliday() == BoolValue.TRUE)
+                        && _self.publicHolidaySetting().pubHD().determineStartDate() == TypeDate.MONTH_DAY) {
                     _self.enableLastPeriod1WeekPubHD(true);
                 } else {
                     _self.enableLastPeriod1WeekPubHD(false);
@@ -421,9 +426,9 @@ module nts.uk.at.view.kmf002.a {
             
             private condition8(): void {
                 let _self = this;
-                if (_self.publicHolidaySetting().isManageComPublicHd() == 1 && _self.publicHolidaySetting().publicHdManagementClassification() == 1
-                        && (_self.fourWkFourHDNumSet().isFourWeekHoliday() == true || _self.fourWkFourHDNumSet().isFourWeekHoliday() == 1)
-                        && _self.publicHolidaySetting().pubHD().determineStartDate() == 1) {
+                if (_self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE && _self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.FOUR_WEEK_FOUR_DAYOFF
+                        && (_self.fourWkFourHDNumSet().isFourWeekHoliday() == true || _self.fourWkFourHDNumSet().isFourWeekHoliday() == BoolValue.TRUE)
+                        && _self.publicHolidaySetting().pubHD().determineStartDate() == TypeDate.MONTH_DAY) {
                     _self.enableLastPeriod4WeekPubHD(true);
                 } else {
                     _self.enableLastPeriod4WeekPubHD(false);
@@ -432,8 +437,8 @@ module nts.uk.at.view.kmf002.a {
             
             private condition6(): void {
                 let _self = this;
-                if (_self.publicHolidaySetting().isManageComPublicHd() == 1 && _self.publicHolidaySetting().publicHdManagementClassification() == 1 
-                        && (_self.fourWkFourHDNumSet().isFourWeekHoliday() == true || _self.fourWkFourHDNumSet().isFourWeekHoliday() == 1)) {
+                if (_self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE && _self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.FOUR_WEEK_FOUR_DAYOFF
+                        && (_self.fourWkFourHDNumSet().isFourWeekHoliday() == true || _self.fourWkFourHDNumSet().isFourWeekHoliday() == BoolValue.TRUE)) {
                     _self.enable4WeeksPubHDInLegalHD(true);
                     _self.enable4WeeksPubHDOutLegalHD(true);    
                 } else {
@@ -444,7 +449,7 @@ module nts.uk.at.view.kmf002.a {
             
             private condition1And2(): void {
                 let _self = this;
-                if (_self.publicHolidaySetting().pubHD().determineStartDate() == 0) {
+                if (_self.publicHolidaySetting().pubHD().determineStartDate() == TypeDate.YEAR_MONTH_DAY) {
                     _self.enableFullDate(true);
                 } else {
                     _self.enableFullDate(false);
@@ -453,7 +458,7 @@ module nts.uk.at.view.kmf002.a {
             
             private condition9(): void {
                 let _self = this;
-                if (_self.publicHolidaySetting().isManageComPublicHd() == 1) {
+                if (_self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE) {
                     _self.enableCarryoverDeadline(true);    
                     _self.enableTransferWhenPublicHdIsMinus(true);
                     _self.enablePublicHdManagementClassification(true);
@@ -474,8 +479,9 @@ module nts.uk.at.view.kmf002.a {
             
             private condition5(): void {
                 let _self = this;
-                if (_self.publicHolidaySetting().isManageComPublicHd() == 1 && _self.publicHolidaySetting().publicHdManagementClassification() == 1 
-                        && (_self.fourWkFourHDNumSet().isOneWeekHoliday() == true || _self.fourWkFourHDNumSet().isOneWeekHoliday() == 1)) {
+                if (_self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE 
+                        && _self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.FOUR_WEEK_FOUR_DAYOFF
+                        && (_self.fourWkFourHDNumSet().isOneWeekHoliday() == true || _self.fourWkFourHDNumSet().isOneWeekHoliday() == BoolValue.TRUE)) {
                     _self.enableOneWeekPubHDInLegalHD(true);
                     _self.enableOneWeekPubHDOutLegalHD(true);    
                 } else {
@@ -487,7 +493,8 @@ module nts.uk.at.view.kmf002.a {
             private condition3And4(): void {
                 let _self = this;
                 // condition 3
-                if (_self.publicHolidaySetting().isManageComPublicHd() == 1 && _self.publicHolidaySetting().publicHdManagementClassification() == 0) {
+                if (_self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE 
+                        && _self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.ONE_MONTH) {
                     _self.isDisableSetUnitBtn(true);
                     _self.enablePubHDGrantDatePeriod(true);
                     _self.enableDetermineStartDate(false);
@@ -495,7 +502,8 @@ module nts.uk.at.view.kmf002.a {
                     _self.enable4Weeks4HDSet(false);
                 }
                 // condtion 4
-                else if (_self.publicHolidaySetting().isManageComPublicHd() == 1 && _self.publicHolidaySetting().publicHdManagementClassification() == 1) {
+                else if (_self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE 
+                            && _self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.FOUR_WEEK_FOUR_DAYOFF) {
                     _self.isDisableSetUnitBtn(false);
                     _self.enablePubHDGrantDatePeriod(false);
                     _self.enableDetermineStartDate(true);
@@ -608,6 +616,9 @@ module nts.uk.at.view.kmf002.a {
                         _self.isManageWkpPublicHd(getShared('isManageWkpPublicHd'));
                         // F2_4
                         _self.isManageEmpPublicHd(getShared('isManageEmpPublicHd'));
+                        _self.isManageEmployeePublicHd.valueHasMutated();
+                        _self.isManageWkpPublicHd.valueHasMutated();
+                        _self.isManageEmpPublicHd.valueHasMutated();
                         $.when(service.saveManageUnit(_self.isManageEmployeePublicHd(), _self.isManageWkpPublicHd(), _self.isManageEmpPublicHd())).done(function(data: any) {
                         });
                     });    
@@ -697,11 +708,11 @@ module nts.uk.at.view.kmf002.a {
         
 //        export class PublicHoliday implements PublicHolidayManagementStartDate{
         export class PublicHoliday{
-            date: KnockoutObservable<number>;
-            dayMonth: KnockoutObservable<number>;
+            date: KnockoutObservable<string>;
+            dayMonth: KnockoutObservable<string>;
             determineStartDate: KnockoutObservable<number>;
             
-            constructor(date: number, dayMonth: number, determineStartDate: number) {                
+            constructor(date: string, dayMonth: string, determineStartDate: number) {                
                 let _self = this;
                 _self.date = ko.observable(date);
                 _self.dayMonth = ko.observable(dayMonth);
@@ -771,6 +782,26 @@ module nts.uk.at.view.kmf002.a {
                 _self.fourWeek = ko.observable(fourWeek);
             } 
         }
+        
+        export enum ManagePubHD {
+            MANAGE = 1,
+            NOT_MANAGE = 0,
+        }
+        
+        export enum PublicHDPeriod {
+            ONE_MONTH = 0,
+            FOUR_WEEK_FOUR_DAYOFF = 1
+        }
+        
+        export enum BoolValue {
+            TRUE = 1,
+            FALSE = 0    
+        }
+        
+        export enum TypeDate {
+            YEAR_MONTH_DAY = 0,
+            MONTH_DAY = 1    
+        }
     }
     
     module SideBarTabIndex {
@@ -780,9 +811,4 @@ module nts.uk.at.view.kmf002.a {
         export const FOURTH = 3;
         export const FIFTH = 4;
     }
-    
-//    module CompanyManagementClassification {
-//        export const MANAGE = "管理する";
-//        export const NOT_MANAGE = "管理しない";
-//    }
 }

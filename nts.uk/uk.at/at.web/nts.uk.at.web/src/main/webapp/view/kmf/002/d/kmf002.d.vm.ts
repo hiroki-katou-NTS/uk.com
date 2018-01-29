@@ -99,7 +99,7 @@ module nts.uk.at.view.kmf002.d {
 
             private save(): void {
                 let _self = this;
-                _self.validateInput();
+//                _self.validateInput();
                 if (!nts.uk.ui.errors.hasError()) {
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), _self.selectedCode()).done((data) => {
                         _self.getDataFromService();
@@ -111,7 +111,7 @@ module nts.uk.at.view.kmf002.d {
             private remove(): void {
                 let _self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    service.remove(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()).done((data) => {
+                    service.remove(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()).done(() => {
                         _self.getDataFromService();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });

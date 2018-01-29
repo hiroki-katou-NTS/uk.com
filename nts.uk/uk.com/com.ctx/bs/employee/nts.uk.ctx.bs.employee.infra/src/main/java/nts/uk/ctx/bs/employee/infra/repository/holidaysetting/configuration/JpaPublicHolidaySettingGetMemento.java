@@ -59,11 +59,12 @@ public class JpaPublicHolidaySettingGetMemento implements PublicHolidaySettingGe
 		if (publicHdManageAtr != null) {
 			if (publicHdManageAtr == 0) {
 				return new PublicHolidayGrantDate(PublicHolidayPeriod.valueOf(this.kshmtPublicHdSet.getPeriod()));
+			} else {
+				return new PublicHoliday(this.kshmtPublicHdSet.getFullDate(), 
+											this.kshmtPublicHdSet.getDayMonth(), 
+											DayOfPublicHoliday.valueOf(this.kshmtPublicHdSet.getDetermineStartD()));
 			}
-			GeneralDate fullDate = this.kshmtPublicHdSet.getFullDate();
-			return new PublicHoliday(GeneralDate.ymd(fullDate.year(), fullDate.month(), fullDate.day()), 
-										this.kshmtPublicHdSet.getDayMonth(), 
-										DayOfPublicHoliday.valueOf(this.kshmtPublicHdSet.getDetermineStartD()));
+			
 		} else {
 			if (this.kshmtPublicHdSet.getPublicHdManageAtr() == 0) {
 				return new PublicHolidayGrantDate(PublicHolidayPeriod.valueOf(this.kshmtPublicHdSet.getPeriod()));

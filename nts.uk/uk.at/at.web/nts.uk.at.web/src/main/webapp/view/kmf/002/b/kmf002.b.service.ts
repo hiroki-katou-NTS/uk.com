@@ -20,11 +20,11 @@ module nts.uk.at.view.kmf002.b {
             return nts.uk.request.ajax("com", path.save, command);
         }
         
-        export function find(year: number, workplaceId: string): JQueryPromise<any> {
+        export function find(year: string, workplaceId: string): JQueryPromise<any> {
             return nts.uk.request.ajax("com", path.find + "/" + year + "/" + workplaceId);
         }
         
-        export function remove(year: number, workplaceId: string): JQueryPromise<any> {
+        export function remove(year: string, workplaceId: string): JQueryPromise<any> {
             let command: any = {};
             command.year = year;
             command.workplaceId = workplaceId;

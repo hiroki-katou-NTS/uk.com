@@ -27,7 +27,7 @@ module nts.uk.at.view.kmf002.d {
             return nts.uk.request.ajax("com", path.find + "/" + year + "/" + employmentCode);
         }
         
-        export function remove(year: number, employmentCode: string): JQueryPromise<any> {
+        export function remove(year: string, employmentCode: string): JQueryPromise<any> {
             let employmentMonthDaySettingRemoveCommand: model.EmploymentMonthDaySettingRemoveCommand= new model.EmploymentMonthDaySettingRemoveCommand(year, employmentCode);
             let command: any = {};
             command.year = year;

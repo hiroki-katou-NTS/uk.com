@@ -74,7 +74,7 @@ module nts.uk.at.view.kmf002.c {
                         dataEmployee.push(data);
                         _self.selectedEmployee(dataEmployee);
                         _self.employeeList.removeAll();
-                        _.forEach(dataList, function(value: any) {
+                        _.forEach(data, function(value: any) {
                             _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                         });
                         
@@ -99,7 +99,7 @@ module nts.uk.at.view.kmf002.c {
                         _self.showinfoSelectedEmployee(true);
                         _self.selectedEmployee(dataEmployee);
                         _self.employeeList.removeAll();
-                        _.forEach(dataList, function(value: any) {
+                        _.forEach(dataEmployee, function(value: any) {
                             _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
                         });
                     }
@@ -187,7 +187,7 @@ module nts.uk.at.view.kmf002.c {
             
             private save(): void {
                 let _self = this;
-                _self.validateInput();
+//                _self.validateInput();
                 if (!nts.uk.ui.errors.hasError()) {
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), _self.selectedCode()).done((data) => {
                         _self.getDataFromService();
