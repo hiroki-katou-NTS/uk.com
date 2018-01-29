@@ -88,7 +88,7 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 
 		// Check common handler
 		try {
-			this.commonHandler.handle(command);
+			this.commonHandler.handle(ScreenMode.valueOf(command.getScreenMode()), command);
 		} catch (Exception e) {
 			if (e.getCause() instanceof BundledBusinessException) {
 				bundledBusinessExceptions.addMessage(((BundledBusinessException) e.getCause()).cloneExceptions());
