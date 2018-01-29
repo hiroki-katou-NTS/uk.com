@@ -19,9 +19,8 @@ module nts.uk.at.view.ksm011.a {
             $(this).addClass("hyperlink-disable");
             $('#item-panel').animate({ scrollTop: $(".item-panel").scrollTop() + $($(this).attr("href")).position().top - 5 }, 'fast');
         });
-
+        
         // show active tab panel 
-        $('.navigator li a.active').trigger('click');
-
+        _.defer(() => { $('.navigator li a.active').trigger('click'); });
     });
 }
