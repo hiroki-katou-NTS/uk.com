@@ -85,9 +85,7 @@ public class WorkHolidayTimeDailyPerformDto {
 	}
 
 	private TimeWithCalculation createTimeWithCalc(CalcAttachTimeDto c) {
-		return c == null ? null : TimeWithCalculation.createTimeWithCalculation(
-				toAttendanceTime(c.getTime()),
-				toAttendanceTime(c.getCalcTime()));
+		return c == null ? null : TimeWithCalculation.sameTime(toAttendanceTime(c.getTime()));
 	}
 	
 	private TimeWithDayAttr toTimeWithDayAttr(Integer time) {

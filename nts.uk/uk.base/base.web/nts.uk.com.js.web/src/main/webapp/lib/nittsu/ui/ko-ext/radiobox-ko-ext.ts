@@ -81,7 +81,7 @@ module nts.uk.ui.koExtentions {
             container.data("enable", enable);
             container.find(".label").text(nts.uk.util.isNullOrUndefined(option) ? optionText : option[optionText]);
 
-            if (selectedValue() === true) {
+            if (selectedValue() === getOptionValue(option,　optionValue)) {
                 container.find("input[type='radio']").prop("checked", true);
             } else {
                 container.find("input[type='radio']").prop("checked", false);    

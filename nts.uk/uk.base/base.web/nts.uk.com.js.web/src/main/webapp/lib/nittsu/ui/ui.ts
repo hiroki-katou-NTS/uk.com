@@ -470,7 +470,7 @@ module nts.uk.ui {
                 var $this = createNoticeDialog(
                     text,
                     [{
-                        text: toBeResource.yes,
+                        text: toBeResource.close,
                         "class": "large",
                         click: function() {
                             $this.dialog('close');
@@ -498,7 +498,7 @@ module nts.uk.ui {
                 var $this = createNoticeDialog(
                     message,
                     [{
-                        text: toBeResource.yes,
+                        text: toBeResource.close,
                         "class": "large",
                         click: function() {
                             $this.dialog('close');
@@ -533,7 +533,7 @@ module nts.uk.ui {
                 var $this = createNoticeDialog(
                     text,
                     [{
-                        text: toBeResource.yes,
+                        text: toBeResource.close,
                         "class": "large",
                         click: function() {
                             $this.dialog('close');

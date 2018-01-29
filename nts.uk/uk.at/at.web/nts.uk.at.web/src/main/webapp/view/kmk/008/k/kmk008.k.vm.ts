@@ -10,7 +10,7 @@ module nts.uk.at.view.kmk008.k {
             currentCodeSelect: KnockoutObservable<number>;
             currentSelectItem: KnockoutObservable<SettingModel>;
             isUpdate: boolean;
-
+            updateEnable: KnockoutObservable<boolean>;
             newMode: KnockoutObservable<boolean>;
             isYearMonth: boolean;
             employeeId: string;
@@ -38,6 +38,7 @@ module nts.uk.at.view.kmk008.k {
                 self.employeeCode = dto.employeeCode;
                 self.employeeName = dto.employeeName;
                 self.isUpdate = true;
+                self.updateEnable = ko.observable(true);
 
                 self.listItemDataGrid = ko.observableArray([]);
                 self.currentCodeSelect = ko.observable(null);
@@ -62,6 +63,7 @@ module nts.uk.at.view.kmk008.k {
                     let itemSelect = _.find(self.listItemDataGrid(), item => { return item.yearOrYearMonthValue == newValueNum; });
                     self.currentSelectItem(new SettingModel(itemSelect, self.employeeId));
                     self.newMode(false);
+                    self.updateEnable(true);
                     self.deleteEnable(true);
                 });
 
@@ -74,12 +76,13 @@ module nts.uk.at.view.kmk008.k {
                 if (self.isYearMonth) {
                     new service.Service().getDetailYearMonth(self.employeeId).done(data => {
                         if (data && data.length > 0) {
-                            data = _.sortBy(data, item => { return data.yearMonthValue });
-                            data.reverse();
+//                            data = _.sortBy(data, item => { return data.yearMonthValue });
+//                            data.reverse();
                             _.forEach(data, item => {
                                 self.listItemDataGrid.push(new ShowListModel(item.yearMonthValue, item.errorOneMonth, item.alarmOneMonth));
                             });
                             self.isUpdate = true;
+                            self.updateEnable(true);
                             self.currentCodeSelect(self.listItemDataGrid()[0].yearOrYearMonthValue);
                         } else {
                             self.setNewMode();
@@ -89,12 +92,13 @@ module nts.uk.at.view.kmk008.k {
                 } else {
                     new service.Service().getDetailYear(self.employeeId).done(data => {
                         if (data && data.length) {
-                            data = _.sortBy(data, item => { return data.yearValue });
-                            data.reverse();
+//                            data = _.sortBy(data, item => { return data.yearValue });
+//                            data.reverse();
                             _.forEach(data, item => {
                                 self.listItemDataGrid.push(new ShowListModel(item.yearValue, item.errorOneYear, item.alarmOneYear));
                             });
                             self.isUpdate = true;
+                             self.updateEnable(true);
                             self.currentCodeSelect(self.listItemDataGrid()[0].yearOrYearMonthValue);
                         } else {
                             self.setNewMode();
@@ -116,6 +120,8 @@ module nts.uk.at.view.kmk008.k {
                 self.deleteEnable(false);
                 self.currentSelectItem(new SettingModel(null, self.employeeId));
                 self.currentCodeSelect(null);
+                self.updateEnable(false);
+                 $("#txt-year").focus();
             }
 
             addOrUpdateClick() {
@@ -137,6 +143,7 @@ module nts.uk.at.view.kmk008.k {
                 if (self.isYearMonth) {
                     new service.Service().addAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done((res) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.updateEnable(true);
                         self.reloadData(yearOrYearMonth);
                     }).fail((res) => {
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage(res.message));
@@ -144,6 +151,7 @@ module nts.uk.at.view.kmk008.k {
                 } else {
                     new service.Service().addAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done((res) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.updateEnable(true);
                         self.reloadData(yearOrYearMonth);
                     }).fail((res) => {
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage(res.message));
@@ -159,6 +167,7 @@ module nts.uk.at.view.kmk008.k {
                 if (self.isYearMonth) {
                     new service.Service().updateAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done((res) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.updateEnable(true);
                         self.reloadData(self.currentCodeSelect());
                     }).fail((res) => {
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['{#KMK008_42}', '{#KMK008_44}']));
@@ -166,6 +175,7 @@ module nts.uk.at.view.kmk008.k {
                 } else {
                     new service.Service().updateAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done((res) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.updateEnable(true);
                         self.reloadData(self.currentCodeSelect());
                     }).fail((res) => {
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['{#KMK008_42}', '{#KMK008_44}']));

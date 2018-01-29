@@ -398,7 +398,7 @@
 		</div>
 	</div>
 	<!--RIGHT CONTENT -->
-	<div class="right-contents panel" style ="background-color: #E7E6E6;">
+	<div class="right-contents panel" style ="background-color: #E7E6E6;" data-bind ="visible: isRightContent">
 			<label data-bind ="visible: referencePanelFlg" style ="margin-left: 38px">#{i18n.getText('KAF005_99')}</label> 
 			<BR data-bind ="visible: referencePanelFlg"/>
 			<HR data-bind ="visible: referencePanelFlg" style="width: 250px;"></HR>
@@ -455,12 +455,12 @@
 			<label data-bind="text : flexExessTimeRefer"></label>
 			</div>
 		</div>
-		<div class="panel panel-gray-bg panel-frame control-group">
+		<div class="panel panel-gray-bg panel-frame control-group" data-bind = "visible: allPreAppPanelFlg()">
 			<!-- A12_2 -->
 			<label>#{i18n.getText('KAF005_120')}</label>
 			 <BR /> <BR /> 
 			<!--A12_3-->
-			<div data-bind = "if: referencePanelFlg() &amp; allPreAppPanelFlg()">
+			<div>
 					<label data-bind =" if: !(preAppPanelFlg())" style ="margin-left: 7px">#{i18n.getText('KAF005_121')}</label>
 					<div data-bind =" if: preAppPanelFlg()">
 						<div class="control-group" >

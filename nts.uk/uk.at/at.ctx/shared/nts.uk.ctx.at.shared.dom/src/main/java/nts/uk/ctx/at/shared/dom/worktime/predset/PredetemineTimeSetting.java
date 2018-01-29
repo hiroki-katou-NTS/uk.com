@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
@@ -10,12 +10,20 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class PredetemineTimeSetting.
  */
 // 所定時間設定
+
+/**
+ * Checks if is predetermine.
+ *
+ * @return true, if is predetermine
+ */
 @Getter
 public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 
@@ -35,7 +43,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 	// 所定時間
 	private PredetermineTime predTime;
 
-	/** The night shift atr. */
+	/** The night shift. */
 	// 夜勤区分
 	private boolean nightShift;
 
@@ -47,7 +55,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 	// 日付開始時刻
 	private TimeWithDayAttr startDateClock;
 
-	/** The predetermine atr. */
+	/** The predetermine. */
 	// 残業を含めた所定時間帯を設定する
 	private boolean predetermine;
 
@@ -196,24 +204,67 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 	}
 	
 	/**
-	 * 1日の範囲を時間帯として返す
-	 * 
-	 * @return 1日の範囲(時間帯)
-	 * 
-	 * @author keisuke_hoshina
+	 * Gets the one day span.
+	 *
+	 * @return the one day span
 	 */
 	public TimeSpanForCalc getOneDaySpan() {
 		return new TimeSpanForCalc(startDateClock,
 				new TimeWithDayAttr(startDateClock.valueAsMinutes() + rangeTimeDay.valueAsMinutes()));
 	}
 	
+	/**
+	 * Gets the predetermine end time.
+	 *
+	 * @return the predetermine end time
+	 */
 	public int getPredetermineEndTime() {
 		return this.startDateClock.minute() + (int) this.rangeTimeDay.minute();
 	}
 
+	/**
+	 * Gets the time sheet of.
+	 *
+	 * @param workNo the work no
+	 * @return the time sheet of
+	 */
 	public TimezoneUse getTimeSheetOf(int workNo) {
 		return this.prescribedTimezoneSetting.getMatchWorkNoTimeSheet(workNo);
 	}
 
-
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param workTimeType the work time type
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, PredetemineTimeSetting oldDomain) {	
+		// Tab 1
+		this.prescribedTimezoneSetting.restoreData(screenMode, workTimeType, oldDomain.getPrescribedTimezoneSetting());	
+		
+		if (screenMode == ScreenMode.SIMPLE) {
+			// Simple mode
+			this.rangeTimeDay = oldDomain.getRangeTimeDay();
+			this.nightShift = oldDomain.isNightShift();
+			this.predetermine = oldDomain.isPredetermine();
+		} 	
+	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode, WorkTimeDivision workTimeType) {
+		// Tab 1
+		this.prescribedTimezoneSetting.restoreDefaultData(screenMode, workTimeType);	
+		
+		if (screenMode == ScreenMode.SIMPLE) {
+			// Simple mode
+			this.rangeTimeDay = new AttendanceTime(TimeWithDayAttr.MINUTES_OF_DAY);
+			this.nightShift = false;
+			this.predetermine = false;
+		} 		
+	}
 }

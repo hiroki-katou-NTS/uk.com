@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
@@ -32,6 +34,10 @@ public class FlowMenuFinder {
 		List<FlowMenu> flowMenus = repository.findAll(companyID);
 		List<FlowMenuDto> flowMenuDtos = new ArrayList<FlowMenuDto>();
 		for (FlowMenu flowMenu : flowMenus) {
+			if(StringUtils.isEmpty(flowMenu.getFileID()) || !fileStorage.getInfo(flowMenu.getFileID()).isPresent()) {
+				flowMenuDtos.add(FlowMenuDto.fromDomain(flowMenu, null));
+				continue;
+			}
 			StoredFileInfo fileInfo = fileStorage.getInfo(flowMenu.getFileID()).get();
 			flowMenuDtos.add(FlowMenuDto.fromDomain(flowMenu, fileInfo));
 		}
