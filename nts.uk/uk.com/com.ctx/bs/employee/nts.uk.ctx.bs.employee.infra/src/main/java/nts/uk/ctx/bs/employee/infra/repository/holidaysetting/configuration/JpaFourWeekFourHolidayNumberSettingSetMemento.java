@@ -42,8 +42,9 @@ public class JpaFourWeekFourHolidayNumberSettingSetMemento implements FourWeekFo
 	public void setIsOneWeekHoliday(boolean isOneWeekHoliday) {
 		if(isOneWeekHoliday){
 			this.kshmtFourweekfourHdNumbSet.setIsOneWeekHd(TRUE_VALUE);
+		} else {
+			this.kshmtFourweekfourHdNumbSet.setIsOneWeekHd(FALSE_VALUE);
 		}
-		this.kshmtFourweekfourHdNumbSet.setIsOneWeekHd(FALSE_VALUE);
 	}
 
 	/**
@@ -68,8 +69,9 @@ public class JpaFourWeekFourHolidayNumberSettingSetMemento implements FourWeekFo
 	public void setIsFourWeekHoliday(boolean isFourWeekHoliday) {
 		if(isFourWeekHoliday){
 			this.kshmtFourweekfourHdNumbSet.setIsFourWeekHd(TRUE_VALUE);
+		} else {
+			this.kshmtFourweekfourHdNumbSet.setIsFourWeekHd(FALSE_VALUE);
 		}
-		this.kshmtFourweekfourHdNumbSet.setIsFourWeekHd(FALSE_VALUE);
 	}
 
 	/**
