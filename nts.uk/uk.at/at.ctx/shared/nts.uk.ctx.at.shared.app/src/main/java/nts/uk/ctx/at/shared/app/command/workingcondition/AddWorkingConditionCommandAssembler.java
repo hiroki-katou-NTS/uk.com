@@ -153,10 +153,10 @@ public class AddWorkingConditionCommandAssembler {
 		
 		
 		// ----------------------- BreakdownTimeDay
-		BreakdownTimeDay holidayAddTimeSet = new BreakdownTimeDay(
-				new AttendanceTime(command.getOneDay() != null ? command.getOneDay().intValue() : 0),
-				new AttendanceTime(command.getMorning() != null ? command.getMorning().intValue() : 0),
-				new AttendanceTime(command.getAfternoon() != null ? command.getAfternoon().intValue() : 0));
+		BreakdownTimeDay holidayAddTimeSet = new BreakdownTimeDay(command.getOneDay() != null?
+				new AttendanceTime(command.getOneDay().intValue()):null,
+				command.getMorning() != null? new AttendanceTime(command.getMorning().intValue()):null,
+				command.getAfternoon() != null ? new AttendanceTime(command.getAfternoon().intValue()):null);
 		// ------------------------
 		
 		

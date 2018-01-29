@@ -233,8 +233,12 @@ public class LayoutFinder {
 					browsingPeronId, standardDate);
 			// get data
 			getDataforSingleItem(perInfoCategory, classItemList, standardDate, browsingPeronId, browsingEmpId, query);
-
-			switch (perInfoCategory.getCategoryType()) {
+			
+			classItemList.forEach(classItem -> {
+				checkActionRoleItemData(itemAuthMap.get(classItem.getPersonInfoCategoryID()), classItem, selfBrowsing);
+			});
+			
+			/*switch (perInfoCategory.getCategoryType()) {
 			case SINGLEINFO:
 				classItemList.forEach(classItem -> {
 					checkActionRoleItemData(itemAuthMap.get(classItem.getPersonInfoCategoryID()), classItem, selfBrowsing);
@@ -248,14 +252,8 @@ public class LayoutFinder {
 				break;
 			default:
 				break;
-			}
+			}*/
 			
-			// check role
-			if ( perInfoCategory.getCategoryType() == CategoryType.SINGLEINFO) {
-				
-			} else {
-				
-			}
 			
 		}
 

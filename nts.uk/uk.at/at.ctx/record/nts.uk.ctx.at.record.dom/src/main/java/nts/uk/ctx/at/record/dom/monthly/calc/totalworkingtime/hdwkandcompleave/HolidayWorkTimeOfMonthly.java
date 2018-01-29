@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.Working
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の休出時間
@@ -481,15 +482,17 @@ public class HolidayWorkTimeOfMonthly {
 	
 	/**
 	 * 法定内休出時間を取得する
+	 * @param datePeriod 期間
 	 * @return 法定内休出時間
 	 */
-	public AttendanceTimeMonth getLegalHolidayWorkTime(){
+	public AttendanceTimeMonth getLegalHolidayWorkTime(DatePeriod datePeriod){
 
 		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
 
 		// 法定内休出時間．休出時間　＋　法定内休出時間．振替時間　の合計
 		for (val aggregateHolidayWorkTime : this.aggregateHolidayWorkTimeMap.values()){
 			for (val timeSeriesWork : aggregateHolidayWorkTime.getTimeSeriesWorks().values()){
+				if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 				val legalHolidayWorkTime = timeSeriesWork.getLegalHolidayWorkTime();
 				returnTime = returnTime.addMinutes(legalHolidayWorkTime.getHolidayWorkTime().get().getTime().v());
 				returnTime = returnTime.addMinutes(legalHolidayWorkTime.getTransferTime().get().getTime().v());
@@ -501,15 +504,16 @@ public class HolidayWorkTimeOfMonthly {
 	
 	/**
 	 * 休出合計時間を集計する
+	 * @param datePeriod 期間
 	 */
-	public void aggregateTotal(){
+	public void aggregateTotal(DatePeriod datePeriod){
 
 		this.totalHolidayWorkTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.beforeHolidayWorkTime = new AttendanceTimeMonth(0);
 		this.totalTransferTime = TimeMonthWithCalculation.ofSameTime(0);
 
 		for (val aggregateHolidayWorkTime : this.aggregateHolidayWorkTimeMap.values()){
-			aggregateHolidayWorkTime.aggregate();
+			aggregateHolidayWorkTime.aggregate(datePeriod);
 			this.totalHolidayWorkTime = this.totalHolidayWorkTime.addMinutes(
 					aggregateHolidayWorkTime.getHolidayWorkTime().getTime().v(),
 					aggregateHolidayWorkTime.getHolidayWorkTime().getCalcTime().v());

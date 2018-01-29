@@ -24,7 +24,7 @@ public class PublicHoliday extends DomainObject
 	
 	/** The day month. */
 	// 月日
-	private int dayMonth;
+	private Integer dayMonth;
 	
 	/** The determine start date. */
 	// 起算日指定方法
@@ -37,7 +37,7 @@ public class PublicHoliday extends DomainObject
 	 * @param dayMonth the day month
 	 * @param determineStartDate the determine start date
 	 */
-	public PublicHoliday(GeneralDate date, int dayMonth, DayOfPublicHoliday determineStartDate) {
+	public PublicHoliday(GeneralDate date, Integer dayMonth, DayOfPublicHoliday determineStartDate) {
 		this.date = date;
 		this.dayMonth = dayMonth;
 		this.determineStartDate = determineStartDate;

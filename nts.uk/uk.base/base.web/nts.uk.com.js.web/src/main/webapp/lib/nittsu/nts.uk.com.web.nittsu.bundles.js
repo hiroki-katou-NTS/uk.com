@@ -4979,7 +4979,7 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(text, [{
-                                text: toBeResource.yes,
+                                text: toBeResource.close,
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');
@@ -5005,7 +5005,7 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(message, [{
-                                text: toBeResource.yes,
+                                text: toBeResource.close,
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');
@@ -5037,7 +5037,7 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(text, [{
-                                text: toBeResource.yes,
+                                text: toBeResource.close,
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');

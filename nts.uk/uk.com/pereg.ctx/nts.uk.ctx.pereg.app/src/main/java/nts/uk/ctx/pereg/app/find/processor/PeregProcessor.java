@@ -22,11 +22,9 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.DataTypeStateDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutFinder;
 import nts.uk.ctx.pereg.dom.person.ParamForGetPerItem;
-import nts.uk.ctx.pereg.dom.person.PerInfoCtgDomainService;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
@@ -63,9 +61,6 @@ import nts.uk.shr.pereg.app.find.dto.PersonOptionalDto;
 public class PeregProcessor {
 	@Inject
 	private PerInfoCategoryFinder perInfoCategoryFinder;
-	
-	@Inject
-	private PerInfoCtgDomainService perInfoCtgDomainService;
 	
 	@Inject
 	private PerInfoItemDefForLayoutFinder itemForLayoutFinder;

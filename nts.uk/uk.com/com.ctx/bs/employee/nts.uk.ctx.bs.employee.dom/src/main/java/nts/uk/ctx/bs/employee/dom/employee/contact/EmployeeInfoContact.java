@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.employeeinfo.contact;
+package nts.uk.ctx.bs.employee.dom.employee.contact;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +14,8 @@ import nts.uk.ctx.bs.person.dom.person.contact.MailAddress;
 @AllArgsConstructor
 @Getter
 public class EmployeeInfoContact extends AggregateRoot{
+	
+	private String cId;
 	//社員ID
 	private String sid;
 	
@@ -33,8 +35,9 @@ public class EmployeeInfoContact extends AggregateRoot{
 	private CellPhoneNumber cellPhoneNo;
 	
 	
-	public EmployeeInfoContact(String sid, String mailAddress, String seatDialIn,
+	public EmployeeInfoContact(String cid, String sid, String mailAddress, String seatDialIn,
 			 String seatExtensionNo, String phoneMailAddress, String cellPhoneNo){
+		this.cId = cid;
 		this.sid = sid;
 		this.mailAddress = new MailAddress(mailAddress);
 		this.seatDialIn = new SeatNo(seatDialIn);
@@ -43,9 +46,9 @@ public class EmployeeInfoContact extends AggregateRoot{
 		this.cellPhoneNo = new CellPhoneNumber(cellPhoneNo);
 	}
 	
-	public static EmployeeInfoContact createFromJavaType(String sid, String mailAddress, String seatDialIn,
+	public static EmployeeInfoContact createFromJavaType(String cid, String sid, String mailAddress, String seatDialIn,
 			 String seatExtensionNo, String phoneMailAddress, String cellPhoneNo){
-	 return new EmployeeInfoContact(sid, mailAddress, seatDialIn, seatExtensionNo, phoneMailAddress, cellPhoneNo);
+	 return new EmployeeInfoContact(cid, sid, mailAddress, seatDialIn, seatExtensionNo, phoneMailAddress, cellPhoneNo);
 	}
 	
 }

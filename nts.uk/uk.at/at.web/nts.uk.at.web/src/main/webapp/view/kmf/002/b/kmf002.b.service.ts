@@ -10,7 +10,7 @@ module nts.uk.at.view.kmf002.b {
                 findFirstMonth: "basic/company/beginningmonth/find",
             };
         
-         export function save(year: number, data: any, workplaceId: string): JQueryPromise<any> {
+         export function save(year: string, data: any, workplaceId: string): JQueryPromise<any> {
             let workplaceMonthDaySetting: model.WorkplaceMonthDaySetting = new model.WorkplaceMonthDaySetting(year, workplaceId, []);
             workplaceMonthDaySetting.toDto(data);
             let command: any = {};
@@ -20,11 +20,11 @@ module nts.uk.at.view.kmf002.b {
             return nts.uk.request.ajax("com", path.save, command);
         }
         
-        export function find(year: number, workplaceId: string): JQueryPromise<any> {
+        export function find(year: string, workplaceId: string): JQueryPromise<any> {
             return nts.uk.request.ajax("com", path.find + "/" + year + "/" + workplaceId);
         }
         
-        export function remove(year: number, workplaceId: string): JQueryPromise<any> {
+        export function remove(year: string, workplaceId: string): JQueryPromise<any> {
             let command: any = {};
             command.year = year;
             command.workplaceId = workplaceId;
@@ -42,11 +42,11 @@ module nts.uk.at.view.kmf002.b {
      */
     export module model {
         export class WorkplaceMonthDaySetting {
-            year: number;
+            year: string;
             publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[];
             workplaceId: string;
             
-            constructor(year: number, workplaceId: string, publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[]){
+            constructor(year: string, workplaceId: string, publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[]){
                 let _self = this;
                 _self.year = year;
                 _self.publicHolidayMonthSettingDto = publicHolidayMonthSettingDto;
@@ -73,11 +73,11 @@ module nts.uk.at.view.kmf002.b {
         }
         
         export class PublicHolidayMonthSettingDto{
-            publicHdManagementYear: number;
+            publicHdManagementYear: string;
             month: number;
             inLegalHoliday: number;
             
-            constructor(publicHdManagementYear: number, month: number, inLegalHoliday: number) {
+            constructor(publicHdManagementYear: string, month: number, inLegalHoliday: number) {
                 this.publicHdManagementYear = publicHdManagementYear;
                 this.month = month;
                 this.inLegalHoliday = inLegalHoliday;
