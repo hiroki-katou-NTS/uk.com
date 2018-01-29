@@ -300,6 +300,7 @@ project (':at.ctx:function:nts.uk.ctx.at.function.ac') {
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.pub')
 		compile project(':at.ctx:request:nts.uk.ctx.at.request.pub')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.pub')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: '0.10.26')
 	}
 }
 project (':at.ctx:function:nts.uk.ctx.at.function.pub') {
