@@ -376,6 +376,7 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
 		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
+		Join<BsymtJobInfo, BsymtJobSeqMaster> joinRoot = root.join(BsymtJobInfo_.bsymtJobSeqMaster, JoinType.LEFT);
 
 		// Build query
 		cq.select(root);
