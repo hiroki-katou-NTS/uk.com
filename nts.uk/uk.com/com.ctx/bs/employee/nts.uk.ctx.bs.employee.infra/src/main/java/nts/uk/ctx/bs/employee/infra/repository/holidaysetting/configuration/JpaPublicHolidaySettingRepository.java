@@ -34,7 +34,11 @@ public class JpaPublicHolidaySettingRepository extends JpaRepository implements 
 	 */
 	@Override
 	public List<PublicHolidaySetting> findByCIDToList(String companyId) {
-		return this.queryProxy().find(companyId, KshmtPublicHdSet.class).map(e -> this.toListDomain(e)).get();
+		Optional<KshmtPublicHdSet> optKshmtPublicHdSet = this.queryProxy().find(companyId, KshmtPublicHdSet.class);
+		if (optKshmtPublicHdSet.isPresent()) {
+			return this.queryProxy().find(companyId, KshmtPublicHdSet.class).map(e -> this.toListDomain(e)).get();
+		}
+		return new ArrayList<>();
 	}
 
 	/* (non-Javadoc)

@@ -21,7 +21,7 @@ module nts.uk.at.view.kmf002.e {
             
             public save(): void {
                 let _self = this;
-                _self.validateInput();
+//                _self.validateInput();
                 if (!nts.uk.ui.errors.hasError()) {
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth()).done((data) => {
                         _self.enableDelete(true);
@@ -59,7 +59,7 @@ module nts.uk.at.view.kmf002.e {
                         /** 
                          *   create value null for prepare create new 
                         **/
-                        _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value) {
+                        _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value: any) {
                             value.day('');
                         });
                         _self.enableDelete(false);

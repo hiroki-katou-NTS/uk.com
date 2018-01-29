@@ -43,15 +43,15 @@ public class KshmtPublicHdSet extends UkJpaEntity implements Serializable {
    
     /** The is manage com public hd. */
     @Column(name = "IS_MANAGE_COM_PUBLIC_HD")
-    private int isManageComPublicHd;
+    private Integer isManageComPublicHd;
     
     /** The public hd manage atr. */
     @Column(name = "PUBLIC_HD_MANAGE_ATR")
-    private int publicHdManageAtr;
+    private Integer publicHdManageAtr;
     
     /** The period. */
     @Column(name = "PERIOD")
-    private int period;
+    private Integer period;
     
     /** The full date. */
     @Column(name = "FULL_DATE")
@@ -64,11 +64,11 @@ public class KshmtPublicHdSet extends UkJpaEntity implements Serializable {
     
     /** The determine start D. */
     @Column(name = "DETERMINE_START_D")
-    private int determineStartD;
+    private Integer determineStartD;
 
     /** The is weekly hd check. */
     @Column(name = "IS_WEEKLY_HD_CHECK")
-    private int isWeeklyHdCheck;
+    private Integer isWeeklyHdCheck;
 
     /**
      * Instantiates a new kshmt public hd set.

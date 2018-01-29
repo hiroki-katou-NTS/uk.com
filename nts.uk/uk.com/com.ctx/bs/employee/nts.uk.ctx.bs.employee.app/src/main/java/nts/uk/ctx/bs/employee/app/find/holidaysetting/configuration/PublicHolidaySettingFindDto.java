@@ -20,25 +20,25 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 	private final static int FALSE_VALUE = 0;
 	
 	/** The is manage com public hd. */
-	private int isManageComPublicHd;
+	private Integer isManageComPublicHd;
 	
 	/** The public hd management classification. */
-	private int publicHdManagementClassification;
+	private Integer publicHdManagementClassification;
 	
 	/** The is weekly hd check. */
-	private int isWeeklyHdCheck;
+	private Integer isWeeklyHdCheck;
 	
 	/** The period. */
-	private int period;
+	private Integer period;
 	
 	/** The full date. */
 	private String fullDate;
 	
 	/** The day month. */
-	private int dayMonth;
+	private Integer dayMonth;
 	
 	/** The determine start D. */
-	private int determineStartD;
+	private Integer determineStartD;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidaySettingSetMemento#setCompanyID(java.lang.String)
@@ -87,7 +87,7 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 		if (this.publicHdManagementClassification == 1) {
 			PublicHoliday publicHoliday = (PublicHoliday) publicHolidayManagementStartDate;
 			this.dayMonth = publicHoliday.getDayMonth();
-			this.fullDate = publicHoliday.getDate().toString("MMddyyyy");
+			this.fullDate = publicHoliday.getDate().toString("YYYYMMDD");
 			this.determineStartD = publicHoliday.getDetermineStartDate().value;
 		} else {
 			PublicHolidayGrantDate holidayGrantDate = (PublicHolidayGrantDate) publicHolidayManagementStartDate;
@@ -98,14 +98,28 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 	@Override
 	public void setPublicHolidayManagementStartDate(PublicHolidayManagementStartDate publicHolidayManagementStartDate,
 			Integer type) {
-		if (type == 1) {
+		if (type == 1) { 
 			PublicHoliday publicHoliday = (PublicHoliday) publicHolidayManagementStartDate;
-			this.dayMonth = publicHoliday.getDayMonth();
-			this.fullDate = publicHoliday.getDate().toString("MMddyyyy");
-			this.determineStartD = publicHoliday.getDetermineStartDate().value;
+			if (publicHoliday.getDayMonth() != null) {
+				this.dayMonth = publicHoliday.getDayMonth();
+			}
+			if (publicHoliday.getDate() != null) {
+				this.fullDate = publicHoliday.getDate().toString("YYYYMMDD");
+			} 
+			if (publicHoliday.getDetermineStartDate() != null) {
+				this.determineStartD = publicHoliday.getDetermineStartDate().value;
+			} else {
+				this.determineStartD = 0; // 0 is value Year - month - day
+			}
+			
 		} else {
 			PublicHolidayGrantDate holidayGrantDate = (PublicHolidayGrantDate) publicHolidayManagementStartDate;
-			this.period = holidayGrantDate.getPeriod().value;
+			if (holidayGrantDate.getPeriod() == null) {
+				this.period = 0; // default value
+			} else {
+				this.period = holidayGrantDate.getPeriod().value;
+			}
+			
 		}
 	}
 

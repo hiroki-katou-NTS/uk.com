@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.infra.repository.holidaysetting.configuration;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHoliday;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayGrantDate;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementClassification;

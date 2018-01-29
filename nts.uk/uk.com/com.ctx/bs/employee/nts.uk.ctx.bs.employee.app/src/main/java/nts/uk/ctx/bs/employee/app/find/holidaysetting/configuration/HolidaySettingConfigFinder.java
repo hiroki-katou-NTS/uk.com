@@ -55,18 +55,24 @@ public class HolidaySettingConfigFinder {
 		if(optionalForwardSetOfPubHd.isPresent()){
 			ForwardSettingOfPublicHoliday forwardSetOfPubHdDomain = optionalForwardSetOfPubHd.get();
 			forwardSetOfPubHdDomain.saveToMemento(forwardSetOfPubHdDto);
+		} else {
+			forwardSetOfPubHdDto = null;
 		}
 		
 		Optional<FourWeekFourHolidayNumberSetting> optionalFourWeekfourHdNumbSet = this.fourWeekfourHdNumbSetRepo.findByCID(companyId);
 		if(optionalFourWeekfourHdNumbSet.isPresent()){
 			FourWeekFourHolidayNumberSetting fourWeekfourHdNumbSetDomain = optionalFourWeekfourHdNumbSet.get();
 			fourWeekfourHdNumbSetDomain.saveToMemento(fourWeekfourHdNumbSetDto);
+		} else {
+			fourWeekfourHdNumbSetDto = null;
 		}
 		
 		Optional<WeekHolidaySetting> optionalWeekHdSet = this.weekHdSetRepo.findByCID(companyId);
 		if(optionalWeekHdSet.isPresent()){
 			WeekHolidaySetting weekHdSetDomain = optionalWeekHdSet.get();
 			weekHdSetDomain.saveToMemento(weekHdSetDto);
+		} else {
+			weekHdSetDto = null;
 		}
 		
 		List<PublicHolidaySetting> lstPubHdSet = this.pubHdSetRepo.findByCIDToList(companyId);
@@ -76,6 +82,8 @@ public class HolidaySettingConfigFinder {
 			
 			pubHdSetDomain = lstPubHdSet.get(1);
 			pubHdSetDomain.saveToMemento(pubHdSetDto, 1);
+		} else {
+			pubHdSetDto = null;
 		}
 		
 		HolidaySettingConfigDto dto = new HolidaySettingConfigDto(forwardSetOfPubHdDto, fourWeekfourHdNumbSetDto, weekHdSetDto, pubHdSetDto);

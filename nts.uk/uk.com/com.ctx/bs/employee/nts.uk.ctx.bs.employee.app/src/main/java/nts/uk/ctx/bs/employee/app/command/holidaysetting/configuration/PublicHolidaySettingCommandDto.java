@@ -93,13 +93,15 @@ public class PublicHolidaySettingCommandDto implements PublicHolidaySettingGetMe
 		if (this.publicHdManagementClassification == 0) {
 			return new PublicHolidayGrantDate(PublicHolidayPeriod.valueOf(this.period));
 		}
-		if (fullDate.length() < 8) {
-			fullDate = "0" + fullDate;
+		try {
+			int year = Integer.parseInt(fullDate.substring(0, 4));
+			int month= Integer.parseInt(fullDate.substring(5, 7));
+			int day = Integer.parseInt(fullDate.substring(8, 10));
+			return new PublicHoliday(GeneralDate.ymd(year, month, day), this.dayMonth, DayOfPublicHoliday.valueOf(this.determineStartD));
+		} catch (Exception e) {
+			return new PublicHoliday(null, this.dayMonth, DayOfPublicHoliday.valueOf(this.determineStartD));
 		}
-		int year = Integer.parseInt(fullDate.substring(4));
-		int month= Integer.parseInt(fullDate.substring(0, 2));
-		int day = Integer.parseInt(fullDate.substring(2, 4));
-		return new PublicHoliday(GeneralDate.ymd(year, month, day), this.dayMonth, DayOfPublicHoliday.valueOf(this.determineStartD));
+		
 	}
 
 }
