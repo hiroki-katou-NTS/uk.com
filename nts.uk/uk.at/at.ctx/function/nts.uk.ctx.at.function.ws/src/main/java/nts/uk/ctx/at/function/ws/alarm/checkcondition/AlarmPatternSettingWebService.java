@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.function.ws.alarm.checkcondition;
 
 import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.alarm.AddAlarmPatternSettingCommand;
 import nts.uk.ctx.at.function.app.command.alarm.AddAlarmPatternSettingCommandHandler;
@@ -15,6 +19,8 @@ import nts.uk.ctx.at.function.app.find.alarm.AlarmCheckConditonCodeDto;
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingDto;
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingFinder;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.SpecifiedMonthDto;
+import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * Web Service for function KAL004_パターン設定
@@ -37,6 +43,9 @@ public class AlarmPatternSettingWebService extends WebService{
 	
 	@Inject
 	private DeleteAlarmPatternSettingCommandHandler deleteCommandHandler;
+	
+	@Inject
+	private I18NResourcesForUK i18n;
 	
 	@POST
 	@Path("pattern/setting")
@@ -74,4 +83,9 @@ public class AlarmPatternSettingWebService extends WebService{
 		return finder.getSpecifiedMonth();
 	}
 	
+	@POST
+	@Path("get/enum/alarm/category")
+	public List<EnumConstant> getEnumAlarmCategory(){
+		return EnumAdaptor.convertToValueNameList(AlarmCategory.class, i18n);
+	}
 }
