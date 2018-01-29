@@ -65,6 +65,10 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 			+ " INNER JOIN BsymtAffiWorkplaceHistItem b ON a.hisId = b.hisId"
 			+ " WHERE b.workPlaceId = :workPlaceId AND a.strDate <= :endDate AND  a.endDate >= :startDate";
 
+	private static final String SELECT_BY_LISTSID = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
+			+ " INNER JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId"
+			+ " WHERE aw.sid IN :listSid ";
+
 	/**
 	 * Convert from domain to entity
 	 *
@@ -316,5 +320,19 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 			return Collections.emptyList();
 		}
 	}
+	
+	@Override
+	 public List<AffWorkplaceHistory> getByListSid(List<String> listSid) {
+	  
+	  // Split query.
+	  List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
+	  
+	  CollectionUtil.split(listSid, 1000, (subList) -> {
+	   resultList.addAll(this.queryProxy().query(SELECT_BY_LISTSID, BsymtAffiWorkplaceHist.class)
+	     .setParameter("listSid", subList).getList());
+	  });
+
+	  return resultList.stream().map(entity -> this.toDomain(entity)).collect(Collectors.toList());
+	 }
 
 }
