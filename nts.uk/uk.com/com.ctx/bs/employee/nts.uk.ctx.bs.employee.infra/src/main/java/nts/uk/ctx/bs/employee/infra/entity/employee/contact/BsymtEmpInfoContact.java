@@ -20,7 +20,7 @@ public class BsymtEmpInfoContact extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	private BsymtEmpInfoContactPK bsymtEmpInfoContactPK;
+	public BsymtEmpInfoContactPK bsymtEmpInfoContactPK;
 
 	
 	@Basic(optional = false)
