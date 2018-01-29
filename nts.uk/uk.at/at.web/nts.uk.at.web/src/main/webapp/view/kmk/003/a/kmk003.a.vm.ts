@@ -14,12 +14,14 @@ module nts.uk.at.view.kmk003.a {
     import PredetemineTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.predset.PredetemineTimeSettingModel;
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
     import FixedWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixedWorkSettingModel;
-    import FlowWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlWorkSettingModel;
+    import FlowWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flowset.FlowWorkSettingModel;
     import DiffTimeWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeWorkSettingModel;
     import FlexWorkSettingModel = nts.uk.at.view.kmk003.a.viewmodel.flexset.FlexWorkSettingModel;
     
     import FixedWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FixedWorkSettingSaveCommand;
+    import FlowWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlowWorkSettingSaveCommand;
     import FlexWorkSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.FlexWorkSettingSaveCommand;
+    import DiffTimeSettingSaveCommand = nts.uk.at.view.kmk003.a.service.model.command.DiffTimeWorkSettingSaveCommand;
     
     export module viewmodel {
 
@@ -393,7 +395,7 @@ module nts.uk.at.view.kmk003.a {
              */
             private setupTestMode(): void {
                 let self = this;
-                const inputKeys = [];
+                const inputKeys: any[] = [];
                 const patwuot = 'ahihi';
 
                 window.addEventListener('keyup', e => {
@@ -683,8 +685,24 @@ module nts.uk.at.view.kmk003.a {
                         .done(() => self.onSaveSuccess(dfd))
                         .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
+                }                
+                if (self.workTimeSetting.isDiffTime()) {
+                    //TODO
+                }
+                if (self.workTimeSetting.isFlow()) {
+                    service.saveFlowWorkSetting(self.toFlowCommand(addMode, tabMode))
+                        .done(() => self.onSaveSuccess(dfd))
+                        .fail(err => dfd.reject(err))
+                        .always(() => _.defer(() => nts.uk.ui.block.clear()));
                 }
 
+                if (self.workTimeSetting.isDiffTime()) {
+                    service.saveDiffTimeWorkSetting(self.toDiffTimeCommand(addMode, tabMode))
+                        .done(() => self.onSaveSuccess(dfd))
+                        .fail(err => dfd.reject(err))
+                        .always(() => _.defer(() => nts.uk.ui.block.clear()));
+                }
+                
                 return dfd.promise();
             }
 
@@ -703,6 +721,18 @@ module nts.uk.at.view.kmk003.a {
                 return command;  
             }
 
+            toFlowCommand(addMode: boolean, tabMode: number): FlowWorkSettingSaveCommand {
+                let _self = this;
+                let command: FlowWorkSettingSaveCommand = {
+                    addMode: addMode,
+                    predseting: _self.predetemineTimeSetting.toDto(),
+                    worktimeSetting: _self.workTimeSetting.toDto(),
+                    flowWorkSetting: _self.flowWorkSetting.toDto(_self.commonSetting),
+                    screenMode: tabMode
+                };
+                return command;  
+            }
+            
             /**
              * Collect flex data and convert to command dto
              */
@@ -718,6 +748,22 @@ module nts.uk.at.view.kmk003.a {
                 };
                 return command;
             }
+            
+            /**
+             * Collect difftime data and convert to command dto
+             */
+            toDiffTimeCommand(addMode: boolean, tabMode: number): DiffTimeSettingSaveCommand {
+                let self = this;
+                let command: DiffTimeSettingSaveCommand;
+                command = {
+                    screenMode: tabMode,
+                    addMode: addMode,
+                    diffTimeWorkSetting: self.diffWorkSetting.toDto(self.commonSetting),
+                    predseting: self.predetemineTimeSetting.toDto(),
+                    worktimeSetting: self.workTimeSetting.toDto()
+                };
+                return command;
+            }
 
             updateData(worktimeSettingInfo: WorkTimeSettingInfoDto): void {
                 let self = this;
@@ -726,7 +772,6 @@ module nts.uk.at.view.kmk003.a {
                 
                 if (self.workTimeSetting.isFlex()) {
                     self.flexWorkSetting.updateData(worktimeSettingInfo.flexWorkSetting);
-                    //dientx add
                     self.commonSetting.updateData(worktimeSettingInfo.flexWorkSetting.commonSetting);
 
                     // set useHalfDay to mainScreen model
@@ -734,31 +779,38 @@ module nts.uk.at.view.kmk003.a {
                 }
                 if (self.workTimeSetting.isFlow()) {
                     self.flowWorkSetting.updateData(worktimeSettingInfo.flowWorkSetting);
-                    //dientx add
                     self.commonSetting.updateData(worktimeSettingInfo.flowWorkSetting.commonSetting);
                 }
                 if (self.workTimeSetting.isFixed()) {
                     self.fixedWorkSetting.updateData(worktimeSettingInfo.fixedWorkSetting);
-                    //dientx add
                     self.commonSetting.updateData(worktimeSettingInfo.fixedWorkSetting.commonSetting);
 
                     // set useHalfDay to mainScreen model
                     self.useHalfDay(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift);
                 }
-                //TODO update diff viewmodel
+                
+                if (self.workTimeSetting.isDiffTime()) {
+                    self.diffWorkSetting.updateData(worktimeSettingInfo.diffTimeWorkSetting);
+                    self.commonSetting.updateData(worktimeSettingInfo.diffTimeWorkSetting.commonSet);
+
+                    // set useHalfDay to mainScreen model
+                    self.useHalfDay(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift);
+                }
             }
             
-            resetData(isNewMode?: boolean){
-                this.useHalfDay(false);
-                this.predetemineTimeSetting.resetData();
-                this.fixedWorkSetting.resetData();
-                this.flexWorkSetting.resetData();
-                this.commonSetting.resetData();
+            resetData(isNewMode?: boolean) {
+                let self = this;
+                self.useHalfDay(false);
+                self.predetemineTimeSetting.resetData();
+                self.fixedWorkSetting.resetData();
+                self.flowWorkSetting.resetData();
+                self.flexWorkSetting.resetData();
+                self.diffWorkSetting.resetData();             
+                self.commonSetting.resetData();
                 if (!isNewMode) {
-                    this.workTimeSetting.resetData();
-                    this.workTimeSetting.resetWorkTimeDivision();
+                    self.workTimeSetting.resetData();
+                    self.workTimeSetting.resetWorkTimeDivision();
                 }
-                //TODO update diff viewmodel
             }
         }
 

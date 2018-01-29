@@ -24,12 +24,16 @@ public class SgwmtWindowAcc implements Serializable {
 
 	@EmbeddedId
 	private SgwmtWindowAccPK sgwmtWindowAccPK;
-	
-	@Column(name="[NO]")
-	private Integer no;
+		
+	@Column(name="HOST_NAME")
+	private String hostName;
+
+	@Column(name="USER_NAME")
+	private String userName;
 
 	@Column(name="USE_ATR")
 	private Integer useAtr;
+	
 
 	public SgwmtWindowAcc() {
 		super();

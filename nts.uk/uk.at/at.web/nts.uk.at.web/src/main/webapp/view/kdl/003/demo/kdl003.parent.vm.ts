@@ -10,18 +10,22 @@ module kdl003.parent.viewmodel {
         childSelectWorkTypeName: KnockoutObservable<string>;
         childSelectSiftCode: KnockoutObservable<string>;
         childSelectSiftName: KnockoutObservable<string>;
+        firstTime: KnockoutObservable<string>;
+        secondTime: KnockoutObservable<string>;
         constructor() {
             var self = this;
             //construct codes 
             self.canSelectWorkTypeCodes = ko.observable('001,002,003,004,005,006,007,008,009,010');
             self.selectWorkTypeCode = ko.observable('002');
-            self.canSelectSiftCodes = ko.observable('001,003,005');
-            self.selectSiftCode = ko.observable('003');
+            self.canSelectSiftCodes = ko.observable('');
+            self.selectSiftCode = ko.observable('324');
 
             self.childSelectWorkTypeCode = ko.observable('');
             self.childSelectWorkTypeName = ko.observable('');
             self.childSelectSiftCode = ko.observable('');
             self.childSelectSiftName = ko.observable('');
+            self.firstTime = ko.observable('');
+            self.secondTime = ko.observable('');
         }
         //open dialog 003 
         OpenDialog003() {
@@ -43,6 +47,8 @@ module kdl003.parent.viewmodel {
                     self.childSelectWorkTypeName(childData.selectedWorkTypeName);
                     self.childSelectSiftCode(childData.selectedWorkTimeCode);
                     self.childSelectSiftName(childData.selectedWorkTimeName);
+                    self.firstTime(childData.firstTime);
+                    self.secondTime(childData.secondTime);
                 }
             })
         }

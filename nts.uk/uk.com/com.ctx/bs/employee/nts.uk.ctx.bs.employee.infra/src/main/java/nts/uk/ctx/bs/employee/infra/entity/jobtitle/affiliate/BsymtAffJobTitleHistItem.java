@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate;
@@ -10,9 +10,11 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -20,7 +22,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  *   所属職位履歴項目
  */
 @Entity
-@AllArgsConstructor
 @Table(name = "BSYMT_AFF_JOB_HIST_ITEM")
 public class BsymtAffJobTitleHistItem extends UkJpaEntity implements Serializable {
 
@@ -45,12 +46,33 @@ public class BsymtAffJobTitleHistItem extends UkJpaEntity implements Serializabl
 	@Basic(optional = false)
 	@Column(name = "NOTE")
 	public String note;
+	
+	/** The bsymt aff job title hist. */
+	@OneToOne
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
+	public BsymtAffJobTitleHist bsymtAffJobTitleHist;
 
 	/**
 	 * Instantiates a new cempt employment.
 	 */
 	public BsymtAffJobTitleHistItem() {
 		super();
+	}
+	
+	/**
+	 * Instantiates a new bsymt aff job title hist item.
+	 *
+	 * @param hisId the his id
+	 * @param sid the sid
+	 * @param jobTitleId the job title id
+	 * @param note the note
+	 */
+	public BsymtAffJobTitleHistItem(String hisId, String sid, String jobTitleId, String note) {
+		super();
+		this.hisId = hisId;
+		this.sid = sid;
+		this.jobTitleId = jobTitleId;
+		this.note = note;
 	}
 
 	@Override

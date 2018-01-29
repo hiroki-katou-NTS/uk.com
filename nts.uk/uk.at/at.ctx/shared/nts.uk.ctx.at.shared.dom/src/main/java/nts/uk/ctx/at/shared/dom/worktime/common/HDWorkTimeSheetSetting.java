@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class HDWorkTimeSheetSetting.
  */
 // 休出時間の時間帯設定
 @Getter
-public class HDWorkTimeSheetSetting extends DomainObject {
+public class HDWorkTimeSheetSetting extends WorkTimeDomainObject {
 	
 	/** The work time no. */
 	//就業時間帯NO

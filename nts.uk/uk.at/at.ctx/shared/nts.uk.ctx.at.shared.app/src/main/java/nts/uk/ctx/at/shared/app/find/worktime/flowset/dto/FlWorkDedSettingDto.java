@@ -6,9 +6,9 @@ package nts.uk.ctx.at.shared.app.find.worktime.flowset.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkDedSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowCalculateSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkDedSetMemento;
 
 /**
  * The Class FlowWorkDedicateSettingDto.
@@ -32,7 +32,10 @@ public class FlWorkDedSettingDto implements FlWorkDedSetMemento {
 	 */
 	@Override
 	public void setOvertimeSetting(FlowOTSet otSet) {
-		otSet.saveToMemento(this.overtimeSetting);
+		if (otSet != null) {
+			this.overtimeSetting = new FlOTSetDto();
+			otSet.saveToMemento(this.overtimeSetting);
+		}
 	}
 
 	/*
@@ -44,6 +47,9 @@ public class FlWorkDedSettingDto implements FlWorkDedSetMemento {
 	 */
 	@Override
 	public void setCalculateSetting(FlowCalculateSet fcSet) {
-		fcSet.saveToMemento(this.calculateSetting);
+		if (fcSet != null) {
+			this.calculateSetting = new FlCalcSetDto();
+			fcSet.saveToMemento(this.calculateSetting);
+		}		
 	}
 }

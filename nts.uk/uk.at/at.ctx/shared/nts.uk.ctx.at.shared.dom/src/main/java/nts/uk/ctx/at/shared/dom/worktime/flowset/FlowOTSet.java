@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FlowOTSet.
  */
 //流動残業設定
 @Getter
-public class FlowOTSet extends DomainObject {
+public class FlowOTSet extends WorkTimeDomainObject {
 
 	/** The fixed change atr. */
 	//所定変動区分

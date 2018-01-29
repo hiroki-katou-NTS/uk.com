@@ -38,7 +38,7 @@ public class AddedVacationUseTime {
 	 * 月単位の加算時間に加算する
 	 * @param minutes 加算する時間（分）
 	 */
-	public void addAddTimePerMonth(int minutes){
+	public void addMinutesToAddTimePerMonth(int minutes){
 		
 		this.addTimePerMonth = this.addTimePerMonth.addMinutes(minutes);
 	}

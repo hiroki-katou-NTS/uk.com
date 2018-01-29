@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class PrioritySetting.
  */
 // 優先設定
 @Getter
-public class PrioritySetting extends DomainObject {
+public class PrioritySetting extends WorkTimeDomainObject {
 
 	/** The priority atr. */
 	// 優先区分

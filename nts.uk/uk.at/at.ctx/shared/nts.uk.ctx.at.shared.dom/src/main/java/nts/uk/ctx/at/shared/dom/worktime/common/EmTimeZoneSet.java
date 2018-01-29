@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -13,7 +13,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 // 就業時間の時間帯設定
 @Getter
-public class EmTimeZoneSet extends DomainObject {
+public class EmTimeZoneSet extends WorkTimeDomainObject {
 
 	/** The Employment time frame no. */
 	//就業時間枠NO
@@ -63,15 +63,6 @@ public class EmTimeZoneSet extends DomainObject {
 	public void restoreData(EmTimeZoneSet other) {
 		this.employmentTimeFrameNo = other.employmentTimeFrameNo;
 		this.timezone = other.getTimezone();
-	}
-	
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.dom.DomainObject#validate()
-	 */
-	@Override
-	public void validate() {
-		super.validate();
-
 	}
 
 	/**

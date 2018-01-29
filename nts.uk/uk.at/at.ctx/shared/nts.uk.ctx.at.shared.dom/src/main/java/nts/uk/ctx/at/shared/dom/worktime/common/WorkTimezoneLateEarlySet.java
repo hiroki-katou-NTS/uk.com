@@ -7,14 +7,14 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class WorkTimezoneLateEarlySet.
  */
 //就業時間帯の遅刻・早退設定
 @Getter
-public class WorkTimezoneLateEarlySet extends DomainObject{
+public class WorkTimezoneLateEarlySet extends WorkTimeDomainObject {
 
 	/** The common set. */
 	//共通設定

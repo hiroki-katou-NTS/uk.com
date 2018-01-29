@@ -1,3 +1,4 @@
+//__viewContext.noHeader = true;
 __viewContext.ready(function () {
     class ScreenModel {
         constructor() {

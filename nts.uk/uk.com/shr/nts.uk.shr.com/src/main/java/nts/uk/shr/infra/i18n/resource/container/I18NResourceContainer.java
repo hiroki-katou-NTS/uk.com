@@ -8,14 +8,22 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.i18n.resource.I18NResourceType;
 
 public class I18NResourceContainer<T extends I18NResourceItem> {
 	
-	private static final I18NResourceContainer<?> EMPTY = new I18NResourceContainer<>();
+	private static final I18NResourceContainer<?> EMPTY = new I18NResourceContainer<>(GeneralDateTime.now());
 
 	@Getter
+	private GeneralDateTime lastUpdatedAt;
+	
+	@Getter
 	private final Map<String, T> items = new HashMap<>();
+	
+	public I18NResourceContainer(GeneralDateTime lastUpdatedAt) {
+		this.lastUpdatedAt = lastUpdatedAt;
+	}
 	
 	public void addAll(List<T> items) {
 		items.forEach(item -> this.add(item));
@@ -71,7 +79,7 @@ public class I18NResourceContainer<T extends I18NResourceItem> {
 			I18NResourceContainer<T1> source1,
 			I18NResourceContainer<T2> source2) {
 		
-		val merged = new I18NResourceContainer<I18NResourceItem>();
+		val merged = new I18NResourceContainer<I18NResourceItem>(GeneralDateTime.now());
 		source1.items.values().forEach(e -> merged.add(e));
 		source2.items.values().forEach(e -> merged.add(e));
 		return merged;
