@@ -5,6 +5,7 @@ module nts.uk.at.view.kdl003.a {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             $("[tabindex='2']").focus();
+            $("#inputStartTime").focus();
         });
     });
 }
