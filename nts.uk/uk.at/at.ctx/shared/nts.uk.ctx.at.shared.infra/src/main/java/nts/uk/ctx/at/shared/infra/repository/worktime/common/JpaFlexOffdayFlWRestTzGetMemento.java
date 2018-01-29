@@ -7,9 +7,9 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezoneGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaFixRest;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRestSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRtSet;

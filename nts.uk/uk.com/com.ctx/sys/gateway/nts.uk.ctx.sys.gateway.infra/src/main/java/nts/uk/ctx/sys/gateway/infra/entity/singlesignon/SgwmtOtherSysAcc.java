@@ -24,9 +24,16 @@ public class SgwmtOtherSysAcc implements Serializable {
 
 	@EmbeddedId
 	private SgwmtOtherSysAccPK sgwmtOtherSysAccPK;
+	
+	// company code
+	@Column(name = "CCD")
+	private String ccd;
 
+	@Column(name = "USER_NAME")
+	private String userName;
+	
 	@Column(name="USE_ATR")
-	private Integer useAtr;
+	private Integer useAtr;	
 
 	public SgwmtOtherSysAcc() {
 		super();

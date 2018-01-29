@@ -11,13 +11,13 @@ import nts.uk.shr.com.history.DateHistoryItem;
 public class AffWorkplaceHistoryService {
 
 	@Inject
-	private AffWorkplaceHistoryRepository_v1 affWorkplaceHistoryRepository;
+	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepository;
 	
 	/**
 	 * ドメインモデル「所属職場」を新規登録する
 	 * @param domain
 	 */
-	public void add(AffWorkplaceHistory_ver1 domain){
+	public void add(AffWorkplaceHistory domain){
 		if (domain.getHistoryItems().isEmpty()){
 			return;
 		}
@@ -32,7 +32,7 @@ public class AffWorkplaceHistoryService {
 	 * ドメインモデル「所属職場」を削除する
 	 * @param domain
 	 */
-	public void delete(AffWorkplaceHistory_ver1 domain, DateHistoryItem item){
+	public void delete(AffWorkplaceHistory domain, DateHistoryItem item){
 		affWorkplaceHistoryRepository.delete(item.identifier());
 		// Update last item
 		if (domain.getHistoryItems().size() >0){
@@ -45,7 +45,7 @@ public class AffWorkplaceHistoryService {
 	 * ドメインモデル「所属職場」を取得する
 	 * @param domain
 	 */
-	public void update(AffWorkplaceHistory_ver1 domain, DateHistoryItem item){
+	public void update(AffWorkplaceHistory domain, DateHistoryItem item){
 		affWorkplaceHistoryRepository.update(item);
 		// Update item before
 		updateItemBefore(domain,item);
@@ -56,7 +56,7 @@ public class AffWorkplaceHistoryService {
 	 * @param domain
 	 * @param item
 	 */
-	private void updateItemBefore(AffWorkplaceHistory_ver1 domain, DateHistoryItem item){
+	private void updateItemBefore(AffWorkplaceHistory domain, DateHistoryItem item){
 		Optional<DateHistoryItem> itemToBeUpdated = domain.immediatelyBefore(item);
 		if (!itemToBeUpdated.isPresent()){
 			return;

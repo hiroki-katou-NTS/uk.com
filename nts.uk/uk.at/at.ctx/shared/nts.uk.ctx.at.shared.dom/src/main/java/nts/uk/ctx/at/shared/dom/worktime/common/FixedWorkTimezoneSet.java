@@ -11,16 +11,15 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FixedWorkTimezoneSet.
  */
 // 固定勤務時間帯設定
 @Getter
-public class FixedWorkTimezoneSet extends DomainObject {
+public class FixedWorkTimezoneSet extends WorkTimeDomainObject {
 
 	/** The lst working timezone. */
 	// 就業時間帯
@@ -72,10 +71,11 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	 */
 	@Override
 	public void validate() {
-		super.validate();
 		this.checkOverlap();
 		this.checkSetting();
 		this.checkOverTimeAndEmTimeOverlap();
+		
+		super.validate();
 	}
 	
 	/**
@@ -86,6 +86,7 @@ public class FixedWorkTimezoneSet extends DomainObject {
 			return;
 		}
 
+		//TODO
 		// 開始 = 就業時間帯NO=1の場合の就業時間の時間帯設定.時間帯. 開始
 		EmTimeZoneSet enEmTimeZoneSet = this.getEmTimeZoneSet(EMPLOYMENT_TIME_FRAME_NO_ONE);
 		int startTimeZone = enEmTimeZoneSet.getTimezone().getStart().valueAsMinutes();
@@ -97,11 +98,11 @@ public class FixedWorkTimezoneSet extends DomainObject {
 		int endTimeOvertime = overTimeOfTimeZoneSet.getTimezone().getEnd().valueAsMinutes();
 
 //		if (startTimeZone < startTimeOvertime) {
-//			throw new BusinessException("Msg_779");
+//			this.bundledBusinessExceptions.addMessage("Msg_779");
 //		}
 		
 //		if (endTimeZone >= endTimeOvertime) {
-//			throw new BusinessException("Msg_780");
+//			this.bundledBusinessExceptions.addMessage("Msg_780");
 //		}
 		
 	}
@@ -132,7 +133,7 @@ public class FixedWorkTimezoneSet extends DomainObject {
 	private void checkOverTimeAndEmTimeOverlap() {
 		if (this.lstOTTimezone.stream().anyMatch(ot -> CollectionUtil.isEmpty(this.lstWorkingTimezone)
 				|| this.lstWorkingTimezone.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())))) {
-			throw new BusinessException("Msg_845", "KMK003_89");
+			this.bundledBusinessExceptions.addMessage("Msg_845", "KMK003_89");
 		}
 	}
 
@@ -146,7 +147,7 @@ public class FixedWorkTimezoneSet extends DomainObject {
 				for (int j = i + 1; j < size; j++) {
 					if (this.lstWorkingTimezone.get(i).getTimezone()
 							.isOverlap(this.lstWorkingTimezone.get(j).getTimezone())) {
-						throw new BusinessException("Msg_515","KMK003_86");
+						this.bundledBusinessExceptions.addMessage("Msg_515", "KMK003_86");
 					}
 				}
 			}
@@ -158,7 +159,7 @@ public class FixedWorkTimezoneSet extends DomainObject {
 				for (int j = i + 1; j < size; j++) {
 					if (this.lstOTTimezone.get(i).getTimezone()
 							.isOverlap(this.lstOTTimezone.get(j).getTimezone())) {
-						throw new BusinessException("Msg_515","KMK003_89");
+						this.bundledBusinessExceptions.addMessage("Msg_515", "KMK003_89");
 					}
 				}
 			}

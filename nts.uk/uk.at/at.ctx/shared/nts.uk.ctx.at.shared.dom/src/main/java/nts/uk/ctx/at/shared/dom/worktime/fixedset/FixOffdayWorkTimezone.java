@@ -9,17 +9,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FixOffdayWorkTimezone.
  */
 @Getter
 // 固定勤務の休日出勤用勤務時間帯
-public class FixOffdayWorkTimezone extends DomainObject {
+public class FixOffdayWorkTimezone extends WorkTimeDomainObject {
 
 	/** The rest timezone. */
 	// 休憩時間帯
@@ -56,16 +55,13 @@ public class FixOffdayWorkTimezone extends DomainObject {
 	 */
 	@Override
 	public void validate() {
-		super.validate();
-
-		// #Msg_756
-		this.checkRestTimezone();
-
 		// #Msg_515 - domain TimezoneOfFixedRestTimeSet - validate overlap
-		this.validOverlap();
+		this.validateOverlap();
+		// #Msg_756
+		this.validateRestTimezone();
 		
 		//validate 770 for work time
-		this.lstWorkTimezone.stream().forEach(item->{
+		this.lstWorkTimezone.stream().forEach(item -> {
 			item.getTimezone().validateRange("KMK003_90");
 		});
 		
@@ -73,12 +69,14 @@ public class FixOffdayWorkTimezone extends DomainObject {
 		this.restTimezone.getLstTimezone().stream().forEach(item -> {
 			item.validateRange("KMK003_21");
 		});
+		
+		super.validate();
 	}
 
 	/**
 	 * Valid overlap.
 	 */
-	private void validOverlap() {
+	private void validateOverlap() {
 		// sort asc by start time		
 		this.lstWorkTimezone = this.lstWorkTimezone.stream()
 				.sorted((obj1, obj2) -> obj1.getTimezone().getStart().compareTo(obj2.getTimezone().getStart()))
@@ -93,7 +91,7 @@ public class FixOffdayWorkTimezone extends DomainObject {
 			}
 			TimeZoneRounding next = iterator.next().getTimezone();
 			if (current.getEnd().greaterThan(next.getStart())) {
-				throw new BusinessException("Msg_515","KMK003_90");
+				this.bundledBusinessExceptions.addMessage("Msg_515", "KMK003_90");
 			}
 		}
 		
@@ -104,7 +102,7 @@ public class FixOffdayWorkTimezone extends DomainObject {
 	/**
 	 * Check rest timezone.
 	 */
-	private void checkRestTimezone() {
+	private void validateRestTimezone() {
 		this.restTimezone.getLstTimezone().forEach((timezone) -> {
 			// Is timezone in WorkTimezone -  休出時間帯.時間帯
 			boolean isHasWorkTime = this.lstWorkTimezone.stream()
@@ -115,7 +113,7 @@ public class FixOffdayWorkTimezone extends DomainObject {
 					});
 
 			if (!isHasWorkTime) {
-				throw new BusinessException("Msg_756");
+				this.bundledBusinessExceptions.addMessage("Msg_756");
 			}
 		});
 	}

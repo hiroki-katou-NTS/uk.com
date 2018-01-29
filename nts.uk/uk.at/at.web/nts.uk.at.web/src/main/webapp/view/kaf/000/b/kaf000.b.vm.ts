@@ -364,11 +364,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     }
                 }else{//利用者が『本人』、又は『その他』
                     //反映済
-                    if(approvalATR　== Status.REFLECTED){
+                    if(reflectPlanState　== Status.REFLECTED){
                         //取消   〇
                         self.displayButtonControl().enableCancel(true);
                     }
-                    if(approvalATR == Status.NOTREFLECTED || approvalATR == Status.REMAND){//未反映 , 差し戻し
+                    if(reflectPlanState == Status.NOTREFLECTED || reflectPlanState == Status.REMAND){//未反映 , 差し戻し
                         //登録 ○
                         self.displayButtonControl().enableUpdate(true);
                         //削除  ○

@@ -17,8 +17,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -64,53 +62,52 @@ public class KshmtFlowWorkSet extends UkJpaEntity implements Serializable {
 	private int legalOtSet;
 
 	/** The kshmt flow rest set. */
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
+	@OneToOne(cascade = CascadeType.ALL, optional = false)
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", updatable = false, insertable = false),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", updatable = false, insertable = false) })
 	private KshmtFlowRestSet kshmtFlowRestSet;
 	
 	/** The kshmt flow time zone. */
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
+	@OneToOne(cascade = CascadeType.ALL, optional = false)
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", updatable = false, insertable = false),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", updatable = false, insertable = false) })
 	private KshmtFlowTimeZone kshmtFlowTimeZone;
 	
 	/** The kshmt fstamp reflect time. */
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-			@PrimaryKeyJoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
+	@OneToOne(cascade = CascadeType.ALL, optional = false)
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", updatable = false, insertable = false),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", updatable = false, insertable = false) })
 	private KshmtFstampReflectTime kshmtFstampReflectTime;
 	
 	/** The lst kshmt flow rt set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false)
-	})
+		@JoinColumn(name = "CID", referencedColumnName = "CID"),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
 	private List<KshmtFlowRtSet> lstKshmtFlowRtSet;
 	
 	/** The lst kshmt ot time zone. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false)
-	})
+		@JoinColumn(name = "CID", referencedColumnName = "CID"),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
 	private List<KshmtOtTimeZone> lstKshmtOtTimeZone;
 	
 	/** The lst kshmt fwork holiday time. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false)
-	})
+		@JoinColumn(name = "CID", referencedColumnName = "CID"),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
 	private List<KshmtFworkHolidayTime> lstKshmtFworkHolidayTime;
 	
 	/** The lst kshmt worktime common set. */
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD", insertable = false, updatable = false)
-	})
+		@JoinColumn(name = "CID", referencedColumnName = "CID"),
+		@JoinColumn(name = "WORKTIME_CD", referencedColumnName = "WORKTIME_CD") })
 	private List<KshmtWorktimeCommonSet> lstKshmtWorktimeCommonSet;
 	
 	/**

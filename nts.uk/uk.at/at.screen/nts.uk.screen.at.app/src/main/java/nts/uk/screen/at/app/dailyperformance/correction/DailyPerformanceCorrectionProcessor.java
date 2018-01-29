@@ -41,7 +41,6 @@ import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.ParamDialog;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
@@ -372,6 +371,7 @@ public class DailyPerformanceCorrectionProcessor {
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
 			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer displayFormat,
 			CorrectionOfDailyPerformance correct, List<String> formatCodes) throws InterruptedException {
+		long timeStart = System.currentTimeMillis();
 		String sId = AppContexts.user().employeeId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
 
@@ -497,7 +497,8 @@ public class DailyPerformanceCorrectionProcessor {
 				}
 			});
 		}
-
+		System.out.println("time before get item" + (System.currentTimeMillis() - timeStart));
+		long start = System.currentTimeMillis();
 		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
 		screenDto.setComment(dailyPerformanceDto != null && dailyPerformanceDto.getComment() != null
 				? dailyPerformanceDto.getComment() : null);
@@ -508,67 +509,6 @@ public class DailyPerformanceCorrectionProcessor {
 		DPControlDisplayItem dPControlDisplayItem = new DPControlDisplayItem();
 		ExecutorService service;
 		CountDownLatch latch;
-		List<GeneralDate> lstDate = dateRange.toListDate();
-//		if (displayFormat == 0 && lstDate.size() > 10) {
-//			service = Executors.newFixedThreadPool(3);
-//			latch = new CountDownLatch(3);
-//			DateRange dateRange1 = new DateRange(dateRange.getStartDate(), lstDate.get(lstDate.size() / 3));
-//			DateRange dateRange2 = new DateRange(lstDate.get(lstDate.size() / 3 + 1),
-//					lstDate.get(lstDate.size() * 2 / 3));
-//			DateRange dateRange3 = new DateRange(lstDate.get(lstDate.size() * 2 / 3 + 1), dateRange.getEndDate());
-//			Future<List<DailyModifyResult>> sResults = service.submit(new GetDataDaily(listEmployeeId, dateRange1,
-//					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
-//			Future<List<DailyModifyResult>> sResults2 = service.submit(new GetDataDaily(listEmployeeId, dateRange2,
-//					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
-//			Future<List<DailyModifyResult>> sResults3 = service.submit(new GetDataDaily(listEmployeeId, dateRange3,
-//					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
-//			dPControlDisplayItem = this.getItemIdNames(disItem.getFormatCode(), disItem.isSettingUnit(),
-//					disItem.getLstFormat(), disItem.getLstSheet(), disItem.getLstAtdItemUnique(),
-//					disItem.getLstBusinessTypeCode());
-//			try {
-//				results = sResults.get();
-//				latch.countDown();
-//				results.addAll(sResults2.get());
-//				latch.countDown();
-//				results.addAll(sResults3.get());
-//				latch.countDown();
-//			} catch (InterruptedException e1) {
-//				Thread.currentThread().interrupt();
-//				e1.printStackTrace();
-//			} catch (ExecutionException e1) {
-//				Thread.currentThread().interrupt();
-//				e1.printStackTrace();
-//			}
-//		} else if (displayFormat == 1 && listEmployeeId.size() > 10) {
-//			service = Executors.newFixedThreadPool(3);
-//			latch = new CountDownLatch(3);
-//			List<String> sid1 = listEmployeeId.subList(0, listEmployeeId.size()/3);
-//			List<String> sid2=  listEmployeeId.subList(listEmployeeId.size()/3 +1, listEmployeeId.size()*2/3);;
-//			List<String> sid3 =  listEmployeeId.subList(listEmployeeId.size()*2/3 +1, listEmployeeId.size());
-//			Future<List<DailyModifyResult>> sResults = service.submit(new GetDataDaily(sid1, dateRange,
-//					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
-//			Future<List<DailyModifyResult>> sResults2 = service.submit(new GetDataDaily(sid2, dateRange,
-//					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
-//			Future<List<DailyModifyResult>> sResults3 = service.submit(new GetDataDaily(sid3, dateRange,
-//					disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor));
-//			dPControlDisplayItem = this.getItemIdNames(disItem.getFormatCode(), disItem.isSettingUnit(),
-//					disItem.getLstFormat(), disItem.getLstSheet(), disItem.getLstAtdItemUnique(),
-//					disItem.getLstBusinessTypeCode());
-//			try {
-//				results = sResults.get();
-//				latch.countDown();
-//				results.addAll(sResults2.get());
-//				latch.countDown();
-//				results.addAll(sResults3.get());
-//				latch.countDown();
-//			} catch (InterruptedException e1) {
-//				Thread.currentThread().interrupt();
-//				e1.printStackTrace();
-//			} catch (ExecutionException e1) {
-//				Thread.currentThread().interrupt();
-//				e1.printStackTrace();
-//			}
-//		} else {
 			service = Executors.newFixedThreadPool(1);
 			latch = new CountDownLatch(1);
 			Future<List<DailyModifyResult>> sResults = service.submit(new GetDataDaily(listEmployeeId, dateRange,
@@ -578,16 +518,18 @@ public class DailyPerformanceCorrectionProcessor {
 					disItem.getLstBusinessTypeCode());
 			try {
 				results = sResults.get();
+				screenDto.getItemValues().addAll(results.isEmpty() ?new ArrayList<>() : results.get(0).getItems());
 				latch.countDown();
 			} catch (InterruptedException e1) {
-				Thread.currentThread().interrupt();
 				e1.printStackTrace();
+				Thread.currentThread().interrupt();
 			} catch (ExecutionException e1) {
-				Thread.currentThread().interrupt();
 				e1.printStackTrace();
+				Thread.currentThread().interrupt();
 			}
-//		}
 		latch.await();
+		System.out.println("time get data and map name : " + (System.currentTimeMillis() - start ));
+		long startTime2 = System.currentTimeMillis();
 		Map<String, DailyModifyResult> resultDailyMap = results.stream()
 				.collect(Collectors.toMap((x) -> x.getEmployeeId() + "|" + x.getDate(), Function.identity()));
 		//// 11. Excel: 未計算のアラームがある場合は日付又は名前に表示する
@@ -601,7 +543,31 @@ public class DailyPerformanceCorrectionProcessor {
 				? dPControlDisplayItem.getLstAttendanceItem().stream()
 						.collect(Collectors.toMap(DPAttendanceItem::getId, x -> x))
 				: new HashMap<>();
+		Set<Integer> types = dPControlDisplayItem.getLstAttendanceItem() == null ? new HashSet<>()
+				: dPControlDisplayItem.getLstAttendanceItem().stream().map(x -> x.getTypeGroup()).filter(x -> x != null)
+						.collect(Collectors.toSet());
+		Map<Integer, Map<String, CodeName>> mapGetName = dataDialogWithTypeProcessor
+				.getAllCodeName(new ArrayList<Integer>(types), AppContexts.user().companyId());
+		
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
+		System.out.println("time create HashMap: " + (System.currentTimeMillis() - startTime2 ));
+		start = System.currentTimeMillis();
+		screenDto.markLoginUser();
+		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
+		service = Executors.newFixedThreadPool(1);
+		CountDownLatch latch1 = new CountDownLatch(1);
+		// set disable cell
+		service.submit(new Runnable() {
+			@Override
+			public void run() {
+				screenDto.createAccessModifierCellState(mapDP);
+				screenDto.getLstFixedHeader().forEach(column -> {
+					screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
+				});
+				latch1.countDown();
+			}
+		});
+		//set cell data
 		for (DPDataDto data : screenDto.getLstData()) {
 			boolean lock = false;
 			if (!employeeAndDateRange.isEmpty()) {
@@ -650,7 +616,6 @@ public class DailyPerformanceCorrectionProcessor {
 				resultOfOneRow.getItems().forEach(x -> {
 					attendanceTimes.add(x);
 				});
-				screenDto.getItemValues().addAll(attendanceTimes);
 				itemValueMap = attendanceTimes.isEmpty() ? Collections.emptyMap()
 						: attendanceTimes.stream().collect(Collectors
 								.toMap(x -> x.getItemId() + "|" + data.getEmployeeId() + "|" + data.getDate(), x -> x));
@@ -660,6 +625,7 @@ public class DailyPerformanceCorrectionProcessor {
 				for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()) {
 					// int a = 1;
 					int attendanceAtr = mapDP.get(item.getId()).getAttendanceAtr();
+					Integer groupType =  mapDP.get(item.getId()).getTypeGroup();
 					String key = item.getId() + "|" + data.getEmployeeId() + "|" + data.getDate();
 					String value = (itemValueMap.containsKey(key) && itemValueMap.get(key).value() != null)
 							? itemValueMap.get(key).value().toString() : "";
@@ -670,17 +636,23 @@ public class DailyPerformanceCorrectionProcessor {
 								screenDto.setLock(data.getId(), CODE + String.valueOf(item.getId()));
 								screenDto.setLock(data.getId(), NAME + String.valueOf(item.getId()));
 							}
-							cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), value,
-									String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
 							if (value.equals("")) {
+								cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), value,
+										String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
 								value = TextResource.localize("KDW003_82");
 							} else {
-								CodeName codeName = dataDialogWithTypeProcessor.getTypeDialog(
-										TypeLink.valueOf(item.getTypeGroup()).value,
-										new ParamDialog("", screenDto.getEmploymentCode(), data.getWorkplaceId(),
-												data.getDate(), value));
-								// CodeName codeName = null;
-								value = (codeName == null) ? TextResource.localize("KDW003_81") : codeName.getName();
+								if(groupType != null){
+								   if(groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value){
+									   Optional<CodeName> optCodeName = dataDialogWithTypeProcessor.getCodeNameWithId(groupType, data.getDate(), value);
+									   cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), optCodeName.isPresent() ? optCodeName.get().getCode() : value,
+												String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
+									   value = !optCodeName.isPresent() ? TextResource.localize("KDW003_81") : optCodeName.get().getName();
+								   }else{
+									   cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), value,
+												String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
+									   value = mapGetName.get(groupType).containsKey(value) ? mapGetName.get(groupType).get(value).getName() :  TextResource.localize("KDW003_81");
+								   }
+								}
 							}
 							cellDatas.add(new DPCellDataDto(NAME + String.valueOf(item.getId()), value,
 									String.valueOf(item.getAttendanceAtr()), TYPE_LINK));
@@ -733,17 +705,12 @@ public class DailyPerformanceCorrectionProcessor {
 					&& optWorkInfoOfDailyPerformanceDto.get().getState() == CalculationState.No_Calculated)
 				screenDto.setAlarmCellForFixedColumn(data.getId());
 		}
-		Set<ItemValue> set = screenDto.getItemValues().stream()
-				.collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(ItemValue::getItemId))));
-		screenDto.getItemValues().clear();
-		screenDto.getItemValues().addAll(set);
+		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start ));
+		start = System.currentTimeMillis();
 		// screenDto.setLstData(lstData);
-		screenDto.markLoginUser();
-		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
-		screenDto.createAccessModifierCellState(mapDP);
-		screenDto.getLstFixedHeader().forEach(column -> {
-			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
-		});
+		latch1.await();
+		System.out.println("time add  return : " + (System.currentTimeMillis() - start));
+		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
 		return screenDto;
 	}
 
@@ -810,6 +777,9 @@ public class DailyPerformanceCorrectionProcessor {
 		return lstErrorRefer;
 	}
 
+	/**
+	 * アルゴリズム「表示項目を制御する」を実行する | Execute the algorithm "control display items"
+	 */
 	private DisplayItem getItemIds(List<String> lstEmployeeId, DateRange dateRange,
 			CorrectionOfDailyPerformance correct, List<String> formatCodeSelects,
 			OperationOfDailyPerformanceDto dailyPerformanceDto) {
@@ -916,7 +886,10 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		return result;
 	}
-
+ 
+	/**
+	 * アルゴリズム「表示項目を制御する」を実行する | Execute the algorithm "control display items"
+	 */
 	private DPControlDisplayItem getItemIdNames(Set<String> formatCode, boolean settingUnit,
 			List<FormatDPCorrectionDto> lstFormat, List<DPSheetDto> lstSheet, List<Integer> lstAtdItemUnique,
 			List<String> lstBusinessTypeCode) {

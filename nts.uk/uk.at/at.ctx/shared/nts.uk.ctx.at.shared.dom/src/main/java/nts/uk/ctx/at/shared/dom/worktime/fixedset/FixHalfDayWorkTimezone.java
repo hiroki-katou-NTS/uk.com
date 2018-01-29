@@ -5,10 +5,9 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
@@ -16,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 @Getter
 // 固定勤務の平日出勤用勤務時間帯
-public class FixHalfDayWorkTimezone extends DomainObject {
+public class FixHalfDayWorkTimezone extends WorkTimeDomainObject {
 
 	/** The rest timezone. */
 	// 休憩時間帯
@@ -105,11 +104,9 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
-	public void validate() {
-		super.validate();
-
+	public void validate() {		
 		if (!this.isInFixedWork()) {
-			throw new BusinessException("Msg_755");
+			this.bundledBusinessExceptions.addMessage("Msg_755");
 		}
 		
 		//validate Msg_770 for list work
@@ -129,6 +126,8 @@ public class FixHalfDayWorkTimezone extends DomainObject {
 
 		//validate Msg_515 for rest time
 		this.restTimezone.validOverlap("KMK003_20");
+		
+		super.validate();
 	}
 
 	/**

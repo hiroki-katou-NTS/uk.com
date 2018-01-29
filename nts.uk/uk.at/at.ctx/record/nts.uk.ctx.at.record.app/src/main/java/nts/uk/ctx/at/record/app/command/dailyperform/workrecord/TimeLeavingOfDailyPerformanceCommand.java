@@ -30,34 +30,41 @@ public class TimeLeavingOfDailyPerformanceCommand extends DailyWorkCommonCommand
 	public void setRecords(ConvertibleAttendanceItem item) {
 		this.data = item == null ? Optional.empty() : Optional.of((TimeLeavingOfDailyPerformanceDto) item);
 	}
-	
+
 	@Override
 	public TimeLeavingOfDailyPerformance toDomain() {
-		return !data.isPresent() ? null : new TimeLeavingOfDailyPerformance(
-				getEmployeeId(), new WorkTimes(data.get().getWorkTimes()), 
-				data.get().getWorkAndLeave() == null ? new ArrayList<>() : 
-					ConvertHelper.mapTo(data.get().getWorkAndLeave(), c ->  toTimeLeaveWork(c)),
-				getWorkDate());
+		return !data.isPresent() ? null : new TimeLeavingOfDailyPerformance(getEmployeeId(),
+						new WorkTimes(toWorkTime(data.get())),
+						data.get().getWorkAndLeave() == null ? new ArrayList<>()
+								: ConvertHelper.mapTo(data.get().getWorkAndLeave(), c -> toTimeLeaveWork(c)),
+						getWorkDate());
+	}
+
+	private int toWorkTime(TimeLeavingOfDailyPerformanceDto time) {
+		return time.getWorkTimes() == null ? (time.getWorkAndLeave() == null ? 0 : time.getWorkAndLeave().size())
+				: (time.getWorkTimes());
 	}
 
 	private TimeLeavingWork toTimeLeaveWork(WorkLeaveTimeDto c) {
-		return c == null ? null : new TimeLeavingWork(new WorkNo(c.getWorkNo()), toTimeActualStamp(c.getWorking()),
-				toTimeActualStamp(c.getLeave()));
+		return c == null ? null
+				: new TimeLeavingWork(new WorkNo(c.getWorkNo()), toTimeActualStamp(c.getWorking()),
+						toTimeActualStamp(c.getLeave()));
 	}
 
 	private Optional<TimeActualStamp> toTimeActualStamp(WithActualTimeStampDto c) {
-		return c == null ? Optional.empty() : 
-						Optional.of(new TimeActualStamp(
-								toWorkStamp(c.getActualTime()), 
-								toWorkStamp(c.getTime()),
-								c.getNumberOfReflectionStamp()));
+		return c == null ? Optional.empty()
+				: Optional.of(new TimeActualStamp(toWorkStamp(c.getActualTime()), toWorkStamp(c.getTime()),
+						c.getNumberOfReflectionStamp()));
 	}
 
 	private WorkStamp toWorkStamp(TimeStampDto c) {
-		return c == null ? null : new WorkStamp(
-					c.getAfterRoundingTimesOfDay() == null ? null : new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
-					c.getTimesOfDay() == null ? null : new TimeWithDayAttr(c.getTimesOfDay()), 
-					c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
-					c.getStampSourceInfo() == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
+		return c == null ? null
+				: new WorkStamp(
+						c.getAfterRoundingTimesOfDay() == null ? null
+								: new TimeWithDayAttr(c.getAfterRoundingTimesOfDay()),
+						c.getTimesOfDay() == null ? null : new TimeWithDayAttr(c.getTimesOfDay()),
+						c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
+						c.getStampSourceInfo() == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF
+								: ConvertHelper.getEnum(c.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

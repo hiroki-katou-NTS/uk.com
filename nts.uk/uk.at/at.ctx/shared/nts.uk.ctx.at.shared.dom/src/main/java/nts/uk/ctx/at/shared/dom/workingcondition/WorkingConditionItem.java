@@ -19,6 +19,10 @@ public class WorkingConditionItem extends AggregateRoot {
 	/** The history id. */
 	// 履歴ID
 	private String historyId;
+	
+	/** The hourly ppayment atr. */
+	// 時給者区分
+	private HourlyPaymentAtr hourlyPaymentAtr;
 
 	/** The schedule management atr. */
 	// 予定管理区分
@@ -63,6 +67,14 @@ public class WorkingConditionItem extends AggregateRoot {
 	/** The schedule method. */
 	// 予定作成方法
 	private Optional<ScheduleMethod> scheduleMethod;
+	
+	/** The time apply. */
+	// 加給時間帯
+	private Optional<BonusPaySettingCode> timeApply;
+	
+	/** The monthly pattern. */
+	// 月間パターン
+	private Optional<MonthlyPatternCode> monthlyPattern;
 
 	/**
 	 * Instantiates a new working condition item.

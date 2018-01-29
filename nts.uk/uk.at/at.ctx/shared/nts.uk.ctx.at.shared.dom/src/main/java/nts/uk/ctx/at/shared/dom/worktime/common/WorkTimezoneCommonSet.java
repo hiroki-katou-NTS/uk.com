@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 // 就業時間帯の共通設定
 @Getter
-public class WorkTimezoneCommonSet extends DomainObject {
+public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 
 	/** The Zero H stradd calculate set. */
 	// 0時跨ぎ計算設定

@@ -172,7 +172,7 @@ public class UpdateErrorAlarmWrCommand {
 		ErrorAlarmCondition condition = ErrorAlarmCondition.init();
 		condition.setCheckId(eralDomain.getErrorAlarmCheckID());
 		condition.setDisplayMessage(displayMessage);
-		if (fixedAtr != 1) {
+		//if (fixedAtr != 1) {
 			// Set AlCheckTargetCondition
 			condition.createAlCheckTargetCondition(alCheckTargetCondition.isFilterByBusinessType(),
 					alCheckTargetCondition.isFilterByJobTitle(), alCheckTargetCondition.isFilterByEmployment(),
@@ -206,12 +206,13 @@ public class UpdateErrorAlarmWrCommand {
 			// Set AttendanceItemCondition
 			List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = erAlAtdItemConditionGroup1.stream()
 					.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon)).collect(Collectors.toList());
+			
 			List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = erAlAtdItemConditionGroup2.stream()
 					.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon)).collect(Collectors.toList());
 			condition.createAttendanceItemCondition(operatorBetweenGroups, group2UseAtr)
 					.setAttendanceItemConditionGroup1(operatorGroup1, conditionsGroup1)
 					.setAttendanceItemConditionGroup2(operatorGroup2, conditionsGroup2);
-		}
+		//}
 		return condition;
 	}
 	
