@@ -55,21 +55,6 @@ public class KscstEstAggregateSet extends UkJpaEntity implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstEstAggregateSet", orphanRemoval = true)
 	public List<KscstPerCostExtraItem> kscstPerCostExtraItem;
 
-    /**
-     * Instantiates a new kscst est aggregate set.
-     */
-    public KscstEstAggregateSet() {
-    }
-
-    /**
-     * Instantiates a new kscst est aggregate set.
-     *
-     * @param cid the cid
-     */
-    public KscstEstAggregateSet(String cid) {
-        this.cid = cid;
-    }
-
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
