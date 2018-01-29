@@ -6,11 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import find.person.info.PersonDto;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.contact.EmployeeInfoContact;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.contact.EmployeeInfoContactRepository;
-import nts.uk.ctx.bs.person.dom.person.info.Person;
-import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
+import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
+import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContactRepository;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 import nts.uk.shr.pereg.app.find.PeregQuery;

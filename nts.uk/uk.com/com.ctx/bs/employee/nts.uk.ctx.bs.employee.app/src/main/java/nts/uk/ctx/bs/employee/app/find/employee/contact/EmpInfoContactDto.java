@@ -3,7 +3,7 @@ package nts.uk.ctx.bs.employee.app.find.employee.contact;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.bs.employee.dom.employeeinfo.contact.EmployeeInfoContact;
+import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
