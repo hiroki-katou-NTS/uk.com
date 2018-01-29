@@ -14,7 +14,7 @@ module cps002.f.vm {
         lstPerInfoItemDef: KnockoutObservableArray<PerInforItemDef>;
         columns: KnockoutObservableArray<any>;
         columnPerInfoItemDef: KnockoutObservableArray<any>;
-        currentPerInfoItem: KnockoutObservableArray<string> = ko.observableArray([]);
+        checkedIds: KnockoutObservableArray<string> = ko.observableArray([]);
         txtSearch: KnockoutObservable<string> = ko.observable("");
         lstItem: KnockoutObservableArray<string> = ko.observableArray([]);
 
@@ -37,11 +37,14 @@ module cps002.f.vm {
 
             self.currentPerInfoCtg.subscribe(id => {
                 service.getPerInfoItemDef(id).done(function(data) {
+                    //contant all item
                     self.lstItem(data);
+                    //for no show child item
                     let datalist = _.filter(data, (item: any) => { return item.itemParentCd == null });
                     self.lstPerInfoItemDef(datalist);
+                    //contant all checked id
                     let perItemCopy = _.filter(data, function(item: IPerInfoItemDef) { return item.alreadyItemDefCopy == true; }).map(function(item) { return item.id; });
-                    self.currentPerInfoItem(perItemCopy);
+                    self.checkedIds(perItemCopy);
                 });
             });
 
@@ -51,11 +54,11 @@ module cps002.f.vm {
         register() {
             let self = this;
             // let dataBind = self.lstPerInfoItemDef();
-            let itemIds = self.currentPerInfoItem();
+            let itemIds = self.checkedIds();
             let categoryId = self.currentPerInfoCtg();
             _.forEach(self.lstItem(), function(item: IPerInfoItemDef) {
 
-                if (_.find(self.currentPerInfoItem(), function(o) { return o == item.id; })) {
+                if (_.find(self.checkedIds(), function(o) { return o == item.id; })) {
                     item.checked = true;
                 } else {
                     item.checked = false;
