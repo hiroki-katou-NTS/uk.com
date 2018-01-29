@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employee;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -26,10 +25,10 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItemRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.ver1.AffJobTitleHistoryItem_ver1;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository_v1;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
@@ -53,10 +52,10 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 	/** The workplace history repository. */
 	@Inject
-	private AffWorkplaceHistoryRepository_v1 workplaceHistoryRepository_v1;
+	private AffWorkplaceHistoryRepository workplaceHistoryRepository;
 
 	@Inject
-	private AffJobTitleHistoryItemRepository_ver1 jobTitleHistoryItemRepository_v1;
+	private AffJobTitleHistoryItemRepository jobTitleHistoryItemRepository;
 
 	/** The person repository. */
 	@Inject
@@ -79,10 +78,10 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<EmployeeExport> findByWpkIds(String companyId, List<String> workplaceIds, GeneralDate baseDate) {
 		// Query
-		// update use AffWorkplaceHistory_ver1 - get list Aff WorkplaceHistory by list wkpIds and base data
-		List<AffWorkplaceHistory_ver1> affWorkplaceHistories = this.workplaceHistoryRepository_v1.getWorkplaceHistoryByWkpIdsAndDate(baseDate, workplaceIds);
+		// update use AffWorkplaceHistory - get list Aff WorkplaceHistory by list wkpIds and base data
+		List<AffWorkplaceHistory> affWorkplaceHistories = this.workplaceHistoryRepository.getWorkplaceHistoryByWkpIdsAndDate(baseDate, workplaceIds);
 
-		List<String> employeeIds = affWorkplaceHistories.stream().map(AffWorkplaceHistory_ver1::getEmployeeId)
+		List<String> employeeIds = affWorkplaceHistories.stream().map(AffWorkplaceHistory::getEmployeeId)
 				.collect(Collectors.toList());
 
 		List<EmployeeDataMngInfo> employeeList = empDataMngRepo.findByListEmployeeId(companyId, employeeIds);
@@ -132,14 +131,14 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<ConcurrentEmployeeExport> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate) {
 		// Query
-		List<AffJobTitleHistoryItem_ver1> affJobTitleHistories = this.jobTitleHistoryItemRepository_v1.getByJobIdAndReferDate(jobId, baseDate);
+		List<AffJobTitleHistoryItem> affJobTitleHistories = this.jobTitleHistoryItemRepository.getByJobIdAndReferDate(jobId, baseDate);
 		
 		// Check exist
 		if(CollectionUtil.isEmpty(affJobTitleHistories)) {
 			return Collections.emptyList();
 		}
 
-		List<String> employeeIds = affJobTitleHistories.stream().map(AffJobTitleHistoryItem_ver1::getEmployeeId)
+		List<String> employeeIds = affJobTitleHistories.stream().map(AffJobTitleHistoryItem::getEmployeeId)
 				.collect(Collectors.toList());
 
 		List<EmployeeDataMngInfo> employeeList = empDataMngRepo.findByListEmployeeId(companyId, employeeIds);

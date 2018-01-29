@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.app.command.worktime.flowset.dto;
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlCalcGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowCalculateGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
 
 /**
  * The Class FlCalcSetDto.
  */
 @Value
-public class FlCalcSetDto implements FlCalcGetMemento {
+public class FlCalcSetDto implements FlowCalculateGetMemento {
 
 	/** The calc start time set. */
 	private Integer calcStartTimeSet;

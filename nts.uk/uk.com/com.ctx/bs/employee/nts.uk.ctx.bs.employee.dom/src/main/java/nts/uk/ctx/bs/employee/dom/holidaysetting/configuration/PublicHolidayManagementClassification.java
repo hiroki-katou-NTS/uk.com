@@ -12,11 +12,11 @@ public enum PublicHolidayManagementClassification {
 	
 	/** The  1 month. */
 	// 1ヵ月
-	_1_MONTH(0, "Enum_1Month"),
+	_1_MONTH(0, "Enum_HolidayManageAtr_OneMonth"),
 
 	/** The  4 weeks 4 days off. */
 	// 4週4休
-	_4_WEEKS_4_DAYS_OFF(1, "Enum_4Weeks4DaysOff");
+	_4_WEEKS_4_DAYS_OFF(1, "Enum_HolidayManageAtr_TwoEigntDays");
 
 	/** The value. */
 	public final int value;

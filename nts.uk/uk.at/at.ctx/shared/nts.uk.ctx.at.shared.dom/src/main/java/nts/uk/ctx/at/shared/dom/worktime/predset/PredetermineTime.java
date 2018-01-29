@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class PredetermineTime.
  */
 @Getter
 //所定時間
-public class PredetermineTime extends DomainObject {
+public class PredetermineTime extends WorkTimeDomainObject {
 
 	/** The add time. */
 	//就業加算時間

@@ -25,7 +25,7 @@
 .widget-panel .panel-header {border-bottom:1px solid #B1B1B1; height:30px; padding-bottom:10px; margin-bottom:10px; box-sizing:border-box;}
 .widget-panel .panel-header .square {display:inline-block; width:18px; height:18px; vertical-align: middle; margin-right: 10px;}
 .widget-panel .panel-header .square.green {background-color: #2FCC71;}
-.widget-panel .panel-header .title {display:inline-block; vertical-align: middle;white-space: nowrap;}
+.widget-panel .panel-header .title {display:inline-block; vertical-align: middle;white-space: nowrap;overflow:hidden;text-overflow:ellipsis;width: calc(100% - 22px);}
 .widget-panel .panel-content {padding: 5px; box-sizing:border-box;}
 /* Widget Panel Preview Component */
 .widget-panel.preview {position:absolute; background:#fff; top: 0;}

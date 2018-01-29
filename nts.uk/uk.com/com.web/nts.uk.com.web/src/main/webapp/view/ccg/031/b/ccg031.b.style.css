@@ -37,3 +37,7 @@ html, body {overflow: visible;}
 .external-url-part .input-width {width: 40px;}
 .external-url-part .input-height {width: 40px;}
 .external-url-part .input-url {width: 450px !important;}
+
+.widget-panel .panel-header {font-size:0;}
+.widget-panel .panel-header .square {vertical-align: middle;}
+.widget-panel .panel-header .title {width: calc(100% - 29px); vertical-align: middle;}

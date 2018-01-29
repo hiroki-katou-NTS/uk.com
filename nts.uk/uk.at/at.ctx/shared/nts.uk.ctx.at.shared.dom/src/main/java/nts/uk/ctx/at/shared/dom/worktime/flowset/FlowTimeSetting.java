@@ -5,16 +5,16 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FlowTimeSetting.
  */
 //流動時間設定
 @Getter
-public class FlowTimeSetting extends DomainObject {
+public class FlowTimeSetting extends WorkTimeDomainObject {
 
 	/** The rounding. */
 	// 丸め

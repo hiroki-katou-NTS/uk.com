@@ -21,7 +21,7 @@ public interface OtherSysAccountSetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	void setCompanyCode(String companyCode);
+	void setCompanyCode(CompanyCode companyCode);
 	
 	
 	/**
@@ -29,7 +29,7 @@ public interface OtherSysAccountSetMemento {
 	 *
 	 * @param userName the new user name
 	 */
-	void setUserName(String userName);
+	void setUserName(UserName userName);
 	
 	
 	/**

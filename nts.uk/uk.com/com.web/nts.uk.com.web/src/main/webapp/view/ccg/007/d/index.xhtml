@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/noheader.xhtml">
+	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
 			<com:stylefile path="ccg007.d.style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -14,9 +14,6 @@
 			<com:scriptfile path="ccg007.d.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<!-- TODO remove after kiban fix -->
-			<div id="functions-area" class="divHeader"></div>
-			<!-- ===== -->
 			<div style="background-color: white;" id="contents-area">
 				<div style="position: relative; top: 20%; margin: 0 auto auto 40%;">
 					<table>

@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezoneSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezoneSetMemento;
 
 /**
  * The Class FlowRestTimezoneDto.

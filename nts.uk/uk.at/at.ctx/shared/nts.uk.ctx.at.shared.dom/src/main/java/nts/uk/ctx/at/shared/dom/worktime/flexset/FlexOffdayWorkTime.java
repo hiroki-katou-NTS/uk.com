@@ -9,18 +9,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class FlexOffdayWorkTime.
  */
 @Getter
 // フレックス勤務の休日出勤用勤務時間帯
-public class FlexOffdayWorkTime extends DomainObject {
+public class FlexOffdayWorkTime extends WorkTimeDomainObject {
 
 	/** The lst work timezone. */
 	// 勤務時間帯
@@ -33,53 +32,58 @@ public class FlexOffdayWorkTime extends DomainObject {
 	/**
 	 * Instantiates a new flex offday work time.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public FlexOffdayWorkTime(FlexOffdayWorkTimeGetMemento memento) {
 		this.lstWorkTimezone = memento.getLstWorkTimezone();
 		this.restTimezone = memento.getRestTimezone();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public void saveToMemento(FlexOffdayWorkTimeSetMemento memento){
+	public void saveToMemento(FlexOffdayWorkTimeSetMemento memento) {
 		memento.setLstWorkTimezone(this.lstWorkTimezone);
 		memento.setRestTimezone(this.restTimezone);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
 	public void validate() {
-		super.validate();
 		if (this.restTimezone.isFixRestTime() && !this.isRestTzInHolidayTz()) {
-			throw new BusinessException("Msg_756");
+			this.bundledBusinessExceptions.addMessage("Msg_756");
 		}
-		
+
 		// validate 770
 		this.lstWorkTimezone.stream().forEach(item -> {
 			item.getTimezone().validateRange("KMK003_90");
 		});
-		
+
 		// validate 770 for rest
 		if (this.restTimezone.isFixRestTime()) {
 			this.restTimezone.getFixedRestTimezone().getTimezones().stream().forEach(item -> {
 				item.validateRange("KMK003_21");
 			});
 		}
-		
+
 		this.validOverlap();
+
+		super.validate();
 	}
-	
+
 	/**
 	 * Valid overlap.
 	 */
 	private void validOverlap() {
-		// sort asc by start time		
+		// sort asc by start time
 		this.lstWorkTimezone = this.lstWorkTimezone.stream()
 				.sorted((obj1, obj2) -> obj1.getTimezone().getStart().compareTo(obj2.getTimezone().getStart()))
 				.collect(Collectors.toList());
@@ -93,13 +97,13 @@ public class FlexOffdayWorkTime extends DomainObject {
 			}
 			TimeZoneRounding next = iterator.next().getTimezone();
 			if (current.getEnd().greaterThan(next.getStart())) {
-				throw new BusinessException("Msg_515","KMK003_90");
+				this.bundledBusinessExceptions.addMessage("Msg_515", "KMK003_90");
 			}
 		}
-		
-		//validate msg_515
+
+		// validate msg_515
 		if (this.restTimezone.isFixRestTime()) {
-			this.restTimezone.getFixedRestTimezone().checkOverlap("KMK003_21");;
+			this.restTimezone.getFixedRestTimezone().checkOverlap("KMK003_21");
 		}
 	}
 

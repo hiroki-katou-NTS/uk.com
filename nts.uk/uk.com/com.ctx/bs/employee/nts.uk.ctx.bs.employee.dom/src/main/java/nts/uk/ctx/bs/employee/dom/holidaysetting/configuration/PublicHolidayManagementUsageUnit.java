@@ -14,15 +14,15 @@ public class PublicHolidayManagementUsageUnit extends DomainObject{
 	
 	/** The is manage employee public hd. */
 	// 社員の公休管理をする
-	private boolean isManageEmployeePublicHd;
+	private int isManageEmployeePublicHd;
 	
 	/** The is manage wkp public hd. */
 	// 職場の公休管理をする
-	private boolean isManageWkpPublicHd;
+	private int isManageWkpPublicHd;
 	
 	/** The is manage emp public hd. */
 	// 雇用の公休管理をする
-	private boolean isManageEmpPublicHd;
+	private int isManageEmpPublicHd;
 	
 	/**
 	 * Instantiates a new public holiday management usage unit.
@@ -31,7 +31,7 @@ public class PublicHolidayManagementUsageUnit extends DomainObject{
 	 * @param isManageWkpPublicHd the is manage wkp public hd
 	 * @param isManageEmpPublicHd the is manage emp public hd
 	 */
-	public PublicHolidayManagementUsageUnit(boolean isManageEmployeePublicHd, boolean isManageWkpPublicHd, boolean isManageEmpPublicHd){
+	public PublicHolidayManagementUsageUnit(int isManageEmployeePublicHd, int isManageWkpPublicHd, int isManageEmpPublicHd){
 		this.isManageEmployeePublicHd = isManageEmployeePublicHd;
 		this.isManageWkpPublicHd = isManageWkpPublicHd;
 		this.isManageEmpPublicHd = isManageEmpPublicHd;
