@@ -907,7 +907,15 @@ project (':com.web:nts.uk.com.web') {
 		//runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.pubimp', version: '0.1'
 		//runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.ac', version: '0.1'
 		
-
+		// AD Authentication
+		// https://mvnrepository.com/artifact/com.github.dblock.waffle/waffle-jna
+		compile group: 'com.github.dblock.waffle', name: 'waffle-jna', version: '1.8.1'
+		// https://mvnrepository.com/artifact/com.google.guava/guava
+		compile group: 'com.google.guava', name: 'guava', version: '23.0'
+		// https://mvnrepository.com/artifact/net.java.dev.jna/jna
+		compile group: 'net.java.dev.jna', name: 'jna', version: '4.4.0'
+		// https://mvnrepository.com/artifact/net.java.dev.jna/jna-platform
+		compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.4.0'
 	}
 }
 //========================nts.uk.com.web↑=====================================
