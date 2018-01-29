@@ -93,11 +93,11 @@ module nts.uk.at.view.kmf002.a {
                 /** 
                   *    main define variable code 
                 **/
-                _self.publicHolidaySetting = ko.observable(new PublicHolidaySetting(0, 0, new PublicHolidayGrantDate(0),
+                _self.publicHolidaySetting = ko.observable(new PublicHolidaySetting(1, 0, new PublicHolidayGrantDate(0),
                                                                                     new PublicHoliday('', '', 0), 0));
                 _self.forwardSetOfPubHD = ko.observable(new ForwardSettingOfPublicHoliday(0, 0));
                 _self.weekHDSet = ko.observable(new WeekHolidaySetting(0, 0, 0));
-                _self.fourWkFourHDNumSet = ko.observable(new FourWeekFourHolidayNumberSetting(1, new OneWeekPublicHoliday(0, 0, new LastWeekHolidayNumberOfOneWeek(0, 0)), 1, new FourWeekPublicHoliday(0, 0, new LastWeekHolidayNumberOfFourWeek(0, 0))));
+                _self.fourWkFourHDNumSet = ko.observable(new FourWeekFourHolidayNumberSetting(0, new OneWeekPublicHoliday(0, 0, new LastWeekHolidayNumberOfOneWeek(0, 0)), 0, new FourWeekPublicHoliday(0, 0, new LastWeekHolidayNumberOfFourWeek(0, 0))));
                 
                 _self.companyManageClassification = ko.observableArray();
                 _self.publicHDPeriod = ko.observableArray();
