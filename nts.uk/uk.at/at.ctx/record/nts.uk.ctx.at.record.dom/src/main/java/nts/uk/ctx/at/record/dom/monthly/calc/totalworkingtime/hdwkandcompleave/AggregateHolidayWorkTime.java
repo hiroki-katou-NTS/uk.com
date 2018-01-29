@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.HolidayWorkTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 集計休出時間
@@ -125,8 +126,9 @@ public class AggregateHolidayWorkTime {
 	
 	/**
 	 * 集計する
+	 * @param datePeriod 期間
 	 */
-	public void aggregate(){
+	public void aggregate(DatePeriod datePeriod){
 
 		this.holidayWorkTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.beforeHolidayWorkTime = new AttendanceTimeMonth(0);
@@ -135,6 +137,7 @@ public class AggregateHolidayWorkTime {
 		this.legalTransferHolidayWorkTime = new AttendanceTimeMonth(0);
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			this.holidayWorkTime = this.holidayWorkTime.addMinutes(
 					timeSeriesWork.getHolidayWorkTime().getHolidayWorkTime().get().getTime().v(),
 					timeSeriesWork.getHolidayWorkTime().getHolidayWorkTime().get().getCalcTime().v());

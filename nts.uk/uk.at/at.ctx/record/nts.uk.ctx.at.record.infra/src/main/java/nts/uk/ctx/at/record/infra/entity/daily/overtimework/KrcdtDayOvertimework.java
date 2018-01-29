@@ -383,7 +383,7 @@ public class KrcdtDayOvertimework extends UkJpaEntity implements Serializable{
 		return new OverTimeOfDaily(new ArrayList<>(), 
 								   list,
 								   Finally.of(new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.ileglMidntOverTime),new AttendanceTime(this.calcIleglMidNOverTime)))),
-								   new AttendanceTime(this.ileglMidntOverTime),
+								   new AttendanceTime(this.deformLeglOverTime),
 								   new FlexTime(TimeWithCalculationMinusExist.createTimeWithCalculation(new AttendanceTimeOfExistMinus(this.flexTime), new AttendanceTimeOfExistMinus(this.calcFlexTime)),new AttendanceTime(this.preAppFlexTime)),
 								   new AttendanceTime(this.overTimeBindTime)
 								   ); 

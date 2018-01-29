@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -36,8 +40,7 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 	/**
 	 * Instantiates a new prescribed timezone setting.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public PrescribedTimezoneSetting(PrescribedTimezoneSettingGetMemento memento) {
 		this.morningEndTime = memento.getMorningEndTime();
@@ -102,8 +105,7 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(PrescribedTimezoneSettingSetMemento memento) {
 		memento.setMorningEndTime(this.morningEndTime);
@@ -132,10 +134,8 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 	/**
 	 * Update start time shift.
 	 *
-	 * @param newTime
-	 *            the new time
-	 * @param workNo
-	 *            the work no
+	 * @param newTime the new time
+	 * @param workNo the work no
 	 */
 	public void updateStartTimeShift(TimeWithDayAttr newTime, int workNo) {
 		TimezoneUse tz = this.getTimezone(workNo);
@@ -145,10 +145,8 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 	/**
 	 * Update end time shift.
 	 *
-	 * @param newTime
-	 *            the new time
-	 * @param workNo
-	 *            the work no
+	 * @param newTime the new time
+	 * @param workNo the work no
 	 */
 	public void updateEndTimeShift(TimeWithDayAttr newTime, int workNo) {
 		TimezoneUse tz = this.getTimezone(workNo);
@@ -158,12 +156,9 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 	/**
 	 * Update timezone shift.
 	 *
-	 * @param workNo
-	 *            the work no
-	 * @param newStrTime
-	 *            the new str time
-	 * @param newEndTime
-	 *            the new end time
+	 * @param workNo the work no
+	 * @param newStrTime the new str time
+	 * @param newEndTime the new end time
 	 */
 	public void updateTimezoneShift(int workNo, TimeWithDayAttr newStrTime, TimeWithDayAttr newEndTime) {
 		this.updateStartTimeShift(newStrTime, workNo);
@@ -173,8 +168,7 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 	/**
 	 * Gets the timezone.
 	 *
-	 * @param workNo
-	 *            the work no
+	 * @param workNo the work no
 	 * @return the timezone
 	 */
 	private TimezoneUse getTimezone(int workNo) {
@@ -198,8 +192,7 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 	/**
 	 * Checks if is morning end time less than or equal to shift 2 start time.
 	 *
-	 * @return true, if is morning end time less than or equal to shift 2 start
-	 *         time
+	 * @return true, if is morning end time less than or equal to shift 2 start time
 	 */
 	private boolean isMorningEndTimeLessThanOrEqualToShift2StartTime() {
 		return this.morningEndTime.lessThanOrEqualTo(this.getTimezoneShiftTwo().getStart());
@@ -208,8 +201,7 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 	/**
 	 * Checks if is afternoon start time less than or equal to shift 1 end time.
 	 *
-	 * @return true, if is afternoon start time less than or equal to shift 1
-	 *         end time
+	 * @return true, if is afternoon start time less than or equal to shift 1 end time
 	 */
 	private boolean isAfternoonStartTimeLessThanOrEqualToShift1EndTime() {
 		return this.afternoonStartTime.lessThanOrEqualTo(this.getTimezoneShiftOne().getEnd());
@@ -256,15 +248,12 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 			this.validTimeDayShiftTwo();
 			this.validTimeDayShiftOneAndTwo();
 		}
-		
+
 		super.validate();
 	}
 
 	/**
 	 * Valid time day.
-	 *
-	 * @param be
-	 *            the be
 	 */
 	private void validTimeDay() {
 		// 使用しない
@@ -281,9 +270,6 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 
 	/**
 	 * Valid time day shift two.
-	 *
-	 * @param be
-	 *            the be
 	 */
 	private void validTimeDayShiftTwo() {
 		if (this.getTimezoneShiftTwo().isUsed()) {
@@ -301,9 +287,6 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 
 	/**
 	 * Valid time day shift one and two.
-	 *
-	 * @param be
-	 *            the be
 	 */
 	private void validTimeDayShiftOneAndTwo() {
 		if (this.getTimezoneShiftTwo().isUsed()) {
@@ -318,8 +301,7 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 	/**
 	 * Restore disabled data from.
 	 *
-	 * @param domain
-	 *            the domain
+	 * @param domain the domain
 	 */
 	public void restoreDisabledDataFrom(PrescribedTimezoneSetting domain) {
 		int indexOfShift2 = this.lstTimezone.indexOf(this.getTimezoneShiftTwo());
@@ -327,17 +309,9 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 	}
 
 	/**
-	 * Restore default data.
-	 */
-	public void restoreDefaultData() {
-		this.getTimezoneShiftTwo().restoreDefaultData();
-	}
-
-	/**
 	 * Gets the match work no time sheet.
 	 *
-	 * @param workNo
-	 *            the work no
+	 * @param workNo the work no
 	 * @return the match work no time sheet
 	 */
 	public TimezoneUse getMatchWorkNoTimeSheet(int workNo) {
@@ -347,5 +321,60 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 			throw new RuntimeException("Exist duplicate workNo : " + workNo);
 		}
 		return timeSheetWithUseAtrList.get(0);
+	}
+
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param workTimeType the work time type
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, PrescribedTimezoneSetting oldDomain) {
+		if (screenMode == ScreenMode.SIMPLE) {
+			// Simple mode
+			this.getTimezoneShiftTwo().restoreData(oldDomain.getTimezoneShiftTwo());
+		} 
+
+		if (screenMode == ScreenMode.DETAIL) {
+			// Detail mode
+			if ((workTimeType.getWorkTimeDailyAtr().equals(WorkTimeDailyAtr.REGULAR_WORK)
+					&& workTimeType.getWorkTimeMethodSet().equals(WorkTimeMethodSet.DIFFTIME_WORK))
+					|| workTimeType.getWorkTimeDailyAtr().equals(WorkTimeDailyAtr.FLEX_WORK)) {
+				this.getTimezoneShiftTwo().restoreData(oldDomain.getTimezoneShiftTwo());
+			} else {
+				TimezoneUse timeZone2 = this.getTimezoneShiftTwo();
+				if (!timeZone2.isUsed()) {
+					this.getTimezoneShiftTwo().restoreData(oldDomain.getTimezoneShiftTwo());
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param workTimeType the work time type
+	 */
+	public void restoreDefaultData(ScreenMode screenMode, WorkTimeDivision workTimeType) {
+		if (screenMode == ScreenMode.SIMPLE) {
+			// Simple mode
+			this.getTimezoneShiftTwo().restoreDefaultData();
+		} 
+
+		if (screenMode == ScreenMode.DETAIL) {
+			// Detail mode
+			if ((workTimeType.getWorkTimeDailyAtr().equals(WorkTimeDailyAtr.REGULAR_WORK)
+					&& workTimeType.getWorkTimeMethodSet().equals(WorkTimeMethodSet.DIFFTIME_WORK))
+					|| workTimeType.getWorkTimeDailyAtr().equals(WorkTimeDailyAtr.FLEX_WORK)) {
+				this.getTimezoneShiftTwo().restoreDefaultData();
+			} else {
+				TimezoneUse timeZone2 = this.getTimezoneShiftTwo();
+				if (!timeZone2.isUsed()) {
+					this.getTimezoneShiftTwo().restoreDefaultData();
+				}
+			}
+		}
 	}
 }

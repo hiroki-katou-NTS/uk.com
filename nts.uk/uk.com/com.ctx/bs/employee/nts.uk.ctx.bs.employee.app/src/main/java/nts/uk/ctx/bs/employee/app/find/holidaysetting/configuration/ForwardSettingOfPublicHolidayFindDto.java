@@ -37,8 +37,9 @@ public class ForwardSettingOfPublicHolidayFindDto implements ForwardSettingOfPub
 	public void setIsTransferWhenPublicHdIsMinus(boolean isTransferWhenPublicHdIsMinus) {
 		if(isTransferWhenPublicHdIsMinus){
 			this.isTransferWhenPublicHdIsMinus = TRUE_VALUE;
+		} else {
+			this.isTransferWhenPublicHdIsMinus = FALSE_VALUE;
 		}
-		this.isTransferWhenPublicHdIsMinus = FALSE_VALUE;
 	}
 
 	/* (non-Javadoc)
