@@ -64,8 +64,8 @@ module nts.uk.at.view.kdl003.a {
                 // Search options
                 self.startTimeOption = ko.observable(1);
                 self.startTime = ko.observable(null);
-                self.endTimeOption = ko.observable(1);
-                self.endTime = ko.observable(null);
+                self.endTimeOption = ko.observable(1); 
+                self.endTime = ko.observable(null);  
                 
                 self.startBTime = ko.observable(null);
                 self.endBTime = ko.observable(null);
