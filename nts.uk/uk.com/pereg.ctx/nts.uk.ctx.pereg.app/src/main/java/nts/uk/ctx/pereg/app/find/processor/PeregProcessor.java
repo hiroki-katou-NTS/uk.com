@@ -185,6 +185,7 @@ public class PeregProcessor {
 				roleId == null ? "" : roleId, companyId, contractCode, loginEmpId.equals(query.getEmployeeId()));
 		lstPerInfoItemDefForLayout = getPerItemDefForLayout(getItemDefParam, loginEmpId, checkViewOnly.isViewOnly, checkViewOnly.startDate);				
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
+		if(lstPerInfoItemDefForLayout.size() == 0) return empMaintLayoutDto;
 		List<LayoutPersonInfoClsDto> classItemList = getClassItemList(query, perInfoCtg, lstPerInfoItemDefForLayout, peregDto);
 		empMaintLayoutDto.setClassificationItems(classItemList);
 		

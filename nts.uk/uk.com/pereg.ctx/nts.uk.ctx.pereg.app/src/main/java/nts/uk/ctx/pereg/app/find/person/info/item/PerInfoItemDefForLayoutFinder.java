@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -31,18 +30,12 @@ import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItem;
 import nts.uk.ctx.pereg.dom.person.info.timeitem.TimeItem;
 import nts.uk.ctx.pereg.dom.person.info.timepointitem.TimePointItem;
-import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
-import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
-import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Stateless
 public class PerInfoItemDefForLayoutFinder {
-	
-	@Inject
-	private PersonInfoItemAuthRepository personInfoItemAuthRepository;
 	
 	@Inject
 	I18NResourcesForUK ukResouce;

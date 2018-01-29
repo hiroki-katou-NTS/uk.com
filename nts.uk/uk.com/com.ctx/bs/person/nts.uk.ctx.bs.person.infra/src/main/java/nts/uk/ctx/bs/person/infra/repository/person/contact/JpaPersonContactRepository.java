@@ -35,6 +35,20 @@ public class JpaPersonContactRepository  extends JpaRepository implements Person
 		this.commandProxy().remove(BpsmtPersonContact.class, key);
 	}
 	
+	private PersonContact toDomain(BpsmtPersonContact entity) {
+		String personId = entity.bpsmtPersonContactPK.pid;
+		String phoneNumber = entity.cellPhoneNumber != null ? entity.cellPhoneNumber : null;
+		String mailAddress = entity.mailAdress != null ? entity.mailAdress : null;
+		String mobileMailAdd = entity.mobileMailAdress != null ? entity.mobileMailAdress : null;
+		String memo1 = entity.memo1 != null ? entity.memo1 : null;
+		String contactName1 = entity.contactName1 != null ? entity.contactName1 : null;
+		String phoneNumber1 = entity.phoneNo1 != null? entity.phoneNo1 : null;
+		String memo2 = entity.memo2 != null ? entity.memo2 : null;
+		String contactName2 = entity.contactName2 != null ? entity.contactName2 : null;
+		String phoneNumber2 = entity.phoneNo2 != null? entity.phoneNo2 : null;
+		return new PersonContact(personId, phoneNumber, mailAddress, mobileMailAdd, memo1, contactName1, phoneNumber1, memo2, contactName2, phoneNumber2);
+	}
+	
 	/**
 	 * Convert domain to entity
 	 * @param domain
@@ -96,6 +110,19 @@ public class JpaPersonContactRepository  extends JpaRepository implements Person
 			entity.phoneNo1 = domain.getEmergencyContact2().getPhoneNumber().v();
 		}
 			
+	}
+
+	/**
+	 * get domain PersonContact by person id
+	 * @param perId -- person id
+	 */
+	@Override
+	public Optional<PersonContact> getByPId(String perId) {
+		BpsmtPersonContactPK key = new BpsmtPersonContactPK(perId);
+		Optional<BpsmtPersonContact> entity = this.queryProxy().find(key, BpsmtPersonContact.class);
+		if(entity.isPresent())
+			return Optional.of(toDomain(entity.get()));
+		else return Optional.empty();
 	}
 
 }
