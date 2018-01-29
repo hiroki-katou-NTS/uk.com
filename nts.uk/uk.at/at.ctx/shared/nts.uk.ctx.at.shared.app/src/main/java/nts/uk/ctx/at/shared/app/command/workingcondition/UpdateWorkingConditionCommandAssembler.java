@@ -8,7 +8,9 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.workingcondition.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
+import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternWorkScheduleCre;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
@@ -178,14 +180,25 @@ public class UpdateWorkingConditionCommandAssembler {
 				EnumAdaptor.valueOf(command.getBasicCreateMethod()!=null?command.getBasicCreateMethod().intValue():0, WorkScheduleBasicCreMethod.class),
 				busCal, monthlySchedule);
 		WorkingConditionItem workingCond = new WorkingConditionItem(command.getHistId(),
-				EnumAdaptor.valueOf(command.getScheduleManagementAtr() != null? command.getScheduleManagementAtr().intValue() : 0, NotUseAtr.class), workDayOfWeek,
-				workCategory, EnumAdaptor.valueOf(command.getAutoStampSetAtr() != null ? command.getAutoStampSetAtr().intValue(): 0, NotUseAtr.class),
-				EnumAdaptor.valueOf(command.getAutoIntervalSetAtr() != null ? command.getAutoIntervalSetAtr().intValue(): 0, NotUseAtr.class),
+				EnumAdaptor.valueOf(
+						command.getScheduleManagementAtr() != null ? command.getScheduleManagementAtr().intValue() : 0,
+						NotUseAtr.class),
+				workDayOfWeek, workCategory,
+				EnumAdaptor.valueOf(command.getAutoStampSetAtr() != null ? command.getAutoStampSetAtr().intValue() : 0,
+						NotUseAtr.class),
+				EnumAdaptor.valueOf(
+						command.getAutoIntervalSetAtr() != null ? command.getAutoIntervalSetAtr().intValue() : 0,
+						NotUseAtr.class),
 				command.getEmployeeId(),
-				EnumAdaptor.valueOf(command.getVacationAddedTimeAtr() != null? command.getVacationAddedTimeAtr().intValue(): 0, NotUseAtr.class),
-				command.getContractTime() != null? command.getContractTime().intValue(): 0,
-				EnumAdaptor.valueOf(command.getLaborSystem() != null? command.getLaborSystem().intValue(): 0, WorkingSystem.class), holidayAddTimeSet,
-				scheduleMethod);
+				EnumAdaptor.valueOf(
+						command.getVacationAddedTimeAtr() != null ? command.getVacationAddedTimeAtr().intValue() : 0,
+						NotUseAtr.class),
+				command.getContractTime() != null ? command.getContractTime().intValue() : 0,
+				EnumAdaptor.valueOf(command.getLaborSystem() != null ? command.getLaborSystem().intValue() : 0,
+						WorkingSystem.class),
+				holidayAddTimeSet, scheduleMethod, command.getHourlyPaymentAtr() != null? command.getHourlyPaymentAtr().intValue() : null,
+				command.getTimeApply() != null ? new BonusPaySettingCode(command.getTimeApply()) : null,
+				command.getMonthlyPattern() != null ? new MonthlyPatternCode(command.getMonthlyPattern()) : null);
 		return workingCond;
 	}
 	
