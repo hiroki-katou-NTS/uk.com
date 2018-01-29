@@ -17,6 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Table(name = "BSYMT_EMP_INFO_CONTACT")
 public class BsymtEmpInfoContact extends UkJpaEntity implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
@@ -28,8 +29,16 @@ public class BsymtEmpInfoContact extends UkJpaEntity implements Serializable {
 	public String cid;
 	
 	@Basic(optional = true)
+	@Column(name = "CELL_PHONE_NO")
+	public String cellPhoneNo;
+	
+	@Basic(optional = true)
 	@Column(name = "MAIL_ADDRESS")
 	public String mailAdress;
+	
+	@Basic(optional = true)
+	@Column(name = "PHONE_MAIL_ADDRESS")
+	public String phoneMailAddress;
 	
 	@Basic(optional = true)
 	@Column(name = "SEAT_DIAL_IN")
@@ -39,13 +48,8 @@ public class BsymtEmpInfoContact extends UkJpaEntity implements Serializable {
 	@Column(name = "SEAT_EXTENSION_NO")
 	public String seatExtensionNo;
 	
-	@Basic(optional = true)
-	@Column(name = "PHONE_MAIL_ADDRESS")
-	public String phoneMailAddress;
-	
-	@Basic(optional = true)
-	@Column(name = "CELL_PHONE_NO")
-	public String cellPhoneNo;
+
+
 	
 	@Override
 	protected Object getKey() {
