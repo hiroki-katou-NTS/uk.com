@@ -36,7 +36,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	@Override
 	public List<AnyItemValueOfDaily> finds(List<String> employeeId, DatePeriod baseDate) {
 		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override

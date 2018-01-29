@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -32,6 +32,16 @@ public class DeductionTime extends TimeZone {
 	public void saveToMemento(DeductionTimeSetMemento memento){
 		memento.setStart(this.start);
 		memento.setEnd(this.end);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(DeductionTime oldDomain) {
+		this.start = oldDomain.getStart();
+		this.end = oldDomain.getEnd();
 	}
 	
 	/* (non-Javadoc)

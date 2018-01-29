@@ -74,8 +74,8 @@ module ccg030.a.viewmodel {
         registryFlowMenu() {
             var self = this;
             $(".nts-input").trigger("validate");
-            if (util.isNullOrEmpty(self.selectedFlowMenu().fileID()))
-                $('#file_upload').ntsError('set', '選択されていないファイル');
+//            if (util.isNullOrEmpty(self.selectedFlowMenu().fileID()))
+//                $('#file_upload').ntsError('set', '選択されていないファイル');
             if (!errors.hasError()) {
                 self.selectedFlowMenu().topPageCode(text.padLeft($("#inpCode").val(), '0', 4));
                 var flowMenu = ko.mapping.toJS(self.selectedFlowMenu);
@@ -227,6 +227,10 @@ module ccg030.a.viewmodel {
 
         /** Open ccg030 B Dialog */
         open030B_Dialog() {
+            var self = this;
+            if(self.selectedFlowMenu().fileName() == '未設定'){
+                return;    
+            }
             nts.uk.ui.block.invisible();
             nts.uk.ui.windows.setShared("flowmenu", ko.mapping.toJS(this.selectedFlowMenu()), false);
             nts.uk.ui.windows.setShared("fileID", this.selectedFlowMenu().fileID(), false);

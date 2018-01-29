@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class WorkTimezoneStampSet.
@@ -20,7 +20,7 @@ import nts.arc.layer.dom.DomainObject;
  * @return the priority set
  */
 @Getter
-public class WorkTimezoneStampSet extends DomainObject{
+public class WorkTimezoneStampSet extends WorkTimeDomainObject {
 	
 	/** The rounding set. */
 	//丸め設定

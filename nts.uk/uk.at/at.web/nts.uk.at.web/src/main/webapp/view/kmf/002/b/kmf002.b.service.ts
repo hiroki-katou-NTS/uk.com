@@ -6,28 +6,33 @@ module nts.uk.at.view.kmf002.b {
         var path: any = {
                 save: "bs/employee/holidaysetting/workplace/save",
                 find: "bs/employee/holidaysetting/workplace/findWorkplaceMonthDaySetting",
-                remove: "bs/employee/holidaysetting/workplace/remove"
+                remove: "bs/employee/holidaysetting/workplace/remove",
+                findFirstMonth: "basic/company/beginningmonth/find",
             };
         
-         export function save(year: number, data: any, workplaceId: string): JQueryPromise<any> {
-            model.WorkplaceMonthDaySetting workplaceMonthDaySetting = new model.WorkplaceMonthDaySetting(year, workplaceId, new Array<model.PublicHolidayMonthSettingDto>());
+         export function save(year: string, data: any, workplaceId: string): JQueryPromise<any> {
+            let workplaceMonthDaySetting: model.WorkplaceMonthDaySetting = new model.WorkplaceMonthDaySetting(year, workplaceId, []);
             workplaceMonthDaySetting.toDto(data);
-            let command = {};
+            let command: any = {};
             command.year = year;
             command.publicHolidayMonthSettings = workplaceMonthDaySetting.publicHolidayMonthSettingDto;
             command.workplaceId = workplaceId;
             return nts.uk.request.ajax("com", path.save, command);
         }
         
-        export function find(year: number, workplaceId: string): JQueryPromise<any> {
+        export function find(year: string, workplaceId: string): JQueryPromise<any> {
             return nts.uk.request.ajax("com", path.find + "/" + year + "/" + workplaceId);
         }
         
-        export function remove(year: number, workplaceId: string): JQueryPromise<any> {
-            let command = {};
+        export function remove(year: string, workplaceId: string): JQueryPromise<any> {
+            let command: any = {};
             command.year = year;
             command.workplaceId = workplaceId;
             return nts.uk.request.ajax("com", path.remove, command);
+        }
+        
+        export function findFirstMonth(): JQueryPromise<any>{
+            return nts.uk.request.ajax("com", path.findFirstMonth);
         }
         
     }
@@ -37,11 +42,11 @@ module nts.uk.at.view.kmf002.b {
      */
     export module model {
         export class WorkplaceMonthDaySetting {
-            year: number;
-            publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>;
+            year: string;
+            publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[];
             workplaceId: string;
             
-            constructor(year: number, workplaceId: string, publicHolidayMonthSettingDto: Array<PublicHolidayMonthSettingDto>){
+            constructor(year: string, workplaceId: string, publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[]){
                 let _self = this;
                 _self.year = year;
                 _self.publicHolidayMonthSettingDto = publicHolidayMonthSettingDto;
@@ -63,16 +68,16 @@ module nts.uk.at.view.kmf002.b {
             constructor(year: number, workplaceId: string){
                 let _self = this;
                 _self.year = year;
-                _self.workplaceId = empCd;
+                _self.workplaceId = workplaceId;
             }
         }
         
         export class PublicHolidayMonthSettingDto{
-            publicHdManagementYear: number;
+            publicHdManagementYear: string;
             month: number;
             inLegalHoliday: number;
             
-            constructor(publicHdManagementYear: number, month: number, inLegalHoliday: number) {
+            constructor(publicHdManagementYear: string, month: number, inLegalHoliday: number) {
                 this.publicHdManagementYear = publicHdManagementYear;
                 this.month = month;
                 this.inLegalHoliday = inLegalHoliday;

@@ -133,6 +133,12 @@ module nts.uk.ui.errors {
             });
         }
         
+        removeErrorByCode($element: JQuery, errorCode: string) {
+            this.errors.remove((error) => {
+                return error.$control.is($element) && error.errorCode === errorCode;
+            });
+        }
+        
         getErrorByElement($element: JQuery): ErrorListItem {
             return _.find(this.errors(), e => { 
                 return e.$control.is($element)
@@ -275,6 +281,10 @@ module nts.uk.ui.errors {
 
     export function removeByElement($control: JQuery): void {
         errorsViewModel().removeErrorByElement($control);
+    }
+    
+    export function removeByCode($control: JQuery, errorCode: string): void {
+        errorsViewModel().removeErrorByCode($control, errorCode);
     }
     
     export function getErrorByElement($element: JQuery): ErrorListItem{

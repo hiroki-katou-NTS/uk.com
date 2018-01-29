@@ -26,11 +26,9 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 	private static final String REMOVE_TIME_LEAVING_WORK;
 
-	private static final String DEL_BY_LIST_KEY;
-
-	private static final String FIND_BY_LIST_SID;
-
 	private static final String FIND_BY_KEY;
+
+	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -49,25 +47,20 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		REMOVE_TIME_LEAVING_WORK = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiLeavingWork a ");
-		builderString.append("WHERE WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd IN :ymds ");
-		DEL_BY_LIST_KEY = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDaiLeavingWork a ");
-		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd IN :ymds ");
-		FIND_BY_LIST_SID = builderString.toString();
-
-		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiLeavingWork a ");
 		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
 		FIND_BY_KEY = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtDaiLeavingWork a ");
+		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd >= :start ");
+		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd <= :end ");
+		builderString.append("ORDER BY a.krcdtDaiLeavingWorkPK.ymd ");
+		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
 	}
 
 	@Override
@@ -80,23 +73,20 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	@Override
-	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
-		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
-				.setParameter("processingYmds", ymds).executeUpdate();
-	}
-
-	@Override
-	public List<TimeLeavingOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
-		return this.queryProxy().query(FIND_BY_LIST_SID, KrcdtDaiLeavingWork.class)
-				.setParameter("employeeIds", employeeIds).setParameter("ymds", ymds).getList(f -> f.toDomain());
-	}
-
-	@Override
 	public Optional<TimeLeavingOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd) {
 		return this.queryProxy().query(FIND_BY_KEY, KrcdtDaiLeavingWork.class).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).getSingle(f -> f.toDomain());
 	}
 
+	@Override
+	public List<TimeLeavingOfDailyPerformance> findbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
+		return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD, KrcdtDaiLeavingWork.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("start", datePeriod.start())
+				.setParameter("end", datePeriod.end())
+				.getList(f -> f.toDomain());
+	}
+	
 	@Override
 	public void update(TimeLeavingOfDailyPerformance domain) {
 		if (domain == null) {
@@ -104,7 +94,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		}
 		KrcdtDaiLeavingWork entity = getDailyLeaving(domain.getEmployeeId(), domain.getYmd());
 		List<KrcdtTimeLeavingWork> timeWorks = entity.timeLeavingWorks;
-		entity.workTimes = domain.getWorkTimes().v();
+		entity.workTimes = domain.getWorkTimes() == null ? null : domain.getWorkTimes().v();
 		domain.getTimeLeavingWorks().stream().forEach(c -> {
 			KrcdtTimeLeavingWork krcdtTimeLeavingWork = timeWorks.stream()
 					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()).findFirst().orElse(null);
@@ -223,7 +213,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtDaiLeavingWork a ");
 		query.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId IN :employeeId ");
-		query.append("AND a.krcdtDaiLeavingWorkPK.ymd <= :end AND a.krcdtDaiLeavingWorkPK.ymd >= : start");
+		query.append("AND a.krcdtDaiLeavingWorkPK.ymd <= :end AND a.krcdtDaiLeavingWorkPK.ymd >= :start");
 		return queryProxy().query(query.toString(), KrcdtDaiLeavingWork.class).setParameter("employeeId", employeeIds)
 				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
 				.collect(Collectors.groupingBy(c -> c.krcdtDaiLeavingWorkPK.employeeId + c.krcdtDaiLeavingWorkPK.ymd.toString()))

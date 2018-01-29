@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.OverTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 集計残業時間
@@ -125,8 +126,9 @@ public class AggregateOverTime {
 	
 	/**
 	 * 集計する
+	 * @param datePeriod 期間
 	 */
-	public void aggregate(){
+	public void aggregate(DatePeriod datePeriod){
 
 		this.overTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.beforeOverTime = new AttendanceTimeMonth(0);
@@ -135,6 +137,7 @@ public class AggregateOverTime {
 		this.legalTransferOverTime = new AttendanceTimeMonth(0);
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			this.overTime = this.overTime.addMinutes(
 					timeSeriesWork.getOverTime().getOverTimeWork().getTime().v(),
 					timeSeriesWork.getOverTime().getOverTimeWork().getCalcTime().v());

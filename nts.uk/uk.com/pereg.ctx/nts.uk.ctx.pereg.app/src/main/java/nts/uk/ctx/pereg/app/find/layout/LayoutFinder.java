@@ -32,6 +32,9 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.definition.LayoutPersonInfoClsDefFinder;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgDataDto;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.DataTypeStateDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
@@ -39,6 +42,7 @@ import nts.uk.ctx.pereg.app.find.processor.LayoutingProcessor;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
+import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
@@ -109,6 +113,12 @@ public class LayoutFinder {
 	
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxFactory;
+	
+	@Inject
+	private PerInfoCtgFinder categoryFinder;
+	
+	@Inject
+	private LayoutPersonInfoClsDefFinder clsItemDefFinder;
 
 	public List<SimpleEmpMainLayoutDto> getSimpleLayoutList(String browsingEmpId) {
 
@@ -119,14 +129,20 @@ public class LayoutFinder {
 		boolean selfBrowsing = loginEmpId.equals(browsingEmpId);
 
 		List<MaintenanceLayout> simpleLayouts = layoutRepo.getAllMaintenanceLayout(companyId);
-
-		Map<String, PersonInfoCategoryAuth> mapCategoryAuth = perInfoCtgAuthRepo.getAllCategoryAuthByRoleId(roleId)
+		
+		Map<String, PersonInfoCategoryAuth> authCategoryMap = perInfoCtgAuthRepo.getAllCategoryAuthByRoleId(roleId)
 				.stream().collect(Collectors.toMap(e -> e.getPersonInfoCategoryAuthId(), e -> e));
 
+		Map<String, PerInfoCtgDataDto> availableCategoryMap = categoryFinder.getAllCtgUsedByCompanyId().stream()
+				.collect(Collectors.toMap(x -> x.getCtgId(), x -> x));
+		
 		List<SimpleEmpMainLayoutDto> acceptSplLayouts = new ArrayList<>();
 		for (MaintenanceLayout simpleLayout : simpleLayouts) {
-
-			if (haveAnItemAuth(simpleLayout.getMaintenanceLayoutID(), mapCategoryAuth, selfBrowsing)) {
+			String layoutId = simpleLayout.getMaintenanceLayoutID();
+			
+			List<LayoutPersonInfoClassification> itemClassList = this.itemClsRepo.getAllByLayoutId(layoutId);
+			
+			if (haveAnItemAuth(itemClassList, authCategoryMap, availableCategoryMap, selfBrowsing)) {
 				acceptSplLayouts.add(SimpleEmpMainLayoutDto.fromDomain(simpleLayout));
 			}
 
@@ -186,7 +202,7 @@ public class LayoutFinder {
 			}
 		}
 
-		// GET DATA WITH EACH CATEGORY
+		// COLLECT CLASS ITEM WITH CATEGORY
 		Map<String, List<LayoutPersonInfoClsDto>> classItemInCategoryMap = new HashMap<>();
 		for (LayoutPersonInfoClsDto classItem : authItemClasList) {
 			
@@ -205,7 +221,8 @@ public class LayoutFinder {
 			}
 
 		}
-
+		
+		// GET DATA WITH EACH CATEGORY
 		for (Entry<String, List<LayoutPersonInfoClsDto>> classItemsOfCategory : classItemInCategoryMap.entrySet())
 		{
 			String categoryId = classItemsOfCategory.getKey();
@@ -217,9 +234,29 @@ public class LayoutFinder {
 			// get data
 			getDataforSingleItem(perInfoCategory, classItemList, standardDate, browsingPeronId, browsingEmpId, query);
 
-			classItemList.forEach(classItem -> {
-				checkActionRoleItemData(itemAuthMap.get(classItem.getPersonInfoCategoryID()), classItem, selfBrowsing);
-			});
+			switch (perInfoCategory.getCategoryType()) {
+			case SINGLEINFO:
+				classItemList.forEach(classItem -> {
+					checkActionRoleItemData(itemAuthMap.get(classItem.getPersonInfoCategoryID()), classItem, selfBrowsing);
+				});
+				break;
+			case CONTINUOUSHISTORY:
+			case NODUPLICATEHISTORY:
+			case DUPLICATEHISTORY:
+			case CONTINUOUS_HISTORY_FOR_ENDDATE:
+				
+				break;
+			default:
+				break;
+			}
+			
+			// check role
+			if ( perInfoCategory.getCategoryType() == CategoryType.SINGLEINFO) {
+				
+			} else {
+				
+			}
+			
 		}
 
 		result.setClassificationItems(authItemClasList);
@@ -227,21 +264,44 @@ public class LayoutFinder {
 
 	}
 
-	private boolean haveAnItemAuth(String layoutId, Map<String, PersonInfoCategoryAuth> mapCategoryAuth,
+	private boolean haveAnItemAuth(List<LayoutPersonInfoClassification> itemClassList,
+			Map<String, PersonInfoCategoryAuth> authCategoryMap, Map<String, PerInfoCtgDataDto> availableCategoryMap,
 			boolean selfBrowsing) {
-		List<LayoutPersonInfoClassification> itemClassList = this.itemClsRepo.getAllByLayoutId(layoutId);
 		for (LayoutPersonInfoClassification itemClass : itemClassList) {
+			
 			if (itemClass.getLayoutItemType() == LayoutItemType.SeparatorLine) {
 				continue;
 			}
-			PersonInfoCategoryAuth categoryAuth = mapCategoryAuth.get(itemClass.getPersonInfoCategoryID());
-			if (categoryAuth == null) {
-				continue;
+			
+			String categoryIdOfClassItem = itemClass.getPersonInfoCategoryID();
+			
+			if ( availableCategoryMap.containsKey(categoryIdOfClassItem)) {
+				PerInfoCtgDataDto availableCategory = availableCategoryMap.get(categoryIdOfClassItem);
+				
+				List<String> itemIdList = this.clsItemDefFinder.getItemDefineIds(itemClass.getLayoutID(),
+						itemClass.getDispOrder().v());
+				
+				if ( anElementExistInList(availableCategory.getItemList(), itemIdList)) {
+					PersonInfoCategoryAuth categoryAuth = authCategoryMap.get(categoryIdOfClassItem);
+					if (categoryAuth == null) {
+						continue;
+					}
+					if (selfBrowsing && categoryAuth.getAllowPersonRef() == PersonInfoPermissionType.YES) {
+						return true;
+					}
+					if (!selfBrowsing && categoryAuth.getAllowOtherRef() == PersonInfoPermissionType.YES) {
+						return true;
+					}
+				}
+				
 			}
-			if (selfBrowsing && categoryAuth.getAllowPersonRef() == PersonInfoPermissionType.YES) {
-				return true;
-			}
-			if (!selfBrowsing && categoryAuth.getAllowOtherRef() == PersonInfoPermissionType.YES) {
+		}
+		return false;
+	}
+	
+	private boolean anElementExistInList(List<String> fatherList, List<String> sonList) {
+		for ( String element : sonList) {
+			if ( fatherList.contains(element)) {
 				return true;
 			}
 		}

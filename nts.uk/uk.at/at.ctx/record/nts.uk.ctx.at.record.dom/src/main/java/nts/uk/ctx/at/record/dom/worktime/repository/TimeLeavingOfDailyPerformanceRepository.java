@@ -11,14 +11,12 @@ public interface TimeLeavingOfDailyPerformanceRepository {
 	
 	void delete(String employeeId, GeneralDate ymd);
 	
-	void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
-	
-	List<TimeLeavingOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
-	
 	Optional<TimeLeavingOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd);
 
+	List<TimeLeavingOfDailyPerformance> findbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
+	
 	List<TimeLeavingOfDailyPerformance> finds(List<String> employeeIds, DatePeriod ymd);
-
+	
 	void add(TimeLeavingOfDailyPerformance timeLeaving);
 	
 	void update(TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance);

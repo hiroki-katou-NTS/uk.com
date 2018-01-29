@@ -10,10 +10,10 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepositoryService;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItemRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepositoryService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
@@ -27,10 +27,10 @@ public class DeleteAffClassCommandHandler extends CommandHandler<DeleteAffClassi
 		implements PeregDeleteCommandHandler<DeleteAffClassificationCommand> {
 	
 	@Inject
-	private AffClassHistoryRepository_ver1 affClassHistoryRepo;
+	private AffClassHistoryRepository affClassHistoryRepo;
 
 	@Inject
-	private AffClassHistItemRepository_ver1 affClassHistItemRepo;
+	private AffClassHistItemRepository affClassHistItemRepo;
 	
 	@Inject
 	private AffClassHistoryRepositoryService affClassHistoryRepositoryService;
@@ -50,15 +50,15 @@ public class DeleteAffClassCommandHandler extends CommandHandler<DeleteAffClassi
 		DeleteAffClassificationCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		
-		Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(companyId,command.getEmployeeId());
+		Optional<AffClassHistory> historyOption = affClassHistoryRepo.getByEmployeeId(companyId,command.getEmployeeId());
 		if ( !historyOption.isPresent()) {
-			throw new RuntimeException("Invalid AffClassHistory_ver1");
+			throw new RuntimeException("Invalid AffClassHistory");
 		}
-		AffClassHistory_ver1 history = historyOption.get();
+		AffClassHistory history = historyOption.get();
 		Optional<DateHistoryItem> itemToBeDeleteOpt = history.getPeriods().stream()
 				.filter(h -> h.identifier().equals(command.getHistoryId())).findFirst();
 		if ( !itemToBeDeleteOpt.isPresent()) {
-			throw new RuntimeException("Invalid AffClassHistory_ver1");
+			throw new RuntimeException("Invalid AffClassHistory");
 		}
 		DateHistoryItem itemToBeDelete = itemToBeDeleteOpt.get();
 		historyOption.get().remove(itemToBeDelete);

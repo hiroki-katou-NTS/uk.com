@@ -30,7 +30,7 @@
 				<div class="row2" style="margin-top: 5px;">
 					<span style="text-align: center; margin-right: 15px;">#{i18n.getText('CCG014_18')}</span>
 					<div data-bind="ntsFormLabel: { constraint: ['TitleMenuCD' , 'Name'], required: true }">#{i18n.getText('CCG014_13')}</div>
-					<input id="copycode" data-bind="ntsTextEditor: {value: copyTitleCD, constraint: 'TitleMenuCD', required: true,name: '#[CCG014_21]'}" tabindex="1" />
+					<input id="copycode" data-bind="ntsTextEditor: {value: copyTitleCD, constraint: 'TitleMenuCD', required: true,name: '#[CCG014_21]' , immediate: true ,option: {autofill:true, filldirection:'left'}}" tabindex="1" />
 	     			<input id="copyname" data-bind="ntsTextEditor: {value: copyName, constraint: 'Name', required: true ,name: '#[CCG014_22]'}" tabindex="2"/>
 				</div>
 				<div id="functions-area-bottom">

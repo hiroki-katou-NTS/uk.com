@@ -7,7 +7,9 @@
     <com:ValidatorScript>
         nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord
     </com:ValidatorScript>
-
+	<com:EnumScript>
+		nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond
+	</com:EnumScript>
 	<div id="daily-content" data-bind="visible: category() == 5">
 		<div id="div_group_function">
 		    <table>
@@ -41,8 +43,8 @@
 			            <th class="ui-widget-header" style ="text-align: center;">#{i18n.getText('KAL003_25')}</th>
 			        </tr>
 		        </thead>
-		       <tbody data-bind="foreach: listWorkRecordExtractingConditions">
-		           <tr data-bind="attr: { 'data-id': rowId() }">
+		       <tbody data-bind="foreach: listWorkRecordExtractingConditions()">
+		           <tr data-bind="attr: { 'data-id': rowId }">
 		               <td style ="text-align: center;">
 		                   <div data-bind="ntsCheckBox: {checked: useAtr}"></div>
 		               </td>
@@ -50,7 +52,7 @@
 	                       <span data-bind="text: rowId"></span>
 	                   </td>
 	                   <td>
-	                       <input data-bind="ntsTextEditor: {value: nameWKRecord, 
+	                       <input data-bind="ntsTextEditor: {value: nameWKRecord, required: true, constraint: 'NameWKRecord',
 		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
 				                textmode: 'text',
 				                placeholder: '',
@@ -62,30 +64,27 @@
 	                       <button data-bind="click: function() {$parent.btnSettingCheckCondition_click(rowId)},enable: true">#{i18n.getText('KAL003_14')}</button>
 	                   </td>
 	                   <td>
-	                       <input data-bind="ntsTextEditor: {value: errorAlarmCondition().message,
-	                           option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-	                            textmode: 'text',
-	                            placeholder: '',
-	                            width: '203px',
-	                            textalign: 'left'
-	                        }))}" />
+	                   		<div data-bind="with: errorAlarmCondition">
+								<div data-bind = "text: displayMessage" class="limited-label description"></div>
+ 	                        </div>
 	                   </td>
 		           </tr>
 		       </tbody>
 		   </table>
+
 		</div>
 	</div>
 	<div id="schedule4week-content" data-bind="visible: category() == 2">
-		<div data-bind="ntsRadioBoxGroup: {
-			options: itemList,
-			optionsValue: 'code',
-			optionsText: 'name',
-			value: schedule4WeekCheckCondition,
-			enable: true}"></div>
-		<br/>
-		<label>#{i18n.getText('KAL003_151')}</label>
-		<br/>
-		<label>#{i18n.getText('KAL003_152')}</label>
+		<div class="valign-center control-group">
+			<div
+				data-bind="ntsRadioButton: { checked: schedule4WeekCheckCondition, option: list4weekClassEnum()[0], name: '#[KAL003_150]', optionValue: 'code', optionText: 'name', group: 'D4W4'}"></div>
+			<label class="label4w4d">#{i18n.getText('KAL003_151')}</label>
+		</div>
+		<div class="valign-center control-group">
+			<div
+				data-bind="ntsRadioButton: { checked: schedule4WeekCheckCondition, option: list4weekClassEnum()[1], name: '#[KAL003_150]', optionValue: 'code', optionText: 'name', group: 'D4W4'}"></div>
+			<label class="label4w4d">#{i18n.getText('KAL003_152')}</label>
+		</div>
 	</div>
 
 </ui:composition>

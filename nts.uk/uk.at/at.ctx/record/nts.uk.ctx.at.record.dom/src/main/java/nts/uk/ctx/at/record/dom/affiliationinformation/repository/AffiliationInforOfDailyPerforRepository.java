@@ -13,8 +13,6 @@ public interface AffiliationInforOfDailyPerforRepository {
 	
 	void add(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor);
 	
-	void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds);
-	
 	Optional<AffiliationInforOfDailyPerfor> findByKey(String employeeId, GeneralDate ymd);
 	
 	List<AffiliationInforOfDailyPerfor> finds(List<String> employeeId, DatePeriod ymd);

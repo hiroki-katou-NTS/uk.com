@@ -1,6 +1,7 @@
 module cps001.d.vm {
     import text = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
+    import alertError = nts.uk.ui.dialog.alertError;
     import confirm = nts.uk.ui.dialog.confirm;
     import close = nts.uk.ui.windows.close;
     import setShared = nts.uk.ui.windows.setShared;
@@ -26,7 +27,7 @@ module cps001.d.vm {
             let self = this,
                 params: IEmpFileMn = getShared("CPS001D_PARAMS");
             $('input[type=checkbox]').prop('checked', false);
-
+            $(".comfirm-checkbox").hide();
 
             self.empFileMn().employeeId = params.employeeId;
             //get employee file management domain by employeeId
@@ -81,13 +82,16 @@ module cps001.d.vm {
             }
 
             let isImageLoaded = $("#test").ntsImageEditor("getImgStatus");
-            if ($("#test").data("cropper") == undefined) {
-                self.close();
-                return;
-            }
-            if ($("#test").data("cropper").cropped)
-                self.isChange(true);
+
             if (isImageLoaded.imgOnView) {
+
+                if ($("#test").data("cropper") == undefined) {
+                    self.close();
+                    return;
+                }
+                if ($("#test").data("cropper").cropped)
+                    self.isChange(true);
+
                 if (self.isChange()) {
                     $("#test").ntsImageEditor("upload", { stereoType: "image" }).done(function(data1) {
 
@@ -102,7 +106,8 @@ module cps001.d.vm {
                     });
                 } else self.close();
             } else {
-                self.close();
+                alertError({ messageId: "Msg_617" });
+                nts.uk.ui.block.clear();
             }
         }
 

@@ -1,16 +1,15 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * The Class Timezone.
+ * The Class TimezoneUse.
  */
 //時間帯(使用区分付き)
 @Getter
@@ -30,6 +29,11 @@ public class TimezoneUse extends TimeZone {
 	/** The shift two. */
 	public static Integer SHIFT_TWO = 2;
 
+	/**
+	 * Update start time.
+	 *
+	 * @param start the start
+	 */
 	public void updateStartTime(TimeWithDayAttr start) {
 		this.start = start;
 	}
@@ -64,23 +68,38 @@ public class TimezoneUse extends TimeZone {
 	@Override
 	public void validate() {
 		if (this.isUsed()) {
+			// Validate
 			if (this.workNo == SHIFT_TWO && (this.start == null || this.end == null)) {
-				throw new BusinessException("Msg_516", "KMK003_216");
+				this.bundledBusinessExceptions.addMessage("Msg_516", "KMK003_216");
 			}
 			this.validateRange("KMK003_216");
 		}
+		
+		super.validate();
 	}
 
+	/**
+	 * Restore data.
+	 *
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(TimezoneUse oldDomain) {
+		this.useAtr = oldDomain.getUseAtr();
+		this.start = oldDomain.getStart();
+		this.end = oldDomain.getEnd();
+	}
+	
 	/**
 	 * Restore default data.
 	 */
 	public void restoreDefaultData() {
+		this.useAtr = UseSetting.NOT_USE;
 		this.start = TimeWithDayAttr.THE_PRESENT_DAY_0000;
 		this.end = TimeWithDayAttr.THE_PRESENT_DAY_0000;
 	}
 	
 	/**
-	 * Instantiates a new timezone.
+	 * Instantiates a new timezone use.
 	 *
 	 * @param memento the memento
 	 */

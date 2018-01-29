@@ -26,13 +26,11 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaWorkInformationRepository extends JpaRepository implements WorkInformationRepository {
 
 	private static final String DEL_BY_KEY;
-
-	private static final String FIND_BY_LIST_SID;
+	
+	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
 	
 	private static final String FIND_BY_LIST_SID_AND_PERIOD;
-
-	private static final String DEL_BY_LIST_KEY;
-
+	
 	private static final String DEL_BY_KEY_ID;
 
 	private static final String FIND_BY_ID = "SELECT a FROM KrcdtDaiPerWorkInfo a "
@@ -52,13 +50,15 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		builderString.append("WHERE a.krcdtWorkScheduleTimePK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtWorkScheduleTimePK.ymd = :ymd ");
 		DEL_BY_KEY_ID = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
-		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd IN :ymds ");
-		FIND_BY_LIST_SID = builderString.toString();
+		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd >= :startDate ");
+		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd <= :endDate ");
+		builderString.append("ORDER BY a.krcdtDaiPerWorkInfoPK.ymd ");
+		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -67,13 +67,6 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd >= :startDate ");
 		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd <= :endDate ");
 		FIND_BY_LIST_SID_AND_PERIOD = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
-		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd IN :ymds ");
-		DEL_BY_LIST_KEY = builderString.toString();
 	}
 
 	@Override
@@ -93,22 +86,17 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	}
 
 	@Override
-	public List<WorkInfoOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
-		return this.queryProxy().query(FIND_BY_LIST_SID, KrcdtDaiPerWorkInfo.class)
-				.setParameter("employeeIds", employeeIds).setParameter("ymds", ymds).getList(f -> f.toDomain());
+	public List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
+		return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeId", employeeId).setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain());
 	}
-
+	
 	@Override
 	public List<WorkInfoOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, DatePeriod ymds) {
 		return this.queryProxy().query(FIND_BY_LIST_SID_AND_PERIOD, KrcdtDaiPerWorkInfo.class)
 				.setParameter("employeeIds", employeeIds).setParameter("startDate", ymds.start())
 				.setParameter("endDate", ymds.end()).getList(f -> f.toDomain());
-	}
-
-	@Override
-	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
-		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
-				.setParameter("ymds", ymds).executeUpdate();
 	}
 
 	@Override

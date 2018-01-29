@@ -71,11 +71,32 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 	}
 
 	@Override
+	public List<SpecificDateAttrOfDailyPerfor> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a FROM KrcdtDaiSpeDayCla a ");
+		query.append("WHERE a.krcdtDaiSpeDayClaPK.sid = :employeeId ");
+		query.append("AND a.krcdtDaiSpeDayClaPK.ymd >= :start ");
+		query.append("AND a.krcdtDaiSpeDayClaPK.ymd <= :end ");
+		query.append("ORDER BY a.krcdtDaiSpeDayClaPK.ymd ");
+		return queryProxy().query(query.toString(), KrcdtDaiSpeDayCla.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("start", datePeriod.start())
+				.setParameter("end", datePeriod.end())
+				.getList().stream()
+				.collect(Collectors.groupingBy(c -> c.krcdtDaiSpeDayClaPK.sid + c.krcdtDaiSpeDayClaPK.ymd.toString()))
+				.entrySet().stream().map(c -> new SpecificDateAttrOfDailyPerfor(
+						c.getValue().get(0).krcdtDaiSpeDayClaPK.sid,
+						c.getValue().stream().map(x -> specificDateAttr(x)).collect(Collectors.toList()),
+						c.getValue().get(0).krcdtDaiSpeDayClaPK.ymd))
+				.collect(Collectors.toList());
+	}
+	
+	@Override
 	public List<SpecificDateAttrOfDailyPerfor> finds(List<String> employeeId, DatePeriod ymd) {
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtDaiSpeDayCla a ");
 		query.append("WHERE a.krcdtDaiSpeDayClaPK.sid IN :employeeId ");
-		query.append("AND a.krcdtDaiSpeDayClaPK.ymd <= :end AND a.krcdtDaiSpeDayClaPK.ymd >= : start");
+		query.append("AND a.krcdtDaiSpeDayClaPK.ymd <= :end AND a.krcdtDaiSpeDayClaPK.ymd >= :start");
 		return queryProxy().query(query.toString(), KrcdtDaiSpeDayCla.class).setParameter("employeeId", employeeId)
 				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
 				.collect(Collectors.groupingBy(c -> c.krcdtDaiSpeDayClaPK.sid + c.krcdtDaiSpeDayClaPK.ymd.toString()))

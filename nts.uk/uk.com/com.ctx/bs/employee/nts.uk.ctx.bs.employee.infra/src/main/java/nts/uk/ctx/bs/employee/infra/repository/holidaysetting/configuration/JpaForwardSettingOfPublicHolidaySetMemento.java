@@ -46,8 +46,9 @@ public class JpaForwardSettingOfPublicHolidaySetMemento implements ForwardSettin
 	public void setIsTransferWhenPublicHdIsMinus(boolean isTransferWhenPublicHdIsMinus) {
 		if(isTransferWhenPublicHdIsMinus){
 			this.kshmtForwardSetOfPublicHd.setIsPublicHdMinus(TRUE_VALUE);
+		} else {
+			this.kshmtForwardSetOfPublicHd.setIsPublicHdMinus(FALSE_VALUE);
 		}
-		this.kshmtForwardSetOfPublicHd.setIsPublicHdMinus(FALSE_VALUE);
 	}
 
 	/* (non-Javadoc)

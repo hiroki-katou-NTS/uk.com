@@ -37,7 +37,7 @@ public class FlowMenuDto {
 				 domain.getSize().getWidth().v(),
 				 domain.getSize().getHeight().v(),
 				 domain.getFileID(),
-				 fileInfo.getOriginalName(),
+				 fileInfo == null? "" : fileInfo.getOriginalName(),
 				 domain.getDefClassAtr().value);
 	}
 }

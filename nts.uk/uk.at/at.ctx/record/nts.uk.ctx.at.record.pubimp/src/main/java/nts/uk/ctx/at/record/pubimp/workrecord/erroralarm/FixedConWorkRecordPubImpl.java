@@ -24,8 +24,8 @@ public class FixedConWorkRecordPubImpl implements FixedConWorkRecordPub {
 	private FixedConditionWorkRecordRepository repo;
 	
 	@Override
-	public List<FixedConWorkRecordPubExport> getAllFixedConWorkRecordByListID(List<String> listErrorAlarmID) {
-		List<FixedConWorkRecordPubExport> data = repo.getAllFixedConWorkRecordByListID(listErrorAlarmID)
+	public List<FixedConWorkRecordPubExport> getAllFixedConWorkRecordByID(String dailyAlarmConID) {
+		List<FixedConWorkRecordPubExport> data = repo.getAllFixedConWorkRecordByID(dailyAlarmConID)
 				.stream().map(c->convertToExport(c)).collect(Collectors.toList());
 		if(data.isEmpty())
 			return Collections.emptyList();
@@ -33,8 +33,8 @@ public class FixedConWorkRecordPubImpl implements FixedConWorkRecordPub {
 	}
 
 	@Override
-	public FixedConWorkRecordPubExport getFixedConWRByCode(String errorAlarmID) {
-		Optional<FixedConWorkRecordPubExport> data = repo.getFixedConWRByCode(errorAlarmID).map(c->convertToExport(c));
+	public FixedConWorkRecordPubExport getFixedConWRByCode(String dailyAlarmConID,int fixConWorkRecordNo) {
+		Optional<FixedConWorkRecordPubExport> data = repo.getFixedConWRByCode(dailyAlarmConID,fixConWorkRecordNo).map(c->convertToExport(c));
 		if(data.isPresent())
 			return data.get();
 		return null;
@@ -42,7 +42,7 @@ public class FixedConWorkRecordPubImpl implements FixedConWorkRecordPub {
 	
 	public FixedConWorkRecordPubExport convertToExport(FixedConditionWorkRecord domain) {
 		return new FixedConWorkRecordPubExport(
-				domain.getErrorAlarmID(),
+				domain.getDailyAlarmConID(),
 				domain.getFixConWorkRecordNo().value,
 				domain.getMessage().v(),
 				domain.isUseAtr()
@@ -52,7 +52,7 @@ public class FixedConWorkRecordPubImpl implements FixedConWorkRecordPub {
 	
 	public FixedConditionWorkRecord convertToDomain(FixedConWorkRecordPubExport dto) {
 		return new FixedConditionWorkRecord(
-				dto.getErrorAlarmID(),
+				dto.getDailyAlarmConID(),
 				EnumAdaptor.valueOf(dto.getFixConWorkRecordNo(), WorkRecordFixedCheckItem.class),
 				new FixedConditionWorkRecordName(dto.getMessage()),
 				dto.isUseAtr()
@@ -73,11 +73,8 @@ public class FixedConWorkRecordPubImpl implements FixedConWorkRecordPub {
 	}
 
 	@Override
-	public void deleteFixedConWorkRecordPub(List<String> errorAlarmID) {
-		for(String errorId :errorAlarmID ) {
-			this.repo.deleteFixedConWorkRecord(errorId);
-		}
-		
+	public void deleteFixedConWorkRecordPub(String dailyAlarmConID) {
+		this.repo.deleteFixedConWorkRecord(dailyAlarmConID);
 	}
 
 }

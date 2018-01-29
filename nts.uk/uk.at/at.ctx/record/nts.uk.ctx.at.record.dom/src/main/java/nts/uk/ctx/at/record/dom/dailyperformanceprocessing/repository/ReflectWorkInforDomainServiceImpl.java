@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
@@ -30,8 +31,6 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.Classifica
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
-import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
@@ -78,10 +77,8 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -89,7 +86,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -363,7 +359,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			} else {
 				// 個人情報から勤務種類と就業時間帯を写す
 				// 個人情報に処理中の曜日の設定が存在するか確認する
-				// 存在する - has data
 				WorkInformation recordWorkInformation = new WorkInformation();
 				if (this.workingConditionItemRepository.getBySidAndStandardDate(employeeID, day).isPresent()) {
 					// monday
@@ -508,17 +503,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						}
 					}
 				}
-				// // 存在しない - no data
-				// else {
-				// recordWorkInformation.setWorkTypeCode(new WorkTypeCode(
-				// personalLaborHasData.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().v()));
-				// recordWorkInformation.setWorkTimeCode(
-				// personalLaborHasData.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()
-				// ? new
-				// WorkTimeCode(personalLaborHasData.get().getWorkCategory().getWeekdayTime()
-				// .getWorkTimeCode().get().v())
-				// : new WorkTimeCode(""));
-				// }
 
 				workInfoOfDailyPerformanceUpdate.setRecordWorkInformation(recordWorkInformation);
 
@@ -529,26 +513,26 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							.v();
 					Optional<WorkType> workType = this.workTypeRepository.findByPK(companyId, workTypeCode);
 					// 打刻の扱い方に従って、直行区分、直帰区分を更新
-					if (workType.get().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay) {
-						if (workType.get().getWorkTypeSetList().get(0).getAttendanceTime() == WorkTypeSetCheck.CHECK) {
-							workInfoOfDailyPerformanceUpdate
-									.setGoStraightAtr(EnumAdaptor.valueOf(1, NotUseAttribute.class));
-						} else if (workType.get().getWorkTypeSetList().get(0)
-								.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK) {
-							workInfoOfDailyPerformanceUpdate
-									.setGoStraightAtr(EnumAdaptor.valueOf(0, NotUseAttribute.class));
-						}
-						if (workType.get().getWorkTypeSetList().get(0).getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
-							workInfoOfDailyPerformanceUpdate
-									.setBackStraightAtr(EnumAdaptor.valueOf(1, NotUseAttribute.class));
-						} else if (workType.get().getWorkTypeSetList().get(0)
-								.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
-							workInfoOfDailyPerformanceUpdate
-									.setBackStraightAtr(EnumAdaptor.valueOf(0, NotUseAttribute.class));
-						}
+					if (workType.get().getWorkTypeSetList().get(0).getAttendanceTime() == WorkTypeSetCheck.CHECK) {
+						workInfoOfDailyPerformanceUpdate
+								.setGoStraightAtr(EnumAdaptor.valueOf(1, NotUseAttribute.class));
+					} else if (workType.get().getWorkTypeSetList().get(0)
+							.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK) {
+						workInfoOfDailyPerformanceUpdate
+								.setGoStraightAtr(EnumAdaptor.valueOf(0, NotUseAttribute.class));
 					}
+					if (workType.get().getWorkTypeSetList().get(0).getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
+						workInfoOfDailyPerformanceUpdate
+								.setBackStraightAtr(EnumAdaptor.valueOf(1, NotUseAttribute.class));
+					} else if (workType.get().getWorkTypeSetList().get(0)
+							.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
+						workInfoOfDailyPerformanceUpdate
+								.setBackStraightAtr(EnumAdaptor.valueOf(0, NotUseAttribute.class));
+					}
+				} else {
+					workInfoOfDailyPerformanceUpdate.setGoStraightAtr(EnumAdaptor.valueOf(1, NotUseAttribute.class));
+					workInfoOfDailyPerformanceUpdate.setBackStraightAtr(EnumAdaptor.valueOf(1, NotUseAttribute.class));
 				}
-				;
 
 				// カレンダー情報を取得する
 				// a part of Du's team
@@ -575,6 +559,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						}
 					}
 					workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(scheduleTimeSheets);
+				} else {
+					throw new RuntimeException("PredetemineTimeSetting has not data");
 				}
 			}
 
@@ -618,38 +604,32 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			// timeLeavingOptional.getTimeLeavingWorks();
 		}
 		if (stampOutput != null) {
-			// if (stampOutput.getOutingTimeOfDailyPerformance() != null) {
-			// List<OutingFrameNo> outingFrameNos =
-			// stampOutput.getOutingTimeOfDailyPerformance().getOutingTimeSheets()
-			// .stream().map(item -> {
-			// return item.getOutingFrameNo();
-			// }).collect(Collectors.toList());
-			// for (OutingFrameNo outingFrameNo : outingFrameNos) {
-			// if
-			// (this.outingTimeOfDailyPerformanceRepository.checkExistData(employeeID,
-			// day, outingFrameNo)) {
-			// OutingTimeSheet outingTimeSheet =
-			// stampOutput.getOutingTimeOfDailyPerformance().getOutingTimeSheets().stream()
-			// .filter(item -> item.getOutingFrameNo().v() ==
-			// outingFrameNo.v()).findFirst().get();
-			// this.outingTimeOfDailyPerformanceRepository.updateOneDataInlist(employeeID,
-			// day, outingTimeSheet);
-			// } else {
-			// this.outingTimeOfDailyPerformanceRepository.add(stampOutput.getOutingTimeOfDailyPerformance());
-			// }
-			// }
-			// }
-			// if (stampOutput.getTemporaryTimeOfDailyPerformance() != null) {
-			// if
-			// (this.temporaryTimeOfDailyPerformanceRepository.findByKey(employeeID,
-			// day).isPresent()) {
-			// this.temporaryTimeOfDailyPerformanceRepository
-			// .update(stampOutput.getTemporaryTimeOfDailyPerformance());
-			// } else {
-			// this.temporaryTimeOfDailyPerformanceRepository
-			// .insert(stampOutput.getTemporaryTimeOfDailyPerformance());
-			// }
-			// }
+//			if (stampOutput.getOutingTimeOfDailyPerformance() != null) {
+//				List<OutingFrameNo> outingFrameNos = stampOutput.getOutingTimeOfDailyPerformance().getOutingTimeSheets()
+//						.stream().map(item -> {
+//							return item.getOutingFrameNo();
+//						}).collect(Collectors.toList());
+//				for (OutingFrameNo outingFrameNo : outingFrameNos) {
+//					if (this.outingTimeOfDailyPerformanceRepository.checkExistData(employeeID, day, outingFrameNo)) {
+//						OutingTimeSheet outingTimeSheet = stampOutput.getOutingTimeOfDailyPerformance()
+//								.getOutingTimeSheets().stream()
+//								.filter(item -> item.getOutingFrameNo().v() == outingFrameNo.v()).findFirst().get();
+//						this.outingTimeOfDailyPerformanceRepository.updateOneDataInlist(employeeID, day,
+//								outingTimeSheet);
+//					} else {
+//						this.outingTimeOfDailyPerformanceRepository.add(stampOutput.getOutingTimeOfDailyPerformance());
+//					}
+//				}
+//			}
+//			if (stampOutput.getTemporaryTimeOfDailyPerformance() != null) {
+//				if (this.temporaryTimeOfDailyPerformanceRepository.findByKey(employeeID, day).isPresent()) {
+//					this.temporaryTimeOfDailyPerformanceRepository
+//							.update(stampOutput.getTemporaryTimeOfDailyPerformance());
+//				} else {
+//					this.temporaryTimeOfDailyPerformanceRepository
+//							.insert(stampOutput.getTemporaryTimeOfDailyPerformance());
+//				}
+//			}
 			if (stampOutput.getTimeLeavingOfDailyPerformance() != null
 					&& stampOutput.getTimeLeavingOfDailyPerformance().getTimeLeavingWorks() != null
 					&& !stampOutput.getTimeLeavingOfDailyPerformance().getTimeLeavingWorks().isEmpty()) {
@@ -791,10 +771,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 											.findBySid(employeeID, day);
 
 									if (affWorkplaceDto.isPresent()) {
-										actualStamp.setLocationCode(
-												new WorkLocationCD(affWorkplaceDto.get().getWorkplaceCode()));
-										leaveActualStamp.setLocationCode(
-												new WorkLocationCD(affWorkplaceDto.get().getWorkplaceCode()));
+										actualStamp.setLocationCode(null);
+										leaveActualStamp.setLocationCode(null);
 									}
 									actualStamp.setStampSourceInfo(automaticStampSetDetailDto.getAttendanceStamp());
 									leaveActualStamp.setStampSourceInfo(automaticStampSetDetailDto.getLeavingStamp());

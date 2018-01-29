@@ -1237,7 +1237,7 @@ public class ProgramsManager {
 			"/view/cas/011/a/index.xhtml");
 	
 	public static final Program CAS011C = new Program(WebAppId.COM, ProgramIdConsts.CAS011C, "CAS011_3",
-			"/view/cas/011/b/index.xhtml");
+			"/view/cas/011/c/index.xhtml");
 	
 	public static final Program CAS012A = new Program(WebAppId.COM, ProgramIdConsts.CAS012A, "CAS012_1",
 			"/view/cas/012/a/index.xhtml");
@@ -1248,10 +1248,10 @@ public class ProgramsManager {
 	public static final Program CAS012C = new Program(WebAppId.COM, ProgramIdConsts.CAS012C, "CAS012_3",
 			"/view/cas/012/c/index.xhtml");
 
-	public static final Program CAS013A = new Program(WebAppId.COM, ProgramIdConsts.CAS013A, "CAS012_1",
+	public static final Program CAS013A = new Program(WebAppId.COM, ProgramIdConsts.CAS013A, "CAS013_1",
 			"/view/cas/013/a/index.xhtml");
 	
-	public static final Program CAS013B = new Program(WebAppId.COM, ProgramIdConsts.CAS013B, "CAS012_2",
+	public static final Program CAS013B = new Program(WebAppId.COM, ProgramIdConsts.CAS013B, "CAS013_2",
 			"/view/cas/013/b/index.xhtml");
 
 	public static final Program CAS014A = new Program(WebAppId.COM, ProgramIdConsts.CAS014A, "CAS014_2",

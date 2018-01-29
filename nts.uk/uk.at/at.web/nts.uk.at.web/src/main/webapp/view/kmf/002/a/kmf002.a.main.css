@@ -36,7 +36,7 @@
 	padding-left: 70px;
 }  
 
-.ntsRadioBox span.box {
+/* .ntsRadioBox span.box {
     border: 2px solid black;
 }
 
@@ -46,7 +46,7 @@
     top: 0px;
     left: 0px;
     background: black;
-}
+} */
 
 .sidebar-content-header {
 	display: flex;
@@ -60,3 +60,7 @@
 .sidebar-content-header > button:nth-child(2) {
 	margin-left: 60px;
 } 
+
+.hidden-element {
+    display: none !important;
+}

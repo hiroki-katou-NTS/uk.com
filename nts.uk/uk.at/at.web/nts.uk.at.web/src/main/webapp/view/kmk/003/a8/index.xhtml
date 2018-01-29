@@ -4,15 +4,15 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	
-	<div class="tab_8_setting_rows">
-		<div class="tab_8_setting_header" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_80')}</div>		
+	<div class="tab-rows">
+		<div style="width: 180px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_80')}</div>		
 	</div>
 	
-	<div style="margin-left: 20px; margin-right: 20px;">		
+	<div>		
 		<hr/>
 	</div>
 	
-	<div style="margin-left: 40px; margin-right: 40px; margin-top: 20px;">	
+	<div class="tab-block">	
 		<div class="tab_8_round_setting">
 			<label>#{i18n.getText('KMK003_213')}</label>
 			<div tabindex="99" class="tab_8_radio_setting" data-bind="ntsRadioBoxGroup: {
@@ -35,7 +35,7 @@
 		</div>
 	</div>
 	
-	<div style="margin-left: 40px; margin-right: 20px; margin-top: 20px;">	
+	<div class="tab-block">	
 		<div id="workTimeGoOutSetTabPanel" data-bind="ntsTabPanel: { 
 				dataSource: workTimeTabs, 
 				active: workTimeSelectedTab,

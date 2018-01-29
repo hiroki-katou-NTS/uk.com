@@ -13,16 +13,16 @@ module nts.uk.at.view.kmf002.e {
         /**
          * 
          */
-        export function find(year: number): JQueryPromise<>{
+        export function find(year: string): JQueryPromise<any>{
             return nts.uk.request.ajax("com",path.find + "/" + year);
         }
 
         
         
-        export function save(year: number, data: any): JQueryPromise<any> {
-            model.SystemResourceDto sysResourceDto = new model.SystemResourceDto(year, new Array<model.PublicHolidayMonthSettingDto>());
+        export function save(year: string, data: any): JQueryPromise<any> {
+            let sysResourceDto: model.SystemResourceDto= new model.SystemResourceDto(year, []);
             sysResourceDto.toDto(data);
-            let command = {};
+            let command: any = {};
             command.year = year;
             command.publicHolidayMonthSettings = sysResourceDto.publicHolidayMonthSettings
             return nts.uk.request.ajax("com", path.save, command);
@@ -32,8 +32,8 @@ module nts.uk.at.view.kmf002.e {
             return nts.uk.request.ajax("com", path.findFirstMonth);
         }
         
-        export function remove(year: number): JQueryPromise<any> {
-            let command = {};
+        export function remove(year: string): JQueryPromise<any> {
+            let command: any = {};
             command.year = year;
             return nts.uk.request.ajax("com", path.remove, command);
         }
@@ -44,10 +44,10 @@ module nts.uk.at.view.kmf002.e {
      */
     export module model {
         export class SystemResourceDto {
-            year: number;
-            publicHolidayMonthSettings: Array<PublicHolidayMonthSettingDto>;
+            year: string;
+            publicHolidayMonthSettings: PublicHolidayMonthSettingDto[];
             
-            constructor(year: number, publicHolidayMonthSettings: Array<PublicHolidayMonthSettingDto>){
+            constructor(year: string, publicHolidayMonthSettings: PublicHolidayMonthSettingDto[]){
                 let _self = this;
                 _self.year = year;
                 _self.publicHolidayMonthSettings = publicHolidayMonthSettings;
@@ -70,11 +70,11 @@ module nts.uk.at.view.kmf002.e {
         }
         
         export class PublicHolidayMonthSettingDto{
-            publicHdManagementYear: number;
+            publicHdManagementYear: string;
             month: number;
             inLegalHoliday: number;
             
-            constructor(publicHdManagementYear: number, month: number, inLegalHoliday: number) {
+            constructor(publicHdManagementYear: string, month: number, inLegalHoliday: number) {
                 this.publicHdManagementYear = publicHdManagementYear;
                 this.month = month;
                 this.inLegalHoliday = inLegalHoliday;

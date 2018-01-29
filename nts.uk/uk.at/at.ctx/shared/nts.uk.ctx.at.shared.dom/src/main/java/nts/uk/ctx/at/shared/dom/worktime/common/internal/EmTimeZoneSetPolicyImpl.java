@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
@@ -35,19 +35,19 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, EmTimeZoneSet etzSet) {
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, EmTimeZoneSet etzSet) {
 		val emTimezon = etzSet.getTimezone();
 		val prescribed = predTime.getPrescribedTimezoneSetting();
 
 		// validate msg_516
 		if (this.tzrPolicy.validateRange(predTime, emTimezon)) {
-			throw new BusinessException("Msg_516","KMK003_86");
+			be.addMessage("Msg_516","KMK003_86");
 		}
 
 		// validate msg_774
 		if (prescribed.getTimezoneShiftTwo().isUsed() && (!emTimezon.isBetweenOrEqual(prescribed.getTimezoneShiftOne())
 				&& !emTimezon.isBetweenOrEqual(prescribed.getTimezoneShiftTwo()))) {
-			throw new BusinessException("Msg_774","KMK003_86");
+			be.addMessage("Msg_774","KMK003_86");
 		}
 	}
 
@@ -60,10 +60,10 @@ public class EmTimeZoneSetPolicyImpl implements EmTimeZoneSetPolicy {
 	 * nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding)
 	 */
 	@Override
-	public void validateTimezone(PrescribedTimezoneSetting presTz, TimeZoneRounding timezone) {
+	public void validateTimezone(BundledBusinessException be, PrescribedTimezoneSetting presTz, TimeZoneRounding timezone) {
 		// validate msg_773
 		if (!presTz.getTimezoneShiftTwo().isUsed() && !timezone.isBetweenOrEqual(presTz.getTimezoneShiftOne())) {
-			throw new BusinessException("Msg_773", "KMK003_86");
+			be.addMessage("Msg_773", "KMK003_86");
 		}
 	}
 

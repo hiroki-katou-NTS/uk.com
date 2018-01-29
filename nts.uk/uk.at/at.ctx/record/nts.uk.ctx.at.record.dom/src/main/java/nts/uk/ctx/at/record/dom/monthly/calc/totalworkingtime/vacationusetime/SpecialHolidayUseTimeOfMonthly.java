@@ -8,6 +8,7 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.SpecialHolidayUseTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の特別休暇使用時間
@@ -52,11 +53,16 @@ public class SpecialHolidayUseTimeOfMonthly {
 	
 	/**
 	 * 特別休暇使用時間を確認する
+	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailys リスト：日別実績の勤怠時間
 	 */
-	public void confirm(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+	public void confirm(DatePeriod datePeriod,
+			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
 
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailys) {
+			
+			// 期間外はスキップする
+			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
 			
 			// 「日別実績の特別休暇」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -73,14 +79,16 @@ public class SpecialHolidayUseTimeOfMonthly {
 	
 	/**
 	 * 特別休暇使用時間を集計する
+	 * @param datePeriod 期間
 	 */
-	public void aggregate(){
+	public void aggregate(DatePeriod datePeriod){
 		
 		if (this.isAggregated) return;
 		
 		this.useTime = new AttendanceTimeMonth(0);
 		
 		for (val timeSeriesWork : this.timeSeriesWorks){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
 			//SpecialHolidayOfDaily specialHolidayUseTime = timeSeriesWork.getSpecialHolidayUseTime();
 			//this.useTime.addMinutes(specialHolidayUseTime.getUseTime().valueAsMinutes());
 		}

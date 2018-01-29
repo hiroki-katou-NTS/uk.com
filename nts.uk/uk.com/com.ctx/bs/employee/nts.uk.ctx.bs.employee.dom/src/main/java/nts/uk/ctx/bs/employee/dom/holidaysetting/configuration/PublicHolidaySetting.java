@@ -46,7 +46,15 @@ public class PublicHolidaySetting extends AggregateRoot {
 		this.isManageComPublicHd = memento.getIsManageComPublicHd();
 		this.publicHdManagementClassification = memento.getPublicHdManagementClassification();
 		this.isWeeklyHdCheck = memento.getIsWeeklyHdCheck();
-		this.publicHdManagementStartDate = memento.getPublicHolidayManagementStartDate();
+		this.publicHdManagementStartDate = memento.getPublicHolidayManagementStartDate(null);
+	}
+	
+	public PublicHolidaySetting(PublicHolidaySettingGetMemento memento, Integer publicHdManageAtr) {
+		this.companyID = memento.getCompanyID();
+		this.isManageComPublicHd = memento.getIsManageComPublicHd();
+		this.publicHdManagementClassification = memento.getPublicHdManagementClassification();
+		this.isWeeklyHdCheck = memento.getIsWeeklyHdCheck();
+		this.publicHdManagementStartDate = memento.getPublicHolidayManagementStartDate(publicHdManageAtr);
 	}	
 
 	/**
@@ -60,5 +68,13 @@ public class PublicHolidaySetting extends AggregateRoot {
 		memento.setPublicHdManagementClassification(this.publicHdManagementClassification);
 		memento.setIsWeeklyHdCheck(this.isWeeklyHdCheck);
 		memento.setPublicHolidayManagementStartDate(this.publicHdManagementStartDate);
+	}
+	
+	public void saveToMemento(PublicHolidaySettingSetMemento memento, Integer publicHdManageAtr) {
+		memento.setCompanyID(this.companyID);
+		memento.setIsManageComPublicHd(this.isManageComPublicHd);
+		memento.setPublicHdManagementClassification(this.publicHdManagementClassification);
+		memento.setIsWeeklyHdCheck(this.isWeeklyHdCheck);
+		memento.setPublicHolidayManagementStartDate(this.publicHdManagementStartDate, publicHdManageAtr);
 	}
 }
