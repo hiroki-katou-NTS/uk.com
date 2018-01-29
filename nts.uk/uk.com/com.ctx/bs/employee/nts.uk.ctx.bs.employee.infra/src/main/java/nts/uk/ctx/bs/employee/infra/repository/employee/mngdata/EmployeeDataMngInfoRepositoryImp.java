@@ -193,10 +193,10 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 			if (entity[4] != null) {
 				if (Integer.valueOf(entity[4].toString()) == 1) {
-					emp.setGender("男");
+					emp.setGender("男性");
 
 				} else if (Integer.valueOf(entity[4].toString()) == 2) {
-					emp.setGender("女");
+					emp.setGender("女性");
 				}
 
 			}
