@@ -33,4 +33,32 @@ public class KscstPerCostExtraItemPK implements Serializable {
     @Column(name = "PREMIUM_NO")
     private int premiumNo;
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KscstPerCostExtraItemPK other = (KscstPerCostExtraItemPK) obj;
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
+			return false;
+		if (premiumNo != other.premiumNo)
+			return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + premiumNo;
+		return result;
+	}
+
 }

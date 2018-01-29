@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.app.find.shift.estimate.aggregateset;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -44,41 +43,20 @@ public class AggregateSettingFinder {
 			AggregateSetting domain = optAggredateSet.get();
 			domain.saveToMemento(dto);
 			return dto;
-		} else {
-			return new AggregateSettingFindDto();
 		}
+		return null;
 	}
 	
 	public List<PremiumItemDto> findPremiumNo(){
 		String companyId = AppContexts.user().companyId();
-		
-		Optional<AggregateSetting> optAggredateSet = this.repository.findByCID(new CompanyId(companyId));
-		
-		if (optAggredateSet.isPresent()){
-			List<Integer> listPremiumNo = new ArrayList<>();
-			optAggredateSet.get().getPremiumNo().stream().forEach(e -> {
-				listPremiumNo.add(e.v());
-			});
-			return this.premiumItemRepository.findByCompanyIDAndListPremiumNo(companyId, listPremiumNo)
-					.stream()
-					.map(x -> new PremiumItemDto(
-							companyId, 
-							x.getDisplayNumber(),
-							x.getName().v(), 
-							x.getUseAtr().value))
-					.sorted(Comparator.comparing(PremiumItemDto::getDisplayNumber))
-					.collect(Collectors.toList());
-		} else {
-			return this.premiumItemRepository.findAllIsUse(companyId)
-					.stream()
-					.map(x -> new PremiumItemDto(
-							companyId, 
-							x.getDisplayNumber(),
-							x.getName().v(), 
-							x.getUseAtr().value))
-					.sorted(Comparator.comparing(PremiumItemDto::getDisplayNumber))
-					.collect(Collectors.toList());
-		}
-		
+		return this.premiumItemRepository.findAllIsUse(companyId)
+				.stream()
+				.map(x -> new PremiumItemDto(
+						companyId, 
+						x.getDisplayNumber(),
+						x.getName().v(), 
+						x.getUseAtr().value))
+				.sorted(Comparator.comparing(PremiumItemDto::getDisplayNumber))
+				.collect(Collectors.toList());
 	}
 }
