@@ -57,6 +57,9 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 		// Imported（就業）「所属雇用履歴」を取得する
 		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId, employeeId, processingDate);
+		if (!employmentHisOptional.isPresent()) {
+			throw new RuntimeException("Employment History not exist");
+		} 
 		String employmentCode = employmentHisOptional.get().getEmploymentCode();
 
 		for (GeneralDate day : listDayBetween) {

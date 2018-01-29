@@ -321,8 +321,9 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	
 	private void validRangeOfErAlCondition(CompareRange<?> compareRange) {
 		if (compareRange == null) {
-			throw new RuntimeErrorException(new Error(), "Data is invalid");
+			return;
 		}
+
 		int comOper = compareRange.getCompareOperator().value;
 		int minValue = Integer.valueOf(compareRange.getStartValue().toString()); 
 		int maxValue = Integer.valueOf(compareRange.getEndValue().toString());
@@ -331,15 +332,15 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		switch (comOper) {
 	        case 6: // 範囲の間（境界値を含まない）（＜＞）
 	        case 8: // 範囲の外（境界値を含まない）（＞＜）
-	        	valid = (minValue >= maxValue);
+	        	valid = !(minValue >= maxValue);
 	        case 7: // 範囲の間（境界値を含む）（≦≧）
 	        case 9: // 範囲の外（境界値を含む）（≧≦）
-	            valid = (minValue > maxValue);
+	            valid = !(minValue > maxValue);
 	        default:
 	            break;
 	    }
 	    if (!valid) {
-	    	throw new BusinessException("Msg_833");
+	    	throw new BusinessException("Msg_927");
 	    }
 	}
 	/**

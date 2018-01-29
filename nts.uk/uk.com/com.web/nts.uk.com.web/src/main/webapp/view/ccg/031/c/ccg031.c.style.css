@@ -1,11 +1,9 @@
 @CHARSET "UTF-8";
 
 /* Override base */
-#header {display: none;}
-#functions-area-bottom {position:relative; height:45px;}
-
+.placement-wraper {height: 100%}
 .placement-container {overflow:auto;}
-.placement-container.overflow-y {overflow-y: auto;}
-.placement-container.overflow-x {overflow-x: auto; height: 485px;}
+.placement-container.overflow-y {overflow-y: auto;  margin-right:0px;}
+.placement-container.overflow-x {overflow-x: auto; height: 100%; margin-bottom:0px;}
 
 .btn-close {min-width: 85px;}

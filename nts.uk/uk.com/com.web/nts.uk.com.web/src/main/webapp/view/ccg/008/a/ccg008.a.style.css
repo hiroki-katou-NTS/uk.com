@@ -1,3 +1,7 @@
+body {
+	overflow: hidden;
+}
+
 .setting-button{
 	float: right;
     margin-top: -35px;

@@ -78,6 +78,7 @@ module nts.uk.at.view.kaf005.b {
             // 参照
             referencePanelFlg: KnockoutObservable<boolean> = ko.observable(false);
             preAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
+            isRightContent: KnockoutObservable<boolean> = ko.observable(false);
             
             instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
             instructInfor : KnockoutObservable <string> = ko.observable('');
@@ -215,6 +216,7 @@ module nts.uk.at.view.kaf005.b {
                 self.preAppPanelFlg(data.preAppPanelFlg);
                 self.allPreAppPanelFlg(data.allPreAppPanelFlg);
                 self.indicationOvertimeFlg(data.extratimeDisplayFlag);
+                self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
                 // preAppOvertime
                 if(data.preAppOvertimeDto != null){
                     self.appDatePre(data.preAppOvertimeDto.appDatePre);
@@ -440,11 +442,13 @@ module nts.uk.at.view.kaf005.b {
                         }
                     } else if (data.errorCode == 1){
                         if(data.frameNo == -1){
+                            let frameName = [];
                             //Setting color for item error
                             for (let i = 0; i < self.overtimeHours().length; i++) {
                                 self.changeColor( self.overtimeHours()[i].attendanceID(), self.overtimeHours()[i].frameNo());
+                                frameName.push(self.overtimeHours()[i].frameName());
                             }
-                            dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(), moment(self.appDate()).format(self.DATEFORMART)]}) .then(function() { nts.uk.ui.block.clear(); }); 
+                            dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(), moment(self.appDate()).format(self.DATEFORMART),frameName]}) .then(function() { nts.uk.ui.block.clear(); }); 
                         }else{
                           //Change background color
                             self.changeColor( data.attendanceId, data.frameNo);
