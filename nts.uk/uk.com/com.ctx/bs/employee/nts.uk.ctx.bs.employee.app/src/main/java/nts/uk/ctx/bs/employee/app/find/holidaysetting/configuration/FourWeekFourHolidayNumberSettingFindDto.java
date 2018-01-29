@@ -54,8 +54,9 @@ public class FourWeekFourHolidayNumberSettingFindDto implements FourWeekFourHoli
 	public void setIsOneWeekHoliday(boolean isOneWeekHoliday) {
 		if(isOneWeekHoliday){
 			this.isOneWeekHoliday = TRUE_VALUE;
+		} else {
+			this.isOneWeekHoliday = FALSE_VALUE;
 		}
-		this.isOneWeekHoliday = FALSE_VALUE;
 	}
 
 	/* (non-Javadoc)
@@ -76,8 +77,9 @@ public class FourWeekFourHolidayNumberSettingFindDto implements FourWeekFourHoli
 	public void setIsFourWeekHoliday(boolean isFourWeekHoliday) {
 		if(isFourWeekHoliday){
 			this.isFourWeekHoliday = TRUE_VALUE;
+		} else {
+			this.isFourWeekHoliday = FALSE_VALUE;
 		}
-		this.isFourWeekHoliday = FALSE_VALUE;
 	}
 
 	/* (non-Javadoc)

@@ -17,6 +17,7 @@ import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -42,20 +43,20 @@ public class KshmtPublicHdSet extends UkJpaEntity implements Serializable {
    
     /** The is manage com public hd. */
     @Column(name = "IS_MANAGE_COM_PUBLIC_HD")
-    private int isManageComPublicHd;
+    private Integer isManageComPublicHd;
     
     /** The public hd manage atr. */
     @Column(name = "PUBLIC_HD_MANAGE_ATR")
-    private int publicHdManageAtr;
+    private Integer publicHdManageAtr;
     
     /** The period. */
     @Column(name = "PERIOD")
-    private int period;
+    private Integer period;
     
     /** The full date. */
     @Column(name = "FULL_DATE")
     @Temporal(TemporalType.DATE)
-    private Date fullDate;
+    private GeneralDate fullDate;
     
     /** The day month. */
     @Column(name = "DAY_MONTH")
@@ -63,11 +64,11 @@ public class KshmtPublicHdSet extends UkJpaEntity implements Serializable {
     
     /** The determine start D. */
     @Column(name = "DETERMINE_START_D")
-    private int determineStartD;
+    private Integer determineStartD;
 
     /** The is weekly hd check. */
     @Column(name = "IS_WEEKLY_HD_CHECK")
-    private int isWeeklyHdCheck;
+    private Integer isWeeklyHdCheck;
 
     /**
      * Instantiates a new kshmt public hd set.

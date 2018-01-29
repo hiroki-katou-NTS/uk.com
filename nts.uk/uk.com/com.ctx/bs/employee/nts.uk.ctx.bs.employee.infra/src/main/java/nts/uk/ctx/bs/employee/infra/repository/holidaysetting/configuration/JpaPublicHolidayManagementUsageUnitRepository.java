@@ -8,6 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementUsageUnit;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementUsageUnitRepository;
 import nts.uk.ctx.bs.employee.infra.entity.holidaysetting.configuration.KshmtPubHdMngUnitSet;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaPublicHolidayManagementUsageUnitRepository.
@@ -58,7 +59,7 @@ public class JpaPublicHolidayManagementUsageUnitRepository extends JpaRepository
 		e.setIsManageEmpPubHd(domain.getIsManageEmpPublicHd());
 		e.setIsManageSPubHd(domain.getIsManageEmployeePublicHd());
 		e.setIsManageWkpPubHd(domain.getIsManageWkpPublicHd());
-		
+		e.setCid(AppContexts.user().companyId());
 		return e;
 	}
 }
