@@ -130,11 +130,12 @@
 						</div> -->
 						<div  tabindex="9" data-bind="ntsDatePicker: {value: publicHolidaySetting().pubHD().date, 
 																      dateFormat: 'YYYY/MM/DD',
-																      enable: enablePubHDDateAndDayMonth}, 
+																      enable: enablePubHDDateAndDayMonth,
+																      constraint: ''}, 
 														css: {'hidden-element': enableFullDate() == false}">
 						</div>
 						<!-- A9_7 -->
-						<div tabindex="10" data-bind="css: {'hidden-element': enableFullDate() == true}">
+						<!-- <div tabindex="10" data-bind="css: {'hidden-element': enableFullDate() == true}">
 							<input data-bind="ntsTextEditor: {
 								value: publicHolidaySetting().pubHD().dayMonth,
 								constraint: '',
@@ -142,7 +143,9 @@
 								required: true,
 								enable: enablePubHDDateAndDayMonth,
 								readonly: false}" name='#[KMF002_16]'/>
-						</div>
+						</div> -->
+						<div tabindex="10" id="monthdays" data-bind="ntsMonthDays: {value: publicHolidaySetting().pubHD().dayMonth}, 
+																		css: {'hidden-element': enableFullDate() == true}" name='#[KMF002_16]'/>
 					</div>
 				</div>
 			</div>
