@@ -16,7 +16,7 @@ module nts.uk.at.view.kmf022.a.service {
         findApproSet: "at/request/application/common/setting/appcommon",
         // A10_3
         findAppCom: "at/request/application/common/setting/appset",
-        // A13_4 có 2 sự lựa chọn, anh có thể lấy list cty đang đăng nhập rồi lên ui lọc, hoặc lấy thẳng 1 object nhớ truyền apptype 
+        // A13_4 có 2 sự lựa chọn, có thể lấy list cty đang đăng nhập rồi lên UI lọc, hoặc lấy thẳng 1 object(nhớ truyền apptype) 
         findAllPro: "at/request/application/setting/proxy/findAll",
         findProByApp: "at/request/application/setting/proxy/findApp",
         // A14_3
@@ -33,6 +33,12 @@ module nts.uk.at.view.kmf022.a.service {
         findAppro: "approval/setting/approval",
         // A17_4, A9_5
         findAppSet: "at/request/application/setting/appset",
+        // A6_24, A6_26, A6_35->A6_45 có thể lấy list cty đang đăng nhập rồi lên UI lọc, hoặc lấy thẳng 1 object(nhớ truyền apptype)
+        findDisp: "at/request/application/displayname/disp",
+        fidnDispApp: "at/request/application/displayname/app",
+        // A6_27 -> A6_34 có thể lấy theo company rồi lên lọc hoặc lấy thẳng object bằng cả holiday app type
+        findAllHdApp: "at/request/application/displayname/hd",
+        findHdApp: "at/request/application/displayname/hdapp",
         //E14,15
         findStamp: "at/request/application/stamprequest/findByComID", //UpdateStampRequestSettingCommandHandler
         // F10->F16
@@ -41,6 +47,23 @@ module nts.uk.at.view.kmf022.a.service {
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
     }
+    
+    export function fidnDispApp(appType: number): JQueryPromise<void>{
+        return nts.uk.request.ajax("at", paths.fidnDispApp + "/" + appType);     
+    }
+    
+    export function findDisp() {
+        return nts.uk.request.ajax("at", paths.findDisp); 
+    }
+    
+    export function findHdApp(hdAppType: number): JQueryPromise<void>{
+        return nts.uk.request.ajax("at", paths.findHdApp + "/" + hdAppType);     
+    }
+    
+    export function findAllHdApp() {
+        return nts.uk.request.ajax("at", paths.findAllHdApp); 
+    }
+    
     export function findOt() {
         return nts.uk.request.ajax("at", paths.findOt); 
     }

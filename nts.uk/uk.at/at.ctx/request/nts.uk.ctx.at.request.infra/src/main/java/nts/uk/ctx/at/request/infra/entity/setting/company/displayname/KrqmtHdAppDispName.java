@@ -13,16 +13,16 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRQMT_APP_DISP_NAME")
-public class KrqmtAppDispName extends UkJpaEntity implements Serializable{
+@Table(name = "KRQMT_HD_APP_DISP_NAME")
+public class KrqmtHdAppDispName extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KrqmtAppDispNamePK krqmtAppDispNamePK;
+	public KrqmtHdAppDispNamePK krqmtHdAppDispNamePK;
 	/** 表示名 */
 	@Column(name = "DISP_NAME")
 	public String dispName;
 	@Override
 	protected Object getKey() {
-		return krqmtAppDispNamePK;
+		return krqmtHdAppDispNamePK;
 	}
 }

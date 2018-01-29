@@ -11,12 +11,16 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.find.setting.company.displayname.AppDispNameDto;
 import nts.uk.ctx.at.request.app.find.setting.company.displayname.AppDispNameFinder;
+import nts.uk.ctx.at.request.app.find.setting.company.displayname.HdAppDispNameDto;
+import nts.uk.ctx.at.request.app.find.setting.company.displayname.HdAppDispNameFinder;
 
 @Path("at/request/application/displayname")
 @Produces("application/json")
 public class AppDispNameWebservice extends WebService{
 	@Inject
 	private AppDispNameFinder dispFinder;
+	@Inject
+	private HdAppDispNameFinder hdFinder; 
 	@POST
 	@Path("disp")
 	public List<AppDispNameDto> getAppSet(){
@@ -27,5 +31,17 @@ public class AppDispNameWebservice extends WebService{
 	@Path("app/{appType}")
 	public AppDispNameDto getAppSet(@PathParam("appType") int appType){
 		 return dispFinder.findByApp(appType);
+	}
+	
+	@POST
+	@Path("hd")
+	public List<HdAppDispNameDto> getHdApp(){
+		 return hdFinder.findByCid();
+	}
+
+	@POST
+	@Path("hdapp/{hdAppType}")
+	public HdAppDispNameDto getHdAppDisp(@PathParam("hdAppType") int hdAppType){
+		 return hdFinder.findItem(hdAppType);
 	}
 }
