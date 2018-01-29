@@ -39,7 +39,7 @@
 	                                data-bind="ntsGridList: {
 	                                            name:'#[CAS011_8]',
 	                                            height: 425,
-	                                            width: 230,
+	                                            width: 330,
 	                                            options: listRoleSets,
 	                                            optionsValue: selectedRoleSetCd,
 	                                            primaryKey: 'roleSetCd',
@@ -56,7 +56,7 @@
 
                     <table >
                         <colgroup>
-                            <col width="150px" />
+                            <col width="200px" />
                             <col width="*" />
                         </colgroup>
                         <tr class="row">
@@ -258,6 +258,7 @@
                             value: currentRoleSet().webMenus,
                             columns: swapColumns,
                             draggable: true,
+                            enableRowNumbering: false,
                             multipleDrag: { left: true, right: false },
                             innerDrag: { left: false, right: true },
                             outerDrag: { left: true, right: true }
