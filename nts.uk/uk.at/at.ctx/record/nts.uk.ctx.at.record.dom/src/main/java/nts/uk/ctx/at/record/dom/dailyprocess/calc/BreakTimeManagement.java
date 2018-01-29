@@ -13,7 +13,6 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
