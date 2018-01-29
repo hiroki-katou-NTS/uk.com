@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,7 +16,6 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
@@ -30,7 +28,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
-import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
@@ -213,12 +210,12 @@ public class ComboBoxRetrieveFactory {
 		case "M00007":
 			// 勤務種別マスタ
 			if (isDisplayItemCode) {
-				return getBusinessType(companyId).stream().map(businessType -> new ComboBoxObject(
+				return businessTypeRepo.findAll(companyId).stream().map(businessType -> new ComboBoxObject(
 						businessType.getBusinessTypeCode().v(),
 						businessType.getBusinessTypeCode().v() + JP_SPACE + businessType.getBusinessTypeName().v()))
 						.collect(Collectors.toList());
 			} else {
-				return getBusinessType(companyId).stream()
+				return businessTypeRepo.findAll(companyId).stream()
 						.map(businessType -> new ComboBoxObject(businessType.getBusinessTypeCode().v(),
 								businessType.getBusinessTypeName().v()))
 						.collect(Collectors.toList());
@@ -290,16 +287,6 @@ public class ComboBoxRetrieveFactory {
 
 		}
 		return new ArrayList<>();
-	}
-
-	private List<BusinessType> getBusinessType(String companyId) {
-		List<BusinessType> descendingList = businessTypeRepo.findAll(companyId);
-		List<BusinessType> ascendingList = new ArrayList<>();
-		int size = descendingList.size();
-		for (int i = size - 1; i >= 0; i--) {
-			ascendingList.add(descendingList.get(i));
-		}
-		return ascendingList;
 	}
 
 }
