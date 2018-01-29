@@ -31,6 +31,6 @@ public class KscstPerCostExtraItemPK implements Serializable {
     
     /** The premium no. */
     @Column(name = "PREMIUM_NO")
-    private String premiumNo;
+    private int premiumNo;
 
 }

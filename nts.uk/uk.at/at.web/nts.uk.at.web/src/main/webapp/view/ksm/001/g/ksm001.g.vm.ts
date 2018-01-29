@@ -1,11 +1,8 @@
 module nts.uk.at.view.ksm001.g {
 
-    import CommonGuidelineSettingDto = service.model.CommonGuidelineSettingDto;
-    import UsageSettingDto = nts.uk.at.view.ksm001.a.service.model.UsageSettingDto;
-    import UsageSettingModel = nts.uk.at.view.ksm001.a.viewmodel.UsageSettingModel;
-    import EstimatedConditionDto = service.model.EstimatedConditionDto;
-    import EstimatedAlarmColorDto = service.model.EstimatedAlarmColorDto;
-    import ReferenceConditionDto = service.model.ReferenceConditionDto;
+    import AggregateSettingDto = service.model.AggregateSettingDto;
+    import MonthlyWorkingDaySettingDto = service.model.MonthlyWorkingDaySettingDto;
+    import PremiumItemDto = service.model.PremiumItemDto;
 
     export module viewmodel {
 
