@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset;
 
 import java.util.Optional;
@@ -18,9 +22,9 @@ public interface AggregateSettingRepository {
 	Optional<AggregateSetting> findByCID(CompanyId companyId);
 	
 	/**
-	 * Update.
+	 * Save.
 	 *
 	 * @param domain the domain
 	 */
-	void update(AggregateSetting domain);
+	void save(AggregateSetting domain);
 }

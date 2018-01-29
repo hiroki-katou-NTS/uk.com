@@ -1,8 +1,14 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.holidaysetting.employee;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -42,6 +48,23 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 		EmployeeMonthDaySetting domain = new EmployeeMonthDaySetting(new JpaEmployeeMonthDaySettingGetMemento(result));
 			
 		return Optional.of(domain);
+	}
+	
+	/**
+	 * Find all employee register.
+	 *
+	 * @return the list
+	 */
+	public List<EmployeeMonthDaySetting> findAllEmployeeRegister(CompanyId companyId) {
+		List<KshmtEmployeeMonthDaySet> result = this.findBy(companyId, null, null, null);
+		List<EmployeeMonthDaySetting> lstEmpoyee = new ArrayList<>();
+		// Check exist
+		if (result != null && !result.isEmpty()) {
+			lstEmpoyee = result.stream().map(obt -> new EmployeeMonthDaySetting(new JpaEmployeeMonthDaySettingGetMemento(result))).collect(Collectors.toList());
+			return lstEmpoyee;
+		}
+		
+		return new ArrayList<>();
 	}
 
 	/* (non-Javadoc)

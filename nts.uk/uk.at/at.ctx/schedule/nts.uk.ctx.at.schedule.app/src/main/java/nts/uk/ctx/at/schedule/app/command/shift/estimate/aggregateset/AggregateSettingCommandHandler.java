@@ -30,6 +30,6 @@ public class AggregateSettingCommandHandler extends CommandHandler<AggregateSett
 		AggregateSetting domain = new AggregateSetting(command);
 		
 		//save
-		this.repository.update(domain);
+		this.repository.save(domain);
 	}
 }

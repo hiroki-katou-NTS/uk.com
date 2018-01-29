@@ -3,7 +3,8 @@ package nts.uk.ctx.at.schedule.app.command.shift.estimate.aggregateset;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.schedule.app.common.shift.estimate.aggregateset.dto.MonthlyWorkingDaySettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.AggregateSettingGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.ExtraTimeItemNo;
@@ -16,7 +17,8 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class AggregateSettingCommand.
  */
-@Data
+@Setter
+@Getter
 public class AggregateSettingCommand implements AggregateSettingGetMemento{
 	/** The premium no. */
 	private List<Integer> premiumNo;
