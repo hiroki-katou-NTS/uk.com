@@ -814,8 +814,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }else if (data == 0) {
                 hourMinute = "0:00";
             }else if(data != null){
-                let hour = Math.floor(data/60);
-                let minutes = Math.floor(data%60);
+                let hour = Math.floor(Math.abs(data)/60);
+                    let minutes = Math.floor(Math.abs(data)%60);
                 hourMinute = hour + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
             }
             return hourMinute;
