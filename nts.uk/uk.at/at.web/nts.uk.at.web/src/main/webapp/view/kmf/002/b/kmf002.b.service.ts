@@ -36,7 +36,7 @@ module nts.uk.at.view.kmf002.b {
             return nts.uk.request.ajax("com", path.findFirstMonth);
         }
         
-        export function findAll(year: string): JQueryPromise<any> {
+        export function findAll(): JQueryPromise<any> {
             return nts.uk.request.ajax("com", path.findAll);
         }
         

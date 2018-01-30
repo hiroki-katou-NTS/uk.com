@@ -135,7 +135,7 @@ module nts.uk.at.view.kmf002.b {
                 if ($('#tree-grid').getRowSelected()[0] != null) {
                     $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(),$('#tree-grid').getRowSelected()[0].workplaceId), 
                             service.findFirstMonth(),
-                            service.findAll()).done(function(data, data2, data3) {
+                            service.findAll()).done(function(data: any, data2: any, data3: any) {
                         _self.alreadySettingList.removeAll();
                         _.forEach(data3, function(wkpID) {
                             _self.alreadySettingList.push({'workplaceId': wkpID, 'isAlreadySetting': true});
@@ -144,7 +144,7 @@ module nts.uk.at.view.kmf002.b {
                             /** 
                              *   create value null for prepare create new 
                             **/
-                            _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value) {
+                            _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value: any) {
                                 value.day(0);
                             });
                             _self.enableDelete(false);
@@ -172,7 +172,7 @@ module nts.uk.at.view.kmf002.b {
             
             private dataDefault(): void {
                 let _self = this;
-                _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value) {
+                _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value: any) {
                     value.day(0);
                 });
                 _self.commonTableMonthDaySet().infoSelect2('');
