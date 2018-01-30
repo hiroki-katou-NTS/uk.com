@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
@@ -212,7 +213,7 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
 		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
 		Join<BsymtJobInfo, BsymtJobSeqMaster> joinRoot = root.join(BsymtJobInfo_.bsymtJobSeqMaster, JoinType.LEFT);
-
+		
 		// Build query
 		cq.select(root);
 		
@@ -228,7 +229,11 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		cq.where(listPredicate.toArray(new Predicate[] {}));
 		
 		// Sort by disporder
-		cq.orderBy(criteriaBuilder.asc(joinRoot.get(BsymtJobSeqMaster_.disporder)),
+		Expression<Object> queryCase = criteriaBuilder.selectCase()
+				.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobSeqMaster_.disporder)),
+						Integer.MAX_VALUE)
+				.otherwise(joinRoot.get(BsymtJobSeqMaster_.disporder));
+		cq.orderBy(criteriaBuilder.asc(queryCase),
 				criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
 		
 		return em.createQuery(cq).getResultList().stream()
@@ -394,7 +399,12 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 
 		cq.where(listPredicate.toArray(new Predicate[] {}));
 		
-		cq.orderBy(criteriaBuilder.asc(joinRoot.get(BsymtJobSeqMaster_.disporder)),
+		// Sort by disporder
+		Expression<Object> queryCase = criteriaBuilder.selectCase()
+				.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobSeqMaster_.disporder)),
+						Integer.MAX_VALUE)
+				.otherwise(joinRoot.get(BsymtJobSeqMaster_.disporder));
+		cq.orderBy(criteriaBuilder.asc(queryCase),
 				criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
 
 		List<BsymtJobInfo> result = em.createQuery(cq).getResultList();
