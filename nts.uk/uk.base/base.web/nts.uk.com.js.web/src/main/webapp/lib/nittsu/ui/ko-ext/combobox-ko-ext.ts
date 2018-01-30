@@ -171,6 +171,8 @@ module nts.uk.ui.koExtentions {
                 container.igCombo("value", selectedValue);
             }
             
+            container.data("columns", _.cloneDeep(columns));
+            container.data("comboMode", comboMode);
             var isDropDownWidthSpecified = false;
 
             // Set width for multi columns.
@@ -195,9 +197,6 @@ module nts.uk.ui.koExtentions {
                     container.find(".ui-igcombo-dropdown").css("width", "auto");
                 }
             }
-
-            container.data("columns", columns);
-            container.data("comboMode", comboMode);
         }
     }
     
