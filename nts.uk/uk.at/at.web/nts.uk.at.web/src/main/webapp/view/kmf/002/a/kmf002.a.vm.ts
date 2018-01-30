@@ -212,6 +212,7 @@ module nts.uk.at.view.kmf002.a {
                 } else if (typeStart == SideBarTabIndex.FIRST) {
                     // Process for screen A (Mother of all screen)
                     $.when(_self.getAllEnum(), _self.getAllData(), _self.findAllManageUseUnit()).done(function() {
+                        $( "#managePubHD" ).focus();
                         dfd.resolve(_self);    
                     });
                 } else if (typeStart == SideBarTabIndex.SECOND) {
@@ -398,18 +399,20 @@ module nts.uk.at.view.kmf002.a {
             }
             
             private conditionSideBar5(): void {
-//                let _self = this;
-//                if (_self.publicHolidaySetting().isManageComPublicHd() == 0) {
+                let _self = this;
+                if (_self.publicHolidaySetting().isManageComPublicHd() == 1) {
 //                    $("#sidebar").ntsSideBar("enable", 1);
 //                    $("#sidebar").ntsSideBar("enable", 2);
 //                    $("#sidebar").ntsSideBar("enable", 3);
 //                    $("#sidebar").ntsSideBar("enable", 4);
-//                } else {
+                    setShared('conditionSidebar5', true);
+                } else {
 //                    $("#sidebar").ntsSideBar("disable", 1);
 //                    $("#sidebar").ntsSideBar("disable", 2);
 //                    $("#sidebar").ntsSideBar("disable", 3);
 //                    $("#sidebar").ntsSideBar("disable", 4);
-//                }
+                    setShared('conditionSidebar5', false);
+                }
             }
             
             private condition7(): void {
