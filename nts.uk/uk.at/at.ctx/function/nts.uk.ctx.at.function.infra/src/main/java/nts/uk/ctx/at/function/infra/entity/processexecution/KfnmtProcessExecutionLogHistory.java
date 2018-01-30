@@ -37,11 +37,11 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Seri
 	
 	/* 全体の終了状態 */
 	@Column(name = "OVERALL_STATUS")
-	public int overallStatus;
+	public Integer overallStatus;
 	
 	/* 全体のエラー詳細 */
 	@Column(name = "ERROR_DETAIL")
-	public int errorDetail;
+	public Integer errorDetail;
 	
 	/* 前回実行日時 */
 	@Column(name = "LAST_EXEC_DATETIME")

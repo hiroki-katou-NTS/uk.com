@@ -11,11 +11,27 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskLogRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLog;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLogPK;
+import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLog;
 
 @Stateless
 public class JpaExecutionTaskLogRepository extends JpaRepository
 		implements ExecutionTaskLogRepository {
-
+	/**
+	 * Query strings
+	 */
+	private static final String SELECT_ALL = "SELECT etl FROM KfnmtExecutionTaskLog etl ";
+	private static final String SELECT_LIST = SELECT_ALL
+			+ "WHERE etl.kfnmtExecTaskLogPK.companyId = :companyId "
+			+ "AND etl.kfnmtExecTaskLogPK.execItemCd = :execItemCd "
+			+ "AND etl.kfnmtExecTaskLogPK.execId = :execId ";
+	@Override
+	public List<ExecutionTaskLog> getAllByCidExecCdExecId(String companyId, String execItemCd, String execId) {
+		return this.queryProxy().query(SELECT_LIST, KfnmtExecutionTaskLog.class)
+				.setParameter("companyId", companyId)
+				.setParameter("execItemCd", execItemCd)
+				.setParameter("execId", execId).getList(c -> c.toDomain());
+	}
+	
 	/**
 	 * insert task log list
 	 */

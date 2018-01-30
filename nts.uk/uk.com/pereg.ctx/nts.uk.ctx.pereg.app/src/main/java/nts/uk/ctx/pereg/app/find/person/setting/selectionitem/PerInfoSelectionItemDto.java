@@ -1,7 +1,5 @@
 package nts.uk.ctx.pereg.app.find.person.setting.selectionitem;
 
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.Value;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.PerInfoSelectionItem;
 import nts.uk.shr.com.context.AppContexts;
@@ -18,11 +16,11 @@ public class PerInfoSelectionItemDto {
 	private int ReflectedToAllCompanies;
 	public static PerInfoSelectionItemDto fromDomain(PerInfoSelectionItem domain) {
 		// システム管理者　かつ　選択している選択項目の「選択項目区分」＝社員のとき
-		String roleId = AppContexts.user().roles().forSystemAdmin();
+		boolean isSystemAdmin = AppContexts.user().roles().have().systemAdmin();
 		return new PerInfoSelectionItemDto(domain.getSelectionItemId(), domain.getSelectionItemName().v(),
 				domain.getMemo().v(), domain.getSelectionItemClassification().value, domain.getContractCode(),
 				domain.getIntegrationCode().v(), FormatSelectionDto.fromDomain(domain.getFormatSelection()),
-				(StringUtils.isNotEmpty(roleId) && domain.getSelectionItemClassification().value == 1) ? 1: 0);
+				(isSystemAdmin && domain.getSelectionItemClassification().value == 1) ? 1: 0);
 
 	}
 }

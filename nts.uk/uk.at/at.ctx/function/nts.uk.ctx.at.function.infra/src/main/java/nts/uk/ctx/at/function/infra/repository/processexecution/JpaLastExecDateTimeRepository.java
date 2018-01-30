@@ -30,4 +30,13 @@ public class JpaLastExecDateTimeRepository extends JpaRepository
 	public void insert(LastExecDateTime domain) {
 		this.commandProxy().insert(KfnmtLastExecDateTime.toEntity(domain));
 	}
+
+	@Override
+	public void update(LastExecDateTime domain) {
+		KfnmtLastExecDateTime updateData = KfnmtLastExecDateTime.toEntity(domain);
+		KfnmtLastExecDateTime oldData = this.queryProxy().find(updateData.kfnmtLastDateTimePK, KfnmtLastExecDateTime.class).get();
+		oldData.lastExecDateTime = updateData.lastExecDateTime;
+		
+		this.commandProxy().update(oldData);
+	}
 }

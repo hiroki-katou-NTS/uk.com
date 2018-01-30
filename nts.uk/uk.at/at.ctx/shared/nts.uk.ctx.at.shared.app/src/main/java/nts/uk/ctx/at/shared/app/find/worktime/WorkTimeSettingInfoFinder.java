@@ -64,12 +64,11 @@ public class WorkTimeSettingInfoFinder {
 	@Inject
 	private FlexWorkSettingRepository flexWorkSettingRepository;
 	
+	/** The fixed finder. */
 	@Inject
 	private FixedWorkSettingFinder fixedFinder;
 	
-//	@Inject
-//	private DiffTimeWorkSettingFinder diffFinder;
-	
+	/** The flex finder. */
 	@Inject
 	private FlexWorkSettingFinder flexFinder;
 	
@@ -139,6 +138,12 @@ public class WorkTimeSettingInfoFinder {
 				fixedWorkSettingDto, flowWorkSettingDto, diffTimeWorkSettingDto);
 	}
 	
+	/**
+	 * Find mode method.
+	 *
+	 * @param workTimeCode the work time code
+	 * @return the break time day dto
+	 */
 	public BreakTimeDayDto findModeMethod(String workTimeCode) {
 
 		String companyId = AppContexts.user().companyId();

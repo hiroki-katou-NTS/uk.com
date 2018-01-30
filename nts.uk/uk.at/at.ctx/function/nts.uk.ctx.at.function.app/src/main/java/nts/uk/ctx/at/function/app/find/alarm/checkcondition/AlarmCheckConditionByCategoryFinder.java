@@ -42,7 +42,7 @@ public class AlarmCheckConditionByCategoryFinder {
 
 	@Inject
 	private WorkRecordExtraConAdapter workRecordExtractConditionAdapter;
-	
+
 	@Inject
 	private ErrorAlarmWorkRecordAdapter errorAlarmWkRcAdapter;
 
@@ -53,13 +53,19 @@ public class AlarmCheckConditionByCategoryFinder {
 				.collect(Collectors.toList());
 	}
 
+	public List<DailyErrorAlarmCheckDto> getDailyErrorAlarmCheck() {
+		return errorAlarmWkRcAdapter.getAllErrorAlarmWorkRecord(AppContexts.user().companyId()).stream()
+				.map(item -> new DailyErrorAlarmCheckDto(item.getCode(), item.getName(), item.getTypeAtr(),
+						item.getDisplayMessage()))
+				.collect(Collectors.toList());
+	}
+
 	private AlarmCheckConditionByCategoryDto fromDomain(AlarmCheckConditionByCategory domain) {
 		int schedule4WCondition = 0;
 		DailyAlarmCondition dailyAlarmCondition = new DailyAlarmCondition("", ConExtractedDaily.ALL.value, false,
 				Collections.emptyList(), Collections.emptyList());
 		List<FixedConditionWorkRecordDto> listFixedConditionWkRecord = new ArrayList<>();
 		List<WorkRecordExtraConAdapterDto> lstWorkRecordExtraCon = new ArrayList<>();
-		List<DailyErrorAlarmCheckDto> listErrorAlarmCheck = new ArrayList<>();
 		if (domain.getCategory() == AlarmCategory.SCHEDULE_4WEEK && domain.getExtractionCondition() != null) {
 			AlarmCheckCondition4W4D schedule4WeekCondition = (AlarmCheckCondition4W4D) domain.getExtractionCondition();
 			schedule4WCondition = schedule4WeekCondition.getFourW4DCheckCond().value;
@@ -69,14 +75,16 @@ public class AlarmCheckConditionByCategoryFinder {
 			String dailyID = dailyAlarmCondition.getDailyAlarmConID();
 			List<FixedConWorkRecordAdapterDto> listFixedConditionWorkRecord = fixedConditionAdapter
 					.getAllFixedConWorkRecordByID(dailyID);
-			List<FixedConditionDataAdapterDto> listFixedConditionData = fixCondDataAdapter.getAllFixedConditionDataPub();
+			List<FixedConditionDataAdapterDto> listFixedConditionData = fixCondDataAdapter
+					.getAllFixedConditionDataPub();
 			for (FixedConditionDataAdapterDto i : listFixedConditionData) {
 				boolean check = true;
 				if (listFixedConditionWorkRecord != null && !listFixedConditionWorkRecord.isEmpty()) {
 					for (FixedConWorkRecordAdapterDto e : listFixedConditionWorkRecord) {
 						if (e.getFixConWorkRecordNo() == i.getFixConWorkRecordNo()) {
 							FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto(e.getDailyAlarmConID(),
-									i.getFixConWorkRecordName(), i.getFixConWorkRecordNo(), e.getMessage(), e.isUseAtr());
+									i.getFixConWorkRecordName(), i.getFixConWorkRecordNo(), e.getMessage(),
+									e.isUseAtr());
 							listFixedConditionWkRecord.add(dto);
 							check = false;
 							break;
@@ -91,11 +99,8 @@ public class AlarmCheckConditionByCategoryFinder {
 			}
 			lstWorkRecordExtraCon = workRecordExtractConditionAdapter
 					.getAllWorkRecordExtraConByListID(dailyAlarmCondition.getExtractConditionWorkRecord());
-			listErrorAlarmCheck = errorAlarmWkRcAdapter.getAllErrorAlarmWorkRecord(AppContexts.user().companyId())
-					.stream().map(item -> new DailyErrorAlarmCheckDto(item.getCode(), item.getName(), item.getTypeAtr(),
-							item.getDisplayMessage())).collect(Collectors.toList());
 		}
-		
+
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
 				domain.getCategory().value,
 				new AlarmCheckTargetConditionDto(domain.getExtractTargetCondition().isFilterByEmployment(),
@@ -108,10 +113,7 @@ public class AlarmCheckConditionByCategoryFinder {
 						domain.getExtractTargetCondition().getLstBusinessTypeCode()),
 				domain.getListRoleId(), schedule4WCondition,
 				new DailyAlarmCheckConditionDto(dailyAlarmCondition.isAddApplication(),
-						dailyAlarmCondition.getConExtractedDaily().value,
-						dailyAlarmCondition.getErrorAlarmCode(), 
-						listErrorAlarmCheck,
-						lstWorkRecordExtraCon, 
-						listFixedConditionWkRecord));
+						dailyAlarmCondition.getConExtractedDaily().value, dailyAlarmCondition.getErrorAlarmCode(),
+						lstWorkRecordExtraCon, listFixedConditionWkRecord));
 	}
 }

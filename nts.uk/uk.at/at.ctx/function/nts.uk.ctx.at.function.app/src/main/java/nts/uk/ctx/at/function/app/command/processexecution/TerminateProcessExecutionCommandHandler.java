@@ -12,8 +12,8 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDeta
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
-//import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
-//import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExeStateOfCalAndSum;
+import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExeStateOfCalAndSum;
 
 @Stateless
 public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler<TerminateProcessExecutionCommand> {
@@ -21,8 +21,8 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 	@Inject
 	private ProcessExecutionLogRepository procExecLogRepo;
 	
-//	@Inject
-//	private EmpCalAndSumExeLogRepository empCalSumRepo;
+	@Inject
+	private EmpCalAndSumExeLogRepository empCalSumRepo;
 	
 	/**
 	 * 終了処理を実行する
@@ -67,19 +67,19 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 		/*
 		 * 日別作成の処理が完了しているか確認する
 		 */
-//		procExecLog.getTaskLogList().forEach(task ->{
-//			if (task.getProcExecTask().value == ProcessExecutionTask.DAILY_CREATION.value) {
-//				if (task.getStatus() == null) {
-//					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
-//					return;
-//				}
-//			} else if (task.getProcExecTask().value == ProcessExecutionTask.DAILY_CALCULATION.value) {
-//				if (task.getStatus() == null) {
-//					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
-//					return;
-//				}
-//			}
-//		});
+		procExecLog.getTaskLogList().forEach(task ->{
+			if (task.getProcExecTask().value == ProcessExecutionTask.DAILY_CREATION.value) {
+				if (task.getStatus() == null) {
+					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
+					return;
+				}
+			} else if (task.getProcExecTask().value == ProcessExecutionTask.DAILY_CALCULATION.value) {
+				if (task.getStatus() == null) {
+					this.interupt(execId, ExeStateOfCalAndSum.START_INTERRUPTION.value);
+					return;
+				}
+			}
+		});
 		
 		/*
 		 * ドメインモデル「就業計算と集計実行ログ」を更新する
@@ -91,7 +91,7 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 		 * 【更新内容】
 		 * 就業計算と集計実行ログ．実行状況 ← 中断終了
 		 */
-//		this.interupt(execId, ExeStateOfCalAndSum.END_INTERRUPTION.value);
+		this.interupt(execId, ExeStateOfCalAndSum.END_INTERRUPTION.value);
 	}
 	
 	/**
@@ -109,6 +109,6 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
 		 * 【更新内容】
 		 * 就業計算と集計実行ログ．実行状況 ← 中断開始
 		 */
-//		this.empCalSumRepo.updateStatus(execId, status);
+		this.empCalSumRepo.updateStatus(execId, status);
 	}
 }
