@@ -15,7 +15,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 self.changeCheckCondition(newList);
             });
             self.ListView = ko.observableArray([]);
-          
+            $("#fixed-table").ntsFixedTable({ height: 320, width: 830 });
         }
 
         private changeCheckCondition(listCheckCode: Array<share.CheckConditionCommand>): void {
@@ -56,7 +56,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             var self = this;
             var param = ModelCheckConditonCode.extractionPeriodDaily;
             var categoryId = ModelCheckConditonCode.categoryId;
-            if(categoryId == 5 || categoryId == 13){
+            if(categoryId == 5 || categoryId == 13 || categoryId == 0 || categoryId == 8){
                 var ExtractionDailyDto = {
                     extractionId: param.extractionId,
                     extractionRange: param.extractionRange,

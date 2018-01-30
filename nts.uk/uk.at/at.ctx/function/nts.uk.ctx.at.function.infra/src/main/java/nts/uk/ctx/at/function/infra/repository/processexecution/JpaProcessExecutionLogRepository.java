@@ -22,10 +22,14 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	private static final String SELECT_All_BY_CID = SELECT_ALL
 			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId ";
 	
-	private static final String SELECT_BY_CID_AND_EXEC_CD = SELECT_ALL
+	private static final String SELECT_BY_PK = SELECT_ALL
 			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
 			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd "
 			+ "AND pel.kfnmtProcExecLogPK.execId = :execId ";
+	
+	private static final String SELECT_BY_CID_AND_EXEC_CD = SELECT_ALL
+			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
+			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd ";
 	
 	@Override
 	public List<ProcessExecutionLog> getProcessExecutionLogByCompanyId(String companyId) {
@@ -35,7 +39,7 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	
 	@Override
 	public Optional<ProcessExecutionLog> getLogByCIdAndExecCd(String companyId, String execItemCd, String execId) {
-		return this.queryProxy().query(SELECT_BY_CID_AND_EXEC_CD, KfnmtProcessExecutionLog.class)
+		return this.queryProxy().query(SELECT_BY_PK, KfnmtProcessExecutionLog.class)
 				.setParameter("companyId", companyId)
 				.setParameter("execItemCd", execItemCd)
 				.setParameter("execId", execId).getSingle(c -> c.toDomain());

@@ -7,8 +7,7 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.person.dom.person.contact.PersonContact;
-import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyContact;
-import nts.uk.ctx.bs.person.dom.person.emergencycontact.PersonEmergencyCtRepository;
+import nts.uk.ctx.bs.person.dom.person.contact.PersonContactRepository;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless
@@ -16,11 +15,11 @@ public class UpdatePerContactCommandHandler extends CommandHandler<UpdatePerCont
  	implements PeregUpdateCommandHandler<UpdatePerContactCommand>{
 
 	@Inject
-	private PersonEmergencyCtRepository perEmergencyContact;
+	private PersonContactRepository personContactRepository;
 	
 	@Override
 	public String targetCategoryCd() {
-		return null;
+		return "CS00022";
 	}
 
 	@Override
@@ -37,7 +36,7 @@ public class UpdatePerContactCommandHandler extends CommandHandler<UpdatePerCont
 				command.getPhoneNumber1(), command.getMemo2(), command.getContactName2(), command.getPhoneNumber2());
 		// Update person emergency contact
 		
-//		perEmergencyContact.updatePersonEmergencyContact(emergencyContact);
+		personContactRepository.update(perContact);
 	}
 
 }

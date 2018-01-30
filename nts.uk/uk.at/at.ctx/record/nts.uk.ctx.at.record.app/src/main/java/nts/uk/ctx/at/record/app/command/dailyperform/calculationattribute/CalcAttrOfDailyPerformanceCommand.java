@@ -12,13 +12,13 @@ import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.LimitOfOverTimeSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.SalaryCalAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.SpecificSalaryCalAttr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 
 public class CalcAttrOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
@@ -73,8 +73,8 @@ public class CalcAttrOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 	
 	private AutoCalculationSetting newAutoCalcSetting(AutoCalculationSettingDto dto) {
 		return dto == null ? null : new AutoCalculationSetting(
-				getEnum(dto.getCalculationAttr(), AutoCalculationCategoryOutsideHours.class),
-				getEnum(dto.getUpperLimitSetting(), LimitOfOverTimeSetting.class));
+				getEnum(dto.getCalculationAttr(), AutoCalAtrOvertime.class),
+				getEnum(dto.getUpperLimitSetting(), TimeLimitUpperLimitSetting.class));
 	}
 
 	private <T> T getEnum(int value, Class<T> enumType) {

@@ -259,7 +259,10 @@ module nts.uk.ui.koExtentions {
                 let selectItems = _.filter(currentDataSource, function (itemFilterd: any){
                     return _.find(selected, function (item: any){
                         let itemVal = itemFilterd[primaryKey];
-                        return itemVal === item["id"];        
+                        if(nts.uk.util.isNullOrUndefined(itemVal) || nts.uk.util.isNullOrUndefined(item["id"])){
+                           return false;
+                        }
+                        return itemVal.toString() === item["id"].toString();        
                     }) !== undefined;            
                 }); 
                 $gridX.ntsGridList("setSelected",  _.map(selectItems, primaryKey));

@@ -43,11 +43,11 @@ module nts.uk.at.view.kmf002 {
                 
                 $.when(_self.findFirstMonth()).done(function(data: any) {
                     for (let i=data.startMonth; i<=12; i++) {
-                        _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(''), 'enable': ko.observable(true)});
+                        _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(0), 'enable': ko.observable(true)});
                     }
                     
                     for (let i=1; i<data.startMonth; i++) {
-                        _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(''), 'enable': ko.observable(true)});
+                        _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(0), 'enable': ko.observable(true)});
                     } 
                 });
                 

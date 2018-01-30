@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.holidaysetting.employment;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -45,5 +48,21 @@ public class EmploymentMonthDaySettingFinder {
 			return dto;
 		}
 		return null;
+	}
+	
+	/**
+	 * Find all emp register.
+	 *
+	 * @return the list
+	 */
+	public List<String> findAllEmpRegister(){
+		String companyId = AppContexts.user().companyId();
+		
+		List<String> lstEmp = this.repository.findAllEmpRegister(new CompanyId(companyId));
+		if (lstEmp != null && !lstEmp.isEmpty()) {
+			return lstEmp;
+		}
+		
+		return new ArrayList<>();
 	}
 }

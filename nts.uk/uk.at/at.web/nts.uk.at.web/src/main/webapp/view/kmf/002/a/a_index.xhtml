@@ -6,6 +6,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
+		
 	<ui:composition>
 		<div class="sidebar-content-header">
    			<!-- A2_1 -->
@@ -23,7 +24,7 @@
 				<!-- A3_2 -->
 				<div tabindex="3" name="#[KMF002_3]">
 					<!-- A3_3, A3_4 -->
-					<div tabindex="-1" data-bind="ntsRadioBoxGroup: { options: companyManageClassification,
+					<div tabindex="-1" id="managePubHD" data-bind="ntsRadioBoxGroup: { options: companyManageClassification,
 														optionsText: 'name',
 														optionsValue: 'id',
 														value: publicHolidaySetting().isManageComPublicHd,
@@ -129,11 +130,12 @@
 						</div> -->
 						<div  tabindex="9" data-bind="ntsDatePicker: {value: publicHolidaySetting().pubHD().date, 
 																      dateFormat: 'YYYY/MM/DD',
-																      enable: enablePubHDDateAndDayMonth}, 
+																      enable: enablePubHDDateAndDayMonth,
+																      constraint: ''}, 
 														css: {'hidden-element': enableFullDate() == false}">
 						</div>
 						<!-- A9_7 -->
-						<div tabindex="10" data-bind="css: {'hidden-element': enableFullDate() == true}">
+						<!-- <div tabindex="10" data-bind="css: {'hidden-element': enableFullDate() == true}">
 							<input data-bind="ntsTextEditor: {
 								value: publicHolidaySetting().pubHD().dayMonth,
 								constraint: '',
@@ -141,7 +143,9 @@
 								required: true,
 								enable: enablePubHDDateAndDayMonth,
 								readonly: false}" name='#[KMF002_16]'/>
-						</div>
+						</div> -->
+						<div tabindex="10" id="monthdays" data-bind="ntsMonthDays: {value: publicHolidaySetting().pubHD().dayMonth}, 
+																		css: {'hidden-element': enableFullDate() == true}" name='#[KMF002_16]'/>
 					</div>
 				</div>
 			</div>
@@ -176,7 +180,8 @@
 					</div>
 					<div style="display: flex; padding-top: 30px; align-items: center;">
 						<!-- A16_5 -->
-						<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_49')}</div>
+						<div tabindex="-1" data-bind="ntsFormLabel: {required: true,
+																	constraint: 'WeekNumberOfDay' }">#{i18n.getText('KMF002_49')}</div>
 						<!-- A16_6 -->
 						<div tabindex="16">
 							<input name="#[KMF002_54]" data-bind="ntsTextEditor: {
@@ -194,7 +199,8 @@
 					</div>
 					<div style="display: flex; padding-top: 30px; align-items: center;">
 						<!-- A16_7 -->
-						<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_50')}</div>
+						<div tabindex="-1" data-bind="ntsFormLabel: {required: true,
+																	constraint: 'WeekNumberOfDay' }">#{i18n.getText('KMF002_50')}</div>
 						<!-- A16_8 -->
 						<div tabindex="17">
 							<input name="#[KMF002_54]" data-bind="ntsTextEditor: {
@@ -267,7 +273,8 @@
 					<div style="padding-left: 70px;">
 						<div>
 							<!-- A13_1 -->
-							<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_19')}</div>
+							<div tabindex="-1" data-bind="ntsFormLabel: {required: true, 
+																		constraint: 'WeekNumberOfDay' }">#{i18n.getText('KMF002_19')}</div>
 						</div>
 						<div>
 							<table>
@@ -352,7 +359,8 @@
 					<div id="four_week_scrA">
 						<div>
 							<!-- A14_1 -->
-							<div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_19')}</div>
+							<div tabindex="-1" data-bind="ntsFormLabel: {required: true,
+																		constraint: 'FourWeekDay'}">#{i18n.getText('KMF002_19')}</div>
 						</div>
 						<div>
 							<table>

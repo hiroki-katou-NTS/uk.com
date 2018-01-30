@@ -176,14 +176,14 @@ public class WorkTimeSettingFinder {
 				workTimeSetItems = this.predetemineTimeSettingRepository.findByStartAndEnd(companyID, codeList,
 						startTime, endTime);
 				// when only start time is select
-			} else if ((startTime != null) && (endTime == null)) {
-				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
-				workTimeSetItems = this.predetemineTimeSettingRepository.findByStart(companyID, codeList, startTime);
-				// when only end time is select
-			} else if ((startTime == null) && (endTime != null)) {
-				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
-				workTimeSetItems = this.predetemineTimeSettingRepository.findByEnd(companyID, codeList, endTime);
-				// when both start time and end time is invalid
+//			} else if ((startTime != null) && (endTime == null)) {
+//				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
+//				workTimeSetItems = this.predetemineTimeSettingRepository.findByStart(companyID, codeList, startTime);
+//				// when only end time is select
+//			} else if ((startTime == null) && (endTime != null)) {
+//				workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codeList);
+//				workTimeSetItems = this.predetemineTimeSettingRepository.findByEnd(companyID, codeList, endTime);
+//				// when both start time and end time is invalid
 			} else {
 				throw new BusinessException("Msg_53");
 			}
