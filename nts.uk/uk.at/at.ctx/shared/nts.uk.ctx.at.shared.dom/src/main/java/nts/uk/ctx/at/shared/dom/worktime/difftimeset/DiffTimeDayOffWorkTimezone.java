@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.gul.collection.CollectionUtil;
@@ -51,6 +52,7 @@ public class DiffTimeDayOffWorkTimezone extends WorkTimeDomainObject {
 	public void validate() {
 		super.validate();
 		this.checkOverlap();
+		this.validateRestInWork();
 	}
 
 	private void checkOverlap() {
@@ -76,5 +78,17 @@ public class DiffTimeDayOffWorkTimezone extends WorkTimeDomainObject {
 				}
 			}
 		}
+	}
+	
+	private void validateRestInWork() {
+		this.restTimezone.getRestTimezones().stream().forEach(rest -> {
+			List<DayOffTimezoneSetting> workTime = this.workTimezones.stream()
+					.filter(work -> (work.getTimezone().getStart().v() <= rest.getStart().v())
+							&& (work.getTimezone().getEnd().v() >= rest.getEnd().v()))
+					.collect(Collectors.toList());
+			if (CollectionUtil.isEmpty(workTime)) {
+				this.bundledBusinessExceptions.addMessage("Msg_755");
+			}
+		});
 	}
 }
