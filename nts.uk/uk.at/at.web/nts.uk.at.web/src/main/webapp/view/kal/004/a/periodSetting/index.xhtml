@@ -4,16 +4,33 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
+		<!-- <div class="tab2" >
+			<table id="single-list" 
+				data-bind="ntsGridList: {
+                       width: 955,
+                       rows: 12,
+                       options: empCalAndSumExeLog,
+                       optionsValue: 'empCalAndSumExecLogID',
+                       columns: columns ,
+                       multiple: false,
+                       value: currentSelectedRow}">
+			</table>
+		</div> -->
 		<div class="tab2" >
-			<table >
+			<table id="fixed-table">
+		        <colgroup>
+					<col width="240px"/>
+					<col width="500px"/>
+					<col width="90px"/>
+				</colgroup>
 		        <thead>
 		            <tr class="bg-green">
-		                <th style="width: 240px;">#{i18n.getText('KAL004_21')}</th>
-		                <th style="width: 500px;">#{i18n.getText('KAL004_22')}</th>
-		                <th style="width: 90px;"/>
+		                <th class="ui-widget-header">#{i18n.getText('KAL004_21')}</th>
+		                <th class="ui-widget-header">#{i18n.getText('KAL004_22')}</th>
+		                <th class="ui-widget-header"/>
 		            </tr>
 		        </thead>
-		        <tbody data-bind='foreach: ListView'>
+			    <tbody data-bind='foreach: ListView'>
 		            <tr>
 		                <td data-bind="text: categoryName"></td>
 		                <td data-bind="text: extractionPeriod"></td>
