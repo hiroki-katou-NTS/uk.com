@@ -76,8 +76,8 @@ module nts.uk.at.view.kmk008.k {
                 if (self.isYearMonth) {
                     new service.Service().getDetailYearMonth(self.employeeId).done(data => {
                         if (data && data.length > 0) {
-//                            data = _.sortBy(data, item => { return data.yearMonthValue });
-//                            data.reverse();
+                            //                            data = _.sortBy(data, item => { return data.yearMonthValue });
+                            //                            data.reverse();
                             _.forEach(data, item => {
                                 self.listItemDataGrid.push(new ShowListModel(item.yearMonthValue, item.errorOneMonth, item.alarmOneMonth));
                             });
@@ -92,13 +92,13 @@ module nts.uk.at.view.kmk008.k {
                 } else {
                     new service.Service().getDetailYear(self.employeeId).done(data => {
                         if (data && data.length) {
-//                            data = _.sortBy(data, item => { return data.yearValue });
-//                            data.reverse();
+                            //                            data = _.sortBy(data, item => { return data.yearValue });
+                            //                            data.reverse();
                             _.forEach(data, item => {
                                 self.listItemDataGrid.push(new ShowListModel(item.yearValue, item.errorOneYear, item.alarmOneYear));
                             });
                             self.isUpdate = true;
-                             self.updateEnable(true);
+                            self.updateEnable(true);
                             self.currentCodeSelect(self.listItemDataGrid()[0].yearOrYearMonthValue);
                         } else {
                             self.setNewMode();
@@ -121,7 +121,7 @@ module nts.uk.at.view.kmk008.k {
                 self.currentSelectItem(new SettingModel(null, self.employeeId));
                 self.currentCodeSelect(null);
                 self.updateEnable(false);
-                 $("#txt-year").focus();
+                $("#txt-year").focus();
             }
 
             addOrUpdateClick() {
@@ -190,14 +190,16 @@ module nts.uk.at.view.kmk008.k {
                         if (self.isYearMonth) {
                             new service.Service().removeAgreementMonthSetting(new DeleteMonthSettingModel(self.employeeId, self.currentSelectItem().yearOrYearMonthValue()))
                                 .done(function() {
-                                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16", []));
-                                    self.reloadData(Number(self.currentSelectItem().yearOrYearMonthValue().toString().replace("/", "")), true);
+                                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16", [])).then(() => {
+                                         self.reloadData(Number(self.currentSelectItem().yearOrYearMonthValue().toString().replace("/", "")), true);
+                                    });
                                 });
                         } else {
                             new service.Service().removeAgreementYearSetting(new DeleteYearSettingModel(self.employeeId, self.currentSelectItem().yearOrYearMonthValue()))
                                 .done(function() {
-                                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16", []));
-                                    self.reloadData(self.currentSelectItem().yearOrYearMonthValue(), true);
+                                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16", [])).then(() => {
+                                        self.reloadData(self.currentSelectItem().yearOrYearMonthValue(), true);
+                                    });
                                 });
                         }
 
