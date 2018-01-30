@@ -2,20 +2,21 @@ module nts.uk.at.view.ksm005.c {
     
     import MonthlyPatternDto = service.model.MonthlyPatternDto;
     import MonthlyPatternSettingDto = service.model.MonthlyPatternSettingDto;
-    import MonthlyPatternSettingActionDto = service.model.MonthlyPatternSettingActionDto;
-  
+    import HistoryDto = service.model.HistoryDto;
 
     export module viewmodel {
 
         export class ScreenModel {
             ccgcomponent: GroupOption;
+            
+            enableSave: KnockoutObservable<boolean>;
 
             // Options
             baseDate: KnockoutObservable<Date>;
-            selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+            selectedEmployee: KnockoutObservableArray<any>;
 
             listComponentOption: any;
-            selectedCode: KnockoutObservable<string>;
+            selectedCode: KnockoutObservable<any>;
             monthlyPatternCode: string;
             monthlyPatternSetting: KnockoutObservable<string>;
             employeeName: KnockoutObservable<string>;
@@ -24,11 +25,40 @@ module nts.uk.at.view.ksm005.c {
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             employeeList: KnockoutObservableArray<UnitModel>;
-
-
+            
+            // list hist
+            histList: KnockoutObservableArray<any>;
+            histName: KnockoutObservable<string>;
+            currentHist: KnockoutObservable<number>
+            selectedHist: KnockoutObservable<string>;
+            selectedHists: KnockoutObservableArray<any>;
+            isEnableListHist: KnockoutObservable<boolean>;
+            
+            // monthly pattern list
+            monthlyPatternList: KnockoutObservableArray<any>;
+            selectedmonthlyPattern: KnockoutObservable<string>;
+            isEnableListMonthlyPattern: KnockoutObservable<boolean>;
+            isEditableListMonthlyPattern: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
+                
+                self.enableSave = ko.observable(true);
+                
+                // list hist
+                self.histList = ko.observableArray([]);
+                self.histName = ko.observable('');
+                self.currentHist = ko.observable(3);
+                self.selectedHist = ko.observable(null)
+                self.isEnableListHist = ko.observable(true);
+                self.selectedHists = ko.observableArray([]);
+                
+                // list monthly pattern
+                self.monthlyPatternList = ko.observableArray([]);
+                self.selectedmonthlyPattern = ko.observable('1');
+                self.isEnableListMonthlyPattern = ko.observable(true);
+                self.isEditableListMonthlyPattern = ko.observable(false);
+                
                 self.selectedEmployee = ko.observableArray([]);
                 self.baseDate = ko.observable(new Date());
                 self.monthlyPatternSetting = ko.observable('');
@@ -75,14 +105,14 @@ module nts.uk.at.view.ksm005.c {
 
                 }
 
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+//                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 
                 self.selectedCode = ko.observable('');
                 self.alreadySettingList = ko.observableArray([]);
                 self.isShowNoSelectRow = ko.observable(false);
                 self.employeeList = ko.observableArray<UnitModel>([]);
                 self.applyKCP005ContentSearch([]);
-                $('#component-items-list').ntsListComponent(self.listComponentOption);
+//                $('#component-items-list').ntsListComponent(self.listComponentOption);
 
                 self.selectedCode.subscribe(function(employeeCode: string) {
                     if (employeeCode) {
@@ -95,6 +125,25 @@ module nts.uk.at.view.ksm005.c {
                     }
                 });
             }
+            
+            public start_page(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+                var monthlyPatternData: MonthlyPatterModel[] = [];
+                 $.when(service.getListMonthlyPattern())
+                    .done(function(data) {
+                        data.forEach(function(item){
+                            monthlyPatternData.push(new MonthlyPatterModel(item.code, item.name));
+                        });
+                        self.monthlyPatternList(monthlyPatternData);
+                        $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+                        $('#component-items-list').ntsListComponent(self.listComponentOption);
+                        dfd.resolve();
+                }); 
+                
+                return dfd.promise();
+            }
+            
             /**
              * apply ccg001 search data to kcp005
              */
@@ -115,9 +164,9 @@ module nts.uk.at.view.ksm005.c {
                     self.selectedCode(dataList[0].employeeCode);
                 }
                 
-                self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data){
-                    self.alreadySettingList(data);                       
-                });
+//                self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data){
+//                    self.alreadySettingList(data);                       
+//                });
                 self.listComponentOption = {
                     isShowAlreadySet: true,
                     isMultiSelect: false,
@@ -196,25 +245,44 @@ module nts.uk.at.view.ksm005.c {
              */
             public applySelectEmployeeCode(employeeCode: string){
                 var self = this;
+                var historyData: HistModel[] = [];
+                var textDisplay = "";
                 if (employeeCode) {
                     self.employeeName((self.findByCodeEmployee(employeeCode)).name);
-                    service.findByIdMonthlyPatternSetting(self.findEmployeeIdByCode(employeeCode)).done(function(data: MonthlyPatternSettingDto) {
+                    service.getListHistory(self.findEmployeeIdByCode(employeeCode)).done(function (data){
                         console.log(data);
-                        if (data.setting) {
-                            if (data.info && data.info.code) {
-                                self.monthlyPatternCode = data.info.code;
-                                self.monthlyPatternSetting(data.info.code + ' ' + data.info.name);
+                        if(data != null){
+                             data.forEach(function(item){
+                              textDisplay = item.period.startDate + " - " + item.period.endDate;
+                              historyData.push(new HistModel(item.historyId, textDisplay));
+                            });
+                            self.isEnableListMonthlyPattern(true);
+                            self.isEnableListHist(true);
+                            self.enableSave(true);
+                        } else {
+                            self.isEnableListMonthlyPattern(false);
+                            self.isEnableListHist(false);
+                            self.enableSave(false);
+                        }
+                        self.histList(historyData);
+                    });
+                    service.findByIdMonthlyPatternSetting(self.findEmployeeIdByCode(employeeCode), self.selectedHist()).done(function(data: MonthlyPatternSettingDto) {
+                        console.log(data);
+                        if (data != null) {
+//                            if (data.info && data.info.code) {
+                                self.selectedmonthlyPattern(data.monthlyPatternCode);
+                                self.selectedHist(data.historyId);
                                 self.enableDelete(true);
                                 self.enableSystemChange(true);
-                            }else {
-                                self.monthlyPatternCode = '';
-                                self.monthlyPatternSetting('');
-                                self.enableDelete(true);
-                                self.enableSystemChange(true);   
-                            }
+//                            }else {
+//                                self.monthlyPatternCode = '';
+//                                self.monthlyPatternSetting('');
+//                                self.enableDelete(true);
+//                                self.enableSystemChange(true);   
+//                            }
                         } else {
-                            self.monthlyPatternCode = '';
-                            self.monthlyPatternSetting('');
+//                            self.monthlyPatternCode = '';
+//                            self.monthlyPatternSetting('');
                             self.enableDelete(false);
                             self.enableSystemChange(true);
                         }
@@ -254,6 +322,7 @@ module nts.uk.at.view.ksm005.c {
                     }
                     dfd.resolve(dataRes);
                 });
+                dfd.resolve();
                 return dfd.promise();
             }
             /**
@@ -261,9 +330,9 @@ module nts.uk.at.view.ksm005.c {
              */
             public reloadPage(): void {
                 var self = this;
-                self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data) {
-                    self.alreadySettingList(data);
-                });
+//                self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data) {
+//                    self.alreadySettingList(data);
+//                });
                 self.applySelectEmployeeCode(self.selectedCode());
             }
             
@@ -272,12 +341,12 @@ module nts.uk.at.view.ksm005.c {
              */
             public saveMonthlyPatternSetting(): void {
                 var self = this;
-                var dto : MonthlyPatternSettingActionDto;
+                var dto : MonthlyPatternSettingDto;
                 if (!self.selectedCode()) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
                     return;
                 }
-                dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), monthlyPatternCode: self.monthlyPatternCode};
+                dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHist(), monthlyPatternCode: self.monthlyPatternCode};
                 service.saveMonthlyPatternSetting(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -293,8 +362,8 @@ module nts.uk.at.view.ksm005.c {
              */
             public deleteMonthlyPatternSetting(): void {
                 var self = this;
-                var dto: MonthlyPatternSettingActionDto;
-                dto = { employeeId: self.findEmployeeIdByCode(self.selectedCode()), monthlyPatternCode: self.monthlyPatternCode };
+                var dto: MonthlyPatternSettingDto;
+                dto = { employeeId: self.findEmployeeIdByCode(self.selectedCode()),historyId: self.selectedHist(), monthlyPatternCode: self.monthlyPatternCode };
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     service.deleteMonthlyPatternSetting(dto).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
@@ -383,5 +452,25 @@ module nts.uk.at.view.ksm005.c {
     export interface UnitAlreadySettingModel {
         code: string;
         isAlreadySetting: boolean;
+    }
+    
+    export class HistModel {
+        historyId: string;
+        textDisplay: string;
+        
+        constructor(historyId: string, textDisplay: string) {
+            this.historyId = historyId;
+            this.textDisplay = textDisplay;
+        }
+    }
+    
+    export class MonthlyPatterModel {
+        code: string;
+        name: string;
+       
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
     }
 }
