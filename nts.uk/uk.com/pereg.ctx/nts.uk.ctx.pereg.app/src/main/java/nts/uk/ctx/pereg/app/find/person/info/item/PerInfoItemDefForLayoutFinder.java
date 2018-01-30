@@ -36,21 +36,22 @@ import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Stateless
 public class PerInfoItemDefForLayoutFinder {
-	
+
 	@Inject
 	I18NResourcesForUK ukResouce;
-	
+
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemDefRepositoty;
-	
-	@Inject 
+
+	@Inject
 	private ComboBoxRetrieveFactory comboBoxRetrieveFactory;
-	
+
 	@Inject
 	AffCompanyHistRepository achFinder;
-	
+
 	/***
-	 * set value for item 
+	 * set value for item
+	 * 
 	 * @param itemForLayout
 	 * @param empId
 	 * @param ctgType
@@ -61,14 +62,17 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @param sDate
 	 * @param mapListCombo
 	 */
-	public void setItemForLayout(PerInfoItemDefForLayoutDto itemForLayout, String empId, int ctgType, PersonInfoItemDefinition itemDef, String perInfoCd, 
-			int dispOrder, boolean isCtgViewOnly, GeneralDate sDate, Map<Integer, List<ComboBoxObject>> mapListCombo){
-		List<PerInfoItemDefForLayoutDto> lstChildren = getPerItemSet(empId,ctgType, itemDef.getItemTypeState(), perInfoCd, dispOrder, isCtgViewOnly, sDate, mapListCombo, itemForLayout.getActionRole());
-		if(lstChildren.size() == 0 && itemDef.getItemTypeState().getItemType().value == 1) itemForLayout.setActionRole(ActionRole.HIDDEN);
+	public void setItemForLayout(PerInfoItemDefForLayoutDto itemForLayout, String empId, int ctgType,
+			PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder, boolean isCtgViewOnly, GeneralDate sDate,
+			Map<Integer, List<ComboBoxObject>> mapListCombo) {
+		List<PerInfoItemDefForLayoutDto> lstChildren = getPerItemSet(empId, ctgType, itemDef.getItemTypeState(),
+				perInfoCd, dispOrder, isCtgViewOnly, sDate, mapListCombo, itemForLayout.getActionRole());
+		if (lstChildren.size() == 0 && itemDef.getItemTypeState().getItemType().value == 1)
+			itemForLayout.setActionRole(ActionRole.HIDDEN);
 		else {
 			itemForLayout.setLstChildItemDef(lstChildren);
 			itemForLayout.setCtgType(ctgType);
-			if(isCtgViewOnly)
+			if (isCtgViewOnly)
 				itemForLayout.setActionRole(ActionRole.VIEW_ONLY);
 			itemForLayout.setId(itemDef.getPerInfoItemDefId());
 			itemForLayout.setPerInfoCtgId(itemDef.getPerInfoCategoryId());
@@ -76,34 +80,36 @@ public class PerInfoItemDefForLayoutFinder {
 			itemForLayout.setItemCode(itemDef.getItemCode().v());
 			itemForLayout.setItemName(itemDef.getItemName().v());
 			itemForLayout.setItemDefType(itemDef.getItemTypeState().getItemType().value);
-			
+
 			itemForLayout.setIsRequired(itemDef.getIsRequired().value);
 			itemForLayout.setDispOrder(dispOrder);
-			
+
 			itemForLayout.setSelectionItemRefType(itemDef.getSelectionItemRefType());
 			itemForLayout.setItemTypeState(createItemTypeStateDto(itemDef.getItemTypeState()));
-			List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
+			List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class,
+					ukResouce);
 			itemForLayout.setSelectionItemRefTypes(selectionItemRefTypes);
-			if(itemForLayout.getItemDefType() == 2){
+			if (itemForLayout.getItemDefType() == 2) {
 				SingleItem singleItemDom = (SingleItem) itemDef.getItemTypeState();
 				int dataTypeValue = singleItemDom.getDataTypeState().getDataTypeValue().value;
-				if(dataTypeValue == 6){
+				if (dataTypeValue == 6) {
 					DataTypeStateDto dataTypeStateDto = createDataTypeStateDto(singleItemDom.getDataTypeState());
 					SelectionItemDto selectionItemDto = (SelectionItemDto) dataTypeStateDto;
 					int refType = selectionItemDto.getReferenceType().value;
-					if(mapListCombo.containsKey(refType)) {
+					if (mapListCombo.containsKey(refType)) {
 						itemForLayout.setLstComboxBoxValue(mapListCombo.get(refType));
-					}else {					
-						List<ComboBoxObject> lstCombo = getLstComboBoxValue(selectionItemDto, empId, sDate);			
+					} else {
+						List<ComboBoxObject> lstCombo = getLstComboBoxValue(selectionItemDto, empId, sDate,
+								itemForLayout.getIsRequired() == 1);
 						itemForLayout.setLstComboxBoxValue(lstCombo);
 						mapListCombo.put(refType, lstCombo);
 					}
-					
+
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * create ItemTypeStateDto
 	 * 
@@ -160,49 +166,51 @@ public class PerInfoItemDefForLayoutFinder {
 		}
 	}
 
-	
 	/**
 	 * get per item set from domain
 	 * 
 	 * @param item
 	 * @return
 	 */
-	private List<PerInfoItemDefForLayoutDto> getPerItemSet(String empId, int ctgType, ItemTypeState item, String perInfoCd, int dispOrder, 
-			boolean ctgIsViewOnly, GeneralDate sDate, Map<Integer, List<ComboBoxObject>> mapListCombo, ActionRole actionRole) {
+	private List<PerInfoItemDefForLayoutDto> getPerItemSet(String empId, int ctgType, ItemTypeState item,
+			String perInfoCd, int dispOrder, boolean ctgIsViewOnly, GeneralDate sDate,
+			Map<Integer, List<ComboBoxObject>> mapListCombo, ActionRole actionRole) {
 		// 1 set - 2 Single
 		List<PerInfoItemDefForLayoutDto> lstResult = new ArrayList<>();
 		if (item.getItemType().value == 1) {
 			String contractCode = AppContexts.user().contractCode();
-			//String contractCode = "000000000001";
-			
+			// String contractCode = "000000000001";
+
 			// get itemId list of children
 			SetItem setItem = (SetItem) item;
 			List<String> items = setItem.getItems();
-			if(items.size() == 0) return lstResult;
+			if (items.size() == 0)
+				return lstResult;
 			// get children by itemId list
-			List<PersonInfoItemDefinition> lstDomain = perInfoItemDefRepositoty
-					.getPerInfoItemDefByListId(items, contractCode);
+			List<PersonInfoItemDefinition> lstDomain = perInfoItemDefRepositoty.getPerInfoItemDefByListId(items,
+					contractCode);
 			PerInfoItemDefForLayoutDto childItem;
 			for (int i = 0; i < lstDomain.size(); i++) {
 				childItem = new PerInfoItemDefForLayoutDto();
 				childItem.setActionRole(actionRole);
-				setItemForLayout(childItem, empId, ctgType, lstDomain.get(i), perInfoCd, dispOrder, ctgIsViewOnly, sDate, mapListCombo);
+				setItemForLayout(childItem, empId, ctgType, lstDomain.get(i), perInfoCd, dispOrder, ctgIsViewOnly,
+						sDate, mapListCombo);
 				lstResult.add(childItem);
 			}
 		}
 		return lstResult;
 	}
-	
-	
-	
-	public List<ComboBoxObject> getLstComboBoxValue(SelectionItemDto selectionItemDto, String empId, GeneralDate baseDate){
-		
+
+	public List<ComboBoxObject> getLstComboBoxValue(SelectionItemDto selectionItemDto, String empId,
+			GeneralDate baseDate, boolean isRequired) {
+
 		GeneralDate standardDate = baseDate;
-		if(baseDate == null) {
+		if (baseDate == null) {
 			AffCompanyHist affCompanyHist = achFinder.getAffCompanyHistoryOfEmployeeDesc(AppContexts.user().companyId(),
 					empId);
-			standardDate = affCompanyHist.getLstAffCompanyHistByEmployee().get(0).getLstAffCompanyHistoryItem().stream().collect(Collectors.toList()).get(0).start();
+			standardDate = affCompanyHist.getLstAffCompanyHistByEmployee().get(0).getLstAffCompanyHistoryItem().stream()
+					.collect(Collectors.toList()).get(0).start();
 		}
-		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, empId, standardDate, true);
+		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, empId, standardDate, true, isRequired);
 	}
 }
