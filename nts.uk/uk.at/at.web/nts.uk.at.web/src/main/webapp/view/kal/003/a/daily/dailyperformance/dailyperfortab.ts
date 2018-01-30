@@ -6,12 +6,7 @@ module nts.uk.at.view.kal003.a.tab {
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
 
     export class DailyPerformanceTab {
-        listWorkRecordExtraCon: KnockoutObservableArray<model.DailyErrorAlarmCheck> = ko.observableArray([
-            new model.DailyErrorAlarmCheck('S001', 'name S001', model.ERROR_CLASSIFICATION.ERROR, 'message s001'),
-            new model.DailyErrorAlarmCheck('S002', 'name S002', model.ERROR_CLASSIFICATION.ALARM, 'message s002'),
-            new model.DailyErrorAlarmCheck('S003', 'name S003', model.ERROR_CLASSIFICATION.OTHER, 'message s003'),
-            new model.DailyErrorAlarmCheck('S004', 'name S004', model.ERROR_CLASSIFICATION.ALARM, 'message s004')
-        ]);
+        listWorkRecordExtraCon: KnockoutObservableArray<model.DailyErrorAlarmCheck> = ko.observableArray([]);
         currentCodeList: KnockoutObservableArray<string>;
         addApplication: KnockoutObservable<boolean> = ko.observable(true);
         columns: Array<any>;
@@ -19,6 +14,15 @@ module nts.uk.at.view.kal003.a.tab {
         constructor(listWorkRecordExtraCon?: Array<model.DailyErrorAlarmCheck>) {
             let self = this;
 
+            service.getDailyErrorAlarmCheck().done((data: Array<any>) => {
+                if (data && data.length) {
+                    let _list: Array<model.DailyErrorAlarmCheck> = _.map(data, acc => {
+                        return new model.DailyErrorAlarmCheck(acc.code, acc.name, acc.classification, acc.message);
+                    });
+                    self.listWorkRecordExtraCon(_list);
+                }
+            });
+            
             if (listWorkRecordExtraCon) {
                 self.listWorkRecordExtraCon.removeAll();
                 self.listWorkRecordExtraCon(listWorkRecordExtraCon);
@@ -55,19 +59,7 @@ module nts.uk.at.view.kal003.a.tab {
                 { headerText: getText('KAL003_55'), key: 'message', width: 300 }
             ];
 
-
-//            self.listWorkRecordExtraCon.subscribe((data: Array<model.DailyErrorAlarmCheck>) => {
-//                for (var i = 1; i <= data.length; i++) {
-//                    if ($("table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)").text() == "ER") {
-//                        $("table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)").css("background-color", "red");
-//                    }
-//                    if ($("table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)").text() == "AL") {
-//                        $("table[id='AA3_1'] tr:nth-child(" + i + ") td:nth-child(3)").css("background-color", "yellow");
-//                    }
-//                }
-//            });
             this.currentCodeList = ko.observableArray([]);
-            //self.listWorkRecordExtraCon.valueHasMutated();
 
         }//end constructor
     }//en            b
