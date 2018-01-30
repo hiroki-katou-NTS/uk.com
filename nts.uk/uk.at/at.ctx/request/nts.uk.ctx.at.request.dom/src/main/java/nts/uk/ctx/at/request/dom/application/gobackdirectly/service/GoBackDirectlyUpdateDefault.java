@@ -9,6 +9,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
@@ -17,9 +18,12 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 
 @Stateless
@@ -46,6 +50,9 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	@Inject
 	private GoBackDirectlyRegisterService goBackDirectlyRegisterService;
 
+	@Inject
+	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	
 	/**
 	 * アルゴリズム「直行直帰更新前チェック」を実行する
 	 */
@@ -84,14 +91,6 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	public void updateGoBackDirectly(GoBackDirectly goBackDirectly, Application_New application, Long version) {
 		// ドメインモデル「直行直帰申請」の更新する
 		this.goBackDirectlyRepo.update(goBackDirectly);
-		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
-				.getApplicationSettingByComID(goBackDirectly.getCompanyID());
-		
-		ApplicationSetting applicationSetting = applicationSettingOp.get();
-		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				&& Strings.isBlank(application.getAppReason().v())) {
-			throw new BusinessException("Msg_115");
-		}
 		application.setVersion(version);
 		appRepo.updateWithVersion(application);
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
