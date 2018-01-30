@@ -5,7 +5,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
@@ -20,6 +23,12 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyUpdateService;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -27,6 +36,12 @@ import nts.uk.shr.com.context.AppContexts;
 public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApplicationGoBackDirectlyCommand> {
 	@Inject
 	private GoBackDirectlyUpdateService goBackDirectlyUpdateService;
+	
+	@Inject
+	ApplicationSettingRepository applicationSettingRepository;
+	
+	@Inject
+	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateApplicationGoBackDirectlyCommand> context) {
@@ -34,10 +49,29 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateApp
 		UpdateApplicationGoBackDirectlyCommand command = context.getCommand();
 		
 		// get new Application Item
-		String appReason = "";
-		if(!command.appCommand.getAppReasonID().isEmpty() || !command.appCommand.getApplicationReason().isEmpty()) {
-			appReason = !command.appCommand.getAppReasonID().isEmpty() ? command.appCommand.getAppReasonID() + System.lineSeparator() + command.appCommand.getApplicationReason() : command.appCommand.getApplicationReason();
+		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
+				companyId, 
+				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value).get();
+		String appReason = Strings.EMPTY;	
+		String typicalReason = Strings.EMPTY;
+		String displayReason = Strings.EMPTY;
+		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)){
+			typicalReason += command.appCommand.getAppReasonID();
 		}
+		if(appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+			if(Strings.isNotBlank(typicalReason)){
+				displayReason += System.lineSeparator();
+			}
+			displayReason += command.appCommand.getApplicationReason();
+		}
+		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
+				.getApplicationSettingByComID(companyId);
+		ApplicationSetting applicationSetting = applicationSettingOp.get();
+		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+				& Strings.isBlank(typicalReason+displayReason)) {
+			throw new BusinessException("Msg_115");
+		}
+		appReason = typicalReason + displayReason;
 		
 		Application_New updateApp = new Application_New(0L, companyId, command.goBackCommand.getAppID(),
 				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr.class),

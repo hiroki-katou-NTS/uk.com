@@ -110,10 +110,6 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 			// ドメインモデル「更新処理自動実行」に新規登録する
 			procExecRepo.insert(procExec);
 			
-//			// ドメインモデル「実行タスク設定」に新規登録する
-//			ExecutionTaskSetting taskSetting = new ExecutionTaskSetting(new ExecutionCode(command.getExecItemCd()), companyId, false, false);
-//			execSettingRepo.insert(taskSetting);
-			
 			// ドメインモデル「更新処理自動実行ログ」に新規登録する
 			String execId = IdentifierUtil.randomUniqueId();
 			ProcessExecutionLog procExecLog =
@@ -122,10 +118,6 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 														EndStatus.NOT_IMPLEMENT,
 														execId,
 														CurrentExecutionStatus.INVALID);
-			// TODO - Confirming
-//			procExecLog.setTaskLogList(new ArrayList<>());
-//			procExecLog.setEachProcPeriod(
-//					new EachProcessPeriod(new DatePeriod(GeneralDate.today(), GeneralDate.today()), new DatePeriod(GeneralDate.today(), GeneralDate.today()), new DatePeriod(GeneralDate.today(), GeneralDate.today())));
 			this.procExecLogRepo.insert(procExecLog);
 			this.lastDateTimeRepo.insert(new LastExecDateTime(companyId,
 																new ExecutionCode(command.getExecItemCd()),

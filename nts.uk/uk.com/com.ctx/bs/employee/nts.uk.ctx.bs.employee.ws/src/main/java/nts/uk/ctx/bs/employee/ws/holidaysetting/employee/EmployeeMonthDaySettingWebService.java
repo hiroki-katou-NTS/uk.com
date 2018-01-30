@@ -1,4 +1,10 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.ws.holidaysetting.employee;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -44,6 +50,18 @@ public class EmployeeMonthDaySettingWebService extends WebService {
 	@POST
 	public EmployeeMonthDaySettingDto findAll(@PathParam("year") int year,@PathParam("sId") String sId){
 		return this.finder.getEmployeeMonthDaySetting(sId, year);
+	}
+	
+	
+	/**
+	 * Find all employee register.
+	 *
+	 * @return the list
+	 */
+	@Path("findEmployeeMonthDaySetting/findAllEmployeeRegister")
+	@POST
+	public List<String> findAllEmployeeRegister(){
+		return this.finder.findAllEmployeeRegister();
 	}
 	
 	/**

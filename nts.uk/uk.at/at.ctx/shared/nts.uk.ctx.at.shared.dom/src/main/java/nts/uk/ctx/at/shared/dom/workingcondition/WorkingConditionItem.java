@@ -85,6 +85,7 @@ public class WorkingConditionItem extends AggregateRoot {
 	 */
 	public WorkingConditionItem(WorkingConditionItemGetMemento memento) {
 		this.historyId = memento.getHistoryId();
+		this.hourlyPaymentAtr = memento.getHourlyPaymentAtr();
 		this.scheduleManagementAtr = memento.getScheduleManagementAtr();
 		this.vacationAddedTimeAtr = memento.getVacationAddedTimeAtr();
 		this.laborSystem = memento.getLaborSystem();
@@ -96,6 +97,8 @@ public class WorkingConditionItem extends AggregateRoot {
 		this.autoStampSetAtr = memento.getAutoStampSetAtr();
 		this.scheduleMethod = memento.getScheduleMethod();
 		this.holidayAddTimeSet = memento.getHolidayAddTimeSet();
+		this.timeApply = memento.getTimeApply();
+		this.monthlyPattern = memento.getMonthlyPattern();
 	}
 
 	/**
@@ -106,6 +109,7 @@ public class WorkingConditionItem extends AggregateRoot {
 	 */
 	public void saveToMemento(WorkingConditionItemSetMemento memento) {
 		memento.setHistoryId(this.historyId);
+		memento.setHourlyPaymentAtr(this.hourlyPaymentAtr);
 		memento.setScheduleManagementAtr(this.scheduleManagementAtr);
 		memento.setVacationAddedTimeAtr(this.vacationAddedTimeAtr);
 		memento.setLaborSystem(this.laborSystem);
@@ -117,6 +121,8 @@ public class WorkingConditionItem extends AggregateRoot {
 		memento.setAutoStampSetAtr(this.autoStampSetAtr);
 		memento.setScheduleMethod(this.scheduleMethod);
 		memento.setHolidayAddTimeSet(this.holidayAddTimeSet);
+		memento.setTimeApply(this.timeApply);
+		memento.setMonthlyPattern(this.monthlyPattern);
 	}
 
 	/*

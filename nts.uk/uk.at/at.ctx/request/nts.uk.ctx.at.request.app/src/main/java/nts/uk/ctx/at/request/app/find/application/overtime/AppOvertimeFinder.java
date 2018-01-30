@@ -480,7 +480,7 @@ public class AppOvertimeFinder {
 				result.setAllPreAppPanelFlg(true);
 			}
 		}
-//01-09_事前申請を取得
+		//01-09_事前申請を取得
 		if(result.isAllPreAppPanelFlg()){
 			if(prePostAtr  == PrePostAtr.POSTERIOR.value ){
 				AppOverTime appOvertime = iOvertimePreProcess.getPreApplication(companyID, employeeID,overtimeRestAppCommonSet, appDate,prePostAtr);

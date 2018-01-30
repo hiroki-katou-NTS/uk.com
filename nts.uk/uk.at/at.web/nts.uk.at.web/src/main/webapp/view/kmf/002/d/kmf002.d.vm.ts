@@ -1,6 +1,9 @@
 module nts.uk.at.view.kmf002.d {
 
     import service = nts.uk.at.view.kmf002.d.service;
+    import blockUI = nts.uk.ui.block;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     
     export module viewmodel {
 
@@ -24,12 +27,9 @@ module nts.uk.at.view.kmf002.d {
                 _self.enableSave = ko.observable(true);
                 _self.enableDelete= ko.observable(false);
                 _self.selectedCode = ko.observable("");
-                _self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+                _self.multiSelectedCode = ko.observableArray([]);
                 _self.isShowAlreadySet = ko.observable(true);
-                _self.alreadySettingList = ko.observableArray([
-                    { code: '1', isAlreadySetting: true },
-                    { code: '2', isAlreadySetting: true }
-                ]);
+                _self.alreadySettingList = ko.observableArray([]);
                 _self.isDialog = ko.observable(false);
                 _self.isShowNoSelectRow = ko.observable(false);
                 _self.isMultiSelect = ko.observable(false);
@@ -88,6 +88,11 @@ module nts.uk.at.view.kmf002.d {
             public start_page(): JQueryPromise<void> {
                 let _self = this;
                 var dfd = $.Deferred<void>();
+                if (getShared('conditionSidebar5') == false) {
+//                    blockUI.grayout();
+                } else {
+//                    blockUI.clear();
+                }
                 $('#empt-list-setting').ntsListComponent(_self.listComponentOption).done(function(){
                     _self.catchChangeSelectEmp();
                     _self.getDataFromService();
@@ -129,14 +134,19 @@ module nts.uk.at.view.kmf002.d {
             public getDataFromService(): void {
                 let _self = this;
                 
-                 $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), service.findFirstMonth()).done(function(data: any, data2: any) {
-                     
+                 $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
+                                    service.findFirstMonth(),
+                                    service.findAllEmpRegister()).done(function(data: any, data2: any, data3: any) {
+                    _self.alreadySettingList.removeAll();
+                    _.forEach(data3, function(code) {
+                        _self.alreadySettingList.push({code: code, isAlreadySetting: true});
+                    });
                     if (typeof data === "undefined") {
                         /** 
                          *   create value null for prepare create new 
                         **/
                         _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value) {
-                            value.day('');
+                            value.day(0);
                         });
                         _self.enableDelete(false);
                     } else {

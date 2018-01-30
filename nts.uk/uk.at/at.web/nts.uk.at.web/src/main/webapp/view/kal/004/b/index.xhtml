@@ -36,7 +36,7 @@
 								<label class="ntsRadioBox">
 									<input type="radio" name="strRadio" tabindex="1" data-bind="checkedValue: 0, checked: strSelected, enable: enable" />
 									<span class="box"></span><span class="label" data-bind="text: txtDay"></span>
-									<input class="input-box input-str" tabindex="2" data-bind="ntsNumberEditor: {value:strDay, constraint:'Day', required: true, enable: (strSelected() == 0)}" />
+									<input class="input-box input-str" tabindex="2" data-bind="ntsNumberEditor: {value:strDay, name: '#[KAL004_33]', constraint:'Day', required: true, enable: (strSelected() == 0)}" />
 									<span class="label txt">#{i18n.getText('KAL004_34')}</span> 
 									<com:ko-if bind="getCategoryId() == 0 || getCategoryId() == 8">
 									 	<div class="combo-box combo-day" tabindex="3"
@@ -85,7 +85,7 @@
 								<label class="ntsRadioBox">
 									<input type="radio" name="endRadio" tabindex="6" data-bind="checkedValue: 0, checked: endSelected, enable: enable" />
 									<span class="box"></span><span class="label" data-bind="text: txtDay"></span>
-									<input class="input-box input-end" tabindex="7" data-bind="ntsNumberEditor: {value:endDay, constraint:'Day', required: true, enable: (endSelected() == 0)}" />
+									<input class="input-box input-end" tabindex="7" data-bind="ntsNumberEditor: {value:endDay, name: '#[KAL004_39]', constraint:'Day', required: true, enable: (endSelected() == 0)}" />
 									<span class="label txt">#{i18n.getText('KAL004_34')}</span> 
 									<com:ko-if bind="getCategoryId() == 0 || getCategoryId() == 8">
 									 	<div class="combo-box combo-day" tabindex="8"

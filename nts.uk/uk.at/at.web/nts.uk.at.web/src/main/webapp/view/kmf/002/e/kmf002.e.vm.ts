@@ -1,6 +1,10 @@
 module nts.uk.at.view.kmf002.e {
     
     import service = nts.uk.at.view.kmf002.e.service;
+    import blockUI = nts.uk.ui.block;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    
     export module viewmodel {
         export class ScreenModel {
             commonTableMonthDaySet: KnockoutObservable<nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet>;
@@ -54,13 +58,19 @@ module nts.uk.at.view.kmf002.e {
             public start_page(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var _self = this;
+                if (getShared('conditionSidebar5') == false) {
+//                    blockUI.grayout();
+                } else {
+//                    blockUI.clear();
+                }
+                $( "#datePickerYear" ).focus();
                 service.find(_self.commonTableMonthDaySet().fiscalYear()).done((data) => {
                     if (typeof data === "undefined") {
                         /** 
                          *   create value null for prepare create new 
                         **/
                         _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value: any) {
-                            value.day('');
+                            value.day(0);
                         });
                         _self.enableDelete(false);
                     } else {
