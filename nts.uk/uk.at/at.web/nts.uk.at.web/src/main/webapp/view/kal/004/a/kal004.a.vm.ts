@@ -225,6 +225,13 @@ module nts.uk.at.view.kal004.a.model {
             // Validate input
             $(".nts-input").trigger("validate");
             if ($(".nts-input").ntsError("hasError")) return;
+            
+            // Validate logic
+            if(_.find(self.currentCodeListSwap(), {'cssClass': 'red-color'})){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_817" });
+                return;
+            }
+            
             // Create command
             let alarmPerSet: share.AlarmPermissionSettingCommand = new share.AlarmPermissionSettingCommand(self.setPermissionModel.selectedRuleCode() == 1 ? false : true, self.setPermissionModel.listRoleID());
             let checkConditonList: Array<share.CheckConditionCommand> = self.periodSetting.listCheckCondition();
@@ -234,7 +241,7 @@ module nts.uk.at.view.kal004.a.model {
             if (self.createMode()) {
                 service.addAlarmPattern(command).done(() => {
 
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 
                     self.getAlarmPattern().done(function() {
                         self.currentCode(self.alarmCode());
@@ -242,13 +249,13 @@ module nts.uk.at.view.kal004.a.model {
                         block.clear();
                     });
                 }).fail((error) => {
-                    nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                     block.clear();
                 });
             } else {
                 service.updateAlarmPattern(command).done(() => {
 
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 
                     self.getAlarmPattern().done(function() {
                         self.currentCode(self.alarmCode());
@@ -256,7 +263,7 @@ module nts.uk.at.view.kal004.a.model {
                         block.clear();
                     });
                 }).fail((error) => {
-                    nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                     block.clear();
                 });
 
