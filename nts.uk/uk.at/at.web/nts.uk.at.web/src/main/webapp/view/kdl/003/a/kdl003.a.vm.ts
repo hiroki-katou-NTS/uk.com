@@ -126,7 +126,7 @@ module nts.uk.at.view.kdl003.a {
                 // On selectedWorkTimeCode changed event.
                 self.selectedWorkTimeCode.subscribe(code => {
                     self.getListTimeBySeleckedCode(code);
-                    self.loadWorkTime(code);
+                    self.getTimeBySelectedCode(self.listWorkTime(), code);
                 }); 
                 
                 //parent data
@@ -307,38 +307,40 @@ module nts.uk.at.view.kdl003.a {
                     service.findBreakByCodes(code).done(function(data){
                         dataBB = data.breakBreakTimeDto;
                         dataB = data.breakTimeDto;
-                        if (dataB.length <= 5 && dataBB.length <= 5){
-                            for (let i = 0; i < 5; i++){
-                                dataEmpty.push(emptyArray);
-                            }
-                            for (let i = dataB.length; i < 5; i++){
-                                dataB.push(emptyArray);
-                            }
-                            for (let i = dataBB.length; i < 5; i++){
-                                dataBB.push(emptyArray);
-                            }
-                            
-                            //Set list Break Time and list Break Break Time
-                            self.listTimeBreak1(dataB);
-                            self.listTimeBreak2(dataEmpty);
-                            self.listTimeBreakBreak1(dataBB);
-                            self.listTimeBreakBreak2(dataEmpty);
-                        } else {
-                            if(dataB.length > 5){
-                                for (let i = 0; i < 5 ; i++){
-                                    self.listTimeBreak1(dataB[i]);
-                                }
-                                for (let i = 5; i < dataB.length ; i++){
-                                    self.listTimeBreak2(dataB[i]);
-                                }
-                            } else {
-                                for (let i = 0; i < 5 ; i++){
-                                    self.listTimeBreakBreak1(dataBB[i]);
-                                }
-                                for (let i = 5; i < dataB.length ; i++){
-                                    self.listTimeBreakBreak2(dataBB[i]);
-                                }
-                            }
+                        if(nts.uk.util.isNullOrEmpty(dataB) && nts.uk.util.isNullOrEmpty(dataBB)){
+//                            if (dataB.length <= 5 && dataBB.length <= 5){
+//                                for (let i = 0; i < 5; i++){
+//                                    dataEmpty.push(emptyArray);
+//                                }
+//                                for (let i = dataB.length; i < 5; i++){
+//                                    dataB.push(emptyArray);
+//                                }
+//                                for (let i = dataBB.length; i < 5; i++){
+//                                    dataBB.push(emptyArray);
+//                                }
+//                                
+//                                //Set list Break Time and list Break Break Time
+//                                self.listTimeBreak1(dataB);
+//                                self.listTimeBreak2(dataEmpty);
+//                                self.listTimeBreakBreak1(dataBB);
+//                                self.listTimeBreakBreak2(dataEmpty);
+//                            } else {
+//                                if(dataB.length > 5){
+//                                    for (let i = 0; i < 5 ; i++){
+//                                        self.listTimeBreak1(dataB[i]);
+//                                    }
+//                                    for (let i = 5; i < dataB.length ; i++){
+//                                        self.listTimeBreak2(dataB[i]);
+//                                    }
+//                                } else {
+//                                    for (let i = 0; i < 5 ; i++){
+//                                        self.listTimeBreakBreak1(dataBB[i]);
+//                                    }
+//                                    for (let i = 5; i < dataB.length ; i++){
+//                                        self.listTimeBreakBreak2(dataBB[i]);
+//                                    }
+//                                }
+//                            }
                         }
                     });
                 }
@@ -418,6 +420,10 @@ module nts.uk.at.view.kdl003.a {
                     $('#inputStartTime').ntsError('hasError')) {
                     return;
                 }
+                
+                 if (nts.uk.util.isNullOrEmpty(self.startTime()) || nts.uk.util.isNullOrEmpty(self.endTime())) {
+                    return;
+                }
                 nts.uk.ui.block.invisible();
 
                 // Search command.
@@ -432,6 +438,7 @@ module nts.uk.at.view.kdl003.a {
                 // Search & display data.
                 service.findByTime(command)
                     .done(function(data) {
+                        self.listWorkTime([]);
                         self.listWorkTime(data);
                         if (!nts.uk.util.isNullOrEmpty(data)) {
                             self.selectedWorkTimeCode(data[0].code);
@@ -439,7 +446,8 @@ module nts.uk.at.view.kdl003.a {
                     })
                     .fail(function(res) {
                         nts.uk.ui.dialog.alertError(res);
-                    }).always(() => {
+                    })
+                    .always(() => {
                         // Set focus.
                         $("[tabindex='10']").focus();
 
