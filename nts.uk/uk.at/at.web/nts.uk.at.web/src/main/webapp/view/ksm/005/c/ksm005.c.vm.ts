@@ -55,9 +55,9 @@ module nts.uk.at.view.ksm005.c {
                 
                 // list monthly pattern
                 self.monthlyPatternList = ko.observableArray([
-                    new MonthlyPatterModel('0', 'なし'),
+//                    new MonthlyPatterModel('0', 'なし')
                 ]);
-                self.selectedmonthlyPattern = ko.observable('0');
+                self.selectedmonthlyPattern = ko.observable('');
                 self.isEnableListMonthlyPattern = ko.observable(true);
                 self.isEditableListMonthlyPattern = ko.observable(false);
                 
@@ -269,31 +269,33 @@ module nts.uk.at.view.ksm005.c {
                             self.enableSave(false);
                         }
                         self.histList(historyData);
-                    });
-                    service.findByIdMonthlyPatternSetting(self.findEmployeeIdByCode(employeeCode), self.selectedHist()).done(function(data: MonthlyPatternSettingDto) {
-                        console.log(data);
-                        if (data != null) {
-                            if (data.monthlyPatternCode != null) {
-                                self.selectedmonthlyPattern(data.monthlyPatternCode);
-                                self.selectedHist(data.historyId);
-                                self.enableDelete(true);
-                                self.enableSystemChange(true);
-                            }else {
-                                self.selectedmonthlyPattern('0');
-                                self.selectedHist(null);
-                                self.enableDelete(false);
-                                self.enableSystemChange(false);   
-                            }
-                        } else {
-                            self.selectedmonthlyPattern('0');
-                                self.selectedHist(null);
-                            self.enableDelete(false);
-                            self.enableSystemChange(true);
-                        }
+                        self.selectedHist.subscribe(function(newValue){
+                            service.findByIdMonthlyPatternSetting(self.findEmployeeIdByCode(employeeCode), newValue).done(function(data: MonthlyPatternSettingDto) {
+                                console.log(data);
+                                if (data != null) {
+                                    if (data.monthlyPatternCode != null) {
+                                        self.selectedmonthlyPattern(data.monthlyPatternCode);
+                                        self.selectedHist(data.historyId);
+                                        self.enableDelete(true);
+                                        self.enableSystemChange(true);
+                                    }else {
+                                        self.selectedmonthlyPattern('0');
+                                        self.selectedHist(null);
+                                        self.enableDelete(false);
+                                        self.enableSystemChange(false);   
+                                    }
+                                } else {
+                                    self.selectedmonthlyPattern('0');
+                                        self.selectedHist(null);
+                                    self.enableDelete(false);
+                                    self.enableSystemChange(true);
+                                }
+                            });
+                        })
                     });
                 }
             }
-
+            
             /**
              * call service find all by employee id
              */
