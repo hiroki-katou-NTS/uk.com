@@ -47,6 +47,15 @@ module nts.uk.ui.koExtentions {
             var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
             var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
             
+            let beforeLeft = nts.uk.util.isNullOrUndefined(data.beforeMoveLeft) ? $.noop : data.beforeMoveLeft;
+            let beforeRight = nts.uk.util.isNullOrUndefined(data.beforeMoveRight) ? $.noop : data.beforeMoveRight;
+            let beforeAllL = nts.uk.util.isNullOrUndefined(data.beforeAllLeft) ? $.noop : data.beforeAllLeft;
+            let beforeAllR = nts.uk.util.isNullOrUndefined(data.beforeAllRight) ? $.noop : data.beforeAllRight;
+            let afterLeft = nts.uk.util.isNullOrUndefined(data.afterMoveLeft) ? $.noop : data.afterMoveLeft;
+            let afterRight = nts.uk.util.isNullOrUndefined(data.afterMoveRight) ? $.noop : data.afterMoveRight;
+            let afterAllL = nts.uk.util.isNullOrUndefined(data.afterAllLeft) ? $.noop : data.afterAllLeft;
+            let afterAllR = nts.uk.util.isNullOrUndefined(data.afterAllRight) ? $.noop : data.afterAllRight;
+            
             // 動作が不安定なので、使わないようにする
             data.draggable = false;
     
@@ -234,16 +243,16 @@ module nts.uk.ui.koExtentions {
 
             var swapper = this.swapper;
             $moveForward.click(function() {
-                swapper.Model.move(true, data.value, false, $moveForward);
+                swapper.Model.move(true, data.value, false, beforeRight, afterRight);
             });
             $moveBack.click(function() {
-                swapper.Model.move(false, data.value, false, $moveBack);
+                swapper.Model.move(false, data.value, false, beforeLeft, afterLeft);
             });
             $moveForwardAll.click(function() {
-                swapper.Model.move(true, data.value, true, $moveForwardAll);
+                swapper.Model.move(true, data.value, true, beforeAllR, afterAllR);
             });
             $moveBackAll.click(function() {
-                swapper.Model.move(false, data.value, true, $moveBackAll);
+                swapper.Model.move(false, data.value, true, beforeAllL, afterAllL);
             });
             
             $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
@@ -263,10 +272,6 @@ module nts.uk.ui.koExtentions {
                     }) !== undefined;            
                 }); 
                 $gridX.ntsGridList("setSelected",  _.map(selectItems, primaryKey));
-            });
-            
-            $moveArea.find("move-button").bind("itemmoved", function(evt, dataX){
-                $swap.trigger("swaplistitemchanged", dataX);
             });
         }
 
@@ -501,7 +506,7 @@ module nts.uk.ui.koExtentions {
         abstract neighbor(param: any): string;
         abstract dropDone(): void;
         abstract enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>, value: (param?: any) => any) => void): void;
-        abstract move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean, $button: JQuery): void;
+        abstract move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean, beforMove: Function, afterMove: Function): void;
     }
     
     interface ISwapAction {
@@ -511,7 +516,7 @@ module nts.uk.ui.koExtentions {
         neighbor(param: any): string;
         dropDone(): void;
         enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>, value: (param?: any) => any) => void): void;
-        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean, $button: JQuery): void;
+        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean, beforMove: Function, afterMove: Function): void;
     }
     
     class SearchResult {
@@ -798,7 +803,8 @@ module nts.uk.ui.koExtentions {
             }
         }
         
-        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean, $button: JQuery): void {
+        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean, beforMove: Function, afterMove: Function): void {
+            
             var primaryKey = this.transportBuilder.primaryKey;
             
             var $source = forward === true ? this.swapParts[0].$listControl : this.swapParts[1].$listControl;
@@ -806,9 +812,12 @@ module nts.uk.ui.koExtentions {
             var $dest = forward === true ? this.swapParts[1].$listControl : this.swapParts[0].$listControl;
             var destList = forward === true ? this.swapParts[1].dataSource : this.swapParts[0].dataSource;
             var max = forward === true ? this.swapParts[1].itemsLimit : this.swapParts[0].itemsLimit;
-            
+            var oldSource = _.cloneDeep(forward ? destList : sourceList);
             if (moveAll) {
                 var selectedIds = sourceList.map(function(row) { return row[primaryKey]; });
+                if(beforMove(forward, oldSource, selectedIds) == false) {
+                    return;
+                }
                 if (!util.isNullOrUndefined(max) && (selectedIds.length + destList.length > max)) {
                     this.$container.trigger($.Event("swaplistgridsizeexceed"), [ $dest, max ]);
                     return;
@@ -832,6 +841,9 @@ module nts.uk.ui.koExtentions {
                 var firstSelected = selectedRows[0];
                 
                 var selectedIds = selectedRows.map(function(row) { return row.id; });
+                if(beforMove(forward, oldSource, selectedIds) == false) {
+                    return;
+                }
                 
                 this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
                         .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][primaryKey] : null).update(moveAll);    
@@ -845,6 +857,7 @@ module nts.uk.ui.koExtentions {
             value(secondSource);
             $source.igGridSelection("clearSelection");
             $dest.igGridSelection("clearSelection");
+            afterMove(forward, oldSource, _.cloneDeep(forward ? secondSource : firstSource))
             
             if (forward){
                 var selectIndex = firstSource.length === 0 ? -1 
@@ -853,8 +866,6 @@ module nts.uk.ui.koExtentions {
                 var selectIndex = secondSource.length === 0 ? -1  
                     : (secondSource.length - 1 < firstSelected.index ? secondSource.length - 1 : firstSelected.index);    
             }
-            
-            $button.trigger("itemmoved");
             
             setTimeout(function() {
                 $source.igGrid("virtualScrollTo", selectIndex);
