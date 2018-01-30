@@ -74,10 +74,10 @@ public class LayoutFinder {
 
 	@Inject
 	private EmployeeDataMngInfoRepository employeeDataRepo;
-	
+
 	@Inject
 	private AffCompanyHistRepository affCompanyHistRepo;
-	
+
 	@Inject
 	private LayoutPersonInfoClsFinder clsFinder;
 
@@ -110,13 +110,13 @@ public class LayoutFinder {
 
 	@Inject
 	private IMaintenanceLayoutRepository layoutRepo;
-	
+
 	@Inject
 	private ComboBoxRetrieveFactory comboBoxFactory;
-	
+
 	@Inject
 	private PerInfoCtgFinder categoryFinder;
-	
+
 	@Inject
 	private LayoutPersonInfoClsDefFinder clsItemDefFinder;
 
@@ -129,19 +129,19 @@ public class LayoutFinder {
 		boolean selfBrowsing = loginEmpId.equals(browsingEmpId);
 
 		List<MaintenanceLayout> simpleLayouts = layoutRepo.getAllMaintenanceLayout(companyId);
-		
+
 		Map<String, PersonInfoCategoryAuth> authCategoryMap = perInfoCtgAuthRepo.getAllCategoryAuthByRoleId(roleId)
 				.stream().collect(Collectors.toMap(e -> e.getPersonInfoCategoryAuthId(), e -> e));
 
 		Map<String, PerInfoCtgDataDto> availableCategoryMap = categoryFinder.getAllCtgUsedByCompanyId().stream()
 				.collect(Collectors.toMap(x -> x.getCtgId(), x -> x));
-		
+
 		List<SimpleEmpMainLayoutDto> acceptSplLayouts = new ArrayList<>();
 		for (MaintenanceLayout simpleLayout : simpleLayouts) {
 			String layoutId = simpleLayout.getMaintenanceLayoutID();
-			
+
 			List<LayoutPersonInfoClassification> itemClassList = this.itemClsRepo.getAllByLayoutId(layoutId);
-			
+
 			if (haveAnItemAuth(itemClassList, authCategoryMap, availableCategoryMap, selfBrowsing)) {
 				acceptSplLayouts.add(SimpleEmpMainLayoutDto.fromDomain(simpleLayout));
 			}
@@ -162,11 +162,12 @@ public class LayoutFinder {
 		String cid = AppContexts.user().companyId();
 		EmployeeDataMngInfo employee = employeeDataRepo.findByEmpId(browsingEmpId).get();
 		String browsingPeronId = employee.getPersonId();
-		
+
 		// validate standard date
-		//standardDate = validateStandardDate(cid, browsingEmpId, standardDate, result);
+		// standardDate = validateStandardDate(cid, browsingEmpId, standardDate,
+		// result);
 		result.setStandardDate(standardDate);
-		
+
 		// check authority & get data
 		boolean selfBrowsing = browsingEmpId.equals(AppContexts.user().employeeId());
 		List<LayoutPersonInfoClsDto> itemClassList = this.clsFinder.getListClsDto(layoutQuery.getLayoutId());
@@ -205,7 +206,7 @@ public class LayoutFinder {
 		// COLLECT CLASS ITEM WITH CATEGORY
 		Map<String, List<LayoutPersonInfoClsDto>> classItemInCategoryMap = new HashMap<>();
 		for (LayoutPersonInfoClsDto classItem : authItemClasList) {
-			
+
 			if (classItem.getLayoutItemType() != LayoutItemType.SeparatorLine) {
 				if (classItem.getLayoutItemType() == LayoutItemType.ITEM) {
 					List<LayoutPersonInfoClsDto> classItemList = classItemInCategoryMap
@@ -216,45 +217,38 @@ public class LayoutFinder {
 					}
 					classItemList.add(classItem);
 				} else {
-					
+
 				}
 			}
 
 		}
-		
+
 		// GET DATA WITH EACH CATEGORY
-		for (Entry<String, List<LayoutPersonInfoClsDto>> classItemsOfCategory : classItemInCategoryMap.entrySet())
-		{
+		for (Entry<String, List<LayoutPersonInfoClsDto>> classItemsOfCategory : classItemInCategoryMap.entrySet()) {
 			String categoryId = classItemsOfCategory.getKey();
-			List<LayoutPersonInfoClsDto> classItemList = classItemsOfCategory.getValue(); 
-		    PersonInfoCategory perInfoCategory = perInfoCateRepo
+			List<LayoutPersonInfoClsDto> classItemList = classItemsOfCategory.getValue();
+			PersonInfoCategory perInfoCategory = perInfoCateRepo
 					.getPerInfoCategory(categoryId, AppContexts.user().contractCode()).get();
 			PeregQuery query = new PeregQuery(perInfoCategory.getCategoryCode().v(), layoutQuery.getBrowsingEmpId(),
 					browsingPeronId, standardDate);
 			// get data
 			getDataforSingleItem(perInfoCategory, classItemList, standardDate, browsingPeronId, browsingEmpId, query);
-			
+
 			classItemList.forEach(classItem -> {
 				checkActionRoleItemData(itemAuthMap.get(classItem.getPersonInfoCategoryID()), classItem, selfBrowsing);
 			});
-			
-			/*switch (perInfoCategory.getCategoryType()) {
-			case SINGLEINFO:
-				classItemList.forEach(classItem -> {
-					checkActionRoleItemData(itemAuthMap.get(classItem.getPersonInfoCategoryID()), classItem, selfBrowsing);
-				});
-				break;
-			case CONTINUOUSHISTORY:
-			case NODUPLICATEHISTORY:
-			case DUPLICATEHISTORY:
-			case CONTINUOUS_HISTORY_FOR_ENDDATE:
-				
-				break;
-			default:
-				break;
-			}*/
-			
-			
+
+			/*
+			 * switch (perInfoCategory.getCategoryType()) { case SINGLEINFO:
+			 * classItemList.forEach(classItem -> {
+			 * checkActionRoleItemData(itemAuthMap.get(classItem.
+			 * getPersonInfoCategoryID()), classItem, selfBrowsing); }); break;
+			 * case CONTINUOUSHISTORY: case NODUPLICATEHISTORY: case
+			 * DUPLICATEHISTORY: case CONTINUOUS_HISTORY_FOR_ENDDATE:
+			 * 
+			 * break; default: break; }
+			 */
+
 		}
 
 		result.setClassificationItems(authItemClasList);
@@ -266,20 +260,20 @@ public class LayoutFinder {
 			Map<String, PersonInfoCategoryAuth> authCategoryMap, Map<String, PerInfoCtgDataDto> availableCategoryMap,
 			boolean selfBrowsing) {
 		for (LayoutPersonInfoClassification itemClass : itemClassList) {
-			
+
 			if (itemClass.getLayoutItemType() == LayoutItemType.SeparatorLine) {
 				continue;
 			}
-			
+
 			String categoryIdOfClassItem = itemClass.getPersonInfoCategoryID();
-			
-			if ( availableCategoryMap.containsKey(categoryIdOfClassItem)) {
+
+			if (availableCategoryMap.containsKey(categoryIdOfClassItem)) {
 				PerInfoCtgDataDto availableCategory = availableCategoryMap.get(categoryIdOfClassItem);
-				
+
 				List<String> itemIdList = this.clsItemDefFinder.getItemDefineIds(itemClass.getLayoutID(),
 						itemClass.getDispOrder().v());
-				
-				if ( anElementExistInList(availableCategory.getItemList(), itemIdList)) {
+
+				if (anElementExistInList(availableCategory.getItemList(), itemIdList)) {
 					PersonInfoCategoryAuth categoryAuth = authCategoryMap.get(categoryIdOfClassItem);
 					if (categoryAuth == null) {
 						continue;
@@ -291,15 +285,15 @@ public class LayoutFinder {
 						return true;
 					}
 				}
-				
+
 			}
 		}
 		return false;
 	}
-	
+
 	private boolean anElementExistInList(List<String> fatherList, List<String> sonList) {
-		for ( String element : sonList) {
-			if ( fatherList.contains(element)) {
+		for (String element : sonList) {
+			if (fatherList.contains(element)) {
 				return true;
 			}
 		}
@@ -366,10 +360,10 @@ public class LayoutFinder {
 	private List<PerInfoItemDefDto> validateAuthItem(List<PersonInfoItemAuth> authItems,
 			List<PerInfoItemDefDto> listItemDef, boolean selfBrowsing) {
 
-		if ( authItems == null ) {
+		if (authItems == null) {
 			return new ArrayList<>();
 		}
-		
+
 		List<PerInfoItemDefDto> dataInfoItems = new ArrayList<>();
 
 		for (PerInfoItemDefDto itemDef : listItemDef) {
@@ -399,8 +393,8 @@ public class LayoutFinder {
 			GeneralDate standardDate, String personId, String employeeId, PeregQuery query) {
 
 		cloneDefItemToValueItem(perInfoCategory, classItemList);
-		
-		GeneralDate comboBoxStandardDate = null; 
+
+		GeneralDate comboBoxStandardDate = null;
 
 		if (perInfoCategory.getIsFixed() == IsFixed.FIXED) {
 			// get domain data
@@ -408,18 +402,17 @@ public class LayoutFinder {
 
 			if (peregDto != null) {
 				MappingFactory.mapListItemClass(peregDto, classItemList);
-				
+
 				Map<String, Object> itemValueMap = MappingFactory.getFullDtoValue(peregDto);
 				List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119");
 				for (String itemCode : standardDateItemCodes) {
-					if ( itemValueMap.containsKey(itemCode)) {
+					if (itemValueMap.containsKey(itemCode)) {
 						comboBoxStandardDate = (GeneralDate) itemValueMap.get(itemCode);
 						break;
 					}
 				}
 			}
-			
-			
+
 		} else {
 			switch (perInfoCategory.getCategoryType()) {
 			case SINGLEINFO:
@@ -434,15 +427,15 @@ public class LayoutFinder {
 						MappingFactory.matchPerOptionData(recordId, classItemList, dataItems);
 					}
 				} else {
-					List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo
-							.getByEmpIdAndCtgId(employeeId, perInfoCategory.getPersonInfoCategoryId());
-					if ( !empInfoCtgDatas.isEmpty()) {
+					List<EmpInfoCtgData> empInfoCtgDatas = empInCtgDataRepo.getByEmpIdAndCtgId(employeeId,
+							perInfoCategory.getPersonInfoCategoryId());
+					if (!empInfoCtgDatas.isEmpty()) {
 						String recordId = empInfoCtgDatas.get(0).getRecordId();
 						List<EmpOptionalDto> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId).stream()
 								.map(x -> x.genToPeregDto()).collect(Collectors.toList());
 						MappingFactory.matchEmpOptionData(recordId, classItemList, dataItems);
 					}
-					
+
 				}
 				break;
 			case CONTINUOUSHISTORY:
@@ -466,21 +459,20 @@ public class LayoutFinder {
 		// For each classification item to get combo box list
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
-				
+
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 				DataTypeStateDto itemDataTypeSate = valueItem.getItem();
-				
+
 				if (itemDataTypeSate != null && itemDataTypeSate.getDataTypeValue() == DataTypeValue.SELECTION.value) {
-					
+
 					SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
-					valueItem.setLstComboBoxValue(
-							comboBoxFactory.getComboBox(selectionItemDto, employeeId, comboBoxStandardDate, true));
+					valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, employeeId,
+							comboBoxStandardDate, true, valueItem.isRequired()));
 				}
 			}
 		}
 
 	}
-
 
 	/**
 	 * @param perInfoCategoryId
@@ -534,17 +526,17 @@ public class LayoutFinder {
 
 		for (EmpInfoCtgData empInfoCtgData : empInfoCtgDatas) {
 			String recordId = empInfoCtgData.getRecordId();
-			List<EmpOptionalDto> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId)
-					.stream().map(x -> x.genToPeregDto()).collect(Collectors.toList());
-					
+			List<EmpOptionalDto> dataItems = empInItemDataRepo.getAllInfoItemByRecordId(recordId).stream()
+					.map(x -> x.genToPeregDto()).collect(Collectors.toList());
+
 			Optional<EmpOptionalDto> startDateOpt = dataItems.stream()
 					.filter(column -> column.getPerInfoDefId().equals(startDateId)).findFirst();
 			Optional<EmpOptionalDto> endDateOpt = dataItems.stream()
 					.filter(column -> column.getPerInfoDefId().equals(endDateId)).findFirst();
 
 			if (startDateOpt.isPresent() && endDateOpt.isPresent()) {
-				if (stardardDate.afterOrEquals((GeneralDate)startDateOpt.get().getValue())
-						&& stardardDate.beforeOrEquals( (GeneralDate) endDateOpt.get().getValue())) {
+				if (stardardDate.afterOrEquals((GeneralDate) startDateOpt.get().getValue())
+						&& stardardDate.beforeOrEquals((GeneralDate) endDateOpt.get().getValue())) {
 					MappingFactory.matchEmpOptionData(recordId, classItemList, dataItems);
 					break;
 				}
@@ -553,7 +545,8 @@ public class LayoutFinder {
 		}
 	}
 
-	private void cloneDefItemToValueItem(PersonInfoCategory perInfoCategory, List<LayoutPersonInfoClsDto> classItemList) {
+	private void cloneDefItemToValueItem(PersonInfoCategory perInfoCategory,
+			List<LayoutPersonInfoClsDto> classItemList) {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			List<Object> items = new ArrayList<>();
 			for (PerInfoItemDefDto itemDef : classItem.getListItemDf()) {
@@ -660,10 +653,10 @@ public class LayoutFinder {
 	private void checkActionRoleItemData(List<PersonInfoItemAuth> inforAuthItems, LayoutPersonInfoClsDto classItem,
 			boolean selfBrowsing) {
 
-		if ( inforAuthItems == null) {
+		if (inforAuthItems == null) {
 			return;
 		}
-		
+
 		for (Object item : classItem.getItems()) {
 			LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 
@@ -679,7 +672,7 @@ public class LayoutFinder {
 				}
 				valueItem.setActionRole(actionrole);
 			}
-			
+
 		}
 
 	}
