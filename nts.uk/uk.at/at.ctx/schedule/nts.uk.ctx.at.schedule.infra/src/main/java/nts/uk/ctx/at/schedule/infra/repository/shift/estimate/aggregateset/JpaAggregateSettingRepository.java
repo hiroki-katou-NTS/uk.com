@@ -50,7 +50,9 @@ public class JpaAggregateSettingRepository extends JpaRepository implements Aggr
 			this.commandProxy().update(toEntity(domain, opt.get()));
 		}
 		// add mode
-		this.commandProxy().update(toEntity(domain, new KscstEstAggregateSet()));
+		else {
+			this.commandProxy().insert(toEntity(domain, new KscstEstAggregateSet()));
+		}
 	}
 
 	/**
