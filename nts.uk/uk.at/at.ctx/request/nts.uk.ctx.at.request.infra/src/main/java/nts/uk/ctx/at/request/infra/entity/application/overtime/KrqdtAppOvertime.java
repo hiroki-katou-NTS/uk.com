@@ -96,7 +96,7 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 		for(int i = 0; i<appOverTime.getOverTimeInput().size(); i++){
 			OverTimeInput overtimeInput = appOverTime.getOverTimeInput().get(i);
 			this.getOvertimeInputs().stream().filter(
-					x -> x.krqdtOvertimeInputPK.getAttendanceId()==overtimeInput.getAttendanceID().value 
+					x -> x.krqdtOvertimeInputPK.getAttendanceId()==overtimeInput.getAttendanceType().value 
 					&& x.krqdtOvertimeInputPK.getFrameNo()==overtimeInput.getFrameNo()
 					&& x.krqdtOvertimeInputPK.getTimeItemTypeAtr()==overtimeInput.getTimeItemTypeAtr().value)
 			.findAny()
@@ -108,7 +108,7 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 						new KrqdtOvertimeInputPK(
 							appOverTime.getCompanyID(),
 							appOverTime.getAppID(),
-							overtimeInput.getAttendanceID().value,
+							overtimeInput.getAttendanceType().value,
 							overtimeInput.getFrameNo(),
 							overtimeInput.getTimeItemTypeAtr().value
 						), 

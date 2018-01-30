@@ -17,6 +17,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -179,7 +180,7 @@ public class ScheCreExeWorkTypeHandler {
 			if (!optionalWorkingConditionItem.isPresent()) {
 				return command.getWorkTypeCode();
 			}
-			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayWork().getWorkTypeCode().v();
+			return optionalWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().v();
 		} else {
 
 			// find work type set by close atr employment status

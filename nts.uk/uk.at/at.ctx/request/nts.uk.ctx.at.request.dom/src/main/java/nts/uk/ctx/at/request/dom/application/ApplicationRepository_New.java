@@ -32,5 +32,21 @@ public interface ApplicationRepository_New {
 	public void updateWithVersion(Application_New application);
 	
 	public void delete(String companyID, String appID);
-	
+	/**
+	 * get list application by sID
+	 * @param companyId
+	 * @param sID
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Application_New> getListAppBySID(String companyId, String sID, GeneralDate startDate, GeneralDate endDate);
+	/**
+	 * get List Application By Reflect
+	 * @param companyId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<Application_New> getListAppByReflect(String companyId, GeneralDate startDate, GeneralDate endDate);
 }

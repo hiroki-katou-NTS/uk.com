@@ -2,9 +2,9 @@ package nts.uk.ctx.at.request.dom.application.overtime;
 
 /**
  * @author loivt
- * 勤怠項目ID
+ * 勤怠種類
  */
-public enum AttendanceID {
+public enum AttendanceType {
 	
 	/**
 	 * 休出時間
@@ -33,7 +33,7 @@ public enum AttendanceID {
 	
 	public final int value;
 	
-	AttendanceID(int value){
+	AttendanceType(int value){
 		this.value = value;
 	}
 }
