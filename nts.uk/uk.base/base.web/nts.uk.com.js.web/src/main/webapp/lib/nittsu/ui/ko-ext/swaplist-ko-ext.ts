@@ -234,16 +234,16 @@ module nts.uk.ui.koExtentions {
 
             var swapper = this.swapper;
             $moveForward.click(function() {
-                swapper.Model.move(true, data.value, false);
+                swapper.Model.move(true, data.value, false, $moveForward);
             });
             $moveBack.click(function() {
-                swapper.Model.move(false, data.value, false);
+                swapper.Model.move(false, data.value, false, $moveBack);
             });
             $moveForwardAll.click(function() {
-                swapper.Model.move(true, data.value, true);
+                swapper.Model.move(true, data.value, true, $moveForwardAll);
             });
             $moveBackAll.click(function() {
-                swapper.Model.move(false, data.value, true);
+                swapper.Model.move(false, data.value, true, $moveBackAll);
             });
             
             $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
@@ -263,6 +263,10 @@ module nts.uk.ui.koExtentions {
                     }) !== undefined;            
                 }); 
                 $gridX.ntsGridList("setSelected",  _.map(selectItems, primaryKey));
+            });
+            
+            $moveArea.find("move-button").bind("itemmoved", function(evt, dataX){
+                $swap.trigger("swaplistitemchanged", dataX);
             });
         }
 
@@ -497,7 +501,7 @@ module nts.uk.ui.koExtentions {
         abstract neighbor(param: any): string;
         abstract dropDone(): void;
         abstract enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>, value: (param?: any) => any) => void): void;
-        abstract move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean): void;
+        abstract move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean, $button: JQuery): void;
     }
     
     interface ISwapAction {
@@ -507,7 +511,7 @@ module nts.uk.ui.koExtentions {
         neighbor(param: any): string;
         dropDone(): void;
         enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>, value: (param?: any) => any) => void): void;
-        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean): void;
+        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean, $button: JQuery): void;
     }
     
     class SearchResult {
@@ -794,7 +798,7 @@ module nts.uk.ui.koExtentions {
             }
         }
         
-        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean): void {
+        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean, $button: JQuery): void {
             var primaryKey = this.transportBuilder.primaryKey;
             
             var $source = forward === true ? this.swapParts[0].$listControl : this.swapParts[1].$listControl;
@@ -849,6 +853,8 @@ module nts.uk.ui.koExtentions {
                 var selectIndex = secondSource.length === 0 ? -1  
                     : (secondSource.length - 1 < firstSelected.index ? secondSource.length - 1 : firstSelected.index);    
             }
+            
+            $button.trigger("itemmoved");
             
             setTimeout(function() {
                 $source.igGrid("virtualScrollTo", selectIndex);
