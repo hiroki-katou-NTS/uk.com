@@ -1,6 +1,9 @@
 module nts.uk.at.view.kmf002.b {
     
     import service = nts.uk.at.view.kmf002.b.service;
+    import blockUI = nts.uk.ui.block;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     
     export module viewmodel {
         export class ScreenModel {
@@ -35,7 +38,7 @@ module nts.uk.at.view.kmf002.b {
                         isShowSelectButton: true,
                         isDialog: false,
                         alreadySettingList: _self.alreadySettingList,
-                        maxRows: 10,
+                        maxRows: 20,
                         tabindex: 1,
                         systemType : SystemType.EMPLOYMENT
                 };
@@ -82,6 +85,11 @@ module nts.uk.at.view.kmf002.b {
             public start_page(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var _self = this;
+                if (getShared('conditionSidebar5') == false) {
+//                    blockUI.grayout();
+                } else {
+//                    blockUI.clear();
+                }
                $('#tree-grid').ntsTreeComponent(_self.treeGrid).done(() => {
                     _self.getDataFromService();
                    _self.baseDate(new Date(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth()[0].month()-1, 2));
@@ -127,7 +135,7 @@ module nts.uk.at.view.kmf002.b {
                 if ($('#tree-grid').getRowSelected()[0] != null) {
                     $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(),$('#tree-grid').getRowSelected()[0].workplaceId), 
                             service.findFirstMonth(),
-                            service.findAll(_self.baseDate().getFullYear())).done(function(data, data2, data3) {
+                            service.findAll()).done(function(data, data2, data3) {
                         _self.alreadySettingList.removeAll();
                         _.forEach(data3, function(wkpID) {
                             _self.alreadySettingList.push({'workplaceId': wkpID, 'isAlreadySetting': true});

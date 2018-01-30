@@ -37,7 +37,7 @@ module nts.uk.at.view.kmf002.b {
         }
         
         export function findAll(year: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.findAll + "/" + year);
+            return nts.uk.request.ajax("com", path.findAll);
         }
         
     }

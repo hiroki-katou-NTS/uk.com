@@ -50,15 +50,17 @@ public class EmploymentMonthDaySettingFinder {
 		return null;
 	}
 	
+	/**
+	 * Find all emp register.
+	 *
+	 * @return the list
+	 */
 	public List<String> findAllEmpRegister(){
 		String companyId = AppContexts.user().companyId();
 		
-		List<EmploymentMonthDaySetting> lstEmp = this.repository.findAllEmpRegister(new CompanyId(companyId));
+		List<String> lstEmp = this.repository.findAllEmpRegister(new CompanyId(companyId));
 		if (lstEmp != null && !lstEmp.isEmpty()) {
-			return lstEmp.stream()
-					.map(obj -> new EmploymentMonthDaySettingDto().getEmpCd())
-					.distinct()
-					.collect(Collectors.toList());
+			return lstEmp;
 		}
 		
 		return new ArrayList<>();

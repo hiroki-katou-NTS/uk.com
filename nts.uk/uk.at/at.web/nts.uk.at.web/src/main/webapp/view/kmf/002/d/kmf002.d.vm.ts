@@ -1,6 +1,9 @@
 module nts.uk.at.view.kmf002.d {
 
     import service = nts.uk.at.view.kmf002.d.service;
+    import blockUI = nts.uk.ui.block;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     
     export module viewmodel {
 
@@ -85,6 +88,11 @@ module nts.uk.at.view.kmf002.d {
             public start_page(): JQueryPromise<void> {
                 let _self = this;
                 var dfd = $.Deferred<void>();
+                if (getShared('conditionSidebar5') == false) {
+//                    blockUI.grayout();
+                } else {
+//                    blockUI.clear();
+                }
                 $('#empt-list-setting').ntsListComponent(_self.listComponentOption).done(function(){
                     _self.catchChangeSelectEmp();
                     _self.getDataFromService();

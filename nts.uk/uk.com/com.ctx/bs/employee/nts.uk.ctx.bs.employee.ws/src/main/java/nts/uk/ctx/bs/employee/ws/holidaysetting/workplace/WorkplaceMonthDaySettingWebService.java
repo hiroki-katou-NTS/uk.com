@@ -48,10 +48,10 @@ public class WorkplaceMonthDaySettingWebService extends WebService {
 		return this.finder.getWorkplaceMonthDaySetting(workplaceId, year);
 	}
 	
-	@Path("findWorkplaceMonthDaySetting/{year}")
+	@Path("findWorkplaceMonthDaySetting")
 	@POST
-	public List<String> findAllWkpRegister(@PathParam("year") int year){
-		return this.finder.findAllByYear(year);
+	public List<String> findAllWkpRegister(){
+		return this.finder.findAllByYear();
 	}
 	
 	/**

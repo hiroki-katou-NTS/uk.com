@@ -55,13 +55,14 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 	 *
 	 * @return the list
 	 */
-	public List<EmployeeMonthDaySetting> findAllEmployeeRegister(CompanyId companyId) {
+	public List<String> findAllEmployeeRegister(CompanyId companyId) {
 		List<KshmtEmployeeMonthDaySet> result = this.findBy(companyId, null, null, null);
-		List<EmployeeMonthDaySetting> lstEmpoyee = new ArrayList<>();
 		// Check exist
 		if (result != null && !result.isEmpty()) {
-			lstEmpoyee = result.stream().map(obt -> new EmployeeMonthDaySetting(new JpaEmployeeMonthDaySettingGetMemento(result))).collect(Collectors.toList());
-			return lstEmpoyee;
+			return result.stream()
+								.map(obj -> obj.getKshmtEmployeeMonthDaySetPK().getSid())
+								.distinct()
+								.collect(Collectors.toList());
 		}
 		
 		return new ArrayList<>();
