@@ -105,7 +105,10 @@ module nts.uk.ui.koExtentions {
                     let selectItem = _.filter(filtered, function (itemFilterd: any){
                         return _.find(selectedItems, function (item: any){
                             let itemVal = itemFilterd[key];
-                            return itemVal === item["id"];        
+                            if(nts.uk.util.isNullOrUndefined(itemVal) || nts.uk.util.isNullOrUndefined(item["id"])){
+                               return false;
+                            }
+                            return itemVal.toString() === item["id"].toString();        
                         }) !== undefined;            
                     }); 
                     result.selectItems = selectItem;
