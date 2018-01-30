@@ -19,7 +19,7 @@ module nts.uk.at.view.kmf022.a.service {
         // A13_4 có 2 sự lựa chọn, có thể lấy list cty đang đăng nhập rồi lên UI lọc, hoặc lấy thẳng 1 object(nhớ truyền apptype) 
         findAllPro: "at/request/application/setting/proxy/findAll",
         findProByApp: "at/request/application/setting/proxy/findApp",
-        // A14_3
+        // A14_3 
         findJobAssign: "job/assign/setting/getjob",
         //A15_4
         findJobTitleSearch: "workflow/jobtitlesearchset/job/getbyId",
@@ -42,10 +42,37 @@ module nts.uk.at.view.kmf022.a.service {
         //E14,15
         findStamp: "at/request/application/stamprequest/findByComID", //UpdateStampRequestSettingCommandHandler
         // F10->F16
-        findDirectlycommon: "at/request/application/gobackdirectlycommon/getGoBackCommonByCid" //GoBackDirectlyCommonSettingRepository
+        findDirectlycommon: "at/request/application/gobackdirectlycommon/getGoBackCommonByCid", //GoBackDirectlyCommonSettingRepository
+
+        //B18 -> B36
+        findOvertime: "at/request/application/overtime/ot",
+        
+        // C27 -> C49 có thể lấy theo company rồi lên lọc hoặc lấy thẳng object bằng cả holiday app type
+        findAllVaca: "at/request/vacation/setting/hdapp",
+        findVaca: "at/request/vacation/setting/hdappset",
+        
+        //D
+        findWorkChange: "at/request/application/workchange/workChangeSet",
+        
         
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
+    }
+    
+    export function findWorkChange() {
+        return nts.uk.request.ajax("at", paths.findWorkChange); 
+    }
+    
+    export function findOvertime() {
+        return nts.uk.request.ajax("at", paths.findOvertime); 
+    }
+    
+    export function findVaca(hdAppType: number): JQueryPromise<void>{
+        return nts.uk.request.ajax("at", paths.findVaca + "/" + hdAppType);     
+    }
+    
+    export function findAllVaca() {
+        return nts.uk.request.ajax("at", paths.findAllVaca); 
     }
     
     export function fidnDispApp(appType: number): JQueryPromise<void>{
