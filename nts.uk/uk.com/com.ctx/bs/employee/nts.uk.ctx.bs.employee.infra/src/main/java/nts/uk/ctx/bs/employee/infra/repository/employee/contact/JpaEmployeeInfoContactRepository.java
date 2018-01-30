@@ -81,7 +81,7 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 	@Override
 	public Optional<EmployeeInfoContact> findByEmpId(String sId) {
 		
-		Optional<BsymtEmpInfoContact> empContact = this.queryProxy().find(new BpsmtPersonPk(sId), BsymtEmpInfoContact.class);
+		Optional<BsymtEmpInfoContact> empContact = this.queryProxy().find(new BsymtEmpInfoContactPK(sId), BsymtEmpInfoContact.class);
 		if (empContact.isPresent()) {
 			return Optional.of(toDomain(empContact.get()));
 		} else {

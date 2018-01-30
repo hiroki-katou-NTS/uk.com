@@ -41,7 +41,7 @@ public class PeregEmpInfoContactFinder implements PeregFinder<EmpInfoContactDto>
 		Optional<EmployeeInfoContact> empInfoContact = empInfoContactRepo.findByEmpId(query.getEmployeeId());
 		if(empInfoContact.isPresent())
 			return EmpInfoContactDto.fromDomain(empInfoContact.get());
-		return new PeregDomainDto();
+		return null;
 	}
 
 	@Override
