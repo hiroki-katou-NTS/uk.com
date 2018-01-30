@@ -725,7 +725,7 @@ public class ScheCreExeWorkTimeHandler {
 		}
 
 		// check work time code null
-		if(worktimeCode == null){
+		if(StringUtil.isNullOrEmpty(worktimeCode, true)){ // fix bug #87723 for case not setting work time
 			return null;
 		}
 		

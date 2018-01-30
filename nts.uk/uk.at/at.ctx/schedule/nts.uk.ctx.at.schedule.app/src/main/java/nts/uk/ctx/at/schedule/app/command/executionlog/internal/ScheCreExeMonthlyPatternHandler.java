@@ -84,34 +84,32 @@ public class ScheCreExeMonthlyPatternHandler {
 		//在職、休職、休業
 		//ドメインモデル「勤務予定基本情報」を取得する
 		Optional<BasicSchedule> basicScheOpt = basicScheduleRepo.find(command.getEmployeeId(), command.getToDate());
-		//データなし
-		if (!basicScheOpt.isPresent()) {
-			//TODO no something
-		}
-				
-		BasicSchedule basicSche = basicScheOpt.get();
 		
-		//データあり
 		if (ImplementAtr.RECREATE == command.getContent().getImplementAtr()) { // 再作成
-			//入力パラメータ「再作成区分」を判断
-			if (command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ONLY_UNCONFIRM) { // 未確定データのみ
-				//取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
-				ConfirmedAtr confirmedAtr = basicSche.getConfirmedAtr();
-				if (confirmedAtr == ConfirmedAtr.UNSETTLED) {//未確定
-					//対象外 : アルゴリズム「スケジュール作成判定処理」を実行する
+			if (basicScheOpt.isPresent()) { //「勤務予定基本情報」 データあり
+				BasicSchedule basicSche = basicScheOpt.get();
+				
+				//入力パラメータ「再作成区分」を判断
+				if (command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ONLY_UNCONFIRM) { // 未確定データのみ
+					//取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
+					ConfirmedAtr confirmedAtr = basicSche.getConfirmedAtr();
+					if (confirmedAtr == ConfirmedAtr.UNSETTLED) {//未確定
+						//対象外 : アルゴリズム「スケジュール作成判定処理」を実行する
+						//対象外 : 手修正を保護するか判定する
+						command.setIsDeleteBeforInsert(true);
+						
+					} else { //確定済み
+						return;
+					}
+				} else { // 全件
 					//対象外 : 手修正を保護するか判定する
 					command.setIsDeleteBeforInsert(true);
-					
-				} else { //確定済み
-					
 				}
-			} else { // 全件
-				//対象外 : 手修正を保護するか判定する
-				command.setIsDeleteBeforInsert(true);
+			} else { //「勤務予定基本情報」 データなし
+				//no something
 			}
 			
-			
-			//TODO 在職状態に対応する「勤務種類コード」を取得する
+			//在職状態に対応する「勤務種類コード」を取得する
 			WorkTypeGetterCommand commandWorktypeGetter = new WorkTypeGetterCommand();
 			commandWorktypeGetter.setBaseGetter(command.toBaseCommand());
 			commandWorktypeGetter.setEmployeeId(workingConditionItem.getEmployeeId());
@@ -157,7 +155,7 @@ public class ScheCreExeMonthlyPatternHandler {
 				}
 			}			
 		} else { // 通常作成
-			
+			return;
 		}
 	}
 }
