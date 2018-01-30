@@ -1237,7 +1237,7 @@ public class ProgramsManager {
 			"/view/cas/011/a/index.xhtml");
 	
 	public static final Program CAS011C = new Program(WebAppId.COM, ProgramIdConsts.CAS011C, "CAS011_3",
-			"/view/cas/011/b/index.xhtml");
+			"/view/cas/011/c/index.xhtml");
 	
 	public static final Program CAS012A = new Program(WebAppId.COM, ProgramIdConsts.CAS012A, "CAS012_1",
 			"/view/cas/012/a/index.xhtml");

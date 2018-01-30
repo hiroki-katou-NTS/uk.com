@@ -2,13 +2,14 @@ package nts.uk.ctx.at.function.dom.processexecution.personalschedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * 作成対象詳細設定
  */
 @Getter
 @AllArgsConstructor
-public class TargetSetting {
+public class TargetSetting extends DomainObject {
 	/* 勤務種別変更者を再作成 */
 	private boolean recreateWorkType;
 	

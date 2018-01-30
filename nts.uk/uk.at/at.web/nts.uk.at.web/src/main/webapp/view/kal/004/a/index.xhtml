@@ -33,16 +33,16 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<a class="goback link-button" data-bind="ntsLinkButton: { jump: '../../002/a/index.xhtml' }">#{i18n.getText('KAL004_3')}</a>
-					<button id="new"  tabindex="1" data-bind="click: createAlarm">#{i18n.getText('KAL004_4')}</button>
-					<button id="registration"  class="proceed" tabindex="2" data-bind="click: saveAlarm , enable : $root.errors.isEmpty">#{i18n.getText('KAL004_5')}</button>
-					<button id="delete" class="danger" data-bind="click: removeAlarm, enable: !createMode()" tabindex="3">#{i18n.getText('KAL004_6')}</button>
+					<a class="goback link-button" tabindex="1" data-bind="ntsLinkButton: { jump: '../../002/a/index.xhtml' }">#{i18n.getText('KAL004_3')}</a>
+					<button id="new"  tabindex="2" data-bind="click: createAlarm">#{i18n.getText('KAL004_4')}</button>
+					<button id="registration"  class="proceed" tabindex="3" data-bind="click: saveAlarm , enable : $root.errors.isEmpty">#{i18n.getText('KAL004_5')}</button>
+					<button id="delete" tabindex="4" class="danger" data-bind="click: removeAlarm, enable: !createMode()" >#{i18n.getText('KAL004_6')}</button>
 				</div>
 			</div>
 			<div id="contents-area" >
 				<div class="container">
 					<div id="left-content" class ="bg-green caret-right caret-background">
-						<table id="single-list" data-bind="ntsGridList: {								
+						<table tabindex="5" id="single-list" data-bind="ntsGridList: {								
 								height: 350,
 								dataSource: alarmSource,
 								primaryKey: 'alarmPatternCD',
@@ -58,7 +58,7 @@
 										<div data-bind="ntsFormLabel: {required: true, constraint: ['AlarmPatternCode' , 'AlarmPatternName']}">#{i18n.getText('KAL004_9')}</div>									
 									</td>
 									<td>
-										<input tabindex="7" id="alarmCode"
+										<input tabindex="6" id="alarmCode"
 			                                 data-bind="ntsTextEditor: {
 			                                 name: '#[KAL004_10]',
 			                                 constraint: 'AlarmPatternCode',
@@ -66,7 +66,7 @@
 			                                 required: true,
 			                                 enable: createMode,
 			                                 immediate: true }, hasFocus: createMode()"/>
-										<input tabindex="8" id="alarmName"
+										<input tabindex="7" id="alarmName"
 			                                 data-bind="ntsTextEditor: {
 			                                 name: '#[KAL004_11]',
 			                                 value: alarmName,
@@ -76,7 +76,7 @@
 									</td>
 								</tr>
 						</table>
-						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+						<div tabindex="8" id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 							<div class="tab-content-1 tab-content-fixsize" >
 								<div>						
 									<div id='check-condition-text'> 
@@ -86,7 +86,7 @@
 
 
 								</div>
-								<div id="swap-list" data-bind="ntsSwapList: {
+								<div tabindex="9" id="swap-list" data-bind="ntsSwapList: {
 									showSearchBox: { showLeft : true, showRight: true},
 									height: 300,
 									dataSource: checkConditionList,

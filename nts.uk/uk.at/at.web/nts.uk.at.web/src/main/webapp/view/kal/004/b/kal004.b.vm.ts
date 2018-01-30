@@ -39,31 +39,31 @@ module nts.uk.com.view.kal004.b.viewmodel {
             self.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             
             
-//            self.getParam = nts.uk.ui.windows.getShared("extractionDailyDto");
-//            self.getCategoryName = nts.uk.ui.windows.getShared("categoryName");
-//            self.getCategoryId = nts.uk.ui.windows.getShared("categoryId");
+            self.getParam = nts.uk.ui.windows.getShared("extractionDailyDto");
+            self.getCategoryName = nts.uk.ui.windows.getShared("categoryName");
+            self.getCategoryId = ko.observable(nts.uk.ui.windows.getShared("categoryId"));
             
-            self.getParam = {
-                    extractionId: "",
-                    extractionRange: 0,
-                    strSpecify: 1,
-                    strPreviousDay: null,
-                    strMakeToDay: null,
-                    strDay: null,
-                    strPreviousMonth: 0,
-                    strCurrentMonth: 1,
-                    strMonth: 0,
-                    endSpecify: 1,
-                    endPreviousDay: null,
-                    endMakeToDay: null,
-                    endDay: null,
-                    endPreviousMonth: 0,
-                    endCurrentMonth: 1,
-                    endMonth: 0
-                };
-            self.getCategoryName = ko.observable("asdfasd");
-            self.getCategoryId = ko.observable(5);
-            
+//            self.getParam = {
+//                    extractionId: "",
+//                    extractionRange: 0,
+//                    strSpecify: 1,
+//                    strPreviousDay: null,
+//                    strMakeToDay: null,
+//                    strDay: null,
+//                    strPreviousMonth: 0,
+//                    strCurrentMonth: 1,
+//                    strMonth: 0,
+//                    endSpecify: 1,
+//                    endPreviousDay: null,
+//                    endMakeToDay: null,
+//                    endDay: null,
+//                    endPreviousMonth: 0,
+//                    endCurrentMonth: 1,
+//                    endMonth: 0
+//                };
+//            self.getCategoryName = ko.observable("asdfasd");
+//            self.getCategoryId = ko.observable(5);
+//            
             //start date
             self.strSelected = ko.observable(self.getParam.strSpecify);
             self.strPreviousDay = ko.observable(self.getParam.strPreviousDay);
@@ -88,7 +88,7 @@ module nts.uk.com.view.kal004.b.viewmodel {
             }else if(self.checkPeriod()){
                 let dataSetShare = self.getData();
                 nts.uk.ui.windows.setShared("extractionDaily", dataSetShare);
-                //self.cancel_Dialog();
+                self.cancel_Dialog();
             }
         }
         

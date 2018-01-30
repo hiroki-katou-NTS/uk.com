@@ -260,5 +260,78 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		entity.setMonthlyPattern(monthlyPattern.v());
 		this.commandProxy().update(entity);
 	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#copyLastMonthlyPatternSetting(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean copyLastMonthlyPatternSetting(String sourceSid, String destSid) {
+		// Get items
+		Optional<KshmtWorkingCondItem> optSourceItem = this.getLastWorkingCondItem(sourceSid);
+		Optional<KshmtWorkingCondItem> optDestItem = this.getLastWorkingCondItem(destSid);
+
+		// Check 
+		if (!optSourceItem.isPresent() || !optDestItem.isPresent()) {
+			// Copy fails
+			return false;
+		}
+		
+		// Copy data
+		KshmtWorkingCondItem destItem = optDestItem.get();
+		destItem.setMonthlyPattern(optSourceItem.get().getMonthlyPattern());
+
+		// Update
+		this.commandProxy().update(destItem);
+		
+		// Copy success
+		return true;
+	}
+	
+	/**
+	 * Gets the last working cond item.
+	 *
+	 * @param employeeId the employee id
+	 * @return the last working cond item
+	 */
+	private Optional<KshmtWorkingCondItem> getLastWorkingCondItem(String employeeId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<KshmtWorkingCondItem> cq = criteriaBuilder
+				.createQuery(KshmtWorkingCondItem.class);
+
+		// root data
+		Root<KshmtWorkingCondItem> root = cq.from(KshmtWorkingCondItem.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KshmtWorkingCondItem_.sid), employeeId));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
+				GeneralDate.max()));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		
+		// create query
+		TypedQuery<KshmtWorkingCondItem> query = em.createQuery(cq);
+
+		List<KshmtWorkingCondItem> result = query.getResultList();
+		
+		// Check empty
+		if (CollectionUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
+		// exclude select
+		return Optional.of(result.get(FIRST_ITEM_INDEX));
+	}
 
 }

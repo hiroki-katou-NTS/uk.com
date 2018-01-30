@@ -21,7 +21,6 @@ import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.LimitOfOverTimeSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.SalaryCalAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.enums.SpecificSalaryCalAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
@@ -30,7 +29,8 @@ import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstDaiCalc
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstFlexAutoCalSet;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstHolAutoCalSet;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstOtAutoCalSet;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -203,8 +203,8 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	}
 
 	private AutoCalculationSetting newAutoCalcSetting(int calc, int limit) {
-		return new AutoCalculationSetting(getEnum(calc, AutoCalculationCategoryOutsideHours.class),
-				getEnum(limit, LimitOfOverTimeSetting.class));
+		return new AutoCalculationSetting(getEnum(calc, AutoCalAtrOvertime.class),
+				getEnum(limit, TimeLimitUpperLimitSetting.class));
 	}
 
 	private <T> T getEnum(int value, Class<T> className) {
@@ -216,25 +216,24 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 		StringBuilder builder = new StringBuilder("SELECT c FROM KrcstDaiCalculationSet c ");
 		builder.append("WHERE c.krcstDaiCalculationSetPK.sid IN :ids ");
 		builder.append("AND c.krcstDaiCalculationSetPK.ymd <= :end AND c.krcstDaiCalculationSetPK.ymd >= :start");
-		String childQuery = "SELECT c FROM {0} c WHERE c.{1} IN :ids";
 		List<KrcstDaiCalculationSet> calces = this.queryProxy().query(builder.toString(), KrcstDaiCalculationSet.class)
 				.setParameter("ids", employeeId).setParameter("end", baseDate.end())
 				.setParameter("start", baseDate.start()).getList();
 		if(calces.isEmpty()){
 			return new ArrayList<>();
 		}
+		List<String> otIds = calces.stream().map(c -> c.overTimeWorkId).collect(Collectors.toList());
+		List<String> flexIds = calces.stream().map(c -> c.flexExcessTimeId).collect(Collectors.toList());
+		List<String> holiIds = calces.stream().map(c -> c.holWorkTimeId).collect(Collectors.toList());
 		List<KrcstOtAutoCalSet> ots = this.queryProxy()
-				.query(childQuery.replace("{0}", "KrcstOtAutoCalSet").replace("{1}", "overTimeWorkId"),
-						KrcstOtAutoCalSet.class)
-				.setParameter("ids", calces.stream().map(c -> c.overTimeWorkId).collect(Collectors.toList())).getList();
+				.query("SELECT c FROM KrcstOtAutoCalSet c WHERE c.overTimeWorkId IN :ids", KrcstOtAutoCalSet.class)
+				.setParameter("ids", otIds).getList();
 		List<KrcstFlexAutoCalSet> flexes = this.queryProxy()
-				.query(childQuery.replace("{0}", "KrcstFlexAutoCalSet").replace("{1}", "flexExcessTimeId"),
-						KrcstFlexAutoCalSet.class)
-				.setParameter("ids", calces.stream().map(c -> c.flexExcessTimeId).collect(Collectors.toList())).getList();
+				.query("SELECT c FROM KrcstFlexAutoCalSet c WHERE c.flexExcessTimeId IN :ids", KrcstFlexAutoCalSet.class)
+				.setParameter("ids", flexIds).getList();
 		List<KrcstHolAutoCalSet> holies = this.queryProxy()
-				.query(childQuery.replace("{0}", "KrcstHolAutoCalSet").replace("{1}", "holWorkTimeId"),
-						KrcstHolAutoCalSet.class)
-				.setParameter("ids", calces.stream().map(c -> c.holWorkTimeId).collect(Collectors.toList())).getList();
+				.query("SELECT c FROM KrcstHolAutoCalSet c WHERE c.holWorkTimeId IN :ids", KrcstHolAutoCalSet.class)
+				.setParameter("ids", holiIds).getList();
 		return calces.stream().map(c -> {
 			KrcstFlexAutoCalSet flex = flexes.stream().filter(f -> f.flexExcessTimeId.equals(c.flexExcessTimeId)).findFirst().orElse(null);
 			KrcstOtAutoCalSet ot = ots.stream().filter(f -> f.overTimeWorkId.equals(c.overTimeWorkId)).findFirst().orElse(null);

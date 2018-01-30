@@ -84,4 +84,11 @@ public interface WorkingConditionItemRepository {
 	 */
 	void updateMonthlyPattern(String historyId, MonthlyPatternCode monthlyPattern);
 
+	/**
+	 * Copy last monthly pattern setting.
+	 *
+	 * @param sourceSid the source sid
+	 * @param destSid the dest sid
+	 */
+	boolean copyLastMonthlyPatternSetting(String sourceSid, String destSid);
 }

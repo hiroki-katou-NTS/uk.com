@@ -386,12 +386,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let item : any;
                     if (data.columnKey.indexOf("Code") != -1) {
                         columnKey = data.columnKey.substring(4, data.columnKey.length);
-                         item = _.find(self.lstAttendanceItem(), (data) => {
-                            return String(data.id) === columnKey;
-                        })
                     } else {
                         columnKey = data.columnKey.substring(2, data.columnKey.length);
                     }
+                    //TO Thanh: move find logic out if condition
+                    item = _.find(self.lstAttendanceItem(), (data) => {
+                        return String(data.id) === columnKey;
+                    })
 
                     let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
                         return item.itemId == columnKey;
@@ -505,6 +506,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 nts.uk.ui.block.grayout();
                 service.startScreen(param).done((data) => {
                     self.formatCodes(data.lstControlDisplayItem.formatCode);
+                    //TO Thanh: set data for list attendance item after load by extract click
+                    self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                     self.itemValueAll(data.itemValues);
                     _.each(data.lstControlDisplayItem.lstSheet, function(item) {
                         item.columns.unshift("sign");

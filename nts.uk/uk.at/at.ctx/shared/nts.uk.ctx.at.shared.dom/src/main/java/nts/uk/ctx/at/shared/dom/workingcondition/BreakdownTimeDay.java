@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * The Class BreakdownTimeDay.

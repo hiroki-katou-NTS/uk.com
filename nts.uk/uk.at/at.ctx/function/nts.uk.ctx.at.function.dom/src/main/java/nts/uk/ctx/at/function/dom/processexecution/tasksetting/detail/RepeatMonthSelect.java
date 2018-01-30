@@ -7,13 +7,14 @@ import java.util.stream.IntStream;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  *	繰り返す月
  */
 @Getter
 @AllArgsConstructor
-public class RepeatMonthSelect {
+public class RepeatMonthSelect extends DomainObject {
 	/* 1月 */
 	private boolean january;
 	
@@ -52,6 +53,10 @@ public class RepeatMonthSelect {
 
 	public static RepeatMonthSelect initDefaut() {
 		return new RepeatMonthSelect(false, false, false, false, false, false, false, false, false, false, false, false);
+	}
+	
+	public boolean isCheckedAtLeastOne() {
+		return (january || february || march || april || may || june || july|| august|| september|| october|| november|| december);
 	}
 	
 	public List<Integer> getMonthsAfterEqualsStartMonth(Integer startMonth) {

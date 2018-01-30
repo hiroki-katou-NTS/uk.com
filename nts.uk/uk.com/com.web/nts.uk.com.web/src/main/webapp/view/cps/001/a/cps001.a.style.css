@@ -27,7 +27,7 @@
 
 #contents-area>.left-area .bg-green {
 	padding: 12px;
-	height: 255px;
+	max-height: 250px;
 }
 
 #contents-area>.right-area {
@@ -82,9 +82,9 @@
 
 .action-group button.btn {
 	width: 100%;
-	margin-bottom: 5px;   
+	margin-bottom: 5px;
 	padding-left: 30px;
-    text-align: left;
+	text-align: left;
 }
 
 .action-group .btn-print {
@@ -158,7 +158,7 @@
 	border: 1px solid #999;
 }
 
-.person-info td:not(:first-child ) {
+.person-info td:not(:first-child) {
 	position: relative;
 }
 
@@ -178,7 +178,7 @@
 	display: block;
 	padding-left: 5px;
 	padding-right: 5px;
-    min-height: 30px;
+	min-height: 30px;
 	max-height: 30px;
 	overflow: hidden;
 }
@@ -218,16 +218,19 @@
 	padding-top: 5px;
 }
 
-.form-group:not(.item-classification)>* {
+.form-group:not (.item-classification )>* {
 	display: inline-block;
 	vertical-align: middle;
 }
 
 #contents-area .layout-control .drag-panel {
 	min-width: 860px;
+	min-height: 445px;
+	height: calc(100vh - 365px) !important;
 }
 
-#contents-area .category-input .cat-has-childs .layout-control .drag-panel {
+#contents-area .category-input .cat-has-childs .layout-control .drag-panel
+	{
 	min-width: 830px;
 	border: none;
 	height: auto;
@@ -238,17 +241,15 @@
 	border-top: none;
 }
 
-#employees .ui-iggrid-headertable th:last-child,
-	#employees .ui-iggrid-tablebody td.ui-state-hover:last-child,
-	#employees .ui-iggrid-tablebody td.ui-state-active:last-child,
-	#employees .ui-iggrid-tablebody td:last-child {
+.bg-green .ui-iggrid-headertable th:last-child, .bg-green .ui-iggrid-tablebody td.ui-state-hover:last-child,
+	.bg-green .ui-iggrid-tablebody td.ui-state-active:last-child, .bg-green .ui-iggrid-tablebody td:last-child
+	{
 	border-left: none;
 }
 
-#employees .ui-iggrid-headertable th:first-child,
-	#employee .ui-iggrid-tablebody td.ui-state-hover:first-child,
-	#employees .ui-iggrid-tablebody td.ui-state-active:first-child,
-	#employees .ui-iggrid-tablebody td:first-child {
+.bg-green .ui-iggrid-headertable th:first-child, .bg-green .ui-iggrid-tablebody td.ui-state-hover:first-child,
+	.bg-green .ui-iggrid-tablebody td.ui-state-active:first-child,
+	.bg-green .ui-iggrid-tablebody td:first-child {
 	border-right: none;
 }
 
