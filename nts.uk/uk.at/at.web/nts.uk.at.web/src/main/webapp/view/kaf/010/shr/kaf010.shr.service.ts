@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf005.shr.service {
+module nts.uk.at.view.kaf010.shr.service {
     var paths: any = {
         getOvertimeByUI: "at/request/application/overtime/getOvertimeByUI",
         findByChangeAppDate: "at/request/application/overtime/findByChangeAppDate",

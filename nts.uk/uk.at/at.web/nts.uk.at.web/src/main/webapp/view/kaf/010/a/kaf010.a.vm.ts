@@ -1,6 +1,6 @@
-module nts.uk.at.view.kaf005.a.viewmodel {
-    import common = nts.uk.at.view.kaf005.share.common;
-    import service = nts.uk.at.view.kaf005.shr.service;
+module nts.uk.at.view.kaf010.a.viewmodel {
+    import common = nts.uk.at.view.kaf010.share.common;
+    import service = nts.uk.at.view.kaf010.shr.service;
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     export class ScreenModel {
@@ -14,11 +14,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //manualSendMailAtr
         manualSendMailAtr: KnockoutObservable<boolean> = ko.observable(false);
-        displayBreakTimeFlg: KnockoutObservable<boolean> = ko.observable(false);
+        displayBreakTimeFlg: KnockoutObservable<boolean> = ko.observable(true);
         //申請者
         employeeName: KnockoutObservable<string> = ko.observable("");
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(0);
+        backSelected : KnockoutObservable<number> = ko.observable(0);
+        goSelected : KnockoutObservable<number> = ko.observable(0);
         workState: KnockoutObservable<boolean> = ko.observable(true);;
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付

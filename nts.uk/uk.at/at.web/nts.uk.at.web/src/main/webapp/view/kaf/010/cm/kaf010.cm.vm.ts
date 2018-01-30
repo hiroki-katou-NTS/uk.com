@@ -1,6 +1,6 @@
-module nts.uk.at.view.kaf005.cm.viewmodel {
-    import common = nts.uk.at.view.kaf005.share.common;
-    import service = nts.uk.at.view.kaf005.shr.service;
+module nts.uk.at.view.kaf010.cm.viewmodel {
+    import common = nts.uk.at.view.kaf010.share.common;
+    import service = nts.uk.at.view.kaf010.shr.service;
     export class ScreenModel {
         //kaf000
         kaf000_a: kaf000.a.viewmodel.ScreenModel;

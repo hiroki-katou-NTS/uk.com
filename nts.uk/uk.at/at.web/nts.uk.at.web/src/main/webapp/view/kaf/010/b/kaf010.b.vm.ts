@@ -1,7 +1,7 @@
-module nts.uk.at.view.kaf005.b {
-    import common = nts.uk.at.view.kaf005.share.common;
+module nts.uk.at.view.kaf010.b {
+    import common = nts.uk.at.view.kaf010.share.common;
     import model = nts.uk.at.view.kaf000.b.viewmodel.model;
-    import service = nts.uk.at.view.kaf005.shr.service;
+    import service = nts.uk.at.view.kaf010.shr.service;
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     export module viewmodel {

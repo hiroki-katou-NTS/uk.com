@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf005.share {
+module nts.uk.at.view.kaf010.share {
     export module common {
         /**
          * 
