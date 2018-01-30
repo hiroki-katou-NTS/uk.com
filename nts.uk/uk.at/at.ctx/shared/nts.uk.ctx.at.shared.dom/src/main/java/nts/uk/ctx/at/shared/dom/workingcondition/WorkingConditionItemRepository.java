@@ -46,7 +46,7 @@ public interface WorkingConditionItemRepository {
 	 * @param historyId the history id
 	 * @return the by sid and hist id
 	 */
-	Optional<WorkingConditionItem> getBySidAndHistId(String employeeId, String historyId);
+	Optional<WorkingConditionItem> getBySid(String employeeId);
 
 	/**
 	 * Adds the.

@@ -44,7 +44,7 @@ public class MonthlyPatternSettingFinder {
     	
     	List<WorkingConditionItem> listResult = this.repositoryWorkingCondItem.getByListSidAndMonthlyPatternNotNull(employeeIds);
     	
-    	if (listResult.isEmpty()) {
+    	if (!listResult.isEmpty()) {
     		List<MonthlyPatternSettingDto> list = new ArrayList<>();
     		listResult.stream().forEach(e -> {
     			// new Dto
@@ -67,18 +67,19 @@ public class MonthlyPatternSettingFinder {
 	 * @param historyId the history id
 	 * @return the monthly pattern setting dto
 	 */
-	public MonthlyPatternSettingDto findById(String employeeId, String historyId){	
+	public MonthlyPatternSettingDto findById(String employeeId){	
 		// new Dto
 		MonthlyPatternSettingDto dto = new MonthlyPatternSettingDto();
 		
 		//call repository find by employee id
-		Optional<WorkingConditionItem> optWkConItem = this.repositoryWorkingCondItem.getBySidAndHistId(employeeId, historyId);
+		Optional<WorkingConditionItem> optWkConItem = this.repositoryWorkingCondItem.getBySid(employeeId);
 		
 		// check exist data
 		if(optWkConItem.isPresent()){
 			dto.setEmployeeId(optWkConItem.get().getEmployeeId());
 			dto.setHistoryId(optWkConItem.get().getHistoryId());
 			dto.setMonthlyPatternCode(optWkConItem.get().getMonthlyPattern().get().v());
+			return dto;
 		}
 		return null;
 	}

@@ -193,7 +193,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * getBySidAndHistId(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<WorkingConditionItem> getBySidAndHistId(String employeeId, String historyId) {
+	public Optional<WorkingConditionItem> getBySid(String employeeId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -213,8 +213,6 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		// equal
 		lstpredicateWhere
 				.add(criteriaBuilder.equal(root.get(KshmtWorkingCondItem_.sid), employeeId));
-		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KshmtWorkingCondItem_.historyId), employeeId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
