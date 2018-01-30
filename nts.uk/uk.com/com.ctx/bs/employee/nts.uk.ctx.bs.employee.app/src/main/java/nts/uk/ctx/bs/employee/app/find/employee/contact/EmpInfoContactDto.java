@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.app.find.employee.contact;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
 import nts.uk.shr.pereg.app.PeregItem;
@@ -10,6 +11,7 @@ import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class EmpInfoContactDto extends PeregDomainDto{
 	
 	/** The Company mobile phone number - 会社携帯電話番号*/
@@ -42,12 +44,15 @@ public class EmpInfoContactDto extends PeregDomainDto{
 	}
 
 	public static EmpInfoContactDto fromDomain(EmployeeInfoContact domain) {
-		return new EmpInfoContactDto(domain.getSid(),
-				domain.getCellPhoneNo().v(), 
-				domain.getMailAddress().v(), 
-				domain.getPhoneMailAddress().v(), 
-				domain.getSeatDialIn().v(), 
-				domain.getSeatExtensionNo().v());
+		EmpInfoContactDto result = new EmpInfoContactDto();
+		result.setRecordId(domain.getSid());
+		if(domain.getCellPhoneNo() != null) result.setCellPhoneNo(domain.getCellPhoneNo().v());
+		if(domain.getMailAddress() != null) result.setMailAddress(domain.getMailAddress().v());
+		if(domain.getPhoneMailAddress() != null) result.setPhoneMailAddress(domain.getPhoneMailAddress().v());
+		if(domain.getSeatDialIn() != null) result.setSeatDialIn(domain.getSeatDialIn().v());
+		if(domain.getSeatExtensionNo() != null) result.setSeatExtensionNo(domain.getSeatExtensionNo().v());
+		
+		return result;
 	}
 
 }
