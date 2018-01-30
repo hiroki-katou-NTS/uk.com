@@ -37,7 +37,7 @@
 						<label tabindex="-1" data-bind="text: employeeName"></label>
 						<br />
 						<br />
-						<div tabindex="-1" class="lableData"
+						<div style="position: relative; top: -65px;" tabindex="-1" class="lableData"
 							data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KSM005_45')}</label>
 						</div>
@@ -55,10 +55,10 @@
 						<br />
 						<br />
 						<div tabindex="-1" class="lableData"
-							data-bind="ntsFormLabel: {}">
+							data-bind="ntsFormLabel: {required: true}">
 							<label>#{i18n.getText('KSM005_46')}</label>
 						</div>
-						<div id="combo-box" data-bind="ntsComboBox: {
+						<div style="top: 10px;" id="combo-box" data-bind="ntsComboBox: {
 							options: monthlyPatternList,
 							optionsValue: 'code',
 							visibleItemsCount: 5,
