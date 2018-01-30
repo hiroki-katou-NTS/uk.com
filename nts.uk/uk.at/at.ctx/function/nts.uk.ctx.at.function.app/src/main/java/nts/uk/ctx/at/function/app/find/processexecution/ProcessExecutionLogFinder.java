@@ -36,7 +36,9 @@ public class ProcessExecutionLogFinder {
 					Optional<ExecutionTaskSetting> taskSettingOpt = this.execSettingRepo.getByCidAndExecCd(companyId, a.getExecItemCd().v());
 					if (taskSettingOpt.isPresent()) {
 						ExecutionTaskSetting setting = Optional.of(taskSettingOpt.get()).get();
-						dto.setNextExecDateTime(setting.getNextExecDateTime().toString("yyyy/MM/dd HH:mm:ss"));
+						dto.setNextExecDateTime(
+								setting.getNextExecDateTime() == null ? 
+										"" : setting.getNextExecDateTime().toString("yyyy/MM/dd HH:mm:ss"));
 					}
 					Optional<ProcessExecution> procExecOpt = this.procExecRepo.getProcessExecutionByCidAndExecCd(companyId, a.getExecItemCd().v());
 					if (procExecOpt.isPresent()) {

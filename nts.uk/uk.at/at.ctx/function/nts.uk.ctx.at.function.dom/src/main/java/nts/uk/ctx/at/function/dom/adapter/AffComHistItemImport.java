@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.pub.company;
+package nts.uk.ctx.at.function.dom.adapter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @AllArgsConstructor
 @Setter
 @Getter
-public class AffComHistItem {
+public class AffComHistItemImport {
 	
 	/** 履歴ID */
 	private String historyId;
