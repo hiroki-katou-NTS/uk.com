@@ -73,10 +73,9 @@ public class StampServiceImpl implements StampDomainService{
 			lstStampItem.forEach(x -> {
 				int attendanceClock = x.getAttendanceTime().v();
 				TimeZoneOutput stampRange = s.getStampRange();
-				boolean reflectClass = false;
 				
 				if ( DateUtils.isSameDay(x.getDate().date(),date.date()) && attendanceClock >= stampRange.getStart().v().intValue()
-						&& attendanceClock <= stampRange.getEnd().v().intValue() && reflectClass == false) {
+						&& attendanceClock <= stampRange.getEnd().v().intValue() && x.getReflectedAtr().value ==0) {
 					lstStampItemOutput.add(x);
 				}
 

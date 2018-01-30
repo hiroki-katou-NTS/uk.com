@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.find.shift.estimate.aggregateset;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -26,6 +27,8 @@ public class AggregateSettingFindDto implements AggregateSettingSetMemento{
 	 */
 	public AggregateSettingFindDto(){
 		super();
+		this.premiumNo = new ArrayList<>();
+		this.monthlyWorkingDaySettingDto = new MonthlyWorkingDaySettingDto();
 	}
 
 	/* (non-Javadoc)
@@ -41,7 +44,7 @@ public class AggregateSettingFindDto implements AggregateSettingSetMemento{
 	 */
 	@Override
 	public void setPremiumNo(List<ExtraTimeItemNo> premiumNo) {
-		premiumNo.stream().forEach(e -> {
+		premiumNo.forEach(e -> {
 			this.premiumNo.add(e.v());
 		});
 	}

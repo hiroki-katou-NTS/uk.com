@@ -234,11 +234,26 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 				? holidayAddTimeSet.get().getOneDay().v() : null);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemSetMemento#
+	 * setHourlyPaymentAtr(nts.uk.ctx.at.shared.dom.workingcondition.
+	 * HourlyPaymentAtr)
+	 */
 	@Override
 	public void setHourlyPaymentAtr(HourlyPaymentAtr hourlyPaymentAtr) {
 		this.entity.setHourlyPayAtr(hourlyPaymentAtr.value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemSetMemento#
+	 * setTimeApply(java.util.Optional)
+	 */
 	@Override
 	public void setTimeApply(Optional<BonusPaySettingCode> timeApply) {
 		if (!timeApply.isPresent()) {
@@ -248,6 +263,13 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 		this.entity.setTimeApply(timeApply.get().v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemSetMemento#
+	 * setMonthlyPattern(java.util.Optional)
+	 */
 	@Override
 	public void setMonthlyPattern(Optional<MonthlyPatternCode> monthlyPattern) {
 		if (!monthlyPattern.isPresent()) {

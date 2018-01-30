@@ -24,7 +24,7 @@ module nts.uk.at.view.ksm001.g {
         /**
          * call service get list premium
          */
-        export function getListPremium(): JQueryPromise<model.PremiumItemDto> {
+        export function getListPremium(): JQueryPromise<Array<model.PremiumItemDto>> {
             return nts.uk.request.ajax(paths.getListPremium);
         }
         

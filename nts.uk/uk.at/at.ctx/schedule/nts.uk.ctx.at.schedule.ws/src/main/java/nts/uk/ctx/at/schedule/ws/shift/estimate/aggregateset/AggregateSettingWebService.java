@@ -47,7 +47,7 @@ public class AggregateSettingWebService extends WebService{
 	 */
 	@POST
 	@Path("save")
-	void saveAggregateSetting(AggregateSettingCommand command) {
+	public void saveAggregateSetting(AggregateSettingCommand command) {
 		this.saveHandler.handle(command);
 	}
 	
