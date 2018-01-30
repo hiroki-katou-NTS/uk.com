@@ -90,7 +90,7 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 		Optional<ErrorAlarmCondition> optErAlCondition = 
 				listErrorAlarmCondition.stream().filter(item -> item.getErrorAlarmCheckID().equals(eralCheckId)).findFirst();
         if (!optErAlCondition.isPresent()) {
-        	return null;
+        	throw new RuntimeErrorException(new Error(), "ErrorAlarmCondition is invalid!");
         }
       //ドメインモデル「勤怠項目に対する条件」を取得する - Acquire domain model "Condition for attendance item"
         ErrorAlarmCondition errorAlarmCondition = optErAlCondition.get();
@@ -107,16 +107,16 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 		ErrorAlarmConditionPubExport errorAlarmConditionPubExport = workRecordExtraConPubExport.getErrorAlarmCondition();
 		
 		// for ErrorAlarmCondition
-
+		errorAlarmConditionPubExport.setErrorAlarmCheckID(errorAlarmCheckId);
 		ErrorAlarmCondition errorAlarmCondition = errorAlarmConditionPubExport.toConditionDomain();
 		
-		ErrorAlarmCondition insertErrorAlarmCondition = ErrorAlarmCondition.init();
+		//ErrorAlarmCondition insertErrorAlarmCondition = ErrorAlarmCondition.init();
 		//add data for insert
-		insertErrorAlarmCondition.setByCheckItem(workRecordExtraConPubExport.getCheckItem(), errorAlarmCondition);
+		//insertErrorAlarmCondition.setByCheckItem(workRecordExtraConPubExport.getCheckItem(), errorAlarmCondition);
 		
-		insertErrorAlarmCondition.setCheckId(errorAlarmCheckId);
+		//insertErrorAlarmCondition.setCheckId(errorAlarmCheckId);
 		workRecordExtraConPubExport.setErrorAlarmCheckID(errorAlarmCheckId);
-		this.errorAlarmConditionRepository.addErrorAlarmCondition(insertErrorAlarmCondition);
+		this.errorAlarmConditionRepository.addErrorAlarmCondition(errorAlarmCondition);
 		this.repo.addWorkRecordExtraCon(
 				convertToDomainWR(workRecordExtraConPubExport)
 				);
@@ -154,30 +154,14 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 	}
 	
 	@Override
-	public void checkUpdateListErAl(List<String> oldlstErrorAlarmCheckID, List<WorkRecordExtraConPubExport> listErroAlarm) {
+	public List<String> checkUpdateListErAl(List<String> oldlstErrorAlarmCheckID, List<WorkRecordExtraConPubExport> listErroAlarm) {
 		//get list gốc theo list Error AlarmCheckID
 		List<WorkRecordExtraConPubExport> oldData = getAllWorkRecordExtraConByListID(oldlstErrorAlarmCheckID);
 		List<String> newListCheckIds = listErroAlarm.stream().filter(em -> !StringUtil.isNullOrEmpty(em.getErrorAlarmCheckID(), true))
 				.map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList());
 		//ktra xem có xóa phần tử nào k?
 		//lặp list gốc
-		/*
-		for(WorkRecordExtraConPubExport oldWorkRecordExtraCon :data) {
-			boolean checkExist = false;
-			//lặp list truyền vào
-			for(WorkRecordExtraConPubExport newWorkRecordExtraCon  : listErroAlarm ) {
-				//nếu tồn tại thì gán checkExist
-				if(oldWorkRecordExtraCon.getErrorAlarmCheckID().equals(newWorkRecordExtraCon.getErrorAlarmCheckID())) {
-					checkExist = true;
-					break;
-				}
-			}//end lặp list truyền vào 
-			//nếu checkExist bằng false tức là đã bị xóa, gọi hàm xóa
-			if(!checkExist) {
-				listErrorAlarmID.add(oldWorkRecordExtraCon.getErrorAlarmCheckID());
-			}
-		}//end lặp list gốc
-		*/
+		List<String> listErrorAlarmCheckID = new ArrayList<>();
 		
 		List<String> listDeleteErrorAlarmID = oldData.stream().filter(item -> !isExistCheckIdInList(item.getErrorAlarmCheckID(),
 				newListCheckIds)).map(id -> id.getErrorAlarmCheckID()).collect(Collectors.toList());
@@ -194,19 +178,21 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 			//lặp list gốc
 			for(WorkRecordExtraConPubExport oldWorkRecordExtraCon : oldData) {
 				if(newWorkRecordExtraCon.getErrorAlarmCheckID().equals(oldWorkRecordExtraCon.getErrorAlarmCheckID())) {
-					if(!newWorkRecordExtraCon.equals(oldWorkRecordExtraCon)) {
+					//if(!newWorkRecordExtraCon.equals(oldWorkRecordExtraCon)) {
 						updateWorkRecordExtraConPub(newWorkRecordExtraCon);
-					}
+					//}
 					checkExist1 = true;
+					listErrorAlarmCheckID.add(newWorkRecordExtraCon.getErrorAlarmCheckID());
 					break;
 				}
 			}//end lặp list gốc
 			//nếu checkExist1 = false, tức là phần tử thêm mới, gọi hàm thêm mới
 			if(!checkExist1) {
 				addWorkRecordExtraConPub(newWorkRecordExtraCon);
+				listErrorAlarmCheckID.add(newWorkRecordExtraCon.getErrorAlarmCheckID());
 			}
 		}//end lặp list truyền vào
-		
+		return listErrorAlarmCheckID;
 	}
 
 	@Override

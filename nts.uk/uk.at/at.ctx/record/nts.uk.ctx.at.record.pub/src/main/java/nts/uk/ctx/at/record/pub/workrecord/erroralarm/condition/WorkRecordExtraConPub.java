@@ -15,7 +15,7 @@ public interface WorkRecordExtraConPub {
 	
 	void deleteWorkRecordExtraConPub(List<String> errorAlarmCheckID);
 	
-	void checkUpdateListErAl(List<String> listErrorAlarmCheckID,List<WorkRecordExtraConPubExport> listErroAlarm);
+	List<String> checkUpdateListErAl(List<String> listErrorAlarmCheckID,List<WorkRecordExtraConPubExport> listErroAlarm);
 	
 	List<String> addNewListErAl(List<WorkRecordExtraConPubExport> listErroAlarm);
 	

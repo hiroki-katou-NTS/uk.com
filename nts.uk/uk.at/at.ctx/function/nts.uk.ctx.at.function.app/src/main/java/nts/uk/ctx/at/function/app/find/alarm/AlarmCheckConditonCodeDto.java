@@ -19,6 +19,4 @@ public class AlarmCheckConditonCodeDto {
 	// 名称
 	private String checkConditionName;
 	
-	// アラームリストの結果が閲覧できるロール一覧
-	private List<String> listRoleId = new ArrayList<>();
 }

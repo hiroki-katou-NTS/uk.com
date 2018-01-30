@@ -682,13 +682,13 @@ module nts.uk.at.view.kal003.b.viewmodel{
                //時間 - 0: check time
                //連続時間 - 4:  check time
                self.minTimeValue.subscribe((minValue) => {
-                    if (self.checkValidOfRange(checkItem(), comOper(), 0)) { //min
+                    if (self.checkValidOfRange(checkItem(), 0)) { //min
                         self.minValue(self.minTimeValue());
                         self.maxValue(self.maxTimeValue());
                     }
                 });
                 self.maxTimeValue.subscribe((maxValue) => {
-                    if (self.checkValidOfRange(checkItem(), comOper(), 1)) { //max
+                    if (self.checkValidOfRange(checkItem(), 1)) { //max
                         self.minValue(self.minTimeValue());
                         self.maxValue(self.maxTimeValue());
                     }
@@ -696,13 +696,13 @@ module nts.uk.at.view.kal003.b.viewmodel{
 
                 //回数 - 1: check times
                 self.minTimesValue.subscribe((minValue) => {
-                    if (self.checkValidOfRange(checkItem(), comOper(), 0)) { //min
+                    if (self.checkValidOfRange(checkItem(), 0)) { //min
                         self.minValue(self.minTimesValue());
                         self.maxValue(self.maxTimesValue());
                     }
                 });
                 self.maxTimesValue.subscribe((maxValue) => {
-                    if (self.checkValidOfRange(checkItem(), comOper(), 1)) { //max
+                    if (self.checkValidOfRange(checkItem(), 1)) { //max
                         self.minValue(self.minTimesValue());
                         self.maxValue(self.maxTimesValue());
                     }
@@ -710,13 +710,13 @@ module nts.uk.at.view.kal003.b.viewmodel{
 
                 //金額 - 2: check amount of money
                 self.minAmountOfMoneyValue.subscribe((minValue) => {
-                    if (self.checkValidOfRange(checkItem(), comOper(), 0)) { //min
+                    if (self.checkValidOfRange(checkItem(), 0)) { //min
                         self.minValue(self.minAmountOfMoneyValue());
                         self.maxValue(self.maxAmountOfMoneyValue());
                     }
                 });
                 self.maxAmountOfMoneyValue.subscribe((maxValue) => {
-                    if (self.checkValidOfRange(checkItem(), comOper(), 1)) { //max
+                    if (self.checkValidOfRange(checkItem(), 1)) { //max
                         self.minValue(self.minAmountOfMoneyValue());
                         self.maxValue(self.maxAmountOfMoneyValue());
                     }
@@ -724,13 +724,13 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 
                 //時刻の場合 - 3: time within day
                 self.minTimeWithinDayValue.subscribe((minValue) => {
-                    if (self.checkValidOfRange(checkItem(), comOper(), 0)) { //min
+                    if (self.checkValidOfRange(checkItem(), 0)) { //min
                         self.minValue(self.minTimeWithinDayValue());
                         self.maxValue(self.maxTimeWithinDayValue());
                     }
                 });
                 self.maxTimeWithinDayValue.subscribe((maxValue) => {
-                    if (self.checkValidOfRange(checkItem(), comOper(), 1)) { //max
+                    if (self.checkValidOfRange(checkItem(), 1)) { //max
                         self.minValue(self.minTimeWithinDayValue());
                         self.maxValue(self.maxTimeWithinDayValue());
                     }
@@ -792,10 +792,10 @@ module nts.uk.at.view.kal003.b.viewmodel{
                  switch (comOper) {
                     case 6: // 範囲の間（境界値を含まない）（＜＞）
                     case 8: // 範囲の外（境界値を含まない）（＞＜）
-                        return !(minValue >= maxValue);
+                        return minValue < maxValue;
                     case 7: // 範囲の間（境界値を含む）（≦≧）
                     case 9: // 範囲の外（境界値を含む）（≧≦）
-                        return !(minValue > maxValue);
+                        return minValue <= maxValue;
                     default:
                         break;
                 }
