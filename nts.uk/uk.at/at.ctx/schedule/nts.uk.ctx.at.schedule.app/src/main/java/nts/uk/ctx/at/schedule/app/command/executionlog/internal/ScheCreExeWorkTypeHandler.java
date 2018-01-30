@@ -259,7 +259,7 @@ public class ScheCreExeWorkTypeHandler {
 	 * @return the worktype
 	 */
 	// 勤務種類を取得する
-	private Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command) {
+	public Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command) {
 
 		// setup command getter
 		BasicWorkSettingGetterCommand commandBasicGetter = command.toBasicWorkSetting();
@@ -318,5 +318,4 @@ public class ScheCreExeWorkTypeHandler {
 		}
 		return Optional.empty();
 	}
-
 }
