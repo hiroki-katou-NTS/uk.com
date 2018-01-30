@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**
@@ -12,10 +13,11 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 public interface FixedWorkSettingPolicy {
 
 	/**
-	 * Can register.
+	 * Validate.
 	 *
-	 * @param fixedWork the fixed work
+	 * @param be the be
 	 * @param predTime the pred time
+	 * @param fixedWork the fixed work
 	 */
-	void canRegister(FixedWorkSetting fixedWork, PredetemineTimeSetting predTime);
+	void validate(BundledBusinessException be, PredetemineTimeSetting predTime, FixedWorkSetting fixedWork);
 }

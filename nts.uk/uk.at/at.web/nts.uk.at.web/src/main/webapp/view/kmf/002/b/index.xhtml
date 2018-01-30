@@ -9,13 +9,14 @@
 	<ui:composition>
 		<div class="sidebar-content-header">
 			<!-- B1_1 -->
-   			<button tabindex="1" data-bind="click: saveWorkpalce, attr : {'disabled' : multiSelectedWorkplaceId().length == 0 ? true : false}">#{i18n.getText('KMF002_2')}</button>
+   			<button tabindex="1" data-bind="click: saveWorkpalce, enable: enableSave">#{i18n.getText('KMF002_2')}</button>
    			<!-- B1_2 -->
-   			<button tabindex="2" data-bind="click: removeWorkplace, attr : {'disabled' : multiSelectedWorkplaceId().length == 0 ? true : false}">#{i18n.getText('KMF002_11')}</button>
+   			<button tabindex="2" data-bind="click: removeWorkplace, enable: enableDelete">#{i18n.getText('KMF002_11')}</button>
 		</div>
 		
 		<div id="scrB" class="contents-area">
-			<div id="tree-grid"></div>
+			<!-- B2_1 -->
+			<div tabindex="3" id="tree-grid"></div>
 			<div id="includeTableMonthlyDay" data-bind="with: commonTableMonthDaySet">
 				<ui:include src="../base.xhtml"/>
 			</div>

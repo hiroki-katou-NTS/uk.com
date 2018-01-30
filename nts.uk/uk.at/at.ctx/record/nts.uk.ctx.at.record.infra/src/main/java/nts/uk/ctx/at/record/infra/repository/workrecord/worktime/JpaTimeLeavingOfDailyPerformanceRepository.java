@@ -28,6 +28,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 	private static final String FIND_BY_KEY;
 
+	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE ");
@@ -50,6 +52,15 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
 		FIND_BY_KEY = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtDaiLeavingWork a ");
+		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd >= :start ");
+		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd <= :end ");
+		builderString.append("ORDER BY a.krcdtDaiLeavingWorkPK.ymd ");
+		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
 	}
 
 	@Override
@@ -68,13 +79,22 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	@Override
+	public List<TimeLeavingOfDailyPerformance> findbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
+		return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD, KrcdtDaiLeavingWork.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("start", datePeriod.start())
+				.setParameter("end", datePeriod.end())
+				.getList(f -> f.toDomain());
+	}
+	
+	@Override
 	public void update(TimeLeavingOfDailyPerformance domain) {
 		if (domain == null) {
 			return;
 		}
 		KrcdtDaiLeavingWork entity = getDailyLeaving(domain.getEmployeeId(), domain.getYmd());
 		List<KrcdtTimeLeavingWork> timeWorks = entity.timeLeavingWorks;
-		entity.workTimes = domain.getWorkTimes().v();
+		entity.workTimes = domain.getWorkTimes() == null ? null : domain.getWorkTimes().v();
 		domain.getTimeLeavingWorks().stream().forEach(c -> {
 			KrcdtTimeLeavingWork krcdtTimeLeavingWork = timeWorks.stream()
 					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()).findFirst().orElse(null);

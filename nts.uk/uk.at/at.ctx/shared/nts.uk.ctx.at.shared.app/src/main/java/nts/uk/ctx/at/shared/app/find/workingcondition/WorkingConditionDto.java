@@ -109,13 +109,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 平日開始1 区分別勤務.平日時.勤務時間帯.開始 ※回数=1
 	 */
 	@PeregItem("IS00133")
-	private int weekDayStartTime1;
+	private Integer weekDayStartTime1;
 
 	/**
 	 * 平日終了1 区分別勤務.平日時.勤務時間帯.終了 ※回数=1
 	 */
 	@PeregItem("IS00134")
-	private int weekDayEndTime1;
+	private Integer weekDayEndTime1;
 
 	/**
 	 * 平日時勤務時間2
@@ -127,13 +127,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 平日開始2 区分別勤務.平日時.勤務時間帯.開始 ※回数=2
 	 */
 	@PeregItem("IS00136")
-	private int weekDayStartTime2;
+	private Integer weekDayStartTime2;
 
 	/**
 	 * 平日終了2 区分別勤務.平日時.勤務時間帯.終了 ※回数=2
 	 */
 	@PeregItem("IS00137")
-	private int weekDayEndTime2;
+	private Integer weekDayEndTime2;
 
 	/**
 	 * 休出時勤務設定
@@ -162,13 +162,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 休出開始1 区分別勤務.休日出勤時.勤務時間帯.開始 ※回数=1
 	 */
 	@PeregItem("IS00142")
-	private int workInHolidayStartTime1;
+	private Integer workInHolidayStartTime1;
 
 	/**
 	 * 休出終了1 区分別勤務.休日出勤時.勤務時間帯.終了 ※回数=1
 	 */
 	@PeregItem("IS00143")
-	private int workInHolidayEndTime1;
+	private Integer workInHolidayEndTime1;
 
 	/**
 	 * 休出時勤務時間2
@@ -180,13 +180,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 休出開始2 区分別勤務.休日出勤時.勤務時間帯.開始 ※回数=2
 	 */
 	@PeregItem("IS00145")
-	private int workInHolidayStartTime2;
+	private Integer workInHolidayStartTime2;
 
 	/**
 	 * 休出終了2 区分別勤務.休日出勤時.勤務時間帯.終了 ※回数=2
 	 */
 	@PeregItem("IS00146")
-	private int workInHolidayEndTime2;
+	private Integer workInHolidayEndTime2;
 
 	/**
 	 * 公休出勤時勤務設定
@@ -215,13 +215,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 公休出開始1 区分別勤務.公休出勤時.勤務時間帯.開始 ※回数=1
 	 */
 	@PeregItem("IS00151")
-	private int workInPublicHolidayStartTime1;
+	private Integer workInPublicHolidayStartTime1;
 
 	/**
 	 * 公休出終了1 区分別勤務.公休出勤時.勤務時間帯.終了 ※回数=1
 	 */
 	@PeregItem("IS00152")
-	private int workInPublicHolidayEndTime1;
+	private Integer workInPublicHolidayEndTime1;
 
 	/**
 	 * 公休時勤務時間2
@@ -233,13 +233,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 公休出開始2 区分別勤務.公休出勤時.勤務時間帯.開始 ※回数=2
 	 */
 	@PeregItem("IS00154")
-	private int workInPublicHolidayStartTime2;
+	private Integer workInPublicHolidayStartTime2;
 
 	/**
 	 * 公休出終了2 区分別勤務.公休出勤時.勤務時間帯.終了 ※回数=2
 	 */
 	@PeregItem("IS00155")
-	private int workInPublicHolidayEndTime2;
+	private Integer workInPublicHolidayEndTime2;
 
 	/**
 	 * 法定休出時勤務設定
@@ -268,13 +268,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 法内休出開始1 区分別勤務.法内休出時.勤務時間帯.開始 ※回数=1
 	 */
 	@PeregItem("IS00160")
-	private int inLawBreakTimeStartTime1;
+	private Integer inLawBreakTimeStartTime1;
 
 	/**
 	 * 法内休出終了1 区分別勤務.法内休出時.勤務時間帯.終了 ※回数=1
 	 */
 	@PeregItem("IS00161")
-	private int inLawBreakTimeEndTime1;
+	private Integer inLawBreakTimeEndTime1;
 
 	/**
 	 * 法内休出時勤務時間2
@@ -286,13 +286,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 法内休出開始2 区分別勤務.法内休出時.勤務時間帯.開始 ※回数=2
 	 */
 	@PeregItem("IS00163")
-	private int inLawBreakTimeStartTime2;
+	private Integer inLawBreakTimeStartTime2;
 
 	/**
 	 * 法内休出終了2 区分別勤務.法内休出時.勤務時間帯.終了 ※回数=2
 	 */
 	@PeregItem("IS00164")
-	private int inLawBreakTimeEndTime2;
+	private Integer inLawBreakTimeEndTime2;
 
 	/**
 	 * 法定外休出時勤務設定
@@ -321,13 +321,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 法外休出開始1 区分別勤務.法外休出時.勤務時間帯.開始 ※回数=1
 	 */
 	@PeregItem("IS00169")
-	private int outsideLawBreakTimeStartTime1;
+	private Integer outsideLawBreakTimeStartTime1;
 
 	/**
 	 * 法外休出終了1 区分別勤務.法外休出時.勤務時間帯.終了 ※回数=1
 	 */
 	@PeregItem("IS00170")
-	private int outsideLawBreakTimeEndTime1;
+	private Integer outsideLawBreakTimeEndTime1;
 
 	/**
 	 * 法外休出時勤務時間2
@@ -339,13 +339,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 法外休出開始2 区分別勤務.法外休出時.勤務時間帯.開始 ※回数=2
 	 */
 	@PeregItem("IS00172")
-	private int outsideLawBreakTimeStartTime2;
+	private Integer outsideLawBreakTimeStartTime2;
 
 	/**
 	 * 法外休出終了2 区分別勤務.法外休出時.勤務時間帯.終了 ※回数=2
 	 */
 	@PeregItem("IS00173")
-	private int outsideLawBreakTimeEndTime2;
+	private Integer outsideLawBreakTimeEndTime2;
 
 	/**
 	 * 祝日時勤務設定
@@ -374,13 +374,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 法外祝日開始1 区分別勤務.祝日出勤時.勤務時間帯.開始 ※回数=1
 	 */
 	@PeregItem("IS00178")
-	private int holidayAttendanceTimeStartTime1;
+	private Integer holidayAttendanceTimeStartTime1;
 
 	/**
 	 * 法外祝日終了1 区分別勤務.祝日出勤時.勤務時間帯.終了 ※回数=1
 	 */
 	@PeregItem("IS00179")
-	private int holidayAttendanceTimeEndTime1;
+	private Integer holidayAttendanceTimeEndTime1;
 
 	/**
 	 * 法外祝日時勤務時間2
@@ -392,13 +392,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 法外祝日開始2 区分別勤務.祝日出勤時.勤務時間帯.開始 ※回数=2
 	 */
 	@PeregItem("IS00181")
-	private int holidayAttendanceTimeStartTime2;
+	private Integer holidayAttendanceTimeStartTime2;
 
 	/**
 	 * 法外祝日終了2 区分別勤務.祝日出勤時.勤務時間帯.終了 ※回数=2
 	 */
 	@PeregItem("IS00182")
-	private int holidayAttendanceTimeEndTime2;
+	private Integer holidayAttendanceTimeEndTime2;
 
 	/**
 	 * 日曜勤務設定
@@ -427,13 +427,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 日開始1 曜日別勤務.日曜日.勤務時間帯.開始 ※回数=1
 	 */
 	@PeregItem("IS00187")
-	private int sundayStartTime1;
+	private Integer sundayStartTime1;
 
 	/**
 	 * 日終了1 曜日別勤務.日曜日.勤務時間帯.終了 ※回数=1
 	 */
 	@PeregItem("IS00188")
-	private int sundayEndTime1;
+	private Integer sundayEndTime1;
 
 	/**
 	 * 日曜出勤時勤務時間2
@@ -445,13 +445,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 日開始2 曜日別勤務.日曜日.勤務時間帯.開始 ※回数=2
 	 */
 	@PeregItem("IS00190")
-	private int sundayStartTime2;
+	private Integer sundayStartTime2;
 
 	/**
 	 * 日終了2 曜日別勤務.日曜日.勤務時間帯.終了 ※回数=2
 	 */
 	@PeregItem("IS00191")
-	private int sundayEndTime2;
+	private Integer sundayEndTime2;
 
 	/**
 	 * 月曜勤務設定
@@ -480,13 +480,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 月開始1 曜日別勤務.月曜日.勤務時間帯.開始 ※回数=1
 	 */
 	@PeregItem("IS00196")
-	private int mondayStartTime1;
+	private Integer mondayStartTime1;
 
 	/**
 	 * 月終了1 曜日別勤務.月曜日.勤務時間帯.終了 ※回数=1
 	 */
 	@PeregItem("IS00197")
-	private int mondayEndTime1;
+	private Integer mondayEndTime1;
 
 	/**
 	 * 月曜出勤時勤務時間2
@@ -498,13 +498,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 月開始2 曜日別勤務.月曜日.勤務時間帯.開始 ※回数=2
 	 */
 	@PeregItem("IS00199")
-	private int mondayStartTime2;
+	private Integer mondayStartTime2;
 
 	/**
 	 * 月終了2 曜日別勤務.月曜日.勤務時間帯.終了 ※回数=2
 	 */
 	@PeregItem("IS00200")
-	private int mondayEndTime2;
+	private Integer mondayEndTime2;
 
 	/**
 	 * 火曜勤務設定
@@ -533,13 +533,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 火開始1 曜日別勤務.火曜日.勤務時間帯.開始 ※回数=1
 	 */
 	@PeregItem("IS00205")
-	private int tuesdayStartTime1;
+	private Integer tuesdayStartTime1;
 
 	/**
 	 * 火終了1 曜日別勤務.火曜日.勤務時間帯.終了 ※回数=1
 	 */
 	@PeregItem("IS00206")
-	private int tuesdayEndTime1;
+	private Integer tuesdayEndTime1;
 
 	/**
 	 * 火曜出勤時勤務時間2
@@ -551,13 +551,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 火開始2 曜日別勤務.火曜日.勤務時間帯.開始 ※回数=2
 	 */
 	@PeregItem("IS00208")
-	private int tuesdayStartTime2;
+	private Integer tuesdayStartTime2;
 
 	/**
 	 * 火終了2 曜日別勤務.火曜日.勤務時間帯.終了 ※回数=2
 	 */
 	@PeregItem("IS00209")
-	private int tuesdayEndTime2;
+	private Integer tuesdayEndTime2;
 
 	/**
 	 * 水曜勤務設定
@@ -586,13 +586,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 水開始1 曜日別勤務.水曜日.勤務時間帯.開始 ※回数=1
 	 */
 	@PeregItem("IS00214")
-	private int wednesdayStartTime1;
+	private Integer wednesdayStartTime1;
 
 	/**
 	 * 水終了1 曜日別勤務.水曜日.勤務時間帯.終了 ※回数=1
 	 */
 	@PeregItem("IS00215")
-	private int wednesdayEndTime1;
+	private Integer wednesdayEndTime1;
 
 	/**
 	 * 水曜出勤時勤務時間2
@@ -604,13 +604,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 水開始2 曜日別勤務.水曜日.勤務時間帯.開始 ※回数=2
 	 */
 	@PeregItem("IS00217")
-	private int wednesdayStartTime2;
+	private Integer wednesdayStartTime2;
 
 	/**
 	 * 水終了2 曜日別勤務.水曜日.勤務時間帯.終了 ※回数=2
 	 */
 	@PeregItem("IS00218")
-	private int wednesdayEndTime2;
+	private Integer wednesdayEndTime2;
 
 	/**
 	 * 木曜勤務設定
@@ -639,13 +639,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 木開始1 曜日別勤務.木曜日.勤務時間帯.開始 ※回数=1
 	 */
 	@PeregItem("IS00223")
-	private int thursdayStartTime1;
+	private Integer thursdayStartTime1;
 
 	/**
 	 * 木終了1 曜日別勤務.木曜日.勤務時間帯.終了 ※回数=1
 	 */
 	@PeregItem("IS00224")
-	private int thursdayEndTime1;
+	private Integer thursdayEndTime1;
 
 	/**
 	 * 木曜出勤時勤務時間2
@@ -657,13 +657,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 木開始2 曜日別勤務.木曜日.勤務時間帯.開始 ※回数=2
 	 */
 	@PeregItem("IS00226")
-	private int thursdayStartTime2;
+	private Integer thursdayStartTime2;
 
 	/**
 	 * 木終了2 曜日別勤務.木曜日.勤務時間帯.終了 ※回数=2
 	 */
 	@PeregItem("IS00227")
-	private int thursdayEndTime2;
+	private Integer thursdayEndTime2;
 
 	/**
 	 * 金曜勤務設定
@@ -693,13 +693,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 金開始1 曜日別勤務.金曜日.勤務時間帯.開始 ※回数=1
 	 */
 	@PeregItem("IS00232")
-	private int fridayStartTime1;
+	private Integer fridayStartTime1;
 
 	/**
 	 * 金終了1 曜日別勤務.金曜日.勤務時間帯.終了 ※回数=1
 	 */
 	@PeregItem("IS00233")
-	private int fridayEndTime1;
+	private Integer fridayEndTime1;
 
 	/**
 	 * 金曜出勤時勤務時間2
@@ -711,13 +711,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 金開始2 曜日別勤務.金曜日.勤務時間帯.開始 ※回数=2
 	 */
 	@PeregItem("IS00235")
-	private int fridayStartTime2;
+	private Integer fridayStartTime2;
 
 	/**
 	 * 金終了2 曜日別勤務.金曜日.勤務時間帯.終了 ※回数=2
 	 */
 	@PeregItem("IS00236")
-	private int fridayEndTime2;
+	private Integer fridayEndTime2;
 
 	/**
 	 * 土曜勤務設定
@@ -746,13 +746,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 土開始1 曜日別勤務.土曜日.勤務時間帯.開始 ※回数=1
 	 */
 	@PeregItem("IS00241")
-	private int saturdayStartTime1;
+	private Integer saturdayStartTime1;
 
 	/**
 	 * 土終了1 曜日別勤務.土曜日.勤務時間帯.終了 ※回数=1
 	 */
 	@PeregItem("IS00242")
-	private int saturdayEndTime1;
+	private Integer saturdayEndTime1;
 
 	/**
 	 * 土曜出勤時勤務時間2
@@ -764,13 +764,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 	 * 土開始2 曜日別勤務.土曜日.勤務時間帯.開始 ※回数=2
 	 */
 	@PeregItem("IS00244")
-	private int saturdayStartTime2;
+	private Integer saturdayStartTime2;
 
 	/**
 	 * 土終了2 曜日別勤務.土曜日.勤務時間帯.終了 ※回数=2
 	 */
 	@PeregItem("IS00245")
-	private int saturdayEndTime2;
+	private Integer saturdayEndTime2;
 
 	/**
 	 * 加給CD

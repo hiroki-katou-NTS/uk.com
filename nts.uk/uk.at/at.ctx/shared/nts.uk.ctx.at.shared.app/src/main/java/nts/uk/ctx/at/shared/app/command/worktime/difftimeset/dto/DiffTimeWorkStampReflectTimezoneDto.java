@@ -4,18 +4,25 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeStampReflectGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkStampReflectTimezone;
 
+@Getter
+@Setter
 public class DiffTimeWorkStampReflectTimezoneDto {
 
 	/** The stamp reflect timezone. */
-	private StampReflectTimezoneDto stampReflectTimezone;
+	private List<StampReflectTimezoneDto> stampReflectTimezone;
 
 	/** The is update start time. */
-	private boolean isUpdateStartTime;
+	private boolean updateStartTime;
 
 	/**
 	 * To domain.
@@ -37,7 +44,8 @@ public class DiffTimeWorkStampReflectTimezoneDto {
 		/**
 		 * Instantiates a new diff time work stamp reflect timezone impl.
 		 *
-		 * @param diffTimeWorkStampReflectTimezoneDto the diff time work stamp reflect timezone dto
+		 * @param diffTimeWorkStampReflectTimezoneDto
+		 *            the diff time work stamp reflect timezone dto
 		 */
 		public DiffTimeWorkStampReflectTimezoneImpl(
 				DiffTimeWorkStampReflectTimezoneDto diffTimeWorkStampReflectTimezoneDto) {
@@ -45,13 +53,15 @@ public class DiffTimeWorkStampReflectTimezoneDto {
 		}
 
 		@Override
-		public StampReflectTimezone getStampReflectTimezone() {
-			return new StampReflectTimezone(this.dto.stampReflectTimezone);
+		public List<StampReflectTimezone> getStampReflectTimezone() {
+			return this.dto.stampReflectTimezone == null ? null : this.dto.stampReflectTimezone.stream().map(item -> {
+				return new StampReflectTimezone(item);
+			}).collect(Collectors.toList());
 		}
 
 		@Override
 		public boolean isIsUpdateStartTime() {
-			return this.dto.isUpdateStartTime;
+			return this.dto.updateStartTime;
 		}
 
 	}

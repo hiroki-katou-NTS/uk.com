@@ -26,8 +26,7 @@ public class ExcessOverTimeWorkMidNightTimeDto {
 	}
 
 	public ExcessOverTimeWorkMidNightTime toDomain() {
-		return time == null ? null : new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.createTimeWithCalculation(
-							time.getTime() == null ? null : new AttendanceTime(time.getTime()),  
-							time.getCalcTime() == null ? null : new AttendanceTime(time.getCalcTime())));
+		return time == null ? null : new ExcessOverTimeWorkMidNightTime(
+				TimeWithCalculation.sameTime(time.getTime() == null ? null : new AttendanceTime(time.getTime())));
 	}
 }

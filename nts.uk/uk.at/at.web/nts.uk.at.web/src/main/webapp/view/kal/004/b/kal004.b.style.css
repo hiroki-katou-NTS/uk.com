@@ -3,7 +3,7 @@
 #contents-area .end{width: 320px; float: left; padding: 30px 0 0 40px;}
 #contents-area .day{margin: 30px 0 45px 25px;}
 #contents-area .day .ntsRadioBox span:nth-child(6){padding-left: 0px;}
-#contents-area .day .input-box{height: 20px; width: 50px; text-align: center; margin-left: 10px;}
+#contents-area .day .input-box{height: 20px; width: 25px; text-align: center; margin-left: 10px;}
 #contents-area .day .txt{position: relative; top:-3px;}
 #contents-area .day .combo-day{width:60px; top:10px;}
 

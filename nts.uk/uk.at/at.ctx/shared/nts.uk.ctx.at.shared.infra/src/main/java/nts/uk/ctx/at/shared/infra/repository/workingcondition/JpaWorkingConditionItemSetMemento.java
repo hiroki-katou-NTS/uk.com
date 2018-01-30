@@ -8,8 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
+import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
+import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
@@ -223,9 +226,35 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 			return;
 		}
 
-		this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning().v());
-		this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon().v());
-		this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay().v());
+		this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning() != null
+				? holidayAddTimeSet.get().getMorning().v() : null);
+		this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon() != null
+				? holidayAddTimeSet.get().getAfternoon().v() : null);
+		this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay() != null
+				? holidayAddTimeSet.get().getOneDay().v() : null);
+	}
+
+	@Override
+	public void setHourlyPaymentAtr(HourlyPaymentAtr hourlyPaymentAtr) {
+		this.entity.setHourlyPayAtr(hourlyPaymentAtr.value);
+	}
+
+	@Override
+	public void setTimeApply(Optional<BonusPaySettingCode> timeApply) {
+		if (!timeApply.isPresent()) {
+			this.entity.setTimeApply(null);
+			return;
+		}
+		this.entity.setTimeApply(timeApply.get().v());
+	}
+
+	@Override
+	public void setMonthlyPattern(Optional<MonthlyPatternCode> monthlyPattern) {
+		if (!monthlyPattern.isPresent()) {
+			this.entity.setMonthlyPattern(null);
+			return;
+		}
+		this.entity.setMonthlyPattern(monthlyPattern.get().v());
 	}
 
 }

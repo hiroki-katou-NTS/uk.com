@@ -18,6 +18,10 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 	private static final String FIND_ERROR_CODE;
 
+	private static final String FIND_ERROR_CODE_BY_PERIOD;
+
+	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
@@ -26,6 +30,24 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		builderString.append("AND a.krcdtSyainDpErListPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtSyainDpErListPK.errorCode = :errorCode ");
 		FIND_ERROR_CODE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtSyainDpErListPK.processingDate >= :start ");
+		builderString.append("AND a.krcdtSyainDpErListPK.processingDate <= :end ");
+		builderString.append("AND a.krcdtSyainDpErListPK.errorCode = :errorCode ");
+		FIND_ERROR_CODE_BY_PERIOD = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtSyainDpErListPK.processingDate >= :start ");
+		builderString.append("AND a.krcdtSyainDpErListPK.processingDate <= :end ");
+		builderString.append("ORDER BY a.krcdtSyainDpErListPK.processingDate ");
+		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
 	}
 
 	@Override
@@ -38,6 +60,16 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	public boolean checkExistErrorCode(String employeeID, GeneralDate processingDate, String errorCode) {
 		return this.queryProxy().query(FIND_ERROR_CODE, long.class).setParameter("processingDate", processingDate)
 				.setParameter("employeeId", employeeID).setParameter("errorCode", errorCode).getSingle().get() > 0;
+	}
+	
+	@Override
+	public boolean checkExistErrorCodeByPeriod(String employeeID, DatePeriod datePeriod, String errorCode) {
+		return this.queryProxy().query(FIND_ERROR_CODE_BY_PERIOD, long.class)
+				.setParameter("employeeId", employeeID)
+				.setParameter("start", datePeriod.start())
+				.setParameter("end", datePeriod.end())
+				.setParameter("errorCode", errorCode)
+				.getSingle().get() > 0;
 	}
 
 	@Override
@@ -70,6 +102,18 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		this.getEntityManager().flush();
 	}
 
+	@Override
+	public List<EmployeeDailyPerError> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
+		return this.queryProxy()
+				.query(FIND_BY_PERIOD_ORDER_BY_YMD, KrcdtSyainDpErList.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("start", datePeriod.start())
+				.setParameter("end", datePeriod.end())
+				.getList().stream()
+				.collect(Collectors.groupingBy(c -> c.krcdtSyainDpErListPK.employeeId + c.krcdtSyainDpErListPK.processingDate.toString()))
+				.entrySet().stream().map(c -> toDomain(c.getValue())).collect(Collectors.toList());
+	}
+	
 	@Override
 	public List<EmployeeDailyPerError> finds(List<String> employeeID, DatePeriod processingDate) {
 		StringBuilder builderString = new StringBuilder();

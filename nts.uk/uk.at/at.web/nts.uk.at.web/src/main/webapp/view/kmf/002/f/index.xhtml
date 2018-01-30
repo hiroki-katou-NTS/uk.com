@@ -15,11 +15,12 @@
 			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmf002.f.main.css" />
+			<com:scriptfile path="kmf002.f.service.js" />
 			<com:scriptfile path="kmf002.f.vm.js" />
 			<com:scriptfile path="kmf002.f.start.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area" class="scrE" >
+			<div tabindex="-1" id="contents-area" class="scrE" >
 				<div class="title-content">
 					<!-- F1_1 -->
 					<pre>#{i18n.getText('KMF002_28')}</pre>
@@ -31,7 +32,9 @@
 							<span>#{i18n.getText('Com_Company')}</span>
 						</div>
 						<!-- F2_2 -->
-						<div data-bind="ntsCheckBox: { checked: selectUnitCheck(), enable: true, text: '#{i18n.getText('KMF002_31')}' }"></div>
+						<div data-bind="ntsCheckBox: { checked: selectUnitCheck, 
+														enable: true, 
+														text: '#{i18n.getText('KMF002_31')}'}"></div>
 						
 						<!-- F2_3 -->
 						<div>
@@ -45,7 +48,9 @@
 							</div>
 						<div>
 							<!-- F2_6 -->
-							<div data-bind="ntsCheckBox: { checked: selectEmployee(), enable: true, text: '#{i18n.getText('Com_Person')}' }"></div>
+							<div data-bind="ntsCheckBox: { checked: selectEmployee, 
+															enable: true, 
+															text: '#{i18n.getText('Com_Person')}' }"></div>
 						</div>
 					</div>
 					<div>
@@ -53,15 +58,15 @@
 					</div>
 					<div>
 						<!-- F3_2 -->
-						<pre>#{i18n.getText('KMF002_33')}</pre>
+						<pre>#{i18n.getText('KMF002_32')}</pre>
 					</div>
 				</div>
 			</div>
-			<div id="functions-area-bottom">
+			<div  tabindex="-1" id="functions-area-bottom">
 				<!-- F4_2 -->
-				<button tabindex="-1" data-bind="click: closeSaveDialog" class="x-large proceed">#{i18n.getText('KMF002_20')}</button>
+				<button data-bind="click: closeSaveDialog" class="x-large proceed">#{i18n.getText('KMF002_20')}</button>
 				<!-- F4_3 -->
-				<button tabindex="-1" >#{i18n.getText('KMF002_33')}</button>
+				<button >#{i18n.getText('KMF002_33')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

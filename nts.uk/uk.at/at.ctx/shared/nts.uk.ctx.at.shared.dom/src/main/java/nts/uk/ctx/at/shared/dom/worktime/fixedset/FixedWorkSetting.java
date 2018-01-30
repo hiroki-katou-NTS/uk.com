@@ -10,13 +10,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
  */
 @Getter
 // 固定勤務設定
-public class FixedWorkSetting extends AggregateRoot {
+public class FixedWorkSetting extends WorkTimeAggregateRoot {
 
 	/** The company id. */
 	// 会社ID
@@ -143,10 +143,8 @@ public class FixedWorkSetting extends AggregateRoot {
 	 * @param workTimeType the work time type
 	 * @param oldDomain the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {
-		this.commonSetting.restoreData(screenMode, oldDomain.getCommonSetting());
-		
-		// restore 平日勤務時間帯
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {	
+		// Tab 2 + 3 + 5: restore 平日勤務時間帯
 		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
 				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.FIXED_WORK) {
 			Map<AmPmAtr, FixHalfDayWorkTimezone> mapFixHalfWork = oldDomain.getLstHalfDayWorkTimezone().stream()
@@ -157,6 +155,9 @@ public class FixedWorkSetting extends AggregateRoot {
 		} else {
 			this.lstHalfDayWorkTimezone = oldDomain.getLstHalfDayWorkTimezone();
 		}
+		
+		// Tab 8 -> 16
+		this.commonSetting.restoreData(screenMode, oldDomain.getCommonSetting());
 	}
 	
 	/**
@@ -165,9 +166,10 @@ public class FixedWorkSetting extends AggregateRoot {
 	 * @param screenMode the screen mode
 	 */
 	public void restoreDefaultData(ScreenMode screenMode) {
-		this.commonSetting.restoreDefaultData(screenMode);
+		// Tab 2 + 3 + 5: restore 平日勤務時間帯
+		this.lstHalfDayWorkTimezone.forEach(item -> item.restoreDefaultData(screenMode));
 		
-		// restore 平日勤務時間帯
-		//TODO
+		// Tab 8 -> 16
+		this.commonSetting.restoreDefaultData(screenMode);
 	}
 }

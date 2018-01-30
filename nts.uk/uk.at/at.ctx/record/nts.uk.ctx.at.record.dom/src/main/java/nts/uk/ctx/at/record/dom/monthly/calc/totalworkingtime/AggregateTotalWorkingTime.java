@@ -100,10 +100,10 @@ public class AggregateTotalWorkingTime {
 		this.workTime.confirm(datePeriod, attendanceTimeOfDailys);
 	
 		// 休暇使用時間を集計する
-		this.vacationUseTime.confirm(attendanceTimeOfDailys);
+		this.vacationUseTime.confirm(datePeriod, attendanceTimeOfDailys);
 		
 		// 所定労働時間を集計する
-		this.prescribedWorkingTime.confirm(attendanceTimeOfDailys);
+		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailys);
 	}
 	
 	/**
@@ -198,29 +198,31 @@ public class AggregateTotalWorkingTime {
 	
 	/**
 	 * 実働時間の集計
+	 * @param datePeriod 期間
 	 * @param workingSystem 労働制
 	 * @param actualWorkingTime 実働時間
 	 * @param flexTime フレックス時間
 	 */
 	public void aggregateActualWorkingTime(
+			DatePeriod datePeriod,
 			WorkingSystem workingSystem,
 			RegularAndIrregularTimeOfMonthly actualWorkingTime,
 			FlexTimeOfMonthly flexTime){
 		
 		// 残業合計時間を集計する
-		this.overTime.aggregateTotal();
+		this.overTime.aggregateTotal(datePeriod);
 		
 		// 休出合計時間を集計する
-		this.holidayWorkTime.aggregateTotal();
+		this.holidayWorkTime.aggregateTotal(datePeriod);
 		
 		// 休暇使用時間を集計する
-		this.vacationUseTime.aggregate();
+		this.vacationUseTime.aggregate(datePeriod);
 		
 		// 所定労働時間を集計する
-		this.prescribedWorkingTime.aggregate();
+		this.prescribedWorkingTime.aggregate(datePeriod);
 		
 		// 就業時間を集計する
-		this.workTime.aggregate(workingSystem, actualWorkingTime, flexTime,
+		this.workTime.aggregate(datePeriod, workingSystem, actualWorkingTime, flexTime,
 				this.overTime, this.holidayWorkTime);
 	}
 }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.val;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.i18n.resource.I18NResourceType;
 
 public class CustomizedI18NResourceContainers<T extends I18NResourceItem> {
@@ -16,7 +17,7 @@ public class CustomizedI18NResourceContainers<T extends I18NResourceItem> {
 	
 	public void add(String companyId, T item) {
 		if (!this.itemsEachCompany.containsKey(companyId)) {
-			this.itemsEachCompany.put(companyId, new I18NResourceContainer<T>());
+			this.itemsEachCompany.put(companyId, new I18NResourceContainer<T>(GeneralDateTime.now()));
 		}
 		
 		this.itemsEachCompany.get(companyId).add(item);
@@ -26,8 +27,17 @@ public class CustomizedI18NResourceContainers<T extends I18NResourceItem> {
 		items.forEach(item -> this.add(companyId, item));
 	}
 	
+	public boolean existsContainerOf(String companyId) {
+		return this.itemsEachCompany.containsKey(companyId);
+	}
+	
 	public I18NResourceContainer<T> containerOf(String companyId) {
 		return this.itemsEachCompany.getOrDefault(companyId, I18NResourceContainer.empty());
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void update(String companyId, Object newContainer) {
+		this.itemsEachCompany.put(companyId, (I18NResourceContainer<T>) newContainer);
 	}
 	
 	public Map<String, String> createContentsMapByClassId(String classId, String companyId) {

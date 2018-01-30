@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.infra.repository.singlesignon;
 
+import nts.uk.ctx.sys.gateway.dom.singlesignon.CompanyCode;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountSetMemento;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAcc;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAccPK;
 
@@ -41,16 +43,16 @@ public class JpaOtherSysAccountSetMemento implements OtherSysAccountSetMemento {
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountSetMemento#setCompanyCode(java.lang.String)
 	 */
 	@Override
-	public void setCompanyCode(String companyCode) {
-		this.typedValue.getSgwmtOtherSysAccPK().setCcd(companyCode);
+	public void setCompanyCode(CompanyCode companyCode) {
+		this.typedValue.setCcd(companyCode.v());
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountSetMemento#setUserName(java.lang.String)
 	 */
 	@Override
-	public void setUserName(String userName) {
-		this.typedValue.getSgwmtOtherSysAccPK().setUserName(userName);
+	public void setUserName(UserName userName) {
+		this.typedValue.setUserName(userName.v());
 	}
 
 	/* (non-Javadoc)

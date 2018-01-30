@@ -18,7 +18,6 @@ import nts.uk.ctx.pereg.app.find.initsetting.item.SaveDataDto;
 import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.layout.RegisterLayoutFinder;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateType;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.SaveDataType;
 import nts.uk.shr.pereg.app.ItemValue;
@@ -157,22 +156,16 @@ public class AddEmployeeCommandFacade {
 
 		dataList.forEach(x -> {
 
-			if (x.getDataType().equals(DataTypeValue.SELECTION)) {
-				if (x.getSelectionItemRefType().equals(ReferenceTypes.ENUM)) {
-					x.setDataType(DataTypeValue.NUMERIC);
-				}
-			}
-
 			String itemCD = x.getItemCode();
 			ItemValue itemVal = getItemById(inputs, itemCD, x.getCategoryCode());
-
+			
+			x.setDataType(getSaveDataType(x.getDataType(), x));
+			
 			if (itemVal != null) {
 				x.setSaveData(new SaveDataDto(x.getSaveData().getSaveDataType(),
 						itemVal.value() != null ? itemVal.value().toString() : ""));
-				x.setDataType(getSaveDataType(x.getDataType(), x));
-				inputs.remove(itemVal);
-			} else {
 
+				inputs.remove(itemVal);
 			}
 		});
 

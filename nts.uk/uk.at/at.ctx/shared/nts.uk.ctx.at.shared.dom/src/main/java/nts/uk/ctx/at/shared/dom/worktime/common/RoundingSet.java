@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class RoundingSet.
  */
 // 丸め設定
 @Getter
-public class RoundingSet extends DomainObject {
+public class RoundingSet extends WorkTimeDomainObject {
 
 	/** The rounding set. */
 	// 時刻丸め
