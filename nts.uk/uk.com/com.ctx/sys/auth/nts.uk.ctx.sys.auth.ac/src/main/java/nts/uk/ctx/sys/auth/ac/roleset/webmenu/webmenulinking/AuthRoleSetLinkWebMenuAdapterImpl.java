@@ -29,8 +29,15 @@ public class AuthRoleSetLinkWebMenuAdapterImpl implements RoleSetLinkWebMenuAdap
     @Override
     public List<RoleSetLinkWebMenuImport> findAllWebMenuByRoleSetCd(String roleSetCd) {
         return this.roleSetLinkWebMenuPub.findAllWebMenuByRoleSetCd(AppContexts.user().companyId(), roleSetCd).stream()
-                .map(item -> new RoleSetLinkWebMenuImport(item.getCompanyId(), item.getWebMenuCode(), item.getRoleSetCd())
+                .map(item -> new RoleSetLinkWebMenuImport(item.getCompanyId(), item.getRoleSetCd(), item.getWebMenuCode())
                 ).collect(Collectors.toList());
     }
+
+	@Override
+	public List<RoleSetLinkWebMenuImport> findAllWebMenuByListRoleSetCd(List<String> roleSetCds) {
+		return this.roleSetLinkWebMenuPub.findAllWebMenuByListRoleSetCd(AppContexts.user().companyId(), roleSetCds).stream()
+                .map(item -> new RoleSetLinkWebMenuImport(item.getCompanyId(), item.getRoleSetCd(), item.getWebMenuCode())
+                ).collect(Collectors.toList());
+	}
 
 }
