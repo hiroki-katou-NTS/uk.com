@@ -40,7 +40,12 @@ module nts.uk.at.view.kmf022.a.service {
         findAllHdApp: "at/request/application/displayname/hd",
         findHdApp: "at/request/application/displayname/hdapp",
 
-        // C27 -> C49
+        //B18 -> B36
+        findOvertime: "at/request/application/overtime/ot",
+        
+        // C27 -> C49 có thể lấy theo company rồi lên lọc hoặc lấy thẳng object bằng cả holiday app type
+        findAllVaca: "at/request/vacation/setting/hdapp",
+        findVaca: "at/request/vacation/setting/hdappset",
         
         //E14,15
         findStamp: "at/request/application/stamprequest/findByComID", //UpdateStampRequestSettingCommandHandler
@@ -49,6 +54,18 @@ module nts.uk.at.view.kmf022.a.service {
         
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
+    }
+    
+    export function findOvertime() {
+        return nts.uk.request.ajax("at", paths.findOvertime); 
+    }
+    
+    export function findVaca(hdAppType: number): JQueryPromise<void>{
+        return nts.uk.request.ajax("at", paths.findVaca + "/" + hdAppType);     
+    }
+    
+    export function findAllVaca() {
+        return nts.uk.request.ajax("at", paths.findAllVaca); 
     }
     
     export function fidnDispApp(appType: number): JQueryPromise<void>{
