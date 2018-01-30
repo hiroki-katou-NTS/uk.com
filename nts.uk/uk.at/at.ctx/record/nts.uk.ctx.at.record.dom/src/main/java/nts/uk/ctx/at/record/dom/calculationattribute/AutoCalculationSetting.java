@@ -3,8 +3,8 @@ package nts.uk.ctx.at.record.dom.calculationattribute;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.LimitOfOverTimeSetting;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 
 /**
  * 
@@ -18,15 +18,15 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategory
 public class AutoCalculationSetting {
 	
 	//計算区分
-	private AutoCalculationCategoryOutsideHours calculationAttr;
+	private AutoCalAtrOvertime calculationAttr;
 	
 	//上限の設定
-	private LimitOfOverTimeSetting upperLimitSetting;
+	private TimeLimitUpperLimitSetting upperLimitSetting;
 	
 	/**
 	 * 計算区分を打刻から計算するに変更する
 	 */
 	public void calculationAttrChangeStamp() {
-		this.calculationAttr = AutoCalculationCategoryOutsideHours.CalculateEmbossing;
+		this.calculationAttr = AutoCalAtrOvertime.CALCULATEMBOSS;
 	}
 }
