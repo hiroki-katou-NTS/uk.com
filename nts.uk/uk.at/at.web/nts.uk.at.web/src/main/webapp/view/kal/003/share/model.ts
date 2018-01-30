@@ -657,7 +657,7 @@ module nts.uk.at.view.kal003.share.model {
         constructor(param : IWorkTypeCondition) {
             let self = this;
             self.useAtr = param && param.useAtr ? param.useAtr : false;
-            self.comparePlanAndActual(param && param.comparePlanAndActual ? param.comparePlanAndActual : 1); //default is 1
+            self.comparePlanAndActual(param ? (param.comparePlanAndActual == 0 ? 0 : 1) : 1); //default is 1
             self.planFilterAtr = param && param.planFilterAtr ? param.planFilterAtr : false;
             self.planLstWorkType(param && param.planLstWorkType ? param.planLstWorkType : []);
             self.actualFilterAtr = param && param.actualFilterAtr ? param.actualFilterAtr : false;

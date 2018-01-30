@@ -20,6 +20,7 @@ module nts.uk.at.view.kal004.a.model {
         alarmName: KnockoutObservable<string>;
         tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
+        alarmCategoryArr: Array<share.EnumConstantDto> = [];
 
         // Tab 1
         checkHeader: KnockoutObservableArray<any>;
@@ -56,9 +57,10 @@ module nts.uk.at.view.kal004.a.model {
 
             self.checkHeader = ko.observableArray([
                 { headerText: getText('KAL004_21'), key: 'GUID', width: 10, hidden: true },
-                { headerText: getText('KAL004_21'), key: 'categoryName', width: 120 },
-                { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 40 },
-                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 160 }
+                { headerText: 'cssClass', key: 'cssClass', width: 10, hidden: true },
+                { headerText: getText('KAL004_21'), key: 'categoryName', width: 120, template: "<span class='${cssClass}'>${categoryName}</span>" },
+                { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 40, template: "<span class='${cssClass}'>${checkConditonCode}</span>" },
+                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 160, template: "<span class='${cssClass}'>${checkConditionName}</span>" }
             ]);
 
             self.currentCodeListSwap = ko.observableArray([]);
@@ -69,7 +71,11 @@ module nts.uk.at.view.kal004.a.model {
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred<any>();
-
+            service.getEnumAlarm().done((enumRes) => {
+                self.alarmCategoryArr = enumRes;
+            }).fail((enumErr) => {
+                nts.uk.ui.dialog.alert({ messageId: enumErr.messageId });
+            });
             service.getCheckConditionCode().done((res) => {
                 let resolve = _.map(res, (x) => { return new share.ModelCheckConditonCode(x) });
                 self.checkSource = _.cloneDeep(resolve);
@@ -120,6 +126,17 @@ module nts.uk.at.view.kal004.a.model {
 
             });
 
+            self.checkConditionList.subscribe((newCheck) => {
+                _.remove(newCheck, function(leftItem) {
+                    let optItem = _.find(self.checkSource, function(item) {
+                        return leftItem.GUID == item.GUID;
+                    });
+                    return (optItem) ? false : true;
+                });
+                if (!_.differenceWith(newCheck, self.checkConditionList(), _.isEqual))
+                    self.checkConditionList(newCheck);
+            });
+            
             // Tab 2: Period Setting
             self.currentCodeListSwap.subscribe((listCode) => {
 
@@ -141,6 +158,7 @@ module nts.uk.at.view.kal004.a.model {
                 self.periodSetting.listCheckConditionCode(shareTab2);
 
             });
+
         }
 
         public alarmCodeChange(newV): any {
@@ -168,9 +186,16 @@ module nts.uk.at.view.kal004.a.model {
                 self.currentAlarm.checkConList.forEach((x) => {
                     x.checkConditionCodes.forEach((y) => {
                         let CD = _.find(_.cloneDeep(self.checkSource), { 'category': x.alarmCategory, 'checkConditonCode': y });
-                        currentCodeListSwap.push(_.cloneDeep(CD));
+                        if (CD !== undefined)
+                            currentCodeListSwap.push(_.cloneDeep(CD));
+                        else {
+                            let category = _.find(self.alarmCategoryArr, ['value', x.alarmCategory]);
+                            currentCodeListSwap.push(share.ModelCheckConditonCode.createNotFoundCheckConditonCode(category, y));
+                        }
+
                     });
                 });
+
 
                 _.remove(checkSource, (leftItem) => {
                     let optItem = _.find(currentCodeListSwap, (rightItem) => {
@@ -179,16 +204,18 @@ module nts.uk.at.view.kal004.a.model {
                     if (optItem)
                         return optItem.GUID == leftItem.GUID;
                 });
+
                 self.currentCodeListSwap([]);
                 self.checkConditionList(_.sortBy(checkSource, ['category', 'checkConditonCode']));
                 self.currentCodeListSwap(_.sortBy(currentCodeListSwap, ['category', 'checkConditonCode']));
 
-                // Tab 2: 
-                //                self.periodSetting.listStorageCheckCondition                
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
                 self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting == true ? 0 : 1);
             }
+        }
+
+        private buildNotFoundCheckCondition(): void {
 
         }
 

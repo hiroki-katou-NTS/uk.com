@@ -48,7 +48,7 @@ public class AlarmPatternSettingFinder {
 	}
 	
 	public AlarmCheckConditonCodeDto  convertToCheckConditionCode(AlarmCheckConditionByCategory domain) {		
-		return new AlarmCheckConditonCodeDto(EnumAdaptor.convertToValueName(domain.getCategory()), domain.getCode().v(), domain.getName().v(), domain.getListRoleId());
+		return new AlarmCheckConditonCodeDto(EnumAdaptor.convertToValueName(domain.getCategory()), domain.getCode().v(), domain.getName().v());
 	}
 	
 	public List<SpecifiedMonthDto> getSpecifiedMonth(){
