@@ -22,12 +22,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePersonInfoRoleAuthCommand> {
 	@Inject
 	private PersonInfoRoleAuthRepository pRoleAuthRepo;
-	/*
-	 * @Inject private PersonInforRoleRepository pRoleRepo;
-	 */
-	/*
-	 * @Inject private PerInfoCategoryRepositoty perInfoCtgRepositoty;
-	 */
 	@Inject
 	private PersonInfoCategoryAuthRepository pCategoryAuthRepo;
 	@Inject
@@ -36,159 +30,128 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 	@Override
 	public void handle(CommandHandlerContext<SavePersonInfoRoleAuthCommand> context) {
 
-		SavePersonInfoRoleAuthCommand roleCommand = context.getCommand();
+		SavePersonInfoRoleAuthCommand roleCmd = context.getCommand();
 
-		saveRoleAuth(roleCommand);
+		saveRoleAuth(roleCmd);
 
-		saveCategoryAuth(roleCommand);
+		saveCtgAuth(roleCmd);
 
-		saveItemAuth(roleCommand);
+		saveItemAuth(roleCmd);
 
 	}
 
-	private void saveRoleAuth(SavePersonInfoRoleAuthCommand roleCommand) {
+	private void saveRoleAuth(SavePersonInfoRoleAuthCommand roleCmd) {
 
-		String companyId = AppContexts.user().companyId();
+		String cId = AppContexts.user().companyId();
 
-		String roleId = roleCommand.getRoleId();
+		String roleId = roleCmd.getRoleId();
 
-		/*
-		 * Optional<PersonInforRole> optRole =
-		 * this.pRoleRepo.getDetailPersonRole(roleId,
-		 * AppContexts.user().companyId());
-		 * 
-		 * if (!optRole.isPresent()) { throw new BusinessException(new
-		 * RawErrorMessage("")); }
-		 */
-
-		Optional<PersonInfoRoleAuth> optRoleAuth = this.pRoleAuthRepo.getDetailPersonRoleAuth(roleId,
+		Optional<PersonInfoRoleAuth> roleAuthOpt = this.pRoleAuthRepo.getDetailPersonRoleAuth(roleId,
 				AppContexts.user().companyId());
 
-		if (optRoleAuth.isPresent()) {
+		if (roleAuthOpt.isPresent()) {
 
-			PersonInfoRoleAuth oldRoleAuth = optRoleAuth.get();
+			PersonInfoRoleAuth oldRoleAuth = roleAuthOpt.get();
 
-			oldRoleAuth.updateFromJavaType(roleCommand.getAllowMapUpload(), roleCommand.getAllowMapBrowse(),
-					roleCommand.getAllowDocUpload(), roleCommand.getAllowDocRef(), roleCommand.getAllowAvatarUpload(),
-					roleCommand.getAllowAvatarRef());
+			oldRoleAuth.updateFromJavaType(roleCmd.getAllowMapUpload(), roleCmd.getAllowMapBrowse(),
+					roleCmd.getAllowDocUpload(), roleCmd.getAllowDocRef(), roleCmd.getAllowAvatarUpload(),
+					roleCmd.getAllowAvatarRef());
 
 			this.pRoleAuthRepo.update(oldRoleAuth);
 
 		} else {
-			PersonInfoRoleAuth pRoleAuthDomain = PersonInfoRoleAuth.createFromJavaType(roleId, companyId,
-					roleCommand.getAllowMapUpload(), roleCommand.getAllowMapBrowse(), roleCommand.getAllowDocUpload(),
-					roleCommand.getAllowDocRef(), roleCommand.getAllowAvatarUpload(), roleCommand.getAllowAvatarRef());
+			PersonInfoRoleAuth newRoleAuth = PersonInfoRoleAuth.createFromJavaType(roleId, cId,
+					roleCmd.getAllowMapUpload(), roleCmd.getAllowMapBrowse(), roleCmd.getAllowDocUpload(),
+					roleCmd.getAllowDocRef(), roleCmd.getAllowAvatarUpload(), roleCmd.getAllowAvatarRef());
 
-			this.pRoleAuthRepo.add(pRoleAuthDomain);
+			this.pRoleAuthRepo.add(newRoleAuth);
 
 		}
 
 	}
 
-	private void saveCategoryAuth(SavePersonInfoRoleAuthCommand roleCommand) {
+	private void saveCtgAuth(SavePersonInfoRoleAuthCommand roleCmd) {
 
-		SavePersonInfoCategoryAuthCommand pCategoryCommand = roleCommand.getCurrentCategory();
+		SavePersonInfoCategoryAuthCommand ctgCmd = roleCmd.getCurrentCategory();
 
-		String categoryId = pCategoryCommand.getCategoryId();
+		String ctgId = ctgCmd.getCategoryId();
 
-		/* String contractCode = AppContexts.user().contractCode(); */
+		String roleId = roleCmd.getRoleId();
 
-		String roleId = roleCommand.getRoleId();
+		Optional<PersonInfoCategoryAuth> ctgAuthOpt = this.pCategoryAuthRepo.getDetailPersonCategoryAuthByPId(roleId,
+				ctgId);
 
-		/*
-		 * Optional<PersonInfoCategory> optPCategory =
-		 * this.perInfoCtgRepositoty.getPerInfoCategory(categoryId,
-		 * contractCode);
-		 * 
-		 * if (!optPCategory.isPresent()) { throw new BusinessException(new
-		 * RawErrorMessage("")); }
-		 */
+		if (ctgAuthOpt.isPresent()) {
+			PersonInfoCategoryAuth oldCtgAuth = ctgAuthOpt.get();
+			oldCtgAuth.updateFromJavaType(ctgCmd.getAllowPersonRef(), ctgCmd.getAllowOtherRef(),
+					ctgCmd.getAllowOtherCompanyRef(), ctgCmd.getSelfPastHisAuth(), ctgCmd.getSelfFutureHisAuth(),
+					ctgCmd.getSelfAllowAddHis(), ctgCmd.getSelfAllowDelHis(), ctgCmd.getOtherPastHisAuth(),
+					ctgCmd.getOtherFutureHisAuth(), ctgCmd.getOtherAllowAddHis(), ctgCmd.getOtherAllowDelHis(),
+					ctgCmd.getSelfAllowAddMulti(), ctgCmd.getSelfAllowDelMulti(), ctgCmd.getOtherAllowAddMulti(),
+					ctgCmd.getOtherAllowDelMulti());
 
-		Optional<PersonInfoCategoryAuth> optPCategoryAuth = this.pCategoryAuthRepo
-				.getDetailPersonCategoryAuthByPId(roleId, categoryId);
-
-		if (optPCategoryAuth.isPresent()) {
-			PersonInfoCategoryAuth oldPCategoryAuth = optPCategoryAuth.get();
-			oldPCategoryAuth.updateFromJavaType(pCategoryCommand.getAllowPersonRef(),
-					pCategoryCommand.getAllowOtherRef(), pCategoryCommand.getAllowOtherCompanyRef(),
-					pCategoryCommand.getSelfPastHisAuth(), pCategoryCommand.getSelfFutureHisAuth(),
-					pCategoryCommand.getSelfAllowAddHis(), pCategoryCommand.getSelfAllowDelHis(),
-					pCategoryCommand.getOtherPastHisAuth(), pCategoryCommand.getOtherFutureHisAuth(),
-					pCategoryCommand.getOtherAllowAddHis(), pCategoryCommand.getOtherAllowDelHis(),
-					pCategoryCommand.getSelfAllowAddMulti(), pCategoryCommand.getSelfAllowDelMulti(),
-					pCategoryCommand.getOtherAllowAddMulti(), pCategoryCommand.getOtherAllowDelMulti());
-
-			this.pCategoryAuthRepo.update(oldPCategoryAuth);
+			this.pCategoryAuthRepo.update(oldCtgAuth);
 
 		} else {
 
-			PersonInfoCategoryAuth pCategoryAuthDomain = PersonInfoCategoryAuth.createFromJavaType(roleId,
-					pCategoryCommand.getCategoryId(), pCategoryCommand.getAllowPersonRef(),
-					pCategoryCommand.getAllowOtherRef(), pCategoryCommand.getAllowOtherCompanyRef(),
-					pCategoryCommand.getSelfPastHisAuth(), pCategoryCommand.getSelfFutureHisAuth(),
-					pCategoryCommand.getSelfAllowAddHis(), pCategoryCommand.getSelfAllowDelHis(),
-					pCategoryCommand.getOtherPastHisAuth(), pCategoryCommand.getOtherFutureHisAuth(),
-					pCategoryCommand.getOtherAllowAddHis(), pCategoryCommand.getOtherAllowDelHis(),
-					pCategoryCommand.getSelfAllowAddMulti(), pCategoryCommand.getSelfAllowDelMulti(),
-					pCategoryCommand.getOtherAllowAddMulti(), pCategoryCommand.getOtherAllowDelMulti());
+			PersonInfoCategoryAuth newCtgAuth = PersonInfoCategoryAuth.createFromJavaType(roleId,
+					ctgCmd.getCategoryId(), ctgCmd.getAllowPersonRef(), ctgCmd.getAllowOtherRef(),
+					ctgCmd.getAllowOtherCompanyRef(), ctgCmd.getSelfPastHisAuth(), ctgCmd.getSelfFutureHisAuth(),
+					ctgCmd.getSelfAllowAddHis(), ctgCmd.getSelfAllowDelHis(), ctgCmd.getOtherPastHisAuth(),
+					ctgCmd.getOtherFutureHisAuth(), ctgCmd.getOtherAllowAddHis(), ctgCmd.getOtherAllowDelHis(),
+					ctgCmd.getSelfAllowAddMulti(), ctgCmd.getSelfAllowDelMulti(), ctgCmd.getOtherAllowAddMulti(),
+					ctgCmd.getOtherAllowDelMulti());
 
-			this.pCategoryAuthRepo.add(pCategoryAuthDomain);
+			this.pCategoryAuthRepo.add(newCtgAuth);
 
 		}
 	}
 
-	private void saveItemAuth(SavePersonInfoRoleAuthCommand roleCommand) {
+	private void saveItemAuth(SavePersonInfoRoleAuthCommand roleCmd) {
 
-		SavePersonInfoCategoryAuthCommand pCategoryCommand = roleCommand.getCurrentCategory();
+		SavePersonInfoCategoryAuthCommand ctgCmd = roleCmd.getCurrentCategory();
 
-		String roleId = roleCommand.getRoleId();
+		String roleId = roleCmd.getRoleId();
 
-		String categoryId = pCategoryCommand.getCategoryId();
+		String ctgId = ctgCmd.getCategoryId();
 
-		List<PersonInfoItemAuthCommand> listItems = pCategoryCommand.getRoleItemList();
+		List<PersonInfoItemAuthCommand> roleItems = ctgCmd.getItems();
 
-		listItems.stream().forEach(ia -> {
+		roleItems.forEach(roleItem -> {
 
-			doUpdateItemAuth(roleId, categoryId, ia, pCategoryCommand);
+			updateItemAuth(roleId, ctgId, roleItem, ctgCmd);
 
-			// add child item for set
-			if (ia.getSetItems() != null) {
-				ia.getSetItems().stream().forEach(i -> {
-					i.setSelfAuth(ia.getSelfAuth());
-					i.setOtherAuth(ia.getOtherAuth());
-					doUpdateItemAuth(roleId, categoryId, i, pCategoryCommand);
-				});
-			}
 		});
 	}
 
-	private void doUpdateItemAuth(String roleId, String categoryId, PersonInfoItemAuthCommand itemCmd,
+	private void updateItemAuth(String roleId, String categoryId, PersonInfoItemAuthCommand itemCmd,
 			SavePersonInfoCategoryAuthCommand ctgCmd) {
+
 		boolean isNeedSave = ctgCmd.getAllowPersonRef() == 1 || ctgCmd.getAllowOtherRef() == 1;
 
 		if (isNeedSave) {
-
-			Optional<PersonInfoItemAuth> optPItemAuth = this.pItemAuthRepo.getItemDetai(roleId, categoryId,
+			// check available item auth
+			Optional<PersonInfoItemAuth> oldItemAuthOpt = this.pItemAuthRepo.getItemDetai(roleId, categoryId,
 					itemCmd.getPersonItemDefId());
 
 			int selfAuth = itemCmd.getSelfAuth();
 
 			int otherAuth = itemCmd.getOtherAuth();
 
-			if (optPItemAuth.isPresent()) {
+			if (oldItemAuthOpt.isPresent()) {
 
-				PersonInfoItemAuth oldItemAuthDomain = optPItemAuth.get();
+				PersonInfoItemAuth oldItemAuth = oldItemAuthOpt.get();
 
-				oldItemAuthDomain.updateFromJavaType(selfAuth, otherAuth);
+				oldItemAuth.updateFromJavaType(selfAuth, otherAuth);
 
-				this.pItemAuthRepo.update(oldItemAuthDomain);
+				this.pItemAuthRepo.update(oldItemAuth);
 
 			} else {
 
-				PersonInfoItemAuth pItemAuthDomain = PersonInfoItemAuth.createFromJavaType(roleId, categoryId,
+				PersonInfoItemAuth newItemAuth = PersonInfoItemAuth.createFromJavaType(roleId, categoryId,
 						itemCmd.getPersonItemDefId(), selfAuth, otherAuth);
 
-				this.pItemAuthRepo.add(pItemAuthDomain);
+				this.pItemAuthRepo.add(newItemAuth);
 
 			}
 		}
