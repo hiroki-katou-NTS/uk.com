@@ -260,7 +260,7 @@ public class ScheCreExeWorkTypeHandler {
 	 * @return the worktype
 	 */
 	// 勤務種類を取得する
-	private Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command) {
+	public Optional<WorktypeDto> getWorktype(WorkTypeGetterCommand command) {
 
 		// setup command getter
 		BasicWorkSettingGetterCommand commandBasicGetter = command.toBasicWorkSetting();
@@ -295,7 +295,7 @@ public class ScheCreExeWorkTypeHandler {
 	 * @return the work type by employment status
 	 */
 	// 在職状態に対応する「勤務種類コード」を取得する
-	private Optional<WorktypeDto> getWorkTypeByEmploymentStatus(WorkTypeByEmpStatusGetterCommand command) {
+	public Optional<WorktypeDto> getWorkTypeByEmploymentStatus(WorkTypeByEmpStatusGetterCommand command) {
 		String worktypeCode = null;
 		// check 就業時間帯の参照先  == 個人曜日別
 		if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
@@ -319,5 +319,4 @@ public class ScheCreExeWorkTypeHandler {
 		}
 		return Optional.empty();
 	}
-
 }
