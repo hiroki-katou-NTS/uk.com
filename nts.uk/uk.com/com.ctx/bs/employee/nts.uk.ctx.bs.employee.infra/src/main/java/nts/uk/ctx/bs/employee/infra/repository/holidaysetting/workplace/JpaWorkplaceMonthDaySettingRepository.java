@@ -1,8 +1,13 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.holidaysetting.workplace;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import static java.util.stream.Collectors.toList;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -130,5 +135,22 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 		TypedQuery<KshmtWkpMonthDaySet> query = em.createQuery(cq);
 
 		return query.getResultList();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.workplace.WorkplaceMonthDaySettingRepository#findWkpRegisterByYear(nts.uk.ctx.bs.employee.dom.common.CompanyId, nts.uk.ctx.bs.employee.dom.holidaysetting.common.Year)
+	 */
+	@Override
+	public List<String> findWkpRegisterByYear(CompanyId companyId, Year year) {
+		List<KshmtWkpMonthDaySet> result = this.findBy(companyId, null, year, null);
+		
+		// Check exist
+		if (result.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		return result.stream()
+						.map(obj -> new WorkplaceMonthDaySetting(new JpaWorkplaceMonthDaySettingGetMemento(result)).getWorkplaceId())
+						.collect(toList());
 	}
 }

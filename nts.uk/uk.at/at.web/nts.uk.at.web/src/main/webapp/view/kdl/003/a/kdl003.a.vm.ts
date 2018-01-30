@@ -496,6 +496,8 @@ module nts.uk.at.view.kdl003.a {
                 // Set work time = ã�ªã�— if list work time is empty.
                 if (!workTimeCode || nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
                     workTimeCode = '000';
+                    time1 = '';
+                    time2 = '';
                 }
 
                 // Check pair work type & work time.
@@ -503,6 +505,8 @@ module nts.uk.at.view.kdl003.a {
 
                     if (workTimeCode === '000') {
                         workTimeCode = '';
+                        time1 = '';
+                        time2 = '';
                     }
 
                     // Set shared data.

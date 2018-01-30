@@ -8,45 +8,45 @@ module nts.uk.at.view.ksm001.g {
 
         export class ScreenModel {
             itemsSwap: KnockoutObservableArray<ItemModel>;
-            columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-            currentCodeListSwap: KnockoutObservableArray<any>;
-            test: KnockoutObservableArray<any>;
+            columns: KnockoutObservableArray<any>;
+            currentCodeListSwap: KnockoutObservableArray<ItemModel>;
             
-            checked1: KnockoutObservable<boolean>;
-            checked2: KnockoutObservable<boolean>;
-            checked3: KnockoutObservable<boolean>;
+            yearHdAtr: KnockoutObservable<boolean>;
+            havyHdAtr: KnockoutObservable<boolean>;
+            sphdAtr: KnockoutObservable<boolean>;
+            halfDayAtr: KnockoutObservable<boolean>;
            
             constructor() {
-                var _self = this;
+                let _self = this;
                 _self.itemsSwap = ko.observableArray([]);
-           
-                var array = [];
-                for (var i = 0; i < 10; i++) {
-                   array.push(new ItemModel(i, '基本給'));
-                }
-                _self.itemsSwap(array);
+                _self.currentCodeListSwap = ko.observableArray([]);
     
                 _self.columns = ko.observableArray([
-                   { headerText: 'コード', key: 'code', width: 100 },
+                   { headerText: 'コード', key: 'code', width: 100, hidden: true},
                    { headerText: '名称', key: 'name', width: 150 }
                 ]);
     
-                _self.currentCodeListSwap = ko.observableArray([]);
-                _self.test = ko.observableArray([]);
-                
-                _self.checked1 = ko.observable(false);
-                _self.checked2 = ko.observable(false);
-                _self.checked3 = ko.observable(false);
+                _self.yearHdAtr = ko.observable(false);
+                _self.havyHdAtr = ko.observable(false);
+                _self.sphdAtr = ko.observable(false);
+                _self.halfDayAtr = ko.observable(false);
              }
 
             /**
-            * start page data 
+            * Start page data 
             */
             public startPage(): JQueryPromise<any> {
-                var _self = this;
-                var dfd = $.Deferred();
+                let _self = this;
+                let dfd = $.Deferred();
                 
-                 dfd.resolve();
+                $.when(_self.loadListPremium()).done(() => {
+                    
+                    // load setting
+                    _self.findAggregateSetting().done(() => {
+
+                        dfd.resolve();
+                    });
+                });
 
                 return dfd.promise();
             }
@@ -55,18 +55,123 @@ module nts.uk.at.view.ksm001.g {
              * function on click save CommonGuidelineSetting
              */
             public save(): void {
-                var _self = this;
+                let _self = this;
 
                 nts.uk.ui.block.invisible();
+                service.saveAggregateSetting(_self.toJsObject()).done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        _self.closeDialog();
+                    });
+                }).fail((res: any) => {
+                    nts.uk.ui.block.clear();
+                    
+                    // show message error
+                    _self.showMessageError(res);
+                });
             }
 
             /**
              * Event on click cancel button.
              */
-            public cancelSetting(): void {
+            public closeDialog(): void {
                 nts.uk.ui.windows.close();
             }
 
+            /**
+             * toJson data
+             */
+            private toJsObject(): AggregateSettingDto {
+                let _self = this;
+                
+                let lstPremiumNo: Array<number> = _self.currentCodeListSwap().map(item => item.code);
+                
+                let monthlyWorkingDaySettingDto: MonthlyWorkingDaySettingDto = new MonthlyWorkingDaySettingDto(_self.getValue(_self.halfDayAtr()),
+                    _self.getValue(_self.yearHdAtr()), _self.getValue(_self.sphdAtr()), _self.getValue(_self.havyHdAtr()));
+                
+                return new AggregateSettingDto(lstPremiumNo, monthlyWorkingDaySettingDto);
+            }
+            
+            /**
+             * Find aggregate setting
+             */
+            private findAggregateSetting(): JQueryPromise<AggregateSettingDto> {
+                let _self = this;
+                let dfd = $.Deferred();
+                
+                nts.uk.ui.block.invisible();
+                service.findAggregateSetting().done((setting: AggregateSettingDto) => {
+                    nts.uk.ui.block.clear();
+                    
+                    // set data
+                    if (setting) {
+                        _self.currentCodeListSwap(_self.itemsSwap().filter(item => setting.premiumNo.indexOf(item.code) != -1));
+                        _self.halfDayAtr(_self.convertValue(setting.monthlyWorkingDaySettingDto.halfDayAtr));
+                        _self.yearHdAtr(_self.convertValue(setting.monthlyWorkingDaySettingDto.yearHdAtr));
+                        _self.sphdAtr(_self.convertValue(setting.monthlyWorkingDaySettingDto.sphdAtr));
+                        _self.havyHdAtr(_self.convertValue(setting.monthlyWorkingDaySettingDto.havyHdAtr));
+                    }
+                    dfd.resolve();
+                });
+                 return dfd.promise();
+            }
+            
+            /**
+             * Load list Premium
+             */
+            private loadListPremium(): JQueryPromise<any> {
+                let _self = this;
+                let dfd = $.Deferred();
+
+                nts.uk.ui.block.invisible();
+                service.getListPremium().done((data: Array<PremiumItemDto>) => {
+                    nts.uk.ui.block.clear();
+                    
+                    // set data
+                    let itemList: Array<ItemModel> = [];
+                    _.forEach(data, item => {
+                        itemList.push(new ItemModel(item.displayNumber, item.name));
+                    });
+                    
+                    // set data source swap list
+                    _self.itemsSwap(itemList);
+                    
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
+            /**
+             * Convert value from boolean to number
+             */
+            private getValue(value: boolean): number {
+                return !value ? UseAtr.NOT_USE : UseAtr.USE;
+            }
+            
+            /**
+             * Convert value from number to boolean
+             */
+            private convertValue(value: UseAtr): boolean {
+                return value == UseAtr.USE ? true : false;
+            }
+            
+            /**
+             * showMessageError
+             */
+            private showMessageError(res: any) {
+                let dfd = $.Deferred<any>();
+                
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
+            }
         }
         
         export class ItemModel {
@@ -90,6 +195,14 @@ module nts.uk.at.view.ksm001.g {
             CONDITION_4TH = 4,
             // 条件5
             CONDITION_5TH = 5,
+        }
+        
+        /**
+         * するしない区分
+         */
+        enum UseAtr {
+            NOT_USE = 0,
+            USE = 1
         }
     }
 }

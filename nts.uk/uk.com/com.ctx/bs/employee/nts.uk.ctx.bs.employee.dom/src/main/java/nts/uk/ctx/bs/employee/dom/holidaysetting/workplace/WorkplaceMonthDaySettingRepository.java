@@ -1,5 +1,10 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.holidaysetting.workplace;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
@@ -19,6 +24,15 @@ public interface WorkplaceMonthDaySettingRepository {
 	 * @return the optional
 	 */
 	Optional<WorkplaceMonthDaySetting> findByYear(CompanyId companyId, String workplaceId, Year year);
+	
+	/**
+	 * Find all by year.
+	 *
+	 * @param companyId the company id
+	 * @param year the year
+	 * @return the workplace month day setting
+	 */
+	List<String> findWkpRegisterByYear(CompanyId companyId, Year year);
 	
 	/**
 	 * Adds the.

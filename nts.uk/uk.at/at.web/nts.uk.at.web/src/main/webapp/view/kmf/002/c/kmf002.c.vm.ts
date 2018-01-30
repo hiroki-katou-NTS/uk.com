@@ -113,12 +113,9 @@ module nts.uk.at.view.kmf002.c {
                 /* start declare variable KCP005 */
                 _self.baseDate = ko.observable(new Date());
                 _self.selectedCode = ko.observable("");
-                _self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
-                _self.isShowAlreadySet = ko.observable(false);
-                _self.alreadySettingList = ko.observableArray([
-                    {code: '1', isAlreadySetting: true},
-                    {code: '2', isAlreadySetting: true}
-                ]);
+                _self.multiSelectedCode = ko.observableArray([]);
+                _self.isShowAlreadySet = ko.observable(true);
+                _self.alreadySettingList = ko.observableArray([]);
                 _self.isDialog = ko.observable(false);
                 _self.isShowNoSelectRow = ko.observable(false);
                 _self.isMultiSelect = ko.observable(false);
@@ -216,22 +213,32 @@ module nts.uk.at.view.kmf002.c {
             private getDataFromService(): void {
                 let _self = this;
                 if (!_.isNull(_self.selectedCode()) && !_.isEmpty(_self.selectedCode())) {
-                    $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), service.findFirstMonth()).done(function(data: any, data2: any) {
+                    $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
+                            service.findFirstMonth(),
+                            service.findAllEmployeeRegister()).done(function(data: any, data2: any, data3: any) {
+                        _self.alreadySettingList.removeAll();
+                        _.forEach(data3, function(code) {
+                            _self.alreadySettingList.push({code: code, isAlreadySetting: true});
+                        });
                         if (typeof data === "undefined") {
                             /** 
                              *   create value null for prepare create new 
                             **/
                             _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value: any) {
-                                value.day('');
+                                value.day(0);
                             });
                             _self.enableDelete(false);
                         } else {
                             _self.commonTableMonthDaySet().arrMonth.removeAll();
                             for (let i=data2.startMonth-1; i<12; i++) {
-                                _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 'enable': ko.observable(true)});    
+                                _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 
+                                                                              'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 
+                                                                              'enable': ko.observable(true)});    
                             }
                             for (let i=0; i<data2.startMonth-1; i++) {
-                                _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 'enable': ko.observable(true)});    
+                                _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 
+                                                                              'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 
+                                                                              'enable': ko.observable(true)});    
                             }
                             _self.enableDelete(true);
                         }            

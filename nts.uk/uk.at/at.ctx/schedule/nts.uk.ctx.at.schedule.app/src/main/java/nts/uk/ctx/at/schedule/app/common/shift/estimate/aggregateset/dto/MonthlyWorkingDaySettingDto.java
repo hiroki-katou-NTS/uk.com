@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.schedule.app.common.shift.estimate.aggregateset.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The Class MonthlyWorkingDaySetting.
  */
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
 public class MonthlyWorkingDaySettingDto {
 	
 	/** The half day atr. */

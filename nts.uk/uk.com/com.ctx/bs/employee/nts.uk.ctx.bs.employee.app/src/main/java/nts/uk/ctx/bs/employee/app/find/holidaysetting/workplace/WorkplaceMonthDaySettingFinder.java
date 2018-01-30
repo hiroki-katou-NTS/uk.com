@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.holidaysetting.workplace;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import static java.util.stream.Collectors.toList;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -45,5 +48,15 @@ public class WorkplaceMonthDaySettingFinder {
 			return dto;
 		}
 		return null;
+	}
+	
+	public List<String> findAllByYear(int year) {
+		String companyId = AppContexts.user().companyId();
+		
+		List<String> lstWpk = this.repository.findWkpRegisterByYear(new CompanyId(companyId), new Year(year));
+		if (lstWpk != null && !lstWpk.isEmpty()) {
+			return lstWpk.stream().distinct().collect(toList());
+		} 
+		return new ArrayList<>();
 	}
 }

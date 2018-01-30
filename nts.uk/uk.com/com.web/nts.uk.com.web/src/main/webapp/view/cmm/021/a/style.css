@@ -5,13 +5,17 @@
 	float: left;
 }
 
+.icon-78 {
+	background: url('../icon/icon78.png');
+	width: 17.727px;
+	height: 17px;
+	background-size: 17px 17px;
+	margin-left: 23px;
+}
+
 .caret-right {
 	width: 520px;
 	border-radius: 10px;
-}
-
-.icon-searchbox {
-	
 }
 
 .table-grid-list {
@@ -61,16 +65,18 @@
 	padding-top: 60px;
 }
 
-.right-content .right-content-space {
-	padding-left: 28px;
-}
-.right-content-space-employee-code {
-	padding-left: 14px;
+.right-content-space-personName1, .right-content-space-employee-code1, .right-content-space-login1{
+	width: 70px;
 }
 
-.right-content .right-content-space-login {
-	padding-left: 7px;
+.right-content-space-personName2, .right-content-space-employee-code2, .right-content-space-login2{
+	width: 20px;
+} 
+
+.right-content-space-personName3, .right-content-space-employee-code3, .right-content-space-login3{
+	width: 200px;
 }
+
 
 /*  b screen mode */
 .screen-b-mode {

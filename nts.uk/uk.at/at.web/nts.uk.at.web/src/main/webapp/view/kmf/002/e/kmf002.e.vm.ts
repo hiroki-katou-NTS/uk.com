@@ -60,7 +60,7 @@ module nts.uk.at.view.kmf002.e {
                          *   create value null for prepare create new 
                         **/
                         _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value: any) {
-                            value.day('');
+                            value.day(0);
                         });
                         _self.enableDelete(false);
                     } else {
