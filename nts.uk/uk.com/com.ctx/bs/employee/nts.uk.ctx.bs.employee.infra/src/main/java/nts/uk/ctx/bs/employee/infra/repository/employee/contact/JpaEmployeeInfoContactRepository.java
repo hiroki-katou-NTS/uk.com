@@ -9,7 +9,6 @@ import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
 import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContactRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employee.contact.BsymtEmpInfoContact;
 import nts.uk.ctx.bs.employee.infra.entity.employee.contact.BsymtEmpInfoContactPK;
-import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPersonPk;
 
 @Stateless
 public class JpaEmployeeInfoContactRepository extends JpaRepository implements EmployeeInfoContactRepository {
@@ -45,9 +44,8 @@ public class JpaEmployeeInfoContactRepository extends JpaRepository implements E
 	 */
 	private BsymtEmpInfoContact toEntity(EmployeeInfoContact domain){
 		BsymtEmpInfoContactPK key = new BsymtEmpInfoContactPK(domain.getSid());
-		BsymtEmpInfoContact entity = new BsymtEmpInfoContact(key, domain.getCId(), domain.getMailAddress().v(),
-				domain.getSeatDialIn().v(), domain.getSeatExtensionNo().v(), domain.getPhoneMailAddress().v(),
-				domain.getCellPhoneNo().v());
+		BsymtEmpInfoContact entity = new BsymtEmpInfoContact(key, domain.getCId(), domain.getCellPhoneNo().v(), domain.getMailAddress().v(),
+				domain.getPhoneMailAddress().v(),domain.getSeatDialIn().v(), domain.getSeatExtensionNo().v());
 		return entity;
 	}
 	
