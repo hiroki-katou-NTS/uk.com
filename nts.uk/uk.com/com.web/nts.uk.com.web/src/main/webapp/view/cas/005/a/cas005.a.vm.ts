@@ -491,7 +491,7 @@ module nts.uk.com.view.cas005.a {
             registerButton() {
                 let self = this;
                 self.isRegister(true);
-
+                $("#roleNameFocus").trigger("validate");
                 self.listWorkPlaceAuthorityCommand([]);
                 for (let i = 0; i < self.componentCcg026.listPermissions().length; i++) { //sucribe
                     let tempCommand = new model.WorkPlaceAuthorityCommand(

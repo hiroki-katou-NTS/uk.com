@@ -9,7 +9,24 @@ module nts.uk.at.view.ksu007.a {
                 // Load employee list component
                 $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function() {
                     $('#dateRangePickerPeriod').find('input').first().focus();
+                    if(self.employeeList().length <= 0){
+                        $('#hor-scroll-button-hide').trigger('click');  
+                    }                                    
                 });
+            });
+            //Load ScheduleBatchCorrect
+            self.findScheduleBatchCorrectSetting().done(function(e) {
+                if(e != undefined){
+                    $('#dateRangePickerPeriod').find('input').first().val(e.startDate);
+                    $('#dateRangePickerPeriod').find('input').last().val(e.endDate);
+                    self.periodDate().startDate = e.startDate;
+                    self.periodDate().endDate = e.endDate;     
+                    self.workTypeInfo(e.worktypeCode);                  
+                    self.workTimeInfo(e.worktimeCode);
+                    self.workTypeCode(e.worktypeCode.split(" ")[0]);
+                    self.workTimeCode(e.worktimeCode.split(" ")[0]);
+                }
+               
             });
         });
 

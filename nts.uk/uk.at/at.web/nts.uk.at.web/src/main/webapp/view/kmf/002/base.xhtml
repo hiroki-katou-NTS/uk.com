@@ -9,11 +9,18 @@
 	<ui:composition>
 		<div>
 			<!-- YearMonth Picker -->
-			<div
-				data-bind="ntsDatePicker: {value: fiscalYear, dateFormat: 'YYYY', valueFormat: 'YYYY', fiscalYear: true, cssRanger: cssRangerY, showJumpButtons: true}"
-				class="ntsControl nts-datepicker-wrapper"></div>
+			<!-- E7_1 -->
+			<div tabindex="1" id="datePickerYear" class="ntsControl nts-datepicker-wrapper" data-bind="ntsDatePicker: { value: fiscalYear, 
+																						dateFormat: 'YYYY', 
+																						valueFormat: 'YYYY', 
+																						fiscalYear: true, 
+																						cssRanger: cssRangerY, 
+																						showJumpButtons: true }"></div>
 		</div>
-		<div data-bind="visible: visibleInfoSelect">
+		<div tabindex="-1" data-bind="visible: visibleInfoSelect">
+			<!-- B4_1 -->
+			<!-- C3_1 -->
+			<!-- D3_1 -->
 			<span data-bind="text: infoSelect1" style="padding-right: 30px"></span>
 			<span data-bind="text: infoSelect2" style="padding-right: 30px"></span>
 			<span data-bind="text: infoSelect3" ></span>
@@ -34,14 +41,16 @@
 				</thead>
 				<tbody data-bind="foreach: arrMonth">
 					<tr>
+						<!-- E8_5 -->
 						<td><span data-bind="text: month"></span> <span>月度</span></td>
-						<td><input id="" type="text" tabindex="-1"
-							data-bind="ntsTextEditor: { 
-																value: day,
-																enable: enable,
-																constraint: 'MonthlyNumberOfDays',
-																required: true,
-																option: {width: '90px'}}"></input>
+						<!-- E8_6 -->
+						<td><input id="" name="#[KMF002_13]" type="text" tabindex="2" class="validateInput"
+											data-bind="ntsTextEditor: { 
+																		value: day,
+																		enable: enable,
+																		constraint: 'MonthlyNumberOfDays',
+																		required: true,
+																		option: {width: '90px'}}"></input>
 							<span>日</span></td>
 					</tr>
 				</tbody>

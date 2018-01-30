@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.personallaborcondition;
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.personallaborcondition.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionGetMemento;

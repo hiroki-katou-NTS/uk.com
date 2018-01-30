@@ -62,7 +62,12 @@
 										 		value: currentCodeList }"></table>
 									</div>
 									<div class="tab-content-3">
-										<table id="grid"></table>
+										<div data-bind="ntsComboBox: {
+												options: items,
+												optionsValue: 'code',
+												value: currentCode,
+												editable: false
+										}"></div>
 									</div>
 									<div class="tab-content-4">
 										<p>Fusce vitae libero non sem blandit pharetra a vel mi. Integer euismod pellentesque hendrerit. Nam interdum maximus lacus. Mauris dapibus pulvinar quam vitae maximus. Morbi dapibus vitae ligula at facilisis. Quisque rhoncus magna ut enim scelerisque, venenatis tempus lacus volutpat. Sed ut tellus erat. Morbi sollicitudin luctus condimentum. Sed malesuada hendrerit dignissim.</p>

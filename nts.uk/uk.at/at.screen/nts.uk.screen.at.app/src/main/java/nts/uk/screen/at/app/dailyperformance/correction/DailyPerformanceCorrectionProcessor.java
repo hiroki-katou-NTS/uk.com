@@ -552,6 +552,22 @@ public class DailyPerformanceCorrectionProcessor {
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		System.out.println("time create HashMap: " + (System.currentTimeMillis() - startTime2 ));
 		start = System.currentTimeMillis();
+		screenDto.markLoginUser();
+		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
+		service = Executors.newFixedThreadPool(1);
+		CountDownLatch latch1 = new CountDownLatch(1);
+		// set disable cell
+		service.submit(new Runnable() {
+			@Override
+			public void run() {
+				screenDto.createAccessModifierCellState(mapDP);
+				screenDto.getLstFixedHeader().forEach(column -> {
+					screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
+				});
+				latch1.countDown();
+			}
+		});
+		//set cell data
 		for (DPDataDto data : screenDto.getLstData()) {
 			boolean lock = false;
 			if (!employeeAndDateRange.isEmpty()) {
@@ -692,12 +708,7 @@ public class DailyPerformanceCorrectionProcessor {
 		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start ));
 		start = System.currentTimeMillis();
 		// screenDto.setLstData(lstData);
-		screenDto.markLoginUser();
-		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
-		screenDto.createAccessModifierCellState(mapDP);
-		screenDto.getLstFixedHeader().forEach(column -> {
-			screenDto.getLstControlDisplayItem().getColumnSettings().add(new ColumnSetting(column.getKey(), false));
-		});
+		latch1.await();
 		System.out.println("time add  return : " + (System.currentTimeMillis() - start));
 		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
 		return screenDto;

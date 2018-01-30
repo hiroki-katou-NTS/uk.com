@@ -38,9 +38,10 @@ public class PerInfoInitValueSetItemFinder {
 					} else if (dto.getSelectionItemRefType() == 3) {
 						selectionItemDto = SelectionItemDto.createEnumRefDto(dto.getSelectionItemId());
 					}
-					
-					List<ComboBoxObject> selectionDto =this.comboBoxFactory.getComboBox(selectionItemDto, AppContexts.user().employeeId(), GeneralDate.today(), true);
-					
+
+					List<ComboBoxObject> selectionDto = this.comboBoxFactory.getComboBox(selectionItemDto,
+							AppContexts.user().employeeId(), GeneralDate.today(), true, true);
+
 					dto.setSelection(selectionDto);
 					return dto;
 				} else {
@@ -51,7 +52,7 @@ public class PerInfoInitValueSetItemFinder {
 			return itemDto;
 		}
 
-		return new ArrayList<>();	
+		return new ArrayList<>();
 	}
 
 }

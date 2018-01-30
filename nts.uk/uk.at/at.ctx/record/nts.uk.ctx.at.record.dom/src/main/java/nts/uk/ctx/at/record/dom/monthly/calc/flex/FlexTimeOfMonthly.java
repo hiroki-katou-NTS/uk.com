@@ -108,17 +108,25 @@ public class FlexTimeOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 集計総労働時間　作成　（返却用）
-		//*****（メモ）　この方法では、値が正しく戻らないかもしれない（動作検証要）。クラスの必要な値だけコピーしたクローンを作る必要があるかも。
 		val returnClass = aggregateTotalWorkingTime;
 		
 		// 処理をする期間の日数分ループ
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
 			
-			// 処理日の個人履歴関連情報を取得する
-			//*****（未）　所属職場履歴から、処理日の職場IDを取る
-			String workplaceId = "dummy";
-			//*****（未）　所属雇用履歴から、処理日の雇用コードを取る
-			String employmentCd = "dummy";
+			// 期間外はスキップする
+			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
+			
+			// 処理日の職場コードを取得する
+			//*****（未）　所属職場履歴から、期間終了日の職場IDを取る
+			String workplaceId = "empty";
+			
+			// 処理日の雇用コードを取得する
+			String employmentCd = "empty";
+			val syEmploymentOpt = repositories.getSyEmployment().findByEmployeeId(
+					companyId, employeeId, attendanceTimeOfDaily.getYmd());
+			if (syEmploymentOpt.isPresent()){
+				employmentCd = syEmploymentOpt.get().getEmploymentCode();
+			}
 		
 			// 日別実績を集計する　（フレックス時間勤務用）
 			val flexTimeDaily = returnClass.aggregateDailyForFlex(attendanceTimeOfDaily, companyId,
@@ -321,7 +329,7 @@ public class FlexTimeOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// フレックス対象時間を集計する
-		val flexTargetTime = this.aggregateFlexTargetTime(aggregateTotalWorkingTime);
+		val flexTargetTime = this.aggregateFlexTargetTime(datePeriod, aggregateTotalWorkingTime);
 		
 		// 所定労働時間（代休控除後）を求める
 		val compensatoryLeaveAfterDudection =
@@ -365,22 +373,24 @@ public class FlexTimeOfMonthly {
 			// フレックス不足の処理をする
 			val addedTimeForShortage = this.flexShortagePrinciple(
 					datePeriod, carryforwardTimeBeforeOffset, aggregateTotalWorkingTime, addSet);
-			this.addedVacationUseTime.addAddTimePerMonth(addedTimeForShortage.getAddTimePerMonth().v());
+			this.addedVacationUseTime.addMinutesToAddTimePerMonth(addedTimeForShortage.getAddTimePerMonth().v());
 		}
 	}
 	
 	/**
 	 * フレックス対象時間を集計する
+	 * @param datePeriod 期間
 	 * @param aggregateTotalWorkingTime 総労働時間
 	 * @return フレックス対象時間
 	 */
 	private AttendanceTimeMonthWithMinus aggregateFlexTargetTime(
+			DatePeriod datePeriod,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime){
 		
 		AttendanceTimeMonthWithMinus flexTargetTime = new AttendanceTimeMonthWithMinus(0);
 		
 		// 合計法定内時間を取得する
-		val totalLegalTime = aggregateTotalWorkingTime.getWorkTime().getTimeSeriesTotalLegalTime();
+		val totalLegalTime = aggregateTotalWorkingTime.getWorkTime().getTimeSeriesTotalLegalTime(datePeriod);
 		
 		// フレックス対象時間に合計法定内時間（就業時間）を加算する
 		flexTargetTime = flexTargetTime.addMinutes(totalLegalTime.v());
@@ -421,7 +431,7 @@ public class FlexTimeOfMonthly {
 		
 		// 所定労働時間から代休分を引く
 		val compensatoryLeave = aggregateTotalWorkingTime.getVacationUseTime().getCompensatoryLeave();
-		compensatoryLeave.aggregate();
+		compensatoryLeave.aggregate(datePeriod);
 		compensatoryLeaveAfterDeduction = compensatoryLeaveAfterDeduction.minusMinutes(compensatoryLeave.getUseTime().v());
 		
 		return compensatoryLeaveAfterDeduction;
