@@ -143,10 +143,8 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 	 * @param workTimeType the work time type
 	 * @param oldDomain the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {
-		this.commonSetting.restoreData(screenMode, oldDomain.getCommonSetting());
-		
-		// restore 平日勤務時間帯
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {	
+		// Tab 2 + 3 + 5: restore 平日勤務時間帯
 		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
 				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.FIXED_WORK) {
 			Map<AmPmAtr, FixHalfDayWorkTimezone> mapFixHalfWork = oldDomain.getLstHalfDayWorkTimezone().stream()
@@ -158,7 +156,8 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 			this.lstHalfDayWorkTimezone = oldDomain.getLstHalfDayWorkTimezone();
 		}
 		
-		//TODO tab 3 + 5
+		// Tab 8 -> 16
+		this.commonSetting.restoreData(screenMode, oldDomain.getCommonSetting());
 	}
 	
 	/**
@@ -167,6 +166,10 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 	 * @param screenMode the screen mode
 	 */
 	public void restoreDefaultData(ScreenMode screenMode) {
+		// Tab 2 + 3 + 5: restore 平日勤務時間帯
+		this.lstHalfDayWorkTimezone.forEach(item -> item.restoreDefaultData(screenMode));
+		
+		// Tab 8 -> 16
 		this.commonSetting.restoreDefaultData(screenMode);
 	}
 }

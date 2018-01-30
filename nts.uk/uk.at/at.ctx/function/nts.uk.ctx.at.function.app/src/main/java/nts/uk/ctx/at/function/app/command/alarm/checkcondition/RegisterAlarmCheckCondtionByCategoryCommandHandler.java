@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.app.command.alarm.checkcondition;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,7 +13,6 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
-import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
@@ -73,17 +71,18 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			AlarmCategory category = AlarmCategory.values()[command.getCategory()];
 			switch (category) {
 			case DAILY:
+				//update WorkRecordExtractCondition
+				DailyAlarmCondition dailyAlramCondition = (DailyAlarmCondition) domain.getExtractionCondition();
+				List<String> listErrorAlarmId = this.workRecordExtraConRepo.checkUpdateListErAl(
+						dailyAlramCondition.getExtractConditionWorkRecord(),
+						command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork());
+				
 				extractionCondition = command.getDailyAlarmCheckCondition() == null ? null
 						: new DailyAlarmCondition(IdentifierUtil.randomUniqueId(),
 								command.getDailyAlarmCheckCondition().getConditionToExtractDaily(),
 								command.getDailyAlarmCheckCondition().isAddApplication(),
-								command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList()),
+								listErrorAlarmId,
 								command.getDailyAlarmCheckCondition().getListErrorAlarmCode());
-				//update WorkRecordExtractCondition
-				DailyAlarmCondition dailyAlramCondition = (DailyAlarmCondition) domain.getExtractionCondition();
-				this.workRecordExtraConRepo.checkUpdateListErAl(
-						dailyAlramCondition.getExtractConditionWorkRecord(),
-						command.getDailyAlarmCheckCondition().getListExtractConditionWorkRecork());
 
 				// update FixedWorkRecordExtractCondition
 				for(FixedConWorkRecordAdapterDto fixedConWorkRecordAdapterDto : command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord()) {

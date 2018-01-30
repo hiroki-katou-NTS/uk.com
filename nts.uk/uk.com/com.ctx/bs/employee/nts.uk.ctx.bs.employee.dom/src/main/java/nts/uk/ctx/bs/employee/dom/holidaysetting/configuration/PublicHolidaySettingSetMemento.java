@@ -43,4 +43,12 @@ public interface PublicHolidaySettingSetMemento {
 	 * @param publicHolidayManagementStartDate the new public holiday management start date
 	 */
 	void setPublicHolidayManagementStartDate(PublicHolidayManagementStartDate publicHolidayManagementStartDate);
+	
+	/**
+	 * Sets the public holiday management start date.
+	 *
+	 * @param publicHolidayManagementStartDate the public holiday management start date
+	 * @param type the type
+	 */
+	void setPublicHolidayManagementStartDate(PublicHolidayManagementStartDate publicHolidayManagementStartDate, Integer type);
 }

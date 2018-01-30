@@ -17,6 +17,7 @@ import nts.uk.ctx.bs.employee.app.find.holidaysetting.configuration.HolidaySetti
 import nts.uk.ctx.bs.employee.app.find.holidaysetting.configuration.HolidaySettingConfigFinder;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.DayOfPublicHoliday;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.DayOfWeek;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.ManagementDistinction;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayCarryOverDeadline;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementClassification;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayPeriod;
@@ -111,5 +112,11 @@ public class HolidaySettingConfigWebService extends WebService {
 	@POST
 	public List<EnumConstant> getEnumPublicHolidayCarryOverDeadline(){
 		return EnumAdaptor.convertToValueNameList(PublicHolidayCarryOverDeadline.class);
+	}
+	
+	@Path("enum/manage")
+	@POST
+	public List<EnumConstant> getEnumManage(){
+		return EnumAdaptor.convertToValueNameList(ManagementDistinction.class);
 	}
 }

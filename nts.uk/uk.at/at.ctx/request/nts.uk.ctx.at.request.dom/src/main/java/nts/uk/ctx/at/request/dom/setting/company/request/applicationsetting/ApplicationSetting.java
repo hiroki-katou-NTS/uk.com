@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.applimitset.AppLimitSetting;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.disp
  *
  */
 @Getter
+@AllArgsConstructor
 public class ApplicationSetting extends DomainObject {
 	
 	/**

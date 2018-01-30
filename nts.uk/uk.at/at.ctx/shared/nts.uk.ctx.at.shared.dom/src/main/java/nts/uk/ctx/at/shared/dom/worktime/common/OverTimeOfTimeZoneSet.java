@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -26,6 +26,7 @@ public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject {
 	// 早出残業として扱う
 	private boolean earlyOTUse;
 
+	/** The timezone. */
 	// 時間帯
 	private TimeZoneRounding timezone;
 
@@ -70,5 +71,20 @@ public class OverTimeOfTimeZoneSet extends WorkTimeDomainObject {
 		memento.setOTFrameNo(this.otFrameNo);
 		memento.setLegalOTframeNo(this.legalOTframeNo);
 		memento.setSettlementOrder(this.settlementOrder);
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param other the other
+	 */
+	public void restoreData(OverTimeOfTimeZoneSet other) {
+		this.workTimezoneNo = other.getWorkTimezoneNo();
+		this.restraintTimeUse = other.isRestraintTimeUse();
+		this.earlyOTUse = other.isEarlyOTUse();
+		this.timezone = other.getTimezone();
+		this.otFrameNo = other.getOtFrameNo();
+		this.legalOTframeNo = other.getLegalOTframeNo();
+		this.settlementOrder = other.getSettlementOrder();
 	}
 }

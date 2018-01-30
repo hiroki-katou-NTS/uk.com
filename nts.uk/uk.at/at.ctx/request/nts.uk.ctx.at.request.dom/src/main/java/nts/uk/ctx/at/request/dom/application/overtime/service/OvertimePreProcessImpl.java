@@ -415,7 +415,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 					if (application!= null && application.size() > 0) {
 						applicationOvertime.setAppDate(application.get(0).getAppDate());
 						Optional<AppOverTime> appOvertime = this.overtimeRepository
-								.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppDate().toString(DATE_FORMAT));
+								.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppID());
 						if (appOvertime.isPresent()) {
 							result.setWorkTypeCode(appOvertime.get().getWorkTypeCode());
 							result.setSiftCode(appOvertime.get().getSiftCode());
