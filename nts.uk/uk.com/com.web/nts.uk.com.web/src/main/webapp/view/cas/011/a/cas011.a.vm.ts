@@ -453,31 +453,27 @@ module nts.uk.com.view.cas011.a.viewmodel {
          */
         buildRoleName() {
             let self = this;
+            self.clearRoleName();
             if (self.listCurrentRoleIds && self.listCurrentRoleIds.length > 0) {
                 service.getRoleNameByListId(self.listCurrentRoleIds).done((itemList : Array<any>) => {
                     if (itemList && itemList.length > 0) {
                         for(var i = 0; i < itemList.length; i++) {
                             self.setRoleName(itemList[i].roleType, itemList[i].name);
                         }
-                    } else {
-                        self.clearRoleName();
-                    }
-                 }).fail(function(error) {
-                     self.clearRoleName();
+                    } 
                  });
-            } else {
-                  self.clearRoleName();
               }
         }
 
         clearRoleName() {
             let self = this;
-            self.employmentRoleName("");
-            self.hRRoleName("");
-            self.salaryRoleName("");
-            self.personInfRoleName("");
-            self.myNumberRoleName("");
-            self.officeHelperRoleName("");
+            let emName = resource.getText('CAS011_23');
+            self.employmentRoleName(emName);
+            self.hRRoleName(emName);
+            self.salaryRoleName(emName);
+            self.personInfRoleName(emName);
+            self.myNumberRoleName(emName);
+            self.officeHelperRoleName(emName);
         }
         /**
          * Execute get all web menu.
