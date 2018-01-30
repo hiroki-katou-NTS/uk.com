@@ -515,9 +515,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
         setting: boolean;
         requiredAtr: string;
         itemName: string;
+        parrentCd: string;
         otherAuth: number;
         selfAuth: number;
-        setItems: Array<any>;
     }
 
     export class PersonRole {
@@ -622,6 +622,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         otherAllowDelMulti: KnockoutObservable<number>;
         otherAllowAddMulti: KnockoutObservable<number>;
         roleItemList: KnockoutObservableArray<PersonRoleItem> = ko.observableArray([]);
+        roleItemDatas: KnockoutObservableArray<PersonRoleItem> = ko.observableArray([]);
 
         constructor(param: IPersonRoleCategory) {
             let self = this;
@@ -675,9 +676,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
 
             service.getPersonRoleItemList(roleId, CategoryId).done(function(result: Array<IPersonRoleItem>) {
-
-                self.roleItemList.removeAll();
-                self.roleItemList(_.map(result, x => new PersonRoleItem(x)));
+                self.roleItemDatas(_.map(result, x => new PersonRoleItem(x)));
+                self.roleItemList(_.filter(_.map(result, x => new PersonRoleItem(x)), ['parrentCd', null]));
                 if (self.roleItemList().length < 1) {
                     dialog({ messageId: "Msg_217" });
                 }
@@ -701,9 +701,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
         setting: boolean;
         requiredAtr: string;
         itemName: string;
+        parrentCd: string;
         otherAuth: number;
         selfAuth: number;
-        setItems: Array<any>;
+        itemCd: string;
 
         constructor(param: IPersonRoleItem) {
             let self = this;
@@ -711,9 +712,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.setting = param ? param.setting : false;
             self.requiredAtr = param ? param.requiredAtr : 'false';
             self.itemName = param ? param.itemName : '';
+            self.parrentCd = param ? param.parrentCd : '';
+            self.itemCd = param ? param.itemCd : '';
             self.otherAuth = this.setting === true ? param ? param.otherAuth : 1 : 1;
             self.selfAuth = this.setting === true ? param ? param.selfAuth : 1 : 1;
-            self.setItems = param ? param.setItems : [];
         }
     }
 
@@ -760,16 +762,16 @@ module nts.uk.com.view.cas001.a.viewmodel {
         selfAllowAddMulti: number;
         otherAllowDelMulti: number;
         otherAllowAddMulti: number;
-        roleItemList: Array<PersonRoleItemCommand> = [];
+        items: Array<PersonRoleItemCommand> = [];
         constructor(param: PersonRoleCategory) {
 
-            let screenModel = __viewContext['screenModel'];
+            let sm: ScreenModel = __viewContext['screenModel'];
 
             this.categoryId = param.categoryId;
             this.categoryName = param.categoryName;
             this.categoryType = param.categoryType;
-            this.allowPersonRef = screenModel.allowPersonRef();
-            this.allowOtherRef = screenModel.allowOtherRef();
+            this.allowPersonRef = sm.allowPersonRef();
+            this.allowOtherRef = sm.allowOtherRef();
             this.allowOtherCompanyRef = param.allowOtherCompanyRef();
             this.selfPastHisAuth = param.selfPastHisAuth();
             this.selfFutureHisAuth = param.selfFutureHisAuth();
@@ -783,23 +785,46 @@ module nts.uk.com.view.cas001.a.viewmodel {
             this.selfAllowAddMulti = param.selfAllowAddMulti();
             this.otherAllowDelMulti = param.otherAllowDelMulti();
             this.otherAllowAddMulti = param.otherAllowAddMulti();
-            for (let i of param.roleItemList()) {
-                this.roleItemList.push(new PersonRoleItemCommand(i))
-            }
+            //add parrent item
+            this.items = _.map(param.roleItemList(), x => new PersonRoleItemCommand(x));
+            //add child item
+            this.addChildItem(this.items);
+        }
+
+        addChildItem(items: Array<PersonRoleItemCommand>) {
+            let sm: ScreenModel = __viewContext['screenModel'],
+                itemDatas = sm.currentRole().currentCategory().roleItemDatas();
+            //create loop parent for get child item 
+            _.forEach(items, function(parentItem: PersonRoleItemCommand) {
+
+                let childItems = _.filter(itemDatas, { 'parrentCd': parentItem.itemCd });
+                //set atr same parent item
+                _.forEach(childItems, function(childItem: PersonRoleItem) {
+                    childItem.selfAuth = parentItem.selfAuth;
+                    childItem.otherAuth = parentItem.otherAuth;
+                    
+                    items.push(new PersonRoleItemCommand(childItem));
+                });
+
+            });
+
+
 
         }
 
     }
     export class PersonRoleItemCommand {
         personItemDefId: string;
+        itemCd: string;
+        parrentCd: string;
         otherAuth: number;
         selfAuth: number;
-        setItems: Array<any>
         constructor(param: PersonRoleItem) {
             this.personItemDefId = param.personItemDefId;
+            this.parrentCd = param.parrentCd;
             this.otherAuth = param.otherAuth;
             this.selfAuth = param.selfAuth;
-            this.setItems = param.setItems;
+            this.itemCd = param.itemCd;
         }
 
     }

@@ -798,4 +798,18 @@ public class UpdateWorkingConditionCommand{
 	@PeregItem("IS00253")
 	private BigDecimal contractTime;
 
+	/** The hourly ppayment atr. */
+	// 時給者区分
+	@PeregItem("IS00259")
+	private BigDecimal hourlyPaymentAtr;
+
+	/** The time apply. */
+	// 加給時間帯
+	@PeregItem("IS00246")
+	private String timeApply;
+	
+	/** The monthly pattern. */
+	// 月間パターン
+	@PeregItem("IS00127")
+	private String monthlyPattern;
 }
