@@ -5,8 +5,10 @@
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -19,6 +21,7 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
@@ -34,6 +37,29 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 	/** The Constant FIRST_ITEM_INDEX. */
 	private final static int FIRST_ITEM_INDEX = 0;
+	
+	/** The Constant FIND_WORKCONDITEM_MONTHLY_NOT_NULL. */
+	private final static String FIND_WORKCONDITEM_MONTHLY_NOT_NULL = "SELECT wi FROM KshmtWorkingCondItem wi"
+																	+ " WHERE wi.monthlyPattern IS NOT NULL"
+																	+ " AND wi.sid IN :employeeIds";
+	
+	/**
+	 * Gets the by list sid and monthly pattern not null.
+	 *
+	 * @param employeeIds the employee ids
+	 * @return the by list sid and monthly pattern not null
+	 */
+	public List<WorkingConditionItem> getByListSidAndMonthlyPatternNotNull(List<String> employeeIds){
+		if (employeeIds.isEmpty()){
+			return Collections.emptyList();
+		}
+		List<KshmtWorkingCondItem> entitys = this.queryProxy().query(FIND_WORKCONDITEM_MONTHLY_NOT_NULL, KshmtWorkingCondItem.class)
+													.setParameter("employeeIds", employeeIds).getList();
+		if(entitys.isEmpty()){
+			return Collections.emptyList();
+		}
+		return entitys.stream().map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e))).collect(Collectors.toList());
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -206,6 +232,33 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		// exclude select
 		return Optional.of(new WorkingConditionItem(
 				new JpaWorkingConditionItemGetMemento(result.get(FIRST_ITEM_INDEX))));
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#deleteMonthlyPattern(java.lang.String)
+	 */
+	@Override
+	public void deleteMonthlyPattern(String historyId) {
+		Optional<KshmtWorkingCondItem> optEntity = this.queryProxy().find(historyId,
+				KshmtWorkingCondItem.class);
+		KshmtWorkingCondItem entity = optEntity.get();
+		
+		entity.setMonthlyPattern(null);
+		
+		this.commandProxy().update(entity);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#updateMonthlyPattern(java.lang.String, nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode)
+	 */
+	@Override
+	public void updateMonthlyPattern(String historyId, MonthlyPatternCode monthlyPattern) {
+		Optional<KshmtWorkingCondItem> optEntity = this.queryProxy().find(historyId,
+				KshmtWorkingCondItem.class);
+		KshmtWorkingCondItem entity = optEntity.get();
+		
+		entity.setMonthlyPattern(monthlyPattern.v());
+		this.commandProxy().update(entity);
 	}
 
 }

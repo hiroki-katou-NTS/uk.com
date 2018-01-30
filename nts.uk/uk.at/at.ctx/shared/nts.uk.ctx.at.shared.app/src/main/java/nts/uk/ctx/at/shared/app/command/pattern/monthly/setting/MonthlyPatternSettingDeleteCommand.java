@@ -2,20 +2,24 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.find.shift.pattern.dto;
-
-import java.util.List;
+package nts.uk.ctx.at.shared.app.command.pattern.monthly.setting;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class MonthlyPatternSettingFindAllDto.
+ * The Class MonthlyPatternSettingSaveCommand.
  */
 @Getter
 @Setter
-public class MonthlyPatternSettingFindAllDto {
+public class MonthlyPatternSettingDeleteCommand {
 
-	/** The employee ids. */
-	private List<String> employeeIds;
+	/** The employee id. */
+	private String employeeId;
+
+	/** The monthly pattern code. */
+	private String monthlyPatternCode;
+	
+	/** The history id. */
+	private String historyId;
 }

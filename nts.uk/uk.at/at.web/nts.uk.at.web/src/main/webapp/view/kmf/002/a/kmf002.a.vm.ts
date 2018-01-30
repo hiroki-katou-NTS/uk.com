@@ -666,12 +666,12 @@ module nts.uk.at.view.kmf002.a {
         export class PublicHolidaySetting {
             isManageComPublicHd: KnockoutObservable<number>;
             publicHdManagementClassification: KnockoutObservable<number>;
-            pubHDGrantDate: KnockoutObservable<PublicHolidayManagementStartDate>;
+            pubHDGrantDate: KnockoutObservable<PublicHolidayGrantDate>;
             pubHD: KnockoutObservable<PublicHoliday>;
             isWeeklyHdCheck: KnockoutObservable<any>;
             
             constructor(isManageComPublicHd:number, publicHdManagementClassification: number, 
-                            pubHDGrantDate: PublicHolidayManagementStartDate,
+                            pubHDGrantDate: PublicHolidayGrantDate,
                             pubHD: PublicHoliday, isWeeklyHdCheck: number) {
                 let _self = this;
                 
