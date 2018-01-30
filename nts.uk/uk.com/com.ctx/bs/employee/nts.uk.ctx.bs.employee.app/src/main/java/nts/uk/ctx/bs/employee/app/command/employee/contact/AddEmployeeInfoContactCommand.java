@@ -15,21 +15,21 @@ public class AddEmployeeInfoContactCommand {
 	
 	//メールアドレス
 	@PeregItem("IS00272")
-	private MailAddress mailAddress;
+	private String mailAddress;
 	
 	//座席ダイヤルイン
 	@PeregItem("IS00274")
-	private SeatNo seatDialIn;
+	private String seatDialIn;
 	
 	//座席内線番号
 	@PeregItem("IS00275")
-	private SeatNo seatExtensionNo;
+	private String seatExtensionNo;
 	
 	//携帯メールアドレス
 	@PeregItem("IS00273")
-	private MailAddress phoneMailAddress;
+	private String phoneMailAddress;
 	
 	//携帯電話番号
 	@PeregItem("IS00271")
-	private CellPhoneNumber cellPhoneNo;
+	private String cellPhoneNo;
 }
