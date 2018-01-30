@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.processexecution;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.IndividualAlarmExtraction;
 import nts.uk.ctx.at.function.dom.processexecution.alarmextraction.WorkplaceAlarmExtraction;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
@@ -14,7 +15,7 @@ import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalSche
 @Getter
 @Setter
 @AllArgsConstructor
-public class ProcessExecutionSetting {
+public class ProcessExecutionSetting extends DomainObject {
 	/* アラーム抽出（個人別） */
 	private IndividualAlarmExtraction indvAlarm;
 	

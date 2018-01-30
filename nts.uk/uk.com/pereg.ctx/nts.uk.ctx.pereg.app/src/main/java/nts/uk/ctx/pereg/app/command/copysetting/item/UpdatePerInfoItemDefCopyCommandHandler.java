@@ -33,30 +33,28 @@ public class UpdatePerInfoItemDefCopyCommandHandler extends CommandHandler<Updat
 	private CopySettingItemFinder itemFinder;
 
 	String ctgId;
-	UpdatePerInfoItemDefCopy command;
-	List<CopySettingItemDto> itemList;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdatePerInfoItemDefCopy> context) {
-		command = context.getCommand();
+		UpdatePerInfoItemDefCopy command = context.getCommand();
 
 		ctgId = command.getPerInfoCtgId();
 
-		itemList = this.itemFinder.getPerInfoDefById(ctgId).stream().filter(x -> x.isAlreadyItemDefCopy())
-				.collect(Collectors.toList());
-		removeObject();
+		List<CopySettingItemDto> items = this.itemFinder.getPerInfoDefById(ctgId).stream()
+				.filter(x -> x.isAlreadyItemDefCopy()).collect(Collectors.toList());
+		removeObject(items);
 
-		addObject();
+		addObject(command.getPerInfoItemDefLst());
 
 	}
 
 	@Transactional
-	private void removeObject() {
+	private void removeObject(List<CopySettingItemDto> items) {
 
 		this.empCopyRepo.removeCtgCopySetting(ctgId);
-		itemList.forEach(x -> {
+		items.forEach(x -> {
 
-			empCopyItemRepo.removePerInfoItemInCopySetting(x.getId());
+			this.empCopyItemRepo.removePerInfoItemInCopySetting(x.getId());
 
 		});
 		// delete object
@@ -64,41 +62,58 @@ public class UpdatePerInfoItemDefCopyCommandHandler extends CommandHandler<Updat
 	}
 
 	@Transactional
-	private void addObject() {
+	private void addObject(List<PerInfoDefDto> items) {
 		// add objects
 
-		List<PerInfoDefDto> itemList = command.getPerInfoItemDefLst();
+		// add item child for list
+		List<String> itemCds = getItemDefCdList(items);
+		new ArrayList<String>();
 
-		List<String> itemDefCd = new ArrayList<String>();
+		// get itemIds from itemDefCdlst
+		List<String> itemIds = new ArrayList<String>();
 
-		itemList.forEach(x -> {
+		items.forEach(x -> {
+			if (itemCds.indexOf(x.getItemCd()) != -1) {
+				itemIds.add(x.getId());
+			}
+		});
+		if (!CollectionUtil.isEmpty(itemIds)) {
+			EmpCopySetting newCtg = EmpCopySetting.createFromJavaType(ctgId, AppContexts.user().companyId());
+			this.empCopyRepo.addCtgCopySetting(newCtg);
+			this.empCopyItemRepo.updatePerInfoItemInCopySetting(ctgId, itemIds);
+		}
+
+	}
+
+	private List<String> getItemDefCdList(List<PerInfoDefDto> items) {
+
+		// add parent
+		List<String> itemCds = new ArrayList<String>();
+		items.forEach(x -> {
 
 			if (x.getChecked()) {
 				if (StringUtils.isEmpty(x.getItemParentCd())) {
-					itemDefCd.add(x.getItemCd());
+					itemCds.add(x.getItemCd());
 				}
 			}
 		});
+		// add child
+		addChildItems(items, itemCds);
 
-		itemList.stream().filter(x -> {
+		// add grandchild
+		addChildItems(items, itemCds);
+
+		return itemCds;
+	}
+
+	private void addChildItems(List<PerInfoDefDto> items, List<String> itemCds) {
+		items.stream().filter(x -> {
 			return !StringUtils.isEmpty(x.getItemParentCd());
 		}).collect(Collectors.toList()).forEach(item -> {
-			if (itemDefCd.contains(item.getItemParentCd())) {
-				itemDefCd.add(item.getItemCd());
+			if (itemCds.contains(item.getItemParentCd())) {
+				itemCds.add(item.getItemCd());
 			}
 		});
-		List<String> itemDefIds = new ArrayList<String>();
-
-		itemList.forEach(x -> {
-			if (itemDefCd.indexOf(x.getItemCd()) != -1) {
-				itemDefIds.add(x.getId());
-			}
-		});
-		if (!CollectionUtil.isEmpty(itemDefIds)) {
-			EmpCopySetting newCtg = EmpCopySetting.createFromJavaType(ctgId, AppContexts.user().companyId());
-			this.empCopyRepo.addCtgCopySetting(newCtg);
-			empCopyItemRepo.updatePerInfoItemInCopySetting(ctgId, itemDefIds);
-		}
 
 	}
 

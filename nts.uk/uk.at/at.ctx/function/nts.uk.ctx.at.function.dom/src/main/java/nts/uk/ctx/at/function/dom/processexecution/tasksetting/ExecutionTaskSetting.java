@@ -106,7 +106,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	}
 	
 	private boolean isCheckedAtLeastOneMonthDay() {
-		return detailSetting.getMonthly().getDays().size() > 0;
+		return detailSetting.getMonthly().getMonth().isCheckedAtLeastOne();
 	}
 	
 	/**

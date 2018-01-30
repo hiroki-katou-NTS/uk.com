@@ -172,6 +172,10 @@ module nts.uk.at.view.kal004.a.model {
                 self.currentCodeListSwap([]);
                 self.checkConditionList(_.sortBy(self.checkSource, ['category', 'checkConditonCode']));
                 self.currentAlarm = null;
+                
+                // tab3
+                self.setPermissionModel.listRoleID([]);
+                self.setPermissionModel.selectedRuleCode(1);
             }
             else {
                 self.createMode(false);

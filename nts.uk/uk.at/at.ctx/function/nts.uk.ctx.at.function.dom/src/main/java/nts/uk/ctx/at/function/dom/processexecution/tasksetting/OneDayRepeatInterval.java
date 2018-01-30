@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.processexecution.tasksetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.OneDayRepeatClassification;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.OneDayRepeatIntervalDetail;
 
@@ -10,7 +11,7 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.On
  */
 @Getter
 @AllArgsConstructor
-public class OneDayRepeatInterval {
+public class OneDayRepeatInterval extends DomainObject {
 	/* 1日の繰り返し間隔ありなし区分 */
 	private OneDayRepeatIntervalDetail detail;
 	

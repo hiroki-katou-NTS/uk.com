@@ -1,5 +1,14 @@
 package nts.uk.ctx.bs.person.dom.person.contact;
 
-public interface PersonContactRepository {
+import java.util.Optional;
 
+public interface PersonContactRepository {
+	
+	Optional<PersonContact> getByPId(String perId);
+	
+	void add(PersonContact domain);
+	
+	void update(PersonContact domain);
+	
+	void delete(String pID);
 }

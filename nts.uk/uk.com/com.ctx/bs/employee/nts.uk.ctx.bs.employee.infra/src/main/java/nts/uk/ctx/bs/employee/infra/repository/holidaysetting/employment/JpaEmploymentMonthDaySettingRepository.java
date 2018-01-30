@@ -1,8 +1,14 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.holidaysetting.employment;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -130,5 +136,22 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 		TypedQuery<KshmtEmpMonthDaySet> query = em.createQuery(cq);
 
 		return query.getResultList();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.employment.EmploymentMonthDaySettingRepository#findAllEmpRegister(nts.uk.ctx.bs.employee.dom.common.CompanyId)
+	 */
+	@Override
+	public List<String> findAllEmpRegister(CompanyId companyId) {
+		 List<KshmtEmpMonthDaySet> result = this.findBy(companyId, null, null, null);
+		
+		// Check exist
+		if (result != null && !result.isEmpty()) {
+			return result.stream()
+					.map(obj -> obj.getKshmtEmpMonthDaySetPK().getEmpCd())
+					.distinct()
+					.collect(Collectors.toList()); 
+		}
+		return new ArrayList<>();
 	}
 }

@@ -68,7 +68,7 @@ public class WindowAccountWs extends WebService{
 	 */
 	@POST
 	@Path("find/window/account")
-	public List<WindownAccountFinderDto> findListWindowAccByUserIdAndUseAtr(WindownAccountFinderDto windownAccountFinderDto) {
+	public List<WindownAccountFinderDto> findListWindowAccByUserId(WindownAccountFinderDto windownAccountFinderDto) {
 		return this.windowAccountFinder.findWindowAccountByUserId(windownAccountFinderDto.getUserId());
 	}
 	

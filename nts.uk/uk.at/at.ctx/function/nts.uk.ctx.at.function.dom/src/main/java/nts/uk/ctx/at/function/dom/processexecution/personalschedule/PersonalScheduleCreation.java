@@ -2,13 +2,14 @@ package nts.uk.ctx.at.function.dom.processexecution.personalschedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * 個人スケジュール作成
  */
 @Getter
 @AllArgsConstructor
-public class PersonalScheduleCreation {
+public class PersonalScheduleCreation extends DomainObject {
 	/* 作成期間 */
 	private PersonalScheduleCreationPeriod period;
 	

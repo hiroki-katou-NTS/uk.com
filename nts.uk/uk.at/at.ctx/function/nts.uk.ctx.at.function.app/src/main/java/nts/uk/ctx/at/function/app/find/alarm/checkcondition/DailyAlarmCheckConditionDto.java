@@ -23,8 +23,6 @@ public class DailyAlarmCheckConditionDto {
 	
 	private List<String> listErrorAlarmCode;
 	
-	private List<DailyErrorAlarmCheckDto> listErrorAlarmCheck;
-	
 	private List<WorkRecordExtraConAdapterDto> listExtractConditionWorkRecork;
 	
 	private List<FixedConditionWorkRecordDto> listFixedExtractConditionWorkRecord;
