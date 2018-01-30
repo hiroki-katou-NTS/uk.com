@@ -95,7 +95,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 		return new ProcessExecutionLog(new ExecutionCode(this.kfnmtProcExecLogPK.execItemCd),
 				this.kfnmtProcExecLogPK.companyId,
 				this.errorDetail == null ? null : EnumAdaptor.valueOf(this.errorDetail, OverallErrorDetail.class),
-				EnumAdaptor.valueOf(this.overallStatus, EndStatus.class),
+				this.overallStatus == null ? null : EnumAdaptor.valueOf(this.overallStatus, EndStatus.class),
 				this.lastExecDateTime,
 				new EachProcessPeriod(new DatePeriod(this.schCreateStart, this.schCreateEnd),
 						new DatePeriod(this.dailyCreateStart, this.dailyCreateEnd),

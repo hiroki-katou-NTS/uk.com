@@ -823,6 +823,21 @@ public class WorkingConditionDto extends PeregDomainDto {
 	// 自動打刻セット区分
 	@PeregItem("IS00258")
 	private int autoStampSetAtr;
+	
+	 /* The hourly ppayment atr. */
+	 // 時給者区分
+	 @PeregItem("IS00259")
+	 private Integer hourlyPaymentAtr;
+
+	 /* The time apply. */
+	 // 加給時間帯
+	 @PeregItem("IS00246")
+	 private String timeApply;
+	 
+	 /* The monthly pattern. */
+	 // 月間パターン
+	 @PeregItem("IS00127")
+	 private String monthlyPattern;
 
 	public WorkingConditionDto(String recordId) {
 		super(recordId);
@@ -834,7 +849,13 @@ public class WorkingConditionDto extends PeregDomainDto {
 		dto.setRecordId(dateHistoryItem.identifier());
 		dto.setStartDate(dateHistoryItem.start());
 		dto.setEndDate(dateHistoryItem.end());
-
+		
+		if(workingConditionItem.getHourlyPaymentAtr() != null)dto.setHourlyPaymentAtr(workingConditionItem.getHourlyPaymentAtr().value);
+		if(workingConditionItem.getTimeApply().isPresent())
+			dto.setTimeApply(workingConditionItem.getTimeApply().get().v());
+		if(workingConditionItem.getMonthlyPattern().isPresent())
+			dto.setMonthlyPattern(workingConditionItem.getMonthlyPattern().get().v());
+		
 		dto.setScheduleManagementAtr(workingConditionItem.getScheduleManagementAtr().value);
 
 		// 予定作成方法
