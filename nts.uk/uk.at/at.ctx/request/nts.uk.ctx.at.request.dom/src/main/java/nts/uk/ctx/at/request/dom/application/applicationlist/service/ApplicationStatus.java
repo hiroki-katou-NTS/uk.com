@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ApplicationStatus {
+	private String appId;
 	private String type;
 	private int number;
 }
