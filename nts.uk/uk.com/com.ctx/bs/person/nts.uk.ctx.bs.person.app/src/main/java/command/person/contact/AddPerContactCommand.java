@@ -2,12 +2,12 @@ package command.person.contact;
 
 import lombok.Getter;
 import nts.uk.shr.pereg.app.PeregItem;
-import nts.uk.shr.pereg.app.PeregRecordId;
+import nts.uk.shr.pereg.app.PeregPersonId;
 
 @Getter
 public class AddPerContactCommand {
 	//個人ID
-	@PeregRecordId
+	@PeregPersonId
 	private String personId;
 	
 	//携帯電話番号

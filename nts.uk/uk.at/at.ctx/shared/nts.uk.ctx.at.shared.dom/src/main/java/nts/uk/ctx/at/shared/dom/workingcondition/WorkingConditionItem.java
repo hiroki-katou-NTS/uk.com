@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -180,12 +181,18 @@ public class WorkingConditionItem extends AggregateRoot {
 	 *            the holiday add time set
 	 * @param scheduleMethod
 	 *            the schedule method
+	 * @param hourlyPaymentAtr
+	 * 			  the hourlyPaymentAtr
+	 * @param timeApply
+	 * 			  the timeApply
+	 * @param monthlyPattern
+	 * 			  the monthlyPattern
 	 */
-	public WorkingConditionItem(String historyId, NotUseAtr scheduleManagementAtr,
-			PersonalDayOfWeek workDayOfWeek, PersonalWorkCategory workCategory,
-			NotUseAtr autoStampSetAtr, NotUseAtr autoIntervalSetAtr, String employeeId,
-			NotUseAtr vacationAddedTimeAtr, int contractTime, WorkingSystem laborSystem,
-			BreakdownTimeDay holidayAddTimeSet, ScheduleMethod scheduleMethod) {
+	public WorkingConditionItem(String historyId, NotUseAtr scheduleManagementAtr, PersonalDayOfWeek workDayOfWeek,
+			PersonalWorkCategory workCategory, NotUseAtr autoStampSetAtr, NotUseAtr autoIntervalSetAtr,
+			String employeeId, NotUseAtr vacationAddedTimeAtr, int contractTime, WorkingSystem laborSystem,
+			BreakdownTimeDay holidayAddTimeSet, ScheduleMethod scheduleMethod, Integer hourlyPaymentAtr,
+			BonusPaySettingCode timeApply, MonthlyPatternCode monthlyPattern) {
 		super();
 		this.historyId = historyId;
 		this.scheduleManagementAtr = scheduleManagementAtr;
@@ -199,6 +206,13 @@ public class WorkingConditionItem extends AggregateRoot {
 		this.laborSystem = laborSystem;
 		this.holidayAddTimeSet = Optional.ofNullable(holidayAddTimeSet);
 		this.scheduleMethod = Optional.ofNullable(scheduleMethod);
+		if (hourlyPaymentAtr != null){
+			this.hourlyPaymentAtr = EnumAdaptor.valueOf(hourlyPaymentAtr.intValue(),HourlyPaymentAtr.class);
+		}
+		this.timeApply = Optional.ofNullable(timeApply);
+		this.monthlyPattern = Optional.ofNullable(monthlyPattern);
+		
+		
 	}
 
 }

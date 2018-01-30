@@ -70,6 +70,7 @@ public class PersonContactDto extends PeregDomainDto{
 	
 	public static PersonContactDto createFromDomain(PersonContact domain) {
 		PersonContactDto perContact = new PersonContactDto();
+		perContact.setRecordId(domain.getPersonId());
 		if(domain.getCellPhoneNumber() != null) perContact.setCellPhoneNumber(domain.getCellPhoneNumber().v());
 		if(domain.getMailAdress() != null) perContact.setMailAdress(domain.getMailAdress().v());
 		if(domain.getMobileMailAdress() != null) perContact.setMobileMailAdress(domain.getMobileMailAdress().v());
