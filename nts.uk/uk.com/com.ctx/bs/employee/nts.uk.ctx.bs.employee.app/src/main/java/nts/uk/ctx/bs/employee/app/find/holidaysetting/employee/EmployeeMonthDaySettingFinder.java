@@ -55,15 +55,10 @@ public class EmployeeMonthDaySettingFinder {
 	public List<String> findAllEmployeeRegister() {
 		String companyId = AppContexts.user().companyId();
 		
-		List<EmployeeMonthDaySetting> lstEmployee = this.repository.findAllEmployeeRegister(new CompanyId(companyId));
-		List<String> lstCode = new ArrayList<>();
+		List<String> lstEmployee = this.repository.findAllEmployeeRegister(new CompanyId(companyId));
 		
 		if (lstEmployee != null && !lstEmployee.isEmpty()) {
-			lstCode = lstEmployee.stream()
-						.map(obj -> obj.getEmployeeId())
-						.distinct()
-						.collect(Collectors.toList());
-			return lstCode;
+			return lstEmployee;
 		}
 		
 		return new ArrayList<>();

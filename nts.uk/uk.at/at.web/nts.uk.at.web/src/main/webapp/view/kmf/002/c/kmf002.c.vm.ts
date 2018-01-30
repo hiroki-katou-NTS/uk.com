@@ -1,6 +1,9 @@
 module nts.uk.at.view.kmf002.c {
 
     import service = nts.uk.at.view.kmf002.c.service;
+    import blockUI = nts.uk.ui.block;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     
     export module viewmodel {
         export class ScreenModel {
@@ -173,6 +176,11 @@ module nts.uk.at.view.kmf002.c {
             public start_page(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 let _self = this;
+                if (getShared('conditionSidebar5') == false) {
+//                    blockUI.grayout();
+                } else {
+//                    blockUI.clear();
+                }
                 _self.getDataFromService();
                  $.when($('#ccgcomponent').ntsGroupComponent(_self.ccgcomponent), 
                         $('#component-items-list').ntsListComponent(_self.listComponentOption)).done(function(data: any) {
