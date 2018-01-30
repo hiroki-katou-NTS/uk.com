@@ -133,16 +133,18 @@ public class ComboBoxRetrieveFactory {
 		case ENUM:
 			EnumRefConditionDto enumTypeDto = (EnumRefConditionDto) selectionItemDto;
 			resultList = getEnumComboBox(enumTypeDto.getEnumName());
-
+			break;
 		case CODE_NAME:
 			CodeNameRefTypeDto codeNameTypeDto = (CodeNameRefTypeDto) selectionItemDto;
 
 			resultList = getCodeNameComboBox(codeNameTypeDto.getTypeCode(), standardDate);
+			break;
 		case DESIGNATED_MASTER:
 			MasterRefConditionDto masterRefTypeDto = (MasterRefConditionDto) selectionItemDto;
 
 			resultList = getMasterComboBox(masterRefTypeDto.getMasterType(), employeeId, standardDate,
 					isDisplayItemCode, false, null);
+			break;
 
 		}
 		if (!CollectionUtil.isEmpty(resultList)) {
@@ -296,10 +298,13 @@ public class ComboBoxRetrieveFactory {
 		switch (RefType) {
 		case ENUM:
 			resultList = getEnumComboBox(RefCd);
+			break;
 		case CODE_NAME:
 			resultList = getCodeNameComboBox(RefCd, standardDate);
+			break;
 		case DESIGNATED_MASTER:
 			resultList = getMasterComboBox(RefCd, employeeId, standardDate, false, true, workplaceId);
+			break;
 
 		}
 		if (!CollectionUtil.isEmpty(resultList)) {
