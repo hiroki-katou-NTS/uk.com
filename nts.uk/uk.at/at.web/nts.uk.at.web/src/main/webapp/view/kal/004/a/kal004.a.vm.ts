@@ -46,7 +46,7 @@ module nts.uk.at.view.kal004.a.model {
 
             self.alarmHeader = ko.observableArray([
                 { headerText: getText('KAL004_7'), key: 'alarmPatternCD', width: 40 },
-                { headerText: getText('KAL004_8'), key: 'alarmPatternName', width: 150 },
+                { headerText: getText('KAL004_8'), key: 'alarmPatternName', width: 175 },
             ]);
             self.alarmCode = ko.observable('');
             self.alarmName = ko.observable('');
@@ -60,7 +60,7 @@ module nts.uk.at.view.kal004.a.model {
                 { headerText: 'cssClass', key: 'cssClass', width: 10, hidden: true },
                 { headerText: getText('KAL004_21'), key: 'categoryName', width: 120, template: "<span class='${cssClass}'>${categoryName}</span>" },
                 { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 40, template: "<span class='${cssClass}'>${checkConditonCode}</span>" },
-                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 160, template: "<span class='${cssClass}'>${checkConditionName}</span>" }
+                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 150, template: "<span class='${cssClass}'>${checkConditionName}</span>" }
             ]);
 
             self.currentCodeListSwap = ko.observableArray([]);
@@ -172,6 +172,10 @@ module nts.uk.at.view.kal004.a.model {
                 self.currentCodeListSwap([]);
                 self.checkConditionList(_.sortBy(self.checkSource, ['category', 'checkConditonCode']));
                 self.currentAlarm = null;
+                
+                // tab3
+                self.setPermissionModel.listRoleID([]);
+                self.setPermissionModel.selectedRuleCode(1);
             }
             else {
                 self.createMode(false);
@@ -225,6 +229,13 @@ module nts.uk.at.view.kal004.a.model {
             // Validate input
             $(".nts-input").trigger("validate");
             if ($(".nts-input").ntsError("hasError")) return;
+            
+            // Validate logic
+            if(_.find(self.currentCodeListSwap(), {'cssClass': 'red-color'})){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_817" });
+                return;
+            }
+            
             // Create command
             let alarmPerSet: share.AlarmPermissionSettingCommand = new share.AlarmPermissionSettingCommand(self.setPermissionModel.selectedRuleCode() == 1 ? false : true, self.setPermissionModel.listRoleID());
             let checkConditonList: Array<share.CheckConditionCommand> = self.periodSetting.listCheckCondition();
@@ -234,7 +245,7 @@ module nts.uk.at.view.kal004.a.model {
             if (self.createMode()) {
                 service.addAlarmPattern(command).done(() => {
 
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 
                     self.getAlarmPattern().done(function() {
                         self.currentCode(self.alarmCode());
@@ -242,13 +253,13 @@ module nts.uk.at.view.kal004.a.model {
                         block.clear();
                     });
                 }).fail((error) => {
-                    nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                     block.clear();
                 });
             } else {
                 service.updateAlarmPattern(command).done(() => {
 
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 
                     self.getAlarmPattern().done(function() {
                         self.currentCode(self.alarmCode());
@@ -256,7 +267,7 @@ module nts.uk.at.view.kal004.a.model {
                         block.clear();
                     });
                 }).fail((error) => {
-                    nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                     block.clear();
                 });
 

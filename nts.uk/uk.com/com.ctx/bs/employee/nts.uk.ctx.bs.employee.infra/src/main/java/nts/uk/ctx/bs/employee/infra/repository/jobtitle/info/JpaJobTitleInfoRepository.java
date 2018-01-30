@@ -228,8 +228,9 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		cq.where(listPredicate.toArray(new Predicate[] {}));
 		
 		// Sort by disporder
-		cq.orderBy(criteriaBuilder.asc(joinRoot.get(BsymtJobSeqMaster_.disporder)));
-
+		cq.orderBy(criteriaBuilder.asc(joinRoot.get(BsymtJobSeqMaster_.disporder)),
+				criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
+		
 		return em.createQuery(cq).getResultList().stream()
 				.map(item -> new JobTitleInfo(new JpaJobTitleInfoGetMemento(item)))
 				.collect(Collectors.toList());
@@ -375,6 +376,7 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
 		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
+		Join<BsymtJobInfo, BsymtJobSeqMaster> joinRoot = root.join(BsymtJobInfo_.bsymtJobSeqMaster, JoinType.LEFT);
 
 		// Build query
 		cq.select(root);
@@ -391,7 +393,9 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 				root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.endDate), baseDate));
 
 		cq.where(listPredicate.toArray(new Predicate[] {}));
-		//cq.orderBy(criteriaBuilder.asc(root.get(BsymtJobInfo_.bsymtJobSeqMaster).get(BsymtJobSeqMaster_.disporder)));
+		
+		cq.orderBy(criteriaBuilder.asc(joinRoot.get(BsymtJobSeqMaster_.disporder)),
+				criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
 
 		List<BsymtJobInfo> result = em.createQuery(cq).getResultList();
 		

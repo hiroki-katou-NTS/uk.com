@@ -6,6 +6,7 @@ import nts.arc.primitive.constraint.TimeRange;
 /**
  * The Class AttendenceTime.
  */
+// 勤怠時間
 @TimeRange(max = "48:00", min = "00:00")
 public class AttendanceTime extends TimeDurationPrimitiveValue<AttendanceTime> {
 

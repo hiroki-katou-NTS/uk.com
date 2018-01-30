@@ -35,12 +35,12 @@
 							binding: <span data-bind="text: time"></span>
 						</p>
 						<p>
-							<input id="test" data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', value: time2, enable: enable, readonly: readonly, required: true }" />
+							<input id="test1" data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', value: time2, enable: enable, readonly: readonly, required: true }" />
 							binding: <span data-bind="text: time2"></span>
 						</p>
 						<p>
 							<h3>Show Raw Time</h3>
-							<input id="test2" data-bind="ntsTimeWithDayEditor: {name: 'Time With Day 2', constraint:'TimeWithDayAttr', value: time2, enable: enable, readonly: readonly, required: true, option: {timeWithDay: false}}" />
+							<input id="test2" data-bind="ntsTimeWithDayEditor: {name: 'Time With Day 2', constraint:'TimeWithDayAttr', value: time2, enable: enable, readonly: readonly, required: true, option: {timeWithDay: true}}" />
 							binding: <span data-bind="text: time2"></span>
 						</p>
 						<article class="cf">

@@ -7,7 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.workingcondition.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;

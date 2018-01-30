@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.processexecution.dailyperformance;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * 日別実績の作成・計算
@@ -10,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class DailyPerformanceCreation {
+public class DailyPerformanceCreation extends DomainObject {
 	/* 日別実績の作成・計算 */
 	private boolean dailyPerfCls;
 	
