@@ -39,6 +39,9 @@ module nts.uk.at.view.kmf022.a.service {
         // A6_27 -> A6_34 có thể lấy theo company rồi lên lọc hoặc lấy thẳng object bằng cả holiday app type
         findAllHdApp: "at/request/application/displayname/hd",
         findHdApp: "at/request/application/displayname/hdapp",
+
+        // C27 -> C49
+        
         //E14,15
         findStamp: "at/request/application/stamprequest/findByComID", //UpdateStampRequestSettingCommandHandler
         // F10->F16
