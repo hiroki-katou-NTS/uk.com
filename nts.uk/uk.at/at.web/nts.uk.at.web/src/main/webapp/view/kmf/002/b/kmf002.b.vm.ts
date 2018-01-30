@@ -38,7 +38,7 @@ module nts.uk.at.view.kmf002.b {
                         isShowSelectButton: true,
                         isDialog: false,
                         alreadySettingList: _self.alreadySettingList,
-                        maxRows: 10,
+                        maxRows: 20,
                         tabindex: 1,
                         systemType : SystemType.EMPLOYMENT
                 };
