@@ -19,7 +19,7 @@ module nts.uk.at.view.kmf022.a.service {
         // A13_4 có 2 sự lựa chọn, có thể lấy list cty đang đăng nhập rồi lên UI lọc, hoặc lấy thẳng 1 object(nhớ truyền apptype) 
         findAllPro: "at/request/application/setting/proxy/findAll",
         findProByApp: "at/request/application/setting/proxy/findApp",
-        // A14_3
+        // A14_3 
         findJobAssign: "job/assign/setting/getjob",
         //A15_4
         findJobTitleSearch: "workflow/jobtitlesearchset/job/getbyId",
@@ -39,6 +39,10 @@ module nts.uk.at.view.kmf022.a.service {
         // A6_27 -> A6_34 có thể lấy theo company rồi lên lọc hoặc lấy thẳng object bằng cả holiday app type
         findAllHdApp: "at/request/application/displayname/hd",
         findHdApp: "at/request/application/displayname/hdapp",
+        //E14,15
+        findStamp: "at/request/application/stamprequest/findByComID", //UpdateStampRequestSettingCommandHandler
+        // F10->F16
+        findDirectlycommon: "at/request/application/gobackdirectlycommon/getGoBackCommonByCid", //GoBackDirectlyCommonSettingRepository
 
         //B18 -> B36
         findOvertime: "at/request/application/overtime/ot",
@@ -47,13 +51,16 @@ module nts.uk.at.view.kmf022.a.service {
         findAllVaca: "at/request/vacation/setting/hdapp",
         findVaca: "at/request/vacation/setting/hdappset",
         
-        //E14,15
-        findStamp: "at/request/application/stamprequest/findByComID", //UpdateStampRequestSettingCommandHandler
-        // F10->F16
-        findDirectlycommon: "at/request/application/gobackdirectlycommon/getGoBackCommonByCid" //GoBackDirectlyCommonSettingRepository
+        //D
+        findWorkChange: "at/request/application/workchange/workChangeSet",
+        
         
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
+    }
+    
+    export function findWorkChange() {
+        return nts.uk.request.ajax("at", paths.findWorkChange); 
     }
     
     export function findOvertime() {
