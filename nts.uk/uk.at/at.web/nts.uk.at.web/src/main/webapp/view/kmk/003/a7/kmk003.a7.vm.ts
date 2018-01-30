@@ -440,9 +440,9 @@ module a7 {
                     screenModel.dataSourceForFixedOrDiffTime.valueHasMutated();
                 });
                 
-                document.getElementById('nts-fix-table-a7-flow-flex-use').addEventListener('timerangedatachange', e => {
-                    screenModel.dataSourceForFlowOrFlexUse.valueHasMutated();
-                });
+//                document.getElementById('nts-fix-table-a7-flow-flex-use').addEventListener('timerangedatachange', e => {
+//                    screenModel.dataSourceForFlowOrFlexUse.valueHasMutated();
+//                });
                 
                 isClickSave.subscribe((v) => {
                     if (screenModel.mainSettingModel.workTimeSetting.isFlex()) {
