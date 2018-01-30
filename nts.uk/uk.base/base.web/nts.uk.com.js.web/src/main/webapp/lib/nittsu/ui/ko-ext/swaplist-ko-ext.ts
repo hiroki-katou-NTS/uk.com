@@ -812,7 +812,7 @@ module nts.uk.ui.koExtentions {
             var $dest = forward === true ? this.swapParts[1].$listControl : this.swapParts[0].$listControl;
             var destList = forward === true ? this.swapParts[1].dataSource : this.swapParts[0].dataSource;
             var max = forward === true ? this.swapParts[1].itemsLimit : this.swapParts[0].itemsLimit;
-            var oldSource = _.cloneDeep(forward ? destList : sourceList);
+            var oldSource = _.cloneDeep(destList);
             if (moveAll) {
                 var selectedIds = sourceList.map(function(row) { return row[primaryKey]; });
                 if(beforMove(forward, oldSource, selectedIds) == false) {
