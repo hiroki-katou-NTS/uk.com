@@ -8,6 +8,7 @@ module nts.uk.at.view.kmf002.b {
                 find: "bs/employee/holidaysetting/workplace/findWorkplaceMonthDaySetting",
                 remove: "bs/employee/holidaysetting/workplace/remove",
                 findFirstMonth: "basic/company/beginningmonth/find",
+                findAll: "bs/employee/holidaysetting/workplace/findWorkplaceMonthDaySetting"
             };
         
          export function save(year: string, data: any, workplaceId: string): JQueryPromise<any> {
@@ -33,6 +34,10 @@ module nts.uk.at.view.kmf002.b {
         
         export function findFirstMonth(): JQueryPromise<any>{
             return nts.uk.request.ajax("com", path.findFirstMonth);
+        }
+        
+        export function findAll(year: string): JQueryPromise<any> {
+            return nts.uk.request.ajax("com", path.findAll);
         }
         
     }

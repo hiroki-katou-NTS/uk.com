@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.ws.holidaysetting.employment;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -44,6 +46,12 @@ public class EmploymentMonthDaySettingWebService extends WebService {
 	@POST
 	public EmploymentMonthDaySettingDto findAll(@PathParam("year") int year,@PathParam("empCd") String empCd){
 		return this.finder.getEmploymentMonthDaySetting(empCd, year);
+	}
+	
+	@Path("findEmploymentMonthDaySetting/findAllEmpRegister")
+	@POST
+	public List<String> findAllEmpRegister(){
+		return this.finder.findAllEmpRegister();
 	}
 	
 	/**

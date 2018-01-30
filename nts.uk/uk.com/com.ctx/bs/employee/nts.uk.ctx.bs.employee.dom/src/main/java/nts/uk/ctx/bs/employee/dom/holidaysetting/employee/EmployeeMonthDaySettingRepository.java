@@ -1,5 +1,10 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.holidaysetting.employee;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
@@ -20,6 +25,14 @@ public interface EmployeeMonthDaySettingRepository {
 	 * @return the optional
 	 */
 	Optional<EmployeeMonthDaySetting> findByYear(CompanyId companyId, String employee, Year year);
+	
+	/**
+	 * Find all employee register.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<String> findAllEmployeeRegister(CompanyId companyId);
 	
 	/**
 	 * Adds the.
