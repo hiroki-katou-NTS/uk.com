@@ -52,7 +52,7 @@ module nts.uk.at.view.kal003.a.tab {
                     }
                 },
                 { headerText: getText('KAL003_54'), key: 'name', width: 200 },
-                { headerText: getText('KAL003_55'), key: 'message', width: 200 }
+                { headerText: getText('KAL003_55'), key: 'message', width: 300 }
             ];
 
 
