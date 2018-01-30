@@ -181,19 +181,7 @@ public class RegisterLayoutFinder {
 				List<ComboBoxObject> resultList = cbbfact.getComboBox(selectionItemDto, AppContexts.user().employeeId(),
 						command.getHireDate(), true, dataObject.isRequired());
 
-				if (!CollectionUtil.isEmpty(resultList)) {
-
-					List<ComboBoxObject> comboboxItems = new ArrayList<ComboBoxObject>();
-
-					if (!dataObject.isRequired()) {
-
-						comboboxItems = new ArrayList<ComboBoxObject>(Arrays.asList(new ComboBoxObject("", "")));
-
-					}
-					comboboxItems.addAll(resultList);
-
-					dataObject.setLstComboBoxValue(comboboxItems);
-				}
+				dataObject.setLstComboBoxValue(resultList);
 
 			}
 		}
