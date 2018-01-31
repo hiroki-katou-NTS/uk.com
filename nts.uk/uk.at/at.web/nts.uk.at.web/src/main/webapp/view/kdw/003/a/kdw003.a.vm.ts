@@ -109,11 +109,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             { prop: 'name', length: 2 }]);
         comboColumnsCalc: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 1 },
             { prop: 'name', length: 8 }]);
-         comboItemsDoWork : KnockoutObservableArray<any> = ko.observableArray([]);
-         comboItemsReason : KnockoutObservableArray<any> = ko.observableArray([]);
-         comboItemsCalc : KnockoutObservableArray<any> = ko.observableArray([]);
-         showPrincipal :  KnockoutObservable<any> = ko.observable(true);
-         dataAll :  KnockoutObservable<any> = ko.observable(null);
+        comboItemsDoWork: KnockoutObservableArray<any> = ko.observableArray([]);
+        comboItemsReason: KnockoutObservableArray<any> = ko.observableArray([]);
+        comboItemsCalc: KnockoutObservableArray<any> = ko.observableArray([]);
+        showPrincipal: KnockoutObservable<any> = ko.observable(true);
+        dataAll: KnockoutObservable<any> = ko.observable(null);
+        hasLstHeader : boolean  =  true;
 
         constructor() {
             var self = this;
@@ -276,7 +277,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // Fixed Header
                 self.fixHeaders(data.lstFixedHeader);
                 self.showPrincipal(data.showPrincipal);
-                if (data.showPrincipal) {
+                if (data.showPrincipal || data.lstControlDisplayItem.lstHeader.length == 0) {
+                    self.hasLstHeader = false;
                     self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
                     self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
                     self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
@@ -792,7 +794,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             } else if (self.displayFormat() == 2) {
                 self.fixColGrid(self.errorModeFixCol);
             }
-            if(self.showPrincipal()){
+            if(self.showPrincipal() && self.hasLstHeader){
                 let sign = _.find( self.fixColGrid(), (data: any) =>{
                     return data.columnKey === 'sign';
                 }
