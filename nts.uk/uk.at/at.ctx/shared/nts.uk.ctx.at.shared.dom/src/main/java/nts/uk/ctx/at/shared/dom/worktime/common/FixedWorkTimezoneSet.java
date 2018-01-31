@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -189,5 +190,20 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject {
 		this.lstWorkingTimezone.forEach(emTimezoneOther -> {
 			emTimezoneOther.restoreData(mapEmTimezone.get(emTimezoneOther.getEmploymentTimeFrameNo()));
 		});
+		
+		// restore OTTimezone
+		Map<EmTimezoneNo, OverTimeOfTimeZoneSet> mapOverTimezone = other.getLstOTTimezone().stream().collect(
+				Collectors.toMap(item -> ((OverTimeOfTimeZoneSet) item).getWorkTimezoneNo(), Function.identity()));
+		this.lstOTTimezone.forEach(overTimezoneOther -> {
+			overTimezoneOther.restoreData(mapOverTimezone.get(overTimezoneOther.getWorkTimezoneNo()));
+		});
+	}
+	
+	/**
+	 * Restore default data.
+	 */
+	public void restoreDefaultData() {
+		this.lstWorkingTimezone = new ArrayList<>();
+		this.lstOTTimezone = new ArrayList<>();
 	}
 }

@@ -41,7 +41,7 @@ module nts.uk.at.view.kmf002 {
                 _self.fiscalYear = ko.observable(moment().format('YYYY'));
                 _self.arrMonth = ko.observableArray([]);
                 
-                $.when(_self.findFirstMonth()).done(function(data) {
+                $.when(_self.findFirstMonth()).done(function(data: any) {
                     for (let i=data.startMonth; i<=12; i++) {
                         _self.arrMonth.push({'month': ko.observable(i), 'day': ko.observable(''), 'enable': ko.observable(true)});
                     }
@@ -56,7 +56,7 @@ module nts.uk.at.view.kmf002 {
                _self.cssRangerYM = {};
                _self.cssRangerYMD = {};
                 
-                _.forEach(_self.arrMonth(), function(newValue) {
+                _.forEach(_self.arrMonth(), function(newValue: any) {
                     newValue.day.subscribe(function(newValue) {
                     });
                 });   

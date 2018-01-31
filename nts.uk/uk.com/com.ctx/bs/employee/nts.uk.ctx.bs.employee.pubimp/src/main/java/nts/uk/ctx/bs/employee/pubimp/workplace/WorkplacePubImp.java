@@ -318,7 +318,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		if (sids.isEmpty() || datePeriod.start() == null || datePeriod.end() == null)
 			return null;
 
-		List<AffWorkplaceHistory> lstAffWkpHist = new ArrayList();//affWorkplaceHistoryRepository.getByListSid(sids);
+		List<AffWorkplaceHistory> lstAffWkpHist = affWorkplaceHistoryRepository.getByListSid(sids);
 		if (lstAffWkpHist.isEmpty())
 			return null;
 

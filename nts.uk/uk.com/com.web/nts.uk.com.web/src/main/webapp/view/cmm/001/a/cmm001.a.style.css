@@ -1,7 +1,4 @@
 @CHARSET "UTF-8";
-#contents-area{
-	width: 1340px !important;
-}
 .outer {
 	outline: 1px solid #FF6138;
 }
@@ -34,17 +31,10 @@
 	width: 70px;
 }
 
-.nts-left-content {
-	margin-top: 10px;
-	width: 410px;
-	margin-left: 15px;
-}
-
 #ntsleft {
-	float: left;
-	width: 370px;
+	margin-top: 10px;
+	margin-left: 15px;
 	height: 500px;
-	margin-top: 2px;
 }
 
 .group-button-1 {
@@ -66,23 +56,6 @@
 	width: 200px;
 	height: 28px;
 	margin-top: 4px;
-}
-
-.nts-right-content {
-	float: left;
-	padding: 0 20px 0px 20px;
-	width: 700px;
-	margin-left: 15px;
-}
-
-.div-left-content {
-	margin-top: 20px;
-}
-
-.div-right-content {
-	float: left;
-	padding: 20px;
-	width: 650px;
 }
 
 .form-label {

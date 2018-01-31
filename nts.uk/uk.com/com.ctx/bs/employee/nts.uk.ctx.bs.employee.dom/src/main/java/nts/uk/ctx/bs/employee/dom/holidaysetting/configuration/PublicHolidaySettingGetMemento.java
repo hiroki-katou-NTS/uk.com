@@ -42,5 +42,5 @@ public interface PublicHolidaySettingGetMemento {
 	 *
 	 * @return the public holiday management start date
 	 */
-	PublicHolidayManagementStartDate getPublicHolidayManagementStartDate();
+	PublicHolidayManagementStartDate getPublicHolidayManagementStartDate(Integer publicHdManageAtr);
 }

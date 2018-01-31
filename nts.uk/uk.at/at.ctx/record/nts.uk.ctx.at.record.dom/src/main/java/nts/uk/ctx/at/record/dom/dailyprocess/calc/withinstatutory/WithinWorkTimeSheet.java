@@ -27,9 +27,9 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -624,7 +624,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * 法定内深夜時間の計算
 	 * @return　法定内深夜時間
 	 */
-	public WithinStatutoryMidNightTime calcMidNightTime(AutoCalculationCategoryOutsideHours autoCalcSet) {
+	public WithinStatutoryMidNightTime calcMidNightTime(AutoCalAtrOvertime autoCalcSet) {
 		int totalMidNightTime = 0;
 		totalMidNightTime = withinWorkTimeFrame.stream()
 											   .filter(tg -> tg.getMidNightTimeSheet().isPresent())

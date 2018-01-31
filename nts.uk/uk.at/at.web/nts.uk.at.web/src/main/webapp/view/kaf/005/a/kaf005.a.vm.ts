@@ -187,25 +187,23 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     });
                 self.prePostSelected.subscribe(function(value){
                     let dfd =$.Deferred();
-                    if(!nts.uk.util.isNullOrEmpty(self.appDate())){
-                            service.checkConvertPrePost({
-                                prePostAtr: value,
-                                appDate:  nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-                                siftCD: self.siftCD(),
-                                overtimeHours: ko.toJS(self.overtimeHours) 
-                            }).done((data) =>{
-                                self.convertpreAppOvertimeDto(data);
-                                self.convertAppOvertimeReferDto(data);
-                                self.referencePanelFlg(data.referencePanelFlg);
-                                self.allPreAppPanelFlg(data.allPreAppPanelFlg);
-                                self.preAppPanelFlg(data.preAppPanelFlg);
-                                self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
-                                self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
-                                self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
-                            }).fail((res) =>{
-                                dfd.reject(res);    
-                            });
-                    }
+                        service.checkConvertPrePost({
+                            prePostAtr: value,
+                            appDate:  nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
+                            siftCD: self.siftCD(),
+                            overtimeHours: ko.toJS(self.overtimeHours) 
+                        }).done((data) =>{
+                            self.convertpreAppOvertimeDto(data);
+                            self.convertAppOvertimeReferDto(data);
+                            self.referencePanelFlg(data.referencePanelFlg);
+                            self.allPreAppPanelFlg(data.allPreAppPanelFlg);
+                            self.preAppPanelFlg(data.preAppPanelFlg);
+                            self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
+                            self.displayDivergenceReasonForm(data.displayDivergenceReasonForm);
+                            self.displayDivergenceReasonInput(data.displayDivergenceReasonInput);
+                        }).fail((res) =>{
+                            dfd.reject(res);    
+                        });
                      return dfd.promise();
                 });
                 
@@ -403,19 +401,26 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     }
                 } else if (data.errorCode == 1){
                     if(data.frameNo == -1){
-                        let frameName = [];
+                        let frameName = "";
                         //Setting color for item error
                         for (let i = 0; i < self.overtimeHours().length; i++) {
                             self.changeColor( self.overtimeHours()[i].attendanceID(), self.overtimeHours()[i].frameNo(),data.errorCode);
-                            frameName.push(self.overtimeHours()[i].frameName());
+                            if(self.overtimeHours().length == 1){
+                                frameName = self.overtimeHours()[i].frameName();
+                            }else{
+                                if(i == 0){
+                                    frameName =  self.overtimeHours()[0].frameName();
+                                }else{
+                                    frameName += "、"+ self.overtimeHours()[i].frameName();
+                                }
+                            }
                         }
                         
-                        
-                        dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(), moment(self.appDate()).format(self.DATE_FORMAT),frameName]}) .then(function() { nts.uk.ui.block.clear(); }); 
+                        dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(),frameName]}) .then(function() { nts.uk.ui.block.clear(); }); 
                     }else{
                       //Change background color
                         self.changeColor( data.attendanceId, data.frameNo,data.errorCode);
-                        dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(), moment(self.appDate()).format(self.DATE_FORMAT), $('#overtimeHoursHeader_'+data.attendanceId+'_'+data.frameNo).text()]}) .then(function() { nts.uk.ui.block.clear(); }); 
+                        dialog.alertError({messageId:"Msg_424", messageParams: [self.employeeName(),$('#overtimeHoursHeader_'+data.attendanceId+'_'+data.frameNo).text()]}) .then(function() { nts.uk.ui.block.clear(); }); 
                     }                    
                 }
             }).fail((res) => {
@@ -809,8 +814,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             }else if (data == 0) {
                 hourMinute = "0:00";
             }else if(data != null){
-                let hour = Math.floor(data/60);
-                let minutes = Math.floor(data%60);
+                let hour = Math.floor(Math.abs(data)/60);
+                    let minutes = Math.floor(Math.abs(data)%60);
                 hourMinute = hour + ":"+ (minutes < 10 ? ("0" + minutes) : minutes);
             }
             return hourMinute;

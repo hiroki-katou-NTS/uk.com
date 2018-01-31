@@ -33,9 +33,9 @@ import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSet;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndAggregateFrameSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
@@ -177,7 +177,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																		new OverDayEndCalcSetOfWeekDay(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE));
 
 			//残業時間の自動計算設定
-			AutoCalcSet autoCalSetting = new AutoCalcSet(AutoCalculationCategoryOutsideHours.CalculateEmbossing);
+			AutoCalcSet autoCalSetting = new AutoCalcSet(AutoCalAtrOvertime.CALCULATEMBOSS);
 			AutoCalculationOfOverTimeWork autoCalcOverTimeWork = new AutoCalculationOfOverTimeWork(autoCalSetting,
 																									autoCalSetting,
 																									autoCalSetting,

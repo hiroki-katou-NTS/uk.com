@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleSidDto;
@@ -558,6 +559,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						}
 					}
 					workInfoOfDailyPerformanceUpdate.setScheduleTimeSheets(scheduleTimeSheets);
+				} else {
+					throw new RuntimeException("PredetemineTimeSetting has not data");
 				}
 			}
 
@@ -768,10 +771,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 											.findBySid(employeeID, day);
 
 									if (affWorkplaceDto.isPresent()) {
-										actualStamp.setLocationCode(
-												new WorkLocationCD(affWorkplaceDto.get().getWorkplaceCode()));
-										leaveActualStamp.setLocationCode(
-												new WorkLocationCD(affWorkplaceDto.get().getWorkplaceCode()));
+										actualStamp.setLocationCode(null);
+										leaveActualStamp.setLocationCode(null);
 									}
 									actualStamp.setStampSourceInfo(automaticStampSetDetailDto.getAttendanceStamp());
 									leaveActualStamp.setStampSourceInfo(automaticStampSetDetailDto.getLeavingStamp());

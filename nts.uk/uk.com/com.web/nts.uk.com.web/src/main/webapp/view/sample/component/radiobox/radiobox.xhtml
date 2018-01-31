@@ -28,36 +28,12 @@
 							If you want to create a list of RadioBoxes then using <a href="/nts.uk.com.web/view/sample/radioboxgroup/radioboxgroup.xhtml">RadioBoxGroup</a> instead.<br/>
 							Use RadioBox only to customize your layout like below demo
 						</note>
-						<span class="ntsControl">
-							<label class="ntsRadioBox">
-								<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: selectedValue, enable: enable" />
-								<span class="box"></span><span class="label" data-bind="text: 'Panel 1 select'"></span>
-							</label>
-						</span>
-						<div style="margin: 5px 25px 10px; padding: 10px; border:1px solid #ddd; border-radius: 5px;">
-							<input data-bind="ntsTextEditor: {value: ko.observable(), enable: (selectedValue() == 1)}" />
-							<button data-bind="enable: (selectedValue() == 1)">Click me!</button>
-							<span data-bind="ntsCheckBox: {checked: true, enable: (selectedValue() == 1)}">Select me!</span>
-						</div>
-						<span class="ntsControl">
-							<label class="ntsRadioBox">
-								<input type="radio" name="textRadio" data-bind="checkedValue: 2, checked: selectedValue, enable: enable" />
-								<span class="box"></span><span class="label" data-bind="text: 'Panel 2 select'"></span>
-							</label>
-						</span>
-						<div style="margin: 5px 25px 10px; padding: 10px; border:1px solid #ddd; border-radius: 5px;">
-							<input data-bind="ntsTextEditor: {value: ko.observable(), enable: (selectedValue() == 2)}" />
-							<button data-bind="enable: (selectedValue() == 2)">Click me!</button>
-							<span data-bind="ntsCheckBox: {checked: true, enable: (selectedValue() == 2)}">Select me!</span>
-						</div>
 						<br/>
 						<div data-bind="ntsRadioButton: {checked: selectedValue2, enable: enable, option: option, optionValue: 'value', optionText: 'text', group: 'ntsControl'}"></div>
 						<div data-bind="ntsRadioButton: {checked: selectedValue3, enable: enable, optionText: 'No Option' }"></div>
-						<br/>
-						<div data-bind="ntsCheckBox: { checked: enable }" class="cf">Enable</div>
-						<div>Selected Value: <span data-bind="text: ko.toJSON(selectedValue())"></span>
-							<br/><span data-bind="text: ko.toJSON(selectedValue2())"></span>
-							<br/><span data-bind="text: ko.toJSON(selectedValue3())"></span></div>
+						
+						<br/><span data-bind="text: ko.toJSON(selectedValue2())"></span>
+						<br/><span data-bind="text: ko.toJSON(selectedValue3())"></span></div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
