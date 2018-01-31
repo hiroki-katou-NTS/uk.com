@@ -2,7 +2,11 @@ package nts.uk.ctx.at.schedule.dom.schedule.schedulemaster;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.PersonSymbolQualify;
+import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.ScheDispControl;
+import nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol.UseAtr;
 
 /**
  * 勤務予定マスタ情報
@@ -33,4 +37,10 @@ public class ScheMasterInfo {
 	
 	/** 職場ID */
 	private String workplaceId;
+
+	public static ScheMasterInfo createFromJavaType(String sId, GeneralDate generalDate, String employeeCd,
+			String classificationCd, String workTypeCd, String jobId, String workplaceId) {
+
+		return new ScheMasterInfo(sId, generalDate, employeeCd, classificationCd, workTypeCd, jobId, workplaceId);
+	}
 }
