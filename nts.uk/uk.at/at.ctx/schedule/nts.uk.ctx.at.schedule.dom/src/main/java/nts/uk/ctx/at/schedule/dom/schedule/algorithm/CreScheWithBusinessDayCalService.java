@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.schedule.algorithm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ public class CreScheWithBusinessDayCalService {
 	 * @param workTypeCode
 	 * @param workTimeCode
 	 */
-	public void ScheduleBreakTime(String companyId, String workTypeCode, String workTimeCode) {
+	public BusinessDayCal ScheduleBreakTime(String companyId, String workTypeCode, String workTimeCode) {
 		// 入力パラメータ「就業時間帯コード」をチェック
 		if(!Strings.isBlank(workTimeCode) || !"000".equals(workTimeCode)) {
 			// ドメインモデル「勤務種類」を取得する
@@ -65,7 +66,7 @@ public class CreScheWithBusinessDayCalService {
 							// 今回対象外
 							// TODO: 
 						} else {
-							determineSetWorkingHours(workTimeSetting.get(), companyId, workTimeCode, true, workType.get().getDailyWork());
+							return determineSetWorkingHours(workTimeSetting.get(), companyId, workTimeCode, true, workType.get().getDailyWork());
 						}
 					}
 				} else {
@@ -76,12 +77,14 @@ public class CreScheWithBusinessDayCalService {
 							// ［フレックス勤務用］
 							// TODO: 
 						} else {
-							determineSetWorkingHours(workTimeSetting.get(), companyId, workTimeCode, false, workType.get().getDailyWork());
+							return determineSetWorkingHours(workTimeSetting.get(), companyId, workTimeCode, false, workType.get().getDailyWork());
 						}
 					}
 				}
 			}
 		}
+		
+		return null;
 	}	
 	
 	/**
@@ -91,7 +94,9 @@ public class CreScheWithBusinessDayCalService {
 	 * @param companyId
 	 * @param workTimeCode
 	 */
-	public void determineSetWorkingHours(WorkTimeSetting workTimeSetting, String companyId, String workTimeCode, boolean isHoliday, DailyWork dailyWork) {
+	public BusinessDayCal determineSetWorkingHours(WorkTimeSetting workTimeSetting, String companyId, String workTimeCode, boolean isHoliday, DailyWork dailyWork) {
+		BusinessDayCal data = new BusinessDayCal();
+		
 		// 「就業時間帯勤務区分. 就業時間帯の設定方法」を判断
 		switch(workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet()) {
 			// ［固定勤務設定］
@@ -101,9 +106,9 @@ public class CreScheWithBusinessDayCalService {
 				
 				if(fixedWorkSetting.isPresent()) {
 					if(isHoliday) {
-						getFixRestTimezoneSet(fixedWorkSetting.get());
+						data.setFixRestTimezoneSet(getFixRestTimezoneSet(fixedWorkSetting.get()));
 					} else {
-						getLstFixRestTimezoneSet(fixedWorkSetting.get(), dailyWork);
+						data.setLstFixRestTimezoneSet(getLstFixRestTimezoneSet(fixedWorkSetting.get(), dailyWork));
 					}			
 				}
 				
@@ -115,9 +120,9 @@ public class CreScheWithBusinessDayCalService {
 				
 				if(flowWorkSetting.isPresent()) {
 					if(isHoliday) {
-						getTimezoneOfFixedRestTimeSet(flowWorkSetting.get());
+						data.setTimezoneOfFixedRestTimeSet(getTimezoneOfFixedRestTimeSet(flowWorkSetting.get()));
 					} else {
-						getFixedRestTimezone(flowWorkSetting.get(), dailyWork);
+						data.setTimezoneOfFixedRestTimeSet(getFixedRestTimezone(flowWorkSetting.get(), dailyWork));
 					}
 				}
 				
@@ -129,14 +134,16 @@ public class CreScheWithBusinessDayCalService {
 				
 				if(diffTimeWorkSetting.isPresent()) {
 					if(isHoliday) {
-						getDiffTimeRestTimezone(diffTimeWorkSetting.get());
+						data.setDiffTimeRestTimezone(getDiffTimeRestTimezone(diffTimeWorkSetting.get()));
 					} else {
-						getLstDiffTimeRestTimezone(diffTimeWorkSetting.get(), dailyWork);
+						data.setLstDiffTimeRestTimezone(getLstDiffTimeRestTimezone(diffTimeWorkSetting.get(), dailyWork));
 					}					
 				}
 				
 		    	break;
 		}
+		
+		return data;
 	}
 	
 	/**
@@ -176,7 +183,7 @@ public class CreScheWithBusinessDayCalService {
 			return null;
 		}
 		
-		List<FixRestTimezoneSet> lstFixRestTimezoneSet = null;
+		List<FixRestTimezoneSet> lstFixRestTimezoneSet = new ArrayList<>();
 		
 		for(int i = 0; i < fixedWorkSetting.getLstHalfDayWorkTimezone().size(); i++) {
 			FixRestTimezoneSet item = fixedWorkSetting.getLstHalfDayWorkTimezone().get(i).getRestTimezone();
@@ -184,7 +191,7 @@ public class CreScheWithBusinessDayCalService {
 		}
 		
 		if(lstFixRestTimezoneSet.size() > 0) {
-			makeBreakTimesCorrections(dailyWork);
+			makeBreakTimesFixedWorkSetting(dailyWork);
 		}
 		
 		return lstFixRestTimezoneSet;
@@ -199,7 +206,7 @@ public class CreScheWithBusinessDayCalService {
 		TimezoneOfFixedRestTimeSet item = flowWorkSetting.getHalfDayWorkTimezone().getRestTimezone().getFixedRestTimezone();
 		
 		if(item != null) {
-			makeBreakTimesCorrections(dailyWork);
+			makeFlowWorkSetting(dailyWork);
 		}
 		
 		return item;
@@ -215,7 +222,7 @@ public class CreScheWithBusinessDayCalService {
 			return null;
 		}
 		
-		List<DiffTimeRestTimezone> lstDiffTimeRestTimezone = null;
+		List<DiffTimeRestTimezone> lstDiffTimeRestTimezone = new ArrayList<>();
 		
 		for(int i = 0; i < diffTimeWorkSetting.getHalfDayWorkTimezones().size(); i++) {
 			DiffTimeRestTimezone item = diffTimeWorkSetting.getHalfDayWorkTimezones().get(i).getRestTimezone();
@@ -223,17 +230,41 @@ public class CreScheWithBusinessDayCalService {
 		}
 		
 		if(lstDiffTimeRestTimezone.size() > 0) {
-			makeBreakTimesCorrections(dailyWork);
+			makeDiffTimeWorkSetting(dailyWork);
 		}
 		
 		return lstDiffTimeRestTimezone;
 	}
 	
 	/**
-	 * 午前出勤系、午後出勤系の場合に、休憩時間帯の補正を行う
+	 * Make Break Times Fixed Work Setting
 	 * @param dailyWork
 	 */
-	public void makeBreakTimesCorrections(DailyWork dailyWork) {
+	public void makeBreakTimesFixedWorkSetting(DailyWork dailyWork) {
+		if(dailyWork.IsLeaveForMorning()) {
+			
+		} else if (dailyWork.IsLeaveForAfternoon()) {
+			
+		}
+	}
+	
+	/**
+	 * Make Flow Work Setting
+	 * @param dailyWork
+	 */
+	public void makeFlowWorkSetting(DailyWork dailyWork) {
+		if(dailyWork.IsLeaveForMorning()) {
+			
+		} else if (dailyWork.IsLeaveForAfternoon()) {
+			
+		}
+	}
+	
+	/**
+	 * Make Diff Time Work Setting
+	 * @param dailyWork
+	 */
+	public void makeDiffTimeWorkSetting(DailyWork dailyWork) {
 		if(dailyWork.IsLeaveForMorning()) {
 			
 		} else if (dailyWork.IsLeaveForAfternoon()) {
