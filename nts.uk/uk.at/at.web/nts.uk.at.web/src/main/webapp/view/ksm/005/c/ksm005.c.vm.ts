@@ -2,6 +2,7 @@ module nts.uk.at.view.ksm005.c {
     
     import MonthlyPatternDto = service.model.MonthlyPatternDto;
     import MonthlyPatternSettingDto = service.model.MonthlyPatternSettingDto;
+    import CopyMonthlyPatternSettingDto = service.model.CopyMonthlyPatternSettingDto;
     import HistoryDto = service.model.HistoryDto;
 
     export module viewmodel {
@@ -367,8 +368,38 @@ module nts.uk.at.view.ksm005.c {
                     nts.uk.ui.dialog.alertError(error);
                 });    
             }
+            
+            /**
+             * open dialog copy monthly pattern setting by on click button
+             */
+            public openDialogCopy(): void {
+                var self = this;
+                if (!self.selectedCode()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
+                    return;
+                }
+                
+                let object: IObjectDuplication = {
+                    code: self.selectedCode(),
+                    name: "HHHHHHHHH",
+                    targetType: TargetType.WORKPLACE_PERSONAL,
+                    itemListSetting: [],
+                    baseDate: new Date()
+                };
+                
+                // create object has data type IObjectDuplication and use:
+                nts.uk.ui.windows.setShared("CDL023Input", object);
+                
+                // open dialog
+                nts.uk.ui.windows.sub.modal('com','/view/cdl/023/a/index.xhtml').onClosed(() => {
+                    // show data respond
+                    let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
+                    console.log(lstSelection);
+                });
+            }
+            
              /**
-             * call service save monthly pattern setting by on click button
+             * call service copy monthly pattern setting
              */
             public copyMonthlyPatternSetting(): void {
                 var self = this;
@@ -377,16 +408,7 @@ module nts.uk.at.view.ksm005.c {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
                     return;
                 }
-                dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern()};
-                service.saveMonthlyPatternSetting(dto).done(function() {
-                    // show message 15
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        // reload page
-                        self.reloadPage();
-                    });
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                });    
+  
             }
             /**
              * call service delete monthly pattern setting by on click button 
@@ -459,6 +481,44 @@ module nts.uk.at.view.ksm005.c {
         onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
 
         onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+    }
+    
+    /**
+     * IObjectDuplication
+     */
+    export interface IObjectDuplication {
+        code: string;
+        name: string;
+        targetType: number;
+        itemListSetting: Array<string>;
+        baseDate?: Date;
+    }
+    
+    /**
+     * TargetType
+     */
+    export class TargetType {
+        
+        // 雇用
+        static EMPLOYMENT = 1;
+        
+        // 分類
+        static CLASSIFICATION = 2;
+        
+        // 職位
+        static JOB_TITLE = 3;
+        
+        // 職場
+        static WORKPLACE = 4;
+        
+        // 部門
+        static DEPARTMENT = 5;
+        
+        // 職場個人
+        static WORKPLACE_PERSONAL = 6;
+        
+        // 部門個人
+        static DEPARTMENT_PERSONAL = 7;
     }
 
     export class ListType {

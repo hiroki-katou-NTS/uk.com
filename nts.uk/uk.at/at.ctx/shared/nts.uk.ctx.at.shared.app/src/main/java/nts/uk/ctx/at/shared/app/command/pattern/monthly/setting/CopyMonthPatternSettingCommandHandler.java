@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.command.workingcondition.setting;
+package nts.uk.ctx.at.shared.app.command.pattern.monthly.setting;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

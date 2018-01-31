@@ -263,23 +263,23 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * @see nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository#copyLastMonthlyPatternSetting(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean copyLastMonthlyPatternSetting(String sourceSid, String destSid) {
+	public boolean copyLastMonthlyPatternSetting(String sourceSid, List<String> destSid) {
 		// Get items
-		Optional<KshmtWorkingCondItem> optSourceItem = this.getLastWorkingCondItem(sourceSid);
-		Optional<KshmtWorkingCondItem> optDestItem = this.getLastWorkingCondItem(destSid);
+		Optional<WorkingConditionItem>  optSourceItem = this.getBySid(sourceSid);
+		List<KshmtWorkingCondItem> optDestItem = this.getLastWorkingCondItem(destSid);
 
 		// Check 
-		if (!optSourceItem.isPresent() || !optDestItem.isPresent()) {
+		if (!optSourceItem.isPresent() || optDestItem.isEmpty()) {
 			// Copy fails
 			return false;
 		}
 		
 		// Copy data
-		KshmtWorkingCondItem destItem = optDestItem.get();
-		destItem.setMonthlyPattern(optSourceItem.get().getMonthlyPattern());
-
-		// Update
-		this.commandProxy().update(destItem);
+		optDestItem.stream().forEach(e -> {
+			e.setMonthlyPattern(optSourceItem.get().getMonthlyPattern().get().v());
+			// Update
+			this.commandProxy().update(e);
+		});
 		
 		// Copy success
 		return true;
@@ -291,7 +291,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	 * @param employeeId the employee id
 	 * @return the last working cond item
 	 */
-	private Optional<KshmtWorkingCondItem> getLastWorkingCondItem(String employeeId) {
+	private List<KshmtWorkingCondItem> getLastWorkingCondItem(List<String> employeeId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -310,7 +310,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		// equal
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KshmtWorkingCondItem_.sid), employeeId));
+				.add(root.get(KshmtWorkingCondItem_.sid).in(employeeId));
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(KshmtWorkingCondItem_.kshmtWorkingCond).get(KshmtWorkingCond_.endD),
 				GeneralDate.max()));
@@ -325,11 +325,11 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		
 		// Check empty
 		if (CollectionUtil.isEmpty(result)) {
-			return Optional.empty();
+			return Collections.emptyList();
 		}
 
 		// exclude select
-		return Optional.of(result.get(FIRST_ITEM_INDEX));
+		return result;
 	}
 
 }
