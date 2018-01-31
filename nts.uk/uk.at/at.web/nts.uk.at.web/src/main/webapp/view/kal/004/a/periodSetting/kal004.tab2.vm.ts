@@ -56,7 +56,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             var self = this;
             var param = ModelCheckConditonCode.extractionPeriodDaily;
             var categoryId = ModelCheckConditonCode.categoryId;
-            if(categoryId == 5 || categoryId == 13 || categoryId == 0 || categoryId == 8){
+            if(categoryId == 5 || categoryId == 13){
                 var ExtractionDailyDto = {
                     extractionId: param.extractionId,
                     extractionRange: param.extractionRange,
