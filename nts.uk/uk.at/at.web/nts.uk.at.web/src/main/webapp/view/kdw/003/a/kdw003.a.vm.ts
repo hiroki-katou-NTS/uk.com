@@ -277,8 +277,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // Fixed Header
                 self.fixHeaders(data.lstFixedHeader);
                 self.showPrincipal(data.showPrincipal);
+                if(data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                 if (data.showPrincipal || data.lstControlDisplayItem.lstHeader.length == 0) {
-                    self.hasLstHeader = false;
                     self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
                     self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
                     self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
