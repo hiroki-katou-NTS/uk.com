@@ -651,27 +651,32 @@ module nts.uk.at.view.kmf022 {
 
                 //a5
                 self.itemListA5_14 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_36')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_37'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_36')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_37'))
                 ]);
-                self.selectedIdA5_14 = ko.observable(1);
+                self.selectedIdA5_14 = ko.observable(0);
                 self.enableA5_14 = ko.observable(true);
                 self.itemListA5_16 = ko.observableArray([
-                    new ItemModel(1, '基本給'),
-                    new ItemModel(2, '役職手当'),
-                    new ItemModel(3, '基本給ながい文字列ながい文字列ながい文字列')
+                    new ItemModel(0, '0'),
+                    new ItemModel(1, '1'),
+                    new ItemModel(2, '2'),
+                    new ItemModel(3, '3'),
+                    new ItemModel(4, '4'),
+                    new ItemModel(5, '5'),
+                    new ItemModel(6, '6'),
+                    new ItemModel(7, '7'),
                 ]);
-                self.selectedCodeA5_16 = ko.observable(1);
-                self.selectedIdA5_18 = ko.observable(1);
-                self.selectedIdA5_19 = ko.observable(1);
-                self.selectedIdA5_20 = ko.observable(1);
-                self.selectedIdA5_21 = ko.observable(1);
-                self.selectedIdA5_22 = ko.observable(1);
-                self.selectedIdA5_23 = ko.observable(1);
+                self.selectedCodeA5_16 = ko.observable(0);
+                self.selectedIdA5_18 = ko.observable(0);
+                self.selectedIdA5_19 = ko.observable(0);
+                self.selectedIdA5_20 = ko.observable(0);
+                self.selectedIdA5_21 = ko.observable(0);
+                self.selectedIdA5_22 = ko.observable(0);
+                self.selectedIdA5_23 = ko.observable(0);
                 self.itemListA5_24 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_42')),
-                    new ItemModel(2, nts.uk.resource.getText('KAF022_43')),
-                    new ItemModel(3, nts.uk.resource.getText('KAF022_44'))
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_42')),
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_43')),
+                    new ItemModel(2, nts.uk.resource.getText('KAF022_44'))
                 ]);
                 self.selectedIdA5_24 = ko.observable(1);
                 self.selectedIdA5_25 = ko.observable(1);
@@ -1805,32 +1810,48 @@ module nts.uk.at.view.kmf022 {
                 self.initDataA14();
                 //self.initDataA17();
                 self.initDataF();
+                self.initDataA5();
             }
             initDataA4(): void {
                 let self = this;
                 // init data A4
                 self.dataA4Display([]);
                 self.sizeArrayA4(0);
-                let dataA4 = [];
+
                 service.findAllClosure().done(data => {
                     self.sizeArrayA4(data.length);
-                    for (let i = 0; i < 5; i++) {
-                        if (data[i]) {
-                            let name = data[i].id + "." + data[i].name;
-                            service.findApp(data[i].id).done(obj => {
-                                self.dataA4Display.push(new ItemA4(data[i].id, name, obj.userAtr, obj.deadlineCriteria, obj.deadline));
-                            });
-                        } else {
-                            self.dataA4Display.push(new ItemA4(i + 1, (i + 1) + ".", 0, 0, 0));
-                        }
-                    }
+                    _.forEach(data, element => {
+                        let name = element.id + "." + element.name;
+                        service.findApp(element.id).done(obj => {
+                            self.dataA4Display.push(new ItemA4(element.id, name, obj.userAtr, obj.deadlineCriteria, obj.deadline));
+                            if (self.dataA4Display().length == data.length) {
+                                for (let i = data.length + 1; i <=5; i++) {
+                                    self.dataA4Display.push(new ItemA4(i, i + '.', 0, 0, 0));
+                                }
+                            }
+                        });
+                    });
                 });
-                //self.dataA4Display(_.sortBy(self.dataA4Display(),['index']));
             }
             initDataA14(): void {
                 let self = this;
                 service.findJobAssign().done((data) => {
                     self.selectedIdA14_3(data.isConcurrently ? 1 : 0);
+                });
+            }
+            initDataA5(): void {
+                let self = this;
+                service.findApproSet().done(data => {
+                    self.selectedIdA5_14(data.reasonDisp);
+                    self.selectedCodeA5_16(data.warnDateDisp);
+                    self.selectedIdA5_18(data.overtimePre);
+                    self.selectedIdA5_19(data.hdPre);
+                    self.selectedIdA5_20(data.msgAdvance);
+                    self.selectedIdA5_21(data.overtimePerfom);
+                    self.selectedIdA5_22(data.hdPerform);
+                    self.selectedIdA5_23(data.msgExceeded)
+                    self.selectedIdA5_24(data.scheduleCon);
+                    self.selectedIdA5_25(data.achiveCon);
                 });
             }
             initDataA17(): void {
@@ -1849,16 +1870,24 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdF10(data.workType);
                     self.selectedIdF11(data.performanceDisplayAtr);
                     self.selectedIdF12(data.contraditionCheckAtr);
-                    self.selectedValueF13(data.workChangeTimeAtr);
-                    // self.checkedF13_1()
-                    self.enableF13_1 = ko.observable(false);
+                    self.selectedValueF13(data.workChangeFlg);
+                    self.checkedF13_1(data.workChangeTimeAtr == 1 ? true : false);
                     self.selectedIdF14 = ko.observable(1);
-                    self.texteditorF15.value(data.commentContent1) ;
+                    self.texteditorF15.value(data.commentContent1);
                     self.valueF15(data.commentFontColor1);
-                    self.enableF15(data.commentFontWeight1==1 ? true : false);
-                    self.texteditorF16.value(data.commentContent2) ;
+                    self.enableF15(data.commentFontWeight1 == 1 ? true : false);
+                    self.texteditorF16.value(data.commentContent2);
                     self.valueF15_1(data.commentFontColor2);
-                    self.enableF15_1(data.commentFontWeight2==1 ? true : false);
+                    self.enableF15_1(data.commentFontWeight2 == 1 ? true : false);
+                });
+            }
+            initDataE(): void {
+                let self = this;
+                service.findStamp().done(data => {
+                    self.valueE14(data.topCommentFontColor);
+                    self.enableE15(data.topCommentFontWeight);
+                    self.valueE14_1(data.bottomCommentFontColor);
+                    self.enableE15_1(data.bottomCommentFontWeight);
                 });
             }
 

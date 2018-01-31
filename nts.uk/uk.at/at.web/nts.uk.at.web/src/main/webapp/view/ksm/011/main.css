@@ -193,3 +193,9 @@ button.nts-switch-button {
 	float: left;
 	margin: 10px 8px;
 }
+
+.hyperlink-disable {
+    color: #7f7f7f;
+    text-decoration: underline;
+    cursor: pointer;
+}

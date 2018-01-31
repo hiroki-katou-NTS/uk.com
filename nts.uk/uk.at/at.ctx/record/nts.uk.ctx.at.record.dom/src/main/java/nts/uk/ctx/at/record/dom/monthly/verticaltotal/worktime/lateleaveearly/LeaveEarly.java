@@ -7,6 +7,7 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 早退
@@ -45,14 +46,18 @@ public class LeaveEarly {
 	
 	/**
 	 * 集計
+	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
 	 */
-	public void aggregate(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+	public void aggregate(
+			DatePeriod datePeriod,
+			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
 		
 		this.times = new AttendanceTimesMonth(0);
 		this.time = TimeMonthWithCalculation.ofSameTime(0);
 		
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
+			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
 			val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
 			val leaveEarlyTimeOfDailys = totalWorkingTime.getLeaveEarlyTimeOfDaily();
 			for (val leaveEarlyTimeOfDaily : leaveEarlyTimeOfDailys){

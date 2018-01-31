@@ -38,6 +38,11 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND a.appDate = :appDate "
 			+ " AND a.appType = :applicationType "
 			+ " AND a.prePostAtr = :prePostAtr ORDER BY a.inputDate DESC";
+	private final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate";
+	private final String SELECT_APP_BY_REFLECT = SELECT_FROM_APPLICATION + " AND a.stateReflectionReal != 5"
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate";
+	
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class)
@@ -105,6 +110,33 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("appDate", appDate)
 				.setParameter("applicationType", appType)
 				.setParameter("prePostAtr", prePostAtr)				
+				.getList(c -> c.toDomain());
+	}
+	/**
+	 * @author hoatt
+	 * get list application by sID
+	 */
+	@Override
+	public List<Application_New> getListAppBySID(String companyId, String sID, GeneralDate startDate,
+			GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_APP_BY_SID, KrqdtApplication_New.class)
+				.setParameter("companyID", companyId)
+				.setParameter("employeeID", sID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(c -> c.toDomain());
+	}
+	/**
+	 * @author hoatt
+	 * get List Application By Reflect
+	 * wait QA
+	 */
+	@Override
+	public List<Application_New> getListAppByReflect(String companyId, GeneralDate startDate, GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_APP_BY_REFLECT, KrqdtApplication_New.class)
+				.setParameter("companyID", companyId)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
 				.getList(c -> c.toDomain());
 	}
 }

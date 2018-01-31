@@ -18,6 +18,13 @@ public interface ApplicationListInitialRepository {
 	 * @return
 	 */
 	public DatePeriod getInitialPeriod(String companyId);
+	/**
+	 * 0 - 申請一覧事前必須チェック
+	 * @param appType
+	 * @param wkpID
+	 * @return
+	 */
+	public Boolean checkAppPredictRequire(int appType, String wkpID);
 	
 	/**
 	 * 1- 申請一覧リスト取得

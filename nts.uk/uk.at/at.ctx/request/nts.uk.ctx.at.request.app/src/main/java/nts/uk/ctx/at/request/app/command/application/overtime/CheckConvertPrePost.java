@@ -157,7 +157,7 @@ public class CheckConvertPrePost {
 			List<Integer> frameNo = new ArrayList<>();
 			for (OverTimeInput overTimeInput : overtimeInputs) {
 				OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-				overtimeInputDto.setAttendanceID(overTimeInput.getAttendanceID().value);
+				overtimeInputDto.setAttendanceID(overTimeInput.getAttendanceType().value);
 				overtimeInputDto.setFrameNo(overTimeInput.getFrameNo());
 				overtimeInputDto.setStartTime(overTimeInput.getStartTime().v());
 				overtimeInputDto.setEndTime(overTimeInput.getEndTime().v());

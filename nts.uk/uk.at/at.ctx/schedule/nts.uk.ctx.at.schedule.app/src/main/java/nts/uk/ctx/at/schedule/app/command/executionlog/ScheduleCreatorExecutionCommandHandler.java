@@ -17,6 +17,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicScheduleResetCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicScheduleHandler;
+import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeMonthlyPatternHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTypeHandler;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
@@ -80,6 +81,9 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The sche cre exe basic schedule handler. */
 	@Inject
 	private ScheCreExeBasicScheduleHandler scheCreExeBasicScheduleHandler;
+	
+	@Inject
+	private ScheCreExeMonthlyPatternHandler scheCreExeMonthlyPatternHandler;
 	
 	
 	/** The Constant DEFAULT_CODE. */
@@ -319,9 +323,17 @@ public class ScheduleCreatorExecutionCommandHandler
 			if (workingConditionItem.isPresent()
 					&& workingConditionItem.get().getScheduleManagementAtr() == NotUseAtr.USE
 					&& workingConditionItem.get().getScheduleMethod().isPresent()
-					&& workingConditionItem.get().getScheduleMethod().get()
+					) {
+				if (workingConditionItem.get().getScheduleMethod().get()
 							.getBasicCreateMethod() == WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR) {
-				this.createWorkScheduleByBusinessDayCalenda(command, domain, workingConditionItem.get(), context);
+					this.createWorkScheduleByBusinessDayCalenda(command, domain, workingConditionItem.get(), context);
+				} else if (workingConditionItem.get().getScheduleMethod().get()
+						.getBasicCreateMethod() == WorkScheduleBasicCreMethod.MONTHLY_PATTERN) {
+					//create schedule by monthly pattern
+					this.scheCreExeMonthlyPatternHandler.createScheduleWithMonthlyPattern(command, workingConditionItem.get());
+				} else {
+					//TODO no something
+				}
 			}
 			command.setToDate(this.nextDay(command.getToDate()));
 		}

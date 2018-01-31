@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.applicationlist.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,6 +19,10 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
+import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
+import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -32,6 +37,10 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	private CollectAchievement collectAchievement;
 	@Inject
 	private AppStampRepository repoAppStamp;
+	@Inject
+	private RequestOfEachWorkplaceRepository repoRequestWkp;
+	@Inject
+	private RequestOfEachCompanyRepository repoRequestCompany;
 	/**
 	 * 12 - 申請一覧初期日付期間
 	 */
@@ -53,7 +62,32 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 		
 		return new DatePeriod(start,end);
 	}
-
+	/**
+	 * 0 - 申請一覧事前必須チェック
+	 */
+	@Override
+	public Boolean checkAppPredictRequire(int appType, String wkpID) {
+		//申請種類-(Check AppType)
+		if(appType !=0 && appType != 6){//「休出時間申請」又は「残業申請」以外の場合
+			return null;
+		}
+		//「休出時間申請」又は「残業申請」の場合
+		//ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
+		String companyId = AppContexts.user().companyId();
+		Optional<ApprovalFunctionSetting> appFuncSet = null;
+		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpID, appType);
+		//対象が存在しない場合 - TH doi tuong k ton tai
+		if(!appFuncSet.isPresent()){
+			//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
+			appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
+		}
+		//申請承認機能設定.残業申請の事前必須設定
+		if(appFuncSet.get().getOvertimeAppSetting().equals(SettingFlg.SETTING)){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	/**
 	 * 1 - 申請一覧リスト取得
 	 */
@@ -127,6 +161,7 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 		return null;
 	}
 	/**
+	 * lam o ui
 	 * 4 - 申請一覧リスト取得承認件数
 	 */
 	@Override
@@ -139,6 +174,10 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	 */
 	@Override
 	public AppListAtrOutput getAppListAchievement(List<Application_New> lstApp, ApprovalListDisplaySetting displaySet) {
+		//申請一覧抽出条件.申請表示対象が「部下の申請」が指定-(Check đk lọc)
+		if(true){//部下の申請の場合
+			//アルゴリズム「自部門職場と配下の社員をすべて取得する」を実行する - wait request
+		}
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -198,10 +237,24 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	 */
 	@Override
 	public List<Application_New> getListAppMasterInfo(List<Application_New> lstApp) {
-		//ドメインモデル「申請一覧共通設定」を取得する - wait YenNTH
-		
-		
+		//ドメインモデル「申請一覧共通設定」を取得する-(Lấy domain Application list common settings) - wait YenNTH
 		// TODO Auto-generated method stub
+		//申請一覧リスト　繰返し実行
+		for (Application_New app : lstApp) {
+			//ドメインモデル「申請表示名」より申請表示名称を取得する-(Lấy Application display name) - wait YenNTH
+			// TODO Auto-generated method stub
+			//アルゴリズム「社員IDから個人社員基本情報を取得」を実行する - wait request
+			// TODO Auto-generated method stub
+			//アルゴリズム「社員から職場を取得する」を実行する
+			// TODO Auto-generated method stub
+			String wkpID = "";
+			//アルゴリズム「申請一覧事前必須チェック」を実行する- (check App Predict Require): 0 - 申請一覧事前必須チェック
+			Boolean check = this.checkAppPredictRequire(app.getAppType().value, wkpID);
+			if(check == true){//必須(True)
+				//事前、事後の後ろに#CMM045_101(※)を追加
+				// TODO Auto-generated method stub
+			}
+		}
 		return null;
 	}
 
