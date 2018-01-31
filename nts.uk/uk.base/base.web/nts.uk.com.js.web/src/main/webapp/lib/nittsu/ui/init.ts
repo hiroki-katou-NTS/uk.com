@@ -61,25 +61,38 @@ module nts.uk.ui {
             
             viewModelBuilt.fire(_viewModel);
             
-            ko.applyBindings(_viewModel);
+            let dfd = [];
+            _.forEach($(".html-loading"), function(e){
+                let $container = $(e);
+                let dX = $.Deferred(); 
+                $container.load($container.attr("link"), function(){
+                    dX.resolve();
+                });
+                dfd.push(dX);
+                dX.promise();
+            })
+            $.when(...dfd).then(function( data, textStatus, jqXHR ) {
+                $('.html-loading').contents().unwrap();
+                ko.applyBindings(_viewModel);
             
-            // off event reset for class reset-not-apply
-            $(".reset-not-apply").find(".reset-element").off("reset");
-            
-            //avoid page content overlap header and function area
-            var content_height=20;
-            if ($("#header").length != 0) {
-                content_height += $("#header").outerHeight();//header height+ content area botton padding,top padding
-            }
-            if ($("#functions-area").length != 0) {
-                content_height += $("#functions-area").outerHeight();//top function area height
-            }
-            if ($("#functions-area-bottom").length != 0) {
-                content_height += $("#functions-area-bottom").outerHeight();//bottom function area height
-            }
-            $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
-            //            if($("#functions-area-bottom").length!=0){
-            //            }
+                // off event reset for class reset-not-apply
+                $(".reset-not-apply").find(".reset-element").off("reset");
+                
+                //avoid page content overlap header and function area
+                var content_height=20;
+                if ($("#header").length != 0) {
+                    content_height += $("#header").outerHeight();//header height+ content area botton padding,top padding
+                }
+                if ($("#functions-area").length != 0) {
+                    content_height += $("#functions-area").outerHeight();//top function area height
+                }
+                if ($("#functions-area-bottom").length != 0) {
+                    content_height += $("#functions-area-bottom").outerHeight();//bottom function area height
+                }
+                $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
+                //            if($("#functions-area-bottom").length!=0){
+                //            }
+            });
         }
         
         $(function () {
@@ -92,6 +105,19 @@ module nts.uk.ui {
             
             // Menu
             if ($(document).find("#header").length > 0) {
+                menu.request();
+            } else if (!util.isInFrame() && !__viewContext.noHeader) {
+                let header = "<div id='header'><div id='menu-header'>" 
+                                + "<div id='logo-area' class='cf'>" 
+                                + "<div id='logo'>勤次郎</div>"
+                                + "<div id='user-info' class='cf'>"
+                                + "<div id='company' class='cf' />"
+                                + "<div id='user' class='cf' />"    
+                                + "</div></div>"                            
+                                + "<div id='nav-area' class='cf' />"
+                                + "<div id='pg-area' class='cf' />"
+                                + "</div></div>";
+                $("#master-wrapper").prepend(header);
                 menu.request();
             }
         });

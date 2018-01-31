@@ -12,7 +12,7 @@ module nts.uk.ui.koExtentions {
             let ROW_HEIGHT = 23;
             let DIFF_NUMBER = 2;
             
-            var $grid = $(element);
+            var $grid = $(element).addClass("nts-gridlist");
             let gridId = $grid.attr('id');
             if (nts.uk.util.isNullOrUndefined(gridId)) {
                 throw new Error('the element NtsGridList must have id attribute.');
@@ -46,7 +46,12 @@ module nts.uk.ui.koExtentions {
             var features = [];
             features.push({ name: 'Selection', multipleSelection: data.multiple });
             if(data.multiple || showNumbering){ 
-                features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: showNumbering });    
+                features.push({
+                    name: 'RowSelectors',
+                    enableCheckBoxes: data.multiple,
+                    enableRowNumbering: false, //this feature is not needed
+                    rowSelectorColumnWidth: 25
+                });    
             }
             let tabIndex = $grid.attr("tabindex");
             $grid.data("tabindex", nts.uk.util.isNullOrEmpty(tabIndex) ? "0" : tabIndex);

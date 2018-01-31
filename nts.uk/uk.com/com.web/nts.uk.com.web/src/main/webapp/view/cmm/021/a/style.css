@@ -5,13 +5,17 @@
 	float: left;
 }
 
+.icon-78 {
+	background: url('../icon/icon78.png');
+	width: 17.727px;
+	height: 17px;
+	background-size: 17px 17px;
+	margin-left: 23px;
+}
+
 .caret-right {
 	width: 520px;
 	border-radius: 10px;
-}
-
-.icon-searchbox {
-	
 }
 
 .table-grid-list {
@@ -52,25 +56,40 @@
 }
 .show-text-user-id{
 	width: 470px;
+	height: 80px;
 	padding-left: 28px;
 }
 
 .right-content {
 	margin-left: 20px;
 	float: left;
-	padding-top: 60px;
+	padding-top: 50px;
 }
 
-.right-content .right-content-space {
-	padding-left: 28px;
-}
-.right-content-space-employee-code {
-	padding-left: 14px;
+.show-text-user-id table{
+	height: 80px;
 }
 
-.right-content .right-content-space-login {
-	padding-left: 7px;
+.right-content-space-personName1, .right-content-space-employee-code1, .right-content-space-login1{
+	width: 100px;
 }
+
+.right-content-space-personName2, .right-content-space-employee-code2, .right-content-space-login2{
+	width: 30px;
+} 
+
+.right-content-space-personName3, .right-content-space-employee-code3, .right-content-space-login3{
+	width: 200px;
+}
+
+.right-content-space-personName{
+	margin-bottom: 10px;
+}
+
+.right-content-space-login{
+	margin-bottom: 10px;
+}
+
 
 /*  b screen mode */
 .screen-b-mode {

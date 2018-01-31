@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.val;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
@@ -237,8 +238,11 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 * @return
 	 */
 	public AttendanceTime calcActualWorkTimeAndWorkTime(HolidayAdditionAtr holidayAdditionAtr,DeductionTimeSheet dedTimeSheet) {
-		AttendanceTime actualTime = calcActualTime(); 
-		actualTime = actualTime.minusMinutes(dedTimeSheet.calcDeductionAllTimeSheet(DeductionAtr.Deduction, ((CalculationTimeSheet)this).getTimeSheet().timeSpan()).valueAsMinutes());
+		AttendanceTime actualTime = calcActualTime();
+		val dedAllTime = dedTimeSheet.calcDeductionAllTimeSheet(DeductionAtr.Deduction, this.getTimeSheet().timeSpan()).valueAsMinutes();
+		if(dedAllTime > 0) {
+			actualTime = actualTime.minusMinutes(dedAllTime);
+		}
 		AttendanceTime workTime = calcWorkTime(actualTime);
 		/*就業時間算出ロジックをここに*/
 		

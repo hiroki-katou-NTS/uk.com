@@ -35,9 +35,6 @@ div.nts-column{
 #day-list-div th, #day-list-div td {
 	padding-left: 10px;
 }
-#day-list-tbl > tbody > tr > td:LAST-CHILD {
-    height: 40px;
-}
 #day-list-tbl > tbody > tr > td:LAST-CHILD > span{
    	display: inline-block;
 }

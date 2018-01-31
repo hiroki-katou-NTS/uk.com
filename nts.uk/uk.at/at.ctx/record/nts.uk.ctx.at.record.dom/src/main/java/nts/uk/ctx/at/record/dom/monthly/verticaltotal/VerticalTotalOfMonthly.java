@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,11 +10,13 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.vtotalwork.AttendanceStatusMap;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -72,12 +73,8 @@ public class VerticalTotalOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 日別実績の勤務情報　取得
-		//*****（未）　適切なメソッドがまだない。仮に、1日だけ取る。正式には、期間で取ってくる。
-		List<WorkInfoOfDailyPerformance> workInfoOfDailys = new ArrayList<>();
-		val workInfoOfDailyOpt = repositories.getWorkInformationOfDaily().find(employeeId, datePeriod.start());
-		if (workInfoOfDailyOpt.isPresent()){
-			workInfoOfDailys.add(workInfoOfDailyOpt.get());
-		}
+		List<WorkInfoOfDailyPerformance> workInfoOfDailys =
+				repositories.getWorkInformationOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
 		Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap = new HashMap<>();
 		for (val workInfoOfDaily : workInfoOfDailys){
 			val ymd = workInfoOfDaily.getYmd();
@@ -85,28 +82,16 @@ public class VerticalTotalOfMonthly {
 		}
 		
 		// 日別実績の勤怠時間　取得
-		//*****（未）　適切なメソッドがまだない。仮に、1日だけ取る。正式には、期間で取ってくる。
-		List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys = new ArrayList<>();
-		val attendanceTimeOfDailyOpt = repositories.getAttendanceTimeOfDaily().find(employeeId, datePeriod.start());
-		if (attendanceTimeOfDailyOpt.isPresent()){
-			attendanceTimeOfDailys.add(attendanceTimeOfDailyOpt.get());
-		}
+		List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys =
+				repositories.getAttendanceTimeOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
 		
 		// 日別実績の出退勤
-		//*****（未）　適切なメソッドがまだない。仮に、1日だけ取る。正式には、期間で取ってくる。
-		List<TimeLeavingOfDailyPerformance> timeLeaveingOfDailys = new ArrayList<>();
-		val timeLeaveOfDailyOpt = repositories.getTimeLeavingOfDaily().findByKey(employeeId, datePeriod.start());
-		if (timeLeaveOfDailyOpt.isPresent()){
-			timeLeaveingOfDailys.add(timeLeaveOfDailyOpt.get());
-		}
+		List<TimeLeavingOfDailyPerformance> timeLeaveingOfDailys =
+				repositories.getTimeLeavingOfDaily().findbyPeriodOrderByYmd(employeeId, datePeriod);
 		
 		// 日別実績の特定日区分
-		//*****（未）　適切なメソッドがまだない。仮に、1日だけ取る。正式には、期間で取ってくる。
-		List<SpecificDateAttrOfDailyPerfor> specificDateAtrOfDailys = new ArrayList<>();
-		val specificDateAtrOfDailyOpt = repositories.getSpecificDateAtrOfDaily().find(employeeId, datePeriod.start());
-		if (specificDateAtrOfDailyOpt.isPresent()){
-			specificDateAtrOfDailys.add(specificDateAtrOfDailyOpt.get());
-		}
+		List<SpecificDateAttrOfDailyPerfor> specificDateAtrOfDailys =
+				repositories.getSpecificDateAtrOfDaily().findByPeriodOrderByYmd(employeeId, datePeriod);
 		
 		// 勤務情報　取得
 		val workTypes = repositories.getWorkType().findByCompanyId(companyId);
@@ -116,16 +101,37 @@ public class VerticalTotalOfMonthly {
 			if (!workTypeMap.containsKey(workTypeCd)) workTypeMap.put(workTypeCd, workType);
 		}
 		
+		// 所定時間設定　取得
+		val predetermineTimeSets = repositories.getPredetermineTimeSet().findByCompanyID(companyId);
+		Map<String, PredetemineTimeSetting> predetermineTimeSetMap = new HashMap<>();
+		for (val predetermineTimeSet : predetermineTimeSets){
+			val workTimeCd = predetermineTimeSet.getWorkTimeCode().v();
+			if (!predetermineTimeSetMap.containsKey(workTimeCd)){
+				predetermineTimeSetMap.put(workTimeCd, predetermineTimeSet);
+			}
+		}
+		
 		// 回数集計　取得
 		//*****（未）　集計での利用方法があいまいなため、設計確認要。
-		val totalTimesList = repositories.getTotalTimes().getAllTotalTimes(companyId);
+		//val totalTimesList = repositories.getTotalTimes().getAllTotalTimes(companyId);
+		
+		// 出勤状態クラスの作成
+		AttendanceStatusMap attendanceStatusMap = new AttendanceStatusMap(
+				attendanceTimeOfDailys, timeLeaveingOfDailys);
 		
 		// 勤務日数集計
-		this.workDays.aggregate(workInfoOfDailys, attendanceTimeOfDailys, timeLeaveingOfDailys,
-				specificDateAtrOfDailys, workTypeMap);
+		this.workDays.aggregate(datePeriod, workInfoOfDailys, attendanceTimeOfDailys, timeLeaveingOfDailys,
+				specificDateAtrOfDailys, workTypeMap, predetermineTimeSetMap, attendanceStatusMap);
 		
 		// 勤務時間集計
-		this.workTime.aggregate(workInfoOfDailyMap, attendanceTimeOfDailys, specificDateAtrOfDailys,
-				workTypeMap);
+		this.workTime.aggregate(datePeriod, workInfoOfDailyMap, attendanceTimeOfDailys,
+				specificDateAtrOfDailys, workTypeMap);
+		
+		// 処理期間の各週の開始日・終了日を判断
+		
+		// 週の回数分ループ
+		
+		// 週の集計
+		
 	}
 }

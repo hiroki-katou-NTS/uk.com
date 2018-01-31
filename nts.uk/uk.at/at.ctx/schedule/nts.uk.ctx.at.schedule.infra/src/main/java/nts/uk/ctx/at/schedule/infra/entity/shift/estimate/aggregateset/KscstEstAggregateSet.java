@@ -10,6 +10,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -52,23 +53,8 @@ public class KscstEstAggregateSet extends UkJpaEntity implements Serializable {
     private int havyHdAtr;
     
     /** The kscst per cost extra item. */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstEstAggregateSet", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstEstAggregateSet", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<KscstPerCostExtraItem> kscstPerCostExtraItem;
-
-    /**
-     * Instantiates a new kscst est aggregate set.
-     */
-    public KscstEstAggregateSet() {
-    }
-
-    /**
-     * Instantiates a new kscst est aggregate set.
-     *
-     * @param cid the cid
-     */
-    public KscstEstAggregateSet(String cid) {
-        this.cid = cid;
-    }
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

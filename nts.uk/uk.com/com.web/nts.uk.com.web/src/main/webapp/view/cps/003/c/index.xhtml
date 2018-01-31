@@ -15,9 +15,9 @@
 			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps003.c.style.css" />
-			<!-- 			<com:scriptfile path="cps003.c.service.js" /> -->
-			<!-- 			<com:scriptfile path="cps003.c.vm.js" /> -->
-			<!-- 			<com:scriptfile path="cps003.c.start.js" /> -->
+			<com:scriptfile path="cps003.c.service.js" />
+			<com:scriptfile path="cps003.c.vm.js" />
+			<com:scriptfile path="cps003.c.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -34,26 +34,60 @@
 					class="relative bg-green caret-right caret-background">
 					<i class="icon icon-searchbox"></i>
 					<div class="cf">
-						<div style="float: left"></div>
+						<div style="float: left">
+							<div style="width: 308px"
+								data-bind="ntsSearchBox: {
+									searchMode: 'filter',
+									targetKey: 'name', 
+									comId: 'single-list',
+									items: listItems, 
+									selectedKey: item.name, 
+									fields: ['name'], 
+									mode: 'igGrid'
+									}" />
+
+							<table id="single-list"
+								data-bind="ntsGridList: {
+									height: 535,
+									options: listItems,
+									optionsValue: 'id',
+									columns: [
+						                { headerText: '', key: 'id', width: 0, hidden: true },
+						                { headerText: '#{i18n.getText('CPS016_7')}', key: 'name', width: 290, hidden: false }
+						            ],
+									multiple: false,
+									value: item().id}">
+							</table>
+						</div>
 					</div>
 				</div>
 
-				<div id="right-content">
+				<div id="right-content" data-bind="with: item">
 					<div id="right-content" class="form-group">
 						<div class="row">
-							<div class="coll">Test01</div>
+							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_52')}</div>
+							<input style="width: 320px;"
+								data-bind="ntsTextEditor: {value: name}" />
 						</div>
 
 						<div class="row">
-							<div class="coll">Test02</div>
-						</div>
-						
-						<div class="row">
-							<div class="coll">Test03</div>
+							<div class='coll' data-bind="ntsFormLabel: {required: true}">
+								<label>#{i18n.getText('CPS003_54')}</label>
+							</div>
+							<span class="coll" data-bind="text: columnSetting"></span>
+							<button tabindex="" id="">#{i18n.getText('CPS003_56')}</button>
 						</div>
 
+<!-- 						<div class="row"> -->
+<!-- 							<div class="coll"><P>対象外</P></div> -->
+<!-- 						</div> -->
+
 						<div class="row">
-							<div class="coll">Test04</div>
+							<div class="coll" data-bind="ntsFormLabel: { required: false }">
+								<label>#{i18n.getText('CPS003_62')}</label>
+							</div>
+							<textarea style="width: 450px; height: 120px;"
+								data-bind="ntsMultilineEditor: { value: notes }" />
 						</div>
 					</div>
 				</div>

@@ -228,9 +228,16 @@ module nts.uk.com.view.cdl009.a {
          * class EnrollmentStatus
          */
         export class EnrollmentStatus {
+            //在職者
             static INCUMBENT = 1;
+            
+            //休業者
             static LEAVE_OF_ABSENCE = 2;
+            
+            //休職者
             static HOLIDAY = 3;
+            
+            //退職者
             static RETIREMENT = 6;
         }
     }

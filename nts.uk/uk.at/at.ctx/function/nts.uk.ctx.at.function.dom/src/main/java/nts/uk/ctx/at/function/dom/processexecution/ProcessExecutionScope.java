@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -11,7 +12,7 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 @AllArgsConstructor
-public class ProcessExecutionScope {
+public class ProcessExecutionScope extends DomainObject {
 	/* 実行範囲区分 */
 	private ExecutionScopeClassification execScopeCls;
 	

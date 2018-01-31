@@ -9,9 +9,10 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringMaxLength(20)
 public class PersonMobile extends StringPrimitiveValue<PersonMobile> {
 
+	private static final long serialVersionUID = 1L;
+
 	public PersonMobile(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 }

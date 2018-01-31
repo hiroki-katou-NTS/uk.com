@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.workplace;
 
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +34,10 @@ import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceIdAndPeriod;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkplacePubImp.
@@ -163,9 +167,9 @@ public class WorkplacePubImp implements SyWorkplacePub {
 					});
 				}
 			});
-			
+
 			return result;
-			
+
 		} else {
 			return Collections.emptyList();
 		}
@@ -190,14 +194,13 @@ public class WorkplacePubImp implements SyWorkplacePub {
 			wkpConfigInfoRepo.findAllParentByWkpId(companyId, baseDate, item.getWorkplaceId())
 					.ifPresent(wkpConfigInfo -> {
 						lstWpkIds.addAll(wkpConfigInfo.getLstWkpHierarchy().stream()
-								.map(WorkplaceHierarchy::getWorkplaceId)
-								.collect(Collectors.toList()));
+								.map(WorkplaceHierarchy::getWorkplaceId).collect(Collectors.toList()));
 					});
 
 			// Include this wkp
 			lstWpkIds.add(item.getWorkplaceId());
 		});
-		
+
 		// reverse list (child -> parent)
 		Collections.reverse(lstWpkIds);
 
@@ -308,5 +311,69 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		return listWkpHierachy.stream().map(wkpHierachy -> wkpHierachy.getWorkplaceId()).collect(Collectors.toList());
 
 	}
+
+	@Override
+	public List<WorkPlaceHistExport> GetWplByListSidAndPeriod(List<String> sids, DatePeriod datePeriod) {
+
+		if (sids.isEmpty() || datePeriod.start() == null || datePeriod.end() == null)
+			return null;
+
+		List<AffWorkplaceHistory> lstAffWkpHist = affWorkplaceHistoryRepository.getByListSid(sids);
+		if (lstAffWkpHist.isEmpty())
+			return null;
+
+		List<WorkPlaceHistExport> result = new ArrayList<>();
+
+		lstAffWkpHist.forEach(affWkp -> {
+			WorkPlaceHistExport workPlaceHistExport = new WorkPlaceHistExport();
+
+			workPlaceHistExport.setEmployeeId(affWkp.getEmployeeId());
+
+			if (!affWkp.getHistoryItems().isEmpty()) {
+				workPlaceHistExport.setLstWkpIdAndPeriod(getLstWkpIdAndPeriod(affWkp, datePeriod));
+			}
+			
+			result.add(workPlaceHistExport);
+		});
+
+		return result;
+	}
+
+	
+	private List<WorkPlaceIdAndPeriod> getLstWkpIdAndPeriod(AffWorkplaceHistory affWkp, DatePeriod datePeriod) {
+		
+		List<WorkPlaceIdAndPeriod> result = new ArrayList<>();
+
+		affWkp.getHistoryItems().forEach(itemHist -> {
+
+			WorkPlaceIdAndPeriod workPlaceIdAndPeriod = new WorkPlaceIdAndPeriod();
+
+			boolean check = (itemHist.start().afterOrEquals(datePeriod.start())
+					&& itemHist.start().beforeOrEquals(datePeriod.end())
+					&& itemHist.end().afterOrEquals(datePeriod.start())
+					&& itemHist.end().beforeOrEquals(datePeriod.end()))
+					|| (itemHist.start().afterOrEquals(datePeriod.start())
+							&& itemHist.start().beforeOrEquals(datePeriod.end())
+							&& itemHist.end().after(datePeriod.end()))
+					|| (itemHist.end().afterOrEquals(datePeriod.start())
+							&& itemHist.end().beforeOrEquals(datePeriod.end())
+							&& itemHist.start().before(datePeriod.start()));
+
+			if (check) {
+				DatePeriod date = new DatePeriod(itemHist.start(), itemHist.end());
+
+				AffWorkplaceHistoryItem affWkpHisItem = affWorkplaceHistoryItemRepository
+						.getByHistId(itemHist.identifier()).get();
+
+				workPlaceIdAndPeriod.setWorkplaceId(affWkpHisItem.getWorkplaceId());
+
+				workPlaceIdAndPeriod.setDatePeriod(date);
+
+				result.add(workPlaceIdAndPeriod);
+
+			}
+		});
+		return result;
+	};
 
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.app.find.layout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.command.addemployee.AddEmployeeCommand;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
@@ -62,7 +62,7 @@ public class RegisterLayoutFinder {
 	private InitValueSetItemFinder initItemFinder;
 
 	@Inject
-	private ComboBoxRetrieveFactory comboBoxRetrieveFactory;
+	private ComboBoxRetrieveFactory cbbfact;
 
 	// sonnlb end
 
@@ -178,9 +178,11 @@ public class RegisterLayoutFinder {
 			int dataTypeValue = dataObject.getItem().getDataTypeValue();
 			if (dataTypeValue == 6) {
 				SelectionItemDto selectionItemDto = (SelectionItemDto) dataObject.getItem();
-				List<ComboBoxObject> lstComboBox = comboBoxRetrieveFactory.getComboBox(selectionItemDto,
-						AppContexts.user().employeeId(), command.getHireDate(), true);
-				dataObject.setLstComboBoxValue(lstComboBox);
+				List<ComboBoxObject> resultList = cbbfact.getComboBox(selectionItemDto, AppContexts.user().employeeId(),
+						command.getHireDate(), true, dataObject.isRequired());
+
+				dataObject.setLstComboBoxValue(resultList);
+
 			}
 		}
 		dataObject.setActionRole(EnumAdaptor.valueOf(actionRole, ActionRole.class));

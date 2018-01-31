@@ -226,16 +226,34 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 			return;
 		}
 
-		this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning().v());
-		this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon().v());
-		this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay().v());
+		this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning() != null
+				? holidayAddTimeSet.get().getMorning().v() : null);
+		this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon() != null
+				? holidayAddTimeSet.get().getAfternoon().v() : null);
+		this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay() != null
+				? holidayAddTimeSet.get().getOneDay().v() : null);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemSetMemento#
+	 * setHourlyPaymentAtr(nts.uk.ctx.at.shared.dom.workingcondition.
+	 * HourlyPaymentAtr)
+	 */
 	@Override
 	public void setHourlyPaymentAtr(HourlyPaymentAtr hourlyPaymentAtr) {
 		this.entity.setHourlyPayAtr(hourlyPaymentAtr.value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemSetMemento#
+	 * setTimeApply(java.util.Optional)
+	 */
 	@Override
 	public void setTimeApply(Optional<BonusPaySettingCode> timeApply) {
 		if (!timeApply.isPresent()) {
@@ -245,6 +263,13 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 		this.entity.setTimeApply(timeApply.get().v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemSetMemento#
+	 * setMonthlyPattern(java.util.Optional)
+	 */
 	@Override
 	public void setMonthlyPattern(Optional<MonthlyPatternCode> monthlyPattern) {
 		if (!monthlyPattern.isPresent()) {

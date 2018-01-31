@@ -55,7 +55,7 @@ module nts.uk.com.view.ccg015.a {
                 self.listLinkScreen = ko.observableArray([
                     { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_17"), action: function(evt, ui) {/*TODO go to ccg011*/ } },
                     { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_18"), action: function(evt, ui) { nts.uk.request.jump("/view/ccg/014/a/index.xhtml"); } },
-                    { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_19"), action: function(evt, ui) {/*TODO go to ccg018*/ } },
+                    { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_19"), action: function(evt, ui) {nts.uk.request.jump("/view/ccg/018/a/index.xhtml"); } },
                 ]);
 
                 self.isProcess = ko.observable(false);

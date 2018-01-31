@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -128,14 +127,13 @@ public class JpaWindowAccountRepository extends JpaRepository implements WindowA
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
-		// Create Query
-		TypedQuery<SgwmtWindowAcc> query = em.createQuery(cq);
-
-		try {
-			// exclude select
-			return Optional.of(this.toDomain(query.getSingleResult()));
-		} catch (NoResultException e) {
+		// Create Query		
+		List<SgwmtWindowAcc> result = em.createQuery(cq).getResultList();
+		
+		if (result.isEmpty()) {
 			return Optional.empty();
+		} else {
+			return Optional.of(this.toDomain(result.get(0)));
 		}
 
 	}
