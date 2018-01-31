@@ -133,11 +133,21 @@ module a7 {
                 self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime(v == UseDivision.USE);
                 //TODO load
 //                self.dataSourceForFixedOrDiffTime(self.backUpOfFixedOrDiffTime);
-                if (v) {
-                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.updateData(self.backUpOfFlowOrFlexNotUse);
+                if (self.mainSettingModel.workTimeSetting.isFlex()) {
+                    if (v == UseDivision.NOTUSE) {
+                        self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.updateData(self.backUpOfFlowOrFlexNotUse);
+                    }
+                    else {
+                        self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.updateData(self.backUpOfFlowOrFlexUse);
+                    }
                 }
-                else {
-                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.updateData(self.backUpOfFlowOrFlexUse);
+                if (self.mainSettingModel.workTimeSetting.isFlow()) {
+                    if (v == UseDivision.NOTUSE) {
+                        self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.updateData(self.backUpOfFlowOrFlexNotUse);
+                    }
+                    else {
+                        self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.fixedRestTimezone.updateData(self.backUpOfFlowOrFlexUse);
+                    }
                 }
                 self.updateDataModel();
             });
@@ -149,8 +159,14 @@ module a7 {
                     self.updateDataModel();
                     self.setDataFlexOrFlowToModel();
 //                    self.backUpOfFixedOrDiffTime = self.dataSourceForFixedOrDiffTime();
-                    self.backUpOfFlowOrFlexUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.toDto();
-                    self.backUpOfFlowOrFlexNotUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.toDto();
+                    if (self.mainSettingModel.workTimeSetting.isFlex()) {
+                        self.backUpOfFlowOrFlexUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.toDto();
+                        self.backUpOfFlowOrFlexNotUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.toDto();
+                    }
+                    if (self.mainSettingModel.workTimeSetting.isFlow()) {
+                        self.backUpOfFlowOrFlexUse = self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.fixedRestTimezone.toDto();
+                        self.backUpOfFlowOrFlexNotUse = self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.toDto();
+                    }
                 }
             });
             
