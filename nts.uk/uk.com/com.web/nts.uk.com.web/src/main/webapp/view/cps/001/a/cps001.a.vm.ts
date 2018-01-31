@@ -503,6 +503,7 @@ module cps001.a.vm {
 
     class MultiData {
         title: KnockoutObservable<string> = undefined;
+        htitle: KnockoutObservable<string> = ko.observable('');
         mode: KnockoutObservable<TABS> = ko.observable(undefined);
         roleId: KnockoutObservable<string> = ko.observable(undefined);
 
@@ -696,6 +697,10 @@ module cps001.a.vm {
 
                                 lv.removeDoubleLine(data.classificationItems);
                                 layout.listItemCls(data.classificationItems || []);
+
+                                _.defer(() => {
+                                    $('.drag-panel input:first').focus();
+                                });
                             } else {
                                 layout.listItemCls.removeAll();
                             }
@@ -726,6 +731,9 @@ module cps001.a.vm {
                                     if (data) {
                                         lv.removeDoubleLine(data.classificationItems);
                                         layout.listItemCls(data.classificationItems || []);
+                                        _.defer(() => {
+                                            $('.drag-panel input:first').focus();
+                                        });
                                     } else {
                                         layout.listItemCls.removeAll();
                                     }
@@ -749,6 +757,12 @@ module cps001.a.vm {
 
                                 if (rep == REPL_KEYS.NORMAL) {
                                     service.getHistData(query).done((data: Array<any>) => {
+                                        let _title = _.find(data, x => !x.optionValue);
+                                        if (_title) {
+                                            self.htitle(_title.optionText);
+                                        }
+
+                                        data = _.filter(data, x => !!x.optionValue);
                                         if (data && data.length) {
                                             self.gridlist(data);
                                             self.changeTitle(ATCS.UPDATE);
@@ -855,7 +869,11 @@ module cps001.a.vm {
                             }
                             layout.showColor(false);
                             lv.removeDoubleLine(data.classificationItems);
-                            layout.listItemCls(data.classificationItems);
+                            layout.listItemCls(data.classificationItems || []);
+
+                            _.defer(() => {
+                                $('.drag-panel input:first').focus();
+                            });
 
                             let roleId = self.roleId(),
                                 catId = self.categoryId() || self.id();
@@ -996,7 +1014,7 @@ module cps001.a.vm {
                 days = self.numberOfWork(),
                 duration = moment.duration(days, "days");
 
-            return format("{0}{1}{2}{3}", duration.years(), text('CPS001_67'), duration.months(), text('CPS001_88'));
+            return duration.days() != 0 && format("{0}{1}{2}{3}", duration.years(), text('CPS001_67'), duration.months(), text('CPS001_88')) || '';
         });
 
         constructor(param?: IEmployee) {
@@ -1027,7 +1045,11 @@ module cps001.a.vm {
                             self.contractType(data.contractCodeType);
 
                             person.gender(data.gender);
-                            person.birthDate(moment.utc(data.birthday).toDate());
+                            if (data.birthday) {
+                                person.birthDate(moment.utc(data.birthday).toDate());
+                            } else {
+                                person.birthDate(undefined);
+                            }
 
                             self.departmentCode(data.departmentCode);
                             self.departmentName(data.departmentName);
@@ -1126,7 +1148,7 @@ module cps001.a.vm {
                 birth = moment.utc(birthDay),
                 duration = moment.duration(now.diff(birth));
 
-            return duration.years() + text('CPS001_66');
+            return birthDay && (duration.years() + text('CPS001_66')) || '';
         });
     }
 

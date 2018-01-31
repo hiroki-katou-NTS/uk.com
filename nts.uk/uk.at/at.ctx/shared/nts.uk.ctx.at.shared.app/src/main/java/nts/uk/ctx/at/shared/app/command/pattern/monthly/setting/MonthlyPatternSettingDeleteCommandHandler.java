@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.setting;
+package nts.uk.ctx.at.shared.app.command.pattern.monthly.setting;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 
 /**
  * The Class MonthlyPatternSettingAddCommandHandler.
@@ -20,7 +20,7 @@ public class MonthlyPatternSettingDeleteCommandHandler
 
 	/** The repository. */
 	@Inject
-	private MonthlyPatternSettingRepository repository;
+	private WorkingConditionItemRepository repository;
 	
 	/*
 	 * (non-Javadoc)
@@ -36,7 +36,7 @@ public class MonthlyPatternSettingDeleteCommandHandler
 		MonthlyPatternSettingDeleteCommand command = context.getCommand();
 		
 		// call repository remove
-		this.repository.remove(command.getEmployeeId());
+		this.repository.deleteMonthlyPattern(command.getHistoryId());
 	}
 
 }

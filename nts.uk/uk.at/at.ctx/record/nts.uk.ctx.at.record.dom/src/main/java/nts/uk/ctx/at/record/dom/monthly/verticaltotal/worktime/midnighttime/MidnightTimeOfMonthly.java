@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の深夜時間
@@ -70,9 +71,12 @@ public class MidnightTimeOfMonthly {
 	
 	/**
 	 * 集計
+	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
 	 */
-	public void aggregate(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+	public void aggregate(
+			DatePeriod datePeriod,
+			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
 		
 		this.overWorkMidnightTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.legalMidnightTime = TimeMonthWithCalculation.ofSameTime(0);
@@ -82,6 +86,7 @@ public class MidnightTimeOfMonthly {
 		this.specialHolidayWorkMidnightTime = TimeMonthWithCalculation.ofSameTime(0);
 
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
+			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
 			val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
 			val legalTime = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 			val illegalTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();

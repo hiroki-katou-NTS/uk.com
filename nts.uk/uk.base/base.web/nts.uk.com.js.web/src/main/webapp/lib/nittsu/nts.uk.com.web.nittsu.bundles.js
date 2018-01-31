@@ -3314,23 +3314,36 @@ var nts;
                     });
                     kiban.systemName(__viewContext.env.systemName);
                     ui.viewModelBuilt.fire(ui._viewModel);
-                    ko.applyBindings(ui._viewModel);
-                    // off event reset for class reset-not-apply
-                    $(".reset-not-apply").find(".reset-element").off("reset");
-                    //avoid page content overlap header and function area
-                    var content_height = 20;
-                    if ($("#header").length != 0) {
-                        content_height += $("#header").outerHeight(); //header height+ content area botton padding,top padding
-                    }
-                    if ($("#functions-area").length != 0) {
-                        content_height += $("#functions-area").outerHeight(); //top function area height
-                    }
-                    if ($("#functions-area-bottom").length != 0) {
-                        content_height += $("#functions-area-bottom").outerHeight(); //bottom function area height
-                    }
-                    $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
-                    //            if($("#functions-area-bottom").length!=0){
-                    //            }
+                    var dfd = [];
+                    _.forEach($(".html-loading"), function (e) {
+                        var $container = $(e);
+                        var dX = $.Deferred();
+                        $container.load($container.attr("link"), function () {
+                            dX.resolve();
+                        });
+                        dfd.push(dX);
+                        dX.promise();
+                    });
+                    $.when.apply($, dfd).then(function (data, textStatus, jqXHR) {
+                        $('.html-loading').contents().unwrap();
+                        ko.applyBindings(ui._viewModel);
+                        // off event reset for class reset-not-apply
+                        $(".reset-not-apply").find(".reset-element").off("reset");
+                        //avoid page content overlap header and function area
+                        var content_height = 20;
+                        if ($("#header").length != 0) {
+                            content_height += $("#header").outerHeight(); //header height+ content area botton padding,top padding
+                        }
+                        if ($("#functions-area").length != 0) {
+                            content_height += $("#functions-area").outerHeight(); //top function area height
+                        }
+                        if ($("#functions-area-bottom").length != 0) {
+                            content_height += $("#functions-area-bottom").outerHeight(); //bottom function area height
+                        }
+                        $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
+                        //            if($("#functions-area-bottom").length!=0){
+                        //            }
+                    });
                 };
                 $(function () {
                     ui.documentReady.fire();
@@ -8860,7 +8873,7 @@ var nts;
                         var container = $(element);
                         container.data("enable", enable);
                         container.find(".label").text(nts.uk.util.isNullOrUndefined(option) ? optionText : option[optionText]);
-                        if (selectedValue() === true) {
+                        if (selectedValue() === getOptionValue(option, optionValue)) {
                             container.find("input[type='radio']").prop("checked", true);
                         }
                         else {
@@ -9415,6 +9428,14 @@ var nts;
                         var rightColumns = data.rightColumns || data.columns;
                         var enableRowNumbering = ko.unwrap(data.enableRowNumbering);
                         var defaultSearchText = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
+                        var beforeLeft = nts.uk.util.isNullOrUndefined(data.beforeMoveLeft) ? $.noop : data.beforeMoveLeft;
+                        var beforeRight = nts.uk.util.isNullOrUndefined(data.beforeMoveRight) ? $.noop : data.beforeMoveRight;
+                        var beforeAllL = nts.uk.util.isNullOrUndefined(data.beforeAllLeft) ? $.noop : data.beforeAllLeft;
+                        var beforeAllR = nts.uk.util.isNullOrUndefined(data.beforeAllRight) ? $.noop : data.beforeAllRight;
+                        var afterLeft = nts.uk.util.isNullOrUndefined(data.afterMoveLeft) ? $.noop : data.afterMoveLeft;
+                        var afterRight = nts.uk.util.isNullOrUndefined(data.afterMoveRight) ? $.noop : data.afterMoveRight;
+                        var afterAllL = nts.uk.util.isNullOrUndefined(data.afterAllLeft) ? $.noop : data.afterAllLeft;
+                        var afterAllR = nts.uk.util.isNullOrUndefined(data.afterAllRight) ? $.noop : data.afterAllRight;
                         // 動作が不安定なので、使わないようにする
                         data.draggable = false;
                         $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
@@ -9575,16 +9596,16 @@ var nts;
                         var $moveBackAll = $moveArea.find(".move-back-all");
                         var swapper = this.swapper;
                         $moveForward.click(function () {
-                            swapper.Model.move(true, data.value, false);
+                            swapper.Model.move(true, data.value, false, beforeRight, afterRight);
                         });
                         $moveBack.click(function () {
-                            swapper.Model.move(false, data.value, false);
+                            swapper.Model.move(false, data.value, false, beforeLeft, afterLeft);
                         });
                         $moveForwardAll.click(function () {
-                            swapper.Model.move(true, data.value, true);
+                            swapper.Model.move(true, data.value, true, beforeAllR, afterAllR);
                         });
                         $moveBackAll.click(function () {
-                            swapper.Model.move(false, data.value, true);
+                            swapper.Model.move(false, data.value, true, beforeAllL, afterAllL);
                         });
                         $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
                         this.swapper.Model.$container.bind("swaplistgridsizeexceed", function (evt, data) {
@@ -10068,15 +10089,19 @@ var nts;
                             });
                         }
                     };
-                    GridSwapList.prototype.move = function (forward, value, moveAll) {
+                    GridSwapList.prototype.move = function (forward, value, moveAll, beforMove, afterMove) {
                         var primaryKey = this.transportBuilder.primaryKey;
                         var $source = forward === true ? this.swapParts[0].$listControl : this.swapParts[1].$listControl;
                         var sourceList = forward === true ? this.swapParts[0].dataSource : this.swapParts[1].dataSource;
                         var $dest = forward === true ? this.swapParts[1].$listControl : this.swapParts[0].$listControl;
                         var destList = forward === true ? this.swapParts[1].dataSource : this.swapParts[0].dataSource;
                         var max = forward === true ? this.swapParts[1].itemsLimit : this.swapParts[0].itemsLimit;
+                        var oldSource = _.cloneDeep(destList);
                         if (moveAll) {
                             var selectedIds = sourceList.map(function (row) { return row[primaryKey]; });
+                            if (beforMove(forward, oldSource, selectedIds) == false) {
+                                return;
+                            }
                             if (!uk.util.isNullOrUndefined(max) && (selectedIds.length + destList.length > max)) {
                                 this.$container.trigger($.Event("swaplistgridsizeexceed"), [$dest, max]);
                                 return;
@@ -10098,6 +10123,9 @@ var nts;
                             });
                             var firstSelected = selectedRows[0];
                             var selectedIds = selectedRows.map(function (row) { return row.id; });
+                            if (beforMove(forward, oldSource, selectedIds) == false) {
+                                return;
+                            }
                             this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
                                 .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][primaryKey] : null).update(moveAll);
                         }
@@ -10108,6 +10136,7 @@ var nts;
                         value(secondSource);
                         $source.igGridSelection("clearSelection");
                         $dest.igGridSelection("clearSelection");
+                        afterMove(forward, oldSource, _.cloneDeep(forward ? secondSource : firstSource));
                         if (forward) {
                             var selectIndex = firstSource.length === 0 ? -1
                                 : (firstSource.length - 1 < firstSelected.index ? firstSource.length - 1 : firstSelected.index);

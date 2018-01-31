@@ -10,9 +10,9 @@ module nts.uk.at.view.kmf002.d {
         export class ScreenModel {
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
-            multiSelectedCode: KnockoutObservableArray<string>;
+            multiSelectedCode: KnockoutObservableArray<string[]>;
             isShowAlreadySet: KnockoutObservable<boolean>;
-            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel[]>;
             isDialog: KnockoutObservable<boolean>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             isMultiSelect: KnockoutObservable<boolean>;
@@ -145,7 +145,7 @@ module nts.uk.at.view.kmf002.d {
                         /** 
                          *   create value null for prepare create new 
                         **/
-                        _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value) {
+                        _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value: any) {
                             value.day(0);
                         });
                         _self.enableDelete(false);
