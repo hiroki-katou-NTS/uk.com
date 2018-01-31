@@ -30,7 +30,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.busin
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
@@ -426,7 +426,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 
 							List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(
 									appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),
-									AttendanceID.NORMALOVERTIME.value);
+									AttendanceType.NORMALOVERTIME.value);
 							result.setOverTimeInput(overtimeInputs);
 							result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
 							result.setFlexExessTime(appOvertime.get().getFlexExessTime());

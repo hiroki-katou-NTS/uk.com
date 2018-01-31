@@ -39,4 +39,16 @@ public class RoleSetWebMenuPubImp implements RoleSetLinkWebMenuPub {
                     )
                 .collect(Collectors.toList());
     }
+
+	@Override
+	public List<RoleSetLinkWebMenuExport> findAllWebMenuByListRoleSetCd(String companyId, List<String> roleSetCds) {
+		return roleSetAndWebMenuRepository.findByListRoleSetCd(companyId, roleSetCds).stream()
+                .map(item -> new RoleSetLinkWebMenuExport(
+                        item.getCompanyId()
+                        , item.getRoleSetCd().v()
+                        , item.getWebMenuCd().v()
+                        )
+                    )
+                .collect(Collectors.toList());
+	}
 }

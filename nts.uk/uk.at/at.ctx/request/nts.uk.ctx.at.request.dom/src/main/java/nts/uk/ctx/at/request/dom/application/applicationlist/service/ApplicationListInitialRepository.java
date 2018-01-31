@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.applicationlist.service;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
@@ -18,6 +19,13 @@ public interface ApplicationListInitialRepository {
 	 * @return
 	 */
 	public DatePeriod getInitialPeriod(String companyId);
+	/**
+	 * 0 - 申請一覧事前必須チェック
+	 * @param appType
+	 * @param wkpID
+	 * @return
+	 */
+	public Boolean checkAppPredictRequire(int appType, String wkpID);
 	
 	/**
 	 * 1- 申請一覧リスト取得
@@ -52,6 +60,13 @@ public interface ApplicationListInitialRepository {
 	 * @return
 	 */
 	public AppListAtrOutput getAppListAchievement(List<Application_New> lstApp, ApprovalListDisplaySetting displaySet);
+	/**
+	 * 5.1 - 申請一覧リスト取得実績休出申請
+	 * @param sID
+	 * @param date
+	 * @return
+	 */
+	public Boolean getAppListAchievementBreak(String sID, GeneralDate date);
 	/**
 	 * 6 - 申請一覧リスト取得振休振出
 	 * @param application

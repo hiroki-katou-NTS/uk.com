@@ -45,6 +45,7 @@ module nts.uk.at.view.kal003.a.tab {
                 },
                 owner: self
             });
+            $("#table-fixed").ntsFixedTable();
         }//end constructor
     }//end FixedCheckConditionTab
 }//end tab

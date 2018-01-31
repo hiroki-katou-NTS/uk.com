@@ -109,10 +109,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             { prop: 'name', length: 2 }]);
         comboColumnsCalc: KnockoutObservableArray<any> = ko.observableArray([{ prop: 'code', length: 1 },
             { prop: 'name', length: 8 }]);
-         comboItemsDoWork : KnockoutObservable<any> = ko.observableArray([]);
-         comboItemsReason : KnockoutObservable<any> = ko.observableArray([]);
-         comboItemsCalc : KnockoutObservable<any> = ko.observableArray([]);
-        
+        comboItemsDoWork: KnockoutObservableArray<any> = ko.observableArray([]);
+        comboItemsReason: KnockoutObservableArray<any> = ko.observableArray([]);
+        comboItemsCalc: KnockoutObservableArray<any> = ko.observableArray([]);
+        showPrincipal: KnockoutObservable<any> = ko.observable(true);
+        dataAll: KnockoutObservable<any> = ko.observable(null);
+        hasLstHeader : boolean  =  true;
 
         constructor() {
             var self = this;
@@ -202,7 +204,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
                     }
                 }
-                if (item.typeFormat != undefined) {
+                if (item.typeFormat !=  null && item.typeFormat != undefined) {
                     if (item.typeFormat == 2) {
                         //so lan
                         item.allowSummaries = true;
@@ -255,12 +257,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             service.startScreen(param).done((data) => {
                 console.log(data);
+                self.dataAll(data);
                 self.itemValueAll(data.itemValues);
                 self.comment(data.comment != null ? '■ ' + data.comment : null);
                 self.formatCodes(data.lstControlDisplayItem.formatCode);
-                _.each(data.lstControlDisplayItem.lstSheet, function(item) {
-                    item.columns.unshift("sign");
-                });
+//                _.each(data.lstControlDisplayItem.lstSheet, function(item) {
+//                    item.columns.unshift("sign");
+//                });
                 self.createSumColumn(data);
                 // combo box
                 self.comboItemsCalc(data.lstControlDisplayItem.comboItemCalc);
@@ -273,9 +276,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto == null ? false : data.yearHolidaySettingDto.manageAtr, data.substVacationDto == null ? false : data.substVacationDto.manageAtr, data.compensLeaveComDto == null ? false : data.compensLeaveComDto.manageAtr, data.com60HVacationDto == null ? false : data.com60HVacationDto.manageAtr, self.showButton()));
                 // Fixed Header
                 self.fixHeaders(data.lstFixedHeader);
-                self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
-                self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
-                self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
+                self.showPrincipal(data.showPrincipal);
+                if(data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
+                if (data.showPrincipal || data.lstControlDisplayItem.lstHeader.length == 0) {
+                    self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
+                    self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
+                    self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
+                } else {
+                    self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3]];
+                    self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6]];
+                    self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3]];
+                }
                 self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
                 self.receiveData(data);
                 let employeeLogin: any = _.find(self.lstEmployee(), function(data){
@@ -310,9 +321,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.grayout();
                         service.selectFormatCode(param).done((data) => {
                             self.formatCodes(data.lstControlDisplayItem.formatCode);
-                            _.each(data.lstControlDisplayItem.lstSheet, function(item) {
-                                item.columns.unshift("sign");
-                            });
+//                            _.each(data.lstControlDisplayItem.lstSheet, function(item) {
+//                                item.columns.unshift("sign");
+//                            });
                              self.createSumColumn(data);
                             self.employmentCode(data.employmentCode);
                             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
@@ -320,10 +331,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto == null ? false : data.yearHolidaySettingDto.manageAtr, data.substVacationDto == null ? false : data.substVacationDto.manageAtr, data.compensLeaveComDto == null ? false : data.compensLeaveComDto.manageAtr, data.com60HVacationDto == null ? false : data.com60HVacationDto.manageAtr, self.showButton()));
                             // Fixed Header
                             self.fixHeaders(data.lstFixedHeader);
-                            self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
-                            self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
-                            self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
-
+                            self.showPrincipal(data.showPrincipal);
+                            if (data.showPrincipal) {
+                                self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
+                                self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
+                                self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
+                            } else {
+                                self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3]];
+                                self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6]];
+                                self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3]];
+                            }
                             self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
                             self.receiveData(data);
                             let employeeLogin: any = _.find(self.lstEmployee(), function(data) {
@@ -464,19 +481,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $("#cbListDate").css("display", "none");
                 $('#numberHoliday').show();
                 $('#fixed-table').show();
-                 $("#content-grid").attr('style', 'top: 244px !IMPORTANT');
+               //  $("#content-grid").attr('style', 'top: 244px !IMPORTANT');
             } else if (self.displayFormat() == 1) {
                 $("#cbListDate").css("display", "block");
                 $("#emp-component").css("display", "none");
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
-                $("#content-grid").attr('style', 'top: 225px !IMPORTANT');
+               // $("#content-grid").attr('style', 'top: 225px !IMPORTANT');
             } else {
                 $("#cbListDate").css("display", "none");
                 $("#emp-component").css("display", "none");
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
-                $("#content-grid").attr('style', 'top: 180px !IMPORTANT');
+               // $("#content-grid").attr('style', 'top: 180px !IMPORTANT');
             }
         }
         btnExtraction_Click() {
@@ -509,9 +526,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     //TO Thanh: set data for list attendance item after load by extract click
                     self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                     self.itemValueAll(data.itemValues);
-                    _.each(data.lstControlDisplayItem.lstSheet, function(item) {
-                        item.columns.unshift("sign");
-                    });
+//                    _.each(data.lstControlDisplayItem.lstSheet, function(item) {
+//                        item.columns.unshift("sign");
+//                    });
                     self.createSumColumn(data);
                     self.columnSettings(data.lstControlDisplayItem.columnSettings);
                     self.receiveData(data);
@@ -556,13 +573,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     errorValidateScreeen.push(object);
                 });
             };
-//            errorValidateScreeen = [{ date: moment(self.dateRanger().startDate, "YYYY/MM/DD"), employeeCode: "00000001", employeeName: "AAA", message: "Loi gi", itemName: "AAAA", columnKey:"A312" }];
-//            _.each(errorValidateScreeen, value =>{
-//                let item = _.find(self.lstAttendanceItem(), (data) => {
-//                    return String(data.id) === value.columnKey.substring(1, value.columnKey.length);
-//                })
-//                value.itemName = (item == undefined) ? "" : item.name; 
-//            })
             if (self.displayFormat() === 0) {
                 lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
@@ -612,9 +622,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.selectErrorCode(param).done((data) => {
-                            _.each(data.lstControlDisplayItem.lstSheet, function(item) {
-                                item.columns.unshift("sign");
-                            });
+//                            _.each(data.lstControlDisplayItem.lstSheet, function(item) {
+//                                item.columns.unshift("sign");
+//                            });
                             self.createSumColumn(data);
                             self.columnSettings(data.lstControlDisplayItem.columnSettings);
                             self.receiveData(data);
@@ -658,9 +668,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.selectFormatCode(param).done((data) => {
-                            _.each(data.lstControlDisplayItem.lstSheet, function(item) {
-                                item.columns.unshift("sign");
-                            });
+//                            _.each(data.lstControlDisplayItem.lstSheet, function(item) {
+//                                item.columns.unshift("sign");
+//                            });
                             self.createSumColumn(data);
                             self.columnSettings(data.lstControlDisplayItem.columnSettings);
                             self.receiveData(data);
@@ -784,6 +794,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             } else if (self.displayFormat() == 2) {
                 self.fixColGrid(self.errorModeFixCol);
             }
+            if(self.showPrincipal() && self.hasLstHeader){
+                let sign = _.find( self.fixColGrid(), (data: any) =>{
+                    return data.columnKey === 'sign';
+                }
+                )
+                if(sign == undefined) self.fixColGrid.push({ columnKey: 'sign', isFixed: true });
+            }
             self.loadHeader(self.displayFormat());
             self.dailyPerfomanceData(self.filterData(self.displayFormat()));
         }
@@ -858,7 +875,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         color: header.color
                     });
                 }
-                if (header.group != undefined && header.group.length > 0) {
+                if (header.group !=  null && header.group != undefined && header.group.length > 0) {
                     self.headerColors.push({
                         key: header.group[0].key,
                         color: header.group[0].color
@@ -1238,9 +1255,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         reloadGrid() {
             var self = this;
             nts.uk.ui.block.invisible();
-            nts.uk.ui.block.grayout();
-            self.extraction();
-            nts.uk.ui.block.clear();
+             nts.uk.ui.block.grayout();
+            self.destroyGrid();
+            setTimeout(function() {
+                self.extractionData();
+                self.loadGrid();
+                nts.uk.ui.block.clear();
+            }, 3000);
         }
 
         createNtsFeatures() {
@@ -1294,16 +1315,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             self.dislayNumberHeaderText();
             _.forEach(self.optionalHeader, (header) => {
-                if (header.constraint == null) {
+                if (header.constraint == null || header.constraint == undefined) {
                     delete header.constraint;
                 }else{
                     header.constraint["cDisplayType"] = header.constraint.cdisplayType;
-                    if(header.constraint.cdisplayType.indexOf("Currency") != -1){
+                    if(header.constraint.cDisplayType != null && header.constraint.cDisplayType != undefined && header.constraint.cDisplayType.indexOf("Currency") != -1){
                        header["columnCssClass"] =  "currency-symbol";
                     }
                     delete header.constraint.cdisplayType;
                 }
-                if (header.group != undefined) {
+                if (header.group != null && header.group != undefined) {
                     if (header.group.length > 0) {
                        delete header.group[0].constraint;
                        delete header.group[1].constraint;
@@ -1387,7 +1408,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (self.showHeaderNumber()) {
                 self.optionalHeader.map((header) => {
                     if (header.headerText) {
-                        header.headerText = header.headerText + " " + header.key;
+                        header.headerText = header.headerText + " " + header.key.substring(1, header.key.length);
                     }
                     return header;
                 });

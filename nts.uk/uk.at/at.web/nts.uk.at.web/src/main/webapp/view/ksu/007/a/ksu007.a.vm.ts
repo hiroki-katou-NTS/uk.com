@@ -217,10 +217,10 @@ module nts.uk.at.view.ksu007.a {
                     var scheduleBatchCorrectSetting = new ScheduleBatchCorrectSetting();
                     
                     scheduleBatchCorrectSetting.employeeId = employeeId;                    
-                    scheduleBatchCorrectSetting.startDate = $('#dateRangePickerPeriod').find('input').first().val();
-                    scheduleBatchCorrectSetting.endDate = $('#dateRangePickerPeriod').find('input').last().val();
-                    scheduleBatchCorrectSetting.worktypeCode = $("#workTypeInfo").text();
-                    scheduleBatchCorrectSetting.worktimeCode = $("#workTimeInfo").text();
+                    scheduleBatchCorrectSetting.startDate = self.periodDate().startDate;
+                    scheduleBatchCorrectSetting.endDate = self.periodDate().endDate;
+                    scheduleBatchCorrectSetting.worktypeCode = self.workTypeInfo();
+                    scheduleBatchCorrectSetting.worktimeCode = self.workTimeInfo();
                       
                     self.scheduleBatchCorrectSettingInfo = ko.observable(scheduleBatchCorrectSetting);
                     self.saveScheduleBatchCorrectSetting(self.scheduleBatchCorrectSettingInfo());

@@ -22,9 +22,8 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -290,18 +289,20 @@ public class HolidayWorkTimeOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 日の法定労働時間を取得する
-		DailyCalculationPersonalInformation dailyCalculationPersonalInformation =
-				repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(
-					workingSystem,
-					companyId,
-					placeId,
-					employmentCd,
-					attendanceTimeOfDaily.getEmployeeId(),
-					attendanceTimeOfDaily.getYmd());
+		//*****（未）　正式な処理の作成待ち。
+		//DailyCalculationPersonalInformation dailyCalculationPersonalInformation =
+		//		repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(
+		//			workingSystem,
+		//			companyId,
+		//			placeId,
+		//			employmentCd,
+		//			attendanceTimeOfDaily.getEmployeeId(),
+		//			attendanceTimeOfDaily.getYmd());
 		
 		// 法定内休出にできる時間
-		AttendanceTime canLegalHolidayWork =
-				new AttendanceTime(dailyCalculationPersonalInformation.getStatutoryWorkTime().v());
+		//*****（未）　正式な処理が出来てから、代入。
+		AttendanceTime canLegalHolidayWork = new AttendanceTime(0);
+		//		new AttendanceTime(dailyCalculationPersonalInformation.getStatutoryWorkTime().v());
 		return canLegalHolidayWork;
 	}
 	

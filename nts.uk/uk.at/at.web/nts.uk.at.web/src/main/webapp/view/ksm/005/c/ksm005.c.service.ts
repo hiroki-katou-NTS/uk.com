@@ -1,11 +1,13 @@
 module nts.uk.at.view.ksm005.c {
     export module service {
         var paths = {
-            findByIdMonthlyPatternSetting: "ctx/at/schedule/pattern/monthly/setting/findById",
-            findAllMonthlyPatternSetting: "ctx/at/schedule/pattern/monthly/setting/findAll",
-            saveMonthlyPatternSetting: "ctx/at/schedule/pattern/monthly/setting/save",
-            deleteMonthlyPatternSetting: "ctx/at/schedule/pattern/monthly/setting/delete",
-            findByIdMonthlyPattern: "ctx/at/schedule/pattern/monthly/findById"
+            findByIdMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/findById",
+            saveMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/save",
+            copyMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/copy",
+            deleteMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/delete",
+            getListHistory: "ctx/at/shared/pattern/monthly/setting/getListHistory",
+            getListMonthlyPattern: "ctx/at/schedule/pattern/monthly/findAll",
+            getAllMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/findAll"
         }
         
         /**
@@ -14,51 +16,83 @@ module nts.uk.at.view.ksm005.c {
         export function findByIdMonthlyPatternSetting(employeeId: string): JQueryPromise<model.MonthlyPatternSettingDto> {
             return nts.uk.request.ajax('at', paths.findByIdMonthlyPatternSetting + "/" + employeeId);                
         }
-        /**
-         * call service find by employee id
-         */
-        export function findAllMonthlyPatternSetting(employeeIds: string[]): JQueryPromise<string[]> {
-            return nts.uk.request.ajax('at', paths.findAllMonthlyPatternSetting, {employeeIds: employeeIds});                
-        }
         
          /**
          * call service save monthly pattern setting
          */
-        export function saveMonthlyPatternSetting(dto: model.MonthlyPatternSettingActionDto): JQueryPromise<void> {
+        export function saveMonthlyPatternSetting(dto: model.MonthlyPatternSettingDto): JQueryPromise<void> {
             return nts.uk.request.ajax('at', paths.saveMonthlyPatternSetting, dto);
+        }
+        
+        export function copyMonthlyPatternSetting(dto: model.CopyMonthlyPatternSettingDto): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.copyMonthlyPatternSetting, dto);
         }
         
         /**
         * call service save monthly pattern setting
         */
-        export function deleteMonthlyPatternSetting(dto: model.MonthlyPatternSettingActionDto): JQueryPromise<void> {
+        export function deleteMonthlyPatternSetting(dto: model.MonthlyPatternSettingDto): JQueryPromise<void> {
             return nts.uk.request.ajax('at', paths.deleteMonthlyPatternSetting, dto);
         }
         
         /**
-         * call service find by id monthly pattern
+         * get list history
          */
-        export function findByIdMonthlyPattern(monthlyPatternCode: string):  JQueryPromise<model.MonthlyPatternDto>{
-            return nts.uk.request.ajax('at', paths.findByIdMonthlyPattern + "/" + monthlyPatternCode);
+        export function getListHistory(employeeId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', paths.getListHistory + "/" + employeeId);
+        }
+        
+        /**
+         * get list MonthlyPattern
+         */
+        export function getListMonthlyPattern(): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', paths.getListMonthlyPattern);
+        }
+        
+        export function findAllMonthlyPatternSetting(employeeIds: string[]): JQueryPromise<any> {
+             return nts.uk.request.ajax('at', paths.getAllMonthlyPatternSetting, {employeeIds: employeeIds});
         }
         
         export module model {
 
-            export interface MonthlyPatternDto {
+            export class MonthlyPatternDto {
                 code: string;
                 name: string;
             }
             
-            export interface MonthlyPatternSettingDto{
-                setting: boolean;
-                info: MonthlyPatternDto; 
+            export interface CopyMonthlyPatternSettingDto{
+                
+                destSid: string[];
+                
+                sourceSid: string;
+                
+                isOverwrite: number;
             }
             
-            export interface MonthlyPatternSettingActionDto {
+            export class MonthlyPatternSettingDto{
                 employeeId: string;
+                historyId: string;
                 monthlyPatternCode: string;
+                
+                constructor(employeeId: string, historyId: string, monthlyPatternCode: string) {
+                    this.employeeId = employeeId;
+                    this.historyId = historyId;
+                    this.monthlyPatternCode = monthlyPatternCode
+                }
             }
-                       
+            
+            export class HistoryDto{
+                historyId: string;
+                period: Period;  
+            }
+            
+            /**
+             * Period
+             */
+            export class Period {
+                startDate: string;
+                endDate: string;
+            }
         }
 
     }

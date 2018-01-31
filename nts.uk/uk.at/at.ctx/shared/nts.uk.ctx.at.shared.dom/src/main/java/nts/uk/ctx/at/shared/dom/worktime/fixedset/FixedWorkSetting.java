@@ -50,44 +50,46 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 	private Boolean useHalfDayShift;
 
 	/** The fixed work rest setting. */
-	//固定勤務の休憩設定
+	// 固定勤務の休憩設定
 	private FixedWorkRestSet fixedWorkRestSetting;
-	
+
 	/** The lst half day work timezone. */
 	// 平日勤務時間帯
 	private List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone;
-	
+
 	/** The lst stamp reflect timezone. */
 	// 打刻反映時間帯
 	private List<StampReflectTimezone> lstStampReflectTimezone;
 
 	/** The legal OT setting. */
 	// 法定内残業設定
-    private LegalOTSetting legalOTSetting;
-    
-    /**
-     * Instantiates a new fixed work setting.
-     *
-     * @param memento the memento
-     */
-    public FixedWorkSetting(FixedWorkSettingGetMemento memento) {
-    	this.companyId = memento.getCompanyId();
-    	this.workTimeCode = memento.getWorkTimeCode();
-    	this.offdayWorkTimezone = memento.getOffdayWorkTimezone();
-    	this.commonSetting = memento.getCommonSetting();
-    	this.useHalfDayShift = memento.getUseHalfDayShift();
-    	this.fixedWorkRestSetting = memento.getFixedWorkRestSetting();
-    	this.lstHalfDayWorkTimezone = memento.getLstHalfDayWorkTimezone();
-    	this.lstStampReflectTimezone = memento.getLstStampReflectTimezone();
-        this.legalOTSetting = memento.getLegalOTSetting();
-    }
-    
-    /**
-     * Save to memento.
-     *
-     * @param memento the memento
-     */
-    public void saveToMemento(FixedWorkSettingSetMemento memento) {
+	private LegalOTSetting legalOTSetting;
+
+	/**
+	 * Instantiates a new fixed work setting.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public FixedWorkSetting(FixedWorkSettingGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.workTimeCode = memento.getWorkTimeCode();
+		this.offdayWorkTimezone = memento.getOffdayWorkTimezone();
+		this.commonSetting = memento.getCommonSetting();
+		this.useHalfDayShift = memento.getUseHalfDayShift();
+		this.fixedWorkRestSetting = memento.getFixedWorkRestSetting();
+		this.lstHalfDayWorkTimezone = memento.getLstHalfDayWorkTimezone();
+		this.lstStampReflectTimezone = memento.getLstStampReflectTimezone();
+		this.legalOTSetting = memento.getLegalOTSetting();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(FixedWorkSettingSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setWorkTimeCode(this.workTimeCode);
 		memento.setOffdayWorkTimezone(this.offdayWorkTimezone);
@@ -99,7 +101,9 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 		memento.setLegalOTSetting(this.legalOTSetting);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -111,7 +115,9 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -139,36 +145,40 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot {
 	/**
 	 * Restore data.
 	 *
-	 * @param screenMode the screen mode
-	 * @param workTimeType the work time type
-	 * @param oldDomain the old domain
+	 * @param screenMode
+	 *            the screen mode
+	 * @param workTimeType
+	 *            the work time type
+	 * @param oldDomain
+	 *            the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {	
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {
 		// Tab 2 + 3 + 5: restore 平日勤務時間帯
 		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
 				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.FIXED_WORK) {
 			Map<AmPmAtr, FixHalfDayWorkTimezone> mapFixHalfWork = oldDomain.getLstHalfDayWorkTimezone().stream()
-					.collect(Collectors.toMap(item -> ((FixHalfDayWorkTimezone) item).getDayAtr(),
-							Function.identity()));
-			this.lstHalfDayWorkTimezone.forEach(item -> item.restoreData(screenMode, this,
-					mapFixHalfWork.get(item.getDayAtr())));
+					.collect(
+							Collectors.toMap(item -> ((FixHalfDayWorkTimezone) item).getDayAtr(), Function.identity()));
+			this.lstHalfDayWorkTimezone
+					.forEach(item -> item.restoreData(screenMode, this, mapFixHalfWork.get(item.getDayAtr())));
 		} else {
 			this.lstHalfDayWorkTimezone = oldDomain.getLstHalfDayWorkTimezone();
 		}
-		
+
 		// Tab 8 -> 16
 		this.commonSetting.restoreData(screenMode, oldDomain.getCommonSetting());
 	}
-	
+
 	/**
 	 * Restore default data.
 	 *
-	 * @param screenMode the screen mode
+	 * @param screenMode
+	 *            the screen mode
 	 */
 	public void restoreDefaultData(ScreenMode screenMode) {
 		// Tab 2 + 3 + 5: restore 平日勤務時間帯
 		this.lstHalfDayWorkTimezone.forEach(item -> item.restoreDefaultData(screenMode));
-		
+
 		// Tab 8 -> 16
 		this.commonSetting.restoreDefaultData(screenMode);
 	}

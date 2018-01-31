@@ -174,13 +174,13 @@
 						</td>
 						<td class="screen-content-right">
 						<com:ko tag="with" bind="mainSettingModel.workTimeSetting">
-							<div class="setting_header">
+							<div class="setting_header" style="display: inline-flex;">
 								<div data-bind="ntsFormLabel: {required:true, 
 									constraint: ['WorkTimeCode','WorkTimeName']}">
 									#{i18n.getText('KMK003_13')}
 								</div>
 
-								<input tabindex="10" id="inp-worktimecode" data-bind="ntsTextEditor: {
+								<input class="main-input" tabindex="10" id="inp-worktimecode" data-bind="ntsTextEditor: {
 								    name: '#[KMK003_10]',
 									value: worktimeCode,
 									constraint: 'WorkTimeCode',
@@ -188,7 +188,7 @@
 									required: true,
 									enable: $parent.isNewOrCopyMode()}">
 								</input> 
-								<input tabindex="11" id="inp-worktimename" data-bind="ntsTextEditor: {
+								<input class="main-input" tabindex="11" id="inp-worktimename" data-bind="ntsTextEditor: {
 									name: '#[KMK003_11]',
 									value: workTimeDisplayName.workTimeName,
 									constraint: 'WorkTimeName',
@@ -199,7 +199,7 @@
 								</input>
 								<div class="label_header" data-bind="ntsFormLabel: {constraint: 'WorkTimeAbName'}">#{i18n.getText('KMK003_14')}
 								</div>
-								<input tabindex="12" data-bind="ntsTextEditor: {
+								<input class="main-input" tabindex="12" data-bind="ntsTextEditor: {
 									name: '#[KMK003_14]',
 									value: workTimeDisplayName.workTimeAbName,
 									constraint: 'WorkTimeAbName',
@@ -209,7 +209,7 @@
 									}" />
 								<div class="label_header" data-bind="ntsFormLabel: {constraint: 'WorkTimeSymbol'}">#{i18n.getText('KMK003_15')}
 								</div>
-								<input tabindex="13" data-bind="ntsTextEditor: {
+								<input class="main-input" tabindex="13" data-bind="ntsTextEditor: {
 									name: '#[KMK003_15]',
 									value: workTimeDisplayName.workTimeSymbol,
 									constraint: 'WorkTimeSymbol',
@@ -217,10 +217,10 @@
 									required: false,
 									enable: true
 									}" />
-								<div tabindex="14" class="label_header"
+								<div tabindex="14" class="label_header" style="padding-top: 5px;" 
 									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_16')}
 								</div>
-								<div tabindex="15" id="colorpicker"
+								<div class="main-input" tabindex="15" id="colorpicker"
 									data-bind="ntsColorPicker: {name: '#[KMK003_161]',value: colorCode, enable: true, width: 50}" />
 							</div>
 							<div class="setting_header_br">

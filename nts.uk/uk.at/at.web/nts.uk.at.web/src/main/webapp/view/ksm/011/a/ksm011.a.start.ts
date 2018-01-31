@@ -10,9 +10,17 @@ module nts.uk.at.view.ksm011.a {
             viewmodelC: new ksm.c.viewmodel.ScreenModel(),
             viewmodelD: new ksm.d.viewmodel.ScreenModel()
         };
-        
+
         __viewContext.bind(__viewContext.viewModel);
+
+        $(".link-control a").on("click", function() {
+            event.preventDefault();
+            $(".link-control a").removeClass('hyperlink-disable');
+            $(this).addClass("hyperlink-disable");
+            $('#item-panel').animate({ scrollTop: $(".item-panel").scrollTop() + $($(this).attr("href")).position().top - 5 }, 'fast');
+        });
+        
         // show active tab panel 
-        $('.navigator li a.active').trigger('click');
+        _.defer(() => { $('.navigator li a.active').trigger('click'); });
     });
 }

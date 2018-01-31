@@ -70,7 +70,7 @@ module nts.uk.com.view.cas014.a {
                     $("#A4").focus();
                     dfd.resolve();
                 }).fail(function(error) {
-                    alertError({ messageId: error.messageId }).then(() => {
+                    alertError(error).then(() => {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     });
                     dfd.reject();
@@ -97,7 +97,7 @@ module nts.uk.com.view.cas014.a {
                         $("#A4").focus();
                     });
                 }).fail(error => {
-                    alertError({ messageId: error.messageId });
+                    alertError(error);
                 }).always(() => {
                     block.clear();
                 });
