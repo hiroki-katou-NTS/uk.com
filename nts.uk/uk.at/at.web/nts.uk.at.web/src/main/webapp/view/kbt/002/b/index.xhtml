@@ -82,14 +82,14 @@
                             	<div id="scopeRadioBox">
 									<div class="ntsControl" style="width: 100%; margin-bottom : 5px">
 										<label class="ntsRadioBox">
-											<input tabindex="9" type="radio" name="execScopeRadio" data-bind="checkedValue: 0, checked: execScopeCls" />
-											<span class="box"></span><span class="label">#{i18n.getText('Com_Company')}</span>
+											<input type="radio" name="execScopeRadio" data-bind="checkedValue: 0, checked: execScopeCls" />
+											<span tabindex="9" class="box"></span><span class="label">#{i18n.getText('Com_Company')}</span>
 										</label>
 									</div>		
 									<div class="ntsControl">
 										<label class="ntsRadioBox">
-											<input tabindex="9" type="radio" name="execScopeRadio" data-bind="checkedValue: 1, checked: execScopeCls" />
-											<span class="box"></span><span class="label">#{i18n.getText('Com_Workplace')}</span>
+											<input type="radio" name="execScopeRadio" data-bind="checkedValue: 1, checked: execScopeCls" />
+											<span tabindex="9" class="box"></span><span class="label">#{i18n.getText('Com_Workplace')}</span>
 										</label>
 										<span style="vertical-align: middle;margin-left: 15px;">#{i18n.getText('KBT002_119')}</span>
 										<div tabindex="10" data-bind="ntsDatePicker: {value: refDate, dateFormat: 'YYYY/MM/DD'}"></div>
@@ -156,14 +156,24 @@
 		                         					<div id="targetRadioBox">
 														<div class="ntsControl" style="margin-right: 60px">
 															<label class="ntsRadioBox">
-																<input tabindex="17" type="radio" name="targetRadio" data-bind="checkedValue: 0, checked: creationTarget, enable: perScheduleCls()" />
-																<span class="box"></span><span class="label">#{i18n.getText('KBT002_30')}</span>
+																<input type="radio" name="targetRadio" data-bind="checkedValue: 0, checked: creationTarget, enable: perScheduleCls()" />
+																<com:ko-if bind="perScheduleCls()">
+																	<span tabindex="17" class="box"></span><span class="label">#{i18n.getText('KBT002_30')}</span>
+																</com:ko-if>
+																<com:ko-if bind="!perScheduleCls()">
+																	<span class="box"></span><span class="label">#{i18n.getText('KBT002_30')}</span>
+																</com:ko-if>
 															</label>
 														</div>		
 														<div class="ntsControl">
 															<label class="ntsRadioBox">
-																<input tabindex="17" type="radio" name="targetRadio" data-bind="checkedValue: 1, checked: creationTarget, enable: perScheduleCls()" />
-																<span class="box"></span><span class="label">#{i18n.getText('KBT002_31')}</span>
+																<input type="radio" name="targetRadio" data-bind="checkedValue: 1, checked: creationTarget, enable: perScheduleCls()" />
+																<com:ko-if bind="perScheduleCls()">
+																	<span tabindex="17" class="box"></span><span class="label">#{i18n.getText('KBT002_31')}</span>
+																</com:ko-if>
+																<com:ko-if bind="!perScheduleCls()">
+																	<span class="box"></span><span class="label">#{i18n.getText('KBT002_31')}</span>
+																</com:ko-if>
 															</label>
 														</div>
 													</div>

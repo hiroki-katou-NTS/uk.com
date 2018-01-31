@@ -8,14 +8,16 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum RepeatContentItem {
 	/* 毎日 */
-	DAILY(0),
+	DAILY(0, "毎日"),
 	
 	/* 毎週 */
-	WEEKLY(1),
+	WEEKLY(1, "毎週"),
 	
 	/* 毎月 */
-	MONTHLY(2);
+	MONTHLY(2, "毎月");
 	
 	/** The value. */
 	public final int value;
+	
+	public final String name;
 }
