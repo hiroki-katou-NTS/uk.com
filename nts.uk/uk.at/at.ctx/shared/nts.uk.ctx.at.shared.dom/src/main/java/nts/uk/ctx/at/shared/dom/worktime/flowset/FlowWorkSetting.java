@@ -103,19 +103,27 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 	 * @param other
 	 *            the other
 	 */
-	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlowWorkSetting other) {
-		this.commonSetting.restoreData(screenMode, other.getCommonSetting());
-
-		// Tab 2 restore 平日勤務時間帯
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlowWorkSetting other) {		
+		// Tab 2 + 5 + 7
 		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
 				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
+			// Tab 2: restore 平日勤務時間帯
 			this.flowSetting.restoreData(screenMode, other.getFlowSetting());
+			// Tab 5
+			this.halfDayWorkTimezone.restoreData(screenMode, other.getHalfDayWorkTimezone());
+			// Tab 7
+			this.offdayWorkTimezone.restoreData(screenMode, other.getOffdayWorkTimezone());
 		} else {
-			this.halfDayWorkTimezone = other.getHalfDayWorkTimezone();
+			// Tab 2
 			this.flowSetting = other.getFlowSetting();
+			// Tab 5
+			this.halfDayWorkTimezone = other.getHalfDayWorkTimezone();
+			// Tab 7
+			this.offdayWorkTimezone = other.getOffdayWorkTimezone();
 		}
 		
-		//TODO: tab 3 + 5
+		// Tab 8 -> 16
+		this.commonSetting.restoreData(screenMode, other.getCommonSetting());
 	}
 
 	/**
@@ -125,6 +133,13 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 	 *            the screen mode
 	 */
 	public void restoreDefaultData(ScreenMode screenMode) {
+		// Tab 2 + 5: restore 平日勤務時間帯
+		this.halfDayWorkTimezone.restoreDefaultData(screenMode);
+		
+		// Tab 7
+		this.offdayWorkTimezone.restoreDefaultData(screenMode);
+		
+		// Tab 8 -> 16
 		this.commonSetting.restoreDefaultData(screenMode);
 	}
 }

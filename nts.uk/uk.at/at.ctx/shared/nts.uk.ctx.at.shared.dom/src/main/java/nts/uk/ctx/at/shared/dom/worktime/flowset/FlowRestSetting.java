@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
@@ -23,11 +23,20 @@ public class FlowRestSetting extends WorkTimeDomainObject {
 	// 流動経過時間
 	private AttendanceTime flowPassageTime;
 
+	/**
+	 * Instantiates a new flow rest setting.
+	 */
+	public FlowRestSetting() {
+		super();
+		this.flowRestTime = new AttendanceTime(0);
+		this.flowPassageTime = new AttendanceTime(0);
+	}
 	
 	/**
-	 * Constructor
+	 * Instantiates a new flow rest setting.
+	 *
 	 * @param flowRestTime the flow rest time
-	 * @param flowPassageTime the flow passage time.
+	 * @param flowPassageTime the flow passage time
 	 */
 	public FlowRestSetting(AttendanceTime flowRestTime, AttendanceTime flowPassageTime) {
 		super();
@@ -41,6 +50,7 @@ public class FlowRestSetting extends WorkTimeDomainObject {
 	 * @param memento the memento
 	 */
 	public FlowRestSetting(FlowRestSettingGetMemento memento) {
+		super();
 		this.flowRestTime = memento.getFlowRestTime();
 		this.flowPassageTime = memento.getFlowPassageTime();
 	}

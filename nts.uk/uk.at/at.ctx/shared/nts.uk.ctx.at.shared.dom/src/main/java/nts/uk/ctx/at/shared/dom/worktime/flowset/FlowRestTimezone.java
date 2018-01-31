@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class FlowRestTimezone.
@@ -32,14 +34,23 @@ public class FlowRestTimezone extends WorkTimeDomainObject {
 	private FlowRestSetting hereAfterRestSet;
 
 	/**
-	 * Constructor
-	 * 
+	 * Instantiates a new flow rest timezone.
+	 */
+	public FlowRestTimezone() {
+		this.flowRestSets = new ArrayList<>();
+		this.useHereAfterRestSet = false;
+		this.hereAfterRestSet = new FlowRestSetting();
+	}
+
+	/**
+	 * Instantiates a new flow rest timezone.
+	 *
 	 * @param flowRestSets
-	 *            The flow rest sets.
+	 *            the flow rest sets
 	 * @param useHereAfterRestSet
-	 *            The use here after rest set.
+	 *            the use here after rest set
 	 * @param hereAfterRestSet
-	 *            The here after rest set.
+	 *            the here after rest set
 	 */
 	public FlowRestTimezone(List<FlowRestSetting> flowRestSets, boolean useHereAfterRestSet,
 			FlowRestSetting hereAfterRestSet) {
@@ -79,7 +90,7 @@ public class FlowRestTimezone extends WorkTimeDomainObject {
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
-	public void validate() {		
+	public void validate() {
 		this.validateAfterRestSetting();
 		this.validateOverlapFlowRestSets();
 		super.validate();
@@ -111,4 +122,29 @@ public class FlowRestTimezone extends WorkTimeDomainObject {
 		}
 	}
 
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, FlowRestTimezone oldDomain) {
+		if (!this.useHereAfterRestSet) {
+			this.hereAfterRestSet = oldDomain.getHereAfterRestSet();
+		}
+	}
+
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		if (!this.useHereAfterRestSet) {
+			this.hereAfterRestSet = new FlowRestSetting();
+		}
+	}
 }

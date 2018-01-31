@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class FlexOffdayWorkTime.
@@ -118,5 +119,11 @@ public class FlexOffdayWorkTime extends WorkTimeDomainObject {
 		}
 		return this.restTimezone.getFixedRestTimezone().getTimezones().stream().allMatch(
 				resTz -> this.lstWorkTimezone.stream().anyMatch(hdWtz -> resTz.isBetweenOrEqual(hdWtz.getTimezone())));
+	}
+
+	public void restoreData(ScreenMode screenMode, FlexWorkSetting oldDomain) {
+		if (!this.restTimezone.getFlowRestTimezone().isUseHereAfterRestSet()) {
+			this.restTimezone.restoreData(screenMode, oldDomain.getOffdayWorkTime().getRestTimezone());
+		}
 	}
 }
