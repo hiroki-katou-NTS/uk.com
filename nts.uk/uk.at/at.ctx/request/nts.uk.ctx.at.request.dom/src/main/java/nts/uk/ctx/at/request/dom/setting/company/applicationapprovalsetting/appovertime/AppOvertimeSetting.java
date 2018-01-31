@@ -6,7 +6,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 /**
  * 残業申請設定
  * @author loivt
@@ -94,7 +94,7 @@ public class AppOvertimeSetting extends AggregateRoot{
 				EnumAdaptor.valueOf(priorityStampSetAtr, PriorityStampSetAtr.class), 
 				EnumAdaptor.valueOf(unitAssignmentOvertime, UnitAssignmentOvertime.class), 
 				EnumAdaptor.valueOf(normalOvertimeUseAtr, UseAtr.class), 
-				new OtHourUnitControl(EnumAdaptor.valueOf(attendanceId, AttendanceID.class), 
+				new OtHourUnitControl(EnumAdaptor.valueOf(attendanceId, AttendanceType.class), 
 						EnumAdaptor.valueOf(useOt, UseOtWk.class)));
 	}
 }
