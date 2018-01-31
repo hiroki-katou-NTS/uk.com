@@ -501,7 +501,7 @@ module nts.uk.at.view.kmf002.a {
                 // condition 3
                 if (_self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE 
                         && _self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.ONE_MONTH) {
-                    _self.isDisableSetUnitBtn(true);
+                    _self.isDisableSetUnitBtn(false);
                     _self.enablePubHDGrantDatePeriod(true);
                     _self.enableDetermineStartDate(false);
                     _self.enablePubHDDateAndDayMonth(false);
@@ -510,7 +510,7 @@ module nts.uk.at.view.kmf002.a {
                 // condtion 4
                 else if (_self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE 
                             && _self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.FOUR_WEEK_FOUR_DAYOFF) {
-                    _self.isDisableSetUnitBtn(false);
+                    _self.isDisableSetUnitBtn(true);
                     _self.enablePubHDGrantDatePeriod(false);
                     _self.enableDetermineStartDate(true);
                     _self.enablePubHDDateAndDayMonth(true);
@@ -518,7 +518,7 @@ module nts.uk.at.view.kmf002.a {
                 } 
                 // another    
                 else {
-                    _self.isDisableSetUnitBtn(false);
+                    _self.isDisableSetUnitBtn(true);
                     _self.enablePubHDGrantDatePeriod(false);
                     _self.enableDetermineStartDate(false);
                     _self.enablePubHDDateAndDayMonth(false);
