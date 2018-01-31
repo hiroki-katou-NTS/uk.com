@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.algorithm;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
+@Stateless
 public class CreScheWithBusinessDayCalService {
 	@Inject
 	WorkTypeRepository workTypeRepository;
