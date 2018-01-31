@@ -25,7 +25,7 @@ module nts.uk.at.view.ksm005.c {
         }
         
         export function copyMonthlyPatternSetting(dto: model.CopyMonthlyPatternSettingDto): JQueryPromise<void> {
-            return nts.uk.request.ajax('at', paths.saveMonthlyPatternSetting, dto);
+            return nts.uk.request.ajax('at', paths.copyMonthlyPatternSetting, dto);
         }
         
         /**
