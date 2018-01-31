@@ -52,9 +52,9 @@
 						data-bind="ntsGridList: {	
 						dataSource: categoryList ,
 						primaryKey: 'id' ,
-						columns: currentCategory().ctgColums ,
+						columns: ctgColums ,
 						multiple: false,
-						value: currentCategory().id ,
+						value: id ,
 						rows:20 }">
 					</table>
 				</div>
@@ -141,7 +141,7 @@
 					</div>
 					<div style="margin-top: 10px;">
 						<com:ko-if
-								bind="currentCategory().isExistedItemLst === 1">
+								bind="currentCategory().isExistedItemLst() === 1">
 						<div id='col1' >
 							<button data-bind="click: openBModal">#{i18n.getText('CPS006_14')}</button>
 						</div>
