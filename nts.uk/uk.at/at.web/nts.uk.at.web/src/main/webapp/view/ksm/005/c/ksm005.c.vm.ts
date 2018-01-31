@@ -145,6 +145,8 @@ module nts.uk.at.view.ksm005.c {
                     
                     if(self.histList().filter(e => e.historyId == newValue && e.textDisplay.indexOf("9999/12/31") == -1).length > 0){
                         self.enableSave(false);
+                    }else {
+                        self.enableSave(true);
                     }
                     self.findMonthlyPatternSetting(newValue);
                 });
@@ -464,7 +466,9 @@ module nts.uk.at.view.ksm005.c {
                             // reload page
                             self.reloadPage();
                             self.selectedmonthlyPattern('000');
-                            self.selectedHists(null);
+                             if (self.histList().length > 0){
+                                self.selectedHists(self.histList()[self.histList().length - 1].historyId);
+                            }
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
