@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
@@ -149,6 +150,17 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		this.dailyRecord.temporaryTime(TemporaryTimeOfDailyPerformanceDto.getDto(domain));
 		return this;
 	}
+
+	public DailyRecordToAttendanceItemConverter employeeId(String employeeId) {
+		this.dailyRecord.employeeId(employeeId);
+		return this;
+	}
+
+	public DailyRecordToAttendanceItemConverter workingDate(GeneralDate workingDate) {
+		this.dailyRecord.workingDate(workingDate);
+		return this;
+	}
+
 
 	public DailyRecordToAttendanceItemConverter completed(){
 		return this;
