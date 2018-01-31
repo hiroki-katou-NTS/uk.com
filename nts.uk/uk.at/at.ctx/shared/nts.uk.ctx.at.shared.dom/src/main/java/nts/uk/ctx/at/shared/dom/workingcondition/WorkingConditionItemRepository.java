@@ -46,7 +46,7 @@ public interface WorkingConditionItemRepository {
 	 * @param historyId the history id
 	 * @return the by sid and hist id
 	 */
-	Optional<WorkingConditionItem> getBySidAndHistId(String employeeId, String historyId);
+	Optional<WorkingConditionItem> getBySid(String employeeId);
 
 	/**
 	 * Adds the.
@@ -84,4 +84,11 @@ public interface WorkingConditionItemRepository {
 	 */
 	void updateMonthlyPattern(String historyId, MonthlyPatternCode monthlyPattern);
 
+	/**
+	 * Copy last monthly pattern setting.
+	 *
+	 * @param sourceSid the source sid
+	 * @param destSid the dest sid
+	 */
+	boolean copyLastMonthlyPatternSetting(String sourceSid, String destSid);
 }

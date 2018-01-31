@@ -10,6 +10,7 @@ module nts.uk.at.view.ksm005.c {
             ccgcomponent: GroupOption;
             
             enableSave: KnockoutObservable<boolean>;
+            enableCopy: KnockoutObservable<boolean>;
 
             // Options
             baseDate: KnockoutObservable<Date>;
@@ -44,21 +45,20 @@ module nts.uk.at.view.ksm005.c {
                 var self = this;
                 
                 self.enableSave = ko.observable(true);
+                self.enableCopy = ko.observable(false);
                 
                 // list hist
                 self.histList = ko.observableArray([]);
                 self.histName = ko.observable('');
                 self.currentHist = ko.observable(3);
                 self.selectedHist = ko.observable(null)
-                self.isEnableListHist = ko.observable(true);
+                self.isEnableListHist = ko.observable(false);
                 self.selectedHists = ko.observableArray([]);
                 
                 // list monthly pattern
-                self.monthlyPatternList = ko.observableArray([
-                    new MonthlyPatterModel('0', 'なし'),
-                ]);
-                self.selectedmonthlyPattern = ko.observable('0');
-                self.isEnableListMonthlyPattern = ko.observable(true);
+                self.monthlyPatternList = ko.observableArray([]);
+                self.selectedmonthlyPattern = ko.observable('');
+                self.isEnableListMonthlyPattern = ko.observable(false);
                 self.isEditableListMonthlyPattern = ko.observable(false);
                 
                 self.selectedEmployee = ko.observableArray([]);
@@ -126,14 +126,17 @@ module nts.uk.at.view.ksm005.c {
                         self.monthlyPatternSetting('');
                     }
                 });
+                
+                self.selectedHists.subscribe(function(newValue) {
+                    self.findMonthlyPatternSetting(self.selectedCode());
+                });
             }
             
             public start_page(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                var monthlyPatternData: MonthlyPatterModel[] = [];
-                 $.when(service.getListMonthlyPattern())
-                    .done(function(data) {
+                var monthlyPatternData: MonthlyPatterModel[] = [new MonthlyPatterModel('000', 'なし') ];
+                 service.getListMonthlyPattern().done(function(data) {
                         data.forEach(function(item){
                             monthlyPatternData.push(new MonthlyPatterModel(item.code, item.name));
                         });
@@ -141,7 +144,6 @@ module nts.uk.at.view.ksm005.c {
                         $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                         dfd.resolve(); 
                 });
-                
                 return dfd.promise();
             }
             
@@ -269,31 +271,40 @@ module nts.uk.at.view.ksm005.c {
                             self.enableSave(false);
                         }
                         self.histList(historyData);
-                    });
-                    service.findByIdMonthlyPatternSetting(self.findEmployeeIdByCode(employeeCode), self.selectedHist()).done(function(data: MonthlyPatternSettingDto) {
-                        console.log(data);
-                        if (data != null) {
-                            if (data.monthlyPatternCode != null) {
-                                self.selectedmonthlyPattern(data.monthlyPatternCode);
-                                self.selectedHist(data.historyId);
-                                self.enableDelete(true);
-                                self.enableSystemChange(true);
-                            }else {
-                                self.selectedmonthlyPattern('0');
-                                self.selectedHist(null);
-                                self.enableDelete(false);
-                                self.enableSystemChange(false);   
-                            }
-                        } else {
-                            self.selectedmonthlyPattern('0');
-                                self.selectedHist(null);
-                            self.enableDelete(false);
-                            self.enableSystemChange(true);
-                        }
+                        self.findMonthlyPatternSetting(employeeCode);
                     });
                 }
             }
-
+            
+            public findMonthlyPatternSetting(employeeCode: string): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+                service.findByIdMonthlyPatternSetting(self.findEmployeeIdByCode(employeeCode)).done(function(data: MonthlyPatternSettingDto) {
+                    console.log(data);
+                    if (data != null) {
+                        if (data.monthlyPatternCode != "") {
+                            self.selectedmonthlyPattern(data.monthlyPatternCode);
+                            self.selectedHists(data.historyId);
+                            self.enableDelete(true);
+                            self.enableSystemChange(true);
+                            self.enableCopy(true);
+                        }else {
+                            self.enableDelete(false);
+                            self.enableCopy(false);
+                            self.enableSystemChange(false);   
+                        }
+                    } else {
+                        self.selectedmonthlyPattern('000');
+                        self.selectedHists(null);
+                        self.enableDelete(false);
+                        self.enableCopy(false);
+                        self.enableSystemChange(true);
+                    }
+                    dfd.resolve();
+                });   
+                return dfd.promise(); 
+            }
+            
             /**
              * call service find all by employee id
              */
@@ -302,14 +313,18 @@ module nts.uk.at.view.ksm005.c {
                 var dataRes: UnitAlreadySettingModel[] = [];
                 var self = this;
                 service.findAllMonthlyPatternSetting(employeeIds).done(function(data) {
-                    for (var employeeId of data) {
-                        var setting: UnitAlreadySettingModel;
-                        setting = { code: self.findEmployeeCodeById(employeeId), isAlreadySetting: true };
-                        dataRes.push(setting);
+                    console.log(data);
+                    if(data != null){
+                        data.forEach(function(item){
+                            var setting: UnitAlreadySettingModel;
+                            setting = { code: self.findEmployeeCodeById(item.employeeId), isAlreadySetting: true };
+                            dataRes.push(setting);
+                        })
                     }
+                    
                     dfd.resolve(dataRes);
                 });
-                dfd.resolve();
+
                 return dfd.promise();
             }
             /**
@@ -329,11 +344,40 @@ module nts.uk.at.view.ksm005.c {
             public saveMonthlyPatternSetting(): void {
                 var self = this;
                 var dto : MonthlyPatternSettingDto;
+                if (!self.selectedHists()) {
+//                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
+                    return;
+                }
                 if (!self.selectedCode()) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
                     return;
                 }
-                dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHist(), monthlyPatternCode: self.monthlyPatternCode};
+                if (self.selectedmonthlyPattern() == "000") {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_190" });
+                    return;
+                }
+                dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern()};
+                service.saveMonthlyPatternSetting(dto).done(function() {
+                    // show message 15
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        // reload page
+                        self.reloadPage();
+                    });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                });    
+            }
+             /**
+             * call service save monthly pattern setting by on click button
+             */
+            public copyMonthlyPatternSetting(): void {
+                var self = this;
+                var dto : MonthlyPatternSettingDto;
+                if (!self.selectedCode()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
+                    return;
+                }
+                dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern()};
                 service.saveMonthlyPatternSetting(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -350,12 +394,14 @@ module nts.uk.at.view.ksm005.c {
             public deleteMonthlyPatternSetting(): void {
                 var self = this;
                 var dto: MonthlyPatternSettingDto;
-                dto = { employeeId: self.findEmployeeIdByCode(self.selectedCode()),historyId: self.selectedHist(), monthlyPatternCode: self.monthlyPatternCode };
+                dto = { employeeId: self.findEmployeeIdByCode(self.selectedCode()),historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern() };
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     service.deleteMonthlyPatternSetting(dto).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             // reload page
                             self.reloadPage();
+                            self.selectedmonthlyPattern('000');
+                            self.selectedHists(null);
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);

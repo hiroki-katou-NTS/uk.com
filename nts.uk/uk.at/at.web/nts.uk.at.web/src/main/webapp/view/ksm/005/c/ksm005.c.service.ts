@@ -12,8 +12,8 @@ module nts.uk.at.view.ksm005.c {
         /**
          * call service find by employee id
          */
-        export function findByIdMonthlyPatternSetting(employeeId: string, historyId: string): JQueryPromise<model.MonthlyPatternSettingDto> {
-            return nts.uk.request.ajax('at', paths.findByIdMonthlyPatternSetting + "/" + employeeId + "/" + historyId);                
+        export function findByIdMonthlyPatternSetting(employeeId: string): JQueryPromise<model.MonthlyPatternSettingDto> {
+            return nts.uk.request.ajax('at', paths.findByIdMonthlyPatternSetting + "/" + employeeId);                
         }
         
          /**

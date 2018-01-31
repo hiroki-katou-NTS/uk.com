@@ -60,10 +60,11 @@ public class MonthlyPatternSettingWs {
 	 * @return the monthly pattern setting dto
 	 */
 	@POST
-	@Path("findById/{employeeId}/{historyId}")
-	public MonthlyPatternSettingDto findById(@PathParam("employeeId") String employeeId, @PathParam("historyId") String historyId){
-		return this.finder.findById(employeeId, historyId);
+	@Path("findById/{employeeId}")
+	public MonthlyPatternSettingDto findById(@PathParam("employeeId") String employeeId){
+		return this.finder.findById(employeeId);
 	}
+	
 	/**
 	 * Adds the.
 	 *

@@ -48,14 +48,6 @@ public class MonthlyPatternSettingSaveCommandHandler
 			throw new BusinessException("Msg_190");
 		}
 		
-		// TODO: call repository find by id 
-//		Optional<MonthlyPattern> monthlyPattern = this.monthlyPatternRepository.findById(companyId,
-//				command.getMonthlyPatternCode());		
-		// check not exist data
-//		if(!monthlyPattern.isPresent()){
-//			throw new BusinessException("Msg_190");
-//		}
-		
 		this.repository.updateMonthlyPattern(command.getHistoryId(), new MonthlyPatternCode(command.getMonthlyPatternCode()));
 	}
 
