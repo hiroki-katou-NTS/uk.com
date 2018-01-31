@@ -74,7 +74,7 @@ module nts.uk.at.view.kal004.a.model {
             service.getEnumAlarm().done((enumRes) => {
                 self.alarmCategoryArr = enumRes;
             }).fail((enumErr) => {
-                nts.uk.ui.dialog.alert({ messageId: enumErr.messageId });
+                alertError(enumErr);
             });
             service.getCheckConditionCode().done((res) => {
                 let resolve = _.map(res, (x) => { return new share.ModelCheckConditonCode(x) });
@@ -90,7 +90,7 @@ module nts.uk.at.view.kal004.a.model {
                     dfd.resolve();
                 });
             }).fail((error) => {
-                nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                alertError(error);
                 dfd.resolve();
             });
             return dfd.promise();
@@ -108,7 +108,7 @@ module nts.uk.at.view.kal004.a.model {
                 self.initSubscribe();
 
             }).fail((error) => {
-                nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                alertError(error);
             }).always(() => {
                 dfd.resolve();
             });
@@ -253,7 +253,7 @@ module nts.uk.at.view.kal004.a.model {
                         block.clear();
                     });
                 }).fail((error) => {
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    alertError(error);
                     block.clear();
                 });
             } else {
@@ -267,7 +267,7 @@ module nts.uk.at.view.kal004.a.model {
                         block.clear();
                     });
                 }).fail((error) => {
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    alertError(error);
                     block.clear();
                 });
 
@@ -299,7 +299,7 @@ module nts.uk.at.view.kal004.a.model {
                         });
 
                     }).fail((error) => {
-                        nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                        alertError(error);
                         block.clear();
                     });
 

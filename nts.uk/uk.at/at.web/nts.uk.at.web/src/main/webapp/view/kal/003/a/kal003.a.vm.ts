@@ -103,7 +103,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 }
                 dfd.resolve();
             }).fail(function(error) {
-                alertError({ messageId: error.messageId });
+                alertError(error);
                 dfd.reject();
             }).always(() => {
                 block.clear();
@@ -181,7 +181,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         });
                     });
                 }).fail(error => {
-                    alertError({ messageId: error.messageId });
+                    alertError(error);
                 }).always(() => {
                     block.clear();
                 });
@@ -213,7 +213,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         });
                     });
                 }).fail(error => {
-                    alertError({ messageId: error.messageId });
+                    alertError(error);
                 }).always(() => {
                     block.clear();
                 });

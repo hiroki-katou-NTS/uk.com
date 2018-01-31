@@ -5,6 +5,7 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
 
 /**
  * 日別実績の法定内時間
@@ -36,8 +37,8 @@ public class WithinStatutoryTimeOfDaily {
 	 * 日別実績の法定内時間の計算
 	 */
 	public static WithinStatutoryTimeOfDaily calcStatutoryTime(CalculationRangeOfOneDay oneDay) {
-		AttendanceTime workTime = new AttendanceTime(0);
-		//AttendanceTime workTime =  oneDay.getWithinWorkingTimeSheet().calcWorkTimeForStatutory(calcActualTime, dedTimeSheet);
+		//AttendanceTime workTime = new AttendanceTime(0);
+		AttendanceTime workTime =  oneDay.getWithinWorkingTimeSheet().get().calcWorkTimeForStatutory(CalculationByActualTimeAtr.CalculationByActualTime, oneDay.getTemporaryDeductionTimeSheet().get());
 		return new WithinStatutoryTimeOfDaily(workTime);
 	}
 	

@@ -9,8 +9,9 @@ module nts.uk.com.view.cas011.a.service {
             addRoleSet:                 "screen/sys/auth/cas011/addroleset",
             updateRoleSet:              "screen/sys/auth/cas011/updateroleset",
             removeRoleSet:              "screen/sys/auth/cas011/deleteroleset",
-            getAllWebMenu:              "sys/portal/webmenu/find",
-            getRoleById:                "ctx/sys/auth/role/getrolebyroleid/{0}"
+            getAllWebMenu:              "sys/portal/webmenu/findallwithnomenubar",
+            getRoleById:                "ctx/sys/auth/role/getrolebyroleid/{0}",
+            getRoleNameByListId:        "ctx/sys/auth/role/get/rolename/by/roleids"
     }
 
     //get all role set
@@ -40,7 +41,8 @@ module nts.uk.com.view.cas011.a.service {
 
     //get all web menu
     export function getAllWebMenu() : JQueryPromise<any>{
-        return ajax(paths.getAllWebMenu);
+        
+        return nts.uk.request.ajax(paths.getAllWebMenu);
     }
 
     //get company id of login user
@@ -52,4 +54,9 @@ module nts.uk.com.view.cas011.a.service {
     export function getRoleById(command) : JQueryPromise<any>{
         return ajax(format(paths.getRoleById, command));
     }
+    
+    export function getRoleNameByListId(command): JQueryPromise<any>{
+        return ajax(paths.getRoleNameByListId, command);
+    }
+
 }
