@@ -27,6 +27,10 @@ module nts.uk.com.view.cps006.a.viewmodel {
             self.currentCategory().id.subscribe(function(value) {
                 if (nts.uk.text.isNullOrEmpty(value)) return;
                 self.getDetailCategory(value);
+                if(self.isFiltered){
+                     $("#category_grid").igGrid("option", "dataSource", self.ctgLstFilter);
+                }
+                
             });
             self.isAbolished.subscribe(function(value) {
                 if (value) {
@@ -114,10 +118,9 @@ module nts.uk.com.view.cps006.a.viewmodel {
                     }, data.systemRequired, data.isExistedItemLst);
                     if (data.itemLst.length > 0) {
                         self.currentCategory().currentItemId(data.itemLst[0].id);
-                    } else {
-                        self.currentCategory().currentItemId('');
                     }
-                    self.currentCategory.valueHasMutated();
+                    
+                    //self.currentCategory.valueHasMutated();
                 }
             });
         }
@@ -413,7 +416,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
     export class CategoryInfoDetail {
         id: KnockoutObservable<string>;
-        categoryNameDefault: string;
+        categoryNameDefault: KnockoutObservable<string>;
         categoryName: KnockoutObservable<string>;
         categoryType: number;
         isAbolition: KnockoutObservable<boolean>;
@@ -440,7 +443,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         ]);
         constructor(params: ICategoryInfoDetail) {
             this.id = ko.observable("");
-            this.categoryNameDefault = params.categoryNameDefault;
+            this.categoryNameDefault = ko.observable(params.categoryNameDefault);
             this.categoryName = ko.observable(params.categoryName);
             this.categoryType = params.categoryType;
             this.isAbolition = ko.observable(false);
@@ -449,7 +452,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         }
 
         setData(params: any, displayIsAbolished: number, isExistedItemLst: number) {
-            this.categoryNameDefault = params.categoryNameDefault;
+            this.categoryNameDefault(params.categoryNameDefault);
             this.categoryName(params.categoryName);
             this.categoryType = params.categoryType;
             this.isAbolition(params.isAbolition);
