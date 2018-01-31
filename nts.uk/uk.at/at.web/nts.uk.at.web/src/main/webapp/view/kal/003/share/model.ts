@@ -98,18 +98,42 @@ module nts.uk.at.view.kal003.share.model {
             this.targetClassification   = ko.observableArray(targetCls);
             this.targetJobTitle         = ko.observableArray(targetJob);
             this.targetBusinessType     = ko.observableArray(targetBus);
-            this.displayTargetEmployment = ko.computed(function() {
-                return this.targetEmployment().join(", ");
-            }, this);
-            this.displayTargetClassification = ko.computed(function() {
-                return this.targetClassification().join(", ");
-            }, this);
-            this.displayTargetJobTitle = ko.computed(function() {
-                return this.targetJobTitle().join(", ");
-            }, this);
-            this.displayTargetBusinessType = ko.computed(function() {
-                return this.targetBusinessType().join(", ");
-            }, this);
+            this.displayTargetEmployment = ko.observable("");
+            this.displayTargetClassification = ko.observable("");
+            this.displayTargetJobTitle = ko.observable("");
+            this.displayTargetBusinessType = ko.observable("");
+            
+            this.targetEmployment.subscribe((data) => {
+                kal003.a.service.getEmpNameByCodes(data).done((result: Array<string>) => {
+                    this.displayTargetEmployment(result.join(", "));
+                }).fail(() => {
+                    this.displayTargetEmployment(this.targetClassification().join(", "));
+                });
+            });
+            
+            this.targetClassification.subscribe((data) => {
+                kal003.a.service.getClsNameByCodes(data).done((result: Array<string>) => {
+                    this.displayTargetClassification(result.join(", "));
+                }).fail(() => {
+                    this.displayTargetClassification(this.targetClassification().join(", "));
+                });
+            });
+            
+            this.targetJobTitle.subscribe((data) => {
+                kal003.a.service.getJobNamesByIds(data).done((result: Array<string>) => {
+                    this.displayTargetJobTitle(result.join(", "));
+                }).fail(() => {
+                    this.displayTargetJobTitle(this.targetClassification().join(", "));
+                });
+            });
+            
+            this.targetBusinessType.subscribe((data) => {
+                kal003.a.service.getBusTypeNamesByCodes(data).done((result: Array<string>) => {
+                    this.displayTargetBusinessType(result.join(", "));
+                }).fail(() => {
+                    this.displayTargetBusinessType(this.targetClassification().join(", "));
+                });
+            });
         }
 
         // Open Dialog CDL002
