@@ -18,6 +18,8 @@ module nts.uk.com.view.ccg.share.ccg {
         */
         
         export class ListGroupScreenModel {
+
+            // flags
             isMultiple: boolean;
             isQuickSearchTab: boolean;
             isAdvancedSearchTab: boolean;
@@ -26,30 +28,44 @@ module nts.uk.com.view.ccg.share.ccg {
             isEmployeeOfWorkplace: boolean;
             isEmployeeWorkplaceFollow: boolean;
             isSelectAllEmployee: boolean;
-            tabs: KnockoutObservableArray<NtsTabPanelModel>;
-            selectedTab: KnockoutObservable<string>;
-            selectedCodeEmployment: KnockoutObservableArray<string>;
-            selectedCodeClassification: KnockoutObservableArray<string>;
-            selectedCodeJobtitle: KnockoutObservableArray<string>;
-            selectedCodeWorkplace: KnockoutObservableArray<string>;
-            selectedCodeEmployee: KnockoutObservableArray<string>;
-            baseDate: KnockoutObservable<Date>;
-            employments: any;
-            classifications: any;
-            jobtitles: any;
-            workplaces: TreeComponentOption;
-            employeeinfo: any;
-            onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
-            onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
-            onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
-            onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
-            onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+
             isShow: KnockoutObservable<boolean>;
             isFistTimeShow: boolean;
             isOpenEmploymentList: KnockoutObservable<boolean>;
             isOpenClassificationList: KnockoutObservable<boolean>;
             isOpenJoptitleList: KnockoutObservable<boolean>;
             isOpenWorkplaceList: KnockoutObservable<boolean>;
+
+            // tabs
+            tabs: KnockoutObservableArray<any>;
+            selectedTab: KnockoutObservable<string>;
+
+            // selected code
+            selectedCodeEmployment: KnockoutObservableArray<string>;
+            selectedCodeClassification: KnockoutObservableArray<string>;
+            selectedCodeJobtitle: KnockoutObservableArray<string>;
+            selectedCodeWorkplace: KnockoutObservableArray<string>;
+            selectedCodeEmployee: KnockoutObservableArray<string>;
+
+            // params
+            baseDate: KnockoutObservable<Date>;
+            employments: any;
+            classifications: any;
+            jobtitles: any;
+            workplaces: TreeComponentOption;
+            employeeinfo: any;
+            closureList: KnockoutObservableArray<any>;
+            selectedClosure: KnockoutObservable<string>;
+            periodStart: KnockoutObservable<any>;
+            periodEnd: KnockoutObservable<any>;
+
+            // functions
+            onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
+            onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
+            onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
+            onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
+            onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+
             /**
              * Init screen model
              */
@@ -85,15 +101,19 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isOpenClassificationList = ko.observable(false);
                 self.isOpenJoptitleList = ko.observable(false);
                 self.isOpenWorkplaceList = ko.observable(false);
+                self.closureList = ko.observableArray([]);
+                self.selectedClosure = ko.observable('');
+                self.periodStart = ko.observable();
+                self.periodEnd = ko.observable();
             }
 
             /**
              * update select tabs
              */
              
-            public updateTabs(): NtsTabPanelModel[] {
-                var self = this;
-                var arrTabs: NtsTabPanelModel[] = [];
+            public updateTabs(): Array<any> {
+                let self = this;
+                let arrTabs = [];
                 // is quick search tab
                 if (self.isQuickSearchTab) {
                     // push tab 1
@@ -239,8 +259,12 @@ module nts.uk.com.view.ccg.share.ccg {
                 
                 // init function click button ccg common
                 $(window).on('click', function(e) {
-                    // Check is click to outter component.
+                    // Check is click to inside component.
                     if (e.target.id == "ccg-component" || $(e.target).parents("#ccg-component")[0]) {
+                        return;
+                    }
+                    // click when block ui
+                    if ($(e.target).hasClass('ui-widget-overlay ui-front')) {
                         return;
                     }
                     // Check is click to dialog.
@@ -492,12 +516,12 @@ module nts.uk.com.view.ccg.share.ccg {
             public toUnitModelList(dataList: EmployeeSearchDto[]): Array<UnitModel> {
                 var dataRes: UnitModel[] = [];
 
-                for (var item: EmployeeSearchDto of dataList) {
+                _.forEach(dataList, item => {
                     dataRes.push({
                         code: item.employeeId,
                         name: item.employeeName
                     });
-                }
+                });
                 return dataRes;
             }
 
@@ -571,7 +595,7 @@ module nts.uk.com.view.ccg.share.ccg {
             static MAX_ROWS_CLASSIFICATION = 10;
             static MAX_ROWS_JOBTITLE = 10;
             static MAX_ROWS_WORKPLACE = 10;
-            static MAX_ROWS_EMPLOYEE = 15;    
+            static MAX_ROWS_EMPLOYEE = 20;    
         }
     }
 }
