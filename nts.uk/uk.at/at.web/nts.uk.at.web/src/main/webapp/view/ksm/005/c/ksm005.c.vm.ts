@@ -122,9 +122,12 @@ module nts.uk.at.view.ksm005.c {
                         self.applySelectEmployeeCode(employeeCode);
                     }else {
                         self.enableDelete(false);
-                        self.enableSystemChange(false);  
+                        self.enableSystemChange(false);
                         self.employeeName('');  
                         self.monthlyPatternSetting('');
+                        self.selectedmonthlyPattern(self.monthlyPatternList()[0]);
+                        self.enableCopy(false);
+                        self.enableSave(false);
                     }
                 });
                 
@@ -347,14 +350,6 @@ module nts.uk.at.view.ksm005.c {
                 var dto : MonthlyPatternSettingDto;
                 if (!self.selectedHists()) {
 //                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
-                    return;
-                }
-                if (!self.selectedCode()) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
-                    return;
-                }
-                if (self.selectedmonthlyPattern() == "000") {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_190" });
                     return;
                 }
                 dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern()};

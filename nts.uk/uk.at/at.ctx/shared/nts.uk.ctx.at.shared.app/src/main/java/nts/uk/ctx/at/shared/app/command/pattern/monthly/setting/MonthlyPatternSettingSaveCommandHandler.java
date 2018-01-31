@@ -7,10 +7,8 @@ package nts.uk.ctx.at.shared.app.command.pattern.monthly.setting;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 
@@ -38,16 +36,7 @@ public class MonthlyPatternSettingSaveCommandHandler
 		//get command
 		MonthlyPatternSettingSaveCommand command = context.getCommand();	
 		
-		// check not setting employee
-		if(StringUtil.isNullOrEmpty(command.getEmployeeId(), true)){
-			throw new BusinessException("Msg_189");
-		}
-		
-		// check not monthly pattern code
-		if(StringUtil.isNullOrEmpty(command.getMonthlyPatternCode(), true)){
-			throw new BusinessException("Msg_190");
-		}
-		
+		// update
 		this.repository.updateMonthlyPattern(command.getHistoryId(), new MonthlyPatternCode(command.getMonthlyPatternCode()));
 	}
 
