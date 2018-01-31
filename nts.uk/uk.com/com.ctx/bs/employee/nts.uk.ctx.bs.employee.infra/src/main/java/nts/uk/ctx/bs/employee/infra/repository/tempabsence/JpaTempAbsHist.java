@@ -107,7 +107,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		TempAbsenceHistory domain = new TempAbsenceHistory(listHist.get(0).cid, listHist.get(0).sid, new ArrayList<DateHistoryItem>());
 		for (BsymtTempAbsHistory item : listHist) {
 			DateHistoryItem dateItem = new DateHistoryItem(item.histId, new DatePeriod(item.startDate, item.endDate));
-			domain.add(dateItem);
+			domain.getDateHistoryItems().add(dateItem);
 		}
 		return domain;
 	}
