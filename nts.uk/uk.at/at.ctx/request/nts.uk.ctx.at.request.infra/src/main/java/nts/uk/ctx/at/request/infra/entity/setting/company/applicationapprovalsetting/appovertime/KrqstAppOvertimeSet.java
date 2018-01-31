@@ -67,6 +67,12 @@ public class KrqstAppOvertimeSet extends UkJpaEntity implements Serializable {
     @Column(name = "NORMAL_OVERTIME_USE_ATR")
     private int normalOvertimeUseAtr;
     
+    @Column(name = "DATTENDANCE_ID")
+    private int attendanceId;
+    
+    @Column(name = "USE_OT_WORK")
+    private int useOt;
+    
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub

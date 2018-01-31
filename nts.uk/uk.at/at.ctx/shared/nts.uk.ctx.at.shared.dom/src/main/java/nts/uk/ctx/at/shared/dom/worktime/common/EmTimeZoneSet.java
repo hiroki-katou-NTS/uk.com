@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -73,6 +74,10 @@ public class EmTimeZoneSet extends WorkTimeDomainObject {
 	 */
 	public EmTimeZoneSet newSpanWith(TimeWithDayAttr start, TimeWithDayAttr end) {
 		return new EmTimeZoneSet(this.employmentTimeFrameNo, new TimeZoneRounding(start, end, this.timezone.getRounding()));
+	}
+
+	public boolean checkRestTime(DiffTimeDeductTimezone item) {
+		return this.timezone.getStart().v() <= item.getStart().v() && this.timezone.getEnd().v() >= item.getEnd().v();
 	}
 	
 }

@@ -102,8 +102,7 @@ module nts.uk.at.view.kdl003.a {
                     { headerText: nts.uk.resource.getText('KDL003_5'), prop: 'code', width: 50 },
                     { headerText: nts.uk.resource.getText('KDL003_6'), prop: 'name', width: 100 },
                     { headerText: nts.uk.resource.getText('KDL003_19'), prop: 'workTime1', width: 200 },
-                    { headerText: nts.uk.resource.getText('KDL003_20'), prop: 'workTime2', width: 200 },
-                    { headerText: nts.uk.resource.getText('KDL003_21'), prop: 'workAtr', width: 100 },
+                    { headerText: nts.uk.resource.getText('KDL003_21'), prop: 'workAtr', width: 130 },
                     { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'remark', template: '<span>${remark}</span>' }
                 ]);
                 self.breakColumns1 = ko.observableArray([

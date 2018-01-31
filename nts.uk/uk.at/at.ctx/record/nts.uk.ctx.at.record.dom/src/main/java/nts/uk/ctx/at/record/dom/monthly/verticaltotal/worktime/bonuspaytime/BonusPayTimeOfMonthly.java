@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の加給時間
@@ -49,12 +50,14 @@ public class BonusPayTimeOfMonthly {
 	
 	/**
 	 * 集計
+	 * @param datePeriod 期間
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
 	 * @param specificDateAtrOfDailys 日別実績の特定日区分リスト
 	 * @param workTypeMap 勤務種類リスト
 	 */
 	public void aggregate(
+			DatePeriod datePeriod,
 			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
 			List<SpecificDateAttrOfDailyPerfor> specificDateAtrOfDailys,
@@ -63,6 +66,7 @@ public class BonusPayTimeOfMonthly {
 		this.bonusPayTime = new HashMap<>();
 		
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
+			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
 			val ymd = attendanceTimeOfDaily.getYmd();
 			if (!workInfoOfDailyMap.containsKey(ymd)) continue;
 			val workInfoOfDaily = workInfoOfDailyMap.get(ymd);

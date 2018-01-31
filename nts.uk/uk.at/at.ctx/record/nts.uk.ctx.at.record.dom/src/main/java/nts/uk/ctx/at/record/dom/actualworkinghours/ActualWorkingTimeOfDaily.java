@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
+import java.util.Collections;
+
 import lombok.Getter;
+import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
@@ -76,13 +79,29 @@ public class ActualWorkingTimeOfDaily {
 	 * 日別実績の実働時間の計算
 	 */
 	public static ActualWorkingTimeOfDaily calcRecordTime(CalculationRangeOfOneDay oneDay) {
-		/* 総労働時間の計算 */
-		return new ActualWorkingTimeOfDaily(new AttendanceTime(0),
-				new ConstraintTime(new AttendanceTime(0), new AttendanceTime(0)), new AttendanceTime(0),
-				TotalWorkingTime.calcAllDailyRecord(oneDay), new DivergenceTimeOfDaily(),
-				new PremiumTimeOfDailyPerformance());
-		/* 拘束時間の計算 */
 		/* 割増時間の計算 */
+		val premiumTime = new PremiumTimeOfDailyPerformance(Collections.emptyList());
+		/*拘束差異時間*/
+		val constraintDifferenceTime = new AttendanceTime(0);
+		/*拘異時間*/
+		val constraintTime = new ConstraintTime(new AttendanceTime(0), new AttendanceTime(0));
+		/* 時差勤務時間*/
+		val timeDifferenceWorkingHours = new AttendanceTime(0);
+		/* 総労働時間の計算 */
+		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(oneDay);
 		/* 乖離時間の計算 */
+		val divergenceTimeOfDaily = new DivergenceTimeOfDaily();
+		
+		
+		/*返値*/
+		return new ActualWorkingTimeOfDaily(
+				constraintDifferenceTime,
+				constraintTime,
+				timeDifferenceWorkingHours,
+				totalWorkingTime,
+				divergenceTimeOfDaily,
+				premiumTime
+				);
+		
 	}
 }

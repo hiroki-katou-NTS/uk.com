@@ -16,7 +16,7 @@ public class AppListExtractCondition {
 	/**期間開始日付*/
 	private GeneralDate startDate;
 	/**期間終了日付*/
-	private GeneralDate emdDate;
+	private GeneralDate endDate;
 	/**申請一覧区分*/
 	private ApplicationListAtr appListAtr;
 	/**申請種類*/

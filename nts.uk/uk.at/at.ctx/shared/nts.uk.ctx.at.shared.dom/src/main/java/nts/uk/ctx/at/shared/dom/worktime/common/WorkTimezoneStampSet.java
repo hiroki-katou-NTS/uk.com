@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
@@ -8,32 +8,28 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class WorkTimezoneStampSet.
  */
 //就業時間帯の打刻設定
-
-/**
- * Gets the priority set.
- *
- * @return the priority set
- */
 @Getter
 public class WorkTimezoneStampSet extends WorkTimeDomainObject {
-	
-	/** The rounding set. */
-	//丸め設定
+
+	/** The rounding sets. */
+	// 丸め設定
 	private List<RoundingSet> roundingSets;
-	
-	/** The priority set. */
-	//優先設定
+
+	/** The priority sets. */
+	// 優先設定
 	private List<PrioritySetting> prioritySets;
 
 	/**
 	 * Instantiates a new work timezone stamp set.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public WorkTimezoneStampSet(WorkTimezoneStampSetGetMemento memento) {
 		this.roundingSets = memento.getRoundingSet();
@@ -43,10 +39,34 @@ public class WorkTimezoneStampSet extends WorkTimeDomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(WorkTimezoneStampSetSetMemento memento) {
 		memento.setRoundingSet(this.roundingSets);
 		memento.setPrioritySet(this.prioritySets);
+	}
+
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, WorkTimezoneStampSet oldDomain) {
+		this.prioritySets.forEach(item -> item.restoreData(screenMode, oldDomain.getPrioritySets().stream()
+				.filter(oldItem -> oldItem.getStampAtr().equals(item.getStampAtr())).findFirst().orElse(null)));
+	}
+
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		this.prioritySets.forEach(item -> item.restoreDefaultData(screenMode));
 	}
 }
