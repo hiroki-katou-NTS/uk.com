@@ -84,14 +84,13 @@ public class JpaOtherSysAccountRepository extends JpaRepository implements Other
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
-		// Create Query
-		TypedQuery<SgwmtOtherSysAcc> query = em.createQuery(cq);
-
-		try {
-			// exclude select
-			return Optional.of(this.toDomain(query.getSingleResult()));
-		} catch (NoResultException e) {
+		// Create Query		
+		List<SgwmtOtherSysAcc> result = em.createQuery(cq).getResultList();
+		
+		if (result.isEmpty()) {
 			return Optional.empty();
+		} else {
+			return Optional.of(this.toDomain(result.get(0)));
 		}
 
 	}

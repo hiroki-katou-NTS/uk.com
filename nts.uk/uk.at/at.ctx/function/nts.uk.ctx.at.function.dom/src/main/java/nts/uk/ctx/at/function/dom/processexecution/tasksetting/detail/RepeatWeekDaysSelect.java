@@ -6,13 +6,14 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * 繰り返す曜日
  */
 @Getter
 @AllArgsConstructor
-public class RepeatWeekDaysSelect {
+public class RepeatWeekDaysSelect extends DomainObject {
 	/* 月曜日 */
 	private boolean monday;
 	

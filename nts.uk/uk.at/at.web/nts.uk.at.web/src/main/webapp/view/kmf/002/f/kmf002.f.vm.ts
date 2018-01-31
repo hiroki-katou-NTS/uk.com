@@ -66,6 +66,7 @@ module nts.uk.at.view.kmf002.f {
             
             public start_page(): JQueryPromise<any> {
                 let _self = this;
+                $( "#selectUnitCheck" ).focus();
                 var dfd = $.Deferred<any>();
                 _self.isManageWkpPublicHd(getShared('isManageWkpPublicHd'));
                 _self.isManageEmpPublicHd(getShared('isManageEmpPublicHd'));

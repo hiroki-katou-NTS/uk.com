@@ -43,15 +43,43 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 	protected void handle(CommandHandlerContext<SaveWindowAccountCommand> context) {
 		// Get command
 		SaveWindowAccountCommand command = context.getCommand();
+		
+		//validate duplicate win account in list win account save	
+		List<WindowAccountDto> listWinAccSaveCheckDupli = new ArrayList<>();
+		List<WindowAccountDto> listOtherWinAccSaveCheckDupli = new ArrayList<>();
+			
+		listWinAccSaveCheckDupli.add(command.getWinAcc1());
+		listWinAccSaveCheckDupli.add(command.getWinAcc2());
+		listWinAccSaveCheckDupli.add(command.getWinAcc3());
+		listWinAccSaveCheckDupli.add(command.getWinAcc4());
+		listWinAccSaveCheckDupli.add(command.getWinAcc5());
 
-		// remove in special case, when remove just only an item
-		if (command.getWinAcc1() == null && command.getWinAcc2() == null && command.getWinAcc3() == null
-				&& command.getWinAcc4() == null && command.getWinAcc5() == null) {
-			List<WindowAccount> listWindowAcc = windowAccountRepository.findByUserId(command.getUserId());
-			for (WindowAccount wd : listWindowAcc) {
-					windowAccountRepository.remove(wd.getUserId(), wd.getNo());
+		boolean isError = false;
+		BundledBusinessException exceptions = BundledBusinessException.newInstance();
+		
+		
+		for(WindowAccountDto winAcc : listWinAccSaveCheckDupli){
+			listOtherWinAccSaveCheckDupli.removeAll(listOtherWinAccSaveCheckDupli);
+			listOtherWinAccSaveCheckDupli.addAll(listWinAccSaveCheckDupli);
+			if (winAcc.getHostName().v() != "" && winAcc.getUserName().v() != "") {
+				listOtherWinAccSaveCheckDupli.remove(winAcc);
+				isError = this.findByHostNameAndUserName(winAcc.getHostName().v(), winAcc.getUserName().v(), listOtherWinAccSaveCheckDupli);
+				
+				if(isError){
+					//isError = true;
+					exceptions.addMessage("Msg_616");
+					break;
+				}
+				
 			}
-		} else {
+				
+		}			
+		
+		if (isError) {
+			// show error list
+			exceptions.throwExceptions();
+		}	
+
 			List<WindowAccountDto> listWinAccDto = new ArrayList<>();
 						
 			// TODO: need refactor
@@ -98,6 +126,19 @@ public class SaveWindowAccountCommandHandler extends CommandHandler<SaveWindowAc
 			save(listWindowAcc,listWinAccDto );
 
 		}
+	
+	private boolean findByHostNameAndUserName(String hostName, String userName,
+			List<WindowAccountDto> listOtherWinAccCheckDupli) {
+
+		Optional<WindowAccountDto> winAccount = listOtherWinAccCheckDupli.stream().filter(
+				winAcc -> hostName.equals(winAcc.getHostName().v()) && userName.equals(winAcc.getUserName().v()))
+				.findAny();
+
+		if (winAccount.isPresent()) {
+			return true;
+		}
+		return false;
+
 	}
 	
 	private void save(List<WindowAccount> listWindowAccDB, List<WindowAccountDto> listWinAccDto) {

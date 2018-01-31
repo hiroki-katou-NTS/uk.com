@@ -226,10 +226,10 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 		CollectionUtil.split(workTimeCodes, MAX_PARAM_QUERY_IN, subList -> {
 			// add predicates
 			List<Predicate> predTimePredicates = new ArrayList<>();
-			predTimePredicates.add(predCb
-					.equal(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid), companyID));
 			predTimePredicates.add(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK)
 					.get(KshmtPredTimeSetPK_.worktimeCd).in(workTimeCodes));
+			predTimePredicates.add(predCb
+					.equal(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid), companyID));
 			predTimePredicates.add(predCb.equal(joinRoot.get(KshmtWorkTimeSheetSet_.startTime), startClock));
 			predTimePredicates.add(predCb.equal(joinRoot.get(KshmtWorkTimeSheetSet_.endTime), endClock));
 

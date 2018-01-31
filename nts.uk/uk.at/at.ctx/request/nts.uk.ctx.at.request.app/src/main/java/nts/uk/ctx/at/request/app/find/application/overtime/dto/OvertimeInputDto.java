@@ -56,7 +56,7 @@ public class OvertimeInputDto {
 		return new OvertimeInputDto(
 				overTimeInput.getCompanyID(), 
 				overTimeInput.getAppID(), 
-				overTimeInput.getAttendanceID().value, 
+				overTimeInput.getAttendanceType().value, 
 				overTimeInput.getFrameNo(), 
 				overTimeInput.getTimeItemTypeAtr().value, 
 				"", 

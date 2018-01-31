@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.workingcondition.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;

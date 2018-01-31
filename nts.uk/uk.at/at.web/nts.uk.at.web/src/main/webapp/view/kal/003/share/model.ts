@@ -56,7 +56,7 @@ module nts.uk.at.view.kal003.share.model {
         availableRoles: KnockoutObservableArray<string>;
         targetCondition: KnockoutObservable<AlarmCheckTargetCondition>;
         displayAvailableRoles: KnockoutObservable<string>;
-        dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, false, [], [], [], []));
+        dailyAlarmCheckCondition: KnockoutObservable<DailyAlarmCheckCondition> = ko.observable(new DailyAlarmCheckCondition(DATA_CONDITION_TO_EXTRACT.ALL, false, [], [], []));
         schedule4WeekAlarmCheckCondition: KnockoutObservable<Schedule4WeekAlarmCheckCondition> = ko.observable(new Schedule4WeekAlarmCheckCondition(SCHEDULE_4_WEEK_CHECK_CONDITION.FOR_ACTUAL_RESULTS_ONLY));
         action: KnockoutObservable<number> = ko.observable(0);
 
@@ -197,17 +197,15 @@ module nts.uk.at.view.kal003.share.model {
         conditionToExtractDaily: KnockoutObservable<number>;//main screen
         addApplication: KnockoutObservable<boolean>;//tab daily
         listErrorAlarmCode: KnockoutObservableArray<string>;//tab daily
-        listErrorAlarmCheck: KnockoutObservableArray<DailyErrorAlarmCheck>;//tab daily
         listExtractConditionWorkRecork: KnockoutObservableArray<WorkRecordExtractingCondition>;//tab check condition
         listFixedExtractConditionWorkRecord: KnockoutObservableArray<FixedConditionWorkRecord>;//tab  fixed
         
-        constructor(conditionToExtractDaily: number, addApplication: boolean, listErrorAlarmCode: Array<string>, listErrorAlarmCheck: Array<DailyErrorAlarmCheck>, listWorkRecordExtractingConditions: Array<WorkRecordExtractingCondition>, listFixedConditionWorkRecord: Array<FixedConditionWorkRecord>) {
+        constructor(conditionToExtractDaily: number, addApplication: boolean, listErrorAlarmCode: Array<string>, listWorkRecordExtractingConditions: Array<WorkRecordExtractingCondition>, listFixedConditionWorkRecord: Array<FixedConditionWorkRecord>) {
             this.conditionToExtractDaily = ko.observable(conditionToExtractDaily);
             this.addApplication = ko.observable(addApplication);
             this.listErrorAlarmCode = ko.observableArray(listErrorAlarmCode);
             this.listExtractConditionWorkRecork = ko.observableArray(listWorkRecordExtractingConditions);
             this.listFixedExtractConditionWorkRecord = ko.observableArray(listFixedConditionWorkRecord);
-            this.listErrorAlarmCheck = ko.observableArray(listErrorAlarmCheck);
         } 
     }
 
@@ -500,9 +498,9 @@ module nts.uk.at.view.kal003.share.model {
             let self = this;
             let param = ko.mapping.toJS(self);
 
-            nts.uk.ui.windows.setShared("KAL003CParams", param, true);
-            nts.uk.ui.windows.sub.modal("at", "/view/kal/003/c/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
-                let output = getShared("KAL003CResult");
+            nts.uk.ui.windows.setShared("KDW007BParams", param, true);
+            nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
+                let output = getShared("KDW007BResult");
                 if (output) {
                     self.targetNO(output.targetNO);
                     self.conditionAtr(output.conditionAtr);
@@ -657,7 +655,7 @@ module nts.uk.at.view.kal003.share.model {
         constructor(param : IWorkTypeCondition) {
             let self = this;
             self.useAtr = param && param.useAtr ? param.useAtr : false;
-            self.comparePlanAndActual(param && param.comparePlanAndActual ? param.comparePlanAndActual : 1); //default is 1
+            self.comparePlanAndActual(param ? (param.comparePlanAndActual == 0 ? 0 : 1) : 1); //default is 1
             self.planFilterAtr = param && param.planFilterAtr ? param.planFilterAtr : false;
             self.planLstWorkType(param && param.planLstWorkType ? param.planLstWorkType : []);
             self.actualFilterAtr = param && param.actualFilterAtr ? param.actualFilterAtr : false;

@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.pub.company;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -8,6 +9,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
+@Getter
 public class AffComHistItem {
 	
 	/** 履歴ID */

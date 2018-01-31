@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlConditionsAttendanceItem;
@@ -27,6 +28,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class ErrorAlarmConditionPubExport {
 
 	/* ID */
+	@Setter
 	private String errorAlarmCheckID;
 	/* チェック条件*/
 	private AlarmCheckTargetConditionPubExport alarmCheckTargetCondition;
@@ -186,6 +188,9 @@ public class ErrorAlarmConditionPubExport {
 		
 		//if (!domain.getFixedAtr()) {
 			// Set AlarmCheckTargetConditionDto
+		this.errorAlarmCheckID = conditionDomain.getErrorAlarmCheckID();
+		this.displayMessage = conditionDomain.getDisplayMessage().v();
+		this.continuousPeriod = conditionDomain.getContinuousPeriod().v();
 		this.alarmCheckTargetCondition = new AlarmCheckTargetConditionPubExport(
 					conditionDomain.getCheckTargetCondtion().getFilterByBusinessType(),
 					conditionDomain.getCheckTargetCondtion().getFilterByJobTitle(),
