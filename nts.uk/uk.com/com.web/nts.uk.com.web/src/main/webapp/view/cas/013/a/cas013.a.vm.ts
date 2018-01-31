@@ -221,7 +221,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     self.isCreateMode(false);
                 } else {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_716" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_716", messageParams: [nts.uk.resource.getText("CAS013_11")] });
                 }
             }).always(() => {
                 block.clear();
@@ -240,7 +240,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     self.selectRole(roleId, data);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 } else {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_716" });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_716", messageParams: [nts.uk.resource.getText("CAS013_11")] });
                 }
                 self.isCreateMode(false);
             }).always(() => {
