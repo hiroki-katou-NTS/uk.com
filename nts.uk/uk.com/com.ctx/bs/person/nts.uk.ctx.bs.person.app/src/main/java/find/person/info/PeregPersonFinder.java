@@ -41,7 +41,7 @@ public class PeregPersonFinder implements PeregFinder<PersonDto>{
 		Optional<Person> person = personRepository.getPeregPerByPersonId(query.getPersonId());
 		if(person.isPresent())
 			return PersonDto.createFromDomain(person.get());
-		return new PeregDomainDto();
+		return null;
 	}
 
 	@Override

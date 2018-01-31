@@ -61,20 +61,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.selectedAlarmCheckCondition = ko.observable(new model.AlarmCheckConditionByCategory('', '', new model.ItemModel(0, ""), [], new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], [])));
 
             self.selectedAlarmCheckConditionCode.subscribe(function(data: any) {
-                if (data) {
-                    let item = _.find(self.listAlarmCheckCondition(), (x: model.AlarmCheckConditionByCategory) => x.code() == data);
-                    if (item) {
-                        self.selectedAlarmCheckCondition(item);
-                        self.tabScopeCheck.targetCondition(item.targetCondition());
-                        self.tabCheckCondition.listWorkRecordExtractingConditions(item.dailyAlarmCheckCondition().listExtractConditionWorkRecork());
-                        self.tabCheckCondition.schedule4WeekCheckCondition(item.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition());
-                        self.selectedDataCondition(item.dailyAlarmCheckCondition().conditionToExtractDaily());
-                        self.tabFixedCondition.listFixedConditionWorkRecord(item.dailyAlarmCheckCondition().listFixedExtractConditionWorkRecord());
-                        self.tabDailyErrorAlarm.listWorkRecordExtraCon(item.dailyAlarmCheckCondition().listErrorAlarmCheck());
-                        self.tabDailyErrorAlarm.currentCodeList(item.dailyAlarmCheckCondition().listErrorAlarmCode());
-                        self.screenMode(model.SCREEN_MODE.UPDATE);
-                    }
-                }
+                self.selectCondition(data);
             });
 
         }
@@ -92,9 +79,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         let category = _.find(ko.toJS(self.cbbItemList), (x: model.ItemModel) => x.code == acc.category);
                         let item = new model.AlarmCheckConditionByCategory(acc.code, acc.name, category, acc.availableRoles, new model.AlarmCheckTargetCondition(acc.targetCondition.filterByEmployment, acc.targetCondition.filterByClassification, acc.targetCondition.filterByJobTitle, acc.targetCondition.filterByBusinessType, acc.targetCondition.targetEmployment, acc.targetCondition.targetClassification, acc.targetCondition.targetJobTitle, acc.targetCondition.targetBusinessType));
                         let _fixedList: Array<model.FixedConditionWorkRecord> = _.map(acc.dailyAlarmCheckCondition.listFixedExtractConditionWorkRecord, (fix: model.IFixedConditionWorkRecord) => { return new model.FixedConditionWorkRecord(fix) });
-                        let _dailyList: Array<model.DailyErrorAlarmCheck> = _.map(acc.dailyAlarmCheckCondition.listErrorAlarmCheck, (d: any) => { return new model.DailyErrorAlarmCheck(d.code, d.name, d.classification, d.message) });
                         let _checkList: Array<model.WorkRecordExtractingCondition> = _.map(acc.dailyAlarmCheckCondition.listExtractConditionWorkRecork, (c: model.IWorkRecordExtractingCondition) => {return shareutils.convertTransferDataToWorkRecordExtractingCondition(c)});
-                        item.dailyAlarmCheckCondition(new model.DailyAlarmCheckCondition(acc.dailyAlarmCheckCondition.conditionToExtractDaily, acc.dailyAlarmCheckCondition.addApplication, acc.dailyAlarmCheckCondition.listErrorAlarmCode, _dailyList, _checkList, _fixedList));
+                        item.dailyAlarmCheckCondition(new model.DailyAlarmCheckCondition(acc.dailyAlarmCheckCondition.conditionToExtractDaily, acc.dailyAlarmCheckCondition.addApplication, acc.dailyAlarmCheckCondition.listErrorAlarmCode, _checkList, _fixedList));
                         item.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition(acc.schedule4WeekCondition);
                         return item;
                     });
@@ -110,7 +96,6 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             self.selectedAlarmCheckConditionCode(self.listAlarmCheckCondition()[0].code());
                         }
                         self.selectedAlarmCheckConditionCode.valueHasMutated();
-                        self.screenMode(model.SCREEN_MODE.UPDATE);
                     }
                     
                 } else {
@@ -126,7 +111,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             return dfd.promise();
         }
 
-        createNewAlarmCheckCondition() {
+        private createNewAlarmCheckCondition() {
             let self = this;
             nts.uk.ui.errors.clearAll();
             self.selectedAlarmCheckConditionCode('');
@@ -140,6 +125,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 self.tabCheckCondition.listWorkRecordExtractingConditions([]);
                 self.tabDailyErrorAlarm.currentCodeList([]);
                 self.tabDailyErrorAlarm.addApplication(false);
+                
                 service.getAllFixedConData().done((data: Array<any>) => {
                     if (data && data.length) {
                         let _list: Array<model.FixedConditionWorkRecord> = _.map(data, acc => {
@@ -155,6 +141,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
             
             self.screenMode(model.SCREEN_MODE.NEW);
+            $("#A3_2").focus();
 
         }
 
@@ -255,6 +242,31 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.startPage().done(() => {
                 self.selectCategoryFromDialog(false);
             });
+        }
+        
+        private selectCondition(data) {
+            let self = this;
+            if (data) {
+                let item = _.find(self.listAlarmCheckCondition(), (x: model.AlarmCheckConditionByCategory) => x.code() == data);
+                if (item) {
+                    nts.uk.ui.errors.clearAll();
+                    self.selectedAlarmCheckCondition(item);
+                    self.tabScopeCheck.targetCondition(item.targetCondition());
+                    if (item.category() == model.CATEGORY.SCHEDULE_4_WEEK) {
+                        self.tabCheckCondition.schedule4WeekCheckCondition(item.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition());
+                    }
+                    
+                    if (item.category() == model.CATEGORY.DAILY) {
+                        self.tabCheckCondition.listWorkRecordExtractingConditions(item.dailyAlarmCheckCondition().listExtractConditionWorkRecork());
+                        self.selectedDataCondition(item.dailyAlarmCheckCondition().conditionToExtractDaily());
+                        self.tabFixedCondition.listFixedConditionWorkRecord(item.dailyAlarmCheckCondition().listFixedExtractConditionWorkRecord());
+                        self.tabDailyErrorAlarm.currentCodeList(item.dailyAlarmCheckCondition().listErrorAlarmCode());
+                    }
+                    
+                    self.screenMode(model.SCREEN_MODE.UPDATE);
+                    $("#A3_4").focus();
+                }
+            }
         }
 
     }

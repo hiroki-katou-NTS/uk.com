@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.log;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -82,6 +81,19 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 		this.periodCoverdEndDate = periodCoverdEndDate;
 		this.calExecutionSetInfoID = calExecutionSetInfoID;
 	}
+	
+	public KrcdtExecutionLog(KrcdtExecutionLogPK krcdtExecutionLogPK, int existenceError,
+			GeneralDateTime executionStartDate, GeneralDateTime executionEndDate, int processStatus,
+			GeneralDate periodCoverdStartDate, GeneralDate periodCoverdEndDate) {
+		super();
+		this.krcdtExecutionLogPK = krcdtExecutionLogPK;
+		this.existenceError = existenceError;
+		this.executionStartDate = executionStartDate;
+		this.executionEndDate = executionEndDate;
+		this.processStatus = processStatus;
+		this.periodCoverdStartDate = periodCoverdStartDate;
+		this.periodCoverdEndDate = periodCoverdEndDate;
+	}
 
 	public ExecutionLog toDomain() {
 		val domain = ExecutionLog.createFromJavaType(
@@ -103,6 +115,19 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 		} else {
 			domain.setMonlyAggregationSetInfo(calExeSetInfor.toDomain());
 		}
+		return domain;
+	}
+	
+	public ExecutionLog toDomainFromUpdateProcessing() {
+		val domain = ExecutionLog.createFromJavaType(
+				this.krcdtExecutionLogPK.empCalAndSumExecLogID,
+				this.krcdtExecutionLogPK.executionContent, 
+				this.existenceError, 
+				this.executionStartDate,
+				this.executionEndDate, 
+				this.processStatus, 
+				this.periodCoverdStartDate, 
+				this.periodCoverdEndDate);
 		return domain;
 	}
 	
@@ -133,6 +158,21 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 		}else {
 			entity.calExeSetInfor = KrcdtCalExeSetInfor.toEntity(domain.getMonlyAggregationSetInfo().get());
 		}
+		return entity;
+	}
+	
+	public static KrcdtExecutionLog toEntityFromUpdateProcessing(ExecutionLog domain) {
+		val entity = new KrcdtExecutionLog(
+				 new KrcdtExecutionLogPK(
+					 domain.getEmpCalAndSumExecLogID(),
+					 domain.getExecutionContent().value
+					),
+				 domain.getExistenceError().value,
+				 domain.getExecutionTime().getStartTime(),
+				 domain.getExecutionTime().getEndTime(),
+				 domain.getProcessStatus().value,
+				 domain.getObjectPeriod().getStartDate(),
+				 domain.getObjectPeriod().getEndDate());
 		return entity;
 	}
 	

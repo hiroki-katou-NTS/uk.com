@@ -1,8 +1,128 @@
 package nts.uk.ctx.bs.person.infra.repository.person.contact;
 
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.contact.PersonContactRepository;
+import java.util.Optional;
 
+import javax.ejb.Stateless;
+
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.bs.person.dom.person.contact.PersonContact;
+import nts.uk.ctx.bs.person.dom.person.contact.PersonContactRepository;
+import nts.uk.ctx.bs.person.infra.entity.person.contact.BpsmtPersonContact;
+import nts.uk.ctx.bs.person.infra.entity.person.contact.BpsmtPersonContactPK;
+
+@Stateless
 public class JpaPersonContactRepository  extends JpaRepository implements PersonContactRepository {
+
+	@Override
+	public void add(PersonContact domain) {
+		this.commandProxy().insert(toEntity(domain));
+	}
+
+	@Override
+	public void update(PersonContact domain) {
+		BpsmtPersonContactPK key = new BpsmtPersonContactPK(domain.getPersonId());
+		Optional<BpsmtPersonContact> entity = this.queryProxy().find(key, BpsmtPersonContact.class);
+		
+		if (entity.isPresent()){
+			updateEntity(domain, entity.get());
+			this.commandProxy().update(entity.get());
+		}
+	}
+
+	@Override
+	public void delete(String pID) {
+		BpsmtPersonContactPK key = new BpsmtPersonContactPK(pID);
+		this.commandProxy().remove(BpsmtPersonContact.class, key);
+	}
+	
+	private PersonContact toDomain(BpsmtPersonContact entity) {
+		String personId = entity.bpsmtPersonContactPK.pid;
+		String phoneNumber = entity.cellPhoneNumber != null ? entity.cellPhoneNumber : null;
+		String mailAddress = entity.mailAdress != null ? entity.mailAdress : null;
+		String mobileMailAdd = entity.mobileMailAdress != null ? entity.mobileMailAdress : null;
+		String memo1 = entity.memo1 != null ? entity.memo1 : null;
+		String contactName1 = entity.contactName1 != null ? entity.contactName1 : null;
+		String phoneNumber1 = entity.phoneNo1 != null? entity.phoneNo1 : null;
+		String memo2 = entity.memo2 != null ? entity.memo2 : null;
+		String contactName2 = entity.contactName2 != null ? entity.contactName2 : null;
+		String phoneNumber2 = entity.phoneNo2 != null? entity.phoneNo2 : null;
+		return new PersonContact(personId, phoneNumber, mailAddress, mobileMailAdd, memo1, contactName1, phoneNumber1, memo2, contactName2, phoneNumber2);
+	}
+	
+	/**
+	 * Convert domain to entity
+	 * @param domain
+	 * @return
+	 */
+	private BpsmtPersonContact toEntity(PersonContact domain){
+		BpsmtPersonContactPK key = new BpsmtPersonContactPK(domain.getPersonId());
+		BpsmtPersonContact entity = new BpsmtPersonContact(key, domain.getMailAdress().v(),
+				domain.getMobileMailAdress().v(), domain.getCellPhoneNumber().v(),
+				domain.getEmergencyContact1() != null ? domain.getEmergencyContact1().getMemo().v() : null,
+				domain.getEmergencyContact1() != null ? domain.getEmergencyContact1().getContactName().v() : null,
+				domain.getEmergencyContact1() != null ? domain.getEmergencyContact1().getPhoneNumber().v() : null,
+				domain.getEmergencyContact2() != null ? domain.getEmergencyContact2().getMemo().v() : null,
+				domain.getEmergencyContact2() != null ? domain.getEmergencyContact2().getContactName().v() : null,
+				domain.getEmergencyContact2() != null ? domain.getEmergencyContact2().getPhoneNumber().v() : null);
+		return entity;
+	}
+	
+	/**
+	 * Update entity
+	 * @param domain
+	 * @param entity
+	 */
+	private void updateEntity(PersonContact domain, BpsmtPersonContact entity){
+		
+		if (domain.getMailAdress() != null && !domain.getMailAdress().equals("")){
+			entity.mailAdress = domain.getMailAdress().v();
+		}
+		
+		if (domain.getMobileMailAdress() != null && !domain.getMobileMailAdress().v().equals("")){
+			entity.mobileMailAdress = domain.getMobileMailAdress().v();
+		}
+		
+		if (domain.getCellPhoneNumber() != null && !domain.getCellPhoneNumber().v().equals("")){
+			entity.cellPhoneNumber = domain.getCellPhoneNumber().v();
+		}
+		
+		if (domain.getEmergencyContact1() != null && !domain.getEmergencyContact1().getMemo().v().equals("")){
+			entity.memo1 = domain.getEmergencyContact1().getMemo().v();
+		}
+		
+		if (domain.getEmergencyContact1() != null && !domain.getEmergencyContact1().getContactName().v().equals("")){
+			entity.contactName1 = domain.getEmergencyContact1().getContactName().v();
+		}
+		
+		if (domain.getEmergencyContact1() != null && !domain.getEmergencyContact1().getPhoneNumber().v().equals("")){
+			entity.phoneNo1 = domain.getEmergencyContact1().getPhoneNumber().v();
+		}
+		
+		if (domain.getEmergencyContact2() != null && !domain.getEmergencyContact2().getMemo().v().equals("")){
+			entity.memo1 = domain.getEmergencyContact2().getMemo().v();
+		}
+		
+		if (domain.getEmergencyContact2() != null && !domain.getEmergencyContact2().getContactName().v().equals("")){
+			entity.contactName1 = domain.getEmergencyContact2().getContactName().v();
+		}
+		
+		if (domain.getEmergencyContact2() != null && !domain.getEmergencyContact2().getPhoneNumber().v().equals("")){
+			entity.phoneNo1 = domain.getEmergencyContact2().getPhoneNumber().v();
+		}
+			
+	}
+
+	/**
+	 * get domain PersonContact by person id
+	 * @param perId -- person id
+	 */
+	@Override
+	public Optional<PersonContact> getByPId(String perId) {
+		BpsmtPersonContactPK key = new BpsmtPersonContactPK(perId);
+		Optional<BpsmtPersonContact> entity = this.queryProxy().find(key, BpsmtPersonContact.class);
+		if(entity.isPresent())
+			return Optional.of(toDomain(entity.get()));
+		else return Optional.empty();
+	}
 
 }

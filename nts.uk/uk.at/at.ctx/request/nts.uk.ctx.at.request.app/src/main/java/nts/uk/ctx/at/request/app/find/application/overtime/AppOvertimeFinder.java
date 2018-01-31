@@ -30,7 +30,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputC
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
@@ -301,18 +301,18 @@ public class AppOvertimeFinder {
 		
 		for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-			overtimeInputDto.setAttendanceID(AttendanceID.NORMALOVERTIME.value);
+			overtimeInputDto.setAttendanceID(AttendanceType.NORMALOVERTIME.value);
 			overtimeInputDto.setFrameNo(overtimeFrame.getOvertimeWorkFrNo().v().intValue());
 			overtimeInputDto.setFrameName(overtimeFrame.getOvertimeWorkFrName().toString());
 			overTimeInputs.add(overtimeInputDto);
 		}
 		OvertimeInputDto overtimeInputShiftNight = new OvertimeInputDto();
-		overtimeInputShiftNight.setAttendanceID(AttendanceID.NORMALOVERTIME.value);
+		overtimeInputShiftNight.setAttendanceID(AttendanceType.NORMALOVERTIME.value);
 		overtimeInputShiftNight.setFrameNo(11);
 		overTimeInputs.add(overtimeInputShiftNight);
 		
 		OvertimeInputDto overtimeInputFlexExessTime = new OvertimeInputDto();
-		overtimeInputFlexExessTime.setAttendanceID(AttendanceID.NORMALOVERTIME.value);
+		overtimeInputFlexExessTime.setAttendanceID(AttendanceType.NORMALOVERTIME.value);
 		overtimeInputFlexExessTime.setFrameNo(12);
 		overTimeInputs.add(overtimeInputFlexExessTime);
 		
@@ -320,7 +320,7 @@ public class AppOvertimeFinder {
 		List<WorkdayoffFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
 		for(WorkdayoffFrame breaktimeFrame :breaktimeFrames){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-			overtimeInputDto.setAttendanceID(AttendanceID.BREAKTIME.value);
+			overtimeInputDto.setAttendanceID(AttendanceType.BREAKTIME.value);
 			overtimeInputDto.setFrameNo(breaktimeFrame.getWorkdayoffFrNo().v().intValueExact());
 			overtimeInputDto.setFrameName(breaktimeFrame.getWorkdayoffFrName().toString());
 			overTimeInputs.add(overtimeInputDto);
@@ -339,7 +339,7 @@ public class AppOvertimeFinder {
 						overTimeDto.getSiftType());
 				for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
 					OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-					overtimeInputDto.setAttendanceID(AttendanceID.BONUSPAYTIME.value);
+					overtimeInputDto.setAttendanceID(AttendanceType.BONUSPAYTIME.value);
 					overtimeInputDto.setFrameNo(bonusPayTimeItem.getId());
 					overtimeInputDto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
 					overtimeInputDto.setTimeItemTypeAtr(bonusPayTimeItem.getTimeItemTypeAtr().value);
@@ -351,7 +351,7 @@ public class AppOvertimeFinder {
 		}
 		for(int i = 1; i < 11; i++){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-			overtimeInputDto.setAttendanceID(AttendanceID.RESTTIME.value);
+			overtimeInputDto.setAttendanceID(AttendanceType.RESTTIME.value);
 			overtimeInputDto.setFrameNo(i);
 			overtimeInputDto.setFrameName(Integer.toString(i));
 			overtimeInputDto.setTimeItemTypeAtr(0);
@@ -400,7 +400,7 @@ public class AppOvertimeFinder {
 				}
 				
 		//xu li tinh toan
-		List<OvertimeInputDto> overtimeHours = overTimeInputs.stream().filter(x -> x.getAttendanceID() == AttendanceID.NORMALOVERTIME.value).collect(Collectors.toList());
+		List<OvertimeInputDto> overtimeHours = overTimeInputs.stream().filter(x -> x.getAttendanceID() == AttendanceType.NORMALOVERTIME.value).collect(Collectors.toList());
 		checkColorCaculationForUIB(overtimeHours,overTimeDto.getApplication().getPrePostAtr(),overTimeDto.getApplication().getApplicationDate(),overTimeDto.getApplication().getInputDate());
 		for(OvertimeInputDto overtime : overtimeHours){
 			for(OvertimeInputDto overtimeHour : overTimeDto.getOverTimeInputs()){
@@ -647,7 +647,7 @@ public class AppOvertimeFinder {
 		
 		for(OvertimeWorkFrame overtimeFrame :overtimeFrames){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-			overtimeInputDto.setAttendanceID(AttendanceID.NORMALOVERTIME.value);
+			overtimeInputDto.setAttendanceID(AttendanceType.NORMALOVERTIME.value);
 			overtimeInputDto.setFrameNo(overtimeFrame.getOvertimeWorkFrNo().v().intValueExact());
 			overtimeInputDto.setFrameName(overtimeFrame.getOvertimeWorkFrName().toString());
 			overTimeInputs.add(overtimeInputDto);
@@ -657,7 +657,7 @@ public class AppOvertimeFinder {
 		List<WorkdayoffFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
 		for(WorkdayoffFrame breaktimeFrame :breaktimeFrames){
 			OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-			overtimeInputDto.setAttendanceID(AttendanceID.BREAKTIME.value);
+			overtimeInputDto.setAttendanceID(AttendanceType.BREAKTIME.value);
 			overtimeInputDto.setFrameNo(breaktimeFrame.getWorkdayoffFrNo().v().intValueExact());
 			overtimeInputDto.setFrameName(breaktimeFrame.getWorkdayoffFrName().toString());
 			overTimeInputs.add(overtimeInputDto);
@@ -678,7 +678,7 @@ public class AppOvertimeFinder {
 				List<BonusPayTimeItem> bonusPayTimeItems= this.iOvertimePreProcess.getBonusTime(employeeID,overtimeRestAppCommonSet,appDate,companyID, result.getSiftType());
 				for(BonusPayTimeItem bonusPayTimeItem : bonusPayTimeItems){
 					OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-					overtimeInputDto.setAttendanceID(AttendanceID.BONUSPAYTIME.value);
+					overtimeInputDto.setAttendanceID(AttendanceType.BONUSPAYTIME.value);
 					overtimeInputDto.setFrameNo(bonusPayTimeItem.getId());
 					overtimeInputDto.setFrameName(bonusPayTimeItem.getTimeItemName().toString());
 					overtimeInputDto.setTimeItemTypeAtr(bonusPayTimeItem.getTimeItemTypeAtr().value);
@@ -807,7 +807,7 @@ public class AppOvertimeFinder {
 			List<Integer> frameNo = new ArrayList<>();
 			for (OverTimeInput overTimeInput : overtimeInputs) {
 				OvertimeInputDto overtimeInputDto = new OvertimeInputDto();
-				overtimeInputDto.setAttendanceID(overTimeInput.getAttendanceID().value);
+				overtimeInputDto.setAttendanceID(overTimeInput.getAttendanceType().value);
 				overtimeInputDto.setFrameNo(overTimeInput.getFrameNo());
 				overtimeInputDto.setStartTime(overTimeInput.getStartTime().v());
 				overtimeInputDto.setEndTime(overTimeInput.getEndTime().v());

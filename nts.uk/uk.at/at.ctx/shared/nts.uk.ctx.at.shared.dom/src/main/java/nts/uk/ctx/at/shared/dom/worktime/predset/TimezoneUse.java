@@ -90,6 +90,16 @@ public class TimezoneUse extends TimeZone {
 	}
 	
 	/**
+	 * Restore time.
+	 *
+	 * @param oldDomain the old domain
+	 */
+	public void restoreTime(TimezoneUse oldDomain) {
+		this.start = oldDomain.getStart();
+		this.end = oldDomain.getEnd();
+	}
+	
+	/**
 	 * Restore default data.
 	 */
 	public void restoreDefaultData() {

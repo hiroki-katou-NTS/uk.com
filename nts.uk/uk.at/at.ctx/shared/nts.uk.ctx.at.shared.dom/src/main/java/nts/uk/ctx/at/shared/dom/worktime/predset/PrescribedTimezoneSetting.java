@@ -345,7 +345,7 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 			} else {
 				TimezoneUse timeZone2 = this.getTimezoneShiftTwo();
 				if (!timeZone2.isUsed()) {
-					this.getTimezoneShiftTwo().restoreData(oldDomain.getTimezoneShiftTwo());
+					this.getTimezoneShiftTwo().restoreTime(oldDomain.getTimezoneShiftTwo());
 				}
 			}
 		}
