@@ -32,15 +32,14 @@
 					<div class="valign-center control-group start">
 						<span class="label">#{i18n.getText('KAL004_29')}</span>
 						<div class="day">
-							<span class="ntsControl">
-								<label class="ntsRadioBox">
-									<input type="radio" name="strRadio" tabindex="1" data-bind="checkedValue: 0, checked: strSelected, enable: enable" />
-									<span class="box"></span><span class="label" data-bind="text: txtDay"></span>
-									<input class="input-box input-str" tabindex="2" data-bind="ntsNumberEditor: {value:strDay, name: '#[KAL004_33]', constraint:'Day', required: true, enable: (strSelected() == 0)}" />
-									<span class="label txt">#{i18n.getText('KAL004_34')}</span> 
-									<com:ko-if bind="getCategoryId() == 0 || getCategoryId() == 8">
-									 	<div class="combo-box combo-day" tabindex="3"
-											data-bind="ntsComboBox: {
+							<div tabindex="1"
+								data-bind="ntsRadioButton: {checked: strSelected, enable: enable, option: dateSpecify()[0], optionValue: 'value', optionText: 'name', group: 'strRadio'}"></div>
+							<input class="input-box input-str" tabindex="2"
+								data-bind="ntsNumberEditor: {value:strDay, name: '#[KAL004_33]', constraint:'Day', required: true, enable: (strSelected() == 0)}" />
+							<span class="label txt">#{i18n.getText('KAL004_34')}</span>
+							<com:ko-if bind="getCategoryId() == 0 || getCategoryId() == 8">
+								<div class="combo-box combo-day" tabindex="3"
+									data-bind="ntsComboBox: {
 											options: strComboDay,
 											optionsValue: 'value',
 											value: strPreviousDay,
@@ -50,19 +49,16 @@
 											columns: [
 												{ prop: 'name', length: 1 }
 											]}"></div>
-								 	</com:ko-if>
-								 	<com:ko-if bind="getCategoryId() == 5 || getCategoryId() == 13">
-									 	<span class="label txt">#{i18n.getText('KAL004_35')}</span>
-								 	</com:ko-if>
-								</label>
-							</span>
+							</com:ko-if>
+							<com:ko-if bind="getCategoryId() == 5 || getCategoryId() == 13">
+								<span class="label txt">#{i18n.getText('KAL004_35')}</span>
+							</com:ko-if>
 						</div>
 						<div class="month">
-							<span class="ntsControl">
-								<label class="ntsRadioBox">
-									<input type="radio" name="strRadio" tabindex="4" data-bind="checkedValue: 1, checked: strSelected, enable: enable" />
-									<span class="box"></span><span class="label" data-bind=""></span>
-									<div class="combo-box" tabindex="5" data-bind="ntsComboBox: {
+							<div tabindex="4" class="checkMonth"
+								data-bind="ntsRadioButton: {checked: strSelected, enable: enable, option: dateSpecify()[1], optionValue: 'value', optionText: '', group: 'strRadio'}"></div>
+							<div class="combo-box" tabindex="5"
+								data-bind="ntsComboBox: {
 										options: strComboMonth,
 										optionsValue: 'value',
 										value: strMonth,
@@ -72,24 +68,21 @@
 										columns: [
 											{ prop: 'name', length: 5 }
 										]}"></div>
-									<span class="label" data-bind="text: txtStrMonth"></span>
-								</label>
-							</span>
+							<span class="label" data-bind="text: txtStrMonth"></span>
 						</div>
 					</div>
 					<div class="centerSys">#{i18n.getText('KAL004_30')}</div>
 					<div class="valign-center control-group end">
 						<span class="label">#{i18n.getText('KAL004_31')}</span>
 						<div class="day">
-							<span class="ntsControl">
-								<label class="ntsRadioBox">
-									<input type="radio" name="endRadio" tabindex="6" data-bind="checkedValue: 0, checked: endSelected, enable: enable" />
-									<span class="box"></span><span class="label" data-bind="text: txtDay"></span>
-									<input class="input-box input-end" tabindex="7" data-bind="ntsNumberEditor: {value:endDay, name: '#[KAL004_39]', constraint:'Day', required: true, enable: (endSelected() == 0)}" />
-									<span class="label txt">#{i18n.getText('KAL004_34')}</span> 
-									<com:ko-if bind="getCategoryId() == 0 || getCategoryId() == 8">
-									 	<div class="combo-box combo-day" tabindex="8"
-											data-bind="ntsComboBox: {
+							<div tabindex="6" 
+								data-bind="ntsRadioButton: {checked: endSelected, enable: enable, option: dateSpecify()[0], optionValue: 'value', optionText: 'name', group: 'endRadio'}"></div>
+							<input class="input-box input-end" tabindex="7"
+								data-bind="ntsNumberEditor: {value:endDay, name: '#[KAL004_39]', constraint:'Day', required: true, enable: (endSelected() == 0)}" />
+							<span class="label txt">#{i18n.getText('KAL004_34')}</span>
+							<com:ko-if bind="getCategoryId() == 0 || getCategoryId() == 8">
+								<div class="combo-box combo-day" tabindex="8"
+									data-bind="ntsComboBox: {
 											options: endComboDay,
 											optionsValue: 'value',
 											value: endPreviousDay,
@@ -99,20 +92,16 @@
 											columns: [
 												{ prop: 'name', length: 1 }
 											]}"></div>
-								 	</com:ko-if>
-								 	<com:ko-if bind="getCategoryId() == 5 || getCategoryId() == 13">
-									 	<span class="label txt">#{i18n.getText('KAL004_35')}</span>
-								 	</com:ko-if>
-								</label>
-							</span>
+							</com:ko-if>
+							<com:ko-if bind="getCategoryId() == 5 || getCategoryId() == 13">
+								<span class="label txt">#{i18n.getText('KAL004_35')}</span>
+							</com:ko-if>
 						</div>
 						<div class="month">
-							<span class="ntsControl">
-								<label class="ntsRadioBox">
-									<input type="radio" name="endRadio" tabindex="9" data-bind="checkedValue: 1, checked: endSelected, enable: strSelected() == 1 " />
-									<span class="box"></span><span class="label" data-bind=""></span>
-									<div class="combo-box" tabindex="10"
-										data-bind="ntsComboBox: {
+							<div tabindex="10" class="checkMonth"
+								data-bind="ntsRadioButton: {checked: endSelected, enable: strSelected() == 1, option: dateSpecify()[1], optionValue: 'value', optionText: '', group: 'endRadio'}"></div>
+							<div class="combo-box" tabindex="10"
+								data-bind="ntsComboBox: {
 										options: endComboMonth,
 										optionsValue: 'value',
 										value: endMonth,
@@ -122,9 +111,7 @@
 										columns: [
 											{ prop: 'name', length: 5 }
 										]}"></div>
-									<span class="label" data-bind="text: txtEndMonth"></span>
-								</label>
-							</span>
+							<span class="label" data-bind="text: txtEndMonth"></span>
 						</div>
 					</div>
 				</div>
