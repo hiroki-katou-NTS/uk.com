@@ -65,7 +65,7 @@ module nts.uk.at.view.ksm005.c {
                 // list monthly pattern
                 self.monthlyPatternList = ko.observableArray([]);
                 self.selectedmonthlyPattern = ko.observable('');
-                self.isEnableListMonthlyPattern = ko.observable(false);
+                self.isEnableListMonthlyPattern = ko.observable(true);
                 self.isEditableListMonthlyPattern = ko.observable(false);
                 
                 self.selectedEmployee = ko.observableArray([]);
@@ -125,7 +125,11 @@ module nts.uk.at.view.ksm005.c {
 
                 self.selectedCode.subscribe(function(employeeCode: string) {
                     if (employeeCode) {
-                        self.applySelectEmployeeCode(employeeCode);
+                        self.applySelectEmployeeCode(employeeCode).done(function(){
+                            if (self.histList().length > 0){
+                                self.selectedHists(self.histList()[self.histList().length - 1].historyId);
+                            }
+                        });
                     }else {
                         self.enableDelete(false);
                         self.enableSystemChange(false);
@@ -138,7 +142,11 @@ module nts.uk.at.view.ksm005.c {
                 });
                 
                 self.selectedHists.subscribe(function(newValue) {
-                    self.findMonthlyPatternSetting(self.selectedCode());
+                    
+                    if(self.histList().filter(e => e.historyId == newValue && e.textDisplay.indexOf("9999/12/31") == -1).length > 0){
+                        self.enableSave(false);
+                    }
+                    self.findMonthlyPatternSetting(newValue);
                 });
             }
             
@@ -259,8 +267,9 @@ module nts.uk.at.view.ksm005.c {
              /**
              *  apply info monthly pattern setting 
              */
-            public applySelectEmployeeCode(employeeCode: string){
+            public applySelectEmployeeCode(employeeCode: string): JQueryPromise<any> {
                 var self = this;
+                var dfd = $.Deferred();
                 var historyData: HistModel[] = [];
                 var textDisplay = "";
                 if (employeeCode) {
@@ -269,27 +278,31 @@ module nts.uk.at.view.ksm005.c {
                         console.log(data);
                         if(data != null){
                              data.forEach(function(item){
-                              textDisplay = item.period.startDate + " - " + item.period.endDate;
+                              textDisplay = item.period.startDate + " " + nts.uk.resource.getText("CMM011_26") + " " + item.period.endDate;
                               historyData.push(new HistModel(item.historyId, textDisplay));
                             });
                             self.isEnableListMonthlyPattern(true);
                             self.isEnableListHist(true);
                             self.enableSave(true);
                         } else {
-                            self.isEnableListMonthlyPattern(false);
+                            self.isEnableListMonthlyPattern(true);
                             self.isEnableListHist(false);
                             self.enableSave(false);
+                            self.enableCopy(false);
+                            self.enableDelete(false);
                         }
                         self.histList(historyData);
-                        self.findMonthlyPatternSetting(employeeCode);
+//                        self.findMonthlyPatternSetting(self.selectedHists());
+                        dfd.resolve();
                     });
                 }
+                return dfd.promise(); 
             }
             
-            public findMonthlyPatternSetting(employeeCode: string): JQueryPromise<any> {
+            public findMonthlyPatternSetting(historyId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                service.findByIdMonthlyPatternSetting(self.findEmployeeIdByCode(employeeCode)).done(function(data: MonthlyPatternSettingDto) {
+                service.findByIdMonthlyPatternSetting(historyId).done(function(data: MonthlyPatternSettingDto) {
                     console.log(data);
                     if (data != null) {
                         if (data.monthlyPatternCode != "") {
@@ -299,6 +312,7 @@ module nts.uk.at.view.ksm005.c {
                             self.enableSystemChange(true);
                             self.enableCopy(true);
                         }else {
+                            self.selectedmonthlyPattern('000');
                             self.enableDelete(false);
                             self.enableCopy(false);
                             self.enableSystemChange(false);   
@@ -353,12 +367,21 @@ module nts.uk.at.view.ksm005.c {
              */
             public saveMonthlyPatternSetting(): void {
                 var self = this;
-                var dto : MonthlyPatternSettingDto;
+                
                 if (!self.selectedHists()) {
 //                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
                     return;
                 }
-                dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern()};
+                
+                if (!self.selectedCode()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
+                    return;
+                }
+                if (self.selectedmonthlyPattern() == "000") {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_190" });
+                    return;
+                }
+                var dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern()};
                 service.saveMonthlyPatternSetting(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
