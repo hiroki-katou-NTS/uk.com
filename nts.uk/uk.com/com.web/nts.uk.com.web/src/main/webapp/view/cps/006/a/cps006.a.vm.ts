@@ -25,6 +25,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
             let self = this;
             self.start(undefined);
             self.currentCategory().id.subscribe(function(value) {
+                if (nts.uk.text.isNullOrEmpty(value)) return;
                 self.getDetailCategory(value);
             });
             self.isAbolished.subscribe(function(value) {

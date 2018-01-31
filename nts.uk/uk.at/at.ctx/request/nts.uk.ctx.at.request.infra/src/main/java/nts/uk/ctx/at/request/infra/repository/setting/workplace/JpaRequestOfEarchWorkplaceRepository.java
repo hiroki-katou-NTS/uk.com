@@ -62,6 +62,10 @@ public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implemen
 	@Override
 	public void update(RequestOfEachWorkplace domain) {
 		KrqstWpAppConfig targetEntity = this.queryProxy().find(new KrqstWpAppConfigPK(domain.getCompanyID(), domain.getWorkPlaceID()), KrqstWpAppConfig.class).get();
+		KrqstWpAppConfig updateEntity = KrqstWpAppConfig.fromDomain(domain);
+		targetEntity.krqstWpAppConfigDetails = updateEntity.krqstWpAppConfigDetails;
+		targetEntity.selectOfApproversFlg = updateEntity.selectOfApproversFlg;
+		this.commandProxy().update(targetEntity);
 	}
 
 }

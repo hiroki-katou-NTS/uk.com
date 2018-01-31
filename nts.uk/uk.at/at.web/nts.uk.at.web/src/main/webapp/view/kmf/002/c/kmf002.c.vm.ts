@@ -22,9 +22,9 @@ module nts.uk.at.view.kmf002.c {
             /* start declare variable KCP005 */
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
-            multiSelectedCode: KnockoutObservableArray<string>;
+            multiSelectedCode: KnockoutObservableArray<string[]>;
             isShowAlreadySet: KnockoutObservable<boolean>;
-            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel[]>;
             isDialog: KnockoutObservable<boolean>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             isMultiSelect: KnockoutObservable<boolean>;

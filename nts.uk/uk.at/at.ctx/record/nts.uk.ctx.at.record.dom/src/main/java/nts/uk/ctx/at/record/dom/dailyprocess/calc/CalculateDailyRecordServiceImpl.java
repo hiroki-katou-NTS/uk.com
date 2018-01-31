@@ -129,13 +129,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val oneRange = createOneDayRange(companyId,employeeId,targetDate,integrationOfDaily);
 		/*勤務種類の取得*/
 		val workInfo = integrationOfDaily.getWorkInformation();
-		val workType = this.workTypeRepository.findByPK(companyId, workInfo.getRecordWorkInformation().getWorkTypeCode().v())
-				.get(); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
+		//val workType = this.workTypeRepository.findByPK(companyId, "001").get();
+		val workType = this.workTypeRepository.findByPK(companyId,workInfo.getRecordWorkInformation().getWorkTypeCode().v()).get(); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
 		
 		
 		
 		/*就業時間帯勤務区分*/
-		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId, integrationOfDaily.getWorkInformation().getScheduleWorkInformation().getWorkTimeCode().toString());
+		//Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,//"901"); 
+		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getScheduleWorkInformation().getWorkTimeCode().toString());
 		/*労働制*/
 		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(companyId
 																				, placeId
@@ -160,10 +161,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			FlowFixedRestSet fluidPrefixBreakTimeSet = new FlowFixedRestSet(false,false,false,FlowFixedRestCalcMethod.REFER_MASTER);
 			
 			/*所定時間設定取得*/
-			val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId, integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+			val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId, "901");//integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 			
 			//固定勤務の設定
-			FixedWorkSetting fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordWorkInformation().getWorkTimeCode().toString()).get();
+			FixedWorkSetting fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, "901").get();//workInfo.getRecordWorkInformation().getWorkTimeCode().toString()).get();
 			
 			
 			//0時跨ぎ計算設定
@@ -186,9 +187,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			/*前日の勤務情報取得  */
 			WorkInfoOfDailyPerformance yestarDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(-1)).orElse(workInformationRepository.find(employeeId, targetDate).get());
 			val yesterDay = this.workTypeRepository.findByPK(companyId, yestarDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
+			//val yesterDay = this.workTypeRepository.findByPK(companyId, "001");//yestarDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
 			/*翌日の勤務情報取得 */
 			WorkInfoOfDailyPerformance tomorrowDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(1)).orElse(workInformationRepository.find( employeeId, targetDate).get());
 			val tomorrow = this.workTypeRepository.findByPK(companyId, tomorrowDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
+			//val tomorrow = this.workTypeRepository.findByPK(companyId, "001");//tomorrowDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
 			//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 			
 			oneRange.decisionWorkClassification(workTime.get().getWorkTimeDivision(),
@@ -279,7 +282,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private CalculationRangeOfOneDay createOneDayRange(String companyId, String employeeId, GeneralDate targetDate,IntegrationOfDaily integrationOfDaily) {
 		
 		/*所定時間設定取得*/
-		val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId, integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+		//val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,"901");// integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+		val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 		
 		/*1日の計算範囲取得*/
 		val calcRangeOfOneDay = new TimeSpanForCalc(predetermineTimeSet.get().getStartDateClock()
@@ -316,7 +320,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private DailyCalculationPersonalInformation getPersonInfomation(String companyId,String placeId,String employmentCd,String employeeId,GeneralDate targetDate) {
 		//Optional<EmploymentContractHistory> employmentContractHistory = this.employmentContractHistoryAdopter.findByEmployeeIdAndBaseDate(employeeId, targetDate);
 		Optional<EmploymentContractHistory> employmentContractHistory = Optional.of(new EmploymentContractHistory(employeeId,WorkingSystem.RegularWork));
-		if(employmentContractHistory.isPresent()) {
+		if(!employmentContractHistory.isPresent()) {
 			throw new RuntimeException("Can't get WorkingSystem");
 		}
 		// 労働制

@@ -9,11 +9,19 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationListAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
@@ -41,6 +49,17 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	private RequestOfEachWorkplaceRepository repoRequestWkp;
 	@Inject
 	private RequestOfEachCompanyRepository repoRequestCompany;
+	@Inject
+	private ApplicationRepository_New repoApp;
+	@Inject
+	private ScBasicScheduleAdapter scBasicScheduleAdapter;
+	@Inject
+	private RecordWorkInfoAdapter recordWkpInfoAdapter;
+	@Inject
+	private EmployeeRequestAdapter empRequestAdapter;
+	@Inject
+	private WorkplaceAdapter wkpAdapter;
+	
 	/**
 	 * 12 - 申請一覧初期日付期間
 	 */
@@ -112,9 +131,11 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	 */
 	@Override
 	public List<Application_New> getApplicationListByApp(AppListExtractCondition param) {
+		String companyId = AppContexts.user().companyId();
+		String sID = AppContexts.user().employeeId();
 		// TODO Auto-generated method stub
-		//ドメインモデル「申請」を取得する-(Lấy dữ liệu domain Application) - HungDD se lam
-		List<Application_New> lstApp = new ArrayList<>();
+		//ドメインモデル「申請」を取得する-(Lấy dữ liệu domain Application) - get List Application By SID
+		List<Application_New> lstApp = repoApp.getListAppBySID(companyId, sID, param.getStartDate(), param.getEndDate());
 		for (Application_New application : lstApp) {
 			//アルゴリズム「申請一覧リスト取得打刻取消」を実行する-(Cancel get list app stamp): 7 - 申請一覧リスト取得打刻取消
 			this.getListAppStampIsCancel(application);
@@ -135,6 +156,7 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	 */
 	@Override
 	public List<Application_New> getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting displaySet) {
+		String companyId = AppContexts.user().companyId();
 		//ドメインモデル「承認機能設定」を取得する-(Lấy dữ liệu domain 承認機能設定) - wait hoi lai ben nhat
 		// TODO Auto-generated method stub
 		//申請一覧抽出条件.申請表示対象が「部下の申請」が指定-(Check đk lọc)
@@ -143,15 +165,16 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 			// TODO Auto-generated method stub
 		}
 		//申請一覧抽出条件.申請表示対象が「事前通知」または「検討指示」が指定
+		List<Application_New> lstApp = new ArrayList<>();
 		if(!param.getAppDisplayAtr().equals(ApplicationDisplayAtr.PRIOR_NOTICE) || !param.getAppDisplayAtr().equals(ApplicationDisplayAtr.CONSIDER_INSTRUCT)){//「事前通知」または「検討指示」以外
 			//ドメインモデル「代行者管理」を取得する-(Lấy dữ liệu domain 代行者管理) - wait request
 			// TODO Auto-generated method stub
-			//ドメインモデル「申請」を取得する-(Lấy dữ liệu domain 申請) - wait HungDD
+			//ドメインモデル「申請」を取得する-(Lấy dữ liệu domain 申請) - get List App By Reflect
+			lstApp = repoApp.getListAppByReflect(companyId, param.getStartDate(), param.getEndDate());
 			// TODO Auto-generated method stub
 		}
 		//imported(申請承認）「稟議書」を取得する - wait request : return list app
 		// TODO Auto-generated method stub
-		List<Application_New> lstApp = new ArrayList<>();
 		//アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
 		this.getListAppMasterInfo(lstApp);
 		//アルゴリズム「申請一覧リスト取得実績」を実行する-(get App List Achievement): 5 - 申請一覧リスト取得実績
@@ -181,7 +204,18 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+	/**
+	 * 5.1 - 申請一覧リスト取得実績休出申請
+	 */
+	@Override
+	public Boolean getAppListAchievementBreak(String sID, GeneralDate date) {
+		// TODO Auto-generated method stub
+		//Imported(申請承認)「勤務実績」を取得する - req #5
+		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
+		//Imported(申請承認)「勤務予定」を取得する - req #4
+		Optional<ScBasicScheduleImport> scBsSchedule = scBasicScheduleAdapter.findByID(sID, date);
+		return null;
+	}
 	/**
 	 * 6 - 申請一覧リスト取得振休振出
 	 * wait HungDD
@@ -243,11 +277,12 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 		for (Application_New app : lstApp) {
 			//ドメインモデル「申請表示名」より申請表示名称を取得する-(Lấy Application display name) - wait YenNTH
 			// TODO Auto-generated method stub
-			//アルゴリズム「社員IDから個人社員基本情報を取得」を実行する - wait request
+			//アルゴリズム「社員IDから個人社員基本情報を取得」を実行する - req #1
+			String empName = empRequestAdapter.getEmployeeName(app.getEmployeeID());
 			// TODO Auto-generated method stub
-			//アルゴリズム「社員から職場を取得する」を実行する
-			// TODO Auto-generated method stub
-			String wkpID = "";
+			//アルゴリズム「社員から職場を取得する」を実行する - req #30
+			WkpHistImport wkp = wkpAdapter.findWkpBySid(app.getEmployeeID(), app.getAppDate());
+			String wkpID = wkp == null ? "" : wkp.getWorkplaceId();
 			//アルゴリズム「申請一覧事前必須チェック」を実行する- (check App Predict Require): 0 - 申請一覧事前必須チェック
 			Boolean check = this.checkAppPredictRequire(app.getAppType().value, wkpID);
 			if(check == true){//必須(True)

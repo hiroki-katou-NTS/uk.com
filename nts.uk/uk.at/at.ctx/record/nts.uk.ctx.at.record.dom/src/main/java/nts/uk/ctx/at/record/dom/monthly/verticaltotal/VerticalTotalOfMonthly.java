@@ -10,11 +10,13 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.vtotalwork.AttendanceStatusMap;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -99,16 +101,37 @@ public class VerticalTotalOfMonthly {
 			if (!workTypeMap.containsKey(workTypeCd)) workTypeMap.put(workTypeCd, workType);
 		}
 		
+		// 所定時間設定　取得
+		val predetermineTimeSets = repositories.getPredetermineTimeSet().findByCompanyID(companyId);
+		Map<String, PredetemineTimeSetting> predetermineTimeSetMap = new HashMap<>();
+		for (val predetermineTimeSet : predetermineTimeSets){
+			val workTimeCd = predetermineTimeSet.getWorkTimeCode().v();
+			if (!predetermineTimeSetMap.containsKey(workTimeCd)){
+				predetermineTimeSetMap.put(workTimeCd, predetermineTimeSet);
+			}
+		}
+		
 		// 回数集計　取得
 		//*****（未）　集計での利用方法があいまいなため、設計確認要。
-		val totalTimesList = repositories.getTotalTimes().getAllTotalTimes(companyId);
+		//val totalTimesList = repositories.getTotalTimes().getAllTotalTimes(companyId);
+		
+		// 出勤状態クラスの作成
+		AttendanceStatusMap attendanceStatusMap = new AttendanceStatusMap(
+				attendanceTimeOfDailys, timeLeaveingOfDailys);
 		
 		// 勤務日数集計
-		this.workDays.aggregate(workInfoOfDailys, attendanceTimeOfDailys, timeLeaveingOfDailys,
-				specificDateAtrOfDailys, workTypeMap);
+		this.workDays.aggregate(datePeriod, workInfoOfDailys, attendanceTimeOfDailys, timeLeaveingOfDailys,
+				specificDateAtrOfDailys, workTypeMap, predetermineTimeSetMap, attendanceStatusMap);
 		
 		// 勤務時間集計
-		this.workTime.aggregate(workInfoOfDailyMap, attendanceTimeOfDailys, specificDateAtrOfDailys,
-				workTypeMap);
+		this.workTime.aggregate(datePeriod, workInfoOfDailyMap, attendanceTimeOfDailys,
+				specificDateAtrOfDailys, workTypeMap);
+		
+		// 処理期間の各週の開始日・終了日を判断
+		
+		// 週の回数分ループ
+		
+		// 週の集計
+		
 	}
 }

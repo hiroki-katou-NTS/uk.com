@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;;
 /**
  * 残業時間単位制御区分
  * @author yennth
@@ -16,11 +16,11 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceID;
 @NoArgsConstructor
 public class OtHourUnitControl extends DomainObject{
 	// 勤怠項目ID
-	private AttendanceID attendanceId;
+	private AttendanceType attendanceId;
 	// 残業枠利用
 	private UseOtWk useOt;
 	public static OtHourUnitControl createFromJavaType(int attendanceId, int useOt){
-		return new OtHourUnitControl(EnumAdaptor.valueOf(attendanceId, AttendanceID.class),
+		return new OtHourUnitControl(EnumAdaptor.valueOf(attendanceId, AttendanceType.class),
 				EnumAdaptor.valueOf(useOt, UseOtWk.class));
 	}
 }

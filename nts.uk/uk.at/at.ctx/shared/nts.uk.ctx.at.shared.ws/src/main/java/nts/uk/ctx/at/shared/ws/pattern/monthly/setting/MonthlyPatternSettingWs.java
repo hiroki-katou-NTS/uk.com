@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.ws.shift.pattern.monthly.setting;
+package nts.uk.ctx.at.shared.ws.pattern.monthly.setting;
 
 import java.util.List;
 
@@ -13,18 +13,19 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.setting.MonthlyPatternSettingDeleteCommand;
-import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.setting.MonthlyPatternSettingDeleteCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.setting.MonthlyPatternSettingSaveCommand;
-import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.setting.MonthlyPatternSettingSaveCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.shift.pattern.MonthlyPatternSettingFinder;
-import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternSettingDto;
-import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternSettingFindAllDto;
+import nts.uk.ctx.at.shared.app.command.pattern.monthly.setting.MonthlyPatternSettingDeleteCommand;
+import nts.uk.ctx.at.shared.app.command.pattern.monthly.setting.MonthlyPatternSettingDeleteCommandHandler;
+import nts.uk.ctx.at.shared.app.command.pattern.monthly.setting.MonthlyPatternSettingSaveCommand;
+import nts.uk.ctx.at.shared.app.command.pattern.monthly.setting.MonthlyPatternSettingSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.HistoryDto;
+import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.MonthlyPatternSettingDto;
+import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.MonthlyPatternSettingFindAllDto;
+import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.MonthlyPatternSettingFinder;
 
 /**
  * The Class MonthlyPatternSettingWs.
  */
-@Path("ctx/at/schedule/pattern/monthly/setting")
+@Path("ctx/at/shared/pattern/monthly/setting")
 @Produces(MediaType.APPLICATION_JSON)
 public class MonthlyPatternSettingWs {
 	
@@ -42,19 +43,20 @@ public class MonthlyPatternSettingWs {
 	
 	/**
 	 * Find by id.
-	 *
-	 * @param employeeId the employee id
-	 * @return the monthly pattern setting dto
+	 * @param input the input
+	 * @return the list
 	 */
 	@POST
 	@Path("findAll")
-	public List<String> findAll(MonthlyPatternSettingFindAllDto input){
-		return this.finder.findAllByEmployeeId(input.getEmployeeIds());
+	public List<MonthlyPatternSettingDto> findById(MonthlyPatternSettingFindAllDto input){
+		return this.finder.findAllMonthlyPatternSettingBySid(input.getEmployeeIds());
 	}
+	
 	/**
 	 * Find by id.
 	 *
 	 * @param employeeId the employee id
+	 * @param historyId the history id
 	 * @return the monthly pattern setting dto
 	 */
 	@POST
@@ -62,6 +64,7 @@ public class MonthlyPatternSettingWs {
 	public MonthlyPatternSettingDto findById(@PathParam("employeeId") String employeeId){
 		return this.finder.findById(employeeId);
 	}
+	
 	/**
 	 * Adds the.
 	 *
@@ -83,5 +86,16 @@ public class MonthlyPatternSettingWs {
 	public void delete(MonthlyPatternSettingDeleteCommand command) {
 		this.delete.handle(command);
 	}
-
+	
+	/**
+	 * Gets the list working condition.
+	 *
+	 * @param employeeId the employee id
+	 * @return the list working condition
+	 */
+	@POST
+	@Path("getListHistory/{employeeId}")
+	public List<HistoryDto> getListWorkingCondition(@PathParam("employeeId") String employeeId){
+		return this.finder.findListWorkingConditionBySID(employeeId);
+	}
 }

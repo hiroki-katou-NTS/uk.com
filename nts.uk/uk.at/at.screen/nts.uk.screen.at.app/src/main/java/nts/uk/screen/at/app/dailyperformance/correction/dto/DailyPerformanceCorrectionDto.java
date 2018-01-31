@@ -53,6 +53,8 @@ public class DailyPerformanceCorrectionDto {
 	private String comment;
 	
 	private Set<ItemValue> itemValues;
+	
+	private Boolean showPrincipal;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
