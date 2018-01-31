@@ -7,7 +7,7 @@ module nts.uk.com.view.cmm021.a {
          */
         var servicePath: any = {
             findListUserInfo: "ctx/sys/gateway/single/signon/find/userInfo",
-            findListWindowAccByUserIdAndUseAtr: "ctx/sys/gateway/single/signon/find/window/account",
+            findListWindowAccByUserId: "ctx/sys/gateway/single/signon/find/window/account",
             saveWindowAccount: "ctx/sys/gateway/single/signon/save/windowAcc",
             removeWindowAccount: "ctx/sys/gateway/single/signon/remove/windowAcc",
                         
@@ -23,8 +23,8 @@ module nts.uk.com.view.cmm021.a {
             return nts.uk.request.ajax(servicePath.findListUserInfo, { baseDate: baseDate,isScreenC: isScreenC});
         }
 
-        export function findListWindowAccByUserIdAndUseAtr(userId: string): JQueryPromise<model.WindownAccountFinderDto[]> {
-            return nts.uk.request.ajax(servicePath.findListWindowAccByUserIdAndUseAtr, { userId: userId });
+        export function findListWindowAccByUserId(userId: string): JQueryPromise<model.WindownAccountFinderDto[]> {
+            return nts.uk.request.ajax(servicePath.findListWindowAccByUserId, { userId: userId });
         }
 
         export function saveWindowAccount(saveWindowAcc: model.SaveWindowAccountCommand): JQueryPromise<any> {

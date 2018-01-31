@@ -21,8 +21,8 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.TargetPre
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -262,7 +262,7 @@ public class RegularAndIrregularTimeOfMonthly {
 		}
 		
 		// 労働制を確認する
-		if (workingSystem.isRegularWork()){
+		if (workingSystem == WorkingSystem.REGULAR_WORK){
 			val regularWorkSet = aggrSettingMonthly.getRegularWork();
 			
 			// 「週割増・月割増を求める」を取得する
@@ -280,7 +280,7 @@ public class RegularAndIrregularTimeOfMonthly {
 						addSet, aggregateTotalWorkingTime, statutoryWorkingTimeWeek, weekStart);
 			}
 		}
-		if (workingSystem.isVariableWorkingTimeWork()){
+		if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 
 			// 変形労働勤務の週割増時間を集計する
 			this.aggregateWeeklyPremiumTimeOfIrregular(companyId, employeeId, weekPeriod,
@@ -442,7 +442,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 
 		// 通常勤務の時
-		if (workingSystem.isRegularWork()){
+		if (workingSystem == WorkingSystem.REGULAR_WORK){
 			
 			// 「割増を求める」がtrueの時
 			val legalAggrSetOfReg = aggrSettingMonthly.getRegularWork();
@@ -457,7 +457,7 @@ public class RegularAndIrregularTimeOfMonthly {
 		}
 		
 		// 変形労働時間勤務の時
-		if (workingSystem.isVariableWorkingTimeWork()){
+		if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			
 			// 変形労働勤務の月単位の時間を集計する
 			this.aggregateTimePerMonthOfIrregular(companyId, employeeId,
