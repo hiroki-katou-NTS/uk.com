@@ -188,8 +188,13 @@ public class EmpCtgFinder {
 		List<PersonInfoItemDefinition> lstItemDef = perInfoCtgDomainService
 				.getPerItemDef(new ParamForGetPerItem(perInfoCtg, query.getInfoId(), roleId == null ? "" : roleId,
 						loginCId, contractCode, empIdCurrentLogin.equals(query.getEmployeeId())));
+		DateRangeItem dateRangeItem = perInfoCtgRepositoty
+				.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
+		Optional<PersonInfoItemDefinition> period = lstItemDef.stream().filter(x -> {
+			return x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId());
+		}).findFirst();
 		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED) {
-			infoList = getInfoListOfOptionalCtg(perInfoCtg, query, lstItemDef);
+			infoList = getInfoListOfOptionalCtg(perInfoCtg, query, period);
 		} else {
 			query.setCategoryCode(perInfoCtg.getCategoryCode().v());
 			infoList = layoutingProcessor.getListFirstItems(query);
@@ -204,29 +209,25 @@ public class EmpCtgFinder {
 		}).collect(Collectors.toList());
 		List<ComboBoxObject> resultList = fiterOfContHist(ctgAuth, infoList, roleId, isSelf);
 		if(lstItemDef.size() > 0)
-			resultList.add(new ComboBoxObject(null, lstItemDef.get(0).getItemName().v()));
+			resultList.add(new ComboBoxObject(null, period.get().getItemName().v()));
 		return resultList ;
 	}
 
-	private List<ComboBoxObject> getInfoListOfOptionalCtg(PersonInfoCategory perInfoCtg, PeregQuery query, List<PersonInfoItemDefinition> lstItemDef) {
+	private List<ComboBoxObject> getInfoListOfOptionalCtg(PersonInfoCategory perInfoCtg, PeregQuery query, Optional<PersonInfoItemDefinition> period) {
 		if (perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO)
 			return new ArrayList<>();
 		else if (perInfoCtg.getCategoryType() == CategoryType.MULTIINFO) {
 			return null;
 		} else
-			return getInfoListHistType(perInfoCtg, query, lstItemDef);
+			return getInfoListHistType(perInfoCtg, query, period);
 	}
 
-	private List<ComboBoxObject> getInfoListHistType(PersonInfoCategory perInfoCtg, PeregQuery query, List<PersonInfoItemDefinition> lstItemDef) {
+	private List<ComboBoxObject> getInfoListHistType(PersonInfoCategory perInfoCtg, PeregQuery query, Optional<PersonInfoItemDefinition> period) {
 		
 
 		// get item def
 		
-		DateRangeItem dateRangeItem = perInfoCtgRepositoty
-				.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
-		Optional<PersonInfoItemDefinition> period = lstItemDef.stream().filter(x -> {
-			return x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId());
-		}).findFirst();
+		
 		if (!period.isPresent())
 			return new ArrayList<>();
 		List<String> timePerInfoItemDefIds = ((SetItem) period.get().getItemTypeState()).getItems();
