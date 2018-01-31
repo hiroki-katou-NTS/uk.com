@@ -277,8 +277,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // Fixed Header
                 self.fixHeaders(data.lstFixedHeader);
                 self.showPrincipal(data.showPrincipal);
+                if(data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                 if (data.showPrincipal || data.lstControlDisplayItem.lstHeader.length == 0) {
-                    self.hasLstHeader = false;
                     self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
                     self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
                     self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
@@ -481,19 +481,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $("#cbListDate").css("display", "none");
                 $('#numberHoliday').show();
                 $('#fixed-table').show();
-                 $("#content-grid").attr('style', 'top: 244px !IMPORTANT');
+               //  $("#content-grid").attr('style', 'top: 244px !IMPORTANT');
             } else if (self.displayFormat() == 1) {
                 $("#cbListDate").css("display", "block");
                 $("#emp-component").css("display", "none");
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
-                $("#content-grid").attr('style', 'top: 225px !IMPORTANT');
+               // $("#content-grid").attr('style', 'top: 225px !IMPORTANT');
             } else {
                 $("#cbListDate").css("display", "none");
                 $("#emp-component").css("display", "none");
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
-                $("#content-grid").attr('style', 'top: 180px !IMPORTANT');
+               // $("#content-grid").attr('style', 'top: 180px !IMPORTANT');
             }
         }
         btnExtraction_Click() {
@@ -1260,8 +1260,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             setTimeout(function() {
                 self.extractionData();
                 self.loadGrid();
-            }, 2000);
-            nts.uk.ui.block.clear();
+                nts.uk.ui.block.clear();
+            }, 3000);
         }
 
         createNtsFeatures() {

@@ -121,6 +121,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot {
 //		} else {
 //			this.lstHalfDayWorkTimezone = other.getLstHalfDayWorkTimezone();
 //		}
+		this.offdayWorkTime.restoreData(screenMode,other);
 	}
 	
 	/**

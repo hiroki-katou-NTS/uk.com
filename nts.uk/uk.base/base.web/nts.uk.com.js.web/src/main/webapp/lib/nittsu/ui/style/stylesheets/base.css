@@ -3893,6 +3893,7 @@ button.nts-switch-button[disabled]:hover {
   background-color: MistyRose;
   border-radius: 5px;
   position: absolute;
+  z-index: 990;
 }
 /* line 14, ../sass/components/_functionpanel.scss */
 .ntsFunctionPanel .function-items .function-item-container {

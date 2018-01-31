@@ -3314,36 +3314,44 @@ var nts;
                     });
                     kiban.systemName(__viewContext.env.systemName);
                     ui.viewModelBuilt.fire(ui._viewModel);
-                    var dfd = [];
-                    _.forEach($(".html-loading"), function (e) {
-                        var $container = $(e);
-                        var dX = $.Deferred();
-                        $container.load($container.attr("link"), function () {
-                            dX.resolve();
+                    if ($(".html-loading").length > 0) {
+                        var dfd_1 = [];
+                        _.forEach($(".html-loading"), function (e) {
+                            var $container = $(e);
+                            var dX = $.Deferred();
+                            $container.load($container.attr("link"), function () {
+                                dX.resolve();
+                            });
+                            dfd_1.push(dX);
+                            dX.promise();
                         });
-                        dfd.push(dX);
-                        dX.promise();
-                    });
-                    $.when.apply($, dfd).then(function (data, textStatus, jqXHR) {
-                        $('.html-loading').contents().unwrap();
-                        ko.applyBindings(ui._viewModel);
-                        // off event reset for class reset-not-apply
-                        $(".reset-not-apply").find(".reset-element").off("reset");
-                        //avoid page content overlap header and function area
-                        var content_height = 20;
-                        if ($("#header").length != 0) {
-                            content_height += $("#header").outerHeight(); //header height+ content area botton padding,top padding
-                        }
-                        if ($("#functions-area").length != 0) {
-                            content_height += $("#functions-area").outerHeight(); //top function area height
-                        }
-                        if ($("#functions-area-bottom").length != 0) {
-                            content_height += $("#functions-area-bottom").outerHeight(); //bottom function area height
-                        }
-                        $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
-                        //            if($("#functions-area-bottom").length!=0){
-                        //            }
-                    });
+                        $.when.apply($, dfd_1).then(function (data, textStatus, jqXHR) {
+                            $('.html-loading').contents().unwrap();
+                            binding(ui._viewModel);
+                        });
+                    }
+                    else {
+                        binding(ui._viewModel);
+                    }
+                };
+                var binding = function (_viewModel) {
+                    ko.applyBindings(_viewModel);
+                    // off event reset for class reset-not-apply
+                    $(".reset-not-apply").find(".reset-element").off("reset");
+                    //avoid page content overlap header and function area
+                    var content_height = 20;
+                    if ($("#header").length != 0) {
+                        content_height += $("#header").outerHeight(); //header height+ content area botton padding,top padding
+                    }
+                    if ($("#functions-area").length != 0) {
+                        content_height += $("#functions-area").outerHeight(); //top function area height
+                    }
+                    if ($("#functions-area-bottom").length != 0) {
+                        content_height += $("#functions-area-bottom").outerHeight(); //bottom function area height
+                    }
+                    $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
+                    //            if($("#functions-area-bottom").length!=0){
+                    //            }    
                 };
                 $(function () {
                     ui.documentReady.fire();
@@ -4089,7 +4097,6 @@ var nts;
                         if (!util.isNullOrUndefined(this.constraint.mantissaMaxLength)) {
                             mantissaMaxLength = this.constraint.mantissaMaxLength;
                             var parts = inputText.split(".");
-                            split(".");
                             if (parts[1] !== undefined && parts[1].length > mantissaMaxLength)
                                 validateFail = true;
                         }
@@ -6290,6 +6297,8 @@ var nts;
                         if (selectedValue !== undefined && selectedValue !== null) {
                             container.igCombo("value", selectedValue);
                         }
+                        container.data("columns", _.cloneDeep(columns));
+                        container.data("comboMode", comboMode);
                         var isDropDownWidthSpecified = false;
                         // Set width for multi columns.
                         if (haveColumn && (isChangeOptions || isInitCombo)) {
@@ -6310,8 +6319,6 @@ var nts;
                                 container.find(".ui-igcombo-dropdown").css("width", "auto");
                             }
                         }
-                        container.data("columns", columns);
-                        container.data("comboMode", comboMode);
                     };
                     return ComboBoxBindingHandler;
                 }());
@@ -9145,7 +9152,10 @@ var nts;
                                 var selectItem = _.filter(filtered, function (itemFilterd) {
                                     return _.find(selectedItems, function (item) {
                                         var itemVal = itemFilterd[key_1];
-                                        return itemVal === item["id"];
+                                        if (nts.uk.util.isNullOrUndefined(itemVal) || nts.uk.util.isNullOrUndefined(item["id"])) {
+                                            return false;
+                                        }
+                                        return itemVal.toString() === item["id"].toString();
                                     }) !== undefined;
                                 });
                                 result.selectItems = selectItem;
@@ -9618,7 +9628,10 @@ var nts;
                             var selectItems = _.filter(currentDataSource, function (itemFilterd) {
                                 return _.find(selected, function (item) {
                                     var itemVal = itemFilterd[primaryKey];
-                                    return itemVal === item["id"];
+                                    if (nts.uk.util.isNullOrUndefined(itemVal) || nts.uk.util.isNullOrUndefined(item["id"])) {
+                                        return false;
+                                    }
+                                    return itemVal.toString() === item["id"].toString();
                                 }) !== undefined;
                             });
                             $gridX.ntsGridList("setSelected", _.map(selectItems, primaryKey));
