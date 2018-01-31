@@ -187,16 +187,24 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject {
 		// restore 就業時間帯
 		Map<EmTimeFrameNo, EmTimeZoneSet> mapEmTimezone = other.getLstWorkingTimezone().stream().collect(
 				Collectors.toMap(item -> ((EmTimeZoneSet) item).getEmploymentTimeFrameNo(), Function.identity()));
-		this.lstWorkingTimezone.forEach(emTimezoneOther -> {
-			emTimezoneOther.restoreData(mapEmTimezone.get(emTimezoneOther.getEmploymentTimeFrameNo()));
-		});
+		if (mapEmTimezone.isEmpty()) {
+			this.lstWorkingTimezone = new ArrayList<>();
+		} else {
+			this.lstWorkingTimezone.forEach(emTimezoneOther -> {
+				emTimezoneOther.restoreData(mapEmTimezone.get(emTimezoneOther.getEmploymentTimeFrameNo()));
+			});
+		}	
 		
 		// restore OTTimezone
 		Map<EmTimezoneNo, OverTimeOfTimeZoneSet> mapOverTimezone = other.getLstOTTimezone().stream().collect(
 				Collectors.toMap(item -> ((OverTimeOfTimeZoneSet) item).getWorkTimezoneNo(), Function.identity()));
-		this.lstOTTimezone.forEach(overTimezoneOther -> {
-			overTimezoneOther.restoreData(mapOverTimezone.get(overTimezoneOther.getWorkTimezoneNo()));
-		});
+		if (mapOverTimezone.isEmpty()) {
+			this.lstOTTimezone = new ArrayList<>();
+		} else {
+			this.lstOTTimezone.forEach(overTimezoneOther -> {
+				overTimezoneOther.restoreData(mapOverTimezone.get(overTimezoneOther.getWorkTimezoneNo()));
+			});
+		}	
 	}
 	
 	/**
