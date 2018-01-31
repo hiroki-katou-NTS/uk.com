@@ -7,14 +7,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -30,6 +28,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmOfManagerOrYouself;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnit;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -62,6 +61,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecOpeFuncDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DisplayItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
@@ -471,6 +471,14 @@ public class DailyPerformanceCorrectionProcessor {
 		// アルゴリズム「就業確定情報を取得する」を実行する
 		/// アルゴリズム「日別実績のロックを取得する」を実行する (Tiến hành xử lý "Lấy về lock của thành
 		/// tích theo ngày")
+		
+		//check show column 本人
+		Optional<DailyRecOpeFuncDto> findDailyRecOpeFun = repo.findDailyRecOpeFun(AppContexts.user().companyId());
+		if(findDailyRecOpeFun.isPresent()){
+			screenDto.setShowPrincipal(findDailyRecOpeFun.get().getUseConfirmByYourself().intValue() == 0 ?  false : true );
+		}else{
+			screenDto.setShowPrincipal(false);
+		}
 		Map<String, DatePeriod> employeeAndDateRange = new HashMap<>();
 		if (!closureDtos.isEmpty()) {
 			closureDtos.forEach(x -> {
@@ -548,7 +556,6 @@ public class DailyPerformanceCorrectionProcessor {
 						.collect(Collectors.toSet());
 		Map<Integer, Map<String, CodeName>> mapGetName = dataDialogWithTypeProcessor
 				.getAllCodeName(new ArrayList<Integer>(types), AppContexts.user().companyId());
-		
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		System.out.println("time create HashMap: " + (System.currentTimeMillis() - startTime2 ));
 		start = System.currentTimeMillis();
@@ -569,6 +576,23 @@ public class DailyPerformanceCorrectionProcessor {
 		});
 		//set cell data
 		for (DPDataDto data : screenDto.getLstData()) {
+			
+			// disable, enable check sign no 10
+			if (findDailyRecOpeFun.isPresent()) {
+				if (!sId.equals(data.getEmployeeId())) {
+					screenDto.setLock(data.getId(), LOCK_SIGN);
+				}else{
+					if(data.getError().contains("ER")){
+					DailyRecOpeFuncDto dto = findDailyRecOpeFun.get();
+					if(dto.getYourselfConfirmError().intValue() == ConfirmOfManagerOrYouself.CANNOT_CHECKED_WHEN_ERROR.value){
+						screenDto.setLock(data.getId(), LOCK_SIGN);
+						// thieu check khi co data
+					}else if(dto.getYourselfConfirmError().intValue() == ConfirmOfManagerOrYouself.CANNOT_REGISTER_WHEN_ERROR.value){
+						// thieu tra ve message khi dang ky
+					}
+					}
+				}
+			}
 			boolean lock = false;
 			if (!employeeAndDateRange.isEmpty()) {
 				for (int i = 1; i <= 5; i++) {
@@ -955,6 +979,8 @@ public class DailyPerformanceCorrectionProcessor {
 					.getListAttendanceItemControl(lstAtdItemUnique);
 			result.setLstAttendanceItem(lstAttendanceItem);
 			result.setHeaderColor(lstAttendanceItemControl);
+		}else{
+			result.setLstAttendanceItem(lstAttendanceItem);
 		}
 		// set combo box
 		result.setComboItemCalc(EnumCodeName.getCalcHours());
