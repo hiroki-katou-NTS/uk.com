@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.ac.common;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -20,7 +21,7 @@ import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.shr.com.context.AppContexts;
-
+@Stateless
 public class ScheduleMasterRepositoryImpl implements ScheduleMasterInformationRepository {
 	@Inject
 	SyClassificationPub syClassficationPub;

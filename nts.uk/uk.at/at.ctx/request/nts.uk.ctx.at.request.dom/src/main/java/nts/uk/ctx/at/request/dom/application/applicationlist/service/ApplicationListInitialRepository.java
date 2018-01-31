@@ -52,7 +52,7 @@ public interface ApplicationListInitialRepository {
 	 * @param lstApp
 	 * @return
 	 */
-	public List<ApplicationStatus> countAppListApproval(List<Application_New> lstApp);
+	public ApplicationStatus countAppListApproval(List<Application_New> lstApp);
 	/**
 	 * 5 - 申請一覧リスト取得実績
 	 * @param lstApp
@@ -67,6 +67,13 @@ public interface ApplicationListInitialRepository {
 	 * @return
 	 */
 	public Boolean getAppListAchievementBreak(String sID, GeneralDate date);
+	/**
+	 * 5.2 - 申請一覧リスト取得実績残業申請
+	 * @param sID
+	 * @param date
+	 * @return
+	 */
+	public Boolean getAppListAchievementOverTime(String sID, GeneralDate date);
 	/**
 	 * 6 - 申請一覧リスト取得振休振出
 	 * @param application
