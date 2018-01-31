@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrS
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -151,7 +151,8 @@ public class MonthlyCalculation {
 		this.totalWorkingTime.aggregateSharedItem(datePeriod, attendanceTimeOfDailys);
 		
 		// 通常勤務　or　変形労働　の時
-		if (workingSystem.isRegularWork() || workingSystem.isVariableWorkingTimeWork()){
+		if (workingSystem == WorkingSystem.REGULAR_WORK ||
+			workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			
 			// 通常・変形労働勤務の月別実績を集計する
 			this.totalWorkingTime = this.actualWorkingTime.aggregateMonthly(companyId, employeeId,
@@ -166,7 +167,7 @@ public class MonthlyCalculation {
 					addSet, this.totalWorkingTime, statutoryWorkingTimeMonth, repositories);
 		}
 		// フレックス時間勤務　の時
-		else if (workingSystem.isFlexTimeWork()){
+		else if (workingSystem == WorkingSystem.FLEX_TIME_WORK){
 			
 			// フレックス集計方法を取得する
 			val aggrSetOfFlex = aggrSettingMonthly.getFlexWork();

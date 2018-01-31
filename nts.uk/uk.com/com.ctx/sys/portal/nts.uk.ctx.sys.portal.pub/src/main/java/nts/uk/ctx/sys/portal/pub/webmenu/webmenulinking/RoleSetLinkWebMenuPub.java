@@ -18,4 +18,5 @@ public interface RoleSetLinkWebMenuPub {
      * @return
      */
     List<RoleSetLinkWebMenuExport> findAllWebMenuByRoleSetCd(String companyId, String roleSetCd);
+    List<RoleSetLinkWebMenuExport> findAllWebMenuByListRoleSetCd(String companyId, List<String> roleSetCds);
 }

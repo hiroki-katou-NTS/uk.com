@@ -99,9 +99,9 @@ module a7 {
             /////////////
             self.dataSourceForFlowOrFlexNotUse2 = ko.observableArray([]);
             self.fixTableOptionForFlowOrFlexNotUse2 = {
-                maxRow: 7,
+                maxRow: 1,
                 minRow: 0,
-                maxRowDisplay: 5,
+                maxRowDisplay: 1,
                 isShowButton: false,
                 dataSource: self.dataSourceForFlowOrFlexNotUse2,
                 isMultipleSelect: false,
@@ -133,11 +133,21 @@ module a7 {
                 self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime(v == UseDivision.USE);
                 //TODO load
 //                self.dataSourceForFixedOrDiffTime(self.backUpOfFixedOrDiffTime);
-                if (v) {
-                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.updateData(self.backUpOfFlowOrFlexNotUse);
+                if (self.mainSettingModel.workTimeSetting.isFlex()) {
+                    if (v == UseDivision.NOTUSE) {
+                        self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.updateData(self.backUpOfFlowOrFlexNotUse);
+                    }
+                    else {
+                        self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.updateData(self.backUpOfFlowOrFlexUse);
+                    }
                 }
-                else {
-                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.updateData(self.backUpOfFlowOrFlexUse);
+                if (self.mainSettingModel.workTimeSetting.isFlow()) {
+                    if (v == UseDivision.NOTUSE) {
+                        self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.updateData(self.backUpOfFlowOrFlexNotUse);
+                    }
+                    else {
+                        self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.fixedRestTimezone.updateData(self.backUpOfFlowOrFlexUse);
+                    }
                 }
                 self.updateDataModel();
             });
@@ -149,8 +159,14 @@ module a7 {
                     self.updateDataModel();
                     self.setDataFlexOrFlowToModel();
 //                    self.backUpOfFixedOrDiffTime = self.dataSourceForFixedOrDiffTime();
-                    self.backUpOfFlowOrFlexUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.toDto();
-                    self.backUpOfFlowOrFlexNotUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.toDto();
+                    if (self.mainSettingModel.workTimeSetting.isFlex()) {
+                        self.backUpOfFlowOrFlexUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.toDto();
+                        self.backUpOfFlowOrFlexNotUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.toDto();
+                    }
+                    if (self.mainSettingModel.workTimeSetting.isFlow()) {
+                        self.backUpOfFlowOrFlexUse = self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.fixedRestTimezone.toDto();
+                        self.backUpOfFlowOrFlexNotUse = self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.toDto();
+                    }
                 }
             });
             
@@ -440,9 +456,9 @@ module a7 {
                     screenModel.dataSourceForFixedOrDiffTime.valueHasMutated();
                 });
                 
-                document.getElementById('nts-fix-table-a7-flow-flex-use').addEventListener('timerangedatachange', e => {
-                    screenModel.dataSourceForFlowOrFlexUse.valueHasMutated();
-                });
+//                document.getElementById('nts-fix-table-a7-flow-flex-use').addEventListener('timerangedatachange', e => {
+//                    screenModel.dataSourceForFlowOrFlexUse.valueHasMutated();
+//                });
                 
                 isClickSave.subscribe((v) => {
                     if (screenModel.mainSettingModel.workTimeSetting.isFlex()) {

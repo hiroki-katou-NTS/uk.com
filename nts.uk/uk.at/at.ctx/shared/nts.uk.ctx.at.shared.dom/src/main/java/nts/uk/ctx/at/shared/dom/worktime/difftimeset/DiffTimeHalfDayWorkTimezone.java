@@ -4,8 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -95,5 +100,43 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 			this.workTimezone.restoreData(other.getWorkTimezone());
 			this.restTimezone.restoreData(other.getRestTimezone());
 		}
+	}
+	
+	@Override
+	public void validate() {
+		
+		//validate rest time in work time msg_755
+		this.restInWork();
+		
+		//validate Msg_770 for list work
+		this.workTimezone.getEmploymentTimezones().stream().forEach(item->{
+			item.getTimezone().validateRange("KMK003_86");
+		});
+		
+		// validate Msg_770 for list ot
+		this.workTimezone.getOTTimezones().stream().forEach(item -> {
+			item.getTimezone().validateRange("KMK003_89");
+		});
+		
+		// validate Msg_770 for rest time
+		this.restTimezone.getRestTimezones().stream().forEach(item -> {
+			item.validateRange("KMK003_20");
+		});
+
+		// validate Msg_515 for rest time
+		this.restTimezone.validOverlap("KMK003_20");
+		super.validate();
+	}
+
+	private void restInWork() {
+		this.getRestTimezone().getRestTimezones().stream().forEach(item -> {
+			List<EmTimeZoneSet> lstWork = this.getWorkTimezone().getEmploymentTimezones().stream()
+					.filter(work -> work.checkRestTime(item)).collect(Collectors.toList());
+			List<DiffTimeOTTimezoneSet> lstOt = this.getWorkTimezone().getOTTimezones().stream()
+					.filter(ot -> ot.checkRestTime(item)).collect(Collectors.toList());
+			if (CollectionUtil.isEmpty(lstWork) && CollectionUtil.isEmpty(lstOt)) {
+				this.bundledBusinessExceptions.addMessage("Msg_755");
+			}
+		});
 	}
 }

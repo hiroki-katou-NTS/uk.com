@@ -19,4 +19,6 @@ public interface RoleSetLinkWebMenuAdapter {
      */
     // RequestList #???
     List<RoleSetLinkWebMenuImport> findAllWebMenuByRoleSetCd(String roleSetCd);
+    
+    List<RoleSetLinkWebMenuImport> findAllWebMenuByListRoleSetCd(List<String> roleSetCds);
 }

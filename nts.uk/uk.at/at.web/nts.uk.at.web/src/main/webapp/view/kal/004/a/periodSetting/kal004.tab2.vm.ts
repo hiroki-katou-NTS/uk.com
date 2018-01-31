@@ -15,7 +15,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 self.changeCheckCondition(newList);
             });
             self.ListView = ko.observableArray([]);
-          
+            $("#fixed-table").ntsFixedTable({ height: 320, width: 830 });
         }
 
         private changeCheckCondition(listCheckCode: Array<share.CheckConditionCommand>): void {

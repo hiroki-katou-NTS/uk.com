@@ -38,6 +38,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkReco
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAut;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeable;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcstDailyRecOpe;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcstDailyRecOpeFun;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KrcmtDailyAttendanceItem;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstControlOfAttendanceItems;
@@ -80,6 +81,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecOpeFuncDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
@@ -420,6 +422,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<ClosureDto> getClosureId(List<String> sIds, GeneralDate baseDate) {
 		// get employment codes
+		if(sIds.isEmpty()) return new ArrayList<>(); 
 		String query_empCodes = "SELECT e FROM BsymtEmploymentHistItem e JOIN BsymtEmploymentHist h ON e.hisId = h.hisId WHERE "
 				+ " h.strDate <= :baseDate AND h.endDate >= :baseDate AND h.companyId = :companyId AND h.sid IN :sIds";
 		Map<String, String> empCodes = this.queryProxy().query(query_empCodes, BsymtEmploymentHistItem.class)
@@ -942,6 +945,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return this.queryProxy().query(SEL_FIND_WORKPLACE, BsymtWorkplaceInfo.class).setParameter("cid", companyId)
 				.setParameter("wkpid", id).setParameter("baseDate", date)
 				.getSingle(w -> new CodeName(w.getWkpcd(), w.getWkpName(), w.getBsymtWorkplaceInfoPK().getWkpid()));
+	}
+
+	@Override
+	public Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(String companyId) {
+		Optional<KrcstDailyRecOpeFun> krcstDailyRecOpeFunOpt = this.queryProxy().find(companyId.toString(),
+				KrcstDailyRecOpeFun.class);
+		return !krcstDailyRecOpeFunOpt.isPresent() ? Optional.empty() : Optional.of(new DailyRecOpeFuncDto(krcstDailyRecOpeFunOpt.get().confirmByYourselfAtr, krcstDailyRecOpeFunOpt.get().yourselfConfirmWhenError));
 	}
 
 }

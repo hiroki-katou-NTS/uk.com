@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacati
 import nts.uk.ctx.at.shared.dom.calculation.holiday.FlexWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
