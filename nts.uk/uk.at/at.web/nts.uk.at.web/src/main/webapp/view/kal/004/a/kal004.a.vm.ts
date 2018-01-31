@@ -82,11 +82,14 @@ module nts.uk.at.view.kal004.a.model {
 
                 self.getAlarmPattern().done(() => {
 
+                    self.initSubscribe();
+                    
                     if (self.alarmSource().length > 0) {
                         self.currentCode(self.alarmSource()[0].alarmPatternCD);
                     } else {
-                        self.checkConditionList(self.checkSource);
+                        self.checkConditionList(_.cloneDeep(self.checkSource));
                     }
+                    
                     dfd.resolve();
                 });
             }).fail((error) => {
@@ -104,9 +107,7 @@ module nts.uk.at.view.kal004.a.model {
             service.getAlarmPattern().done((res) => {
                 let alarmResolve = _.sortBy(res, [function(o) { return o.alarmPatternCD; }]);
                 self.alarmSource(alarmResolve);
-
-                self.initSubscribe();
-
+                
             }).fail((error) => {
                 alertError(error);
             }).always(() => {
@@ -177,6 +178,8 @@ module nts.uk.at.view.kal004.a.model {
                 self.setPermissionModel.listRoleID([]);
                 self.setPermissionModel.selectedRuleCode(1);
                 self.setPermissionModel.enableSetting(false);
+                
+                $('#alarmCode').focus();
             }
             else {
                 self.createMode(false);
@@ -218,11 +221,9 @@ module nts.uk.at.view.kal004.a.model {
                 self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
                 self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting == true ? 0 : 1);
                 self.setPermissionModel.enableSetting(true);
+                
+                $('#alarmName').focus();
             }
-        }
-
-        private buildNotFoundCheckCondition(): void {
-
         }
 
         public saveAlarm(): void {
@@ -274,7 +275,7 @@ module nts.uk.at.view.kal004.a.model {
                 });
 
             }
-            $('#alarmName').focus();
+            
         }
         public createAlarm(): void {
             let self = this;
