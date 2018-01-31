@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
@@ -158,7 +159,7 @@ public class CalculationRangeOfOneDay {
 																																									 Collections.emptyList()
 																																									 ),
 																																				Collections.emptyList()));
-		this.temporaryDeductionTimeSheet = Optional.empty();
+		this.temporaryDeductionTimeSheet = Optional.of(deductionTimeSheet);
 		
 		theDayOfWorkTimesLoop(workingSystem, predetermineTimeSet, fixedWorkSetting, workTimeCommonSet, bonusPaySetting,
 				overTimeHourSetList, fixOff, dayEndSet, holidayTimeWorkItem, beforeDay, toDay, afterDay,
@@ -215,14 +216,14 @@ public class CalculationRangeOfOneDay {
 			BreakdownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
 			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,
 			DeductionTimeSheet deductionTimeSheet, WorkTimeSetting workTime) {
-		if (!workingSystem.isExcludedWorkingCalculate()) {
+		if (workingSystem.isExcludedWorkingCalculate()) {
 			/* 計算対象外の処理 */
 			return;
 		}
 		for (int workNumber = 1; workNumber <= attendanceLeavingWork.getTimeLeavingWorks().size(); workNumber++) {
 			/* 就業内の時間帯作成 */
-			withinWorkingTimeSheet.set(WithinWorkTimeSheet.createAsFixed(toDay, predetermineTimeSet, fixedWorkSetting,
-					workTimeCommonSet, deductionTimeSheet, bonusPaySetting));
+			val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(toDay, predetermineTimeSet, fixedWorkSetting,workTimeCommonSet, deductionTimeSheet, bonusPaySetting); 
+			withinWorkingTimeSheet.set(createWithinWorkTimeSheet);
 			/* 就業外の時間帯作成 */
 //			outsideWorkTimeSheet.set(OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
 //					attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),
@@ -328,11 +329,14 @@ public class CalculationRangeOfOneDay {
 						fluidprefixBreakTimeSet, predetermineTimeSet, fixedWorkSetting, workTimeCommonSet,
 						bonusPaySetting, overTimeHourSetList, fixOff, dayEndSet, holidayTimeWorkItem, beforeDay, toDay,
 						afterDay, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet, workTime);
+				break;
 			case FLOW_WORK:
 				/* 流動勤務 */
+				break;
 			case DIFFTIME_WORK:
 				/* 時差勤務 */
 //			case Enum_Overtime_Work:
+				break;
 			default:
 				throw new RuntimeException("unknown workTimeMethodSet" + workTimeDivision.getWorkTimeMethodSet());
 

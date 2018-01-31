@@ -19,4 +19,14 @@ public class MedicalCareTimeOfDaily {
 	
 	/** 勤務時間: 勤怠時間 */
 	private AttendanceTime workTime;
+	
+	public MedicalCareTimeOfDaily(WorkTimeNightShift dayNightAtr, AttendanceTime takeOverTime,
+			AttendanceTime deductionTime, AttendanceTime workTime) {
+		super();
+		this.dayNightAtr = dayNightAtr;
+		this.takeOverTime = takeOverTime;
+		this.deductionTime = deductionTime;
+		this.workTime = workTime;
+	}
+
 }

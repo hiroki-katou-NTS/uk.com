@@ -318,7 +318,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		if (sids.isEmpty() || datePeriod.start() == null || datePeriod.end() == null)
 			return null;
 
-		List<AffWorkplaceHistory_ver1> lstAffWkpHist = affWorkplaceHistoryRepository_v1.getByListSid(sids);
+		List<AffWorkplaceHistory> lstAffWkpHist = new ArrayList();//affWorkplaceHistoryRepository.getByListSid(sids);
 		if (lstAffWkpHist.isEmpty())
 			return null;
 
@@ -340,7 +340,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	}
 
 	
-	private List<WorkPlaceIdAndPeriod> getLstWkpIdAndPeriod(AffWorkplaceHistory_ver1 affWkp, DatePeriod datePeriod) {
+	private List<WorkPlaceIdAndPeriod> getLstWkpIdAndPeriod(AffWorkplaceHistory affWkp, DatePeriod datePeriod) {
 		
 		List<WorkPlaceIdAndPeriod> result = new ArrayList<>();
 
@@ -362,7 +362,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 			if (check) {
 				DatePeriod date = new DatePeriod(itemHist.start(), itemHist.end());
 
-				AffWorkplaceHistoryItem affWkpHisItem = affWorkplaceHistoryItemRepository_v1
+				AffWorkplaceHistoryItem affWkpHisItem = affWorkplaceHistoryItemRepository
 						.getByHistId(itemHist.identifier()).get();
 
 				workPlaceIdAndPeriod.setWorkplaceId(affWkpHisItem.getWorkplaceId());
