@@ -44,7 +44,7 @@
 																optionsValue: 'id',
 																optionsText: 'name',
 																value: valueDefaultTypeSelect,
-																enable: true}"></div>
+																enable: enableTypeSelectUnitRadioBox}"></div>
 							</div>
 						<div>
 							<!-- F2_6 -->
@@ -66,7 +66,7 @@
 				<!-- F4_2 -->
 				<button data-bind="click: closeSaveDialog" class="x-large proceed">#{i18n.getText('KMF002_20')}</button>
 				<!-- F4_3 -->
-				<button >#{i18n.getText('KMF002_33')}</button>
+				<button data-bind="click: closeDialog">#{i18n.getText('KMF002_33')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

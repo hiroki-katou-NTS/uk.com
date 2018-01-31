@@ -32,9 +32,14 @@
 	padding-left:40px
 }
 
-#scrA #one_week_scrA, #scrA #four_week_scrA {
+#scrA .one_week_scrA, #scrA .four_week_scrA {
 	padding-left: 70px;
 }  
+
+.one_week_scrA >div:nth-child(1), .four_week_scrA >div:nth-child(1) {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
 
 /* .ntsRadioBox span.box {
     border: 2px solid black;
