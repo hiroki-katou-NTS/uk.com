@@ -105,7 +105,6 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 				this.processStatus, 
 				this.periodCoverdStartDate, 
 				this.periodCoverdEndDate);
-		
 		if (this.krcdtExecutionLogPK.executionContent == ExecutionContent.DAILY_CREATION.value) {
 			domain.setDailyCreationSetInfo(calExeSetInfor.toDomain());
 		} else if(this.krcdtExecutionLogPK.executionContent == ExecutionContent.DAILY_CALCULATION.value ) {
@@ -115,19 +114,6 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 		} else {
 			domain.setMonlyAggregationSetInfo(calExeSetInfor.toDomain());
 		}
-		return domain;
-	}
-	
-	public ExecutionLog toDomainFromUpdateProcessing() {
-		val domain = ExecutionLog.createFromJavaType(
-				this.krcdtExecutionLogPK.empCalAndSumExecLogID,
-				this.krcdtExecutionLogPK.executionContent, 
-				this.existenceError, 
-				this.executionStartDate,
-				this.executionEndDate, 
-				this.processStatus, 
-				this.periodCoverdStartDate, 
-				this.periodCoverdEndDate);
 		return domain;
 	}
 	
@@ -160,20 +146,4 @@ public class KrcdtExecutionLog extends UkJpaEntity implements Serializable {
 		}
 		return entity;
 	}
-	
-	public static KrcdtExecutionLog toEntityFromUpdateProcessing(ExecutionLog domain) {
-		val entity = new KrcdtExecutionLog(
-				 new KrcdtExecutionLogPK(
-					 domain.getEmpCalAndSumExecLogID(),
-					 domain.getExecutionContent().value
-					),
-				 domain.getExistenceError().value,
-				 domain.getExecutionTime().getStartTime(),
-				 domain.getExecutionTime().getEndTime(),
-				 domain.getProcessStatus().value,
-				 domain.getObjectPeriod().getStartDate(),
-				 domain.getObjectPeriod().getEndDate());
-		return entity;
-	}
-	
 }

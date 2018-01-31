@@ -85,38 +85,8 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 				);
 	}
 	
-	public static KrcdtEmpExecutionLog toEntityFromUpdateProcessing(EmpCalAndSumExeLog domain) {
-		return new  KrcdtEmpExecutionLog(
-				new KrcdtEmpExecutionLogPK(domain.getEmpCalAndSumExecLogID()),
-				domain.getCompanyID(),
-				domain.getProcessingMonth().v(),
-				domain.getExecutedMenu().value,
-				domain.getExecutionDate(),
-				domain.getExecutionStatus().value,
-				domain.getEmployeeID(),
-				domain.getClosureID(),
-				domain.getCaseSpecExeContentID(),
-				domain.getExecutionLogs().stream().map(c->KrcdtExecutionLog.toEntityFromUpdateProcessing(c)).collect(Collectors.toList())
-				);
-	}
-	
 	public EmpCalAndSumExeLog toDomain() {
 		List<ExecutionLog> executionLogs = this.executionLogs.stream().map(c -> c.toDomain()).collect(Collectors.toList());
-		return EmpCalAndSumExeLog.createFromJavaType(
-				this.krcdtEmpExecutionLogPK.empCalAndSumExecLogID,
-				this.companyID,
-				new YearMonth( this.processingMonth),
-				this.executedMenu,
-				this.executedDate, 
-				this.executedStatus,
-				this.employeeID,
-				this.closureID, 
-				this.caseSpecExeContentID, 
-				executionLogs);
-	}
-	
-	public EmpCalAndSumExeLog toDomainFromUpdateProcessing() {
-		List<ExecutionLog> executionLogs = this.executionLogs.stream().map(c -> c.toDomainFromUpdateProcessing()).collect(Collectors.toList());
 		return EmpCalAndSumExeLog.createFromJavaType(
 				this.krcdtEmpExecutionLogPK.empCalAndSumExecLogID,
 				this.companyID,

@@ -22,7 +22,7 @@ import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.TreatOverT
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -131,7 +131,7 @@ public class AggregateTotalWorkingTime {
 		ExcessOutsideTimeSet excessOutsideTimeSet;					// 時間外超過設定
 		TreatOverTimeOfLessThanCriteriaPerDay treatOverTimeOfLessThanCriteriaPerDay;	// 1日の基準時間未満の残業時間の扱い
 		TreatHolidayWorkTimeOfLessThanCriteriaPerWeek treatHolidayWorkTimeOfLessThanCriteriaPerWeek;	// 1週間の基準時間未満の休日出勤時間の扱い
-		if (workingSystem.isVariableWorkingTimeWork()) {
+		if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
 			// 変形労働の時
 			val legalAggrSetOfIrregular = aggrSettingMonthly.getIrregularWork();
 			aggregateTimeSet = legalAggrSetOfIrregular.getAggregateTimeSet();

@@ -12,6 +12,9 @@ module nts.uk.at.view.ksm005.c {
             
             enableSave: KnockoutObservable<boolean>;
             enableCopy: KnockoutObservable<boolean>;
+            
+            //copy mode
+            listDestSid: KnockoutObservableArray<string[]>;
 
             // Options
             baseDate: KnockoutObservable<Date>;
@@ -44,6 +47,9 @@ module nts.uk.at.view.ksm005.c {
 
             constructor() {
                 var self = this;
+                
+                //copy mode
+                self.listDestSid = ko.observableArray([]);
                 
                 self.enableSave = ko.observable(true);
                 self.enableCopy = ko.observable(false);
@@ -122,9 +128,12 @@ module nts.uk.at.view.ksm005.c {
                         self.applySelectEmployeeCode(employeeCode);
                     }else {
                         self.enableDelete(false);
-                        self.enableSystemChange(false);  
+                        self.enableSystemChange(false);
                         self.employeeName('');  
                         self.monthlyPatternSetting('');
+                        self.selectedmonthlyPattern(self.monthlyPatternList()[0]);
+                        self.enableCopy(false);
+                        self.enableSave(false);
                     }
                 });
                 
@@ -349,14 +358,6 @@ module nts.uk.at.view.ksm005.c {
 //                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
                     return;
                 }
-                if (!self.selectedCode()) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
-                    return;
-                }
-                if (self.selectedmonthlyPattern() == "000") {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_190" });
-                    return;
-                }
                 dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern()};
                 service.saveMonthlyPatternSetting(dto).done(function() {
                     // show message 15
@@ -379,11 +380,14 @@ module nts.uk.at.view.ksm005.c {
                     return;
                 }
                 
+                let dataSource = $('#component-items-list').getDataList();
+                let itemListSetting = dataSource.filter(e => e.isAlreadySetting == true).map(e => self.findEmployeeIdByCode(e.code));
+                
                 let object: IObjectDuplication = {
                     code: self.selectedCode(),
-                    name: "HHHHHHHHH",
+                    name: dataSource.filter(e => e.code == self.selectedCode())[0].name,
                     targetType: TargetType.WORKPLACE_PERSONAL,
-                    itemListSetting: [],
+                    itemListSetting: itemListSetting,
                     baseDate: new Date()
                 };
                 
@@ -394,6 +398,7 @@ module nts.uk.at.view.ksm005.c {
                 nts.uk.ui.windows.sub.modal('com','/view/cdl/023/a/index.xhtml').onClosed(() => {
                     // show data respond
                     let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
+                    self.listDestSid(lstSelection);
                     console.log(lstSelection);
                 });
             }
@@ -403,12 +408,25 @@ module nts.uk.at.view.ksm005.c {
              */
             public copyMonthlyPatternSetting(): void {
                 var self = this;
-                var dto : MonthlyPatternSettingDto;
                 if (!self.selectedCode()) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
                     return;
                 }
-  
+                var dto : CopyMonthlyPatternSettingDto = {
+                    destSid: self.listDestSid(),
+                    sourceSid: self.findEmployeeIdByCode(self.selectedCode()),
+                    isOverwrite: 0
+                };
+                
+                service.copyMonthlyPatternSetting(dto).done(function() {
+                    // show message 15
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        // reload page
+                        self.reloadPage();
+                    });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                });   
+                
             }
             /**
              * call service delete monthly pattern setting by on click button 

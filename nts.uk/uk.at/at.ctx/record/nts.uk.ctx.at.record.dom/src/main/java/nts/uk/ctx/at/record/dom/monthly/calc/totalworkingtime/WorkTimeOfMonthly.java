@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeO
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WorkTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**

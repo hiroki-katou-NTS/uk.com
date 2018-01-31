@@ -41,6 +41,9 @@ $(function() {
         });
 
         $("#category_grid").igGrid("option", "dataSource", __viewContext["viewModel"].categoryList());
+//        if (__viewContext["viewModel"].categoryList().length > 0) {
+//            __viewContext["viewModel"].currentCategory().id(__viewContext["viewModel"].categoryList()[0].id);
+//        }
 
     });
 })

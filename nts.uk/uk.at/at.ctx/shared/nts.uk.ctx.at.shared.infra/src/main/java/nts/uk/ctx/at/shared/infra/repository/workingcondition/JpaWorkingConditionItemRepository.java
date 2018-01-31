@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkingConditionItemRepository.
@@ -42,6 +43,14 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	private final static String FIND_WORKCONDITEM_MONTHLY_NOT_NULL = "SELECT wi FROM KshmtWorkingCondItem wi"
 																	+ " WHERE wi.monthlyPattern IS NOT NULL"
 																	+ " AND wi.sid IN :employeeIds";
+
+	/** The Constant FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D. */
+	private final static String FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D =
+			"SELECT wi FROM KshmtWorkingCondItem wi "
+			+ "WHERE wi.sid = :employeeId "
+			+ "AND wi.kshmtWorkingCond.strD <= :endDate "
+			+ "AND wi.kshmtWorkingCond.endD >= :startDate "
+			+ "ORDER BY wi.kshmtWorkingCond.strD";
 	
 	/**
 	 * Gets the by list sid and monthly pattern not null.
@@ -140,6 +149,31 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				new JpaWorkingConditionItemGetMemento(result.get(FIRST_ITEM_INDEX))));
 	}
 
+	/**
+	 * Gets the list by sid and date period
+	 *
+	 * @param employeeId the employee id
+	 * @param datePeriod the date period
+	 * @return the list
+	 */
+	// add 2018.1.31 shuichi_ishida
+	@Override
+	public List<WorkingConditionItem> getBySidAndPeriodOrderByStrD(String employeeId, DatePeriod datePeriod) {
+		
+		List<KshmtWorkingCondItem> entitys =
+				this.queryProxy().query(FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D, KshmtWorkingCondItem.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end())
+				.getList();
+		
+		if (entitys.isEmpty()) return Collections.emptyList();
+		
+		return entitys.stream()
+				.map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e)))
+				.collect(Collectors.toList());
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

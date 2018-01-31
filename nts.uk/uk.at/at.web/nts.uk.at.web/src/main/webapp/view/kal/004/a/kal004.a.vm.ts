@@ -74,7 +74,7 @@ module nts.uk.at.view.kal004.a.model {
             service.getEnumAlarm().done((enumRes) => {
                 self.alarmCategoryArr = enumRes;
             }).fail((enumErr) => {
-                nts.uk.ui.dialog.alert({ messageId: enumErr.messageId });
+                alertError(enumErr);
             });
             service.getCheckConditionCode().done((res) => {
                 let resolve = _.map(res, (x) => { return new share.ModelCheckConditonCode(x) });
@@ -90,7 +90,7 @@ module nts.uk.at.view.kal004.a.model {
                     dfd.resolve();
                 });
             }).fail((error) => {
-                nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                alertError(error);
                 dfd.resolve();
             });
             return dfd.promise();
@@ -108,7 +108,7 @@ module nts.uk.at.view.kal004.a.model {
                 self.initSubscribe();
 
             }).fail((error) => {
-                nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                alertError(error);
             }).always(() => {
                 dfd.resolve();
             });
@@ -176,6 +176,7 @@ module nts.uk.at.view.kal004.a.model {
                 // tab3
                 self.setPermissionModel.listRoleID([]);
                 self.setPermissionModel.selectedRuleCode(1);
+                self.setPermissionModel.enableSetting(false);
             }
             else {
                 self.createMode(false);
@@ -216,6 +217,7 @@ module nts.uk.at.view.kal004.a.model {
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
                 self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting == true ? 0 : 1);
+                self.setPermissionModel.enableSetting(true);
             }
         }
 
@@ -253,7 +255,7 @@ module nts.uk.at.view.kal004.a.model {
                         block.clear();
                     });
                 }).fail((error) => {
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    alertError(error);
                     block.clear();
                 });
             } else {
@@ -267,7 +269,7 @@ module nts.uk.at.view.kal004.a.model {
                         block.clear();
                     });
                 }).fail((error) => {
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    alertError(error);
                     block.clear();
                 });
 
@@ -299,7 +301,7 @@ module nts.uk.at.view.kal004.a.model {
                         });
 
                     }).fail((error) => {
-                        nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                        alertError(error);
                         block.clear();
                     });
 
