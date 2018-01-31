@@ -14,6 +14,8 @@ import nts.uk.ctx.at.request.app.command.application.workchange.UpdateAppWorkCha
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeRecordWorkInfoFinder;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.RecordWorkInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailFinder;
@@ -36,6 +38,9 @@ public class WorkchangeService extends WebService {
 	
 	@Inject
 	AppWorkChangeRecordWorkInfoFinder workInfoFinder;
+	
+	@Inject
+	AppWorkChangeSetFinder appWorkFinder;
 	
 	/**
 	 * 起動する
@@ -81,6 +86,13 @@ public class WorkchangeService extends WebService {
 	@Path("getRecordWorkInfoByDate")
 	public RecordWorkInfoDto getRecordWorkInfoByDate(String appDate){
 		return workInfoFinder.getRecordWorkInfor(appDate);
+	}
+	
+	@POST
+	@Path("workChangeSet")
+	public AppWorkChangeSetDto getWorkChangeSet()
+	{		
+		return appWorkFinder.findByCom();
 	}
 	
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の外出
@@ -46,14 +47,18 @@ public class GoOutOfMonthly {
 	
 	/**
 	 * 集計
+	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
 	 */
-	public void aggregate(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+	public void aggregate(
+			DatePeriod datePeriod,
+			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
 		
 		this.goOuts = new ArrayList<>();
 		this.goOutForChildCares = new ArrayList<>();
 
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
+			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
 			val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
 			//*****（未）　誤って外出時間帯クラスがメンバになっているので、その修正待ち。
 			//val goOutTimeOfDailys = totalWorkingTime.getOutingTimeOfDailyPerformance();

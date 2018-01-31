@@ -16,19 +16,17 @@ module nts.uk.at.view.ksu007.a {
             });
             //Load ScheduleBatchCorrect
             self.findScheduleBatchCorrectSetting().done(function(e) {
-                if(e != undefined){
-                    $('#dateRangePickerPeriod').find('input').first().val(e.startDate);
-                    $('#dateRangePickerPeriod').find('input').last().val(e.endDate);
-                    self.periodDate().startDate = e.startDate;
-                    self.periodDate().endDate = e.endDate;     
+                if(e != undefined){                   
+                    self.periodDate({
+                        startDate: e.startDate,
+                        endDate: e.endDate
+                    });
                     self.workTypeInfo(e.worktypeCode);                  
                     self.workTimeInfo(e.worktimeCode);
                     self.workTypeCode(e.worktypeCode.split(" ")[0]);
                     self.workTimeCode(e.worktimeCode.split(" ")[0]);
-                }
-               
-            });
+                }                       
+             });
         });
-
     });
 }

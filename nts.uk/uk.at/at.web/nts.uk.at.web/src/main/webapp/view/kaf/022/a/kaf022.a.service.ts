@@ -14,21 +14,105 @@ module nts.uk.at.view.kmf022.a.service {
         addClosure: "at/request/application/add",
         // A5_14 -> A5_25
         findApproSet: "at/request/application/common/setting/appcommon",
-        // A14_3
+        // A10_3
+        findAppCom: "at/request/application/common/setting/appset",
+        // A13_4 có 2 sự lựa chọn, có thể lấy list cty đang đăng nhập rồi lên UI lọc, hoặc lấy thẳng 1 object(nhớ truyền apptype) 
+        findAllPro: "at/request/application/setting/proxy/findAll",
+        findProByApp: "at/request/application/setting/proxy/findApp",
+        // A14_3 
         findJobAssign: "job/assign/setting/getjob",
         //A15_4
         findJobTitleSearch: "workflow/jobtitlesearchset/job/getbyId",
+        // A16_7, A16_8
+        findMail: "at/request/application/mail/holiday",
+        // A16_9, A16_10
+        findOt: "at/request/application/mail/ot",
+        // A16_11
+        findTemp: "at/request/application/mail/template",
         // A17_5
         findAppro: "approval/setting/approval",
         // A17_4, A9_5
         findAppSet: "at/request/application/setting/appset",
+        // A6_24, A6_26, A6_35->A6_45 có thể lấy list cty đang đăng nhập rồi lên UI lọc, hoặc lấy thẳng 1 object(nhớ truyền apptype)
+        findDisp: "at/request/application/displayname/disp",
+        fidnDispApp: "at/request/application/displayname/app",
+        // A6_27 -> A6_34 có thể lấy theo company rồi lên lọc hoặc lấy thẳng object bằng cả holiday app type
+        findAllHdApp: "at/request/application/displayname/hd",
+        findHdApp: "at/request/application/displayname/hdapp",
         //E14,15
         findStamp: "at/request/application/stamprequest/findByComID", //UpdateStampRequestSettingCommandHandler
         // F10->F16
-        findDirectlycommon: "at/request/application/gobackdirectlycommon/getGoBackCommonByCid" //GoBackDirectlyCommonSettingRepository
+        findDirectlycommon: "at/request/application/gobackdirectlycommon/getGoBackCommonByCid", //GoBackDirectlyCommonSettingRepository
+
+        //B18 -> B36
+        findOvertime: "at/request/application/overtime/ot",
+        
+        // C27 -> C49 có thể lấy theo company rồi lên lọc hoặc lấy thẳng object bằng cả holiday app type
+        findAllVaca: "at/request/vacation/setting/hdapp",
+        findVaca: "at/request/vacation/setting/hdappset",
+        
+        //D
+        findWorkChange: "at/request/application/workchange/workChangeSet",
+        
         
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
+    }
+    
+    export function findWorkChange() {
+        return nts.uk.request.ajax("at", paths.findWorkChange); 
+    }
+    
+    export function findOvertime() {
+        return nts.uk.request.ajax("at", paths.findOvertime); 
+    }
+    
+    export function findVaca(hdAppType: number): JQueryPromise<void>{
+        return nts.uk.request.ajax("at", paths.findVaca + "/" + hdAppType);     
+    }
+    
+    export function findAllVaca() {
+        return nts.uk.request.ajax("at", paths.findAllVaca); 
+    }
+    
+    export function fidnDispApp(appType: number): JQueryPromise<void>{
+        return nts.uk.request.ajax("at", paths.fidnDispApp + "/" + appType);     
+    }
+    
+    export function findDisp() {
+        return nts.uk.request.ajax("at", paths.findDisp); 
+    }
+    
+    export function findHdApp(hdAppType: number): JQueryPromise<void>{
+        return nts.uk.request.ajax("at", paths.findHdApp + "/" + hdAppType);     
+    }
+    
+    export function findAllHdApp() {
+        return nts.uk.request.ajax("at", paths.findAllHdApp); 
+    }
+    
+    export function findOt() {
+        return nts.uk.request.ajax("at", paths.findOt); 
+    }
+    
+    export function findTemp() {
+        return nts.uk.request.ajax("at", paths.findTemp); 
+    }
+    
+    export function findMail() {
+        return nts.uk.request.ajax("at", paths.findMail); 
+    }
+    
+    export function findAppCom() {
+        return nts.uk.request.ajax("at", paths.findAppCom); 
+    }
+    
+    export function findProByApp(appType: number): JQueryPromise<void>{
+        return nts.uk.request.ajax("at", paths.findProByApp + "/" + appType);     
+    }
+    
+    export function findAllPro() {
+        return nts.uk.request.ajax("at", paths.findAllPro); 
     }
     
     export function findApproSet() {
