@@ -47,7 +47,7 @@
 										items: listWorkType, selected: selectedWorkTypeCode, selectedKey: 'workTypeCode', fields: ['name', 'workTypeCode'], mode: 'igGrid'}" />
 									<table id="list-worktype" tabindex="2"
 										data-bind="ntsGridList: {
-											height: 230,
+											height: 235,
 											options: listWorkType,
 											optionsValue: 'workTypeCode',
 											columns: workTypeColumns,
@@ -68,14 +68,14 @@
 									<div id="day-list-div">
 										<table id="day-list-tbl" tabindex="10"
 											data-bind="ntsGridList: {
-										name: '#[KDL003_18]',
-										width: 810,
-										height: 235,
-										options: listWorkTime,
-										optionsValue: 'code',
-										columns: workTimeColumns,
-										multiple: false,
-										value: selectedWorkTimeCode
+											name: '#[KDL003_18]',
+											width: 810,
+											height: 235,
+											options: listWorkTime,
+											optionsValue: 'code',
+											columns: workTimeColumns,
+											multiple: false,
+											value: selectedWorkTimeCode
 									}"></table>
 									</div>
 								</td>
