@@ -100,5 +100,5 @@ public interface WorkingConditionItemRepository {
 	 * @param sourceSid the source sid
 	 * @param destSid the dest sid
 	 */
-	boolean copyLastMonthlyPatternSetting(String sourceSid, String destSid);
+	boolean copyLastMonthlyPatternSetting(String sourceSid, List<String> destSid);
 }

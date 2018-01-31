@@ -10,7 +10,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
@@ -79,7 +78,7 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 				EmTimeZoneSet em2 = this.employmentTimezones.get(j);
 				// check overlap
 				if (em.getTimezone().isOverlap(em2.getTimezone())) {
-					throw new BusinessException("Msg_515");
+					this.bundledBusinessExceptions.addMessage("Msg_515","KMK003_86");
 				}
 			}
 		}
@@ -91,7 +90,7 @@ public class DiffTimezoneSetting extends WorkTimeDomainObject {
 				DiffTimeOTTimezoneSet em2 = this.oTTimezones.get(j);
 				// check overlap
 				if (em.getTimezone().isOverlap(em2.getTimezone())) {
-					throw new BusinessException("Msg_515");
+					this.bundledBusinessExceptions.addMessage("Msg_515","KMK003_89");
 				}
 			}
 		}

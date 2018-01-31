@@ -1,10 +1,12 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.jobtitle.sequence;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -54,18 +56,17 @@ public class SaveSequenceCommandHandler extends CommandHandler<SaveSequenceComma
 
 		if (command.getIsCreateMode()) {
 			// Add
-			final int newOrder = this.repository.findMaxOrder() + 1;
-			command.setOrder(newOrder);
+			//final int newOrder = this.repository.findMaxOrder() + 1;
+			//command.setOrder(newOrder);
 			this.repository.add(command.toDomain(companyId));
 		} else {
 			// Update
-			// Sequence code + order is not changable
+			// Sequence code is not changable
 			Optional<SequenceMaster> opSequenceMaster = this.repository.findBySequenceCode(companyId,
 					command.getSequenceCode());
 			
 			if (opSequenceMaster.isPresent()) {
 				SequenceMaster oldDomain = opSequenceMaster.get();
-				command.setOrder(oldDomain.getOrder());
 				command.setSequenceCode(oldDomain.getSequenceCode().v());
 
 				this.repository.update(command.toDomain(companyId));
@@ -98,5 +99,15 @@ public class SaveSequenceCommandHandler extends CommandHandler<SaveSequenceComma
 		if (isError) {
 			exceptions.throwExceptions();
 		}
+	}
+	
+	/**
+	 * Update order.
+	 *
+	 * @param listCommand the list command
+	 */
+	public void updateOrder(List<SaveSequenceCommand> listCommand) {
+		String companyId = AppContexts.user().companyId();
+		this.repository.updateOrder(listCommand.stream().map(command -> command.toDomain(companyId)).collect(Collectors.toList()));
 	}
 }

@@ -1,11 +1,12 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class PrioritySetting.
@@ -23,7 +24,7 @@ public class PrioritySetting extends WorkTimeDomainObject {
 	private StampPiorityAtr stampAtr;
 
 	/**
-	 * Instantiates a new priority set.
+	 * Instantiates a new priority setting.
 	 *
 	 * @param memento
 	 *            the memento
@@ -44,4 +45,37 @@ public class PrioritySetting extends WorkTimeDomainObject {
 		memento.setStampAtr(this.stampAtr);
 	}
 
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, PrioritySetting oldDomain) {
+		if (screenMode == ScreenMode.SIMPLE) {
+			if (this.stampAtr == StampPiorityAtr.GOING_WORK || this.stampAtr == StampPiorityAtr.LEAVE_WORK) {
+				this.priorityAtr = oldDomain.priorityAtr;
+			}
+		}
+	}
+
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode) {
+		if (screenMode == ScreenMode.SIMPLE) {
+			if (this.stampAtr == StampPiorityAtr.GOING_WORK) {
+				this.priorityAtr = MultiStampTimePiorityAtr.BEFORE_PIORITY;
+			}
+
+			if (this.stampAtr == StampPiorityAtr.LEAVE_WORK) {
+				this.priorityAtr = MultiStampTimePiorityAtr.AFTER_PIORITY;
+			}
+		}
+	}
 }
