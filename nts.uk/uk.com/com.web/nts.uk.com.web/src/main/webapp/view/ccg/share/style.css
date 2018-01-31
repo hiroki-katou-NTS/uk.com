@@ -173,10 +173,11 @@
 	padding-right: 5px;
 }
 
-#ccg-component {
-	height: calc(100% - 200px);
+#component-ccg001 {
 	z-index: 999;
 	position: fixed;
+	display: none;
+	overflow: hidden;
 }
 
 #hor-scroll-button-hide {
@@ -248,7 +249,7 @@
 }
 
 .ccg-tabpanel {
-	height: calc(100% - 80px);
+	height: calc(100% - 160px);
 	background-color: #F2F2F2;
 	border-radius: 5px;
 }

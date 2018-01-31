@@ -248,19 +248,22 @@ module nts.uk.com.view.ccg.share.ccg {
                     ko.applyBindings(self, $input[0]);
                     self.applyDataSearch();
                     self.initNextTabFeature();
-                    
                     // Set tabindex ro button show component.
                     var tabindex = $input.attr('tabindex');
                     $input.attr('tabindex', -1);
                     $input.find('.btn_showhide').attr('tabindex', tabindex);
+
+                    // set component height
+                    let headerHeight = $('#header').outerHeight();
+                    let functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
+                    $('#component-ccg001').outerHeight(window.innerHeight - headerHeight - functionAreaHeight - 30);
                     dfd.resolve();
                 });
-                $('#ccg-component').outerHeight($('#contents-area').outerHeight());
                 
                 // init function click button ccg common
                 $(window).on('click', function(e) {
                     // Check is click to inside component.
-                    if (e.target.id == "ccg-component" || $(e.target).parents("#ccg-component")[0]) {
+                    if (e.target.id == "component-ccg001" || $(e.target).parents("#component-ccg001")[0]) {
                         return;
                     }
                     // click when block ui
@@ -281,7 +284,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     if (self.isShow()) {
                         // Hide component.
                         self.isShow(false);
-                        $('#ccg-component').toggle("slide");
+                        $('#component-ccg001').toggle("slide");
                     }
                 });
                 return dfd.promise();
@@ -297,7 +300,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     return;
                 }
                 self.isShow(true);
-                $('#ccg-component').toggle("slide", function() {
+                $('#component-ccg001').toggle("slide", function() {
                     if (self.isFistTimeShow) {
                         self.applyDataSearch();
                         self.isFistTimeShow = false;
@@ -349,7 +352,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.validateClient()) {
                     return;
                 }
-                
+
+                nts.uk.ui.block.invisible(); // block ui
                 service.searchWorkplaceOfEmployee(self.baseDate()).done(function(data) {
                     self.selectedCodeWorkplace(data);
                     self.reloadDataSearch();
@@ -364,7 +368,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     }
                 }).fail(function(error){
                     nts.uk.ui.dialog.alertError(error);
-                });
+                }).always(() => nts.uk.ui.block.clear());
 
             }
 
