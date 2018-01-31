@@ -41,17 +41,9 @@
 	padding-bottom: 10px;
 }
 
-/* .ntsRadioBox span.box {
-    border: 2px solid black;
+#scrA #ckbTransferWhenPublicHdIsMinus {
+	margin-left: 50px;
 }
-
-.ntsRadioBox span.box:after {
-    width: 15px;
-    height: 15px;
-    top: 0px;
-    left: 0px;
-    background: black;
-} */
 
 .sidebar-content-header {
 	display: flex;
@@ -72,4 +64,20 @@
 
 .ntsMonthDays_Container{
 	top: 0px !important;
+}
+
+#scrA #managePubHD > label:nth-child(1) {
+	padding-right:40px
+}
+
+#scrA #publicHdManagementClassification > label:nth-child(1) {
+	padding-right:40px
+}
+
+#scrA #determineStartDate > label:nth-child(1) {
+	padding-right:40px
+}
+
+#scrA .weekHDCheck_A > div > div:nth-child(1){
+	width:100px !important	
 }
