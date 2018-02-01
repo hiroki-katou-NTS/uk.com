@@ -51,38 +51,46 @@ public class CreScheWithBusinessDayCalService {
 	 */
 	public BusinessDayCal scheduleBreakTime(String companyId, String workTypeCode, String workTimeCode) {
 		// 入力パラメータ「就業時間帯コード」をチェック
-		if(!Strings.isBlank(workTimeCode) || !"000".equals(workTimeCode)) {
-			// ドメインモデル「勤務種類」を取得する
-			Optional<WorkType> workType = workTypeRepository.findByPK(companyId, workTypeCode);
-			
-			// 取得したドメインモデルの「勤務種類. 1日の勤務. 勤務種類の分類」を判断
-			if(workType.isPresent()) {
-				// ドメインモデル「就業時間帯の設定」を取得する
-				Optional<WorkTimeSetting> workTimeSetting = workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		if(Strings.isBlank(workTimeCode) || "000".equals(workTimeCode)) {
+			return null;
+		}
+		
+		// ドメインモデル「勤務種類」を取得する
+		Optional<WorkType> workTypeOpt = workTypeRepository.findByPK(companyId, workTypeCode);
+		if(!workTypeOpt.isPresent()) {
+			throw new RuntimeException("Work Type Not Found:" + workTypeCode);
+		}
 				
-				// 休日出勤 or 休日出勤 以外
-				if(workType.get().getDailyWork().isHolidayWork()) {
-					if(workTimeSetting.isPresent()) {
-						// 取得したドメインモデルの「就業時間帯勤務区分. 勤務形態区分」を判断
-						if(workTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr() == WorkTimeDailyAtr.FLEX_WORK) {
-							// 今回対象外
-							// TODO: 
-						} else {
-							return determineSetWorkingHours(workTimeSetting.get(), companyId, workTimeCode, true, workType.get().getDailyWork());
-						}
-					}
-				} else {
-					// 就業時間帯の設定
-					// 取得したドメインモデルの「就業時間帯勤務区分. 勤務形態区分」を判断
-					if(workTimeSetting.isPresent()) {
-						if(workTimeSetting.get().getWorkTimeDivision().getWorkTimeDailyAtr() == WorkTimeDailyAtr.FLEX_WORK) {
-							// ［フレックス勤務用］
-							// TODO: 
-						} else {
-							return determineSetWorkingHours(workTimeSetting.get(), companyId, workTimeCode, false, workType.get().getDailyWork());
-						}
-					}
-				}
+		WorkType workType = workTypeOpt.get();
+		
+		// 取得したドメインモデルの「勤務種類. 1日の勤務. 勤務種類の分類」を判断
+		DailyWork dailyWork = workType.getDailyWork();
+		
+		// ドメインモデル「就業時間帯の設定」を取得する
+		Optional<WorkTimeSetting> workTimeSettingOpt = workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		if(!workTimeSettingOpt.isPresent()) {
+			return null;
+		}
+		
+		WorkTimeSetting workTimeSetting = workTimeSettingOpt.get();
+		
+		// 休日出勤 or 休日出勤 以外
+		if(dailyWork.isHolidayWork()) {
+			// 取得したドメインモデルの「就業時間帯勤務区分. 勤務形態区分」を判断
+			if(workTimeSetting.getWorkTimeDivision().getWorkTimeDailyAtr() == WorkTimeDailyAtr.FLEX_WORK) {
+				// 今回対象外
+				// TODO: 
+			} else {
+				return determineSetWorkingHours(workTimeSetting, companyId, workTimeCode, true, workType.getDailyWork());
+			}
+		} else {
+			// 就業時間帯の設定
+			// 取得したドメインモデルの「就業時間帯勤務区分. 勤務形態区分」を判断
+			if(workTimeSetting.getWorkTimeDivision().getWorkTimeDailyAtr() == WorkTimeDailyAtr.FLEX_WORK) {
+				// ［フレックス勤務用］
+				// TODO: 
+			} else {
+				return determineSetWorkingHours(workTimeSetting, companyId, workTimeCode, false, workType.getDailyWork());
 			}
 		}
 		
