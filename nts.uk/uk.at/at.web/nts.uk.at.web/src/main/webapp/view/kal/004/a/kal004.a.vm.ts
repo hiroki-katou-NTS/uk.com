@@ -176,6 +176,7 @@ module nts.uk.at.view.kal004.a.model {
                 // tab3
                 self.setPermissionModel.listRoleID([]);
                 self.setPermissionModel.selectedRuleCode(1);
+                self.setPermissionModel.enableSetting(false);
             }
             else {
                 self.createMode(false);
@@ -216,6 +217,7 @@ module nts.uk.at.view.kal004.a.model {
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
                 self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting == true ? 0 : 1);
+                self.setPermissionModel.enableSetting(true);
             }
         }
 

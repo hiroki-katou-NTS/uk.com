@@ -373,6 +373,8 @@ public class DailyPerformanceCorrectionProcessor {
 			CorrectionOfDailyPerformance correct, List<String> formatCodes) throws InterruptedException {
 		long timeStart = System.currentTimeMillis();
 		String sId = AppContexts.user().employeeId();
+		String NAME_EMPTY = TextResource.localize("KDW003_82");
+		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
 
 		/**
@@ -663,18 +665,18 @@ public class DailyPerformanceCorrectionProcessor {
 							if (value.equals("")) {
 								cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), value,
 										String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
-								value = TextResource.localize("KDW003_82");
+								value = NAME_EMPTY;
 							} else {
 								if(groupType != null){
 								   if(groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value){
 									   Optional<CodeName> optCodeName = dataDialogWithTypeProcessor.getCodeNameWithId(groupType, data.getDate(), value);
 									   cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), optCodeName.isPresent() ? optCodeName.get().getCode() : value,
 												String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
-									   value = !optCodeName.isPresent() ? TextResource.localize("KDW003_81") : optCodeName.get().getName();
+									   value = !optCodeName.isPresent() ? NAME_NOT_FOUND : optCodeName.get().getName();
 								   }else{
 									   cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), value,
 												String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
-									   value = mapGetName.get(groupType).containsKey(value) ? mapGetName.get(groupType).get(value).getName() :  TextResource.localize("KDW003_81");
+									   value = mapGetName.get(groupType).containsKey(value) ? mapGetName.get(groupType).get(value).getName() :  NAME_NOT_FOUND;
 								   }
 								}
 							}

@@ -18,7 +18,7 @@
 			<com:scriptfile path="kaf022.a.start.js" />
 			<com:scriptfile path="../m/kaf022.m.vm.js" /> 
 			<com:scriptfile path="../l/kaf022.l.vm.js" />
-			
+			<com:scriptfile path="../l/kaf022.l.service.js" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			<!-- <com:scriptfile path="../e/kmf004.e.vm.js" /> 
  			<com:scriptfile path="../e/kmf004.e.service.js" />  -->
@@ -41,9 +41,9 @@
 					
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='l'">
-					<button  id="btn_001" class="button separate-button fix-button"  data-bind="">#{i18n.getText('KAF022_1')}</button>
-					<button  id="btn_002" class="button proceed separate-button fix-button" data-bind="">#{i18n.getText('KAF022_274')}</button>
-					<button  id="btn_004" class="button danger separate-button fix-button" data-bind="" >#{i18n.getText('KAF022_275')}</button>
+					<button  id="btn_001" class="button proceed separate-button fix-button"  data-bind="click: function(){$parent.viewmodelL.registerEmploymentSet($parent.viewmodelL);}">#{i18n.getText('KAF022_1')}</button>
+					<button  id="btn_002" class="button separate-button fix-button" data-bind="click: function(){$parent.viewmodelL.copyEmploymentSet($parent.viewmodelL);}">#{i18n.getText('KAF022_274')}</button>
+					<button  id="btn_004" class="button danger separate-button fix-button" data-bind="click: function(){$parent.viewmodelL.deleteEmploymentSet($parent.viewmodelL);}" >#{i18n.getText('KAF022_275')}</button>
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='m'">
 					<button  id="btn_001" class="button separate-button fix-button"  data-bind="">#{i18n.getText('KAF022_1')}</button>
@@ -2033,7 +2033,7 @@
 
 				</div>
 			</div>
-			<div id="tabpanel-l" role="tabpanel" class="screen-l" data-bind="with: viewModelL">
+			<div id="tabpanel-l" role="tabpanel" class="screen-l" data-bind="with: viewmodelL">
 				<ui:include src="../l/index.xhtml" />
 			</div>
 			<div id="tabpanel-m" role="tabpanel" class="screen-m" data-bind="">

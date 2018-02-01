@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
@@ -61,11 +62,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		if (!checkEmploymentStatus(command)) {
 			return;
 		}
-		
-		if (ImplementAtr.GENERALLY_CREATED == command.getContent().getImplementAtr()) { // 通常作成 
-			return;
-		}
-		
+				
 		//在職、休職、休業
 		//ドメインモデル「勤務予定基本情報」を取得する
 		Optional<BasicSchedule> basicScheOpt = basicScheduleRepo.find(command.getEmployeeId(), command.getToDate());
@@ -73,6 +70,10 @@ public class ScheCreExeMonthlyPatternHandler {
 		// 再作成
 		if (basicScheOpt.isPresent()) { //「勤務予定基本情報」 データあり
 			BasicSchedule basicSche = basicScheOpt.get();
+			
+			if (ImplementAtr.GENERALLY_CREATED == command.getContent().getImplementAtr()) { // 通常作成 
+				return;
+			}
 			
 			//入力パラメータ「再作成区分」を判断
 			if (command.getContent().getReCreateContent().getReCreateAtr() == ReCreateAtr.ONLY_UNCONFIRM) { // 未確定データのみ
@@ -104,17 +105,15 @@ public class ScheCreExeMonthlyPatternHandler {
 		if (workTypeOpt.isPresent()) {//取得エラーなし
 			//在職状態に対応する「就業時間帯コード」を取得する
 			Optional<String> workTimeOpt =  this.getWorkingTimeZoneCode(workMonthlySet, commandWorktypeGetter);
-			if (workTimeOpt.isPresent()) {//取得エラーなし
+			if (workTimeOpt == null || workTimeOpt.isPresent()) {//取得エラーなし
 				//TODO 休憩予定時間帯を取得する
 				
 				//勤務予定マスタ情報を取得する
-				ScheduleMasterInformationDto scheduleMasterInfor = scheduleMasterInformationRepo.getScheduleMasterInformationDto(command.getEmployeeId(), command.getToDate());
-				
 				//勤務予定時間帯を取得する		
 				//アルゴリズム「社員の短時間勤務を取得」を実行し、短時間勤務を取得する // request list #72
-				//TODO 取得した情報をもとに「勤務予定基本情報」を作成する (create basic schedule)
-				//TODO 予定確定区分を取得し、「勤務予定基本情報. 確定区分」に設定する
-				scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, command.getEmployeeId(), workTypeOpt.get(), workTimeOpt.get());
+				//取得した情報をもとに「勤務予定基本情報」を作成する (create basic schedule)
+				//予定確定区分を取得し、「勤務予定基本情報. 確定区分」に設定する
+				scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, command.getEmployeeId(), workTypeOpt.get(), workTimeOpt != null ? workTimeOpt.get() : null);
 			}
 		}			
 		
@@ -208,7 +207,7 @@ public class ScheCreExeMonthlyPatternHandler {
 	private boolean checkMonthlyPattern(ScheduleCreatorExecutionCommand command,
 			WorkingConditionItem workingConditionItem, Optional<WorkMonthlySetting> workMonthlySetOpt) {
 		//ドメインモデル「スケジュール作成エラーログ」を登録する
-		if (!workingConditionItem.getMonthlyPattern().isPresent()) {
+		if (!workingConditionItem.getMonthlyPattern().isPresent() || StringUtil.isNullOrEmpty(workingConditionItem.getMonthlyPattern().get().v(), true)) {
 			//log Msg_603
 			scheCreExeErrorLogHandler.addError(command.toBaseCommand(), command.getEmployeeId(), "Msg_603");
 			return false; 

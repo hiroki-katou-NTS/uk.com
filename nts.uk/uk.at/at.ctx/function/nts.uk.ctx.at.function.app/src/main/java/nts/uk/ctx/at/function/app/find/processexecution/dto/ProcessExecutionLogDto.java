@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -98,6 +100,12 @@ public class ProcessExecutionLogDto {
 	
 	public static ProcessExecutionLogDto fromDomain(ProcessExecutionLog procExecLog) {
 		List<ProcessExecutionTaskLogDto> taskLogList = procExecLog.getTaskLogList().stream().map(x -> ProcessExecutionTaskLogDto.fromDomain(x)).collect(Collectors.toList());
+		Collections.sort(taskLogList, new Comparator<ProcessExecutionTaskLogDto>() {
+			@Override
+			public int compare(ProcessExecutionTaskLogDto dto1, ProcessExecutionTaskLogDto dto2) {
+				return dto1.getTaskId() - dto2.getTaskId();
+			}
+		});
 		return new ProcessExecutionLogDto(
 				procExecLog.getExecItemCd().v(),
 				procExecLog.getCompanyId(),
