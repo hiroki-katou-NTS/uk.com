@@ -181,7 +181,7 @@ module nts.uk.at.view.kal004.a.model {
                 // tab3
                 self.setPermissionModel.listRoleID([]);
                 self.setPermissionModel.selectedRuleCode(1);
-                self.setPermissionModel.enableSetting(false);
+                self.setPermissionModel.createMode(false);
                 
                 //tab2
                 self.periodSetting.isCreateMode(true);             
@@ -225,7 +225,7 @@ module nts.uk.at.view.kal004.a.model {
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
                 self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting == true ? 0 : 1);
-                self.setPermissionModel.enableSetting(true);                
+                self.setPermissionModel.createMode(true);                
                 
                 //tab2
                 self.periodSetting.isCreateMode(false);
@@ -336,6 +336,11 @@ module nts.uk.at.view.kal004.a.model {
                 self.currentCode('');
                 nts.uk.ui.errors.clearAll();
             }
+        }
+        public afterMoveLeft(): boolean {
+            var self = this;
+            self.checkConditionList(self.checkConditionList().filter(e => _.find(self.checkSource, {'category' : e.category, 'checkConditonCode': e.checkConditonCode}) != undefined ));
+            return true;
         }
 
 

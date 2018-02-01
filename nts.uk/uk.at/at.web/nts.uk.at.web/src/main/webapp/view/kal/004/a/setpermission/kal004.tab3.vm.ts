@@ -6,7 +6,7 @@ module nts.uk.at.view.kal004.tab3.viewmodel {
         selectedRuleCode: any;
         executionAuthor: KnockoutObservable<string>;
         listRoleID: KnockoutObservableArray<string> = ko.observableArray([]);
-        enableSetting:  KnockoutObservable<boolean>;
+        createMode:  KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.roundingRules = ko.observableArray([
@@ -15,7 +15,11 @@ module nts.uk.at.view.kal004.tab3.viewmodel {
             ]);
             self.selectedRuleCode = ko.observable(0);
             self.executionAuthor = ko.observable("");
-            self.enableSetting =ko.observable(true);
+            self.createMode =ko.observable(true);
+            self.selectedRuleCode.subscribe((newV) =>{
+                if(newV== 1)
+                    self.executionAuthor('');    
+            });
             self.listRoleID.subscribe((newListRoleID) => {
                 self.changeItem(newListRoleID);
             });
