@@ -108,8 +108,6 @@ public class ScheCreExeMonthlyPatternHandler {
 				//TODO 休憩予定時間帯を取得する
 				
 				//勤務予定マスタ情報を取得する
-				ScheduleMasterInformationDto scheduleMasterInfor = scheduleMasterInformationRepo.getScheduleMasterInformationDto(command.getEmployeeId(), command.getToDate());
-				
 				//勤務予定時間帯を取得する		
 				//アルゴリズム「社員の短時間勤務を取得」を実行し、短時間勤務を取得する // request list #72
 				//取得した情報をもとに「勤務予定基本情報」を作成する (create basic schedule)

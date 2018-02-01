@@ -18,15 +18,24 @@ import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.ChildCareSchedu
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
+import nts.uk.ctx.at.schedule.dom.schedule.algorithm.BusinessDayCal;
+import nts.uk.ctx.at.schedule.dom.schedule.algorithm.CreScheWithBusinessDayCalService;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.ScheduledBreakCnt;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreakGetMemento;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
+import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationDto;
+import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class ScheCreExeBasicScheduleHandler.
@@ -54,6 +63,12 @@ public class ScheCreExeBasicScheduleHandler {
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	
+	@Inject
+	private ScheduleMasterInformationRepository scheduleMasterInformationRepo;
+	
+	@Inject
+	private CreScheWithBusinessDayCalService scheWithBusinessDayCalService;
+		
 	/**
 	 * Update all data to command save.
 	 *
@@ -98,6 +113,9 @@ public class ScheCreExeBasicScheduleHandler {
 				PrescribedTimezoneSetting workTimeSet = optionalWorkTimeSet.get();
 				commandSave.updateWorkScheduleTimeZones(workTimeSet);
 			}
+			
+			this.saveScheduleMaster(commandSave);
+			this.saveBreakTime(command.getCompanyId(), commandSave);
 		}
 		// update is confirm
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
@@ -312,5 +330,73 @@ public class ScheCreExeBasicScheduleHandler {
 		return commandSave;
 	}
 	
+	/**
+	 * 勤務予定休憩
+	 * @param employeeId
+	 * @param toDate
+	 */
+	private BasicScheduleSaveCommand saveBreakTime(String companyId,
+			BasicScheduleSaveCommand commandSave) {
+		BusinessDayCal businessDayCal = this.scheWithBusinessDayCalService.scheduleBreakTime(companyId, commandSave.getWorktypeCode(), commandSave.getWorktimeCode());
+		
+		WorkScheduleBreak workScheduleBreak = new WorkScheduleBreak(new WorkScheduleBreakGetMemento() {
+			
+			@Override
+			public TimeWithDayAttr getScheduledStartClock() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public TimeWithDayAttr getScheduledEndClock() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public ScheduledBreakCnt getScheduleBreakCnt() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		});
+		commandSave.setWorkScheduleBreak(workScheduleBreak);
+		return commandSave;
+	}
 	
+	/**
+	 * 勤務予定マスタ情報を取得する
+	 * @param employeeId
+	 * @param toDate
+	 */
+	private BasicScheduleSaveCommand saveScheduleMaster(BasicScheduleSaveCommand commandSave) {
+		//勤務予定マスタ情報を取得する
+		ScheduleMasterInformationDto scheduleMasterInfor = scheduleMasterInformationRepo.getScheduleMasterInformationDto(commandSave.getEmployeeId(), commandSave.getYmd());
+		ScheMasterInfo workScheduleMaster = new ScheMasterInfo(
+				commandSave.getEmployeeId(), 
+				commandSave.getYmd(), 
+				scheduleMasterInfor.getEmployeeCode(), 
+				scheduleMasterInfor.getClassificationCode(), 
+				commandSave.getWorktypeCode(), 
+				scheduleMasterInfor.getJobId(), 
+				scheduleMasterInfor.getWorkplaceId());	
+		commandSave.setWorkScheduleMaster(workScheduleMaster);
+		return commandSave;
+	}
+	
+	/**
+	 * 勤務予定時間
+	 */
+	private BasicScheduleSaveCommand saveScheduleTime(BasicScheduleResetCommand command,
+			BasicScheduleSaveCommand commandSave) {
+//		WorkScheduleTime workScheduleTime = new WorkScheduleTime(
+//				personFeeTime, 
+//				breakTime, 
+//				workingTime, 
+//				weekdayTime, 
+//				predetermineTime, 
+//				totalLaborTime, 
+//				childCareTime);
+//		commandSave.setWorkScheduleTime(workScheduleTime);
+		return commandSave;
+	}
 }

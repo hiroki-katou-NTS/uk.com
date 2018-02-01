@@ -21,6 +21,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedul
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
+import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 
@@ -56,6 +57,11 @@ public class BasicScheduleSaveCommand {
 	/** The child care schedules. */
 	private List<ChildCareScheduleSaveCommand> childCareSchedules;
 	
+	private WorkScheduleTime workScheduleTime;
+	
+	private WorkScheduleBreak workScheduleBreak;
+	
+	private ScheMasterInfo workScheduleMaster;
 	
 	/**
 	 * Update work schedule time zones.

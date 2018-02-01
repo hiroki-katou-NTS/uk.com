@@ -49,7 +49,7 @@ public class CreScheWithBusinessDayCalService {
 	 * @param workTypeCode
 	 * @param workTimeCode
 	 */
-	public BusinessDayCal ScheduleBreakTime(String companyId, String workTypeCode, String workTimeCode) {
+	public BusinessDayCal scheduleBreakTime(String companyId, String workTypeCode, String workTimeCode) {
 		// 入力パラメータ「就業時間帯コード」をチェック
 		if(!Strings.isBlank(workTimeCode) || !"000".equals(workTimeCode)) {
 			// ドメインモデル「勤務種類」を取得する
