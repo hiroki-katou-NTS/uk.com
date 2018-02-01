@@ -86,7 +86,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 		
 		// 集計期間の判断
 		//*****（未）　実締め毎集計期間クラスの作成が必要。仮に変数で設定。実締め毎集計期間は、ループで複数件の処理要。
-		for (int ixClosure = 1; ixClosure <= 2; ixClosure++){
+		for (int ixClosure = 1; ixClosure <= 1; ixClosure++){
 			YearMonth yearMonth = YearMonth.of(2017, 11);
 			val closureId = ClosureId.RegularEmployee;
 			ClosureDate closureDate = new ClosureDate(0, true);
@@ -150,52 +150,31 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 		val aggregateHolidayWorkTimeList = holidayWorktime.getAggregateHolidayWorkTimeMap().values();
 		val aggregateTotalTimeSpentAtWork = monthlyCalculation.getTotalTimeSpentAtWork();
 		
-		if (this.attendanceTimeRepository.find(attendanceTime.getEmployeeId(),
-				attendanceTime.getYearMonth(),
-				attendanceTime.getClosureId(),
-				attendanceTime.getClosureDate()).isPresent()) {
-			
-			// 更新
-			this.attendanceTimeRepository.update(attendanceTime);
-			this.regularAndIrregularTimeRepository.update(attendanceTimeKey, regularAndIrregularTime);
-			this.flexTimeRepository.update(attendanceTimeKey, flexTime);
-			this.aggregateTotalWorkingTimeRepository.update(attendanceTimeKey, aggregateTotalWorkingTime);
-			this.overTimeWorkRepository.update(attendanceTimeKey, overTimeWork);
+		// キー値確認
+		val employeeId = attendanceTime.getEmployeeId();
+		val yearMonth = attendanceTime.getYearMonth();
+		val closureId = attendanceTime.getClosureId();
+		val closureDate = attendanceTime.getClosureDate();
 
-			// 集計残業時間は、枠数変動に対応するため、先に削除して、追加する
-			this.aggregateOverTimeRepository.removeByParentPK(attendanceTimeKey);
-			for (val aggregateOverTime : aggregateOverTimeList){
-				this.aggregateOverTimeRepository.insert(attendanceTimeKey, aggregateOverTime);
-			}
-			
-			this.vacationUseTimeRepository.update(attendanceTimeKey, vacationUseTime);
-			this.holidayWorkTimeRepository.update(attendanceTimeKey, holidayWorktime);
-
-			// 集計休出時間は、枠数変動に対応するため、先に削除して、追加する
-			this.aggregateHolidayWorkTimeRepository.removeByParentPK(attendanceTimeKey);
-			for (val aggregateHolidayWorkTime : aggregateHolidayWorkTimeList){
-				this.aggregateHolidayWorkTimeRepository.insert(attendanceTimeKey, aggregateHolidayWorkTime);
-			}
-			
-			this.aggregateTotalTimeSpentAtWorkRepository.update(attendanceTimeKey, aggregateTotalTimeSpentAtWork);
+		// 既にあるデータを削除する
+		if (this.attendanceTimeRepository.find(employeeId, yearMonth, closureId, closureDate).isPresent()) {
+			this.attendanceTimeRepository.remove(employeeId, yearMonth, closureId, closureDate);
 		}
-		else {
-			
-			// 追加
-			this.attendanceTimeRepository.insert(attendanceTime);
-			this.regularAndIrregularTimeRepository.insert(attendanceTimeKey, regularAndIrregularTime);
-			this.flexTimeRepository.insert(attendanceTimeKey, flexTime);
-			this.aggregateTotalWorkingTimeRepository.insert(attendanceTimeKey, aggregateTotalWorkingTime);
-			this.overTimeWorkRepository.insert(attendanceTimeKey, overTimeWork);
-			for (val aggregateOverTime : aggregateOverTimeList){
-				this.aggregateOverTimeRepository.insert(attendanceTimeKey, aggregateOverTime);
-			}
-			this.vacationUseTimeRepository.insert(attendanceTimeKey, vacationUseTime);
-			this.holidayWorkTimeRepository.insert(attendanceTimeKey, holidayWorktime);
-			for (val aggregateHolidayWorkTime : aggregateHolidayWorkTimeList){
-				this.aggregateHolidayWorkTimeRepository.insert(attendanceTimeKey, aggregateHolidayWorkTime);
-			}
-			this.aggregateTotalTimeSpentAtWorkRepository.insert(attendanceTimeKey, aggregateTotalTimeSpentAtWork);
+		
+		// 追加
+		this.attendanceTimeRepository.insert(attendanceTime);
+		this.regularAndIrregularTimeRepository.insert(attendanceTimeKey, regularAndIrregularTime);
+		this.flexTimeRepository.insert(attendanceTimeKey, flexTime);
+		this.aggregateTotalWorkingTimeRepository.insert(attendanceTimeKey, aggregateTotalWorkingTime);
+		this.overTimeWorkRepository.insert(attendanceTimeKey, overTimeWork);
+		for (val aggregateOverTime : aggregateOverTimeList){
+			this.aggregateOverTimeRepository.insert(attendanceTimeKey, aggregateOverTime);
 		}
+		this.vacationUseTimeRepository.insert(attendanceTimeKey, vacationUseTime);
+		this.holidayWorkTimeRepository.insert(attendanceTimeKey, holidayWorktime);
+		for (val aggregateHolidayWorkTime : aggregateHolidayWorkTimeList){
+			this.aggregateHolidayWorkTimeRepository.insert(attendanceTimeKey, aggregateHolidayWorkTime);
+		}
+		this.aggregateTotalTimeSpentAtWorkRepository.insert(attendanceTimeKey, aggregateTotalTimeSpentAtWork);
 	}
 }

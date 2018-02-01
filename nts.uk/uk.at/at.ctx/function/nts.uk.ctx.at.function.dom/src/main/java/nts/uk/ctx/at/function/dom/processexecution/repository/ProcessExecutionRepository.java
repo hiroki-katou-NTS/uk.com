@@ -7,9 +7,9 @@ import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 
 public interface ProcessExecutionRepository {
 	
-	public List<ProcessExecution> getProcessExecutionByCompanyId(String companyId);
-	public Optional<ProcessExecution> getProcessExecutionByCidAndExecCd(String companyId, String execItemCd);
-	public void insert(ProcessExecution domain);
-	public void update(ProcessExecution domain);
-	public void remove(String companyId, String execItemCd);
+	List<ProcessExecution> getProcessExecutionByCompanyId(String companyId);
+	Optional<ProcessExecution> getProcessExecutionByCidAndExecCd(String companyId, String execItemCd);
+	void insert(ProcessExecution domain);
+	void update(ProcessExecution domain);
+	void remove(String companyId, String execItemCd);
 }

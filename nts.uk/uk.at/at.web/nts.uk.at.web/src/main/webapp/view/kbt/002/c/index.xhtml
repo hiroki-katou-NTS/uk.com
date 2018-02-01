@@ -49,12 +49,12 @@
 	                        </colgroup>
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_53')}</td>
-	                        	<td><div id="startDate" data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD', required: true}"></div></td>
+	                        	<td><div tabindex="1" id="startDate" data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD', required: true}"></div></td>
 	                        </tr>
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_55')}</td>
 	                        	<td>
-                        			<input style="width: 60px;" id="startTime"
+                        			<input tabindex="2" style="width: 60px;" id="startTime"
                         				data-bind="ntsTimeEditor: {value: startTime,
                         				inputFormat: 'time',
                         				required: true,
@@ -69,16 +69,16 @@
 										<div class="ntsControl">
 											<label class="ntsRadioBox">
 												<input type="radio" name="endTimeCls" data-bind="checkedValue: 0, checked: endTimeCls" />
-												<span class="box"></span><span class="label">#{i18n.getText('KBT002_141')}</span>
+												<span tabindex="3" class="box"></span><span class="label">#{i18n.getText('KBT002_141')}</span>
 											</label>
 										</div>		
 										<div class="ntsControl">
 											<label class="ntsRadioBox">
 												<input type="radio" name="endTimeCls" data-bind="checkedValue: 1, checked: endTimeCls" />
-												<span class="box"></span><span class="label">#{i18n.getText('KBT002_142')}</span>
+												<span tabindex="3" class="box"></span><span class="label">#{i18n.getText('KBT002_142')}</span>
 											</label>
 										</div>
-										<input style="width: 60px;" id="endTime"
+										<input tabindex="4" style="width: 60px;" id="endTime"
 											data-bind="ntsTimeEditor: {value: endTime,
 											inputFormat: 'time',
 											enable: endTimeCls() == 1,
@@ -95,16 +95,16 @@
 										<div class="ntsControl">
 											<label class="ntsRadioBox">
 												<input type="radio" name="oneDayCls" data-bind="checkedValue: 0, checked: oneDayRepCls" />
-												<span class="box"></span><span class="label">#{i18n.getText('KBT002_67')}</span>
+												<span tabindex="7" class="box"></span><span class="label">#{i18n.getText('KBT002_67')}</span>
 											</label>
 										</div>		
 										<div class="ntsControl">
 											<label class="ntsRadioBox">
 												<input type="radio" name="oneDayCls" data-bind="checkedValue: 1, checked: oneDayRepCls" />
-												<span class="box"></span><span class="label">#{i18n.getText('KBT002_68')}</span>
+												<span tabindex="7" class="box"></span><span class="label">#{i18n.getText('KBT002_68')}</span>
 											</label>
 										</div>
-										<input style="width: 60px;"  id="oneDayTime"
+										<input tabindex="8" style="width: 60px;"  id="oneDayTime"
 											data-bind="ntsTimeEditor: {value: oneDayRepInterval,
 											inputFormat: 'time',
 											enable: oneDayRepCls() == 1,
@@ -117,7 +117,7 @@
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_59')}</td>
 	                        	<td>
-	                        		<div class="cf"
+	                        		<div tabindex="5" class="cf"
 										data-bind="ntsSwitchButton: {
 													options: $parent.repeatChoice,
 													optionsValue: 'id',
@@ -129,7 +129,7 @@
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_63')}</td>
 	                        	<td>
-	                        		<div style="width: 80px"
+	                        		<div tabindex="6" style="width: 80px"
 					                                    data-bind="ntsComboBox: {
 					                                    name: '#[KBT002_36]',
 					                                    options: $parent.contentList,
@@ -150,23 +150,33 @@
 										<div class="ntsControl">
 											<label class="ntsRadioBox">
 												<input type="radio" name="endDateCls" data-bind="checkedValue: 0, checked: endDateCls, enable: repeatCls() == 1" />
-												<span class="box"></span><span class="label">#{i18n.getText('KBT002_71')}</span>
+												<com:ko-if bind="repeatCls() == 1">
+													<span tabindex="9" class="box"></span><span class="label">#{i18n.getText('KBT002_71')}</span>
+												</com:ko-if>
+												<com:ko-if bind="repeatCls() == 0">
+													<span class="box"></span><span class="label">#{i18n.getText('KBT002_71')}</span>
+												</com:ko-if>
 											</label>
 										</div>		
 										<div class="ntsControl">
 											<label class="ntsRadioBox">
 												<input type="radio" name="endDateCls" data-bind="checkedValue: 1, checked: endDateCls, enable: repeatCls() == 1" />
-												<span class="box"></span><span class="label">#{i18n.getText('KBT002_72')}</span>
+												<com:ko-if bind="repeatCls() == 1">
+													<span tabindex="9" class="box"></span><span class="label">#{i18n.getText('KBT002_72')}</span>
+												</com:ko-if>
+												<com:ko-if bind="repeatCls() == 0">
+													<span class="box"></span><span class="label">#{i18n.getText('KBT002_72')}</span>
+												</com:ko-if>
 											</label>
 										</div>
-										<div id="endDate" data-bind="ntsDatePicker: {value: endDate, dateFormat: 'date', enable: repeatCls() == 1 &amp;&amp; endDateCls() == 1 }" />
+										<div tabindex="10" id="endDate" data-bind="ntsDatePicker: {value: endDate, dateFormat: 'date', enable: repeatCls() == 1 &amp;&amp; endDateCls() == 1 }" />
 									</div>
 	                        	</td>
 	                        </tr>
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_136')}</td>
 	                        	<td>
-	                        		<div class="cf"
+	                        		<div tabindex="11" class="cf"
 										data-bind="ntsSwitchButton: {
 													options: $parent.settingChoice,
 													optionsValue: 'id',
@@ -187,7 +197,7 @@
 	                        </colgroup>
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_88')}</td>
-	                        	<td><input class="nts-input pad_left_5px" id="repIntervalDay"
+	                        	<td><input tabindex="-1" class="nts-input pad_left_5px" id="repIntervalDay"
 												data-bind="ntsTextEditor:{
 												name: '#[KBT002_89]',
 												value: repIntervalDay,
@@ -209,7 +219,7 @@
 	                        </colgroup>
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_76')}</td>
-	                        	<td><input class="nts-input pad_left_5px" id="repIntervalWeek"
+	                        	<td><input tabindex="-1" class="nts-input pad_left_5px" id="repIntervalWeek"
 												data-bind="ntsTextEditor:{
 												name: '#[KBT002_77]',
 												value: repIntervalWeek,
@@ -223,13 +233,13 @@
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_79')}</td>
 	                        	<td>
-	                        		<div data-bind="ntsCheckBox: { checked: sunday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_86')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: monday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_80')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: tuesday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_81')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: wednesday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_82')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: thursday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_83')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: friday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_84')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: saturday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_85')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: sunday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_86')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: monday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_80')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: tuesday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_81')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: wednesday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_82')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: thursday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_83')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: friday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_84')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: saturday, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 1 }">#{i18n.getText('KBT002_85')}</div>
                         		</td>
 	                        </tr>
                         </table>
@@ -244,25 +254,25 @@
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_91')}</td>
 	                        	<td>
-	                        		<div data-bind="ntsCheckBox: { checked: january, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_92')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: february, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_93')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: march, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_94')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: april, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_95')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: may, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_96')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: june, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_97')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: july, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_98')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: august, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_99')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: september, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_100')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: october, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_101')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: november, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_102')}</div>
-	                        		<div data-bind="ntsCheckBox: { checked: december, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_103')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: january, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_92')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: february, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_93')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: march, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_94')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: april, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_95')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: may, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_96')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: june, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_97')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: july, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_98')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: august, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_99')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: september, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_100')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: october, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_101')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: november, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_102')}</div>
+	                        		<div tabindex="-1" data-bind="ntsCheckBox: { checked: december, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2 }">#{i18n.getText('KBT002_103')}</div>
                         		</td>
 	                        </tr>
 	                        <tr class="row">
 	                        	<td class="input-label">#{i18n.getText('KBT002_104')}</td>
 	                        	<td>
 	                        		<div id="monthDays">
-	                        			<div id="dialogDBtn"><button data-bind = "click: function() { $parent.openDialogD() } , enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2">#{i18n.getText('KBT002_105')}</button></div>
+	                        			<div id="dialogDBtn"><button tabindex="-1" data-bind = "click: function() { $parent.openDialogD() } , enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2">#{i18n.getText('KBT002_105')}</button></div>
 		                        		<textarea style="width: 325px; height: 50px;"
 											data-bind="ntsMultilineEditor: { name: '#[CPS016_22]',value: $parent.monthDays, enable: repeatCls() == 1 &amp;&amp; repeatContent() == 2, readonly:true}" />
 	                        		</div>
@@ -272,8 +282,8 @@
 					</div>
 				</div>
 				<div id="functions-area-bottom">
-					<button class="proceed large" data-bind="click: decide">#{i18n.getText('KBT002_74')}</button>
-					<button data-bind="click: closeDialog">#{i18n.getText('KBT002_75')}</button>
+					<button tabindex="12" class="proceed large" data-bind="click: decide">#{i18n.getText('KBT002_74')}</button>
+					<button tabindex="13" data-bind="click: closeDialog">#{i18n.getText('KBT002_75')}</button>
 				</div>
 			</ui:define>
 		</ui:composition>

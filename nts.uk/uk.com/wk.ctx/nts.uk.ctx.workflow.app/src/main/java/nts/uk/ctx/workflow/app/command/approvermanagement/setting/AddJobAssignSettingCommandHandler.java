@@ -1,5 +1,7 @@
 package nts.uk.ctx.workflow.app.command.approvermanagement.setting;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -27,7 +29,7 @@ public class AddJobAssignSettingCommandHandler extends CommandHandler<JobAssignS
 	protected void handle(CommandHandlerContext<JobAssignSettingCommand> context) {
 		JobAssignSettingCommand data = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		JobAssignSetting job = jobRep.findById(companyId);
+		Optional<JobAssignSetting> job = jobRep.findById();
 		JobAssignSetting jobSet = data.toDomain(companyId);
 		jobSet.validate();
 		if(job == null){
