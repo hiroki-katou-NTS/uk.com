@@ -76,21 +76,28 @@ module nts.uk.at.view.kal004.a.model {
             }).fail((enumErr) => {
                 alertError(enumErr);
             });
+            block.grayout();
             service.getCheckConditionCode().done((res) => {
                 let resolve = _.map(res, (x) => { return new share.ModelCheckConditonCode(x) });
                 self.checkSource = _.cloneDeep(resolve);
 
                 self.getAlarmPattern().done(() => {
 
+                    self.initSubscribe();
+                    
                     if (self.alarmSource().length > 0) {
                         self.currentCode(self.alarmSource()[0].alarmPatternCD);
                     } else {
-                        self.checkConditionList(self.checkSource);
+                        self.checkConditionList(_.cloneDeep(self.checkSource));
                     }
+                    
                     dfd.resolve();
+                }).always(()=>{
+                    block.clear();                   
                 });
             }).fail((error) => {
                 alertError(error);
+                block.clear();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -104,9 +111,7 @@ module nts.uk.at.view.kal004.a.model {
             service.getAlarmPattern().done((res) => {
                 let alarmResolve = _.sortBy(res, [function(o) { return o.alarmPatternCD; }]);
                 self.alarmSource(alarmResolve);
-
-                self.initSubscribe();
-
+                
             }).fail((error) => {
                 alertError(error);
             }).always(() => {
@@ -177,6 +182,11 @@ module nts.uk.at.view.kal004.a.model {
                 self.setPermissionModel.listRoleID([]);
                 self.setPermissionModel.selectedRuleCode(1);
                 self.setPermissionModel.enableSetting(false);
+                
+                //tab2
+                self.periodSetting.isCreateMode(true);             
+                                
+                $('#alarmCode').focus();
             }
             else {
                 self.createMode(false);
@@ -197,10 +207,8 @@ module nts.uk.at.view.kal004.a.model {
                             let category = _.find(self.alarmCategoryArr, ['value', x.alarmCategory]);
                             currentCodeListSwap.push(share.ModelCheckConditonCode.createNotFoundCheckConditonCode(category, y));
                         }
-
                     });
                 });
-
 
                 _.remove(checkSource, (leftItem) => {
                     let optItem = _.find(currentCodeListSwap, (rightItem) => {
@@ -217,12 +225,22 @@ module nts.uk.at.view.kal004.a.model {
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
                 self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting == true ? 0 : 1);
-                self.setPermissionModel.enableSetting(true);
+                self.setPermissionModel.enableSetting(true);                
+                
+                //tab2
+                self.periodSetting.isCreateMode(false);
+                
+                $('#alarmName').focus();
             }
         }
-
-        private buildNotFoundCheckCondition(): void {
-
+        
+        public setFocus(): void {
+            let self = this;
+            if(self.currentCode()==''){
+                $('#alarmCode').focus();               
+            }else{
+                $('#alarmName').focus();
+            }      
         }
 
         public saveAlarm(): void {
@@ -274,7 +292,7 @@ module nts.uk.at.view.kal004.a.model {
                 });
 
             }
-            $('#alarmName').focus();
+            
         }
         public createAlarm(): void {
             let self = this;

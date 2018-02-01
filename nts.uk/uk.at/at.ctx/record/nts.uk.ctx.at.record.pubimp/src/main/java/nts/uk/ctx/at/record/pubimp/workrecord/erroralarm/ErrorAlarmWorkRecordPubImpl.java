@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.ErrorAlarmWorkRecordPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.ErrorAlarmWorkRecordPubExport;
+import nts.uk.shr.com.i18n.TextResource;
 @Stateless
 public class ErrorAlarmWorkRecordPubImpl implements ErrorAlarmWorkRecordPub {
 	
@@ -118,11 +119,16 @@ public class ErrorAlarmWorkRecordPubImpl implements ErrorAlarmWorkRecordPub {
 		List<ErrorAlarmCondition> listErrorAlarmCon =  this.errorAlarmConditionRepo.findMessageConByListErAlCheckId(listErrorAlarmID);
 		
 		for(ErrorAlarmWorkRecordPubExport errorAlarmWorkRecordPubExport :data) {
+			boolean exist = false;
 			for(ErrorAlarmCondition errorAlarmCondition:listErrorAlarmCon) {
 				if(errorAlarmWorkRecordPubExport.getErrorAlarmCheckID().equals(errorAlarmCondition.getErrorAlarmCheckID())) {
 					errorAlarmWorkRecordPubExport.setDisplayMessage(errorAlarmCondition.getDisplayMessage().v());
+					exist = true;
 					break;
 				}
+			}
+			if (!exist) {
+				errorAlarmWorkRecordPubExport.setName(TextResource.localize("KAL008_1"));
 			}
 			
 		}

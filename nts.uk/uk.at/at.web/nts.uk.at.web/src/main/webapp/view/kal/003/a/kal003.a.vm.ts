@@ -37,6 +37,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
         tabFixedCondition: tab.FixedCheckConditionTab;
         
         selectCategoryFromDialog: KnockoutObservable<boolean> = ko.observable(false);
+        afterDelete: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             var self = this;
@@ -141,13 +142,18 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
             
             self.screenMode(model.SCREEN_MODE.NEW);
-            $("#A3_2").focus();
+            if (self.afterDelete()) {
+                self.afterDelete(false);
+            } else {
+                $("#A3_2").focus();
+            }
 
         }
 
         registerAlarmCheckCondition() {
             let self = this,
                 data: model.AlarmCheckConditionByCategory = new model.AlarmCheckConditionByCategory(self.selectedAlarmCheckCondition().code(), self.selectedAlarmCheckCondition().name(), new model.ItemModel(self.selectedAlarmCheckCondition().category(), self.selectedAlarmCheckCondition().displayCategory), self.selectedAlarmCheckCondition().availableRoles(), self.selectedAlarmCheckCondition().targetCondition());
+            //block.invisible();
             data.targetCondition(self.tabScopeCheck.targetCondition());
             data.action(self.screenMode());
             if (data.category() == model.CATEGORY.DAILY) {
@@ -172,7 +178,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
 
             let command: any = ko.toJS(data);
-            //$(".ntsDateRange_Component").trigger("validate");
+            $("#A3_4").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
                 service.registerData(command).done(function() {
@@ -190,7 +196,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
         deleteAlarmCheckCondition() {
             let self = this, data: model.AlarmCheckConditionByCategory = self.selectedAlarmCheckCondition();
-
+            nts.uk.ui.errors.clearAll();
             let command: any = ko.toJS(data);
 
             confirm({ messageId: "Msg_18" }).ifYes(() => {
@@ -200,6 +206,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     self.startPage().done(() => {
                         self.listAlarmCheckCondition.remove(function(item) { return item.code() == data.code(); });
                         if (self.listAlarmCheckCondition().length == 0) {
+                            self.afterDelete(true);
                             self.createNewAlarmCheckCondition();
                         } else {
                             if (indexItemDelete == self.listAlarmCheckCondition().length) {
@@ -209,7 +216,11 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             }
                         }
                         info({ messageId: "Msg_16" }).then(() => {
-                            //block.clear();
+                            if (self.screenMode() == nts.uk.at.view.kal003.share.model.SCREEN_MODE.UPDATE) {
+                                $("#A3_4").focus();
+                            } else {
+                                $("#A3_2").focus();
+                            }
                         });
                     });
                 }).fail(error => {
