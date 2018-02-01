@@ -66,6 +66,9 @@ public class KrqstStampRequestSetting extends UkJpaEntity {
 	@Column(name="STAMP_ATR_SUP_DISP_FLG")
 	public Integer stampAtr_Sup_Disp;
 	
+	@Column(name="STAMP_ATR_CHILD_CARE_DISP_FLG")
+	public Integer stampAtr_Child_Care_Disp;
+	
 	@Column(name="STAMP_OUT_PRI_DISP_FLG")
 	public Integer stampGoOutAtr_Private_Disp;
 	
@@ -101,7 +104,8 @@ public class KrqstStampRequestSetting extends UkJpaEntity {
 						EnumAdaptor.valueOf(this.stampAtr_Work_Disp, DisplayAtr.class), 
 						EnumAdaptor.valueOf(this.stampAtr_GoOut_Disp, DisplayAtr.class), 
 						EnumAdaptor.valueOf(this.stampAtr_Care_Disp, DisplayAtr.class), 
-						EnumAdaptor.valueOf(this.stampAtr_Sup_Disp, DisplayAtr.class)),
+						EnumAdaptor.valueOf(this.stampAtr_Sup_Disp, DisplayAtr.class),
+						EnumAdaptor.valueOf(this.stampAtr_Child_Care_Disp, DisplayAtr.class)),
 				new GoOutTypeDisplayControl(
 						EnumAdaptor.valueOf(this.stampGoOutAtr_Private_Disp, DisplayAtr.class), 
 						EnumAdaptor.valueOf(this.stampGoOutAtr_Public_Disp, DisplayAtr.class), 
