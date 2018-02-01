@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.Ap
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
@@ -37,6 +38,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.deadlinesetting.AppDeadlineSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.deadlinesetting.AppDeadlineSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
@@ -44,9 +47,13 @@ import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepositor
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -83,26 +90,34 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	private RelationshipRepository repoRelationship;
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
+	@Inject
+	private AppDeadlineSettingRepository repoDeadlineSet;
+	@Inject
+	private EmployeeRequestAdapter employeeAdaptor;
+	@Inject
+	private ClosureEmploymentRepository closureEmpRepository;
 	
 	/**
 	 * 12 - 申請一覧初期日付期間
 	 */
 	@Override
 	public DatePeriod getInitialPeriod(String companyId) {
+		String companyID = AppContexts.user().companyId();
+		String employeeID = AppContexts.user().employeeId();
+		GeneralDate baseDate = GeneralDate.today();
+		//find employment by employeeId
+		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, employeeID, baseDate);
 		//アルゴリズム「会社の締め日を取得する」を実行する
-		List<ClosureHistory> lstHist = repoClosure.findByCompanyId(companyId);
-		GeneralDate end = GeneralDate.fromString("", "yyyy-MM-dd");
-		for (ClosureHistory closureHistory : lstHist) {
-			//年月
-			YearMonth ym = closureHistory.getEndYearMonth();
-			//締め日
-			ClosureDate date = closureHistory.getClosureDate();
-		}
+		Optional<ClosureEmployment> closureEmployment = closureEmpRepository.findByEmploymentCD(companyID, empHistImport.getEmploymentCode());
+		//ドメインモデル「申請締切設定」を取得する (get domain deadline setting)
+		Optional<AppDeadlineSetting> deadlinSet =  repoDeadlineSet.getDeadlineByClosureId(companyId, closureEmployment.get().getClosureId());
+		
 		//締め日より開始日付を取得
+		// TODO Auto-generated method stub
 		GeneralDate start = GeneralDate.fromString("", "yyyy-MM-dd");
-		
+		GeneralDate end = GeneralDate.fromString("", "yyyy-MM-dd");
 		//開始日付の4か月後を終了日付として取得
-		
+		// TODO Auto-generated method stub
 		return new DatePeriod(start,end);
 	}
 	/**
@@ -268,14 +283,25 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 			if(appPost.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)){//残業申請の場合
 				//承認一覧表示設定.残業の事前申請
 				if(displaySet.getOtAdvanceDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
-					
+					//ドメインモデル「申請」を取得する
+					// TODO Auto-generated method stub
 				}
 				//承認一覧表示設定.残業の実績
 				if(displaySet.getOtActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 					//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
+					// TODO Auto-generated method stub
 				}
 			}else{//休出時間申請の場合
-				
+				//承認一覧表示設定.休出の事前申請
+				if(displaySet.getHwAdvanceDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
+					//ドメインモデル「申請」を取得する
+					// TODO Auto-generated method stub
+				}
+				//承認一覧表示設定.休出の実績
+				if(displaySet.getHwActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
+					//アルゴリズム「申請一覧リスト取得実績休出申請」を実行する-(5.1))
+					// TODO Auto-generated method stub
+				}
 			}
 		}
 		//アルゴリズム「申請一覧リスト取得承認件数」を実行する(countAppListApproval): 4 -   申請一覧リスト取得承認件数
@@ -310,7 +336,7 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	}
 	/**
 	 * 6 - 申請一覧リスト取得振休振出
-	 * wait HungDD
+	 * wait HungDD - kaf011
 	 */
 	@Override
 	public List<Application_New> getListAppComplementLeave(Application_New application) {
@@ -349,11 +375,16 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	
 	/**
 	 * 8 - 申請一覧リスト取得休暇
-	 * wait
+	 * wait - kaf006
 	 */
 	@Override
 	public List<Application_New> getListAppAbsence(Application_New application) {
 		String companyId = AppContexts.user().companyId();
+		//申請種類 - check app type
+		if(application.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)){//休暇申請以外の場合
+			
+		}
+		//休暇申請の場合
 		String relationshipCd = "";
 		// TODO Auto-generated method stub
 		//imported(就業.Shared)「続柄」を取得する
@@ -387,7 +418,11 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 		}
 		return null;
 	}
-	
+	/**
+	 * merge App And Phase
+	 * @param lstApp
+	 * @return
+	 */
 	private List<ApplicationFullOutput> mergeAppAndPhase(List<Application_New> lstApp){
 		String companyID = AppContexts.user().companyId();
 		List<ApplicationFullOutput> lstAppFull = new ArrayList<>();
