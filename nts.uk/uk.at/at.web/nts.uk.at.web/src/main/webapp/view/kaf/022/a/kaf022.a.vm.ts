@@ -460,8 +460,8 @@ module nts.uk.at.view.kmf022 {
             valueE14: KnockoutObservable<string>;
             enableE15: KnockoutObservable<boolean>;
             texteditorE16: any;
-            valueE14_1: KnockoutObservable<string>;
-            enableE15_1: KnockoutObservable<boolean>;
+            valueE17: KnockoutObservable<string>;
+            enableE18: KnockoutObservable<boolean>;
 
             //f
             selectedIdF10: KnockoutObservable<number>;
@@ -472,11 +472,11 @@ module nts.uk.at.view.kmf022 {
             enableF13_1: KnockoutObservable<boolean>;
             selectedIdF14: KnockoutObservable<number>;
             texteditorF15: any;
-            valueF15: KnockoutObservable<string>;
-            enableF15: KnockoutObservable<boolean>;
-            texteditorF16: any;
             valueF15_1: KnockoutObservable<string>;
-            enableF15_1: KnockoutObservable<boolean>;
+            enableF15_2: KnockoutObservable<boolean>;
+            texteditorF16: any;
+            valueF16_1: KnockoutObservable<string>;
+            enableF16_1: KnockoutObservable<boolean>;
             itemListF11: KnockoutObservableArray<ItemModel>;
 
             //g
@@ -1486,8 +1486,8 @@ module nts.uk.at.view.kmf022 {
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
-                self.valueE14_1 = ko.observable('');
-                self.enableE15_1 = ko.observable(false);
+                self.valueE17 = ko.observable('');
+                self.enableE18 = ko.observable(false);
                 self.checkedE11_5 = ko.observable(false);
                 self.selectedValueE11.subscribe((newValue) => {
                     if (newValue == 2) {
@@ -1517,8 +1517,8 @@ module nts.uk.at.view.kmf022 {
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
-                self.valueF15 = ko.observable('');
-                self.enableF15 = ko.observable(false);
+                self.valueF15_1 = ko.observable('');
+                self.enableF15_2 = ko.observable(false);
                 self.texteditorF16 = {
                     value: ko.observable(''),
                     constraint: 'ResidenceCode',
@@ -1532,8 +1532,8 @@ module nts.uk.at.view.kmf022 {
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
-                self.valueF15_1 = ko.observable('');
-                self.enableF15_1 = ko.observable(false);
+                self.valueF16_1 = ko.observable('');
+                self.enableF16_1 = ko.observable(false);
                 self.itemListF11 = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText('KAF022_75')),
                     new ItemModel(1, nts.uk.resource.getText('KAF022_82'))
@@ -1810,10 +1810,13 @@ module nts.uk.at.view.kmf022 {
                 self.initDataA14();
                 self.initDataA16();
                 self.initDataA17();
-                self.initDataF();
+                
                 self.initDataA5();
                 self.initDataB();
                 self.initDataD();
+                self.initDataF();
+                self.initDataE();
+                self.initDataJ();
             }
             initDataA4(): void {
                 let self = this;
@@ -1937,11 +1940,11 @@ module nts.uk.at.view.kmf022 {
                     self.checkedF13_1(data.workChangeTimeAtr == 1 ? true : false);
                     self.selectedIdF14(1);
                     self.texteditorF15.value(data.commentContent1);
-                    self.valueF15(data.commentFontColor1);
-                    self.enableF15(data.commentFontWeight1 == 1 ? true : false);
+                    self.valueF15_1(data.commentFontColor1);
+                    self.enableF15_2(data.commentFontWeight1 == 1 ? true : false);
                     self.texteditorF16.value(data.commentContent2);
-                    self.valueF15_1(data.commentFontColor2);
-                    self.enableF15_1(data.commentFontWeight2 == 1 ? true : false);
+                    self.valueF16_1(data.commentFontColor2);
+                    self.enableF16_1(data.commentFontWeight2 == 1 ? true : false);
                 });
             }
             initDataE(): void {
@@ -1949,8 +1952,39 @@ module nts.uk.at.view.kmf022 {
                 service.findStamp().done(data => {
                     self.valueE14(data.topCommentFontColor);
                     self.enableE15(data.topCommentFontWeight);
-                    self.valueE14_1(data.bottomCommentFontColor);
-                    self.enableE15_1(data.bottomCommentFontWeight);
+                    self.valueE17(data.bottomCommentFontColor);
+                    self.enableE18(data.bottomCommentFontWeight);
+                });
+                service.findTrip().done(data=>{
+                    self.selectedIdE9(data.workType);
+                    self.selectedIdE10(data.contractCheck);
+                    self.selectedValueE11(data.workChange);
+                    self.checkedE11_5(data.WorkChangeAppTime);
+                    self.selectedIdE12(data.lateLeave);
+                    self.texteditorE13.value(data.comment1);
+                    self.texteditorE16.value(data.comment2);
+                });
+            }
+            initDataJ(): void {
+                let self = this;
+                service.findStamp().done(data => {
+                    self.selectedCodeJ18(data.supFrameDispNO);
+                    self.selectedIdJ19(data.stampPlaceDisp);
+                    self.selectedIdJ20(data.stampAtr_Work_Disp);
+                    self.selectedIdJ21(data.stampAtr_GoOut_Disp);
+                    self.selectedIdJ22(data.stampAtr_Care_Disp);
+                    self.selectedIdJ23(data.stampAtr_Sup_Disp);
+                    self.selectedIdJ24(data.stampAtr_Child_Care_Disp);
+                    self.selectedIdJ25(data.stampGoOutAtr_Private_Disp);
+                    self.selectedIdJ26(data.stampGoOutAtr_Public_Disp);
+                    self.selectedIdJ27(data.stampGoOutAtr_Compensation_Disp);
+                    self.selectedIdJ28(data.stampGoOutAtr_Union_Disp);
+                    self.texteditorJ29.value(data.topComment);
+                    self.texteditorJ32.value(data.bottomComment);
+                    self.valueJ30(data.topCommentFontColor);
+                    self.valueJ30_1(data.bottomCommentFontColor);
+                    self.enableJ31(data.topCommentFontWeight);
+                    self.enableJ31_1(data.bottomCommentFontWeight);
                 });
             }
 
