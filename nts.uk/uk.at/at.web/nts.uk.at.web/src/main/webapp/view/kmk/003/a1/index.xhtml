@@ -11,7 +11,7 @@
 	</div>
 	<div class="setting_rows">
 		<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_32')}</div>
-		<input data-bind="ntsTimeWithDayEditor: {
+		<input tabindex = "25" data-bind="ntsTimeWithDayEditor: {
 			name: '#[KMK003_32]',
 			value: predseting.startDateClock,
 			constraint: 'TimeWithDayAttr',
@@ -27,7 +27,7 @@
 	<com:ko tag="if" bind="isDetailMode">
 	<div class="setting_rows">
 		<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_33')}</div>
-		<input data-bind="ntsTimeEditor: {
+		<input tabindex = "26" data-bind="ntsTimeEditor: {
 			name: '#[KMK003_33]',
 			value: predseting.rangeTimeDay,
 			constraint: 'AttendanceTime',
@@ -40,14 +40,14 @@
 			immediate: false}" 
 		/>
 		<label>#{i18n.getText('KMK003_211')}</label>
-		<div data-bind="ntsCheckBox: { checked: predseting.nightShift }">#{i18n.getText('KMK003_34')}</div>
+		<div tabindex="27" data-bind="ntsCheckBox: { checked: predseting.nightShift }">#{i18n.getText('KMK003_34')}</div>
 	</div>
 	</com:ko>
 	<com:ko tag="if" bind="isDiffTimeMode">
 		<div class="setting_rows">
 			<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_125')}</div>
 			<label>#{i18n.getText('KMK003_126')}</label>
-			<input data-bind="ntsTimeEditor: {
+			<input tabindex="28" data-bind="ntsTimeEditor: {
 				name: '#[KMK003_125]',
 				value: changeExtent.aheadChange,
 				constraint: 'AttendanceTime',
@@ -60,7 +60,7 @@
 				immediate: false}" 
 			/>
 			<label class="setting_time">#{i18n.getText('KMK003_127')}</label>
-			<input data-bind="ntsTimeEditor: {
+			<input tabindex="29" data-bind="ntsTimeEditor: {
 				name: '#[KMK003_125]',
 				value: changeExtent.behindChange,
 				constraint: 'AttendanceTime',
@@ -77,7 +77,7 @@
 	<div class="setting_rows">
 		<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_216')}</div>
 		<span>#{i18n.getText('KMK003_36')}</span> <span>#{i18n.getText('KMK003_209')}</span>
-		<input id="workTimeStartInput" data-bind="ntsTimeWithDayEditor: {
+		<input tabindex ="30" id="workTimeStartInput" data-bind="ntsTimeWithDayEditor: {
 			name: '#[KMK003_163]',
 			value: timeZoneModelOne.start,
 			constraint: 'TimeWithDayAttr',
@@ -90,7 +90,7 @@
 			immediate: false}" 
 		/>
 		<span>#{i18n.getText('KMK003_210')}</span>
-		<input id="workTimeEndInput" data-bind="ntsTimeWithDayEditor: {
+		<input tabindex ="31" id="workTimeEndInput" data-bind="ntsTimeWithDayEditor: {
 			name: '#[KMK003_164]',
 			value: timeZoneModelOne.end,
 			constraint: 'TimeWithDayAttr',
@@ -103,14 +103,14 @@
 			immediate: false}"
 		/>
 		<com:ko tag="if" bind="isDetailMode">
-		<div data-bind="ntsCheckBox: { enable: true, checked: predseting.predetermine }">#{i18n.getText('KMK003_38')}</div>
+		<div tabindex ="32" data-bind="ntsCheckBox: { enable: true, checked: predseting.predetermine }">#{i18n.getText('KMK003_38')}</div>
 		</com:ko>
 	</div>
 	<com:ko tag="if" bind="isDetailMode">
 	<div class="setting_rows">
-		<div class="label_time_tab1" data-bind="ntsCheckBox: { enable: isTimezoneTwoEnabled,checked: timeZoneModelTwo.useAtr }">#{i18n.getText('KMK003_37')}</div>
+		<div tabindex ="33" class="label_time_tab1" data-bind="ntsCheckBox: { enable: isTimezoneTwoEnabled,checked: timeZoneModelTwo.useAtr }">#{i18n.getText('KMK003_37')}</div>
 		<span>#{i18n.getText('KMK003_209')}</span>
-		<input data-bind="ntsTimeWithDayEditor: {
+		<input tabindex ="34" data-bind="ntsTimeWithDayEditor: {
 			name: '#[KMK003_163]',
 			value: timeZoneModelTwo.start,
 			constraint: 'TimeWithDayAttr',
@@ -123,7 +123,7 @@
 			immediate: false}" 
 		/>
 		<span>#{i18n.getText('KMK003_210')}</span>
-		<input data-bind="ntsTimeWithDayEditor: {
+		<input tabindex ="35" data-bind="ntsTimeWithDayEditor: {
 			name: '#[KMK003_164]',
 			value: timeZoneModelTwo.end,
 			constraint: 'TimeWithDayAttr',
@@ -140,14 +140,14 @@
 	<com:ko tag="if" bind="isFlexMode">
 		<div class="setting_rows">
 			<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_157')}</div>
-			<div data-bind="ntsSwitchButton: {
+			<div tabindex ="36" data-bind="ntsSwitchButton: {
 				options: SBcoreTimezone,
 				optionsValue: 'value',
 				optionsText: 'localizedName',
 				value: coreTimeSettingModel.timesheet,
 				enable: true }">
 			</div>
-			<input data-bind="ntsTimeWithDayEditor: {
+			<input tabindex ="37" data-bind="ntsTimeWithDayEditor: {
 				name: '#[KMK003_163]',
 				value: coreTimeSettingModel.coreTimeSheet.startTime,
 				constraint: 'TimeWithDayAttr',
@@ -160,7 +160,7 @@
 				immediate: false}" 
 			/>
 		<label>#{i18n.getText('KMK003_160')}</label>
-		<input data-bind="ntsTimeWithDayEditor: {
+		<input tabindex ="38" data-bind="ntsTimeWithDayEditor: {
 			name: '#[KMK003_164]',
 			value: coreTimeSettingModel.coreTimeSheet.endTime,
 			constraint: 'TimeWithDayAttr',
@@ -175,7 +175,7 @@
 	</div>
 	<div class="setting_rows">
 		<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_184')}</div>
-		<input data-bind="ntsTimeEditor: {
+		<input tabindex ="39" data-bind="ntsTimeEditor: {
 			name: '#[KMK003_208]',
 			value: coreTimeSettingModel.minWorkTime,
 			constraint: 'AttendanceTime',
@@ -191,7 +191,7 @@
 </com:ko>
 <div class="setting_rows">
 	<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_39')}</div>
-	<input id="breakTimeStartInput" data-bind="ntsTimeWithDayEditor: {
+	<input tabindex ="40" id="breakTimeStartInput" data-bind="ntsTimeWithDayEditor: {
 		name: '#[KMK003_39]',
 		value: predseting.prescribedTimezoneSetting.morningEndTime,
 		constraint: 'TimeWithDayAttr',
@@ -206,7 +206,7 @@
 </div>
 <div class="setting_rows">
 	<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_40')}</div>
-	<input id="breakTimeEndInput" data-bind="ntsTimeWithDayEditor: {
+	<input tabindex ="41" id="breakTimeEndInput" data-bind="ntsTimeWithDayEditor: {
 		name: '#[KMK003_40]',
 		value: predseting.prescribedTimezoneSetting.afternoonStartTime,
 		constraint: 'TimeWithDayAttr',
@@ -233,7 +233,7 @@
 			<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_42')}</div>
 		</td>
 		<td class="td-cell">
-			<input id="oneDayInput" data-bind="ntsTimeEditor: {
+			<input tabindex ="42" id="oneDayInput" data-bind="ntsTimeEditor: {
 				name: '#[KMK003_42]',
 				value: predseting.predTime.predTime.oneDay,
 				constraint: 'AttendanceTime',
@@ -252,7 +252,7 @@
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_43')}</div>
 		</td>
 		<td class="td-cell">
-			<input data-bind="ntsTimeEditor: {
+			<input tabindex ="43" data-bind="ntsTimeEditor: {
 				name: '#[KMK003_43]',
 				value: predseting.predTime.predTime.morning,
 				constraint: 'AttendanceTime',
@@ -270,7 +270,7 @@
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_44')}</div>
 		</td>
 		<td class="td-cell">
-			<input data-bind="ntsTimeEditor: {
+			<input tabindex ="44" data-bind="ntsTimeEditor: {
 				name: '#[KMK003_44]',
 				value: predseting.predTime.predTime.afternoon,
 				constraint: 'AttendanceTime',

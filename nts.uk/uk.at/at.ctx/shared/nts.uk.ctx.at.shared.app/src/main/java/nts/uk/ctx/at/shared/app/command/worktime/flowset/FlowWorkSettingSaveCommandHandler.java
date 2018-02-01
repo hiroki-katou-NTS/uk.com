@@ -56,13 +56,12 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 		FlowWorkSettingSaveCommand command = context.getCommand();
 		// Convert dto to domain
 		FlowWorkSetting flowWorkSetting = command.toDomainFlowWorkSetting();
-
-		// Validate + common handler
-		this.validate(command, flowWorkSetting);
-
+		
 		// call repository save flow work setting
 		if (command.isAddMode()) {
 			flowWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			// Validate + common handler
+			this.validate(command, flowWorkSetting);
 			this.flowRepo.add(flowWorkSetting);
 		} else {
 			Optional<FlowWorkSetting> opFlowWorkSetting = this.flowRepo.find(companyId,
@@ -70,6 +69,8 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 			if (opFlowWorkSetting.isPresent()) {
 				flowWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
 						command.getWorktimeSetting().getWorkTimeDivision(), opFlowWorkSetting.get());
+				// Validate + common handler
+				this.validate(command, flowWorkSetting);
 				this.flowRepo.update(flowWorkSetting);
 			}
 		}
