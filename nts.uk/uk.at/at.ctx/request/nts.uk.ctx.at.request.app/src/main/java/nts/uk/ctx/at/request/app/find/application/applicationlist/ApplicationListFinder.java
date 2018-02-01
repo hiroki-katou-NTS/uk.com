@@ -36,11 +36,13 @@ public class ApplicationListFinder {
 			appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
 		}
 		//URパラメータが存在する-(Check param)
-		if(param == null){//存在する場合
+		if(param.getAppListAtr() != null){//存在する場合
+			//期間（開始日、終了日）が存する場合
 			// TODO Auto-generated method stub
-			
 		}else{//存在しない場合
+			//ドメインモデル「申請一覧抽出条件」を取得する
 			// TODO Auto-generated method stub
+			//申請一覧抽出条件.社員IDリストが空白
 		}
 		//ドメインモデル「申請一覧共通設定フォーマット.表の列幅」を取得-(Lấy 表の列幅)//xu ly o ui
 		//アルゴリズム「申請一覧リスト取得」を実行する-(Thực hiện thuật toán Application List get): 1-申請一覧リスト取得
