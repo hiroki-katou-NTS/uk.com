@@ -183,10 +183,10 @@ module nts.uk.at.view.kal004.a.model {
                 self.setPermissionModel.selectedRuleCode(1);
                 self.setPermissionModel.enableSetting(false);
                 
-                $('#alarmCode').focus();
-                
                 //tab2
-                self.periodSetting.isCreateMode(true);
+                self.periodSetting.isCreateMode(true);             
+                                
+                $('#alarmCode').focus();
             }
             else {
                 self.createMode(false);
@@ -227,13 +227,19 @@ module nts.uk.at.view.kal004.a.model {
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
                 self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting == true ? 0 : 1);
-                self.setPermissionModel.enableSetting(true);
-                
-                $('#alarmName').focus();
+                self.setPermissionModel.enableSetting(true);                
                 
                 //tab2
                 self.periodSetting.isCreateMode(false);
+                
+                $('#alarmName').focus();
             }
+        }
+        
+        public setFocus(): void {
+            let self = this;
+            if(self.currentCode()=='') $('#alarmCode').focus();
+            else   $('#alarmName').focus();          
         }
 
         public saveAlarm(): void {
