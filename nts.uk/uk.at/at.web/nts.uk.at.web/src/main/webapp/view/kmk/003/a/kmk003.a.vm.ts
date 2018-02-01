@@ -163,7 +163,9 @@ module nts.uk.at.view.kmk003.a {
                 
                 self.selectedWorkTimeCode.subscribe(function(worktimeCode: string){
                     if (worktimeCode) {
-                       self.loadWorktimeSetting(worktimeCode); 
+                        self.loadWorktimeSetting(worktimeCode);
+                        // focus worktime atr
+                        $('#search-daily-atr').focus();
                     }
                 });
                 
@@ -544,7 +546,7 @@ module nts.uk.at.view.kmk003.a {
                 self.screenMode(ScreenMode.COPY);
                 
                 // focus worktime atr
-                $('#cbb-worktime-atr').focus();
+                $('#search-daily-atr').focus();
             }
 
             /**
