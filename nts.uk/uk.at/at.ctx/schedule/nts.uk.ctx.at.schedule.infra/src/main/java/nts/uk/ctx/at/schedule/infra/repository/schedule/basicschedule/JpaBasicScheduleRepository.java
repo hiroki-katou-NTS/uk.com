@@ -26,7 +26,9 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
+import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedulePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcareschedule.KscdtScheChildCare;
@@ -35,10 +37,16 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.childcaresched
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFee;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFeePK_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFee_;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workschedulebreak.KscdtWorkScheduleBreak;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workschedulebreak.KscdtWorkScheduleBreakPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workschedulebreak.KscdtWorkScheduleBreakPK_;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workschedulebreak.KscdtWorkScheduleBreak_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZonePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZonePK_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone_;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfo;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfoPK;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleGetMemento;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.childcareschedule.JpaChildCareScheduleSetMememto;
 import nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule.personalfee.JpaWorkSchedulePersonFeeGetMemento;
@@ -70,6 +78,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		if (list.size() > 0) {
 			this.insertAllWorkScheduleTimeZone(bSchedule.getEmployeeId(), bSchedule.getDate(), list);
 		}
+		this.insertScheduleMaster(bSchedule.getWorkScheduleMaster());
+		this.insertScheduleBreakTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleBreaks());
 	}
 
 	/*
@@ -86,6 +96,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getChildCareSchedules());
 		this.removeAllTimeZone(bSchedule.getEmployeeId(), bSchedule.getDate());
 		this.insertAllWorkScheduleTimeZone(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleTimeZones());
+		this.updateScheduleMaster(bSchedule.getWorkScheduleMaster());
+		this.updateScheduleBreakTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleBreaks());
 	}
 
 	/**
@@ -509,5 +521,118 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 
 		// exclude select
 		return query.getResultList();
+	}
+	
+	/**
+	 * insert 勤務予定マスタ情報
+	 * @param workScheduleMaster
+	 */
+	private void insertScheduleMaster(ScheMasterInfo scheMasterInfo) {
+		if (scheMasterInfo == null) {
+			return;
+		}
+		
+		KscdtScheMasterInfoPK primaryKey = new KscdtScheMasterInfoPK(scheMasterInfo.getSId(), scheMasterInfo.getGeneralDate());
+		
+		KscdtScheMasterInfo sscdtScheMasterInfo = new KscdtScheMasterInfo(
+				primaryKey,
+				scheMasterInfo.getEmploymentCd(),
+				scheMasterInfo.getClassificationCd(),
+				scheMasterInfo.getWorkTypeCd(),
+				scheMasterInfo.getJobId(),
+				scheMasterInfo.getWorkplaceId());
+		this.commandProxy().insert(sscdtScheMasterInfo);
+	}
+
+	/**
+	 * update 勤務予定マスタ情報
+	 * @param workScheduleMaster
+	 */
+	private void updateScheduleMaster(ScheMasterInfo scheMasterInfo) {
+		if (scheMasterInfo == null) {
+			return;
+		}
+		
+		KscdtScheMasterInfoPK primaryKey = new KscdtScheMasterInfoPK(scheMasterInfo.getSId(), scheMasterInfo.getGeneralDate());		
+		KscdtScheMasterInfo kscdtScheMasterInfo = this.queryProxy().find(primaryKey, KscdtScheMasterInfo.class).get();
+		
+		kscdtScheMasterInfo.employmentCd = scheMasterInfo.getEmploymentCd();
+		kscdtScheMasterInfo.classificationCd = scheMasterInfo.getClassificationCd();
+		kscdtScheMasterInfo.workTypeCd = scheMasterInfo.getWorkTypeCd();
+		kscdtScheMasterInfo.jobId = scheMasterInfo.getJobId();
+		kscdtScheMasterInfo.workplaceId = scheMasterInfo.getWorkplaceId();
+		
+		this.commandProxy().update(kscdtScheMasterInfo);
+	}
+	
+	/**
+	 * insert 勤務予定休憩
+	 * @param workScheduleBreaks
+	 */
+	private void insertScheduleBreakTime(String employeeId, GeneralDate baseDate, List<WorkScheduleBreak> workScheduleBreaks) {
+		if (CollectionUtil.isEmpty(workScheduleBreaks)) {
+			return;
+		}
+		
+		List<KscdtWorkScheduleBreak> entityWorkBreakList = workScheduleBreaks.stream().map(domain -> {
+			KscdtWorkScheduleBreakPK key = new KscdtWorkScheduleBreakPK(employeeId, baseDate, domain.getScheduleBreakCnt().v());
+			KscdtWorkScheduleBreak entity = new KscdtWorkScheduleBreak(key, domain.getScheduledStartClock().v(), domain.getScheduledEndClock().v());
+			return entity;
+		}).collect(Collectors.toList());
+		
+		this.commandProxy().insertAll(entityWorkBreakList);
+	}
+
+	/**
+	 * update 勤務予定休憩
+	 * @param workScheduleBreaks
+	 */
+	private void updateScheduleBreakTime(String employeeId, GeneralDate baseDate, List<WorkScheduleBreak> workScheduleBreaks) {
+		if (CollectionUtil.isEmpty(workScheduleBreaks)) {
+			return;
+		}
+		
+		this.removeAllScheduleBreakTime(employeeId, baseDate);
+		this.insertScheduleBreakTime(employeeId, baseDate, workScheduleBreaks);
+	}
+	
+	/**
+	 * Removes the all time zone.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 */
+	private void removeAllScheduleBreakTime(String employeeId, GeneralDate baseDate) {
+
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KSCDT_WORK_SCH_TIMEZONE (KscdtWorkScheduleBreak SQL)
+		CriteriaDelete<KscdtWorkScheduleBreak> cq = criteriaBuilder
+				.createCriteriaDelete(KscdtWorkScheduleBreak.class);
+
+		// root data
+		Root<KscdtWorkScheduleBreak> root = cq.from(KscdtWorkScheduleBreak.class);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal employee id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPK).get(KscdtWorkScheduleBreakPK_.sId),
+				employeeId));
+
+		// equal year month date base date
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPK).get(KscdtWorkScheduleBreakPK_.date),
+				baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		em.createQuery(cq).executeUpdate();
+
 	}
 }

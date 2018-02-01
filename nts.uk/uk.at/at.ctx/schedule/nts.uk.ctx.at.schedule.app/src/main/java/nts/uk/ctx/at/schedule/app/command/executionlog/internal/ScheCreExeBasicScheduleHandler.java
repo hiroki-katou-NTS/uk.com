@@ -338,6 +338,9 @@ public class ScheCreExeBasicScheduleHandler {
 	private BasicScheduleSaveCommand saveBreakTime(String companyId,
 			BasicScheduleSaveCommand commandSave) {
 		BusinessDayCal businessDayCal = this.scheWithBusinessDayCalService.scheduleBreakTime(companyId, commandSave.getWorktypeCode(), commandSave.getWorktimeCode());
+		if (businessDayCal == null) {
+			return commandSave;
+		}
 		List<WorkScheduleBreakSaveCommand> workScheduleBreaks = new ArrayList<WorkScheduleBreakSaveCommand>();
 		List<DeductionTime> timeZones = businessDayCal.getTimezones();
 		for(int i=0;i< timeZones.size();i++){

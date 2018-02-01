@@ -98,7 +98,9 @@ public class BasicScheduleSaveCommand {
 	 * @return the basic schedule
 	 */
 	public BasicSchedule toDomain(){
-		return new BasicSchedule(new BasicScheduleSaveCommandGetMementoImpl());
+		BasicSchedule result = new BasicSchedule(new BasicScheduleSaveCommandGetMementoImpl());
+		result.setWorkScheduleMaster(this.workScheduleMaster);
+		return result;
 	}
 	
 	/**
