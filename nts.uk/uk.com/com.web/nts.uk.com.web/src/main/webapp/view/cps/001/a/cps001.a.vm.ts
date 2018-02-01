@@ -844,22 +844,25 @@ module cps001.a.vm {
 
                                 self.infoId(undefined);
 
-                                let removed: Array<any> = [];
+                                let removed: Array<any> = [],
+                                    clearRecord = (m: any) => {
+                                        if (!_.isArray(m)) {
+                                            m.recordId = undefined;
+                                        } else {
+                                            _.each(m, k => {
+                                                k.recordId = undefined;
+                                            });
+                                        }
+                                    };
                                 _.each(data.classificationItems, (c: any, i: number) => {
                                     if (_.has(c, "items") && _.isArray(c.items)) {
+                                        _.each(c.items, m => clearRecord(m));
+
+                                        // clear value of first set item
                                         if (!removed.length) {
                                             removed = _.filter(c.items, (x: any) => x.item && x.item.dataTypeValue == ITEM_SINGLE_TYPE.DATE);
                                             if (removed.length) {
-                                                _.each(c.items, m => {
-                                                    if (!_.isArray(m)) {
-                                                        m.value = undefined;
-                                                        m.recordId = undefined;
-                                                    } else {
-                                                        _.each(m, k => {
-                                                            k.recordId = undefined;
-                                                        });
-                                                    }
-                                                });
+                                                _.each(c.items, m => m.value = undefined);
                                             }
                                         }
                                     }

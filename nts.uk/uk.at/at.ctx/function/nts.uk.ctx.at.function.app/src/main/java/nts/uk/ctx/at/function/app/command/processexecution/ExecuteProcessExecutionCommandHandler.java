@@ -2,8 +2,11 @@ package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.time.DateTimeException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -42,17 +45,27 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSett
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ProcessFlowOfDailyCreationDomainService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationService;
+import nts.uk.ctx.at.record.dom.workrecord.log.CalExeSettingInfor;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfo;
+import nts.uk.ctx.at.record.dom.workrecord.log.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.log.ExecutionTime;
 import nts.uk.ctx.at.record.dom.workrecord.log.ObjectPeriod;
+import nts.uk.ctx.at.record.dom.workrecord.log.SettingInforForDailyCreation;
+import nts.uk.ctx.at.record.dom.workrecord.log.TargetPersonRepository;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.DailyRecreateClassification;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutedMenu;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionStatus;
+import nts.uk.ctx.at.record.dom.workrecord.log.enums.ExecutionType;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommandHandler;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
@@ -134,6 +147,17 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	@Inject
 	private BusinessTypeEmpOfHistoryRepository typeEmployeeOfHistoryRepos;
 	
+	@Inject
+	private TargetPersonRepository targetPersonRepository;
+	
+	@Inject
+	private CreateDailyResultDomainService createDailyResultDomainService;
+	
+	@Inject
+	private DailyCalculationService dailyCalculationService;
+	
+	@Inject
+	private ErrMessageInfoRepository errMessageInfoRepository;
 	/**
 	 * 更新処理を開始する
 	 * 
@@ -229,7 +253,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		} else {
 			this.execTaskLogRepo.updateAll(companyId, execItemCd, execId, procExecLog.getTaskLogList());
 		}
-		this.procExecLogRepo.update(procExecLog);
 		
 		/*
 		 * ドメインモデル「更新処理自動実行ログ」を更新する
@@ -306,9 +329,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		 *  実行ID
 		 *  取得したドメインモデル「更新処理自動実行」、「実行タスク設定」、「更新処理自動実行ログ」の情報
 		 */
-//		this.createSchedule(execId, procExec, execSetting, procExecLog);
-//		this.createDailyData(execId, procExec, execSetting, procExecLog, context);
-		
 		if (!this.createSchedule(execId, procExec, procExecLog)) {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.FORCE_END);
@@ -430,8 +450,16 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			DatePeriod period = this.findClosurePeriod(companyId, closureList);
 			
 			// ドメインモデル「就業計算と集計実行ログ」を新規登録する
-			this.registerEmpCalAndSumExeLog(execId, procExecLog, command, period.start(), period.end());
+			EmpCalAndSumExeLog empCalAndSumExeLog = null;
+			Optional<EmpCalAndSumExeLog> empExeLogOpt = 
+					this.empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(execId);
+			if (empExeLogOpt.isPresent()) {
+				empCalAndSumExeLog = empExeLogOpt.get();
+			} else {
+				empCalAndSumExeLog = this.registerEmpCalAndSumExeLog(execId, procExecLog, command, period.start(), period.end());
+			}
 			
+			val asyncContext = context.asAsync();
 			for (Closure closure : closureList) {
 				// 期間の計算
 				this.calculateDailyPeriod(procExec,
@@ -445,57 +473,101 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 									this.closureEmpRepo.findByClosureId(companyId, closure.getClosureId().value);
 				
 				// 対象社員を取得 - TODO
+				List<String> sidList = new ArrayList<>();
+				sidList.add(AppContexts.user().employeeId()); // Add login sid to test, remove when implement [対象社員を取得]
 				
+//				// Insert all TargetPersons
+//				List<TargetPerson> lstTargetPerson = new ArrayList<TargetPerson>();
+//				for (String employeeID : sidList) {
+//					List<ComplStateOfExeContents> lstState = new ArrayList<ComplStateOfExeContents>();
+//					for (ExecutionLog executionLog : empCalAndSumExeLog.getExecutionLogs()) {
+//						ComplStateOfExeContents state = new ComplStateOfExeContents(executionLog.getExecutionContent(), EmployeeExecutionStatus.INCOMPLETE);
+//						lstState.add(state);
+//					}
+//					TargetPerson targetPerson = new TargetPerson(employeeID, empCalAndSumExeLog.getEmpCalAndSumExecLogID(), lstState);
+//					lstTargetPerson.add(targetPerson);
+//				}
+//				targetPersonRepository.addAll(lstTargetPerson);
 				// 取得した社員IDを1つずつ順番に回す（取得した社員ID　＝　回数）
-				try {
-					for (ClosureEmployment employee : employmentList) {
-						DatePeriod createPeriod = procExecLog.getEachProcPeriod().getDailyCreationPeriod();
-						val asyncContext = context.asAsync();
-						// 実行
-						processFlowOfDailyCreationDomainService.processFlowOfDailyCreation(asyncContext, ExecutionAttr.MANUAL, createPeriod, execId);
-						// 実行処理からパラメータで「終了状態=中断」がかえってきているか確認する
-						Optional<EmpCalAndSumExeLog> empExeLogOpt = 
-								this.empCalAndSumExeLogRepository.getByExecLogIDUpdateProcessing(execId);
-						if (empExeLogOpt.isPresent()) {
-							// 終了状態　＝　中断
-							if (empExeLogOpt.get().getExecutionStatus().value == ExeStateOfCalAndSum.STOPPING.value) {
-								return false;
-							}
-						}
-					}
-					// ドメインモデル「更新処理自動実行ログ」を更新する
-					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.SUCCESS);
-				} catch (Exception e) {
-					// ドメインモデル「更新処理自動実行ログ」を更新する
-					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.ABNORMAL_END);
+				
+				ProcessState finalStatus = ProcessState.SUCCESS;
+				// 実行ログを確認する
+				val executionLogs = empCalAndSumExeLog.getExecutionLogs();
+				Map<ExecutionContent, ExecutionLog> logsMap = new HashMap<>();
+				for (val executionLog : executionLogs){
+					logsMap.put(executionLog.getExecutionContent(), executionLog);
 				}
 				
-				// 対象社員を取得 - TODO
+				DatePeriod createPeriod = procExecLog.getEachProcPeriod().getDailyCreationPeriod();
+				// 日別実績の作成　実行
+				if (logsMap.containsKey(ExecutionContent.DAILY_CREATION)
+						&& finalStatus == ProcessState.SUCCESS) {
+					try {
+						Optional<ExecutionLog> dailyCreationLog =
+								Optional.of(logsMap.get(ExecutionContent.DAILY_CREATION));
+						finalStatus = this.createDailyResultDomainService.createDailyResult(asyncContext, sidList,
+								createPeriod, ExecutionAttr.MANUAL, companyId, execId, dailyCreationLog);
+						if (finalStatus == ProcessState.SUCCESS) {
+							// ドメインモデル「更新処理自動実行ログ」を更新する
+							this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.SUCCESS);
+						}
+					} catch (Exception e) {
+						// ドメインモデル「更新処理自動実行ログ」を更新する
+						this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.ABNORMAL_END);
+					}
+				}
 				
-				// 取得した社員IDを1つずつ順番に回す（取得した社員ID　＝　回数）
-				try {
-					for (ClosureEmployment employee : employmentList) {
-						DatePeriod calPeriod = procExecLog.getEachProcPeriod().getDailyCalcPeriod();
-						val asyncContext = context.asAsync();
-						// 実行
-						processFlowOfDailyCreationDomainService.processFlowOfDailyCreation(asyncContext, ExecutionAttr.MANUAL, calPeriod, execId);
+				if (logsMap.containsKey(ExecutionContent.DAILY_CALCULATION)
+						&& finalStatus == ProcessState.SUCCESS) {
+					try {
+						Optional<ExecutionLog> dailyCalculationLog =
+								Optional.of(logsMap.get(ExecutionContent.DAILY_CALCULATION));
+						finalStatus = this.dailyCalculationService.manager(asyncContext, companyId, sidList,
+								createPeriod, ExecutionAttr.MANUAL, execId, dailyCalculationLog);
 						
-						// 実行処理からパラメータで「終了状態=中断」がかえってきているか確認する
-						Optional<EmpCalAndSumExeLog> empExeLogOpt = 
-								this.empCalAndSumExeLogRepository.getByExecLogIDUpdateProcessing(execId);
-						if (empExeLogOpt.isPresent()) {
-							// 終了状態　＝　中断
-							if (empExeLogOpt.get().getExecutionStatus().value == ExeStateOfCalAndSum.STOPPING.value) {
-								return false;
-							}
+						if (finalStatus == ProcessState.SUCCESS) {
+							// ドメインモデル「更新処理自動実行ログ」を更新する
+							this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.SUCCESS);
 						}
+					} catch (Exception e) {
+						// ドメインモデル「更新処理自動実行ログ」を更新する
+						this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.ABNORMAL_END);
 					}
-					// ドメインモデル「更新処理自動実行ログ」を更新する
-					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.SUCCESS);
-				} catch (Exception e) {
-					// ドメインモデル「更新処理自動実行ログ」を更新する
-					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.ABNORMAL_END);
 				}
+			
+				// 終了状態　＝　中断
+				if (finalStatus == ProcessState.INTERRUPTION) {
+					this.empCalAndSumExeLogRepository.updateStatus(execId, ExeStateOfCalAndSum.STOPPING.value);
+					return false;
+				} else {
+					ExeStateOfCalAndSum executionStatus = this.updateExecutionState(execId);
+					this.empCalAndSumExeLogRepository.updateStatus(execId, executionStatus.value);
+				}
+//				try {
+//					
+////					for (ClosureEmployment employee : employmentList) {
+//					DatePeriod createPeriod = procExecLog.getEachProcPeriod().getDailyCreationPeriod();
+//					
+//					// 実行
+//					processFlowOfDailyCreationDomainService.processFlowOfDailyCreation(asyncContext, ExecutionAttr.MANUAL, createPeriod, execId);
+//					// 実行処理からパラメータで「終了状態=中断」がかえってきているか確認する
+//					Optional<EmpCalAndSumExeLog> empExeLogOpt = 
+//							this.empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(execId);
+//					if (empExeLogOpt.isPresent()) {
+//						// 終了状態　＝　中断
+//						if (empExeLogOpt.get().getExecutionStatus().value == ExeStateOfCalAndSum.STOPPING.value) {
+//							return false;
+//						}
+//					}
+////					}
+//					// ドメインモデル「更新処理自動実行ログ」を更新する
+//					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.SUCCESS);
+//					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.SUCCESS);
+//				} catch (Exception e) {
+//					// ドメインモデル「更新処理自動実行ログ」を更新する
+//					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.ABNORMAL_END);
+//					this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.ABNORMAL_END);
+//				}
 			}
 		return true;
 	}
@@ -525,7 +597,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		return new DatePeriod(startClosingDate, endClosingDate);
 	}
 
-	private void registerEmpCalAndSumExeLog(String execId, ProcessExecutionLog procExecLog,
+	private EmpCalAndSumExeLog registerEmpCalAndSumExeLog(String execId, ProcessExecutionLog procExecLog,
 			ExecuteProcessExecutionCommand command, GeneralDate startClosingDate, GeneralDate endClosingDate) {
 		GeneralDateTime now = GeneralDateTime.now();
 		Integer processingMonth = Integer.valueOf(GeneralDate.today().toString("YYYYMM"));
@@ -542,23 +614,37 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 													IdentifierUtil.randomUniqueId(),
 													new ArrayList<>());
 		// ドメインモデル「実行ログ」を新規登録する
-		empCalAndSumExeLog.addExecutionLog(new ExecutionLog(
+		ExecutionLog dailyCreateLog = new ExecutionLog(
 				execId,
 				ExecutionContent.DAILY_CREATION,
 				ErrorPresent.NO_ERROR,
 				new ExecutionTime(now, now),
 				ExecutionStatus.INCOMPLETE,
 				new ObjectPeriod(startClosingDate, endClosingDate)
-				));
-		empCalAndSumExeLog.addExecutionLog(new ExecutionLog(
+				);
+		dailyCreateLog.setDailyCreationSetInfo(
+				new SettingInforForDailyCreation(ExecutionContent.DAILY_CREATION,
+						ExecutionType.NORMAL_EXECUTION,
+						IdentifierUtil.randomUniqueId(),
+						DailyRecreateClassification.REBUILD, Optional.empty()));
+		empCalAndSumExeLog.addExecutionLog(dailyCreateLog);
+		
+		ExecutionLog dailyCalLog = new ExecutionLog(
 				execId,
 				ExecutionContent.DAILY_CALCULATION,
 				ErrorPresent.NO_ERROR,
 				new ExecutionTime(now, now),
 				ExecutionStatus.INCOMPLETE,
 				new ObjectPeriod(startClosingDate, endClosingDate)
-				));
-		this.empCalSumRepo.addFromUpdateProcessing(empCalAndSumExeLog);
+				);
+		dailyCalLog.setDailyCalSetInfo(new CalExeSettingInfor(ExecutionContent.DAILY_CALCULATION,
+				ExecutionType.NORMAL_EXECUTION,
+				IdentifierUtil.randomUniqueId()));
+		empCalAndSumExeLog.addExecutionLog(dailyCalLog);
+		this.empCalSumRepo.add(empCalAndSumExeLog);
+//		this.empCalSumRepo.addFromUpdateProcessing(empCalAndSumExeLog);
+		
+		return empCalAndSumExeLog;
 	}
 	
 	private void updateEachTaskStatus(ProcessExecutionLog procExecLog, ProcessExecutionTask execTask, EndStatus status) {
@@ -571,7 +657,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	
 	private boolean isAbnormalTermEachTask(ProcessExecutionLog procExecLog) {
 		for (ExecutionTaskLog task : procExecLog.getTaskLogList()) {
-			if (EndStatus.ABNORMAL_END.value == task.getProcExecTask().value) {
+			if (EndStatus.ABNORMAL_END.value == task.getStatus().value) {
 				return true;
 			}
 		}
@@ -763,5 +849,25 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				employeeHistList.forEach(x->newEmployeeList.add(x.getEmployeeId()));
 			}
 		}
+	}
+	
+private ExeStateOfCalAndSum updateExecutionState(String empCalAndSumExecLogID){
+		
+		// 0 : 完了
+		// 1 : 完了（エラーあり）
+		ExeStateOfCalAndSum executionStatus = ExeStateOfCalAndSum.DONE;
+		
+		List<ErrMessageInfo> errMessageInfos = this.errMessageInfoRepository.getAllErrMessageInfoByEmpID(empCalAndSumExecLogID);
+		List<String> errorMessage = errMessageInfos.stream().map(error -> {
+			return error.getMessageError().v();
+		}).collect(Collectors.toList());
+		if (errorMessage.isEmpty()) {
+			executionStatus = ExeStateOfCalAndSum.DONE;
+
+		} else {
+			executionStatus = ExeStateOfCalAndSum.DONE_WITH_ERROR;
+		}
+		
+		return executionStatus;
 	}
 }
