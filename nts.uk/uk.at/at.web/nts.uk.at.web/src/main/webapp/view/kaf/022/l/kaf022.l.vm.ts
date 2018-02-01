@@ -1,5 +1,4 @@
 module nts.uk.at.view.kmf022.l.viewmodel {
-    //import service = nts.uk.at.view.kmf022.l.service;
     export class ScreenModel {
         //Screen mode
         screenMode: ScreenMode = ScreenMode.INSERT;
@@ -9,9 +8,11 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         alreadySettingList: KnockoutObservableArray<any>;
         employmentName: KnockoutObservable<string> = ko.observable('');
         workTypeList: Array<any>;
-        settingData: any;
         appSetData: KnockoutObservable<PreBeforeAppSetData> = ko.observable(new PreBeforeAppSetData(''));
-        saveNotify:KnockoutObservable<boolean> = ko.observable(false);
+        alreadySettingData: Array<any>;
+        //previewData: any = null;
+        //previewCode: string = "";
+        //saveNotify:KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.alreadySettingList = ko.observableArray([]);
@@ -46,7 +47,31 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             var self = this;
             var dfd = $.Deferred();  
             $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function () {                
-                service.findEmploymentSetByCid().done(data => {
+                //Load data setting
+                self.reloadData();            
+                //Find work type list:
+                service.findAllWorktype().done(data => {
+                    self.workTypeList = data;
+                    self.updateWorkTypeName();
+                    nts.uk.ui.block.clear();
+                }).fail((res) => {
+                    dfd.reject();
+                    nts.uk.ui.block.clear();
+                });
+                dfd.resolve();
+                nts.uk.ui.block.clear();
+            }).fail((res) => {
+                dfd.reject();
+                nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
+                    nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");  
+                });
+                nts.uk.ui.block.clear();
+            });   
+            return dfd.promise();
+        }
+        reloadData(){
+            let self = this;
+            service.findEmploymentSetByCid().done(data => {
                     //Find already setting list
                     if(data!= null && data.length > 0){
                         //Get Employment List.
@@ -59,117 +84,120 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                             self.alreadySettingList(_.map(alreadyLst, item => {
                                                         let alreadyList: UnitAlreadySettingModel = {code: item.code, isAlreadySetting: true};
                                                         return alreadyList;}));
+                        //Store for preview process
+                        self.alreadySettingData = data;
+                        self.updateWorkTypeName();
                     }
-                    
-                    //Store setting data for next process
-                    self.settingData = data;
+                    nts.uk.ui.block.clear();
                 }).fail((res) => {
-                    dfd.reject();
+                    nts.uk.ui.block.clear();
                 });
-            
-                //Find worktype list:
-                service.findAllWorktype().done(data => {
-                    self.workTypeList = data;
-                }).fail((res) => {
-                    dfd.reject();
-                });
-                dfd.resolve();      
-                nts.uk.ui.block.clear();
-            }).fail((res) => {
-                dfd.reject();
-                nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
-                    nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");  
-                });
-                nts.uk.ui.block.clear();
-            });          
-                   
-            
-                 
-            return dfd.promise();
         }
-        changeEmploymentCode(empCode: string){             
+        updateWorkTypeName(){
             let self = this;
-            if(self.saveNotify()){
-                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_19' }).ifNo(function() {
-                        return;
-                });   
-             } 
+            //Update work type name
+            if(nts.uk.util.isNullOrUndefined(self.alreadySettingData) || nts.uk.util.isNullOrUndefined(self.workTypeList)){
+                return;
+            }
+            self.alreadySettingData = _.map(self.alreadySettingData, function(i:any) {
+                i.lstWorkType = _.map(i.lstWorkType, function(wkType:any) {
+                    let name: string = "";
+                    let foundEmployment = _.find(self.workTypeList, function(item:any) { return wkType.workTypeCode === item.workTypeCode; });
+                    if(!nts.uk.util.isNullOrUndefined(foundEmployment)){
+                        wkType.workTypeName = foundEmployment.name
+                    }
+                    return wkType;
+                    });
+                   return i; 
+                });
+        }
+        /**
+         * Load & binding data
+         */
+        changeEmploymentCode(empCode: string){                         
+            let self = this;
+//            if(empCode === self.previewCode) return;
+//            if(self.checkSaveChanged()){
+//                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_19' })
+//                 .ifNo(function() { //Back to preview data
+//                    self.selectedCode(self.previewCode);
+//                    return;
+//                });   
+//             } 
             //return if no selected employment code
             if(nts.uk.util.isNullOrEmpty(empCode)) return;
-            
+            nts.uk.ui.block.invisible();
             self.screenMode = ScreenMode.INSERT;
             self.appSetData(new PreBeforeAppSetData(empCode));
             //Find employment code
-            service.findEmploymentSetByEmpCode(empCode).done(data =>{
-                if(data!= null && data.length > 0){
-                    //残業申請
-                    let overTimeData = _.filter(data, function(item:any) { return item.appType === ApplicationType.OVER_TIME_APPLICATION; });
-                    if(overTimeData!= null && overTimeData.length > 0){ 
-                        self.initDataSetting(self.appSetData().overTimeSet(), overTimeData[0]);
-                    }
-                     //休暇申請
-                    let absenceData = _.filter(data, function(item:any) { return item.appType === ApplicationType.ABSENCE_APPLICATION; });
-                    if(absenceData!= null && absenceData.length > 0){
-                       self.initDataSettingWithListCode(self.appSetData().absenceSet(), absenceData);
-                    }             
-                    //2:勤務変更申請
-                    let workChangeData = _.filter(data, function(item:any) { return item.appType === ApplicationType.WORK_CHANGE_APPLICATION; });
-                    if(workChangeData!= null && workChangeData.length > 0){
-                        self.initDataSetting(self.appSetData().workChangeSet(), workChangeData[0]);
-                    }
-                    //3:出張申請
-                    let businessTripData = _.filter(data, function(item:any) { return item.appType === ApplicationType.BUSINESS_TRIP_APPLICATION; });
-                    if(businessTripData!= null && businessTripData.length > 0){
-                         self.initDataSetting(self.appSetData().businessTripSet(), businessTripData[0]);
-                    }
-                    //4:直行直帰申請
-                    let goReturndirectData = _.filter(data, function(item:any) { return item.appType === ApplicationType.GO_RETURN_DIRECTLY_APPLICATION; });
-                    if(goReturndirectData!= null && goReturndirectData.length > 0){
-                        self.initDataSetting(self.appSetData().goReturndirectSet(), goReturndirectData[0]);
-                    }
-                    //6:休出時間申請
-                    let breakTimeData = _.filter(data, function(item:any) { return item.appType === ApplicationType.BREAK_TIME_APPLICATION; });
-                    if(breakTimeData!= null && breakTimeData.length > 0){
-                        self.initDataSetting(self.appSetData().breakTimeSet(), breakTimeData[0]);
-                    }
-                    //7:打刻申請(打刻申請)
-                    let stampData = _.filter(data, function(item:any) { return item.appType === ApplicationType.STAMP_APPLICATION; });
-                    if(stampData!= null && stampData.length > 0){
-                        self.initDataSetting(self.appSetData().stampSet(), stampData[0]);
-                    }
-                    //8:時間年休申請
-                    let annualHolidayData = _.filter(data, function(item:any) { return item.appType === ApplicationType.ANNUAL_HOLIDAY_APPLICATION; });
-                    if(annualHolidayData!= null && annualHolidayData.length > 0){
-                        self.initDataSetting(self.appSetData().annualHolidaySet(), annualHolidayData[0]);
-                    }
-                    //9:遅刻早退取消申請
-                    let earlyLeaveData = _.filter(data, function(item:any) { return item.appType === ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION; });
-                    if(earlyLeaveData!= null && earlyLeaveData.length > 0){
-                        self.initDataSetting(self.appSetData().earlyLeaveSet(), earlyLeaveData[0]);
-                    }
-                    //10:振休振出申請        
-                    let complementLeaveData = _.filter(data, function(item:any) { return item.appType === ApplicationType.COMPLEMENT_LEAVE_APPLICATION; });
-                    if(complementLeaveData!= null && complementLeaveData.length > 0){
-                        self.initDataSettingWithListCode(self.appSetData().complementLeaveSet(), complementLeaveData);
-                    }
-                    //11:打刻申請（NR形式）               
-                    let stampNRData = _.filter(data, function(item:any) { return item.appType === ApplicationType.STAMP_NR_APPLICATION; });
-                    if(stampNRData!= null && stampNRData.length > 0){
-                        self.initDataSetting(self.appSetData().stampNRSet(), stampNRData[0]);
-                    }
-                    //14:３６協定時間申請                              
-                    let application36Data = _.filter(data, function(item:any) { return item.appType === ApplicationType.APPLICATION_36; });
-                    if(application36Data!= null && application36Data.length > 0){
-                        self.initDataSetting(self.appSetData().application36Set(), application36Data[0]);
-                    }       
-                    self.screenMode = ScreenMode.UPDATE;
+            let data = _.filter(self.alreadySettingData, function(item:any) { return item.employmentCode === empCode; });
+            
+            if(data!= null && data.length > 0){
+                //残業申請
+                let overTimeData = _.filter(data, function(item:any) { return item.appType === ApplicationType.OVER_TIME_APPLICATION; });
+                if(overTimeData!= null && overTimeData.length > 0){ 
+                    self.initDataSetting(self.appSetData().overTimeSet(), overTimeData[0]);
                 }
-            }).fail((res) => {
-                nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
-                    //nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");  
-                });
-                nts.uk.ui.block.clear();
-            });       
+                 //休暇申請
+                let absenceData = _.filter(data, function(item:any) { return item.appType === ApplicationType.ABSENCE_APPLICATION; });
+                if(absenceData!= null && absenceData.length > 0){
+                   self.initDataSettingWithListCode(self.appSetData().absenceSet(), absenceData);
+                }             
+                //2:勤務変更申請
+                let workChangeData = _.filter(data, function(item:any) { return item.appType === ApplicationType.WORK_CHANGE_APPLICATION; });
+                if(workChangeData!= null && workChangeData.length > 0){
+                    self.initDataSetting(self.appSetData().workChangeSet(), workChangeData[0]);
+                }
+                //3:出張申請
+                let businessTripData = _.filter(data, function(item:any) { return item.appType === ApplicationType.BUSINESS_TRIP_APPLICATION; });
+                if(businessTripData!= null && businessTripData.length > 0){
+                     self.initDataSetting(self.appSetData().businessTripSet(), businessTripData[0]);
+                }
+                //4:直行直帰申請
+                let goReturndirectData = _.filter(data, function(item:any) { return item.appType === ApplicationType.GO_RETURN_DIRECTLY_APPLICATION; });
+                if(goReturndirectData!= null && goReturndirectData.length > 0){
+                    self.initDataSetting(self.appSetData().goReturndirectSet(), goReturndirectData[0]);
+                }
+                //6:休出時間申請
+                let breakTimeData = _.filter(data, function(item:any) { return item.appType === ApplicationType.BREAK_TIME_APPLICATION; });
+                if(breakTimeData!= null && breakTimeData.length > 0){
+                    self.initDataSetting(self.appSetData().breakTimeSet(), breakTimeData[0]);
+                }
+                //7:打刻申請(打刻申請)
+                let stampData = _.filter(data, function(item:any) { return item.appType === ApplicationType.STAMP_APPLICATION; });
+                if(stampData!= null && stampData.length > 0){
+                    self.initDataSetting(self.appSetData().stampSet(), stampData[0]);
+                }
+                //8:時間年休申請
+                let annualHolidayData = _.filter(data, function(item:any) { return item.appType === ApplicationType.ANNUAL_HOLIDAY_APPLICATION; });
+                if(annualHolidayData!= null && annualHolidayData.length > 0){
+                    self.initDataSetting(self.appSetData().annualHolidaySet(), annualHolidayData[0]);
+                }
+                //9:遅刻早退取消申請
+                let earlyLeaveData = _.filter(data, function(item:any) { return item.appType === ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION; });
+                if(earlyLeaveData!= null && earlyLeaveData.length > 0){
+                    self.initDataSetting(self.appSetData().earlyLeaveSet(), earlyLeaveData[0]);
+                }
+                //10:振休振出申請        
+                let complementLeaveData = _.filter(data, function(item:any) { return item.appType === ApplicationType.COMPLEMENT_LEAVE_APPLICATION; });
+                if(complementLeaveData!= null && complementLeaveData.length > 0){
+                    self.initDataSettingWithListCode(self.appSetData().complementLeaveSet(), complementLeaveData);
+                }
+                //11:打刻申請（NR形式）               
+                let stampNRData = _.filter(data, function(item:any) { return item.appType === ApplicationType.STAMP_NR_APPLICATION; });
+                if(stampNRData!= null && stampNRData.length > 0){
+                    self.initDataSetting(self.appSetData().stampNRSet(), stampNRData[0]);
+                }
+                //14:３６協定時間申請                              
+                let application36Data = _.filter(data, function(item:any) { return item.appType === ApplicationType.APPLICATION_36; });
+                if(application36Data!= null && application36Data.length > 0){
+                    self.initDataSetting(self.appSetData().application36Set(), application36Data[0]);
+                }       
+                self.screenMode = ScreenMode.UPDATE;
+                //self.previewData = ko.mapping.toJS(self.appSetData());
+                //self.previewCode = empCode;
+            }
+            nts.uk.ui.block.clear();
         }
         /**
          * 登録処理
@@ -197,29 +225,32 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             if(self.screenMode == ScreenMode.INSERT){
                 service.addEmploymentSet(commands).done(()=>{
                     //マスタリストを更新。マスタ設定済みとする 
-                    let alreadyList: UnitAlreadySettingModel = {code: self.selectedCode(), isAlreadySetting: true};
-                    self.alreadySettingList.push(alreadyList);
-                    self.alreadySettingList.valueHasMutated();
+                    //let alreadyList: UnitAlreadySettingModel = {code: self.selectedCode(), isAlreadySetting: true};
+                    //self.alreadySettingList.push(alreadyList);
+                    //self.alreadySettingList.valueHasMutated();
                     //情報メッセージ（Msg_15）を表示する
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        //Load data setting
+                        self.reloadData(); 
                         nts.uk.ui.block.clear();
                     });
                 }).fail(function(res: any) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                            nts.uk.ui.block.clear();
-                        });
-                    }); 
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }); 
             }else{
                 service.updateEmploymentSet(commands).done(()=>{;
                     //情報メッセージ（Msg_15）を表示する
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        //Load data setting
+                        self.reloadData();  
                         nts.uk.ui.block.clear();
                     });
-
                 }).fail(function(res: any) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                            nts.uk.ui.block.clear();
-                        });
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                        nts.uk.ui.block.clear();
+                    });
                 });                 
             }
         }
@@ -235,8 +266,17 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                     let command = ko.mapping.toJS(self.appSetData().overTimeSet());
                     service.deleteEmploymentSet(command).done(() => {
                         nts.uk.ui.dialog.info({ messageId: 'Msg_16' }).then(function() {
+                            //Remove already setting data
                             self.alreadySettingList.remove( function (item) { return item.code === self.selectedCode(); } );
                             self.alreadySettingList.valueHasMutated();
+                            //Remove model data
+                            self.appSetData(new PreBeforeAppSetData(self.selectedCode()));
+                            //Remove DB data
+                            _.remove(self.alreadySettingData, function(currentData : any) {
+                                        return currentData.employmentCode === self.selectedCode();
+                                    });
+                            //Change screen mode
+                            self.screenMode = ScreenMode.INSERT;
                             nts.uk.ui.block.clear();
                         });
                     }).fail(function(res: any) {
@@ -250,7 +290,6 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             } else {
                 nts.uk.ui.block.clear();
             }
-
         }
         /**
          * 申請の前準備を複写する
@@ -271,6 +310,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 };
                 nts.uk.ui.windows.setShared("CDL023Input", param);
                 nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
+                    nts.uk.ui.block.invisible();
                     let data = nts.uk.ui.windows.getShared("CDL023Output");
                     if (!nts.uk.util.isNullOrUndefined(data)){
                         //check overide mode
@@ -290,8 +330,9 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                             //情報メッセージ（Msg_15）を表示する
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 //複写の場合は、複写先の数がわからないので、画面の初期表示処理を実行する
-                                location.reload();
-                                //nts.uk.ui.block.clear();
+                                self.reloadData(); 
+                                // show active tab panel 
+                                //$('.navigator li l.active').trigger('click');
                             });
                         }).fail(function(res: any) {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
@@ -317,24 +358,36 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             nts.uk.ui.windows.setShared('KDL002_AllItemObj', workTypeCodes);
             nts.uk.ui.windows.setShared('KDL002_SelectedItemId', selectedWorkTypes);
 
-            nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {
-                nts.uk.ui.block.clear();
-                var data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
-                var newSelectedCodes = [];
+            nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {                
+                let data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+                let newSelectedCodes = [];
                 if(data != null && data.length > 0){
                     _.forEach(data, function(item: any) {
-                        let newSelectedCode = {companyID: itemSet.companyId, employmentCode: itemSet.employmentCode, appType: itemSet.appType, holidayOrPauseType: itemSet.holidayOrPauseType, workTypeCode: item.code};
+                        let newSelectedCode = {companyID: itemSet.companyId, employmentCode: itemSet.employmentCode, appType: itemSet.appType, holidayOrPauseType: itemSet.holidayOrPauseType, workTypeCode: item.code, workTypeName: item.name};
                         newSelectedCodes.push(newSelectedCode);
                     });
                     itemSet.lstWorkType(newSelectedCodes);
                 }
+                nts.uk.ui.block.clear();
             });
             nts.uk.ui.block.clear();
         }
-        listenerSaveNotify(){
-            let self = this;
-            self.appSetData().overTimeSet().holidayTypeUseFlg.subscribe(() =>{});
-        }
+//        checkSaveChanged() : boolean{
+//            let self = this;
+//            if(nts.uk.util.isNullOrUndefined(self.previewData)) return false;
+//            if(self.previewData.overTimeSet.holidayTypeUseFlg != self.appSetData().overTimeSet().holidayTypeUseFlg()) return true;
+//            if(self.previewData.overTimeSet.displayWorkTypes != self.appSetData().overTimeSet().displayWorkTypes()) return true;
+//            return false;
+//        }
+//        listenerSaveNotify(){
+//            let self = this;
+//            self.appSetData().overTimeSet().holidayTypeUseFlg.subscribe((value) =>{
+//                if(self.previewData.overTimeSet.holidayTypeUseFlg != value) self.saveNotify(true);
+//            });
+//            self.appSetData().overTimeSet().displayWorkTypes.subscribe((value) =>{
+//                if(self.previewData.overTimeSet.displayWorkTypes != value) self.saveNotify(true);
+//            });
+//        }
         initDataSetting(itemSet, data){
             itemSet.companyId = data.companyID;
             itemSet.employmentCode = data.employmentCode;
@@ -489,10 +542,10 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             this.lstWorkType(lstWorkType);
             this.lstWorkType.extend({ rateLimit: 50 });
             this.displayWorkTypes = ko.observable(lstWorkType.map(function(elem){
-                                                        return elem.workTypeCode;
-                                                    }).join(","));
+                                                        return elem.workTypeName;
+                                                    }).join(" + "));
             this.lstWorkType.subscribe(value =>{
-                    this.displayWorkTypes(_.map(this.lstWorkType(), item =>{return item.workTypeCode;}).join(","));
+                    this.displayWorkTypes(_.map(this.lstWorkType(), item =>{return item.workTypeName;}).join(" + "));
             });
         }        
     }
