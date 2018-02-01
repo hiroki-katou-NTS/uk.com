@@ -1817,6 +1817,7 @@ module nts.uk.at.view.kmf022 {
                 self.initDataF();
                 self.initDataE();
                 self.initDataJ();
+                self.initDataG();
             }
             initDataA4(): void {
                 let self = this;
@@ -1963,6 +1964,22 @@ module nts.uk.at.view.kmf022 {
                     self.selectedIdE12(data.lateLeave);
                     self.texteditorE13.value(data.comment1);
                     self.texteditorE16.value(data.comment2);
+                });
+            }
+            initDataG():void{
+                let self = this;
+                service.findWith().done(data=>{
+                     self.selectedIdG16(data.typePaidLeave);
+                     self.selectedIdG18(data.restTime);
+                    self.selectedIdG20(data.workTime);
+                    self.selectedIdG22(data.breakTime);
+                    self.selectedIdG23(data.checkOut);
+                    self.selectedIdG24(data.workChange);
+                    self.selectedIdG25(data.timeInit);
+                    self.selectedIdG26(data.checkHdTime);
+                    self.selectedIdG27(data.prefixLeave);
+                    self.selectedIdG28(data.directDivi);
+                    self.selectedIdG29(data.bounSeg);
                 });
             }
             initDataJ(): void {
