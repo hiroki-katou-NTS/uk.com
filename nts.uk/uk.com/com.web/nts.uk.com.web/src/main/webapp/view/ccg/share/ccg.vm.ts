@@ -58,6 +58,19 @@ module nts.uk.com.view.ccg.share.ccg {
             selectedClosure: KnockoutObservable<string>;
             periodStart: KnockoutObservable<any>;
             periodEnd: KnockoutObservable<any>;
+            
+            //params sceen G
+            incumbent: KnockoutObservableArray<any>;
+            selectedIncumbent: any;
+            
+            closure: KnockoutObservableArray<any>;
+            selectedClosureG: any;
+            
+            leaveOfAbsence: KnockoutObservableArray<any>;
+            selectedLeave: any;
+            
+            retirement: KnockoutObservableArray<any>;
+            selectedRetirement: any;
 
             // functions
             onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
@@ -105,6 +118,30 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedClosure = ko.observable('');
                 self.periodStart = ko.observable();
                 self.periodEnd = ko.observable();
+                
+                self.incumbent = ko.observableArray([
+                    { code: '1', name: nts.uk.resource.getText("CCG001_40") },
+                    { code: '2', name: nts.uk.resource.getText("CCG001_41") }
+                ]);
+                self.selectedIncumbent = ko.observable(1);
+                
+                self.closure = ko.observableArray([
+                    { code: '1', name: nts.uk.resource.getText("CCG001_40") },
+                    { code: '2', name: nts.uk.resource.getText("CCG001_41") }
+                ]);
+                self.selectedClosureG = ko.observable(1);
+                
+                self.leaveOfAbsence = ko.observableArray([
+                    { code: '1', name: nts.uk.resource.getText("CCG001_40") },
+                    { code: '2', name: nts.uk.resource.getText("CCG001_41") }
+                ]);
+                self.selectedLeave = ko.observable(1);
+                
+                self.retirement = ko.observableArray([
+                    { code: '1', name: nts.uk.resource.getText("CCG001_40") },
+                    { code: '2', name: nts.uk.resource.getText("CCG001_41") }
+                ]);
+                self.selectedRetirement = ko.observable(1);
             }
 
             /**
@@ -358,6 +395,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     self.selectedCodeWorkplace(data);
                     self.reloadDataSearch();
                     if (self.isAdvancedSearchTab) {
+//                        $('#statusOfEmployment').ntsListComponent(self.statusOfEmployment);
                         $('#employmentList').ntsListComponent(self.employments);
                         $('#classificationList').ntsListComponent(self.classifications);
                         $('#jobtitleList').ntsListComponent(self.jobtitles);
