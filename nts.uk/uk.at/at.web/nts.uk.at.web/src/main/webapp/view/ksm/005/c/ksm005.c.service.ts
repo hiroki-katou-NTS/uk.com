@@ -7,7 +7,7 @@ module nts.uk.at.view.ksm005.c {
             deleteMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/delete",
             getListHistory: "ctx/at/shared/pattern/monthly/setting/getListHistory",
             getListMonthlyPattern: "ctx/at/schedule/pattern/monthly/findAll",
-            getAllMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/findAll"
+            getAllMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/findAll",
             getMonthlyPatternSettingBySid: "ctx/at/shared/pattern/monthly/setting/findBySId"
         }
         

@@ -127,10 +127,10 @@ module nts.uk.at.view.ksm005.c {
                     if (employeeCode) {
                         self.applySelectEmployeeCode(employeeCode).done(function(){
                             if (self.histList().length > 0){
-                                self.selectedHists(self.histList()[self.histList().length - 1].historyId);
+                                self.selectedHists(self.histList()[0].historyId);
                             }
                         });
-                    }else {
+                    } else {
                         self.enableDelete(false);
                         self.enableSystemChange(false);
                         self.employeeName('');  
@@ -142,7 +142,7 @@ module nts.uk.at.view.ksm005.c {
                 });
                 
                 self.selectedHists.subscribe(function(newValue) {
-                    
+                   
                     if(self.histList().filter(e => e.historyId == newValue && e.textDisplay.indexOf("9999/12/31") == -1).length > 0){
                         self.enableSave(false);
                     }else {
@@ -277,7 +277,6 @@ module nts.uk.at.view.ksm005.c {
                 if (employeeCode) {
                     self.employeeName((self.findByCodeEmployee(employeeCode)).name);
                     service.getListHistory(self.findEmployeeIdByCode(employeeCode)).done(function (data){
-                        console.log(data);
                         if(data != null){
                              data.forEach(function(item){
                               textDisplay = item.period.startDate + " " + nts.uk.resource.getText("CMM011_26") + " " + item.period.endDate;
@@ -305,26 +304,25 @@ module nts.uk.at.view.ksm005.c {
                 var self = this;
                 var dfd = $.Deferred();
                 service.findByIdMonthlyPatternSetting(historyId).done(function(data: MonthlyPatternSettingDto) {
-                    console.log(data);
                     if (data != null) {
                         if (data.monthlyPatternCode != "") {
-                            self.selectedmonthlyPattern(data.monthlyPatternCode);
-                            self.selectedHists(data.historyId);
+                            self.selectedmonthlyPattern(data.monthlyPatternCode);                    
                             self.enableDelete(true);
                             self.enableSystemChange(true);
                             self.enableCopy(true);
-                        }else {
+                            //self.selectedHists(data.historyId);
+                        } else {
                             self.selectedmonthlyPattern('000');
                             self.enableDelete(false);
                             self.enableCopy(false);
                             self.enableSystemChange(false);   
                         }
                     } else {
-                        self.selectedmonthlyPattern('000');
-                        self.selectedHists(null);
+                        self.selectedmonthlyPattern('000');                    
                         self.enableDelete(false);
                         self.enableCopy(false);
                         self.enableSystemChange(true);
+                        //self.selectedHists(null);
                     }
                     dfd.resolve();
                 });   
@@ -339,7 +337,6 @@ module nts.uk.at.view.ksm005.c {
                 var dataRes: UnitAlreadySettingModel[] = [];
                 var self = this;
                 service.findAllMonthlyPatternSetting(employeeIds).done(function(data) {
-                    console.log(data);
                     if(data != null){
                         data.forEach(function(item){
                             var setting: UnitAlreadySettingModel;
@@ -389,6 +386,8 @@ module nts.uk.at.view.ksm005.c {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // reload page
                         self.reloadPage();
+                        self.enableCopy(true);
+                        self.enableDelete(true);
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
@@ -424,7 +423,7 @@ module nts.uk.at.view.ksm005.c {
                     // show data respond
                     let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
                     self.listDestSid(lstSelection);
-                    console.log(lstSelection);
+                    self.copyMonthlyPatternSetting();
                 });
             }
             
@@ -465,9 +464,11 @@ module nts.uk.at.view.ksm005.c {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             // reload page
                             self.reloadPage();
+                            self.enableCopy(false);
+                            self.enableDelete(false);
                             self.selectedmonthlyPattern('000');
-                             if (self.histList().length > 0){
-                                self.selectedHists(self.histList()[self.histList().length - 1].historyId);
+                            if (self.histList().length > 0){
+                                self.selectedHists(self.histList()[0].historyId);
                             }
                         });
                     }).fail(function(error) {
