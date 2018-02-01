@@ -278,7 +278,9 @@ module a6 {
                     width: 100,
                     template: `<input data-bind="ntsTimeEditor: {
                             mode: 'time',
-                            inputFormat: 'time'}" />`
+                            inputFormat: 'time',
+                            required: true
+                            }" />`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_77"),
