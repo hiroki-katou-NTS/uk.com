@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.find.application.overtime.dto;
+package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,16 +10,16 @@ import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OverTimeDto {
-	
+public class AppHolidayWorkDto {
+
 	private Long version;
 	/**
 	 * application
@@ -44,7 +44,7 @@ public class OverTimeDto {
 	 */
 	private boolean displayOvertimeInstructInforFlg;
 	/**
-	 * 
+	 * employeeID
 	 */
 	private String employeeID;
 	
@@ -53,13 +53,9 @@ public class OverTimeDto {
 	 */
 	private String employeeName;
 	/**
-	 * 残業区分
-	 */
-	private int overtimeAtr;
-	/**
 	 * 残業申請時間設定
 	 */
-	private List<OvertimeInputDto> overTimeInputs;
+	private List<HolidayWorkInputDto> holidayWorkInputDtos;
 	/**
 	 *  事前事後区分表示 
 	 */
@@ -74,13 +70,13 @@ public class OverTimeDto {
 	 */
 	private List<String> workTypes;
 	
-	/** siftType */
-	private SiftType siftType;
+	/** workTime */
+	private SiftType workTime;
 	
 	/**
 	 * siftTypes
 	 */
-	private List<String> siftTypes;
+	private List<String> workTimes;
 
 	/**
 	 * 勤務時間From1
@@ -99,6 +95,22 @@ public class OverTimeDto {
 	 */
 	private Integer workClockTo2;
 	/**
+	 * goAtr1
+	 */
+	private int goAtr1;
+	/**
+	 * backAtr1
+	 */
+	private int backAtr1;
+	/**
+	 * goAtr2
+	 */
+	private int goAtr2;
+	/**
+	 * backAtr2
+	 */
+	private int backAtr2;
+	/**
 	 * 乖離定型理由
 	 */
 	private String divergenceReasonID;
@@ -111,10 +123,6 @@ public class OverTimeDto {
 	 * 計算残業時間
 	 */
 	private int calculationOverTime;
-	/**
-	 * フレックス超過時間
-	 */
-	private Integer flexExessTime;
 	/**
 	 * 就業時間外深夜時間
 	 */
@@ -163,9 +171,9 @@ public class OverTimeDto {
 	private boolean displayDivergenceReasonInput;
 	
 	/**
-	 * appOvertimeNightFlg
+	 * holidayWorkNightFlg
 	 */
-	private int appOvertimeNightFlg;
+	private int holidayWorkNightFlg;
 	
 	/**
 	 * 参照ラベル
@@ -192,41 +200,43 @@ public class OverTimeDto {
 	/**
 	 * preAppOvertimeDto
 	 */
-	private PreAppOvertimeDto preAppOvertimeDto;
+	private AppHolidayWorkPreAndReferDto preAppHolidayWorkDto;
 	
 	/**
 	 * appOvertimeReference
 	 */
-	private AppOvertimeReference appOvertimeReference;
+	private AppHolidayWorkPreAndReferDto holidayWorkReferenceDto;
 	
-	public static OverTimeDto fromDomain(AppOverTime appOverTime){
-		return new OverTimeDto(
-				appOverTime.getVersion(),
-				ApplicationDto_New.fromDomain(appOverTime.getApplication()), 
-				appOverTime.getCompanyID(), 
-				appOverTime.getAppID(), 
+	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
+		return new AppHolidayWorkDto(
+				appHolidayWork.getVersion(),
+				ApplicationDto_New.fromDomain(appHolidayWork.getApplication()), 
+				appHolidayWork.getCompanyID(), 
+				appHolidayWork.getAppID(), 
 				"", 
 				false, 
 				"", 
 				"", 
-				appOverTime.getOverTimeAtr().value, 
-				CollectionUtil.isEmpty(appOverTime.getOverTimeInput())
+				CollectionUtil.isEmpty(appHolidayWork.getHolidayWorkInputs())
 					? Collections.emptyList() 
-					: appOverTime.getOverTimeInput().stream().map(x -> OvertimeInputDto.fromDomain(x)).collect(Collectors.toList()), 
+					: appHolidayWork.getHolidayWorkInputs().stream().map(x -> HolidayWorkInputDto.fromDomain(x)).collect(Collectors.toList()), 
 				0, 
-				new WorkTypeOvertime(appOverTime.getWorkTypeCode().v(), ""),
+				new WorkTypeOvertime(appHolidayWork.getWorkTypeCode().v(), ""),
 				Collections.emptyList(),
-				new SiftType(appOverTime.getSiftCode().v(),""),
+				new SiftType(appHolidayWork.getWorkTimeCode().v(),""),
 				Collections.emptyList(),
-				appOverTime.getWorkClockFrom1(), 
-				appOverTime.getWorkClockTo1(),  
-				appOverTime.getWorkClockFrom2(), 
-				appOverTime.getWorkClockTo2(), 
+				appHolidayWork.getWorkClock1().getStartTime().v(), 
+				appHolidayWork.getWorkClock1().getEndTime().v(),  
+				appHolidayWork.getWorkClock2().getStartTime().v(), 
+				appHolidayWork.getWorkClock2().getEndTime().v(),
+				appHolidayWork.getWorkClock1().getGoAtr().value,
+				appHolidayWork.getWorkClock1().getBackAtr().value,
+				appHolidayWork.getWorkClock2().getGoAtr().value,
+				appHolidayWork.getWorkClock2().getBackAtr().value,
 				"", 
-				appOverTime.getDivergenceReason(), 
-				0, 
-				appOverTime.getFlexExessTime(), 
-				appOverTime.getOverTimeShiftNight(), 
+				appHolidayWork.getDivergenceReason(), 
+				0,
+				appHolidayWork.getOverTimeShiftNight(), 
 				false, 
 				false, 
 				false, 
