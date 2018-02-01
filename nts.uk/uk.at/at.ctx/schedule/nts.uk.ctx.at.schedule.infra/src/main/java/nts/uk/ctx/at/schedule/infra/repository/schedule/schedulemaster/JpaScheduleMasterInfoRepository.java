@@ -27,7 +27,7 @@ public class JpaScheduleMasterInfoRepository extends JpaRepository implements Sc
 		}
 		
 		ScheMasterInfo domain = ScheMasterInfo.createFromJavaType(entity.kscdtScheMasterInfoPk.sId, entity.kscdtScheMasterInfoPk.generalDate,
-				entity.employeeCd, entity.classificationCd, entity.workTypeCd, entity.jobId, entity.workplaceId);
+				entity.employmentCd, entity.classificationCd, entity.workTypeCd, entity.jobId, entity.workplaceId);
 		
 		return domain;
 	}
@@ -42,7 +42,7 @@ public class JpaScheduleMasterInfoRepository extends JpaRepository implements Sc
 		
 		return new KscdtScheMasterInfo(
 				primaryKey,
-				scheMasterInfo.getEmployeeCd(),
+				scheMasterInfo.getEmploymentCd(),
 				scheMasterInfo.getClassificationCd(),
 				scheMasterInfo.getWorkTypeCd(),
 				scheMasterInfo.getJobId(),
@@ -54,7 +54,7 @@ public class JpaScheduleMasterInfoRepository extends JpaRepository implements Sc
 		KscdtScheMasterInfoPK primaryKey = new KscdtScheMasterInfoPK(scheMasterInfo.getSId(), scheMasterInfo.getGeneralDate());		
 		KscdtScheMasterInfo kscdtScheMasterInfo = this.queryProxy().find(primaryKey, KscdtScheMasterInfo.class).get();
 		
-		kscdtScheMasterInfo.employeeCd = scheMasterInfo.getEmployeeCd();
+		kscdtScheMasterInfo.employmentCd = scheMasterInfo.getEmploymentCd();
 		kscdtScheMasterInfo.classificationCd = scheMasterInfo.getClassificationCd();
 		kscdtScheMasterInfo.workTypeCd = scheMasterInfo.getWorkTypeCd();
 		kscdtScheMasterInfo.jobId = scheMasterInfo.getJobId();

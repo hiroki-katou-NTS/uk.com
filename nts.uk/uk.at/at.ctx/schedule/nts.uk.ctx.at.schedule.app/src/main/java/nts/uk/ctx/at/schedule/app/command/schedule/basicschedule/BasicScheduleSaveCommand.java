@@ -58,9 +58,7 @@ public class BasicScheduleSaveCommand {
 	private List<ChildCareScheduleSaveCommand> childCareSchedules;
 	
 	private WorkScheduleTime workScheduleTime;
-	
-	private WorkScheduleBreak workScheduleBreak;
-	
+		
 	private ScheMasterInfo workScheduleMaster;
 	
 	/**
@@ -229,6 +227,5 @@ public class BasicScheduleSaveCommand {
 			return childCareSchedules.stream().map(command -> new ChildCareSchedule(command))
 					.collect(Collectors.toList());
 		}
-
 	}
 }
