@@ -110,6 +110,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 		this.goOutSet.restoreData(screenMode, oldDomain.getGoOutSet());
 		this.subHolTimeSet.forEach(item -> item.restoreData(screenMode, oldDomain.getSubHolTimeSet().stream()
 				.filter(oldItem -> oldItem.getOriginAtr().equals(item.getOriginAtr())).findFirst().orElse(null)));
+		this.stampSet.restoreData(screenMode, oldDomain.getStampSet());
 	}
 	
 	/**
@@ -120,5 +121,6 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject {
 	public void restoreDefaultData(ScreenMode screenMode) {
 		this.goOutSet.restoreDefaultData(screenMode);
 		this.subHolTimeSet.forEach(item -> item.restoreDefaultData(screenMode));
+		this.stampSet.restoreDefaultData(screenMode);
 	}
 }

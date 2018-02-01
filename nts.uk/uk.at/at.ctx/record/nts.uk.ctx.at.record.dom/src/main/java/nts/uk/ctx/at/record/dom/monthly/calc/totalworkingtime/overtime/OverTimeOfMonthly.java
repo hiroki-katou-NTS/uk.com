@@ -22,9 +22,8 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInformation;
 import nts.uk.ctx.at.record.dom.workinformation.primitivevalue.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -257,14 +256,15 @@ public class OverTimeOfMonthly {
 			RepositoriesRequiredByMonthlyAggr repositories){
 	
 		// 日の法定労働時間を取得する
-		DailyCalculationPersonalInformation dailyCalculationPersonalInformation =
-				repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(
-					workingSystem,
-					companyId,
-					workplaceId,
-					employmentCd,
-					attendanceTimeOfDaily.getEmployeeId(),
-					attendanceTimeOfDaily.getYmd());
+		//*****（未）　正式な処理の作成待ち。
+		//DailyCalculationPersonalInformation dailyCalculationPersonalInformation =
+		//		repositories.getGetOfStatutoryWorkTime().getDailyTimeFromStaturoyWorkTime(
+		//			workingSystem,
+		//			companyId,
+		//			workplaceId,
+		//			employmentCd,
+		//			attendanceTimeOfDaily.getEmployeeId(),
+		//			attendanceTimeOfDaily.getYmd());
 		
 		// 日別実績の法定内時間を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -272,8 +272,9 @@ public class OverTimeOfMonthly {
 		val legalTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 		
 		// 法定内残業にできる時間を計算する
-		AttendanceTime canLegalOverTime =
-				new AttendanceTime(dailyCalculationPersonalInformation.getStatutoryWorkTime().v());
+		//*****（未）　正式な処理が出来てから、代入。
+		AttendanceTime canLegalOverTime = new AttendanceTime(0);
+		//		new AttendanceTime(dailyCalculationPersonalInformation.getStatutoryWorkTime().v());
 		canLegalOverTime = canLegalOverTime.minusMinutes(legalTimeOfDaily.getWorkTime().v());
 		return canLegalOverTime;
 	}

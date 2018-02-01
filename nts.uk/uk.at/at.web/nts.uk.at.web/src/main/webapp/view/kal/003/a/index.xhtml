@@ -41,13 +41,14 @@
 				<div class="container">
 					<div class="left-content">
 						<div
-							data-bind="ntsPanel:{width: '300px', height: '450px', direction: 'right', showIcon: false, visible: true}">
+							data-bind="ntsPanel:{width: '300px', height: '400px', direction: 'right', showIcon: false, visible: true}">
 							<div class="valign-center control-group">
 								<label>#{i18n.getText('KAL003_48')}</label>
 								<div tabindex="5" id="combo-box" data-bind="ntsComboBox: {
 									options: cbbItemList,
 									optionsValue: 'code',
 									visibleItemsCount: 5,
+									name: '#[KAL003_9]',
 									value: selectedCategory,
 									optionsText: 'name',
 									editable: false,
@@ -59,12 +60,13 @@
 							</div>
 							<table id="single-list" tabindex="6"
 								data-bind="ntsGridList: {								
- 									height: 350, 
+ 									height: 350,
+ 									name: '#[KAL003_10]', 
  									dataSource: listAlarmCheckCondition, 
  									primaryKey: 'displayCode', 
  									columns: [
 						                { headerText: '#{i18n.getText('KAL003_11')}', key: 'displayCode', width: 100, formatter: _.escape },
-						                { headerText: '#{i18n.getText('KAL003_12')}', key: 'displayName', width: 170, formatter: _.escape }
+						                { headerText: '#{i18n.getText('KAL003_12')}', key: 'displayName', width: 180, formatter: _.escape }
 						            ], 
  									multiple: false, 
  									value: selectedAlarmCheckConditionCode 
@@ -75,9 +77,9 @@
 						<div data-bind="with: selectedAlarmCheckCondition">
 							<div class="valign-center control-group">
 								<label class="flabel">#{i18n.getText('KAL003_11')}</label> 
-								<input tabindex="7" id="A3_2" data-bind="ntsTextEditor: {value: code, required: true, constraint: 'AlarmCheckConditionCode', enable: $parent.screenMode() == 0, option: {width: '80px'}}" /> 
+								<input tabindex="7" id="A3_2" data-bind="ntsTextEditor: {name: '#[KAL003_11]', value: code, required: true, constraint: 'AlarmCheckConditionCode', enable: $parent.screenMode() == 0, option: {width: '80px'}}" /> 
 								<label style="padding-left: 50px">#{i18n.getText('KAL003_12')}</label>
-								<input tabindex="8" id="A3_4" data-bind="ntsTextEditor: {value: name, required: true, constraint: 'AlarmCheckConditionName'}" />
+								<input tabindex="8" id="A3_4" data-bind="ntsTextEditor: {name: '#[KAL003_12]', value: name, required: true, constraint: 'AlarmCheckConditionName'}" />
 							</div>
 							<div class="valign-center control-group">
 								<label class="flabel">#{i18n.getText('KAL003_9')}</label> 
@@ -94,7 +96,7 @@
 							</div>
 							<div class="valign-center control-group">
 								<label class="flabel">#{i18n.getText('KAL003_13')}</label> 
-								<input data-bind="ntsTextEditor: {value: displayAvailableRoles, readonly: true}" />
+								<input data-bind="ntsTextEditor: {name: '#[KAL003_13]', value: displayAvailableRoles, readonly: true}" />
 								<button tabindex="10">#{i18n.getText('KAL003_14')}</button>
 							</div>
 						</div>

@@ -21,6 +21,7 @@ import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.shr.com.context.AppContexts;
+
 @Stateless
 public class ScheduleMasterRepositoryImpl implements ScheduleMasterInformationRepository {
 	@Inject

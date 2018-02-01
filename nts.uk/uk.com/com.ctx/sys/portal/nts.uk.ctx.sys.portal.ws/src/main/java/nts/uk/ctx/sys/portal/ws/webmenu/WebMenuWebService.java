@@ -89,7 +89,13 @@ public class WebMenuWebService extends WebService {
 	public List<WebMenuDto> findAll() {
 		return this.webMenuFinder.findAll();
 	}
-	
+
+	@POST
+	@Path("findallwithnomenubar")
+	public List<WebMenuDto> findAllWithNoMenuBar() {
+		return this.webMenuFinder.findAllWithNoMenuBar();
+	}
+
 	@POST
 	@Path("finddefault")
 	public WebMenuDetailDto findDefault() {

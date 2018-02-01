@@ -15,27 +15,17 @@ import nts.uk.ctx.pereg.infra.entity.layout.cls.definition.PpemtLayoutItemClsDfP
 public class JpaItemClassificationDifination extends JpaRepository implements ILayoutPersonInfoClsDefRepository {
 
 	private static final String REMOVE_ALL = "DELETE FROM PpemtLayoutItemClsDf cd";
-	private static final String REMOVE_ALL_BY_LAYOUT_ID = REMOVE_ALL
-			+ " WHERE cd.ppemtLayoutItemClsDfPk.layoutId = :layoutId";
+	private static final String REMOVE_ALL_BY_LAYOUT_ID = String.join(" ", REMOVE_ALL,
+			"WHERE cd.ppemtLayoutItemClsDfPk.layoutId = :layoutId");
 
 	private static final String SELECT_ALL = "SELECT cd FROM PpemtLayoutItemClsDf cd";
-	private static final String SELECT_ALL_BY_CLASSIFID = SELECT_ALL
-			+ " WHERE cd.ppemtLayoutItemClsDfPk.layoutId = :layoutId"
-			+ " AND cd.ppemtLayoutItemClsDfPk.layoutDispOrder = :classDispOrder"
-			+ " ORDER BY cd.ppemtLayoutItemClsDfPk.dispOrder ASC";
-	
-	private static final String CHECK_EXIT_ITEMCLS_DF;
+	private static final String SELECT_ALL_BY_CLASSIFID = String.join(" ", SELECT_ALL,
+			"WHERE cd.ppemtLayoutItemClsDfPk.layoutId = :layoutId",
+			"AND cd.ppemtLayoutItemClsDfPk.layoutDispOrder = :classDispOrder",
+			"ORDER BY cd.ppemtLayoutItemClsDfPk.dispOrder ASC");
 
-	static {
-		StringBuilder builderString = new StringBuilder();
-		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM PpemtLayoutItemClsDf e");
-		builderString.append(" WHERE e.ppemtLayoutItemClsDfPk.layoutId = :layoutId");
-		CHECK_EXIT_ITEMCLS_DF = builderString.toString();
-
-	}
-	
+	private static final String CHECK_EXIT_ITEMCLS_DF = String.join(" ", "SELECT e FROM PpemtLayoutItemClsDf e",
+			"WHERE e.ppemtLayoutItemClsDfPk.layoutId = :layoutId");
 
 	@Override
 	public List<String> getAllItemDefineIds(String layoutId, int classDispOrder) {

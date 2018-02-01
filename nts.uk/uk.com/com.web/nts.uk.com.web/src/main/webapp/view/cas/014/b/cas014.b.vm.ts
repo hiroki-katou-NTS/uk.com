@@ -82,7 +82,7 @@ module nts.uk.com.view.cas014.b {
                     }
                     dfd.resolve();
                 }).fail(function(error) {
-                    alertError({ messageId: error.messageId });
+                    alertError(error);
                     dfd.reject();
                 }).always(() => {
                     block.clear();
@@ -120,7 +120,7 @@ module nts.uk.com.view.cas014.b {
                         $("#B3_2").focus();
                     }
                 }).fail(function(error) {
-                    alertError({ messageId: error.messageId });
+                    alertError(error);
                 });
                 return dfd;
             }
@@ -132,7 +132,7 @@ module nts.uk.com.view.cas014.b {
                         self.roleSetPerson(new RoleSetPerson(self.selectedRoleSet(), empId, data.employeeCode, data.personalName, _data.startDate, _data.endDate));
                     }
                 }).fail(function(error) {
-                    alertError({ messageId: error.messageId });
+                    alertError(error);
                 });
             }
 
@@ -169,7 +169,7 @@ module nts.uk.com.view.cas014.b {
                         });
 
                     }).fail(error => {
-                        alertError({ messageId: error.messageId });
+                        alertError(error);
                     }).always(() => {
                         block.clear();
                     });
@@ -206,7 +206,7 @@ module nts.uk.com.view.cas014.b {
                         });
 
                     }).fail(error => {
-                        alertError({ messageId: error.messageId });
+                        alertError(error);
                     }).always(() => {
                         block.clear();
                     });

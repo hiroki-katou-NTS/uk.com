@@ -7,7 +7,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         listCheckCondition: KnockoutObservableArray<share.CheckConditionCommand> = ko.observableArray([]);
         listStorageCheckCondition: KnockoutObservableArray<share.CheckConditionCommand> = ko.observableArray([]);
         ListView: KnockoutObservableArray<ModelCheckConditonCode>;
-        
+        isCreateMode: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             
@@ -15,7 +15,8 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 self.changeCheckCondition(newList);
             });
             self.ListView = ko.observableArray([]);
-          
+            $("#fixed-table").ntsFixedTable({ height: 320, width: 830 });
+            self.isCreateMode = ko.observable(true);
         }
 
         private changeCheckCondition(listCheckCode: Array<share.CheckConditionCommand>): void {

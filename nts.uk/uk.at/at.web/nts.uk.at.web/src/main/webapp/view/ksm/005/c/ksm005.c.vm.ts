@@ -2,6 +2,7 @@ module nts.uk.at.view.ksm005.c {
     
     import MonthlyPatternDto = service.model.MonthlyPatternDto;
     import MonthlyPatternSettingDto = service.model.MonthlyPatternSettingDto;
+    import CopyMonthlyPatternSettingDto = service.model.CopyMonthlyPatternSettingDto;
     import HistoryDto = service.model.HistoryDto;
 
     export module viewmodel {
@@ -11,6 +12,9 @@ module nts.uk.at.view.ksm005.c {
             
             enableSave: KnockoutObservable<boolean>;
             enableCopy: KnockoutObservable<boolean>;
+            
+            //copy mode
+            listDestSid: KnockoutObservableArray<string[]>;
 
             // Options
             baseDate: KnockoutObservable<Date>;
@@ -44,6 +48,9 @@ module nts.uk.at.view.ksm005.c {
             constructor() {
                 var self = this;
                 
+                //copy mode
+                self.listDestSid = ko.observableArray([]);
+                
                 self.enableSave = ko.observable(true);
                 self.enableCopy = ko.observable(false);
                 
@@ -58,7 +65,7 @@ module nts.uk.at.view.ksm005.c {
                 // list monthly pattern
                 self.monthlyPatternList = ko.observableArray([]);
                 self.selectedmonthlyPattern = ko.observable('');
-                self.isEnableListMonthlyPattern = ko.observable(false);
+                self.isEnableListMonthlyPattern = ko.observable(true);
                 self.isEditableListMonthlyPattern = ko.observable(false);
                 
                 self.selectedEmployee = ko.observableArray([]);
@@ -118,17 +125,32 @@ module nts.uk.at.view.ksm005.c {
 
                 self.selectedCode.subscribe(function(employeeCode: string) {
                     if (employeeCode) {
-                        self.applySelectEmployeeCode(employeeCode);
-                    }else {
+                        self.applySelectEmployeeCode(employeeCode).done(function(){
+                            if (self.histList().length > 0){
+                                self.selectedHists(self.histList()[0].historyId);
+                            } else {
+                                self.selectedHists(null);
+                                self.selectedHists.valueHasMutated();                              
+                            }
+                        });
+                    } else {
                         self.enableDelete(false);
-                        self.enableSystemChange(false);  
+                        self.enableSystemChange(false);
                         self.employeeName('');  
                         self.monthlyPatternSetting('');
+                        self.selectedmonthlyPattern(self.monthlyPatternList()[0]);
+                        self.enableCopy(false);
+                        self.enableSave(false);
                     }
                 });
                 
-                self.selectedHists.subscribe(function(newValue) {
-                    self.findMonthlyPatternSetting(self.selectedCode());
+                self.selectedHists.subscribe(function(newValue) {            
+                    if(self.histList().filter(e => e.historyId == newValue && e.textDisplay.indexOf("9999/12/31") == -1).length > 0){
+                        self.enableSave(false);
+                    } else {
+                        self.enableSave(true);
+                    }
+                    self.findMonthlyPatternSetting(newValue);
                 });
             }
             
@@ -249,56 +271,60 @@ module nts.uk.at.view.ksm005.c {
              /**
              *  apply info monthly pattern setting 
              */
-            public applySelectEmployeeCode(employeeCode: string){
+            public applySelectEmployeeCode(employeeCode: string): JQueryPromise<any> {
                 var self = this;
+                var dfd = $.Deferred();
                 var historyData: HistModel[] = [];
                 var textDisplay = "";
                 if (employeeCode) {
                     self.employeeName((self.findByCodeEmployee(employeeCode)).name);
                     service.getListHistory(self.findEmployeeIdByCode(employeeCode)).done(function (data){
-                        console.log(data);
                         if(data != null){
                              data.forEach(function(item){
-                              textDisplay = item.period.startDate + " - " + item.period.endDate;
+                              textDisplay = item.period.startDate + " " + nts.uk.resource.getText("CMM011_26") + " " + item.period.endDate;
                               historyData.push(new HistModel(item.historyId, textDisplay));
                             });
                             self.isEnableListMonthlyPattern(true);
                             self.isEnableListHist(true);
                             self.enableSave(true);
                         } else {
-                            self.isEnableListMonthlyPattern(false);
+                            self.isEnableListMonthlyPattern(true);
                             self.isEnableListHist(false);
                             self.enableSave(false);
+                            self.enableCopy(false);
+                            self.enableDelete(false);
                         }
                         self.histList(historyData);
-                        self.findMonthlyPatternSetting(employeeCode);
+//                        self.findMonthlyPatternSetting(self.selectedHists());
+                        dfd.resolve();
                     });
                 }
+                return dfd.promise(); 
             }
             
-            public findMonthlyPatternSetting(employeeCode: string): JQueryPromise<any> {
+            public findMonthlyPatternSetting(historyId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                service.findByIdMonthlyPatternSetting(self.findEmployeeIdByCode(employeeCode)).done(function(data: MonthlyPatternSettingDto) {
-                    console.log(data);
+                service.findByIdMonthlyPatternSetting(historyId).done(function(data: MonthlyPatternSettingDto) {
                     if (data != null) {
                         if (data.monthlyPatternCode != "") {
-                            self.selectedmonthlyPattern(data.monthlyPatternCode);
-                            self.selectedHists(data.historyId);
+                            self.selectedmonthlyPattern(data.monthlyPatternCode);                    
                             self.enableDelete(true);
                             self.enableSystemChange(true);
                             self.enableCopy(true);
-                        }else {
+                            //self.selectedHists(data.historyId);
+                        } else {
+                            self.selectedmonthlyPattern('000');
                             self.enableDelete(false);
                             self.enableCopy(false);
                             self.enableSystemChange(false);   
                         }
                     } else {
-                        self.selectedmonthlyPattern('000');
-                        self.selectedHists(null);
+                        self.selectedmonthlyPattern('000');                    
                         self.enableDelete(false);
                         self.enableCopy(false);
                         self.enableSystemChange(true);
+                        //self.selectedHists(null);
                     }
                     dfd.resolve();
                 });   
@@ -313,7 +339,6 @@ module nts.uk.at.view.ksm005.c {
                 var dataRes: UnitAlreadySettingModel[] = [];
                 var self = this;
                 service.findAllMonthlyPatternSetting(employeeIds).done(function(data) {
-                    console.log(data);
                     if(data != null){
                         data.forEach(function(item){
                             var setting: UnitAlreadySettingModel;
@@ -343,11 +368,12 @@ module nts.uk.at.view.ksm005.c {
              */
             public saveMonthlyPatternSetting(): void {
                 var self = this;
-                var dto : MonthlyPatternSettingDto;
+                
                 if (!self.selectedHists()) {
 //                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
                     return;
                 }
+                
                 if (!self.selectedCode()) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
                     return;
@@ -356,29 +382,70 @@ module nts.uk.at.view.ksm005.c {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_190" });
                     return;
                 }
-                dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern()};
+                var dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern()};
                 service.saveMonthlyPatternSetting(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // reload page
                         self.reloadPage();
+                        self.enableCopy(true);
+                        self.enableDelete(true);
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 });    
             }
-             /**
-             * call service save monthly pattern setting by on click button
+            
+            /**
+             * open dialog copy monthly pattern setting by on click button
              */
-            public copyMonthlyPatternSetting(): void {
+            public openDialogCopy(): void {
                 var self = this;
-                var dto : MonthlyPatternSettingDto;
                 if (!self.selectedCode()) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
                     return;
                 }
-                dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), historyId: self.selectedHists(), monthlyPatternCode: self.selectedmonthlyPattern()};
-                service.saveMonthlyPatternSetting(dto).done(function() {
+                
+                let dataSource = $('#component-items-list').getDataList();
+                let itemListSetting = dataSource.filter(e => e.isAlreadySetting == true).map(e => self.findEmployeeIdByCode(e.code));
+                
+                let object: IObjectDuplication = {
+                    code: self.selectedCode(),
+                    name: dataSource.filter(e => e.code == self.selectedCode())[0].name,
+                    targetType: TargetType.WORKPLACE_PERSONAL,
+                    itemListSetting: itemListSetting,
+                    baseDate: new Date()
+                };
+                
+                // create object has data type IObjectDuplication and use:
+                nts.uk.ui.windows.setShared("CDL023Input", object);
+                
+                // open dialog
+                nts.uk.ui.windows.sub.modal('com','/view/cdl/023/a/index.xhtml').onClosed(() => {
+                    // show data respond
+                    let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");                 
+                    if (!nts.uk.util.isNullOrEmpty(lstSelection)) {
+                        self.listDestSid(lstSelection); 
+                        self.copyMonthlyPatternSetting();
+                    }
+                });
+            }
+            
+             /**
+             * call service copy monthly pattern setting
+             */
+            public copyMonthlyPatternSetting(): void {
+                var self = this;
+                if (!self.selectedCode()) {
+                    return;
+                }
+                var dto : CopyMonthlyPatternSettingDto = {
+                    destSid: self.listDestSid(),
+                    sourceSid: self.findEmployeeIdByCode(self.selectedCode()),
+                    isOverwrite: 0
+                };
+                
+                service.copyMonthlyPatternSetting(dto).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // reload page
@@ -386,7 +453,8 @@ module nts.uk.at.view.ksm005.c {
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
-                });    
+                });   
+                
             }
             /**
              * call service delete monthly pattern setting by on click button 
@@ -400,8 +468,12 @@ module nts.uk.at.view.ksm005.c {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             // reload page
                             self.reloadPage();
+                            self.enableCopy(false);
+                            self.enableDelete(false);
                             self.selectedmonthlyPattern('000');
-                            self.selectedHists(null);
+                            if (self.histList().length > 0){
+                                self.selectedHists(self.histList()[0].historyId);
+                            }
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
@@ -459,6 +531,44 @@ module nts.uk.at.view.ksm005.c {
         onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
 
         onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+    }
+    
+    /**
+     * IObjectDuplication
+     */
+    export interface IObjectDuplication {
+        code: string;
+        name: string;
+        targetType: number;
+        itemListSetting: Array<string>;
+        baseDate?: Date;
+    }
+    
+    /**
+     * TargetType
+     */
+    export class TargetType {
+        
+        // 雇用
+        static EMPLOYMENT = 1;
+        
+        // 分類
+        static CLASSIFICATION = 2;
+        
+        // 職位
+        static JOB_TITLE = 3;
+        
+        // 職場
+        static WORKPLACE = 4;
+        
+        // 部門
+        static DEPARTMENT = 5;
+        
+        // 職場個人
+        static WORKPLACE_PERSONAL = 6;
+        
+        // 部門個人
+        static DEPARTMENT_PERSONAL = 7;
     }
 
     export class ListType {

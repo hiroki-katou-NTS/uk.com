@@ -29,6 +29,14 @@ public interface RoleSetLinkWebMenuRepository {
       * @return
       */
      List<RoleSetLinkWebMenu> findByRoleSetCd(String companyId, String roleSetCd);
+     
+     /**
+      * Get all RoleSetLinkWebMenu by list of Role set code
+      * @param companyId
+      * @param roleSetCds
+      * @return
+      */
+     List<RoleSetLinkWebMenu> findByListRoleSetCd(String companyId, List<String> roleSetCds);
 
     /**
      * Find all by company id.

@@ -3,17 +3,19 @@ module nts.uk.at.view.ksm005.c {
         var paths = {
             findByIdMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/findById",
             saveMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/save",
+            copyMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/copy",
             deleteMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/delete",
             getListHistory: "ctx/at/shared/pattern/monthly/setting/getListHistory",
             getListMonthlyPattern: "ctx/at/schedule/pattern/monthly/findAll",
-            getAllMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/findAll"
+            getAllMonthlyPatternSetting: "ctx/at/shared/pattern/monthly/setting/findAll",
+            getMonthlyPatternSettingBySid: "ctx/at/shared/pattern/monthly/setting/findBySId"
         }
         
         /**
          * call service find by employee id
          */
-        export function findByIdMonthlyPatternSetting(employeeId: string): JQueryPromise<model.MonthlyPatternSettingDto> {
-            return nts.uk.request.ajax('at', paths.findByIdMonthlyPatternSetting + "/" + employeeId);                
+        export function findByIdMonthlyPatternSetting(historyId: string): JQueryPromise<model.MonthlyPatternSettingDto> {
+            return nts.uk.request.ajax('at', paths.findByIdMonthlyPatternSetting + "/" + historyId);                
         }
         
          /**
@@ -21,6 +23,10 @@ module nts.uk.at.view.ksm005.c {
          */
         export function saveMonthlyPatternSetting(dto: model.MonthlyPatternSettingDto): JQueryPromise<void> {
             return nts.uk.request.ajax('at', paths.saveMonthlyPatternSetting, dto);
+        }
+        
+        export function copyMonthlyPatternSetting(dto: model.CopyMonthlyPatternSettingDto): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.copyMonthlyPatternSetting, dto);
         }
         
         /**
@@ -38,7 +44,7 @@ module nts.uk.at.view.ksm005.c {
         }
         
         /**
-         * get list history
+         * get list MonthlyPattern
          */
         export function getListMonthlyPattern(): JQueryPromise<any> {
             return nts.uk.request.ajax('at', paths.getListMonthlyPattern);
@@ -48,11 +54,24 @@ module nts.uk.at.view.ksm005.c {
              return nts.uk.request.ajax('at', paths.getAllMonthlyPatternSetting, {employeeIds: employeeIds});
         }
         
+        export function findMonthlyPatternSettingBySid(employeeId: string[]): JQueryPromise<any> {
+             return nts.uk.request.ajax('at', paths.getAllMonthlyPatternSetting, {employeeIds: employeeId});
+        }
+        
         export module model {
 
             export class MonthlyPatternDto {
                 code: string;
                 name: string;
+            }
+            
+            export interface CopyMonthlyPatternSettingDto{
+                
+                destSid: string[];
+                
+                sourceSid: string;
+                
+                isOverwrite: number;
             }
             
             export class MonthlyPatternSettingDto{

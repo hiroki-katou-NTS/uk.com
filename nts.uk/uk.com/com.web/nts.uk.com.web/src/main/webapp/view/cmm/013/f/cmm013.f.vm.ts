@@ -150,7 +150,9 @@ module nts.uk.com.view.cmm013.f {
                         nts.uk.ui.block.grayout();
                         service.removeSequenceMaster(new SequenceMasterRemoveCommand(_self.sequenceCode()))
                             .done((data: any) => {
-                                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                _.remove(_self.items(), (item) => item.sequenceCode === _self.sequenceCode());
+                                _self.updateOrder().done(() => {
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                                     _self.loadSequenceList()
                                         .done((dataList: SequenceMaster[]) => {                      
                                             // Update mode
@@ -168,7 +170,8 @@ module nts.uk.com.view.cmm013.f {
                                             _self.items([]);
                                             _self.currentCode(null);
                                         });
-                                });                                     
+                                    });             
+                                });                                                        
                             })
                             .fail((res: any) => {
                                 _self.showMessageError(res);
@@ -252,6 +255,26 @@ module nts.uk.com.view.cmm013.f {
                 }                     
             }
                    
+            private updateOrder(): JQueryPromise<any> {
+                let _self = this;   
+                let dfd = $.Deferred<any>();
+                let items: any[] = _self.items();
+                let order = 1;
+                for (let item of items) {
+                    item.order = order;
+                    order++;
+                }
+                service.updateOrder(items)
+                    .done((data: any) => {                        
+                        dfd.resolve(data);
+                    })
+                    .fail((res: any) => {
+                        dfd.reject(res);
+                    });    
+                
+                return dfd.promise();
+            }
+            
             /**
              * Validate
              */
@@ -276,7 +299,8 @@ module nts.uk.com.view.cmm013.f {
                 nts.uk.ui.block.grayout();
                 service.saveSequenceMaster(command)
                     .done((data: any) => {   
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        _self.updateOrder().done(() => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                             _self.loadSequenceList()
                                 .done((dataList: SequenceMaster[]) => {                        
                                     if (dataList && dataList.length > 0) {
@@ -294,7 +318,8 @@ module nts.uk.com.view.cmm013.f {
                                 .fail((res: any) => {
                                     
                                 });
-                        });                              
+                            });                            
+                        });                                                    
                     })
                     .fail((res: any) => {
                         _self.showMessageError(res);

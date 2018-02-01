@@ -239,7 +239,8 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 		if(overTime != null) overTime.getOverTimeWorkFrameTimeSheet()
 				.addAll(this.krcdtDayOvertimeworkTs != null ? this.krcdtDayOvertimeworkTs.toDomain().getOverTimeWorkFrameTimeSheet() : new ArrayList<>());
 		HolidayWorkTimeOfDaily holiday = this.krcdtDayHolidyWork == null ? null : this.krcdtDayHolidyWork.toDomain();
-		if(holiday != null) holiday.getHolidayWorkFrameTimeSheet().addAll(this.krcdtDayHolidyWorkTs.toDomain());
+		if(holiday != null) holiday.getHolidayWorkFrameTimeSheet()
+				.addAll(this.krcdtDayHolidyWorkTs != null ? this.krcdtDayHolidyWorkTs.toDomain(): new ArrayList<>());
 		ExcessOfStatutoryTimeOfDaily excess = new ExcessOfStatutoryTimeOfDaily(
 				new ExcessOfStatutoryMidNightTime(
 						TimeWithCalculation.sameTime(new AttendanceTime(this.outPrsMidnTime)),

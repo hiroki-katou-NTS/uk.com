@@ -57,12 +57,11 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 		// Convert dto to domain
 		FlexWorkSetting flexWorkSetting = command.toDomainFlexWorkSetting();
 
-		// Validate + common handler
-		this.validate(command, flexWorkSetting);
-
 		// check is add mode
 		if (command.isAddMode()) {
 			flexWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			// Validate + common handler
+			this.validate(command, flexWorkSetting);
 			this.flexWorkSettingRepository.add(flexWorkSetting);
 		} else {
 			Optional<FlexWorkSetting> opFlexWorkSetting = this.flexWorkSettingRepository.find(companyId,
@@ -70,6 +69,8 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 			if (opFlexWorkSetting.isPresent()) {
 				flexWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
 						command.getWorktimeSetting().getWorkTimeDivision(), opFlexWorkSetting.get());
+				// Validate + common handler
+				this.validate(command, flexWorkSetting);
 				this.flexWorkSettingRepository.update(flexWorkSetting);
 			}
 		}

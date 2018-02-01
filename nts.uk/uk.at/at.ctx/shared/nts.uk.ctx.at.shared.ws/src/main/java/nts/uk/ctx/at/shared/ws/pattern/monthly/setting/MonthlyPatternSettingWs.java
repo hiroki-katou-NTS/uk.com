@@ -13,6 +13,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.uk.ctx.at.shared.app.command.pattern.monthly.setting.CopyMonthPatternSettingCommand;
+import nts.uk.ctx.at.shared.app.command.pattern.monthly.setting.CopyMonthPatternSettingCommandHandler;
 import nts.uk.ctx.at.shared.app.command.pattern.monthly.setting.MonthlyPatternSettingDeleteCommand;
 import nts.uk.ctx.at.shared.app.command.pattern.monthly.setting.MonthlyPatternSettingDeleteCommandHandler;
 import nts.uk.ctx.at.shared.app.command.pattern.monthly.setting.MonthlyPatternSettingSaveCommand;
@@ -35,7 +37,10 @@ public class MonthlyPatternSettingWs {
 	
 	/** The add. */
 	@Inject
-	private  MonthlyPatternSettingSaveCommandHandler save;
+	private MonthlyPatternSettingSaveCommandHandler save;
+	
+	@Inject
+	private CopyMonthPatternSettingCommandHandler copy;
 	
 	/** The delete. */
 	@Inject
@@ -55,14 +60,25 @@ public class MonthlyPatternSettingWs {
 	/**
 	 * Find by id.
 	 *
-	 * @param employeeId the employee id
 	 * @param historyId the history id
 	 * @return the monthly pattern setting dto
 	 */
 	@POST
-	@Path("findById/{employeeId}")
-	public MonthlyPatternSettingDto findById(@PathParam("employeeId") String employeeId){
-		return this.finder.findById(employeeId);
+	@Path("findById/{historyId}")
+	public MonthlyPatternSettingDto findById(@PathParam("historyId") String historyId){
+		return this.finder.findById(historyId);
+	}
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param historyId the history id
+	 * @return the monthly pattern setting dto
+	 */
+	@POST
+	@Path("findBySId/{employeeId}")
+	public MonthlyPatternSettingDto findBySId(@PathParam("employeeId") String employeeId){
+		return this.finder.findBySId(employeeId);
 	}
 	
 	/**
@@ -74,6 +90,17 @@ public class MonthlyPatternSettingWs {
 	@Path("save")
 	public void save( MonthlyPatternSettingSaveCommand command){
 		this.save.handle(command);
+	}
+	
+	/**
+	 * Copy the.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("copy")
+	public void save(CopyMonthPatternSettingCommand command){
+		this.copy.handle(command);
 	}
 	
 	/**
