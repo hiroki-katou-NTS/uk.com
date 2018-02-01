@@ -39,7 +39,7 @@ module nts.uk.at.view.kmf022.a.service {
         // A6_27 -> A6_34 có thể lấy theo company rồi lên lọc hoặc lấy thẳng object bằng cả holiday app type
         findAllHdApp: "at/request/application/displayname/hd",
         findHdApp: "at/request/application/displayname/hdapp",
-        //E14,15
+        //E14,15, E17,18 cũng lấy ở đây (ver2)
         findStamp: "at/request/application/stamprequest/findByComID", //UpdateStampRequestSettingCommandHandler
         // F10->F16
         findDirectlycommon: "at/request/application/gobackdirectlycommon/getGoBackCommonByCid", //GoBackDirectlyCommonSettingRepository
@@ -54,9 +54,14 @@ module nts.uk.at.view.kmf022.a.service {
         //D
         findWorkChange: "at/request/application/workchange/workChangeSet",
         
+        // E9->E13, E16
+        findTrip: "at/request/application/triprequest/disp",
         
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
+    }
+    export function findTrip() {
+        return nts.uk.request.ajax("at", paths.findTrip); 
     }
     
     export function findWorkChange() {

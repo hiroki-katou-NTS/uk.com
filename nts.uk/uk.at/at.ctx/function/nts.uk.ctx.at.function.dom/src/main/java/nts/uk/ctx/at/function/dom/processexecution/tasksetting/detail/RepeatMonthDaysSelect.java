@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 /**
  * 繰り返す日付
  */
-@AllArgsConstructor
 public enum RepeatMonthDaysSelect {
 
 	/* 1日 */
@@ -106,5 +105,7 @@ public enum RepeatMonthDaysSelect {
 	
 	/** The value. */
 	public final int value;
-
+	private RepeatMonthDaysSelect(int type) {
+		this.value = type;
+	}
 }

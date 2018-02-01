@@ -9,11 +9,11 @@
 
 
 #contents-area .month{margin: 50px 0 45px 25px;}
-#contents-area .month input[type="radio"]{position: relative; top: -10px;}
+#contents-area .month .checkMonth{position: relative; top: -10px;}
+#contents-area .month .checkMonth span.box{top: 0;}
 #contents-area .month .ui-corner-all{border-radius: 0;}
 #contents-area .month .combo-box{width: 100px;}
 #contents-area .month .label{position: relative; top: -9px;}
-#contents-area .month .ntsRadioBox span.box{top:-10px;}
 
 #contents-area .centerSys{float: left; width: 0; position: relative; top: 130px; left: 0px;}
 
