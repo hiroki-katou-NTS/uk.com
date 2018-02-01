@@ -337,7 +337,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 */
 	private BasicScheduleSaveCommand saveBreakTime(String companyId,
 			BasicScheduleSaveCommand commandSave) {
-		BusinessDayCal businessDayCal = this.scheWithBusinessDayCalService.scheduleBreakTime(companyId, commandSave.getWorktypeCode(), commandSave.getWorktimeCode());
+		BusinessDayCal businessDayCal = this.scheWithBusinessDayCalService.getScheduleBreakTime(companyId, commandSave.getWorktypeCode(), commandSave.getWorktimeCode());
 		if (businessDayCal == null) {
 			return commandSave;
 		}
