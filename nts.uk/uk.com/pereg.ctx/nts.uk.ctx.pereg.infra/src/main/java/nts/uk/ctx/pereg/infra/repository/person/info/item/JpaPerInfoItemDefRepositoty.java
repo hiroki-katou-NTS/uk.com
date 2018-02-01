@@ -26,7 +26,9 @@ import nts.uk.ctx.pereg.dom.person.info.selectionitem.EnumReferenceCondition;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.MasterReferenceCondition;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionRadio;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItem;
@@ -479,7 +481,13 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				}
 
 				break;
-			default:
+				
+			case 7: // radio
+				dataTypeState = DataTypeState.createSelectionRadio();
+				break;
+			
+			case 8: // button
+				dataTypeState = DataTypeState.createSelectionButton();
 				break;
 			}
 			item.setItemTypeState(ItemTypeState.createSingleItem(dataTypeState));
@@ -583,6 +591,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 					EnumReferenceCondition enumRef = (EnumReferenceCondition) rtypeState;
 					selectionItemRefCode = enumRef.getEnumName().v();
 				}
+				break;
+			 
+			case 7:
+				SelectionRadio selectionRadio = (SelectionRadio) dataTypeState;
+				break;
+			
+			case 8:
+				SelectionButton selectionButton = (SelectionButton) dataTypeState;
 				break;
 			}
 		}
