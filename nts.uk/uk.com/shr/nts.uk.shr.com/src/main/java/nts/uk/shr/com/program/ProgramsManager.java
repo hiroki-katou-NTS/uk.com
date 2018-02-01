@@ -1473,6 +1473,13 @@ public class ProgramsManager {
 			"/view/cmm/001/d/index.xhtml");
 	/**CCG018	 */
 	
+	/**  KAL004 */
+	public static final Program KAL004A = new Program(WebAppId.AT, ProgramIdConsts.KAL004A, "KAL007_1",
+			"view/kal/004/a/index.xhtml");
+	public static final Program KAL004B = new Program(WebAppId.AT, ProgramIdConsts.KAL004B, "KAL007_2",
+			"view/kal/004/b/index.xhtml");
+	public static final Program KAL004F = new Program(WebAppId.AT, ProgramIdConsts.KAL004F, "KAL007_2",
+			"view/kal/004/f/index.xhtml");
 	
 	/**
 	 * All programs map.
