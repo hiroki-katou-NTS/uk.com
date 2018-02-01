@@ -76,6 +76,7 @@ module nts.uk.at.view.kal004.a.model {
             }).fail((enumErr) => {
                 alertError(enumErr);
             });
+            nts.uk.ui.block.grayout();
             service.getCheckConditionCode().done((res) => {
                 let resolve = _.map(res, (x) => { return new share.ModelCheckConditonCode(x) });
                 self.checkSource = _.cloneDeep(resolve);
@@ -91,9 +92,12 @@ module nts.uk.at.view.kal004.a.model {
                     }
                     
                     dfd.resolve();
+                }).always(()=>{                   
+                    nts.uk.ui.block.clear();
                 });
             }).fail((error) => {
                 alertError(error);
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             });
             return dfd.promise();
