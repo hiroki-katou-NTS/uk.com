@@ -128,6 +128,9 @@ module nts.uk.at.view.ksm005.c {
                         self.applySelectEmployeeCode(employeeCode).done(function(){
                             if (self.histList().length > 0){
                                 self.selectedHists(self.histList()[0].historyId);
+                            } else {
+                                self.selectedHists(null);
+                                self.selectedHists.valueHasMutated();                              
                             }
                         });
                     } else {
@@ -141,11 +144,10 @@ module nts.uk.at.view.ksm005.c {
                     }
                 });
                 
-                self.selectedHists.subscribe(function(newValue) {
-                   
+                self.selectedHists.subscribe(function(newValue) {            
                     if(self.histList().filter(e => e.historyId == newValue && e.textDisplay.indexOf("9999/12/31") == -1).length > 0){
                         self.enableSave(false);
-                    }else {
+                    } else {
                         self.enableSave(true);
                     }
                     self.findMonthlyPatternSetting(newValue);
