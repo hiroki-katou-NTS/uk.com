@@ -99,6 +99,9 @@ public class ScheCreExeBasicScheduleHandler {
 									.collect(Collectors.toList()));
 		}
 
+		this.saveScheduleMaster(commandSave);
+		this.saveBreakTime(command.getCompanyId(), commandSave);
+		
 		// check not exist error
 		if (!this.scheCreExeErrorLogHandler.checkExistError(command.toBaseCommand(), employeeId)) {
 
@@ -113,9 +116,6 @@ public class ScheCreExeBasicScheduleHandler {
 				PrescribedTimezoneSetting workTimeSet = optionalWorkTimeSet.get();
 				commandSave.updateWorkScheduleTimeZones(workTimeSet);
 			}
-			
-			this.saveScheduleMaster(commandSave);
-			this.saveBreakTime(command.getCompanyId(), commandSave);
 		}
 		// update is confirm
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
@@ -339,27 +339,6 @@ public class ScheCreExeBasicScheduleHandler {
 			BasicScheduleSaveCommand commandSave) {
 		BusinessDayCal businessDayCal = this.scheWithBusinessDayCalService.scheduleBreakTime(companyId, commandSave.getWorktypeCode(), commandSave.getWorktimeCode());
 		
-		WorkScheduleBreak workScheduleBreak = new WorkScheduleBreak(new WorkScheduleBreakGetMemento() {
-			
-			@Override
-			public TimeWithDayAttr getScheduledStartClock() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public TimeWithDayAttr getScheduledEndClock() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public ScheduledBreakCnt getScheduleBreakCnt() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		});
-		commandSave.setWorkScheduleBreak(workScheduleBreak);
 		return commandSave;
 	}
 	

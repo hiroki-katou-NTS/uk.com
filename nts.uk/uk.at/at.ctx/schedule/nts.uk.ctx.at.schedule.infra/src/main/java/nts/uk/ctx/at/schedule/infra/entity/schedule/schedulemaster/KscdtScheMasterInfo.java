@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCDT_SCHE_MASTER_INFO")
+@Table(name = "KSCDT_SCHE_MASTER")
 public class KscdtScheMasterInfo extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -28,19 +28,19 @@ public class KscdtScheMasterInfo extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KscdtScheMasterInfoPK kscdtScheMasterInfoPk;
 	
-	@Column(name = "EMPLOYEE_CD")
-	public String employeeCd;
+	@Column(name = "EMP_CD")
+	public String employmentCd;
 
-	@Column(name = "CLASSIFICATION_CD")
+	@Column(name = "CLS_CD")
 	public String classificationCd;
 	
-	@Column(name = "WORK_TYPE_CD")
+	@Column(name = "WORKTYPE_CD")
 	public String workTypeCd;
 	
 	@Column(name = "JOB_ID")
 	public String jobId;
 	
-	@Column(name = "WORKPLACE_ID")
+	@Column(name = "WKP_ID")
 	public String workplaceId;
 	
 	@Override

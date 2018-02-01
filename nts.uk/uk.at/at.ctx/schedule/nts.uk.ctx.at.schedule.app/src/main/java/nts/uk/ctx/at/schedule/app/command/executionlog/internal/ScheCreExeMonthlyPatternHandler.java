@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
@@ -206,7 +207,7 @@ public class ScheCreExeMonthlyPatternHandler {
 	private boolean checkMonthlyPattern(ScheduleCreatorExecutionCommand command,
 			WorkingConditionItem workingConditionItem, Optional<WorkMonthlySetting> workMonthlySetOpt) {
 		//ドメインモデル「スケジュール作成エラーログ」を登録する
-		if (!workingConditionItem.getMonthlyPattern().isPresent()) {
+		if (!workingConditionItem.getMonthlyPattern().isPresent() || StringUtil.isNullOrEmpty(workingConditionItem.getMonthlyPattern().get().v(), true)) {
 			//log Msg_603
 			scheCreExeErrorLogHandler.addError(command.toBaseCommand(), command.getEmployeeId(), "Msg_603");
 			return false; 
