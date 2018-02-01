@@ -50,7 +50,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 });        
             }
             self.listCheckCondition(listCheckConditionDto);
-            self.ListView(listConverToview);
+            self.ListView(_.orderBy(listConverToview,'categoryId','asc'));
         }
 
         private openDialog(ModelCheckConditonCode): void {
