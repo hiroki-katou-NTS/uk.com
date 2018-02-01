@@ -184,6 +184,9 @@ module nts.uk.at.view.kal004.a.model {
                 self.setPermissionModel.enableSetting(false);
                 
                 $('#alarmCode').focus();
+                
+                //tab2
+                self.periodSetting.isCreateMode(true);
             }
             else {
                 self.createMode(false);
@@ -227,6 +230,9 @@ module nts.uk.at.view.kal004.a.model {
                 self.setPermissionModel.enableSetting(true);
                 
                 $('#alarmName').focus();
+                
+                //tab2
+                self.periodSetting.isCreateMode(false);
             }
         }
 
