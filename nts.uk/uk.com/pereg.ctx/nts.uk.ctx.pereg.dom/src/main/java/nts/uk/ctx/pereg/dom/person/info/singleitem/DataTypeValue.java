@@ -23,7 +23,14 @@ public enum DataTypeValue {
 	TIMEPOINT(5),
 
 	// 6:選択(Selection)
-	SELECTION(6);
+	SELECTION(6),
+	
+	//7:選択-ラジオボタン(Selection-Radio)
+	SELECTION_RADIO(7),
+	
+	//8:選択-ボタン(Selection-Button)
+	SELECTION_BUTTON(7);
+
 	
 	public final int value;
 }

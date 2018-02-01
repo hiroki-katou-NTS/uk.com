@@ -8,6 +8,8 @@ import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.button.SelectionButton;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.radio.SelectionRadio;
 import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItem;
 import nts.uk.ctx.pereg.dom.person.info.timeitem.TimeItem;
 import nts.uk.ctx.pereg.dom.person.info.timepointitem.TimePointItem;
@@ -40,5 +42,13 @@ public class DataTypeState extends AggregateRoot {
 
 	public static DataTypeState createSelectionItem(ReferenceTypeState referenceTypeState) {
 		return SelectionItem.createFromJavaType(referenceTypeState);
+	}
+	
+	public static DataTypeState createSelectionRadio(int itemButton) {
+		return SelectionRadio.createFromJavaType(itemButton);
+	}
+	
+	public static DataTypeState createSelectionButton(String buttonName) {
+		return SelectionButton.createFromJavaType(buttonName);
 	}
 }
