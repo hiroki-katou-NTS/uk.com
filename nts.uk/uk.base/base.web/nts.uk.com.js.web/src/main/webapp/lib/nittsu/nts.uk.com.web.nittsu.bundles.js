@@ -6399,7 +6399,7 @@ var nts;
                             var $yearType = $("<label/>").attr("for", idString)
                                 .css({ "position": "absolute",
                                 "line-height": "30px",
-                                "right": jumpButtonsDisplay ? "45px" : "5px" });
+                                "right": jumpButtonsDisplay ? "40px" : "5px" });
                             var labelText = fiscalYear ? "年度" : "年";
                             $yearType.text(labelText);
                             container.append($yearType);
@@ -14755,7 +14755,9 @@ var nts;
                     function setErrorPosition($displayPanel) {
                         setTimeout(function () {
                             if ($displayPanel.find(".sidebar-content-header").length > 0) {
-                                $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+                                $('#func-notifier-errors').addClass("show-immediately");
+                                $('#func-notifier-errors').position({ my: 'left+145 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+                                $('#func-notifier-errors').removeClass("show-immediately");
                             }
                             else {
                                 setErrorPosition($(".sidebar-content"));

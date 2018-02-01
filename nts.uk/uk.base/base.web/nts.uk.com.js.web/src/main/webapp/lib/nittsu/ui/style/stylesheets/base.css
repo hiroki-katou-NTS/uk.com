@@ -4755,7 +4755,9 @@ div .ex-area-line.x-stay {
   margin: 10px -5px;
   border-top: 1px solid #f0f0f0;
 }
-
+.show-immediately {
+	display: block !important;
+}
 /* line 67, ../sass/frame/_sidebar.scss */
 .sidebar-content-header {
   position: relative;
