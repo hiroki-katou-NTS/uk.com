@@ -386,6 +386,8 @@ module nts.uk.at.view.ksm005.c {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // reload page
                         self.reloadPage();
+                        self.enableCopy(true);
+                        self.enableDelete(true);
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
@@ -462,9 +464,11 @@ module nts.uk.at.view.ksm005.c {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             // reload page
                             self.reloadPage();
+                            self.enableCopy(false);
+                            self.enableDelete(false);
                             self.selectedmonthlyPattern('000');
-                             if (self.histList().length > 0){
-                                self.selectedHists(self.histList()[self.histList().length - 1].historyId);
+                            if (self.histList().length > 0){
+                                self.selectedHists(self.histList()[0].historyId);
                             }
                         });
                     }).fail(function(error) {
