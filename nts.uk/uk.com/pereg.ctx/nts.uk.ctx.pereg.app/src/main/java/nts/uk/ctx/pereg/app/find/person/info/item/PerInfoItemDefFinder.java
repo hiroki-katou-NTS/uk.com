@@ -258,7 +258,7 @@ public class PerInfoItemDefFinder {
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		ItemTypeStateDto itemTypeStateDto = createItemTypeStateDto(itemDef.getItemTypeState());
 		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
-				itemDef.getItemCode().v(), itemDef.getItemName().v(), itemDef.getIsAbolition().value,
+				itemDef.getItemCode().v(), itemDef.getItemParentCode().v(), itemDef.getItemName().v(), itemDef.getIsAbolition().value,
 				itemDef.getIsFixed().value, itemDef.getIsRequired().value, itemDef.getSystemRequired().value,
 				itemDef.getRequireChangable().value, dispOrder, itemDef.getSelectionItemRefType(), itemTypeStateDto,
 				selectionItemRefTypes);
