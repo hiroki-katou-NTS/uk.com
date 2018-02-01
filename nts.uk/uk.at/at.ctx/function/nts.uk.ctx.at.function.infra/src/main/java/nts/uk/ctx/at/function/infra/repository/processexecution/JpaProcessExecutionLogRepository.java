@@ -20,7 +20,7 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	 */
 	private static final String SELECT_ALL = "SELECT pel FROM KfnmtProcessExecutionLog pel ";
 	private static final String SELECT_All_BY_CID = SELECT_ALL
-			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId ";
+			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId ORDER BY pel.kfnmtProcExecLogPK.execItemCd ASC ";
 	
 	private static final String SELECT_BY_PK = SELECT_ALL
 			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "

@@ -11,6 +11,13 @@ module nts.uk.at.view.kal003.a.tab {
             if (targetCondition) {
                 this.targetCondition(targetCondition);
             }
+            
+            this.targetCondition.subscribe(() => {
+                this.targetCondition().targetEmployment.valueHasMutated();
+                this.targetCondition().targetClassification.valueHasMutated();
+                this.targetCondition().targetJobTitle.valueHasMutated();
+                this.targetCondition().targetBusinessType.valueHasMutated();
+            });
         }
 
     }

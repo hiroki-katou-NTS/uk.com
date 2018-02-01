@@ -16,10 +16,10 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- F1_1 -->
-				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KBT002_1')}</a>
+				<a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KBT002_1')}</a>
 			</div>
 			<div id="contents-area">
-				<table id="single-list"
+				<table tabindex="-1" id="single-list"
 						data-bind="ntsGridList: {	
 							width: 1030,
 							height: 620,
