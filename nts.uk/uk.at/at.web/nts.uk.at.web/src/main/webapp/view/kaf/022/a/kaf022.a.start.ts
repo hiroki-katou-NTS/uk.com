@@ -7,8 +7,8 @@ module nts.uk.at.view.kmf022.a {
         __viewContext.viewModel = {
             tabView: new kmf022.viewmodel.TabScreenModel(),
             viewmodelA: new kmf022.a.viewmodel.ScreenModel(),
-            viewModelL:new kmf022.l.viewmodel.ScreenModel(),
-            viewModelM:new kmf022.m.viewmodel.ScreenModel()
+            viewmodelL:new kmf022.l.viewmodel.ScreenModel(),
+            viewmodelM:new kmf022.m.viewmodel.ScreenModel()
         };
         __viewContext.bind(__viewContext.viewModel);
         // show active tab panel 
