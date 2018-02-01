@@ -76,7 +76,7 @@ module nts.uk.at.view.kal004.a.model {
             }).fail((enumErr) => {
                 alertError(enumErr);
             });
-            nts.uk.ui.block.grayout();
+            block.grayout();
             service.getCheckConditionCode().done((res) => {
                 let resolve = _.map(res, (x) => { return new share.ModelCheckConditonCode(x) });
                 self.checkSource = _.cloneDeep(resolve);
@@ -92,12 +92,12 @@ module nts.uk.at.view.kal004.a.model {
                     }
                     
                     dfd.resolve();
-                }).always(()=>{                   
-                    nts.uk.ui.block.clear();
+                }).always(()=>{
+                    block.clear();                   
                 });
             }).fail((error) => {
                 alertError(error);
-                nts.uk.ui.block.clear();
+                block.clear();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -207,10 +207,8 @@ module nts.uk.at.view.kal004.a.model {
                             let category = _.find(self.alarmCategoryArr, ['value', x.alarmCategory]);
                             currentCodeListSwap.push(share.ModelCheckConditonCode.createNotFoundCheckConditonCode(category, y));
                         }
-
                     });
                 });
-
 
                 _.remove(checkSource, (leftItem) => {
                     let optItem = _.find(currentCodeListSwap, (rightItem) => {
@@ -238,8 +236,11 @@ module nts.uk.at.view.kal004.a.model {
         
         public setFocus(): void {
             let self = this;
-            if(self.currentCode()=='') $('#alarmCode').focus();
-            else   $('#alarmName').focus();          
+            if(self.currentCode()==''){
+                $('#alarmCode').focus();               
+            }else{
+                $('#alarmName').focus();
+            }      
         }
 
         public saveAlarm(): void {
