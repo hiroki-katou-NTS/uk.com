@@ -98,7 +98,8 @@
 						            searchCriterion:['checkConditonCode','checkConditionName'],
 						            enableRowNumbering: false ,
 						            showSort:{ showLeft : false, showRight: false}	,
-						            afterMoveLeft:  afterMoveLeft.bind($data)
+						            afterMoveLeft:  afterMoveLeft.bind($data),
+						            afterAllLeft  : afterMoveLeft.bind($data)
 								  }"></div>
 							</div>
 							<div class="tab-content-2 tab-content-fixsize" data-bind="with: periodSetting" >
