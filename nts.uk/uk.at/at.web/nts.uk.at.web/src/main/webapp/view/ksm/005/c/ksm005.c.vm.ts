@@ -421,9 +421,11 @@ module nts.uk.at.view.ksm005.c {
                 // open dialog
                 nts.uk.ui.windows.sub.modal('com','/view/cdl/023/a/index.xhtml').onClosed(() => {
                     // show data respond
-                    let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
-                    self.listDestSid(lstSelection);
-                    self.copyMonthlyPatternSetting();
+                    let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");                 
+                    if (!nts.uk.util.isNullOrEmpty(lstSelection)) {
+                        self.listDestSid(lstSelection); 
+                        self.copyMonthlyPatternSetting();
+                    }
                 });
             }
             
