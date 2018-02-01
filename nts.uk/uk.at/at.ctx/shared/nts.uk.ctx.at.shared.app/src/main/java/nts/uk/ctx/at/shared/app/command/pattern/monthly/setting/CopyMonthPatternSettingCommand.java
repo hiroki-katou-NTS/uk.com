@@ -2,7 +2,9 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.command.workingcondition.setting;
+package nts.uk.ctx.at.shared.app.command.pattern.monthly.setting;
+
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +20,8 @@ public class CopyMonthPatternSettingCommand {
 	private String sourceSid;
 
 	/** The dest sid. */
-	private String destSid;
-
+	private List<String> destSid;
+	
+	/** The is overwrite. */
+	private int isOverwrite;
 }

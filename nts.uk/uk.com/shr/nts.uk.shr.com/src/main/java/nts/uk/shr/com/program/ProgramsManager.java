@@ -1482,6 +1482,22 @@ public class ProgramsManager {
 			"view/kal/004/f/index.xhtml");
 	
 	/**
+	 * KBT002
+	 */
+	public static final Program KBT002A = new Program(WebAppId.AT, ProgramIdConsts.KBT002A, "KBT002_114",
+			"/view/kbt/002/a/index.xhtml");
+	public static final Program KBT002B = new Program(WebAppId.AT, ProgramIdConsts.KBT002B, "KBT002_115",
+			"/view/kbt/002/b/index.xhtml");
+	public static final Program KBT002C = new Program(WebAppId.AT, ProgramIdConsts.KBT002C, "KBT002_116",
+			"/view/kbt/002/c/index.xhtml");
+	public static final Program KBT002D = new Program(WebAppId.AT, ProgramIdConsts.KBT002D, "KBT002_117",
+			"/view/kbt/002/d/index.xhtml");
+	public static final Program KBT002F = new Program(WebAppId.AT, ProgramIdConsts.KBT002F, "KBT002_125",
+			"/view/kbt/002/f/index.xhtml");
+	public static final Program KBT002G = new Program(WebAppId.AT, ProgramIdConsts.KBT002G, "KBT002_148",
+			"/view/kbt/002/g/index.xhtml");
+	
+	/**
 	 * All programs map.
 	 */
 	private static final Map<WebAppId, List<Program>> PROGRAMS;

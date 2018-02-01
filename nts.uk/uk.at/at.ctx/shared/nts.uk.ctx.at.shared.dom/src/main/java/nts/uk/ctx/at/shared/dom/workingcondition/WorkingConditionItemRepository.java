@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkingConditionItemRepository.
@@ -38,6 +39,15 @@ public interface WorkingConditionItemRepository {
 	 * @return the optional
 	 */
 	Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
+
+	/**
+	 * Find working condition item by pers work cat.
+	 *
+	 * @param employeeId the employee id
+	 * @param datePeriod the date period
+	 * @return the list
+	 */
+	List<WorkingConditionItem> getBySidAndPeriodOrderByStrD(String employeeId, DatePeriod datePeriod);
 	
 	/**
 	 * Gets the by sid and hist id.
@@ -90,5 +100,5 @@ public interface WorkingConditionItemRepository {
 	 * @param sourceSid the source sid
 	 * @param destSid the dest sid
 	 */
-	boolean copyLastMonthlyPatternSetting(String sourceSid, String destSid);
+	boolean copyLastMonthlyPatternSetting(String sourceSid, List<String> destSid);
 }

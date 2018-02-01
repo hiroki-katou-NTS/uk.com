@@ -8,6 +8,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Data
 @AllArgsConstructor
 public class ApprovalSettingCommand {
+	private String companyId;
 	/**
 	 * 本人による承認
 	 */

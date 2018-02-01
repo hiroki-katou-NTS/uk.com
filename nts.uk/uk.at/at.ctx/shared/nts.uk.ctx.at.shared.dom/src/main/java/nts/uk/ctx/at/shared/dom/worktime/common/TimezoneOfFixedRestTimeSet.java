@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -18,15 +19,23 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 @Getter
 public class TimezoneOfFixedRestTimeSet extends WorkTimeDomainObject {
 
-	/** The timezone. */
+	/** The timezones. */
 	// 時間帯
 	private List<DeductionTime> timezones;
 
 	/**
-	 * Constructor
-	 * 
+	 * Instantiates a new timezone of fixed rest time set.
+	 */
+	public TimezoneOfFixedRestTimeSet() {
+		super();
+		this.timezones = new ArrayList<>();
+	}
+
+	/**
+	 * Instantiates a new timezone of fixed rest time set.
+	 *
 	 * @param timezones
-	 *            the timezone
+	 *            the timezones
 	 */
 	public TimezoneOfFixedRestTimeSet(List<DeductionTime> timezones) {
 		super();
@@ -35,6 +44,9 @@ public class TimezoneOfFixedRestTimeSet extends WorkTimeDomainObject {
 
 	/**
 	 * Check overlap.
+	 *
+	 * @param param
+	 *            the param
 	 */
 	public void checkOverlap(String param) {
 		Collections.sort(this.timezones, Comparator.comparing(DeductionTime::getStart));
