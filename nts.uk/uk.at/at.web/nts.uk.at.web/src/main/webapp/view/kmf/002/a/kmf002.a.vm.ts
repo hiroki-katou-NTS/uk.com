@@ -9,6 +9,7 @@ module nts.uk.at.view.kmf002.a {
     import viewModelTabF = nts.uk.at.view.kmf002.f.viewmodel;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import blockUI = nts.uk.ui.block;
     
     import service = nts.uk.at.view.kmf002.a.service;
     
@@ -211,8 +212,10 @@ module nts.uk.at.view.kmf002.a {
                     });    
                 } else if (typeStart == SideBarTabIndex.FIRST) {
                     // Process for screen A (Mother of all screen)
+                    blockUI.grayout();
                     $.when(_self.getAllEnum(), _self.getAllData(), _self.findAllManageUseUnit()).done(function() {
                         $( "#managePubHD" ).focus();
+                        blockUI.clear();
                         dfd.resolve(_self);    
                     });
                 } else if (typeStart == SideBarTabIndex.SECOND) {
@@ -498,7 +501,7 @@ module nts.uk.at.view.kmf002.a {
                 // condition 3
                 if (_self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE 
                         && _self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.ONE_MONTH) {
-                    _self.isDisableSetUnitBtn(true);
+                    _self.isDisableSetUnitBtn(false);
                     _self.enablePubHDGrantDatePeriod(true);
                     _self.enableDetermineStartDate(false);
                     _self.enablePubHDDateAndDayMonth(false);
@@ -507,7 +510,7 @@ module nts.uk.at.view.kmf002.a {
                 // condtion 4
                 else if (_self.publicHolidaySetting().isManageComPublicHd() == ManagePubHD.MANAGE 
                             && _self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.FOUR_WEEK_FOUR_DAYOFF) {
-                    _self.isDisableSetUnitBtn(false);
+                    _self.isDisableSetUnitBtn(true);
                     _self.enablePubHDGrantDatePeriod(false);
                     _self.enableDetermineStartDate(true);
                     _self.enablePubHDDateAndDayMonth(true);
@@ -515,7 +518,7 @@ module nts.uk.at.view.kmf002.a {
                 } 
                 // another    
                 else {
-                    _self.isDisableSetUnitBtn(false);
+                    _self.isDisableSetUnitBtn(true);
                     _self.enablePubHDGrantDatePeriod(false);
                     _self.enableDetermineStartDate(false);
                     _self.enablePubHDDateAndDayMonth(false);
@@ -604,7 +607,6 @@ module nts.uk.at.view.kmf002.a {
                     });    
             }
             
-            
             private settingOfUsageUnit(): void {
                 let _self = this;
                 $.when(_self.findAllManageUseUnit()).done(function() {
@@ -612,30 +614,34 @@ module nts.uk.at.view.kmf002.a {
                     setShared('isManageEmpPublicHd', _self.isManageEmpPublicHd());
                     setShared('isManageEmployeePublicHd', _self.isManageEmployeePublicHd());
                     setShared('isManageWkpPublicHd', _self.isManageWkpPublicHd());
-                    nts.uk.ui.windows.sub.modal("/view/kmf/002/f/index.xhtml").onClosed(function() {
-                        // F2_6
-                        _self.isManageEmployeePublicHd(getShared('isManageEmployeePublicHd'));
-                        // F2_5
-                        _self.isManageWkpPublicHd(getShared('isManageWkpPublicHd'));
-                        // F2_4
-                        _self.isManageEmpPublicHd(getShared('isManageEmpPublicHd'));
-                        _self.isManageEmployeePublicHd.valueHasMutated();
-                        _self.isManageWkpPublicHd.valueHasMutated();
-                        _self.isManageEmpPublicHd.valueHasMutated();
-                        $.when(service.saveManageUnit(_self.isManageEmployeePublicHd(), _self.isManageWkpPublicHd(), _self.isManageEmpPublicHd())).done(function(data: any) {
-                        });
+                    nts.uk.ui.windows.sub.modeless("/view/kmf/002/f/index.xhtml").onClosed(function() {
+                        if (getShared('saveManageUnit') == true) {
+                            // F2_6
+                            _self.isManageEmployeePublicHd(getShared('isManageEmployeePublicHd'));
+                            // F2_5
+                            _self.isManageWkpPublicHd(getShared('isManageWkpPublicHd'));
+                            // F2_4
+                            _self.isManageEmpPublicHd(getShared('isManageEmpPublicHd'));
+                            _self.isManageEmployeePublicHd.valueHasMutated();
+                            _self.isManageWkpPublicHd.valueHasMutated();
+                            _self.isManageEmpPublicHd.valueHasMutated();
+                            $.when(service.saveManageUnit(_self.isManageEmployeePublicHd(), _self.isManageWkpPublicHd(), _self.isManageEmpPublicHd())).done(function(data: any) {
+                            });    
+                        }
                     });    
                 });
-                
             } 
             
-            private findAllManageUseUnit(): void {
+            private findAllManageUseUnit(): JQueryPromise<any> {
                 let _self = this;
+                var dfd = $.Deferred<any>();
                 $.when(service.findAllManageUseUnit()).done(function(data: any) {                     
                     _self.isManageEmployeePublicHd(data.isManageEmployeePublicHd);
                     _self.isManageWkpPublicHd(data.isManageWkpPublicHd);
                     _self.isManageEmpPublicHd(data.isManageEmpPublicHd);
-                });    
+                    dfd.resolve(_self);
+                });
+                return dfd.promise();    
             }
        }
         

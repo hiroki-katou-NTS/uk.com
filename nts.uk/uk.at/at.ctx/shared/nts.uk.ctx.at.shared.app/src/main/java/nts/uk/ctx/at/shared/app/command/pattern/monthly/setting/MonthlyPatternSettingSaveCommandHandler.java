@@ -39,15 +39,16 @@ public class MonthlyPatternSettingSaveCommandHandler
 		MonthlyPatternSettingSaveCommand command = context.getCommand();	
 		
 		// check not setting employee
-		if(StringUtil.isNullOrEmpty(command.getEmployeeId(), true)){
+		if (StringUtil.isNullOrEmpty(command.getEmployeeId(), true)) {
 			throw new BusinessException("Msg_189");
 		}
-		
+
 		// check not monthly pattern code
-		if(StringUtil.isNullOrEmpty(command.getMonthlyPatternCode(), true)){
+		if (StringUtil.isNullOrEmpty(command.getMonthlyPatternCode(), true)) {
 			throw new BusinessException("Msg_190");
 		}
 		
+		// update
 		this.repository.updateMonthlyPattern(command.getHistoryId(), new MonthlyPatternCode(command.getMonthlyPatternCode()));
 	}
 
