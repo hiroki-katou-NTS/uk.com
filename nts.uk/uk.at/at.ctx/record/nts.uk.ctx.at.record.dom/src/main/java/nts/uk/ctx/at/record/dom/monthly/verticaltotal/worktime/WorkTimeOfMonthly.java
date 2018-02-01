@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の勤務時間
@@ -118,50 +119,52 @@ public class WorkTimeOfMonthly {
 	
 	/**
 	 * 集計
+	 * @param datePeriod 期間
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
 	 * @param specificDateAtrOfDailys 日別実績の特定日区分リスト
 	 * @param workTypeMap 勤務種類リスト
 	 */
 	public void aggregate(
+			DatePeriod datePeriod,
 			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
 			List<SpecificDateAttrOfDailyPerfor> specificDateAtrOfDailys,
 			Map<String, WorkType> workTypeMap){
 		
 		// 加給時間の集計
-		this.bonusPayTime.aggregate(workInfoOfDailyMap, attendanceTimeOfDailys,
+		this.bonusPayTime.aggregate(datePeriod, workInfoOfDailyMap, attendanceTimeOfDailys,
 				specificDateAtrOfDailys, workTypeMap);
 		
 		// 外出時間の集計（回数・時間）
-		this.goOut.aggregate(attendanceTimeOfDailys);
+		this.goOut.aggregate(datePeriod, attendanceTimeOfDailys);
 		
 		// 割増時間の集計
-		this.premiumTime.aggregate(attendanceTimeOfDailys);
+		this.premiumTime.aggregate(datePeriod, attendanceTimeOfDailys);
 		
 		// 休憩時間の集計
-		this.breakTime.aggregate(attendanceTimeOfDailys);
+		this.breakTime.aggregate(datePeriod, attendanceTimeOfDailys);
 		
 		// 休日時間の集計
 		//*****（未）　集計方法不明。設計確認要。
 		
 		// 深夜時間の集計
-		this.midnightTime.aggregate(attendanceTimeOfDailys);
+		this.midnightTime.aggregate(datePeriod, attendanceTimeOfDailys);
 		
 		// 遅刻早退の集計（回数・時間）
-		this.lateLeaveEarly.aggregate(attendanceTimeOfDailys);
+		this.lateLeaveEarly.aggregate(datePeriod, attendanceTimeOfDailys);
 		
 		// 入退門関連の項目集計
 		//*****（未）　集計方法不明。設計確認要。
 		
 		// 差異時間の集計
-		this.budgetTimeVarience.aggregate(attendanceTimeOfDailys);
+		this.budgetTimeVarience.aggregate(datePeriod, attendanceTimeOfDailys);
 		
 		// 乖離時間・乖離フラグの集計
-		this.divergenceTime.aggregate(attendanceTimeOfDailys);
+		this.divergenceTime.aggregate(datePeriod, attendanceTimeOfDailys);
 		
 		// 医療項目の集計
-		this.medicalTime.aggregate(attendanceTimeOfDailys);
+		this.medicalTime.aggregate(datePeriod, attendanceTimeOfDailys);
 		
 		// 予約データの集計
 		

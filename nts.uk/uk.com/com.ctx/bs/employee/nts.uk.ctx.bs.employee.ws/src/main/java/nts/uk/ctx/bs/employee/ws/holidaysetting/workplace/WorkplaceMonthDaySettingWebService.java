@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.ws.holidaysetting.workplace;
 
 import java.util.List;
@@ -48,6 +52,11 @@ public class WorkplaceMonthDaySettingWebService extends WebService {
 		return this.finder.getWorkplaceMonthDaySetting(workplaceId, year);
 	}
 	
+	/**
+	 * Find all wkp register.
+	 *
+	 * @return the list
+	 */
 	@Path("findWorkplaceMonthDaySetting")
 	@POST
 	public List<String> findAllWkpRegister(){

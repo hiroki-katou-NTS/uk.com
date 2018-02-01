@@ -52,6 +52,11 @@ public class EmployeeMonthDaySettingFinder {
 		return null;
 	}
 	
+	/**
+	 * Find all employee register.
+	 *
+	 * @return the list
+	 */
 	public List<String> findAllEmployeeRegister() {
 		String companyId = AppContexts.user().companyId();
 		

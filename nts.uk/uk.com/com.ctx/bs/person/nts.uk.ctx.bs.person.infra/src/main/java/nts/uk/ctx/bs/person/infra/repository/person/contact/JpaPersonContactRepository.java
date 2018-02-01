@@ -56,8 +56,8 @@ public class JpaPersonContactRepository  extends JpaRepository implements Person
 	 */
 	private BpsmtPersonContact toEntity(PersonContact domain){
 		BpsmtPersonContactPK key = new BpsmtPersonContactPK(domain.getPersonId());
-		BpsmtPersonContact entity = new BpsmtPersonContact(key, domain.getMailAdress().v(),
-				domain.getMobileMailAdress().v(), domain.getCellPhoneNumber().v(),
+		BpsmtPersonContact entity = new BpsmtPersonContact(key,domain.getCellPhoneNumber().v(), domain.getMailAdress().v(),
+				domain.getMobileMailAdress().v(), 
 				domain.getEmergencyContact1() != null ? domain.getEmergencyContact1().getMemo().v() : null,
 				domain.getEmergencyContact1() != null ? domain.getEmergencyContact1().getContactName().v() : null,
 				domain.getEmergencyContact1() != null ? domain.getEmergencyContact1().getPhoneNumber().v() : null,
@@ -99,15 +99,15 @@ public class JpaPersonContactRepository  extends JpaRepository implements Person
 		}
 		
 		if (domain.getEmergencyContact2() != null && !domain.getEmergencyContact2().getMemo().v().equals("")){
-			entity.memo1 = domain.getEmergencyContact2().getMemo().v();
+			entity.memo2 = domain.getEmergencyContact2().getMemo().v();
 		}
 		
 		if (domain.getEmergencyContact2() != null && !domain.getEmergencyContact2().getContactName().v().equals("")){
-			entity.contactName1 = domain.getEmergencyContact2().getContactName().v();
+			entity.contactName2 = domain.getEmergencyContact2().getContactName().v();
 		}
 		
 		if (domain.getEmergencyContact2() != null && !domain.getEmergencyContact2().getPhoneNumber().v().equals("")){
-			entity.phoneNo1 = domain.getEmergencyContact2().getPhoneNumber().v();
+			entity.phoneNo2 = domain.getEmergencyContact2().getPhoneNumber().v();
 		}
 			
 	}

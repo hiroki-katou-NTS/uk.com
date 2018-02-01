@@ -7,6 +7,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の乖離時間
@@ -45,14 +46,18 @@ public class DivergenceTimeOfMonthly {
 	
 	/**
 	 * 集計
+	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
 	 */
-	public void aggregate(List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+	public void aggregate(
+			DatePeriod datePeriod,
+			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
 		
 		this.divergenceTimeList = new HashMap<>();
 		
 		// 日別実績の「乖離時間」「控除時間」「控除後乖離時間」を集計
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
+			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
 			val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val divergenceTimeOfDaily = actualWorkingTime.getDivTime();
 			for (val divergenceTime : divergenceTimeOfDaily.getDivergenceTime()){

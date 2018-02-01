@@ -94,10 +94,12 @@ module cmm044.d.viewmodel {
                         var employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
                             return e.employeeId == agent.employeeId;
                         });
-                        self.personList.push(new AgentData(employee.employeeCode, employee.employeeName, employee.workplaceCode, employee.workplaceName, employee.jobTitleName, agent.startDate, agent.endDate, self.tabs()[0].title, self.getAgentAppType(agent.agentAppType1, agent.agentSid1), self.getEmpNameAgentAppType(agent.agentAppType1, agent.agentSid1), self.getColSpanAgentAppType(agent.agentAppType1)));
-                        self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[1].title, self.getAgentAppType(agent.agentAppType2, agent.agentSid2), self.getEmpNameAgentAppType(agent.agentAppType2, agent.agentSid2), self.getColSpanAgentAppType(agent.agentAppType2)));
-                        self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[2].title, self.getAgentAppType(agent.agentAppType3, agent.agentSid3), self.getEmpNameAgentAppType(agent.agentAppType3, agent.agentSid3), self.getColSpanAgentAppType(agent.agentAppType3)));
-                        self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[3].title, self.getAgentAppType(agent.agentAppType4, agent.agentSid4), self.getEmpNameAgentAppType(agent.agentAppType4, agent.agentSid4), self.getColSpanAgentAppType(agent.agentAppType4)));
+                        if (employee) {
+                            self.personList.push(new AgentData(employee.employeeCode, employee.employeeName, employee.workplaceCode, employee.workplaceName, employee.jobTitleName, agent.startDate, agent.endDate, self.tabs()[0].title, self.getAgentAppType(agent.agentAppType1, agent.agentSid1), self.getEmpNameAgentAppType(agent.agentAppType1, agent.agentSid1), self.getColSpanAgentAppType(agent.agentAppType1)));
+                            self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[1].title, self.getAgentAppType(agent.agentAppType2, agent.agentSid2), self.getEmpNameAgentAppType(agent.agentAppType2, agent.agentSid2), self.getColSpanAgentAppType(agent.agentAppType2)));
+                            self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[2].title, self.getAgentAppType(agent.agentAppType3, agent.agentSid3), self.getEmpNameAgentAppType(agent.agentAppType3, agent.agentSid3), self.getColSpanAgentAppType(agent.agentAppType3)));
+                            self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[3].title, self.getAgentAppType(agent.agentAppType4, agent.agentSid4), self.getEmpNameAgentAppType(agent.agentAppType4, agent.agentSid4), self.getColSpanAgentAppType(agent.agentAppType4)));
+                        }
                     });
                 });
                 dfd.resolve();

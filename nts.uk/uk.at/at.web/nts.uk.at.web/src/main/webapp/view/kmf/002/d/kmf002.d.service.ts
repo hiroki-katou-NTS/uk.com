@@ -70,10 +70,10 @@ module nts.uk.at.view.kmf002.d {
         }
         
         export class EmploymentMonthDaySettingRemoveCommand {
-            year: number;
+            year: string;
             empCd: string;
             
-            constructor(year: number, empCd: string){
+            constructor(year: string, empCd: string){
                 let _self = this;
                 _self.year = year;
                 _self.empCd = empCd;
