@@ -38,7 +38,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         treeGrid: ITreeGrid = {
                 treeType: 1,
                 selectType: 4,
-                isDialog: false,
+                isDialog: true,
                 isMultiSelect: true,
                 isShowAlreadySet: false,
                 isShowSelectButton: true,
