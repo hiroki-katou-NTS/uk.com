@@ -51,7 +51,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	@JoinTable(name = "KFNMT_CHECK_CON_ITEM")
 	public List<KfnmtCheckConItem> checkConItems;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumns({
 		@JoinColumn(name="EXTRACTION_ID", referencedColumnName="EXTRACTION_ID", insertable=false, updatable=false),
 		@JoinColumn(name="EXTRACTION_RANGE", referencedColumnName="EXTRACTION_RANGE", insertable=false, updatable=false)
