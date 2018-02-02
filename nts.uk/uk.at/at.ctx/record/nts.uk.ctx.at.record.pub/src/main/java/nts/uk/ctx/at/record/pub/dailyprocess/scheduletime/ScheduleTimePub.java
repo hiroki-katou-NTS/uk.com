@@ -7,5 +7,5 @@ package nts.uk.ctx.at.record.pub.dailyprocess.scheduletime;
  */
 public interface ScheduleTimePub {
 	//RequestList No.91
-	ScheduleTimePubExport CalculationScheduleTime(ScheduleTimePubImport impTime);
+	ScheduleTimePubExport calculationScheduleTime(ScheduleTimePubImport impTime);
 }

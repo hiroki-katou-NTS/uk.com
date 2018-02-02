@@ -258,7 +258,7 @@ module nts.uk.com.view.cmm013.f {
             private updateOrder(): JQueryPromise<any> {
                 let _self = this;   
                 let dfd = $.Deferred<any>();
-                let items = _self.items();
+                let items: any[] = _self.items();
                 let order = 1;
                 for (let item of items) {
                     item.order = order;

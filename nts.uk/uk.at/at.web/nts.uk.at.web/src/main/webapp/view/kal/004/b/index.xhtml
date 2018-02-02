@@ -11,7 +11,7 @@
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 750, height: 500 };</script>
+			<script>var dialogSize = { width: 750, height: 550 };</script>
 			<com:EnumScript>
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth
 				nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification
@@ -62,7 +62,7 @@
 										options: strComboMonth,
 										optionsValue: 'value',
 										value: strMonth,
-										visibleItemsCount: 4,
+										visibleItemsCount: 7,
 										optionsText: 'name',
 										enable: (strSelected() == 1),
 										columns: [
@@ -106,7 +106,7 @@
 										optionsValue: 'value',
 										value: endMonth,
 										optionsText: 'name',
-										visibleItemsCount: 4,
+										visibleItemsCount: 7,
 										enable: (strSelected() == 1 &amp;&amp; endSelected() == 1),
 										columns: [
 											{ prop: 'name', length: 5 }
@@ -117,8 +117,8 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="11" data-bind="click :Decide">#{i18n.getText('KAL003_45')}</button>
-				<button tabindex="12" data-bind="click :cancel_Dialog">#{i18n.getText('KAL003_46')}</button>
+				<button tabindex="11" data-bind="click :Decide">#{i18n.getText('KAL004_44')}</button>
+				<button tabindex="12" data-bind="click :cancel_Dialog">#{i18n.getText('KAL004_45')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

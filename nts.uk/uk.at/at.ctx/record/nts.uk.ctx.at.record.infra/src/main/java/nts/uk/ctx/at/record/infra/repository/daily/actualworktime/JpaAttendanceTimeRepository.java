@@ -277,8 +277,6 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		query.append("AND a.krcdtDayAttendanceTimePK.generalDate <= :end AND a.krcdtDayAttendanceTimePK.generalDate >= :start");
 		return queryProxy().query(query.toString(), KrcdtDayAttendanceTime.class).setParameter("employeeId", employeeId)
 				.setParameter("start", ymd.start()).setParameter("end", ymd.end()).getList().stream()
-				.collect(Collectors.groupingBy(c -> c.krcdtDayAttendanceTimePK.employeeID + c.krcdtDayAttendanceTimePK.generalDate.toString()))
-				.entrySet().stream().map(c -> c.getValue().stream().map(x -> x.toDomain()).collect(Collectors.toList()))
-				.flatMap(List::stream).collect(Collectors.toList());
+				.map(x -> x.toDomain()).collect(Collectors.toList());
 	}
 }
