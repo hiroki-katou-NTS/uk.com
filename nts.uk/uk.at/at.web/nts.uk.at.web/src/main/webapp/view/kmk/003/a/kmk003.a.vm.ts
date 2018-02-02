@@ -63,6 +63,9 @@ module nts.uk.at.view.kmk003.a {
             constructor() {
                 let self = this;
                 self.useHalfDay = ko.observable(false); // A5_19 initial value = false
+                self.useHalfDay.subscribe(() => {
+                    self.clearAllError();
+                });
                 self.mainSettingModel = new MainSettingModel(self.useHalfDay);
                 self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
                     if (self.isNewMode()) {
@@ -308,7 +311,6 @@ module nts.uk.at.view.kmk003.a {
 
                         // update mainSettingModel data
                         self.mainSettingModel.updateData(worktimeSettingInfo);
-
                         self.isLoading(true);
                         self.mainSettingModel.isChangeItemTable.valueHasMutated();
                     }).always(() => _.defer(() => nts.uk.ui.block.clear()));
@@ -345,8 +347,9 @@ module nts.uk.at.view.kmk003.a {
             /**
              * Change tab mode
              */
-            private changeTabMode(isDetail: boolean): void {
+            private changeTabMode(isDetail: boolean): void {              
                 let _self = this;
+                _self.clearAllError();
                 if (isDetail) {
                     _.forEach(_self.tabs(), tab => tab.setVisible(true));
                 } else {
@@ -553,9 +556,7 @@ module nts.uk.at.view.kmk003.a {
              * Clear all errors
              */
             public clearAllError(): void {
-                $('.nts-editor').ntsError('clear');
-                $('.ntsControl').ntsError('clear');
-                $('.time-range-editor').ntsError('clear');
+                nts.uk.ui.errors.clearAll();
             }
 
             /**
