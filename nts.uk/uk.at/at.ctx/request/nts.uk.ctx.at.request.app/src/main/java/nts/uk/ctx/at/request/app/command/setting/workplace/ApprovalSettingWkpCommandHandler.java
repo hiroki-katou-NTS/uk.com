@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.request.app.command.setting.workplace;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -18,20 +19,23 @@ import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceReposit
  *
  */
 @Stateless
-public class ApprovalSettingWkpCommandHandler extends CommandHandler<ApprovalSettingWkpCommand> {
+public class ApprovalSettingWkpCommandHandler extends CommandHandler<List<ApprovalSettingWkpCommand>> {
 
 	@Inject
 	private RequestOfEachWorkplaceRepository repo;
 
 	@Override
-	protected void handle(CommandHandlerContext<ApprovalSettingWkpCommand> context) {
-		ApprovalSettingWkpCommand command = context.getCommand();
-		Optional<RequestOfEachWorkplace> existedSetting = repo.getRequestByWorkplace(command.getCompanyId(), command.getWkpId());
-		if(existedSetting.isPresent()){
-			repo.update(command.toDomain());
-		} else {
-			repo.add(command.toDomain());
-		}
+	protected void handle(CommandHandlerContext<List<ApprovalSettingWkpCommand>> context) {
+		List<ApprovalSettingWkpCommand> lstCommand = context.getCommand();
+		lstCommand.stream().forEach(command -> {
+			Optional<RequestOfEachWorkplace> existedSetting = repo.getRequestByWorkplace(command.getCompanyId(),
+					command.getWkpId());
+			if (existedSetting.isPresent()) {
+				repo.update(command.toDomain());
+			} else {
+				repo.add(command.toDomain());
+			}
+		});
 	}
-	
+
 }
