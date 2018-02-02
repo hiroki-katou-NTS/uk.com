@@ -525,6 +525,7 @@ module nts.uk.at.view.kal003.share.model {
 
         openAtdItemConditionDialog() {
             let self = this;
+            if (self.compareEndValue() == null) self.compareEndValue(0);
             let param = ko.mapping.toJS(self);
 
             nts.uk.ui.windows.setShared("KDW007BParams", param, true);
