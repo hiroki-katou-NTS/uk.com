@@ -61,6 +61,27 @@ module nts.uk.ui {
             
             viewModelBuilt.fire(_viewModel);
             
+            if($(".html-loading").length > 0) {
+                let dfd = [];
+                _.forEach($(".html-loading"), function(e){
+                    let $container = $(e);
+                    let dX = $.Deferred(); 
+                    $container.load($container.attr("link"), function(){
+                        dX.resolve();
+                    });
+                    dfd.push(dX);
+                    dX.promise();
+                })
+                $.when(...dfd).then(function( data, textStatus, jqXHR ) {
+                    $('.html-loading').contents().unwrap();
+                    binding(_viewModel);
+                });    
+            } else {
+                binding(_viewModel);
+            }
+        }
+        
+        var binding = function(_viewModel: any){
             ko.applyBindings(_viewModel);
             
             // off event reset for class reset-not-apply
@@ -79,7 +100,7 @@ module nts.uk.ui {
             }
             $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
             //            if($("#functions-area-bottom").length!=0){
-            //            }
+            //            }    
         }
         
         $(function () {
@@ -92,6 +113,19 @@ module nts.uk.ui {
             
             // Menu
             if ($(document).find("#header").length > 0) {
+                menu.request();
+            } else if (!util.isInFrame() && !__viewContext.noHeader) {
+                let header = "<div id='header'><div id='menu-header'>" 
+                                + "<div id='logo-area' class='cf'>" 
+                                + "<div id='logo'>勤次郎</div>"
+                                + "<div id='user-info' class='cf'>"
+                                + "<div id='company' class='cf' />"
+                                + "<div id='user' class='cf' />"    
+                                + "</div></div>"                            
+                                + "<div id='nav-area' class='cf' />"
+                                + "<div id='pg-area' class='cf' />"
+                                + "</div></div>";
+                $("#master-wrapper").prepend(header);
                 menu.request();
             }
         });

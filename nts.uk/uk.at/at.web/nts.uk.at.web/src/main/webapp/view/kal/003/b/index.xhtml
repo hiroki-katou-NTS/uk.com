@@ -18,6 +18,7 @@
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue
+                nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod
             </com:ValidatorScript>
             <com:scriptfile set="IGNITE" />
             <com:scriptfile path="../share/model.js" />
@@ -169,9 +170,11 @@
 	                                        <!-- BA2-2 -->
 	                                        <button id="btnSettingBA2_2" data-bind="click : function() {$parent.btnSettingBA2_2_click()}, enable: true">#{i18n.getText('KAL003_57')}</button>
 	                                        <!-- BA2-3 -->
-	                                        <input data-bind="ntsTextEditor: {
+	                                        <input id ="display-target-item" data-bind="ntsTextEditor: {
 		                                           value: $parent.displayAttendanceItemSelections_BA2_3,
 		                                           readonly: true}" />
+
+
 	                                    </div>
 		                            </td>
 		                            <td class = "pad_left_5px">
@@ -182,7 +185,7 @@
 	                                                options: $parent.listCompareTypes,
 	                                                optionsValue: 'value',
 	                                                visibleItemsCount: 5,
-	                                                value: errorAlarmCondition().atdItemCondition().group1().conditionOperator,
+	                                                value: $parent.comparisonRange().comparisonOperator,
 	                                                optionsText: 'localizedName',
 	                                                editable: false,
 	                                                enable: true,
@@ -333,7 +336,7 @@
 		                                       name: '#[KAL003_61]',
 		                                       value: continuousPeriod,
 		                                       required: true,
-		                                       constraint: 'CheckedTimesValue',
+		                                       constraint: 'ContinuousPeriod',
 		                                       enable: true,
 		                                       option: new nts.uk.ui.option.NumberEditorOption({
 													unitID: 'DAYS'
@@ -397,7 +400,7 @@
 					                   <th class="ui-widget-header" colspan="6" style ="text-align: center;">#{i18n.getText('KAL003_33')}</th>
 					               </tr>
 					            </thead>
-					            <tbody data-bind = "foreach: group1().lstErAlAtdItemCon">
+					            <tbody data-bind = "foreach: group1().lstErAlAtdItemCon()">
 					                <tr>
 					                  <!-- B5_6 -->
 					                    <com:ko-if bind="$data.compareOperator() == 6 || $data.compareOperator() == 7">
@@ -476,7 +479,7 @@
                                           <th class="ui-widget-header"  colspan="6" style ="text-align: center;">#{i18n.getText('KAL003_33')}</th>
                                       </tr>
                                    </thead>
-                                   <tbody data-bind = "foreach: group2().lstErAlAtdItemCon">
+                                   <tbody data-bind = "foreach: group2().lstErAlAtdItemCon()">
                                        <tr>
                                         <!-- B16_3 -->
 						                    <com:ko-if bind="$data.compareOperator() &gt; 5">

@@ -6,13 +6,15 @@ module nts.uk.at.view.kmf002.d {
         var path: any = {
                 save: "bs/employee/holidaysetting/employment/save",
                 find: "bs/employee/holidaysetting/employment/findEmploymentMonthDaySetting",
-                remove: "bs/employee/holidaysetting/employment/remove"
+                remove: "bs/employee/holidaysetting/employment/remove",
+                findFirstMonth: "basic/company/beginningmonth/find",
+                findAllEmpRegister: "bs/employee/holidaysetting/employment/findEmploymentMonthDaySetting/findAllEmpRegister"
             };
         
         /**
          * 
          */
-        export function save(year: number, data: any, empCd: string): JQueryPromise<any> {
+        export function save(year: string, data: any, empCd: string): JQueryPromise<any> {
             let employmentMonthDaySetting: model.EmploymentMonthDaySetting= new model.EmploymentMonthDaySetting(year, empCd, []);
             employmentMonthDaySetting.toDto(data);
             let command: any = {};
@@ -22,16 +24,24 @@ module nts.uk.at.view.kmf002.d {
             return nts.uk.request.ajax("com", path.save, command);
         }
         
-        export function find(year: number, employmentCode: string): JQueryPromise<any> {
+        export function find(year: string, employmentCode: string): JQueryPromise<any> {
             return nts.uk.request.ajax("com", path.find + "/" + year + "/" + employmentCode);
         }
         
-        export function remove(year: number, employmentCode: string): JQueryPromise<any> {
+        export function findAllEmpRegister(): JQueryPromise<any> {
+            return nts.uk.request.ajax("com", path.findAllEmpRegister);
+        }
+        
+        export function remove(year: string, employmentCode: string): JQueryPromise<any> {
             let employmentMonthDaySettingRemoveCommand: model.EmploymentMonthDaySettingRemoveCommand= new model.EmploymentMonthDaySettingRemoveCommand(year, employmentCode);
             let command: any = {};
             command.year = year;
             command.empCd = employmentCode;
             return nts.uk.request.ajax("com", path.remove, command);
+        }
+        
+        export function findFirstMonth(): JQueryPromise<any>{
+            return nts.uk.request.ajax("com", path.findFirstMonth);
         }
     }
     
@@ -40,11 +50,11 @@ module nts.uk.at.view.kmf002.d {
      */
     export module model {
         export class EmploymentMonthDaySetting {
-            year: number;
+            year: string;
             publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[];
             empCd: string;
             
-            constructor(year: number, empCd: string, publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[]){
+            constructor(year: string, empCd: string, publicHolidayMonthSettingDto: PublicHolidayMonthSettingDto[]){
                 let _self = this;
                 _self.year = year;
                 _self.publicHolidayMonthSettingDto = publicHolidayMonthSettingDto;
@@ -60,10 +70,10 @@ module nts.uk.at.view.kmf002.d {
         }
         
         export class EmploymentMonthDaySettingRemoveCommand {
-            year: number;
+            year: string;
             empCd: string;
             
-            constructor(year: number, empCd: string){
+            constructor(year: string, empCd: string){
                 let _self = this;
                 _self.year = year;
                 _self.empCd = empCd;
@@ -71,11 +81,11 @@ module nts.uk.at.view.kmf002.d {
         }
         
         export class PublicHolidayMonthSettingDto{
-            publicHdManagementYear: number;
+            publicHdManagementYear: string;
             month: number;
             inLegalHoliday: number;
             
-            constructor(publicHdManagementYear: number, month: number, inLegalHoliday: number) {
+            constructor(publicHdManagementYear: string, month: number, inLegalHoliday: number) {
                 this.publicHdManagementYear = publicHdManagementYear;
                 this.month = month;
                 this.inLegalHoliday = inLegalHoliday;

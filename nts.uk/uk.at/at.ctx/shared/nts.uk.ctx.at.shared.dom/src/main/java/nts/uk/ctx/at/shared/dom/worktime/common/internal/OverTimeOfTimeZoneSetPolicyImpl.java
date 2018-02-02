@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingPolicy;
@@ -34,14 +34,14 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 	 * nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet)
 	 */
 	@Override
-	public void validate(PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet) {
+	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet) {
 		val otTimezone = otSet.getTimezone();
 		val shift1Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftOne();
 		val shift2Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftTwo();
 
 		// validate msg_516
 		if (this.tzrPolicy.validateRange(predTime, otSet.getTimezone())) {
-			throw new BusinessException("Msg_516", "KMK003_89");
+			be.addMessage("Msg_516", "KMK003_89");
 		}
 			
 
@@ -49,7 +49,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 		if (!predTime.isPredetermine() && predTime.getPrescribedTimezoneSetting().getLstTimezone().stream()
 				.filter(shift -> shift.getUseAtr().equals(UseSetting.USE))
 				.anyMatch(shift -> otTimezone.isOverlap(shift))) {
-			throw new BusinessException("Msg_519","KMK003_89");
+			be.addMessage("Msg_519","KMK003_89");
 		}
 
 		// validate msg_779
@@ -59,14 +59,14 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 		boolean condition2 = shift2Timezone.isUsed() && (otTimezone.getStart().lessThan(shift2Timezone.getEnd())
 				|| otTimezone.getEnd().lessThan(shift2Timezone.getEnd()));
 		if (isNotEarlyAndPred && (condition1 || condition2)) {
-			throw new BusinessException("Msg_779");
+			be.addMessage("Msg_779");
 		}
 
 		// validate msg_780
 		if (!predTime.isPredetermine() && otSet.isEarlyOTUse()
 				&& (otTimezone.getStart().greaterThan(shift1Timezone.getStart())
 						|| otTimezone.getEnd().greaterThan(shift1Timezone.getStart()))) {
-			throw new BusinessException("Msg_780");
+			be.addMessage("Msg_780");
 		}
 	}
 }

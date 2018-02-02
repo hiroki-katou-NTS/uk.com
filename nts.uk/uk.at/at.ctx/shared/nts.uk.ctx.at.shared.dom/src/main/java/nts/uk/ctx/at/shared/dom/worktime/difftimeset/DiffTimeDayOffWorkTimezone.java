@@ -5,18 +5,18 @@
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class TimeDiffDayOffWorkTimezone.
  */
 // 時差勤務の休日出勤用勤務時間帯
 @Getter
-public class DiffTimeDayOffWorkTimezone extends DomainObject {
+public class DiffTimeDayOffWorkTimezone extends WorkTimeDomainObject {
 
 	/** The rest timezone. */
 	// 休憩時間帯
@@ -52,17 +52,43 @@ public class DiffTimeDayOffWorkTimezone extends DomainObject {
 	public void validate() {
 		super.validate();
 		this.checkOverlap();
+		this.validateRestInWork();
 	}
 
 	private void checkOverlap() {
+		// validate overlap list work time
 		if (!CollectionUtil.isEmpty(this.workTimezones)) {
 			for (int i = 0; i < this.workTimezones.size(); i++) {
 				for (int j = i + 1; j < this.workTimezones.size(); j++) {
 					if (this.workTimezones.get(i).getTimezone().isOverlap(this.workTimezones.get(j).getTimezone())) {
-						throw new BusinessException("Msg_515");
+						this.bundledBusinessExceptions.addMessage("Msg_515","KMK003_90");
 					}
 				}
 			}
 		}
+
+		// validate overlap list rest time
+		if (!CollectionUtil.isEmpty(this.restTimezone.getRestTimezones())) {
+			for (int i = 0; i < this.restTimezone.getRestTimezones().size(); i++) {
+				for (int j = i + 1; j < this.restTimezone.getRestTimezones().size(); j++) {
+					if (this.restTimezone.getRestTimezones().get(i)
+							.isOverlap(this.restTimezone.getRestTimezones().get(j))) {
+						this.bundledBusinessExceptions.addMessage("Msg_515","KMK003_21");
+					}
+				}
+			}
+		}
+	}
+	
+	private void validateRestInWork() {
+		this.restTimezone.getRestTimezones().stream().forEach(rest -> {
+			List<DayOffTimezoneSetting> workTime = this.workTimezones.stream()
+					.filter(work -> (work.getTimezone().getStart().v() <= rest.getStart().v())
+							&& (work.getTimezone().getEnd().v() >= rest.getEnd().v()))
+					.collect(Collectors.toList());
+			if (CollectionUtil.isEmpty(workTime)) {
+				this.bundledBusinessExceptions.addMessage("Msg_755");
+			}
+		});
 	}
 }

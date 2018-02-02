@@ -151,6 +151,7 @@ module cps001.c.vm {
                         } else if (itemListLength - 1 > indexItemDelete) {
                             self.start(listItem[indexItemDelete + 1].id);
                         }
+                        nts.uk.ui.block.clear();
                         unblock();
                     });
 

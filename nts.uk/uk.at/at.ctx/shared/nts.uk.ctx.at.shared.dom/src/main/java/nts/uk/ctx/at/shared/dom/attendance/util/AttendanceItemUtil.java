@@ -64,10 +64,12 @@ public class AttendanceItemUtil {
 						currentLayout = mergeLayout(layoutCode, layout.layout());
 				if(isList){
 					List<T> list = ReflectionUtil.getFieldValue(field, attendanceItems);
-					return mapByPath(c.getValue(), x -> getIndexFromString(x.path())).entrySet().stream().map(idx -> {
+					boolean listNoIdx = layout.listNoIndex();
+					return mapByPath(c.getValue(), x -> listNoIdx ? getEnumValueAsIdxPlus(x.path()) : getIndexFromString(x.path()))
+							.entrySet().stream().map(idx -> {
 						T idxValue = list == null || list.size() < idx.getKey() ? null : list.get(idx.getKey() - 1);
 						return getItemValues(fieldValue(className, idxValue), layoutIdx + 1, 
-												layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(), 
+												listNoIdx ? currentLayout : currentLayout + idx.getKey(), 
 												pathName, extraCondition, idx.getKey(), 
 												mapByPath(idx.getValue(), id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
 					}).flatMap(List::stream).collect(Collectors.toList());
@@ -106,14 +108,15 @@ public class AttendanceItemUtil {
 				if(isList){
 					List<T> list = processListToMax(ReflectionUtil.getFieldValue(field, attendanceItems), 
 												layout.listMaxLength(), className, layout.indexField());
+					boolean listNoIdx = layout.listNoIndex();
 					Field idxField = layout.indexField().isEmpty() ? null : getField(layout.indexField(), className);
-					Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), item -> getIndexFromString(item.path()));
+					Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), x -> listNoIdx ? getEnumValueAsIdxPlus(x.path()) : getIndexFromString(x.path()));
 					list.stream().forEach(eVal -> {
 						Integer idx = idxField == null ? 1 : ReflectionUtil.getFieldValue(idxField, eVal);
-						List<ItemValue> subList = layout.listNoIndex() ? c.getValue() : itemsForIdx.get(idx);
+						List<ItemValue> subList = listNoIdx ? c.getValue() : itemsForIdx.get(idx);
 						if(subList != null){
-							fromItemValues(eVal, layoutIdx + 1,  layout.listNoIndex() ? currentLayout : currentLayout + (idx == null ? "" : idx),
-									pathName, idx - 1, needCheckWithIdx || (isList && !layout.listNoIndex()),
+							fromItemValues(eVal, layoutIdx + 1,  listNoIdx ? currentLayout : currentLayout + (idx == null ? "" : idx),
+									pathName, idx - 1, needCheckWithIdx || (isList && !listNoIdx),
 									mapByPath(subList, id -> getCurrentPath(layoutIdx + 1, id.path(), false)));
 							
 							setValueEnumField(layout, className, eVal, subList);
@@ -144,13 +147,18 @@ public class AttendanceItemUtil {
 		
 		return attendanceItems;
 	}
+	
+	private static Integer getEnumValueAsIdxPlus(String path){
+		Integer enumValue = AttendanceItemIdContainer.getEnumValue(getExConditionFromString(path));
+		return enumValue == null ? 1 : enumValue + 1;
+	}
 
-	public static String getEnumTextFromList(List<ItemValue> c) {
+	private static String getEnumTextFromList(List<ItemValue> c) {
 		return c.stream().filter(em -> em.path().indexOf("-") > 0)
 				.map(em -> getExConditionFromString(em.path())).findFirst().orElse(null);
 	}
 
-	public static <T> void setValueEnumField(AttendanceItemLayout layout, Class<T> className, T value,
+	private static <T> void setValueEnumField(AttendanceItemLayout layout, Class<T> className, T value,
 			List<ItemValue> items) {
 		if(!layout.enumField().isEmpty()){
 			String enumText = items.stream().filter(em -> em.path().indexOf("-") > 0)
@@ -160,18 +168,18 @@ public class AttendanceItemUtil {
 		}
 	}
 
-	public static String getPath(String path, AttendanceItemLayout layout, AttendanceItemRoot root) {
+	private static String getPath(String path, AttendanceItemLayout layout, AttendanceItemRoot root) {
 		if(root != null && !root.rootName().isEmpty()){
 			return root.rootName();
 		}
 		return path.isEmpty() ? layout.jpPropertyName() : StringUtils.join(path, ".", layout.jpPropertyName());
 	}
 
-	public static <T> List<T> filterAndMap(List<T> ids, Predicate<T> filter, Function<T, T> mapper) {
+	private static <T> List<T> filterAndMap(List<T> ids, Predicate<T> filter, Function<T, T> mapper) {
 		return ids.stream().filter(filter).map(mapper).collect(Collectors.toList());
 	}
 
-	public static <T> T getOptionalFieldValue(T attendanceItems, Field field, boolean isOptional) {
+	private static <T> T getOptionalFieldValue(T attendanceItems, Field field, boolean isOptional) {
 		if(isOptional){
 			Optional<T> optional = ReflectionUtil.getFieldValue(field, attendanceItems);
 			return optional == null ? null : optional.orElse(null);
@@ -179,11 +187,11 @@ public class AttendanceItemUtil {
 		return ReflectionUtil.getFieldValue(field, attendanceItems);
 	}
 
-	public static <T> T fieldValue(Class<T> className, T idxValue) {
+	private static <T> T fieldValue(Class<T> className, T idxValue) {
 		return idxValue == null ? ReflectionUtil.newInstance(className) : idxValue;
 	}
 
-	public static <T> Map<T, List<ItemValue>> mapByPath(List<ItemValue> ids, Function<ItemValue, T> grouping) {
+	private static <T> Map<T, List<ItemValue>> mapByPath(List<ItemValue> ids, Function<ItemValue, T> grouping) {
 		return ids.stream().collect(Collectors.groupingBy(grouping));
 	}
 

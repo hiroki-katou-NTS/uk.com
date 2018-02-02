@@ -48,6 +48,10 @@ public class KshmtWorkingCondItem extends UkJpaEntity implements Serializable {
 	/** The sid. */
 	@Column(name = "SID")
 	private String sid;
+	
+	/** The hourly pay atr */
+	@Column(name = "HOURLY_PAY_ATR")
+	private Integer hourlyPayAtr;
 
 	/** The sche management atr. */
 	@Column(name = "SCHE_MANAGEMENT_ATR")
@@ -84,6 +88,14 @@ public class KshmtWorkingCondItem extends UkJpaEntity implements Serializable {
 	/** The hd add time afternoon. */
 	@Column(name = "HD_ADD_TIME_AFTERNOON")
 	private Integer hdAddTimeAfternoon;
+	
+	/** The time apply. */
+	@Column(name = "TIME_APPLY")
+	private String timeApply;
+	
+	/** The monthly pattern. */
+	@Column(name = "MONTHLY_PATTERN")
+	private String monthlyPattern;
 
 	/** The kshmt working cond item. */
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

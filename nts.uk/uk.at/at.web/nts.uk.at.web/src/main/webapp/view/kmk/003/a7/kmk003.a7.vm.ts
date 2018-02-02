@@ -6,6 +6,8 @@ module a7 {
     import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
     import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
     import DeductionTimeModel = nts.uk.at.view.kmk003.a.viewmodel.common.DeductionTimeModel;
+    import DiffTimeDeductTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.difftimeset.DiffTimeDeductTimezoneModel;
+
     import FlowRestSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowRestSettingModel;
     class ScreenModel {
 
@@ -97,9 +99,9 @@ module a7 {
             /////////////
             self.dataSourceForFlowOrFlexNotUse2 = ko.observableArray([]);
             self.fixTableOptionForFlowOrFlexNotUse2 = {
-                maxRow: 7,
+                maxRow: 1,
                 minRow: 0,
-                maxRowDisplay: 5,
+                maxRowDisplay: 1,
                 isShowButton: false,
                 dataSource: self.dataSourceForFlowOrFlexNotUse2,
                 isMultipleSelect: false,
@@ -131,23 +133,40 @@ module a7 {
                 self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime(v == UseDivision.USE);
                 //TODO load
 //                self.dataSourceForFixedOrDiffTime(self.backUpOfFixedOrDiffTime);
-                if (v) {
-                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.updateData(self.backUpOfFlowOrFlexNotUse);
+                if (self.mainSettingModel.workTimeSetting.isFlex()) {
+                    if (v == UseDivision.NOTUSE) {
+                        self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.updateData(self.backUpOfFlowOrFlexNotUse);
+                    }
+                    else {
+                        self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.updateData(self.backUpOfFlowOrFlexUse);
+                    }
                 }
-                else {
-                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.updateData(self.backUpOfFlowOrFlexUse);
+                if (self.mainSettingModel.workTimeSetting.isFlow()) {
+                    if (v == UseDivision.NOTUSE) {
+                        self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.updateData(self.backUpOfFlowOrFlexNotUse);
+                    }
+                    else {
+                        self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.fixedRestTimezone.updateData(self.backUpOfFlowOrFlexUse);
+                    }
                 }
                 self.updateDataModel();
             });
             
             //load data to screen 
-            self.setDataFlexOrFlowToModel();
+//            self.setDataFlexOrFlowToModel();
             isLoading.subscribe((isDone: boolean) => {
                 if (isDone) {
                     self.updateDataModel();
+                    self.setDataFlexOrFlowToModel();
 //                    self.backUpOfFixedOrDiffTime = self.dataSourceForFixedOrDiffTime();
-                    self.backUpOfFlowOrFlexUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.toDto();
-                    self.backUpOfFlowOrFlexNotUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.toDto();
+                    if (self.mainSettingModel.workTimeSetting.isFlex()) {
+                        self.backUpOfFlowOrFlexUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.toDto();
+                        self.backUpOfFlowOrFlexNotUse = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.toDto();
+                    }
+                    if (self.mainSettingModel.workTimeSetting.isFlow()) {
+                        self.backUpOfFlowOrFlexUse = self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.fixedRestTimezone.toDto();
+                        self.backUpOfFlowOrFlexNotUse = self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.toDto();
+                    }
                 }
             });
             
@@ -164,107 +183,199 @@ module a7 {
         private loadDataToScreen() {
             let self = this;
             self.dataSourceForFixedOrDiffTime.subscribe((newDataSource: any) => {
-                let listDeductionTimeModel: DeductionTimeModel[] = [];
-                for (let item of newDataSource) {
-                    let deduct = new DeductionTimeModel();
-                    deduct.start(item.column1().startTime);
-                    deduct.end(item.column1().endTime);
-                    listDeductionTimeModel.push(deduct);
+                if (self.mainSettingModel.workTimeSetting.isFixed()) {
+                    let listDeductionTimeModel: DeductionTimeModel[] = [];
+                    for (let item of newDataSource) {
+                        let deduct = new DeductionTimeModel();
+                        deduct.start(item.column1().startTime);
+                        deduct.end(item.column1().endTime);
+                        listDeductionTimeModel.push(deduct);
+                    }
+                    self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(listDeductionTimeModel);
                 }
-                self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone(listDeductionTimeModel);
+
+                if (self.mainSettingModel.workTimeSetting.isDiffTime()) {
+                    let listDiffTimeDeductTimezoneModel: DiffTimeDeductTimezoneModel[] = [];
+                    for (let item of newDataSource) {
+                        let deduct = new DiffTimeDeductTimezoneModel();
+                        deduct.start(item.column1().startTime);
+                        deduct.end(item.column1().endTime);
+                        //is update start time ??
+                        listDiffTimeDeductTimezoneModel.push(deduct);
+                    }
+                    self.mainSettingModel.diffWorkSetting.dayoffWorkTimezone.restTimezone.restTimezones(listDiffTimeDeductTimezoneModel);
+                }
             });
-            //TODO not care difftime or flow
         }
 
         private setDataFlexOrFlowToModel() {
             let self = this;
-            self.isCheckFollowTime = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.useHereAfterRestSet;
             
-            self.dataSourceForFlowOrFlexUse.subscribe((newDataSource: any) => {
-                let listDeductionTimeModel: DeductionTimeModel[] = [];
-                for (let item of newDataSource) {
-                    let deduct = new DeductionTimeModel();
-                    deduct.start(item.column1().startTime);
-                    deduct.end(item.column1().endTime);
-                    listDeductionTimeModel.push(deduct);
-                }
-                self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones(listDeductionTimeModel);
-            });
+            //if mode flex
+            if (self.mainSettingModel.workTimeSetting.isFlex()) {
+                self.isCheckFollowTime = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.useHereAfterRestSet;
 
-            self.dataSourceForFlowOrFlexNotUse1.subscribe((newData: any) => {
-                let listFlowRestSettingModel: FlowRestSettingModel[] = [];
-                for (let item of newData) {
-                    let rest = new FlowRestSettingModel();
-                    rest.flowRestTime(item.column2());
-                    rest.flowPassageTime(item.column1());
-                    listFlowRestSettingModel.push(rest);
-                }
-                self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets(listFlowRestSettingModel);
-            });
+                self.dataSourceForFlowOrFlexUse.subscribe((newDataSource: any) => {
+                    let listDeductionTimeModel: DeductionTimeModel[] = [];
+                    for (let item of newDataSource) {
+                        let deduct = new DeductionTimeModel();
+                        deduct.start(item.column1().startTime);
+                        deduct.end(item.column1().endTime);
+                        listDeductionTimeModel.push(deduct);
+                    }
+                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones(listDeductionTimeModel);
+                });
 
-            self.dataSourceForFlowOrFlexNotUse2.subscribe((newData: any) => {
-                if (newData && newData.length > 0) {
-                    let rest = new FlowRestSettingModel();
-                    rest.flowRestTime(newData[0].column2());
-                    rest.flowPassageTime(newData[0].column1());
-                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet = rest;
-                }
-            });
+                self.dataSourceForFlowOrFlexNotUse1.subscribe((newData: any) => {
+                    let listFlowRestSettingModel: FlowRestSettingModel[] = [];
+                    for (let item of newData) {
+                        let rest = new FlowRestSettingModel();
+                        rest.flowRestTime(item.column2());
+                        rest.flowPassageTime(item.column1());
+                        listFlowRestSettingModel.push(rest);
+                    }
+                    self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets(listFlowRestSettingModel);
+                });
+
+                self.dataSourceForFlowOrFlexNotUse2.subscribe((newData: any) => {
+                    if (newData && newData.length > 0) {
+                        let rest = new FlowRestSettingModel();
+                        rest.flowRestTime(newData[0].column2());
+                        rest.flowPassageTime(newData[0].column1());
+                        self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet = rest;
+                    }
+                });
+            }
+
+            //if mode flow
+            if (self.mainSettingModel.workTimeSetting.isFlow()) {
+                self.isCheckFollowTime = self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.useHereAfterRestSet;
+
+                self.dataSourceForFlowOrFlexUse.subscribe((newDataSource: any) => {
+                    let listDeductionTimeModel: DeductionTimeModel[] = [];
+                    for (let item of newDataSource) {
+                        let deduct = new DeductionTimeModel();
+                        deduct.start(item.column1().startTime);
+                        deduct.end(item.column1().endTime);
+                        listDeductionTimeModel.push(deduct);
+                    }
+                    self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.fixedRestTimezone.timezones(listDeductionTimeModel);
+                });
+
+                self.dataSourceForFlowOrFlexNotUse1.subscribe((newData: any) => {
+                    let listFlowRestSettingModel: FlowRestSettingModel[] = [];
+                    for (let item of newData) {
+                        let rest = new FlowRestSettingModel();
+                        rest.flowRestTime(item.column2());
+                        rest.flowPassageTime(item.column1());
+                        listFlowRestSettingModel.push(rest);
+                    }
+                    self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.flowRestSets(listFlowRestSettingModel);
+                });
+
+                self.dataSourceForFlowOrFlexNotUse2.subscribe((newData: any) => {
+                    if (newData && newData.length > 0) {
+                        let rest = new FlowRestSettingModel();
+                        rest.flowRestTime(newData[0].column2());
+                        rest.flowPassageTime(newData[0].column1());
+                        self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.hereAfterRestSet = rest;
+                    }
+                });
+            }
         }
 
         private updateDataModel() {
             let self = this;
-            if (self.mainSettingModel.workTimeSetting.isFlex()) {
-                let data: any = [];
-                let data1: any = [];
-                let data2: any = [];
+            if (self.isFlowOrFlex()) {
+                //if flex
+                if (self.mainSettingModel.workTimeSetting.isFlex()) {
+                    let data: any = [];
+                    let data1: any = [];
+                    let data2: any = [];
 
-                for (let item of self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones()) {
-                    data.push({
-                        column1: ko.observable({ startTime: item.start(), endTime: item.end() })
-                    });
-                }
-                self.dataSourceForFlowOrFlexUse(data);
+                    for (let item of self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixedRestTimezone.timezones()) {
+                        data.push({
+                            column1: ko.observable({ startTime: item.start(), endTime: item.end() })
+                        });
+                    }
+                    self.dataSourceForFlowOrFlexUse(data);
 
-                for (let item of self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets()) {
-                    data1.push({
+                    for (let item of self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.flowRestSets()) {
+                        data1.push({
+                            column1: ko.observable(item.flowPassageTime()),
+                            column2: ko.observable(item.flowRestTime())
+                        });
+                    }
+                    self.dataSourceForFlowOrFlexNotUse1(data1);
+
+                    let item = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet;
+                    data2.push({
                         column1: ko.observable(item.flowPassageTime()),
                         column2: ko.observable(item.flowRestTime())
                     });
+                    self.dataSourceForFlowOrFlexNotUse2(data2);
                 }
-                self.dataSourceForFlowOrFlexNotUse1(data1);
+                //if flow
+                if (self.mainSettingModel.workTimeSetting.isFlow()) {
+                    let data: any = [];
+                    let data1: any = [];
+                    let data2: any = [];
 
-                let item = self.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.flowRestTimezone.hereAfterRestSet;
-                data2.push({
-                    column1: ko.observable(item.flowPassageTime()),
-                    column2: ko.observable(item.flowRestTime())
-                });
-                self.dataSourceForFlowOrFlexNotUse2(data2);
+                    for (let item of self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.fixedRestTimezone.timezones()) {
+                        data.push({
+                            column1: ko.observable({ startTime: item.start(), endTime: item.end() })
+                        });
+                    }
+                    self.dataSourceForFlowOrFlexUse(data);
+
+                    for (let item of self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.flowRestSets()) {
+                        data1.push({
+                            column1: ko.observable(item.flowPassageTime()),
+                            column2: ko.observable(item.flowRestTime())
+                        });
+                    }
+                    self.dataSourceForFlowOrFlexNotUse1(data1);
+
+                    let item = self.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.flowRestTimezone.hereAfterRestSet;
+                    data2.push({
+                        column1: ko.observable(item.flowPassageTime()),
+                        column2: ko.observable(item.flowRestTime())
+                    });
+                    self.dataSourceForFlowOrFlexNotUse2(data2);
+                }
             }
             else//for fixed or difftime
             {
                 let data: any = [];
-
-                for (let item of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone()) {
-                    data.push({
-                        column1: ko.observable({ startTime: item.start(), endTime: item.end() })
-                    });
+                if (self.mainSettingModel.workTimeSetting.isFixed()) {
+                    for (let item of self.mainSettingModel.fixedWorkSetting.offdayWorkTimezone.restTimezone.lstTimezone()) {
+                        data.push({
+                            column1: ko.observable({ startTime: item.start(), endTime: item.end() })
+                        });
+                    }
+                }
+                if (self.mainSettingModel.workTimeSetting.isDiffTime()) {
+                    for (let item of self.mainSettingModel.diffWorkSetting.dayoffWorkTimezone.restTimezone.restTimezones()) {
+                        data.push({
+                            column1: ko.observable({ startTime: item.start(), endTime: item.end() })
+                        });
+                    }
                 }
                 self.dataSourceForFixedOrDiffTime(data);
             }
         }
 
-         /**
-         * Update column setting
-         */
+        /**
+        * Update column setting
+        */
         private refreshColumnSet() {
             let self = this;
-            self.fixTableOptionForFixedOrDiffTime.columns= self.columnSetting();
-            self.fixTableOptionForFlowOrFlexUse.columns= self.columnSetting();
-            self.fixTableOptionForFlowOrFlexNotUse1.columns= self.columnSetting2();
-            self.fixTableOptionForFlowOrFlexNotUse2.columns= self.columnSetting2();
+            self.fixTableOptionForFixedOrDiffTime.columns = self.columnSetting();
+            self.fixTableOptionForFlowOrFlexUse.columns = self.columnSetting();
+            self.fixTableOptionForFlowOrFlexNotUse1.columns = self.columnSetting2();
+            self.fixTableOptionForFlowOrFlexNotUse2.columns = self.columnSetting2();
         }
-        
+
         private columnSetting(): Array<any> {
             let self = this;
             return [
@@ -345,16 +456,22 @@ module a7 {
                     screenModel.dataSourceForFixedOrDiffTime.valueHasMutated();
                 });
                 
-                document.getElementById('nts-fix-table-a7-flow-flex-use').addEventListener('timerangedatachange', e => {
-                    screenModel.dataSourceForFlowOrFlexUse.valueHasMutated();
-                });
+//                document.getElementById('nts-fix-table-a7-flow-flex-use').addEventListener('timerangedatachange', e => {
+//                    screenModel.dataSourceForFlowOrFlexUse.valueHasMutated();
+//                });
                 
                 isClickSave.subscribe((v) => {
-                    screenModel.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime(screenModel.useFixedRestTime()==UseDivision.USE);
+                    if (screenModel.mainSettingModel.workTimeSetting.isFlex()) {
+                        screenModel.mainSettingModel.flexWorkSetting.offdayWorkTime.restTimezone.fixRestTime(screenModel.useFixedRestTime() == UseDivision.USE);
+                    }
+                    if (screenModel.mainSettingModel.workTimeSetting.isFlow()) {
+                        screenModel.mainSettingModel.flowWorkSetting.offdayWorkTimezone.restTimeZone.fixRestTime(screenModel.useFixedRestTime() == UseDivision.USE);
+                    }
                     if (v) {
                         screenModel.dataSourceForFlowOrFlexNotUse1.valueHasMutated();
                         screenModel.dataSourceForFlowOrFlexNotUse2.valueHasMutated();
                     }
+                    
                 });
 
                 isClickNew.subscribe((v) => {

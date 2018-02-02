@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.gobackdirectly;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -7,6 +9,7 @@ import javax.transaction.Transactional;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.StringUtil;
@@ -16,6 +19,12 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -24,19 +33,41 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 	@Inject
 	private GoBackDirectlyRegisterService goBackDirectlyRegisterService;
 	
+	@Inject
+	ApplicationSettingRepository applicationSettingRepository;
+	
+	@Inject
+	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	
 	@Override
 	protected void handle(CommandHandlerContext<InsertApplicationGoBackDirectlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		InsertApplicationGoBackDirectlyCommand command = context.getCommand();
 		
 		//get new Application Item
-		String appReason = Strings.EMPTY;		
-		if(!StringUtil.isNullOrEmpty(command.appCommand.getAppReasonID(), false) 
-				|| !StringUtil.isNullOrEmpty(command.appCommand.getApplicationReason(), false)) {
-			appReason = !StringUtil.isNullOrEmpty(command.appCommand.getAppReasonID(), false) ? command.appCommand.getAppReasonID() 
-					+ System.lineSeparator() 
-					+ command.appCommand.getApplicationReason() : command.appCommand.getApplicationReason();
+		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
+				companyId, 
+				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value).get();
+		String appReason = Strings.EMPTY;	
+		String typicalReason = Strings.EMPTY;
+		String displayReason = Strings.EMPTY;
+		if(appTypeDiscreteSetting.getTypicalReasonDisplayFlg().equals(AppDisplayAtr.DISPLAY)){
+			typicalReason += command.appCommand.getAppReasonID();
 		}
+		if(appTypeDiscreteSetting.getDisplayReasonFlg().equals(AppDisplayAtr.DISPLAY)){
+			if(Strings.isNotBlank(typicalReason)){
+				displayReason += System.lineSeparator();
+			}
+			displayReason += command.appCommand.getApplicationReason();
+		}
+		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
+				.getApplicationSettingByComID(companyId);
+		ApplicationSetting applicationSetting = applicationSettingOp.get();
+		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+				&& Strings.isBlank(typicalReason+displayReason)) {
+			throw new BusinessException("Msg_115");
+		}
+		appReason = typicalReason + displayReason;
 		Application_New newApp = Application_New.firstCreate(
 				companyId, 
 				EnumAdaptor.valueOf(command.appCommand.getPrePostAtr(), PrePostAtr.class),  

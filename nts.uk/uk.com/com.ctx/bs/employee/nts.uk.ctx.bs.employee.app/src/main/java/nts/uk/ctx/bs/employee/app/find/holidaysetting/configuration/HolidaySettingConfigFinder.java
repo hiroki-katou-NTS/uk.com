@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.app.find.holidaysetting.configuration;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -54,28 +55,53 @@ public class HolidaySettingConfigFinder {
 		if(optionalForwardSetOfPubHd.isPresent()){
 			ForwardSettingOfPublicHoliday forwardSetOfPubHdDomain = optionalForwardSetOfPubHd.get();
 			forwardSetOfPubHdDomain.saveToMemento(forwardSetOfPubHdDto);
+		} else {
+			forwardSetOfPubHdDto = null;
 		}
 		
 		Optional<FourWeekFourHolidayNumberSetting> optionalFourWeekfourHdNumbSet = this.fourWeekfourHdNumbSetRepo.findByCID(companyId);
 		if(optionalFourWeekfourHdNumbSet.isPresent()){
 			FourWeekFourHolidayNumberSetting fourWeekfourHdNumbSetDomain = optionalFourWeekfourHdNumbSet.get();
 			fourWeekfourHdNumbSetDomain.saveToMemento(fourWeekfourHdNumbSetDto);
+		} else {
+			fourWeekfourHdNumbSetDto = null;
 		}
 		
 		Optional<WeekHolidaySetting> optionalWeekHdSet = this.weekHdSetRepo.findByCID(companyId);
 		if(optionalWeekHdSet.isPresent()){
 			WeekHolidaySetting weekHdSetDomain = optionalWeekHdSet.get();
 			weekHdSetDomain.saveToMemento(weekHdSetDto);
+		} else {
+			weekHdSetDto = null;
 		}
 		
-		Optional<PublicHolidaySetting> optionalPubHdSet = this.pubHdSetRepo.findByCID(companyId);
-		if(optionalPubHdSet.isPresent()){
-			PublicHolidaySetting pubHdSetDomain = optionalPubHdSet.get();
-			pubHdSetDomain.saveToMemento(pubHdSetDto);
+		List<PublicHolidaySetting> lstPubHdSet = this.pubHdSetRepo.findByCIDToList(companyId);
+		if(lstPubHdSet != null && !lstPubHdSet.isEmpty()){
+			PublicHolidaySetting pubHdSetDomain = lstPubHdSet.get(0);
+			pubHdSetDomain.saveToMemento(pubHdSetDto, 0);
+			
+			pubHdSetDomain = lstPubHdSet.get(1);
+			pubHdSetDomain.saveToMemento(pubHdSetDto, 1);
+		} else {
+			pubHdSetDto = null;
 		}
 		
 		HolidaySettingConfigDto dto = new HolidaySettingConfigDto(forwardSetOfPubHdDto, fourWeekfourHdNumbSetDto, weekHdSetDto, pubHdSetDto);
 		
 		return dto;
+	}
+	
+	public PublicHolidaySettingFindDto findIsManage() {
+		String companyId = AppContexts.user().companyId();
+		PublicHolidaySettingFindDto pubHdSetDto = new PublicHolidaySettingFindDto();
+		
+		Optional<PublicHolidaySetting> optPubHDSet = this.pubHdSetRepo.findByCID(companyId);
+		if (optPubHDSet.isPresent()) {
+			PublicHolidaySetting pubHDSet = optPubHDSet.get();
+			pubHDSet.saveToMemento(pubHdSetDto);
+		} else {
+			pubHdSetDto = null;
+		}
+		return pubHdSetDto;
 	}
 }

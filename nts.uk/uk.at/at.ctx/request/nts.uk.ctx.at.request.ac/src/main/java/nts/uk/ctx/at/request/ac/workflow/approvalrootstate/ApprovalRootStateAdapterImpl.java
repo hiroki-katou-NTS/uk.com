@@ -51,12 +51,14 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 							return new ApprovalPhaseStateImport_New(
 									x.getPhaseOrder(), 
 									x.getApprovalAtr(), 
+									EnumAdaptor.valueOf(0, ApprovalBehaviorAtrImport_New.class),
 									x.getListApprovalFrame().stream()
 									.map(y -> {
 										return new ApprovalFrameImport_New(
 												y.getPhaseOrder(), 
 												y.getFrameOrder(), 
 												y.getApprovalAtr(), 
+												EnumAdaptor.valueOf(0, ApprovalBehaviorAtrImport_New.class),
 												y.getListApprover().stream().map(z -> new ApproverStateImport_New(z.getApproverID(), z.getRepresenterID())).collect(Collectors.toList()), 
 												y.getApproverID(), 
 												y.getRepresenterID(), 

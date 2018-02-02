@@ -66,7 +66,7 @@
 	margin-left: -293px;
 	margin-top: 34px;
 	padding: 15px;
-	visibility: visible;
+	visibility: hidden;
 	top: -9999px;
 	left: -9999px;
 }
@@ -166,7 +166,6 @@
     border-color: white;
 }
 #content-grid{
-	top: 244px;
     position: absolute;
 }
 #content-grid-not{

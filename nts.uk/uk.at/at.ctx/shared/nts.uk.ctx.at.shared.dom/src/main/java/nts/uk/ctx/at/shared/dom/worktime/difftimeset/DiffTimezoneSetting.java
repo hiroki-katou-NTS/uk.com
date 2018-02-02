@@ -10,17 +10,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class DiffTimezoneSetting.
  */
 // 時差勤務時間帯設定
 @Getter
-public class DiffTimezoneSetting extends DomainObject{
+public class DiffTimezoneSetting extends WorkTimeDomainObject {
 
 	/** The employment timezone. */
 	// 就業時間帯
@@ -53,7 +52,8 @@ public class DiffTimezoneSetting extends DomainObject{
 	/**
 	 * Restore data.
 	 *
-	 * @param other the other
+	 * @param other
+	 *            the other
 	 */
 	public void restoreData(DiffTimezoneSetting other) {
 		// restore 就業時間帯
@@ -62,6 +62,9 @@ public class DiffTimezoneSetting extends DomainObject{
 		this.employmentTimezones.forEach(emTimezoneOther -> {
 			emTimezoneOther.restoreData(mapEmTimezone.get(emTimezoneOther.getEmploymentTimeFrameNo()));
 		});
+
+		// restore 残業時間帯
+		this.oTTimezones = other.getOTTimezones();
 	}
 	
 	@Override
@@ -75,7 +78,7 @@ public class DiffTimezoneSetting extends DomainObject{
 				EmTimeZoneSet em2 = this.employmentTimezones.get(j);
 				// check overlap
 				if (em.getTimezone().isOverlap(em2.getTimezone())) {
-					throw new BusinessException("Msg_515");
+					this.bundledBusinessExceptions.addMessage("Msg_515","KMK003_86");
 				}
 			}
 		}
@@ -87,7 +90,7 @@ public class DiffTimezoneSetting extends DomainObject{
 				DiffTimeOTTimezoneSet em2 = this.oTTimezones.get(j);
 				// check overlap
 				if (em.getTimezone().isOverlap(em2.getTimezone())) {
-					throw new BusinessException("Msg_515");
+					this.bundledBusinessExceptions.addMessage("Msg_515","KMK003_89");
 				}
 			}
 		}

@@ -1,11 +1,13 @@
 package nts.uk.ctx.bs.employee.app.command.holidaysetting.configuration;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class HolidaySettingConfigSaveCommand.
  */
 @Data
+@NoArgsConstructor
 public class HolidaySettingConfigSaveCommand {
 	
 	/** The forward set of pub hd. */

@@ -10,11 +10,11 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItemRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistItem_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepositoryService;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistoryRepository_ver1;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate_ver1.AffClassHistory_ver1;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItemRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepositoryService;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -31,10 +31,10 @@ public class UpdateAffClassCommandHandler extends CommandHandler<UpdateAffClassi
 		implements PeregUpdateCommandHandler<UpdateAffClassificationCommand> {
 
 	@Inject
-	private AffClassHistoryRepository_ver1 affClassHistoryRepo;
+	private AffClassHistoryRepository affClassHistoryRepo;
 
 	@Inject
-	private AffClassHistItemRepository_ver1 affClassHistItemRepo;
+	private AffClassHistItemRepository affClassHistItemRepo;
 	
 	@Inject
 	private AffClassHistoryRepositoryService affClassHistoryRepositoryService;
@@ -56,15 +56,15 @@ public class UpdateAffClassCommandHandler extends CommandHandler<UpdateAffClassi
 		// In case of date period are exist in the screen
 		if (command.getStartDate() != null){
 			// update history
-			Optional<AffClassHistory_ver1> historyOption = affClassHistoryRepo.getByEmployeeId(companyId, command.getEmployeeId());
+			Optional<AffClassHistory> historyOption = affClassHistoryRepo.getByEmployeeId(companyId, command.getEmployeeId());
 			if (!historyOption.isPresent()) {
-				throw new RuntimeException("invalid AffClassHistory_ver1");
+				throw new RuntimeException("invalid AffClassHistory");
 			}
 	
 			Optional<DateHistoryItem> itemToBeUpdateOpt = historyOption.get().getPeriods().stream()
 					.filter(h -> h.identifier().equals(command.getHistoryId())).findFirst();
 			if (!itemToBeUpdateOpt.isPresent()) {
-				throw new RuntimeException("invalid AffClassHistory_ver1");
+				throw new RuntimeException("invalid AffClassHistory");
 			}
 	
 			historyOption.get().changeSpan(itemToBeUpdateOpt.get(),
@@ -72,7 +72,7 @@ public class UpdateAffClassCommandHandler extends CommandHandler<UpdateAffClassi
 			affClassHistoryRepositoryService.update(historyOption.get(), itemToBeUpdateOpt.get());
 		}
 		// update history item
-		AffClassHistItem_ver1 historyItem = AffClassHistItem_ver1.createFromJavaType(command.getEmployeeId(),
+		AffClassHistItem historyItem = AffClassHistItem.createFromJavaType(command.getEmployeeId(),
 				command.getHistoryId(), command.getClassificationCode());
 		affClassHistItemRepo.update(historyItem);
 

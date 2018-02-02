@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.primitive.constraint.IntegerRange;
 
 @AllArgsConstructor
-@IntegerRange(max = 6, min = 1)
+@IntegerRange(max = 8, min = 1)
 public enum DataTypeValue {
 
 	// 1:文字列(String)
@@ -23,7 +23,14 @@ public enum DataTypeValue {
 	TIMEPOINT(5),
 
 	// 6:選択(Selection)
-	SELECTION(6);
+	SELECTION(6),
+	
+	//7:選択-ラジオボタン(Selection-Radio)
+	SELECTION_RADIO(7),
+	
+	//8:選択-ボタン(Selection-Button)
+	SELECTION_BUTTON(8);
+
 	
 	public final int value;
 }

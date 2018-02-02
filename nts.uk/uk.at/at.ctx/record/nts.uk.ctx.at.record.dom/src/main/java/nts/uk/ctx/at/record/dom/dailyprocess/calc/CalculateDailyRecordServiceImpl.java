@@ -33,9 +33,9 @@ import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSet;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndAggregateFrameSet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.OverDayEndCalcSet;
@@ -48,19 +48,18 @@ import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPerso
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -130,13 +129,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val oneRange = createOneDayRange(companyId,employeeId,targetDate,integrationOfDaily);
 		/*勤務種類の取得*/
 		val workInfo = integrationOfDaily.getWorkInformation();
-		val workType = this.workTypeRepository.findByPK(companyId, workInfo.getRecordWorkInformation().getWorkTypeCode().v())
-				.get(); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
+		//val workType = this.workTypeRepository.findByPK(companyId, "001").get();
+		val workType = this.workTypeRepository.findByPK(companyId,workInfo.getRecordWorkInformation().getWorkTypeCode().v()).get(); // 要確認：勤務種類マスタが削除されている場合は考慮しない？
 		
 		
 		
 		/*就業時間帯勤務区分*/
-		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId, integrationOfDaily.getWorkInformation().getScheduleWorkInformation().getWorkTimeCode().toString());
+		//Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,//"901"); 
+		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId,integrationOfDaily.getWorkInformation().getScheduleWorkInformation().getWorkTimeCode().toString());
 		/*労働制*/
 		DailyCalculationPersonalInformation personalInfo = getPersonInfomation(companyId
 																				, placeId
@@ -161,10 +161,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			FlowFixedRestSet fluidPrefixBreakTimeSet = new FlowFixedRestSet(false,false,false,FlowFixedRestCalcMethod.REFER_MASTER);
 			
 			/*所定時間設定取得*/
-			val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId, integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+			val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId, "901");//integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 			
 			//固定勤務の設定
-			FixedWorkSetting fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordWorkInformation().getWorkTimeCode().toString()).get();
+			FixedWorkSetting fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, "901").get();//workInfo.getRecordWorkInformation().getWorkTimeCode().toString()).get();
 			
 			
 			//0時跨ぎ計算設定
@@ -177,7 +177,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																		new OverDayEndCalcSetOfWeekDay(UseAtr.NOTUSE,UseAtr.NOTUSE,UseAtr.NOTUSE));
 
 			//残業時間の自動計算設定
-			AutoCalcSet autoCalSetting = new AutoCalcSet(AutoCalculationCategoryOutsideHours.CalculateEmbossing);
+			AutoCalcSet autoCalSetting = new AutoCalcSet(AutoCalAtrOvertime.CALCULATEMBOSS);
 			AutoCalculationOfOverTimeWork autoCalcOverTimeWork = new AutoCalculationOfOverTimeWork(autoCalSetting,
 																									autoCalSetting,
 																									autoCalSetting,
@@ -187,9 +187,11 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			/*前日の勤務情報取得  */
 			WorkInfoOfDailyPerformance yestarDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(-1)).orElse(workInformationRepository.find(employeeId, targetDate).get());
 			val yesterDay = this.workTypeRepository.findByPK(companyId, yestarDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
+			//val yesterDay = this.workTypeRepository.findByPK(companyId, "001");//yestarDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
 			/*翌日の勤務情報取得 */
 			WorkInfoOfDailyPerformance tomorrowDayWorkInfo = workInformationRepository.find(employeeId, targetDate.addDays(1)).orElse(workInformationRepository.find( employeeId, targetDate).get());
 			val tomorrow = this.workTypeRepository.findByPK(companyId, tomorrowDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
+			//val tomorrow = this.workTypeRepository.findByPK(companyId, "001");//tomorrowDayWorkInfo.getRecordWorkInformation().getWorkTypeCode().v());
 			//---------------------------------Repositoryが整理されるまでの一時的な作成-------------------------------------------
 			
 			oneRange.decisionWorkClassification(workTime.get().getWorkTimeDivision(),
@@ -280,7 +282,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private CalculationRangeOfOneDay createOneDayRange(String companyId, String employeeId, GeneralDate targetDate,IntegrationOfDaily integrationOfDaily) {
 		
 		/*所定時間設定取得*/
-		val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId, integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+		//val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,"901");// integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+		val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
 		
 		/*1日の計算範囲取得*/
 		val calcRangeOfOneDay = new TimeSpanForCalc(predetermineTimeSet.get().getStartDateClock()
@@ -317,7 +320,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private DailyCalculationPersonalInformation getPersonInfomation(String companyId,String placeId,String employmentCd,String employeeId,GeneralDate targetDate) {
 		//Optional<EmploymentContractHistory> employmentContractHistory = this.employmentContractHistoryAdopter.findByEmployeeIdAndBaseDate(employeeId, targetDate);
 		Optional<EmploymentContractHistory> employmentContractHistory = Optional.of(new EmploymentContractHistory(employeeId,WorkingSystem.RegularWork));
-		if(employmentContractHistory.isPresent()) {
+		if(!employmentContractHistory.isPresent()) {
 			throw new RuntimeException("Can't get WorkingSystem");
 		}
 		// 労働制

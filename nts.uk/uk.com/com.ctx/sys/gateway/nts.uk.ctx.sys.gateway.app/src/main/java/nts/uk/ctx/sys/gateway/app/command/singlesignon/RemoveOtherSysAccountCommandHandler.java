@@ -37,7 +37,7 @@ public class RemoveOtherSysAccountCommandHandler extends CommandHandler<RemoveOt
 		
 		if(opOtherSysAcc.isPresent()){
 			// remove
-			this.otherSysAccountRepository.remove(opOtherSysAcc.get().getUserId(), opOtherSysAcc.get().getCompanyCode(), opOtherSysAcc.get().getUserName());
+			this.otherSysAccountRepository.remove(opOtherSysAcc.get().getUserId());
 			
 		}
 		

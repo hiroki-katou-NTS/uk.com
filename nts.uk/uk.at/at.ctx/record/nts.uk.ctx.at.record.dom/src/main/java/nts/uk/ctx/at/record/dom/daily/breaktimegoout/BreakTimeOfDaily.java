@@ -27,6 +27,8 @@ public class BreakTimeOfDaily {
 	/** 補正後時間帯: 休憩時間帯 */
 	private List<BreakTimeSheet> breakTimeSheet;
 	
+	
+	
 	/**
 	 * Constructor
 	 * @param record 計上用
@@ -35,6 +37,16 @@ public class BreakTimeOfDaily {
 	private BreakTimeOfDaily(DeductionTotalTime record,DeductionTotalTime deduction) {
 		this.toRecordTotalTime = record;
 		this.deductionTotalTime = deduction;
+	}
+	
+	public BreakTimeOfDaily(DeductionTotalTime toRecordTotalTime, DeductionTotalTime deductionTotalTime,
+			BreakTimeGoOutTimes gooutTimes, AttendanceTime workTime, List<BreakTimeSheet> breakTimeSheet) {
+		super();
+		this.toRecordTotalTime = toRecordTotalTime;
+		this.deductionTotalTime = deductionTotalTime;
+		this.gooutTimes = gooutTimes;
+		this.workTime = workTime;
+		this.breakTimeSheet = breakTimeSheet;
 	}
 	
 	/**
@@ -54,5 +66,7 @@ public class BreakTimeOfDaily {
 		return new BreakTimeOfDaily(oneDay.getTemporaryDeductionTimeSheet().get().getTotalBreakTime(DeductionAtr.Deduction),
 									oneDay.getTemporaryDeductionTimeSheet().get().getTotalBreakTime(DeductionAtr.Appropriate));
 	}
+
+
 	
 }

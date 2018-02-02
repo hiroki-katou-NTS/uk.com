@@ -28,7 +28,7 @@ public class UpdateWorkingConditionCommandHandler extends CommandHandler<UpdateW
 	private WorkingConditionRepository workingConditionRepository;
 	
 	@Inject
-	private AddWorkingConditionCommandAssembler addWorkingConditionCommandAssembler;
+	private UpdateWorkingConditionCommandAssembler updateWorkingConditionCommandAssembler;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -60,7 +60,7 @@ public class UpdateWorkingConditionCommandHandler extends CommandHandler<UpdateW
 			
 			workingConditionRepository.save(workingCond);
 		}
-		WorkingConditionItem  workingCondItem = addWorkingConditionCommandAssembler.fromDTO(command);
+		WorkingConditionItem  workingCondItem = updateWorkingConditionCommandAssembler.fromDTO(command);
 		
 		workingConditionItemRepository.update(workingCondItem);
 		

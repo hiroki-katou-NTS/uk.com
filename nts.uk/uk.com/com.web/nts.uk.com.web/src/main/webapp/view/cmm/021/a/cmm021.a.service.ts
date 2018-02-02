@@ -7,7 +7,7 @@ module nts.uk.com.view.cmm021.a {
          */
         var servicePath: any = {
             findListUserInfo: "ctx/sys/gateway/single/signon/find/userInfo",
-            findListWindowAccByUserIdAndUseAtr: "ctx/sys/gateway/single/signon/find/window/account",
+            findListWindowAccByUserId: "ctx/sys/gateway/single/signon/find/window/account",
             saveWindowAccount: "ctx/sys/gateway/single/signon/save/windowAcc",
             removeWindowAccount: "ctx/sys/gateway/single/signon/remove/windowAcc",
                         
@@ -19,12 +19,12 @@ module nts.uk.com.view.cmm021.a {
         }
         
         // Screen B
-        export function findListUserInfo(baseDate: Date): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.findListUserInfo, { baseDate: baseDate });
+        export function findListUserInfo(baseDate: Date, isScreenC: boolean): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findListUserInfo, { baseDate: baseDate,isScreenC: isScreenC});
         }
 
-        export function findListWindowAccByUserIdAndUseAtr(userId: string): JQueryPromise<model.WindownAccountFinderDto[]> {
-            return nts.uk.request.ajax(servicePath.findListWindowAccByUserIdAndUseAtr, { userId: userId });
+        export function findListWindowAccByUserId(userId: string): JQueryPromise<model.WindownAccountFinderDto[]> {
+            return nts.uk.request.ajax(servicePath.findListWindowAccByUserId, { userId: userId });
         }
 
         export function saveWindowAccount(saveWindowAcc: model.SaveWindowAccountCommand): JQueryPromise<any> {
@@ -73,6 +73,7 @@ module nts.uk.com.view.cmm021.a {
                 personName: string;
                 employeeId: string;
                 isSetting: boolean;
+                isScreenC: boolean;
                 other: number;
             }
             
@@ -125,12 +126,12 @@ module nts.uk.com.view.cmm021.a {
                 userName: string;
                 useAtr: number;
                 
-                constructor(userId: string, companyCode: string, userName: string, useAtr: number) {
-                    this.userId = userId;
-                    this.companyCode = companyCode;
-                    this.userName = userName;
-                    this.useAtr = useAtr;
-                }
+//                constructor(userId: string, companyCode: string, userName: string, useAtr: number) {
+//                    this.userId = userId;
+//                    this.companyCode = companyCode;
+//                    this.userName = userName;
+//                    this.useAtr = useAtr;
+//                }
 
             }
 

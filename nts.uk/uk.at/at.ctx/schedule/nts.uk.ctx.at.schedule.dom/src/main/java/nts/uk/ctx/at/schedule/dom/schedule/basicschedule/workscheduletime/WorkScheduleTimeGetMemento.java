@@ -2,6 +2,8 @@ package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime;
 
 import java.util.List;
 
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+
 /**
  * The Interface WorkScheduleTimeGetMemento.
  */

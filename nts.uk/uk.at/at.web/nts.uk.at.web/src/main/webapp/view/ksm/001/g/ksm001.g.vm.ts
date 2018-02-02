@@ -1,182 +1,198 @@
 module nts.uk.at.view.ksm001.g {
 
-    import CommonGuidelineSettingDto = service.model.CommonGuidelineSettingDto;
-    import UsageSettingDto = nts.uk.at.view.ksm001.a.service.model.UsageSettingDto;
-    import UsageSettingModel = nts.uk.at.view.ksm001.a.viewmodel.UsageSettingModel;
-    import EstimatedConditionDto = service.model.EstimatedConditionDto;
-    import EstimatedAlarmColorDto = service.model.EstimatedAlarmColorDto;
-    import ReferenceConditionDto = service.model.ReferenceConditionDto;
+    import AggregateSettingDto = service.model.AggregateSettingDto;
+    import MonthlyWorkingDaySettingDto = service.model.MonthlyWorkingDaySettingDto;
+    import PremiumItemDto = service.model.PremiumItemDto;
 
     export module viewmodel {
 
         export class ScreenModel {
-//            commonGuidelineSettingModel: CommonGuidelineSettingModel;
+            itemsSwap: KnockoutObservableArray<ItemModel>;
+            columns: KnockoutObservableArray<any>;
+            currentCodeListSwap: KnockoutObservableArray<ItemModel>;
+            
+            yearHdAtr: KnockoutObservable<boolean>;
+            havyHdAtr: KnockoutObservable<boolean>;
+            sphdAtr: KnockoutObservable<boolean>;
+            halfDayAtr: KnockoutObservable<boolean>;
            
             constructor() {
-                var self = this;
-//                self.commonGuidelineSettingModel = new CommonGuidelineSettingModel();
-            }
+                let _self = this;
+                _self.itemsSwap = ko.observableArray([]);
+                _self.currentCodeListSwap = ko.observableArray([]);
+    
+                _self.columns = ko.observableArray([
+                   { headerText: 'コード', key: 'code', width: 100, hidden: true},
+                   { headerText: nts.uk.resource.getText('KSM001_92'), key: 'name', width: 100 }
+                ]);
+    
+                _self.yearHdAtr = ko.observable(false);
+                _self.havyHdAtr = ko.observable(false);
+                _self.sphdAtr = ko.observable(false);
+                _self.halfDayAtr = ko.observable(false);
+             }
 
             /**
-            * start page data 
+            * Start page data 
             */
             public startPage(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
-//                service.findCommonGuidelineSetting().done(function(data){
-//                    if(data){
-//                        self.commonGuidelineSettingModel.updateData(data);    
-//                    }
-//                    dfd.resolve();
-//                });
+                let _self = this;
+                let dfd = $.Deferred();
+                
+                $.when(_self.loadListPremium()).done(() => {
+                    
+                    // load setting
+                    _self.findAggregateSetting().done(() => {
+
+                        dfd.resolve();
+                    });
+                });
+
                 return dfd.promise();
             }
             
             /**
              * function on click save CommonGuidelineSetting
              */
-            public saveComparTargetSetting(): void {
-                var self = this;
+            public save(): void {
+                let _self = this;
 
+                if (_self.currentCodeListSwap().length == 0) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_676" });
+                    return;
+                }
                 nts.uk.ui.block.invisible();
-
-//                service.saveCommonGuidelineSetting(self.commonGuidelineSettingModel.toDto()).done(function() {
-//                    // show message 15
-//                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-//                        // close windows
-//                        nts.uk.ui.windows.close();
-//                    });
-//                }).fail(function(error) {
-//                    nts.uk.ui.dialog.alertError(error);
-//                }).always(function() {
-//                    nts.uk.ui.block.clear();
-//                });
+                service.saveAggregateSetting(_self.toJsObject()).done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        _self.closeDialog();
+                    });
+                }).fail((res: any) => {
+                    nts.uk.ui.block.clear();
+                    
+                    // show message error
+                    _self.showMessageError(res);
+                });
             }
 
             /**
              * Event on click cancel button.
              */
-            public cancelSetting(): void {
+            public closeDialog(): void {
                 nts.uk.ui.windows.close();
             }
 
-        }     
+            /**
+             * toJson data
+             */
+            private toJsObject(): AggregateSettingDto {
+                let _self = this;
+                
+                let lstPremiumNo: Array<number> = _self.currentCodeListSwap().map(item => item.code);
+                
+                let monthlyWorkingDaySettingDto: MonthlyWorkingDaySettingDto = new MonthlyWorkingDaySettingDto(_self.getValue(_self.halfDayAtr()),
+                    _self.getValue(_self.yearHdAtr()), _self.getValue(_self.sphdAtr()), _self.getValue(_self.havyHdAtr()));
+                
+                return new AggregateSettingDto(lstPremiumNo, monthlyWorkingDaySettingDto);
+            }
+            
+            /**
+             * Find aggregate setting
+             */
+            private findAggregateSetting(): JQueryPromise<AggregateSettingDto> {
+                let _self = this;
+                let dfd = $.Deferred();
+                
+                nts.uk.ui.block.invisible();
+                service.findAggregateSetting().done((setting: AggregateSettingDto) => {
+                    nts.uk.ui.block.clear();
+                    
+                    // set data
+                    if (setting) {
+                        _self.currentCodeListSwap(_self.itemsSwap().filter(item => setting.premiumNo.indexOf(item.code) != -1));
+                        _self.halfDayAtr(_self.convertValue(setting.monthlyWorkingDaySettingDto.halfDayAtr));
+                        _self.yearHdAtr(_self.convertValue(setting.monthlyWorkingDaySettingDto.yearHdAtr));
+                        _self.sphdAtr(_self.convertValue(setting.monthlyWorkingDaySettingDto.sphdAtr));
+                        _self.havyHdAtr(_self.convertValue(setting.monthlyWorkingDaySettingDto.havyHdAtr));
+                    } else {
+                        _self.currentCodeListSwap(_self.itemsSwap());
+                        _self.itemsSwap([]);
+                    }
+                    
+                    dfd.resolve();
+                });
+                 return dfd.promise();
+            }
+            
+            /**
+             * Load list Premium
+             */
+            private loadListPremium(): JQueryPromise<any> {
+                let _self = this;
+                let dfd = $.Deferred();
+
+                nts.uk.ui.block.invisible();
+                service.getListPremium().done((data: Array<PremiumItemDto>) => {
+                    nts.uk.ui.block.clear();
+                    
+                    // set data
+                    let itemList: Array<ItemModel> = [];
+                    _.forEach(data, item => {
+                        itemList.push(new ItemModel(item.displayNumber, item.name));
+                    });
+                    
+                    // set data source swap list
+                    _self.itemsSwap(itemList);
+                    
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
+            /**
+             * Convert value from boolean to number
+             */
+            private getValue(value: boolean): number {
+                return !value ? UseAtr.NOT_USE : UseAtr.USE;
+            }
+            
+            /**
+             * Convert value from number to boolean
+             */
+            private convertValue(value: UseAtr): boolean {
+                return value == UseAtr.USE ? true : false;
+            }
+            
+            /**
+             * showMessageError
+             */
+            private showMessageError(res: any) {
+                let dfd = $.Deferred<any>();
+                
+                // check error business exception
+                if (!res.businessException) {
+                    return;
+                }
+                
+                // show error message
+                if (Array.isArray(res.errors)) {
+                    nts.uk.ui.dialog.bundledErrors(res);
+                } else {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                }
+            }
+        }
         
+        export class ItemModel {
+           code: number;
+           name: string;
+           constructor(code: number, name: string) {
+               this.code = code;
+               this.name = name;
+           }
+       }
         
-//        export class ReferenceConditionModel {
-//            yearlyDisplayCondition: KnockoutObservable<number>;
-//            monthlyDisplayCondition: KnockoutObservable<number>;
-//            alarmCheckCondition: KnockoutObservable<number>;
-//            lstEstimateCondition: KnockoutObservableArray<EstimatedConditionDto>;
-//
-//            constructor() {
-//                this.yearlyDisplayCondition = ko.observable(1);
-//                this.monthlyDisplayCondition = ko.observable(1);
-//                this.alarmCheckCondition = ko.observable(1);
-//                this.lstEstimateCondition = ko.observableArray([
-//                    { code: 1, name: "条件1" },
-//                    { code: 2, name: "条件2" },
-//                    { code: 3, name: "条件3" },
-//                    { code: 4, name: "条件4" },
-//                    { code: 5, name: "条件5" },
-//                ]);
-//            }
-//            
-//            updateData(dto: ReferenceConditionDto) {
-//                this.yearlyDisplayCondition(dto.yearlyDisplayCondition);
-//                this.monthlyDisplayCondition(dto.monthlyDisplayCondition);
-//                this.alarmCheckCondition(dto.alarmCheckCondition);
-//            }
-//            
-//            toDto(): ReferenceConditionDto {
-//                var dto: ReferenceConditionDto = 
-//                    {
-//                        yearlyDisplayCondition: this.yearlyDisplayCondition(),
-//                        monthlyDisplayCondition: this.monthlyDisplayCondition(),
-//                        alarmCheckCondition: this.alarmCheckCondition()
-//                    };
-//                return dto;
-//            }
-//        }
-//        export class CommonGuidelineSettingModel{
-//            estAlarmColors1st:   KnockoutObservable<string>;  
-//            estAlarmColors2nd:   KnockoutObservable<string>;  
-//            estAlarmColors3rd:   KnockoutObservable<string>;  
-//            estAlarmColors4th:   KnockoutObservable<string>;  
-//            estAlarmColors5th:   KnockoutObservable<string>;
-//
-//            /** The estimate time. */
-//            estimateTime: ReferenceConditionModel;
-//
-//            /** The estimate price. */
-//            estimatePrice: ReferenceConditionModel;
-//
-//            /** The estimate number of days. */
-//            estimateNumberOfDays: ReferenceConditionModel;
-//            
-//            
-//            
-//            constructor() {
-//                this.estAlarmColors1st = ko.observable('#0000ff');
-//                this.estAlarmColors2nd = ko.observable('#ffff00');
-//                this.estAlarmColors3rd = ko.observable('#ff9900');
-//                this.estAlarmColors4th = ko.observable('#ff00ff');
-//                this.estAlarmColors5th = ko.observable('#ff0000');
-//                this.estimateTime = new ReferenceConditionModel();
-//                this.estimatePrice = new ReferenceConditionModel();
-//                this.estimateNumberOfDays = new ReferenceConditionModel();
-//            }
-//            
-//            updateData(dto: CommonGuidelineSettingDto) {
-//                for (var color of dto.alarmColors) {
-//                    switch(color.guidelineCondition){
-//                        case EstimatedCondition.CONDITION_1ST:
-//                        this.estAlarmColors1st(color.color);
-//                        break;    
-//                        case EstimatedCondition.CONDITION_2ND:
-//                        this.estAlarmColors2nd(color.color);
-//                        break;    
-//                        case EstimatedCondition.CONDITION_3RD:
-//                        this.estAlarmColors3rd(color.color);
-//                        break;    
-//                        case EstimatedCondition.CONDITION_4TH:
-//                        this.estAlarmColors4th(color.color);
-//                        break;    
-//                        case EstimatedCondition.CONDITION_5TH:
-//                        this.estAlarmColors5th(color.color);
-//                        break;    
-//                    }
-//                }
-//                this.estimateTime.updateData(dto.estimateTime);
-//                this.estimatePrice.updateData(dto.estimatePrice);
-//                this.estimateNumberOfDays.updateData(dto.estimateNumberOfDays);
-//            }
-//            
-//            toDto(): CommonGuidelineSettingDto {
-//                var alarmColors: EstimatedAlarmColorDto[] = [];
-//                alarmColors.push(
-//                    { guidelineCondition: EstimatedCondition.CONDITION_1ST, color: this.estAlarmColors1st() });
-//                alarmColors.push(
-//                    { guidelineCondition: EstimatedCondition.CONDITION_2ND, color: this.estAlarmColors2nd() });
-//                alarmColors.push(
-//                    { guidelineCondition: EstimatedCondition.CONDITION_3RD, color: this.estAlarmColors3rd() });
-//                alarmColors.push(
-//                    { guidelineCondition: EstimatedCondition.CONDITION_4TH, color: this.estAlarmColors4th() });
-//                alarmColors.push(
-//                    { guidelineCondition: EstimatedCondition.CONDITION_5TH, color: this.estAlarmColors5th() });
-//                var dto: CommonGuidelineSettingDto =
-//                    {
-//                        alarmColors: alarmColors,
-//                        estimateTime: this.estimateTime.toDto(),
-//                        estimatePrice: this.estimatePrice.toDto(),
-//                        estimateNumberOfDays: this.estimateNumberOfDays.toDto()
-//                    };
-//                return dto;
-//            }
-//        }
-        
-        //  目安利用条件
-        export enum EstimatedCondition {
+       //  目安利用条件
+       export enum EstimatedCondition {
             // 条件1
             CONDITION_1ST = 1,
             // 条件2
@@ -187,6 +203,14 @@ module nts.uk.at.view.ksm001.g {
             CONDITION_4TH = 4,
             // 条件5
             CONDITION_5TH = 5,
+        }
+        
+        /**
+         * するしない区分
+         */
+        enum UseAtr {
+            NOT_USE = 0,
+            USE = 1
         }
     }
 }

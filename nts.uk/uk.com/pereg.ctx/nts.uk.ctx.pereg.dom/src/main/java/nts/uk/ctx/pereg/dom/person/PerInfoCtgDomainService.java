@@ -57,5 +57,7 @@ public class PerInfoCtgDomainService {
 			else return false;			
 		}).collect(Collectors.toList());
 	}
+	
+	
 
 }

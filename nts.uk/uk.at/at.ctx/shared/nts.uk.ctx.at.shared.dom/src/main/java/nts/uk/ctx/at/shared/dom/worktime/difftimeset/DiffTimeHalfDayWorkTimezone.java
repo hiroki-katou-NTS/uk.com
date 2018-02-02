@@ -4,9 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
@@ -14,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 // 時差勤務の平日出勤用勤務時間帯
 @Getter
-public class DiffTimeHalfDayWorkTimezone extends DomainObject {
+public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 
 	/** The rest timezone. */
 	// 休憩時間帯
@@ -79,6 +84,7 @@ public class DiffTimeHalfDayWorkTimezone extends DomainObject {
 	private void restoreSimpleMode(DiffTimeHalfDayWorkTimezone other) {
 		if (other.getAmPmAtr() != AmPmAtr.ONE_DAY) {
 			this.workTimezone.restoreData(other.getWorkTimezone());
+			this.restTimezone.restoreData(other.getRestTimezone());
 		}
 	}
 	
@@ -92,6 +98,45 @@ public class DiffTimeHalfDayWorkTimezone extends DomainObject {
 		// restore data of dayAtr = AM, PM
 		if (!diffTimeWorkSet.isUseHalfDayShift() && other.getAmPmAtr() != AmPmAtr.ONE_DAY) {
 			this.workTimezone.restoreData(other.getWorkTimezone());
+			this.restTimezone.restoreData(other.getRestTimezone());
 		}
+	}
+	
+	@Override
+	public void validate() {
+		
+		//validate rest time in work time msg_755
+		this.restInWork();
+		
+		//validate Msg_770 for list work
+		this.workTimezone.getEmploymentTimezones().stream().forEach(item->{
+			item.getTimezone().validateRange("KMK003_86");
+		});
+		
+		// validate Msg_770 for list ot
+		this.workTimezone.getOTTimezones().stream().forEach(item -> {
+			item.getTimezone().validateRange("KMK003_89");
+		});
+		
+		// validate Msg_770 for rest time
+		this.restTimezone.getRestTimezones().stream().forEach(item -> {
+			item.validateRange("KMK003_20");
+		});
+
+		// validate Msg_515 for rest time
+		this.restTimezone.validOverlap("KMK003_20");
+		super.validate();
+	}
+
+	private void restInWork() {
+		this.getRestTimezone().getRestTimezones().stream().forEach(item -> {
+			List<EmTimeZoneSet> lstWork = this.getWorkTimezone().getEmploymentTimezones().stream()
+					.filter(work -> work.checkRestTime(item)).collect(Collectors.toList());
+			List<DiffTimeOTTimezoneSet> lstOt = this.getWorkTimezone().getOTTimezones().stream()
+					.filter(ot -> ot.checkRestTime(item)).collect(Collectors.toList());
+			if (CollectionUtil.isEmpty(lstWork) && CollectionUtil.isEmpty(lstOt)) {
+				this.bundledBusinessExceptions.addMessage("Msg_755");
+			}
+		});
 	}
 }

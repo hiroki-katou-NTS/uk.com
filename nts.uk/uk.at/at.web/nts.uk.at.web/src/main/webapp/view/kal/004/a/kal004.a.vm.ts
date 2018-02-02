@@ -20,6 +20,7 @@ module nts.uk.at.view.kal004.a.model {
         alarmName: KnockoutObservable<string>;
         tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
+        alarmCategoryArr: Array<share.EnumConstantDto> = [];
 
         // Tab 1
         checkHeader: KnockoutObservableArray<any>;
@@ -45,7 +46,7 @@ module nts.uk.at.view.kal004.a.model {
 
             self.alarmHeader = ko.observableArray([
                 { headerText: getText('KAL004_7'), key: 'alarmPatternCD', width: 40 },
-                { headerText: getText('KAL004_8'), key: 'alarmPatternName', width: 150 },
+                { headerText: getText('KAL004_8'), key: 'alarmPatternName', width: 175 },
             ]);
             self.alarmCode = ko.observable('');
             self.alarmName = ko.observable('');
@@ -56,9 +57,10 @@ module nts.uk.at.view.kal004.a.model {
 
             self.checkHeader = ko.observableArray([
                 { headerText: getText('KAL004_21'), key: 'GUID', width: 10, hidden: true },
-                { headerText: getText('KAL004_21'), key: 'categoryName', width: 120 },
-                { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 40 },
-                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 160 }
+                { headerText: 'cssClass', key: 'cssClass', width: 10, hidden: true },
+                { headerText: getText('KAL004_21'), key: 'categoryName', width: 120, template: "<span class='${cssClass}'>${categoryName}</span>" },
+                { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 40, template: "<span class='${cssClass}'>${checkConditonCode}</span>" },
+                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 150, template: "<span class='${cssClass}'>${checkConditionName}</span>" }
             ]);
 
             self.currentCodeListSwap = ko.observableArray([]);
@@ -69,22 +71,35 @@ module nts.uk.at.view.kal004.a.model {
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred<any>();
-
+            service.getEnumAlarm().done((enumRes) => {
+                self.alarmCategoryArr = enumRes;
+            }).fail((enumErr) => {
+                alertError(enumErr);
+            });
+            block.grayout();
             service.getCheckConditionCode().done((res) => {
                 let resolve = _.map(res, (x) => { return new share.ModelCheckConditonCode(x) });
                 self.checkSource = _.cloneDeep(resolve);
 
                 self.getAlarmPattern().done(() => {
-
+                    
+                    block.clear(); 
+                    
+                    self.initSubscribe();
+                    
                     if (self.alarmSource().length > 0) {
                         self.currentCode(self.alarmSource()[0].alarmPatternCD);
                     } else {
-                        self.checkConditionList(self.checkSource);
+                        self.checkConditionList(_.cloneDeep(self.checkSource));
                     }
+                    
                     dfd.resolve();
+                }).always(()=>{
+                    block.clear();                   
                 });
             }).fail((error) => {
-                nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                alertError(error);
+                block.clear();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -98,11 +113,9 @@ module nts.uk.at.view.kal004.a.model {
             service.getAlarmPattern().done((res) => {
                 let alarmResolve = _.sortBy(res, [function(o) { return o.alarmPatternCD; }]);
                 self.alarmSource(alarmResolve);
-
-                self.initSubscribe();
-
+                
             }).fail((error) => {
-                nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                alertError(error);
             }).always(() => {
                 dfd.resolve();
             });
@@ -120,6 +133,17 @@ module nts.uk.at.view.kal004.a.model {
 
             });
 
+            self.checkConditionList.subscribe((newCheck) => {
+                _.remove(newCheck, function(leftItem) {
+                    let optItem = _.find(self.checkSource, function(item) {
+                        return leftItem.GUID == item.GUID;
+                    });
+                    return (optItem) ? false : true;
+                });
+                if (!_.differenceWith(newCheck, self.checkConditionList(), _.isEqual))
+                    self.checkConditionList(newCheck);
+            });
+            
             // Tab 2: Period Setting
             self.currentCodeListSwap.subscribe((listCode) => {
 
@@ -130,17 +154,21 @@ module nts.uk.at.view.kal004.a.model {
                     let checkConditionCodes = [];
                     listCode.forEach((code) => { if (code.category == category) { checkConditionCodes.push(code.checkConditonCode); } });
 
-                    let categoryInputed = self.currentAlarm == null ? null : _.find(self.currentAlarm.checkConList, (checkCon) => { return checkCon.alarmCategory == category });
+                    let categoryInputed = self.currentAlarm == null ? null : _.find(self.currentAlarm.checkConList, (checkCon) => { return checkCon.alarmCategory == category });                   
+                    
                     if (categoryInputed) {
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily)));
+                        let daily = categoryInputed.extractionDaily ==null? null:  new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily);                    
+                        let unit = categoryInputed.extractionUnit ==null? null:  new share.PeriodUnitCommand(categoryInputed.extractionUnit);                        
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily , unit ));
                     } else {
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null));
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null));
                     }
 
                 });
                 self.periodSetting.listCheckConditionCode(shareTab2);
 
             });
+
         }
 
         public alarmCodeChange(newV): any {
@@ -154,6 +182,16 @@ module nts.uk.at.view.kal004.a.model {
                 self.currentCodeListSwap([]);
                 self.checkConditionList(_.sortBy(self.checkSource, ['category', 'checkConditonCode']));
                 self.currentAlarm = null;
+                
+                // tab3
+                self.setPermissionModel.listRoleID([]);
+                self.setPermissionModel.selectedRuleCode(1);
+                self.setPermissionModel.createMode(false);
+                
+                //tab2
+                self.periodSetting.isCreateMode(true);             
+                                
+                $('#alarmCode').focus();
             }
             else {
                 self.createMode(false);
@@ -168,7 +206,12 @@ module nts.uk.at.view.kal004.a.model {
                 self.currentAlarm.checkConList.forEach((x) => {
                     x.checkConditionCodes.forEach((y) => {
                         let CD = _.find(_.cloneDeep(self.checkSource), { 'category': x.alarmCategory, 'checkConditonCode': y });
-                        currentCodeListSwap.push(_.cloneDeep(CD));
+                        if (CD !== undefined)
+                            currentCodeListSwap.push(_.cloneDeep(CD));
+                        else {
+                            let category = _.find(self.alarmCategoryArr, ['value', x.alarmCategory]);
+                            currentCodeListSwap.push(share.ModelCheckConditonCode.createNotFoundCheckConditonCode(category, y));
+                        }
                     });
                 });
 
@@ -179,17 +222,30 @@ module nts.uk.at.view.kal004.a.model {
                     if (optItem)
                         return optItem.GUID == leftItem.GUID;
                 });
+
                 self.currentCodeListSwap([]);
                 self.checkConditionList(_.sortBy(checkSource, ['category', 'checkConditonCode']));
                 self.currentCodeListSwap(_.sortBy(currentCodeListSwap, ['category', 'checkConditonCode']));
 
-                // Tab 2: 
-                //                self.periodSetting.listStorageCheckCondition                
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
                 self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting == true ? 0 : 1);
+                self.setPermissionModel.createMode(true);                
+                
+                //tab2
+                self.periodSetting.isCreateMode(false);
+                
+                $('#alarmName').focus();
             }
-
+        }
+        
+        public setFocus(): void {
+            let self = this;
+            if(self.currentCode()==''){
+                $('#alarmCode').focus();               
+            }else{
+                $('#alarmName').focus();
+            }      
         }
 
         public saveAlarm(): void {
@@ -198,6 +254,13 @@ module nts.uk.at.view.kal004.a.model {
             // Validate input
             $(".nts-input").trigger("validate");
             if ($(".nts-input").ntsError("hasError")) return;
+            
+            // Validate logic
+            if(_.find(self.currentCodeListSwap(), {'cssClass': 'red-color'})){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_817" });
+                return;
+            }
+            
             // Create command
             let alarmPerSet: share.AlarmPermissionSettingCommand = new share.AlarmPermissionSettingCommand(self.setPermissionModel.selectedRuleCode() == 1 ? false : true, self.setPermissionModel.listRoleID());
             let checkConditonList: Array<share.CheckConditionCommand> = self.periodSetting.listCheckCondition();
@@ -207,7 +270,7 @@ module nts.uk.at.view.kal004.a.model {
             if (self.createMode()) {
                 service.addAlarmPattern(command).done(() => {
 
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 
                     self.getAlarmPattern().done(function() {
                         self.currentCode(self.alarmCode());
@@ -215,13 +278,13 @@ module nts.uk.at.view.kal004.a.model {
                         block.clear();
                     });
                 }).fail((error) => {
-                    nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                    alertError(error);
                     block.clear();
                 });
             } else {
                 service.updateAlarmPattern(command).done(() => {
 
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 
                     self.getAlarmPattern().done(function() {
                         self.currentCode(self.alarmCode());
@@ -229,12 +292,12 @@ module nts.uk.at.view.kal004.a.model {
                         block.clear();
                     });
                 }).fail((error) => {
-                    nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                    alertError(error);
                     block.clear();
                 });
 
             }
-            $('#alarmName').focus();
+            
         }
         public createAlarm(): void {
             let self = this;
@@ -261,7 +324,7 @@ module nts.uk.at.view.kal004.a.model {
                         });
 
                     }).fail((error) => {
-                        nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                        alertError(error);
                         block.clear();
                     });
 
@@ -278,6 +341,11 @@ module nts.uk.at.view.kal004.a.model {
                 self.currentCode('');
                 nts.uk.ui.errors.clearAll();
             }
+        }
+        public afterMoveLeft(): boolean {
+            var self = this;
+            self.checkConditionList(self.checkConditionList().filter(e => _.find(self.checkSource, {'category' : e.category, 'checkConditonCode': e.checkConditonCode}) != undefined ));
+            return true;
         }
 
 

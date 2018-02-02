@@ -561,7 +561,7 @@ module nts.custombinding {
                             nameid : itemDefId.replace(/[-_]/g, '')
                         }">
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.STRING -->
-                        <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
+                        <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
                         <input data-bind=" ntsTextEditor: {
                                 name: itemName,
                                 value: value,
@@ -579,7 +579,7 @@ module nts.custombinding {
                                 title: itemName
                             }," />
                         <!-- /ko -->
-                        <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
+                        <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
                         <textarea data-bind="ntsMultilineEditor: {
                                 name: itemName,
                                 value: value,
@@ -605,9 +605,9 @@ module nts.custombinding {
                                     constraint: nameid,
                                     required: required,
                                     option: {
+                                        grouplength: 3,
                                         textalign: 'left',
-                                        decimallength: Number(item.decimalPart),
-                                        grouplength: Number(item.integerPart) + Number(item.decimalPart) + 1
+                                        decimallength: Number(item.decimalPart)
                                     },
                                     enable: editable,
                                     readonly: readonly

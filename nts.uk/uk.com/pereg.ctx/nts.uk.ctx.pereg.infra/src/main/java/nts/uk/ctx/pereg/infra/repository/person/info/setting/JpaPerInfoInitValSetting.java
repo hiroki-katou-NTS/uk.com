@@ -28,7 +28,7 @@ public class JpaPerInfoInitValSetting extends JpaRepository implements PerInfoIn
 			+ " ON ic.settingCtgPk.perInfoCtgId= pi.perInfoCtgId " 
 			+ " AND pi.abolitionAtr = 0"
 			+ " WHERE iv.companyId = :companyId" 
-			+ " AND pi.ppemtPerInfoItemPK.perInfoItemDefId IS NOT NULL";
+			+ " AND pi.ppemtPerInfoItemPK.perInfoItemDefId IS NOT NULL ORDER BY iv.settingCode ASC";
 
 	private final String SEL_BY_SET_ID = " SELECT c FROM PpemtPersonInitValueSetting c"
 			+ " WHERE c.initValueSettingPk.settingId = :settingId";

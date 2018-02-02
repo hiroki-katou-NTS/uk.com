@@ -1,9 +1,15 @@
 package nts.uk.screen.at.app.dailyperformance.correction.datadialog;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -24,8 +30,14 @@ public class DataDialogWithTypeProcessor {
 	public CodeNameType getDutyType(String companyId, String workTypeCode, String employmentCode) {
 		List<WorkTypeChangedDto> dtos = repo.findWorkTypeChanged(employmentCode, workTypeCode, companyId);
 		Set<String> workTypeCodes = dtos.stream().map(x -> x.getTypeCode()).collect(Collectors.toSet());
-		List<CodeName> codeNames =  repo.findWorkType(companyId, workTypeCodes);
-		return CodeNameType.create(TypeLink.SERVICE_PLACE.value, codeNames);
+		List<CodeName> codeNames = repo.findWorkType(companyId, workTypeCodes);
+		return CodeNameType.create(TypeLink.DUTY.value, codeNames);
+	}
+
+	// 勤務種類
+	public CodeNameType getDutyTypeAll(String companyId) {
+		List<CodeName> codeNames = repo.findWorkType(companyId, new HashSet<>());
+		return CodeNameType.create(TypeLink.DUTY.value, codeNames);
 	}
 
 	// 就業時間帯
@@ -34,7 +46,13 @@ public class DataDialogWithTypeProcessor {
 		List<String> shiftCodes = workTimeDtos.isEmpty() ? Collections.emptyList()
 				: workTimeDtos.stream().map(x -> x.getWorkTimeID()).collect(Collectors.toList());
 		List<CodeName> codeNames = repo.findWorkTimeZone(companyId, shiftCodes);
-		return CodeNameType.create(TypeLink.SERVICE_PLACE.value, codeNames);
+		return CodeNameType.create(TypeLink.WORK_HOURS.value, codeNames);
+	}
+
+	// 就業時間帯
+	public CodeNameType getWorkHoursAll(String companyId) {
+		List<CodeName> codeNames = repo.findWorkTimeZone(companyId, new ArrayList<>());
+		return CodeNameType.create(TypeLink.WORK_HOURS.value, codeNames);
 	}
 
 	// 勤務場所
@@ -44,8 +62,9 @@ public class DataDialogWithTypeProcessor {
 	}
 
 	// 乖離理由
-	public void getReason() {
-
+	public CodeNameType getReason(String companyId) {
+		List<CodeName> codeNames = repo.findReason(companyId);
+		return CodeNameType.create(TypeLink.REASON.value, codeNames);
 	}
 
 	// 職場--
@@ -78,8 +97,8 @@ public class DataDialogWithTypeProcessor {
 		switch (type) {
 		case 1:
 			// KDL002
-			codeName = this.getDutyType(companyId, param.getWorkTypeCode(), param.getEmploymentCode()).getCodeNames().stream()
-					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
+			codeName = this.getDutyType(companyId, param.getWorkTypeCode(), param.getEmploymentCode()).getCodeNames()
+					.stream().filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
 			return codeName.isPresent() ? codeName.get() : null;
 		case 2:
 			// KDL001
@@ -93,7 +112,7 @@ public class DataDialogWithTypeProcessor {
 			return codeName.isPresent() ? codeName.get() : null;
 		case 4:
 			// KDL032
-			codeName = this.getPossition(companyId, param.getDate()).getCodeNames().stream()
+			codeName = this.getReason(companyId).getCodeNames().stream()
 					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
 			return codeName.isPresent() ? codeName.get() : null;
 		case 5:
@@ -120,36 +139,94 @@ public class DataDialogWithTypeProcessor {
 			return null;
 		}
 	}
-	
+
 	public List<CodeName> getAllTypeDialog(int type, ParamDialog param) {
 		String companyId = AppContexts.user().companyId();
 		switch (type) {
 		case 1:
 			// KDL002
-			return this.getDutyType(companyId, param.getWorkTypeCode(), param.getEmploymentCode()).getCodeNames().stream().collect(Collectors.toList());
+			return this.getDutyType(companyId, param.getWorkTypeCode(), param.getEmploymentCode()).getCodeNames();
 		case 2:
 			// KDL001
-			return this.getWorkHours(companyId, param.getWorkplaceId()).getCodeNames().stream().collect(Collectors.toList());
+			return this.getWorkHours(companyId, param.getWorkplaceId()).getCodeNames();
 		case 3:
 			// KDL010
-			return this.getServicePlace(companyId).getCodeNames().stream().collect(Collectors.toList());
+			return this.getServicePlace(companyId).getCodeNames();
 		case 4:
 			// KDL032
-			return this.getPossition(companyId, param.getDate()).getCodeNames().stream().collect(Collectors.toList());
+			return this.getReason(companyId).getCodeNames();
 		case 5:
 			// CDL008
-			return this.getWorkPlace(companyId, param.getDate()).getCodeNames().stream().collect(Collectors.toList());
+			return this.getWorkPlace(companyId, param.getDate()).getCodeNames();
 		case 6:
 			// KCP002
-			return this.getClassification(companyId).getCodeNames().stream().collect(Collectors.toList());
+			return this.getClassification(companyId).getCodeNames();
 		case 7:
 			// KCP003
-			return this.getPossition(companyId, param.getDate()).getCodeNames().stream().collect(Collectors.toList());
+			return this.getPossition(companyId, param.getDate()).getCodeNames();
 		case 8:
 			// KCP001
-			return this.getEmployment(companyId).getCodeNames().stream().collect(Collectors.toList());
+			return this.getEmployment(companyId).getCodeNames();
 		default:
 			return null;
 		}
+	}
+
+	public Map<Integer, Map<String, String>> getAllCodeName(List<Integer> types, String companyId) {
+		Map<Integer, Map<String, String>> result = new HashMap<Integer, Map<String, String>>();
+		for (int i = 0; i < types.size(); i++) {
+			int type = types.get(i);
+			switch (type) {
+			case 1:
+				// KDL002
+				result.put(type, this.getDutyTypeAll(companyId).getCodeNames().stream().filter(distinctByKey(x -> x.getCode())).collect(Collectors.toMap(x -> x.getCode(), x -> x.getName())));
+				break;
+			case 2:
+				// KDL001
+				result.put(type, this.getWorkHoursAll(companyId).getCodeNames().stream().filter(distinctByKey(x -> x.getCode())).collect(Collectors.toMap(x -> x.getCode(), x -> x.getName())));
+				break;
+			case 3:
+				// KDL010
+				result.put(type, this.getServicePlace(companyId).getCodeNames().stream().filter(distinctByKey(x -> x.getCode())).collect(Collectors.toMap(x -> x.getCode(), x -> x.getName())));
+				break;
+			case 4:
+				// KDL032
+				result.put(type, this.getReason(companyId).getCodeNames().stream().filter(distinctByKey(x -> x.getCode())).collect(Collectors.toMap(x -> x.getCode(), x -> x.getName())));
+				break;
+			case 5:
+				// CDL008
+				break;
+			case 6:
+				// KCP002
+				result.put(type, this.getClassification(companyId).getCodeNames().stream().filter(distinctByKey(x -> x.getCode())).collect(Collectors.toMap(x -> x.getCode(), x -> x.getName())));
+				break;
+			case 7:
+				// KCP003
+				break;
+			case 8:
+				// KCP001
+				result.put(type, this.getEmployment(companyId).getCodeNames().stream().filter(distinctByKey(x -> x.getCode())).collect(Collectors.toMap(x -> x.getCode(), x -> x.getName())));
+				break;
+			default:
+				break;
+			}
+		};
+
+		return result;
+	}
+	
+	public Optional<CodeName> getCodeNameWithId(int type, GeneralDate date, String id) {
+		String companyId = AppContexts.user().companyId();
+		if(type == TypeLink.POSSITION.value){
+			return repo.findJobInfoId(companyId, date, id);
+		}else if(type == TypeLink.WORKPLACE.value){
+			return repo.findWorkplaceId(companyId, date, id);
+		}
+		
+		return null;
+	}
+	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+	    final Set<Object> seen = new HashSet<>();
+	    return t -> seen.add(keyExtractor.apply(t));
 	}
 }

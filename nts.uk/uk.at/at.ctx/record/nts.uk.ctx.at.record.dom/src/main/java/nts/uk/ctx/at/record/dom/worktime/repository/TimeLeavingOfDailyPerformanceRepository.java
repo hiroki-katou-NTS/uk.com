@@ -13,6 +13,8 @@ public interface TimeLeavingOfDailyPerformanceRepository {
 	
 	Optional<TimeLeavingOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd);
 
+	List<TimeLeavingOfDailyPerformance> findbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
+	
 	List<TimeLeavingOfDailyPerformance> finds(List<String> employeeIds, DatePeriod ymd);
 	
 	void add(TimeLeavingOfDailyPerformance timeLeaving);

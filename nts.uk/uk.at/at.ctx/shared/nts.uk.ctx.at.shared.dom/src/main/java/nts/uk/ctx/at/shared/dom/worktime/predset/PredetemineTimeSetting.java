@@ -1,25 +1,31 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Getter;
 import lombok.val;
-import nts.arc.error.BundledBusinessException;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class PredetemineTimeSetting.
  */
 // 所定時間設定
+
+/**
+ * Checks if is predetermine.
+ *
+ * @return true, if is predetermine
+ */
 @Getter
-public class PredetemineTimeSetting extends AggregateRoot {
+public class PredetemineTimeSetting extends WorkTimeAggregateRoot {
 
 	/** The company id. */
 	// 会社ID
@@ -37,7 +43,7 @@ public class PredetemineTimeSetting extends AggregateRoot {
 	// 所定時間
 	private PredetermineTime predTime;
 
-	/** The night shift atr. */
+	/** The night shift. */
 	// 夜勤区分
 	private boolean nightShift;
 
@@ -49,7 +55,7 @@ public class PredetemineTimeSetting extends AggregateRoot {
 	// 日付開始時刻
 	private TimeWithDayAttr startDateClock;
 
-	/** The predetermine atr. */
+	/** The predetermine. */
 	// 残業を含めた所定時間帯を設定する
 	private boolean predetermine;
 
@@ -89,20 +95,18 @@ public class PredetemineTimeSetting extends AggregateRoot {
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
 	@Override
-	public void validate() {
-		super.validate();
-		
-		// validate startDateClock in -12:00 ~ 23:59
+	public void validate() {		
+		// Validate startDateClock in -12:00 ~ 23:59
 		if ((this.startDateClock.valueAsMinutes() < TimeWithDayAttr.THE_PREVIOUS_DAY_1200.valueAsMinutes())
-				|| (this.startDateClock.valueAsMinutes() >= TimeWithDayAttr.THE_NEXT_DAY_0000.valueAsMinutes())) {
-			BundledBusinessException be = BundledBusinessException.newInstance();
-			be.addMessage("Msg_785");
-			be.throwExceptions();
-		}
-		
-		this.validateOneDay();
-		
+				|| (this.startDateClock.valueAsMinutes() >= TimeWithDayAttr.THE_NEXT_DAY_0000.valueAsMinutes())) {		
+			this.bundledBusinessExceptions.addMessage("Msg_785");
+		}		
+		// Validate oneDay < rangeTimeDay
+		this.validateOneDay();			
+		// Validate PrescribedTimezone between startDate and startDate + rangeTimeDay
 		this.validatePrescribedTimezone();
+
+		super.validate();
 	}
 
 	/**
@@ -120,9 +124,9 @@ public class PredetemineTimeSetting extends AggregateRoot {
 	private void validatePrescribedTimezone() {
 		val timezones = this.prescribedTimezoneSetting.getLstTimezone();
 		// validate list time zone
-		if (timezones.stream().anyMatch(
-				tz -> tz.getUseAtr() == UseSetting.USE && this.isOutOfRangeTimeDay(tz.getStart(), tz.getEnd()))) {
-			throw new BusinessException("Msg_516" , "KMK003_216");
+		if (timezones.stream()
+				.anyMatch(tz -> tz.getUseAtr() == UseSetting.USE && this.isOutOfRangeTimeDay(tz.getStart(), tz.getEnd()))) {
+			this.bundledBusinessExceptions.addMessage("Msg_516" , "KMK003_216");
 		}
 	}
 
@@ -146,7 +150,7 @@ public class PredetemineTimeSetting extends AggregateRoot {
 		AttendanceTime oneDayRange = this.getRangeTimeDay();
 		AttendanceTime oneDayTime = this.getPredTime().getPredTime().getOneDay(); 		
 		if (oneDayTime.greaterThan(oneDayRange)) {
-			throw new BusinessException("Msg_781");
+			this.bundledBusinessExceptions.addMessage("Msg_781");
 		}
 	}
 
@@ -200,24 +204,67 @@ public class PredetemineTimeSetting extends AggregateRoot {
 	}
 	
 	/**
-	 * 1日の範囲を時間帯として返す
-	 * 
-	 * @return 1日の範囲(時間帯)
-	 * 
-	 * @author keisuke_hoshina
+	 * Gets the one day span.
+	 *
+	 * @return the one day span
 	 */
 	public TimeSpanForCalc getOneDaySpan() {
 		return new TimeSpanForCalc(startDateClock,
 				new TimeWithDayAttr(startDateClock.valueAsMinutes() + rangeTimeDay.valueAsMinutes()));
 	}
 	
+	/**
+	 * Gets the predetermine end time.
+	 *
+	 * @return the predetermine end time
+	 */
 	public int getPredetermineEndTime() {
 		return this.startDateClock.minute() + (int) this.rangeTimeDay.minute();
 	}
 
+	/**
+	 * Gets the time sheet of.
+	 *
+	 * @param workNo the work no
+	 * @return the time sheet of
+	 */
 	public TimezoneUse getTimeSheetOf(int workNo) {
 		return this.prescribedTimezoneSetting.getMatchWorkNoTimeSheet(workNo);
 	}
 
-
+	/**
+	 * Restore data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param workTimeType the work time type
+	 * @param oldDomain the old domain
+	 */
+	public void restoreData(ScreenMode screenMode, WorkTimeDivision workTimeType, PredetemineTimeSetting oldDomain) {	
+		// Tab 1
+		this.prescribedTimezoneSetting.restoreData(screenMode, workTimeType, oldDomain.getPrescribedTimezoneSetting());	
+		
+		if (screenMode == ScreenMode.SIMPLE) {
+			// Simple mode
+			this.rangeTimeDay = oldDomain.getRangeTimeDay();
+			this.nightShift = oldDomain.isNightShift();
+			this.predetermine = oldDomain.isPredetermine();
+		} 	
+	}
+	
+	/**
+	 * Restore default data.
+	 *
+	 * @param screenMode the screen mode
+	 */
+	public void restoreDefaultData(ScreenMode screenMode, WorkTimeDivision workTimeType) {
+		// Tab 1
+		this.prescribedTimezoneSetting.restoreDefaultData(screenMode, workTimeType);	
+		
+		if (screenMode == ScreenMode.SIMPLE) {
+			// Simple mode
+			this.rangeTimeDay = new AttendanceTime(TimeWithDayAttr.MINUTES_OF_DAY);
+			this.nightShift = false;
+			this.predetermine = false;
+		} 		
+	}
 }
