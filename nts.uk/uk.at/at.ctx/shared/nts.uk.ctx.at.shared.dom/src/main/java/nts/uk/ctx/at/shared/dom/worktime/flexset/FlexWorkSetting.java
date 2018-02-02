@@ -5,14 +5,19 @@
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 
 /**
@@ -109,19 +114,17 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot {
 		this.commonSetting.restoreData(screenMode, other.getCommonSetting());
 		
 		// restore 平日勤務時間帯
-		//TODO
-//		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.FLEX_WORK) {
-//			
-//			// convert map
-//			Map<AmPmAtr, FlexHalfDayWorkTime> mapFixHalfWork = other.getLstHalfDayWorkTimezone().stream()
-//					.collect(Collectors.toMap(item -> ((FlexHalfDayWorkTime) item).getAmpmAtr(), Function.identity()));
-//			
-//			this.lstHalfDayWorkTimezone.forEach(item -> item.restoreData(screenMode, this,
-//					mapFixHalfWork.get(item.getAmpmAtr())));
-//		} else {
-//			this.lstHalfDayWorkTimezone = other.getLstHalfDayWorkTimezone();
-//		}
-		this.offdayWorkTime.restoreData(screenMode,other);
+		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.FLEX_WORK) {
+			// convert map
+			Map<AmPmAtr, FlexHalfDayWorkTime> mapFixHalfWork = other.getLstHalfDayWorkTimezone().stream()
+					.collect(Collectors.toMap(item -> ((FlexHalfDayWorkTime) item).getAmpmAtr(), Function.identity()));
+			
+			this.lstHalfDayWorkTimezone.forEach(item -> item.restoreData(screenMode, this,
+					mapFixHalfWork.get(item.getAmpmAtr())));
+		} else {
+			this.lstHalfDayWorkTimezone = other.getLstHalfDayWorkTimezone();
+		}
+		this.offdayWorkTime.restoreData(screenMode, other);
 	}
 	
 	/**

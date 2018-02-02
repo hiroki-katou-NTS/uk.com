@@ -261,7 +261,7 @@ public class JpaWorkingConditionRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// Order by start date
-		cq.orderBy(criteriaBuilder.asc(root.get(KshmtWorkingCond_.strD)));
+		cq.orderBy(criteriaBuilder.desc(root.get(KshmtWorkingCond_.strD)));
 
 		// creat query
 		TypedQuery<KshmtWorkingCond> query = em.createQuery(cq);

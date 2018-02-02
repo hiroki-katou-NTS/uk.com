@@ -139,4 +139,12 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("endDate", endDate)
 				.getList(c -> c.toDomain());
 	}
+	/**
+	 * get List Application Pre
+	 */
+	@Override
+	public List<Application_New> getListAppPre(String companyId, String sID, GeneralDate appDate, int prePostAtr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

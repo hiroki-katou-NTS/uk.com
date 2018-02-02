@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.InstructionCategory;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationUseSetting;
@@ -60,29 +61,38 @@ public class KrqstWpAppConfig extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return krqstWpAppConfigPK;
 	}
-
-	public RequestOfEachWorkplace toDomain() {
-		return new RequestOfEachWorkplace(this.krqstWpAppConfigPK.companyId, this.krqstWpAppConfigPK.workplaceId,
-				EnumAdaptor.valueOf(this.selectOfApproversFlg, SelectionFlg.class),
-				this.krqstWpAppConfigDetails.stream()
-						.map(x -> new ApprovalFunctionSetting(SettingFlg.toEnum(x.prerequisiteForpauseFlg),
-								new InstructionUseSetting(UseAtr.toEnum(x.instructionAtr), new Memo(x.instructionMemo),
-										UseAtr.toEnum(x.instructionUseAtr)),
-								SettingFlg.toEnum(x.holidayTimeAppCalFlg), SettingFlg.toEnum(x.otAppSettingFlg),
-								SettingFlg.toEnum(x.lateOrLeaveAppCancelFlg),
-								SettingFlg.toEnum(x.lateOrLeaveAppSettingFlg),
-								new ApplicationUseSetting(new Memo(x.memo), UseAtr.toEnum(x.useAtr),
-										EnumAdaptor.valueOf(x.krqstWpAppConfigDetailPK.appType, ApplicationType.class)),
-								Optional.of(new ApplicationDetailSetting(x.breakInputFieldDisFlg == 1 ? true : false,
-										x.breakTimeDisFlg == 1 ? true : false,
-										EnumAdaptor.valueOf(x.atworkTimeBeginDisFlg, AtWorkAtr.class),
-										x.goOutTimeBeginDisFlg == 1 ? true : false,
-										x.requiredInstructionFlg == 1 ? true : false, UseAtr.toEnum(x.timeCalUseAtr),
-										UseAtr.toEnum(x.timeInputUseAtr),
-										EnumAdaptor.valueOf(x.timeEndDispFlg, DisplayBreakTime.class)))))
-						.collect(Collectors.toList()));
+	
+	public RequestOfEachWorkplace toDomain(){
+		return new RequestOfEachWorkplace(
+				this.krqstWpAppConfigPK.companyId, 
+				this.krqstWpAppConfigPK.workplaceId,
+				EnumAdaptor.valueOf(this.selectOfApproversFlg, SelectionFlg.class), 
+				this.krqstWpAppConfigDetails.stream().map(x -> 
+					new ApprovalFunctionSetting(
+							SettingFlg.toEnum(x.prerequisiteForpauseFlg), 
+							new InstructionUseSetting(
+									InstructionCategory.toEnum(x.instructionAtr), 
+									new Memo(x.instructionMemo), 
+									UseAtr.toEnum(x.instructionUseAtr)), 
+							SettingFlg.toEnum(x.holidayTimeAppCalFlg), 
+							SettingFlg.toEnum(x.otAppSettingFlg), 
+							SettingFlg.toEnum(x.lateOrLeaveAppCancelFlg), 
+							SettingFlg.toEnum(x.lateOrLeaveAppSettingFlg), 
+							new ApplicationUseSetting(
+									new Memo(x.memo), 
+									UseAtr.toEnum(x.useAtr), 
+									EnumAdaptor.valueOf(x.krqstWpAppConfigDetailPK.appType, ApplicationType.class)), 
+							Optional.of(new ApplicationDetailSetting(
+									x.breakInputFieldDisFlg == 1? true : false, 
+									x.breakTimeDisFlg == 1? true : false, 
+									EnumAdaptor.valueOf(x.atworkTimeBeginDisFlg, AtWorkAtr.class), 
+									x.goOutTimeBeginDisFlg == 1 ? true : false, 
+									x.requiredInstructionFlg == 1 ? true : false, 
+									UseAtr.toEnum(x.timeCalUseAtr), 
+									UseAtr.toEnum(x.timeInputUseAtr), 
+									EnumAdaptor.valueOf(x.timeEndDispFlg, DisplayBreakTime.class)))))
+				.collect(Collectors.toList()));
 	}
-
 	public static KrqstWpAppConfig fromDomain(RequestOfEachWorkplace domain) {
 		return new KrqstWpAppConfig(new KrqstWpAppConfigPK(domain.getCompanyID(), domain.getWorkPlaceID()),
 				domain.getSelectionFlg().value, domain.getListApprovalFunctionSetting().stream().map((setting) -> {

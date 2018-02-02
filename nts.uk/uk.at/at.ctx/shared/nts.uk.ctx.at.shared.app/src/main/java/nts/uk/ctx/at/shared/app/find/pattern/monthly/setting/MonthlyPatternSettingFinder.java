@@ -63,11 +63,33 @@ public class MonthlyPatternSettingFinder {
 	/**
 	 * Find by id.
 	 *
-	 * @param employeeId the employee id
 	 * @param historyId the history id
 	 * @return the monthly pattern setting dto
 	 */
-	public MonthlyPatternSettingDto findById(String employeeId){	
+	public MonthlyPatternSettingDto findById(String historyId){	
+		// new Dto
+		MonthlyPatternSettingDto dto = new MonthlyPatternSettingDto();
+		
+		//call repository find by employee id
+		Optional<WorkingConditionItem> optWkConItem = this.repositoryWorkingCondItem.getByHistoryId(historyId);
+		
+		// check exist data
+		if(optWkConItem.isPresent()){
+			dto.setEmployeeId(optWkConItem.get().getEmployeeId());
+			dto.setHistoryId(optWkConItem.get().getHistoryId());
+			dto.setMonthlyPatternCode(optWkConItem.get().getMonthlyPattern().get().v());
+			return dto;
+		}
+		return null;
+	}
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param historyId the history id
+	 * @return the monthly pattern setting dto
+	 */
+	public MonthlyPatternSettingDto findBySId(String employeeId){	
 		// new Dto
 		MonthlyPatternSettingDto dto = new MonthlyPatternSettingDto();
 		
