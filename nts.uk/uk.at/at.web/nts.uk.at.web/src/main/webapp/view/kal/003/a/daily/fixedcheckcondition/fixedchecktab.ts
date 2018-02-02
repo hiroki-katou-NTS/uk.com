@@ -6,18 +6,21 @@ module nts.uk.at.view.kal003.a.tab {
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
 
     export class FixedCheckConditionTab {
-        listFixedConditionWorkRecord: KnockoutObservableArray<model.FixedConditionWorkRecord> = ko.observableArray([
-            new model.FixedConditionWorkRecord({ errorAlarmId: "00000000001", checkName: "name 1", fixConWorkRecordNo: 1, message: "xxxx", useAtr: false }), 
-            new model.FixedConditionWorkRecord({ errorAlarmId: "00000000002", checkName: "name 2", fixConWorkRecordNo: 2, message: "xxxx", useAtr: false }),
-            new model.FixedConditionWorkRecord({ errorAlarmId: "00000000003", checkName: "name 3", fixConWorkRecordNo: 3, message: "xxxx", useAtr: false }),
-            new model.FixedConditionWorkRecord({ errorAlarmId: "00000000004", checkName: "name 4", fixConWorkRecordNo: 4, message: "xxxx", useAtr: false }),
-            new model.FixedConditionWorkRecord({ errorAlarmId: "00000000005", checkName: "name 5", fixConWorkRecordNo: 5, message: "xxxx", useAtr: false })
-        ]);
+        listFixedConditionWorkRecord: KnockoutObservableArray<model.FixedConditionWorkRecord> = ko.observableArray([]);
         isAllfixedCheck: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(listFixedConditionWorkRecord?: Array<model.FixedConditionWorkRecord>) {
             let self = this;
 
+            service.getAllFixedConData().done((data: Array<any>) => {
+                if (data && data.length) {
+                    let _list: Array<model.FixedConditionWorkRecord> = _.map(data, acc => {
+                        return new model.FixedConditionWorkRecord({ dailyAlarmConID: "", checkName: acc.fixConWorkRecordName, fixConWorkRecordNo: acc.fixConWorkRecordNo, message: acc.message, useAtr: false });
+                    });
+                    self.listFixedConditionWorkRecord(_list);
+                }
+            });
+            
             if (listFixedConditionWorkRecord) {
                 self.listFixedConditionWorkRecord.removeAll();
                 self.listFixedConditionWorkRecord(listFixedConditionWorkRecord);
@@ -42,6 +45,7 @@ module nts.uk.at.view.kal003.a.tab {
                 },
                 owner: self
             });
+            $("#table-fixed").ntsFixedTable({ width: 512 });
         }//end constructor
     }//end FixedCheckConditionTab
 }//end tab

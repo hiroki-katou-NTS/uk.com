@@ -7,9 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
-<!-- 			<com:ValidatorScript> -->
-<!-- 				nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting.VerticalCalCd -->
-<!-- 			</com:ValidatorScript> -->
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.PersonSymbolQualify
+			</com:ValidatorScript>
 			
 			<com:scriptfile set="IGNITE" />
 				
@@ -67,18 +67,18 @@
 				<div class="contents-area-a cf">
 					<table class="link-control">
 						<tr>
-							<td><a tabindex="3" class="hyperlink" href="#control-01">#{i18n.getText('KSM011_76')}</a></td>
-							<td><a tabindex="4" class="hyperlink" href="#control-02">#{i18n.getText('KSM011_16')}</a></td>
-							<td><a tabindex="5" class="hyperlink" href="#control-03">#{i18n.getText('KSM011_20')}</a></td>
-							<td><a tabindex="6" class="hyperlink" href="#control-04">#{i18n.getText('KSM011_23')}</a></td>
-							<td><a tabindex="7" class="hyperlink" href="#control-05">#{i18n.getText('KSM011_27')}</a></td>
-							<td><a tabindex="8" class="hyperlink" href="#control-06">#{i18n.getText('KSM011_34')}</a></td>
-							<td><a tabindex="9" class="hyperlink" href="#control-07">#{i18n.getText('KSM011_38')}</a></td>
-							<td><a tabindex="10" class="hyperlink" href="#control-08">#{i18n.getText('KSM011_48')}</a></td>
+							<td><a tabindex="3" href="#control-01" class="hyperlink hyperlink-disable">#{i18n.getText('KSM011_76')}</a></td>
+							<td><a tabindex="4" href="#control-02" class="hyperlink">#{i18n.getText('KSM011_16')}</a></td>
+							<td><a tabindex="5" href="#control-03" class="hyperlink">#{i18n.getText('KSM011_20')}</a></td>
+							<td><a tabindex="6" href="#control-04" class="hyperlink">#{i18n.getText('KSM011_23')}</a></td>
+							<td><a tabindex="7" href="#control-05" class="hyperlink">#{i18n.getText('KSM011_27')}</a></td>
+							<td><a tabindex="8" href="#control-06" class="hyperlink">#{i18n.getText('KSM011_34')}</a></td>
+							<td><a tabindex="9" href="#control-07" class="hyperlink">#{i18n.getText('KSM011_38')}</a></td>
+							<td><a tabindex="10" href="#control-08" class="hyperlink">#{i18n.getText('KSM011_48')}</a></td>
 						</tr>
 					</table>
 					
-					<div class="panel panel-frame item-panel">
+					<div id="item-panel" class="panel panel-frame item-panel">
 						<div id="control-01" class="block-1">
 							<label class="basic-label">#{i18n.getText('KSM011_76')}</label>
 							<hr />

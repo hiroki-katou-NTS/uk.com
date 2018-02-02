@@ -38,7 +38,7 @@ module a1 {
         /**
         * Constructor.
         */
-        constructor(input) {
+        constructor(input: any) {
             let self = this;
             self.loadDataFromMainScreen(input);
             self.isTimezoneTwoEnabled = ko.computed(() => {
@@ -79,7 +79,7 @@ module a1 {
         /**
          * Load data from main screen
          */
-        private loadDataFromMainScreen(data): void {
+        private loadDataFromMainScreen(data: any): void {
             let self = this;
             let settingEnum: WorkTimeSettingEnumDto = data.enum;
             self.isDetailMode = data.isDetailMode;

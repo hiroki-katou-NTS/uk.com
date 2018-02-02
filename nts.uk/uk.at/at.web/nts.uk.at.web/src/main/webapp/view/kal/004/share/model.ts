@@ -29,9 +29,7 @@ module nts.uk.at.view.kal004.share.model {
         category: EnumConstantDto;
         checkConditonCode: string;
         checkConditionName: string;
-        listRoleId: Array<string>;
     }
-
 
 
     export class ModelCheckConditonCode {
@@ -40,14 +38,24 @@ module nts.uk.at.view.kal004.share.model {
         categoryName: string;
         checkConditonCode: string;
         checkConditionName: string;
-        listRoleId: Array<string>;
+        cssClass: string;
         constructor(dto: AlarmCheckConditonCodeDto) {
             this.category = dto.category.value;
             this.categoryName = dto.category.localizedName;
             this.checkConditonCode = dto.checkConditonCode;
             this.checkConditionName = dto.checkConditionName;
-            this.listRoleId = dto.listRoleId;
             this.GUID = dto.category.value + dto.checkConditonCode;
+            this.cssClass = "";
+        }
+        
+        public static createNotFoundCheckConditonCode(category: EnumConstantDto, checkConditonCode: string): ModelCheckConditonCode {
+            var result = new ModelCheckConditonCode({
+                category: category,
+                checkConditonCode: checkConditonCode,
+                checkConditionName: nts.uk.resource.getText('KAL004_117'),
+            });
+            result.cssClass = "red-color";
+            return result;
         }
     }
 
@@ -152,15 +160,15 @@ module nts.uk.at.view.kal004.share.model {
                     strMakeToDay: null,
                     strDay: null,
                     strPreviousMonth: 0,
-                    strCurrentMonth: 0,
-                    strMonth: 2,
+                    strCurrentMonth: 1,
+                    strMonth: 0,
                     endSpecify: 1,
                     endPreviousDay: null,
                     endMakeToDay: null,
                     endDay: null,
                     endPreviousMonth: 0,
-                    endCurrentMonth: 0,
-                    endMonth: 1
+                    endCurrentMonth: 1,
+                    endMonth: 0
                 });
             } else {
                 this.extractionPeriodDaily = extractionPeriodDaily;

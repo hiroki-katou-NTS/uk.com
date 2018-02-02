@@ -22,8 +22,6 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckT
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckTargetJobTitle;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyErrorCode;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyErrorCodePK;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyFixExtra;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyFixExtraPK;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyWkRecord;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyWkRecordPK;
 
@@ -176,20 +174,20 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 				}
 				entity.dailyAlarmCondition.listExtractConditionWorkRecord = newListWorkRecord;
 				
-				List<KrcmtDailyFixExtra> oldListFixedWkRecord = entity.dailyAlarmCondition.listFixedExtractConditionWorkRecord;
-				List<KrcmtDailyFixExtra> newListFixedWkRecord = dailyAlarmCondition.getErrorAlarmCode().stream().map(item -> new KrcmtDailyFixExtra(new KrcmtDailyFixExtraPK(dailyAlarmCondition.getDailyAlarmConID(), item))).collect(Collectors.toList());
-				for (KrcmtDailyFixExtra newTarget : newListFixedWkRecord) {
-					for (KrcmtDailyFixExtra oldTarget : oldListFixedWkRecord) {
-						if (oldTarget.krcmtDailyFixExtraPK.equals(newTarget.krcmtDailyFixExtraPK)) {
-							newListFixedWkRecord.set(newListErrorAlarmCode.indexOf(newTarget), oldTarget);
-							break;
-						}
-					}
-				}
-				entity.dailyAlarmCondition.listFixedExtractConditionWorkRecord = newListFixedWkRecord;
+//				List<KrcmtDailyFixExtra> oldListFixedWkRecord = entity.dailyAlarmCondition.listFixedExtractConditionWorkRecord;
+//				List<KrcmtDailyFixExtra> newListFixedWkRecord = dailyAlarmCondition.getErrorAlarmCode().stream().map(item -> new KrcmtDailyFixExtra(new KrcmtDailyFixExtraPK(dailyAlarmCondition.getDailyAlarmConID(), item))).collect(Collectors.toList());
+//				for (KrcmtDailyFixExtra newTarget : newListFixedWkRecord) {
+//					for (KrcmtDailyFixExtra oldTarget : oldListFixedWkRecord) {
+//						if (oldTarget.krcmtDailyFixExtraPK.equals(newTarget.krcmtDailyFixExtraPK)) {
+//							newListFixedWkRecord.set(newListErrorAlarmCode.indexOf(newTarget), oldTarget);
+//							break;
+//						}
+//					}
+//				}
+//				entity.dailyAlarmCondition.listFixedExtractConditionWorkRecord = newListFixedWkRecord;
 			}
 			
-			if (entity.pk.category == AlarmCategory.DAILY.value) {
+			if (entity.pk.category == AlarmCategory.SCHEDULE_4WEEK.value) {
 				AlarmCheckCondition4W4D schedule4Week = (AlarmCheckCondition4W4D) domain.getExtractionCondition();
 				entity.schedule4W4DAlarmCondition.fourW4DCheckCond = schedule4Week.getFourW4DCheckCond().value;
 			}
@@ -199,10 +197,6 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 
 	}
 
-	// When alarm check condition by category is deleted
-	// Delete the "time item check of work record (勤務実績の勤怠項目チェック)"
-	// and "error item condition of time item (勤怠項目のエラーアラーム条件)"
-	// linked to error work alarm check ID of work record
 	@Override
 	public void delete(String companyId, int category, String alarmConditionCode) {
 		this.commandProxy().remove(KfnmtAlarmCheckConditionCategory.class, new KfnmtAlarmCheckConditionCategoryPk(

@@ -238,8 +238,8 @@
 							<!--A6_7 残業時間名称--> 						
 							<td class="header" data-bind="attr: { id: 'overtimeHoursHeader_'+attendanceID()+'_'+frameNo()}, text: frameName"></td>
 							<!--A6_8 残業申請時間入力--> 						
-							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}"><input tabindex="15" class="right-content"
-								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()},  ntsTimeEditor: {name: nameID ,value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
+							<td data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }"><input tabindex="15" class="right-content"
+								data-bind="attr: { id: 'overtimeHoursCheck_'+attendanceID()+'_'+frameNo()}, style: { 'background-color' : color }, ntsTimeEditor: {name: nameID ,value: applicationTime, option: {width: '80px'}, inputFormat: 'time', mode: 'time',constraint:'OvertimeAppPrimitiveTime'}" /></td>
 							<!--A6_9 残業事前申請時間--> 						
 							<td class="right-content" data-bind="text: preAppTime"></td>
 							<!--A6_11 実績時間--> 						
@@ -327,7 +327,7 @@
 			</div>
 		</div>
 		<!--定型理由 -->
-		<div class="valign-center control-group"
+		<div class="valign-center control-group overlay-reason"
 			data-bind="if: typicalReasonDisplayFlg">
 			<!--A9_1 定型理由ラベル--> 			
 			<div class="lblTitle cm-column" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF005_86')}</div>
@@ -362,7 +362,7 @@
 			</div>
 		</div>
 		<!--定型理由 -->
-		<div class="valign-center control-group"
+		<div class="valign-center control-group overlay-reason"
 			data-bind="if: displayDivergenceReasonForm">
 			<!--A9_5 乖離定型理由ラベル--> 
 			<div class="lblTitle cm-column" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF005_90')}</div>
@@ -398,7 +398,7 @@
 		</div>
 	</div>
 	<!--RIGHT CONTENT -->
-	<div class="right-contents panel" style ="background-color: #E7E6E6;">
+	<div class="right-contents panel" style ="background-color: #E7E6E6;" data-bind ="visible: isRightContent">
 			<label data-bind ="visible: referencePanelFlg" style ="margin-left: 38px">#{i18n.getText('KAF005_99')}</label> 
 			<BR data-bind ="visible: referencePanelFlg"/>
 			<HR data-bind ="visible: referencePanelFlg" style="width: 250px;"></HR>
@@ -455,12 +455,12 @@
 			<label data-bind="text : flexExessTimeRefer"></label>
 			</div>
 		</div>
-		<div class="panel panel-gray-bg panel-frame control-group">
+		<div class="panel panel-gray-bg panel-frame control-group" data-bind = "visible: allPreAppPanelFlg()">
 			<!-- A12_2 -->
 			<label>#{i18n.getText('KAF005_120')}</label>
 			 <BR /> <BR /> 
 			<!--A12_3-->
-			<div data-bind = "if: referencePanelFlg() &amp; allPreAppPanelFlg()">
+			<div>
 					<label data-bind =" if: !(preAppPanelFlg())" style ="margin-left: 7px">#{i18n.getText('KAF005_121')}</label>
 					<div data-bind =" if: preAppPanelFlg()">
 						<div class="control-group" >

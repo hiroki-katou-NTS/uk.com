@@ -8,20 +8,13 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
-			<!-- <com:ValidatorScript>
-				
-			</com:ValidatorScript> -->
-			
-			<script>
-				__viewContext.primitiveValueConstraints.MonthlyNumberOfDays = {
-						valueType: 'Integer',
-						max: 31,
-						min: 0
-					};
-			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.WeekNumberOfDay
+				nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.FourWeekDay
+				nts.uk.ctx.bs.employee.dom.holidaysetting.common.MonthlyNumberOfDays
+			</com:ValidatorScript>
 
-
-			<com:scriptfile set="IGNITE" />
+			<com:scriptfile set="IGNITE" />	
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -48,13 +41,14 @@
 			<com:scriptfile path="../commonTableMonthDaySet.js" />
 			
 			<com:stylefile path="kmf002.a.main.css" />
+			<com:scriptfile path="kmf002.a.service.js" />
 			<com:scriptfile path="kmf002.a.vm.js" />
 			<com:scriptfile path="kmf002.a.start.js" />
 			
 		</ui:define>
 		<ui:define name="sidebar">
 			<ul tabindex="1" class="navigator">
-				<li data-bind=""><a tabindex="-1"
+				<li data-bind="click: onSelectTabA"><a tabindex="-1"
 					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('KMF002_30')}</a></li>
 				<li data-bind="click: onSelectTabE"><a tabindex="-1"
 					href="#tabpanel-2" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
@@ -71,16 +65,16 @@
 			<div id="tabpanel-1" role="tabpanel" data-bind="">
 				<ui:include src="../a/a_index.xhtml" />
 			</div>
-			<div id="tabpanel-2" role="tabpanel" data-bind="with: screenE">
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: screenE()">
 				<ui:include src="../e/index.xhtml" />
 			</div>
-			<div id="tabpanel-3" role="tabpanel" data-bind="with: screenB">
+			<div id="tabpanel-3" role="tabpanel" data-bind="with: screenB()">
 				<ui:include src="../b/index.xhtml" />
 			</div>
-			<div id="tabpanel-4" role="tabpanel" data-bind="with: screenD">
+			<div id="tabpanel-4" role="tabpanel" data-bind="with: screenD()">
 				<ui:include src="../d/index.xhtml" />
 			</div>
-			<div id="tabpanel-5" role="tabpanel" data-bind="with: screenC">
+			<div id="tabpanel-5" role="tabpanel" data-bind="with: screenC()">
 				<ui:include src="../c/index.xhtml" />
 			</div>
 			

@@ -9,6 +9,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -33,19 +35,17 @@ public class SaveOtherSysAccountCommandHandler extends CommandHandler<SaveOtherS
 		
 		// Get command
 		SaveOtherSysAccountCommand command = context.getCommand();
-
 		Optional<OtherSysAccount> opOtherSysAcc = otherSysAccountRepository.findByUserId(command.getUserId());
 
 		if (opOtherSysAcc.isPresent()) {
 			this.validate(command);				
-			// remove
-			this.otherSysAccountRepository.remove(opOtherSysAcc.get().getUserId(), opOtherSysAcc.get().getCompanyCode(),
-					opOtherSysAcc.get().getUserName());
-		}
-
+			// update
+			this.otherSysAccountRepository.update(new OtherSysAccount(command) , opOtherSysAcc.get());
+		}else{
+			this.validate(command);	
 		// save domain
-		OtherSysAccount otherSysAccount = new OtherSysAccount(command);
-		this.otherSysAccountRepository.add(otherSysAccount);
+		this.otherSysAccountRepository.add(new OtherSysAccount(command));
+		}
 	}
 			
 	/**
@@ -60,19 +60,21 @@ public class SaveOtherSysAccountCommandHandler extends CommandHandler<SaveOtherS
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 
 		// check only company code and user name
-		Optional<OtherSysAccount> opOtherSysAccount = otherSysAccountRepository
-				.findByCompanyCodeAndUserName(dto.getCompanyCode(), dto.getUserName());
+		if (!StringUtils.isEmpty(dto.getCompanyCode().v()) && !StringUtils.isEmpty(dto.getUserName().v())) {
+			Optional<OtherSysAccount> opOtherSysAccount = otherSysAccountRepository
+					.findByCompanyCodeAndUserName(dto.getCompanyCode().v(), dto.getUserName().v());
 
-		// Check condition
-		if (opOtherSysAccount.isPresent()) {
-			// Has error, throws message
-			isError = true;
-			exceptions.addMessage("Msg_616");
-		}
+			// Check condition
+			if (opOtherSysAccount.isPresent()) {
+				// Has error, throws message
+				isError = true;
+				exceptions.addMessage("Msg_616");
+			}
 
-		if (isError) {			
-			//show error list
-			exceptions.throwExceptions();
+			if (isError) {
+				// show error list
+				exceptions.throwExceptions();
+			}
 		}
 	}
 	

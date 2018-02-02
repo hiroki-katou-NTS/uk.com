@@ -1,31 +1,20 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 /**
  * ドメインサービス：月別実績を集計する
@@ -34,14 +23,17 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.
 @Stateless
 public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecordService {
 
-	/** 労働契約履歴 */
-	//@Inject
-	//private EmploymentContractHistoryAdopter employmentContractHistoryAdopter;
-	
+	/** 労働条件項目 */
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
+	/** 労働条件 */
+	@Inject
+	private WorkingConditionRepository workingConditionRepository;
 	/** 社員 */
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
 
+	/** 月別集計が必要とするリポジトリ */
 	@Inject
 	private RepositoriesRequiredByMonthlyAggr repositories;
 	
@@ -61,19 +53,23 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		
 		val returnValue = new AggregateMonthlyRecordValue();
 		
-		//*****（未）　期間で取れるメソッドが必要
-		//List<EmploymentContractHistory> employmentContracts =
-		//		this.employmentContractHistoryAdopter.findByEmployeeIdAndDatePeriod(employeeID, datePeriod);
-		//*****（仮）　仮データ設定
-		List<EmploymentContractHistory> employmentContracts = new ArrayList<>();
-		employmentContracts.add(new EmploymentContractHistory(employeeId, WorkingSystem.RegularWork));
+		// 「労働条件項目」を取得
+		val workingConditionItems = this.workingConditionItemRepository.getBySidAndPeriodOrderByStrD(
+				employeeId, datePeriod);
 		
-		// 履歴の数だけループ
-		for (val employmentContract : employmentContracts){
+		// 項目の数だけループ
+		for (val workingConditionItem : workingConditionItems){
 			
-			// 処理期間を計算　（処理期間と契約履歴の重複を確認する）
-			//*****（未）employmentcontractから期間を取って、下のtermに入れる
-			val term = new DatePeriod(GeneralDate.ymd(2002, 6, 10), GeneralDate.ymd(2017, 11, 12));
+			// 「労働条件」の該当履歴から期間を取得
+			val historyId = workingConditionItem.getHistoryId();
+			val workingConditionOpt = this.workingConditionRepository.getByHistoryId(historyId);
+			if (!workingConditionOpt.isPresent()) continue;
+			val workingCondition = workingConditionOpt.get();
+
+			// 処理期間を計算　（処理期間と労働条件履歴期間の重複を確認する）
+			val dateHistoryItems = workingCondition.getDateHistoryItem();
+			if (dateHistoryItems.isEmpty()) continue;
+			val term = dateHistoryItems.get(0).span();
 			DatePeriod procPeriod = this.confirmProcPeriod(datePeriod, term);
 			if (procPeriod == null) {
 				// 履歴の期間と重複がない時
@@ -91,10 +87,14 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			val attendanceTime = new AttendanceTimeOfMonthly(employeeId, yearMonth,
 					closureId, closureDate, procPeriod);
 			
+			// 労働制を確認する
+			val workingSystem = workingConditionItem.getLaborSystem();
+			
 			// 月の計算
-			attendanceTime.aggregate(companyId, employmentContract.getWorkingSystem(), this.repositories);
+			attendanceTime.aggregate(companyId, workingSystem, this.repositories);
 			
 			// 縦計
+			attendanceTime.verticalTotal(companyId, workingSystem, this.repositories);
 			
 			// 時間外超過
 

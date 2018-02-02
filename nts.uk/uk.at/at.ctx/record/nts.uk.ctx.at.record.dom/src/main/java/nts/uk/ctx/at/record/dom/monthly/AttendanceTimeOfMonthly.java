@@ -5,8 +5,9 @@ import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -31,6 +32,8 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	private DatePeriod datePeriod;
 	/** 月の計算 */
 	private MonthlyCalculation monthlyCalculation;
+	/** 縦計 */
+	private VerticalTotalOfMonthly verticalTotal;
 	/** 集計日数 */
 	private AttendanceDaysMonth aggregateDays;
 	/** 回数集計 */
@@ -39,8 +42,6 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	//holiday
 	/** 時間外超過 */
 	//excessOutsideTime
-	/** 縦計 */
-	//verticalAggregate
 	/** 任意項目 */
 	//anyItem
 
@@ -62,6 +63,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 		this.closureDate = closureDate;
 		this.datePeriod = datePeriod;
 		this.monthlyCalculation = new MonthlyCalculation();
+		this.verticalTotal = new VerticalTotalOfMonthly();
 		this.aggregateDays = new AttendanceDaysMonth(0.0);
 	}
 	
@@ -73,6 +75,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 	 * @param closureDate 締め日付
 	 * @param datePeriod 期間
 	 * @param monthlyCalculation 月の計算
+	 * @param verticalTotal 縦計
 	 * @param aggregateDays 集計日数
 	 * @return 月別実績の勤怠時間
 	 */
@@ -83,10 +86,12 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 			ClosureDate closureDate,
 			DatePeriod datePeriod,
 			MonthlyCalculation monthlyCalculation,
+			VerticalTotalOfMonthly verticalTotal,
 			AttendanceDaysMonth aggregateDays){
 		
 		val domain = new AttendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate, datePeriod);
 		domain.monthlyCalculation = monthlyCalculation;
+		domain.verticalTotal = verticalTotal;
 		domain.aggregateDays = aggregateDays;
 		return domain;
 	}
@@ -102,5 +107,26 @@ public class AttendanceTimeOfMonthly extends AggregateRoot {
 		
 		this.monthlyCalculation.aggregate(companyId, this.employeeId, this.yearMonth,
 				this.closureId, this.closureDate, this.datePeriod, workingSystem, repositories);
+	}
+	
+	/**
+	 * 縦計
+	 * @param companyId 会社ID
+	 * @param workingSystem 労働制
+	 * @param repositories 月次集計が必要とするリポジトリ
+	 */
+	public void verticalTotal(String companyId, WorkingSystem workingSystem,
+			RepositoriesRequiredByMonthlyAggr repositories){
+	
+		// 月の縦計
+		this.verticalTotal.verticalTotal(companyId, this.employeeId, this.datePeriod,
+				workingSystem, repositories);
+		
+		// 開始週の終了日を計算
+		
+		// 週の縦計
+		
+		// 次の週の期間を計算
+		
 	}
 }

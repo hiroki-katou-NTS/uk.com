@@ -1,7 +1,6 @@
 package nts.uk.ctx.pereg.app.find.employee.category;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -186,8 +185,22 @@ public class EmpCtgFinder {
 			return infoList;
 		query.setCtgType(perInfoCtg.getCategoryType().value);
 		// get combobox object
+		List<PersonInfoItemDefinition> lstItemDef = perInfoCtgDomainService
+				.getPerItemDef(new ParamForGetPerItem(perInfoCtg, query.getInfoId(), roleId == null ? "" : roleId,
+						loginCId, contractCode, empIdCurrentLogin.equals(query.getEmployeeId())));
+		Optional<PersonInfoItemDefinition> period;
+		if(!perInfoCtg.getCategoryCode().v().equals("CS00003"))
+		{
+			DateRangeItem dateRangeItem = perInfoCtgRepositoty.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
+			period = lstItemDef.stream().filter(x -> {
+				return x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId());
+			}).findFirst();
+		}else {
+			period = Optional.of(lstItemDef.get(0));
+		}
+				
 		if (perInfoCtg.getIsFixed() == IsFixed.NOT_FIXED) {
-			infoList = getInfoListOfOptionalCtg(perInfoCtg, query);
+			infoList = getInfoListOfOptionalCtg(perInfoCtg, query, period);
 		} else {
 			query.setCategoryCode(perInfoCtg.getCategoryCode().v());
 			infoList = layoutingProcessor.getListFirstItems(query);
@@ -200,40 +213,34 @@ public class EmpCtgFinder {
 		infoList.stream().filter(x -> {
 			return checkRole(ctgAuth, roleId, query.getCategoryId(), isSelf, isSameCom);
 		}).collect(Collectors.toList());
-		return fiterOfContHist(ctgAuth, infoList, roleId, isSelf);
+		List<ComboBoxObject> resultList = fiterOfContHist(ctgAuth, infoList, roleId, isSelf);
+		if(lstItemDef.size() > 0)
+			resultList.add(new ComboBoxObject(null, period.get().getItemName().v()));
+		return resultList ;
 	}
 
-	private List<ComboBoxObject> getInfoListOfOptionalCtg(PersonInfoCategory perInfoCtg, PeregQuery query) {
+	private List<ComboBoxObject> getInfoListOfOptionalCtg(PersonInfoCategory perInfoCtg, PeregQuery query, Optional<PersonInfoItemDefinition> period) {
 		if (perInfoCtg.getCategoryType() == CategoryType.SINGLEINFO)
 			return new ArrayList<>();
 		else if (perInfoCtg.getCategoryType() == CategoryType.MULTIINFO) {
 			return null;
 		} else
-			return getInfoListHistType(perInfoCtg, query);
+			return getInfoListHistType(perInfoCtg, query, period);
 	}
 
-	private List<ComboBoxObject> getInfoListHistType(PersonInfoCategory perInfoCtg, PeregQuery query) {
-		// app contexts
-		String contractCode = AppContexts.user().contractCode();
-		String companyId = AppContexts.user().companyId();
-		String loginEmpId = AppContexts.user().employeeId();
-		String roleId = AppContexts.user().roles().forPersonalInfo();
+	private List<ComboBoxObject> getInfoListHistType(PersonInfoCategory perInfoCtg, PeregQuery query, Optional<PersonInfoItemDefinition> period) {
+		
 
 		// get item def
-		List<PersonInfoItemDefinition> lstItemDef = perInfoCtgDomainService
-				.getPerItemDef(new ParamForGetPerItem(perInfoCtg, query.getInfoId(), roleId == null ? "" : roleId,
-						companyId, contractCode, loginEmpId.equals(query.getEmployeeId())));
-		DateRangeItem dateRangeItem = perInfoCtgRepositoty
-				.getDateRangeItemByCategoryId(perInfoCtg.getPersonInfoCategoryId());
-		Optional<PersonInfoItemDefinition> period = lstItemDef.stream().filter(x -> {
-			return x.getPerInfoItemDefId().equals(dateRangeItem.getDateRangeItemId());
-		}).findFirst();
+		
+		
 		if (!period.isPresent())
 			return new ArrayList<>();
 		List<String> timePerInfoItemDefIds = ((SetItem) period.get().getItemTypeState()).getItems();
 		return perInfoCtg.getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE
 				? getHistInfoEmployeeType(timePerInfoItemDefIds, query)
 				: getHistInfoPersonType(timePerInfoItemDefIds, query);
+		
 	}
 
 	private List<ComboBoxObject> getHistInfoPersonType(List<String> timePerInfoItemDefIds, PeregQuery query) {
@@ -277,7 +284,7 @@ public class EmpCtgFinder {
 		if (lstEmpInfoCtgData.size() == 0)
 			return new ArrayList<>();
 
-		Map<String, ComboBoxObject> comboBoxs = new HashMap<>();
+		List<ComboBoxObject> comboBoxs = new ArrayList<>();
 		for (EmpInfoCtgData empInfoCtgData : lstEmpInfoCtgData) {
 			// get option value value combo box
 			String value = empInfoCtgData.getRecordId();
@@ -294,12 +301,11 @@ public class EmpCtgFinder {
 				}
 				sortDate(optionText, query);
 				if (optionText.size() > 0)
-					comboBoxs.put(optionText.get(0),
-							ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
+					comboBoxs.add(ComboBoxObject.toComboBoxObject(value, optionText.get(0), optionText.get(1)));
 			}
 		}
-		 List<ComboBoxObject> result =  sortComboBox(comboBoxs);
-		 return result;
+		 sortComboBox(comboBoxs);
+		 return comboBoxs;
 	}
 
 	private void sortDate(List<String> optionText, PeregQuery query) {
@@ -321,14 +327,12 @@ public class EmpCtgFinder {
 				: dateValue;
 	}
 
-	private List<ComboBoxObject> sortComboBox(Map<String, ComboBoxObject> comboBoxs) {
-		List<String> strDates = comboBoxs.entrySet().stream().map(x -> x.getKey()).collect(Collectors.toList());
-		strDates.sort((a, b) -> {
-			GeneralDate before = GeneralDate.fromString(a, "yyyy/MM/dd");
-			GeneralDate after = GeneralDate.fromString(b, "yyyy/MM/dd");
-			return after.compareTo(before);
+	private void sortComboBox(List<ComboBoxObject> comboBoxs) {
+		comboBoxs.sort((a, b) -> {
+			String aStartDate = a.getOptionText().substring(0, 10);
+			String bStartDate = b.getOptionText().substring(0, 10);
+			return GeneralDate.fromString(bStartDate, "yyyy/MM/dd").compareTo(GeneralDate.fromString(aStartDate, "yyyy/MM/dd"));
 		});
-		return strDates.stream().map(x -> comboBoxs.get(x)).collect(Collectors.toList());
 	}
 
 	/**

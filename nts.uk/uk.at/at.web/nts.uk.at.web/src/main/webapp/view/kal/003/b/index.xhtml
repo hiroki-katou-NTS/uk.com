@@ -71,7 +71,7 @@
                          || checkItem() == 4
                          || checkItem() == 5
                          || checkItem() == 6">
-                     <div id='div_target_service_type_ba1'>
+                     <div id='div_target_service_type_ba1' >
                         <table >
                             <colgroup>
                                 <col width="150px" />
@@ -108,7 +108,7 @@
 	                                        options: $parent.itemListTargetSelectionRange_BA1_5,
 	                                        optionsValue: 'value',
 	                                        optionsText: 'localizedName',
-	                                        value: errorAlarmCondition().targetWorkTimeConditionn().comparePlanAndActual,
+	                                        value: errorAlarmCondition().workTimeCondition().comparePlanAndActual,
 	                                        enable: true}">
 	                                     </div>
 	                                 </com:ko-if>
@@ -122,7 +122,8 @@
                                         || checkItem() == 3
                                         || checkItem() == 4
                                         || checkItem() == 6">
-                                            <button id="btnSettingBA1_3"  data-bind="click : function() {$parent.btnSettingBA1_3_click()}, enable: workTypeCondition() > 0">#{i18n.getText('KAL003_57')}</button>
+                                            <button id="btnSettingBA1_3"  data-bind="click : function() {$parent.btnSettingBA1_3_click()},
+                                            	 enable: errorAlarmCondition().workTypeCondition().comparePlanAndActual() > 0">#{i18n.getText('KAL003_57')}</button>
                                             <!-- BA1-4 -->
                                             <input data-bind="ntsTextEditor: {
                                               value: $parent.displayWorkTypeSelections_BA1_4,
@@ -181,7 +182,7 @@
 	                                                options: $parent.listCompareTypes,
 	                                                optionsValue: 'value',
 	                                                visibleItemsCount: 5,
-	                                                value: errorAlarmCondition().attendanceItemCondition().comparisonOperator,
+	                                                value: $parent.comparisonRange().comparisonOperator,
 	                                                optionsText: 'localizedName',
 	                                                editable: false,
 	                                                enable: true,
@@ -220,6 +221,7 @@
 			                                        name: '#[KAL003_64]', 
 			                                        constraint:'TimeWithDayAttr', 
 			                                        value: $parent.comparisonRange().minTimeWithinDayValue, 
+			                                        enable: true,
 			                                        required: true }" />
 	                                    </com:ko-if>
 	                                    
@@ -232,7 +234,9 @@
                                                    value: $parent.comparisonRange().maxTimeValue,
                                                     constraint: 'CheckedTimeDuration',
                                                     required: $parent.enableComparisonMaxValue(),
-                                                    enable: $parent.enableComparisonMaxValue()}"/>
+                                                    enable: $parent.enableComparisonMaxValue(),
+                                                    mode: 'time',
+	                                                inputFormat: 'time'}"/>
                                         </com:ko-if>
                                         <com:ko-if bind="checkItem() == 1"> <!-- 回数 -->
                                             <input class="value-input needcheck" data-bind="ntsNumberEditor: {
@@ -287,7 +291,7 @@
 	                                        options: $parent.itemListTargetSelectionRange_BA1_5,
 	                                        optionsValue: 'value',
 	                                        optionsText: 'localizedName',
-	                                        value: errorAlarmCondition().attendanceItemCondition().comparePlanAndActual,
+	                                        value: errorAlarmCondition().workTimeCondition().comparePlanAndActual,
 	                                        enable: true}">
 	                                     </div>
 	                            </td>
@@ -297,7 +301,7 @@
 	                                    <button id="btnSettingBA5_3" data-bind="click : function() {$parent.btnSettingBA5_2_click()}, enable: true">#{i18n.getText('KAL003_57')}</button>
 	                                    <!-- BA1-3 -->
 	                                    <input data-bind="ntsTextEditor: {
-	                                       value: $parent.displayTargetWorkingTimeSelections_BA5_3,
+	                                       value: $parent.displayWorkingTimeSelections_BA5_3,
 	                                       readonly: true}" />
 	                                </div>
 	                            </td>
@@ -309,7 +313,7 @@
                     <com:ko-if bind="checkItem() == 4
                         || checkItem() == 5
                         || checkItem() == 6">
-	                    <div id="div_continuous_period_ba3">
+	                    <div id="div_continuous_period_ba3" data-bind="with: errorAlarmCondition">
 	                        <table >
 	                        <colgroup>
 	                            <col width="150px" />
@@ -327,7 +331,7 @@
 		                                <!-- BA3-2--> <!-- TODO constrain Continuous period CheckedTimesValue -->
 		                                <input class="value-input needcheck" data-bind="ntsNumberEditor: {
 		                                       name: '#[KAL003_61]',
-		                                       value: errorAlarmCondition().continuousPeriod,
+		                                       value: continuousPeriod,
 		                                       required: true,
 		                                       constraint: 'CheckedTimesValue',
 		                                       enable: true,
@@ -393,7 +397,7 @@
 					                   <th class="ui-widget-header" colspan="6" style ="text-align: center;">#{i18n.getText('KAL003_33')}</th>
 					               </tr>
 					            </thead>
-					            <tbody data-bind = "foreach: group1().lstErAlAtdItemCon">
+					            <tbody data-bind = "foreach: group1().lstErAlAtdItemCon()">
 					                <tr>
 					                  <!-- B5_6 -->
 					                    <com:ko-if bind="$data.compareOperator() == 6 || $data.compareOperator() == 7">
@@ -472,7 +476,7 @@
                                           <th class="ui-widget-header"  colspan="6" style ="text-align: center;">#{i18n.getText('KAL003_33')}</th>
                                       </tr>
                                    </thead>
-                                   <tbody data-bind = "foreach: group2().lstErAlAtdItemCon">
+                                   <tbody data-bind = "foreach: group2().lstErAlAtdItemCon()">
                                        <tr>
                                         <!-- B16_3 -->
 						                    <com:ko-if bind="$data.compareOperator() &gt; 5">

@@ -139,14 +139,45 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
             }
             self.listWorkTimeComboBox([]);
             _.forEach(self.listWorkTime(), (obj) => {
-                if (self.time1() && self.time2()
-                    && (moment.duration(self.time1()).asMinutes() == obj.startTime)
-                    && (moment.duration(self.time2()).asMinutes() == obj.endTime)) {
-                    self.listWorkTimeComboBox.push(obj);
-                } else if (!self.time2() && (moment.duration(self.time1()).asMinutes() <= obj.startTime)) {
-                    self.listWorkTimeComboBox.push(obj);
-                } else if (!self.time1() && (moment.duration(self.time2()).asMinutes() >= obj.endTime)) {
-                    self.listWorkTimeComboBox.push(obj);
+                let timezone1 = obj.timeZone1.split("～");
+                let timezone2 = obj.timeZone2.split("～");
+                if (self.time1() && self.time2()){
+                    if(timezone1.length == 2){
+                        if(moment.duration(self.time1()).asMinutes() == moment.duration(timezone1[0]).asMinutes()
+                        && moment.duration(self.time2()).asMinutes() == moment.duration(timezone1[1]).asMinutes()){
+                             self.listWorkTimeComboBox.push(obj);
+                        }
+                    }
+                    if(timezone2.length == 2){
+                        if(moment.duration(self.time1()).asMinutes() == moment.duration(timezone2[0]).asMinutes()
+                        && moment.duration(self.time2()).asMinutes() == moment.duration(timezone2[1]).asMinutes()){
+                             self.listWorkTimeComboBox.push(obj);
+                        }    
+                    }
+                    
+                } else if (!self.time2()) {
+                    if(timezone1.length == 2){
+                        if(moment.duration(self.time1()).asMinutes() == moment.duration(timezone1[0]).asMinutes()){
+                             self.listWorkTimeComboBox.push(obj);
+                        }
+                    }
+                    if(timezone2.length == 2){
+                        if(moment.duration(self.time1()).asMinutes() == moment.duration(timezone2[0]).asMinutes()){
+                             self.listWorkTimeComboBox.push(obj);
+                        }    
+                    }
+                    
+                } else if (!self.time1()) {
+                    if(timezone1.length == 2){
+                        if(moment.duration(self.time2()).asMinutes() == moment.duration(timezone1[1]).asMinutes()){
+                             self.listWorkTimeComboBox.push(obj);
+                        }
+                    }
+                    if(timezone2.length == 2){
+                        if(moment.duration(self.time2()).asMinutes() == moment.duration(timezone2[1]).asMinutes()){
+                             self.listWorkTimeComboBox.push(obj);
+                        }    
+                    }
                 }
             });
             $("#single-list").focus();

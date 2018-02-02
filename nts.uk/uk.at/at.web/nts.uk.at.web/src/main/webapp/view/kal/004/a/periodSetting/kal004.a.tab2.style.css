@@ -3,3 +3,5 @@
     padding: 5px 5px;
     border: 1px solid #ccc;
 }
+.tab2 table td:nth-child(3){text-align: center;}
+.tab2 table#fixed-table tbody tr{height:40px;}

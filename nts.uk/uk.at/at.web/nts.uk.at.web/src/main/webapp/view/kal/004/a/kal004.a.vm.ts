@@ -20,7 +20,8 @@ module nts.uk.at.view.kal004.a.model {
         alarmName: KnockoutObservable<string>;
         tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
-        
+        alarmCategoryArr: Array<share.EnumConstantDto> = [];
+
         // Tab 1
         checkHeader: KnockoutObservableArray<any>;
         checkSource: Array<share.ModelCheckConditonCode>;
@@ -29,7 +30,7 @@ module nts.uk.at.view.kal004.a.model {
 
         // Tab 2: Period setting
         periodSetting: any = new nts.uk.at.view.kal004.tab2.viewModel.ScreenModel();
-          
+
         // Tab 3: SetPermission
         setPermissionModel: any = new nts.uk.at.view.kal004.tab3.viewmodel.ScreenModel();
 
@@ -45,7 +46,7 @@ module nts.uk.at.view.kal004.a.model {
 
             self.alarmHeader = ko.observableArray([
                 { headerText: getText('KAL004_7'), key: 'alarmPatternCD', width: 40 },
-                { headerText: getText('KAL004_8'), key: 'alarmPatternName', width: 150 },
+                { headerText: getText('KAL004_8'), key: 'alarmPatternName', width: 175 },
             ]);
             self.alarmCode = ko.observable('');
             self.alarmName = ko.observable('');
@@ -56,104 +57,136 @@ module nts.uk.at.view.kal004.a.model {
 
             self.checkHeader = ko.observableArray([
                 { headerText: getText('KAL004_21'), key: 'GUID', width: 10, hidden: true },
-                { headerText: getText('KAL004_21'), key: 'categoryName', width: 120 },
-                { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 40 },
-                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 160 }
+                { headerText: 'cssClass', key: 'cssClass', width: 10, hidden: true },
+                { headerText: getText('KAL004_21'), key: 'categoryName', width: 120, template: "<span class='${cssClass}'>${categoryName}</span>" },
+                { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 40, template: "<span class='${cssClass}'>${checkConditonCode}</span>" },
+                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 150, template: "<span class='${cssClass}'>${checkConditionName}</span>" }
             ]);
 
             self.currentCodeListSwap = ko.observableArray([]);
             self.currentCode = ko.observable('');
-            self.currentAlarm=null;
+            self.currentAlarm = null;
         }
 
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred<any>();
-            
+            service.getEnumAlarm().done((enumRes) => {
+                self.alarmCategoryArr = enumRes;
+            }).fail((enumErr) => {
+                alertError(enumErr);
+            });
+            block.grayout();
             service.getCheckConditionCode().done((res) => {
-                let resolve = _.map(res, (x) =>{return new share.ModelCheckConditonCode(x) });
-                self.checkSource = _.cloneDeep(resolve);    
-                          
-                self.getAlarmPattern().done(() =>{
-                
+                let resolve = _.map(res, (x) => { return new share.ModelCheckConditonCode(x) });
+                self.checkSource = _.cloneDeep(resolve);
+
+                self.getAlarmPattern().done(() => {
+
+                    self.initSubscribe();
+                    
                     if (self.alarmSource().length > 0) {
                         self.currentCode(self.alarmSource()[0].alarmPatternCD);
-                    }else{
-                        self.checkConditionList(self.checkSource);                       
-                    }                                        
+                    } else {
+                        self.checkConditionList(_.cloneDeep(self.checkSource));
+                    }
+                    
                     dfd.resolve();
-                });                
+                }).always(()=>{
+                    block.clear();                   
+                });
             }).fail((error) => {
-                nts.uk.ui.dialog.alert({ messageId: error.messageId });
+                alertError(error);
+                block.clear();
                 dfd.resolve();
             });
-           return dfd.promise();
+            return dfd.promise();
         }
-        
-        
-        public getAlarmPattern(): JQueryPromise<any>{
+
+
+        public getAlarmPattern(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred<any>();
-            
+
             service.getAlarmPattern().done((res) => {
                 let alarmResolve = _.sortBy(res, [function(o) { return o.alarmPatternCD; }]);
                 self.alarmSource(alarmResolve);
-
-                self.initSubscribe();
-
+                
             }).fail((error) => {
-                nts.uk.ui.dialog.alert({ messageId: error.messageId });
-            }).always(()=>{
+                alertError(error);
+            }).always(() => {
                 dfd.resolve();
             });
-            
-            return dfd.promise();            
-        } 
-        
+
+            return dfd.promise();
+        }
+
         private initSubscribe(): void {
             var self = this;
             // AlarmPatternSetting
             self.currentCode.subscribe((newV) => {
+                $('#alarmName').focus();
+                self.periodSetting.listStorageCheckCondition.removeAll();
                 self.alarmCodeChange(newV);
+
+            });
+
+            self.checkConditionList.subscribe((newCheck) => {
+                _.remove(newCheck, function(leftItem) {
+                    let optItem = _.find(self.checkSource, function(item) {
+                        return leftItem.GUID == item.GUID;
+                    });
+                    return (optItem) ? false : true;
+                });
+                if (!_.differenceWith(newCheck, self.checkConditionList(), _.isEqual))
+                    self.checkConditionList(newCheck);
             });
             
             // Tab 2: Period Setting
             self.currentCodeListSwap.subscribe((listCode) => {
-                
-                let categories = _.uniq( _.map(listCode, (code) =>{return code.category}));
-                let shareTab2 : Array<share.CheckConditionCommand>=[];
-                categories.forEach((category)=>{
-                    
-                    let checkConditionCodes =[];
-                    listCode.forEach((code) =>{ if(code.category==category) {checkConditionCodes.push(code.checkConditonCode);} });
-                    
-                    let categoryInputed = self.currentAlarm ==null? null: _.find(self.currentAlarm.checkConList, (checkCon) =>{return checkCon.alarmCategory==category } );
-                    if(categoryInputed){
+
+                let categories = _.uniq(_.map(listCode, (code) => { return code.category }));
+                let shareTab2: Array<share.CheckConditionCommand> = [];
+                categories.forEach((category) => {
+
+                    let checkConditionCodes = [];
+                    listCode.forEach((code) => { if (code.category == category) { checkConditionCodes.push(code.checkConditonCode); } });
+
+                    let categoryInputed = self.currentAlarm == null ? null : _.find(self.currentAlarm.checkConList, (checkCon) => { return checkCon.alarmCategory == category });
+                    if (categoryInputed) {
                         shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily)));
-                    }else{
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null));                             
-                    } 
-                     
+                    } else {
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null));
+                    }
+
                 });
                 self.periodSetting.listCheckConditionCode(shareTab2);
-               
+
             });
-            self.createMode.subscribe((isCreate)=>{
-                if(isCreate)  self.periodSetting.listStorageCheckCondition.removeAll();            
-            });
+
         }
 
         public alarmCodeChange(newV): any {
             let self = this;
-            if (newV == ''){                 
+            errors.clearAll();
+            if (newV == '') {
                 self.createMode(true);
                 self.alarmCode('');
                 self.alarmName('');
-                errors.clearAll();    
                 self.currentCode('');
                 self.currentCodeListSwap([]);
-                self.checkConditionList( _.sortBy(self.checkSource, ['category', 'checkConditonCode']));
-                self.currentAlarm=null;              
+                self.checkConditionList(_.sortBy(self.checkSource, ['category', 'checkConditonCode']));
+                self.currentAlarm = null;
+                
+                // tab3
+                self.setPermissionModel.listRoleID([]);
+                self.setPermissionModel.selectedRuleCode(1);
+                self.setPermissionModel.enableSetting(false);
+                
+                //tab2
+                self.periodSetting.isCreateMode(true);             
+                                
+                $('#alarmCode').focus();
             }
             else {
                 self.createMode(false);
@@ -168,7 +201,12 @@ module nts.uk.at.view.kal004.a.model {
                 self.currentAlarm.checkConList.forEach((x) => {
                     x.checkConditionCodes.forEach((y) => {
                         let CD = _.find(_.cloneDeep(self.checkSource), { 'category': x.alarmCategory, 'checkConditonCode': y });
-                        currentCodeListSwap.push(_.cloneDeep(CD));
+                        if (CD !== undefined)
+                            currentCodeListSwap.push(_.cloneDeep(CD));
+                        else {
+                            let category = _.find(self.alarmCategoryArr, ['value', x.alarmCategory]);
+                            currentCodeListSwap.push(share.ModelCheckConditonCode.createNotFoundCheckConditonCode(category, y));
+                        }
                     });
                 });
 
@@ -179,105 +217,128 @@ module nts.uk.at.view.kal004.a.model {
                     if (optItem)
                         return optItem.GUID == leftItem.GUID;
                 });
+
                 self.currentCodeListSwap([]);
-                self.checkConditionList( _.sortBy(checkSource, ['category', 'checkConditonCode']));
-                self.currentCodeListSwap( _.sortBy(currentCodeListSwap, ['category', 'checkConditonCode']));
-                                
+                self.checkConditionList(_.sortBy(checkSource, ['category', 'checkConditonCode']));
+                self.currentCodeListSwap(_.sortBy(currentCodeListSwap, ['category', 'checkConditonCode']));
+
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
-                self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting==true? 0: 1);
+                self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting == true ? 0 : 1);
+                self.setPermissionModel.enableSetting(true);                
+                
+                //tab2
+                self.periodSetting.isCreateMode(false);
+                
+                $('#alarmName').focus();
             }
-
         }
         
-        public saveAlarm() : void{
+        public setFocus(): void {
             let self = this;
-            
+            if(self.currentCode()==''){
+                $('#alarmCode').focus();               
+            }else{
+                $('#alarmName').focus();
+            }      
+        }
+
+        public saveAlarm(): void {
+            let self = this;
+
             // Validate input
             $(".nts-input").trigger("validate");
-            if($(".nts-input").ntsError("hasError")) return ;
-            $('#alarmCode').focus();
+            if ($(".nts-input").ntsError("hasError")) return;
+            
+            // Validate logic
+            if(_.find(self.currentCodeListSwap(), {'cssClass': 'red-color'})){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_817" });
+                return;
+            }
+            
             // Create command
-            let alarmPerSet : share.AlarmPermissionSettingCommand = new share.AlarmPermissionSettingCommand(self.setPermissionModel.selectedRuleCode()==1? false: true, self.setPermissionModel.listRoleID());
+            let alarmPerSet: share.AlarmPermissionSettingCommand = new share.AlarmPermissionSettingCommand(self.setPermissionModel.selectedRuleCode() == 1 ? false : true, self.setPermissionModel.listRoleID());
             let checkConditonList: Array<share.CheckConditionCommand> = self.periodSetting.listCheckCondition();
             let command = new share.AddAlarmPatternSettingCommand(self.alarmCode(), self.alarmName(), alarmPerSet, checkConditonList);
             block.invisible();
             // Call service
-            if(self.createMode()){
-            service.addAlarmPattern(command).done(()=>{
-                
-                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                          
-                self.getAlarmPattern().done(function(){
-                     self.currentCode(self.alarmCode());                          
-                }).always(() =>{
-                     block.clear();    
-                });    
-            }).fail((error) => {
-                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
-                 block.clear();
-            });                           
-            }else{
-                service.updateAlarmPattern(command).done(()=>{
-                    
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                              
-                    self.getAlarmPattern().done(function(){
-                         self.currentCode(self.alarmCode());                          
-                    }).always(() =>{
-                         block.clear();    
-                    });    
+            if (self.createMode()) {
+                service.addAlarmPattern(command).done(() => {
+
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+
+                    self.getAlarmPattern().done(function() {
+                        self.currentCode(self.alarmCode());
+                    }).always(() => {
+                        block.clear();
+                    });
                 }).fail((error) => {
-                     nts.uk.ui.dialog.alert({ messageId: error.messageId });
-                     block.clear();
-                });                 
+                    alertError(error);
+                    block.clear();
+                });
+            } else {
+                service.updateAlarmPattern(command).done(() => {
+
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+
+                    self.getAlarmPattern().done(function() {
+                        self.currentCode(self.alarmCode());
+                    }).always(() => {
+                        block.clear();
+                    });
+                }).fail((error) => {
+                    alertError(error);
+                    block.clear();
+                });
+
+            }
             
-            }           
-                       
         }
-        public createAlarm() : void{
-            let self = this;    
-            self.currentCode('');  
-        }
-        public removeAlarm() : void{
+        public createAlarm(): void {
             let self = this;
-            if(self.currentCode() !==''){
-                   nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
-                       // Call service  alarmPatternCD
-                       block.invisible();                       
-                       service.removeAlarmPattern({alarmPatternCD: self.alarmCode()}).done(()=>{
-                           nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                           
-                            let index = _.findIndex(self.alarmSource(), ['alarmPatternCD', self.alarmCode()]);
-                            index = _.min([self.alarmSource().length - 2, index]);
-                            self.getAlarmPattern().done(function(){
-                                 self.selectAlarmByIndex(index);                               
-                            }).always(() =>{
-                                 block.clear();    
-                            });                           
-                           
-                       }).fail((error) =>{
-                            nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-                            block.clear();                           
-                       });                      
-                   
-                   });
-            
-           }
+            self.currentCode('');
+            $('#alarmCode').focus();
+            errors.clearAll();
+
+        }
+        public removeAlarm(): void {
+            let self = this;
+            if (self.currentCode() !== '') {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+                    // Call service  alarmPatternCD
+                    block.invisible();
+                    service.removeAlarmPattern({ alarmPatternCD: self.alarmCode() }).done(() => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+
+                        let index = _.findIndex(self.alarmSource(), ['alarmPatternCD', self.alarmCode()]);
+                        index = _.min([self.alarmSource().length - 2, index]);
+                        self.getAlarmPattern().done(function() {
+                            self.selectAlarmByIndex(index);
+                        }).always(() => {
+                            block.clear();
+                        });
+
+                    }).fail((error) => {
+                        alertError(error);
+                        block.clear();
+                    });
+
+                });
+
+            }
         }
         private selectAlarmByIndex(index: number) {
             let self = this;
             let selectAlarmByIndex = _.nth(self.alarmSource(), index);
             if (selectAlarmByIndex !== undefined)
                 self.currentCode(selectAlarmByIndex.alarmPatternCD);
-            else
-                {
+            else {
                 self.currentCode('');
-                nts.uk.ui.errors.clearAll();                
+                nts.uk.ui.errors.clearAll();
             }
-        }                
+        }
 
-                
+
     }
 
 }

@@ -3314,36 +3314,44 @@ var nts;
                     });
                     kiban.systemName(__viewContext.env.systemName);
                     ui.viewModelBuilt.fire(ui._viewModel);
-                    var dfd = [];
-                    _.forEach($(".html-loading"), function (e) {
-                        var $container = $(e);
-                        var dX = $.Deferred();
-                        $container.load($container.attr("link"), function () {
-                            dX.resolve();
+                    if ($(".html-loading").length > 0) {
+                        var dfd_1 = [];
+                        _.forEach($(".html-loading"), function (e) {
+                            var $container = $(e);
+                            var dX = $.Deferred();
+                            $container.load($container.attr("link"), function () {
+                                dX.resolve();
+                            });
+                            dfd_1.push(dX);
+                            dX.promise();
                         });
-                        dfd.push(dX);
-                        dX.promise();
-                    });
-                    $.when.apply($, dfd).then(function (data, textStatus, jqXHR) {
-                        $('.html-loading').contents().unwrap();
-                        ko.applyBindings(ui._viewModel);
-                        // off event reset for class reset-not-apply
-                        $(".reset-not-apply").find(".reset-element").off("reset");
-                        //avoid page content overlap header and function area
-                        var content_height = 20;
-                        if ($("#header").length != 0) {
-                            content_height += $("#header").outerHeight(); //header height+ content area botton padding,top padding
-                        }
-                        if ($("#functions-area").length != 0) {
-                            content_height += $("#functions-area").outerHeight(); //top function area height
-                        }
-                        if ($("#functions-area-bottom").length != 0) {
-                            content_height += $("#functions-area-bottom").outerHeight(); //bottom function area height
-                        }
-                        $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
-                        //            if($("#functions-area-bottom").length!=0){
-                        //            }
-                    });
+                        $.when.apply($, dfd_1).then(function (data, textStatus, jqXHR) {
+                            $('.html-loading').contents().unwrap();
+                            binding(ui._viewModel);
+                        });
+                    }
+                    else {
+                        binding(ui._viewModel);
+                    }
+                };
+                var binding = function (_viewModel) {
+                    ko.applyBindings(_viewModel);
+                    // off event reset for class reset-not-apply
+                    $(".reset-not-apply").find(".reset-element").off("reset");
+                    //avoid page content overlap header and function area
+                    var content_height = 20;
+                    if ($("#header").length != 0) {
+                        content_height += $("#header").outerHeight(); //header height+ content area botton padding,top padding
+                    }
+                    if ($("#functions-area").length != 0) {
+                        content_height += $("#functions-area").outerHeight(); //top function area height
+                    }
+                    if ($("#functions-area-bottom").length != 0) {
+                        content_height += $("#functions-area-bottom").outerHeight(); //bottom function area height
+                    }
+                    $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
+                    //            if($("#functions-area-bottom").length!=0){
+                    //            }    
                 };
                 $(function () {
                     ui.documentReady.fire();

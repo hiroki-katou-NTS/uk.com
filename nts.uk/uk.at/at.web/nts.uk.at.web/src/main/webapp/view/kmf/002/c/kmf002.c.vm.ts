@@ -1,11 +1,14 @@
 module nts.uk.at.view.kmf002.c {
 
     import service = nts.uk.at.view.kmf002.c.service;
+    import blockUI = nts.uk.ui.block;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     
     export module viewmodel {
         export class ScreenModel {
 
-            commonTableMonthDaySet: KnockoutObservable<any>;
+            commonTableMonthDaySet: KnockoutObservable<nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet>;
 
             /* start declare variable CCG001 */
             ccgcomponent: GroupOption;
@@ -13,15 +16,15 @@ module nts.uk.at.view.kmf002.c {
 
             // Options
             baseDate: KnockoutObservable<Date>;
-            selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+            selectedEmployee: KnockoutObservableArray<EmployeeSearchDto[]>;
             /* end declare variable CCG001 */
             
             /* start declare variable KCP005 */
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
-            multiSelectedCode: KnockoutObservableArray<string>;
+            multiSelectedCode: KnockoutObservableArray<string[]>;
             isShowAlreadySet: KnockoutObservable<boolean>;
-            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel[]>;
             isDialog: KnockoutObservable<boolean>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             isMultiSelect: KnockoutObservable<boolean>;
@@ -30,10 +33,15 @@ module nts.uk.at.view.kmf002.c {
             employeeList: KnockoutObservableArray<UnitModel>;
             /* end declare variable KCP005 */
             
+            enableSave: KnockoutObservable<boolean>;
+            enableDelete: KnockoutObservable<boolean>;
+            
             constructor() {
                 let _self = this;
 
-                _self.commonTableMonthDaySet = new nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet();
+                _self.enableSave = ko.observable(true);
+                _self.enableDelete= ko.observable(true);
+                _self.commonTableMonthDaySet = ko.observable(new nts.uk.at.view.kmf002.viewmodel.CommonTableMonthDaySet());
                 
                 /* start declare variable CCG001 */
                 _self.selectedEmployee = ko.observableArray([]);
@@ -58,52 +66,65 @@ module nts.uk.at.view.kmf002.c {
                     onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
                         _self.selectedEmployee(dataList);
+                        _self.employeeList.removeAll();
+                        _.forEach(dataList, function(value: any) {
+                            _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
+                        });  
                     },
                     onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                         _self.showinfoSelectedEmployee(true);
                         var dataEmployee: EmployeeSearchDto[] = [];
                         dataEmployee.push(data);
                         _self.selectedEmployee(dataEmployee);
+                        _self.employeeList.removeAll();
+                        _.forEach(data, function(value: any) {
+                            _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
+                        });
+                        
                     },
                     onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
                         _self.selectedEmployee(dataList);
+                        _self.employeeList.removeAll();
+                        _.forEach(dataList, function(value: any) {
+                            _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
+                        });
                     },
                     onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
                         _self.selectedEmployee(dataList);
+                        _self.employeeList.removeAll();
+                        _.forEach(dataList, function(value: any) {
+                            _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
+                        });
                     },
                     onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
                         _self.showinfoSelectedEmployee(true);
                         _self.selectedEmployee(dataEmployee);
+                        _self.employeeList.removeAll();
+                        _.forEach(dataEmployee, function(value: any) {
+                            _self.employeeList.push({ code: value.employeeId, name: value.employeeName, workplaceName: value.workplaceName});  
+                        });
                     }
 
                 }
 
-                $('#ccgcomponent').ntsGroupComponent(_self.ccgcomponent);
+//                $('#ccgcomponent').ntsGroupComponent(_self.ccgcomponent);
                 /* end declare variable CCG001 */
                 
                 
                 /* start declare variable KCP005 */
                 _self.baseDate = ko.observable(new Date());
-                _self.selectedCode = ko.observable();
-                _self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
-                _self.isShowAlreadySet = ko.observable(false);
-                _self.alreadySettingList = ko.observableArray([
-                    {code: '1', isAlreadySetting: true},
-                    {code: '2', isAlreadySetting: true}
-                ]);
+                _self.selectedCode = ko.observable("");
+                _self.multiSelectedCode = ko.observableArray([]);
+                _self.isShowAlreadySet = ko.observable(true);
+                _self.alreadySettingList = ko.observableArray([]);
                 _self.isDialog = ko.observable(false);
                 _self.isShowNoSelectRow = ko.observable(false);
                 _self.isMultiSelect = ko.observable(false);
-                _self.isShowWorkPlaceName = ko.observable(false);
+                _self.isShowWorkPlaceName = ko.observable(true);
                 _self.isShowSelectAllButton = ko.observable(false);
-                _self.employeeList = ko.observableArray<UnitModel>([
-                    { code: '1', name: 'Angela Baby', workplaceName: 'HN' },
-                    { code: '2', name: 'Xuan Toc Do', workplaceName: 'HN' },
-                    { code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
-                    { code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
-                    ]);
+                _self.employeeList = ko.observableArray<UnitModel>();
                 _self.listComponentOption = {
                     isShowAlreadySet: _self.isShowAlreadySet(),
                     isMultiSelect: _self.isMultiSelect(),
@@ -118,26 +139,32 @@ module nts.uk.at.view.kmf002.c {
                     isShowSelectAllButton: _self.isShowSelectAllButton()
                 };
                 
-                $('#component-items-list').ntsListComponent(_self.listComponentOption);
+//                $('#component-items-list').ntsListComponent(_self.listComponentOption);
                 
                 /* end declare variable KCP005 */
                 
                 /* include table */
-                _self.commonTableMonthDaySet.visibleInfoSelect(true);
-                _self.commonTableMonthDaySet.infoSelect1(nts.uk.resource.getText("Com_Person"));
+                _self.commonTableMonthDaySet().visibleInfoSelect(true);
+                _self.commonTableMonthDaySet().infoSelect1(nts.uk.resource.getText("Com_Person"));
 //                _self.commonTableMonthDaySet.infoSelect2(_self.employeeList()[0].code);
 //                _self.commonTableMonthDaySet.infoSelect3(_self.employeeList()[0].name);
                 
-                _self.selectedCode.subscribe(function(newValue) {
-                     _.forEach(_self.employeeList(), function(value) {
+                _self.selectedCode.subscribe(function(newValue: any) {
+                     _.forEach(_self.employeeList(), function(value: any) {
                         if (value.code == newValue) {
-                            _self.commonTableMonthDaySet.infoSelect2(newValue);
-                            _self.commonTableMonthDaySet.infoSelect3(value.name);
+                            _self.commonTableMonthDaySet().infoSelect2(newValue);
+                            _self.commonTableMonthDaySet().infoSelect3(value.name);
                         }
                     });   
+                    if (_.isUndefined(_self.selectedCode()) || _.isEmpty(_self.selectedCode())) {
+                        _self.enableDelete(false);
+                    } else {
+                        _self.enableDelete(true);
+                    }
+                    _self.getDataFromService();
                 });
                 
-                _self.commonTableMonthDaySet.fiscalYear.subscribe(function(newValue) {
+                _self.commonTableMonthDaySet().fiscalYear.subscribe(function(newValue) {
                     // change year
                     _self.getDataFromService();
                 });
@@ -148,50 +175,83 @@ module nts.uk.at.view.kmf002.c {
              */
             public start_page(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
-                var _self = this;
+                let _self = this;
+                if (getShared('conditionSidebar5') == false) {
+//                    blockUI.grayout();
+                } else {
+//                    blockUI.clear();
+                }
                 _self.getDataFromService();
-                nts.uk.ui.errors.clearAll();
-                dfd.resolve();
+                 $.when($('#ccgcomponent').ntsGroupComponent(_self.ccgcomponent), 
+                        $('#component-items-list').ntsListComponent(_self.listComponentOption)).done(function(data: any) {
+                    nts.uk.ui.errors.clearAll();    
+                    dfd.resolve();    
+                });
                 return dfd.promise();
             }
             
             private save(): void {
                 let _self = this;
-                service.save(_self.commonTableMonthDaySet.fiscalYear(), _self.commonTableMonthDaySet.arrMonth(), _self.selectedCode()).done((data) => {
-                    _self.getDataFromService();
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                });    
+//                _self.validateInput();
+                if (!nts.uk.ui.errors.hasError()) {
+                    service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), _self.selectedCode()).done((data) => {
+                        _self.getDataFromService();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    });    
+                } 
             }
+            
             private remove(): void {
                 let _self = this;
                  nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    service.remove(_self.commonTableMonthDaySet.fiscalYear(), _self.selectedCode()).done((data) => {
+                    service.remove(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()).done((data) => {
                         _self.getDataFromService();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });   
                 }).ifNo(() => {
                 }).ifCancel(() => {
                 }).then(() => {
-                });   
-                 
+                });
+            }
+            
+            private validateInput(): void {
+                $('.validateInput').ntsEditor("validate");        
             }
             
             private getDataFromService(): void {
                 let _self = this;
-                service.find(_self.commonTableMonthDaySet.fiscalYear(), _self.selectedCode()).done((data) => {
-                    if (typeof data === "undefined") {
-                        /** 
-                         *   create value null for prepare create new 
-                        **/
-                        _.forEach(_self.commonTableMonthDaySet.arrMonth(), function(value) {
-                            value.day('');
+                if (!_.isNull(_self.selectedCode()) && !_.isEmpty(_self.selectedCode())) {
+                    $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
+                            service.findFirstMonth(),
+                            service.findAllEmployeeRegister()).done(function(data: any, data2: any, data3: any) {
+                        _self.alreadySettingList.removeAll();
+                        _.forEach(data3, function(code) {
+                            _self.alreadySettingList.push({code: code, isAlreadySetting: true});
                         });
-                    } else {
-                        for (let i=0; i<data.publicHolidayMonthSettings.length; i++) {
-                            _self.commonTableMonthDaySet.arrMonth()[i].day(data.publicHolidayMonthSettings[i].inLegalHoliday);
-                        }
-                    }
-                });    
+                        if (typeof data === "undefined") {
+                            /** 
+                             *   create value null for prepare create new 
+                            **/
+                            _.forEach(_self.commonTableMonthDaySet().arrMonth(), function(value: any) {
+                                value.day(0);
+                            });
+                            _self.enableDelete(false);
+                        } else {
+                            _self.commonTableMonthDaySet().arrMonth.removeAll();
+                            for (let i=data2.startMonth-1; i<12; i++) {
+                                _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 
+                                                                              'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 
+                                                                              'enable': ko.observable(true)});    
+                            }
+                            for (let i=0; i<data2.startMonth-1; i++) {
+                                _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 
+                                                                              'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 
+                                                                              'enable': ko.observable(true)});    
+                            }
+                            _self.enableDelete(true);
+                        }            
+                    });    
+                }
             }
         }
 

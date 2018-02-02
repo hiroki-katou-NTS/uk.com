@@ -128,6 +128,7 @@ module nts.uk.at.view.ksu007.a {
             private saveScheduleBatchCorrectSettingByEmployeeId(employeeId: string, data: ScheduleBatchCorrectSetting): void {
                 nts.uk.characteristics.save("PersonalSchedule_" + employeeId, data);
             }
+            
             /**
              * save to client service ScheduleBatchCorrectSetting
             */
@@ -202,10 +203,28 @@ module nts.uk.at.view.ksu007.a {
              */
             private saveScheduleBatchCorrectSettingProcess() {
                 var self = this;
+                //return if has error
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }                
                 nts.uk.ui.block.invisible();
                 service.checkScheduleBatchCorrectSettingSave(self.collecData()).done(function() {
-                    nts.uk.ui.block.clear();
+                    nts.uk.ui.block.clear();                
+                    var user: any = __viewContext.user;
+                    var employeeId: string = user.employeeId;
+                    
+                    //get info スケジュール一括修正設定 in screen                    
+                    var scheduleBatchCorrectSetting = new ScheduleBatchCorrectSetting();
+                    
+                    scheduleBatchCorrectSetting.employeeId = employeeId;                    
+                    scheduleBatchCorrectSetting.startDate = self.periodDate().startDate;
+                    scheduleBatchCorrectSetting.endDate = self.periodDate().endDate;
+                    scheduleBatchCorrectSetting.worktypeCode = self.workTypeInfo();
+                    scheduleBatchCorrectSetting.worktimeCode = self.workTimeInfo();
+                      
+                    self.scheduleBatchCorrectSettingInfo = ko.observable(scheduleBatchCorrectSetting);
                     self.saveScheduleBatchCorrectSetting(self.scheduleBatchCorrectSettingInfo());
+                                        
                     nts.uk.ui.windows.setShared('inputKSU007', self.collecData());
                     nts.uk.ui.windows.sub.modal("/view/ksu/007/b/index.xhtml");
                 }).fail(function(error) {
@@ -258,8 +277,7 @@ module nts.uk.at.view.ksu007.a {
                         self.workTypeCode(childData.selectedWorkTypeCode);
                         self.workTimeCode(childData.selectedWorkTimeCode);
                         self.workTimeInfo(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
-                    }
-            
+                    }            
                 });
             }
             

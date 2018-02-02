@@ -1237,7 +1237,7 @@ public class ProgramsManager {
 			"/view/cas/011/a/index.xhtml");
 	
 	public static final Program CAS011C = new Program(WebAppId.COM, ProgramIdConsts.CAS011C, "CAS011_3",
-			"/view/cas/011/b/index.xhtml");
+			"/view/cas/011/c/index.xhtml");
 	
 	public static final Program CAS012A = new Program(WebAppId.COM, ProgramIdConsts.CAS012A, "CAS012_1",
 			"/view/cas/012/a/index.xhtml");
@@ -1248,10 +1248,10 @@ public class ProgramsManager {
 	public static final Program CAS012C = new Program(WebAppId.COM, ProgramIdConsts.CAS012C, "CAS012_3",
 			"/view/cas/012/c/index.xhtml");
 
-	public static final Program CAS013A = new Program(WebAppId.COM, ProgramIdConsts.CAS013A, "CAS012_1",
+	public static final Program CAS013A = new Program(WebAppId.COM, ProgramIdConsts.CAS013A, "CAS013_1",
 			"/view/cas/013/a/index.xhtml");
 	
-	public static final Program CAS013B = new Program(WebAppId.COM, ProgramIdConsts.CAS013B, "CAS012_2",
+	public static final Program CAS013B = new Program(WebAppId.COM, ProgramIdConsts.CAS013B, "CAS013_2",
 			"/view/cas/013/b/index.xhtml");
 
 	public static final Program CAS014A = new Program(WebAppId.COM, ProgramIdConsts.CAS014A, "CAS014_2",
@@ -1473,6 +1473,29 @@ public class ProgramsManager {
 			"/view/cmm/001/d/index.xhtml");
 	/**CCG018	 */
 	
+	/**  KAL004 */
+	public static final Program KAL004A = new Program(WebAppId.AT, ProgramIdConsts.KAL004A, "KAL007_1",
+			"view/kal/004/a/index.xhtml");
+	public static final Program KAL004B = new Program(WebAppId.AT, ProgramIdConsts.KAL004B, "KAL007_2",
+			"view/kal/004/b/index.xhtml");
+	public static final Program KAL004F = new Program(WebAppId.AT, ProgramIdConsts.KAL004F, "KAL007_2",
+			"view/kal/004/f/index.xhtml");
+	
+	/**
+	 * KBT002
+	 */
+	public static final Program KBT002A = new Program(WebAppId.AT, ProgramIdConsts.KBT002A, "KBT002_114",
+			"/view/kbt/002/a/index.xhtml");
+	public static final Program KBT002B = new Program(WebAppId.AT, ProgramIdConsts.KBT002B, "KBT002_115",
+			"/view/kbt/002/b/index.xhtml");
+	public static final Program KBT002C = new Program(WebAppId.AT, ProgramIdConsts.KBT002C, "KBT002_116",
+			"/view/kbt/002/c/index.xhtml");
+	public static final Program KBT002D = new Program(WebAppId.AT, ProgramIdConsts.KBT002D, "KBT002_117",
+			"/view/kbt/002/d/index.xhtml");
+	public static final Program KBT002F = new Program(WebAppId.AT, ProgramIdConsts.KBT002F, "KBT002_125",
+			"/view/kbt/002/f/index.xhtml");
+	public static final Program KBT002G = new Program(WebAppId.AT, ProgramIdConsts.KBT002G, "KBT002_148",
+			"/view/kbt/002/g/index.xhtml");
 	
 	/**
 	 * All programs map.

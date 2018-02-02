@@ -40,7 +40,7 @@
 
 									<div style="width: 210px" id="searchCtg"
 										data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'id', comId: 'singleList', 
-	items: lstCategory, selected: currentPerInfoCtg, selectedKey: 'id', fields: ['categoryName'], mode: 'igGrid',placeHolder:'名称で検索…'}" />
+	items: lstCategory, selected: selectedCtgId , selectedKey: 'id', fields: ['categoryName'], mode: 'igGrid',placeHolder:'名称で検索…'}" />
 									<!-- <div>
 										<input type="text" placeholder="名称で検索…" data-bind="value: txtSearch" class="txtSearch"/>
 										<button type="button" class="caret-bottom caret-inline" data-bind="click: searchByName">検索</button>
@@ -53,7 +53,7 @@
 											primaryKey: 'id',
 											columns: columns,
 											multiple: false,
-											value: currentPerInfoCtg
+											value: selectedCtgId
 										}">
 										</table>
 									</div>
@@ -70,7 +70,7 @@
 									columns: columnPerInfoItemDef,
 									primaryKey: 'id',
 									multiple: true,
-									value: currentPerInfoItem
+									value: checkedIds
 								}">
 								</table>
 							</div>

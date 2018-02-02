@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeO
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WorkTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -70,6 +70,9 @@ public class WorkTimeOfMonthly {
 		
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailys) {
 			
+			// 期間外はスキップする
+			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
+			
 			// ドメインモデル「日別実績の所定内時間」を取得する
 			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
@@ -104,19 +107,22 @@ public class WorkTimeOfMonthly {
 	
 	/**
 	 * 時系列合計法定内時間を取得する
+	 * @param datePeriod 期間
 	 * @return 時系列合計法定内時間
 	 */
-	public AttendanceTimeMonth getTimeSeriesTotalLegalTime(){
+	public AttendanceTimeMonth getTimeSeriesTotalLegalTime(DatePeriod datePeriod){
 		
 		AttendanceTimeMonth returnTime = new AttendanceTimeMonth(0);
 		for (val timeSeriesWork : this.timeSeriesWorks){
-			returnTime = returnTime.addMinutes(timeSeriesWork.getLegalTimeOfDaily().getWorkTime().v());
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			returnTime = returnTime.addMinutes(timeSeriesWork.getLegalTime().getWorkTime().v());
 		}
 		return returnTime;
 	}
 	
 	/**
 	 * 就業時間を集計する
+	 * @param datePeriod 期間
 	 * @param workingSystem 労働制
 	 * @param actualWorkingTime 実働時間
 	 * @param flexTime フレックス時間
@@ -124,6 +130,7 @@ public class WorkTimeOfMonthly {
 	 * @param holidayWorkTime 休出時間
 	 */
 	public void aggregate(
+			DatePeriod datePeriod,
 			WorkingSystem workingSystem,
 			RegularAndIrregularTimeOfMonthly actualWorkingTime,
 			FlexTimeOfMonthly flexTime,
@@ -134,16 +141,18 @@ public class WorkTimeOfMonthly {
 		this.workTime = new AttendanceTimeMonth(0);
 		this.withinPrescribedPremiumTime = new AttendanceTimeMonth(0);
 		for (val timeSeriesWork : this.timeSeriesWorks){
-			val legalTime = timeSeriesWork.getLegalTimeOfDaily();
-			this.workTime.addMinutes(legalTime.getWorkTime().v());
-			this.withinPrescribedPremiumTime.addMinutes(legalTime.getWithinPrescribedPremiumTime().v());
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			val legalTime = timeSeriesWork.getLegalTime();
+			this.workTime = this.workTime.addMinutes(legalTime.getWorkTime().v());
+			this.withinPrescribedPremiumTime = this.withinPrescribedPremiumTime.addMinutes(
+					legalTime.getWithinPrescribedPremiumTime().v());
 		}
 		
 		// 就業時間に法定内残業時間を加算する
-		this.workTime = this.workTime.addMinutes(overTime.getLegalOverTime().v());
+		this.workTime = this.workTime.addMinutes(overTime.getLegalOverTime(datePeriod).v());
 		
 		// 就業時間に法定内休出時間を加算する
-		this.workTime = this.workTime.addMinutes(holidayWorkTime.getLegalHolidayWorkTime().v());
+		this.workTime = this.workTime.addMinutes(holidayWorkTime.getLegalHolidayWorkTime(datePeriod).v());
 		
 		// 就業時間に「加算した休暇使用時間」を加算する
 		this.workTime = this.workTime.addMinutes(

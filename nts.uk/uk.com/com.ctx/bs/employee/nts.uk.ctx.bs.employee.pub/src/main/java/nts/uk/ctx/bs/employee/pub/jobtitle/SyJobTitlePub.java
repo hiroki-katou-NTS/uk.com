@@ -83,6 +83,6 @@ public interface SyJobTitlePub {
 	 * @return the list
 	 */
 	// RequestList From  LamDT
-	Optional<AffJobTitleHistory_ver1Export> gerBySidAndBaseDate(String employeeId, GeneralDate baseDate);
+	Optional<AffJobTitleHistoryExport> gerBySidAndBaseDate(String employeeId, GeneralDate baseDate);
 
 }

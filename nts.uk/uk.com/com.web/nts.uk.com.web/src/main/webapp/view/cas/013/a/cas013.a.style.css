@@ -6,6 +6,7 @@ span.text{margin-left: 20px; display: inline-block;}
 #combo-box{width: 120px;}
 
 .container{width: 1300px;}
+#functions-area p.halign-right{float:right;position: relative; top:7px;}
 .cf .pull-left:nth-child(1) {margin-left: 30px;}
 .pull-left .ntsRangeButton_Container{display: none;}
 .pull-left #daterangepicker {height:28px; position: relative; top: 9px;}
@@ -14,3 +15,5 @@ span.text{margin-left: 20px; display: inline-block;}
 .pull-left .control-group.button{margin: 30px 0 20px 20px;}
 .pull-left .control-group.button button{margin-right: 10px;}
 .pull-left .control-group.button .ntsControl.limited-label{width: 198px;}
+.pull-left .control-group.button .label-code{display:inline-block;padding-left:5px; width:110px;}
+.pull-left .control-group.button .label-name{display:inline-block;padding-left:10px; width:20px;}

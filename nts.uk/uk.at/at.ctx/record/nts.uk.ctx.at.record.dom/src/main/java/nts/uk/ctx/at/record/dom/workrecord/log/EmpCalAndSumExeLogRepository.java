@@ -65,5 +65,4 @@ public interface EmpCalAndSumExeLogRepository {
 	void add(EmpCalAndSumExeLog empCalAndSumExeLog);
 	
 	void updateStatus(String empCalAndSumExecLogID, int executionStatus);
-	
 }

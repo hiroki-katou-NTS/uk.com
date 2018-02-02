@@ -4,20 +4,25 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
-		<div class="tab2" style="margin-top: 7px;margin-left: 50px;">
-			<table >
+		<div class="tab2" >
+			<table id="fixed-table">
+		        <colgroup>
+					<col width="240px"/>
+					<col width="500px"/>
+					<col width="90px"/>
+				</colgroup>
 		        <thead>
 		            <tr class="bg-green">
-		                <th style="width: 150px;">#{i18n.getText('KAL004_21')}</th>
-		                <th style="width: 330px;">#{i18n.getText('KAL004_22')}</th>
-		                <th style="width: 70px;"/>
+		                <th class="ui-widget-header">#{i18n.getText('KAL004_21')}</th>
+		                <th class="ui-widget-header">#{i18n.getText('KAL004_22')}</th>
+		                <th class="ui-widget-header"/>
 		            </tr>
 		        </thead>
-		        <tbody data-bind='foreach: ListView'>
+			    <tbody data-bind='foreach: ListView'>
 		            <tr>
 		                <td data-bind="text: categoryName"></td>
 		                <td data-bind="text: extractionPeriod"></td>
-		                <td><button data-bind="click: $parent.openDialog.bind($parent)" >#{i18n.getText('KAL004_23')}</button></td>
+		                <td><button tabindex="11" data-bind="click: $parent.openDialog.bind($parent), visible: (!$parent.isCreateMode()) &amp;&amp; (categoryId != 11) " >#{i18n.getText('KAL004_23')}</button></td>
 		            </tr>
 		        </tbody>
 		    </table>

@@ -15,7 +15,7 @@
 	</div>
 
 	<div class="contents-area-b">
-		<div class="container cf">
+		<div class="container">
 			<div class="block">
 				<div class="top-row flex valign-center">
 					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_30')}</div>
@@ -32,6 +32,7 @@
 						                { headerText: '#{i18n.getText('CAS014_31')}', key: 'code', width: 140, formatter: _.escape },
 						                { headerText: '#{i18n.getText('CAS014_32')}', key: 'name', width: 150, formatter: _.escape }
 						            ],
+						            rows: 8,
 									multiple: false,
 									value: selectedRoleSet
 								}"></table>
@@ -46,7 +47,8 @@
 				<div class="bottom-row">
 					<table id="B4_2" tabindex="6"
 						data-bind="ntsGridList: {
-								name: '#[CAS014_34]',								
+								name: '#[CAS014_34]',
+								rows: 8,								
 								height: 250,
 								options: roleSetPersonList,
 								primaryKey: 'employeeId',
@@ -69,8 +71,8 @@
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_39')}</div>
 						<button tabindex="7" id="B5_1_1"
 							data-bind="click: openDialogCDL009, enable: screenMode() == 0">#{i18n.getText('CAS014_39')}</button>
-						<label data-bind="text: roleSetPerson().employeeCd" style="padding-left: 15px"></label>
-						<label data-bind="text: roleSetPerson().employeeName" style="padding-left: 15px"></label>
+						<label data-bind="text: roleSetPerson().employeeCd" class="ntsControl label-code"></label>
+						<label data-bind="text: roleSetPerson().employeeName" class="label-name"></label>
 					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_40')}</div>

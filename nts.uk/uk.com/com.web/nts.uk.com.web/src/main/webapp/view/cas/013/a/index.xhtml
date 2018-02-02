@@ -24,9 +24,10 @@
 					data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('CAS013_5')}</button>
 				<button class="danger" tabindex="3"
 					data-bind="click: Delete, enable: isDelete() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CAS013_6')}</button>
+					
 			</div>
 			<div id="contents-area">
-				<div class="container">
+				<div class="container cf">
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS013_7')}</div>
 						<div id="combo-box" tabindex="4"

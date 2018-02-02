@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkplacePub.
@@ -94,5 +95,13 @@ public interface SyWorkplacePub {
 	 * @return List EmployeeId
 	 */
 	List<String> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,GeneralDate endDate);
+	
+	/**
+	 * RequestList No 189
+	 * @param sid
+	 * @param baseDate
+	 * @return
+	 */
+	List<WorkPlaceHistExport> GetWplByListSidAndPeriod(List<String> sid, DatePeriod datePeriod);
 	
 }

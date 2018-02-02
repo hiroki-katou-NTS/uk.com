@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.difftimeset.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.InstantRoundingDto;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
@@ -13,6 +15,8 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtentGetMe
 /**
  * The Class EmTimezoneChangeExtentDto.
  */
+@Getter
+@Setter
 public class EmTimezoneChangeExtentDto {
 
 	/** The ahead change. */
@@ -44,7 +48,8 @@ public class EmTimezoneChangeExtentDto {
 		/**
 		 * Instantiates a new em timezone change extent impl.
 		 *
-		 * @param emTimezoneChangeExtentDto the em timezone change extent dto
+		 * @param emTimezoneChangeExtentDto
+		 *            the em timezone change extent dto
 		 */
 		public EmTimezoneChangeExtentImpl(EmTimezoneChangeExtentDto emTimezoneChangeExtentDto) {
 			this.dto = emTimezoneChangeExtentDto;
@@ -52,17 +57,17 @@ public class EmTimezoneChangeExtentDto {
 
 		@Override
 		public AttendanceTime getAheadChange() {
-			return new AttendanceTime(this.dto.aheadChange);
+			return this.dto.aheadChange == null ? null : new AttendanceTime(this.dto.aheadChange);
 		}
 
 		@Override
 		public InstantRounding getUnit() {
-			return new InstantRounding(this.dto.unit);
+			return this.dto.unit == null ? null : new InstantRounding(this.dto.unit);
 		}
 
 		@Override
 		public AttendanceTime getBehindChange() {
-			return new AttendanceTime(this.dto.behindChange);
+			return this.dto.behindChange == null ? null : new AttendanceTime(this.dto.behindChange);
 		}
 	}
 }

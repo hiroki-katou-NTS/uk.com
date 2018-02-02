@@ -14,6 +14,7 @@ import nts.uk.ctx.at.function.app.command.alarm.checkcondition.DeleteAlarmCheckC
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.RegisterAlarmCheckCondtionByCategoryCommandHandler;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionByCategoryDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionByCategoryFinder;
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.DailyErrorAlarmCheckDto;
 
 /**
  * 
@@ -38,6 +39,12 @@ public class AlarmCheckConditionByCategoryWebService extends WebService {
 	@Path("findAll/{category}")
 	public List<AlarmCheckConditionByCategoryDto> findAll(@PathParam("category") int category){
 		return this.finder.getAllData(category);
+	}
+	
+	@POST
+	@Path("findDailyErrorAlarmCheck")
+	public List<DailyErrorAlarmCheckDto> findDailyErrorAlarmCheck(){
+		return this.finder.getDailyErrorAlarmCheck();
 	}
 	
 	@POST

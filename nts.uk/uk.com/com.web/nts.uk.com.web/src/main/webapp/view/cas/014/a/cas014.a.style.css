@@ -3,10 +3,6 @@
     box-sizing: border-box;
 }
 
-.combo-box{
-	margin: 10px 5px;
-}
-
 .top-row{
 	height: 50px;
 	vertical-align: middle;
@@ -26,4 +22,8 @@
     border-left: 1.5em solid;
     border-top: 7em solid transparent;
     border-bottom: 7em solid transparent;
+}
+
+.jobtitle-table > tbody > tr > td {
+	height: 52px;
 }

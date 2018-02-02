@@ -5,8 +5,8 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
  */
 //外出時間の丸め設定
 @Getter
-public class GoOutTimeRoundingSetting extends DomainObject {
+public class GoOutTimeRoundingSetting extends WorkTimeDomainObject {
 
 	/** The rounding method. */
 	//丸め方法

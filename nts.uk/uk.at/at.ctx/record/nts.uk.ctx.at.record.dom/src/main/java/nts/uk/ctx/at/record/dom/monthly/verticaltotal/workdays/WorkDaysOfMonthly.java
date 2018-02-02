@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays;
 
+import java.util.List;
+import java.util.Map;
+
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.paydays.PayDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.SpecificDaysOfMonthly;
@@ -12,7 +16,15 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayW
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TemporaryWorkTimesOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.vtotalwork.AttendanceStatusMap;
+import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の勤務日数
@@ -28,7 +40,7 @@ public class WorkDaysOfMonthly {
 	/** 所定日数 */
 	private PredeterminedDaysOfMonthly predetermineDays;
 	/** 勤務日数 */
-	private WorkDaysOfMonthly workDays;
+	private WorkDaysDetailOfMonthly workDays;
 	/** 休日日数 */
 	private HolidayDaysOfMonthly holidayDays;
 	/** 特定日数 */
@@ -54,7 +66,7 @@ public class WorkDaysOfMonthly {
 		this.attendanceDays = new AttendanceDaysOfMonthly();
 		this.absenceDays = new AbsenceDaysOfMonthly();
 		this.predetermineDays = new PredeterminedDaysOfMonthly();
-		this.workDays = new WorkDaysOfMonthly();
+		this.workDays = new WorkDaysDetailOfMonthly();
 		this.holidayDays = new HolidayDaysOfMonthly();
 		this.specificDays = new SpecificDaysOfMonthly();
 		this.holidayWorkDays = new HolidayWorkDaysOfMonthly();
@@ -85,7 +97,7 @@ public class WorkDaysOfMonthly {
 			AttendanceDaysOfMonthly attendanceDays,
 			AbsenceDaysOfMonthly absenceDays,
 			PredeterminedDaysOfMonthly predetermineDays,
-			WorkDaysOfMonthly workDays,
+			WorkDaysDetailOfMonthly workDays,
 			HolidayDaysOfMonthly holidayDays,
 			SpecificDaysOfMonthly specficDays,
 			HolidayWorkDaysOfMonthly holidayWorkDays,
@@ -109,5 +121,66 @@ public class WorkDaysOfMonthly {
 		domain.temporaryWorkTimes = temporaryWorkTimes;
 		domain.leave = leave;
 		return domain;
+	}
+	
+	/**
+	 * 集計
+	 * @param datePeriod 期間
+	 * @param workInfoOfDailys 日別実績の勤務情報リスト
+	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
+	 * @param timeLeaveingOfDailys 日別実績の出退勤リスト
+	 * @param specificDateAtrOfDailys 日別実績の特定日区分リスト
+	 * @param workTypeMap 勤務種類マップ
+	 * @param predetermineTimeSetMap 所定時間設定マップ
+	 * @param attendanceStatusMap 出勤状態マップ
+	 */
+	public void aggregate(
+			DatePeriod datePeriod,
+			List<WorkInfoOfDailyPerformance> workInfoOfDailys,
+			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
+			List<TimeLeavingOfDailyPerformance> timeLeaveingOfDailys,
+			List<SpecificDateAttrOfDailyPerfor> specificDateAtrOfDailys,
+			Map<String, WorkType> workTypeMap,
+			Map<String, PredetemineTimeSetting> predetermineTimeSetMap,
+			AttendanceStatusMap attendanceStatusMap){
+		
+		// 出勤日数の集計
+		//*****（未）　勤務種類の判断方法の設計確認要。
+		this.attendanceDays.aggregate(datePeriod, workInfoOfDailys, workTypeMap);
+		
+		// 欠勤日数の集計
+		//*****（未）　勤務種類の判断方法、出勤状態の判断方法の設計確認要。
+		
+		// 所定日数の集計
+		//*****（未）　年休付与前後判断方法、勤務種類の判断方法の設計確認要。
+		
+		// 勤務日数の集計
+		//*****（未）　勤務種類の判断方法、出勤状態の判断方法の設計確認要。
+		
+		// 休日日数の集計
+		//*****（未）　勤務種類の判断方法の設計確認要。
+		
+		// 特定日日数の集計
+		//*****（未）　設計確認要。途中に前日休出確認。予備区分判定の部分中心に確認要。
+		
+		// 休出日数の集計
+		//*****（未）　勤務種類の判断方法、出勤状態の判断方法の設計確認要。
+		
+		// 給与支払い基礎日数の集計
+		//*****（未）　回数集計（マスタ）の利用・判断方法、続く勤務種類の判断方法の設計確認要。
+		
+		// 勤務回数の集計
+		this.workTimes.aggregate(datePeriod, attendanceTimeOfDailys);
+		
+		// 二回勤務回数の集計
+		//*****（未）　設計確認要。
+		this.twoTimesWorkTimes.aggregate(datePeriod, workInfoOfDailys, predetermineTimeSetMap,
+				attendanceStatusMap);
+		
+		// 臨時勤務回数の集計
+		//*****（未）　日別側の臨時勤務が出来てから。
+		
+		// 休業日数の集計
+		//*****（未）　勤務種類の判断方法、出勤状態の判断方法の設計確認要。
 	}
 }

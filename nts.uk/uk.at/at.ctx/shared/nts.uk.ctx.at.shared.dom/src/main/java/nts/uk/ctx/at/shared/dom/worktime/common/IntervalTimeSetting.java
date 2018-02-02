@@ -5,15 +5,15 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class IntervalTimeSetting.
  */
 //インターバル時間設定
 @Getter
-public class IntervalTimeSetting extends DomainObject {
+public class IntervalTimeSetting extends WorkTimeDomainObject {
 
 	/** The use interval exemption time. */
 	// インターバル免除時間を使用する
