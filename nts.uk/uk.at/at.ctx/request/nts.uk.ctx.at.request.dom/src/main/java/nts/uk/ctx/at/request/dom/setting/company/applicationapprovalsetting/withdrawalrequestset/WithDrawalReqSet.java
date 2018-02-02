@@ -54,6 +54,12 @@ public class WithDrawalReqSet extends AggregateRoot {
 
 	/** * 振休先取許可 */
 	private AllowAtr lettleSuperLeave;
+	
+	/** *同時申請必須 */
+	private AllowAtr simutanAppRequired;
+	
+	/** * 振休先取許可 */
+	private AllowAtr lettleSuspensionLeave;
 
 	/**
 	 * Contructor
@@ -72,11 +78,13 @@ public class WithDrawalReqSet extends AggregateRoot {
 	 * @param deferredWorkTimeSelect
 	 * @param simulAppliReq
 	 * @param lettleSuperLeave
+	 * @param simutanAppRequired
+	 * @param lettleSuspensionLeave
 	 */
 	public WithDrawalReqSet(String companyId, int permissionDivision, int appliDateContrac, int useAtr,
 			int checkUpLimitHalfDayHD, String pickUpComment, int pickUpBold, String pickUpLettleColor,
 			String deferredComment, int deferredBold, String deferredLettleColor, int deferredWorkTimeSelect,
-			int simulAppliReq, int lettleSuperLeave) {
+			int simulAppliReq, int lettleSuperLeave, int simutanAppRequired, int lettleSuspensionLeave) {
 
 		this.companyId = companyId;
 		this.permissionDivision = EnumAdaptor.valueOf(permissionDivision, AllowAtr.class);
@@ -92,6 +100,8 @@ public class WithDrawalReqSet extends AggregateRoot {
 		this.deferredWorkTimeSelect = EnumAdaptor.valueOf(deferredWorkTimeSelect, WorkUse.class);
 		this.simulAppliReq = EnumAdaptor.valueOf(simulAppliReq, AllowAtr.class);
 		this.lettleSuperLeave = EnumAdaptor.valueOf(lettleSuperLeave, AllowAtr.class);
+		this.simutanAppRequired = EnumAdaptor.valueOf(simutanAppRequired, AllowAtr.class);
+		this.lettleSuspensionLeave = EnumAdaptor.valueOf(lettleSuspensionLeave, AllowAtr.class);
 	}
 
 	/**
@@ -111,15 +121,17 @@ public class WithDrawalReqSet extends AggregateRoot {
 	 * @param deferredWorkTimeSelect
 	 * @param simulAppliReq
 	 * @param lettleSuperLeave
+	 * @param simutanAppRequired
+	 * @param lettleSuspensionLeave
 	 * @return
 	 */
 	public static WithDrawalReqSet createFromJavaType(String companyId, int permissionDivision, int appliDateContrac,
 			int useAtr, int checkUpLimitHalfDayHD, String pickUpComment, int pickUpBold, String pickUpLettleColor,
 			String deferredComment, int deferredBold, String deferredLettleColor, int deferredWorkTimeSelect,
-			int simulAppliReq, int lettleSuperLeave) {
+			int simulAppliReq, int lettleSuperLeave, int simutanAppRequired, int lettleSuspensionLeave) {
 
 		return new WithDrawalReqSet(companyId, permissionDivision, appliDateContrac, useAtr, checkUpLimitHalfDayHD,
 				pickUpComment, pickUpBold, pickUpLettleColor, deferredComment, deferredBold, deferredLettleColor,
-				deferredWorkTimeSelect, simulAppliReq, lettleSuperLeave);
+				deferredWorkTimeSelect, simulAppliReq, lettleSuperLeave, simutanAppRequired, lettleSuspensionLeave);
 	}
 }

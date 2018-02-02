@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdworkapplicationsetting;
+package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdworkappset;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
