@@ -79,6 +79,14 @@ public class KrqstWithDrawalReqSet extends UkJpaEntity implements Serializable {
     /** * 振休先取許可 */
 	@Column(name = "LETTER_SUPER_LEAVE")
     public int lettleSuperLeave;
+	
+	/** *同時申請必須 */
+	@Column(name = "SIMULTAN_APP_REQUIRED")
+	public int simutanAppRequired;
+	
+	/** * 振休先取許可 */
+	@Column(name = "LETTER_SUSPENSION_LEAVE")
+	public int lettleSuspensionLeave;
 
 	@Override
 	protected Object getKey() {
@@ -101,6 +109,8 @@ public class KrqstWithDrawalReqSet extends UkJpaEntity implements Serializable {
 				this.deferredLettleColor,
 				this.deferredWorkTimeSelect,
 				this.simulAppliReq,
-				this.lettleSuperLeave);
+				this.lettleSuperLeave,
+				this.simutanAppRequired,
+				this.lettleSuspensionLeave);
 	}
 }

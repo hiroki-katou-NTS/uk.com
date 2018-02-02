@@ -579,7 +579,10 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param baseDate
 	 */
 	private void removeScheduleMaster(String employeeId, GeneralDate baseDate) {
-		this.commandProxy().remove(KscdtScheMasterInfo.class, new KscdtScheMasterInfoPK(employeeId, baseDate));
+		KscdtScheMasterInfoPK primaryKey = new KscdtScheMasterInfoPK(employeeId, baseDate);
+		if (this.queryProxy().find(primaryKey, KscdtScheMasterInfo.class).isPresent()) {
+			this.commandProxy().remove(KscdtScheMasterInfo.class, new KscdtScheMasterInfoPK(employeeId, baseDate));
+		}
 	}
 	
 	/**
@@ -700,6 +703,9 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * @param workScheduleTime
 	 */
 	private void removeScheduleTime(String employeeId, GeneralDate baseDate) {
-		this.commandProxy().remove(KscdtScheTime.class, new KscdtScheTimePK(employeeId, baseDate));
+		KscdtScheTimePK key = new KscdtScheTimePK(employeeId, baseDate);
+		if (this.queryProxy().find(key, KscdtScheTime.class).isPresent()) {
+			this.commandProxy().remove(KscdtScheTime.class, new KscdtScheTimePK(employeeId, baseDate));
+		}
 	}
 }

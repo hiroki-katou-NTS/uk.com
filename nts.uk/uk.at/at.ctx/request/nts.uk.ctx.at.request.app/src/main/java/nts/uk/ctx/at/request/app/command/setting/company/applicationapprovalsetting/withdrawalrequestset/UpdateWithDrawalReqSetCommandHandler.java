@@ -38,7 +38,9 @@ public class UpdateWithDrawalReqSetCommandHandler extends CommandHandler<UpdateW
 																	data.getDeferredLettleColor(),
 																	data.getDeferredWorkTimeSelect(),
 																	data.getSimulAppliReq(),
-																	data.getLettleSuperLeave());
+																	data.getLettleSuperLeave(),
+																	data.getSimutanAppRequired(),
+																	data.getLettleSuspensionLeave());
 		
 		if(withDrawalReqSet.isPresent()){
 			repository.updateWithDrawalReqSet(item);
