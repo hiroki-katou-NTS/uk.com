@@ -72,7 +72,7 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
 		targetEntity.wtCompareAtr = domainAfterConvert.wtCompareAtr;
 		targetEntity.wtPlanActualOperator = domainAfterConvert.wtPlanActualOperator;
 		targetEntity.wtPlanFilterAtr = domainAfterConvert.wtPlanFilterAtr;
-
+		targetEntity.continuousPeriod = domainAfterConvert.continuousPeriod;
 		this.commandProxy().update(targetEntity);
 	}
 
