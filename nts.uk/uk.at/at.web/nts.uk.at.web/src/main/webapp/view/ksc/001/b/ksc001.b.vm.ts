@@ -426,7 +426,7 @@ module nts.uk.at.view.ksc001.b {
              */
             private isInValidCopyPasteSchedule(): boolean {
                 let self = this;
-                if (self.checkCreateMethodAtrCopyPastSchedule()) {
+                if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.COPY_PAST_SCHEDULE) {
                     $('#copy-start-date').ntsEditor('validate');
                 }
                 return $('.nts-input').ntsError('hasError');
@@ -451,7 +451,7 @@ module nts.uk.at.view.ksc001.b {
                 }
 
                 // check D1_4 is checked
-                if (self.checkCreateMethodAtrPatternSchedule()) {
+                if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE) {
 
                     if (self.responeReflectionSetting()) {
 
