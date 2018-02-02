@@ -648,6 +648,9 @@ module nts.uk.at.view.kal003.b.viewmodel{
                         if (output) {
                             currentAtdItemCondition.uncountableAtdItem(parseInt(output));
                             self.fillTextDisplayTarget(currentAtdItemCondition);
+                        } else if (output === "") {
+                            currentAtdItemCondition.uncountableAtdItem(0);
+                            self.displayAttendanceItemSelections_BA2_3("");
                         }
                     });
                 } else {
@@ -664,7 +667,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                             currentAtdItemCondition.countableAddAtdItems(output.lstAddItems.map((item) => { return parseInt(item); }));
                             currentAtdItemCondition.countableSubAtdItems(output.lstSubItems.map((item) => { return parseInt(item); }));
                             self.fillTextDisplayTarget(currentAtdItemCondition);
-                        }
+                        } 
                     });
                 }
             });
