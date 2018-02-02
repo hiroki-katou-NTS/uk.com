@@ -125,7 +125,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.fixColGrid = ko.observableArray(self.employeeModeFixCol);
             // show/hide header number
             self.showHeaderNumber.subscribe((val) => {
-                self.reloadGrid();
+                $.when(self.destroyGrid()).then( data => {
+                    self.reloadGrid();
+                });
+               
             });
             // show/hide profile icon
             self.showProfileIcon.subscribe((val) => {
@@ -553,10 +556,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     });
 
                     let object = { date: dateCon.date , employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: value.message, itemName: "", columnKey: value.columnKey };
-                    let item = _.find(self.lstAttendanceItem(), (data) => {
-                        return String(data.id) === value.columnKey.substring(1, value.columnKey.length);
+                    let item = _.find(self.optionalHeader, (data) => {
+                        return String(data.key) === value.columnKey;
                     })
-                    object.itemName = (item == undefined) ? "" : item.name; 
+                    object.itemName = (item == undefined) ? "" : item.headerText; 
                     errorValidateScreeen.push(object);
                 });
             } else {
@@ -566,10 +569,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     });
 
                     let object = { date: dateCon.date, employeeCode: dateCon.employeeCode, employeeName: dateCon.employeeName, message: value.message, itemName: "", columnKey: value.columnKey };
-                    let item = _.find(self.lstAttendanceItem(), (data) => {
-                        return String(data.id) === value.columnKey.substring(1, value.columnKey.length);
+                    let item = _.find(self.optionalHeader, (data) => {
+                        return String(data.key) === value.columnKey;
                     })
-                    object.itemName = (item == undefined) ? "" : item.name;
+                    object.itemName = (item == undefined) ? "" : item.headerText;
                     errorValidateScreeen.push(object);
                 });
             };
@@ -1256,12 +1259,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             nts.uk.ui.block.invisible();
              nts.uk.ui.block.grayout();
-            self.destroyGrid();
             setTimeout(function() {
-                self.extractionData();
-                self.loadGrid();
+                 self.createSumColumn(self.dataAll());
+                    self.columnSettings(self.dataAll().lstControlDisplayItem.columnSettings);
+                    self.receiveData(self.dataAll());
+                 self.loadGrid();
+                    self.extractionData();
+                    self.loadGrid();
                 nts.uk.ui.block.clear();
-            }, 3000);
+            }, 500);
         }
 
         createNtsFeatures() {

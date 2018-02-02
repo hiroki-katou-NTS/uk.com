@@ -23,7 +23,7 @@ module nts.uk.at.view.ksm001.g {
     
                 _self.columns = ko.observableArray([
                    { headerText: 'コード', key: 'code', width: 100, hidden: true},
-                   { headerText: '名称', key: 'name', width: 150 }
+                   { headerText: nts.uk.resource.getText('KSM001_92'), key: 'name', width: 100 }
                 ]);
     
                 _self.yearHdAtr = ko.observable(false);
@@ -57,6 +57,10 @@ module nts.uk.at.view.ksm001.g {
             public save(): void {
                 let _self = this;
 
+                if (_self.currentCodeListSwap().length == 0) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_676" });
+                    return;
+                }
                 nts.uk.ui.block.invisible();
                 service.saveAggregateSetting(_self.toJsObject()).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -109,7 +113,11 @@ module nts.uk.at.view.ksm001.g {
                         _self.yearHdAtr(_self.convertValue(setting.monthlyWorkingDaySettingDto.yearHdAtr));
                         _self.sphdAtr(_self.convertValue(setting.monthlyWorkingDaySettingDto.sphdAtr));
                         _self.havyHdAtr(_self.convertValue(setting.monthlyWorkingDaySettingDto.havyHdAtr));
+                    } else {
+                        _self.currentCodeListSwap(_self.itemsSwap());
+                        _self.itemsSwap([]);
                     }
+                    
                     dfd.resolve();
                 });
                  return dfd.promise();

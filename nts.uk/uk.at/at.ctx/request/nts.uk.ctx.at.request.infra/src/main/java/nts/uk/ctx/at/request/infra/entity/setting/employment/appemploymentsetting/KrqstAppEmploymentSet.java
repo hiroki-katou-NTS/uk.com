@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +30,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 public class KrqstAppEmploymentSet extends UkJpaEntity implements Serializable {
 
+	@Version
+	@Column(name = "EXCLUS_VER")
+	private Long version;
+	
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected KrqstAppEmploymentSetPK krqstAppEmploymentSetPK;

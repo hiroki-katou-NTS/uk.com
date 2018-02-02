@@ -38,6 +38,8 @@ public class StampRequestSettingDto {
 	
 	public Integer stampAtr_Sup_Disp;
 	
+	public Integer stampAtr_Child_Care_Disp;
+	
 	public Integer stampGoOutAtr_Private_Disp;
 	
 	public Integer stampGoOutAtr_Public_Disp;
@@ -61,7 +63,8 @@ public class StampRequestSettingDto {
 				stampRequestSetting.getStampDisplayControl().getStampAtrWorkDisp().value, 
 				stampRequestSetting.getStampDisplayControl().getStampAtrGoOutDisp().value, 
 				stampRequestSetting.getStampDisplayControl().getStampAtrCareDisp().value, 
-				stampRequestSetting.getStampDisplayControl().getStampAtrSupDisp().value, 
+				stampRequestSetting.getStampDisplayControl().getStampAtrSupDisp().value,
+				stampRequestSetting.getStampDisplayControl().getStampAtrChildCareDisp().value, 
 				stampRequestSetting.getGoOutTypeDisplayControl().getStampGoOutAtrPrivateDisp().value, 
 				stampRequestSetting.getGoOutTypeDisplayControl().getStampGoOutAtrPublicDisp().value, 
 				stampRequestSetting.getGoOutTypeDisplayControl().getStampGoOutAtrCompensationDisp().value, 

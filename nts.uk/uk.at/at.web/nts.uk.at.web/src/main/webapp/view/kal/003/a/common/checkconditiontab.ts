@@ -5,6 +5,7 @@ module nts.uk.at.view.kal003.a.tab {
     import block = nts.uk.ui.block;
     import model = nts.uk.at.view.kal003.share.model;
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
+    import info = nts.uk.ui.dialog.info;
 
     export class CheckConditionTab {
         listWorkRecordExtractingConditions: KnockoutObservableArray<model.WorkRecordExtractingCondition> = ko.observableArray([]);
@@ -130,6 +131,7 @@ module nts.uk.at.view.kal003.a.tab {
          */
         private deleteCheckCondition_click() {
             let self = this;
+            block.invisible();
             if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listWorkRecordExtractingConditions().length) {
                 return;
             }
@@ -143,6 +145,9 @@ module nts.uk.at.view.kal003.a.tab {
             }
             self.currentRowSelected.valueHasMutated();
             $("#check-condition-table tr")[self.currentRowSelected() - 1].scrollIntoView();
+            info({ messageId: "Msg_16" }).then(() => {
+                block.clear();
+            });
         }
     }
 }
