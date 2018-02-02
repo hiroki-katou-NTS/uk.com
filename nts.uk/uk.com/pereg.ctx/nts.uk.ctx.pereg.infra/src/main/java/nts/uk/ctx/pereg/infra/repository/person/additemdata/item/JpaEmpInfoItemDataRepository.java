@@ -52,7 +52,7 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			+ " INNER JOIN PpemtPerInfoItem pi ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
-			+ " WHERE pc.cid IN :companyId AND pm.ppemtPerInfoItemCmPK.itemCd =:itemCd"
+			+ " WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd"
 			+ " AND pi.perInfoCtgId IN :perInfoCtgId";
 
 	@Override
@@ -201,11 +201,11 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	}
 
 	@Override
-	public boolean getAllInfoItem(String itemCd, List<String> perInfoCtgId,  List<String> companyId) {
+	public boolean getAllInfoItem(String itemCd, List<String> perInfoCtgId) {
 		List<Object[]> item = this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_ALL_CID_QUERY_STRING, Object[].class)
 				.setParameter("itemCd", itemCd)
 				.setParameter("perInfoCtgId", perInfoCtgId)
-				.setParameter("companyId", companyId).getList();
+				.getList();
 		if(item != null && item.size() > 0) {
 			
 			return true;
