@@ -64,7 +64,7 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 				.getApplicationSettingByComID(companyId);
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
-				& Strings.isBlank(typicalReason+displayReason)) {
+				&& Strings.isBlank(typicalReason+displayReason)) {
 			throw new BusinessException("Msg_115");
 		}
 		appReason = typicalReason + displayReason;
