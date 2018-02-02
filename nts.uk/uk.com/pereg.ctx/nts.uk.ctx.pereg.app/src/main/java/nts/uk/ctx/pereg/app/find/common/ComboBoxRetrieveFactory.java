@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
@@ -91,6 +92,9 @@ public class ComboBoxRetrieveFactory {
 
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
+	
+	@Inject
+	private WorkplaceConfigInfoFinder workPlaceFinder;
 
 	private static Map<String, Class<?>> enumMap;
 	static {
@@ -170,14 +174,14 @@ public class ComboBoxRetrieveFactory {
 		case "M00002":
 			// 職場マスタ
 			if (isDisplayItemCode) {
-				return workPlaceRepo.findAll(companyId, standardDate).stream()
+				return workPlaceFinder.findFlatList(standardDate).stream()
 						.map(workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(),
-								workPlace.getWorkplaceCode().v() + JP_SPACE + workPlace.getWorkplaceName().v()))
+								workPlace.code + JP_SPACE + workPlace.name))
 						.collect(Collectors.toList());
 
 			} else {
-				return workPlaceRepo.findAll(companyId, standardDate).stream().map(
-						workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(), workPlace.getWorkplaceName().v()))
+				return workPlaceFinder.findFlatList(standardDate).stream().map(
+						workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(), workPlace.name))
 						.collect(Collectors.toList());
 
 			}

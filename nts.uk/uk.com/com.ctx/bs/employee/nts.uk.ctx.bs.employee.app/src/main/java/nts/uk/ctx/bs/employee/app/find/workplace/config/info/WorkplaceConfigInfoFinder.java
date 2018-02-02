@@ -336,10 +336,12 @@ public class WorkplaceConfigInfoFinder {
 	 * Find flat list.
 	 *
 	 * @param strD the str D
-	 * @return the list
+	 * @return the list6
 	 */
 	public List<WorkplaceHierarchyDto> findFlatList(GeneralDate strD) {
-		List<WorkplaceHierarchyDto> treeList = this.findAllByStartDate(strD);
+		WkpConfigInfoFindObject findObject = new WkpConfigInfoFindObject();
+		findObject.setBaseDate(strD);
+		List<WorkplaceHierarchyDto> treeList = this.findAllByBaseDate(findObject);
 
 		// flat workplace tree.
 		List<WorkplaceHierarchyDto> flatList = new ArrayList<>();
