@@ -69,7 +69,7 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 	@Override
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
-		if (StringUtil.isNullOrEmpty(employeeId, false)){
+		if (!StringUtil.isNullOrEmpty(employeeId, false)){
 			this.entities.stream().forEach(item -> {
 				KshmtWorkingCondPK kshmtWorkingCondPK = item.getKshmtWorkingCondPK();
 				kshmtWorkingCondPK.setSid(employeeId);
