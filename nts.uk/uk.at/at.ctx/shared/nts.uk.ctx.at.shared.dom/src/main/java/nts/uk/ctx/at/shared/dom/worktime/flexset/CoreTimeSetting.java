@@ -70,7 +70,7 @@ public class CoreTimeSetting extends WorkTimeDomainObject {
 		}
 
 		// 使用区分 = 使用しない AND 最低勤務時間 <= 0
-		if (this.minWorkTime != null && !this.isUseTimeSheet() && this.minWorkTime.valueAsMinutes() <= ZERO_MINUTES) {
+		if (!this.isUseTimeSheet() && (this.minWorkTime == null || this.minWorkTime.valueAsMinutes() <= ZERO_MINUTES)) {
 			this.bundledBusinessExceptions.addMessage("Msg_776");
 		}
 

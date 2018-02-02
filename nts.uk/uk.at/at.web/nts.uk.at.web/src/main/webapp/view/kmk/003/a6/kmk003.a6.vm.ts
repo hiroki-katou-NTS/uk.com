@@ -52,9 +52,9 @@ module a6 {
         public initDataModel(): void {
             var self = this;
             self.fixTableOptionFlow = {
-                maxRow: 10,
+                maxRow: 5,
                 minRow: 0,
-                maxRowDisplay: 10,
+                maxRowDisplay: 5,
                 isShowButton: true,
                 dataSource: self.dataSourceFlow,
                 isMultipleSelect: true,
