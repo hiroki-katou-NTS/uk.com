@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.repository.setting.company.applicationapprovalsetting.withdrawalrequestset;
+package nts.uk.ctx.at.request.infra.repository.setting.company.applicationapprovalsetting.widrawalreqset;
 
 import java.util.Optional;
 
@@ -10,7 +10,11 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.with
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.withdrawalrequestset.KrqstWithDrawalReqSet;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * Jpa With Drawal Request Setting Repository
+ * @author yennth
+ *
+ */
 @Stateless
 public class JpaWithDrawalReqSetRepository extends JpaRepository implements WithDrawalReqSetRepository {
 
