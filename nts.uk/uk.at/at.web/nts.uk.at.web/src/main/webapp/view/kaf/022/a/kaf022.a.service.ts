@@ -63,8 +63,15 @@ module nts.uk.at.view.kmf022.a.service {
         // h
         findTimeHd: "at/hdapplication/setting/getbycid",
         
+        // K15, 16, 21, 22
+        findDraw: "at/request/application/withdrawalrequestset/findByCompanyID",
+        
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
+    }
+    
+    export function findDraw() {
+        return nts.uk.request.ajax("at", paths.findDraw); 
     }
     
     export function findTimeHd() {
