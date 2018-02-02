@@ -120,7 +120,7 @@ module nts.uk.ui.koExtentions {
                     value(result.parsedValue);
                 }
                 else {                    
-                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
                     value(newText);
                 }
             });
@@ -129,7 +129,7 @@ module nts.uk.ui.koExtentions {
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 if (!result.isValid) {
-                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
                 } else if (acceptJapaneseCalendar){
                     // Day of Week
                     if (hasDayofWeek) {
@@ -149,9 +149,9 @@ module nts.uk.ui.koExtentions {
             $input.on('validate', (function(e: Event) {
                 var newText = $input.val();
                 var result = validator.validate(newText);
-                $input.ntsError('clear');
+                $input.ntsError('clearKibanError');
                 if (!result.isValid) {
-                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
                 } else if (acceptJapaneseCalendar){
                     // Day of Week
                     if (hasDayofWeek) {
