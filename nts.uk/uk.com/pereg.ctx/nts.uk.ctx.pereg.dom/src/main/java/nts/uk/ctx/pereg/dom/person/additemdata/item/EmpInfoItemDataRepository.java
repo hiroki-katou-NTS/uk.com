@@ -22,4 +22,6 @@ public interface EmpInfoItemDataRepository {
 	void updateEmpInfoItemData(EmpInfoItemData domain);
 	
 	void deleteEmployInfoItemData(String recordID);
+	
+	List<EmpInfoItemData> getAllInfoItem(String itemCd, List<String> companyId);
 }
