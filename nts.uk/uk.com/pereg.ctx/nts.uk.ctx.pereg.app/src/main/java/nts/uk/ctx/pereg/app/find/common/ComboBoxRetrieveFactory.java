@@ -25,6 +25,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -94,13 +95,13 @@ public class ComboBoxRetrieveFactory {
 
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
-	
+
 	@Inject
 	private WorkplaceConfigInfoFinder workPlaceFinder;
-	
-	@Inject 
+
+	@Inject
 	private MonthlyPatternRepository monthlyPatternRepo;
-	
+
 	@Inject
 	private BPSettingRepository bPSettingRepo;
 
@@ -125,6 +126,9 @@ public class ComboBoxRetrieveFactory {
 		aMap.put("E00008", WorkScheduleMasterReferenceAtr.class);
 		// 勤務予定の時間帯マスタ参照区分
 		aMap.put("E00009", TimeZoneScheduledMasterAtr.class);
+		// 時給者区分
+		aMap.put("E00010", HourlyPaymentAtr.class);
+		// 時給者区分
 
 		enumMap = Collections.unmodifiableMap(aMap);
 	}
@@ -188,8 +192,8 @@ public class ComboBoxRetrieveFactory {
 						.collect(Collectors.toList());
 
 			} else {
-				return workPlaceFinder.findFlatList(standardDate).stream().map(
-						workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(), workPlace.name))
+				return workPlaceFinder.findFlatList(standardDate).stream()
+						.map(workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(), workPlace.name))
 						.collect(Collectors.toList());
 
 			}
@@ -276,15 +280,14 @@ public class ComboBoxRetrieveFactory {
 									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName()))
 					.collect(Collectors.toList());
 		case "M00014":
-			//月間パターンマスタ
-			return monthlyPatternRepo.findAll(companyId).stream().map(x -> 
-				new ComboBoxObject(x.getMonthlyPatternCode().v(), x.getMonthlyPatternName().v())
-			).collect(Collectors.toList());
+			// 月間パターンマスタ
+			return monthlyPatternRepo.findAll(companyId).stream()
+					.map(x -> new ComboBoxObject(x.getMonthlyPatternCode().v(), x.getMonthlyPatternName().v()))
+					.collect(Collectors.toList());
 		case "M00015":
-			//加給時間帯マスタ
-			return bPSettingRepo.getAllBonusPaySetting(companyId).stream().map(x -> 
-				new ComboBoxObject(x.getCode().v(), x.getName().v())
-			).collect(Collectors.toList());
+			// 加給時間帯マスタ
+			return bPSettingRepo.getAllBonusPaySetting(companyId).stream()
+					.map(x -> new ComboBoxObject(x.getCode().v(), x.getName().v())).collect(Collectors.toList());
 		default:
 			break;
 		}
