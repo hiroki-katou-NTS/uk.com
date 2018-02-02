@@ -107,8 +107,12 @@ public class ScheCreExeBasicScheduleHandler {
 									.collect(Collectors.toList()));
 		}
 
+		//勤務予定マスタ情報を取得する
 		this.saveScheduleMaster(commandSave);
+		//休憩予定時間帯を取得する
 		this.saveBreakTime(command.getCompanyId(), commandSave);
+		//勤務予定時間
+		this.saveScheduleTime(commandSave);
 		
 		// check not exist error
 		if (!this.scheCreExeErrorLogHandler.checkExistError(command.toBaseCommand(), employeeId)) {
@@ -385,8 +389,7 @@ public class ScheCreExeBasicScheduleHandler {
 	/**
 	 * 勤務予定時間
 	 */
-	private BasicScheduleSaveCommand saveScheduleTime(BasicScheduleResetCommand command,
-			BasicScheduleSaveCommand commandSave) {
+	private BasicScheduleSaveCommand saveScheduleTime(BasicScheduleSaveCommand commandSave) {
 		ScTimeParam param = ScTimeParam.builder()
 				.build();
 		ScTimeImport scTimeImport = scTimeAdapter.calculation(param);
@@ -395,7 +398,7 @@ public class ScheCreExeBasicScheduleHandler {
 				scTimeImport.getBreakTime(), 
 				scTimeImport.getActualWorkTime(), 
 				scTimeImport.getWeekDayTime(), 
-				null, //TODO 
+				scTimeImport.getPreTime(),
 				scTimeImport.getTotalWorkTime(), 
 				scTimeImport.getChildCareTime());
 		commandSave.setWorkScheduleTime(workScheduleTime);
