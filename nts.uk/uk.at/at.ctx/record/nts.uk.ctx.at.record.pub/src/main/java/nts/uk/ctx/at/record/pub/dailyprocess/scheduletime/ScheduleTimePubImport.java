@@ -1,7 +1,8 @@
-package nts.uk.ctx.at.record.pub.scheduletime;
+package nts.uk.ctx.at.record.pub.dailyprocess.scheduletime;
 
 import java.util.List;
 
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * @author keisuke_hoshina
  *
  */
+@Getter
 public class ScheduleTimePubImport {
 
 	//社員ID

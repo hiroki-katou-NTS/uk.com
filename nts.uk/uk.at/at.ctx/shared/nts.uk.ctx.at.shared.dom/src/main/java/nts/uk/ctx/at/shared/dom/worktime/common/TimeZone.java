@@ -103,6 +103,10 @@ public class TimeZone extends WorkTimeDomainObject {
 		return time.greaterThanOrEqualTo(this.start) && time.lessThanOrEqualTo(this.end);
 	}
 	
+	/**
+	 * Convert Time Span
+	 * @return timeSpanForCalc
+	 */
 	public TimeSpanForCalc timeSpan() {
 		return new TimeSpanForCalc(this.start,this.end);
 	}

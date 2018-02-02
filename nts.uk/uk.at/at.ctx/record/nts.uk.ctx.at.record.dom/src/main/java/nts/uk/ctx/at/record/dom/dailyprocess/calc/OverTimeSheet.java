@@ -5,8 +5,10 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.actualworkinghours.SubHolOccurrenceInfo;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
@@ -18,15 +20,16 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  * @author keisuke_hoshina
  *
  */
-
+@Getter
 public class OverTimeSheet {
 	
-	@Getter
-	private static OverTimeOfDaily overWorkTimeOfDaily; 
+	//代休発生情報
+	private SubHolOccurrenceInfo subOccurrenceInfo;
+	//残業枠時間帯
+	private List<OverTimeFrameTimeSheetForCalc> frameTimeSheets;
+	//加給時間
+	private RaisingSalaryTime raisingsalyryTime;
 	
-	public  OverTimeSheet(OverTimeOfDaily dailyOverWorkTime) {
-		this.overWorkTimeOfDaily = dailyOverWorkTime;
-	}
 	
 	/**
 	 * 分割後の残業時間枠時間帯を受け取り
@@ -41,28 +44,29 @@ public class OverTimeSheet {
 	}
 	
 	
-	/**
-	 * 残業時間の計算(残業時間帯の合計の時間を取得し1日の範囲に返す)
-	 * @return
-	 */
-	public static OverTimeOfDaily calcOverTimeWork(AutoCalculationOfOverTimeWork autoCalcSet) {
-		ControlOverFrameTime returnClass = new ControlOverFrameTime(overWorkTimeOfDaily.collectOverTimeWorkTime(autoCalcSet));
-		
-		overWorkTimeOfDaily.addToList(returnClass);
-		
-		return  overWorkTimeOfDaily;
-	}
-	
+//	/**
+//	 * 残業時間の計算(残業時間帯の合計の時間を取得し1日の範囲に返す)
+//	 * @return
+//	 */
+//	public static OverTimeOfDaily calcOverTimeWork(AutoCalculationOfOverTimeWork autoCalcSet) {
+//		ControlOverFrameTime returnClass = new ControlOverFrameTime(overWorkTimeOfDaily.collectOverTimeWorkTime(autoCalcSet));
+//		
+//		overWorkTimeOfDaily.addToList(returnClass);
+//		
+//		return  overWorkTimeOfDaily;
+//	}
+//	
 	/**
 	 * 深夜時間計算後の時間帯再作成
 	 * @return
 	 */
 	public OverTimeSheet reCreateToCalcExcessWork(OverTimeSheet overTimeWorkSheet,AutoCalculationOfOverTimeWork autoCalcSet) {
-		ExcessOverTimeWorkMidNightTime midNightTime = overTimeWorkSheet.overWorkTimeOfDaily.calcMidNightTimeIncludeOverTimeWork(autoCalcSet);
-		OverTimeOfDaily overTimeWorkOfDaily = new OverTimeOfDaily(overTimeWorkSheet.overWorkTimeOfDaily.getOverTimeWorkFrameTimeSheet(),
-																		  overTimeWorkSheet.overWorkTimeOfDaily.getOverTimeWorkFrameTime(),
-																		  Finally.of(midNightTime));
-		return new OverTimeSheet(overTimeWorkOfDaily);
+//		ExcessOverTimeWorkMidNightTime midNightTime = overTimeWorkSheet.overWorkTimeOfDaily.calcMidNightTimeIncludeOverTimeWork(autoCalcSet);
+//		OverTimeOfDaily overTimeWorkOfDaily = new OverTimeOfDaily(overTimeWorkSheet.overWorkTimeOfDaily.getOverTimeWorkFrameTimeSheet(),
+//																		  overTimeWorkSheet.overWorkTimeOfDaily.getOverTimeWorkFrameTime(),
+//																		  Finally.of(midNightTime));
+//		return new OverTimeSheet(overTimeWorkOfDaily);
+		return null;
 	}
 	
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
@@ -169,7 +173,7 @@ public class OverTimeSheet {
 	 * @return 振替可能時間
 	 */
 	private AttendanceTime calcTransferTimeOfPeriodTime(AttendanceTime periodTime) {
-		int totalFrameTime = this.getOverWorkTimeOfDaily().calcTotalFrameTime();
+		int totalFrameTime = 0;//this.getOverWorkTimeOfDaily().calcTotalFrameTime();
 		if(periodTime.greaterThanOrEqualTo(new AttendanceTime(totalFrameTime))) {
 			return new AttendanceTime(totalFrameTime).minusMinutes(periodTime.valueAsMinutes());
 		}

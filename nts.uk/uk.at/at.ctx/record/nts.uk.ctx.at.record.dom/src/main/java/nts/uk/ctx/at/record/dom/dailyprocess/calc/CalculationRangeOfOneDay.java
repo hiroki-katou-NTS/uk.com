@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTime
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkNo;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -225,10 +226,10 @@ public class CalculationRangeOfOneDay {
 			val createWithinWorkTimeSheet = WithinWorkTimeSheet.createAsFixed(toDay, predetermineTimeSet, fixedWorkSetting,workTimeCommonSet, deductionTimeSheet, bonusPaySetting); 
 			withinWorkingTimeSheet.set(createWithinWorkTimeSheet);
 			/* 就業外の時間帯作成 */
-//			outsideWorkTimeSheet.set(OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
-//					attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),
-//					workNumber, dayEndSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
-//					workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet));
+			outsideWorkTimeSheet.set(OutsideWorkTimeSheet.createOutsideWorkTimeSheet(overTimeHourSetList, fixOff,
+					attendanceLeavingWork.getAttendanceLeavingWork(new WorkNo(workNumber)),
+					workNumber, dayEndSet, workTimeCommonSet, holidayTimeWorkItem, beforeDay, toDay, afterDay, workTime,
+					workingSystem, breakdownTimeDay, dailyTime, autoCalculationSet, statutorySet, prioritySet));
 		}
 
 	}
