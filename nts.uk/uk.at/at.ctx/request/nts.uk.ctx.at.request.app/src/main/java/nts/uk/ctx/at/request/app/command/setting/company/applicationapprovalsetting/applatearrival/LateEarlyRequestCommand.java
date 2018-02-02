@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applicationlatearrival;
+package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applatearrival;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
