@@ -39,9 +39,16 @@ public class KfnmtExtractionPerUnit extends UkJpaEntity implements Serializable 
 
 	public static KfnmtExtractionPerUnit toEntity(ExtractionPeriodUnit domain) {
 		return new KfnmtExtractionPerUnit(
-				new KfnmtExtractionPerUnitPK(
-						domain.getExtractionId(),
-						domain.getExtractionRange().value),
+				new KfnmtExtractionPerUnitPK(domain.getExtractionId(), domain.getExtractionRange().value),
 				domain.getSegmentationOfCycle().value);
+	}
+
+	public KfnmtExtractionPerUnit(String extractionID, int extractionRange, int segmentationOfCycle) {
+		this.pk = new KfnmtExtractionPerUnitPK(extractionID , extractionRange);
+		this.segmentationOfCycle = segmentationOfCycle;
+	}
+	
+	public void fromEntity(KfnmtExtractionPerUnit newEntity){
+		this.segmentationOfCycle = newEntity.segmentationOfCycle;
 	}
 }

@@ -11,6 +11,7 @@ module nts.uk.at.view.kal003.b.service {
             getErrorAlarmCondition:         "at/record/attendanceitem/daily/geterroralarmcondition/{0}",
             getAttendanceItemByCodes:       "at/record/divergencetime/AttendanceDivergenceName",
             findWorkTypeByCodes:            "at/share/worktype/findNotDeprecatedByListCode",
+            getAttendanceItemByAtr:         "at/record/businesstype/attendanceItem/getListByAttendanceAtr/",
 
             getEnumSingleValueCompareTypse: "/at/function/alarm/checkcondition/kal003b/getEnumSingleValueCompareTypse",
             getEnumRangeCompareType:        "/at/function/alarm/checkcondition/kal003b/getEnumRangeCompareType",
@@ -50,14 +51,19 @@ module nts.uk.at.view.kal003.b.service {
     export function getAttendNameByIds(command) : JQueryPromise<any> {
         return req_ajax(paths.getAttendNameByIds, command);
     }
+    
     // command erAlCheckId => return ErrorAlarmWorkRecordDto
     export function getErrorAlarmCondition(erAlCheckId) : JQueryPromise<any> {
         return req_ajax(format(paths.getErrorAlarmCondition, erAlCheckId));
     }
 
     //the same kdw007
-    export function getAttendanceItemByCodes(codes) {
+    export function getAttendanceItemByCodes(codes) : JQueryPromise<any> {
         return req_ajax("at", paths.getAttendanceItemByCodes, codes);
+    }
+    
+    export function getAttendanceItemByAtr(atr) : JQueryPromise<any>  {
+        return nts.uk.request.ajax("at", paths.getAttendanceItemByAtr + atr);
     }
     /**
      * Find work type by list codes.

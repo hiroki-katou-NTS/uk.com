@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
@@ -20,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OverTimeDto {
+	
 	private Long version;
 	/**
 	 * application

@@ -373,6 +373,8 @@ public class DailyPerformanceCorrectionProcessor {
 			CorrectionOfDailyPerformance correct, List<String> formatCodes) throws InterruptedException {
 		long timeStart = System.currentTimeMillis();
 		String sId = AppContexts.user().employeeId();
+		String NAME_EMPTY = TextResource.localize("KDW003_82");
+		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
 
 		/**
@@ -526,7 +528,10 @@ public class DailyPerformanceCorrectionProcessor {
 					disItem.getLstBusinessTypeCode());
 			try {
 				results = sResults.get();
-				screenDto.getItemValues().addAll(results.isEmpty() ?new ArrayList<>() : results.get(0).getItems());
+				screenDto.getItemValues().addAll(results.isEmpty() ?new ArrayList<>() : results.get(0).getItems().stream().map(x -> {
+					ItemValue item = new ItemValue(x.getValue(), x.getValueType(), x.getLayoutCode(), x.getItemId());
+					return item;
+				}).collect(Collectors.toList()));
 				latch.countDown();
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
@@ -554,7 +559,7 @@ public class DailyPerformanceCorrectionProcessor {
 		Set<Integer> types = dPControlDisplayItem.getLstAttendanceItem() == null ? new HashSet<>()
 				: dPControlDisplayItem.getLstAttendanceItem().stream().map(x -> x.getTypeGroup()).filter(x -> x != null)
 						.collect(Collectors.toSet());
-		Map<Integer, Map<String, CodeName>> mapGetName = dataDialogWithTypeProcessor
+		Map<Integer, Map<String, String>> mapGetName = dataDialogWithTypeProcessor
 				.getAllCodeName(new ArrayList<Integer>(types), AppContexts.user().companyId());
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		System.out.println("time create HashMap: " + (System.currentTimeMillis() - startTime2 ));
@@ -663,18 +668,18 @@ public class DailyPerformanceCorrectionProcessor {
 							if (value.equals("")) {
 								cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), value,
 										String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
-								value = TextResource.localize("KDW003_82");
+								value = NAME_EMPTY;
 							} else {
 								if(groupType != null){
 								   if(groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value){
 									   Optional<CodeName> optCodeName = dataDialogWithTypeProcessor.getCodeNameWithId(groupType, data.getDate(), value);
 									   cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), optCodeName.isPresent() ? optCodeName.get().getCode() : value,
 												String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
-									   value = !optCodeName.isPresent() ? TextResource.localize("KDW003_81") : optCodeName.get().getName();
+									   value = !optCodeName.isPresent() ? NAME_NOT_FOUND : optCodeName.get().getName();
 								   }else{
 									   cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), value,
 												String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
-									   value = mapGetName.get(groupType).containsKey(value) ? mapGetName.get(groupType).get(value).getName() :  TextResource.localize("KDW003_81");
+									   value = mapGetName.get(groupType).containsKey(value) ? mapGetName.get(groupType).get(value) :  NAME_NOT_FOUND;
 								   }
 								}
 							}
@@ -977,7 +982,11 @@ public class DailyPerformanceCorrectionProcessor {
 			// set color to header
 			List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo
 					.getListAttendanceItemControl(lstAtdItemUnique);
-			result.setLstAttendanceItem(lstAttendanceItem);
+			result.setLstAttendanceItem(lstAttendanceItem.stream().map(x -> {
+				DPAttendanceItem data = x;
+				data.setName("");
+				return data;
+			}).collect(Collectors.toList()));
 			result.setHeaderColor(lstAttendanceItemControl);
 		}else{
 			result.setLstAttendanceItem(lstAttendanceItem);

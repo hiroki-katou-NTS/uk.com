@@ -19,7 +19,7 @@
 			<label>#{i18n.getText('KAL004_114')}</label> <input
 				style="margin-left: 59px;"
 				data-bind="ntsTextEditor: {value : executionAuthor , readonly : true}" />
-			<button data-bind="click : openCDL025">#{i18n.getText('KAL004_115')}</button>
+			<button data-bind="click : openCDL025 , enable : selectedRuleCode()==0 &amp;&amp; createMode() ==true">#{i18n.getText('KAL004_115')}</button>
 		</div>
 	</ui:composition>
 </body>

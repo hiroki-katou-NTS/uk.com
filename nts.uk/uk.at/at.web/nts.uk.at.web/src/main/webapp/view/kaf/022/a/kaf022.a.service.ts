@@ -39,9 +39,9 @@ module nts.uk.at.view.kmf022.a.service {
         // A6_27 -> A6_34 có thể lấy theo company rồi lên lọc hoặc lấy thẳng object bằng cả holiday app type
         findAllHdApp: "at/request/application/displayname/hd",
         findHdApp: "at/request/application/displayname/hdapp",
-        //E14,15
+        //E14,15, E17,18 cũng lấy ở đây (ver2)   màn J cùng link này (ver 3)
         findStamp: "at/request/application/stamprequest/findByComID", //UpdateStampRequestSettingCommandHandler
-        // F10->F16
+        // F10->F15, F16, 16_1, 16_2 (ver2)
         findDirectlycommon: "at/request/application/gobackdirectlycommon/getGoBackCommonByCid", //GoBackDirectlyCommonSettingRepository
 
         //B18 -> B36
@@ -54,9 +54,43 @@ module nts.uk.at.view.kmf022.a.service {
         //D
         findWorkChange: "at/request/application/workchange/workChangeSet",
         
+        // E9->E13, E16
+        findTrip: "at/request/application/triprequest/disp",
+        
+        // G16 -> G29
+        findWith: "at/approverset/hdwork/getbycom",
+        
+        // h
+        findTimeHd: "at/hdapplication/setting/getbycid",
+        
+        // K15, 16, 21, 22
+        findDraw: "at/request/application/withdrawalrequestset/findByCompanyID",
+        
+        // I
+        findLateEarly: "at/request/application/applicationlatearrival/findByCompanyID",
         
 //        add: 'at/shared/yearservicecom/add',
 //        update: 'at/shared/yearservicecom/update'
+    }
+    
+    export function findLateEarly() {
+        return nts.uk.request.ajax("at", paths.findLateEarly); 
+    }
+    
+    export function findDraw() {
+        return nts.uk.request.ajax("at", paths.findDraw); 
+    }
+    
+    export function findTimeHd() {
+        return nts.uk.request.ajax("at", paths.findTimeHd); 
+    }
+    
+    export function findWith() {
+        return nts.uk.request.ajax("at", paths.findWith); 
+    }
+    
+    export function findTrip() {
+        return nts.uk.request.ajax("at", paths.findTrip); 
     }
     
     export function findWorkChange() {

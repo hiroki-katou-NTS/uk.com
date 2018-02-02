@@ -57,12 +57,11 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 		// Convert dto to domain
 		FixedWorkSetting fixedWorkSetting = command.toDomainFixedWorkSetting();
 
-		// Validate + common handler
-		this.validate(command, fixedWorkSetting);
-
 		// call repository save fixed work setting
 		if (command.isAddMode()) {
 			fixedWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			// Validate + common handler
+			this.validate(command, fixedWorkSetting);
 			this.fixedWorkSettingRepository.add(fixedWorkSetting);
 		} else {
 			Optional<FixedWorkSetting> opFixedWorkSetting = this.fixedWorkSettingRepository.findByKey(companyId,
@@ -70,6 +69,8 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 			if (opFixedWorkSetting.isPresent()) {
 				fixedWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
 						command.getWorktimeSetting().getWorkTimeDivision(), opFixedWorkSetting.get());
+				// Validate + common handler
+				this.validate(command, fixedWorkSetting);
 				this.fixedWorkSettingRepository.update(fixedWorkSetting);
 			}
 		}

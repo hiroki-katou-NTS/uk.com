@@ -6,6 +6,7 @@ module nts.uk.com.view.kal004.b.viewmodel {
         getCategoryName: KnockoutObservable<string>;
         enable: boolean;
         txtDay: KnockoutObservable<string>;
+        dateSpecify: KnockoutObservableArray<any>;
         txtStrMonth: KnockoutObservable<string>;
         txtEndMonth: KnockoutObservable<string>;
         strComboMonth: KnockoutObservableArray<any>;
@@ -31,6 +32,10 @@ module nts.uk.com.view.kal004.b.viewmodel {
             var self = this;
             self.enable = true;
             self.txtDay = ko.observable(resource.getText('KAL004_32'));
+            self.dateSpecify = ko.observableArray([
+                {value: 0, name: self.txtDay()},
+                {value: 1, name: self.txtDay()}
+                ]);
             self.txtStrMonth = ko.observable(resource.getText('KAL004_37'));
             self.txtEndMonth = ko.observable(resource.getText('KAL004_43'));
             self.strComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
@@ -43,26 +48,6 @@ module nts.uk.com.view.kal004.b.viewmodel {
             self.getCategoryName = nts.uk.ui.windows.getShared("categoryName");
             self.getCategoryId = ko.observable(nts.uk.ui.windows.getShared("categoryId"));
             
-//            self.getParam = {
-//                    extractionId: "",
-//                    extractionRange: 0,
-//                    strSpecify: 1,
-//                    strPreviousDay: null,
-//                    strMakeToDay: null,
-//                    strDay: null,
-//                    strPreviousMonth: 0,
-//                    strCurrentMonth: 1,
-//                    strMonth: 0,
-//                    endSpecify: 1,
-//                    endPreviousDay: null,
-//                    endMakeToDay: null,
-//                    endDay: null,
-//                    endPreviousMonth: 0,
-//                    endCurrentMonth: 1,
-//                    endMonth: 0
-//                };
-//            self.getCategoryName = ko.observable("asdfasd");
-//            self.getCategoryId = ko.observable(5);
 //            
             //start date
             self.strSelected = ko.observable(self.getParam.strSpecify);
@@ -182,7 +167,7 @@ module nts.uk.com.view.kal004.b.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_812"});
                 return false;    
             }else if(self.getCategoryId() == 5 || self.getCategoryId() == 13){
-                if(self.strSelected() == 0 && (self.strDay() < self.endDay())){
+                if(self.strSelected() == 0 && (Number(self.strDay()) < Number(self.endDay()))){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_812"});
                     return false;
                 }else{
@@ -192,10 +177,10 @@ module nts.uk.com.view.kal004.b.viewmodel {
                 if(self.strSelected() == 0 && self.strPreviousDay() == 1 && self.endPreviousDay() == 0 ){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_812"});
                     return false;
-                }else if (self.strSelected() == 0 && self.strPreviousDay() == 0 && self.endPreviousDay() == 0 && (self.strDay() < self.endDay())){
+                }else if (self.strSelected() == 0 && self.strPreviousDay() == 0 && self.endPreviousDay() == 0 && (Number(self.strDay()) < Number(self.endDay()))){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_812"});
                     return false;   
-                }else if(self.strSelected() == 0 && self.strPreviousDay() == 1 && self.endPreviousDay() == 1 && (self.strDay() > self.endDay())){
+                }else if(self.strSelected() == 0 && self.strPreviousDay() == 1 && self.endPreviousDay() == 1 && (Number(self.strDay()) > Number(self.endDay()))){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_812"});
                     return false;  
                 }else{

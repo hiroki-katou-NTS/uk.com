@@ -98,18 +98,42 @@ module nts.uk.at.view.kal003.share.model {
             this.targetClassification   = ko.observableArray(targetCls);
             this.targetJobTitle         = ko.observableArray(targetJob);
             this.targetBusinessType     = ko.observableArray(targetBus);
-            this.displayTargetEmployment = ko.computed(function() {
-                return this.targetEmployment().join(", ");
-            }, this);
-            this.displayTargetClassification = ko.computed(function() {
-                return this.targetClassification().join(", ");
-            }, this);
-            this.displayTargetJobTitle = ko.computed(function() {
-                return this.targetJobTitle().join(", ");
-            }, this);
-            this.displayTargetBusinessType = ko.computed(function() {
-                return this.targetBusinessType().join(", ");
-            }, this);
+            this.displayTargetEmployment = ko.observable("");
+            this.displayTargetClassification = ko.observable("");
+            this.displayTargetJobTitle = ko.observable("");
+            this.displayTargetBusinessType = ko.observable("");
+            
+            this.targetEmployment.subscribe((data) => {
+                kal003.a.service.getEmpNameByCodes(data).done((result: Array<string>) => {
+                    this.displayTargetEmployment(result.join(", "));
+                }).fail(() => {
+                    this.displayTargetEmployment(this.targetClassification().join(", "));
+                });
+            });
+            
+            this.targetClassification.subscribe((data) => {
+                kal003.a.service.getClsNameByCodes(data).done((result: Array<string>) => {
+                    this.displayTargetClassification(result.join(", "));
+                }).fail(() => {
+                    this.displayTargetClassification(this.targetClassification().join(", "));
+                });
+            });
+            
+            this.targetJobTitle.subscribe((data) => {
+                kal003.a.service.getJobNamesByIds(data).done((result: Array<string>) => {
+                    this.displayTargetJobTitle(result.join(", "));
+                }).fail(() => {
+                    this.displayTargetJobTitle(this.targetClassification().join(", "));
+                });
+            });
+            
+            this.targetBusinessType.subscribe((data) => {
+                kal003.a.service.getBusTypeNamesByCodes(data).done((result: Array<string>) => {
+                    this.displayTargetBusinessType(result.join(", "));
+                }).fail(() => {
+                    this.displayTargetBusinessType(this.targetClassification().join(", "));
+                });
+            });
         }
 
         // Open Dialog CDL002
@@ -435,7 +459,8 @@ module nts.uk.at.view.kal003.share.model {
                 } else {
                     // If is compare with a attendance item
                     if (self.singleAtdItem()) {
-                        nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes([self.singleAtdItem()]).done((lstItems) => {
+                        //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes([self.singleAtdItem()]).done((lstItems) => {
+                        self.getAttendanceItemByCodes([self.singleAtdItem()]).done((lstItems) => {
                             if (lstItems && lstItems.length > 0) {
                                 self.displayLeftCompare(lstItems[0].attendanceItemName);
                                 self.displayRightCompare("");
@@ -451,7 +476,8 @@ module nts.uk.at.view.kal003.share.model {
             self.displayTarget("");
             if (self.conditionAtr() === 2) {
                 if (self.uncountableAtdItem()) {
-                    nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
+                    //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
+                     self.getAttendanceItemByCodes([self.uncountableAtdItem()]).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             self.displayTarget(lstItems[0].attendanceItemName);
                         }
@@ -459,7 +485,8 @@ module nts.uk.at.view.kal003.share.model {
                 }
             } else {
                 if (self.countableAddAtdItems().length > 0) {
-                    nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableAddAtdItems()).done((lstItems) => {
+                    //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableAddAtdItems()).done((lstItems) => {
+                    self.getAttendanceItemByCodes(self.countableAddAtdItems()).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " + ";
@@ -468,7 +495,8 @@ module nts.uk.at.view.kal003.share.model {
                         }
                     }).then(() => {
                         if (self.countableSubAtdItems().length > 0) {
-                            nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                            //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                            self.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
                                 if (lstItems && lstItems.length > 0) {
                                     for (let i = 0; i < lstItems.length; i++) {
                                         let operator = (i === (lstItems.length - 1)) ? "" : " - ";
@@ -480,7 +508,8 @@ module nts.uk.at.view.kal003.share.model {
                         }
                     });
                 } else if (self.countableSubAtdItems().length > 0) {
-                    nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                    //nts.uk.at.view.kal003.b.service.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
+                        self.getAttendanceItemByCodes(self.countableSubAtdItems()).done((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             for (let i = 0; i < lstItems.length; i++) {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " - ";
@@ -532,6 +561,10 @@ module nts.uk.at.view.kal003.share.model {
             self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : 0);
             self.compareOperator(param ? param.compareOperator : 0);
             self.setTextDisplay();
+        }
+        //the same kdw007
+        getAttendanceItemByCodes(codes) : JQueryPromise<any> {
+            return nts.uk.request.ajax("at", "at/record/divergencetime/AttendanceDivergenceName", codes);
         }
     }
     // group condition
@@ -655,7 +688,7 @@ module nts.uk.at.view.kal003.share.model {
         constructor(param : IWorkTypeCondition) {
             let self = this;
             self.useAtr = param && param.useAtr ? param.useAtr : false;
-            self.comparePlanAndActual(param ? (param.comparePlanAndActual == 0 ? 0 : 1) : 1); //default is 1
+            self.comparePlanAndActual(param ? (param.comparePlanAndActual == 0 ? 0 : param.comparePlanAndActual || 1) : 1); //default is 1
             self.planFilterAtr = param && param.planFilterAtr ? param.planFilterAtr : false;
             self.planLstWorkType(param && param.planLstWorkType ? param.planLstWorkType : []);
             self.actualFilterAtr = param && param.actualFilterAtr ? param.actualFilterAtr : false;

@@ -160,4 +160,11 @@ public interface WorkTypeRepository {
 	 * @param workTypeCd
 	 */
 	void remove(String companyId, String workTypeCd);
+	/**
+	 * @param companyId  会社ID
+	 * @param abolishAtr 勤務種類.廃止する
+	 * @param worktypeAtr １日の勤務
+	 * @return the list of Work Type
+	 */
+	List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr);
 }

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedul
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
+import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 
 /**
  * The Class BasicSchedule. 勤務予定基本情報
@@ -63,6 +64,9 @@ public class BasicSchedule extends AggregateRoot {
 	/** The child care schedules. */
 	// 勤務予定育児介護時間帯
 	private List<ChildCareSchedule> childCareSchedules;
+	
+	/** 勤務予定マスタ情報 **/
+	private ScheMasterInfo workScheduleMaster;
 
 	/**
 	 * Instantiates a new basic schedule.
@@ -218,5 +222,12 @@ public class BasicSchedule extends AggregateRoot {
 	public void setWorkScheduleTimeZones(List<WorkScheduleTimeZone> workScheduleTimeZones) {
 		this.workScheduleTimeZones = workScheduleTimeZones;
 	}
-
+	
+	public void setChildCareSchedules(List<ChildCareSchedule> childCareSchedules) {
+		this.childCareSchedules = childCareSchedules;
+	}
+	
+	public void setWorkScheduleMaster(ScheMasterInfo scheduleMaster) {
+		this.workScheduleMaster = scheduleMaster;
+	}
 }

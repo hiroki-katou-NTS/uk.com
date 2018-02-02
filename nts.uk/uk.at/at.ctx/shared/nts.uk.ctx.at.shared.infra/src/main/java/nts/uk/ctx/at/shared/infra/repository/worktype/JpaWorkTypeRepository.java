@@ -61,10 +61,11 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static final String DELETE_WORKTYPE_SET = "DELETE FROM KshmtWorkTypeSet c "
 			+ "WHERE c.kshmtWorkTypeSetPK.companyId =:companyId "
 			+ "AND c.kshmtWorkTypeSetPK.workTypeCode =:workTypeCode ";
-	
-	// findWorkType(java.lang.String, java.lang.Integer, java.util.List, java.util.List)
+
+	// findWorkType(java.lang.String, java.lang.Integer, java.util.List,
+	// java.util.List)
 	private static String FIND_WORKTYPE_ALLDAY_AND_HALFDAY;
-	
+	private static String FIND_WORKTYPE_ONEDAY;
 	static {
 		StringBuilder builder = new StringBuilder();
 		builder.append(SELECT_FROM_WORKTYPE);
@@ -75,6 +76,15 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		builder.append(" OR c.afternoonAtr IN :afternoonAtrs)");
 		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
 		FIND_WORKTYPE_ALLDAY_AND_HALFDAY = builder.toString();
+	}
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_FROM_WORKTYPE);
+		builder.append(" WHERE c.kshmtWorkTypePK.companyId = :companyId");
+		builder.append(" AND c.deprecateAtr = :abolishAtr");
+		builder.append(" AND c.worktypeAtr = :worktypeAtr");
+		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
+		FIND_WORKTYPE_ONEDAY = builder.toString();
 	}
 
 	private static WorkType toDomain(KshmtWorkType entity) {
@@ -257,5 +267,11 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.setParameter("workTypeCode", workTypeCd).executeUpdate();
 	}
 
-	
+	@Override
+	public List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr) {
+		return this.queryProxy().query(FIND_WORKTYPE_ONEDAY, KshmtWorkType.class).setParameter("companyId", companyId)
+				.setParameter("abolishAtr", abolishAtr).setParameter("worktypeAtr", worktypeAtr)
+				.getList(x -> toDomain(x));
+	}
+
 }
