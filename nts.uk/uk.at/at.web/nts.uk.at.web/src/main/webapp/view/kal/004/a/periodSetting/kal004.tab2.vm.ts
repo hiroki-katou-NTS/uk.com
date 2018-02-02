@@ -57,7 +57,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             var self = this;
             var categoryId = ModelCheckConditonCode.categoryId;
             if(categoryId == 2){
-                var param = ModelCheckConditonCode.extractionPeriodUnit.segmentationOfCycle
+                var param = ModelCheckConditonCode.extractionPeriodUnit.segmentationOfCycle;
                 nts.uk.ui.windows.setShared("segmentationOfCycle", param);
                 nts.uk.ui.windows.setShared("categoryName", ModelCheckConditonCode.categoryName);
                 nts.uk.ui.windows.sub.modal("../f/index.xhtml").onClosed(() => {
@@ -101,8 +101,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         private changeExtractionDaily(extractionDailyDto: share.ExtractionDailyDto, categoryId: number): void {
             var self = this;
             var oldItem = _.find(self.listStorageCheckCondition(), ['alarmCategory', categoryId]);
-            var newItem = oldItem.setExtractPeriod(new share.ExtractionPeriodDailyCommand(extractionDailyDto));
-            self.listStorageCheckCondition.replace(oldItem,newItem);
+            oldItem.setExtractPeriod(new share.ExtractionPeriodDailyCommand(extractionDailyDto));
             var listCheckConditionDto: Array<share.CheckConditionCommand> = [];
             _.forEach(self.listCheckCondition(), (category: share.CheckConditionCommand) =>{
                 if(category.alarmCategory == categoryId){
@@ -117,8 +116,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             var self = this;
             var oldItem = _.find(self.listStorageCheckCondition(), ['alarmCategory', categoryId]);
             var PeriodUnitCommand = ({extractionId: extractionId,extractionRange: 3,segmentationOfCycle: segmentationOfCycle});
-            var newItem = oldItem.setExtractUnit(new share.PeriodUnitCommand({extractionId: extractionId,extractionRange: 3,segmentationOfCycle: segmentationOfCycle}));
-            self.listStorageCheckCondition.replace(oldItem,newItem);
+            oldItem.setExtractUnit(new share.PeriodUnitCommand({extractionId: extractionId,extractionRange: 3,segmentationOfCycle: segmentationOfCycle}));
             var listCheckConditionDto: Array<share.CheckConditionCommand> = [];
             _.forEach(self.listCheckCondition(), (category: share.CheckConditionCommand) =>{
                 if(category.alarmCategory == categoryId){
