@@ -92,7 +92,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 nts.uk.ui.windows.setShared("categoryName", ModelCheckConditonCode.categoryName);
                 nts.uk.ui.windows.sub.modal("../b/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("extractionDaily");
-                    if(!nts.uk.util.isNullOrUndefined(data) && !nts.uk.util.isNullOrUndefined(data.decisionEnum)){
+                    if(!nts.uk.util.isNullOrUndefined(data)){
                         self.changeExtractionDaily(data,categoryId);
                     }
                 });
