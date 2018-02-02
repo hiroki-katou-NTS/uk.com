@@ -3881,47 +3881,47 @@ button.nts-switch-button[disabled]:hover {
   color: blue;
   position: relative;
 }
-/* line 3, ../sass/components/_functionpanel.scss */
+/* line 4, ../sass/components/_functionpanel.scss */
 .ntsFunctionPanel .function-header {
   background-color: GreenYellow;
   border-radius: 5px;
   line-height: 30px;
   height: 30px;
 }
-/* line 10, ../sass/components/_functionpanel.scss */
+/* line 11, ../sass/components/_functionpanel.scss */
 .ntsFunctionPanel .function-items {
   background-color: MistyRose;
   border-radius: 5px;
   position: absolute;
   z-index: 990;
 }
-/* line 14, ../sass/components/_functionpanel.scss */
+/* line 17, ../sass/components/_functionpanel.scss */
 .ntsFunctionPanel .function-items .function-item-container {
   line-height: 30px;
   height: 30px;
 }
-/* line 18, ../sass/components/_functionpanel.scss */
+/* line 21, ../sass/components/_functionpanel.scss */
 .ntsFunctionPanel .function-items .function-item-container a {
   text-decoration: underline;
 }
-/* line 24, ../sass/components/_functionpanel.scss */
+/* line 27, ../sass/components/_functionpanel.scss */
 .ntsFunctionPanel .function-item-container {
   margin-bottom: 3px;
 }
-/* line 28, ../sass/components/_functionpanel.scss */
+/* line 31, ../sass/components/_functionpanel.scss */
 .ntsFunctionPanel .function-icon {
   width: 20%;
   line-height: 30px;
   height: 30px;
   float: left;
 }
-/* line 34, ../sass/components/_functionpanel.scss */
+/* line 37, ../sass/components/_functionpanel.scss */
 .ntsFunctionPanel .function-icon img {
   max-width: 100%;
   max-height: 100%;
   user-select: none;
 }
-/* line 41, ../sass/components/_functionpanel.scss */
+/* line 44, ../sass/components/_functionpanel.scss */
 .ntsFunctionPanel .function-link {
   width: 80%;
   vertical-align: middle;
@@ -3929,7 +3929,7 @@ button.nts-switch-button[disabled]:hover {
   height: 30px;
   float: left;
 }
-/* line 48, ../sass/components/_functionpanel.scss */
+/* line 51, ../sass/components/_functionpanel.scss */
 .ntsFunctionPanel .function-link a {
   cursor: pointer;
   user-select: none;
