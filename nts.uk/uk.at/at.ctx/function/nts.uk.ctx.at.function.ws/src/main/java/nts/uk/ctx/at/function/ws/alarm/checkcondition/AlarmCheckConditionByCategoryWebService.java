@@ -42,6 +42,12 @@ public class AlarmCheckConditionByCategoryWebService extends WebService {
 	}
 	
 	@POST
+	@Path("findOne/{category}/{code}")
+	public AlarmCheckConditionByCategoryDto findAll(@PathParam("category") int category, @PathParam("code") String code){
+		return this.finder.getDataByCode(category, code);
+	}
+	
+	@POST
 	@Path("findDailyErrorAlarmCheck")
 	public List<DailyErrorAlarmCheckDto> findDailyErrorAlarmCheck(){
 		return this.finder.getDailyErrorAlarmCheck();

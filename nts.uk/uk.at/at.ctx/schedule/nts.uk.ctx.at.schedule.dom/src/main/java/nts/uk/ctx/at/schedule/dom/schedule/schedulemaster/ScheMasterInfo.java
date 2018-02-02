@@ -20,7 +20,7 @@ public class ScheMasterInfo {
 	private GeneralDate generalDate;
 	
 	/** 雇用コード */
-	private String employeeCd;
+	private String employmentCd;
 	
 	/** 分類コード */
 	private String classificationCd;
@@ -33,4 +33,10 @@ public class ScheMasterInfo {
 	
 	/** 職場ID */
 	private String workplaceId;
+
+	public static ScheMasterInfo createFromJavaType(String sId, GeneralDate generalDate, String employmentCd,
+			String classificationCd, String workTypeCd, String jobId, String workplaceId) {
+
+		return new ScheMasterInfo(sId, generalDate, employmentCd, classificationCd, workTypeCd, jobId, workplaceId);
+	}
 }

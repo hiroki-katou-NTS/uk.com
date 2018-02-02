@@ -23,5 +23,10 @@ public interface StampRequestSettingRepository {
 	 * @author yennth
 	 */
 	void insertStamp(StampRequestSetting stamp);
-	
+	/**
+	 * delete stamp request setting
+	 * @param stamp
+	 * @author tanlv
+	 */
+	void deleteStamp(String companyID);
 }

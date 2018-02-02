@@ -49,4 +49,13 @@ public interface ApplicationRepository_New {
 	 * @return
 	 */
 	public List<Application_New> getListAppByReflect(String companyId, GeneralDate startDate, GeneralDate endDate);
+	/**
+	 * get List Application Pre
+	 * @param companyId
+	 * @param sID
+	 * @param appDate
+	 * @param prePostAtr
+	 * @return
+	 */
+	public List<Application_New> getListAppPre(String companyId, String sID, GeneralDate appDate, int prePostAtr);
 }

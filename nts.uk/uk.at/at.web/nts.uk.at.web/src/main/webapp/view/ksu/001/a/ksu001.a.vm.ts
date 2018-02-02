@@ -771,10 +771,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").on("extablecellupdated", function() { });
                 $("#extable").on("extablerowupdated", function() { });
 
+
                 /**
                  * validate when stick data in cell
                  */
                 $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
+
+                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '000据え置き') {
+                        //TO-DO
+                    }
+
                     let stateWorkTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
                     // if workTypeCode is not required( state = 2) worktime is needless
                     if (stateWorkTypeCd && stateWorkTypeCd.state == 2 && data.workTimeCode !== null && data.workTimeCode !== '000') {
@@ -788,7 +794,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             alertError({ messageId: 'Msg_435' });
                         };
                     }
-
                     return true;
                 });
             }).always(() => {
@@ -801,7 +806,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateDetailAndHorzSum(): void {
             let self = this;
-
             //Get dates in time period
             let currentDay = new Date(self.dtPrev().toString());
             self.arrDay = [];
@@ -876,6 +880,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                     $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
                     $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
+
+
                     self.stopRequest(true);
                 });
             } else if (self.selectedModeDisplayObject() == 1) {
@@ -910,7 +916,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         //dataSource of detail
                         _.each(self.listSid(), (x) => {
                             let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
-                            newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+                            newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(),
+                                __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
                         });
 
                         let updateDetailContent = {
@@ -938,6 +945,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -974,7 +982,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // actual data display mode , if hasn't actual data, display intended data
                         _.each(self.listSid(), (x) => {
                             let dsOfSid: any = _.filter(self.dataSource(), ['employeeId', x]);
-                            newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+                            newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(),
+                                __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
                         });
 
                         let updateDetailContent = {
@@ -1002,6 +1011,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1012,7 +1022,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         /**
-         * Shift condition  A2_4
+         * Shift condition A2_4
          */
         initShiftCondition(): JQueryPromise<any> {
             let self = this,
@@ -1340,6 +1350,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             for (let i = 0; i < arrCell.length; i += 1) {
+                let workScheduleTimeZone: any = self.selectedModeDisplay() != 1 ? [{
+                    scheduleCnt: 1,
+                    scheduleStartClock: (typeof arrCell[i].value.startTime === 'number') ? arrCell[i].value.startTime
+                        : (arrCell[i].value.startTime ? moment.duration(arrCell[i].value.startTime).asMinutes() : null),
+                    scheduleEndClock: (typeof arrCell[i].value.endTime === 'number') ? arrCell[i].value.endTime
+                        : (arrCell[i].value.endTime ? moment.duration(arrCell[i].value.endTime).asMinutes() : null),
+                    //set static bounceAtr =  1
+                    bounceAtr: 1
+                }] : null;
+
+
                 arrObj.push({
                     // slice string '_YYYYMMDD' to 'YYYYMMDD'
                     date: moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
@@ -1349,15 +1370,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     //TO-DO 
                     //set static confirmedAtr= 0
                     confirmedAtr: 0,
-                    workScheduleTimeZoneSaveCommands: [{
-                        scheduleCnt: 1,
-                        scheduleStartClock: (typeof arrCell[i].value.startTime === 'number') ? arrCell[i].value.startTime
-                            : (arrCell[i].value.startTime ? moment.duration(arrCell[i].value.startTime).asMinutes() : null),
-                        scheduleEndClock: (typeof arrCell[i].value.endTime === 'number') ? arrCell[i].value.endTime
-                            : (arrCell[i].value.endTime ? moment.duration(arrCell[i].value.endTime).asMinutes() : null),
-                        //set static bounceAtr =  1
-                        bounceAtr: 1
-                    }]
+                    workScheduleTimeZoneSaveCommands: workScheduleTimeZone
                 });
             }
 

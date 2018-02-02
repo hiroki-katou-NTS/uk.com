@@ -7,7 +7,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         listCheckCondition: KnockoutObservableArray<share.CheckConditionCommand> = ko.observableArray([]);
         listStorageCheckCondition: KnockoutObservableArray<share.CheckConditionCommand> = ko.observableArray([]);
         ListView: KnockoutObservableArray<ModelCheckConditonCode>;
-        
+        isCreateMode: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             
@@ -16,6 +16,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             });
             self.ListView = ko.observableArray([]);
             $("#fixed-table").ntsFixedTable({ height: 320, width: 830 });
+            self.isCreateMode = ko.observable(true);
         }
 
         private changeCheckCondition(listCheckCode: Array<share.CheckConditionCommand>): void {
@@ -49,14 +50,19 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 });        
             }
             self.listCheckCondition(listCheckConditionDto);
-            self.ListView(listConverToview);
+            self.ListView(_.orderBy(listConverToview,'categoryId','asc'));
         }
 
         private openDialog(ModelCheckConditonCode): void {
             var self = this;
-            var param = ModelCheckConditonCode.extractionPeriodDaily;
             var categoryId = ModelCheckConditonCode.categoryId;
+            if(categoryId == 2){
+                nts.uk.ui.windows.sub.modal("../f/index.xhtml").onClosed(() => {
+                    
+                }
+            }
             if(categoryId == 5 || categoryId == 13){
+                var param = ModelCheckConditonCode.extractionPeriodDaily;
                 var ExtractionDailyDto = {
                     extractionId: param.extractionId,
                     extractionRange: param.extractionRange,

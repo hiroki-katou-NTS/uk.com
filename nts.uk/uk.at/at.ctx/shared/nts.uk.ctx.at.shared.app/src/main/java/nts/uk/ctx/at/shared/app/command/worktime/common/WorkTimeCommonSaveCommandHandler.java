@@ -63,7 +63,7 @@ public class WorkTimeCommonSaveCommandHandler {
 		if (command.isAddMode()) {
 			// Validate
 			this.validate(command, workTimeSetting, predseting);
-
+			
 			// call repository add work time setting
 			this.workTimeSettingRepository.add(workTimeSetting);
 
