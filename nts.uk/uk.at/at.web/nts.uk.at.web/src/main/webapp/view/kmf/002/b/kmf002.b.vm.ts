@@ -93,7 +93,7 @@ module nts.uk.at.view.kmf002.b {
                $('#tree-grid').ntsTreeComponent(_self.treeGrid).done(() => {
                     _self.getDataFromService();
                    _self.baseDate(new Date(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth()[0].month()-1, 2));
-                    nts.uk.ui.errors.clearAll();
+//                    nts.uk.ui.errors.clearAll();
                     dfd.resolve();    
                });
                return dfd.promise();   
@@ -101,7 +101,6 @@ module nts.uk.at.view.kmf002.b {
             
             public saveWorkpalce(): void {
                 let _self = this;
-//                _self.validateInput();
                 if (!nts.uk.ui.errors.hasError()) {
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), 
                                     _self.commonTableMonthDaySet().arrMonth(), 
@@ -124,10 +123,6 @@ module nts.uk.at.view.kmf002.b {
                 }).ifCancel(() => {
                 }).then(() => {
                 });   
-            }
-            
-            private validateInput(): void {
-                $('.validateInput').ntsEditor("validate");        
             }
             
             public getDataFromService(): void {
@@ -161,7 +156,7 @@ module nts.uk.at.view.kmf002.b {
                                                                               'enable': ko.observable(true)});    
                             } 
                             _self.enableDelete(true);
-                        }            
+                        }         
                     });
                     
                 } else {

@@ -35,7 +35,7 @@ module nts.uk.at.view.kmf002.c {
         export function remove(year: string, sId: string): JQueryPromise<any> {
             let command: any = {};
             command.year = year;
-            command.sId = sId;
+            command.employeeId = sId;
             return nts.uk.request.ajax("com", path.remove, command);
         }
         
