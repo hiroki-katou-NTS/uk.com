@@ -24,7 +24,7 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRep;
-	
+
 	@Inject
 	private EmpInfoItemDataRepository empInfoRepo;
 
@@ -38,7 +38,7 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 		if (itemDef == null || itemDef.getIsFixed() == IsFixed.FIXED) {
 			return null;
 		}
-		if (checkQuantityItemData(itemDef.getItemCode().toString(), companyIdList)) {
+		if (checkQuantityItemData(itemDef.getItemCode().toString(), itemDef.getPerInfoCategoryId(), companyIdList)) {
 			return "Msg_214";
 		}
 		PersonInfoCategory category = this.perInfoCtgRep.getPerInfoCategory(itemDef.getPerInfoCategoryId(), contractCd)
@@ -47,20 +47,20 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 			return null;
 		}
 		List<String> perInfoCtgIds = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList,
-				category.getCategoryCode().v());	
+				category.getCategoryCode().v());
 		perInfoCtgIds.add(itemDef.getPerInfoCategoryId());
 		this.pernfoItemDefRep.removePerInfoItemDefRoot(perInfoCtgIds, category.getCategoryCode().v(), contractCd,
 				itemDef.getItemCode().v());
 		return null;
 	}
 
-	private boolean checkQuantityItemData(String itemCd, List<String> companyId) {
-		
-		List<EmpInfoItemData> itemList = this.empInfoRepo.getAllInfoItem(itemCd, companyId);
-		if(itemList.size() > 0) {
+	private boolean checkQuantityItemData(String itemCd, String perInfoCtgId, List<String> companyId) {
+
+		List<EmpInfoItemData> itemList = this.empInfoRepo.getAllInfoItem(itemCd, perInfoCtgId, companyId);
+		if (itemList.size() > 0) {
 			return true;
 		}
-		
+
 		return false;
 	}
 

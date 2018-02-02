@@ -23,5 +23,5 @@ public interface EmpInfoItemDataRepository {
 	
 	void deleteEmployInfoItemData(String recordID);
 	
-	List<EmpInfoItemData> getAllInfoItem(String itemCd, List<String> companyId);
+	List<EmpInfoItemData> getAllInfoItem(String itemCd, String perInfoCtgId, List<String> companyId);
 }
