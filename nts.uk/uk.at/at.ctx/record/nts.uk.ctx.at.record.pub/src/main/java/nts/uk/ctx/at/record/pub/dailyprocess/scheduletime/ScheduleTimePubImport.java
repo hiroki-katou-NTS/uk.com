@@ -2,14 +2,11 @@ package nts.uk.ctx.at.record.pub.dailyprocess.scheduletime;
 
 import java.util.List;
 
-<<<<<<< HEAD:nts.uk/uk.at/at.ctx/record/nts.uk.ctx.at.record.pub/src/main/java/nts/uk/ctx/at/record/pub/dailyprocess/scheduletime/ScheduleTimePubImport.java
 import lombok.Getter;
-=======
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
->>>>>>> 5176584dd8325929063a703f41b1cad173d78428:nts.uk/uk.at/at.ctx/record/nts.uk.ctx.at.record.pub/src/main/java/nts/uk/ctx/at/record/pub/scheduletime/ScheduleTimePubImport.java
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -21,12 +18,9 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  *
  */
 @Getter
-<<<<<<< HEAD:nts.uk/uk.at/at.ctx/record/nts.uk.ctx.at.record.pub/src/main/java/nts/uk/ctx/at/record/pub/dailyprocess/scheduletime/ScheduleTimePubImport.java
-=======
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
->>>>>>> 5176584dd8325929063a703f41b1cad173d78428:nts.uk/uk.at/at.ctx/record/nts.uk.ctx.at.record.pub/src/main/java/nts/uk/ctx/at/record/pub/scheduletime/ScheduleTimePubImport.java
 public class ScheduleTimePubImport {
 
 	//社員ID

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 public class ScheduleTimePubImpl implements ScheduleTimePub{
 
 	@Override
-	public ScheduleTimePubExport CalculationScheduleTime(ScheduleTimePubImport impTime) {
+	public ScheduleTimePubExport calculationScheduleTime(ScheduleTimePubImport impTime) {
 		
 		return new ScheduleTimePubExport(impTime.getEmployeeId(),
 										 GeneralDate.today(),
