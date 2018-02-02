@@ -4,20 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.singlesignon;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
  * The Interface OtherSysAccountRepository.
  */
 public interface OtherSysAccountRepository {
-	
 
 	/**
 	 * Removes the.
 	 *
 	 * @param userId the user id
-	 * @param companyCode the company code
-	 * @param userName the user name
 	 */
 	void remove(String userId);
 
@@ -27,8 +25,6 @@ public interface OtherSysAccountRepository {
 	 * @param otherSysAccount the other sys account
 	 */
 	void add(OtherSysAccount otherSysAccount);
-	
-	
 
 	/**
 	 * Find by company code and user name.
@@ -38,7 +34,7 @@ public interface OtherSysAccountRepository {
 	 * @return the optional
 	 */
 	Optional<OtherSysAccount> findByCompanyCodeAndUserName(String companyCode, String userName);
-	
+
 	/**
 	 * Find by user id.
 	 *
@@ -46,6 +42,21 @@ public interface OtherSysAccountRepository {
 	 * @return the optional
 	 */
 	Optional<OtherSysAccount> findByUserId(String userId);
-	
+
+	/**
+	 * Update.
+	 *
+	 * @param otherSysAccCommand the other sys acc command
+	 * @param otherSysAccDB the other sys acc DB
+	 */
 	void update(OtherSysAccount otherSysAccCommand, OtherSysAccount otherSysAccDB);
+
+	/**
+	 * Find all other sys account.
+	 *
+	 * @param listUserId the list user id
+	 * @return the list
+	 */
+	List<OtherSysAccount> findAllOtherSysAccount(List<String> listUserId);
+
 }
