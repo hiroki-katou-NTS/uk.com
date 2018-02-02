@@ -128,7 +128,8 @@ public class ComboBoxRetrieveFactory {
 		aMap.put("E00009", TimeZoneScheduledMasterAtr.class);
 		// 時給者区分
 		aMap.put("E00010", HourlyPaymentAtr.class);
-		// 時給者区分
+		// するしない区分
+		aMap.put("E00011", NotUseAtr.class);
 
 		enumMap = Collections.unmodifiableMap(aMap);
 	}
