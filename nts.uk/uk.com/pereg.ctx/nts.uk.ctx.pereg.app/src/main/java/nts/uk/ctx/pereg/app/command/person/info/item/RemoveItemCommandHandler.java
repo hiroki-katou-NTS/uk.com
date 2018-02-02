@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.pereg.app.command.person.info.category.GetListCompanyOfContract;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
+import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -22,6 +24,9 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRep;
+	
+	@Inject
+	private EmpInfoItemDataRepository empInfoRepo;
 
 	@Override
 	protected String handle(CommandHandlerContext<RemoveItemCommand> context) {
@@ -33,7 +38,7 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 		if (itemDef == null || itemDef.getIsFixed() == IsFixed.FIXED) {
 			return null;
 		}
-		if (checkQuantityItemData()) {
+		if (checkQuantityItemData(itemDef.getItemCode().toString(), companyIdList)) {
 			return "Msg_214";
 		}
 		PersonInfoCategory category = this.perInfoCtgRep.getPerInfoCategory(itemDef.getPerInfoCategoryId(), contractCd)
@@ -42,23 +47,20 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 			return null;
 		}
 		List<String> perInfoCtgIds = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList,
-				category.getCategoryCode().v());
+				category.getCategoryCode().v());	
 		perInfoCtgIds.add(itemDef.getPerInfoCategoryId());
 		this.pernfoItemDefRep.removePerInfoItemDefRoot(perInfoCtgIds, category.getCategoryCode().v(), contractCd,
 				itemDef.getItemCode().v());
 		return null;
 	}
 
-	private boolean checkQuantityItemData() {
-		// TODO-TuongVC: sau nay khi lam den domain [PersonInfoItemData] can
-		// hoan thien not
-		/*
-		 * activity lien quan: [PersonInfoItemData] ở đây lấy như thế nào nhỉ
-		 * Đứclần giải thích tiếp theo sẽ có giải thích về bảng này anh cứ viết
-		 * method check để return true là mặc định sau khi có bảng rồi thì viết
-		 * logic sau cũng được
-		 */
-		// Hiện tại trả về true ~ số lượng > 1
+	private boolean checkQuantityItemData(String itemCd, List<String> companyId) {
+		
+		List<EmpInfoItemData> itemList = this.empInfoRepo.getAllInfoItem(itemCd, companyId);
+		if(itemList.size() > 0) {
+			return true;
+		}
+		
 		return false;
 	}
 
