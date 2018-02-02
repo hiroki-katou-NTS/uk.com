@@ -4,6 +4,7 @@
 package nts.uk.ctx.pereg.app.find.layoutdef.classification;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ public class LayoutPersonInfoClsFinder {
 	}
 
 	private List<LayoutPersonInfoClsDto> mapItemCls(List<LayoutPersonInfoClsDto> listItemCls) {
-		if (listItemCls.size() > 0) {
+		if (listItemCls != null) {
 			for (LayoutPersonInfoClsDto classDto : listItemCls) {
 				switch (classDto.getLayoutItemType()) {
 				case ITEM: // single item
@@ -102,10 +103,14 @@ public class LayoutPersonInfoClsFinder {
 					break;
 				}
 			}
+			return listItemCls.stream()
+					.filter(m -> (m.getLayoutItemType() != LayoutItemType.SeparatorLine && !m.getListItemDf().isEmpty())
+							|| m.getLayoutItemType() == LayoutItemType.SeparatorLine)
+					.collect(Collectors.toList());
+		} else {
+			return Collections.emptyList();
+
 		}
-		return listItemCls.stream()
-				.filter(m -> (m.getLayoutItemType() != LayoutItemType.SeparatorLine && !m.getListItemDf().isEmpty())
-						|| m.getLayoutItemType() == LayoutItemType.SeparatorLine)
-				.collect(Collectors.toList());
+
 	}
 }

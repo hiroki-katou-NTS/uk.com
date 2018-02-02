@@ -47,21 +47,30 @@ import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemPK;
 public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInfoItemDefRepositoty {
 
 	private final static String SPECIAL_ITEM_CODE = "IO";
+	private final static String SELECT_NO_WHERE = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId,"
+			+ " i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
+			+ " ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,"
+			+ " ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,"
+			+ " ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,"
+			+ " ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,"
+			+ " ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId"
+			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
+			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io"
+			+ " ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId";
+	
+	private final static String COMMON_CONDITION = " ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL"
+			+ " ORDER BY io.disporder";
 
-	private final static String SELECT_ITEMS_BY_CATEGORY_ID_QUERY = String.join(" ",
-			"SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,",
-			"ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,",
-			"ic.dataType, ic.timeItemMin, ic.timeItemMax, ic.timepointItemMin, ic.timepointItemMax, ic.dateItemType,",
-			"ic.stringItemType, ic.stringItemLength, ic.stringItemDataType, ic.numericItemMin, ic.numericItemMax, ic.numericItemAmountAtr,",
-			"ic.numericItemMinusAtr, ic.numericItemDecimalPart, ic.numericItemIntegerPart,",
-			"ic.selectionItemRefType, ic.selectionItemRefCode, i.perInfoCtgId",
-			"FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
-			"INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd",
-			"AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io",
-			"ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId",
-			"WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL",
-			"ORDER BY io.disporder");
-
+	private final static String SELECT_ITEMS_BY_CATEGORY_ID_QUERY = SELECT_NO_WHERE
+			+ " WHERE " + COMMON_CONDITION;
+			
+	private final static String SELECT_ITEM_BY_CTG_WITH_AUTH = SELECT_NO_WHERE 
+			+ " INNER JOIN PpemtPersonItemAuth au "
+			+ " ON i.ppemtPerInfoItemPK.perInfoItemDefId = au.ppemtPersonItemAuthPk.personItemDefId"
+			+ " AND i.perInfoCtgId = au.ppemtPersonItemAuthPk.personInfoCategoryAuthId "
+			+ " WHERE i.abolitionAtr = 0 AND au.ppemtPersonItemAuthPk.roleId = :roleId";
+	
 	private final static String SELECT_ITEMS_BY_CATEGORY_ID_WITHOUT_SETITEM_QUERY = String.join(" ",
 			"SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,",
 			"ic.itemParentCd, ic.systemRequiredAtr, ic.requireChangabledAtr, ic.fixedAtr, ic.itemType,",
@@ -738,6 +747,18 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 		return this.queryProxy().query(SEL_ITEM_USED, Object[].class).setParameter("perInfoCtgId", ctgId)
 				.getList(i -> toDomain(i));
+	}
+	
+	@Override
+	public List<PersonInfoItemDefinition> getAllItemByCtgWithAuth(String perInfoCategoryId, String contractCd,
+			String roleId, boolean isSelfRef) {
+		String query = SELECT_ITEM_BY_CTG_WITH_AUTH + " AND "+ (isSelfRef ? " au.selfAuthType != 1 " : " au.otherPersonAuthType != 1 ") + " AND " +COMMON_CONDITION;
+		return this.queryProxy().query(query, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCategoryId)
+				.setParameter("roleId", roleId).getList(i -> {
+					List<String> items = getChildIds(contractCd, perInfoCategoryId, String.valueOf(i[1]));
+					return createDomainFromEntity(i, items);
+				});
 	}
 
 }

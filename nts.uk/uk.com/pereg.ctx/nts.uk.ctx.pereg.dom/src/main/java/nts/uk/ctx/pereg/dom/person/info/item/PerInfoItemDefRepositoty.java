@@ -8,6 +8,8 @@ import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
 public interface PerInfoItemDefRepositoty {
 
 	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCategoryId, String contractCd);
+	
+	List<PersonInfoItemDefinition> getAllItemByCtgWithAuth(String perInfoCategoryId, String contractCd, String roleId, boolean isSelfRef);
 
 	Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd);
 

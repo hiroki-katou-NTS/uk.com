@@ -387,46 +387,35 @@ public class PeregProcessor {
 	
 	private List<PerInfoItemDefForLayoutDto> getPerItemDefForLayout(ParamForGetPerItem paramObject, String empId, boolean isCtgViewOnly, GeneralDate sDate){
 		// get per info item def with order
-		List<PersonInfoItemDefinition> lstPerInfoDef = perItemRepo.getAllPerInfoItemDefByCategoryId(
-				paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), paramObject.getContractCode());
+		List<PersonInfoItemDefinition> lstPerInfoDef = perItemRepo.getAllItemByCtgWithAuth(paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), 
+				paramObject.getContractCode(), paramObject.getRoleId(), paramObject.isSelfAuth());
 		List<PerInfoItemDefForLayoutDto> lstReturn = new ArrayList<>();
 		PersonInfoItemDefinition x;
 		PerInfoItemDefForLayoutDto item;
 		for(int i = 0; i < lstPerInfoDef.size(); i++) {
 			x = lstPerInfoDef.get(i);
-			if(x.getIsAbolition() == IsAbolition.ABOLITION) break;
 			
-			Optional<PersonInfoItemAuth> personInfoItemAuth = itemAuthRepo
+			PersonInfoItemAuth personInfoItemAuth = itemAuthRepo
 					.getItemDetai(paramObject.getRoleId(), paramObject.getPersonInfoCategory().getPersonInfoCategoryId(),
-							x.getPerInfoItemDefId());
-			if(personInfoItemAuth.isPresent())
+							x.getPerInfoItemDefId()).get();
 				if(paramObject.isSelfAuth()) {
-					PersonInfoAuthType itemRole = personInfoItemAuth.get().getSelfAuth();
-					if(itemRole != PersonInfoAuthType.HIDE) {
-						//set item
-						
+					PersonInfoAuthType itemRole = personInfoItemAuth.getSelfAuth();
 						item = new PerInfoItemDefForLayoutDto();
 						item.setActionRole(itemRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT);
 						itemForLayoutFinder.setItemForLayout(item, empId, paramObject.getPersonInfoCategory().getCategoryType().value, x, 
 								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate);
-						
-						
-						if(item.getActionRole() != ActionRole.HIDDEN)
 							lstReturn.add(item);
-					}
+					
 				}else {
-					PersonInfoAuthType itemRole = personInfoItemAuth.get().getOtherAuth();
-					if(itemRole != PersonInfoAuthType.HIDE) {
-						//set item
+					PersonInfoAuthType itemRole = personInfoItemAuth.getOtherAuth();
 						item = new PerInfoItemDefForLayoutDto();
 						item.setActionRole(itemRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT);
 						itemForLayoutFinder.setItemForLayout(item, empId, paramObject.getPersonInfoCategory().getCategoryType().value, x, 
 								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate);
-						if(item.getActionRole() != ActionRole.HIDDEN)
 							lstReturn.add(item);
 					}
 				}		
-		}
+		
 		return lstReturn;
 	}
 	
