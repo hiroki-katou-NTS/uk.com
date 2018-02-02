@@ -81,9 +81,7 @@ module nts.uk.at.view.kal004.a.model {
                 let resolve = _.map(res, (x) => { return new share.ModelCheckConditonCode(x) });
                 self.checkSource = _.cloneDeep(resolve);
 
-                self.getAlarmPattern().done(() => {
-                    
-                    block.clear(); 
+                self.getAlarmPattern().done(() => {                  
                     
                     self.initSubscribe();
                     
@@ -92,14 +90,16 @@ module nts.uk.at.view.kal004.a.model {
                     } else {
                         self.checkConditionList(_.cloneDeep(self.checkSource));
                     }
-                    
+                                
                     dfd.resolve();
                 }).always(()=>{
-                    block.clear();                   
+                    block.clear();
+                    errors.clearAll();                   
                 });
             }).fail((error) => {
                 alertError(error);
                 block.clear();
+                errors.clearAll();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -192,6 +192,8 @@ module nts.uk.at.view.kal004.a.model {
                 self.periodSetting.isCreateMode(true);             
                                 
                 $('#alarmCode').focus();
+                 nts.uk.ui.errors.clearAll();
+                
             }
             else {
                 self.createMode(false);
@@ -236,6 +238,7 @@ module nts.uk.at.view.kal004.a.model {
                 self.periodSetting.isCreateMode(false);
                 
                 $('#alarmName').focus();
+                 nts.uk.ui.errors.clearAll();
             }
         }
         
