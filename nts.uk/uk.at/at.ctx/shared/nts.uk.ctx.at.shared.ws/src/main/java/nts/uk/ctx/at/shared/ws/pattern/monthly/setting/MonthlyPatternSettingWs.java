@@ -60,14 +60,25 @@ public class MonthlyPatternSettingWs {
 	/**
 	 * Find by id.
 	 *
-	 * @param employeeId the employee id
 	 * @param historyId the history id
 	 * @return the monthly pattern setting dto
 	 */
 	@POST
-	@Path("findById/{employeeId}")
-	public MonthlyPatternSettingDto findById(@PathParam("employeeId") String employeeId){
-		return this.finder.findById(employeeId);
+	@Path("findById/{historyId}")
+	public MonthlyPatternSettingDto findById(@PathParam("historyId") String historyId){
+		return this.finder.findById(historyId);
+	}
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param historyId the history id
+	 * @return the monthly pattern setting dto
+	 */
+	@POST
+	@Path("findBySId/{employeeId}")
+	public MonthlyPatternSettingDto findBySId(@PathParam("employeeId") String employeeId){
+		return this.finder.findBySId(employeeId);
 	}
 	
 	/**

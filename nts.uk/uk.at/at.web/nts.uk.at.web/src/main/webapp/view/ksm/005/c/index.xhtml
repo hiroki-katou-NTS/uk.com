@@ -24,7 +24,7 @@
 					<a tabindex="-1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
 					
 					<button tabindex="1" class="proceed" data-bind="click: saveMonthlyPatternSetting, enable: enableSave">#{i18n.getText('KSM005_9')}</button>
-					<button tabindex="1" data-bind="click: openDialogCopy, enable: enableCopy">#{i18n.getText('KSM005_20')}</button>
+					<button tabindex="2" data-bind="click: openDialogCopy, enable: enableCopy">#{i18n.getText('KSM005_20')}</button>
 					<button tabindex="3" class="danger" data-bind="click: deleteMonthlyPatternSetting, enable: enableDelete">#{i18n.getText('KSM005_12')}</button>
 				</div>
 				<div class="contents">
@@ -58,7 +58,7 @@
 							data-bind="ntsFormLabel: {required: true}">
 							<label>#{i18n.getText('KSM005_46')}</label>
 						</div>
-						<div style="top: 10px;" id="combo-box" data-bind="ntsComboBox: {
+						<div tabindex="4" style="top: 10px;" id="combo-box" data-bind="ntsComboBox: {
 							options: monthlyPatternList,
 							optionsValue: 'code',
 							visibleItemsCount: 5,

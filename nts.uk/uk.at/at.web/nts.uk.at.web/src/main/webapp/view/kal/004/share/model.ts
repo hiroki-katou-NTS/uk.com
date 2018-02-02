@@ -23,7 +23,7 @@ module nts.uk.at.view.kal004.share.model {
         extractionDaily?: ExtractionDailyDto;
     }
 
-   
+
 
     export interface AlarmCheckConditonCodeDto {
         category: EnumConstantDto;
@@ -47,7 +47,7 @@ module nts.uk.at.view.kal004.share.model {
             this.GUID = dto.category.value + dto.checkConditonCode;
             this.cssClass = "";
         }
-        
+
         public static createNotFoundCheckConditonCode(category: EnumConstantDto, checkConditonCode: string): ModelCheckConditonCode {
             var result = new ModelCheckConditonCode({
                 category: category,
@@ -77,6 +77,7 @@ module nts.uk.at.view.kal004.share.model {
         endCurrentMonth?: number;
         endMonth?: number;
     }
+
 
     export class ExtractionDaily {
         extractionId: KnockoutObservable<string>;
@@ -217,4 +218,21 @@ module nts.uk.at.view.kal004.share.model {
             this.endMonth = extractionDailyDto.endMonth;
         }
     }
+    export interface PeriodUnitDto {
+        extractionId: string;
+        extractionRange: number;
+        segmentationOfCycle: number;
+    }
+    export class PeriodUnitCommand {
+        extractionId: string;
+        extractionRange: number;
+        segmentationOfCycle: number;
+        constructor(periodUnitDto: PeriodUnitDto) {
+            this.extractionId = periodUnitDto.extractionId;
+            this.extractionRange = periodUnitDto.extractionRange;
+            this.segmentationOfCycle = periodUnitDto.segmentationOfCycle;
+            
+        }
+    }
+
 }
