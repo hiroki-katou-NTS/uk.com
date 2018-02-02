@@ -4089,7 +4089,6 @@ var nts;
                         if (!util.isNullOrUndefined(this.constraint.mantissaMaxLength)) {
                             mantissaMaxLength = this.constraint.mantissaMaxLength;
                             var parts = inputText.split(".");
-                            split(".");
                             if (parts[1] !== undefined && parts[1].length > mantissaMaxLength)
                                 validateFail = true;
                         }
@@ -6290,6 +6289,8 @@ var nts;
                         if (selectedValue !== undefined && selectedValue !== null) {
                             container.igCombo("value", selectedValue);
                         }
+                        container.data("columns", _.cloneDeep(columns));
+                        container.data("comboMode", comboMode);
                         var isDropDownWidthSpecified = false;
                         // Set width for multi columns.
                         if (haveColumn && (isChangeOptions || isInitCombo)) {
@@ -6310,8 +6311,6 @@ var nts;
                                 container.find(".ui-igcombo-dropdown").css("width", "auto");
                             }
                         }
-                        container.data("columns", columns);
-                        container.data("comboMode", comboMode);
                     };
                     return ComboBoxBindingHandler;
                 }());
@@ -9145,7 +9144,10 @@ var nts;
                                 var selectItem = _.filter(filtered, function (itemFilterd) {
                                     return _.find(selectedItems, function (item) {
                                         var itemVal = itemFilterd[key_1];
-                                        return itemVal === item["id"];
+                                        if (nts.uk.util.isNullOrUndefined(itemVal) || nts.uk.util.isNullOrUndefined(item["id"])) {
+                                            return false;
+                                        }
+                                        return itemVal.toString() === item["id"].toString();
                                     }) !== undefined;
                                 });
                                 result.selectItems = selectItem;
@@ -9618,7 +9620,10 @@ var nts;
                             var selectItems = _.filter(currentDataSource, function (itemFilterd) {
                                 return _.find(selected, function (item) {
                                     var itemVal = itemFilterd[primaryKey];
-                                    return itemVal === item["id"];
+                                    if (nts.uk.util.isNullOrUndefined(itemVal) || nts.uk.util.isNullOrUndefined(item["id"])) {
+                                        return false;
+                                    }
+                                    return itemVal.toString() === item["id"].toString();
                                 }) !== undefined;
                             });
                             $gridX.ntsGridList("setSelected", _.map(selectItems, primaryKey));
