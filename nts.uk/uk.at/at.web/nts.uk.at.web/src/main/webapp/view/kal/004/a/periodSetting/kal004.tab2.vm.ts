@@ -55,9 +55,14 @@ module nts.uk.at.view.kal004.tab2.viewModel {
 
         private openDialog(ModelCheckConditonCode): void {
             var self = this;
-            var param = ModelCheckConditonCode.extractionPeriodDaily;
             var categoryId = ModelCheckConditonCode.categoryId;
+            if(categoryId == 2){
+                nts.uk.ui.windows.sub.modal("../f/index.xhtml").onClosed(() => {
+                    
+                }
+            }
             if(categoryId == 5 || categoryId == 13){
+                var param = ModelCheckConditonCode.extractionPeriodDaily;
                 var ExtractionDailyDto = {
                     extractionId: param.extractionId,
                     extractionRange: param.extractionRange,
