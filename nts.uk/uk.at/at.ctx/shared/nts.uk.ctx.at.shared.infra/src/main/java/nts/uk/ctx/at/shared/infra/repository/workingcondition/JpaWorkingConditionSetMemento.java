@@ -4,16 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondPK;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkingConditionSetMemento.
@@ -55,9 +52,11 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 	@Override
 	public void setCompanyId(String companyId) {
 		this.companyId = companyId;
-		this.entities.stream().forEach(item -> {
-			item.setCid(companyId);
-		});
+		if (!StringUtil.isNullOrEmpty(companyId, false)) {
+			this.entities.stream().forEach(item -> {
+				item.setCid(companyId);
+			});
+		}
 	}
 
 	/*
@@ -70,11 +69,13 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 	@Override
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
-		this.entities.stream().forEach(item -> {
-			KshmtWorkingCondPK kshmtWorkingCondPK = item.getKshmtWorkingCondPK();
-			kshmtWorkingCondPK.setSid(employeeId);
-			item.setKshmtWorkingCondPK(new KshmtWorkingCondPK());
-		});
+		if (StringUtil.isNullOrEmpty(employeeId, false)){
+			this.entities.stream().forEach(item -> {
+				KshmtWorkingCondPK kshmtWorkingCondPK = item.getKshmtWorkingCondPK();
+				kshmtWorkingCondPK.setSid(employeeId);
+				item.setKshmtWorkingCondPK(new KshmtWorkingCondPK());
+			});
+		}
 	}
 
 	/*
@@ -107,19 +108,21 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 //				item.setEndD(mapHistoryItems.get(kshmtWorkingCondPK.getHistoryId()).end());
 //			}
 //		});
-
-		dateHistoryItems.stream().forEach(item -> {
-//			if (!entityHistIds.contains(item.identifier())) {
-				KshmtWorkingCond entity = new KshmtWorkingCond();
-				KshmtWorkingCondPK kshmtWorkingCondPK = new KshmtWorkingCondPK(employeeId,
-						item.identifier());
-				entity.setKshmtWorkingCondPK(kshmtWorkingCondPK);
-				entity.setCid(companyId);
-				entity.setStrD(item.start());
-				entity.setEndD(item.end());
-				this.entities.add(entity);
-//			}
-		});
+		
+		if (dateHistoryItems != null) {
+			dateHistoryItems.stream().forEach(item -> {
+//				if (!entityHistIds.contains(item.identifier())) {
+					KshmtWorkingCond entity = new KshmtWorkingCond();
+					KshmtWorkingCondPK kshmtWorkingCondPK = new KshmtWorkingCondPK(employeeId,
+							item.identifier());
+					entity.setKshmtWorkingCondPK(kshmtWorkingCondPK);
+					entity.setCid(companyId);
+					entity.setStrD(item.start());
+					entity.setEndD(item.end());
+					this.entities.add(entity);
+//				}
+			});
+		}
 
 	}
 
