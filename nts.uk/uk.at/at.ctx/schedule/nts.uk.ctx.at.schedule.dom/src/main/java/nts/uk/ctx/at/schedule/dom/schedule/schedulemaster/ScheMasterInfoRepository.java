@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
  *
  */
 public interface ScheMasterInfoRepository {
-	Optional<ScheMasterInfo> getScheMasterInfo(String sId);
+	Optional<ScheMasterInfo> getScheMasterInfo(String sId, GeneralDate generalDate);
 	
 	void addScheMasterInfo(ScheMasterInfo scheMasterInfo);
 	

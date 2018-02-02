@@ -21,6 +21,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedul
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
+import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 
@@ -56,6 +57,9 @@ public class BasicScheduleSaveCommand {
 	/** The child care schedules. */
 	private List<ChildCareScheduleSaveCommand> childCareSchedules;
 	
+	private WorkScheduleTime workScheduleTime;
+		
+	private ScheMasterInfo workScheduleMaster;
 	
 	/**
 	 * Update work schedule time zones.
@@ -94,7 +98,9 @@ public class BasicScheduleSaveCommand {
 	 * @return the basic schedule
 	 */
 	public BasicSchedule toDomain(){
-		return new BasicSchedule(new BasicScheduleSaveCommandGetMementoImpl());
+		BasicSchedule result = new BasicSchedule(new BasicScheduleSaveCommandGetMementoImpl());
+		result.setWorkScheduleMaster(this.workScheduleMaster);
+		return result;
 	}
 	
 	/**
@@ -223,6 +229,5 @@ public class BasicScheduleSaveCommand {
 			return childCareSchedules.stream().map(command -> new ChildCareSchedule(command))
 					.collect(Collectors.toList());
 		}
-
 	}
 }
