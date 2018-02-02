@@ -25,7 +25,6 @@ module nts.uk.at.view.kmf002.e {
             
             public save(): void {
                 let _self = this;
-//                _self.validateInput();
                 if (!nts.uk.ui.errors.hasError()) {
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth()).done((data) => {
                         _self.enableDelete(true);
@@ -46,10 +45,6 @@ module nts.uk.at.view.kmf002.e {
                 }).ifCancel(() => {
                 }).then(() => {
                 });   
-            }
-            
-            private validateInput(): void {
-                $('.validateInput').ntsEditor("validate");        
             }
             
             /**
@@ -80,9 +75,10 @@ module nts.uk.at.view.kmf002.e {
                         _self.enableDelete(true);
                     }
                     dfd.resolve();
+                    
                 });
                 
-                nts.uk.ui.errors.clearAll();
+//                nts.uk.ui.errors.clearAll();
             
                 return dfd.promise();
             }

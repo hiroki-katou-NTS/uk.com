@@ -96,7 +96,7 @@ module nts.uk.at.view.kmf002.d {
                 $('#empt-list-setting').ntsListComponent(_self.listComponentOption).done(function(){
                     _self.catchChangeSelectEmp();
                     _self.getDataFromService();
-                    nts.uk.ui.errors.clearAll();
+//                    nts.uk.ui.errors.clearAll();
                     dfd.resolve();    
                 });
                 return dfd.promise();
@@ -104,7 +104,6 @@ module nts.uk.at.view.kmf002.d {
 
             private save(): void {
                 let _self = this;
-//                _self.validateInput();
                 if (!nts.uk.ui.errors.hasError()) {
                     service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), _self.selectedCode()).done((data) => {
                         _self.getDataFromService();
@@ -125,15 +124,9 @@ module nts.uk.at.view.kmf002.d {
                 }).then(() => {
                 });   
             }
-            
-            private validateInput(): void {
-                $('.validateInput').ntsEditor("validate");        
-            }
-            
 
             public getDataFromService(): void {
                 let _self = this;
-                
                  $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(), _self.selectedCode()), 
                                     service.findFirstMonth(),
                                     service.findAllEmpRegister()).done(function(data: any, data2: any, data3: any) {
@@ -158,7 +151,7 @@ module nts.uk.at.view.kmf002.d {
                             _self.commonTableMonthDaySet().arrMonth.push({'month': ko.observable(data.publicHolidayMonthSettings[i].month), 'day': ko.observable(data.publicHolidayMonthSettings[i].inLegalHoliday), 'enable': ko.observable(true)});    
                         } 
                         _self.enableDelete(true);
-                    }            
+                    }          
                 });
             }
         }
