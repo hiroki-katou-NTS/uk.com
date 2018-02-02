@@ -88,20 +88,33 @@ module nts.uk.at.view.kal003.b.viewmodel{
 
             let comparisonValueRange;
             
-            if (erAlAtdItemCondition.compareOperator() > 5
-                || erAlAtdItemCondition.conditionType() == ConditionType.FIXED_VALUE
-                ) {
-                comparisonValueRange = new model.ComparisonValueRange(
-                    self.workRecordExtractingCondition().checkItem
-                    , erAlAtdItemCondition.compareOperator
-                    , erAlAtdItemCondition .compareStartValue()
-                    , erAlAtdItemCondition.compareEndValue());
+            if (self.workRecordExtractingCondition().checkItem() == enItemCheck.Time          //時間
+                || self.workRecordExtractingCondition().checkItem() == enItemCheck.Times      //回数
+                || self.workRecordExtractingCondition().checkItem() == enItemCheck.AmountOfMoney //金額
+                || self.workRecordExtractingCondition().checkItem() == enItemCheck.TimeOfDate    //時刻の場合
+                || self.workRecordExtractingCondition().checkItem() == enItemCheck.CountinuousTime   //連続時間
+                ){
+                if (erAlAtdItemCondition.compareOperator() > 5
+                    || erAlAtdItemCondition.conditionType() == ConditionType.FIXED_VALUE
+                    ) {
+                    comparisonValueRange = new model.ComparisonValueRange(
+                        self.workRecordExtractingCondition().checkItem
+                        , erAlAtdItemCondition.compareOperator
+                        , erAlAtdItemCondition .compareStartValue()
+                        , erAlAtdItemCondition.compareEndValue());
+                } else {
+                    comparisonValueRange = new model.ComparisonValueRange(
+                        self.workRecordExtractingCondition().checkItem
+                        , erAlAtdItemCondition.compareOperator
+                        , erAlAtdItemCondition.singleAtdItem()
+                        , erAlAtdItemCondition.singleAtdItem());
+                }
             } else {
                 comparisonValueRange = new model.ComparisonValueRange(
-                    self.workRecordExtractingCondition().checkItem
-                    , erAlAtdItemCondition.compareOperator
-                    , erAlAtdItemCondition.singleAtdItem()
-                    , erAlAtdItemCondition.singleAtdItem());
+                        self.workRecordExtractingCondition().checkItem
+                        , erAlAtdItemCondition.compareOperator
+                        , 0
+                        , 0);
             }
             return comparisonValueRange;
         }
@@ -191,6 +204,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
             let maxRow = 3;
             if (listGroupCondition && listGroupCondition != undefined) {
                 for(var i = 0; i < listGroupCondition.length && i < maxRow; i++) {
+                    listGroupCondition[i].targetNO(i);
                     listCondition.push(listGroupCondition[i]);
                 }
             }
@@ -279,7 +293,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 });
                 */
                 // initial default data of ErAlAtdItemCon
-                self.initialDataOfErAlAtdItemCon();
+                //self.initialDataOfErAlAtdItemCon();
                 //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
                 self.initialWorkTypes();
             });
@@ -304,7 +318,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 });
                 */
                 // initial default data of ErAlAtdItemCon
-                self.initialDataOfErAlAtdItemCon();
+                //self.initialDataOfErAlAtdItemCon();
                 //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
                 self.initialWorkTypes();
             });
