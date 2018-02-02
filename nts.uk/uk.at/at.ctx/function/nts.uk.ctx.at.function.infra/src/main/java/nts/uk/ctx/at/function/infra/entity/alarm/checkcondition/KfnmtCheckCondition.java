@@ -22,8 +22,10 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRange;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSet;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.daily.KfnmtExtractionPeriodDaily;
+import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.periodunit.KfnmtExtractionPerUnit;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
@@ -58,6 +60,15 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	})
 	public KfnmtExtractionPeriodDaily extractionPeriodDaily;
 
+	
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumns({
+		@JoinColumn(name="EXTRACTION_ID", referencedColumnName="EXTRACTION_ID", insertable=false, updatable=false),
+		@JoinColumn(name="EXTRACTION_RANGE", referencedColumnName="EXTRACTION_RANGE", insertable=false, updatable=false)
+	})
+	public KfnmtExtractionPerUnit extractionPerUnit;
+	
+	
 	public KfnmtCheckCondition(KfnmtCheckConditionPK pk, String extractionId, int extractionRange,
 			List<KfnmtCheckConItem> checkConItems, KfnmtExtractionPeriodDaily extractionPeriodDaily) {
 		super();
@@ -68,6 +79,16 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		this.extractionPeriodDaily = extractionPeriodDaily;
 	}
 	
+	public KfnmtCheckCondition(KfnmtCheckConditionPK pk, String extractionId, int extractionRange, List<KfnmtCheckConItem> checkConItems,
+			KfnmtExtractionPerUnit extractionPerUnit) {
+		super();
+		this.pk = pk;
+		this.extractionId = extractionId;
+		this.extractionRange = extractionRange;
+		this.checkConItems = checkConItems;
+		this.extractionPerUnit = extractionPerUnit;
+	}
+	
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -75,7 +96,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 
 	public CheckCondition toDomain() {
 		List<String> checkConList = this.checkConItems.stream().map( c -> c.pk.checkConditionCD).collect(Collectors.toList());
-		CheckCondition domain = new CheckCondition(this.pk.alarmPatternCD , this.pk.companyID, EnumAdaptor.valueOf(this.pk.alarmCategory, AlarmCategory.class), 
+		CheckCondition domain = new CheckCondition(EnumAdaptor.valueOf(this.pk.alarmCategory, AlarmCategory.class), 
 				checkConList, extractionPeriodDaily.toDomain());
 		return domain;
 	}
@@ -91,13 +112,30 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 							x-> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode))).collect(Collectors.toList()),
 					KfnmtExtractionPeriodDaily.toEntity(extractionPeriodDaily));
 			return entity;
-		} else {
+			
+		} else if(domain.getExtractPeriod().getExtractionRange() == ExtractionRange.WEEK) {
+			
+			ExtractionPeriodUnit extractionPerUnit = (ExtractionPeriodUnit) domain.getExtractPeriod();
+			KfnmtCheckCondition entity = new KfnmtCheckCondition(
+					new KfnmtCheckConditionPK(companyId, alarmPatternCode, domain.getAlarmCategory().value),
+					domain.getExtractPeriod().getExtractionId(), domain.getExtractPeriod().getExtractionRange().value, 
+					domain.getCheckConditionList().stream().map(
+							x-> new KfnmtCheckConItem(buildCheckConItemPK(domain, x, companyId, alarmPatternCode))).collect(Collectors.toList()),
+					KfnmtExtractionPerUnit.toEntity(extractionPerUnit));
+			return entity;
+		}else {
 			return null;
 		}
+		
 	}
 	
 	public void fromEntity(KfnmtCheckCondition entity) {
-		this.extractionPeriodDaily.fromEntity(entity.extractionPeriodDaily);
+		
+		if(entity.extractionRange == ExtractionRange.PERIOD.value){ 
+			this.extractionPeriodDaily.fromEntity(entity.extractionPeriodDaily);
+		}else if(entity.extractionRange == ExtractionRange.PERIOD.value) {
+			this.extractionPerUnit.fromEntity(entity.extractionPerUnit);
+		}
 		this.extractionRange = entity.extractionRange;
 		this.checkConItems.removeIf(item -> !entity.checkConItems.contains(item));
 		entity.checkConItems.forEach( item ->{
@@ -108,6 +146,8 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	private static KfnmtCheckConItemPK buildCheckConItemPK(CheckCondition domain, String checkConditionCD, String companyId, String alarmPatternCode) {
 		return new KfnmtCheckConItemPK(companyId, alarmPatternCode, domain.getAlarmCategory().value, checkConditionCD);
 	}
+
+
 
 
 		
