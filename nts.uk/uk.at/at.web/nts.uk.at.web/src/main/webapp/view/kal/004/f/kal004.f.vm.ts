@@ -1,13 +1,15 @@
 module nts.uk.at.view.kal004.f.viewmodel {
     export class ScreenModel {
         list4weekClassEnum: KnockoutObservableArray<any>;
+        textlabel: KnockoutObservable<string>;
         selectedId: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.list4weekClassEnum = ko.observableArray(__viewContext.enums.SegmentationOfCycle);
-            self.selectedId = ko.observable(1);
+            self.selectedId = ko.observable(nts.uk.ui.windows.getShared("segmentationOfCycle"));
             self.enable = ko.observable(true);
+            self.textlabel = ko.observable(nts.uk.ui.windows.getShared("categoryName"));
 
         }
 
@@ -25,7 +27,7 @@ module nts.uk.at.view.kal004.f.viewmodel {
             let dataSetShare = {
                 decisionEnum: self.selectedId()
             };
-            nts.uk.ui.windows.setShared('KAL004FOutput', dataSetShare);
+            nts.uk.ui.windows.setShared('segmentationOfCycle', dataSetShare);
             nts.uk.ui.windows.close();
         }
         closeDialog(): void {

@@ -4,7 +4,7 @@ public enum EmployeeRefRange {
 	/**
 	 * 全員(all)
 	 */
-	ALL(0,"全員"),
+	ALL(0,"全社員"),
 	/**
 	 * 社員参照範囲と同じ( allEmployeeRefRange)
 	 */

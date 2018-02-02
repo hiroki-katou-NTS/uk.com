@@ -2,19 +2,20 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.command.holidaysetting.employee;
+package nts.uk.ctx.bs.employee.pub.holidaysetting.configuration;
 
 import lombok.Data;
 
 /**
- * The Class EmployeeMonthDaySettingRemoveCommand.
+ * The Class PublicHolidaySettingFindDto.
  */
 @Data
-public class EmployeeMonthDaySettingRemoveCommand {
-	/** The year. */
-	private int year;
+public class PublicHolidaySettingDto{
 	
+	/** The company id. */
+	private String companyId;
 	
-	/** The employee id. */
-	private String employeeId;
+	/** The is manage com public hd. */
+	private Integer isManageComPublicHd;
+	
 }

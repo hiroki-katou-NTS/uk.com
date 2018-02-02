@@ -10,6 +10,7 @@ module nts.uk.ui.errors {
         location?: string;
         tab?: string;
         $control?: JQuery;
+        businessError?: boolean;
     }
     
     export interface ErrorMessage {
@@ -139,8 +140,14 @@ module nts.uk.ui.errors {
             });
         }
         
-        getErrorByElement($element: JQuery): ErrorListItem {
-            return _.find(this.errors(), e => { 
+        removeKibanError($element: JQuery) {
+            this.errors.remove((error) => {
+                return error.$control.is($element) && error.businessError == false;
+            });
+        }
+        
+        getErrorByElement($element: JQuery): ErrorListItem[] {
+            return _.filter(this.errors(), e => { 
                 return e.$control.is($element)
             });
         }
@@ -287,7 +294,11 @@ module nts.uk.ui.errors {
         errorsViewModel().removeErrorByCode($control, errorCode);
     }
     
-    export function getErrorByElement($element: JQuery): ErrorListItem{
+    export function removeCommonError($control: JQuery): void {
+        errorsViewModel().removeKibanError($control);
+    }
+    
+    export function getErrorByElement($element: JQuery): ErrorListItem[] {
         return errorsViewModel().getErrorByElement($element);    
     }
     

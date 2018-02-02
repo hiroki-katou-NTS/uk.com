@@ -44,14 +44,19 @@
 						<!-- E8_5 -->
 						<td><span data-bind="text: month"></span> <span>月度</span></td>
 						<!-- E8_6 -->
-						<td><input id="" name="#[KMF002_13]" type="text" tabindex="2" class="validateInput"
-											data-bind="ntsTextEditor: { 
+						<td>
+							<div>
+								<input id="" type="text" tabindex="2"
+											data-bind="ntsNumberEditor: { 
 																		value: day,
 																		enable: enable,
 																		constraint: 'MonthlyNumberOfDays',
 																		required: true,
-																		option: {width: '90px'}}"></input>
-							<span>日</span></td>
+																		option: {width: '90px'},
+																		name:'#[KMF002_13]'}"></input>
+								<span>日</span>
+							</div>	
+						</td>
 					</tr>
 				</tbody>
 

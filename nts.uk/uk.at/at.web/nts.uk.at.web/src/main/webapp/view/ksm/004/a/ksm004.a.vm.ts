@@ -12,6 +12,7 @@ module nts.uk.at.view.ksm004.a {
             yearMonthPicked2: KnockoutObservable<number> = ko.observable(Number(moment(new Date()).format('YYYY01')));
             currentCalendarWorkPlace: KnockoutObservable<SimpleObject> = ko.observable(new SimpleObject('',''));
             currentCalendarClass: KnockoutObservable<SimpleObject> = ko.observable(new SimpleObject('',''));
+            removeFlg: KnockoutObservable<boolean> = ko.observable(false);
             calendarPanel: ICalendarPanel = {
                 optionDates: ko.observableArray([]),
                 yearMonth: this.yearMonthPicked,
@@ -225,6 +226,7 @@ module nts.uk.at.view.ksm004.a {
                         switch(info.newIndex) {
                             case 1:
                                 // select tab Work Place
+                                self.removeFlg(true);
                                 self.isShowDatepicker = false;
                                 self.yearMonthPicked1(Number(moment(new Date()).format('YYYY01')));
                                 self.yearMonthPicked1.valueHasMutated();
@@ -232,6 +234,7 @@ module nts.uk.at.view.ksm004.a {
                                 break;
                             case 2:
                                 // select tab Class
+                                self.removeFlg(true);
                                 self.isShowDatepicker = false;
                                 self.yearMonthPicked2(Number(moment(new Date()).format('YYYY01')));
                                 self.yearMonthPicked2.valueHasMutated();
@@ -239,6 +242,7 @@ module nts.uk.at.view.ksm004.a {
                                 break;
                             default:
                                 // select tab Company
+                                self.removeFlg(false);
                                 self.isShowDatepicker = false;
                                 self.yearMonthPicked(Number(moment(new Date()).format('YYYY01')));
                                 self.yearMonthPicked.valueHasMutated();

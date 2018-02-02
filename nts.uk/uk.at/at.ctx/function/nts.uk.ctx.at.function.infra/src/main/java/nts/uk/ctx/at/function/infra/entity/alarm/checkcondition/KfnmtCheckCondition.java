@@ -21,6 +21,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRange;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSet;
@@ -95,9 +96,17 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 	}
 
 	public CheckCondition toDomain() {
+		
+		ExtractionRangeBase extractPeriod=null;
+		if(this.extractionRange ==ExtractionRange.PERIOD.value) {
+			extractPeriod = extractionPeriodDaily.toDomain();
+		}else if(this.extractionRange ==ExtractionRange.WEEK.value) {
+			extractPeriod = extractionPerUnit.toDomain();
+		}
+		
 		List<String> checkConList = this.checkConItems.stream().map( c -> c.pk.checkConditionCD).collect(Collectors.toList());
 		CheckCondition domain = new CheckCondition(EnumAdaptor.valueOf(this.pk.alarmCategory, AlarmCategory.class), 
-				checkConList, extractionPeriodDaily.toDomain());
+				checkConList, extractPeriod);
 		return domain;
 	}
 	
