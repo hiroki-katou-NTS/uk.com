@@ -4,10 +4,12 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
@@ -27,6 +29,9 @@ public class KfnmtExtractionPerUnit extends UkJpaEntity implements Serializable 
 	@Column(name = "SEGMENTATION_OF_CYCLE")
 	public int segmentationOfCycle;
 
+	@OneToOne(mappedBy = "extractionPerUnit", orphanRemoval = true)
+	public KfnmtCheckCondition checkCondition;
+	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
@@ -50,5 +55,11 @@ public class KfnmtExtractionPerUnit extends UkJpaEntity implements Serializable 
 	
 	public void fromEntity(KfnmtExtractionPerUnit newEntity){
 		this.segmentationOfCycle = newEntity.segmentationOfCycle;
+	}
+
+	public KfnmtExtractionPerUnit(KfnmtExtractionPerUnitPK pk, int segmentationOfCycle) {
+		super();
+		this.pk = pk;
+		this.segmentationOfCycle = segmentationOfCycle;
 	}
 }

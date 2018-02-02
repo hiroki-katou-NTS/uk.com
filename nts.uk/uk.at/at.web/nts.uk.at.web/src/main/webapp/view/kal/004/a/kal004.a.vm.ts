@@ -82,7 +82,9 @@ module nts.uk.at.view.kal004.a.model {
                 self.checkSource = _.cloneDeep(resolve);
 
                 self.getAlarmPattern().done(() => {
-
+                    
+                    block.clear(); 
+                    
                     self.initSubscribe();
                     
                     if (self.alarmSource().length > 0) {
@@ -152,11 +154,14 @@ module nts.uk.at.view.kal004.a.model {
                     let checkConditionCodes = [];
                     listCode.forEach((code) => { if (code.category == category) { checkConditionCodes.push(code.checkConditonCode); } });
 
-                    let categoryInputed = self.currentAlarm == null ? null : _.find(self.currentAlarm.checkConList, (checkCon) => { return checkCon.alarmCategory == category });
+                    let categoryInputed = self.currentAlarm == null ? null : _.find(self.currentAlarm.checkConList, (checkCon) => { return checkCon.alarmCategory == category });                   
+                    
                     if (categoryInputed) {
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily)));
+                        let daily = categoryInputed.extractionDaily ==null? null:  new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily);                    
+                        let unit = categoryInputed.extractionUnit ==null? null:  new share.PeriodUnitCommand(categoryInputed.extractionUnit);                        
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily , unit ));
                     } else {
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null));
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null));
                     }
 
                 });

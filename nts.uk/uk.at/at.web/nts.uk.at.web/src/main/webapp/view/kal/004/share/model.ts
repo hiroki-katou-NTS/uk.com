@@ -21,6 +21,7 @@ module nts.uk.at.view.kal004.share.model {
         alarmCategory: number;
         checkConditionCodes: Array<string>;
         extractionDaily?: ExtractionDailyDto;
+        extractionUnit?: PeriodUnitDto;
     }
 
 
@@ -118,7 +119,14 @@ module nts.uk.at.view.kal004.share.model {
         }
     }
 
+    export interface PeriodUnitDto {
+        extractionId: string;
+        extractionRange: number;
+        segmentationOfCycle: number;
+    }
 
+    
+    
 
     //Command
     export class AddAlarmPatternSettingCommand {
@@ -148,8 +156,9 @@ module nts.uk.at.view.kal004.share.model {
         alarmCategory: number;
         extractionPeriodDaily: ExtractionPeriodDailyCommand;
         checkConditionCodes: Array<string>;
+        extractionPeriodUnit: PeriodUnitCommand;
 
-        constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand) {
+        constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand, extractionPeriodUnit: PeriodUnitCommand) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
             if (nts.uk.util.isNullOrUndefined(extractionPeriodDaily)) {
@@ -174,11 +183,25 @@ module nts.uk.at.view.kal004.share.model {
             } else {
                 this.extractionPeriodDaily = extractionPeriodDaily;
             }
+            
+            if(nts.uk.util.isNullOrUndefined(extractionPeriodUnit)){
+                this.extractionPeriodUnit = new PeriodUnitCommand({
+                    extractionId: "",
+                    extractionRange: 3,
+                    segmentationOfCycle: 1
+                })
+            }else{
+                this.extractionPeriodUnit =  extractionPeriodUnit;
+            }
         }
 
         setExtractPeriod(extractionPeriodDaily: ExtractionPeriodDailyCommand) {
             this.extractionPeriodDaily = extractionPeriodDaily;
         }
+        
+        setExtractUnit(extractionPeriodUnit: PeriodUnitCommand) {
+            this.extractionPeriodUnit = extractionPeriodUnit;
+        }        
     }
 
     export class ExtractionPeriodDailyCommand {
@@ -218,12 +241,8 @@ module nts.uk.at.view.kal004.share.model {
             this.endMonth = extractionDailyDto.endMonth;
         }
     }
-    export interface PeriodUnitDto {
-        extractionId: string;
-        extractionRange: number;
-        segmentationOfCycle: number;
-    }
-    export class PeriodUnitCommand {
+    
+        export class PeriodUnitCommand {
         extractionId: string;
         extractionRange: number;
         segmentationOfCycle: number;
