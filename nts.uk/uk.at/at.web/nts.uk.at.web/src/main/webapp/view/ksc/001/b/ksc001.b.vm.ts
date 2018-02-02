@@ -32,9 +32,7 @@ module nts.uk.at.view.ksc001.b {
             checkReCreateAtrOnlyUnConfirm: KnockoutObservable<boolean>;
             checkProcessExecutionAtrRebuild: KnockoutObservable<boolean>;
             checkProcessExecutionAtrReconfig: KnockoutObservable<boolean>;
-            checkCreateMethodAtrPersonalInfo: KnockoutObservable<boolean>;
-            checkCreateMethodAtrPatternSchedule: KnockoutObservable<boolean>;
-            checkCreateMethodAtrCopyPastSchedule: KnockoutObservable<boolean>;
+            checkCreateMethodAtrPersonalInfo: KnockoutObservable<number>;
             resetWorkingHours: KnockoutObservable<boolean>;
             resetDirectLineBounce: KnockoutObservable<boolean>;
             resetMasterInfo: KnockoutObservable<boolean>;
@@ -67,6 +65,10 @@ module nts.uk.at.view.ksc001.b {
             //for control field
             isReCreate: KnockoutObservable<boolean>;
             isReSetting: KnockoutObservable<boolean>;
+            
+            //list
+            lstCreateMethod: KnockoutObservableArray<any>;
+            
             constructor() {
                 var self = this;
 
@@ -98,9 +100,7 @@ module nts.uk.at.view.ksc001.b {
                 self.resetAbsentHolidayBusines = ko.observable(false);
                 self.resetTimeAssignment = ko.observable(false);
                 self.confirm = ko.observable(false);
-                self.checkCreateMethodAtrPersonalInfo = ko.observable(true);
-                self.checkCreateMethodAtrPatternSchedule = ko.observable(false);
-                self.checkCreateMethodAtrCopyPastSchedule = ko.observable(false);
+                self.checkCreateMethodAtrPersonalInfo = ko.observable(0);
                 self.copyStartDate = ko.observable(new Date());
                 self.ccgcomponent = {
                     baseDate: self.baseDate,
@@ -165,30 +165,6 @@ module nts.uk.at.view.ksc001.b {
                     self.checkProcessExecutionAtrRebuild(!check);
                 });
 
-                // update CreateMethodAtr
-                self.checkCreateMethodAtrPersonalInfo.subscribe(function(check: boolean) {
-                    if (check) {
-                        self.checkCreateMethodAtrPatternSchedule(!check);
-                        self.checkCreateMethodAtrCopyPastSchedule(!check);
-                    }
-                });
-
-                // update CreateMethodAtr
-                self.checkCreateMethodAtrPatternSchedule.subscribe(function(check: boolean) {
-                    if (check) {
-                        self.checkCreateMethodAtrPersonalInfo(!check);
-                        self.checkCreateMethodAtrCopyPastSchedule(!check);
-                    }
-                });
-
-                // update CreateMethodAtr
-                self.checkCreateMethodAtrCopyPastSchedule.subscribe(function(check: boolean) {
-                    if (check) {
-                        self.checkCreateMethodAtrPersonalInfo(!check);
-                        self.checkCreateMethodAtrPatternSchedule(!check);
-                    }
-                });
-
                 self.lstLabelInfomation = ko.observableArray([]);
                 self.infoCreateMethod = ko.observable('');
                 self.infoPeriodDate = ko.observable('');
@@ -208,6 +184,8 @@ module nts.uk.at.view.ksc001.b {
                         self.copyStartDate(newValue.startDate);    
                     }    
                 });
+                
+                self.lstCreateMethod = ko.observableArray(__viewContext.enums.CreateMethodAtr);
             }
             /**
              * save to client service PersonalSchedule by employeeId
@@ -379,15 +357,8 @@ module nts.uk.at.view.ksc001.b {
                 data.resetAbsentHolidayBusines = self.resetAbsentHolidayBusines();
 
                 // set CreateMethodAtr
-                if (self.checkCreateMethodAtrPersonalInfo()) {
-                    data.createMethodAtr = CreateMethodAtr.PERSONAL_INFO;
-                }
-                if (self.checkCreateMethodAtrPatternSchedule()) {
-                    data.createMethodAtr = CreateMethodAtr.PATTERN_SCHEDULE;
-                }
-                if (self.checkCreateMethodAtrCopyPastSchedule()) {
-                    data.createMethodAtr = CreateMethodAtr.COPY_PAST_SCHEDULE;
-                }
+                data.createMethodAtr = self.checkCreateMethodAtrPersonalInfo();
+                
                 data.confirm = self.confirm();
 
                 // set ReCreateAtr
@@ -671,16 +642,16 @@ module nts.uk.at.view.ksc001.b {
                     && self.checkProcessExecutionAtrReconfig())) {
 
                     // set to view
-                    if (self.checkCreateMethodAtrPersonalInfo()) {
+                    if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PERSONAL_INFO) {
                         self.infoCreateMethod(nts.uk.resource.getText("KSC001_22"));
                     }
 
                     // set to view
-                    if (self.checkCreateMethodAtrPatternSchedule()) {
+                    if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE) {
                         self.infoCreateMethod(nts.uk.resource.getText("KSC001_23"));
                     }
                     // set to view
-                    if (self.checkCreateMethodAtrCopyPastSchedule()) {
+                    if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.COPY_PAST_SCHEDULE) {
                         self.infoCreateMethod(nts.uk.resource.getText("KSC001_39",
                             [moment(self.copyStartDate()).format('YYYY/MM/DD')]));
                     }
