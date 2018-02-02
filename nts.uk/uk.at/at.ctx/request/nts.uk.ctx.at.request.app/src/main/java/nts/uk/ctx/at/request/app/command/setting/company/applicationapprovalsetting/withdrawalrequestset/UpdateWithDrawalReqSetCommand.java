@@ -2,12 +2,6 @@ package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalset
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.AllowAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.CheckUper;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.ContractCheck;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.Weight;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WorkUse;
 
 @Data
 @AllArgsConstructor
@@ -53,4 +47,10 @@ public class UpdateWithDrawalReqSetCommand {
 
 	/** * 振休先取許可 */
 	private int lettleSuperLeave;
+	
+	/** *同時申請必須 */
+	private int simutanAppRequired;
+	
+	/** * 振休先取許可 */
+	private int lettleSuspensionLeave;
 }

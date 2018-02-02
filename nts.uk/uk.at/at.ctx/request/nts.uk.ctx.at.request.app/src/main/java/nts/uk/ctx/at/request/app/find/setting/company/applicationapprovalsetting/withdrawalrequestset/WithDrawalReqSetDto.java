@@ -46,6 +46,12 @@ public class WithDrawalReqSetDto {
 	
 	 /* * 振休先取許可  */
 	 public int lettleSuperLeave;
+	 
+	 /* *同時申請必須 */
+	 public int simutanAppRequired;
+	
+	 /* * 振休先取許可 */
+	 public int lettleSuspensionLeave;
  
 	 public static WithDrawalReqSetDto fromDomain(WithDrawalReqSet withDrawalReqSet){
 		  return new WithDrawalReqSetDto(
@@ -62,6 +68,8 @@ public class WithDrawalReqSetDto {
 		    withDrawalReqSet.getDeferredLettleColor(),
 		    withDrawalReqSet.getDeferredWorkTimeSelect().value,
 		    withDrawalReqSet.getSimulAppliReq().value,
-		    withDrawalReqSet.getLettleSuperLeave().value);
+		    withDrawalReqSet.getLettleSuperLeave().value,
+		    withDrawalReqSet.getSimutanAppRequired().value,
+		    withDrawalReqSet.getLettleSuspensionLeave().value);
 	 }
 }
