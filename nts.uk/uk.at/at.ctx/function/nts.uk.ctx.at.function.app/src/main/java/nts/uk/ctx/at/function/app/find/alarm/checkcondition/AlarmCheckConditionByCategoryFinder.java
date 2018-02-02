@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.find.alarm.checkcondition;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -48,11 +49,20 @@ public class AlarmCheckConditionByCategoryFinder {
 
 	public List<AlarmCheckConditionByCategoryDto> getAllData(int category) {
 		String companyId = AppContexts.user().companyId();
-
-		return conditionRepo.findByCategory(companyId, category).stream().map(item -> fromDomain(item))
+		return conditionRepo.findByCategory(companyId, category).stream().map(item -> minValueFromDomain(item))
 				.collect(Collectors.toList());
 	}
 
+	public AlarmCheckConditionByCategoryDto getDataByCode(int category, String code) {
+		String companyId = AppContexts.user().companyId();
+		Optional<AlarmCheckConditionByCategory> opt = conditionRepo.find(companyId, category, code);
+		if (opt.isPresent()) {
+			return fromDomain(opt.get());
+		} else {
+			throw new RuntimeException("Object not exist!");
+		}
+	}
+	
 	public List<DailyErrorAlarmCheckDto> getDailyErrorAlarmCheck() {
 		return errorAlarmWkRcAdapter.getAllErrorAlarmWorkRecord(AppContexts.user().companyId()).stream()
 				.map(item -> new DailyErrorAlarmCheckDto(item.getCode(), item.getName(), item.getTypeAtr(),
@@ -115,5 +125,10 @@ public class AlarmCheckConditionByCategoryFinder {
 				new DailyAlarmCheckConditionDto(dailyAlarmCondition.isAddApplication(),
 						dailyAlarmCondition.getConExtractedDaily().value, dailyAlarmCondition.getErrorAlarmCode(),
 						lstWorkRecordExtraCon, listFixedConditionWkRecord));
+	}
+	
+	private AlarmCheckConditionByCategoryDto minValueFromDomain(AlarmCheckConditionByCategory domain) {
+		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
+				domain.getCategory().value, null, null, 0, null);
 	}
 }

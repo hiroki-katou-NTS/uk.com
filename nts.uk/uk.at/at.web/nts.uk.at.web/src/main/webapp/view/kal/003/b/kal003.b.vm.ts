@@ -40,13 +40,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
             self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
             // setting comparison value range
 
-            let erAlAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
-            self.comparisonRange = ko.observable(new model.ComparisonValueRange(
-                self.workRecordExtractingCondition().checkItem
-                , erAlAtdItemCondition.compareOperator
-                , erAlAtdItemCondition.compareStartValue()
-                , erAlAtdItemCondition.compareEndValue()
-            ));
+            self.comparisonRange = ko.observable(self.initComparisonValueRange());
                 
             // change select item check
             self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
@@ -88,6 +82,29 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0].compareOperator() > 5);
         }
 
+        private initComparisonValueRange() : model.ComparisonValueRange {
+            let self = this;
+            let erAlAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
+
+            let comparisonValueRange;
+            
+            if (erAlAtdItemCondition.compareOperator() > 5
+                || erAlAtdItemCondition.conditionType() == ConditionType.FIXED_VALUE
+                ) {
+                comparisonValueRange = new model.ComparisonValueRange(
+                    self.workRecordExtractingCondition().checkItem
+                    , erAlAtdItemCondition.compareOperator
+                    , erAlAtdItemCondition .compareStartValue()
+                    , erAlAtdItemCondition.compareEndValue());
+            } else {
+                comparisonValueRange = new model.ComparisonValueRange(
+                    self.workRecordExtractingCondition().checkItem
+                    , erAlAtdItemCondition.compareOperator
+                    , erAlAtdItemCondition.singleAtdItem()
+                    , erAlAtdItemCondition.singleAtdItem());
+            }
+            return comparisonValueRange;
+        }
         /**
          * initial screen
          */
@@ -253,11 +270,14 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 self.listAllAttdItem = self.getListAttendanceIdFromDtos(itemAttendances);
                 
                 // build name of Attendance Item
+                let currentAtdItemCondition = workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
+                self.fillTextDisplayTarget(currentAtdItemCondition);
+                /*
                let listAttendanceItemSelectedCode = self.getListAttendanceItemCode();//勤怠項目の加算減算式
                 self.generateNameCorrespondingToAttendanceItem(listAttendanceItemSelectedCode).done((names) => {
                             self.displayAttendanceItemSelections_BA2_3(names);
                 });
-                
+                */
                 // initial default data of ErAlAtdItemCon
                 self.initialDataOfErAlAtdItemCon();
                 //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
@@ -275,11 +295,14 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 self.listAllAttdItem = self.getListAttendanceIdFromDtos(itemAttendances);
 
                 // build name of Attendance Item
-                let listWorkTimeItemSelectedCode = self.getListAttendanceItemCode();//勤怠項目の加算減算式
+                let currentAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
+                self.fillTextDisplayTarget(currentAtdItemCondition);
+                
+                /*let listWorkTimeItemSelectedCode = self.getListAttendanceItemCode();//勤怠項目の加算減算式
                 self.generateNameCorrespondingToAttendanceItem(listWorkTimeItemSelectedCode).done((names) => {
                     self.displayAttendanceItemSelections_BA2_3(names);
                 });
-                
+                */
                 // initial default data of ErAlAtdItemCon
                 self.initialDataOfErAlAtdItemCon();
                 //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
@@ -304,6 +327,12 @@ module nts.uk.at.view.kal003.b.viewmodel{
             //ドメインモデル「就業時間帯の設定」を取得する - Acquire domain model "WorkTimeSetting"
             service.getAttendCoutinousTimeZone().done((settingTimeZones) => {
                 self.listAllWorkingTime = self.getListWorkTimeCdFromDtos(settingTimeZones);
+                //get name
+                let listItems = self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().planLstWorkTime();
+                
+                self.generateNameCorrespondingToAttendanceItem(listItems).done((data) => {
+                    self.displayWorkingTimeSelections_BA5_3(data);
+                });
                 //self.initialWorkTimeCodesFromDtos(settingTimeZones);
               //ドメインモデル「勤務種類」を取得する - Acquire domain model "WorkType"
                 self.initialWorkTypes();
@@ -404,31 +433,51 @@ module nts.uk.at.view.kal003.b.viewmodel{
         //initial default data of ErAlAtdItemCon
         private initialDataOfErAlAtdItemCon() {
             let self = this, workRecordExtractingCondition = self.workRecordExtractingCondition();
+            if (!(workRecordExtractingCondition.checkItem() == enItemCheck.Time
+                || workRecordExtractingCondition.checkItem() == enItemCheck.Time
+                || workRecordExtractingCondition.checkItem() == enItemCheck.CountinuousTime
+                || workRecordExtractingCondition.checkItem() == enItemCheck.Times
+                || workRecordExtractingCondition.checkItem() == enItemCheck.AmountOfMoney
+                || workRecordExtractingCondition.checkItem() == enItemCheck.TimeOfDate)) {
+                return;
+            }
             let conditionAtr = 0;
+            let conditionType = ConditionType.ATTENDANCE_ITEM;
+            let lstErAlAtdItemCon1 = workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon();
+            
             switch (workRecordExtractingCondition.checkItem()) {
                 case enItemCheck.Time:          //時間
                 case enItemCheck.CountinuousTime:   //連続時間
                     conditionAtr = 1;
+                    conditionType = ConditionType.FIXED_VALUE;
                     break;
                 case enItemCheck.Times:         //回数
                     conditionAtr = 0;
+                    conditionType = ConditionType.FIXED_VALUE;
                     break;
                 case enItemCheck.AmountOfMoney: //金額
                     conditionAtr = 3;
+                    conditionType = ConditionType.FIXED_VALUE;
                     break;
                 case enItemCheck.TimeOfDate:    //時刻の場合
                     conditionAtr = 2;
+                    conditionType = ConditionType.FIXED_VALUE;
+                    break;
+                default:
+                    if (lstErAlAtdItemCon1 && lstErAlAtdItemCon1.length > 0) {
+                        conditionAtr = lstErAlAtdItemCon1[0].conditionAtr();
+                    }
                     break;
             }
-            let lstErAlAtdItemCon1 = workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon();
+
             for(var i=0; i< lstErAlAtdItemCon1.length; i++) {
                 lstErAlAtdItemCon1[i].conditionAtr(conditionAtr);
-                lstErAlAtdItemCon1[i].conditionType(1); //1: 勤怠項目 - AttendanceItem, 0: fix
+                lstErAlAtdItemCon1[i].conditionType(conditionType); //1: 勤怠項目 - AttendanceItem, 0: fix
             }
             let lstErAlAtdItemCon2 = workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon();
             for(var i=0; i< lstErAlAtdItemCon2.length; i++) {
                 lstErAlAtdItemCon2[i].conditionAtr(conditionAtr);
-                lstErAlAtdItemCon2[i].conditionType(1); //1: 勤怠項目 - AttendanceItem, 0: fix
+                lstErAlAtdItemCon2[i].conditionType(conditionType); //1: 勤怠項目 - AttendanceItem, 0: fix
             }
         }
         /**
@@ -536,6 +585,7 @@ module nts.uk.at.view.kal003.b.viewmodel{
         /**
          * open dialog for select working time zone
          */
+        /*
         btnSettingBA2_2_click() {
             let self = this;
 
@@ -567,6 +617,113 @@ module nts.uk.at.view.kal003.b.viewmodel{
                 block.clear();
             });
         }
+        */
+        //openSelectAtdItemDialogTarget() {
+        btnSettingBA2_2_click() {
+            let self = this;
+            let currentAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
+            self.getListItemByAtr(currentAtdItemCondition.conditionAtr()).done((lstItem) => {
+                let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
+                if (currentAtdItemCondition.conditionAtr() === 2) {
+                    //Open dialog KDL021
+                    nts.uk.ui.windows.setShared('Multiple', false);
+                    nts.uk.ui.windows.setShared('AllAttendanceObj', lstItemCode);
+                    nts.uk.ui.windows.setShared('SelectedAttendanceId', [currentAtdItemCondition.uncountableAtdItem()]);
+                    nts.uk.ui.windows.sub.modal("at", "/view/kdl/021/a/index.xhtml").onClosed(() => {
+                        let output = nts.uk.ui.windows.getShared("selectedChildAttendace");
+                        if (output) {
+                            currentAtdItemCondition.uncountableAtdItem(parseInt(output));
+                            self.fillTextDisplayTarget(currentAtdItemCondition);
+                        }
+                    });
+                } else {
+                    //Open dialog KDW007C
+                    let param = {
+                        lstAllItems: lstItemCode,
+                        lstAddItems: currentAtdItemCondition.countableAddAtdItems(),
+                        lstSubItems: currentAtdItemCondition.countableSubAtdItems()
+                    };
+                    nts.uk.ui.windows.setShared("KDW007Params", param);
+                    nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
+                        let output = nts.uk.ui.windows.getShared("KDW007CResults");
+                        if (output) {
+                            currentAtdItemCondition.countableAddAtdItems(output.lstAddItems.map((item) => { return parseInt(item); }));
+                            currentAtdItemCondition.countableSubAtdItems(output.lstSubItems.map((item) => { return parseInt(item); }));
+                            self.fillTextDisplayTarget(currentAtdItemCondition);
+                        }
+                    });
+                }
+            });
+        }
+        
+        getListItemByAtr(conditionAtr) {
+            let self = this;
+            if (conditionAtr === 0) {
+                //With type 回数 - Times
+                return service.getAttendanceItemByAtr(2);
+            } else if (conditionAtr === 1) {
+                //With type 時間 - Time
+                return service.getAttendanceItemByAtr(5);
+            } else if (conditionAtr === 2) {
+                //With type 時刻 - TimeWithDay
+                return service.getAttendanceItemByAtr(6);
+            } else if (conditionAtr === 3) {
+                //With type 金額 - AmountMoney
+                return service.getAttendanceItemByAtr(3);
+            }
+        }
+        
+        fillTextDisplayTarget(currentAtdItemCondition) {
+            let self = this;
+            self.displayAttendanceItemSelections_BA2_3("");
+            if (currentAtdItemCondition.conditionAtr() === 2) {
+                if (currentAtdItemCondition.uncountableAtdItem()) {
+                    service.getAttendanceItemByCodes([currentAtdItemCondition.uncountableAtdItem()]).done((lstItems) => {
+                        if (lstItems && lstItems.length > 0) {
+                            self.displayAttendanceItemSelections_BA2_3(lstItems[0].attendanceItemName);
+                            $("#display-target-item").trigger("validate");
+                        }
+                    });
+                }
+            } else {
+                if (currentAtdItemCondition.countableAddAtdItems().length > 0) {
+                    service.getAttendanceItemByCodes(currentAtdItemCondition.countableAddAtdItems()).done((lstItems) => {
+                        if (lstItems && lstItems.length > 0) {
+                            for (let i = 0; i < lstItems.length; i++) {
+                                let operator = (i === (lstItems.length - 1)) ? "" : " + ";
+                                self.displayAttendanceItemSelections_BA2_3(self.displayAttendanceItemSelections_BA2_3() + lstItems[i].attendanceItemName + operator);
+                            }
+                            $("#display-target-item").trigger("validate");
+                        }
+                    }).then(() => {
+                        if (currentAtdItemCondition.countableSubAtdItems().length > 0) {
+                            service.getAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).done((lstItems) => {
+                                if (lstItems && lstItems.length > 0) {
+                                    for (let i = 0; i < lstItems.length; i++) {
+                                        let operator = (i === (lstItems.length - 1)) ? "" : " - ";
+                                        let beforeOperator = (i === 0) ? " - " : "";
+                                        self.displayAttendanceItemSelections_BA2_3(self.displayAttendanceItemSelections_BA2_3() + beforeOperator + lstItems[i].attendanceItemName + operator);
+                                    }
+                                    $("#display-target-item").trigger("validate");
+                                }
+                            })
+                        }
+                    });
+                } else if (currentAtdItemCondition.countableSubAtdItems().length > 0) {
+                    service.getAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).done((lstItems) => {
+                        if (lstItems && lstItems.length > 0) {
+                            for (let i = 0; i < lstItems.length; i++) {
+                                let operator = (i === (lstItems.length - 1)) ? "" : " - ";
+                                let beforeOperator = (i === 0) ? " - " : "";
+                                self.displayAttendanceItemSelections_BA2_3(self.displayAttendanceItemSelections_BA2_3() + beforeOperator + lstItems[i].attendanceItemName + operator);
+                            }
+                            $("#display-target-item").trigger("validate");
+                        }
+                    })
+                }
+
+            }
+        }
         
         /**
          * close dialog B and return result
@@ -574,13 +731,16 @@ module nts.uk.at.view.kal003.b.viewmodel{
         btnDecision() {
             let self = this,
                 workRecordExtractingCondition = self.workRecordExtractingCondition();
-                
+            $('.nts-input').trigger("validate");
+            if (errors.hasError() === true) {
+                return;
+             }                
             let isOk : boolean = true;
-            if (workRecordExtractingCondition.checkItem() == 0
-                || workRecordExtractingCondition.checkItem() == 1
-                || workRecordExtractingCondition.checkItem() == 2
-                || workRecordExtractingCondition.checkItem() == 3
-                || workRecordExtractingCondition.checkItem() == 4
+            if (workRecordExtractingCondition.checkItem() == enItemCheck.Time
+                || workRecordExtractingCondition.checkItem() == enItemCheck.Times
+                || workRecordExtractingCondition.checkItem() == enItemCheck.AmountOfMoney
+                || workRecordExtractingCondition.checkItem() == enItemCheck.TimeOfDate
+                || workRecordExtractingCondition.checkItem() == enItemCheck.CountinuousTime
             ) {
                  // validate comparison range
                 let group1 = workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1();
@@ -593,17 +753,19 @@ module nts.uk.at.view.kal003.b.viewmodel{
                     erAlAtdItemCondition.compareOperator(self.comparisonRange().comparisonOperator());
                     erAlAtdItemCondition.compareStartValue(self.comparisonRange().minValue());
                     erAlAtdItemCondition.compareEndValue(self.comparisonRange().maxValue());
+                    erAlAtdItemCondition.singleAtdItem(self.comparisonRange().minValue());
                     //clear 
-                    listErAlAtdItemCondition = listErAlAtdItemCondition.splice(0, 1);
-                    workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon(listErAlAtdItemCondition);
-                    workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon([]);
+                    //listErAlAtdItemCondition = listErAlAtdItemCondition.splice(0, 1);
+                   // workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon(listErAlAtdItemCondition);
+                    //workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon([]);
                     
                 } else {
                     isOk = false;
                 }
-            } else if (workRecordExtractingCondition.checkItem() == 5 || workRecordExtractingCondition.checkItem() == 6) {
-                workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon([]);
-                workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon([]);
+            } else if (workRecordExtractingCondition.checkItem() == enItemCheck.CountinuousWork
+                 || workRecordExtractingCondition.checkItem() == enItemCheck.CountinuousTimeZone) {
+               // workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon([]);
+                //workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon([]);
             }
             if (isOk) {
                 let retData = ko.toJS(workRecordExtractingCondition);
@@ -640,6 +802,15 @@ module nts.uk.at.view.kal003.b.viewmodel{
         CountinuousTimeZone = 6, // 連続時間帯
         CompoundCondition   = 7// 複合条件
     }
+    
+    export enum ConditionType {
+
+        /* 固定値 */
+        FIXED_VALUE = 0, //, "Enum_ConditionType_FixedValue"),
+        /* 勤怠項目 */
+        ATTENDANCE_ITEM = 1 //, "Enum_ConditionType_AttendanceItem");
+    }
+    
     module model {
         export class ItemModelKdl002 {
             code: string;

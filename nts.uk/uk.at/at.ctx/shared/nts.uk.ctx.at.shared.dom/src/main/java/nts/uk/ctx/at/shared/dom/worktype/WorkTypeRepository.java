@@ -38,6 +38,17 @@ public interface WorkTypeRepository {
 	 * @param companyId
 	 * @return
 	 */
+	List<WorkType> findByCompanyIdAndLeaveAbsence(String companyId);
+	
+	
+	/**
+	 *1日.休職
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @return the list
+	 */
+	
 	List<WorkType> findNotDeprecateByCompanyId(String companyId);
 
 	/**

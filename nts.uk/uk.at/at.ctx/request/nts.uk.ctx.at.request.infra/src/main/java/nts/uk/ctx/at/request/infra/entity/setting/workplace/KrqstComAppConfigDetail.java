@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.InstructionCategory;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApplicationUseSetting;
@@ -180,7 +181,7 @@ public class KrqstComAppConfigDetail extends UkJpaEntity implements Serializable
 		return new ApprovalFunctionSetting(
 				SettingFlg.toEnum(this.prerequisiteForpauseFlg), 
 				new InstructionUseSetting(
-						UseAtr.toEnum(this.instructionAtr), 
+						InstructionCategory.toEnum(this.instructionAtr), 
 						new Memo(this.instructionMemo), 
 						UseAtr.toEnum(this.instructionUseAtr)), 
 				SettingFlg.toEnum(this.holidayTimeAppCalFlg), 

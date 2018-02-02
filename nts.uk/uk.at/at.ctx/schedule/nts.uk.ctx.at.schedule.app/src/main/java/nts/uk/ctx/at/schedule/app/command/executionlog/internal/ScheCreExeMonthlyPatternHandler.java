@@ -14,7 +14,6 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
-import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationDto;
 import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
@@ -41,8 +40,6 @@ public class ScheCreExeMonthlyPatternHandler {
 	private ScEmploymentStatusAdapter scEmploymentStatusAdapter;
 	@Inject
 	private ScheCreExeBasicScheduleHandler scheCreExeBasicScheduleHandler;
-	@Inject
-	private ScheduleMasterInformationRepository scheduleMasterInformationRepo;
 	
 	/**
 	 * 月間パターンで勤務予定を作成する
@@ -106,8 +103,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			//在職状態に対応する「就業時間帯コード」を取得する
 			Optional<String> workTimeOpt =  this.getWorkingTimeZoneCode(workMonthlySet, commandWorktypeGetter);
 			if (workTimeOpt == null || workTimeOpt.isPresent()) {//取得エラーなし
-				//TODO 休憩予定時間帯を取得する
-				
+				//休憩予定時間帯を取得する
 				//勤務予定マスタ情報を取得する
 				//勤務予定時間帯を取得する		
 				//アルゴリズム「社員の短時間勤務を取得」を実行し、短時間勤務を取得する // request list #72

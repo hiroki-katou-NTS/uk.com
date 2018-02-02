@@ -42,3 +42,6 @@
 	padding-left:40px;
 }
 
+.scrE #radioBoxTypeSelectScrF > label:nth-child(1) {
+	padding-right: 60px
+}

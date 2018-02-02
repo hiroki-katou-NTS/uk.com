@@ -82,7 +82,9 @@ module nts.uk.at.view.kal004.a.model {
                 self.checkSource = _.cloneDeep(resolve);
 
                 self.getAlarmPattern().done(() => {
-
+                    
+                    block.clear(); 
+                    
                     self.initSubscribe();
                     
                     if (self.alarmSource().length > 0) {
@@ -152,11 +154,14 @@ module nts.uk.at.view.kal004.a.model {
                     let checkConditionCodes = [];
                     listCode.forEach((code) => { if (code.category == category) { checkConditionCodes.push(code.checkConditonCode); } });
 
-                    let categoryInputed = self.currentAlarm == null ? null : _.find(self.currentAlarm.checkConList, (checkCon) => { return checkCon.alarmCategory == category });
+                    let categoryInputed = self.currentAlarm == null ? null : _.find(self.currentAlarm.checkConList, (checkCon) => { return checkCon.alarmCategory == category });                   
+                    
                     if (categoryInputed) {
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily)));
+                        let daily = categoryInputed.extractionDaily ==null? null:  new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily);                    
+                        let unit = categoryInputed.extractionUnit ==null? null:  new share.PeriodUnitCommand(categoryInputed.extractionUnit);                        
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily , unit ));
                     } else {
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null));
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null));
                     }
 
                 });
@@ -181,7 +186,7 @@ module nts.uk.at.view.kal004.a.model {
                 // tab3
                 self.setPermissionModel.listRoleID([]);
                 self.setPermissionModel.selectedRuleCode(1);
-                self.setPermissionModel.enableSetting(false);
+                self.setPermissionModel.createMode(false);
                 
                 //tab2
                 self.periodSetting.isCreateMode(true);             
@@ -225,7 +230,7 @@ module nts.uk.at.view.kal004.a.model {
                 // Tab 3: Permission Setting
                 self.setPermissionModel.listRoleID(self.currentAlarm.alarmPerSet.roleIds);
                 self.setPermissionModel.selectedRuleCode(self.currentAlarm.alarmPerSet.authSetting == true ? 0 : 1);
-                self.setPermissionModel.enableSetting(true);                
+                self.setPermissionModel.createMode(true);                
                 
                 //tab2
                 self.periodSetting.isCreateMode(false);
@@ -336,6 +341,11 @@ module nts.uk.at.view.kal004.a.model {
                 self.currentCode('');
                 nts.uk.ui.errors.clearAll();
             }
+        }
+        public afterMoveLeft(): boolean {
+            var self = this;
+            self.checkConditionList(self.checkConditionList().filter(e => _.find(self.checkSource, {'category' : e.category, 'checkConditonCode': e.checkConditonCode}) != undefined ));
+            return true;
         }
 
 
