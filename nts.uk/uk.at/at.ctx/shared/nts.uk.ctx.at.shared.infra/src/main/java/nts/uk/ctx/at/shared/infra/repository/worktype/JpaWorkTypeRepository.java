@@ -28,6 +28,10 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static final String SELECT_ALL_WORKTYPE = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId";
 	
+	private static final String SELECT_WORKTYPE_BY_LEAVE_ABSENCE = SELECT_FROM_WORKTYPE
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.oneDayAtr=12"
+			+" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC";
+	
 	private static final String SELECT_ALL_NOT_DEPRECATED_WORKTYPE = "SELECT c FROM KshmtWorkType c" 
 			+ " LEFT JOIN KshmtWorkTypeOrder o ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.deprecateAtr = 0"
@@ -37,7 +41,8 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 			+ " AND a.kshmtWorkTypeSetPK.workTypeCode = :workTypeCode";
 
 	private static final String SELECT_FROM_WORKTYPESET_CLOSE_ATR = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
-			+ " AND a.closeAtr = :closeAtr";
+			+ " AND a.closeAtr = :closeAtr"
+			+" ORDER BY a.kshmtWorkTypeSetPK.workTypeCode";
 
 	private final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible";
@@ -56,10 +61,11 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static final String DELETE_WORKTYPE_SET = "DELETE FROM KshmtWorkTypeSet c "
 			+ "WHERE c.kshmtWorkTypeSetPK.companyId =:companyId "
 			+ "AND c.kshmtWorkTypeSetPK.workTypeCode =:workTypeCode ";
-	
-	// findWorkType(java.lang.String, java.lang.Integer, java.util.List, java.util.List)
+
+	// findWorkType(java.lang.String, java.lang.Integer, java.util.List,
+	// java.util.List)
 	private static String FIND_WORKTYPE_ALLDAY_AND_HALFDAY;
-	
+	private static String FIND_WORKTYPE_ONEDAY;
 	static {
 		StringBuilder builder = new StringBuilder();
 		builder.append(SELECT_FROM_WORKTYPE);
@@ -70,6 +76,15 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		builder.append(" OR c.afternoonAtr IN :afternoonAtrs)");
 		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
 		FIND_WORKTYPE_ALLDAY_AND_HALFDAY = builder.toString();
+	}
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_FROM_WORKTYPE);
+		builder.append(" WHERE c.kshmtWorkTypePK.companyId = :companyId");
+		builder.append(" AND c.deprecateAtr = :abolishAtr");
+		builder.append(" AND c.worktypeAtr = :worktypeAtr");
+		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
+		FIND_WORKTYPE_ONEDAY = builder.toString();
 	}
 
 	private static WorkType toDomain(KshmtWorkType entity) {
@@ -133,6 +148,12 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	@Override
 	public List<WorkType> findByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_ALL_WORKTYPE, KshmtWorkType.class).setParameter("companyId", companyId)
+				.getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public List<WorkType> findByCompanyIdAndLeaveAbsence(String companyId) {
+		return this.queryProxy().query(SELECT_WORKTYPE_BY_LEAVE_ABSENCE, KshmtWorkType.class).setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));
 	}
 	
@@ -246,5 +267,11 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.setParameter("workTypeCode", workTypeCd).executeUpdate();
 	}
 
-	
+	@Override
+	public List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr) {
+		return this.queryProxy().query(FIND_WORKTYPE_ONEDAY, KshmtWorkType.class).setParameter("companyId", companyId)
+				.setParameter("abolishAtr", abolishAtr).setParameter("worktypeAtr", worktypeAtr)
+				.getList(x -> toDomain(x));
+	}
+
 }

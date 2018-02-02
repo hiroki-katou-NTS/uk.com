@@ -32,7 +32,7 @@ public class CheckCondition  extends DomainObject {
 	 */
 	private ExtractionRangeBase extractPeriod;
 	
-	public CheckCondition(String alarmPatternCD, String companyID, AlarmCategory alarmCategory,
+	public CheckCondition(AlarmCategory alarmCategory,
 			List<String> checkConditionList, ExtractionRangeBase  extractPeriod) {
 		super();
 		this.alarmCategory = alarmCategory;

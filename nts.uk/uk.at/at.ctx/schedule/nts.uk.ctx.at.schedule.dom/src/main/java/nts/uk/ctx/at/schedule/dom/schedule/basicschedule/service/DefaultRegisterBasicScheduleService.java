@@ -17,8 +17,10 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -28,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class DefaultRegisterBasicScheduleService implements RegisterBasicScheduleService {
@@ -43,14 +46,14 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	@Inject
 	private BasicScheduleRepository basicScheduleRepo;
 
-	//TODO: need check again this service, can move to package 
+	// TODO: need check again this service, can move to package
 	@Inject
 	private BasicScheduleService basicScheduleService;
-	
+
 	@Override
 	public List<String> register(String companyId, List<BasicSchedule> basicScheduleList) {
 		List<String> errList = new ArrayList<>();
-		
+
 		List<String> listWorkTypeCode = basicScheduleList.stream().map(x -> {
 			return x.getWorkTypeCode();
 		}).collect(Collectors.toList());
@@ -103,52 +106,54 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				addMessage(errList, businessException.getMessageId());
 				continue;
 			}
-			
+
 			// get schedule time zone from user input
-			List<WorkScheduleTimeZone> workScheduleTimeZonesCommand = new ArrayList<>(bSchedule.getWorkScheduleTimeZones());
-			
+			List<WorkScheduleTimeZone> workScheduleTimeZonesCommand = new ArrayList<>(
+					bSchedule.getWorkScheduleTimeZones());
+
 			// process data schedule time zone
 			this.addScheTimeZone(companyId, bSchedule, workType);
-			
+
 			// Check exist of basicSchedule
 			Optional<BasicSchedule> basicSchedule = basicScheduleRepo.find(bSchedule.getEmployeeId(),
 					bSchedule.getDate());
+
 			// Insert/Update
 			if (basicSchedule.isPresent()) {
 				// Flag to determine whether to handle
 				// the update function or not
 				if (!CollectionUtil.isEmpty(workScheduleTimeZonesCommand)) {
-					// update again data time zone for case user update start time, end time (mode show time)
+					// update again data time zone for case user update start
+					// time, end time (mode show time)
 					if (!checkTimeZone(errList, workScheduleTimeZonesCommand)) {
 						continue;
 					}
-					
-					// update again data time zone for case user update start time, end time (mode show time)
-					List<WorkScheduleTimeZone> timeZonesNew = new ArrayList<>(); 
-					bSchedule.getWorkScheduleTimeZones()
-						.forEach(item -> {
-							if (item.getScheduleCnt() == 1) {
-								WorkScheduleTimeZone timeZone = workScheduleTimeZonesCommand.get(0);
-								item.updateTime(timeZone.getScheduleStartClock(), timeZone.getScheduleEndClock());
-							}
-							timeZonesNew.add(item);
-						});
-					
+
+					// update again data time zone for case user update start
+					// time, end time (mode show time)
+					List<WorkScheduleTimeZone> timeZonesNew = new ArrayList<>();
+					bSchedule.getWorkScheduleTimeZones().forEach(item -> {
+						if (item.getScheduleCnt() == 1) {
+							WorkScheduleTimeZone timeZone = workScheduleTimeZonesCommand.get(0);
+							item.updateTime(timeZone.getScheduleStartClock(), timeZone.getScheduleEndClock());
+						}
+						timeZonesNew.add(item);
+					});
+
 					bSchedule.setWorkScheduleTimeZones(timeZonesNew);
 				}
-				
-				// update schedule
+
 				basicScheduleRepo.update(bSchedule);
 			} else {
-				// insert schedule
 				basicScheduleRepo.insert(bSchedule);
 			}
 		}
 		return errList;
 	}
-	
+
 	/**
 	 * Check time zone for case update (mode show time)
+	 * 
 	 * @param errList
 	 * @param workScheduleTimeZonesCommand
 	 * @return
@@ -158,7 +163,8 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		timeZone.validate();
 		try {
 			timeZone.validateTime();
-			if (basicScheduleService.isReverseStartAndEndTime(timeZone.getScheduleStartClock(), timeZone.getScheduleEndClock())) {
+			if (basicScheduleService.isReverseStartAndEndTime(timeZone.getScheduleStartClock(),
+					timeZone.getScheduleEndClock())) {
 				addMessage(errList, "Msg_441,KSU001_73,KSU001_74");
 				return false;
 			}
@@ -166,12 +172,13 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			addMessage(errList, ex.getMessageId());
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	/**
 	 * Check work time
+	 * 
 	 * @param errList
 	 * @param workTimeSetting
 	 */
@@ -187,12 +194,13 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			addMessage(errList, "Msg_469");
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	/**
 	 * Check work type
+	 * 
 	 * @param errList
 	 * @param workType
 	 */
@@ -208,10 +216,10 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			addMessage(errList, "Msg_468");
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * @param companyId
 	 * @param basicScheduleObj
@@ -219,26 +227,73 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	 */
 	private void addScheTimeZone(String companyId, BasicSchedule basicScheduleObj, WorkType workType) {
 		List<WorkScheduleTimeZone> workScheduleTimeZones = new ArrayList<WorkScheduleTimeZone>();
+		BounceAtr bounceAtr = addScheduleBounce(workType);
 		Optional<PredetemineTimeSetting> predetemineTimeSet = this.predetemineTimeSettingRepo
 				.findByWorkTimeCode(companyId, basicScheduleObj.getWorkTimeCode());
+
 		if (predetemineTimeSet.isPresent()) {
-			List<TimezoneUse> listTimezoneUse = predetemineTimeSet.get().getPrescribedTimezoneSetting()
-					.getLstTimezone();
-			
-			workScheduleTimeZones = listTimezoneUse.stream()
-				.filter(x -> x.isUsed())
-				.map((timezoneUse) -> {
-					BounceAtr bounceAtr = addScheduleBounce(workType);
+			PrescribedTimezoneSetting prescribedTimezoneSetting = predetemineTimeSet.get()
+					.getPrescribedTimezoneSetting();
+			List<TimezoneUse> listTimezoneUse = prescribedTimezoneSetting.getLstTimezone();
+			TimezoneUse timezoneUseK1 = listTimezoneUse.stream().filter(x -> x.isUsed() && x.getWorkNo() == 1)
+					.findFirst().get();
+			Optional<TimezoneUse> timezoneUseK2 = listTimezoneUse.stream().filter(x -> x.isUsed() && x.getWorkNo() == 2)
+					.findFirst();
+			// if workTypeCode is work on morning, replace endTime = endTime of
+			// morning
+			if (basicScheduleService.checkWorkDay(basicScheduleObj.getWorkTypeCode()) == WorkStyle.MORNING_WORK) {
+				TimeWithDayAttr morningEndTime = prescribedTimezoneSetting.getMorningEndTime();
+				if (morningEndTime.valueAsMinutes() <= timezoneUseK1.getEnd().valueAsMinutes()) {
+					workScheduleTimeZones.add(new WorkScheduleTimeZone(timezoneUseK1.getWorkNo(),
+							timezoneUseK1.getStart(), morningEndTime, bounceAtr));
+				} else {
+					workScheduleTimeZones = listTimezoneUse.stream().map((timezoneUse) -> {
+						if (timezoneUse.getWorkNo() == 2) {
+							return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
+									morningEndTime, bounceAtr);
+						} else {
+							return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
+									timezoneUse.getEnd(), bounceAtr);
+						}
+					}).collect(Collectors.toList());
+				}
+			} else
+			// if workTypeCode is work on afternoon, replace startTime =
+			// startTime of afternoon
+			if (basicScheduleService.checkWorkDay(basicScheduleObj.getWorkTypeCode()) == WorkStyle.AFTERNOON_WORK) {
+				TimeWithDayAttr afternoonStartTime = prescribedTimezoneSetting.getAfternoonStartTime();
+
+				if (timezoneUseK2.isPresent()) {
+					if (afternoonStartTime.valueAsMinutes() <= timezoneUseK1.getEnd().valueAsMinutes()) {
+						workScheduleTimeZones = listTimezoneUse.stream().map((timezoneUse) -> {
+							if (timezoneUse.getWorkNo() == 1) {
+								return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), afternoonStartTime,
+										timezoneUse.getEnd(), bounceAtr);
+							} else {
+								return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
+										timezoneUse.getEnd(), bounceAtr);
+							}
+						}).collect(Collectors.toList());
+					} else {
+						workScheduleTimeZones.add(new WorkScheduleTimeZone(timezoneUseK2.get().getWorkNo(),
+								afternoonStartTime, timezoneUseK2.get().getEnd(), bounceAtr));
+					}
+				}
+
+			} else {
+				workScheduleTimeZones = listTimezoneUse.stream().filter(x -> x.isUsed()).map((timezoneUse) -> {
 					return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
 							timezoneUse.getEnd(), bounceAtr);
 				}).collect(Collectors.toList());
+			}
 		}
-		
+
 		basicScheduleObj.setWorkScheduleTimeZones(workScheduleTimeZones);
 	}
-	
+
 	/**
 	 * Add schedule bounce atr.
+	 * 
 	 * @param workType
 	 * @return
 	 */
@@ -248,13 +303,15 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			WorkTypeSet workTypeSet = workTypeSetList.get(0);
 			return getBounceAtr(workTypeSet);
 		} else if (AttendanceHolidayAttr.AFTERNOON == workType.getAttendanceHolidayAttr()) {
-			WorkTypeSet workTypeSet1 = workTypeSetList.stream().filter(x -> WorkAtr.Afternoon.value == x.getWorkAtr().value).findFirst().get();
+			WorkTypeSet workTypeSet1 = workTypeSetList.stream()
+					.filter(x -> WorkAtr.Afternoon.value == x.getWorkAtr().value).findFirst().get();
 			return getBounceAtr(workTypeSet1);
 		} else if (AttendanceHolidayAttr.MORNING == workType.getAttendanceHolidayAttr()) {
-			WorkTypeSet workTypeSet2 = workTypeSetList.stream().filter(x -> WorkAtr.Monring.value == x.getWorkAtr().value).findFirst().get();
+			WorkTypeSet workTypeSet2 = workTypeSetList.stream()
+					.filter(x -> WorkAtr.Monring.value == x.getWorkAtr().value).findFirst().get();
 			return getBounceAtr(workTypeSet2);
 		}
-		
+
 		return BounceAtr.NO_DIRECT_BOUNCE;
 	}
 
@@ -263,17 +320,20 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	 * @return
 	 */
 	private BounceAtr getBounceAtr(WorkTypeSet workTypeSet) {
-		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK && workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
+		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK
+				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
 			return BounceAtr.NO_DIRECT_BOUNCE;
-		} else if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.CHECK && workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
+		} else if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.CHECK
+				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
 			return BounceAtr.DIRECTLY_ONLY;
-		} else if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK && workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
+		} else if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK
+				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
 			return BounceAtr.BOUNCE_ONLY;
-		} 
-			
+		}
+
 		return BounceAtr.DIRECT_BOUNCE;
 	}
-	
+
 	/**
 	 * Add exception message
 	 * 
@@ -285,5 +345,4 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			errorsList.add(messageId);
 		}
 	}
-
 }
