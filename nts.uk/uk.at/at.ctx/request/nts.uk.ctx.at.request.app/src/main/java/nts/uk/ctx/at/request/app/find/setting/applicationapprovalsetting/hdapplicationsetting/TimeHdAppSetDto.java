@@ -22,7 +22,7 @@ public class TimeHdAppSetDto {
 	// 出勤前を利用する
 	public int useBefore;
 	// 出勤前名称
-	public NameWork nameBefore;
+	public String nameBefore;
 	// 実績表示区分
 	public int actualDisp;
 	// 実績超過をチェックする 
@@ -50,7 +50,7 @@ public class TimeHdAppSetDto {
 	
 	public static TimeHdAppSetDto convertToDto(TimeHdAppSet domain){
 		return new TimeHdAppSetDto(domain.getCompanyId(), domain.getCheckDay().value, domain.getUse60h().value, 
-				domain.getUseAttend2().value, domain.getNameBefore2().v(), domain.getUseBefore().value, domain.getNameBefore(), 
+				domain.getUseAttend2().value, domain.getNameBefore2().v(), domain.getUseBefore().value, domain.getNameBefore().v(), 
 				domain.getActualDisp().value, domain.getCheckOver().value, domain.getUseTimeHd().value, domain.getUseTimeYear().value, 
 				domain.getUsePrivate().value, domain.getPrivateName().v(), domain.getUnionLeave().value, domain.getUnionName().v(), 
 				domain.getUseAfter2().value, domain.getNameAfter2().v(), domain.getUseAfter().value, domain.getNameAfter().v());
