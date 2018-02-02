@@ -53,13 +53,13 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			+ " INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
 			+ " WHERE pc.cid IN :companyId AND pm.ppemtPerInfoItemCmPK.itemCd =:itemCd"
-			+ " AND pi.perInfoCtgId =:perInfoCtgId";
+			+ " AND pi.perInfoCtgId IN :perInfoCtgId";
 
 	@Override
 	public List<EmpInfoItemData> getAllInfoItem(String categoryCd, String companyId, String employeeId) {
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING, Object[].class)
 				.setParameter("categoryCd", categoryCd).setParameter("companyId", companyId)
-				.setParameter("employeeId", employeeId).getList(c -> toDomain(c, 0));
+				.setParameter("employeeId", employeeId).getList(c -> toDomain(c));
 	}
 
 	private EmpInfoItemData toDomainNew(Object[] entity) {
@@ -77,38 +77,29 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 
 	}
 
-	private EmpInfoItemData toDomain(Object[] entity, int i) {
-		EmpInfoItemData newInfoItem = new EmpInfoItemData();
-		if (i == 0) {
+	private EmpInfoItemData toDomain(Object[] entity) {
+		int dataStateType = entity[4] != null ? Integer.valueOf(entity[3].toString()) : 0;
 
-			int dataStateType = entity[4] != null ? Integer.valueOf(entity[3].toString()) : 0;
+		BigDecimal intValue = new BigDecimal(entity[6] != null ? Integer.valueOf(entity[6].toString()) : null);
 
-			BigDecimal intValue = new BigDecimal(entity[6] != null ? Integer.valueOf(entity[6].toString()) : null);
+		GeneralDate dateValue = GeneralDate.fromString(String.valueOf(entity[7].toString()), "yyyy-MM-dd");
 
-			GeneralDate dateValue = GeneralDate.fromString(String.valueOf(entity[7].toString()), "yyyy-MM-dd");
+		int isRequired = Integer.parseInt(entity[8] != null ? entity[9].toString() : "0");
 
-			int isRequired = Integer.parseInt(entity[8] != null ? entity[9].toString() : "0");
+		int dataType = Integer.parseInt(entity[13] != null ? entity[13].toString() : "0");
 
-			int dataType = Integer.parseInt(entity[13] != null ? entity[13].toString() : "0");
+		int selectionItemRefType = Integer.parseInt(entity[14] != null ? entity[14].toString() : "0");
 
-			int selectionItemRefType = Integer.parseInt(entity[14] != null ? entity[14].toString() : "0");
+		String selectionItemRefCd = entity[15] != null ? entity[15].toString() : "";
 
-			String selectionItemRefCd = entity[15] != null ? entity[15].toString() : "";
+		EmpInfoItemData newInfoItem = EmpInfoItemData.createFromJavaType(entity[10].toString(), entity[0].toString(),
+				entity[1].toString(), entity[11].toString(), entity[12].toString(), entity[9].toString(), isRequired,
+				dataStateType, entity[5].toString(), intValue, dateValue, dataType);
 
-			newInfoItem = EmpInfoItemData.createFromJavaType(entity[10].toString(), entity[0].toString(),
-					entity[1].toString(), entity[11].toString(), entity[12].toString(), entity[9].toString(),
-					isRequired, dataStateType, entity[5].toString(), intValue, dateValue, dataType);
+		newInfoItem.setSelectionItemRefType(selectionItemRefType);
 
-			newInfoItem.setSelectionItemRefType(selectionItemRefType);
-
-			newInfoItem.setSelectionItemRefCd(selectionItemRefCd);
-
-		} else {
-
-			newInfoItem.setPerInfoDefId(entity[0].toString());
-
-		}
-
+		newInfoItem.setSelectionItemRefCd(selectionItemRefCd);
+		
 		return newInfoItem;
 	}
 
@@ -199,7 +190,7 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	@Override
 	public List<EmpInfoItemData> getAllInfoItemBySidCtgId(String ctgId, String employeeId) {
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_CTGID_AND_SID, Object[].class)
-				.setParameter("ctgid", ctgId).setParameter("sid", employeeId).getList(c -> toDomain(c, 0));
+				.setParameter("ctgid", ctgId).setParameter("sid", employeeId).getList(c -> toDomain(c));
 	}
 
 	@Override
@@ -210,10 +201,15 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	}
 
 	@Override
-	public List<EmpInfoItemData> getAllInfoItem(String itemCd, String perInfoCtgId,  List<String> companyId) {
-		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_ALL_CID_QUERY_STRING, Object[].class)
+	public boolean getAllInfoItem(String itemCd, List<String> perInfoCtgId,  List<String> companyId) {
+		List<Object[]> item = this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_ALL_CID_QUERY_STRING, Object[].class)
 				.setParameter("itemCd", itemCd)
 				.setParameter("perInfoCtgId", perInfoCtgId)
-				.setParameter("companyId", companyId).getList(c -> toDomain(c, 1));
+				.setParameter("companyId", companyId).getList();
+		if(item != null && item.size() > 0) {
+			
+			return true;
+		}
+		return  false;
 	}
 }
