@@ -894,7 +894,7 @@ declare module nts.uk.ui.option {
 }
 interface JQuery {
     ntsPopup(args: any): JQuery;
-    ntsError(action: string, param?: any): any;
+    ntsError(action: string, ...param: any[]): any;
     ntsListBox(action: string, param?: any): any;
     ntsGridList(action: string, param?: any): any;
     ntsGridListFeature(feature: string, action: string, ...params: any[]): any;

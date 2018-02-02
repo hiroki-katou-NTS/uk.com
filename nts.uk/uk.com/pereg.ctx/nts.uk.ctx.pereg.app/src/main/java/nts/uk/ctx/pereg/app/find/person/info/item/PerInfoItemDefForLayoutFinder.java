@@ -3,7 +3,6 @@ package nts.uk.ctx.pereg.app.find.person.info.item;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -63,10 +62,9 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @param mapListCombo
 	 */
 	public void setItemForLayout(PerInfoItemDefForLayoutDto itemForLayout, String empId, int ctgType,
-			PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder, boolean isCtgViewOnly, GeneralDate sDate,
-			Map<Integer, List<ComboBoxObject>> mapListCombo) {
+			PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder, boolean isCtgViewOnly, GeneralDate sDate) {
 		List<PerInfoItemDefForLayoutDto> lstChildren = getPerItemSet(empId, ctgType, itemDef.getItemTypeState(),
-				perInfoCd, dispOrder, isCtgViewOnly, sDate, mapListCombo, itemForLayout.getActionRole());
+				perInfoCd, dispOrder, isCtgViewOnly, sDate, itemForLayout.getActionRole());
 		if (lstChildren.size() == 0 && itemDef.getItemTypeState().getItemType().value == 1)
 			itemForLayout.setActionRole(ActionRole.HIDDEN);
 		else {
@@ -95,15 +93,9 @@ public class PerInfoItemDefForLayoutFinder {
 				if (dataTypeValue == 6) {
 					DataTypeStateDto dataTypeStateDto = createDataTypeStateDto(singleItemDom.getDataTypeState());
 					SelectionItemDto selectionItemDto = (SelectionItemDto) dataTypeStateDto;
-					int refType = selectionItemDto.getReferenceType().value;
-					if (mapListCombo.containsKey(refType)) {
-						itemForLayout.setLstComboxBoxValue(mapListCombo.get(refType));
-					} else {
-						List<ComboBoxObject> lstCombo = getLstComboBoxValue(selectionItemDto, empId, sDate,
-								itemForLayout.getIsRequired() == 1);
-						itemForLayout.setLstComboxBoxValue(lstCombo);
-						mapListCombo.put(refType, lstCombo);
-					}
+					List<ComboBoxObject> lstCombo = getLstComboBoxValue(selectionItemDto, empId, sDate,
+							itemForLayout.getIsRequired() == 1);
+					itemForLayout.setLstComboxBoxValue(lstCombo);
 
 				}
 			}
@@ -173,8 +165,7 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @return
 	 */
 	private List<PerInfoItemDefForLayoutDto> getPerItemSet(String empId, int ctgType, ItemTypeState item,
-			String perInfoCd, int dispOrder, boolean ctgIsViewOnly, GeneralDate sDate,
-			Map<Integer, List<ComboBoxObject>> mapListCombo, ActionRole actionRole) {
+			String perInfoCd, int dispOrder, boolean ctgIsViewOnly, GeneralDate sDate, ActionRole actionRole) {
 		// 1 set - 2 Single
 		List<PerInfoItemDefForLayoutDto> lstResult = new ArrayList<>();
 		if (item.getItemType().value == 1) {
@@ -194,7 +185,7 @@ public class PerInfoItemDefForLayoutFinder {
 				childItem = new PerInfoItemDefForLayoutDto();
 				childItem.setActionRole(actionRole);
 				setItemForLayout(childItem, empId, ctgType, lstDomain.get(i), perInfoCd, dispOrder, ctgIsViewOnly,
-						sDate, mapListCombo);
+						sDate);
 				lstResult.add(childItem);
 			}
 		}
