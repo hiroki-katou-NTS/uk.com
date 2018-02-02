@@ -192,6 +192,8 @@ module nts.uk.at.view.kal004.a.model {
                 self.periodSetting.isCreateMode(true);             
                                 
                 $('#alarmCode').focus();
+                 nts.uk.ui.errors.clearAll();
+                
             }
             else {
                 self.createMode(false);
@@ -236,6 +238,7 @@ module nts.uk.at.view.kal004.a.model {
                 self.periodSetting.isCreateMode(false);
                 
                 $('#alarmName').focus();
+                 nts.uk.ui.errors.clearAll();
             }
         }
         
