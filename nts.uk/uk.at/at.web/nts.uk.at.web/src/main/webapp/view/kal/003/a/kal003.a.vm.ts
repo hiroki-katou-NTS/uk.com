@@ -231,6 +231,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
         openKAL003dDialog() {
             let self = this;
+            nts.uk.ui.errors.clearAll();
             modal("/view/kal/003/d/index.xhtml").onClosed(() => {
                 var output = getShared("outputKAL003d");
                 if (!nts.uk.util.isNullOrUndefined(output)) {
