@@ -1,4 +1,4 @@
-//__viewContext.noHeader = true;
+__viewContext.noHeader = true;
 __viewContext.ready(function () {
     class ScreenModel {
         constructor() {
@@ -411,7 +411,7 @@ __viewContext.ready(function () {
         dataSource: vertSumContentDs,
         primaryKey: "empId"
     };
-    new nts.uk.ui.exTable.ExTable($("#extable"), { 
+    new nts.uk.ui.exTable2.ExTable($("#extable"), { 
             headerHeight: "75px", bodyRowHeight: "50px", bodyHeight: "400px", 
             horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "140px",
             horizontalSumBodyRowHeight: "20px",
@@ -419,7 +419,7 @@ __viewContext.ready(function () {
             bodyHeightMode: "dynamic",
             windowXOccupation: 170,
             windowYOccupation: 300,
-            updateMode: "stick",
+            updateMode: "edit",
             pasteOverWrite: true,
             stickOverWrite: true,
             viewMode: "shortName",
@@ -490,7 +490,7 @@ __viewContext.ready(function () {
         dataSource: horzSumContentDs,
         primaryKey: "itemId"
     };
-    new nts.uk.ui.exTable.ExTable($("#subtable"), { 
+    new nts.uk.ui.exTable2.ExTable($("#subtable"), { 
         headerHeight: "75px", bodyRowHeight: "20px", bodyHeight: "140px",
         horizontalSumBodyRowHeight: "20px",
         areaResize: false, 
