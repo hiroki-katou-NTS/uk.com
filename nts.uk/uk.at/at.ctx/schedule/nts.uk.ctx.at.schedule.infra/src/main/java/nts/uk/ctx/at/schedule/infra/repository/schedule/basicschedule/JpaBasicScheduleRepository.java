@@ -27,6 +27,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
@@ -41,6 +42,8 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workschedulebr
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workschedulebreak.KscdtWorkScheduleBreakPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workschedulebreak.KscdtWorkScheduleBreakPK_;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workschedulebreak.KscdtWorkScheduleBreak_;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletime.KscdtScheTime;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletime.KscdtScheTimePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZonePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZonePK_;
@@ -80,6 +83,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 		this.insertScheduleMaster(bSchedule.getWorkScheduleMaster());
 		this.insertScheduleBreakTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleBreaks());
+		this.insertScheduleTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleTime());
 	}
 
 	/*
@@ -98,6 +102,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.insertAllWorkScheduleTimeZone(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleTimeZones());
 		this.updateScheduleMaster(bSchedule.getWorkScheduleMaster());
 		this.updateScheduleBreakTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleBreaks());
+		this.updateScheduleTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleTime());
 	}
 
 	/**
@@ -145,6 +150,9 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.commandProxy().remove(KscdtBasicSchedule.class, new KscdtBasicSchedulePK(employeeId, baseDate));
 		this.removeAllChildCare(employeeId, baseDate);
 		this.removeAllTimeZone(employeeId, baseDate);
+		this.removeAllScheduleBreakTime(employeeId, baseDate);
+		this.removeScheduleMaster(employeeId, baseDate);
+		this.removeScheduleTime(employeeId, baseDate);
 	}
 
 	/*
@@ -566,6 +574,15 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	}
 	
 	/**
+	 * remove 勤務予定マスタ情報
+	 * @param employeeId
+	 * @param baseDate
+	 */
+	private void removeScheduleMaster(String employeeId, GeneralDate baseDate) {
+		this.commandProxy().remove(KscdtScheMasterInfo.class, new KscdtScheMasterInfoPK(employeeId, baseDate));
+	}
+	
+	/**
 	 * insert 勤務予定休憩
 	 * @param workScheduleBreaks
 	 */
@@ -620,12 +637,12 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 
 		// equal employee id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPK).get(KscdtWorkScheduleBreakPK_.sId),
+				root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPk).get(KscdtWorkScheduleBreakPK_.sId),
 				employeeId));
 
 		// equal year month date base date
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPK).get(KscdtWorkScheduleBreakPK_.date),
+				root.get(KscdtWorkScheduleBreak_.kscdtWorkScheduleBreakPk).get(KscdtWorkScheduleBreakPK_.date),
 				baseDate));
 
 		// set where to SQL
@@ -634,5 +651,55 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		// create query
 		em.createQuery(cq).executeUpdate();
 
+	}
+	
+	/**
+	 * insert 勤務予定時間
+	 * @param workScheduleTime
+	 */
+	private void insertScheduleTime(String employeeId, GeneralDate baseDate, Optional<WorkScheduleTime> workScheduleTime) {
+		if (!workScheduleTime.isPresent()) {
+			return;
+		}
+		
+		WorkScheduleTime scheduleTime = workScheduleTime.get();
+		KscdtScheTimePK key = new KscdtScheTimePK(employeeId, baseDate);
+		KscdtScheTime entity = new KscdtScheTime(key);
+		entity.setBreakTime(scheduleTime.getBreakTime().valueAsMinutes());
+		entity.setChildCareTime(scheduleTime.getChildCareTime().valueAsMinutes());
+		entity.setPrescribedTime(scheduleTime.getPredetermineTime().valueAsMinutes());
+		entity.setTotalLaborTime(scheduleTime.getTotalLaborTime().valueAsMinutes());
+		entity.setWeekdayTime(scheduleTime.getWeekdayTime().valueAsMinutes());
+		entity.setWorkingTime(scheduleTime.getWorkingTime().valueAsMinutes());
+		this.commandProxy().insert(entity);
+	}
+	
+	/**
+	 * update 勤務予定時間
+	 * @param workScheduleTime
+	 */
+	private void updateScheduleTime(String employeeId, GeneralDate baseDate, Optional<WorkScheduleTime> workScheduleTime) {
+		if (!workScheduleTime.isPresent()) {
+			return;
+		}
+		
+		WorkScheduleTime scheduleTime = workScheduleTime.get();
+		KscdtScheTimePK key = new KscdtScheTimePK(employeeId, baseDate);
+		KscdtScheTime entity = this.queryProxy().find(key, KscdtScheTime.class).get();
+		entity.setBreakTime(scheduleTime.getBreakTime().valueAsMinutes());
+		entity.setChildCareTime(scheduleTime.getChildCareTime().valueAsMinutes());
+		entity.setPrescribedTime(scheduleTime.getPredetermineTime().valueAsMinutes());
+		entity.setTotalLaborTime(scheduleTime.getTotalLaborTime().valueAsMinutes());
+		entity.setWeekdayTime(scheduleTime.getWeekdayTime().valueAsMinutes());
+		entity.setWorkingTime(scheduleTime.getWorkingTime().valueAsMinutes());
+		this.commandProxy().update(entity);
+	}
+	
+	/**
+	 * remove 勤務予定時間
+	 * @param workScheduleTime
+	 */
+	private void removeScheduleTime(String employeeId, GeneralDate baseDate) {
+		this.commandProxy().remove(KscdtScheTime.class, new KscdtScheTimePK(employeeId, baseDate));
 	}
 }
