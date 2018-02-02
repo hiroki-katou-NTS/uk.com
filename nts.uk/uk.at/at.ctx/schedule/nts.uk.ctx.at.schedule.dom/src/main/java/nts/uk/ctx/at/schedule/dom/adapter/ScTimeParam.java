@@ -1,27 +1,16 @@
-package nts.uk.ctx.at.record.pub.scheduletime;
+package nts.uk.ctx.at.schedule.dom.adapter;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
-/**
- * RequestList No91 
- * Import Class
- * @author keisuke_hoshina
- *
- */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class ScheduleTimePubImport {
-
+@Value
+@Builder
+public class ScTimeParam {
 	//社員ID
 	String employeeId;
 	

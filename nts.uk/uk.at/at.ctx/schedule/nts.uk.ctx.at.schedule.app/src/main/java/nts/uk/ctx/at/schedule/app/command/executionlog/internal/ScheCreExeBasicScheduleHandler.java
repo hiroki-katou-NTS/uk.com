@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,9 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionC
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.ChildCareScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.WorkScheduleBreakSaveCommand;
+import nts.uk.ctx.at.schedule.dom.adapter.ScTimeAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.ScTimeImport;
+import nts.uk.ctx.at.schedule.dom.adapter.ScTimeParam;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
@@ -26,6 +30,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.algorithm.CreScheWithBusinessDayCalSe
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationDto;
 import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationRepository;
@@ -68,6 +73,9 @@ public class ScheCreExeBasicScheduleHandler {
 	
 	@Inject
 	private CreScheWithBusinessDayCalService scheWithBusinessDayCalService;
+	
+	@Inject 
+	private ScTimeAdapter scTimeAdapter;
 		
 	/**
 	 * Update all data to command save.
@@ -379,15 +387,18 @@ public class ScheCreExeBasicScheduleHandler {
 	 */
 	private BasicScheduleSaveCommand saveScheduleTime(BasicScheduleResetCommand command,
 			BasicScheduleSaveCommand commandSave) {
-//		WorkScheduleTime workScheduleTime = new WorkScheduleTime(
-//				personFeeTime, 
-//				breakTime, 
-//				workingTime, 
-//				weekdayTime, 
-//				predetermineTime, 
-//				totalLaborTime, 
-//				childCareTime);
-//		commandSave.setWorkScheduleTime(workScheduleTime);
+		ScTimeParam param = ScTimeParam.builder()
+				.build();
+		ScTimeImport scTimeImport = scTimeAdapter.calculation(param);
+		WorkScheduleTime workScheduleTime = new WorkScheduleTime(
+				Collections.emptyList(), //TODO 
+				scTimeImport.getBreakTime(), 
+				scTimeImport.getActualWorkTime(), 
+				scTimeImport.getWeekDayTime(), 
+				null, //TODO 
+				scTimeImport.getTotalWorkTime(), 
+				scTimeImport.getChildCareTime());
+		commandSave.setWorkScheduleTime(workScheduleTime);
 		return commandSave;
 	}
 }

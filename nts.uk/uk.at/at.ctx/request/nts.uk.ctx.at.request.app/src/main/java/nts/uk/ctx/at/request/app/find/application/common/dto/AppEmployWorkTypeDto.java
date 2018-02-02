@@ -29,9 +29,13 @@ public class AppEmployWorkTypeDto {
 	 * 表示する勤務種類を設定する
 	 */
 	private String workTypeCode;
+	/**
+	 * 勤務種類名称
+	 */
+	private String workTypeName;
 	
 	public static AppEmployWorkTypeDto fromDomain(AppEmployWorkType domain){
 		return new AppEmployWorkTypeDto(domain.getCompanyID(), 
-				domain.getEmploymentCode(), domain.getAppType().value, domain.getHolidayOrPauseType(), domain.getWorkTypeCode());
+				domain.getEmploymentCode(), domain.getAppType().value, domain.getHolidayOrPauseType(), domain.getWorkTypeCode(), "");
 	}
 }
