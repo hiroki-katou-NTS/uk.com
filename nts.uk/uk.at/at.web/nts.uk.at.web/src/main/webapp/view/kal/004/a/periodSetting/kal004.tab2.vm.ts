@@ -57,7 +57,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             var self = this;
             var categoryId = ModelCheckConditonCode.categoryId;
             if(categoryId == 2){
-                var param = ModelCheckConditonCode.extractionPeriodUnit.segmentationOfCycle
+                var param = ModelCheckConditonCode.extractionPeriodUnit.segmentationOfCycle;
                 nts.uk.ui.windows.setShared("segmentationOfCycle", param);
                 nts.uk.ui.windows.setShared("categoryName", ModelCheckConditonCode.categoryName);
                 nts.uk.ui.windows.sub.modal("../f/index.xhtml").onClosed(() => {
