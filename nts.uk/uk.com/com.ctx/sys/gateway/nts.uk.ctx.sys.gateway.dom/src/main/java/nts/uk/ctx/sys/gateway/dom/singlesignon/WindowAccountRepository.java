@@ -58,4 +58,7 @@ public interface WindowAccountRepository {
 
 	void update(WindowAccount winAccCommand, WindowAccount winAccDB);
 	
+	
+	List<WindowAccount> findByListUserId(List<String> ltsUserId);
+	
 }
