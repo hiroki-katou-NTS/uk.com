@@ -84,7 +84,7 @@
 								<div>
 									<label>#{i18n.getText('CCG001_20')}</label>
 								</div>
-								<div tabindex="-1" class="accordion" id="EmploymentList"
+								<div tabindex="-1" class="accordion" id="StatusOfEmployeeList"
 									data-bind="ntsAccordion: {enable: true}">
 									<h3>
 										<label>#{i18n.getText('CCG001_42')}</label>
@@ -152,6 +152,9 @@
 									<h3>
 										<label>#{i18n.getText('CCG001_5')}</label>
 									</h3>
+									<div class="contentkcp">
+										<div id="employmentList" tabindex="7" style="width: 352px"></div>
+									</div>
 								</div>
 								<div tabindex="-1" class="accordion" id="ClassificationList"
 									data-bind="ntsAccordion: {enable: true}">
@@ -182,13 +185,13 @@
 											data-bind="click: detailWorkplace">#{i18n.getText('CCG001_9')}</button>
 									</div>
 								</div>
-								<div tabindex="-1" class="accordion" id="EmploymentList"
+								<div tabindex="-1" class="accordion" id="WorkTypeList"
 									data-bind="ntsAccordion: {enable: true}">
 									<h3>
 										<label>#{i18n.getText('CCG001_58')}</label>
 									</h3>
 									<div class="contentkcp">
-										<div id="employmentList" tabindex="7" style="width: 352px"></div>
+										<div id="workTypeList" tabindex="2" style="width: 352px"></div>
 									</div>
 								</div>
 							</div>
