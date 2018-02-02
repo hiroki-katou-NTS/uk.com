@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.holidaysetting.configuration;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.DayOfPublicHoliday;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHoliday;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayGrantDate;
 import nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementClassification;
@@ -79,9 +80,12 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 			this.kshmtPublicHdSet.setPeriod(publicHolidayGrantDate.getPeriod().value);
 		} else {
 			PublicHoliday publicHoliday = (PublicHoliday) publicHolidayManagementStartDate;
-			this.kshmtPublicHdSet.setDayMonth(publicHoliday.getDayMonth());
-			this.kshmtPublicHdSet.setFullDate(publicHoliday.getDate());
 			this.kshmtPublicHdSet.setDetermineStartD(publicHoliday.getDetermineStartDate().value);
+			if (publicHoliday.getDetermineStartDate().value == DayOfPublicHoliday.DESIGNATE_BY_YEAR_MONTH_DAY.value) {
+				this.kshmtPublicHdSet.setFullDate(publicHoliday.getDate());
+			} else {
+				this.kshmtPublicHdSet.setDayMonth(publicHoliday.getDayMonth());
+			}
 		}
 	}
 
