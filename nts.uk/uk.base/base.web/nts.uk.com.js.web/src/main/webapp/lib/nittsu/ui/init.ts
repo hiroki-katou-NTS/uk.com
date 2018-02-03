@@ -103,14 +103,9 @@ module nts.uk.ui {
             //            }    
         }
         
-        $(function () {
-            documentReady.fire();
-            
-            __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
-                .map(v => JSON.parse(v));
-            
+        var startP = function(){
             _.defer(() => _start.call(__viewContext));
-            
+                
             // Menu
             if ($(document).find("#header").length > 0) {
                 menu.request();
@@ -127,7 +122,34 @@ module nts.uk.ui {
                                 + "</div></div>";
                 $("#master-wrapper").prepend(header);
                 menu.request();
+            }    
+        }
+        
+        $(function () {
+            console.log("call");
+            documentReady.fire();
+            
+            __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
+                .map(v => JSON.parse(v));
+            
+            if($(".html-loading").length <= 0){
+                startP();
+                return;
             }
+            let dfd = [];
+            _.forEach($(".html-loading"), function(e){
+                let $container = $(e);
+                let dX = $.Deferred(); 
+                $container.load($container.attr("link"), function(){
+                    dX.resolve();
+                });
+                dfd.push(dX);
+                dX.promise();
+            })
+            $.when(...dfd).then(function( data, textStatus, jqXHR ) {
+                $('.html-loading').contents().unwrap();
+                startP();
+            });  
         });
     }
 }
