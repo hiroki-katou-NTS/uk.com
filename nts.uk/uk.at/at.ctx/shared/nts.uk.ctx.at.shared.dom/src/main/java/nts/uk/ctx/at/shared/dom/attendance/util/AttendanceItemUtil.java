@@ -255,7 +255,6 @@ public class AttendanceItemUtil {
 	}
 
 	private static <T> List<T> processListToMax(List<T> list, int max, Class<T> targetClass, String idxFieldName) {
-		// TODO: check result list
 		list = list == null ? new ArrayList<>() : new ArrayList<>(list);
 		if (!idxFieldName.isEmpty()) {
 			Field idxField = getField(idxFieldName, targetClass);
