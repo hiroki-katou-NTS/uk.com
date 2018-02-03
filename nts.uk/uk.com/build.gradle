@@ -110,8 +110,11 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-        compile group: 'nts.gul', name: 'nts.gul', version: '0.42'
-        compile group: 'nts.arc', name: 'nts.arc', version: '0.55'
+		// https://mvnrepository.com/artifact/org.quartz-scheduler/quartz
+		compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
+		
+        compile group: 'nts.gul', name: 'nts.gul', version: '0.43'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.56'
 	}
 }
 //=============com.file↓===========================================
