@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction.datadialog;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -172,7 +173,7 @@ public class DataDialogWithTypeProcessor {
 		}
 	}
 
-	public Map<Integer, Map<String, String>> getAllCodeName(List<Integer> types, String companyId) {
+	public Map<Integer, Map<String, String>> getAllCodeName(Collection<Integer> types, String companyId) {
 		return types.stream().collect(Collectors.toMap(type -> type, type -> {
 			switch (type) {
 			case 1:

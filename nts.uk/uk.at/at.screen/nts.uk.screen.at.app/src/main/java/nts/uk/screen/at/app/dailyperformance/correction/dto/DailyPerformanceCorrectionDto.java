@@ -114,8 +114,9 @@ public class DailyPerformanceCorrectionDto {
 
 	/** Mark current login employee */
 	public void markLoginUser() {
+		String loginUser = AppContexts.user().employeeId();
 		for (DailyPerformanceEmployeeDto employee : lstEmployee) {
-			if (employee.getId().equals(AppContexts.user().employeeId())) {
+			if (employee.getId().equals(loginUser)) {
 				employee.setLoginUser(true);
 			}
 		}
