@@ -236,7 +236,7 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		System.out.println("time create HashMap: " + (System.currentTimeMillis() - startTime2));
 		start = System.currentTimeMillis();
-		screenDto.markLoginUser();
+		screenDto.markLoginUser(sId);
 		service = Executors.newFixedThreadPool(1);
 		CountDownLatch latch1 = new CountDownLatch(1);
 		// set disable cell
