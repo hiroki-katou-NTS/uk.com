@@ -3353,10 +3353,7 @@ var nts;
                     //            if($("#functions-area-bottom").length!=0){
                     //            }    
                 };
-                $(function () {
-                    ui.documentReady.fire();
-                    __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
-                        .map(function (v) { return JSON.parse(v); });
+                var startP = function () {
                     _.defer(function () { return _start.call(__viewContext); });
                     // Menu
                     if ($(document).find("#header").length > 0) {
@@ -3376,6 +3373,30 @@ var nts;
                         $("#master-wrapper").prepend(header);
                         ui.menu.request();
                     }
+                };
+                $(function () {
+                    console.log("call");
+                    ui.documentReady.fire();
+                    __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
+                        .map(function (v) { return JSON.parse(v); });
+                    if ($(".html-loading").length <= 0) {
+                        startP();
+                        return;
+                    }
+                    var dfd = [];
+                    _.forEach($(".html-loading"), function (e) {
+                        var $container = $(e);
+                        var dX = $.Deferred();
+                        $container.load($container.attr("link"), function () {
+                            dX.resolve();
+                        });
+                        dfd.push(dX);
+                        dX.promise();
+                    });
+                    $.when.apply($, dfd).then(function (data, textStatus, jqXHR) {
+                        $('.html-loading').contents().unwrap();
+                        startP();
+                    });
                 });
             })(init || (init = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -6416,7 +6437,7 @@ var nts;
                             var $yearType = $("<label/>").attr("for", idString)
                                 .css({ "position": "absolute",
                                 "line-height": "30px",
-                                "right": "5px" });
+                                "right": jumpButtonsDisplay ? "40px" : "5px" });
                             var labelText = fiscalYear ? "年度" : "年";
                             $yearType.text(labelText);
                             container.append($yearType);
@@ -15283,7 +15304,9 @@ var nts;
                     function setErrorPosition($displayPanel) {
                         setTimeout(function () {
                             if ($displayPanel.find(".sidebar-content-header").length > 0) {
-                                $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+                                $('#func-notifier-errors').addClass("show-immediately");
+                                $('#func-notifier-errors').position({ my: 'left+145 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+                                $('#func-notifier-errors').removeClass("show-immediately");
                             }
                             else {
                                 setErrorPosition($(".sidebar-content"));
