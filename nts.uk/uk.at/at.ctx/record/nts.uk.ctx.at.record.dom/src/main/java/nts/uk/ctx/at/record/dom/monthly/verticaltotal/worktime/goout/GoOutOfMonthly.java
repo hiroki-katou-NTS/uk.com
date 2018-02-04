@@ -60,7 +60,7 @@ public class GoOutOfMonthly {
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
 			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
 			val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
-			//*****（未）　誤って外出時間帯クラスがメンバになっているので、その修正待ち。
+			//*****（未）　誤って外出時間帯クラスがメンバになっているので、その修正待ち。外出時間クラスも、まだ未実装。
 			//val goOutTimeOfDailys = totalWorkingTime.getOutingTimeOfDailyPerformance();
 			//*****（未）　短時間勤務時間のメンバが、まだ実装されていない。shortWorkTime
 			
