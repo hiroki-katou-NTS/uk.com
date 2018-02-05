@@ -6,8 +6,16 @@ package nts.uk.ctx.at.schedule.app.command.processbatch;
 
 import java.util.List;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
+import com.fasterxml.jackson.core.JsonParser;
+
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import nts.arc.time.GeneralDateTime;
 
 /**
@@ -37,5 +45,24 @@ public class PerScheBatchCorrectProcessDto {
 	/** The errors. */
 	// エラーリスト
 	private List<ErrorContentDto> errors;
+	
+	/**
+	 * Build error list content json
+	 * @return error list content json
+	 */
 
+	private String buildJsonString() {
+		JsonArrayBuilder arr = Json.createArrayBuilder();
+		
+		for (ErrorContentDto error : errors) {
+			arr.add(error.buildJsonObject());
+		}
+		
+		return arr.build().toString();
+	}
+	
+	@Override
+	public String toString() {
+		return buildJsonString();
+	}
 }
