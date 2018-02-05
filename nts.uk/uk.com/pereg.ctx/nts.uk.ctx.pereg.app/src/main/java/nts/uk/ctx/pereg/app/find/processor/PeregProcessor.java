@@ -2,7 +2,9 @@ package nts.uk.ctx.pereg.app.find.processor;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -47,6 +49,7 @@ import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
@@ -391,6 +394,7 @@ public class PeregProcessor {
 		List<PerInfoItemDefForLayoutDto> lstReturn = new ArrayList<>();
 		PersonInfoItemDefinition x;
 		PerInfoItemDefForLayoutDto item;
+		Map<Integer, Map<String,  List<ComboBoxObject>>> combobox = new HashMap<Integer, Map<String,  List<ComboBoxObject>>>();
 		for(int i = 0; i < lstPerInfoDef.size(); i++) {
 			x = lstPerInfoDef.get(i);
 			
@@ -402,7 +406,7 @@ public class PeregProcessor {
 						item = new PerInfoItemDefForLayoutDto();
 						item.setActionRole(itemRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT);
 						itemForLayoutFinder.setItemForLayout(item, empId, paramObject.getPersonInfoCategory().getCategoryType().value, x, 
-								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate);
+								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate, combobox);
 							lstReturn.add(item);
 					
 				}else {
@@ -410,7 +414,7 @@ public class PeregProcessor {
 						item = new PerInfoItemDefForLayoutDto();
 						item.setActionRole(itemRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT);
 						itemForLayoutFinder.setItemForLayout(item, empId, paramObject.getPersonInfoCategory().getCategoryType().value, x, 
-								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate);
+								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate, combobox);
 							lstReturn.add(item);
 					}
 				}		
