@@ -305,7 +305,7 @@ public class PerInfoItemDefFinder {
 				selectionLst);
 	}
 
-	private ItemTypeStateDto createItemTypeStateDto(ItemTypeState itemTypeState) {
+	public static ItemTypeStateDto createItemTypeStateDto(ItemTypeState itemTypeState) {
 		ItemType itemType = itemTypeState.getItemType();
 		if (itemType == ItemType.SINGLE_ITEM) {
 			SingleItem singleItemDom = (SingleItem) itemTypeState;
@@ -316,7 +316,7 @@ public class PerInfoItemDefFinder {
 		}
 	}
 
-	private DataTypeStateDto createDataTypeStateDto(DataTypeState dataTypeState) {
+	private static DataTypeStateDto createDataTypeStateDto(DataTypeState dataTypeState) {
 		int dataTypeValue = dataTypeState.getDataTypeValue().value;
 		switch (dataTypeValue) {
 		case 1:
