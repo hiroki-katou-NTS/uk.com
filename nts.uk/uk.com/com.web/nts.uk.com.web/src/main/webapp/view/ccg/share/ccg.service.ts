@@ -13,7 +13,9 @@ module nts.uk.com.view.ccg.share.ccg {
             searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
             getOfSelectedEmployee: "basic/organization/employee/getoffselect",
             searchAllWorkType: "at/share/worktype/findNotDeprecated",
-            quickSearchEmployee: "basic/organization/employee/quicksearch"
+            quickSearchEmployee: "basic/organization/employee/quicksearch",
+            getRefRangeBySysType: "ctx/sys/auth/role/getrefrangebysystype",
+            findClosureListByCurrentMonth: "ctx/at/shared/workrule/closure/findClosureListByCurrentMonth" //TODO: basedate truyen len hay lay system date?
         }
 
         /**
@@ -21,6 +23,14 @@ module nts.uk.com.view.ccg.share.ccg {
          */
         export function searchAllEmployee(baseDate: Date): JQueryPromise<Array<model.EmployeeSearchDto>> {
             return nts.uk.request.ajax('com', servicePath.searchAllEmployee, baseDate);
+        }
+
+        export function getRefRangeBySysType(sysType: number): JQueryPromise<number> {
+            return nts.uk.request.ajax('com', servicePath.getRefRangeBySysType, sysType);
+        }
+
+        export function findClosureListByCurrentMonth(): JQueryPromise<Array<any>> {
+            return nts.uk.request.ajax('at', servicePath.findClosureListByCurrentMonth);
         }
 
         /**

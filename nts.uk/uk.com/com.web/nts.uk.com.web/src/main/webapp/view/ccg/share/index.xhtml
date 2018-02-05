@@ -15,17 +15,16 @@
 			</div>
 			<div class="control-group ccg001-control-group">
 				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_28')}</div>
-				<div id="combo-box" tabindex="2" style="display: inline-table" data-bind="ntsComboBox: {
+				<div id="cbb-closure" tabindex="2" style="display: inline-table" data-bind="ntsComboBox: {
 					name: '#[CCG001_28]',
 					options: closureList,
-					optionsValue: 'code',
-					visibleItemsCount: 5,
+					optionsValue: 'id',
 					value: selectedClosure,
 					optionsText: 'name',
 					editable: false,
 					enable: true,
 					columns: [
-						{ prop: 'code', length: 2 },
+						{ prop: 'id', length: 1 },
 						{ prop: 'name', length: 5 },
 					]}"></div>
 			</div>

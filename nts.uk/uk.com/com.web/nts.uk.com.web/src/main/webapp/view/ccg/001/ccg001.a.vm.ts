@@ -86,6 +86,7 @@ module nts.uk.com.view.ccg001.a {
                 var self = this;
                 self.baseDate(new Date());
                 self.ccgcomponent = {
+                    showClosure: true,
                     baseDate: self.baseDate,
                     periodStartDate: self.baseDate,
                     periodEndDate: self.baseDate,

@@ -324,78 +324,141 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             
             public init($input: JQuery, data: GroupOption): JQueryPromise<void> {
-                var dfd = $.Deferred<void>();
-                var self = this;
-                /** Common properties */
-                self.isSelectAllEmployee = data.isSelectAllEmployee;
-                self.systemType = data.systemType;
-                self.isQuickSearchTab = data.isQuickSearchTab;
-                self.isAdvancedSearchTab = data.isAdvancedSearchTab;
-                self.showBaseDate = data.showBaseDate;
-                self.showClosure = data.showClosure;
-                self.showAllClosure = data.showAllClosure;
-                self.showPeriod = data.showPeriod;
-                self.periodAccuracy = data.periodAccuracy;
+                let dfd = $.Deferred<void>();
+                let self = this;
 
-                /** Required parameter */
-                self.baseDate = data.baseDate;
-                self.periodStartDate = data.periodStartDate;
-                self.periodEndDate = data.periodEndDate;
-                self.periodStartYm = data.periodStartDate;
-                self.periodEndYm = data.periodEndDate;
-                self.inService = data.inService;
-                self.leaveOfAbsence = data.leaveOfAbsence;
-                self.closed = data.closed;
-                self.retirement = data.retirement;
+                // set component properties
+                self.setProperties(data);
 
-                /** Quick search tab options */
-                self.isAllReferableEmployee = data.isAllReferableEmployee;
-                self.isOnlyMe = data.isOnlyMe;
-                self.isEmployeeOfWorkplace = data.isEmployeeOfWorkplace;
-                self.isEmployeeWorkplaceFollow = data.isEmployeeWorkplaceFollow;
-
-                /** Advanced search properties */
-                self.showEmployment = data.showEmployment;
-                self.showWorkplace = data.showWorkplace;
-                self.showClassification = data.showClassification;
-                self.showJobTitle = data.showJobTitle;
-                self.showWorktype = data.showWorktype;
-                self.isMultiple = data.isMutipleCheck;
-
-                // functions
-                self.onSearchAllClicked = data.onSearchAllClicked;
-                self.onSearchOnlyClicked = data.onSearchOnlyClicked;
-                self.onSearchOfWorkplaceClicked = data.onSearchOfWorkplaceClicked;
-                self.onSearchWorkplaceChildClicked = data.onSearchWorkplaceChildClicked;
-                self.onApplyEmployee = data.onApplyEmployee;
                 self.tabs(self.updateTabs());
                 self.selectedTab(self.updateSelectedTab());
 
-                // load closure
-                self.loadClosure();
-                
-                // init view
-                var webserviceLocator = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
-                    .mergeRelativePath('/view/ccg/share/index.xhtml').serialize();
-                $input.load(webserviceLocator, function() {
-                    ko.cleanNode($input[0]);
-                    ko.applyBindings(self, $input[0]);
-                    self.applyDataSearch();
-                    self.initNextTabFeature();
-                    // Set tabindex ro button show component.
-                    var tabindex = $input.attr('tabindex');
-                    $input.attr('tabindex', -1);
-                    $input.find('.btn_showhide').attr('tabindex', tabindex);
+                // start component
+                nts.uk.ui.block.invisible(); // block ui
+                self.startComponent().done(() => {
+                    // init view
+                    let webserviceLocator = nts.uk.request.location.siteRoot
+                        .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
+                        .mergeRelativePath('/view/ccg/share/index.xhtml').serialize();
+                    $input.load(webserviceLocator, function() {
+                        ko.cleanNode($input[0]);
+                        ko.applyBindings(self, $input[0]);
+                        self.applyDataSearch();
+                        self.initNextTabFeature();
 
-                    // set component height
-                    let headerHeight = $('#header').outerHeight();
-                    let functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
-                    $('#component-ccg001').outerHeight(window.innerHeight - headerHeight - functionAreaHeight - 30);
+                        // Set tabindex ro button show component.
+                        let tabindex = $input.attr('tabindex');
+                        $input.attr('tabindex', -1);
+                        $input.find('.btn_showhide').attr('tabindex', tabindex);
+
+                        // init ccg show/hide event
+                        self.initCcgEvent();
+                        // set component height
+                        self.setComponentHeight();
+
+                        nts.uk.ui.block.clear(); // clear block UI
+                        dfd.resolve();
+                    });
+                });
+
+                return dfd.promise();
+            }
+
+            /**
+             * Start component
+             */
+            private startComponent(): JQueryPromise<void> {
+                let dfd = $.Deferred<void>();
+                let self = this;
+                //service.getRefRangeBySysType(self.systemType)// get ref range
+                self.loadClosure().done(() => {
                     dfd.resolve();
                 });
-                
-                // init function click button ccg common
+
+                return dfd.promise();
+            }
+
+            /**
+             * Set component properties
+             */
+            private setProperties(options: GroupOption): void {
+                let self = this;
+
+                /** Common properties */
+                self.isSelectAllEmployee = options.isSelectAllEmployee;
+                self.systemType = options.systemType;
+                self.isQuickSearchTab = options.isQuickSearchTab;
+                self.isAdvancedSearchTab = options.isAdvancedSearchTab;
+                self.showBaseDate = options.showBaseDate;
+                self.showClosure = options.showClosure;
+                self.showAllClosure = options.showAllClosure;
+                self.showPeriod = options.showPeriod;
+                self.periodAccuracy = options.periodAccuracy;
+
+                /** Required parameter */
+                self.baseDate = options.baseDate;
+                self.periodStartDate = options.periodStartDate;
+                self.periodEndDate = options.periodEndDate;
+                self.periodStartYm = options.periodStartDate;
+                self.periodEndYm = options.periodEndDate;
+                self.inService = options.inService;
+                self.leaveOfAbsence = options.leaveOfAbsence;
+                self.closed = options.closed;
+                self.retirement = options.retirement;
+
+                /** Quick search tab options */
+                self.isAllReferableEmployee = options.isAllReferableEmployee;
+                self.isOnlyMe = options.isOnlyMe;
+                self.isEmployeeOfWorkplace = options.isEmployeeOfWorkplace;
+                self.isEmployeeWorkplaceFollow = options.isEmployeeWorkplaceFollow;
+
+                /** Advanced search properties */
+                self.showEmployment = options.showEmployment;
+                self.showWorkplace = options.showWorkplace;
+                self.showClassification = options.showClassification;
+                self.showJobTitle = options.showJobTitle;
+                self.showWorktype = options.showWorktype;
+                self.isMultiple = options.isMutipleCheck;
+
+                // functions
+                self.onSearchAllClicked = options.onSearchAllClicked;
+                self.onSearchOnlyClicked = options.onSearchOnlyClicked;
+                self.onSearchOfWorkplaceClicked = options.onSearchOfWorkplaceClicked;
+                self.onSearchWorkplaceChildClicked = options.onSearchWorkplaceChildClicked;
+                self.onApplyEmployee = options.onApplyEmployee;
+            }
+
+            /**
+             * Set component height
+             */
+            private setComponentHeight(): void {
+                let headerHeight = $('#header').outerHeight();
+                let functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
+                $('#component-ccg001').outerHeight(window.innerHeight - headerHeight - functionAreaHeight - 30);
+            }
+
+            /**
+             * Load ListClosure 
+             */
+            private loadClosure(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                if (self.showClosure) {
+                    service.findClosureListByCurrentMonth().done(data => {
+                        self.closureList(data);
+                        dfd.resolve();
+                    });
+                } else {
+                    dfd.resolve();
+                }
+                return dfd.promise();
+            }
+
+            /**
+             * Initial ccg event
+             */
+            private initCcgEvent(): void {
+                let self = this;
                 $(window).on('click', function(e) {
                     // Check is click to inside component.
                     if (e.target.id == "component-ccg001" || $(e.target).parents("#component-ccg001")[0]) {
@@ -422,17 +485,6 @@ module nts.uk.com.view.ccg.share.ccg {
                         $('#component-ccg001').toggle("slide");
                     }
                 });
-                return dfd.promise();
-            }
-
-            /**
-             * Load ListClosure 
-             */
-            private loadClosure(): void {
-                let self = this;
-                if (self.showClosure) {
-                    
-                }
             }
             
             /**
@@ -801,6 +853,34 @@ module nts.uk.com.view.ccg.share.ccg {
             static MAX_ROWS_JOBTITLE = 10;
             static MAX_ROWS_WORKPLACE = 10;
             static MAX_ROWS_EMPLOYEE = 20;    
+        }
+
+        interface QueryParam {
+            baseDate: any;
+            referenceRange: number;
+            filterByEmployment: boolean;
+            listEmploymentCode: Array<any>;
+            filterByDepartment: boolean;
+            listDepartmentId
+            filterByWorkplace: boolean;
+            listWorkplaceid: Array<any>;
+            filterByClassification: boolean;
+            listClassificationCode: Array<any>;
+            filterByJobTitle: boolean;
+            listPositionId: Array<any>;
+
+            periodStart: any;
+            periodEnd: any;
+
+            includeIncumbents: boolean;
+            //TODO: Including workers on leave 
+            includeOccupancy: boolean;
+            includeRetirees: boolean;
+            retireStart: any;
+            retireEnd: any;
+
+            sortOrderNo: number;
+            nameType: number;
         }
         
         interface WorkType {
