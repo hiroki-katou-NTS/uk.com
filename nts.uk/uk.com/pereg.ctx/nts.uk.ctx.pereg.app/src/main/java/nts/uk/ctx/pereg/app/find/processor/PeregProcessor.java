@@ -182,7 +182,12 @@ public class PeregProcessor {
 		}
 		ParamForGetPerItem getItemDefParam = new ParamForGetPerItem(perInfoCtg, query.getInfoId(),
 				roleId == null ? "" : roleId, companyId, contractCode, loginEmpId.equals(query.getEmployeeId()));
-		lstPerInfoItemDefForLayout = getPerItemDefForLayout(getItemDefParam, loginEmpId, checkViewOnly.isViewOnly, checkViewOnly.startDate);				
+		//measure
+		long start = System.currentTimeMillis();
+		lstPerInfoItemDefForLayout = getPerItemDefForLayout(getItemDefParam, loginEmpId, checkViewOnly.isViewOnly, checkViewOnly.startDate);		
+		long elapsedTimeMillis = System.currentTimeMillis()-start;
+		System.out.println("Total time to get item def: " + elapsedTimeMillis);
+		
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
 		if(lstPerInfoItemDefForLayout.size() == 0) return empMaintLayoutDto;
 		List<LayoutPersonInfoClsDto> classItemList = getClassItemList(query, perInfoCtg, lstPerInfoItemDefForLayout, peregDto);
@@ -389,18 +394,21 @@ public class PeregProcessor {
 	
 	private List<PerInfoItemDefForLayoutDto> getPerItemDefForLayout(ParamForGetPerItem paramObject, String empId, boolean isCtgViewOnly, GeneralDate sDate){
 		// get per info item def with order
+		
 		List<PersonInfoItemDefinition> lstPerInfoDef = perItemRepo.getAllItemByCtgWithAuth(paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), 
 				paramObject.getContractCode(), paramObject.getRoleId(), paramObject.isSelfAuth());
+		
 		List<PerInfoItemDefForLayoutDto> lstReturn = new ArrayList<>();
 		PersonInfoItemDefinition x;
 		PerInfoItemDefForLayoutDto item;
 		Map<Integer, Map<String,  List<ComboBoxObject>>> combobox = new HashMap<Integer, Map<String,  List<ComboBoxObject>>>();
 		for(int i = 0; i < lstPerInfoDef.size(); i++) {
 			x = lstPerInfoDef.get(i);
-			
 			PersonInfoItemAuth personInfoItemAuth = itemAuthRepo
 					.getItemDetai(paramObject.getRoleId(), paramObject.getPersonInfoCategory().getPersonInfoCategoryId(),
 							x.getPerInfoItemDefId()).get();
+
+			
 				if(paramObject.isSelfAuth()) {
 					PersonInfoAuthType itemRole = personInfoItemAuth.getSelfAuth();
 						item = new PerInfoItemDefForLayoutDto();
@@ -417,8 +425,8 @@ public class PeregProcessor {
 								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate, combobox);
 							lstReturn.add(item);
 					}
-				}		
-		
+				
+		}		
 		return lstReturn;
 	}
 	
