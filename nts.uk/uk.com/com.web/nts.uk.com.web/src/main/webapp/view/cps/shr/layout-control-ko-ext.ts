@@ -519,21 +519,19 @@ module nts.custombinding {
                                             <div class="set-group"></div>
                                             <!-- /ko -->
                                             <div class="set-group">
-                                                <!-- ko if: _items.length == _childs.length -->
-                                                    <!-- ko foreach: { data: _childs, as: 'set'} -->
-                                                        <!-- ko if: $index() && _render.length > 1 -->
-                                                        <div class="set-item set-item-sperator">
-                                                            <span data-bind="text: text('CPS001_89')"></span>
-                                                        </div>
-                                                        <!-- /ko -->
-                                                        <!-- ko if: _items.length == 1 && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
-                                                        <div class="child-label" data-bind="text: set.itemName"></div>
-                                                        <!-- /ko -->
-                                                        <div data-bind="template: {
-                                                                data: set,
-                                                                name: 'ctr_template'
-                                                            }" class="set-item"></div>
-                                                    <!-- /ko -->
+                                                <!-- ko foreach: { data: _childs, as: 'set'} -->
+                                                <!-- ko if: $index() && _render.length > 1 -->
+                                                <div class="set-item set-item-sperator">
+                                                    <span data-bind="text: text('CPS001_89')"></span>
+                                                </div>
+                                                <!-- /ko -->
+                                                <!-- ko if: _items.length == 1 && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
+                                                <div class="child-label" data-bind="text: set.itemName"></div>
+                                                <!-- /ko -->
+                                                <div data-bind="template: {
+                                                        data: set,
+                                                        name: 'ctr_template'
+                                                    }" class="set-item"></div>
                                                 <!-- /ko -->
                                             </div>
                                         <!-- /ko -->
@@ -544,6 +542,7 @@ module nts.custombinding {
                                             <!-- /ko -->
                                             <div class="set-group" data-bind="css: { 'radio': [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) > -1 }">
                                                 <!-- ko if: (set || {}).type == CTRL_TYPE.SET -->
+                                                    <div class="child-label" data-bind="text: set.itemName"></div>
                                                     <!-- ko foreach: _.filter(__items, function(x) { x.itemParentCode == set.itemCode }) -->
                                                         <!-- ko if: $index() && _render.length > 1 -->
                                                         <div class="set-item set-item-sperator">
@@ -1305,6 +1304,7 @@ module nts.custombinding {
 
             $element
                 .append(self.tmp)
+                .disableSelection()
                 .addClass('ntsControl layout-control');
 
 
