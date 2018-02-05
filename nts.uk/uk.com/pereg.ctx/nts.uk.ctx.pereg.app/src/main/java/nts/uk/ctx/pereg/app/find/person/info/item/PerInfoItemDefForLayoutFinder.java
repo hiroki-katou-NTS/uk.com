@@ -243,6 +243,6 @@ public class PerInfoItemDefForLayoutFinder {
 			standardDate = affCompanyHist.getLstAffCompanyHistByEmployee().get(0).getLstAffCompanyHistoryItem().stream()
 					.collect(Collectors.toList()).get(0).start();
 		}
-		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, empId, standardDate, true, isRequired);
+		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, empId, standardDate, isRequired);
 	}
 }

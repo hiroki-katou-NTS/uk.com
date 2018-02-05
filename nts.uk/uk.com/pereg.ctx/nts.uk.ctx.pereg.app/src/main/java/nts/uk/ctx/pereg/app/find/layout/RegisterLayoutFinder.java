@@ -177,7 +177,7 @@ public class RegisterLayoutFinder {
 			int dataTypeValue = item.getItem().getDataTypeValue();
 			if (dataTypeValue == DataTypeValue.SELECTION.value
 					|| dataTypeValue == DataTypeValue.SELECTION_RADIO.value) {
-
+				
 				SelectionItemDto selectionItemDto = null;
 
 				List<ComboBoxObject> comboValues;
@@ -185,7 +185,7 @@ public class RegisterLayoutFinder {
 				selectionItemDto = (SelectionItemDto) item.getItem();
 
 				comboValues = cbbfact.getComboBox(selectionItemDto, AppContexts.user().employeeId(),
-						command.getHireDate(), true, item.isRequired());
+						command.getHireDate(), item.isRequired());
 
 				item.setLstComboBoxValue(comboValues);
 
