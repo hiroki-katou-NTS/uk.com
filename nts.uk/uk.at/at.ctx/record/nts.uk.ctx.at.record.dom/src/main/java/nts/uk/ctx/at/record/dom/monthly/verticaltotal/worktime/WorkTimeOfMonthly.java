@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime;
 
 import java.util.List;
-import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.attdleavegatetime.AttendanceLeaveGateTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
@@ -18,11 +16,9 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.medicaltime.Medic
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.PremiumTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
-import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の勤務時間
@@ -119,54 +115,56 @@ public class WorkTimeOfMonthly {
 	
 	/**
 	 * 集計
-	 * @param datePeriod 期間
-	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
-	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
-	 * @param specificDateAtrOfDailys 日別実績の特定日区分リスト
-	 * @param workTypeMap 勤務種類リスト
+	 * @param workType 勤務種類
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 */
 	public void aggregate(
-			DatePeriod datePeriod,
-			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
-			List<SpecificDateAttrOfDailyPerfor> specificDateAtrOfDailys,
-			Map<String, WorkType> workTypeMap){
+			WorkType workType,
+			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
 		
 		// 加給時間の集計
-		this.bonusPayTime.aggregate(datePeriod, workInfoOfDailyMap, attendanceTimeOfDailys,
-				specificDateAtrOfDailys, workTypeMap);
+		//*****（未）　加給時間のクラス利用が不整合になっていて、正しいメンバが参照できない。
+		this.bonusPayTime.aggregate(workType, attendanceTimeOfDaily);
 		
 		// 外出時間の集計（回数・時間）
-		this.goOut.aggregate(datePeriod, attendanceTimeOfDailys);
+		//*****（未）　日別実績の外出時間・短時間勤務時間のクラスの作成待ち。集計処理は、未実装。
+		this.goOut.aggregate(attendanceTimeOfDaily);
 		
 		// 割増時間の集計
-		this.premiumTime.aggregate(datePeriod, attendanceTimeOfDailys);
+		this.premiumTime.aggregate(attendanceTimeOfDaily);
 		
 		// 休憩時間の集計
-		this.breakTime.aggregate(datePeriod, attendanceTimeOfDailys);
-		
-		// 休日時間の集計
-		//*****（未）　集計方法不明。設計確認要。
+		this.breakTime.aggregate(attendanceTimeOfDaily);
 		
 		// 深夜時間の集計
-		this.midnightTime.aggregate(datePeriod, attendanceTimeOfDailys);
+		this.midnightTime.aggregate(attendanceTimeOfDaily);
 		
 		// 遅刻早退の集計（回数・時間）
-		this.lateLeaveEarly.aggregate(datePeriod, attendanceTimeOfDailys);
+		this.lateLeaveEarly.aggregate(attendanceTimeOfDaily);
 		
 		// 入退門関連の項目集計
-		//*****（未）　集計方法不明。設計確認要。
+		this.attendanceLeaveGateTime.aggregate(attendanceTimeOfDaily);
 		
 		// 差異時間の集計
-		this.budgetTimeVarience.aggregate(datePeriod, attendanceTimeOfDailys);
+		this.budgetTimeVarience.aggregate(attendanceTimeOfDaily);
 		
-		// 乖離時間・乖離フラグの集計
-		this.divergenceTime.aggregate(datePeriod, attendanceTimeOfDailys);
+		// 乖離時間の集計
+		this.divergenceTime.aggregate(attendanceTimeOfDaily);
 		
 		// 医療項目の集計
-		this.medicalTime.aggregate(datePeriod, attendanceTimeOfDailys);
+		//*****（未）　医療時間クラスをリスト管理に設計変更要。
+		this.medicalTime.aggregate(attendanceTimeOfDaily);
 		
 		// 予約データの集計
 		
+	}
+	
+	/**
+	 * 乖離フラグの集計
+	 * @param employeeDailyPerErrors 社員の日別実績エラー一覧リスト
+	 */
+	public void aggregateDivergenceAtr(List<EmployeeDailyPerError> employeeDailyPerErrors){
+		
+		this.divergenceTime.aggregateDivergenceAtr(employeeDailyPerErrors);
 	}
 }

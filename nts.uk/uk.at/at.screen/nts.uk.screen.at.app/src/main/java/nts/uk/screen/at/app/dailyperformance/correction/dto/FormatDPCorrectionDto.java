@@ -26,4 +26,9 @@ public class FormatDPCorrectionDto {
 	
 	private Integer columnWidth;
 	
+	public static FormatDPCorrectionDto from(String companyId, AuthorityFomatDailyDto x){
+		return new FormatDPCorrectionDto(companyId, x.getDailyPerformanceFormatCode(),
+				x.getAttendanceItemId(), x.getSheetNo().toString(), x.getDisplayOrder(),
+				x.getColumnWidth().intValue());
+	}
 }

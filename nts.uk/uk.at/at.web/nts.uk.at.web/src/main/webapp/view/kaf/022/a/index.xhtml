@@ -9,6 +9,7 @@
 		<ui:define name="sidebar-head">
 			<script>var dialogSize = { width: 1200, height: 800 };</script>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 			<com:stylefile path="kaf022.a.main.css" />
 			<com:stylefile path="../l/kaf022.l.main.css" />
 			<!-- <com:stylefile path="../e/kmf004.e.main.css" /> -->
@@ -17,11 +18,16 @@
 			<com:scriptfile path="kaf022.a.service.js" />
 			<com:scriptfile path="kaf022.a.start.js" />
 			<com:scriptfile path="../m/kaf022.m.vm.js" /> 
+			<com:scriptfile path="../m/kaf022.m.service.js" /> 
+			<com:stylefile path="../m/kaf022.m.style.css" />
 			<com:scriptfile path="../l/kaf022.l.vm.js" />
 			<com:scriptfile path="../l/kaf022.l.service.js" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			<!-- <com:scriptfile path="../e/kmf004.e.vm.js" /> 
  			<com:scriptfile path="../e/kmf004.e.service.js" />  -->
+ 			<com:ValidatorScript>
+				nts.uk.shr.com.primitive.Memo
+			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="sidebar">
 			<div data-bind="with: tabView">
@@ -46,9 +52,9 @@
 					<button  id="btn_004" class="button danger separate-button fix-button" data-bind="click: function(){$parent.viewmodelL.deleteEmploymentSet($parent.viewmodelL);}" >#{i18n.getText('KAF022_275')}</button>
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='m'">
-					<button  id="btn_001" class="button separate-button fix-button"  data-bind="">#{i18n.getText('KAF022_1')}</button>
-					<button  id="btn_002" class="button proceed separate-button fix-button" data-bind="">#{i18n.getText('KAF022_274')}</button>
-					<button  id="btn_004" class="button danger separate-button fix-button" data-bind="" >#{i18n.getText('KAF022_275')}</button>
+					<button  id="btn_001" class="button separate-button fix-button"  data-bind="click: $parent.viewmodelM.update">#{i18n.getText('KAF022_1')}</button>
+					<button  id="btn_002" class="button proceed separate-button fix-button" data-bind="click: $parent.viewmodelM.openDialogCopy, enable: $parent.viewmodelM.isUpdateMode">#{i18n.getText('KAF022_274')}</button>
+					<button  id="btn_004" class="button danger separate-button fix-button" data-bind="click: $parent.viewmodelM.remove, enable: $parent.viewmodelM.isUpdateMode" >#{i18n.getText('KAF022_275')}</button>
 				</com:ko-if>
 			</div>
 			<div id="tabpanel-a" role="tabpanel" class="screen-a"
@@ -2036,7 +2042,7 @@
 			<div id="tabpanel-l" role="tabpanel" class="screen-l" data-bind="with: viewmodelL">
 				<ui:include src="../l/index.xhtml" />
 			</div>
-			<div id="tabpanel-m" role="tabpanel" class="screen-m" data-bind="">
+			<div id="tabpanel-m" role="tabpanel" class="screen-m" data-bind="with: viewmodelM">
 				<ui:include src="../m/index.xhtml" />
 			</div>
 		</ui:define>

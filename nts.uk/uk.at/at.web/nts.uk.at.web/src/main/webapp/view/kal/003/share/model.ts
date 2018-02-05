@@ -525,6 +525,7 @@ module nts.uk.at.view.kal003.share.model {
 
         openAtdItemConditionDialog() {
             let self = this;
+            if (self.compareStartValue() == null) self.compareStartValue(0);
             if (self.compareEndValue() == null) self.compareEndValue(0);
             let param = ko.mapping.toJS(self);
 

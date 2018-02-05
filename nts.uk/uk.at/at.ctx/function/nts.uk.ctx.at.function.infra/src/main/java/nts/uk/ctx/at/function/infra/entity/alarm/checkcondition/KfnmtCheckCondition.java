@@ -142,7 +142,7 @@ public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
 		
 		if(entity.extractionRange == ExtractionRange.PERIOD.value){ 
 			this.extractionPeriodDaily.fromEntity(entity.extractionPeriodDaily);
-		}else if(entity.extractionRange == ExtractionRange.PERIOD.value) {
+		}else if(entity.extractionRange == ExtractionRange.WEEK.value) {
 			this.extractionPerUnit.fromEntity(entity.extractionPerUnit);
 		}
 		this.extractionRange = entity.extractionRange;

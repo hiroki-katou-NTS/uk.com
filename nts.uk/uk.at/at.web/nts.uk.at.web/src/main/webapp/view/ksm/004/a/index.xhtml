@@ -37,7 +37,7 @@
 					<button class="proceed" data-bind="click: function(){submitCalendar(0)}, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_1')}</button>
 					<button data-bind="click: function(){openDialogD(0)}, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_2')}</button>
 					<button data-bind="click: openDialogC, enable: $root.errors.isEmpty">#{i18n.getText('KSM004_3')}</button>
-					<button class="danger" data-bind="click: function(){removeCalendar(0)}, enable: Boolean(isUpdate()&#38;$root.errors.isEmpty())">#{i18n.getText('KSM004_4')}</button>
+					<button class="danger" data-bind="click: function(){removeCalendar(0)}, enable: Boolean(isUpdate()&#38;$root.errors.isEmpty()),visible : removeFlg">#{i18n.getText('KSM004_4')}</button>
 				</div>
 				<div class="contents-area">
 					<div class="rightExtend">

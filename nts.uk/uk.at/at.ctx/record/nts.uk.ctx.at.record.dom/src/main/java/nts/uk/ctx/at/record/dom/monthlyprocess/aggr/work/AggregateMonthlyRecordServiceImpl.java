@@ -57,6 +57,14 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		val workingConditionItems = this.workingConditionItemRepository.getBySidAndPeriodOrderByStrD(
 				employeeId, datePeriod);
 		
+		// 社員を取得する
+		EmployeeImport employee = null;
+		employee = this.empEmployeeAdapter.findByEmpId(employeeId);
+		if (employee == null){
+			String errMsg = "社員データが見つかりません。　社員ID：" + employeeId;
+			throw new BusinessException(new RawErrorMessage(errMsg));
+		}
+		
 		// 項目の数だけループ
 		for (val workingConditionItem : workingConditionItems){
 			
@@ -76,8 +84,13 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 				continue;
 			}
 			
+			// 退職月か確認する　（変形労働勤務の月単位集計：精算月判定に利用）
+			boolean isRetireMonth = false;
+			if (procPeriod.contains(employee.getRetiredDate())) isRetireMonth = true;
+			
 			// 入社前、退職後を期間から除く
-			procPeriod = this.confirmProcPeriodInOffice(procPeriod, employeeId);
+			val termInOffice = new DatePeriod(employee.getEntryDate(), employee.getRetiredDate());
+			procPeriod = this.confirmProcPeriod(procPeriod, termInOffice);
 			if (procPeriod == null) {
 				// 処理期間全体が、入社前または退職後の時
 				continue;
@@ -91,7 +104,7 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			val workingSystem = workingConditionItem.getLaborSystem();
 			
 			// 月の計算
-			attendanceTime.aggregate(companyId, workingSystem, this.repositories);
+			attendanceTime.aggregate(companyId, workingSystem, isRetireMonth, this.repositories);
 			
 			// 縦計
 			attendanceTime.verticalTotal(companyId, workingSystem, this.repositories);
@@ -162,7 +175,6 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		val actualWorkingTime = monthlyCalculation.getActualWorkingTime();
 		actualWorkingTime.setWeeklyTotalPremiumTime(new AttendanceTimeMonth(540 + randomVal));
 		actualWorkingTime.setMonthlyTotalPremiumTime(new AttendanceTimeMonth(2460 + randomVal));
-		
 		returnValue.getAttendanceTimes().add(attendanceTime);
 		*/
 		
@@ -205,29 +217,5 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 		}
 
 		return overlap;
-	}
-	
-	/**
-	 * 期間に入退職があるか確認する　（処理期間の内、入社～退職の期間と重複する期間を取り出す）
-	 * @param target 処理期間
-	 * @param employeeId 社員ID
-	 * @return 重複期間　（null = 重複なし）
-	 */
-	private DatePeriod confirmProcPeriodInOffice(DatePeriod target, String employeeId){
-		
-		// 社員を取得する
-		EmployeeImport employee = null;
-		employee = this.empEmployeeAdapter.findByEmpId(employeeId);
-		if (employee == null){
-			String errMsg = "社員データが見つかりません。"
-					+ "　社員ID：" + employeeId;
-			throw new BusinessException(new RawErrorMessage(errMsg));
-		}
-		
-		// 在職期間
-		val term = new DatePeriod(employee.getEntryDate(), employee.getRetiredDate());
-		
-		// 入社前・退職後を除外
-		return this.confirmProcPeriod(target, term);
 	}
 }

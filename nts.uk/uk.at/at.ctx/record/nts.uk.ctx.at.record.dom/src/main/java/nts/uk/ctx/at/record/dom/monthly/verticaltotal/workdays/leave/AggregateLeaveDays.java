@@ -18,10 +18,11 @@ public class AggregateLeaveDays {
 	
 	/**
 	 * コンストラクタ
+	 * @param leaveAtr 休業区分
 	 */
-	public AggregateLeaveDays(){
+	public AggregateLeaveDays(int leaveAtr){
 		
-		this.leaveAtr = 0;
+		this.leaveAtr = leaveAtr;
 		this.days = new AttendanceDaysMonth(0.0);
 	}
 	
@@ -35,9 +36,16 @@ public class AggregateLeaveDays {
 			int leaveAtr,
 			AttendanceDaysMonth days){
 		
-		val domain = new AggregateLeaveDays();
-		domain.leaveAtr = leaveAtr;
+		val domain = new AggregateLeaveDays(leaveAtr);
 		domain.days = days;
 		return domain;
+	}
+	
+	/**
+	 * 日数を加算する
+	 * @param days 日数
+	 */
+	public void addDays(Double days){
+		this.days = this.days.addDays(days);
 	}
 }
