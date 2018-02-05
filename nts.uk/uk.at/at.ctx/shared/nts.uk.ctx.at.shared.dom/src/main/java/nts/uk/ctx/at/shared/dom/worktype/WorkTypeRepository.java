@@ -167,4 +167,16 @@ public interface WorkTypeRepository {
 	 * @return the list of Work Type
 	 */
 	List<WorkType> findWorkOneDay(String companyId, int abolishAtr, int worktypeAtr);
+	
+	/**
+	 * Get acquired attendance work type
+	 * @return
+	 */
+	List<WorkType> getAcquiredAttendanceWorkTypes(String companyId);
+	
+	/**
+	 * Get acquired holiday work type
+	 * @return
+	 */
+	List<WorkType> getAcquiredHolidayWorkTypes(String companyId);
 }
