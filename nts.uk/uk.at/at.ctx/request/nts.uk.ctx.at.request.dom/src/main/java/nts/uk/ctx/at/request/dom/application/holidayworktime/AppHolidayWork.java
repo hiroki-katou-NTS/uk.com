@@ -66,7 +66,7 @@ public class AppHolidayWork extends AggregateRoot{
 	/**
 	 * 就業時間外深夜時間
 	 */
-	private int overTimeShiftNight;
+	private int holidayShiftNight;
 	
 	public AppHolidayWork(String companyID,
 						String appID,
@@ -81,7 +81,7 @@ public class AppHolidayWork extends AggregateRoot{
 						int goAtr2,
 						int backAtr2,
 						String divergenceReason,
-						int overTimeShiftNight){
+						int holidayShiftNight){
 		this.companyID = companyID;
 		this.appID = appID;
 		this.workTypeCode = new WorkTypeCode(workTypeCode);
@@ -89,7 +89,7 @@ public class AppHolidayWork extends AggregateRoot{
 		this.workClock1 = HolidayWorkClock.validateTime(workClockStart1, workClockEnd1,goAtr1,backAtr1);
 		this.workClock2 = HolidayWorkClock.validateTime(workClockStart2, workClockEnd2,goAtr2,backAtr2);
 		this.divergenceReason = divergenceReason;
-		this.overTimeShiftNight = overTimeShiftNight;
+		this.holidayShiftNight = holidayShiftNight;
 	}
 	
 	public static AppHolidayWork createSimpleFromJavaType(String companyID,
