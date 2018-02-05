@@ -37,4 +37,14 @@ public class DataTypeStateDto {
 
 	}
 
+	
+	public static DataTypeStateDto createSelectionButtonDto( ) {
+		return SelectionButtonDto.createFromJavaType();
+
+	}
+	
+	public static DataTypeStateDto createSelectionRadioDto( ) {
+		return SelectionRadioDto.createFromJavaType();
+
+	}
 }

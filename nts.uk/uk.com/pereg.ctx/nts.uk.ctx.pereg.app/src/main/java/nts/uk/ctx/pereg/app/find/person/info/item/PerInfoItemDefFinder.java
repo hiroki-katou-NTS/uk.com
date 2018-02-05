@@ -25,7 +25,9 @@ import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
 import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionRadio;
 import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
@@ -339,6 +341,14 @@ public class PerInfoItemDefFinder {
 		case 6:
 			SelectionItem sItem = (SelectionItem) dataTypeState;
 			return DataTypeStateDto.createSelectionItemDto(sItem.getReferenceTypeState());
+	
+		case 7:
+			SelectionRadio rItem = (SelectionRadio) dataTypeState;
+			return DataTypeStateDto.createSelectionRadioDto();
+			
+		case 8:
+			SelectionButton bItem = (SelectionButton) dataTypeState;
+			return DataTypeStateDto.createSelectionButtonDto();
 		default:
 			return null;
 		}
