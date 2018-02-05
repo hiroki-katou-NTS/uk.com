@@ -18,6 +18,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
+import nts.uk.ctx.pereg.dom.person.info.item.IsRequired;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemTypeState;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
@@ -29,6 +30,7 @@ import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionRadio;
 import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.pereg.dom.person.info.stringitem.StringItem;
 import nts.uk.ctx.pereg.dom.person.info.timeitem.TimeItem;
@@ -87,18 +89,18 @@ public class PerInfoItemDefForLayoutFinder {
 			itemForLayout.setDispOrder(dispOrder);
 
 			itemForLayout.setSelectionItemRefType(itemDef.getSelectionItemRefType());
-			itemForLayout.setItemTypeState(createItemTypeStateDto(itemDef.getItemTypeState()));
+			itemForLayout.setItemTypeState(PerInfoItemDefFinder.createItemTypeStateDto(itemDef.getItemTypeState()));
 			List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class,
 					ukResouce);
 			itemForLayout.setSelectionItemRefTypes(selectionItemRefTypes);
 			if (itemForLayout.getItemDefType() == 2) {
 				SingleItem singleItemDom = (SingleItem) itemDef.getItemTypeState();
-				int dataTypeValue = singleItemDom.getDataTypeState().getDataTypeValue().value;
-				if (dataTypeValue == 6 || dataTypeValue == 7) {
-					DataTypeStateDto dataTypeStateDto = createDataTypeStateDto(singleItemDom.getDataTypeState());
+				DataTypeValue dataTypeValue = singleItemDom.getDataTypeState().getDataTypeValue();
+				if (dataTypeValue == DataTypeValue.SELECTION || dataTypeValue == DataTypeValue.SELECTION_RADIO) {
+					DataTypeStateDto dataTypeStateDto = PerInfoItemDefFinder.createDataTypeStateDto(singleItemDom.getDataTypeState());
 					SelectionItemDto selectionItemDto = (SelectionItemDto) dataTypeStateDto;
 					
-					List<ComboBoxObject> lstCombo = getCombo(selectionItemDto, combobox, empId, sDate, itemForLayout.getIsRequired() == 1);
+					List<ComboBoxObject> lstCombo = getCombo(selectionItemDto, combobox, empId, sDate, itemDef.getIsRequired() == IsRequired.REQUIRED);
 					itemForLayout.setLstComboxBoxValue(lstCombo);
 
 				}
@@ -145,68 +147,8 @@ public class PerInfoItemDefForLayoutFinder {
 		}
 	}
 
-	/**
-	 * create ItemTypeStateDto
-	 * 
-	 * @param itemTypeState
-	 * @return
-	 */
+	
 
-	private static ItemTypeStateDto createItemTypeStateDto(ItemTypeState itemTypeState) {
-		ItemType itemType = itemTypeState.getItemType();
-		if (itemType == ItemType.SINGLE_ITEM) {
-			SingleItem singleItemDom = (SingleItem) itemTypeState;
-			return ItemTypeStateDto.createSingleItemDto(createDataTypeStateDto(singleItemDom.getDataTypeState()));
-		} else {
-			SetItem setItemDom = (SetItem) itemTypeState;
-			return ItemTypeStateDto.createSetItemDto(setItemDom.getItems());
-		}
-	}
-
-	/**
-	 * create DataTypeStateDto
-	 * 
-	 * @param dataTypeState
-	 * @return
-	 */
-	private static DataTypeStateDto createDataTypeStateDto(DataTypeState dataTypeState) {
-		int dataTypeValue = dataTypeState.getDataTypeValue().value;
-		switch (dataTypeValue) {
-		case 1:
-			StringItem strItem = (StringItem) dataTypeState;
-			return DataTypeStateDto.createStringItemDto(strItem.getStringItemLength().v(),
-					strItem.getStringItemType().value, strItem.getStringItemDataType().value);
-		case 2:
-			NumericItem numItem = (NumericItem) dataTypeState;
-			BigDecimal numericItemMin = numItem.getNumericItemMin() != null ? numItem.getNumericItemMin().v() : null;
-			BigDecimal numericItemMax = numItem.getNumericItemMax() != null ? numItem.getNumericItemMax().v() : null;
-			return DataTypeStateDto.createNumericItemDto(numItem.getNumericItemMinus().value,
-					numItem.getNumericItemAmount().value, numItem.getIntegerPart().v(), numItem.getDecimalPart().v(),
-					numericItemMin, numericItemMax);
-		case 3:
-			DateItem dItem = (DateItem) dataTypeState;
-			return DataTypeStateDto.createDateItemDto(dItem.getDateItemType().value);
-		case 4:
-			TimeItem tItem = (TimeItem) dataTypeState;
-			return DataTypeStateDto.createTimeItemDto(tItem.getMax().v(), tItem.getMin().v());
-		case 5:
-			TimePointItem tPointItem = (TimePointItem) dataTypeState;
-			return DataTypeStateDto.createTimePointItemDto(tPointItem.getTimePointItemMin().v(),
-					tPointItem.getTimePointItemMax().v());
-		case 6:
-			SelectionItem sItem = (SelectionItem) dataTypeState;
-			return DataTypeStateDto.createSelectionItemDto(sItem.getReferenceTypeState());
-		case 7:
-			SelectionRadio rItem = (SelectionRadio) dataTypeState;
-			return DataTypeStateDto.createSelectionRadioDto(rItem.getReferenceTypeState());
-
-		case 8:
-			SelectionButton bItem = (SelectionButton) dataTypeState;
-			return DataTypeStateDto.createSelectionButtonDto(bItem.getReferenceTypeState());
-		default:
-			return null;
-		}
-	}
 
 	/**
 	 * get per item set from domain

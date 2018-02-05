@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktype;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,6 +37,12 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 			+ " LEFT JOIN KshmtWorkTypeOrder o ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.deprecateAtr = 0"
 			+ " ORDER BY CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC, c.kshmtWorkTypePK.workTypeCode ASC";
+	
+	private static final String SELECT_ALL_CODE_AND_NAME_OF_WORKTYPE = "SELECT c.kshmtWorkTypePK.workTypeCode, C.name FROM KshmtWorkType c" 
+			+ " LEFT JOIN KshmtWorkTypeOrder o ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.deprecateAtr = 0"
+			+ " ORDER BY CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC, c.kshmtWorkTypePK.workTypeCode ASC";
+
 
 	private static final String SELECT_FROM_WORKTYPESET = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
 			+ " AND a.kshmtWorkTypeSetPK.workTypeCode = :workTypeCode";
@@ -137,6 +144,13 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				domain.getTimeLeaveWork().value, domain.getAttendanceTime().value, domain.getGenSubHodiday().value,
 				domain.getDayNightTimeAsk().value);
 		return entity;
+	}
+	
+	private List<String> toListCodeAndName(Object[] obj){
+		List<String> lstCodeAndName = new ArrayList<>();
+		lstCodeAndName.add(obj[0].toString());
+		lstCodeAndName.add(obj[1].toString());
+		return lstCodeAndName;
 	}
 
 	@Override
@@ -272,6 +286,12 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		return this.queryProxy().query(FIND_WORKTYPE_ONEDAY, KshmtWorkType.class).setParameter("companyId", companyId)
 				.setParameter("abolishAtr", abolishAtr).setParameter("worktypeAtr", worktypeAtr)
 				.getList(x -> toDomain(x));
+	}
+
+	@Override
+	public List<List<String>> findCodeAndNameOfWorkTypeByCompanyId(String companyId) {
+		return this.queryProxy().query(SELECT_ALL_CODE_AND_NAME_OF_WORKTYPE, Object[].class)
+				.setParameter("companyId", companyId).getList(c -> toListCodeAndName(c));
 	}
 
 }

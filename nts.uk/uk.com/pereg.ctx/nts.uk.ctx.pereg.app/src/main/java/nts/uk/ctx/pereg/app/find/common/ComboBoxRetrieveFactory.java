@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
@@ -223,10 +224,13 @@ public class ComboBoxRetrieveFactory {
 					.collect(Collectors.toList());
 		case "M00008":
 			// 勤務種類マスタ
-			return workTypeRepo.findNotDeprecateByCompanyId(companyId).stream()
-					.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(),
-							workType.getWorkTypeCode().v() + JP_SPACE + workType.getName().v()))
+			List<List<String>> lstWTDomain = workTypeRepo.findCodeAndNameOfWorkTypeByCompanyId(companyId);
+			List<ComboBoxObject> lstReturn =  lstWTDomain.stream()
+					.map(workType -> new ComboBoxObject(workType.get(0),
+							workType.get(0) + JP_SPACE + workType.get(1)))
 					.collect(Collectors.toList());
+			
+			return lstReturn;
 		case "M00009":
 			// 就業時間帯マスタ
 			PeregDto resultDto = layoutingProcessor.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
