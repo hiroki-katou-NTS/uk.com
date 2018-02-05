@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdapplicationsetting;
+package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdappset;
 
 import java.util.Optional;
 
@@ -9,8 +9,13 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdapplicationsetting.TimeHdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdapplicationsetting.TimeHdAppSetRepository;
+/**
+ * update time holiday application setting command handler
+ * @author yennth
+ *
+ */
 @Stateless
-public class UpdateTimeHdAppSetCommandHandler extends CommandHandler<TimeHdAppSetCommand>{
+public class UpdateTimeHdAppSetHandler extends CommandHandler<TimeHdAppSetCommand>{
 	@Inject
 	private TimeHdAppSetRepository timeRep;
 

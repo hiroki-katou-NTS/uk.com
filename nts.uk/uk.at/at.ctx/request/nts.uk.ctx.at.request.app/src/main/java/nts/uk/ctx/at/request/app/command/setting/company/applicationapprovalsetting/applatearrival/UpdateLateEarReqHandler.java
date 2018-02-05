@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applicationlatearrival;
+package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applatearrival;
 
 import java.util.Optional;
 
@@ -11,11 +11,12 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequestRepository;
 
 /**
+ * Update Late Early Request Command Handler
  * TanLV
  *
  */
 @Stateless
-public class UpdateLateEarlyRequestCommandHandler extends CommandHandler<LateEarlyRequestCommand> {
+public class UpdateLateEarReqHandler extends CommandHandler<LateEarlyRequestCommand> {
 	@Inject
 	private LateEarlyRequestRepository repository;
 

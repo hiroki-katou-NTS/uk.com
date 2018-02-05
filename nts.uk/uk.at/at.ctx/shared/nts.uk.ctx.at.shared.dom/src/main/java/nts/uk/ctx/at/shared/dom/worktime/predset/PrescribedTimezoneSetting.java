@@ -37,6 +37,7 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 	/** The size one. */
 	public static Integer SIZE_ONE = 1;
 
+	
 	/**
 	 * Instantiates a new prescribed timezone setting.
 	 *
@@ -46,6 +47,17 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 		this.morningEndTime = memento.getMorningEndTime();
 		this.afternoonStartTime = memento.getAfternoonStartTime();
 		this.lstTimezone = memento.getLstTimezone();
+	}
+	
+	/**
+	 *Constructor 
+	 */
+	public PrescribedTimezoneSetting(TimeWithDayAttr morningEndTime, TimeWithDayAttr afternoonStartTime,
+			List<TimezoneUse> lstTimezone) {
+		super();
+		this.morningEndTime = morningEndTime;
+		this.afternoonStartTime = afternoonStartTime;
+		this.lstTimezone = lstTimezone;
 	}
 
 	/**
@@ -377,4 +389,6 @@ public class PrescribedTimezoneSetting extends WorkTimeDomainObject {
 			}
 		}
 	}
+
+
 }

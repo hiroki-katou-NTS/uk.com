@@ -139,6 +139,10 @@ module nts.uk.ui.gridlist {
             rowStates.push(new RowState(i, true));
         }
         
+        let keys = [];
+        for (let i = 0; i < 300; i++) {
+            keys.push(i);
+        }
         $("#grid2").ntsGrid({ 
                             width: '1500px',
                             height: '800px',
@@ -151,6 +155,7 @@ module nts.uk.ui.gridlist {
                             autoFitWindow: true,
                             preventEditInError: false,
                             hidePrimaryKey: true,
+                            recordKeys: keys, 
 //                            avgRowHeight: 36,
 //                            autoAdjustHeight: false,
 //                            adjustVirtualHeights: false,
@@ -177,9 +182,9 @@ module nts.uk.ui.gridlist {
                                 },
                                 { headerText: 'Address',
                                     group: [
-                                            { headerText: 'Item<br/>Code', key: 'addressCode1', dataType: 'string', width: '150px', //columnCssClass: 'currency-symbol',
+                                            { headerText: 'Item<br/>Code', key: 'addressCode1', dataType: 'string', width: '150px', columnCssClass: 'currency-symbol',
                                                 constraint: {
-                                                    cDisplayType: "HalfInt",
+                                                    cDisplayType: "Currency",
                                                     min: 3, max: 9,
                                                     required: true
                                                 }},
@@ -301,11 +306,11 @@ module nts.uk.ui.gridlist {
                                       ],
                             ntsFeatures: [{ name: 'CopyPaste' },
                                             { name: 'CellEdit' },
-                                            { name: 'Storage',
-                                                type: 'Remote',
-                                                loadPath: 'sample/store/load',
-                                                savePath: 'sample/store/save'
-                                            },
+//                                            { name: 'Storage',
+//                                                type: 'Remote',
+//                                                loadPath: 'sample/store/load',
+//                                                savePath: 'sample/store/save'
+//                                            },
                                             { name: 'CellColor', columns: [ 
                                                   { 
                                                     key: 'ruleCode', 
