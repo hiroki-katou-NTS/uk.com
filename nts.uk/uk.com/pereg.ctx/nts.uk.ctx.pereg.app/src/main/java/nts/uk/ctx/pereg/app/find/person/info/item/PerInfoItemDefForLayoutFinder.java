@@ -24,7 +24,9 @@ import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionRadio;
 import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.SingleItem;
@@ -65,7 +67,7 @@ public class PerInfoItemDefForLayoutFinder {
 	 */
 	public void setItemForLayout(PerInfoItemDefForLayoutDto itemForLayout, String empId, int ctgType,
 			PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder, boolean isCtgViewOnly, GeneralDate sDate, Map<Integer, Map<String,  List<ComboBoxObject>>> combobox) {
-		List<PerInfoItemDefForLayoutDto> lstChildren = getPerItemSet(empId, ctgType, itemDef.getItemTypeState(),
+		List<PerInfoItemDefForLayoutDto> lstChildren = getPerItemSet(empId, ctgType, itemDef.getItemCode().v(), itemDef.getItemTypeState(),
 				perInfoCd, dispOrder, isCtgViewOnly, sDate, itemForLayout.getActionRole(), combobox);
 		if (lstChildren.size() == 0 && itemDef.getItemTypeState().getItemType().value == 1)
 			itemForLayout.setActionRole(ActionRole.HIDDEN);
@@ -194,6 +196,13 @@ public class PerInfoItemDefForLayoutFinder {
 		case 6:
 			SelectionItem sItem = (SelectionItem) dataTypeState;
 			return DataTypeStateDto.createSelectionItemDto(sItem.getReferenceTypeState());
+		case 7:
+			SelectionRadio rItem = (SelectionRadio) dataTypeState;
+			return DataTypeStateDto.createSelectionRadioDto(rItem.getReferenceTypeState());
+
+		case 8:
+			SelectionButton bItem = (SelectionButton) dataTypeState;
+			return DataTypeStateDto.createSelectionButtonDto();
 		default:
 			return null;
 		}
@@ -205,7 +214,7 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @param item
 	 * @return
 	 */
-	private List<PerInfoItemDefForLayoutDto> getPerItemSet(String empId, int ctgType, ItemTypeState item,
+	private List<PerInfoItemDefForLayoutDto> getPerItemSet(String empId, int ctgType, String itemParentCode, ItemTypeState item,
 			String perInfoCd, int dispOrder, boolean ctgIsViewOnly, GeneralDate sDate, ActionRole actionRole, Map<Integer, Map<String,  List<ComboBoxObject>>> combobox) {
 		// 1 set - 2 Single
 		List<PerInfoItemDefForLayoutDto> lstResult = new ArrayList<>();
@@ -225,6 +234,7 @@ public class PerInfoItemDefForLayoutFinder {
 			for (int i = 0; i < lstDomain.size(); i++) {
 				childItem = new PerInfoItemDefForLayoutDto();
 				childItem.setActionRole(actionRole);
+				childItem.setItemParentCode(itemParentCode);
 				setItemForLayout(childItem, empId, ctgType, lstDomain.get(i), perInfoCd, dispOrder, ctgIsViewOnly,
 						sDate,combobox) ;
 				lstResult.add(childItem);
@@ -243,6 +253,6 @@ public class PerInfoItemDefForLayoutFinder {
 			standardDate = affCompanyHist.getLstAffCompanyHistByEmployee().get(0).getLstAffCompanyHistoryItem().stream()
 					.collect(Collectors.toList()).get(0).start();
 		}
-		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, empId, standardDate, true, isRequired);
+		return comboBoxRetrieveFactory.getComboBox(selectionItemDto, empId, standardDate, isRequired);
 	}
 }

@@ -43,7 +43,7 @@ public class PerInfoInitValueSetItemFinder {
 					}
 
 					List<ComboBoxObject> selectionDto = this.comboBoxFactory.getComboBox(selectionItemDto,
-							AppContexts.user().employeeId(), GeneralDate.today(), true, true);
+							AppContexts.user().employeeId(), GeneralDate.today(), true);
 
 					dto.setSelection(selectionDto);
 					return dto;
