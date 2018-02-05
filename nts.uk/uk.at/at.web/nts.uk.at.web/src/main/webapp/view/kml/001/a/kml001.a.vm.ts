@@ -233,6 +233,7 @@ module nts.uk.at.view.kml001.a {
                 let index = currentIndex?currentIndex:0;
                 nts.uk.ui.windows.setShared('isInsert', self.isInsert());
                 nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                    nts.uk.ui.block.invisible();
                     if (nts.uk.ui.windows.getShared('updatePremiumSeting') == true) {
                         nts.uk.ui.errors.clearAll();
                         var dfdPremiumItemSelect = servicebase.premiumItemSelect();
