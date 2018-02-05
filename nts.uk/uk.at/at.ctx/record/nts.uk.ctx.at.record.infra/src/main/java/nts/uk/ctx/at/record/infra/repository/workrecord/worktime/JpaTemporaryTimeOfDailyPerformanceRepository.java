@@ -192,6 +192,22 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	@Override
+	public List<TemporaryTimeOfDailyPerformance> findbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT a FROM KrcdtDaiTemporaryTime a ");
+		query.append("WHERE a.krcdtDaiTemporaryTimePK.employeeId = :employeeId ");
+		query.append("AND a.krcdtDaiTemporaryTimePK.ymd >= :start ");
+		query.append("AND a.krcdtDaiTemporaryTimePK.ymd <= :end ");
+		query.append("ORDER BY a.krcdtDaiTemporaryTimePK.ymd ");
+		return queryProxy().query(query.toString(), KrcdtDaiTemporaryTime.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("start", datePeriod.start())
+				.setParameter("end", datePeriod.end())
+				.getList().stream()
+				.map(f -> f.toDomain()).collect(Collectors.toList());
+	}
+	
+	@Override
 	public List<TemporaryTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT a FROM KrcdtDaiTemporaryTime a ");
