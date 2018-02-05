@@ -5,7 +5,11 @@
 package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
@@ -109,21 +113,24 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 //			}
 //		});
 		
-		if (dateHistoryItems != null) {
+		Map<KshmtWorkingCondPK, KshmtWorkingCond> mapHistoryItems = this.entities.stream()
+				.collect(Collectors.toMap(KshmtWorkingCond::getKshmtWorkingCondPK, Function.identity()));
+
+		if (!CollectionUtil.isEmpty(dateHistoryItems)) {
 			dateHistoryItems.stream().forEach(item -> {
-//				if (!entityHistIds.contains(item.identifier())) {
-					KshmtWorkingCond entity = new KshmtWorkingCond();
-					KshmtWorkingCondPK kshmtWorkingCondPK = new KshmtWorkingCondPK(employeeId,
-							item.identifier());
+				KshmtWorkingCondPK kshmtWorkingCondPK = new KshmtWorkingCondPK(employeeId,
+						item.identifier());
+				KshmtWorkingCond entity = mapHistoryItems.get(kshmtWorkingCondPK);
+				if (entity == null) {
+					entity = new KshmtWorkingCond();
 					entity.setKshmtWorkingCondPK(kshmtWorkingCondPK);
 					entity.setCid(companyId);
-					entity.setStrD(item.start());
-					entity.setEndD(item.end());
-					this.entities.add(entity);
-//				}
+				}					
+				entity.setStrD(item.start());
+				entity.setEndD(item.end());
+				this.entities.add(entity);
 			});
 		}
-
 	}
-
+	
 }
