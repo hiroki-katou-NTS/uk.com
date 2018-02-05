@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -61,7 +62,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+@Stateless
 public class AppHolidayWorkFinder {
 	final static String DATE_FORMAT = "yyyy/MM/dd";
 	final static String ZEZO_TIME = "00:00";
@@ -118,7 +119,7 @@ public class AppHolidayWorkFinder {
 		 }
 		 // アルゴリズム「初期データの取得」を実行する
 		 getData(companyID,employeeID,appDateInput,appCommonSettingOutput,result,uiType);
-		return null;
+		return result;
 	}
 	
 	/**
@@ -129,7 +130,7 @@ public class AppHolidayWorkFinder {
 	 * @param appCommonSettingOutput
 	 * @param result
 	 */
-	public void getData(String companyID,String employeeID,String appDate,AppCommonSettingOutput appCommonSettingOutput,AppHolidayWorkDto result,int uiType){
+	private void getData(String companyID,String employeeID,String appDate,AppCommonSettingOutput appCommonSettingOutput,AppHolidayWorkDto result,int uiType){
 		ApplicationDto_New applicationDto = new ApplicationDto_New();
 		List<HolidayWorkInputDto> holidayWorkInputDtos = new ArrayList<>();
 		//01-12_申請日付取得

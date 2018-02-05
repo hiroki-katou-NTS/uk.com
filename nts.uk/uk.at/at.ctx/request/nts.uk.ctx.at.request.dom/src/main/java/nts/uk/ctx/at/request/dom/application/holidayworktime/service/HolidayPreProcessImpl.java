@@ -119,7 +119,8 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 						result.setWorkClock1(appHolidayWork.get().getWorkClock1());
 						result.setWorkClock2(appHolidayWork.get().getWorkClock2());
 						
-						List<HolidayWorkInput> holidayWorkInputs= holidayWorkInputRepository.getHolidayWorkInputByAttendanceID(
+						List<HolidayWorkInput> holidayWorkInputs= holidayWorkInputRepository.getHolidayWorkInputByAttendanceType
+								(
 								appHolidayWork.get().getCompanyID(), appHolidayWork.get().getAppID(),
 								AttendanceType.BREAKTIME.value);
 						result.setHolidayWorkInputs(holidayWorkInputs);
