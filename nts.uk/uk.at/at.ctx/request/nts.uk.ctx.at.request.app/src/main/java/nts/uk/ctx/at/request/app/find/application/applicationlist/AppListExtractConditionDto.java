@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.applicationlist;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
@@ -13,9 +14,11 @@ import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.Ap
 public class AppListExtractConditionDto {
 
 	/**期間開始日付*/
+	@Setter
 	private String startDate;
 	/**期間終了日付*/
-	private String emdDate;
+	@Setter
+	private String endDate;
 	/**申請一覧区分*/
 	private Integer appListAtr;
 	/**申請種類*/
@@ -43,7 +46,7 @@ public class AppListExtractConditionDto {
 		String dateFormat = "yyyy-MM-dd";
 		return new AppListExtractCondition(
 				GeneralDate.fromString(dto.getStartDate(), dateFormat),
-				GeneralDate.fromString(dto.getEmdDate(), dateFormat),
+				GeneralDate.fromString(dto.getEndDate(), dateFormat),
 				dto.getAppListAtr() == null ? null : EnumAdaptor.valueOf(dto.getAppListAtr(),ApplicationListAtr.class),
 				EnumAdaptor.valueOf(dto.getAppType(), AppTypeList.class),
 				dto.isUnapprovalStatus(),
