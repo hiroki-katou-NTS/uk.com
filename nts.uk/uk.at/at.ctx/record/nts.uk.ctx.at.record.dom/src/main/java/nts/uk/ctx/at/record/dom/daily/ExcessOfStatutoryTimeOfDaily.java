@@ -45,13 +45,13 @@ public class ExcessOfStatutoryTimeOfDaily {
 	public static ExcessOfStatutoryTimeOfDaily CalculationOverTime(CalculationRangeOfOneDay oneDay) {
 		if(oneDay.getOutsideWorkTimeSheet().isPresent()) {
 			if(oneDay.getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().isPresent()) {
-				oneDay.getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().get().collectOverTimeWorkTime(autoCalcSet);
+				//oneDay.getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().get().collectOverTimeWorkTime(autoCalcSet);
 			}
 		}
 		else {
 			
 		}
-		
+		return null;
 	}
 	
 	

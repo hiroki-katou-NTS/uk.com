@@ -75,7 +75,7 @@ public class OverTimeSheet {
 	 * 残業時間枠時間帯をループさせ時間を計算する
 	 * @param autoCalcSet 時間外時間の自動計算設定
 	 */
-	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
+	public List<OverTimeFrameTimeSheetForCalc> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
 		List<OverTimeFrameTimeSheetForCalc> calcOverTimeWorkTimeList = new ArrayList<>();
 		for(OverTimeFrameTimeSheetForCalc OverTimeFrameTime : frameTimeSheets) {
 			//calcOverTimeWorkTimeList.add(OverTimeFrameTime.calcOverTimeWorkTime(autoCalcSet));
