@@ -489,15 +489,8 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				break;
 
 			case 7: // radio
-
-<<<<<<< HEAD
-				if (selectionItemRefType.intValue() == 7) {
-					dataTypeState = DataTypeState.createSelectionRadio(new RadioName(selectionItemRefCode));
-				}
-=======
 				dataTypeState = createSelectionItem(selectionItemRefType, selectionItemRefCode,
 						DataTypeValue.SELECTION_RADIO);
->>>>>>> 7b6cd570859aa45d31b703bda626d00d0e3f6b70
 				break;
 
 			case 8: // button
@@ -637,12 +630,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 			case 7:
 				SelectionRadio selectionRadio = (SelectionRadio) dataTypeState;
-				selectionItemRefCode = selectionRadio.getRadioName().v();
 				break;
 
 			case 8:
 				SelectionButton selectionButton = (SelectionButton) dataTypeState;
-				selectionItemRefCode = selectionButton.getButtonName().v();
 				break;
 			}
 		}
