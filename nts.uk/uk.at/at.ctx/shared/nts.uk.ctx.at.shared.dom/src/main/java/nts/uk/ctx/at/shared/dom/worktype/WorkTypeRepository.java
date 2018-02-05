@@ -179,4 +179,10 @@ public interface WorkTypeRepository {
 	 * @return
 	 */
 	List<WorkType> getAcquiredHolidayWorkTypes(String companyId);
+	
+	/**
+	 * Get acquired leave system work type
+	 * @return
+	 */
+	List<WorkType> getAcquiredLeaveSystemWorkTypes(String companyId);
 }
