@@ -25,8 +25,7 @@ public interface WindowAccountRepository {
 	 * Removes the.
 	 *
 	 * @param userId the user id
-	 * @param userName the user name
-	 * @param hostName the host name
+	 * @param no the no
 	 */
 	void remove(String userId, Integer no);
 
@@ -40,7 +39,6 @@ public interface WindowAccountRepository {
 	/**
 	 * Findby user name and host name.
 	 *
-	 * @param userId the user id
 	 * @param userName the user name
 	 * @param hostName the host name
 	 * @return the optional
@@ -56,9 +54,21 @@ public interface WindowAccountRepository {
 	 */
 	List<WindowAccount> findByUserId(String userId);
 
+	/**
+	 * Update.
+	 *
+	 * @param winAccCommand the win acc command
+	 * @param winAccDB the win acc DB
+	 */
 	void update(WindowAccount winAccCommand, WindowAccount winAccDB);
 	
 	
+	/**
+	 * Find by list user id.
+	 *
+	 * @param ltsUserId the lts user id
+	 * @return the list
+	 */
 	List<WindowAccount> findByListUserId(List<String> ltsUserId);
 	
 }

@@ -92,4 +92,22 @@ public class UserAdapterImpl implements UserAdapter {
 					userInfo.getExpirationDate())).collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#getListUsersByListPersonIds(java.util.List)
+	 */
+	@Override
+	public List<UserImport> getListUsersByListPersonIds(List<String> listPersonIds) {
+		return this.userPublisher.getListUserByListAsId(listPersonIds).stream().map(userInfo -> 		
+		UserImport.builder()
+		.userId(userInfo.getUserID())
+		.userName(userInfo.getUserName())
+		.mailAddress(userInfo.getMailAddress())
+		.loginId(userInfo.getLoginID())
+		.associatePersonId(userInfo.getAssociatedPersonID())
+		.password(userInfo.getPassword())
+		.expirationDate(userInfo.getExpirationDate())
+		.contractCode(userInfo.getContractCode())
+		.build()).collect(Collectors.toList());
+	}
+
 }
