@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.monthly;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,8 +40,17 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.Va
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAggrTotalSpt;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.actualworkingtime.KrcdtMonRegIrregTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.flex.KrcdtMonFlexTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.KrcdtMonAggrTotalWrk;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonAggrHdwkTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonAggrHdwkTimePK;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonHdwkTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonAggrOverTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonAggrOverTimePK;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonOverTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
@@ -157,12 +167,12 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	
 	/**
 	 * エンティティ→ドメイン　（月別実績の通常変形時間）
-	 * @param paretEntity エンティティ：月別実績の勤怠時間
+	 * @param parentEntity エンティティ：月別実績の勤怠時間
 	 * @return ドメイン：月別実績の通常変形時間
 	 */
-	private static RegularAndIrregularTimeOfMonthly toDomainRegularAndIrregularTimeOfMonthly(KrcdtMonAttendanceTime paretEntity){
+	private static RegularAndIrregularTimeOfMonthly toDomainRegularAndIrregularTimeOfMonthly(KrcdtMonAttendanceTime parentEntity){
 
-		val entity = paretEntity.krcdtMonRegIrregTime;
+		val entity = parentEntity.krcdtMonRegIrregTime;
 		if (entity == null) return new RegularAndIrregularTimeOfMonthly();
 
 		// 月別実績の変形労働時間
@@ -411,5 +421,220 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		entity.statutoryWorkingTime = monthlyCalculation.getStatutoryWorkingTime().v();
 		if (execUpdate) this.commandProxy().update(entity);
 		return entity;
+	}
+
+	/**
+	 * 登録および更新
+	 * @param domain ドメイン：月別実績の勤怠時間
+	 */
+	@Override
+	public void persistAndUpdate(AttendanceTimeOfMonthly domain){
+
+		// 締め日付
+		val closureDate = domain.getClosureDate();
+		
+		// キー
+		val key = new KrcdtMonAttendanceTimePK(
+				domain.getEmployeeId(),
+				domain.getYearMonth().v(),
+				domain.getClosureId().value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+
+		// 月別実績の月の計算
+		val monthlyCalculation = domain.getMonthlyCalculation();
+		
+		// 登録・更新を判断　および　キー設定・子初期設定
+		boolean isNeedPersist = false;
+		KrcdtMonAttendanceTime entity;
+		entity = this.getEntityManager().find(KrcdtMonAttendanceTime.class, key);
+		if (entity == null){
+			isNeedPersist = true;
+			entity = new KrcdtMonAttendanceTime();
+			entity.PK = key;
+			entity.krcdtMonRegIrregTime = new KrcdtMonRegIrregTime();
+			entity.krcdtMonFlexTime = new KrcdtMonFlexTime();
+			entity.krcdtMonVactUseTime = new KrcdtMonVactUseTime();
+			entity.krcdtMonAggrTotalWrk = new KrcdtMonAggrTotalWrk();
+			entity.krcdtMonOverTime = new KrcdtMonOverTime();
+			entity.krcdtMonAggrOverTimes = new ArrayList<>();
+			entity.krcdtMonHdwkTime = new KrcdtMonHdwkTime();
+			entity.krcdtMonAggrHdwkTimes = new ArrayList<>();
+			entity.krcdtMonAggrTotalSpt = new KrcdtMonAggrTotalSpt();
+		}
+		
+		// 登録・更新値の設定
+		entity.startYmd = domain.getDatePeriod().start();
+		entity.endYmd = domain.getDatePeriod().end();
+		entity.aggregateDays = domain.getAggregateDays().v();
+		entity.statutoryWorkingTime = monthlyCalculation.getStatutoryWorkingTime().v();
+
+		// 実働時間：月別実績の通常変形時間　値設定
+		val actualWorkingTime = monthlyCalculation.getActualWorkingTime();
+		val irregularWorkingTime = actualWorkingTime.getIrregularWorkingTime();
+		val entityRegIrregTime = entity.krcdtMonRegIrregTime;
+		if (isNeedPersist) entityRegIrregTime.PK = key;
+		entityRegIrregTime.weeklyTotalPremiumTime = actualWorkingTime.getWeeklyTotalPremiumTime().v();
+		entityRegIrregTime.monthlyTotalPremiumTime = actualWorkingTime.getMonthlyTotalPremiumTime().v();
+		entityRegIrregTime.multiMonthIrregularMiddleTime = irregularWorkingTime.getMultiMonthIrregularMiddleTime().v();
+		entityRegIrregTime.irregularPeriodCarryforwardTime = irregularWorkingTime.getIrregularPeriodCarryforwardTime().v();
+		entityRegIrregTime.irregularWorkingShortageTime = irregularWorkingTime.getIrregularWorkingShortageTime().v();
+		entityRegIrregTime.irregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getTime().v();
+		entityRegIrregTime.calcIrregularLegalOverTime = irregularWorkingTime.getIrregularLegalOverTime().getCalcTime().v();
+		
+		// 月別実績のフレックス時間
+		val flexTimeOfMonthly = monthlyCalculation.getFlexTime();
+		val flexTime = flexTimeOfMonthly.getFlexTime();
+		val flexCarryForwardTime = flexTimeOfMonthly.getFlexCarryforwardTime();
+		val flexTimeOfExcessOutsideTime = flexTimeOfMonthly.getFlexTimeOfExcessOutsideTime();
+		val entityFlexTime = entity.krcdtMonFlexTime;
+		if (isNeedPersist) entityFlexTime.PK = key;
+		entityFlexTime.flexTime = flexTime.getFlexTime().getTime().v();
+		entityFlexTime.calcFlexTime = flexTime.getFlexTime().getCalcTime().v();
+		entityFlexTime.beforeFlexTime = flexTime.getBeforeFlexTime().v();
+		entityFlexTime.legalFlexTime = flexTime.getLegalFlexTime().v();
+		entityFlexTime.illegalFlexTime = flexTime.getIllegalFlexTime().v();
+		entityFlexTime.flexExcessTime = flexTimeOfMonthly.getFlexExcessTime().v();
+		entityFlexTime.flexShortageTime = flexTimeOfMonthly.getFlexShortageTime().v();
+		entityFlexTime.flexCarryforwardWorkTime = flexCarryForwardTime.getFlexCarryforwardWorkTime().v();
+		entityFlexTime.flexCarryforwardTime = flexCarryForwardTime.getFlexCarryforwardTime().v();
+		entityFlexTime.flexCarryforwardShortageTime = flexCarryForwardTime.getFlexCarryforwardShortageTime().v();
+		entityFlexTime.excessFlexAtr = flexTimeOfExcessOutsideTime.getExcessFlexAtr().value;
+		entityFlexTime.principleTime = flexTimeOfExcessOutsideTime.getPrincipleTime().v();
+		entityFlexTime.forConvenienceTime = flexTimeOfExcessOutsideTime.getForConvenienceTime().v();
+		
+		// 総労働時間：月別実績の休暇使用時間
+		val totalWorkingTime = monthlyCalculation.getTotalWorkingTime();
+		val vacationUseTime = totalWorkingTime.getVacationUseTime();
+		val annualLeaveUseTime = vacationUseTime.getAnnualLeave();
+		val retentionYearlyUseTime = vacationUseTime.getRetentionYearly();
+		val specialHolidayUseTime = vacationUseTime.getSpecialHoliday();
+		val compensatoryLeaveUseTime = vacationUseTime.getCompensatoryLeave();
+		val entityVactUseTime = entity.krcdtMonVactUseTime;
+		if (isNeedPersist) entityVactUseTime.PK = key;
+		entityVactUseTime.annualLeaveUseTime = annualLeaveUseTime.getUseTime().v();
+		entityVactUseTime.retentionYearlyUseTime = retentionYearlyUseTime.getUseTime().v();
+		entityVactUseTime.specialHolidayUseTime = specialHolidayUseTime.getUseTime().v();
+		entityVactUseTime.compensatoryLeaveUseTime = compensatoryLeaveUseTime.getUseTime().v();
+		
+		// 総労働時間：集計総労働時間
+		val workTime = totalWorkingTime.getWorkTime();
+		val prescribedWorkingTime = totalWorkingTime.getPrescribedWorkingTime();
+		val entityAggrTotalWrk = entity.krcdtMonAggrTotalWrk;
+		if (isNeedPersist) entityAggrTotalWrk.PK = key;
+		entityAggrTotalWrk.totalWorkingTime = totalWorkingTime.getTotalWorkingTime().v();
+		entityAggrTotalWrk.workTime = workTime.getWorkTime().v();
+		entityAggrTotalWrk.withinPrescribedPremiumTime = workTime.getWithinPrescribedPremiumTime().v();
+		entityAggrTotalWrk.schedulePrescribedWorkingTime = prescribedWorkingTime.getSchedulePrescribedWorkingTime().v();
+		entityAggrTotalWrk.recordPrescribedWorkingTime = prescribedWorkingTime.getRecordPrescribedWorkingTime().v();
+		
+		// 総労働時間：残業時間：月別実績の残業時間
+		val overTime = totalWorkingTime.getOverTime();
+		val entityOverTime = entity.krcdtMonOverTime;
+		if (isNeedPersist) entityOverTime.PK = key;
+		entityOverTime.totalOverTime = overTime.getTotalOverTime().getTime().v();
+		entityOverTime.calcTotalOverTime = overTime.getTotalOverTime().getCalcTime().v();
+		entityOverTime.beforeOverTime = overTime.getBeforeOverTime().v();
+		entityOverTime.totalTransferOverTime = overTime.getTotalTransferOverTime().getTime().v();
+		entityOverTime.calcTotalTransferOverTime = overTime.getTotalTransferOverTime().getCalcTime().v();
+
+		// 総労働時間：残業時間：集計残業時間
+		val aggrOverTimeMap = overTime.getAggregateOverTimeMap();
+		val entityOverTimes = entity.krcdtMonAggrOverTimes;
+		val itrOverTimes = entityOverTimes.iterator();
+		while (itrOverTimes.hasNext()){
+			val aggrOverTime = itrOverTimes.next();
+			if (!aggrOverTimeMap.containsKey(new OverTimeFrameNo(aggrOverTime.PK.overTimeFrameNo))){
+				itrOverTimes.remove();
+			}
+		}
+		for (val aggrOverTime : aggrOverTimeMap.values()){
+			KrcdtMonAggrOverTime entityAggrOverTime = new KrcdtMonAggrOverTime();
+			boolean isAddAggrOverTime = false;
+			val entityAggrOverTimeOpt = entityOverTimes.stream()
+					.filter(c -> c.PK.overTimeFrameNo == aggrOverTime.getOverTimeFrameNo().v()).findFirst();
+			if (entityAggrOverTimeOpt.isPresent()){
+				entityAggrOverTime = entityAggrOverTimeOpt.get();
+			}
+			else {
+				isAddAggrOverTime = true;
+				entityAggrOverTime.PK = new KrcdtMonAggrOverTimePK(
+						domain.getEmployeeId(),
+						domain.getYearMonth().v(),
+						domain.getClosureId().value,
+						closureDate.getClosureDay().v(),
+						(closureDate.getLastDayOfMonth() ? 1 : 0),
+						aggrOverTime.getOverTimeFrameNo().v());
+			}
+			entityAggrOverTime.overTime = aggrOverTime.getOverTime().getTime().v();
+			entityAggrOverTime.calcOverTime = aggrOverTime.getOverTime().getCalcTime().v();
+			entityAggrOverTime.beforeOverTime = aggrOverTime.getBeforeOverTime().v();
+			entityAggrOverTime.transferOverTime = aggrOverTime.getTransferOverTime().getTime().v();
+			entityAggrOverTime.calcTransferOverTime = aggrOverTime.getTransferOverTime().getCalcTime().v();
+			entityAggrOverTime.legalOverTime = aggrOverTime.getLegalOverTime().v();
+			entityAggrOverTime.legalTransferOverTime = aggrOverTime.getLegalTransferOverTime().v();
+			if (isAddAggrOverTime) entityOverTimes.add(entityAggrOverTime);
+		}
+		
+		// 総労働時間：休出・代休：月別実績の休出時間
+		val holidayWorkTime = totalWorkingTime.getHolidayWorkTime();
+		val entityHdwkTime = entity.krcdtMonHdwkTime;
+		if (isNeedPersist) entityHdwkTime.PK = key;
+		entityHdwkTime.totalHolidayWorkTime = holidayWorkTime.getTotalHolidayWorkTime().getTime().v();
+		entityHdwkTime.calcTotalHolidayWorkTime = holidayWorkTime.getTotalHolidayWorkTime().getCalcTime().v();
+		entityHdwkTime.beforeHolidayWorkTime = holidayWorkTime.getBeforeHolidayWorkTime().v();
+		entityHdwkTime.totalTransferTime = holidayWorkTime.getTotalTransferTime().getTime().v();
+		entityHdwkTime.calcTotalTransferTime = holidayWorkTime.getTotalTransferTime().getCalcTime().v();
+		
+		// 総労働時間：休出・代休：集計休出時間
+		val aggrHolidayWorkTimeMap = holidayWorkTime.getAggregateHolidayWorkTimeMap();
+		val entityHdwkTimes = entity.krcdtMonAggrHdwkTimes;
+		val itrHdwkTimes = entityHdwkTimes.iterator();
+		while (itrHdwkTimes.hasNext()){
+			val aggrHdwkTime = itrHdwkTimes.next();
+			if (!aggrHolidayWorkTimeMap.containsKey(new HolidayWorkFrameNo(aggrHdwkTime.PK.holidayWorkFrameNo))){
+				itrHdwkTimes.remove();
+			}
+		}
+		for (val aggrHolidayWorkTime : aggrHolidayWorkTimeMap.values()){
+			KrcdtMonAggrHdwkTime entityAggrHdwkTime = new KrcdtMonAggrHdwkTime();
+			boolean isAddAggrHdwkTime = false;
+			val entityAggrHdwkTimeOpt = entityHdwkTimes.stream()
+					.filter(c -> c.PK.holidayWorkFrameNo == aggrHolidayWorkTime.getHolidayWorkFrameNo().v()).findFirst();
+			if (entityAggrHdwkTimeOpt.isPresent()){
+				entityAggrHdwkTime = entityAggrHdwkTimeOpt.get();
+			}
+			else {
+				isAddAggrHdwkTime = true;
+				entityAggrHdwkTime.PK = new KrcdtMonAggrHdwkTimePK(
+						domain.getEmployeeId(),
+						domain.getYearMonth().v(),
+						domain.getClosureId().value,
+						closureDate.getClosureDay().v(),
+						(closureDate.getLastDayOfMonth() ? 1 : 0),
+						aggrHolidayWorkTime.getHolidayWorkFrameNo().v());
+			}
+			entityAggrHdwkTime.holidayWorkTime = aggrHolidayWorkTime.getHolidayWorkTime().getTime().v();
+			entityAggrHdwkTime.calcHolidayWorkTime = aggrHolidayWorkTime.getHolidayWorkTime().getCalcTime().v();
+			entityAggrHdwkTime.beforeHolidayWorkTime = aggrHolidayWorkTime.getBeforeHolidayWorkTime().v();
+			entityAggrHdwkTime.transferTime = aggrHolidayWorkTime.getTransferTime().getTime().v();
+			entityAggrHdwkTime.calcTransferTime = aggrHolidayWorkTime.getTransferTime().getCalcTime().v();
+			entityAggrHdwkTime.legalHolidayWorkTime = aggrHolidayWorkTime.getLegalHolidayWorkTime().v();
+			entityAggrHdwkTime.legalTransferHolidayWorkTime = aggrHolidayWorkTime.getLegalTransferHolidayWorkTime().v();
+			if (isAddAggrHdwkTime) entityHdwkTimes.add(entityAggrHdwkTime);
+		}
+		
+		// 集計総拘束時間
+		val totalTimeSpentAtWork = monthlyCalculation.getTotalTimeSpentAtWork();
+		val entityAggrTotalSpt = entity.krcdtMonAggrTotalSpt;
+		if (isNeedPersist) entityAggrTotalSpt.PK = key;
+		entityAggrTotalSpt.overTimeSpentAtWork = totalTimeSpentAtWork.getOverTimeSpentAtWork().v();
+		entityAggrTotalSpt.midnightTimeSpentAtWork = totalTimeSpentAtWork.getMidnightTimeSpentAtWork().v();
+		entityAggrTotalSpt.holidayTimeSpentAtWork = totalTimeSpentAtWork.getHolidayTimeSpentAtWork().v();
+		entityAggrTotalSpt.varienceTimeSpentAtWork = totalTimeSpentAtWork.getVarienceTimeSpentAtWork().v();
+		entityAggrTotalSpt.totalTimeSpentAtWork = totalTimeSpentAtWork.getTotalTimeSpentAtWork().v();
+		
+		// 登録が必要な時、登録を実行
+		if (isNeedPersist) this.getEntityManager().persist(entity);
 	}
 }

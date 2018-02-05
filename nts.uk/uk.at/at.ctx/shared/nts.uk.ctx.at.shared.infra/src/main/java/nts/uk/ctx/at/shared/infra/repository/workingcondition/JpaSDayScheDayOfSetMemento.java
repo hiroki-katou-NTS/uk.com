@@ -56,7 +56,9 @@ public class JpaSDayScheDayOfSetMemento implements SingleDayScheduleSetMemento {
 	 */
 	@Override
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
-		this.entity.setWorkTypeCode(workTypeCode.v());
+		if (workTypeCode != null) {
+			this.entity.setWorkTypeCode(workTypeCode.v());
+		}
 	}
 
 	/*

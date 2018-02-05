@@ -63,7 +63,9 @@ $sidebar_arrow_width: 50px;
 		border-top: 1px solid $sidebar_theme_color;
 	}
 }
-
+.show-immediately {
+	display: block !important;
+}
 .sidebar-content-header {
 	position: relative;
 	height: $sidebar_content_header_height;

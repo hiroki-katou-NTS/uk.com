@@ -25,7 +25,7 @@ public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implemen
 			+ "WHERE c.krqstWpAppConfigPK.companyId = :companyId "
 			+ "AND c.krqstWpAppConfigPK.workplaceId = :workplaceId";
 
-	private static final String FIND_ALL = "SELECT c FROM KrqstWpAppConfig c WHERE c.krqstWpAppConfigPK.companyId = :companyId ";
+	private static final String FIND_ALL = "SELECT c FROM KrqstWpAppConfig c WHERE c.krqstWpAppConfigPK.companyId = :companyId AND c.krqstWpAppConfigPK.workplaceId IN :lstWkpId";
 
 	/**
 	 * get request of earch workplace by app type
@@ -49,9 +49,10 @@ public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public List<RequestOfEachWorkplace> getAll() {
+	public List<RequestOfEachWorkplace> getAll(List<String> lstWkpId) {
 		return this.queryProxy().query(FIND_ALL, KrqstWpAppConfig.class)
-				.setParameter("companyId", AppContexts.user().companyId()).getList(c -> c.toDomain());
+				.setParameter("companyId", AppContexts.user().companyId()).setParameter("lstWkpId", lstWkpId)
+				.getList(c -> c.toDomain());
 	}
 
 	@Override
@@ -61,11 +62,19 @@ public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implemen
 
 	@Override
 	public void update(RequestOfEachWorkplace domain) {
-		KrqstWpAppConfig targetEntity = this.queryProxy().find(new KrqstWpAppConfigPK(domain.getCompanyID(), domain.getWorkPlaceID()), KrqstWpAppConfig.class).get();
+		KrqstWpAppConfig targetEntity = this.queryProxy()
+				.find(new KrqstWpAppConfigPK(domain.getCompanyID(), domain.getWorkPlaceID()), KrqstWpAppConfig.class)
+				.get();
 		KrqstWpAppConfig updateEntity = KrqstWpAppConfig.fromDomain(domain);
 		targetEntity.krqstWpAppConfigDetails = updateEntity.krqstWpAppConfigDetails;
 		targetEntity.selectOfApproversFlg = updateEntity.selectOfApproversFlg;
 		this.commandProxy().update(targetEntity);
+	}
+
+	@Override
+	public void remove(RequestOfEachWorkplace domain) {
+		this.commandProxy().remove(KrqstWpAppConfig.class,
+				new KrqstWpAppConfigPK(domain.getCompanyID(), domain.getWorkPlaceID()));
 	}
 
 }

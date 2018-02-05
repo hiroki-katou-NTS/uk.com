@@ -170,10 +170,10 @@
 	                                        <!-- BA2-2 -->
 	                                        <button id="btnSettingBA2_2" data-bind="click : function() {$parent.btnSettingBA2_2_click()}, enable: true">#{i18n.getText('KAL003_57')}</button>
 	                                        <!-- BA2-3 -->
-	                                        <input id ="display-target-item" data-bind="ntsTextEditor: {
+	                                        <input id ="display-target-item" class="display-list-label need-check" data-bind="ntsTextEditor: {
 		                                           value: $parent.displayAttendanceItemSelections_BA2_3,
+		                                           require: true,
 		                                           readonly: true}" />
-
 
 	                                    </div>
 		                            </td>

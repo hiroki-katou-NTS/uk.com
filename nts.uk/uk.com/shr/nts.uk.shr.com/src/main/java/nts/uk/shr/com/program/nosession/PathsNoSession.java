@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import lombok.val;
+import nts.uk.shr.com.program.ProgramsManager;
 
 public class PathsNoSession {
 
@@ -18,8 +19,11 @@ public class PathsNoSession {
 
 	public static PathsNoSession WEB_SCREENS = PathsNoSession.define(
 			"/view/sample/.*",
-			"/view/common/error/.*"
-			//ProgramsManager.Abc001x.getPPath()  <- sample using definition in ProgramManager
+			"/view/common/error/.*",
+			ProgramsManager.CCG007A.getPPath(),
+			ProgramsManager.CCG007B.getPPath(),
+			ProgramsManager.CCG007C.getPPath(),
+			ProgramsManager.CCG007D.getPPath()
 			);
 
 	

@@ -18,23 +18,12 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 
 	private static final String FIND;
 
-	private static final String UPDATE_BY_KEY;
-
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KmkmtAgeementOperationSetting a ");
 		builderString.append("WHERE a.kmkmtAgeementOperationSettingPK.companyId = :companyId ");
 		FIND = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("UPDATE KmkmtAgeementOperationSetting a ");
-		builderString
-				.append("SET a.startingMonthType = :startingMonthType , a.numberTimesOverLimitType = :numberTimesOverLimitType, "
-						+ " a.closingDateType = :closingDateType, a.closingDateAtr = :closingDateAtr, "
-						+ " a.yearlyWorkTableAtr = :yearlyWorkTableAtr, a.alarmListAtr = :alarmListAtr ");
-		builderString.append("WHERE a.kmkmtAgeementOperationSettingPK.companyId = :companyId ");
-		UPDATE_BY_KEY = builderString.toString();
 
 	}
 
@@ -51,14 +40,22 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 
 	@Override
 	public void update(AgreementOperationSetting agreementOperationSetting) {
-		this.getEntityManager().createQuery(UPDATE_BY_KEY)
-				.setParameter("companyId", agreementOperationSetting.getCompanyId())
-				.setParameter("startingMonthType", agreementOperationSetting.getStartingMonth().value)
-				.setParameter("numberTimesOverLimitType", agreementOperationSetting.getNumberTimesOverLimitType().value)
-				.setParameter("closingDateType", agreementOperationSetting.getClosingDateType().value)
-				.setParameter("closingDateAtr", agreementOperationSetting.getClosingDateAtr().value)
-				.setParameter("yearlyWorkTableAtr", agreementOperationSetting.getYearlyWorkTableAtr().value)
-				.setParameter("alarmListAtr", agreementOperationSetting.getAlarmListAtr().value).executeUpdate();
+
+		Optional<KmkmtAgeementOperationSetting> entity = this.queryProxy()
+				.query(FIND, KmkmtAgeementOperationSetting.class)
+				.setParameter("companyId", agreementOperationSetting.getCompanyId()).getSingle();
+		
+		if (entity.isPresent()) {
+			KmkmtAgeementOperationSetting data = entity.get();
+			data.alarmListAtr = new BigDecimal(agreementOperationSetting.getAlarmListAtr().value);
+			data.closingDateAtr = new BigDecimal(agreementOperationSetting.getClosingDateAtr().value);
+			data.closingDateType = new BigDecimal(agreementOperationSetting.getClosingDateType().value);
+			data.numberTimesOverLimitType = new BigDecimal(agreementOperationSetting.getNumberTimesOverLimitType().value);
+			data.startingMonthType = new BigDecimal(agreementOperationSetting.getStartingMonth().value);
+			data.yearlyWorkTableAtr = new BigDecimal(agreementOperationSetting.getYearlyWorkTableAtr().value);
+			
+			this.commandProxy().update(data);
+		}
 	}
 
 	private static AgreementOperationSetting toDomain(KmkmtAgeementOperationSetting kmkmtAgeementOperationSetting) {

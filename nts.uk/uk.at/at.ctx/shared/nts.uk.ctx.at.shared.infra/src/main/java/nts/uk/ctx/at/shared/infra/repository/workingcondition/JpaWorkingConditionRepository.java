@@ -171,7 +171,7 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	 */
 	@Override
 	@Transactional
-	public void update(WorkingCondition workingCondition) {
+	public void update(WorkingCondition workingCondition) {			
 		List<KshmtWorkingCond> entities = this.findBy(workingCondition.getCompanyId(),
 				workingCondition.getEmployeeId(), null);
 //		this.commandProxy().removeAll(entities);
@@ -201,9 +201,15 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	 */
 	@Override
 	@Transactional
-	public void save(WorkingCondition workingCondition) {
-		deleteAll(workingCondition);
-		add(workingCondition);
+	public void save(WorkingCondition workingCondition) {		
+		Optional<WorkingCondition> oldDomain = this.getBySid(workingCondition.getCompanyId(), workingCondition.getEmployeeId());
+		if (oldDomain.isPresent()) {
+			// Update
+			this.update(workingCondition);
+			return;
+		} 
+		// Add
+		this.add(workingCondition);
 	}
 
 	@Transactional
