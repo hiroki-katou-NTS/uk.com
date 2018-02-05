@@ -7,7 +7,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 
 /**
  * 月別実績の乖離時間
@@ -46,31 +46,46 @@ public class DivergenceTimeOfMonthly {
 	
 	/**
 	 * 集計
-	 * @param datePeriod 期間
-	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 */
-	public void aggregate(
-			DatePeriod datePeriod,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
-		
-		this.divergenceTimeList = new HashMap<>();
+	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+
+		if (attendanceTimeOfDaily == null) return;
 		
 		// 日別実績の「乖離時間」「控除時間」「控除後乖離時間」を集計
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
-			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
-			val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
-			val divergenceTimeOfDaily = actualWorkingTime.getDivTime();
-			for (val divergenceTime : divergenceTimeOfDaily.getDivergenceTime()){
-				val divTimeNo = Integer.valueOf(divergenceTime.getDivTimeId());
-				if (!this.divergenceTimeList.containsKey(divTimeNo)) {
-					this.divergenceTimeList.put(divTimeNo, new AggregateDivergenceTime(divTimeNo.intValue()));
-				}
-				val targetDivergenceTime = this.divergenceTimeList.get(divTimeNo);
+		val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+		val divergenceTimeOfDaily = actualWorkingTime.getDivTime();
+		for (val divergenceTime : divergenceTimeOfDaily.getDivergenceTime()){
+			val divTimeNo = Integer.valueOf(divergenceTime.getDivTimeId());
+			if (!this.divergenceTimeList.containsKey(divTimeNo)) {
+				this.divergenceTimeList.put(divTimeNo, new AggregateDivergenceTime(divTimeNo.intValue()));
+			}
+			val targetDivergenceTime = this.divergenceTimeList.get(divTimeNo);
+			
+			targetDivergenceTime.addMinutesToDivergenceTime(divergenceTime.getDivTime().v());
+			targetDivergenceTime.addMinutesToDeductionTime(divergenceTime.getDeductionTime().v());
+			targetDivergenceTime.addMinutesToDivergenceTimeAfterDeduction(
+					divergenceTime.getDivTimeAfterDeduction().v());
+		}
+	}
+	
+	/**
+	 * 乖離フラグの集計
+	 * @param employeeDailyPerErrors 社員の日別実績エラー一覧リスト
+	 */
+	public void aggregateDivergenceAtr(List<EmployeeDailyPerError> employeeDailyPerErrors){
+		
+		//*****（未）　ドメインの構成、DB設計、リポジトリでのfindの管理単位が不整合かもしれない。確認要。
+		for (val employeeDailyPerError : employeeDailyPerErrors){
+			
+			// 乖離時間のエラー
+			if (employeeDailyPerError.getErrorAlarmWorkRecordCode().v() == "S017"){
 				
-				targetDivergenceTime.addMinutesToDivergenceTime(divergenceTime.getDivTime().v());
-				targetDivergenceTime.addMinutesToDeductionTime(divergenceTime.getDeductionTime().v());
-				targetDivergenceTime.addMinutesToDivergenceTimeAfterDeduction(
-						divergenceTime.getDivTimeAfterDeduction().v());
+			}
+			
+			// 乖離時間のアラーム
+			if (employeeDailyPerError.getErrorAlarmWorkRecordCode().v() == "S018"){
+				
 			}
 		}
 	}

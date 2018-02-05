@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.repository.setting.company.applicationapprovalsetting.hdapplicationsetting;
+package nts.uk.ctx.at.request.infra.repository.setting.company.applicationapprovalsetting.hdappset;
 
 import java.util.Optional;
 

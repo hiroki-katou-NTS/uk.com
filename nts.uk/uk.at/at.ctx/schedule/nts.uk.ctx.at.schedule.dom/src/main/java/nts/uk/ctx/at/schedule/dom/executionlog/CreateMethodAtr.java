@@ -12,15 +12,15 @@ public enum CreateMethodAtr {
 
 	/** The personal info. */
 	// 個人情報
-	PERSONAL_INFO(0, "Enum_CreateMethodAtr_personalInfo", "個人情報"),
+	PERSONAL_INFO(0, "KSC001_22", "個人情報"),
 
 	/** The pattern schedule. */
 	// パターンスケジュール
-	PATTERN_SCHEDULE(1, "Enum_CreateMethodAtr_patternSchedule", "パターンスケジュール"),
+	PATTERN_SCHEDULE(1, "KSC001_23", "パターンスケジュール"),
 	
 	/** The copy past schedule. */
 	// 過去スケジュールコピー
-	COPY_PAST_SCHEDULE(2, "Enum_CreateMethodAtr_copyPastSchedule", "過去スケジュールコピー");
+	COPY_PAST_SCHEDULE(2, "KSC001_24", "過去スケジュールコピー");
 
 	/** The value. */
 	public final int value;

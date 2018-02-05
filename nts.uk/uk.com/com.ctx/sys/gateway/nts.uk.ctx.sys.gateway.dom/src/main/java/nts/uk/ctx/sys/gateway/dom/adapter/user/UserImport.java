@@ -11,8 +11,8 @@ import nts.arc.time.GeneralDate;
 /**
  * The Class UserImport.
  */
-@Builder
 @Getter
+@Builder
 public class UserImport {
 	
 	/** The user id. */
@@ -37,5 +37,6 @@ public class UserImport {
 	private String contractCode;
 	
 	/** The expiration date. */
-	private GeneralDate expirationDate;
+	private GeneralDate expirationDate;	
+	
 }

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の割増時間
@@ -78,28 +77,21 @@ public class PremiumTimeOfMonthly {
 	
 	/**
 	 * 集計
-	 * @param datePeriod 期間
-	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 */
-	public void aggregate(
-			DatePeriod datePeriod,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
+	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
+
+		if (attendanceTimeOfDaily == null) return;
 		
-		this.premiumTime = new HashMap<>();
-		
-		// 日別実績の「割増時間」を集計する
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
-			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
-			val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
-			val premiumTimeOfDaily = actualWorkingTime.getPremiumTimeOfDailyPerformance();
-			for (val premiumTime : premiumTimeOfDaily.getPremiumTimes()){
-				val premiumTimeNo = premiumTime.getPremiumTimeNo();
-				if (!this.premiumTime.containsKey(premiumTimeNo)) {
-					this.premiumTime.put(premiumTimeNo, new AggregatePremiumTime(premiumTimeNo));
-				}
-				val targetPremiumTime = this.premiumTime.get(premiumTimeNo);
-				targetPremiumTime.addMinutesToTime(premiumTime.getPremitumTime().v());
+		val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+		val premiumTimeOfDaily = actualWorkingTime.getPremiumTimeOfDailyPerformance();
+		for (val premiumTime : premiumTimeOfDaily.getPremiumTimes()){
+			val premiumTimeNo = premiumTime.getPremiumTimeNo();
+			if (!this.premiumTime.containsKey(premiumTimeNo)) {
+				this.premiumTime.put(premiumTimeNo, new AggregatePremiumTime(premiumTimeNo));
 			}
+			val targetPremiumTime = this.premiumTime.get(premiumTimeNo);
+			targetPremiumTime.addMinutesToTime(premiumTime.getPremitumTime().v());
 		}
 	}
 }

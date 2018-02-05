@@ -2,7 +2,7 @@ module nts.uk.at.view.ksc001.b {
     __viewContext.ready(function() {
         let screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function(self) {
-            __viewContext.bind(self);
+            __viewContext.bind(screenModel);
 
             // load ccg component
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {

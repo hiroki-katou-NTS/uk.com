@@ -41,7 +41,7 @@ module nts.uk.request {
             return instance;
         }
 
-        get(key: string): any {
+        get(key: string): any { 
             return this.items[key];
         }
 
@@ -337,7 +337,7 @@ module nts.uk.request {
         }
         
         export function requestToCancel(taskId: string) {
-            ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId);
+            return ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId); 
         }
     }
     
