@@ -21,7 +21,6 @@ import nts.uk.ctx.pereg.dom.person.layout.classification.ILayoutPersonInfoClsRep
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutPersonInfoClassification;
 import nts.uk.ctx.pereg.dom.person.layout.classification.definition.ILayoutPersonInfoClsDefRepository;
 import nts.uk.ctx.pereg.dom.person.layout.classification.definition.LayoutPersonInfoClsDefinition;
-import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Stateless
 @Transactional
@@ -38,9 +37,6 @@ public class NewLayoutCommandHandler extends CommandHandler<NewLayoutCommand> {
 
 	@Inject
 	PerInfoItemDefFinder itemDefFinder;
-
-	@Inject
-	I18NResourcesForUK text;
 
 	@Override
 	protected void handle(CommandHandlerContext<NewLayoutCommand> context) {

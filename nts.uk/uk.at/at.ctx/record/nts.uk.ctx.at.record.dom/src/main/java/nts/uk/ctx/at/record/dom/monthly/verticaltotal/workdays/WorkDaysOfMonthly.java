@@ -6,6 +6,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.paydays.PayDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.SpecificDaysOfMonthly;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.vtotalwork.AttendanceStatusM
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -126,6 +128,7 @@ public class WorkDaysOfMonthly {
 	/**
 	 * 集計
 	 * @param datePeriod 期間
+	 * @param workingSystem 労働制
 	 * @param workInfoOfDailys 日別実績の勤務情報リスト
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
 	 * @param timeLeaveingOfDailys 日別実績の出退勤リスト
@@ -133,20 +136,24 @@ public class WorkDaysOfMonthly {
 	 * @param workTypeMap 勤務種類マップ
 	 * @param predetermineTimeSetMap 所定時間設定マップ
 	 * @param attendanceStatusMap 出勤状態マップ
+	 * @param vacationAddSet 休暇加算設定
 	 */
 	public void aggregate(
 			DatePeriod datePeriod,
+			WorkingSystem workingSystem,
 			List<WorkInfoOfDailyPerformance> workInfoOfDailys,
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
 			List<TimeLeavingOfDailyPerformance> timeLeaveingOfDailys,
 			List<SpecificDateAttrOfDailyPerfor> specificDateAtrOfDailys,
 			Map<String, WorkType> workTypeMap,
 			Map<String, PredetemineTimeSetting> predetermineTimeSetMap,
-			AttendanceStatusMap attendanceStatusMap){
+			AttendanceStatusMap attendanceStatusMap,
+			VacationAddSet vacationAddSet){
 		
 		// 出勤日数の集計
-		//*****（未）　勤務種類の判断方法の設計確認要。
-		this.attendanceDays.aggregate(datePeriod, workInfoOfDailys, workTypeMap);
+		//*****（未）　休暇加算の判断方法の確認要。
+		this.attendanceDays.aggregate(datePeriod, workingSystem, workInfoOfDailys, workTypeMap,
+				attendanceStatusMap, vacationAddSet);
 		
 		// 欠勤日数の集計
 		//*****（未）　勤務種類の判断方法、出勤状態の判断方法の設計確認要。
@@ -158,7 +165,7 @@ public class WorkDaysOfMonthly {
 		//*****（未）　勤務種類の判断方法、出勤状態の判断方法の設計確認要。
 		
 		// 休日日数の集計
-		//*****（未）　勤務種類の判断方法の設計確認要。
+		this.holidayDays.aggregate(datePeriod, workInfoOfDailys, workTypeMap, vacationAddSet);
 		
 		// 特定日日数の集計
 		//*****（未）　設計確認要。途中に前日休出確認。予備区分判定の部分中心に確認要。

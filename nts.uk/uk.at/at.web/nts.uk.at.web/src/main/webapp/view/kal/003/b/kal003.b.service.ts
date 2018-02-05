@@ -21,6 +21,7 @@ module nts.uk.at.view.kal003.b.service {
             getEnumLogicalOperator:         "/at/function/alarm/checkcondition/kal003b/getEnumLogicalOperator",
 
     }
+
     ////アルゴリズム「日次の初期起動」を実行する
     //command: checkItem => return List<AttdItemDto>
     export function getDailyItemChkItemComparison(checkItem) : JQueryPromise<any> {
@@ -91,4 +92,3 @@ module nts.uk.at.view.kal003.b.service {
         return req_ajax(paths.getEnumLogicalOperator);
     }
 }
-

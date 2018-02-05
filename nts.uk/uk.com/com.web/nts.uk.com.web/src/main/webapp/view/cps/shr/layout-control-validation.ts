@@ -18,10 +18,29 @@ module nts.layout {
         }
     }
 
-    export const constraint = {
-        combobox: (subscribeCode: string, targetCode: string) => {
+    export const constraint = (lstCls: Array<any>) => {
+        let self = {
+            _lst: lstCls,
+            lst: (lstCls?: Array<any>) => {
+                if (_.isArray(lstCls)) {
+                    self._lst = lstCls;
+                }
 
-        }
+                return self._lst;
+            },
+            combobox: (categoryCode: string, subscribeCode: string, targetCode: string) => {
+                let controls = _(self.lst()).map(x => x.items()).flatten().flatten().value(),
+                    target = _.find(controls, (x: any) => x.categoryCode == categoryCode && x.itemCode == targetCode),
+                    subscribe = _.find(controls, (x: any) => x.categoryCode == categoryCode && x.itemCode == subscribeCode);
+
+                debugger;
+                fetch.combobox("", "");
+            }
+        };
+
+        self.lst(lstCls);
+
+        return self;
     }
 
     const fetch = {

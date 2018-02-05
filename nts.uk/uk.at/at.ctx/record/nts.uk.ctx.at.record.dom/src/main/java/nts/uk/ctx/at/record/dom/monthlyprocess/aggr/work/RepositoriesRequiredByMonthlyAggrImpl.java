@@ -16,6 +16,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepos
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetOfStatutoryWorkTime;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.GetWeekStart;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
@@ -84,6 +86,18 @@ public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequir
 	/** 休日加算設定 */
 	@Inject
 	public HolidayAddtionRepository holidayAddition;
+	
+	/** 年休設定 */
+	@Inject
+	public AnnualPaidLeaveSettingRepository annualPaidLeaveSet;
+	
+	/** 積立年休設定 */
+	@Inject
+	public RetentionYearlySettingRepository retentionYearlySet;
+	
+	/** 特別休暇設定 */
+	//@Inject
+	//public SpecialHolidayRepository specialHolidaySet;
 	
 	/** 代休時間設定の取得 */
 	//@Inject

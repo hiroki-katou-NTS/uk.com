@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.standardtime;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -17,10 +18,9 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 
 	private static final String FIND;
 
-	private static final String UPDATE_BY_KEY;
-
+	private static final String FIND_BY_KEY;
 	private static final String DEL_BY_KEY;
-	
+
 	private static final String IS_EXIST_DATA;
 
 	static {
@@ -28,14 +28,15 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		builderString.append("SELECT a ");
 		builderString.append("FROM KmkmtAgeementYearSetting a ");
 		builderString.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId = :employeeId ");
+		builderString.append("ORDER BY a.kmkmtAgeementYearSettingPK.yearValue DESC ");
 		FIND = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("UPDATE KmkmtAgeementYearSetting a ");
-		builderString.append("SET a.errorOneYear = :errorOneYear , a.alarmOneYear = :alarmOneYear ");
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgeementYearSetting a ");
 		builderString.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId = :employeeId ");
 		builderString.append("AND a.kmkmtAgeementYearSettingPK.yearValue = :yearValue ");
-		UPDATE_BY_KEY = builderString.toString();
+		FIND_BY_KEY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
@@ -43,12 +44,11 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		builderString.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId = :employeeId ");
 		builderString.append("AND a.kmkmtAgeementYearSettingPK.yearValue = :yearValue ");
 		DEL_BY_KEY = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM KmkmtAgeementYearSetting a ");
-		builderString
-				.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId = :employeeId ");
+		builderString.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId = :employeeId ");
 		builderString.append("AND a.kmkmtAgeementYearSettingPK.yearValue = :yearValue ");
 		IS_EXIST_DATA = builderString.toString();
 	}
@@ -66,11 +66,19 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 
 	@Override
 	public void update(AgreementYearSetting agreementYearSetting) {
-		this.getEntityManager().createQuery(UPDATE_BY_KEY)
+
+		Optional<KmkmtAgeementYearSetting> entity = this.queryProxy().query(FIND_BY_KEY, KmkmtAgeementYearSetting.class)
 				.setParameter("employeeId", agreementYearSetting.getEmployeeId())
-				.setParameter("yearValue", agreementYearSetting.getYearValue())
-				.setParameter("errorOneYear", agreementYearSetting.getErrorOneYear().v())
-				.setParameter("alarmOneYear", agreementYearSetting.getAlarmOneYear().v()).executeUpdate();
+				.setParameter("yearValue", agreementYearSetting.getYearValue()).getSingle();
+		
+		if (entity.isPresent()) {
+			KmkmtAgeementYearSetting data = entity.get();
+			data.errorOneYear = new BigDecimal(agreementYearSetting.getErrorOneYear().valueAsMinutes());
+			data.alarmOneYear = new BigDecimal(agreementYearSetting.getAlarmOneYear().valueAsMinutes());
+			
+			this.commandProxy().update(data);
+		}
+
 	}
 
 	@Override
