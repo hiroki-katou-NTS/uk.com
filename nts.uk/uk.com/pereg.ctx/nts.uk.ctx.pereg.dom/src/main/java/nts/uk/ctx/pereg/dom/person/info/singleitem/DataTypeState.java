@@ -44,8 +44,8 @@ public class DataTypeState extends AggregateRoot {
 		return SelectionItem.createFromJavaType(referenceTypeState);
 	}
 
-	public static DataTypeState createSelectionRadio() {
-		return SelectionRadio.createFromJavaType();
+	public static DataTypeState createSelectionRadio(ReferenceTypeState referenceTypeState) {
+		return SelectionRadio.createFromJavaType(referenceTypeState);
 	}
 
 	public static DataTypeState createSelectionButton() {

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
+
 @Getter
 public class DataTypeStateDto {
 
@@ -37,14 +38,13 @@ public class DataTypeStateDto {
 
 	}
 
-	
-	public static DataTypeStateDto createSelectionButtonDto( ) {
+	public static DataTypeStateDto createSelectionButtonDto() {
 		return SelectionButtonDto.createFromJavaType();
 
 	}
-	
-	public static DataTypeStateDto createSelectionRadioDto( ) {
-		return SelectionRadioDto.createFromJavaType();
+
+	public static DataTypeStateDto createSelectionRadioDto(ReferenceTypeState refTypeState) {
+		return SelectionRadioDto.createFromJavaType(refTypeState);
 
 	}
 }
