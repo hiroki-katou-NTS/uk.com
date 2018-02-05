@@ -13,7 +13,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class OutsideWorkplaceCode.
  */
 @StringCharType(CharType.ALPHA_NUMERIC)
-@StringMaxLength(15)
+@StringMaxLength(10)
 public class OutsideWorkplaceCode extends StringPrimitiveValue<OutsideWorkplaceCode> {
 
 	/** The Constant serialVersionUID. */
