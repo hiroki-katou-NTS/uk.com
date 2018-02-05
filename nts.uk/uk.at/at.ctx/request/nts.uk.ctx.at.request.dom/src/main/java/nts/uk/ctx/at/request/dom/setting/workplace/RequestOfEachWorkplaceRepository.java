@@ -22,7 +22,7 @@ public interface RequestOfEachWorkplaceRepository {
 	 * Get all 
 	 * @return all RequestOfEachWorkplace in company
 	 */
-	List<RequestOfEachWorkplace> getAll();
+	List<RequestOfEachWorkplace> getAll(List<String> lstWkpId);
 	/**
 	 * Add RequestOfEachWorkplace
 	 */
@@ -31,4 +31,8 @@ public interface RequestOfEachWorkplaceRepository {
 	 * Update RequestOfEachWorkplace
 	 */
 	void update(RequestOfEachWorkplace domain);
+	/**
+	 * Remove RequestOfEachWorkplace
+	 */
+	void remove(RequestOfEachWorkplace domain);
 }
