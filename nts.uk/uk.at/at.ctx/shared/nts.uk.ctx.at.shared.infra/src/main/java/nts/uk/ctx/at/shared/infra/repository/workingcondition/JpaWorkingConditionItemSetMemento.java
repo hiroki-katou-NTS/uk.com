@@ -132,7 +132,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setContractTime(LaborContractTime contractTime) {
-		if (contractTime != null) {
+		if (contractTime != null && contractTime.v() != null) {
 			this.entity.setContractTime(contractTime.v());
 		}
 	}
@@ -279,7 +279,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setTimeApply(Optional<BonusPaySettingCode> timeApply) {
-		if (!timeApply.isPresent()) {
+		if (!timeApply.isPresent() && StringUtil.isNullOrEmpty(timeApply.get().v(), true)) {
 			this.entity.setTimeApply(null);
 			return;
 		}
@@ -295,7 +295,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setMonthlyPattern(Optional<MonthlyPatternCode> monthlyPattern) {
-		if (!monthlyPattern.isPresent()) {
+		if (!monthlyPattern.isPresent() && StringUtil.isNullOrEmpty(monthlyPattern.get().v(), true)) {
 			this.entity.setMonthlyPattern(null);
 			return;
 		}
