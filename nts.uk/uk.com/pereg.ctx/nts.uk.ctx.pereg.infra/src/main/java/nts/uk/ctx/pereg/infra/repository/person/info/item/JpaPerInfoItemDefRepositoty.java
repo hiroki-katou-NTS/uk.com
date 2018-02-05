@@ -517,7 +517,16 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 				referenceTypeState = ReferenceTypeState.createEnumReferenceCondition(selectionItemRefCode);
 			}
-			dataTypeState = DataTypeState.createSelectionItem(referenceTypeState);
+			switch (selection) {
+			case SELECTION:
+				dataTypeState = DataTypeState.createSelectionItem(referenceTypeState);
+				break;
+			case SELECTION_RADIO:
+				dataTypeState = DataTypeState.createSelectionRadio(referenceTypeState);
+				break;
+
+			}
+
 		}
 		return dataTypeState;
 	}
