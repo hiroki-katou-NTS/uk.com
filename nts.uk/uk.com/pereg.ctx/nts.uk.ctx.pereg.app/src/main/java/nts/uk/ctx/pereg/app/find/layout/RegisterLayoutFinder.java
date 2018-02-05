@@ -171,6 +171,7 @@ public class RegisterLayoutFinder {
 		item.setRow(0);
 		item.setRequired(itemDef.getIsRequired() == 1);
 		item.setType(itemDef.getItemTypeState().getItemType());
+		item.setItemParentCode(itemDef.getItemParentCode());
 		if (itemDef.getItemTypeState().getItemType() != 1) {
 			SingleItemDto sigleItem = (SingleItemDto) itemDef.getItemTypeState();
 			item.setItem(sigleItem.getDataTypeState());
