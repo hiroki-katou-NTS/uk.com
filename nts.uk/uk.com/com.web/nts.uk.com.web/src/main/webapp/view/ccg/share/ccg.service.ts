@@ -101,23 +101,23 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 /** Common properties */
                 isSelectAllEmployee: boolean; // 検索タイプ
-                systemType?: number; // システム区分
+                systemType: number; // システム区分
                 isQuickSearchTab: boolean; // クイック検索
                 isAdvancedSearchTab: boolean; // 詳細検索
-                showBaseDate?: boolean; // 基準日利用
-                showClosure?: boolean; // 就業締め日利用
-                showAllClosure?: boolean; // 全締め表示
-                showPeriod?: boolean; // 対象期間利用
-                periodAccuracy?: number; // 対象期間精度
+                showBaseDate: boolean; // 基準日利用
+                showClosure: boolean; // 就業締め日利用
+                showAllClosure: boolean; // 全締め表示
+                showPeriod: boolean; // 対象期間利用
+                periodAccuracy: number; // 対象期間精度
 
                 /** Required parameter */
                 baseDate?: KnockoutObservable<Date>; // 基準日
                 periodStartDate?: KnockoutObservable<any>; // 対象期間開始日
                 periodEndDate?: KnockoutObservable<any>; // 対象期間終了日
-                inService?: any; // 在職区分
-                leaveOfAbsence?: any; // 休職区分
-                closed?: any; // 休業区分
-                retirement?: any; // 退職区分
+                inService: boolean; // 在職区分
+                leaveOfAbsence: boolean; // 休職区分
+                closed: boolean; // 休業区分
+                retirement: boolean; // 退職区分
 
                 /** Quick search tab options */
                 isAllReferableEmployee: boolean; // 参照可能な社員すべて
@@ -126,14 +126,14 @@ module nts.uk.com.view.ccg.share.ccg {
                 isEmployeeWorkplaceFollow: boolean; // 同じ職場とその配下の社員
 
                 /** Advanced search properties */
-                showEmployment?: boolean; // 雇用条件
-                showWorkplace?: boolean; // 職場条件
-                showClassification?: boolean; // 分類条件
-                showJobTitle?: boolean; // 職位条件
-                showWorktype?: boolean; // 勤種条件
+                showEmployment: boolean; // 雇用条件
+                showWorkplace: boolean; // 職場条件
+                showClassification: boolean; // 分類条件
+                showJobTitle: boolean; // 職位条件
+                showWorktype: boolean; // 勤種条件
                 isMutipleCheck: boolean; // 選択モード
-                // showDepartment?: boolean; // 部門条件 not covered
-                // showDelivery?: boolean; not covered
+                // showDepartment: boolean; // 部門条件 not covered
+                // showDelivery: boolean; not covered
 
                 /** Data returned */
                 onSearchAllClicked: (data: EmployeeSearchDto[]) => void;

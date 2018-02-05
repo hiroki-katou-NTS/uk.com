@@ -21,13 +21,42 @@ module nts.uk.com.view.ccg.share.ccg {
 
             // flags
             isMultiple: boolean;
-            isQuickSearchTab: boolean;
-            isAdvancedSearchTab: boolean;
-            isAllReferableEmployee: boolean;
-            isOnlyMe: boolean;
-            isEmployeeOfWorkplace: boolean;
-            isEmployeeWorkplaceFollow: boolean;
-            isSelectAllEmployee: boolean;
+
+            /** Common properties */
+            isSelectAllEmployee: boolean; // 検索タイプ
+            systemType: number; // システム区分
+            isQuickSearchTab: boolean; // クイック検索
+            isAdvancedSearchTab: boolean; // 詳細検索
+            showBaseDate: boolean; // 基準日利用
+            showClosure: boolean; // 就業締め日利用
+            showAllClosure: boolean; // 全締め表示
+            showPeriod: boolean; // 対象期間利用
+            periodAccuracy: number; // 対象期間精度
+
+            /** Required parameter */
+            baseDate: KnockoutObservable<Date>;
+            periodStartDate: KnockoutObservable<any>;
+            periodEndDate: KnockoutObservable<any>;
+            periodStartYm: KnockoutObservable<any>;
+            periodEndYm: KnockoutObservable<any>;
+            inService: boolean; // 在職区分
+            leaveOfAbsence: boolean; // 休職区分
+            closed: boolean; // 休業区分
+            retirement: boolean; // 退職区分
+
+            /** Quick search tab options */
+            isAllReferableEmployee: boolean; // 参照可能な社員すべて
+            isOnlyMe: boolean; // 自分だけ
+            isEmployeeOfWorkplace: boolean; // 同じ職場の社員
+            isEmployeeWorkplaceFollow: boolean; // 同じ職場とその配下の社員
+
+            /** Advanced search properties */
+            showEmployment: boolean; // 雇用条件
+            showWorkplace: boolean; // 職場条件
+            showClassification: boolean; // 分類条件
+            showJobTitle: boolean; // 職位条件
+            showWorktype: boolean; // 勤種条件
+            isMutipleCheck: boolean; // 選択モード
 
             isShow: KnockoutObservable<boolean>;
             isFistTimeShow: boolean;
@@ -51,7 +80,6 @@ module nts.uk.com.view.ccg.share.ccg {
             selectedCodeWorkType: KnockoutObservableArray<string>;
 
             // params
-            baseDate: KnockoutObservable<Date>;
             employments: any;
             classifications: any;
             jobtitles: any;
@@ -59,22 +87,18 @@ module nts.uk.com.view.ccg.share.ccg {
             employeeinfo: any;
             closureList: KnockoutObservableArray<any>;
             selectedClosure: KnockoutObservable<string>;
-            periodStartDate: KnockoutObservable<any>;
-            periodEndDate: KnockoutObservable<any>;
-            periodStart: KnockoutObservable<any>;
-            periodEnd: KnockoutObservable<any>;
             
             //params Status Of Employee
-            incumbent: KnockoutObservableArray<any>;
+            incumbentDatasource: KnockoutObservableArray<any>;
             selectedIncumbent: any;
             
-            closure: KnockoutObservableArray<any>;
-            selectedClosureG: any;
+            closedDatasource: KnockoutObservableArray<any>;
+            selectedClosed: any;
             
-            leaveOfAbsence: KnockoutObservableArray<any>;
+            leaveOfAbsenceDatasource: KnockoutObservableArray<any>;
             selectedLeave: any;
             
-            retirement: KnockoutObservableArray<any>;
+            retirementDatasource: KnockoutObservableArray<any>;
             selectedRetirement: any;
 
             // functions
@@ -130,28 +154,28 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedClosure = ko.observable('');
                 self.periodStartDate = ko.observable(new Date());
                 self.periodEndDate = ko.observable(new Date());
-                self.periodStart = ko.observable('');
-                self.periodEnd = ko.observable('');
+                self.periodStartYm = ko.observable('');
+                self.periodEndYm = ko.observable('');
                 
-                self.incumbent = ko.observableArray([
+                self.incumbentDatasource = ko.observableArray([
                     { code: '1', name: nts.uk.resource.getText("CCG001_40") },
                     { code: '2', name: nts.uk.resource.getText("CCG001_41") }
                 ]);
                 self.selectedIncumbent = ko.observable(1);
                 
-                self.closure = ko.observableArray([
+                self.closedDatasource = ko.observableArray([
                     { code: '1', name: nts.uk.resource.getText("CCG001_40") },
                     { code: '2', name: nts.uk.resource.getText("CCG001_41") }
                 ]);
-                self.selectedClosureG = ko.observable(1);
+                self.selectedClosed = ko.observable(1);
                 
-                self.leaveOfAbsence = ko.observableArray([
+                self.leaveOfAbsenceDatasource = ko.observableArray([
                     { code: '1', name: nts.uk.resource.getText("CCG001_40") },
                     { code: '2', name: nts.uk.resource.getText("CCG001_41") }
                 ]);
                 self.selectedLeave = ko.observable(1);
                 
-                self.retirement = ko.observableArray([
+                self.retirementDatasource = ko.observableArray([
                     { code: '1', name: nts.uk.resource.getText("CCG001_40") },
                     { code: '2', name: nts.uk.resource.getText("CCG001_41") }
                 ]);
@@ -302,21 +326,48 @@ module nts.uk.com.view.ccg.share.ccg {
             public init($input: JQuery, data: GroupOption): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                // init data sample
-                self.isMultiple = data.isMutipleCheck;
+                /** Common properties */
+                self.isSelectAllEmployee = data.isSelectAllEmployee;
+                self.systemType = data.systemType;
                 self.isQuickSearchTab = data.isQuickSearchTab;
                 self.isAdvancedSearchTab = data.isAdvancedSearchTab;
+                self.showBaseDate = data.showBaseDate;
+                self.showClosure = data.showClosure;
+                self.showAllClosure = data.showAllClosure;
+                self.showPeriod = data.showPeriod;
+                self.periodAccuracy = data.periodAccuracy;
+
+                /** Required parameter */
+                self.baseDate = data.baseDate;
+                self.periodStartDate = data.periodStartDate;
+                self.periodEndDate = data.periodEndDate;
+                self.periodStartYm = data.periodStartDate;
+                self.periodEndYm = data.periodEndDate;
+                self.inService = data.inService;
+                self.leaveOfAbsence = data.leaveOfAbsence;
+                self.closed = data.closed;
+                self.retirement = data.retirement;
+
+                /** Quick search tab options */
                 self.isAllReferableEmployee = data.isAllReferableEmployee;
                 self.isOnlyMe = data.isOnlyMe;
                 self.isEmployeeOfWorkplace = data.isEmployeeOfWorkplace;
                 self.isEmployeeWorkplaceFollow = data.isEmployeeWorkplaceFollow;
-                self.isSelectAllEmployee = data.isSelectAllEmployee;
+
+                /** Advanced search properties */
+                self.showEmployment = data.showEmployment;
+                self.showWorkplace = data.showWorkplace;
+                self.showClassification = data.showClassification;
+                self.showJobTitle = data.showJobTitle;
+                self.showWorktype = data.showWorktype;
+                self.isMultiple = data.isMutipleCheck;
+
+                // functions
                 self.onSearchAllClicked = data.onSearchAllClicked;
                 self.onSearchOnlyClicked = data.onSearchOnlyClicked;
                 self.onSearchOfWorkplaceClicked = data.onSearchOfWorkplaceClicked;
                 self.onSearchWorkplaceChildClicked = data.onSearchWorkplaceChildClicked;
                 self.onApplyEmployee = data.onApplyEmployee;
-                self.baseDate = data.baseDate;
                 self.tabs(self.updateTabs());
                 self.selectedTab(self.updateSelectedTab());
                 
@@ -526,6 +577,43 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
             }
 
+            public acquireBaseDate(): String {
+                let self = this;
+                if (self.showBaseDate) {
+                    return self.baseDate().toString();
+                } else {
+                    if (self.periodAccuracy == 1) { //TODO: is accuracy year month date 
+                        return self.periodEndDate();
+                    } else {
+                        return 'call ws to calculate period';
+                    }
+                }
+            }
+
+            public validateBaseDate(): void {
+                let self = this;
+                if (self.baseDate()) { // is future date
+                    //TODO: throw msg_853
+                }
+                if (1==1) { // period end is future date
+                    //TODO: throw msg_860
+                }
+            }
+
+            public getFuturePermit(): boolean {
+                let self = this;
+                if (self.systemType == 1) { //TODO: check system type
+                    //TODO: call ws check future permit
+                    return true;
+                }
+            }
+
+            public validateBaseDateAndTargetPeriod() {
+                let self = this;
+                if (self.baseDate()) { //TODO: base date is not in target period range.
+                    // throw Msg_765
+                }
+            }
             /**
              * function click by search employee of work place
              */
