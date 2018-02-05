@@ -316,7 +316,7 @@ public class PerInfoItemDefFinder {
 		}
 	}
 
-	private static DataTypeStateDto createDataTypeStateDto(DataTypeState dataTypeState) {
+	public static DataTypeStateDto createDataTypeStateDto(DataTypeState dataTypeState) {
 		int dataTypeValue = dataTypeState.getDataTypeValue().value;
 		switch (dataTypeValue) {
 		case 1:
