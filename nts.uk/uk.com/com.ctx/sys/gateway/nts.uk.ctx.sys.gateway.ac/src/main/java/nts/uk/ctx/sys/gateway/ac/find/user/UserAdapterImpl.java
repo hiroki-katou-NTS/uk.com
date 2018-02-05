@@ -64,15 +64,16 @@ public class UserAdapterImpl implements UserAdapter {
 	 */
 	private Optional<UserImport> covertToImportDomain(Optional<UserExport> user) {
 		UserExport userInfo = user.get();
-		return Optional.of(new UserImport(
-				userInfo.getUserID(),
-				userInfo.getPassword(),
-				userInfo.getLoginID(),
-				userInfo.getMailAddress(),
-				userInfo.getUserName(),
-				userInfo.getAssociatedPersonID(),
-				userInfo.getContractCode(),
-				userInfo.getExpirationDate()));
+		return Optional.of(UserImport.builder()
+				.userId(userInfo.getUserID())
+				.userName(userInfo.getUserName())
+				.mailAddress(userInfo.getMailAddress())
+				.loginId(userInfo.getLoginID())
+				.associatePersonId(userInfo.getAssociatedPersonID())
+				.password(userInfo.getPassword())
+				.expirationDate(userInfo.getExpirationDate())
+				.contractCode(userInfo.getContractCode())
+				.build());
 	}
 
 	/* (non-Javadoc)
@@ -80,16 +81,17 @@ public class UserAdapterImpl implements UserAdapter {
 	 */
 	@Override
 	public List<UserImport> getListUsersByListPersonIds(List<String> listPersonIds) {
-		return this.userPublisher.getListUserByListAsId(listPersonIds).stream().map(userInfo -> 
-			 new UserImport(
-					userInfo.getUserID(),
-					userInfo.getPassword(),
-					userInfo.getLoginID(),
-					userInfo.getMailAddress(),
-					userInfo.getUserName(),
-					userInfo.getAssociatedPersonID(),
-					userInfo.getContractCode(),
-					userInfo.getExpirationDate())).collect(Collectors.toList());
+		return this.userPublisher.getListUserByListAsId(listPersonIds).stream().map(userInfo -> 		
+		UserImport.builder()
+		.userId(userInfo.getUserID())
+		.userName(userInfo.getUserName())
+		.mailAddress(userInfo.getMailAddress())
+		.loginId(userInfo.getLoginID())
+		.associatePersonId(userInfo.getAssociatedPersonID())
+		.password(userInfo.getPassword())
+		.expirationDate(userInfo.getExpirationDate())
+		.contractCode(userInfo.getContractCode())
+		.build()).collect(Collectors.toList());
 	}
 
 }
