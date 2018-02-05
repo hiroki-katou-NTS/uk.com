@@ -230,7 +230,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     block.clear();
                 });
 
-            }).ifCancel(() => {
+            }).ifNo(() => {
             });
         }
 
