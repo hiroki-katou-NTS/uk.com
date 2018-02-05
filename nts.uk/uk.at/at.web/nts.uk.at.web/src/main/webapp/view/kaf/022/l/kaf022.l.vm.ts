@@ -1,7 +1,7 @@
 module nts.uk.at.view.kmf022.l.viewmodel {
     export class ScreenModel {
         //Screen mode
-        screenMode: ScreenMode = ScreenMode.INSERT;
+        screenMode: KnockoutObservable<ScreenMode> =  ko.observable(ScreenMode.INSERT);
         dateFormat: string = 'YYYY/MM/DD';
         listComponentOption: any;
         selectedCode: KnockoutObservable<string> = ko.observable('');
@@ -39,27 +39,31 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                     self.employmentName('');
                 }
                 //Get data setting            
-                self.changeEmploymentCode(value);
+                self.changeEmploymentCode(value);   
             });
+            self.selectedCode.extend({ deferred: true });
         }
         start(): JQueryPromise<any> {
             nts.uk.ui.block.invisible();
             var self = this;
             var dfd = $.Deferred();  
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function () {                
-                //Load data setting
-                self.reloadData();            
+            $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function () {  
                 //Find work type list:
                 service.findAllWorktype().done(data => {
                     self.workTypeList = data;
-                    self.updateWorkTypeName();
-                    nts.uk.ui.block.clear();
+                    //Load data setting
+                    self.reloadData().done(data => {
+                        dfd.resolve();
+                        self.selectedCode.valueHasMutated();
+                        nts.uk.ui.block.clear();
+                    }).fail((res) => {
+                        dfd.reject();
+                        nts.uk.ui.block.clear();
+                    });                    
                 }).fail((res) => {
                     dfd.reject();
                     nts.uk.ui.block.clear();
                 });
-                dfd.resolve();
-                nts.uk.ui.block.clear();
             }).fail((res) => {
                 dfd.reject();
                 nts.uk.ui.dialog.alertError({messageId: res.messageId}).then(function(){ 
@@ -69,39 +73,42 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             });   
             return dfd.promise();
         }
-        reloadData(){
+        reloadData(): JQueryPromise<any>{
             let self = this;
+            var dfd = $.Deferred();
             service.findEmploymentSetByCid().done(data => {
-                    //Find already setting list
-                    if(data!= null && data.length > 0){
-                        //Get Employment List.
-                        let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();
-                            let alreadyLst: Array<UnitModel> = _.filter(employmentList, 
-                                                function(emp) {
-                                                    let foundEmployment = _.find(data, function(item:any) { return item.employmentCode === emp.code; });
-                                                     return !nts.uk.util.isNullOrUndefined(foundEmployment); 
-                                                });
-                            self.alreadySettingList(_.map(alreadyLst, item => {
-                                                        let alreadyList: UnitAlreadySettingModel = {code: item.code, isAlreadySetting: true};
-                                                        return alreadyList;}));
-                        //Store for preview process
-                        self.alreadySettingData = data;
-                        self.updateWorkTypeName();
-                    }
-                    nts.uk.ui.block.clear();
-                }).fail((res) => {
-                    nts.uk.ui.block.clear();
-                });
+                //Find already setting list
+                if(data!= null && data.length > 0){
+                    //Get Employment List.
+                    let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();
+                        let alreadyLst: Array<UnitModel> = _.filter(employmentList, 
+                                            function(emp) {
+                                                let foundEmployment = _.find(data, function(item:any) { return item.employmentCode === emp.code; });
+                                                 return !nts.uk.util.isNullOrUndefined(foundEmployment); 
+                                            });
+                        self.alreadySettingList(_.map(alreadyLst, item => {
+                                                    let alreadyList: UnitAlreadySettingModel = {code: item.code, isAlreadySetting: true};
+                                                    return alreadyList;}));
+                    //Store for preview process
+                    self.alreadySettingData = data;
+                    self.updateWorkTypeName();                    
+                    dfd.resolve();
+                }
+                nts.uk.ui.block.clear();
+            }).fail((res) => {
+                dfd.reject();
+                nts.uk.ui.block.clear();
+            });
+            return dfd.promise();
         }
         updateWorkTypeName(){
             let self = this;
             //Update work type name
-            if(nts.uk.util.isNullOrUndefined(self.alreadySettingData) || nts.uk.util.isNullOrUndefined(self.workTypeList)){
-                return;
-            }
+//            if(nts.uk.util.isNullOrUndefined(self.alreadySettingData) || nts.uk.util.isNullOrUndefined(self.workTypeList)){
+//                return;
+//            }
             self.alreadySettingData = _.map(self.alreadySettingData, function(i:any) {
                 i.lstWorkType = _.map(i.lstWorkType, function(wkType:any) {
-                    let name: string = "";
                     let foundEmployment = _.find(self.workTypeList, function(item:any) { return wkType.workTypeCode === item.workTypeCode; });
                     if(!nts.uk.util.isNullOrUndefined(foundEmployment)){
                         wkType.workTypeName = foundEmployment.name
@@ -127,7 +134,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             //return if no selected employment code
             if(nts.uk.util.isNullOrEmpty(empCode)) return;
             nts.uk.ui.block.invisible();
-            self.screenMode = ScreenMode.INSERT;
+            self.screenMode(ScreenMode.INSERT);
             self.appSetData(new PreBeforeAppSetData(empCode));
             //Find employment code
             let data = _.filter(self.alreadySettingData, function(item:any) { return item.employmentCode === empCode; });
@@ -193,7 +200,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 if(application36Data!= null && application36Data.length > 0){
                     self.initDataSetting(self.appSetData().application36Set(), application36Data[0]);
                 }       
-                self.screenMode = ScreenMode.UPDATE;
+                self.screenMode(ScreenMode.UPDATE);
                 //self.previewData = ko.mapping.toJS(self.appSetData());
                 //self.previewCode = empCode;
             }
@@ -222,7 +229,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             });            
             commands.push(ko.mapping.toJS(self.appSetData().stampNRSet()));
             commands.push(ko.mapping.toJS(self.appSetData().application36Set()));
-            if(self.screenMode == ScreenMode.INSERT){
+            if(self.screenMode() === ScreenMode.INSERT){
                 service.addEmploymentSet(commands).done(()=>{
                     //マスタリストを更新。マスタ設定済みとする 
                     //let alreadyList: UnitAlreadySettingModel = {code: self.selectedCode(), isAlreadySetting: true};
@@ -261,7 +268,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             nts.uk.ui.block.invisible();
             let self = parent;
             ////画面を更新モードにする
-            if (self.screenMode == ScreenMode.UPDATE) {
+            if (self.screenMode() === ScreenMode.UPDATE) {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let command = ko.mapping.toJS(self.appSetData().overTimeSet());
                     service.deleteEmploymentSet(command).done(() => {
@@ -276,7 +283,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                                         return currentData.employmentCode === self.selectedCode();
                                     });
                             //Change screen mode
-                            self.screenMode = ScreenMode.INSERT;
+                            self.screenMode(ScreenMode.INSERT);
                             nts.uk.ui.block.clear();
                         });
                     }).fail(function(res: any) {
@@ -297,7 +304,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         copyEmploymentSet(parent:any){
             nts.uk.ui.block.invisible();
             let self = parent;
-            if(self.screenMode == ScreenMode.UPDATE){
+            if(self.screenMode() === ScreenMode.UPDATE){
                 let listSetting = [];
                 listSetting = _.map(self.alreadySettingList(), function(item: any) {return item.code;});
                 //CDL023：複写ダイアログを起動する
@@ -331,8 +338,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 //複写の場合は、複写先の数がわからないので、画面の初期表示処理を実行する
                                 self.reloadData(); 
-                                // show active tab panel 
-                                //$('.navigator li l.active').trigger('click');
+                                nts.uk.ui.block.clear();
                             });
                         }).fail(function(res: any) {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
@@ -340,6 +346,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                             });
                         }); 
                     }
+                    nts.uk.ui.block.clear();
                 });
             }else{
                 nts.uk.ui.block.clear();
