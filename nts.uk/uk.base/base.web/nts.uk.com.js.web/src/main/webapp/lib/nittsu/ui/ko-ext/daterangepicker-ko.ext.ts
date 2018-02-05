@@ -67,7 +67,7 @@ module nts.uk.ui.koExtentions {
                             if(isEndOfMonth){
                                 startDate.endOf("month");           
                             }
-                            oldValue.startDate = startDate.format(dateFormat);         
+                            oldValue.startDate = startDate.format(dateFormat);          
                         }     
                     }    
                     

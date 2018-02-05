@@ -106,13 +106,14 @@ public class EmpCtgFinder {
 
 		// companyId of viewer
 		String viewerCId = (employeeRepository.findByEmpId(selectedEmployeeIdId).get()).getCompanyId();
-
-		// get list Category
-		List<PersonInfoCategory> listCategory = perInfoCategoryRepositoty.getAllPerInfoCtg(companyId);
-
 		boolean isSelf = selectedEmployeeIdId.equals(empIdCurrentLogin);
+		// get list Category
+		List<PersonInfoCategory> listCategory = isSelf ? perInfoCategoryRepositoty.getAllCtgWithAuth(companyId, roleIdOfLogin, 1, 0) : 
+			perInfoCategoryRepositoty.getAllCtgWithAuth(companyId, roleIdOfLogin, 0, 1);
 
-		boolean isSameCom = companyId.equals(viewerCId);
+		
+
+		/*boolean isSameCom = companyId.equals(viewerCId);
 		// get category domain list
 		Map<String, PersonInfoCategoryAuth> mapCategoryAuth = personInfoCategoryAuthRepository
 				.getAllCategoryAuthByRoleId(roleIdOfLogin).stream()
@@ -122,9 +123,9 @@ public class EmpCtgFinder {
 			String ctgId = x.getPersonInfoCategoryId();
 			PersonInfoCategoryAuth ctgAuth = mapCategoryAuth.get(ctgId);
 			return checkRole(ctgAuth, roleIdOfLogin, ctgId, isSelf, isSameCom) && checkIsNotAbolition(x);
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList());*/
 
-		List<PerInfoCtgFullDto> returnDtoList = returnList.stream()
+		List<PerInfoCtgFullDto> returnDtoList = listCategory.stream()
 				.map(x -> new PerInfoCtgFullDto(x.getPersonInfoCategoryId(), x.getCategoryCode().v(),
 						x.getCategoryName().v(), x.getPersonEmployeeType().value, x.getIsAbolition().value,
 						x.getCategoryType().value, x.getIsFixed().value))
@@ -183,6 +184,13 @@ public class EmpCtgFinder {
 			return infoList;
 		if(perInfoCtg.getCategoryType() == CategoryType.MULTIINFO)
 			return infoList;
+		// check ctg auth 
+		PersonInfoCategoryAuth ctgAuth = personInfoCategoryAuthRepository
+				.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
+		boolean isSelf = query.getEmployeeId().equals(empIdCurrentLogin);
+		boolean allowCtgAuth = checkRole(ctgAuth, roleId, query.getCategoryId(), isSelf, isSameCom);
+		if(!allowCtgAuth) return infoList;
+		
 		query.setCtgType(perInfoCtg.getCategoryType().value);
 		// get combobox object
 		List<PersonInfoItemDefinition> lstItemDef = perInfoCtgDomainService
@@ -206,13 +214,6 @@ public class EmpCtgFinder {
 			infoList = layoutingProcessor.getListFirstItems(query);
 		}
 
-		boolean isSelf = query.getEmployeeId().equals(empIdCurrentLogin);
-		PersonInfoCategoryAuth ctgAuth = personInfoCategoryAuthRepository
-				.getDetailPersonCategoryAuthByPId(roleId, perInfoCtg.getPersonInfoCategoryId()).get();
-
-		infoList.stream().filter(x -> {
-			return checkRole(ctgAuth, roleId, query.getCategoryId(), isSelf, isSameCom);
-		}).collect(Collectors.toList());
 		List<ComboBoxObject> resultList = fiterOfContHist(ctgAuth, infoList, roleId, isSelf);
 		if(lstItemDef.size() > 0)
 			resultList.add(new ComboBoxObject(null, period.get().getItemName().v()));

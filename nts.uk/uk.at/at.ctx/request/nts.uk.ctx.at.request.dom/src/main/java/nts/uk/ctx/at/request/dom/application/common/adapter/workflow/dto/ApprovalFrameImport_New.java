@@ -19,6 +19,8 @@ public class ApprovalFrameImport_New {
 	
 	private String approvalAtr;
 	
+	private ApprovalBehaviorAtrImport_New approvalAtr_Enum;
+	
 	private List<ApproverStateImport_New> listApprover;
 	
 	private String approverID;

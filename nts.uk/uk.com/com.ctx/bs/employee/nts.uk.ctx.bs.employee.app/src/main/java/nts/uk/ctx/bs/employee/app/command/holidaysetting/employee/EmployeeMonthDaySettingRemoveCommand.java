@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.holidaysetting.employee;
 
 import lombok.Data;
@@ -10,6 +14,7 @@ public class EmployeeMonthDaySettingRemoveCommand {
 	/** The year. */
 	private int year;
 	
-	/** The s id. */
-	private String sId;
+	
+	/** The employee id. */
+	private String employeeId;
 }

@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction.datadialog;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -172,61 +173,57 @@ public class DataDialogWithTypeProcessor {
 		}
 	}
 
-	public Map<Integer, Map<String, String>> getAllCodeName(List<Integer> types, String companyId) {
-		Map<Integer, Map<String, String>> result = new HashMap<Integer, Map<String, String>>();
-		for (int i = 0; i < types.size(); i++) {
-			int type = types.get(i);
+	public Map<Integer, Map<String, String>> getAllCodeName(Collection<Integer> types, String companyId) {
+		return types.stream().collect(Collectors.toMap(type -> type, type -> {
 			switch (type) {
 			case 1:
 				// KDL002
-				result.put(type, this.getDutyTypeAll(companyId).getCodeNames().stream().filter(distinctByKey(x -> x.getCode())).collect(Collectors.toMap(x -> x.getCode(), x -> x.getName())));
-				break;
+				return toMap(this.getDutyTypeAll(companyId).getCodeNames());
 			case 2:
 				// KDL001
-				result.put(type, this.getWorkHoursAll(companyId).getCodeNames().stream().filter(distinctByKey(x -> x.getCode())).collect(Collectors.toMap(x -> x.getCode(), x -> x.getName())));
-				break;
+				return toMap(this.getWorkHoursAll(companyId).getCodeNames());
 			case 3:
 				// KDL010
-				result.put(type, this.getServicePlace(companyId).getCodeNames().stream().filter(distinctByKey(x -> x.getCode())).collect(Collectors.toMap(x -> x.getCode(), x -> x.getName())));
-				break;
+				return toMap(this.getServicePlace(companyId).getCodeNames());
 			case 4:
 				// KDL032
-				result.put(type, this.getReason(companyId).getCodeNames().stream().filter(distinctByKey(x -> x.getCode())).collect(Collectors.toMap(x -> x.getCode(), x -> x.getName())));
-				break;
+				return toMap(this.getReason(companyId).getCodeNames());
 			case 5:
 				// CDL008
-				break;
+				return new HashMap<>();
 			case 6:
 				// KCP002
-				result.put(type, this.getClassification(companyId).getCodeNames().stream().filter(distinctByKey(x -> x.getCode())).collect(Collectors.toMap(x -> x.getCode(), x -> x.getName())));
-				break;
+				return toMap(this.getClassification(companyId).getCodeNames());
 			case 7:
 				// KCP003
-				break;
+				return new HashMap<>();
 			case 8:
 				// KCP001
-				result.put(type, this.getEmployment(companyId).getCodeNames().stream().filter(distinctByKey(x -> x.getCode())).collect(Collectors.toMap(x -> x.getCode(), x -> x.getName())));
-				break;
+				return toMap(this.getEmployment(companyId).getCodeNames());
 			default:
-				break;
+				return new HashMap<>();
 			}
-		};
-
-		return result;
+		}));
 	}
-	
+
+	private Map<String, String> toMap(List<CodeName> codeNames) {
+		return codeNames.stream().filter(distinctByKey(x -> x.getCode()))
+				.collect(Collectors.toMap(x -> x.getCode(), x -> x.getName()));
+	}
+
 	public Optional<CodeName> getCodeNameWithId(int type, GeneralDate date, String id) {
 		String companyId = AppContexts.user().companyId();
-		if(type == TypeLink.POSSITION.value){
+		if (type == TypeLink.POSSITION.value) {
 			return repo.findJobInfoId(companyId, date, id);
-		}else if(type == TypeLink.WORKPLACE.value){
+		} else if (type == TypeLink.WORKPLACE.value) {
 			return repo.findWorkplaceId(companyId, date, id);
 		}
-		
+
 		return null;
 	}
+
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-	    final Set<Object> seen = new HashSet<>();
-	    return t -> seen.add(keyExtractor.apply(t));
+		final Set<Object> seen = new HashSet<>();
+		return t -> seen.add(keyExtractor.apply(t));
 	}
 }

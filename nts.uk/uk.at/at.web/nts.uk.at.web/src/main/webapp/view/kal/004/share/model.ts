@@ -161,7 +161,7 @@ module nts.uk.at.view.kal004.share.model {
         constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand, extractionPeriodUnit: PeriodUnitCommand) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
-            if (nts.uk.util.isNullOrUndefined(extractionPeriodDaily)) {
+            if (nts.uk.util.isNullOrUndefined(extractionPeriodDaily)  && alarmCategory!=2) {
                 this.extractionPeriodDaily = new ExtractionPeriodDailyCommand({
                     extractionId: "",
                     extractionRange: 0,
@@ -183,8 +183,7 @@ module nts.uk.at.view.kal004.share.model {
             } else {
                 this.extractionPeriodDaily = extractionPeriodDaily;
             }
-            
-            if(nts.uk.util.isNullOrUndefined(extractionPeriodUnit)){
+            if(nts.uk.util.isNullOrUndefined(extractionPeriodUnit) && alarmCategory == 2){
                 this.extractionPeriodUnit = new PeriodUnitCommand({
                     extractionId: "",
                     extractionRange: 3,
@@ -195,11 +194,11 @@ module nts.uk.at.view.kal004.share.model {
             }
         }
 
-        setExtractPeriod(extractionPeriodDaily: ExtractionPeriodDailyCommand) {
+        public setExtractPeriod(extractionPeriodDaily: ExtractionPeriodDailyCommand) {
             this.extractionPeriodDaily = extractionPeriodDaily;
         }
         
-        setExtractUnit(extractionPeriodUnit: PeriodUnitCommand) {
+        public setExtractUnit(extractionPeriodUnit: PeriodUnitCommand) {
             this.extractionPeriodUnit = extractionPeriodUnit;
         }        
     }

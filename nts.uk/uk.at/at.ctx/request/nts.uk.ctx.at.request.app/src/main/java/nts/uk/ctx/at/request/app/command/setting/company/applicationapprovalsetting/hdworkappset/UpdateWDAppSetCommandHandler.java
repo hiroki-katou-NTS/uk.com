@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdworkapplicationsetting;
+package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdworkappset;
 
 import java.util.Optional;
 
@@ -9,9 +9,13 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
-
+/**
+ * Update Withdrawal App Set Command Handler
+ * @author yennth
+ *
+ */
 @Stateless
-public class UpdateWithdrawalAppSetCommandHandler extends CommandHandler<WithdrawalAppSetCommand>{
+public class UpdateWDAppSetCommandHandler extends CommandHandler<WithdrawalAppSetCommand>{
 	@Inject
 	private WithdrawalAppSetRepository withRep;
 

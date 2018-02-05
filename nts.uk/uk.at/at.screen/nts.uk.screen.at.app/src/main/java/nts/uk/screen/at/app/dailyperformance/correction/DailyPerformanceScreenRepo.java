@@ -4,6 +4,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -159,9 +160,9 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<AuthorityFormatInitialDisplayDto> findAuthorityFormatInitialDisplay(String companyId);
 	
-	List<AuthorityFomatDailyDto> findAuthorityFomatDaily(String companyId, List<String> formatCode);
+	List<AuthorityFomatDailyDto> findAuthorityFomatDaily(String companyId, Collection<String> formatCode);
 	
-	List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode,  List<BigDecimal>sheetNo);
+	List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, Collection<String> formatCode,  Collection<BigDecimal>sheetNo);
 	
 	Optional<DivergenceTimeDto> findDivergenceTime(String companyId, int divTimeId);
 	

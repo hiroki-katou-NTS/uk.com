@@ -5,6 +5,7 @@ package nts.uk.screen.at.infra.dailyperformance.correction;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -603,6 +604,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem) {
+		if(lstAttendanceItem.isEmpty()){
+			return new ArrayList<>();
+		}
 		return this.queryProxy().query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class)
 				.setParameter("companyId", AppContexts.user().companyId()).setParameter("lstItem", lstAttendanceItem)
 				.getList().stream().map(i -> {
@@ -786,7 +790,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				KrcstDailyRecOpe.class);
 		if (krcstDailyRecOpeOpt.isPresent()) {
 			return new OperationOfDailyPerformanceDto(companyId,
-					EnumAdaptor.valueOf(krcstDailyRecOpeOpt.get().settingUnit.intValue(), SettingUnit.class),
+					EnumAdaptor.valueOf(krcstDailyRecOpeOpt.get().settingUnit, SettingUnit.class),
 					krcstDailyRecOpeOpt.get().comment);
 		} else
 			return null;
@@ -800,7 +804,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public List<AuthorityFomatDailyDto> findAuthorityFomatDaily(String companyId, List<String> formatCodes) {
+	public List<AuthorityFomatDailyDto> findAuthorityFomatDaily(String companyId, Collection<String> formatCodes) {
+		if(formatCodes.isEmpty()){
+			return new ArrayList<>();
+		}
 		return this.queryProxy().query(SEL_AUTHOR_DAILY_ITEM, KfnmtAuthorityDailyItem.class)
 				.setParameter("companyId", companyId).setParameter("dailyPerformanceFormatCodes", formatCodes)
 				.getList(f -> new AuthorityFomatDailyDto(f.kfnmtAuthorityDailyItemPK.companyId,
@@ -810,8 +817,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode,
-			List<BigDecimal> sheetNo) {
+	public List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, Collection<String> formatCode,
+			Collection<BigDecimal> sheetNo) {
+		if(sheetNo.isEmpty() || formatCode.isEmpty()){
+			return new ArrayList<>();
+		}
 		List<KfnmtAuthorityFormSheet> ent = this.queryProxy()
 				.query(SEL_AUTHOR_FORM_SHEET, KfnmtAuthorityFormSheet.class).setParameter("companyId", companyId)
 				.setParameter("dailyPerformanceFormatCode", formatCode).setParameter("sheetNo", sheetNo).getList();

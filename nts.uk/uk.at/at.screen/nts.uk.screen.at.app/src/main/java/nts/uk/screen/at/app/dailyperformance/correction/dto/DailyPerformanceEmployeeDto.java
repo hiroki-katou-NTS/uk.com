@@ -20,4 +20,8 @@ public class DailyPerformanceEmployeeDto {
 	private String workplaceId;
 	private String depName;
 	private boolean isLoginUser;
+	
+	public void markAsLoggedIn(){
+		this.isLoginUser = true;
+	}
 }
