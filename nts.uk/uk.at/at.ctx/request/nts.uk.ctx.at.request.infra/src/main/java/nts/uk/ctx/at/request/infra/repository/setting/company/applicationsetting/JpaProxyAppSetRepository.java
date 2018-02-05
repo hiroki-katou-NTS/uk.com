@@ -71,5 +71,4 @@ public class JpaProxyAppSetRepository extends JpaRepository implements ProxyAppS
 		KrqstProxyAppSet entity = toEntity(proxy);
 		this.commandProxy().insert(entity);
 	}
-
 }

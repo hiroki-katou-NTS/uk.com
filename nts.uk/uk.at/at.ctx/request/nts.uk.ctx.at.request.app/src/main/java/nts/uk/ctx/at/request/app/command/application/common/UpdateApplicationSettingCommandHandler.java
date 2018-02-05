@@ -39,6 +39,7 @@ public class UpdateApplicationSettingCommandHandler extends CommandHandler<Appli
 		Optional<ApplicationSetting> appSet = appRep.getApplicationSettingByComID(companyId);
 		if(appSet.isPresent()){
 			appRep.updateSingle(appli);
+			return;
 		}
 		appRep.insert(appli);
 	}

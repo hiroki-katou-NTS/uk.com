@@ -29,6 +29,7 @@ public class UpdateApprovalSettingCommandHandler extends CommandHandler<Approval
 		appro.validate();
 		if(approOld.isPresent()){
 			appRep.update(appro);
+			return;
 		}
 		appRep.insert(appro);
 	}

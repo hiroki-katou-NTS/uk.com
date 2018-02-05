@@ -27,6 +27,7 @@ public class UpdateHdAppSetCommandHandler extends CommandHandler<HdAppSetCommand
 				data.concheckDateRelease, data.appDateContra, data.yearResig, data.regisShortReser);
 		if(hdApp.isPresent()){
 			hdRep.update(hdAppSet);
+			return;
 		}
 		hdRep.insert(hdAppSet);
 	}

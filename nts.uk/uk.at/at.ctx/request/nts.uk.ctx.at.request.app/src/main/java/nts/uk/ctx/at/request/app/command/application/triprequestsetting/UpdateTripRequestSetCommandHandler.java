@@ -25,6 +25,7 @@ public class UpdateTripRequestSetCommandHandler extends CommandHandler<TripReque
 				data.getWorkChangeTime(), data.getContractCheck(), data.getLateLeave());
 		if(trip.isPresent()){
 			tripRep.update(tripRequest);
+			return;
 		}
 		tripRep.insert(tripRequest);
 	}
