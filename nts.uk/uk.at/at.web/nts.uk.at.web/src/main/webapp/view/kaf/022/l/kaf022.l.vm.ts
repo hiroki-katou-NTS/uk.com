@@ -41,7 +41,6 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 //Get data setting            
                 self.changeEmploymentCode(value);   
             });
-            self.selectedCode.extend({ deferred: true });
         }
         start(): JQueryPromise<any> {
             nts.uk.ui.block.invisible();
