@@ -11,12 +11,12 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.with
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetRepository;
 
 /**
- * 
+ * Update WithDrawal Request Setting Command Handler
  * @author tanlv
  *
  */
 @Stateless
-public class UpdateWithDrawalReqSetCommandHandler extends CommandHandler<UpdateWithDrawalReqSetCommand> {
+public class UpdateWithDrawalReqSetHandler extends CommandHandler<UpdateWithDrawalReqSetCommand> {
 	@Inject
 	private WithDrawalReqSetRepository repository;
 

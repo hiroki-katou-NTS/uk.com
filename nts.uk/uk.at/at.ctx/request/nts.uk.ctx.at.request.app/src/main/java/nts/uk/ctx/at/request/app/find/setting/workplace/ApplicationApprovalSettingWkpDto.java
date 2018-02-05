@@ -25,7 +25,7 @@ public class ApplicationApprovalSettingWkpDto {
 	// 選択
 	private Integer selectionFlg;
 	// 申請承認機能設定
-	private List<ApprovalFunctionSettingDto> ApprovalFunctionSettingDtoLst;
+	private List<ApprovalFunctionSettingDto> approvalFunctionSettingDtoLst;
 
 	public static ApplicationApprovalSettingWkpDto fromDomain(RequestOfEachWorkplace domain) {
 		return new ApplicationApprovalSettingWkpDto(domain.getCompanyID(), domain.getWorkPlaceID(),
