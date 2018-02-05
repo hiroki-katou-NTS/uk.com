@@ -63,7 +63,7 @@ module nts.uk.at.view.kml001.a {
                     self.premiumItems().forEach(function(item){
                         if(item.useAtr()) {
                             self.currentPersonCost().premiumSets.push(
-                                new vmbase.PremiumSetting("", "", item.displayNumber(), 1, item.name(), item.useAtr(), []));
+                                new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), []));
                         }
                         sum+=item.useAtr();    
                     });
@@ -256,7 +256,7 @@ module nts.uk.at.view.kml001.a {
                                 self.premiumItems().forEach(function(item){
                                     if(item.useAtr()) {
                                         self.currentPersonCost().premiumSets.push(
-                                            new vmbase.PremiumSetting("", "", item.displayNumber(), 1, item.name(), item.useAtr(), []));
+                                            new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), []));
                                     }
                                 });    
                                 $("#startDateInput").focus(); 
@@ -266,7 +266,7 @@ module nts.uk.at.view.kml001.a {
                                     self.premiumItems().forEach(function(item){
                                         if(item.useAtr()) {
                                             self.currentPersonCost().premiumSets.push(
-                                                new vmbase.PremiumSetting("", "", item.displayNumber(), 1, item.name(), item.useAtr(), []));
+                                                new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), []));
                                         }
                                     });    
                                     $("#startDateInput").focus();
@@ -342,7 +342,7 @@ module nts.uk.at.view.kml001.a {
                                                 "", 
                                                 "", 
                                                 item.displayNumber(), 
-                                                1, 
+                                                100, 
                                                 item.name(), 
                                                 item.useAtr(), 
                                                 []));
@@ -382,7 +382,7 @@ module nts.uk.at.view.kml001.a {
                                             "", 
                                             "", 
                                             item.displayNumber(), 
-                                            1, 
+                                            100, 
                                             item.name(),
                                             item.useAtr(), 
                                             []));
