@@ -2,6 +2,7 @@ module nts.uk.at.view.ksu007.b {
 
     import ScheduleBatchCorrectSetting = nts.uk.at.view.ksu007.a.viewmodel.ScheduleBatchCorrectSetting;
     import ScheduleBatchCorrectSettingSave = nts.uk.at.view.ksu007.a.service.model.ScheduleBatchCorrectSettingSave;
+
     export module viewmodel {
 
         export class ScreenModel {
@@ -180,14 +181,20 @@ module nts.uk.at.view.ksu007.b {
             }
             
             /**
-             * function export file error by client click
+             * funtion export file csv error
              */
-            private exportFileError(): void{
-                var self = this;
-                service.exportScheduleErrorLog(self.inputData.executionId);    
+            private exportFileError(): void {
+                let self = this;
+                _.forEach(self.errorLogs(), error => {
+                    error.employeeCode = error.employeeId;
+                    error.dateYMD = moment(error.ymd, 'YYYY/MM/DD').toDate();                   
+                });
+                nts.uk.ui.block.grayout();
+                service.exportFileError(self.errorLogs()).done(function() {
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
             }
-        }     
-
-        
+        }
     }
 }

@@ -5,6 +5,7 @@ module nts.uk.at.view.ksu007.b {
         var paths = {
             executionScheduleBatchCorrectSetting: "ctx/at/schedule/processbatch/execution",
             exportScheduleBatchErrorLog: "ctx/at/schedule/processbatch/error/export",
+            exportFileError: "ctx/at/schedule/processbatch/log/export",
         }
 
 
@@ -15,12 +16,12 @@ module nts.uk.at.view.ksu007.b {
             return nts.uk.request.ajax('at', paths.executionScheduleBatchCorrectSetting, command);
         }
         
-        /**
-         * call service export file ScheduleErrorLog 
+         /**
+         * executeImportFile
          */
-//        export function exportScheduleErrorLog(executionId: string): JQueryPromise<model.ScheduleErrorLogDto[]> {
-//            return nts.uk.request.exportFile(paths.exportScheduleBatchErrorLog + "/" + executionId);
-//        }
+        export function exportFileError(data): JQueryPromise<any> {
+             return nts.uk.request.exportFile(paths.exportFileError, data);  
+        }    
         
         export module Model {
             export interface ErrorContentDto {
