@@ -370,6 +370,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.onApplyEmployee = data.onApplyEmployee;
                 self.tabs(self.updateTabs());
                 self.selectedTab(self.updateSelectedTab());
+
+                // load closure
+                self.loadClosure();
                 
                 // init view
                 var webserviceLocator = nts.uk.request.location.siteRoot
@@ -420,6 +423,16 @@ module nts.uk.com.view.ccg.share.ccg {
                     }
                 });
                 return dfd.promise();
+            }
+
+            /**
+             * Load ListClosure 
+             */
+            private loadClosure(): void {
+                let self = this;
+                if (self.showClosure) {
+                    
+                }
             }
             
             /**
@@ -700,6 +713,21 @@ module nts.uk.com.view.ccg.share.ccg {
                     });
                 });
                 return dataRes;
+            }
+            
+            quickSearchEmployee(): void {
+                var self = this;
+                if (self.validateClient()) {
+                    return;
+                }
+                
+                
+                
+//                service.searchAllEmployee(self.baseDate()).done(data => {
+//                    self.onSearchAllClicked(data);
+//                }).fail(function(error) {
+//                    nts.uk.ui.dialog.alertError(error);
+//                });
             }
 
             /**
