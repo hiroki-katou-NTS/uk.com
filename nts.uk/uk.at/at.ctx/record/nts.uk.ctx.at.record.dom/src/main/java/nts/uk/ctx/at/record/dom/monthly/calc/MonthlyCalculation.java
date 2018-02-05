@@ -89,12 +89,13 @@ public class MonthlyCalculation {
 	 * @param closureDate 締め日付
 	 * @param datePeriod 期間
 	 * @param workingSystem 労働制
+	 * @param isRetireMonth 退職月かどうか
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregate(String companyId, String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate,
 			DatePeriod datePeriod, WorkingSystem workingSystem,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			boolean isRetireMonth, RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 日別実績の勤怠時間　取得
 		// ※　取得期間を　開始日-6日～終了日　とする　（開始週の集計のため）
@@ -163,8 +164,9 @@ public class MonthlyCalculation {
 			// 通常・変形労働勤務の月単位の時間を集計する
 			this.actualWorkingTime.aggregateMonthlyHours(companyId, employeeId,
 					yearMonth, closureId, closureDate, datePeriod, workingSystem,
-					MonthlyAggregateAtr.MONTHLY, workplaceId, employmentCd, aggrSettingMonthly,
-					addSet, this.totalWorkingTime, statutoryWorkingTimeMonth, repositories);
+					MonthlyAggregateAtr.MONTHLY, isRetireMonth, workplaceId, employmentCd,
+					aggrSettingMonthly, addSet, this.totalWorkingTime, statutoryWorkingTimeMonth,
+					repositories);
 		}
 		// フレックス時間勤務　の時
 		else if (workingSystem == WorkingSystem.FLEX_TIME_WORK){

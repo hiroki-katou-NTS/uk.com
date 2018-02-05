@@ -9,13 +9,17 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodDailyDto;
+import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionPeriodUnitDto;
 import nts.uk.ctx.at.function.app.find.alarm.extractionrange.SpecifiedMonthDto;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRange;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -40,7 +44,7 @@ public class AlarmPatternSettingFinder {
 	public AlarmPatternSettingDto convertToAlarmPatternDto(AlarmPatternSetting domain) {
 		
 		List<CheckConditionDto> checkConditionDtos = domain.getCheckConList().stream()
-				.map(c -> new CheckConditionDto(c.getAlarmCategory().value, c.getCheckConditionList(), ExtractionPeriodDailyDto.fromDomain((ExtractionPeriodDaily)c.getExtractPeriod())))
+				.map(c -> convertToCheckConditionDto(c))
 				.collect(Collectors.toList());
 		AlarmPermissionSettingDto alarmPerSet = new AlarmPermissionSettingDto(domain.getAlarmPerSet().isAuthSetting(), domain.getAlarmPerSet().getRoleIds());
 		
@@ -58,6 +62,23 @@ public class AlarmPatternSettingFinder {
 		}
 		return monthDtos;
 	}
+	
+	public CheckConditionDto convertToCheckConditionDto(CheckCondition  domain) {
+		ExtractionPeriodDailyDto extractionPeriodDailyDto=null;
+		ExtractionPeriodUnitDto extractionUnit=null;
+		
+		if(domain.getExtractPeriod().getExtractionRange() == ExtractionRange.PERIOD) {
+			extractionPeriodDailyDto= ExtractionPeriodDailyDto.fromDomain((ExtractionPeriodDaily)domain.getExtractPeriod());
+		}else if(domain.getExtractPeriod().getExtractionRange() == ExtractionRange.WEEK){
+			extractionUnit = ExtractionPeriodUnitDto.fromDomain((ExtractionPeriodUnit)domain.getExtractPeriod());
+		}else {
+			
+		}
+		
+		return new CheckConditionDto(domain.getAlarmCategory().value, domain.getCheckConditionList(), extractionPeriodDailyDto,  extractionUnit );
+		
+	}
+	
 	
 	
 }

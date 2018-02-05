@@ -47,6 +47,14 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			+ " WHERE ic.personInfoCtgId = :ctgid AND ic.employeeId = :sid";
 	private static final String DELETE_ITEM_DATA = "DELETE FROM PpemtEmpInfoItemData WHERE ppemtEmpInfoItemDataPk.recordId = :recordId";
 
+	public final String SELECT_ALL_INFO_ITEM_BY_ALL_CID_QUERY_STRING = "SELECT id.ppemtEmpInfoItemDataPk.perInfoDefId"
+			+ " FROM PpemtEmpInfoItemData id"
+			+ " INNER JOIN PpemtPerInfoItem pi ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
+			+ " WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd"
+			+ " AND pi.perInfoCtgId IN :perInfoCtgId";
+
 	@Override
 	public List<EmpInfoItemData> getAllInfoItem(String categoryCd, String companyId, String employeeId) {
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING, Object[].class)
@@ -70,7 +78,6 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	}
 
 	private EmpInfoItemData toDomain(Object[] entity) {
-
 		int dataStateType = entity[4] != null ? Integer.valueOf(entity[3].toString()) : 0;
 
 		BigDecimal intValue = new BigDecimal(entity[6] != null ? Integer.valueOf(entity[6].toString()) : null);
@@ -94,7 +101,6 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 		newInfoItem.setSelectionItemRefCd(selectionItemRefCd);
 		
 		return newInfoItem;
-
 	}
 
 	@Override
@@ -192,5 +198,18 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 		return this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_ITEMDEF_ID_AND_RECODE_ID, Object[].class)
 				.setParameter("recordId", recordId).setParameter("perInfoDefId", itemDefId)
 				.getSingle(c -> toDomainNew(c));
+	}
+
+	@Override
+	public boolean getAllInfoItem(String itemCd, List<String> perInfoCtgId) {
+		List<Object[]> item = this.queryProxy().query(SELECT_ALL_INFO_ITEM_BY_ALL_CID_QUERY_STRING, Object[].class)
+				.setParameter("itemCd", itemCd)
+				.setParameter("perInfoCtgId", perInfoCtgId)
+				.getList();
+		if(item != null && item.size() > 0) {
+			
+			return true;
+		}
+		return  false;
 	}
 }

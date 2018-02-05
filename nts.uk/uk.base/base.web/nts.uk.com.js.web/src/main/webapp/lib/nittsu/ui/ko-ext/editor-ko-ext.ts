@@ -39,9 +39,9 @@ module nts.uk.ui.koExtentions {
                     value.valueHasMutated();
                 } else {
                     let error = $input.ntsError('getError');
-                    if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
+                    if (nts.uk.util.isNullOrEmpty(error) || error.messageText !== result.errorMessage) {
                         $input.ntsError('clear');
-                        $input.ntsError('set', result.errorMessage, result.errorCode);
+                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
                     }
                     value(newText);
                 }
@@ -55,14 +55,14 @@ module nts.uk.ui.koExtentions {
                     let validator = self.getValidator(data);
                     var result = validator.validate(newText);
                     if (result.isValid) {
-                        $input.ntsError('clear');
+                        $input.ntsError('clearKibanError');
                         $input.val(formatter.format(result.parsedValue));
                     }
                     else {
                         let error = $input.ntsError('getError');
-                        if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
-                            $input.ntsError('clear');
-                            $input.ntsError('set', result.errorMessage, result.errorCode);
+                        if (nts.uk.util.isNullOrEmpty(error) || error.messageText !== result.errorMessage) {
+                            $input.ntsError('clearKibanError');
+                            $input.ntsError('set', result.errorMessage, result.errorCode, false);
                         }
                         value(newText);
                     }
@@ -73,9 +73,9 @@ module nts.uk.ui.koExtentions {
                 var newText = $input.val();
                 let validator = self.getValidator(data);
                 var result = validator.validate(newText);
-                $input.ntsError('clear');
+                $input.ntsError('clearKibanError');
                 if (!result.isValid) {
-                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
                 }
             }));
                
@@ -165,7 +165,7 @@ module nts.uk.ui.koExtentions {
                     var result = validator.validate(newText,{ isCheckExpression: true });
                     $input.ntsError('clear');
                     if (!result.isValid) {
-                        $input.ntsError('set', result.errorMessage, result.errorCode);
+                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
                     } 
                 } 
             });
@@ -178,19 +178,20 @@ module nts.uk.ui.koExtentions {
                     var result = validator.validate(newText,{ isCheckExpression: true });
                     
                     if (!result.isValid) {
-                        let oldError = $("#companyCode").ntsError('getError');
+                        let oldError: nts.uk.ui.errors.ErrorListItem[] = $input.ntsError('getError');
                         if(nts.uk.util.isNullOrUndefined(oldError)){
-                           $input.ntsError('set', result.errorMessage, result.errorCode);
+                           $input.ntsError('set', result.errorMessage, result.errorCode, false);
                         } else {
-                            if(oldError.errorCode !== result.errorCode){
-                                $input.ntsError('clear');
+                            let inListError = _.find(oldError, function (o){ return o.errorCode !== result.errorCode; });
+                            if(nts.uk.util.isNullOrUndefined(inListError)){
+                                $input.ntsError('clearKibanError');
                                 setTimeout(function() {
-                                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                 }, 10);
                             }
                         }
                     } else {
-                        $input.ntsError('clear');
+                        $input.ntsError('clearKibanError');
                     }
                 }
             });
@@ -208,7 +209,7 @@ module nts.uk.ui.koExtentions {
                             value(result.parsedValue);
                         }
                     } else {
-                        $input.ntsError('set', result.errorMessage, result.errorCode);
+                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
                         value(newText);
                     } 
                 }
@@ -218,9 +219,9 @@ module nts.uk.ui.koExtentions {
                 let validator = self.getValidator(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
-                $input.ntsError('clear');
+                $input.ntsError('clearKibanError');
                 if (!result.isValid) {
-                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
                 }
             }));
                 

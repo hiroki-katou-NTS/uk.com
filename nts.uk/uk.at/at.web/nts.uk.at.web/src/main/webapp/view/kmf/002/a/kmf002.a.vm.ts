@@ -207,28 +207,41 @@ module nts.uk.at.view.kmf002.a {
 //                _self.removeValidate();
                 // load all
                 if (typeStart == SideBarTabIndex.THIRD) {
+                    nts.uk.ui.errors.clearAll()
+                    blockUI.grayout();
                     $.when(_self.screenB().start_page()).done(function() {
                         dfd.resolve(_self);
+                        blockUI.clear();
                     });    
                 } else if (typeStart == SideBarTabIndex.FIRST) {
                     // Process for screen A (Mother of all screen)
+                    nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
                     $.when(_self.getAllEnum(), _self.getAllData(), _self.findAllManageUseUnit()).done(function() {
                         $( "#managePubHD" ).focus();
-                        blockUI.clear();
                         dfd.resolve(_self);    
+                        blockUI.clear();
                     });
                 } else if (typeStart == SideBarTabIndex.SECOND) {
+                    nts.uk.ui.errors.clearAll()
+                    blockUI.grayout();
                     $.when(_self.screenE().start_page()).done(function() {
                         dfd.resolve(_self);
+                        blockUI.clear();
                     });    
                 } else if (typeStart == SideBarTabIndex.FOURTH) {
+                    nts.uk.ui.errors.clearAll()
+                    blockUI.grayout();
                     $.when(_self.screenD().start_page()).done(function() {
                         dfd.resolve(_self);
+                        blockUI.clear();
                     });    
                 } else if (typeStart == SideBarTabIndex.FIFTH) {
+                    nts.uk.ui.errors.clearAll()
+                    blockUI.grayout();
                     $.when(_self.screenC().start_page()).done(function() {
                         dfd.resolve(_self);
+                        blockUI.clear();
                     });    
                 }
                 
@@ -294,21 +307,71 @@ module nts.uk.at.view.kmf002.a {
              */
             public save(): void {
                 let _self = this;
+                nts.uk.ui.errors.clearAll();
                 _self.validateInput();
+                _self.checkValidate();
                 if (!nts.uk.ui.errors.hasError()) {
-                    $.when(service.save(_self.publicHolidaySetting(), _self.forwardSetOfPubHD(), _self.weekHDSet(), _self.fourWkFourHDNumSet())).done(function() {
+                    $.when(service.save(_self.publicHolidaySetting(), _self.forwardSetOfPubHD(), 
+                                        _self.weekHDSet(), _self.fourWkFourHDNumSet())).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         _self.getAllData();
                     });    
                 }
             }
             
-            private validateInput(): void {
-//                $('.validateInput').ntsEditor("validate");        
+            private checkValidate(): void {
+                let _self = this;
+                if ( _self.publicHolidaySetting().isManageComPublicHd() == 0 ) {
+                    nts.uk.ui.errors.clearAll();    
+                } else {
+                    if (_self.publicHolidaySetting().publicHdManagementClassification() == PublicHDPeriod.ONE_MONTH) {
+                        $('#fullDate').ntsEditor("clear");
+                        $('#inLegalHoliday18').ntsEditor("clear");
+                        $('#outLegalHoliday19').ntsEditor("clear");
+                        $('#inLegalHoliday20').ntsEditor("clear");
+                        $('#outLegalHoliday21').ntsEditor("clear");
+                        $('#inLegalHoliday22').ntsEditor("clear");
+                        $('#outLegalHoliday23').ntsEditor("clear");
+                        $('#inLegalHoliday24').ntsEditor("clear");
+                        $('#outLegalHoliday25').ntsEditor("clear");
+                    } else {
+                        if (_self.publicHolidaySetting().pubHD().determineStartDate() == TypeDate.MONTH_DAY) {
+                            $('#fullDate').ntsError('clear');
+                        } else {
+                            $('#fullDate').ntsEditor("validate");
+                            $('#inLegalHoliday20').ntsEditor("clear");
+                            $('#outLegalHoliday21').ntsEditor("clear");     
+                            $('#inLegalHoliday24').ntsEditor("clear");
+                            $('#outLegalHoliday25').ntsEditor("clear");               
+                        }
+                    }
+                    
+                    if (_self.fourWkFourHDNumSet().isOneWeekHoliday() == false) {
+                        $('#inLegalHoliday18').ntsEditor("clear");
+                        $('#outLegalHoliday19').ntsEditor("clear");     
+                        $('#inLegalHoliday20').ntsEditor("clear");
+                        $('#outLegalHoliday21').ntsEditor("clear");      
+                    }
+                    if (_self.fourWkFourHDNumSet().isFourWeekHoliday() == false) {
+                        $('#inLegalHoliday18').ntsEditor("clear");
+                        $('#outLegalHoliday19').ntsEditor("clear");     
+                        $('#inLegalHoliday20').ntsEditor("clear");
+                        $('#outLegalHoliday21').ntsEditor("clear");      
+                    }
+                }    
             }
             
-            private removeValidate(): void {
-                nts.uk.ui.errors.clearAll();
+            private validateInput(): void {
+                $('#inLegalHoliday16').ntsEditor("validate");
+                $('#outLegalHoliday17').ntsEditor("validate");
+                $('#inLegalHoliday18').ntsEditor("validate");
+                $('#outLegalHoliday19').ntsEditor("validate");
+                $('#inLegalHoliday20').ntsEditor("validate");
+                $('#outLegalHoliday21').ntsEditor("validate");
+                $('#inLegalHoliday22').ntsEditor("validate");
+                $('#outLegalHoliday23').ntsEditor("validate");
+                $('#inLegalHoliday24').ntsEditor("validate");
+                $('#outLegalHoliday25').ntsEditor("validate");
             }
             
             private getAllData(): JQueryPromise<any> {
@@ -614,7 +677,7 @@ module nts.uk.at.view.kmf002.a {
                     setShared('isManageEmpPublicHd', _self.isManageEmpPublicHd());
                     setShared('isManageEmployeePublicHd', _self.isManageEmployeePublicHd());
                     setShared('isManageWkpPublicHd', _self.isManageWkpPublicHd());
-                    nts.uk.ui.windows.sub.modeless("/view/kmf/002/f/index.xhtml").onClosed(function() {
+                    nts.uk.ui.windows.sub.modal("/view/kmf/002/f/index.xhtml").onClosed(function() {
                         if (getShared('saveManageUnit') == true) {
                             // F2_6
                             _self.isManageEmployeePublicHd(getShared('isManageEmployeePublicHd'));
@@ -625,7 +688,8 @@ module nts.uk.at.view.kmf002.a {
                             _self.isManageEmployeePublicHd.valueHasMutated();
                             _self.isManageWkpPublicHd.valueHasMutated();
                             _self.isManageEmpPublicHd.valueHasMutated();
-                            $.when(service.saveManageUnit(_self.isManageEmployeePublicHd(), _self.isManageWkpPublicHd(), _self.isManageEmpPublicHd())).done(function(data: any) {
+                            $.when(service.saveManageUnit(_self.isManageEmployeePublicHd(), _self.isManageWkpPublicHd(), 
+                                                            _self.isManageEmpPublicHd())).done(function(data: any) {
                             });    
                         }
                     });    
