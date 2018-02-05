@@ -8,19 +8,10 @@ public class EnumRefConditionDto extends SelectionItemDto {
 
 	private String enumName;
 
-	private EnumRefConditionDto(String enumName) {
-		super(ReferenceTypes.ENUM);
-		this.enumName = enumName;
-	}
-
 	private EnumRefConditionDto(String enumName, int dataType) {
 		super(ReferenceTypes.ENUM);
 		this.dataTypeValue = dataType;
 		this.enumName = enumName;
-	}
-
-	public static EnumRefConditionDto createFromJavaType(String enumName) {
-		return new EnumRefConditionDto(enumName);
 	}
 
 	public static SelectionItemDto createFromJavaType(String enumName, int dataTypeValue) {

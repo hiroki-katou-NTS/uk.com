@@ -9,11 +9,6 @@ public class CodeNameRefTypeDto extends SelectionItemDto {
 	private String typeCode;
 	private String selectionItemName;
 
-	private CodeNameRefTypeDto(String typeCode) {
-		super(ReferenceTypes.CODE_NAME);
-		this.typeCode = typeCode;
-	}
-
 	private CodeNameRefTypeDto(String typeCode, String selectionItemName) {
 		super(ReferenceTypes.CODE_NAME);
 		this.typeCode = typeCode;
@@ -24,10 +19,6 @@ public class CodeNameRefTypeDto extends SelectionItemDto {
 		super(ReferenceTypes.CODE_NAME);
 		this.typeCode = typeCode;
 		this.dataTypeValue = dataTypeValue;
-	}
-
-	public static CodeNameRefTypeDto createFromJavaType(String typeCode) {
-		return new CodeNameRefTypeDto(typeCode);
 	}
 
 	public static CodeNameRefTypeDto createFromJavaType(String typeCode, String selectionItemName) {
