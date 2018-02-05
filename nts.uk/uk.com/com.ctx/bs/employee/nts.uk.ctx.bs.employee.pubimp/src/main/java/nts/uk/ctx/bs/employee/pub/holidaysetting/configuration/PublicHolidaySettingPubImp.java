@@ -21,6 +21,9 @@ public class PublicHolidaySettingPubImp implements PublicHolidaySettingPub{
 	@Inject
 	private PublicHolidaySettingRepository pubHdSetRepo;
 	
+	private static final Integer NOT_MANAGE = 0;
+	private static final Integer MANAGE = 1;
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.pub.holidaysetting.configuration.PublicHolidaySettingPub#FindPublicHolidaySetting()
 	 */
@@ -33,7 +36,7 @@ public class PublicHolidaySettingPubImp implements PublicHolidaySettingPub{
 		if (optPubHDSet.isPresent()) {
 			PublicHolidaySetting pubHDSet = optPubHDSet.get();
 			dto.setCompanyId(pubHDSet.getCompanyID());
-			dto.setIsManageComPublicHd(pubHDSet.isManageComPublicHd() == true ? 1 : 0);
+			dto.setIsManageComPublicHd(pubHDSet.isManageComPublicHd() == true ? MANAGE : NOT_MANAGE);
 		} else {
 			dto = null;
 		}
