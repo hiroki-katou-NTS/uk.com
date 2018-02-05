@@ -94,7 +94,7 @@ public class PerInfoItemDefForLayoutFinder {
 			if (itemForLayout.getItemDefType() == 2) {
 				SingleItem singleItemDom = (SingleItem) itemDef.getItemTypeState();
 				int dataTypeValue = singleItemDom.getDataTypeState().getDataTypeValue().value;
-				if (dataTypeValue == 6) {
+				if (dataTypeValue == 6 || dataTypeValue == 7) {
 					DataTypeStateDto dataTypeStateDto = createDataTypeStateDto(singleItemDom.getDataTypeState());
 					SelectionItemDto selectionItemDto = (SelectionItemDto) dataTypeStateDto;
 					
