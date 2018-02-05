@@ -47,9 +47,9 @@ public class OverTimeWorkSheet {
 	 * @return
 	 */
 	public static OverTimeOfDaily calcOverTimeWork(AutoCalculationOfOverTimeWork autoCalcSet) {
-		ControlOverFrameTime returnClass = new ControlOverFrameTime(overWorkTimeOfDaily.collectOverTimeWorkTime(autoCalcSet));
+		//ControlOverFrameTime returnClass = new ControlOverFrameTime(overWorkTimeOfDaily.collectOverTimeWorkTime(autoCalcSet));
 		
-		overWorkTimeOfDaily.addToList(returnClass);
+		//overWorkTimeOfDaily.addToList(returnClass);
 		
 		return  overWorkTimeOfDaily;
 	}

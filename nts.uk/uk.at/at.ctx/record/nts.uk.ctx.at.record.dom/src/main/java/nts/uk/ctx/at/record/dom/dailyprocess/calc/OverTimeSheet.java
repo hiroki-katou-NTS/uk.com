@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.gul.util.value.Finally;
@@ -71,18 +72,32 @@ public class OverTimeSheet {
 //		return  overWorkTimeOfDaily;
 //	}
 //	
+	
 	/**
 	 * 残業時間枠時間帯をループさせ時間を計算する
 	 * @param autoCalcSet 時間外時間の自動計算設定
 	 */
 	public List<OverTimeFrameTimeSheetForCalc> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
 		List<OverTimeFrameTimeSheetForCalc> calcOverTimeWorkTimeList = new ArrayList<>();
-		for(OverTimeFrameTimeSheetForCalc OverTimeFrameTime : frameTimeSheets) {
+		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : frameTimeSheets) {
 			//calcOverTimeWorkTimeList.add(OverTimeFrameTime.calcOverTimeWorkTime(autoCalcSet));
 			//calcOverTimeWorkTimeList.add();
+		//	overTimeFrameTime.autoCalcSet
 		}
 		return calcOverTimeWorkTimeList;
 	}
+	
+	/**
+	 * 計算用残業枠時間帯から残業枠時間帯へ変換する
+	 * 日別実績の残業時間作成時処理
+	 * @param autoCalcSet 時間外時間の自動計算設定
+	 */
+	public List<OverTimeFrameTimeSheet> changeOverTimeFrameTimeSheet() {
+		return this.getFrameTimeSheets().stream().map(tc -> tc.changeNotCalcOverTimeFrameTimeSheet())
+												 .sorted((first,second) -> first.getFrameNo().v().compareTo(second.getFrameNo().v()))
+												 .collect(Collectors.toList());
+	}
+	
 	
 	/**
 	 * 深夜時間計算後の時間帯再作成
