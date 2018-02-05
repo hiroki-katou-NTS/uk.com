@@ -813,8 +813,8 @@ module nts.custombinding {
                                 name: itemName,
                                 value: value,
                                 options: ko.observableArray(lstComboBoxValue || []),
-                                optionsText: 'optionsText',
-                                optionsValue: 'optionsValue',
+                                optionsText: 'optionText',
+                                optionsValue: 'optionValue',
                                 enable: editable
                             }"></div>
                         <!-- /ko -->
@@ -1633,8 +1633,8 @@ module nts.custombinding {
                             def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
 
                             def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [
-                                { optionsValue: '0', optionsText: text('CPS001_99') },
-                                { optionsValue: '1', optionsText: text('CPS001_100') }
+                                { optionValue: '0', optionText: text('CPS001_99') },
+                                { optionValue: '1', optionText: text('CPS001_100') }
                             ];
 
                             def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
