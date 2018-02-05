@@ -19,6 +19,8 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 public class HolidayServiceImpl implements HolidayService {
 	@Inject
@@ -27,6 +29,8 @@ public class HolidayServiceImpl implements HolidayService {
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 	
 	@Override
 	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID, List<AppEmploymentSetting> appEmploymentSettings,
@@ -37,17 +41,26 @@ public class HolidayServiceImpl implements HolidayService {
 		if(sEmpHistImport != null && !CollectionUtil.isEmpty(appEmploymentSettings)){
 			// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する
 			List<AppEmployWorkType> lstEmploymentWorkType = appEmploymentSettings.get(0).getLstWorkType();
-			if(!CollectionUtil.isEmpty(lstEmploymentWorkType)) {
-				Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
-				lstEmploymentWorkType.forEach(x -> {workTypeHolidayWorks.getWorkTypeCodes().add(x.getWorkTypeCode());});
+			if(CollectionUtil.isEmpty(lstEmploymentWorkType)) {
+				return workTypeHolidayWorks;
 			}
+			Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
+			lstEmploymentWorkType.forEach(x -> {workTypeHolidayWorks.getWorkTypeCodes().add(x.getWorkTypeCode());});
 		}else{
-			// ドメインモデル「勤務種類」を取得 :TODO , anh chinh thu 2 viet
-			
+			////休出
+			int breakDay = 11;
+			// ドメインモデル「勤務種類」を取得
+			List<WorkType> workrTypes = this.workTypeRepository.findWorkOneDay(companyID, 0, breakDay);
+			if(CollectionUtil.isEmpty(workrTypes)){
+				return workTypeHolidayWorks;
+			}
+			workrTypes.forEach(x -> {
+				workTypeHolidayWorks.getWorkTypeCodes().add(x.getWorkTypeCode().toString());
+			});
 		}
-		// 勤務種類初期選択 :4_c.初期選択
-		
-		return null;
+		// 勤務種類初期選択 :4_c.初期選択 : TODO
+		getWorkType(workTypeHolidayWorks,baseDate,employeeID,personalLablorCodition);
+		return workTypeHolidayWorks;
 	}
 	// 4_c.初期選択
 	@Override

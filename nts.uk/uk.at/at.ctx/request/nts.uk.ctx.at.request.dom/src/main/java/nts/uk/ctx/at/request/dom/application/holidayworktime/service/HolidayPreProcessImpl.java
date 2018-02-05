@@ -1,18 +1,34 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.InstructionCategory;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstruct;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInputRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class HolidayPreProcessImpl implements HolidayPreProcess {
@@ -24,6 +40,12 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 	private HolidayInstructRepository holidayInstructRepository;
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
+	@Inject
+	private ApplicationRepository_New applicationRepository;
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
+	@Inject
+	private HolidayWorkInputRepository holidayWorkInputRepository;
 
 	@Override
 	public HolidayWorkInstruction getHolidayInstructionInformation(AppCommonSettingOutput appCommonSettingOutput,
@@ -77,5 +99,37 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 		}
 		return hourminute;
 	}
-	
+	@Override
+	public AppHolidayWork getPreApplicationHoliday(String companyID, String employeeId,
+			Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet, String appDate, int prePostAtr) {
+			AppHolidayWork result = new AppHolidayWork();
+			if(overtimeRestAppCommonSet.isPresent() && overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.USE.value){
+				List<Application_New> application = this.applicationRepository.getApp(employeeId,
+						appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value,
+						ApplicationType.BREAK_TIME_APPLICATION.value);
+				if(CollectionUtil.isEmpty(application)){
+					Application_New applicationOvertime = Application_New.firstCreate(companyID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
+							appDate == null ? null :GeneralDate.fromString(appDate, DATE_FORMAT), ApplicationType.OVER_TIME_APPLICATION, employeeId, new AppReason(Strings.EMPTY));
+					applicationOvertime.setAppDate(application.get(0).getAppDate());
+					Optional<AppHolidayWork> appHolidayWork = this.appHolidayWorkRepository
+							.getAppHolidayWork(application.get(0).getCompanyID(), application.get(0).getAppID());
+					if (appHolidayWork.isPresent()) {
+						result.setWorkTypeCode(appHolidayWork.get().getWorkTypeCode());
+						result.setWorkTimeCode(appHolidayWork.get().getWorkTimeCode());
+						result.setWorkClock1(appHolidayWork.get().getWorkClock1());
+						result.setWorkClock2(appHolidayWork.get().getWorkClock2());
+						
+						List<HolidayWorkInput> holidayWorkInputs= holidayWorkInputRepository.getHolidayWorkInputByAttendanceID(
+								appHolidayWork.get().getCompanyID(), appHolidayWork.get().getAppID(),
+								AttendanceType.BREAKTIME.value);
+						result.setHolidayWorkInputs(holidayWorkInputs);
+						result.setApplication(applicationOvertime);
+						result.setAppID(appHolidayWork.get().getAppID());
+						return result;
+				}
+			}
+			
+		}
+		return null;
+	}
 }
