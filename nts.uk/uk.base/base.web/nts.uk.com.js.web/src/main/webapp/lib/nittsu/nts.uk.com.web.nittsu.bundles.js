@@ -11821,777 +11821,274 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
+        (function (ui_16) {
             var koExtentions;
             (function (koExtentions) {
-                var DatePickerBindingHandler = (function () {
-                    /**
-                     * Constructor.
-                     */
-                    function DatePickerBindingHandler() {
+                /**
+                 * Dialog binding handler
+                 */
+                var NtsDateRangePickerBindingHandler = (function () {
+                    function NtsDateRangePickerBindingHandler() {
                     }
                     /**
-                     * Init.
+                     * Init. sssss
                      */
-                    DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    NtsDateRangePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
+                        var $container = $(element);
+                        var dateType = ko.unwrap(data.type);
+                        var maxRange = ko.unwrap(data.maxRange);
                         var value = data.value;
-                        var name = data.name !== undefined ? ko.unwrap(data.name) : "";
-                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
+                        var rangeName = ko.unwrap(data.name);
+                        var startName = ko.unwrap(data.startName);
+                        var endName = ko.unwrap(data.endName);
+                        var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
+                        var showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious);
+                        var required = ko.unwrap(data.required);
+                        var id = nts.uk.util.randomId();
+                        var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
+                        $container.data("tabindex", tabIndex);
+                        $container.removeAttr("tabindex");
+                        $container.append("<div class='ntsDateRange_Container' id='" + id + "' />");
+                        var $datePickerArea = $container.find(".ntsDateRange_Container");
+                        $datePickerArea.append("<div class='ntsDateRangeComponent ntsControl ntsDateRange'>" +
+                            "<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>～</label></div>" +
+                            "<div class='ntsDateRangeComponent ntsEndDate ntsControl nts-datepicker-wrapper' /></div>");
+                        $datePickerArea.data("required", required);
+                        var dateFormat = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
-                        var hasDayofWeek = (ISOFormat.indexOf("ddd") !== -1);
-                        var dayofWeekFormat = ISOFormat.replace(/[^d]/g, "");
                         ISOFormat = ISOFormat.replace(/d/g, "").trim();
-                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : "";
-                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-                        var button = (data.button !== undefined) ? ko.unwrap(data.button) : false;
-                        var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
-                        var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
-                        var autoHide = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
-                        var acceptJapaneseCalendar = (data.acceptJapaneseCalendar !== undefined) ? ko.unwrap(data.acceptJapaneseCalendar) : true;
-                        var valueType = typeof value();
-                        if (valueType === "string") {
-                            valueFormat = (valueFormat) ? valueFormat : uk.text.getISOFormat("ISO");
+                        if (showNextPrevious === true) {
+                            $datePickerArea.append("<div class= 'ntsDateRangeComponent ntsDateNextButton_Container ntsRangeButton_Container'>" +
+                                "<button class = 'ntsDateNextButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");
+                            $datePickerArea.prepend("<div class='ntsDateRangeComponent ntsDatePreviousButton_Container ntsRangeButton_Container'>" +
+                                "<button class = 'ntsDatePrevButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");
+                            var $nextButton = $container.find(".ntsDateNextButton").text("▶").css("margin-left", "3px");
+                            var $prevButton = $container.find(".ntsDatePrevButton").text("◀").css("margin-right", "3px");
+                            $nextButton.click(function (evt, ui) {
+                                var $startDate = $container.find(".ntsStartDatePicker");
+                                var $endDate = $container.find(".ntsEndDatePicker");
+                                var oldValue = value();
+                                var currentStart = $startDate.val();
+                                var currentEnd = $endDate.val();
+                                if (!nts.uk.util.isNullOrEmpty(currentStart)) {
+                                    var startDate = moment(currentStart, dateFormat);
+                                    if (startDate.isValid()) {
+                                        var isEndOfMonth = startDate.daysInMonth() === startDate.date();
+                                        startDate.month(startDate.month() + 1);
+                                        if (isEndOfMonth) {
+                                            startDate.endOf("month");
+                                        }
+                                        oldValue.startDate = startDate.format(dateFormat);
+                                    }
+                                }
+                                if (!nts.uk.util.isNullOrEmpty(currentEnd)) {
+                                    var endDate = moment(currentEnd, dateFormat);
+                                    if (endDate.isValid()) {
+                                        var isEndOfMonth = endDate.daysInMonth() === endDate.date();
+                                        endDate.month(endDate.month() + 1);
+                                        if (isEndOfMonth) {
+                                            endDate.endOf("month");
+                                        }
+                                        oldValue.endDate = endDate.format(dateFormat);
+                                    }
+                                }
+                                value(oldValue);
+                            });
+                            $prevButton.click(function (evt, ui) {
+                                var $startDate = $container.find(".ntsStartDatePicker");
+                                var $endDate = $container.find(".ntsEndDatePicker");
+                                var oldValue = value();
+                                var currentStart = $startDate.val();
+                                var currentEnd = $endDate.val();
+                                if (!nts.uk.util.isNullOrEmpty(currentStart)) {
+                                    var startDate = moment(currentStart, dateFormat);
+                                    if (startDate.isValid()) {
+                                        var isEndOfMonth = startDate.daysInMonth() === startDate.date();
+                                        startDate.month(startDate.month() - 1);
+                                        if (isEndOfMonth) {
+                                            startDate.endOf("month");
+                                        }
+                                        oldValue.startDate = startDate.format(dateFormat);
+                                    }
+                                }
+                                if (!nts.uk.util.isNullOrEmpty(currentEnd)) {
+                                    var endDate = moment(currentEnd, dateFormat);
+                                    if (endDate.isValid()) {
+                                        var isEndOfMonth = endDate.daysInMonth() === endDate.date();
+                                        endDate.month(endDate.month() - 1);
+                                        if (isEndOfMonth) {
+                                            endDate.endOf("month");
+                                        }
+                                        oldValue.endDate = endDate.format(dateFormat);
+                                    }
+                                }
+                                value(oldValue);
+                            });
                         }
-                        else if (valueType === "number") {
-                            valueFormat = (valueFormat) ? valueFormat : ISOFormat;
-                        }
-                        else if (valueType === "object") {
-                            if (moment.isDate(value())) {
-                                valueType = "date";
-                            }
-                            else if (moment.isMoment(value())) {
-                                valueType = "moment";
-                            }
-                        }
-                        var container = $(element);
-                        var idString;
-                        if (!container.attr("id")) {
-                            idString = nts.uk.util.randomId();
-                        }
-                        else {
-                            idString = container.attr("id");
-                            container.removeAttr("id");
-                        }
-                        var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
-                        container.removeAttr("tabindex");
-                        var containerClass = container.attr('class');
-                        container.removeClass(containerClass);
-                        container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
-                        var inputClass = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
-                        var $input = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "'/>").addClass(inputClass);
-                        $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
-                        container.append($input);
-                        var jumpButtonsDisplay = data.showJumpButtons !== undefined ? ko.unwrap(data.showJumpButtons) : false;
-                        var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
-                        var $prevButton, $nextButton;
-                        if (jumpButtonsDisplay) {
-                            $prevButton = $("<button/>").text("◀").css("margin-right", "3px").attr("tabIndex", tabIndex);
-                            $nextButton = $("<button/>").text("▶").css("margin-left", "3px").attr("tabIndex", tabIndex);
-                            $input.before($prevButton).after($nextButton);
-                        }
-                        if (data.dateFormat === "YYYY") {
-                            var $yearType = $("<label/>").attr("for", idString)
-                                .css({ "position": "absolute",
-                                "line-height": "30px",
-                                "right": "5px" });
-                            var labelText = fiscalYear ? "年度" : "年";
-                            $yearType.text(labelText);
-                            container.append($yearType);
-                        }
-                        if (hasDayofWeek) {
-                            var lengthClass = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
-                            var $label = $("<label id='" + idString + "-label' for='" + idString + "' class='dayofweek-label' />");
-                            $input.addClass(lengthClass);
-                            container.append($label);
-                        }
+                        var $startDateArea = $datePickerArea.find(".ntsStartDate");
+                        var $endDateArea = $datePickerArea.find(".ntsEndDate");
+                        $startDateArea.append("<input id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRange_Component' />");
+                        $endDateArea.append("<input id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRange_Component' />");
+                        var $input = $container.find(".ntsDatepicker");
                         // Init Datepicker
                         $input.datepicker({
                             language: 'ja-JP',
                             format: ISOFormat,
-                            startDate: startDate,
-                            endDate: endDate,
-                            autoHide: autoHide,
-                            weekStart: 0,
-                        }).data("dateNormalizer", DatePickerNormalizer.getInstance($input, $prevButton, $nextButton).setCssRanger(data.cssRanger)
-                            .fiscalMonthsMode(data.fiscalMonthsMode)
-                            .setDefaultCss(data.defaultClass || ""));
-                        name = nts.uk.resource.getControlName(name);
-                        var validator = new ui.validation.TimeValidator(name, constraintName, { required: required,
-                            outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar });
-                        $input.on("change", function (e) {
-                            var newText = $input.val();
-                            var result = validator.validate(newText);
-                            $input.ntsError('clear');
-                            if (result.isValid) {
-                                // Day of Week
-                                if (hasDayofWeek) {
-                                    if (uk.util.isNullOrEmpty(result.parsedValue))
-                                        $label.text("");
-                                    else
-                                        $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                            autoHide: true,
+                        });
+                        rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
+                        startName = nts.uk.util.isNullOrUndefined(startName) ? "期間入力フォーム開始" : nts.uk.resource.getControlName(startName);
+                        endName = nts.uk.util.isNullOrUndefined(endName) ? "期間入力フォーム終了" : nts.uk.resource.getControlName(endName);
+                        var $ntsDateRange = $container.find(".ntsRangeLabel");
+                        var getMessage = nts.uk.resource.getMessage;
+                        var validateProcess = function (newText, $target, isStart, oldValue, result) {
+                            if (nts.uk.util.isNullOrEmpty(newText) && $datePickerArea.data("required") === true) {
+                                $target.ntsError('set', getMessage('FND_E_REQ_INPUT', [isStart ? startName : endName]), 'FND_E_REQ_INPUT');
+                            }
+                            else if (!result.isValid) {
+                                $target.ntsError('set', result.errorMessage, result.errorCode);
+                            }
+                            else if (!nts.uk.util.isNullOrEmpty(newText)) {
+                                var startDate = moment(oldValue.startDate, dateFormat);
+                                var endDate = moment(oldValue.endDate, dateFormat);
+                                if (endDate.isBefore(startDate)) {
+                                    $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_REVERSED", [rangeName]), "FND_E_SPAN_REVERSED");
                                 }
-                                value(result.parsedValue);
+                                else if (dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth") {
+                                    var maxDate = startDate.add(31, "days");
+                                    if (endDate.isAfter(maxDate)) {
+                                        $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_MONTH", [rangeName]), "FND_E_SPAN_OVER_MONTH");
+                                    }
+                                }
+                                else if (maxRange === "oneYear") {
+                                    var maxDate = _.cloneDeep(startDate);
+                                    if (dateFormat === "YYYY/MM/DD") {
+                                        var currentDate = startDate.date();
+                                        var isEndMonth = currentDate === startDate.endOf("months").date();
+                                        var isStartMonth = currentDate === 1;
+                                        //                        maxDate = maxDate.add(1, 'year').add(-1, "months");
+                                        maxDate = maxDate.date(1).add(1, 'year');
+                                        if (isStartMonth) {
+                                            maxDate = maxDate.month(maxDate.month() - 1).endOf("months");
+                                        }
+                                        else if (isEndMonth) {
+                                            maxDate = maxDate.endOf("months").add(-1, "days");
+                                        }
+                                        else {
+                                            maxDate = maxDate.date(currentDate - 1);
+                                        }
+                                    }
+                                    else {
+                                        maxDate = maxDate.add(1, 'year').add(-1, "months");
+                                    }
+                                    if (endDate.isAfter(maxDate)) {
+                                        $ntsDateRange.ntsError('set', getMessage("FND_E_SPAN_OVER_YEAR", [rangeName]), "FND_E_SPAN_OVER_YEAR");
+                                    }
+                                }
+                            }
+                        };
+                        $input.on("change", function (e) {
+                            var $target = $(e.target);
+                            var newText = $target.val();
+                            $target.ntsError('clear');
+                            $ntsDateRange.ntsError("clear");
+                            var isStart = $target.hasClass("ntsStartDatePicker");
+                            var validator = new ui_16.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var result = validator.validate(newText);
+                            var oldValue = value();
+                            if ($target.hasClass("ntsStartDatePicker")) {
+                                oldValue.startDate = result.isValid ? result.parsedValue : newText;
                             }
                             else {
-                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                                value(newText);
+                                oldValue.endDate = result.isValid ? result.parsedValue : newText;
                             }
+                            validateProcess(newText, $target, isStart, oldValue, result);
+                            value(oldValue);
                         });
-                        $input.on("blur", function () {
-                            var newText = $input.val();
-                            var result = validator.validate(newText);
-                            if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                        $input.on("blur", function (e) {
+                            var isStart = $(e.target).hasClass("ntsStartDatePicker");
+                            var newText = $(e.target).val();
+                            if (nts.uk.util.isNullOrEmpty(newText) && $datePickerArea.data("required") === true) {
+                                $(e.target).ntsError('set', getMessage('FND_E_REQ_INPUT', [isStart ? startName : endName]), 'FND_E_REQ_INPUT');
                             }
-                            else if (acceptJapaneseCalendar) {
-                                // Day of Week
-                                if (hasDayofWeek) {
-                                    if (uk.util.isNullOrEmpty(result.parsedValue))
-                                        $label.text("");
-                                    else
-                                        $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
+                            else {
+                                var validator = new ui_16.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                                var result = validator.validate(newText);
+                                if (!result.isValid) {
+                                    $(e.target).ntsError('set', result.errorMessage, result.errorCode);
                                 }
                             }
                         });
                         $input.on('validate', (function (e) {
-                            var newText = $input.val();
+                            var $target = $(e.target);
+                            var newText = $target.val();
+                            var isStart = $target.hasClass("ntsStartDatePicker");
+                            var oldValue = value();
+                            var validator = new ui_16.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                             var result = validator.validate(newText);
-                            $input.ntsError('clearKibanError');
-                            if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                            }
-                            else if (acceptJapaneseCalendar) {
-                                // Day of Week
-                                if (hasDayofWeek) {
-                                    if (uk.util.isNullOrEmpty(result.parsedValue))
-                                        $label.text("");
-                                    else
-                                        $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
-                                }
-                            }
+                            $target.ntsError('clear');
+                            $ntsDateRange.ntsError("clear");
+                            validateProcess(newText, $target, isStart, oldValue, result);
                         }));
-                        new nts.uk.util.value.DefaultValue().onReset($input, data.value);
-                        container.data("init", false);
+                        $container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
                     };
                     /**
                      * Update
                      */
-                    DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    NtsDateRangePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
-                        var value = data.value;
-                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
+                        var $container = $(element);
+                        var dateType = ko.unwrap(data.type);
+                        var maxRange = ko.unwrap(data.maxRange);
+                        var dataName = ko.unwrap(data.name);
+                        var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
+                        var required = ko.unwrap(data.required);
+                        var dateFormat = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
-                        var hasDayofWeek = (ISOFormat.indexOf("ddd") !== -1);
-                        var dayofWeekFormat = ISOFormat.replace(/[^d]/g, "");
                         ISOFormat = ISOFormat.replace(/d/g, "").trim();
-                        var valueFormat = (data.valueFormat !== undefined) ? ko.unwrap(data.valueFormat) : ISOFormat;
-                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : undefined;
-                        var startDate = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
-                        var endDate = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
-                        var container = $(element);
-                        var dateNormalizer = container.find("input").data("dateNormalizer");
-                        if (dateNormalizer) {
-                            if (data.cssRanger) {
-                                dateNormalizer.setCssRanger(ko.unwrap(data.cssRanger));
-                            }
-                        }
-                        var init = container.data("init");
-                        var $input = container.find(".nts-input");
-                        var $label = container.find(".dayofweek-label");
-                        // Value Binding
-                        if (value() !== $input.val()) {
-                            var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
-                            if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
-                                // Check equals to avoid multi datepicker with same value
-                                $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
-                                $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
-                            }
-                            else {
-                                $input.val("");
-                                $label.text("");
-                            }
-                        }
-                        // Properties Binding
-                        $input.datepicker('setStartDate', startDate);
-                        $input.datepicker('setEndDate', endDate);
-                        if (enable !== undefined)
-                            $input.prop("disabled", !enable);
-                        else
-                            $input.prop("disabled", disabled);
-                        if ($input.prop("disabled") === true) {
-                            new nts.uk.util.value.DefaultValue().applyReset($input, value);
-                        }
-                        if (data.button)
-                            container.find('.datepicker-btn').prop("disabled", disabled);
-                    };
-                    return DatePickerBindingHandler;
-                }());
-                ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
-                var ViewLocation;
-                (function (ViewLocation) {
-                    ViewLocation[ViewLocation["PREV"] = 0] = "PREV";
-                    ViewLocation[ViewLocation["CURRENT"] = 1] = "CURRENT";
-                    ViewLocation[ViewLocation["NEXT"] = 2] = "NEXT";
-                })(ViewLocation || (ViewLocation = {}));
-                var DatePickerNormalizer = (function () {
-                    function DatePickerNormalizer() {
-                        this.fiscalMonth = 1;
-                        // Constants
-                        this.NAMESPACE = "datepicker";
-                        this.YEARS = "years";
-                        this.MONTHS = "months";
-                        this.DAYS = "days";
-                        this.WEEK = "week";
-                        this.PICKER = " picker";
-                        this.YEAR = "year";
-                        this.MONTH = "month";
-                        this.DAY = "day";
-                        this.YEAR_TEXT = "年";
-                        this.MONTH_TEXT = "月";
-                        this.PERIOD_TEXT = "度";
-                        this.structure = { 0: this.YEARS, 1: this.MONTHS, 2: this.DAYS };
-                        this.EVENT_SHOW = "show." + this.NAMESPACE;
-                        this.EVENT_KEYUP = "keyup." + this.NAMESPACE;
-                        this.EVENT_PICK = "pick." + this.NAMESPACE;
-                        this.EVENT_CLICK = "click";
-                        this.Y_FORMAT = "YYYY";
-                        this.YM_FORMAT = "YYYY/MM";
-                        this.YMD_FORMAT = "YYYY/MM/DD";
-                        this.DATE_SPLITTER = "/";
-                    }
-                    // Use this method to get an instance.
-                    DatePickerNormalizer.getInstance = function ($input, $prev, $next) {
-                        var instance = new DatePickerNormalizer();
-                        instance.$input = $input;
-                        instance.$prev = $prev;
-                        instance.$next = $next;
-                        return instance.onShow().onKeyup().onPick().onJump();
-                    };
-                    DatePickerNormalizer.prototype.setCssRanger = function (range) {
-                        this.cssRanger = range;
-                        return this;
-                    };
-                    DatePickerNormalizer.prototype.setFiscalMonth = function (month) {
-                        this.fiscalMonth = month;
-                        return this;
-                    };
-                    DatePickerNormalizer.prototype.setDefaultCss = function (clazz) {
-                        this.defaultCss = clazz;
-                        return this;
-                    };
-                    DatePickerNormalizer.prototype.fiscalMonthsMode = function (value) {
-                        if (value === true)
-                            this.setFiscalMonth(4);
-                        return this;
-                    };
-                    DatePickerNormalizer.prototype.getPicker = function () {
-                        return this.$input.data(this.NAMESPACE).$picker;
-                    };
-                    DatePickerNormalizer.prototype.getYearsPicker = function () {
-                        return this.$input.data(this.NAMESPACE).$yearsPicker;
-                    };
-                    DatePickerNormalizer.prototype.getMonthsPicker = function () {
-                        return this.$input.data(this.NAMESPACE).$monthsPicker;
-                    };
-                    DatePickerNormalizer.prototype.getYearsBoard = function () {
-                        return this.$input.data(this.NAMESPACE).$years;
-                    };
-                    DatePickerNormalizer.prototype.getMonthsBoard = function () {
-                        return this.$input.data(this.NAMESPACE).$months;
-                    };
-                    DatePickerNormalizer.prototype.getCurrentYear = function () {
-                        return this.$input.data(this.NAMESPACE).$yearCurrent;
-                    };
-                    DatePickerNormalizer.prototype.getView = function (view, isCurrentView) {
-                        var pickerView, viewPart, currentViewPart;
-                        var viewName = this.structure[view];
-                        switch (viewName) {
-                            case this.YEARS:
-                                pickerView = this.YEARS + this.PICKER;
-                                viewPart = this.YEARS;
-                                currentViewPart = "current year";
-                                break;
-                            case this.MONTHS:
-                                pickerView = this.MONTHS + this.PICKER;
-                                viewPart = this.MONTHS;
-                                currentViewPart = "current month";
-                                break;
-                            case this.DAYS:
-                                pickerView = this.DAYS + this.PICKER;
-                                viewPart = this.DAYS;
-                                break;
-                            case this.WEEK:
-                                pickerView = this.DAYS + this.PICKER;
-                                viewPart = this.WEEK;
-                                break;
-                        }
-                        return $(this.getPicker()[0]).children().filter(function (idx, elm) {
-                            return $(elm).data("view") === pickerView;
-                        }).find("ul").filter(function (idx, elm) {
-                            if (isCurrentView === true)
-                                return idx === 0;
-                            else
-                                return $(elm).data("view") === viewPart;
-                        });
-                    };
-                    DatePickerNormalizer.prototype.getMutedClass = function () {
-                        return this.options !== undefined ? this.options.mutedClass : "";
-                    };
-                    DatePickerNormalizer.prototype.getPickedClass = function () {
-                        return this.options !== undefined ? this.options.pickedClass : "";
-                    };
-                    DatePickerNormalizer.prototype.setColorLevel = function () {
-                        if (this.options.format === this.Y_FORMAT)
-                            this.colorLevel = this.YEARS;
-                        else if (this.options.format === this.YM_FORMAT)
-                            this.colorLevel = this.MONTHS;
-                        else if (this.options.format === this.YMD_FORMAT)
-                            this.colorLevel = this.DAYS;
-                        // Only set to colorLevel in initialization.
-                        if (this.selectedView === undefined)
-                            this.selectedView = this.colorLevel;
-                    };
-                    DatePickerNormalizer.prototype.color = function () {
-                        var _this = this;
-                        if (this.cssRanger === undefined)
-                            return;
-                        // Year only picker
-                        if (this.cssRanger.constructor === Array) {
-                            _.each(this.cssRanger, function (cell) { return _this.colorCell(cell, ViewLocation.CURRENT, -1); });
-                            return;
-                        }
-                        this.colorNode(this.cssRanger, ViewLocation.CURRENT, 0);
-                        this.colorNode(this.cssRanger, ViewLocation.NEXT, 0);
-                        this.colorNode(this.cssRanger, ViewLocation.PREV, 0);
-                    };
-                    DatePickerNormalizer.prototype.colorNode = function (holders, location, currentLayer) {
-                        var _this = this;
-                        var holder;
-                        var handledYear = location === ViewLocation.CURRENT ? this.viewYear : this.viewYear + 1;
-                        // If processing layer is 1 level above leaf layer
-                        if (this.colorLevel === this.structure[currentLayer + 1]) {
-                            switch (currentLayer) {
-                                case 0:
-                                    holder = handledYear;
-                                    break;
-                                case 1:
-                                    if (location === ViewLocation.CURRENT)
-                                        holder = this.viewMonth;
-                                    else if (location === ViewLocation.PREV)
-                                        holder = this.viewMonth - 1;
-                                    else
-                                        holder = this.viewMonth + 1;
-                                    break;
-                                case 2:
-                                    holder = this.date;
-                                    break;
-                                default:
-                                    holder = handledYear;
-                                    currentLayer = 0;
-                                    break;
-                            }
-                        }
-                        else {
-                            switch (currentLayer) {
-                                case 0:
-                                    holder = this.viewYear;
-                                    break;
-                                case 1:
-                                    holder = this.viewMonth;
-                                    break;
-                                case 2:
-                                    holder = this.date;
-                                    break;
-                                default:
-                                    holder = this.viewYear;
-                                    currentLayer = 0;
-                                    break;
-                            }
-                        }
-                        if (holders.hasOwnProperty(holder)) {
-                            if (holders[holder].constructor === Array) {
-                                _.each(holders[holder], function (cell) { return _this.colorCell(cell, location, currentLayer); });
-                                return;
-                            }
-                            currentLayer++;
-                            this.colorNode(holders[holder], location, currentLayer);
-                        }
-                    };
-                    DatePickerNormalizer.prototype.colorCell = function (cell, location, layer) {
-                        var self = this;
-                        var data = typeof cell === "object" ? Object.keys(cell)[0] : cell;
-                        var $target = this.$view.children().filter(function (idx, elm) {
-                            if (self.structure[layer] === self.YEARS) {
-                                return $(elm).text() === self.defaultMonths[data - 1]
-                                    && ((location === ViewLocation.PREV && $(elm).data("view").indexOf("prev") !== -1)
-                                        || (location === ViewLocation.NEXT && $(elm).data("view").indexOf("next") !== -1)
-                                        || location === ViewLocation.CURRENT && $(elm).data("view").indexOf("prev") === -1
-                                            && $(elm).data("view").indexOf("next") === -1);
-                            }
-                            else if (self.structure[layer] === self.MONTHS) {
-                                return $(elm).text() === data.toString()
-                                    && ((location === ViewLocation.PREV && $(elm).data("view").indexOf("prev") !== -1)
-                                        || (location === ViewLocation.NEXT && $(elm).data("view").indexOf("next") !== -1)
-                                        || location === ViewLocation.CURRENT && $(elm).data("view").indexOf("prev") === -1
-                                            && $(elm).data("view").indexOf("next") === -1);
-                            }
-                            else if (layer === -1) {
-                                return $(elm).text() === data.toString();
-                            }
-                        });
-                        if ($target.length > 0) {
-                            $target.addClass((typeof cell === "object" && cell[data] !== undefined) ? cell[data] : this.defaultCss);
-                        }
-                    };
-                    DatePickerNormalizer.prototype.fillFiscalMonthsInYear = function () {
-                        var self = this;
-                        if (this.fiscalMonth === 1)
-                            return;
-                        var nextYearMonths = this.defaultMonths.slice(0, this.fiscalMonth - 1);
-                        var currentYearMonths = this.defaultMonths.slice(this.fiscalMonth - 1);
-                        var newMonths = $.merge(currentYearMonths, nextYearMonths);
-                        var nextYearMark = 12 - this.fiscalMonth;
-                        this.getMonthsBoard().children().each(function (idx, elm) {
-                            $(elm).text(newMonths[idx]);
-                            if (idx > nextYearMark)
-                                $(elm).addClass(self.getMutedClass()).attr("data-view", "fiscalMonth next")
-                                    .data("view", "fiscalMonth next").css("font-size", "inherit");
-                        });
-                        var $currentYear = this.getCurrentYear();
-                        if ($currentYear.length > 0)
-                            $currentYear.text(this.viewYear + this.yearText());
-                    };
-                    DatePickerNormalizer.prototype.allowPickMonth = function () {
-                        return (this.viewMonth < this.fiscalMonth && this.viewYear === this.year - 1)
-                            || (this.viewMonth >= this.fiscalMonth && this.viewYear === this.year);
-                    };
-                    DatePickerNormalizer.prototype.allowPickDate = function () {
-                        return this.viewYear === this.year && this.viewMonth === this.month;
-                    };
-                    DatePickerNormalizer.prototype.pickMonth = function () {
-                        var self = this;
-                        if (self.fiscalMonth === 1)
-                            return;
-                        var month = self.month + self.MONTH_TEXT;
-                        this.getMonthsBoard().children().each(function (idx, elm) {
-                            var view;
-                            if ($(elm).text() === month.toString()) {
-                                view = "month picked";
-                                $(elm).addClass(self.getPickedClass()).attr("data-view", view).data("view", view);
-                            }
-                            else if ($(elm).hasClass(self.getPickedClass())) {
-                                view = $(elm).data("view").split(" ")[0];
-                                $(elm).removeClass(self.getPickedClass()).attr("data-view", view).data("view", view);
-                            }
-                        });
-                    };
-                    DatePickerNormalizer.prototype.pickDate = function () {
-                        var self = this;
-                        if (self.colorLevel !== self.DAYS || self.fiscalMonth === 1)
-                            return;
-                        var date = self.date;
-                        this.$view.children().each(function (idx, elm) {
-                            if ($(elm).text() === date.toString() && $(elm).data("view").indexOf("prev") === -1
-                                && $(elm).data("view").indexOf("next") === -1) {
-                                $(elm).addClass(self.getPickedClass()).attr("data-view", "day picked").data("view", "day picked");
-                            }
-                            else if ($(elm).hasClass(self.getPickedClass())) {
-                                $(elm).removeClass(self.getPickedClass()).attr("data-view", "day").data("view", "day");
-                            }
-                        });
-                    };
-                    DatePickerNormalizer.prototype.clearPicked = function () {
-                        var self = this;
-                        var view = self.colorLevel === self.MONTHS ? "month" : "day";
-                        var $selectedBoard;
-                        if (this.selectedView === this.MONTHS) {
-                            $selectedBoard = this.getMonthsBoard();
-                        }
-                        else if (this.selectedView === this.DAYS) {
-                            $selectedBoard = this.getYearsBoard();
-                        }
-                        if ($selectedBoard === undefined)
-                            return;
-                        $selectedBoard.children().filter(function (idx, elm) {
-                            return $(elm).data("view").indexOf("picked") !== -1;
-                        }).removeClass(self.getPickedClass()).attr("data-view", view).data("view", view);
-                    };
-                    DatePickerNormalizer.prototype.yearText = function () {
-                        return this.fiscalMonth !== 1 ? this.YEAR_TEXT + this.PERIOD_TEXT : this.YEAR_TEXT;
-                    };
-                    DatePickerNormalizer.prototype.onClick = function () {
-                        var self = this;
-                        var picker = this.getPicker();
-                        picker.off("click", this._click);
-                        picker.on("click", $.proxy(this._click, this));
-                    };
-                    DatePickerNormalizer.prototype._click = function (evt) {
-                        var $target = $(evt.target);
-                        var view = $target.data("view");
-                        switch (view) {
-                            case "years prev":
-                            case "years next":
-                                this.updateYearsView();
-                                break;
-                            case "year prev":
-                                this.viewYear--;
-                                this.updateMonthsView();
-                                break;
-                            case "year next":
-                                this.viewYear++;
-                                this.updateMonthsView();
-                                break;
-                            case "month prev":
-                                if (this.viewMonth == 1) {
-                                    this.viewMonth = 12;
-                                    this.viewYear--;
-                                }
-                                else
-                                    this.viewMonth--;
-                                this.updateDaysView();
-                                break;
-                            case "month next":
-                                if (this.viewMonth == 12) {
-                                    this.viewMonth = 1;
-                                    this.viewYear++;
-                                }
-                                else
-                                    this.viewMonth++;
-                                this.updateDaysView();
-                                break;
-                            case "day prev":
-                                this.updateDaysView();
-                                break;
-                            case "day next":
-                                this.updateDaysView();
-                                break;
-                            case "fiscalMonth next":
-                                if ($target.hasClass(this.getPickedClass()))
-                                    return;
-                                var pickedMonth = this.defaultMonths.indexOf($target.text());
-                                this._clickFiscalNextMonth(pickedMonth);
-                                this.$input.datepicker("hide");
-                                if (this.colorLevel === this.DAYS) {
-                                    this.$input.datepicker("show");
-                                }
-                                break;
-                            case "year current":
-                                this.selectedView = this.YEARS;
-                                break;
-                            case "month current":
-                                this.selectedView = this.MONTHS;
-                                if (this.viewMonth < this.fiscalMonth)
-                                    this.viewYear--;
-                                this.updateMonthsView();
-                                break;
-                        }
-                    };
-                    DatePickerNormalizer.prototype.updateYearsView = function () {
-                        this.color();
-                    };
-                    DatePickerNormalizer.prototype.updateMonthsView = function () {
-                        if (this.fiscalMonth !== 1) {
-                            this.fillFiscalMonthsInYear();
-                        }
-                        if (this.colorLevel === this.MONTHS) {
-                            this.color();
-                        }
-                        if (this.allowPickMonth())
-                            this.pickMonth();
-                        if (this.viewMonth < this.fiscalMonth && this.viewYear === this.year)
-                            this.clearPicked();
-                    };
-                    DatePickerNormalizer.prototype.updateDaysView = function () {
-                        if (this.colorLevel === this.DAYS) {
-                            this.color();
-                        }
-                        if (this.allowPickDate())
-                            this.pickDate();
-                    };
-                    DatePickerNormalizer.prototype._beforeShow = function () {
-                        this.options = this.$input.data(this.NAMESPACE).options;
-                        this.setColorLevel();
-                        this.defaultMonths = this.options.monthsShort;
-                        var text = this.$input.val();
-                        var parsedTextTime = this.parseDate(text);
-                        if (parsedTextTime !== undefined && parsedTextTime.month === 2) {
-                            this.viewYear = this.year = parsedTextTime.year;
-                            this.viewMonth = this.month = parsedTextTime.month;
-                            this.date = parsedTextTime.date;
-                        }
-                        else {
-                            var initValue = this.$input.datepicker("getDate", true);
-                            var viewTime = this.$input.data(this.NAMESPACE).viewDate;
-                            this.viewYear = viewTime.getFullYear();
-                            this.viewMonth = viewTime.getMonth() + 1;
-                            var parsedTime = this.parseDate(initValue);
-                            if (parsedTime !== undefined) {
-                                this.year = parsedTime.year;
-                                this.month = parsedTime.month;
-                                this.date = parsedTime.date;
-                            }
-                            else
-                                return;
-                        }
-                        var colorLevel = this.colorLevel;
-                        var layer;
-                        if (colorLevel === this.YEARS) {
-                            layer = 0;
-                        }
-                        else if (colorLevel === this.MONTHS) {
-                            layer = 1;
-                        }
-                        else if (colorLevel === this.DAYS) {
-                            layer = 2;
-                        }
-                        this.$view = this.getView(layer);
-                        this.$currentView = this.getView(layer, true);
-                        // Body contents of picker is showing months
-                        if (this.selectedView === this.MONTHS) {
-                            if (this.viewMonth < this.fiscalMonth)
-                                this.viewYear--;
-                            this.fillFiscalMonthsInYear();
-                        }
-                        this.color();
-                        // Pick time
-                        if (this.selectedView === this.MONTHS && this.allowPickMonth()) {
-                            if (this.viewMonth < this.fiscalMonth && this.viewYear === this.year)
-                                this.clearPicked();
-                            this.pickMonth();
-                        }
-                        else if (this.selectedView === this.DAYS && this.allowPickDate()) {
-                            this.pickDate();
-                        }
-                    };
-                    DatePickerNormalizer.prototype.parseDate = function (date) {
-                        var exp = new RegExp(/\d+(\/\d+)?(\/\d+)?/);
-                        if (exp.test(date) === false)
-                            return;
-                        var dateParts = date.split(this.DATE_SPLITTER);
-                        return {
-                            year: parseInt(dateParts[0]),
-                            month: parseInt(dateParts[1]),
-                            date: dateParts[2] !== undefined ? parseInt(dateParts[2]) : undefined
-                        };
-                    };
-                    DatePickerNormalizer.prototype.onShow = function () {
-                        var self = this;
-                        this.$input.on(this.EVENT_SHOW, function (evt) {
-                            var _self = self;
-                            setTimeout(function () {
-                                _self._beforeShow.call(_self);
-                                _self.onClick.call(_self);
-                            }, 0);
-                        });
-                        return self;
-                    };
-                    DatePickerNormalizer.prototype.onKeyup = function () {
-                        //            this.$input.off(this.EVENT_KEYUP, this._beforeShow);
-                        //            this.$input.on(this.EVENT_KEYUP, $.proxy(this._beforeShow, this));
-                        return this;
-                    };
-                    DatePickerNormalizer.prototype.onPick = function () {
-                        var self = this;
-                        this.$input.on(this.EVENT_PICK, function (evt) {
-                            var view = evt.view; // month | year
-                            if (view === self.DAY) {
-                                self.date = evt.date.getDate();
-                                self.month = evt.date.getMonth() + 1;
-                                self.viewMonth = self.month;
-                                self.year = evt.date.getFullYear();
-                                self.viewYear = self.year;
-                            }
-                            else if (view === self.MONTH) {
-                                self._clickFiscalNextMonth.call(self, evt.date.getMonth());
-                            }
-                            else if (view === self.YEAR) {
-                                var _self = self;
-                                setTimeout(function () {
-                                    _self.year = evt.date.getFullYear();
-                                    _self.viewYear = _self.year;
-                                    _self.month = _self.viewMonth;
-                                    if (_self.viewMonth < _self.fiscalMonth)
-                                        _self.viewYear--;
-                                    _self.updateMonthsView.call(_self);
-                                }, 0);
-                            }
-                        });
-                        return self;
-                    };
-                    DatePickerNormalizer.prototype._clickFiscalNextMonth = function (pickedMonth) {
-                        var self = this;
-                        self.month = pickedMonth + 1;
-                        self.viewMonth = self.month;
-                        // Fiscal month mode
-                        if (self.fiscalMonth !== 1) {
-                            self.year = self.month >= self.fiscalMonth ? self.viewYear : (self.viewYear + 1);
-                            self.viewYear = self.year;
-                            self.$input.datepicker("setDate", new Date(self.year, self.month - 1, self.date || 1));
-                        }
-                    };
-                    DatePickerNormalizer.prototype.onJump = function () {
-                        var self = this;
-                        if (uk.util.isNullOrUndefined(self.$prev) || uk.util.isNullOrUndefined(self.$next))
-                            return self;
-                        this.$prev.on(this.EVENT_CLICK, function (evt) {
-                            self.addTime(-1);
-                        });
-                        this.$next.on(this.EVENT_CLICK, function (evt) {
-                            self.addTime(1);
-                        });
-                        return self;
-                    };
-                    DatePickerNormalizer.prototype.addTime = function (value) {
-                        var self = this;
-                        var year, month, date;
-                        if (self.options === undefined)
-                            self.options = self.$input.data(self.NAMESPACE).options;
-                        var time = self.$input.datepicker("getDate", true);
-                        var parsedTime = self.parseDate(time);
-                        if (parsedTime !== undefined) {
-                            if (self.options.format === self.YMD_FORMAT) {
-                                year = parsedTime.year;
-                                month = parsedTime.month - 1;
-                                date = parsedTime.date + value;
-                            }
-                            else if (self.options.format === self.YM_FORMAT) {
-                                var postCalcVal = parsedTime.month + value;
-                                date = 1;
-                                if (postCalcVal < 1) {
-                                    year = parsedTime.year - 1;
-                                    month = 11;
-                                }
-                                else if (postCalcVal > 12) {
-                                    year = parsedTime.year + 1;
-                                    month = postCalcVal - 13;
+                        var $input = $container.find(".ntsDatepicker");
+                        var $startDate = $container.find(".ntsStartDatePicker");
+                        var $endDate = $container.find(".ntsEndDatePicker");
+                        if (!nts.uk.util.isNullOrUndefined(data.value())) {
+                            var startDate = (data.value().startDate !== "") ? uk.time.formatPattern(data.value().startDate, dateFormat, ISOFormat) : "";
+                            var oldStart = $startDate.val();
+                            if (startDate !== oldStart) {
+                                if (startDate !== "" && startDate !== "Invalid date") {
+                                    // Check equals to avoid multi datepicker with same value
+                                    $startDate.datepicker('setDate', startDate);
                                 }
                                 else {
-                                    year = parsedTime.year;
-                                    month = postCalcVal - 1;
+                                    $startDate.val("");
                                 }
                             }
-                            else if (self.options.format === self.Y_FORMAT) {
-                                var postCalcVal = parsedTime.year + value;
-                                if (postCalcVal < 1900) {
-                                    year = 9999;
+                            var endDate = (data.value().endDate !== "") ? uk.time.formatPattern(data.value().endDate, dateFormat, ISOFormat) : "";
+                            var oldEnd = $endDate.val();
+                            if (endDate !== oldEnd) {
+                                if (endDate !== "" && endDate !== "Invalid date") {
+                                    // Check equals to avoid multi datepicker with same value
+                                    $endDate.datepicker('setDate', endDate);
                                 }
-                                else if (postCalcVal > 9999) {
-                                    year = 1900;
+                                else {
+                                    $endDate.val("");
                                 }
-                                else
-                                    year = postCalcVal;
-                                month = 1;
-                                date = 1;
                             }
                         }
-                        self.$input.datepicker("setDate", new Date(year, month, date));
+                        if (enable === false) {
+                            $container.find(".ntsDateRange_Component").removeAttr("tabindex");
+                        }
+                        else {
+                            $container.find(".ntsDateRange_Component").attr("tabindex", $container.data("tabindex"));
+                        }
+                        $input.prop("disabled", !enable);
+                        $container.find(".ntsDateRangeButton").prop("disabled", !enable);
+                        var $datePickerArea = $container.find(".ntsDateRange_Container");
+                        $datePickerArea.data("required", required);
                     };
-                    return DatePickerNormalizer;
+                    return NtsDateRangePickerBindingHandler;
                 }());
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+                ko.bindingHandlers['ntsDateRangePicker'] = new NtsDateRangePickerBindingHandler();
+            })(koExtentions = ui_16.koExtentions || (ui_16.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12731,7 +12228,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_16) {
+        (function (ui_17) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsFixedTable;
@@ -12828,7 +12325,7 @@ var nts;
                         return controls;
                     }
                 })(ntsFixedTable || (ntsFixedTable = {}));
-            })(jqueryExtentions = ui_16.jqueryExtentions || (ui_16.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_17.jqueryExtentions || (ui_17.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -12838,7 +12335,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_17) {
+        (function (ui_18) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGridList;
@@ -13048,7 +12545,7 @@ var nts;
                             mousePos = {
                                 x: e.pageX,
                                 y: e.pageY,
-                                rowIndex: ui_17.ig.grid.getRowIndexFrom($(e.target))
+                                rowIndex: ui_18.ig.grid.getRowIndexFrom($(e.target))
                             };
                             // set position to start dragging
                             dragSelectRange.push(mousePos.rowIndex);
@@ -13065,7 +12562,7 @@ var nts;
                             }, 20);
                             // handle mousemove on window while dragging (unhandle when mouseup)
                             $(window).bind('pointermove.NtsGridListDragging', function (e) {
-                                var newPointedRowIndex = ui_17.ig.grid.getRowIndexFrom($(e.target));
+                                var newPointedRowIndex = ui_18.ig.grid.getRowIndexFrom($(e.target));
                                 // selected range is not changed
                                 if (mousePos.rowIndex === newPointedRowIndex) {
                                     return;
@@ -13141,7 +12638,7 @@ var nts;
                         //            $grid.off('mouseup');
                     }
                 })(ntsGridList || (ntsGridList = {}));
-            })(jqueryExtentions = ui_17.jqueryExtentions || (ui_17.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_18.jqueryExtentions || (ui_18.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13151,7 +12648,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_18) {
+        (function (ui_19) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsWizard;
@@ -13240,7 +12737,7 @@ var nts;
                         return wizard.steps("getCurrentIndex");
                     }
                 })(ntsWizard || (ntsWizard = {}));
-            })(jqueryExtentions = ui_18.jqueryExtentions || (ui_18.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13339,7 +12836,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_19) {
+        (function (ui_20) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var isNull = nts.uk.util.isNullOrUndefined;
@@ -13706,7 +13203,7 @@ var nts;
                     }());
                     ntsButtonTable.TableButtonEntity = TableButtonEntity;
                 })(ntsButtonTable || (ntsButtonTable = {}));
-            })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_20.jqueryExtentions || (ui_20.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13716,7 +13213,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_20) {
+        (function (ui_21) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -13914,7 +13411,7 @@ var nts;
                     return NtsTreeDragAndDropBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeDragAndDrop'] = new NtsTreeDragAndDropBindingHandler();
-            })(koExtentions = ui_20.koExtentions || (ui_20.koExtentions = {}));
+            })(koExtentions = ui_21.koExtentions || (ui_21.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -13924,7 +13421,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_21) {
+        (function (ui_22) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -14041,7 +13538,7 @@ var nts;
                     return NtsMonthDaysBindingHandler;
                 }());
                 ko.bindingHandlers['ntsMonthDays'] = new NtsMonthDaysBindingHandler();
-            })(koExtentions = ui_21.koExtentions || (ui_21.koExtentions = {}));
+            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14051,7 +13548,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_22) {
+        (function (ui_23) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -14425,7 +13922,7 @@ var nts;
                     return ImageEditorHelper;
                 }());
                 ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
-            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
+            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14435,7 +13932,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_23) {
+        (function (ui_24) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -14525,7 +14022,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
+            })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14685,7 +14182,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_24) {
+        (function (ui_25) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -14770,7 +14267,7 @@ var nts;
                     return NtsAccordionBindingHandler;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
-            })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
+            })(koExtentions = ui_25.koExtentions || (ui_25.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -14888,7 +14385,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_25) {
+        (function (ui_26) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -15045,7 +14542,7 @@ var nts;
                     return NtsColorPickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsColorPicker'] = new NtsColorPickerBindingHandler();
-            })(koExtentions = ui_25.koExtentions || (ui_25.koExtentions = {}));
+            })(koExtentions = ui_26.koExtentions || (ui_26.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -15214,7 +14711,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_26) {
+        (function (ui_27) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var errorMementos = {};
@@ -15337,7 +14834,7 @@ var nts;
                         return control.find("#sidebar-area .navigator a.active").closest("li").index();
                     }
                 })(ntsSideBar || (ntsSideBar = {}));
-            })(jqueryExtentions = ui_26.jqueryExtentions || (ui_26.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_27.jqueryExtentions || (ui_27.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -15501,7 +14998,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_27) {
+        (function (ui_28) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGrid;
@@ -19806,7 +19303,7 @@ var nts;
                         utils.setChildrenTabIndex = setChildrenTabIndex;
                     })(utils || (utils = {}));
                 })(ntsGrid = jqueryExtentions.ntsGrid || (jqueryExtentions.ntsGrid = {}));
-            })(jqueryExtentions = ui_27.jqueryExtentions || (ui_27.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_28.jqueryExtentions || (ui_28.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -20494,7 +19991,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_28) {
+        (function (ui_29) {
             var exTable;
             (function (exTable_1) {
                 var NAMESPACE = "extable";
@@ -27396,7 +26893,7 @@ var nts;
                         return css;
                     }
                 })(widget || (widget = {}));
-            })(exTable = ui_28.exTable || (ui_28.exTable = {}));
+            })(exTable = ui_29.exTable || (ui_29.exTable = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
