@@ -21,11 +21,9 @@ import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
 import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.ButtonName;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.CodeNameReferenceType;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.EnumReferenceCondition;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.MasterReferenceCondition;
-import nts.uk.ctx.pereg.dom.person.info.selectionitem.RadioName;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
@@ -494,9 +492,8 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				break;
 
 			case 8: // button
-				//if (selectionItemRefType.intValue() == 8) {
-					dataTypeState = DataTypeState.createSelectionButton(new ButtonName(selectionItemRefCode));
-				//}
+				dataTypeState = createSelectionItem(selectionItemRefType, selectionItemRefCode,
+						DataTypeValue.SELECTION_BUTTON);
 				break;
 			}
 			item.setItemTypeState(ItemTypeState.createSingleItem(dataTypeState));
@@ -526,8 +523,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				break;
 			case SELECTION_RADIO:
 				dataTypeState = DataTypeState.createSelectionRadio(referenceTypeState);
-				break;
 
+			case SELECTION_BUTTON:
+				dataTypeState = DataTypeState.createSelectionButton(referenceTypeState);
 			}
 
 		}

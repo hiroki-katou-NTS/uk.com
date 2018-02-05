@@ -39,8 +39,8 @@ public class DataTypeStateDto {
 
 	}
 
-	public static DataTypeStateDto createSelectionButtonDto() {
-		return SelectionButtonDto.createFromJavaType();
+	public static DataTypeStateDto createSelectionButtonDto(ReferenceTypeState refTypeState) {
+		return SelectionButtonDto.createFromJavaType(refTypeState, DataTypeValue.SELECTION_BUTTON.value);
 
 	}
 

@@ -4,6 +4,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -74,19 +75,20 @@ public class DailyPerformanceCorrectionDto {
 	}
 
 	/** Find cell by dataID and columnKey */
-	private Optional<DPCellStateDto> findExistCellState(String dataId, String columnKey) {
-		return this.lstCellState.stream().filter(cs -> {
-			return cs.getRowId().equals(dataId) && cs.getColumnKey().equals(columnKey);
-		}).findFirst();
+	private boolean findAndUpdateCellState(String dataId, String columnKey, String state) {
+		for (DPCellStateDto cs : this.lstCellState){
+			if(cs.getRowId().equals(dataId) && cs.getColumnKey().equals(columnKey)){
+				cs.addState(state);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** Set disable cell & Create not existed cell */
 	private void setDisableCell(DPHeaderDto header, DPDataDto data, Map<Integer, DPAttendanceItem> mapDP) {
 		String dataId = toId(data.getId());
-		Optional<DPCellStateDto> existedCellState = findExistCellState(dataId, header.getKey());
-		if (existedCellState.isPresent()) {
-			existedCellState.get().addState("ntsgrid-disable");
-		} else {
+		if (!findAndUpdateCellState(dataId, header.getKey(), "ntsgrid-disable")) {
 			String id = getID(header.getKey());
 			int attendanceAtr = mapDP.get(Integer.parseInt(id)).getAttendanceAtr();
 			if (attendanceAtr == DailyAttendanceAtr.Code.value
@@ -123,8 +125,9 @@ public class DailyPerformanceCorrectionDto {
 
 	/** Create Access Modifier Cellstate */
 	public void createAccessModifierCellState(Map<Integer, DPAttendanceItem> mapDP) {
+		String loginUser = AppContexts.user().employeeId();
 		this.getLstData().forEach(data -> {
-			boolean isLoginUser = isLoginUser(data.getEmployeeId());
+			boolean isLoginUser = loginUser.equals(data.getEmployeeId());
 			this.getLstControlDisplayItem().getLstHeader().forEach(header -> {
 				if (header.getChangedByOther() && !header.getChangedByYou()) {
 					if (isLoginUser) {
@@ -186,31 +189,19 @@ public class DailyPerformanceCorrectionDto {
 	}
 
 	private void setCellState(String dataId, String columnKey, String state) {
-		Optional<DPCellStateDto> existedCellState = findExistCellState(dataId, columnKey);
-		if (existedCellState.isPresent()) {
-			existedCellState.get().addState(state);
-		} else {
-			DPCellStateDto dto = new DPCellStateDto(dataId, columnKey, toList(state));
-			this.lstCellState.add(dto);
+		if (!findAndUpdateCellState(dataId, columnKey, state)) {
+			this.lstCellState.add(new DPCellStateDto(dataId, columnKey, toList(state)));
 		}
 	}
 
 	private List<String> toList(String... item) {
-		return Stream.of(item).collect(Collectors.toCollection(ArrayList::new));
+		return new ArrayList<>(Arrays.asList(item));
 	}
 
 	/** Set AlarmCell state for Fixed cell */
 	public void setLock(int rowId, String columnKey) {
 		String id = toId(rowId);
-		Optional<DPCellStateDto> existedCellState = findExistCellState(id, columnKey);
-		if (existedCellState.isPresent()) {
-			existedCellState.get().addState("ntsgrid-disable");
-		} else {
-			List<String> state = new ArrayList<>();
-			state.add("ntsgrid-disable");
-			this.lstCellState.add(new DPCellStateDto(id, columnKey, state));
-		}
-
+		setCellState(id, columnKey, "ntsgrid-disable");
 	}
 
 }

@@ -350,7 +350,7 @@ public class PerInfoItemDefFinder {
 
 		case 8:
 			SelectionButton bItem = (SelectionButton) dataTypeState;
-			return DataTypeStateDto.createSelectionButtonDto();
+			return DataTypeStateDto.createSelectionButtonDto(bItem.getReferenceTypeState());
 		default:
 			return null;
 		}

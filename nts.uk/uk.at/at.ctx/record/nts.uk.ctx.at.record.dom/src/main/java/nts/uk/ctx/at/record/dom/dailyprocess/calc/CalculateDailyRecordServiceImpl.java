@@ -51,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
@@ -60,7 +61,11 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
@@ -161,10 +166,21 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			FlowFixedRestSet fluidPrefixBreakTimeSet = new FlowFixedRestSet(false,false,false,FlowFixedRestCalcMethod.REFER_MASTER);
 			
 			/*所定時間設定取得*/
-			val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId, "901");//integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
-			
+			Optional<PredetemineTimeSetting> predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+			if(!predetermineTimeSet.isPresent()) {
+				predetermineTimeSet = Optional.of(new PredetemineTimeSetting(companyId,
+																new AttendanceTime(0),
+																new WorkTimeCode(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString()),
+																new PredetermineTime(new BreakDownTimeDay(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
+																		  			 new BreakDownTimeDay(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0))),
+																false,
+																new PrescribedTimezoneSetting(new TimeWithDayAttr(0),new TimeWithDayAttr(0),Collections.emptyList()),
+																new TimeWithDayAttr(0),
+																false));
+						
+			}
 			//固定勤務の設定
-			FixedWorkSetting fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, "901").get();//workInfo.getRecordWorkInformation().getWorkTimeCode().toString()).get();
+			FixedWorkSetting fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workInfo.getRecordWorkInformation().getWorkTimeCode().toString()).get();
 			
 			
 			//0時跨ぎ計算設定
@@ -283,8 +299,19 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		/*所定時間設定取得*/
 		//val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,"901");// integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
-		val predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
-		
+		Optional<PredetemineTimeSetting> predetermineTimeSet = predetemineTimeSetRepository.findByWorkTimeCode(companyId,integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString());
+		if(!predetermineTimeSet.isPresent()) {
+			predetermineTimeSet = Optional.of(new PredetemineTimeSetting(companyId,
+															new AttendanceTime(0),
+															new WorkTimeCode(integrationOfDaily.getWorkInformation().getRecordWorkInformation().getWorkTimeCode().toString()),
+															new PredetermineTime(new BreakDownTimeDay(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0)),
+																	  			 new BreakDownTimeDay(new AttendanceTime(0),new AttendanceTime(0),new AttendanceTime(0))),
+															false,
+															new PrescribedTimezoneSetting(new TimeWithDayAttr(0),new TimeWithDayAttr(0),Collections.emptyList()),
+															new TimeWithDayAttr(0),
+															false));
+					
+		}
 		/*1日の計算範囲取得*/
 		val calcRangeOfOneDay = new TimeSpanForCalc(predetermineTimeSet.get().getStartDateClock()
 												   ,predetermineTimeSet.get().getStartDateClock().forwardByMinutes(predetermineTimeSet.get().getRangeTimeDay().valueAsMinutes()));
