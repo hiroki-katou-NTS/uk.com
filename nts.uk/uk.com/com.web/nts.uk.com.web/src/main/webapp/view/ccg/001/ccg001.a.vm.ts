@@ -18,7 +18,9 @@ module nts.uk.com.view.ccg001.a {
             isEmployeeWorkplaceFollow: KnockoutObservable<boolean>;
             isMutipleCheck: KnockoutObservable<boolean>;
             isSelectAllEmployee: KnockoutObservable<boolean>;
-            baseDate: KnockoutObservable<Date>;
+            periodStartDate: KnockoutObservable<Date>;
+            periodEndDate: KnockoutObservable<Date>;
+            baseDate: KnockoutObservable<Date>;                
             selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
 
             constructor() {
@@ -37,6 +39,8 @@ module nts.uk.com.view.ccg001.a {
                 self.isMutipleCheck = ko.observable(true);
                 self.isSelectAllEmployee = ko.observable(true);
                 self.baseDate = ko.observable(new Date());
+                self.periodStartDate = ko.observable(new Date());
+                self.periodEndDate = ko.observable(new Date());
                 
                 // Init component.
                 self.applyView();
@@ -83,6 +87,8 @@ module nts.uk.com.view.ccg001.a {
                 self.baseDate(new Date());
                 self.ccgcomponent = {
                     baseDate: self.baseDate,
+                    periodStartDate: self.baseDate,
+                    periodEndDate: self.baseDate,
                     isQuickSearchTab: self.isQuickSearchTab(),
                     isAdvancedSearchTab: self.isAdvancedSearchTab(),
                     isAllReferableEmployee: self.isAllReferableEmployee(),

@@ -5,13 +5,14 @@ module nts.uk.com.view.ccg.share.ccg {
 
         // Service paths.
         var servicePath = {
-            searchAllEmployee: "basic/organization/employee/allemployee",
+            searchAllEmployee: "basic/organization/employee/quicksearch",
             searchEmployeeByLogin: "basic/organization/employee/onlyemployee",
             searchModeEmployee: "basic/organization/employee/advanced",
             searchOfWorkplace: "basic/organization/employee/ofworkplace",
             searchWorkplaceChild: "basic/organization/employee/workplacechild",
             searchWorkplaceOfEmployee: "basic/organization/employee/workplaceemp",
             getOfSelectedEmployee: "basic/organization/employee/getoffselect",
+            searchAllWorkType: "at/share/worktype/findNotDeprecated",
             
         }
 
@@ -64,6 +65,11 @@ module nts.uk.com.view.ccg.share.ccg {
          */
         export function getOfSelectedEmployee(baseDate: Date, employeeIds: string[]): JQueryPromise<model.EmployeeSearchDto[]> {
             return nts.uk.request.ajax('com', servicePath.getOfSelectedEmployee, { baseDate: baseDate, employeeIds: employeeIds });
+        }
+        
+        
+        export function searchAllWorkType(): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', servicePath.searchAllWorkType);
         }
         
         

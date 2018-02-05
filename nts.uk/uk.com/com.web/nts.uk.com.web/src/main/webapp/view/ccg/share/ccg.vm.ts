@@ -57,13 +57,14 @@ module nts.uk.com.view.ccg.share.ccg {
             jobtitles: any;
             workplaces: TreeComponentOption;
             employeeinfo: any;
-            worktypes: any;
             closureList: KnockoutObservableArray<any>;
             selectedClosure: KnockoutObservable<string>;
+            periodStartDate: KnockoutObservable<any>;
+            periodEndDate: KnockoutObservable<any>;
             periodStart: KnockoutObservable<any>;
             periodEnd: KnockoutObservable<any>;
             
-            //params sceen G
+            //params Status Of Employee
             incumbent: KnockoutObservableArray<any>;
             selectedIncumbent: any;
             
@@ -82,6 +83,12 @@ module nts.uk.com.view.ccg.share.ccg {
             onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
             onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
             onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+
+            // List WorkType
+            listWorkType: KnockoutObservableArray<WorkType>;
+            selectedWorkTypeCode: KnockoutObservableArray<string>;
+            
+            workTypeColumns: KnockoutObservableArray<any>;
 
             /**
              * Init screen model
@@ -118,10 +125,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isOpenClassificationList = ko.observable(false);
                 self.isOpenJoptitleList = ko.observable(false);
                 self.isOpenWorkplaceList = ko.observable(false);
+                self.isOpenWorkTypeList = ko.observable(false);
                 self.closureList = ko.observableArray([]);
                 self.selectedClosure = ko.observable('');
-                self.periodStart = ko.observable();
-                self.periodEnd = ko.observable();
+                self.periodStartDate = ko.observable(new Date());
+                self.periodEndDate = ko.observable(new Date());
+                self.periodStart = ko.observable('');
+                self.periodEnd = ko.observable('');
                 
                 self.incumbent = ko.observableArray([
                     { code: '1', name: nts.uk.resource.getText("CCG001_40") },
@@ -146,6 +156,16 @@ module nts.uk.com.view.ccg.share.ccg {
                     { code: '2', name: nts.uk.resource.getText("CCG001_41") }
                 ]);
                 self.selectedRetirement = ko.observable(1);
+                
+                //WorkType
+                self.listWorkType = ko.observableArray([]);
+                self.selectedWorkTypeCode = ko.observableArray([]);
+                
+                // Define gridlist's columns
+                self.workTypeColumns = ko.observableArray([
+                    { headerText: nts.uk.resource.getText('CCG001_60'), prop: 'workTypeCode', width: 50 },
+                    { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'name', width: 100 }
+                ]);
             }
 
             /**
@@ -223,37 +243,37 @@ module nts.uk.com.view.ccg.share.ccg {
                 $('#tab-2').find('#WorkTypeList').find('.ui-accordion-header').on('click', function() {
                     self.isOpenWorkTypeList(!self.isOpenWorkTypeList());
                 });
-                $("[tabindex='6']").on('keydown', function(e) {
+                $("[tabindex='10']").on('keydown', function(e) {
                     if (e.which == 9 && self.isAdvancedSearchTab) {
                         self.selectedTab('tab-2');
                         if (!self.isOpenStatusOfEmployeeList()) {
                             $('#tab-2').find('#StatusOfEmployeeList').find('.ui-accordion-header').click();
                         }
-                        $("[tabindex='9']").on('keydown', function(e) {
+                        $("[tabindex='11']").on('keydown', function(e) {
                             if (e.which == 9) {
                                 if (!self.isOpenEmploymentList()) {
                                     $('#tab-2').find('#EmploymentList').find('.ui-accordion-header').click();
                                 }
                             }
-                            $("[tabindex='11']").on('keydown', function(e) {
+                            $("[tabindex='12']").on('keydown', function(e) {
                                 if (e.which == 9) {
                                     if (!self.isOpenClassificationList()) {
                                         $('#tab-2').find('#ClassificationList').find('.ui-accordion-header').click();
                                     }
                                 }
-                                $("[tabindex='12']").on('keydown', function(e) {
+                                $("[tabindex='13']").on('keydown', function(e) {
                                     if (e.which == 9) {
                                         if (!self.isOpenJoptitleList()) {
                                             $('#tab-2').find('#JoptitleList').find('.ui-accordion-header').click();
                                         }
                                     }
-                                    $("[tabindex='13']").on('keydown', function(e) {
+                                    $("[tabindex='14']").on('keydown', function(e) {
                                         if (e.which == 9) {
                                             if (!self.isOpenWorkplaceList()) {
                                                 $('#tab-2').find('#WorkplaceList').find('.ui-accordion-header').click();
                                             }
                                         }
-                                        $("[tabindex='14']").on('keydown', function(e) {
+                                        $("[tabindex='15']").on('keydown', function(e) {
                                             if (e.which == 9) {
                                                 if (!self.isOpenWorkTypeList()) {
                                                     $('#tab-2').find('#WorkTypeList').find('.ui-accordion-header').click();
@@ -266,8 +286,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         });
                     }
                 });
-                $("[tabindex='2']").on('keydown', function(e) {
-                    if (e.which == 9 && self.selectedTab() == 'tab-2' && !$(e.target).parents("[tabindex='2']")[0]) {
+                $("[tabindex='6']").on('keydown', function(e) {
+                    if (e.which == 9 && self.selectedTab() == 'tab-2' && !$(e.target).parents("[tabindex='6']")[0]) {
                         self.selectedTab('tab-1');
                     }
                 });
@@ -426,7 +446,10 @@ module nts.uk.com.view.ccg.share.ccg {
                         if(!self.isSelectAllEmployee) {
                             $('#employeeinfo').ntsListComponent(self.employeeinfo);
                         }
-                        $('#workTypeList').ntsListComponent(self.worktypes);
+                        service.searchAllWorkType()
+                            .done(function(workTypeList: Array<WorkType>) {
+                                self.listWorkType(workTypeList);
+                        });
                     }
                 }).fail(function(error){
                     nts.uk.ui.dialog.alertError(error);
@@ -652,16 +675,6 @@ module nts.uk.com.view.ccg.share.ccg {
                         isShowNoSelectRow: false,
                         maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYEE
                     }
-                    
-                    self.worktypes = {
-                        isShowAlreadySet: false,
-                        isMultiSelect: true,
-                        selectType: SelectType.SELECT_ALL,
-                        listType: ListType.EMPLOYMENT,
-                        selectedCode: self.selectedCodeWorkType,
-                        isDialog: true,
-                        maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT
-                    };
                 }
             }
         }
@@ -672,6 +685,17 @@ module nts.uk.com.view.ccg.share.ccg {
             static MAX_ROWS_JOBTITLE = 10;
             static MAX_ROWS_WORKPLACE = 10;
             static MAX_ROWS_EMPLOYEE = 20;    
+        }
+        
+        interface WorkType {
+            abbreviationName: string;
+            companyId: string;
+            displayAtr: number;
+            memo: string;
+            name: string;
+            sortOrder: number;
+            symbolicName: string;
+            workTypeCode: string;
         }
     }
 }

@@ -15,7 +15,7 @@
 			</div>
 			<div class="control-group ccg001-control-group">
 				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_28')}</div>
-				<div id="combo-box" style="display: inline-table" data-bind="ntsComboBox: {
+				<div id="combo-box" tabindex="2" style="display: inline-table" data-bind="ntsComboBox: {
 					name: '#[CCG001_28]',
 					options: closureList,
 					optionsValue: 'code',
@@ -31,44 +31,44 @@
 			</div>
 			<div class="control-group ccg001-control-group">
 				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_29')}</div>
-				<div id="inp_baseDate" tabindex="1" data-bind="ntsDatePicker: {
+				<div id="inp_baseDate" tabindex="3" data-bind="ntsDatePicker: {
 					name: '#[CCG001_30]',
 					dateFormat: 'YYYY/MM/DD',
-					value: periodStart,
+					value: periodStartDate,
 					required: true }"></div> 
-					<div id="inp_baseDate" tabindex="2" data-bind="ntsDatePicker: {
+					<div id="inp_baseDate" tabindex="4" data-bind="ntsDatePicker: {
 					name: '#[CCG001_31]',
 					dateFormat: 'YYYY/MM/DD',
-					value: periodEnd,
+					value: periodEndDate,
 					required: true }"></div> 
 				<button tabindex="5" id="zcxvzxcv" class="proceed" data-bind="click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
 			</div>
-		<div tabindex="2" id="tab-panel" class="cf ccg-tabpanel pull-left"
+		<div tabindex="6" id="tab-panel" class="cf ccg-tabpanel pull-left"
 			data-bind="if: isQuickSearchTab||isAdvancedSearchTab, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 			<com:ko tag="if" bind="isQuickSearchTab">
 				<div tabindex="-1" class="tab-content-1">
-					<div tabindex="3" class="btn-quick-search" data-bind="if: isAllReferableEmployee, click: searchAllEmployee">
+					<div tabindex="7" class="btn-quick-search" data-bind="if: isAllReferableEmployee, click: searchAllEmployee">
 						<div class="flex valign-center btn_big">
 							<i class="icon icon-28-allemployee"></i>
 							<label class="labelBigButton">#{i18n.getText('CCG001_10')}</label> 
 						</div>
 						<span class="controlSettingBg caret-right"></span>
 					</div>
-					<div tabindex="4" class="btn-quick-search" data-bind="if: isOnlyMe, click: getEmployeeLogin">
+					<div tabindex="8" class="btn-quick-search" data-bind="if: isOnlyMe, click: getEmployeeLogin">
 						<div class="flex valign-center btn_big">
 							<i class="icon icon-26-onlyemployee"></i>
 							<label class="labelBigButton">#{i18n.getText('CCG001_11')}</label> 
 						</div>
 						<span class="controlSettingBg caret-right"></span>
 					</div>
-					<div tabindex="5" class="btn-quick-search" data-bind="if: isEmployeeOfWorkplace, click: searchOfWorkplace">
+					<div tabindex="9" class="btn-quick-search" data-bind="if: isEmployeeOfWorkplace, click: searchOfWorkplace">
 						<div class="flex valign-center btn_small">
 							<i class="icon icon-48-ofworkplace"></i>
 							<label class="labelSmallButton">#{i18n.getText('CCG001_12')}</label> 
 						</div>
 						<span class="controlSetting caret-right"></span>
 					</div>
-					<div tabindex="6" class="btn-quick-search" data-bind="if: isEmployeeWorkplaceFollow, click: searchWorkplaceChild">
+					<div tabindex="10" class="btn-quick-search" data-bind="if: isEmployeeWorkplaceFollow, click: searchWorkplaceChild">
 						<div class="flex valign-center btn_small">
 							<i class="icon icon-49-workplacechild"></i>
 							<label class="labelSmallButton">#{i18n.getText('CCG001_13')}</label> 
@@ -84,7 +84,7 @@
 								<div>
 									<label>#{i18n.getText('CCG001_20')}</label>
 								</div>
-								<div tabindex="-1" class="accordion" id="StatusOfEmployeeList"
+								<div tabindex="11" class="accordion" id="StatusOfEmployeeList"
 									data-bind="ntsAccordion: {enable: true}">
 									<h3>
 										<label>#{i18n.getText('CCG001_42')}</label>
@@ -147,7 +147,7 @@
 										</div>
 									</div>
 								</div>
-								<div tabindex="-1" class="accordion" id="EmploymentList"
+								<div tabindex="12" class="accordion" id="EmploymentList"
 									data-bind="ntsAccordion: {enable: true}">
 									<h3>
 										<label>#{i18n.getText('CCG001_5')}</label>
@@ -156,7 +156,7 @@
 										<div id="employmentList" tabindex="7" style="width: 352px"></div>
 									</div>
 								</div>
-								<div tabindex="-1" class="accordion" id="ClassificationList"
+								<div tabindex="13" class="accordion" id="ClassificationList"
 									data-bind="ntsAccordion: {enable: true}">
 									<h3>
 										<label>#{i18n.getText('CCG001_6')}</label>
@@ -165,7 +165,7 @@
 										<div tabindex="8" id="classificationList"></div>
 									</div>
 								</div>
-								<div tabindex="-1" class="accordion" id="JoptitleList"
+								<div tabindex="14" class="accordion" id="JoptitleList"
 									data-bind="ntsAccordion: {enable: true}">
 									<h3>
 										<label>#{i18n.getText('CCG001_7',["Com_Jobtitle"])}</label>
@@ -174,7 +174,7 @@
 										<div tabindex="9" id="jobtitleList"></div>
 									</div>
 								</div>
-								<div tabindex="-1" class="accordion" id="WorkplaceList"
+								<div tabindex="15" class="accordion" id="WorkplaceList"
 									data-bind="ntsAccordion: {enable: true}">
 									<h3>
 										<label>#{i18n.getText('CCG001_8')}</label>
@@ -185,18 +185,26 @@
 											data-bind="click: detailWorkplace">#{i18n.getText('CCG001_9')}</button>
 									</div>
 								</div>
-								<div tabindex="-1" class="accordion" id="WorkTypeList"
+								<div tabindex="16" class="accordion" id="WorkTypeList"
 									data-bind="ntsAccordion: {enable: true}">
 									<h3>
 										<label>#{i18n.getText('CCG001_58')}</label>
 									</h3>
 									<div class="contentkcp">
-										<div id="workTypeList" tabindex="2" style="width: 352px"></div>
+										<table id="list-worktype" tabindex="2"
+										data-bind="ntsGridList: {
+											height: 235,
+											options: listWorkType,
+											optionsValue: 'workTypeCode',
+											columns: workTypeColumns,
+											multiple: true,
+											value: selectedWorkTypeCode
+										}"></table>
 									</div>
 								</div>
 							</div>
 							<div class="pull-left" style="height: 100%">
-								<div tabindex="15" class="btn_apply" data-bind="click: applyEmployee">
+								<div tabindex="17" class="btn_apply" data-bind="click: applyEmployee">
 									<div style="display:table-cell;vertical-align:middle;">
 										<div class="lbl-apply">#{i18n.getText('CCG001_25')}</div>
 									</div>
@@ -205,11 +213,11 @@
 							
 							<com:ko tag="ifnot" bind="isSelectAllEmployee">
 								<div class="pull-left" style="height: 100%">
-									<div tabindex="13" class="contentkcp"
+									<div tabindex="18" class="contentkcp"
 										id="employeeinfo"></div>
 								</div>
 								<div class="pull-left" style="height: 100%">
-									<div tabindex="17" class="btn_apply" data-bind="click: searchDataEmployee">
+									<div tabindex="19" class="btn_apply" data-bind="click: searchDataEmployee">
 										<div style="display:table-cell;vertical-align:middle;">
 											<i class="icon icon-01-searchmode"></i>
 											<div class="lbl-apply">#{i18n.getText('CCG001_26')}</div>
