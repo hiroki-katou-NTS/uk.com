@@ -23,7 +23,7 @@ module nts.uk.com.view.ccg015.a {
                 self.topPageModel = ko.observable(new TopPageModel());
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("CCG015_11"), width: "50px", key: 'code', dataType: "string", hidden: false },
-                    { headerText: nts.uk.resource.getText("CCG015_12"), width: "300px", key: 'nodeText', dataType: "string" }
+                    { headerText: nts.uk.resource.getText("CCG015_12"), width: "300px", key: 'nodeText', dataType: "string",formatter: _.escape}
                 ]);
                 self.isNewMode = ko.observable(true);
                 self.toppageSelectedCode.subscribe(function(selectedTopPageCode: string) {
@@ -119,7 +119,7 @@ module nts.uk.com.view.ccg015.a {
             private collectData(): TopPageDto {
                 var self = this;
                 //mock data
-                var data: TopPageDto = { topPageCode: _.escape(self.topPageModel().topPageCode()), topPageName: _.escape(self.topPageModel().topPageName()), languageNumber: 0, layoutId: self.topPageModel().layoutId() };
+                var data: TopPageDto = { topPageCode: self.topPageModel().topPageCode(), topPageName: self.topPageModel().topPageName(), languageNumber: 0, layoutId: self.topPageModel().layoutId() };
                 return data;
             }
 

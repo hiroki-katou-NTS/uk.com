@@ -6,6 +6,8 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pereg.dom.person.info.dateitem.DateItem;
 import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ButtonName;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.RadioName;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypeState;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
@@ -44,11 +46,16 @@ public class DataTypeState extends AggregateRoot {
 		return SelectionItem.createFromJavaType(referenceTypeState);
 	}
 
-	public static DataTypeState createSelectionRadio() {
-		return SelectionRadio.createFromJavaType();
+<<<<<<< HEAD
+	public static DataTypeState createSelectionRadio(RadioName radioName) {
+		return SelectionRadio.createFromJavaType(radioName);
+=======
+	public static DataTypeState createSelectionRadio(ReferenceTypeState referenceTypeState) {
+		return SelectionRadio.createFromJavaType(referenceTypeState);
+>>>>>>> 7b6cd570859aa45d31b703bda626d00d0e3f6b70
 	}
 
-	public static DataTypeState createSelectionButton() {
-		return SelectionButton.createFromJavaType();
+	public static DataTypeState createSelectionButton(ButtonName buttonName) {
+		return SelectionButton.createFromJavaType(buttonName);
 	}
 }

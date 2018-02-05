@@ -61,7 +61,7 @@ public class KrqstHdAppSet extends UkJpaEntity implements Serializable{
 	public int wrkHours;
 	
 	/** 年休より優先消化チェック区分 */
-	@Column(name = "PRIDIG_CHECK_YEAREND_BREAK")
+	@Column(name = "PRIORITY_DIGESTION_ATR")
 	public int pridigCheck;
 	
 	/** 年休名称  */

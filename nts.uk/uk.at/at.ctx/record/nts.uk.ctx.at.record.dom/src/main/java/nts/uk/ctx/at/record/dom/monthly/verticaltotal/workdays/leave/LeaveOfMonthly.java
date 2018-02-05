@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 
 /**
  * 月別実績の休業
@@ -14,32 +17,56 @@ import lombok.val;
 public class LeaveOfMonthly {
 
 	/** 固定休業日数 */
-	private List<AggregateLeaveDays> fixLeaveDays;
+	private Map<Integer, AggregateLeaveDays> fixLeaveDays;
 	/** 任意休業日数 */
-	private List<AnyLeave> anyLeaveDays;
+	private Map<Integer, AnyLeave> anyLeaveDays;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public LeaveOfMonthly(){
 		
-		this.fixLeaveDays = new ArrayList<>();
-		this.anyLeaveDays = new ArrayList<>();
+		this.fixLeaveDays = new HashMap<>();
+		this.anyLeaveDays = new HashMap<>();
 	}
 	
 	/**
 	 * ファクトリー
-	 * @param fixLeaveDays 固定休業日数
-	 * @param anyLeaveDays 任意休業日数
+	 * @param fixLeaveDaysList 固定休業日数リスト
+	 * @param anyLeaveDaysList 任意休業日数リスト
 	 * @return 月別実績の休業
 	 */
 	public static LeaveOfMonthly of(
-			List<AggregateLeaveDays> fixLeaveDays,
-			List<AnyLeave> anyLeaveDays){
+			List<AggregateLeaveDays> fixLeaveDaysList,
+			List<AnyLeave> anyLeaveDaysList){
 		
 		val domain = new LeaveOfMonthly();
-		domain.fixLeaveDays = fixLeaveDays;
-		domain.anyLeaveDays = anyLeaveDays;
+		for (val fixLeaveDays : fixLeaveDaysList){
+			val leaveAtr = Integer.valueOf(fixLeaveDays.getLeaveAtr());
+			if (domain.fixLeaveDays.containsKey(leaveAtr)) continue;
+			domain.fixLeaveDays.put(leaveAtr, AggregateLeaveDays.of(
+					leaveAtr, new AttendanceDaysMonth(fixLeaveDays.getDays().v())));
+		}
+		for (val anyLeaveDays : anyLeaveDaysList){
+			val anyLeaveNo = Integer.valueOf(anyLeaveDays.getAnyLeaveNo());
+			if (domain.anyLeaveDays.containsKey(anyLeaveNo)) continue;
+			domain.anyLeaveDays.put(anyLeaveNo, AnyLeave.of(
+					anyLeaveNo, new AttendanceDaysMonth(anyLeaveDays.getDays().v())));
+		}
 		return domain;
+	}
+	
+	/**
+	 * 集計
+	 * @param workTypeDaysCountTable 勤務種類の日数カウント表
+	 */
+	public void aggregate(WorkTypeDaysCountTable workTypeDaysCountTable){
+
+		if (workTypeDaysCountTable == null) return;
+		
+		//*****（未）　仮に、固定休業区分1に加算する。固定休業・任意休業の振り分けが必要。
+		if (!this.fixLeaveDays.containsKey(1)) this.fixLeaveDays.put(1, new AggregateLeaveDays(1));
+		val targetDays = this.fixLeaveDays.get(1);
+		targetDays.addDays(workTypeDaysCountTable.getLeaveDays().v());
 	}
 }

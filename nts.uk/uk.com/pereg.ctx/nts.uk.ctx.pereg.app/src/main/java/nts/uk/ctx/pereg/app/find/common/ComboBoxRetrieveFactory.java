@@ -143,37 +143,25 @@ public class ComboBoxRetrieveFactory {
 			standardDate = GeneralDate.today();
 		}
 
-		List<ComboBoxObject> resultList = new ArrayList<ComboBoxObject>();
-		List<ComboBoxObject> comboboxItems = new ArrayList<ComboBoxObject>();
-
-		switch (selectionItemDto.getReferenceType()) {
+		ReferenceTypes RefType = selectionItemDto.getReferenceType();
+		String refCd = "";
+		switch (RefType) {
 		case ENUM:
 			EnumRefConditionDto enumTypeDto = (EnumRefConditionDto) selectionItemDto;
-			resultList = getEnumComboBox(enumTypeDto.getEnumName());
+			refCd = enumTypeDto.getEnumName();
 			break;
 		case CODE_NAME:
 			CodeNameRefTypeDto codeNameTypeDto = (CodeNameRefTypeDto) selectionItemDto;
-
-			resultList = getCodeNameComboBox(codeNameTypeDto.getTypeCode(), standardDate);
+			refCd = codeNameTypeDto.getTypeCode();
 			break;
 		case DESIGNATED_MASTER:
 			MasterRefConditionDto masterRefTypeDto = (MasterRefConditionDto) selectionItemDto;
 
-			resultList = getMasterComboBox(masterRefTypeDto.getMasterType(), employeeId, standardDate,
-					isDisplayItemCode, false, null);
+			refCd = masterRefTypeDto.getMasterType();
 			break;
 
 		}
-		if (!CollectionUtil.isEmpty(resultList)) {
-			if (!isRequired) {
-
-				comboboxItems = new ArrayList<ComboBoxObject>(Arrays.asList(new ComboBoxObject("", "")));
-
-			}
-
-			comboboxItems.addAll(resultList);
-		}
-		return comboboxItems;
+		return getComboBox(RefType, refCd, standardDate, employeeId, "", isDisplayItemCode, isRequired);
 	}
 
 	private List<ComboBoxObject> getMasterComboBox(String masterType, String employeeId, GeneralDate standardDate,
@@ -317,7 +305,8 @@ public class ComboBoxRetrieveFactory {
 	}
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes RefType, String RefCd,
-			GeneralDate standardDate, String employeeId, String workplaceId, boolean isRequired) {
+			GeneralDate standardDate, String employeeId, String workplaceId, boolean isDisplayItemCode,
+			boolean isRequired) {
 
 		List<ComboBoxObject> resultList = new ArrayList<ComboBoxObject>();
 		List<ComboBoxObject> comboboxItems = new ArrayList<ComboBoxObject>();
@@ -329,7 +318,7 @@ public class ComboBoxRetrieveFactory {
 			resultList = getCodeNameComboBox(RefCd, standardDate);
 			break;
 		case DESIGNATED_MASTER:
-			resultList = getMasterComboBox(RefCd, employeeId, standardDate, false, true, workplaceId);
+			resultList = getMasterComboBox(RefCd, employeeId, standardDate, isDisplayItemCode, true, workplaceId);
 			break;
 
 		}
@@ -337,9 +326,7 @@ public class ComboBoxRetrieveFactory {
 			if (!isRequired) {
 
 				comboboxItems = new ArrayList<ComboBoxObject>(Arrays.asList(new ComboBoxObject("", "")));
-
 			}
-
 			comboboxItems.addAll(resultList);
 		}
 		return comboboxItems;

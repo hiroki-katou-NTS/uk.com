@@ -110,8 +110,11 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-        compile group: 'nts.gul', name: 'nts.gul', version: '0.42'
-        compile group: 'nts.arc', name: 'nts.arc', version: '0.55'
+		// https://mvnrepository.com/artifact/org.quartz-scheduler/quartz
+		compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
+		
+        compile group: 'nts.gul', name: 'nts.gul', version: '0.43'
+        compile group: 'nts.arc', name: 'nts.arc', version: '0.56'
 	}
 }
 //=============com.file↓===========================================
@@ -854,12 +857,12 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pub', version: '0.3'
 		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pubimp', version: '0.3'
 		
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.ac', version: '0.3.8'
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: '0.3.8'
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: '0.3.8'
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: '0.3.8'
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: '0.3.8'
-		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pubimp', version: '0.3.8'
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.ac', version: '0.3.9'
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: '0.3.9'
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: '0.3.9'
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: '0.3.9'
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: '0.3.9'
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pubimp', version: '0.3.9'
 		
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.ac', version: '0.3.4'
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: '0.3.4'
@@ -1003,8 +1006,8 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: '0.2.9'
 		compile group: 'at.function', name: 'nts.uk.ctx.at.function.app', version: '0.3'
 		compile group: 'at.function', name: 'nts.uk.ctx.at.function.dom', version: '0.3'
-		compile group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: '0.3.8'
-		compile group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: '0.3.8'
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: '0.3.9'
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: '0.3.9'
 		compile group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: '0.3.4'
 		compile group: 'at.request', name: 'nts.uk.ctx.at.request.dom', version: '0.3.4'
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.app', version: '0.4.3'
@@ -1078,7 +1081,7 @@ project (':query:nts.uk.query.infra') {
 		
 		compile group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: '0.2.9'
 		compile group: 'at.function', name: 'nts.uk.ctx.at.function.infra', version: '0.3'
-		compile group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: '0.3.8'
+		compile group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: '0.3.9'
 		compile group: 'at.request', name: 'nts.uk.ctx.at.request.infra', version: '0.3.4'
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.infra', version: '0.4.3'
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: '0.5.5'

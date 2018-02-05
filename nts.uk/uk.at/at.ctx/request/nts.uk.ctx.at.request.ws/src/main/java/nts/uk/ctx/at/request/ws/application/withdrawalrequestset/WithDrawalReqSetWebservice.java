@@ -7,7 +7,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.withdrawalrequestset.UpdateWithDrawalReqSetCommand;
-import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.withdrawalrequestset.UpdateWithDrawalReqSetCommandHandler;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.withdrawalrequestset.UpdateWithDrawalReqSetHandler;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetFinder;
 
@@ -18,7 +18,7 @@ public class WithDrawalReqSetWebservice extends WebService {
 	private WithDrawalReqSetFinder finder;
 	
 	@Inject
-	private UpdateWithDrawalReqSetCommandHandler update;
+	private UpdateWithDrawalReqSetHandler update;
 	
 	@POST
 	@Path("findByCompanyID")

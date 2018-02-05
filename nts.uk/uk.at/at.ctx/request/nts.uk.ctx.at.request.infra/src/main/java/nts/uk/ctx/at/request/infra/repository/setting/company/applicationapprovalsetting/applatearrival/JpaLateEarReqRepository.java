@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.repository.setting.company.applicationapprovalsetting.applicationlatearrival;
+package nts.uk.ctx.at.request.infra.repository.setting.company.applicationapprovalsetting.applatearrival;
 
 import java.util.Optional;
 
@@ -12,11 +12,12 @@ import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalset
 import nts.uk.shr.com.context.AppContexts;
 
 /**
+ * Jpa Late Early Request Repository
  * TanLV
  *
  */
 @Stateless
-public class JpaLateEarlyRequestRepository extends JpaRepository implements LateEarlyRequestRepository {
+public class JpaLateEarReqRepository extends JpaRepository implements LateEarlyRequestRepository {
 
 	/**
 	 * Get data

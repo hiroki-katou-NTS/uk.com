@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.adapter.user;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -28,4 +29,15 @@ public interface UserAdapter {
 	 * @return the user by associate id
 	 */
 	Optional<UserImport> findUserByAssociateId(String associatePersonId);
+	
+	
+	/**
+	 * Gets the list users by list person ids.
+	 *
+	 * @param listPersonIds the list person ids
+	 * @return the list users by list person ids
+	 */
+	List<UserImport> getListUsersByListPersonIds(List<String> listPersonIds);
+	
+
 }

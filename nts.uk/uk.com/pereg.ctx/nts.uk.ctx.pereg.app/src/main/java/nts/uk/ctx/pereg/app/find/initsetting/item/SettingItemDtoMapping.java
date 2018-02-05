@@ -36,7 +36,7 @@ public class SettingItemDtoMapping {
 			SelectionItemLst.forEach(item -> {
 
 				List<ComboBoxObject> comboxList = this.comboBoxFac.getComboBox(item.getSelectionItemRefType(),
-						item.getSelectionItemRefCd(), baseDate, employeeId, null, true);
+						item.getSelectionItemRefCd(), baseDate, employeeId, null, false, true);
 
 				comboxList.forEach(cbItem -> {
 					if (cbItem.getOptionValue().equals(item.getSaveData().getValue())) {
