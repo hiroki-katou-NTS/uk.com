@@ -48,6 +48,10 @@ public class ErrorContentDto {
 	//社員名
 	private String employeeName = "";
 	
+	/**
+	 * Create a error content json object to transfer to client side.
+	 * @return error content json object
+	 */
 	public JsonObject buildJsonObject() {
 		JsonObjectBuilder tmp = Json.createObjectBuilder();
 		tmp.add(MESSAGE, message);

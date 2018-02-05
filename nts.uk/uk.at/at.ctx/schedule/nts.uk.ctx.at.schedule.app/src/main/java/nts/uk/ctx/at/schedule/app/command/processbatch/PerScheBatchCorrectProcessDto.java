@@ -50,7 +50,6 @@ public class PerScheBatchCorrectProcessDto {
 	 * Build error list content json
 	 * @return error list content json
 	 */
-
 	private String buildJsonString() {
 		JsonArrayBuilder arr = Json.createArrayBuilder();
 		
@@ -61,6 +60,10 @@ public class PerScheBatchCorrectProcessDto {
 		return arr.build().toString();
 	}
 	
+	/**
+	 * Create a json string from error content json array
+	 * @return string of error content json array
+	 */
 	@Override
 	public String toString() {
 		return buildJsonString();

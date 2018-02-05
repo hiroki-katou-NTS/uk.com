@@ -67,9 +67,11 @@ public class ScheBatchCorrectExecutionCommandHandler
 	@Inject
 	private ClosureEmploymentRepository closureEmployment;
 	
+	/** The ScheCreExeWorkTimeHandler */
 	@Inject
 	private ScheCreExeWorkTimeHandler scheCreExeWorkTimeHandler;
 	
+	/** The ScheCreExeBasicScheduleHandler  */
 	@Inject
 	private ScheCreExeBasicScheduleHandler scheCreExeBasicScheduleHandler;
 	
@@ -130,15 +132,18 @@ public class ScheBatchCorrectExecutionCommandHandler
 		dto.setEndTime(GeneralDateTime.now());
 		dto.setStartTime(GeneralDateTime.now());
 		dto.setExecutionState(ExecutionState.PROCESSING);
-		dto.setErrors(new ArrayList<>());
+		
+		// Creating list of errors
+		List<ErrorContentDto> errorList = new ArrayList<>();
+		
+		dto.setErrors(errorList);
 		dto.setWithError(WithError.NO_ERROR);
 		
 		int countSuccess = DEFAULT_VALUE;
-		int countError = DEFAULT_VALUE;
 		
 		setter.setData(DATA_EXECUTION, dto);
 		setter.setData(NUMBER_OF_SUCCESS, countSuccess);
-		setter.setData(NUMBER_OF_ERROR, countError);
+		setter.setData(NUMBER_OF_ERROR, DEFAULT_VALUE);
 		
 		// 選択されている社員ループ
 		for (String employeeId : command.getEmployeeIds()) {
@@ -153,17 +158,14 @@ public class ScheBatchCorrectExecutionCommandHandler
 				Optional<String> optErrorMsg = registerProcess(companyId, command, employeeId, currentDateCheck);
 				
 				if (optErrorMsg.isPresent()) {
+					// Create and add error content to the errors list
 					ErrorContentDto errorContentDto = new ErrorContentDto();
 					errorContentDto.setMessage(optErrorMsg.get());
 					errorContentDto.setEmployeeCode(employeeId);
 					errorContentDto.setEmployeeName(employeeDto.getEmployeeName());
 					errorContentDto.setDateYMD(currentDateCheck);
-					dto.getErrors().add(errorContentDto);
-					dto.setWithError(WithError.WITH_ERROR);
-					countError++;
-					setter.updateData(NUMBER_OF_ERROR, countError);
+					errorList.add(errorContentDto);
 				} else {
-					dto.setWithError(WithError.NO_ERROR);
 					countSuccess++;
 					setter.updateData(NUMBER_OF_SUCCESS, countSuccess);
 				}
@@ -172,6 +174,16 @@ public class ScheBatchCorrectExecutionCommandHandler
 				// Add 1 more day to current day
 				currentDateCheck = currentDateCheck.nextValue(true);
 			}
+		}
+		
+		// Count emount of error
+		if (errorList.size() > 0) {
+			dto.setWithError(WithError.WITH_ERROR);
+			setter.updateData(NUMBER_OF_ERROR, errorList.size());
+		}
+		// If there is completely no error, set to NO_ERROR
+		else {
+			dto.setWithError(WithError.NO_ERROR);
 		}
 
 		dto.setEndTime(GeneralDateTime.now());
