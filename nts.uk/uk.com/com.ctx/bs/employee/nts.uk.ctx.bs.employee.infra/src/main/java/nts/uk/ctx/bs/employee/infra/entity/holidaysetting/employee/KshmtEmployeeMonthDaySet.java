@@ -39,7 +39,7 @@ public class KshmtEmployeeMonthDaySet extends UkJpaEntity implements Serializabl
 
     /** The in legal hd. */
     @Column(name = "IN_LEGAL_HD")
-    private BigDecimal inLegalHd;
+    private double inLegalHd;
 
     /**
      * Instantiates a new kshmt employee month day set.
