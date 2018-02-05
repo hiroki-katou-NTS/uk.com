@@ -29,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
@@ -39,7 +38,6 @@ import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.NotUseAtr;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.info.BloodType;
 import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
 import nts.uk.ctx.pereg.app.find.person.info.item.CodeNameRefTypeDto;
@@ -80,9 +78,6 @@ public class ComboBoxRetrieveFactory {
 
 	@Inject
 	private TempAbsenceRepositoryFrame tempAbsFrameRepo;
-
-	@Inject
-	private WorkplaceInfoRepository workPlaceRepo;
 
 	@Inject
 	private JobTitleInfoRepository jobTitleRepo;
@@ -137,7 +132,7 @@ public class ComboBoxRetrieveFactory {
 	private final String JP_SPACE = "　";
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
-			GeneralDate standardDate, boolean isDisplayItemCode, boolean isRequired) {
+			GeneralDate standardDate, boolean isRequired) {
 
 		if (standardDate == null) {
 			standardDate = GeneralDate.today();
@@ -156,16 +151,14 @@ public class ComboBoxRetrieveFactory {
 			break;
 		case DESIGNATED_MASTER:
 			MasterRefConditionDto masterRefTypeDto = (MasterRefConditionDto) selectionItemDto;
-
 			refCd = masterRefTypeDto.getMasterType();
 			break;
-
 		}
-		return getComboBox(RefType, refCd, standardDate, employeeId, "", isDisplayItemCode, isRequired);
+		return getComboBox(RefType, refCd, standardDate, employeeId, "", isRequired);
 	}
 
 	private List<ComboBoxObject> getMasterComboBox(String masterType, String employeeId, GeneralDate standardDate,
-			boolean isDisplayItemCode, boolean isCps002, String workplaceId) {
+			boolean isCps002, String workplaceId) {
 		String companyId = AppContexts.user().companyId();
 		switch (masterType) {
 
@@ -174,55 +167,31 @@ public class ComboBoxRetrieveFactory {
 			break;
 		case "M00002":
 			// 職場マスタ
-			if (isDisplayItemCode) {
-				return workPlaceFinder.findFlatList(standardDate).stream()
-						.map(workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(),
-								workPlace.code + JP_SPACE + workPlace.name))
-						.collect(Collectors.toList());
-
-			} else {
-				return workPlaceFinder.findFlatList(standardDate).stream()
-						.map(workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(), workPlace.name))
-						.collect(Collectors.toList());
-
-			}
+			return workPlaceFinder.findFlatList(standardDate).stream()
+					.map(workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(),
+							workPlace.code + JP_SPACE + workPlace.name))
+					.collect(Collectors.toList());
 
 		case "M00003":
-			// 雇用マスタ
 			return employmentRepo.findAll(companyId).stream()
 					.map(employment -> new ComboBoxObject(employment.getEmploymentCode().v(),
 							employment.getEmploymentCode().v() + JP_SPACE + employment.getEmploymentName().v()))
 					.collect(Collectors.toList());
-
+			
 		case "M00004":
 			// 分類マスタ１
-			if (isDisplayItemCode) {
-				return classificationRepo.getAllManagementCategory(companyId)
-						.stream().map(
-								classification -> new ComboBoxObject(classification.getClassificationCode().v(),
-										classification.getClassificationCode().v() + JP_SPACE
-												+ classification.getClassificationName().v()))
-						.collect(Collectors.toList());
-			} else {
-
-				return classificationRepo.getAllManagementCategory(companyId).stream()
-						.map(classification -> new ComboBoxObject(classification.getClassificationCode().v(),
-								classification.getClassificationName().v()))
-						.collect(Collectors.toList());
-			}
+			return classificationRepo.getAllManagementCategory(companyId)
+					.stream().map(
+							classification -> new ComboBoxObject(classification.getClassificationCode().v(),
+									classification.getClassificationCode().v() + JP_SPACE
+											+ classification.getClassificationName().v()))
+					.collect(Collectors.toList());
 		case "M00005":
 			// 職位マスタ
-			if (isDisplayItemCode) {
-				return jobTitleRepo.findAll(companyId, standardDate).stream()
-						.map(jobTitle -> new ComboBoxObject(jobTitle.getJobTitleId(),
-								jobTitle.getJobTitleCode() + JP_SPACE + jobTitle.getJobTitleName().v()))
-						.collect(Collectors.toList());
-			} else {
-				return jobTitleRepo.findAll(companyId, standardDate).stream()
-						.map(jobTitle -> new ComboBoxObject(jobTitle.getJobTitleId(), jobTitle.getJobTitleName().v()))
-						.collect(Collectors.toList());
-
-			}
+			return jobTitleRepo.findAll(companyId, standardDate).stream()
+					.map(jobTitle -> new ComboBoxObject(jobTitle.getJobTitleId(),
+							jobTitle.getJobTitleCode() + JP_SPACE + jobTitle.getJobTitleName().v()))
+					.collect(Collectors.toList());
 		case "M00006":
 			// 休職休業マスタ
 			return tempAbsFrameRepo.findWithUseState(companyId, NotUseAtr.USE.value).stream().map(
@@ -230,31 +199,16 @@ public class ComboBoxRetrieveFactory {
 					.collect(Collectors.toList());
 		case "M00007":
 			// 勤務種別マスタ
-			if (isDisplayItemCode) {
-				return businessTypeRepo.findAll(companyId).stream().map(businessType -> new ComboBoxObject(
-						businessType.getBusinessTypeCode().v(),
-						businessType.getBusinessTypeCode().v() + JP_SPACE + businessType.getBusinessTypeName().v()))
-						.collect(Collectors.toList());
-			} else {
-				return businessTypeRepo.findAll(companyId).stream()
-						.map(businessType -> new ComboBoxObject(businessType.getBusinessTypeCode().v(),
-								businessType.getBusinessTypeName().v()))
-						.collect(Collectors.toList());
-
-			}
+			return businessTypeRepo.findAll(companyId).stream().map(businessType -> new ComboBoxObject(
+					businessType.getBusinessTypeCode().v(),
+					businessType.getBusinessTypeCode().v() + JP_SPACE + businessType.getBusinessTypeName().v()))
+					.collect(Collectors.toList());
 		case "M00008":
 			// 勤務種類マスタ
-			List<WorkType> workTypeList = workTypeRepo.findNotDeprecateByCompanyId(companyId);
-			if (isDisplayItemCode) {
-				return workTypeList.stream()
-						.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(),
-								workType.getWorkTypeCode().v() + JP_SPACE + workType.getName().v()))
-						.collect(Collectors.toList());
-			} else {
-				return workTypeList.stream()
-						.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(), workType.getName().v()))
-						.collect(Collectors.toList());
-			}
+			return workTypeRepo.findNotDeprecateByCompanyId(companyId).stream()
+					.map(workType -> new ComboBoxObject(workType.getWorkTypeCode().v(),
+							workType.getWorkTypeCode().v() + JP_SPACE + workType.getName().v()))
+					.collect(Collectors.toList());
 		case "M00009":
 			// 就業時間帯マスタ
 			PeregDto resultDto = layoutingProcessor.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
@@ -266,17 +220,21 @@ public class ComboBoxRetrieveFactory {
 			return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
 					.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
 							workTimeSetting.getWorktimeCode() + JP_SPACE
-									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName()))
+									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
 					.collect(Collectors.toList());
+			
 		case "M00014":
 			// 月間パターンマスタ
 			return monthlyPatternRepo.findAll(companyId).stream()
-					.map(x -> new ComboBoxObject(x.getMonthlyPatternCode().v(), x.getMonthlyPatternName().v()))
+					.map(x -> new ComboBoxObject(x.getMonthlyPatternCode().v(),
+							x.getMonthlyPatternCode().v() + JP_SPACE + x.getMonthlyPatternName().v()))
 					.collect(Collectors.toList());
+			
 		case "M00015":
-			// 加給時間帯マスタ
+			// 加給時間帯マスタ 
 			return bPSettingRepo.getAllBonusPaySetting(companyId).stream()
-					.map(x -> new ComboBoxObject(x.getCode().v(), x.getName().v())).collect(Collectors.toList());
+					.map(x -> new ComboBoxObject(x.getCode().v(), x.getCode().v() + JP_SPACE + x.getName().v()))
+					.collect(Collectors.toList());
 		default:
 			break;
 		}
@@ -293,6 +251,7 @@ public class ComboBoxRetrieveFactory {
 		return lstComboBoxValue;
 	}
 
+	@SuppressWarnings("unchecked")
 	private <E extends Enum<?>> List<ComboBoxObject> getEnumComboBox(String enumName) {
 		Class<?> enumClass = enumMap.get(enumName);
 		if (enumClass == null) {
@@ -305,8 +264,7 @@ public class ComboBoxRetrieveFactory {
 	}
 
 	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes RefType, String RefCd,
-			GeneralDate standardDate, String employeeId, String workplaceId, boolean isDisplayItemCode,
-			boolean isRequired) {
+			GeneralDate standardDate, String employeeId, String workplaceId, boolean isRequired) {
 
 		List<ComboBoxObject> resultList = new ArrayList<ComboBoxObject>();
 		List<ComboBoxObject> comboboxItems = new ArrayList<ComboBoxObject>();
@@ -318,7 +276,7 @@ public class ComboBoxRetrieveFactory {
 			resultList = getCodeNameComboBox(RefCd, standardDate);
 			break;
 		case DESIGNATED_MASTER:
-			resultList = getMasterComboBox(RefCd, employeeId, standardDate, isDisplayItemCode, true, workplaceId);
+			resultList = getMasterComboBox(RefCd, employeeId, standardDate, true, workplaceId);
 			break;
 
 		}

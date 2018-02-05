@@ -492,7 +492,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				break;
 
 			case 8: // button
-					dataTypeState = createSelectionItem(selectionItemRefType, selectionItemRefCode, 
+				dataTypeState = createSelectionItem(selectionItemRefType, selectionItemRefCode,
 						DataTypeValue.SELECTION_BUTTON);
 				break;
 			}

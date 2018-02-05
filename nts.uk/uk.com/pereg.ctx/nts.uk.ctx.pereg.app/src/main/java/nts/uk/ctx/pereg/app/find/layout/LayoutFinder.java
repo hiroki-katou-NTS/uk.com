@@ -467,7 +467,7 @@ public class LayoutFinder {
 
 					SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
 					valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, employeeId,
-							comboBoxStandardDate, true, valueItem.isRequired()));
+							comboBoxStandardDate, valueItem.isRequired()));
 				}
 			}
 		}
