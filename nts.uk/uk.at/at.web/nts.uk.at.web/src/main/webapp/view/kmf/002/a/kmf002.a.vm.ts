@@ -665,7 +665,7 @@ module nts.uk.at.view.kmf002.a {
             private setManageEnum(manage: any): void {
                 let _self = this;
                 _self.companyManageClassification.removeAll();
-                    _.forEach(manage, function(obj) {
+                    _.forEachRight(manage, function(obj) {
                         _self.companyManageClassification.push({"id":obj.value , "name":obj.localizedName});  
                     });    
             }
