@@ -24,7 +24,7 @@
 		<ui:define name="content">
 
 			<div id="contents-area">
-				<label>Chưa có Text</label>
+				<label data-bind="text:textlabel"></label>
 				<hr></hr>
 				<div
 					data-bind="ntsRadioBoxGroup: {
@@ -35,8 +35,8 @@
 					enable: enable}"></div>
 			</div>
 			<div id="functions-area-bottom">
-				<button data-bind="click : submit" class="proceed x-large">#{i18n.getText('KAL007_44')}</button>
-				<button data-bind="click : closeDialog">#{i18n.getText('KAL007_45')}</button>
+				<button data-bind="click : submit" class="proceed x-large">#{i18n.getText('KAL004_44')}</button>
+				<button data-bind="click : closeDialog">#{i18n.getText('KAL004_45')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

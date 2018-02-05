@@ -6,7 +6,11 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceDaysMonth;
+import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.vtotalwork.AttendanceStatusMap;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -43,30 +47,45 @@ public class AttendanceDaysOfMonthly {
 	/**
 	 * 集計
 	 * @param datePeriod 期間
+	 * @param workingSystem 労働制
 	 * @param workInfoOfDailys 日別実績の勤務情報リスト
 	 * @param workTypeMap 勤務種類マップ
+	 * @param attendanceStatusMap 出勤状態マップ
+	 * @param vacationAddSet 休暇加算設定
 	 */
 	public void aggregate(
 			DatePeriod datePeriod,
+			WorkingSystem workingSystem,
 			List<WorkInfoOfDailyPerformance> workInfoOfDailys,
-			Map<String, WorkType> workTypeMap){
+			Map<String, WorkType> workTypeMap,
+			AttendanceStatusMap attendanceStatusMap,
+			VacationAddSet vacationAddSet){
 		
 		this.days = new AttendanceDaysMonth(0.0);
 		for (val workInfoOfDaily : workInfoOfDailys){
-			if (!datePeriod.contains(workInfoOfDaily.getYmd())) continue;
+			val ymd = workInfoOfDaily.getYmd();
+			if (!datePeriod.contains(ymd)) continue;
 			val recordWorkInfo = workInfoOfDaily.getRecordWorkInformation();
 			val workTypeCd = recordWorkInfo.getWorkTypeCode();
 			if (!workTypeMap.containsKey(workTypeCd.v())) continue;
 			val workType = workTypeMap.get(workTypeCd.v());
 			
 			// 勤務種類を判断しカウント数を取得する
-			//*****（未）　カウントの確認方法の確認要。
-			val workTypeSet = workType.getWorkTypeSet();
+			val workTypeDaysCountTable = new WorkTypeDaysCountTable(workType, vacationAddSet);
 			
-			// 出勤状態を判断する
-			
-			// 出勤日数に加算する
-			this.days = this.days.addDays(0.0);
+			// 労働制を取得
+			if (workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE){
+
+				// 計算対象外の時、無条件で、出勤日数に加算する
+				this.days = this.days.addDays(workTypeDaysCountTable.getAttendanceDays().v());
+			}
+			else {
+				
+				// その他労働制の時、出勤状態を判断して、出勤日数に加算する
+				if (attendanceStatusMap.isAttendanceDay(ymd)){
+					this.days = this.days.addDays(workTypeDaysCountTable.getAttendanceDays().v());
+				}
+			}
 		}
 	}
 }

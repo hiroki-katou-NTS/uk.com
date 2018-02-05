@@ -23,12 +23,16 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.app.find.workplace.affiliate.AffWorlplaceHistItemDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.SalarySegment;
@@ -92,6 +96,15 @@ public class ComboBoxRetrieveFactory {
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepo;
 
+	@Inject
+	private WorkplaceConfigInfoFinder workPlaceFinder;
+
+	@Inject
+	private MonthlyPatternRepository monthlyPatternRepo;
+
+	@Inject
+	private BPSettingRepository bPSettingRepo;
+
 	private static Map<String, Class<?>> enumMap;
 	static {
 		Map<String, Class<?>> aMap = new HashMap<>();
@@ -113,6 +126,10 @@ public class ComboBoxRetrieveFactory {
 		aMap.put("E00008", WorkScheduleMasterReferenceAtr.class);
 		// 勤務予定の時間帯マスタ参照区分
 		aMap.put("E00009", TimeZoneScheduledMasterAtr.class);
+		// 時給者区分
+		aMap.put("E00010", HourlyPaymentAtr.class);
+		// するしない区分
+		aMap.put("E00011", NotUseAtr.class);
 
 		enumMap = Collections.unmodifiableMap(aMap);
 	}
@@ -170,14 +187,14 @@ public class ComboBoxRetrieveFactory {
 		case "M00002":
 			// 職場マスタ
 			if (isDisplayItemCode) {
-				return workPlaceRepo.findAll(companyId, standardDate).stream()
+				return workPlaceFinder.findFlatList(standardDate).stream()
 						.map(workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(),
-								workPlace.getWorkplaceCode().v() + JP_SPACE + workPlace.getWorkplaceName().v()))
+								workPlace.code + JP_SPACE + workPlace.name))
 						.collect(Collectors.toList());
 
 			} else {
-				return workPlaceRepo.findAll(companyId, standardDate).stream().map(
-						workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(), workPlace.getWorkplaceName().v()))
+				return workPlaceFinder.findFlatList(standardDate).stream()
+						.map(workPlace -> new ComboBoxObject(workPlace.getWorkplaceId(), workPlace.name))
 						.collect(Collectors.toList());
 
 			}
@@ -263,6 +280,15 @@ public class ComboBoxRetrieveFactory {
 							workTimeSetting.getWorktimeCode() + JP_SPACE
 									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName()))
 					.collect(Collectors.toList());
+		case "M00014":
+			// 月間パターンマスタ
+			return monthlyPatternRepo.findAll(companyId).stream()
+					.map(x -> new ComboBoxObject(x.getMonthlyPatternCode().v(), x.getMonthlyPatternName().v()))
+					.collect(Collectors.toList());
+		case "M00015":
+			// 加給時間帯マスタ
+			return bPSettingRepo.getAllBonusPaySetting(companyId).stream()
+					.map(x -> new ComboBoxObject(x.getCode().v(), x.getName().v())).collect(Collectors.toList());
 		default:
 			break;
 		}

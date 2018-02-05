@@ -180,6 +180,11 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 service.registerData(command).done(function() {
                     self.startPage(data.code()).done(() => {
                         info({ messageId: "Msg_15" }).then(() => {
+                            if (self.screenMode() == nts.uk.at.view.kal003.share.model.SCREEN_MODE.UPDATE) {
+                                $("#A3_4").focus();
+                            } else {
+                                $("#A3_2").focus();
+                            }
                         });
                     });
                 }).fail(error => {

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -44,16 +46,16 @@ public class DailyPerformanceCorrectionDto {
 	private List<DPCellStateDto> lstCellState;
 
 	private List<DPDataDto> lstData;
-	
+
 	private List<DailyPerformanceAuthorityDto> authorityDto;
-	
+
 	private String employmentCode;
-	
-	//A13_1  コメント
+
+	// A13_1 コメント
 	private String comment;
-	
+
 	private Set<ItemValue> itemValues;
-	
+
 	private Boolean showPrincipal;
 
 	public DailyPerformanceCorrectionDto() {
@@ -66,70 +68,70 @@ public class DailyPerformanceCorrectionDto {
 
 	/** Check if employeeId is login user */
 	private boolean isLoginUser(String employeeId) {
-		for (DailyPerformanceEmployeeDto employee : this.lstEmployee) {
-			if (employee.getId().equals(employeeId) && employee.isLoginUser()) {
-				return true;
-			}
-		}
-		return false;
+		DailyPerformanceEmployeeDto emp = this.lstEmployee.stream().filter(e -> e.getId().equals(employeeId))
+				.findFirst().orElse(null);
+		return emp == null ? false : emp.isLoginUser();
 	}
 
 	/** Find cell by dataID and columnKey */
-	private Optional<DPCellStateDto> findExistCellState(int dataId, String columnKey) {
-		for (int i = 0; i < this.lstCellState.size(); i++) {
-			if (this.lstCellState.get(i).getRowId().equals("_"+String.valueOf(dataId))
-					&& this.lstCellState.get(i).getColumnKey().equals(String.valueOf(columnKey))) {
-				return Optional.of(this.lstCellState.get(i));
-			}
-		}
-		return Optional.empty();
+	private Optional<DPCellStateDto> findExistCellState(String dataId, String columnKey) {
+		return this.lstCellState.stream().filter(cs -> {
+			return cs.getRowId().equals(dataId) && cs.getColumnKey().equals(columnKey);
+		}).findFirst();
 	}
 
 	/** Set disable cell & Create not existed cell */
-	private void setDisableCell(DPHeaderDto header, DPDataDto data, Map<Integer,DPAttendanceItem> mapDP ) {
-		Optional<DPCellStateDto> existedCellState = findExistCellState(data.getId(), header.getKey());
-
+	private void setDisableCell(DPHeaderDto header, DPDataDto data, Map<Integer, DPAttendanceItem> mapDP) {
+		String dataId = toId(data.getId());
+		Optional<DPCellStateDto> existedCellState = findExistCellState(dataId, header.getKey());
 		if (existedCellState.isPresent()) {
 			existedCellState.get().addState("ntsgrid-disable");
 		} else {
-			List<String> state = new ArrayList<>();
-			state.add("ntsgrid-disable");
-				int attendanceAtr = mapDP.get(Integer.parseInt(header.getKey().trim().substring(1, header.getKey().trim().length()))).getAttendanceAtr() ;
-				if(attendanceAtr == DailyAttendanceAtr.Code.value || attendanceAtr == DailyAttendanceAtr.Classification.value ){
-					if(attendanceAtr == DailyAttendanceAtr.Classification.value){
-						this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "NO"+header.getKey().substring(1, header.getKey().length()), state));
-					}else{
-						this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Code"+header.getKey().substring(1, header.getKey().length()), state));
-					}
-				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), "Name"+header.getKey().substring(1, header.getKey().length()), state));
+			String id = getID(header.getKey());
+			int attendanceAtr = mapDP.get(Integer.parseInt(id)).getAttendanceAtr();
+			if (attendanceAtr == DailyAttendanceAtr.Code.value
+					|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
+				if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
+					this.lstCellState.add(new DPCellStateDto(dataId, "NO" + id, toList("ntsgrid-disable")));
+				} else {
+					this.lstCellState.add(new DPCellStateDto(dataId, "Code" + id, toList("ntsgrid-disable")));
+				}
+				this.lstCellState.add(new DPCellStateDto(dataId, "Name" + id, toList("ntsgrid-disable")));
 			} else {
-				this.lstCellState.add(new DPCellStateDto("_"+data.getId(), header.getKey(), state));
+				this.lstCellState.add(new DPCellStateDto(dataId, header.getKey(), toList("ntsgrid-disable")));
 			}
 		}
+	}
+
+	private String getID(String key) {
+		key = key.trim();
+		return key.substring(1, key.length());
 	}
 
 	/** Mark current login employee */
 	public void markLoginUser() {
-		for (DailyPerformanceEmployeeDto employee : lstEmployee) {
-			if (employee.getId().equals(AppContexts.user().employeeId())) {
-				employee.setLoginUser(true);
-			}
-		}
+		String loginUser = AppContexts.user().employeeId();
+		markLoginUser(loginUser);
+	}
+
+	/** Mark login employee */
+	public void markLoginUser(String sId) {
+		lstEmployee.stream().filter(e -> e.getId().equals(sId)).findFirst().ifPresent(e -> {
+			e.markAsLoggedIn();
+		});
 	}
 
 	/** Create Access Modifier Cellstate */
-	public void createAccessModifierCellState(Map<Integer,DPAttendanceItem> mapDP) {
+	public void createAccessModifierCellState(Map<Integer, DPAttendanceItem> mapDP) {
 		this.getLstData().forEach(data -> {
 			boolean isLoginUser = isLoginUser(data.getEmployeeId());
 			this.getLstControlDisplayItem().getLstHeader().forEach(header -> {
 				if (header.getChangedByOther() && !header.getChangedByYou()) {
-					boolean isDisableCell = isLoginUser;
-					if (isDisableCell) {
+					if (isLoginUser) {
 						setDisableCell(header, data, mapDP);
 					}
 				} else if (!header.getChangedByOther() && header.getChangedByYou()) {
-					boolean isDisableCell = !isLoginUser;
-					if (isDisableCell) {
+					if (!isLoginUser) {
 						setDisableCell(header, data, mapDP);
 					}
 				} else if (!header.getChangedByOther() && !header.getChangedByYou()) {
@@ -145,14 +147,9 @@ public class DailyPerformanceCorrectionDto {
 			this.lstData.forEach(data -> {
 				if (data.getEmployeeId().equals(error.getEmployeeId())
 						&& data.getDate().equals(error.getProcessingDate())) {
-					String errorType = "";
-					for (int i = 0; i < lstErrorSetting.size(); i++) {
-						if (lstErrorSetting.get(i).getErrorAlarmCode().equals(error.getErrorCode())) {
-							errorType = lstErrorSetting.get(i).getTypeAtr() == 0 ? "ER" : "AL";
-						}
-					}
+					String errorType = getErrorType(lstErrorSetting, error);
 					// add error alarm to response data
-					if (!data.getError().equals("")) {
+					if (!data.getError().isEmpty()) {
 						if (!errorType.equals(data.getError())) {
 							data.setError("ER/AL");
 						}
@@ -160,52 +157,58 @@ public class DailyPerformanceCorrectionDto {
 						data.setError(errorType);
 					}
 					// add error alarm cell state
-					Optional<DPCellStateDto> existedCellState = findExistCellState(data.getId(),
-							error.getAttendanceItemId().toString());
-					if (existedCellState.isPresent()) {
-						List<String> lstState = existedCellState.get().getState();
-						lstState.add(errorType.equals("ER") ? "ntsgrid-error" : "ntsgrid-alarm");
-						existedCellState.get().setState(lstState);
-					} else {
-						List<String> state = new ArrayList<>();
-						state.add(errorType.equals("ER") ? "ntsgrid-error" : "ntsgrid-alarm");
-						List<DPCellStateDto> lstCellState = this.getLstCellState();
-						lstCellState.add(
-								new DPCellStateDto("_"+data.getId(), String.valueOf(error.getAttendanceItemId()), state));
-						this.setLstCellState(lstCellState);
-					}
+					setCellState(toId(data.getId()), error.getAttendanceItemId().toString(),
+							errorType.equals("ER") ? "ntsgrid-error" : "ntsgrid-alarm");
 				}
 			});
 		});
 	}
 
+	private String toId(int dataId) {
+		return "_" + dataId;
+	}
+
+	private String getErrorType(List<DPErrorSettingDto> lstErrorSetting, DPErrorDto error) {
+		DPErrorSettingDto setting = lstErrorSetting.stream()
+				.filter(c -> c.getErrorAlarmCode().equals(error.getErrorCode())).findFirst().orElse(null);
+		if (setting == null) {
+			return "";
+		}
+		return setting.getTypeAtr() == 0 ? "ER" : "AL";
+	}
+
 	/** Set AlarmCell state for Fixed cell */
 	public void setAlarmCellForFixedColumn(int dataId) {
-		String[] listHighlight = { "date", "employeeCode", "employeeName" };
-		for (String columnKey : listHighlight) {
-			Optional<DPCellStateDto> existedCellState = findExistCellState(dataId, columnKey);
-			if (existedCellState.isPresent()) {
-				existedCellState.get().addState("ntsgrid-alarm");
-			}else{
-				List<String> state = new ArrayList<>();
-				state.add("ntsgrid-alarm");
-				DPCellStateDto dto = new DPCellStateDto("_"+dataId, columnKey, state);
-				this.lstCellState.add(dto);
-			}
-		}
-
+		String id = toId(dataId);
+		Stream.of("date", "employeeCode", "employeeName").forEach(columnKey -> {
+			setCellState(id, columnKey, "ntsgrid-alarm");
+		});
 	}
-	
+
+	private void setCellState(String dataId, String columnKey, String state) {
+		Optional<DPCellStateDto> existedCellState = findExistCellState(dataId, columnKey);
+		if (existedCellState.isPresent()) {
+			existedCellState.get().addState(state);
+		} else {
+			DPCellStateDto dto = new DPCellStateDto(dataId, columnKey, toList(state));
+			this.lstCellState.add(dto);
+		}
+	}
+
+	private List<String> toList(String... item) {
+		return Stream.of(item).collect(Collectors.toCollection(ArrayList::new));
+	}
+
 	/** Set AlarmCell state for Fixed cell */
 	public void setLock(int rowId, String columnKey) {
-			Optional<DPCellStateDto> existedCellState = findExistCellState(rowId, columnKey);
-			if (existedCellState.isPresent()) {
-				existedCellState.get().addState("ntsgrid-disable");
-			}else{
-				List<String> state = new ArrayList<>();
-				state.add("ntsgrid-disable");
-				DPCellStateDto dto = new DPCellStateDto("_"+rowId, columnKey, state);
-				this.lstCellState.add(dto);
+		String id = toId(rowId);
+		Optional<DPCellStateDto> existedCellState = findExistCellState(id, columnKey);
+		if (existedCellState.isPresent()) {
+			existedCellState.get().addState("ntsgrid-disable");
+		} else {
+			List<String> state = new ArrayList<>();
+			state.add("ntsgrid-disable");
+			this.lstCellState.add(new DPCellStateDto(id, columnKey, state));
 		}
 
 	}

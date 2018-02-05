@@ -137,6 +137,7 @@ public class WorkTimeOfMonthly {
 				specificDateAtrOfDailys, workTypeMap);
 		
 		// 外出時間の集計（回数・時間）
+		//*****（未）　日別実績の外出時間・短時間勤務時間のクラスの作成待ち。集計処理は、未実装。
 		this.goOut.aggregate(datePeriod, attendanceTimeOfDailys);
 		
 		// 割増時間の集計
@@ -144,9 +145,6 @@ public class WorkTimeOfMonthly {
 		
 		// 休憩時間の集計
 		this.breakTime.aggregate(datePeriod, attendanceTimeOfDailys);
-		
-		// 休日時間の集計
-		//*****（未）　集計方法不明。設計確認要。
 		
 		// 深夜時間の集計
 		this.midnightTime.aggregate(datePeriod, attendanceTimeOfDailys);
