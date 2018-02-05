@@ -116,7 +116,7 @@ subprojects {
         compile group: 'nts.gul', name: 'nts.gul', version: '0.43'
         compile group: 'nts.arc', name: 'nts.arc', version: '0.56'
 		
-		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.7.32\1'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.7.31'
 	}
 }
 
