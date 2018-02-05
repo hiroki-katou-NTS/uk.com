@@ -53,7 +53,7 @@ public class DataTypeState extends AggregateRoot {
 	}
 
 
-	public static DataTypeState createSelectionButton(ButtonName buttonName) {
-		return SelectionButton.createFromJavaType(buttonName);
+	public static DataTypeState createSelectionButton(ReferenceTypeState referenceTypeState) {
+		return SelectionButton.createFromJavaType(referenceTypeState);
 	}
 }

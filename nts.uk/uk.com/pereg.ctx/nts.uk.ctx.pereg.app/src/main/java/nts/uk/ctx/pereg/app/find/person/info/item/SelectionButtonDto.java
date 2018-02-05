@@ -1,14 +1,16 @@
 package nts.uk.ctx.pereg.app.find.person.info.item;
 
+import lombok.Getter;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 
-public class SelectionButtonDto extends DataTypeStateDto {
-	public static SelectionButtonDto createFromJavaType() {
-		return new SelectionButtonDto();
-	}
+@Getter
+public class SelectionButtonDto extends SelectionItemDto {
 
-	public SelectionButtonDto() {
-		super();
+	private ReferenceTypes referenceType;
+
+	public SelectionButtonDto(ReferenceTypes referenceType) {
+		super(referenceType);
 		this.dataTypeValue = DataTypeValue.SELECTION_BUTTON.value;
 	}
 }
