@@ -10,6 +10,7 @@ import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculationMinusExist;
@@ -225,20 +226,20 @@ public class OverTimeOfDaily {
 	 * メンバー変数の時間計算を指示するクラス
 	 * @return 計算結果
 	 */
-	public static OverTimeOfDaily calculationTime(OverTimeSheet overTimeSheet) {
+	public static OverTimeOfDaily calculationTime(OverTimeSheet overTimeSheet,AutoCalculationOfOverTimeWork overTimeAutoCalcSet) {
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
-		//val overTimeFrame = ;
-		val excessOverTimeWorkMidNightTime = Finally.empty();
+		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(overTimeAutoCalcSet);
+		//val excessOverTimeWorkMidNightTime = Finally.empty();
 		val irregularTime = new AttendanceTime(0);
 		val flexTime = new FlexTime(TimeWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 		val overTimeWork = new AttendanceTime(0);
-//		return new OverTimeOfDaily(overTimeFrameTimeSheet,
-//								   overTimeFrame,
-//								   excessOverTimeWorkMidNightTime,
-//								   irregularTime,
-//								   flexTime,
-//								   overTimeWork);
-		return null;
+		return new OverTimeOfDaily(overTimeFrameTimeSheet,
+								   overTimeFrame,
+								   Finally.empty(),
+								   irregularTime,
+								   flexTime,
+								   overTimeWork);
+		
 	}
 	
 }

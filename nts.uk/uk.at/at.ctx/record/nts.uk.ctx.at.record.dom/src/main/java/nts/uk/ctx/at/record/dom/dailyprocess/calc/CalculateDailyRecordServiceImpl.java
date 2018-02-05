@@ -263,8 +263,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			/*出勤日の時間帯作成*/
 			//val calcRangeOfOneDay =　/*現在作業分の対応範囲外のため保留 2017.10.16*/;
 		}
+		
+		val overTimeSet = new AutoCalcSet(AutoCalAtrOvertime.CALCULATEMBOSS);
+		AutoCalculationOfOverTimeWork overTimeAutoCalcSet = new AutoCalculationOfOverTimeWork(overTimeSet, 
+																							  overTimeSet, 
+																							  overTimeSet, 
+																							  overTimeSet, 
+																							  overTimeSet, 
+																							  overTimeSet);
 		/*時間の計算*/
-		integrationOfDaily = AttendanceTimeOfDailyPerformance.calcTimeResult(oneRange,integrationOfDaily);
+		integrationOfDaily = AttendanceTimeOfDailyPerformance.calcTimeResult(oneRange,integrationOfDaily,overTimeAutoCalcSet);
 		
 		/*手修正、申請範囲された項目を元に戻す(ベトナムが作成している可能性があるため、確認後)*/
 		/*日別実績への項目移送*/

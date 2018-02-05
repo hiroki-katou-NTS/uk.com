@@ -1,18 +1,24 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.SubHolOccurrenceInfo;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -77,28 +83,35 @@ public class OverTimeSheet {
 	 * 残業時間枠時間帯をループさせ時間を計算する
 	 * @param autoCalcSet 時間外時間の自動計算設定
 	 */
-	public List<OverTimeFrameTimeSheetForCalc> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
-		List<OverTimeFrameTimeSheetForCalc> calcOverTimeWorkTimeList = new ArrayList<>();
+	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
+		List<OverTimeFrameTime> calcOverTimeWorkTimeList = new ArrayList<>();
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(1), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(2), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(3), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(4), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(5), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(6), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(7), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(8), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(9), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		calcOverTimeWorkTimeList.add(new OverTimeFrameTime(new OverTimeFrameNo(10), TimeWithCalculation.sameTime(new AttendanceTime(0)),TimeWithCalculation.sameTime(new AttendanceTime(0)),new AttendanceTime(0),new AttendanceTime(0)));
+		
 		for(OverTimeFrameTimeSheetForCalc overTimeFrameTime : frameTimeSheets) {
-			//calcOverTimeWorkTimeList.add(OverTimeFrameTime.calcOverTimeWorkTime(autoCalcSet));
-			//calcOverTimeWorkTimeList.add();
-		//	overTimeFrameTime.autoCalcSet
+			val calcTime = overTimeFrameTime.correctCalculationTime(Optional.empty(), autoCalcSet);
+			calcOverTimeWorkTimeList.get(overTimeFrameTime.getOverTimeWorkSheetNo().v()).getOverTimeWork().addMinutes(calcTime,calcTime);
 		}
 		return calcOverTimeWorkTimeList;
 	}
 	
 	/**
-	 * 計算用残業枠時間帯から残業枠時間帯へ変換する
-	 * 日別実績の残業時間作成時処理
-	 * @param autoCalcSet 時間外時間の自動計算設定
+	 * 残業枠時間帯(WORK)を全て残業枠時間帯へ変換する
+	 * @return　残業枠時間帯List
 	 */
-	public List<OverTimeFrameTimeSheet> changeOverTimeFrameTimeSheet() {
-		return this.getFrameTimeSheets().stream().map(tc -> tc.changeNotCalcOverTimeFrameTimeSheet())
-												 .sorted((first,second) -> first.getFrameNo().v().compareTo(second.getFrameNo().v()))
-												 .collect(Collectors.toList());
+	public List<OverTimeFrameTimeSheet> changeOverTimeFrameTimeSheet(){
+		return this.frameTimeSheets.stream().map(tc -> tc.changeNotWorkFrameTimeSheet())
+											.sorted((first,second) -> first.getFrameNo().v().compareTo(second.getFrameNo().v()))
+											.collect(Collectors.toList());
 	}
-	
-	
 	/**
 	 * 深夜時間計算後の時間帯再作成
 	 * @return

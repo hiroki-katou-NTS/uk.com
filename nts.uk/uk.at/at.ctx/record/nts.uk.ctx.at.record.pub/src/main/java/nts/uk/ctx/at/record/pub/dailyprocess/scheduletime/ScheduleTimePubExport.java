@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pub.dailyprocess.scheduletime;
 
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
@@ -10,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * @author keisuke_hoshina
  *
  */
-
+@Getter
 public class ScheduleTimePubExport {
 	
 	//社員ID
