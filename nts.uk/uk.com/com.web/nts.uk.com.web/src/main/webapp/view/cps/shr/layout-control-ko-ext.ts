@@ -115,7 +115,7 @@ module nts.custombinding {
                     }
 
                     .layout-control .item-classification div.item-control>.set-items .set-group {
-                        min-height: 39px;
+                        min-height: 34px;
                     }
 
                     .layout-control .item-classification div.item-control>.set-items .set-group>div {
@@ -515,14 +515,20 @@ module nts.custombinding {
                                                 _render: _.filter(_items, function(x) { return [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(x.item.dataTypeValue) > -1; } ) || []
                                         }">
                                         <!-- ko if: _items.length == 1 || (_items.length < 3 && _render.length == _items.length) -->
+                                            <!-- ko if: _items.length == 1 && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
+                                            <div class="set-group"></div>
+                                            <!-- /ko -->
                                             <div class="set-group">
                                                 <!-- ko if: _items.length == _childs.length -->
                                                     <!-- ko foreach: { data: _childs, as: 'set'} -->
-                                                        <div class="set-item set-item-sperator" data-bind="css: { 'hidden': !$index() }">
-                                                            <!-- ko if: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(set.item.dataTypeValue) > -1 -->
-                                                                <span data-bind="text: text('CPS001_89')"></span>
-                                                            <!-- /ko -->
+                                                        <!-- ko if: $index() && _render.length > 1 -->
+                                                        <div class="set-item set-item-sperator">
+                                                            <span data-bind="text: text('CPS001_89')"></span>
                                                         </div>
+                                                        <!-- /ko -->
+                                                        <!-- ko if: _items.length == 1 && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
+                                                        <div class="child-label" data-bind="text: set.itemName"></div>
+                                                        <!-- /ko -->
                                                         <div data-bind="template: {
                                                                 data: set,
                                                                 name: 'ctr_template'
@@ -539,11 +545,11 @@ module nts.custombinding {
                                             <div class="set-group" data-bind="css: { 'radio': [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) > -1 }">
                                                 <!-- ko if: (set || {}).type == CTRL_TYPE.SET -->
                                                     <!-- ko foreach: _.filter(__items, function(x) { x.itemParentCode == set.itemCode }) -->
-                                                    <div class="set-item set-item-sperator" data-bind="css: { 'hidden': !$index() }">
-                                                        <!-- ko if: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(set.item.dataTypeValue) > -1 -->
+                                                        <!-- ko if: $index() && _render.length > 1 -->
+                                                        <div class="set-item set-item-sperator">
                                                             <span data-bind="text: text('CPS001_89')"></span>
+                                                        </div>
                                                         <!-- /ko -->
-                                                    </div>
                                                     <div data-bind="template: {
                                                             data: set,
                                                             name: 'ctr_template'
@@ -1629,7 +1635,7 @@ module nts.custombinding {
                             def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [
                                 { optionsValue: '0', optionsText: text('CPS001_99') },
                                 { optionsValue: '1', optionsText: text('CPS001_100') }
-                            ]
+                            ];
 
                             def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
                             def.readonly = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled();
