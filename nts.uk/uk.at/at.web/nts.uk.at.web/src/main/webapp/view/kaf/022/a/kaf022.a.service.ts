@@ -84,7 +84,7 @@ module nts.uk.at.view.kmf022.a.service {
     
     // view model cho thêm đối tượng Kcp003Dto chỉ có 1 trường baseDate: truyền ngày hiện tại
     export function findJobId(date: viewmodel.Kcp003Dto): JQueryPromise<void>{
-        return nts.uk.request.ajax("com", paths.findJobId + "/" + date);     
+        return nts.uk.request.ajax(paths.findJobId, date);     
     }
     
     export function findLateEarly() {
