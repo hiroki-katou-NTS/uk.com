@@ -28,10 +28,8 @@ module nts.uk.at.view.ksc001.b {
 
             selectImplementAtr: KnockoutObservableArray<RadioBoxModel>;
             selectedImplementAtrCode: KnockoutObservable<number>;
-            checkReCreateAtrAllCase: KnockoutObservable<boolean>;
-            checkReCreateAtrOnlyUnConfirm: KnockoutObservable<boolean>;
-            checkProcessExecutionAtrRebuild: KnockoutObservable<boolean>;
-            checkProcessExecutionAtrReconfig: KnockoutObservable<boolean>;
+            checkReCreateAtrAllCase: KnockoutObservable<number>;
+            checkProcessExecutionAtrRebuild: KnockoutObservable<number>;
             checkCreateMethodAtrPersonalInfo: KnockoutObservable<number>;
             resetWorkingHours: KnockoutObservable<boolean>;
             resetDirectLineBounce: KnockoutObservable<boolean>;
@@ -68,6 +66,8 @@ module nts.uk.at.view.ksc001.b {
             
             //list
             lstCreateMethod: KnockoutObservableArray<any>;
+            lstReCreate: KnockoutObservableArray<any>;
+            lstProcessExecution: KnockoutObservableArray<any>;
             
             constructor() {
                 var self = this;
@@ -89,10 +89,8 @@ module nts.uk.at.view.ksc001.b {
                 self.responeDailyPatternSetting = ko.observable(null);
 
                 self.periodDate = ko.observable({});
-                self.checkReCreateAtrOnlyUnConfirm = ko.observable(false);
-                self.checkReCreateAtrAllCase = ko.observable(true);
-                self.checkProcessExecutionAtrRebuild = ko.observable(true);
-                self.checkProcessExecutionAtrReconfig = ko.observable(false);
+                self.checkReCreateAtrAllCase = ko.observable(0);
+                self.checkProcessExecutionAtrRebuild = ko.observable(0);
                 self.resetWorkingHours = ko.observable(false);
                 self.resetDirectLineBounce = ko.observable(false);
                 self.resetMasterInfo = ko.observable(false);
@@ -149,22 +147,6 @@ module nts.uk.at.view.ksc001.b {
                 self.selectImplementAtr = ko.observableArray(lstRadioBoxModelImplementAtr);
                 self.selectedImplementAtrCode = ko.observable(ImplementAtr.GENERALLY_CREATED);
 
-                // update ReCreateAtr
-                self.checkReCreateAtrAllCase.subscribe(function(check: boolean) {
-                    self.checkReCreateAtrOnlyUnConfirm(!check);
-                });
-                self.checkReCreateAtrOnlyUnConfirm.subscribe(function(check: boolean) {
-                    self.checkReCreateAtrAllCase(!check);
-                });
-
-                // update ProcessExecutionAtr
-                self.checkProcessExecutionAtrRebuild.subscribe(function(check: boolean) {
-                    self.checkProcessExecutionAtrReconfig(!check);
-                });
-                self.checkProcessExecutionAtrReconfig.subscribe(function(check: boolean) {
-                    self.checkProcessExecutionAtrRebuild(!check);
-                });
-
                 self.lstLabelInfomation = ko.observableArray([]);
                 self.infoCreateMethod = ko.observable('');
                 self.infoPeriodDate = ko.observable('');
@@ -177,7 +159,7 @@ module nts.uk.at.view.ksc001.b {
 
                 // for is reseting
                 self.isReSetting = ko.computed(function() {
-                    return self.checkProcessExecutionAtrReconfig() && self.isReCreate();
+                    return self.checkProcessExecutionAtrRebuild() == ProcessExecutionAtr.RECONFIG && self.isReCreate();
                 });
                 self.periodDate.subscribe((newValue)=>{
                     if(newValue.startDate){
@@ -186,6 +168,8 @@ module nts.uk.at.view.ksc001.b {
                 });
                 
                 self.lstCreateMethod = ko.observableArray(__viewContext.enums.CreateMethodAtr);
+                self.lstReCreate = ko.observableArray(__viewContext.enums.ReCreateAtr);
+                self.lstProcessExecution = ko.observableArray(__viewContext.enums.ProcessExecutionAtr);
             }
             /**
              * save to client service PersonalSchedule by employeeId
@@ -362,20 +346,10 @@ module nts.uk.at.view.ksc001.b {
                 data.confirm = self.confirm();
 
                 // set ReCreateAtr
-                if (self.checkReCreateAtrAllCase()) {
-                    data.reCreateAtr = ReCreateAtr.ALLCASE;
-                }
-                if (self.checkReCreateAtrOnlyUnConfirm()) {
-                    data.reCreateAtr = ReCreateAtr.ONLYUNCONFIRM;
-                }
-
+                data.reCreateAtr = self.checkReCreateAtrAllCase(); //ReCreateAtr.ALLCASE;
+                
                 // set ProcessExecutionAtr
-                if (self.checkProcessExecutionAtrRebuild()) {
-                    data.processExecutionAtr = ProcessExecutionAtr.REBUILD;
-                }
-                if (self.checkProcessExecutionAtrReconfig()) {
-                    data.processExecutionAtr = ProcessExecutionAtr.RECONFIG;
-                }
+                data.processExecutionAtr = self.checkProcessExecutionAtrRebuild();
 
                 // set ImplementAtr
                 data.implementAtr = self.selectedImplementAtrCode();
@@ -405,7 +379,7 @@ module nts.uk.at.view.ksc001.b {
             private nextPageC(): void {
                 var self = this;
                 if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
-                    && self.checkProcessExecutionAtrReconfig()) {
+                    && self.checkProcessExecutionAtrRebuild() == ProcessExecutionAtr.RECONFIG) {
                     //build string for Screen E
                     self.buildString();
                     //goto screen E
@@ -531,7 +505,7 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
 
                 if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
-                    && self.checkProcessExecutionAtrReconfig()) {
+                    && self.checkProcessExecutionAtrRebuild() == ProcessExecutionAtr.RECONFIG) {
                     //back screen C
                     self.previousTwo();
                 } else {
@@ -575,11 +549,11 @@ module nts.uk.at.view.ksc001.b {
                     lstLabelInfomation.push(nts.uk.resource.getText("KSC001_36"));
 
                     //NO2
-                    if (self.checkReCreateAtrAllCase()) {
+                    if (self.checkReCreateAtrAllCase() == ReCreateAtr.ALLCASE) {
                         lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")
                             + nts.uk.resource.getText("KSC001_4"));
                     }
-                    if (self.checkReCreateAtrOnlyUnConfirm()) {
+                    if (self.checkReCreateAtrAllCase() == ReCreateAtr.ONLYUNCONFIRM) {
                         lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")
                             + nts.uk.resource.getText("KSC001_5"));
                     }
@@ -639,7 +613,7 @@ module nts.uk.at.view.ksc001.b {
                 self.infoCreateMethod('');
                 //check select recreate and select resetting
                 if (!((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
-                    && self.checkProcessExecutionAtrReconfig())) {
+                    && self.checkProcessExecutionAtrRebuild() == ProcessExecutionAtr.RECONFIG)) {
 
                     // set to view
                     if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PERSONAL_INFO) {
