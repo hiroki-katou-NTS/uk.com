@@ -15,15 +15,18 @@
 				</div>
 			</div>			
 			<!--   -->
-			<div class="ui-iggrid" data-bind="with: appSetData">
-				<table class="fixed-table kaf022l nts-fixed-table cf">
+			<div class="ui-iggrid kaf022l" data-bind="with: appSetData">
+				<table class="fixed-table kaf022l">
 					<colgroup>
 						<col width="350px" />
 						<col width="450px" />
 					</colgroup>
 					<thead>
+						<!--L5 申請設定テーブル--> 
 						<tr>
+							<!--L5_1 申請の種類--> 
 							<th class="color-header" >#{i18n.getText('KAF022_242')}</th>
+							<!--L5_2 対象勤務種類--> 
 							<th class="color-header" >#{i18n.getText('KAF022_243')}</th>
 						</tr>
 					</thead>
@@ -32,29 +35,40 @@
 						<tr>
 							<td>
 								<!--L6 残業申請--> 
-								<div data-bind="ntsCheckBox: {checked: overTimeSet().holidayTypeUseFlg, enable: true }">#{i18n.getText('KAF022_3')}</div>
+								<div data-bind="ntsCheckBox: {checked: overTimeSet().holidayTypeUseFlg, 
+																enable: true }">#{i18n.getText('KAF022_3')}</div>
 							</td>
 							<td>
-								<button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(overTimeSet()); }, enable: overTimeSet().holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
-								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: overTimeSet().displayWorkTypes, enable: overTimeSet().holidayTypeUseFlg, readonly: true}" />
+								<button class="small"
+									data-bind="click: function(){ $parent.openKDL002Dialog(overTimeSet()); }, 
+																enable: overTimeSet().holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+								<input class="lagre-input-code"
+									data-bind="ntsTextEditor: {value: overTimeSet().displayWorkTypes, 
+																enable: overTimeSet().holidayTypeUseFlg, 
+																readonly: true}"/>
 							</td>
 						</tr>
 						<!-- 休暇申請 -->
 						<tr>
-							<td><div>#{i18n.getText('KAF022_4')}</div></td>
+							<td><div class="group-margin-left">#{i18n.getText('KAF022_4')}</div></td>
 							<td></td>
 						</tr>	
 						<com:ko bind="absenceSet" tag="foreach">
 							<tr>
 								<td>
 									<div class="block-style">
-										<div class="margin-left-style" data-bind="ntsCheckBox: {checked: holidayTypeUseFlg, enable: true, text: optionName()}"></div>
+										<div class="margin-left-style" data-bind="ntsCheckBox: {checked: holidayTypeUseFlg, 
+																								enable: true, 
+																								text: optionName()}"></div>
 										<div data-bind="ntsCheckBox: {checked: displayFlag, enable: holidayTypeUseFlg}">#{i18n.getText('KAF022_101')}</div>
 									</div>
 								</td>
 								<td>
-									<button class="small" data-bind="click: function(){ $parents[1].openKDL002Dialog($data); }, enable: holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
-									<input class="lagre-input-code" data-bind="ntsTextEditor: {value: displayWorkTypes, enable: holidayTypeUseFlg, readonly: true}" />
+									<button class="small" data-bind="click: function(){ $parents[1].openKDL002Dialog($data); }, 
+																	enable: holidayTypeUseFlg">#{i18n.getText('KAF022_280')}</button>
+									<input class="lagre-input-code" data-bind="ntsTextEditor: {value: displayWorkTypes, 
+																								enable: holidayTypeUseFlg, 
+																								readonly: true}"/>
 								</td>
 							</tr>	
 						</com:ko>	
@@ -140,7 +154,7 @@
 						</tr>
 						<!--L32 振休振出申請--> 
 						<tr>
-							<td><div>#{i18n.getText('KAF022_12')}</div></td>
+							<td><div class="group-margin-left">#{i18n.getText('KAF022_12')}</div></td>
 							<td></td>
 						</tr>
 						<com:ko bind="complementLeaveSet" tag="foreach">	
