@@ -6,10 +6,12 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.record.dom.actualworkinghours.SubHolOccurrenceInfo;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
+import nts.uk.ctx.at.record.dom.raisesalarytime.RaisingSalaryTime;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -68,11 +70,12 @@ public class OutsideWorkTimeSheet {
 			WorkType toDay, WorkType afterDay, WorkTimeSetting workTime, WorkingSystem workingSystem,
 			BreakdownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalculationOfOverTimeWork autoCalculationSet,
 			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet) {
-		Optional<OverTimeSheet> overTimeWorkSheet = Optional.empty();
+		
 		Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet = Optional.empty();
+		List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheet = new ArrayList<>();
 		if (toDay.isWeekDayAttendance()) {
 			/* 就業時間外時間帯の平日出勤の処理 */
-			List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheet = OverTimeFrameTimeSheetForCalc.createOverWorkFrame(
+			overTimeWorkFrameTimeSheet = OverTimeFrameTimeSheetForCalc.createOverWorkFrame(
 					overTimeHourSetList, workingSystem, attendanceLeave, workNo, breakdownTimeDay, dailyTime,
 					autoCalculationSet, statutorySet, prioritySet);
 
@@ -120,7 +123,10 @@ public class OutsideWorkTimeSheet {
 //																		// Optional.of(overTimeWorkSheet.get().getOverWorkTimeOfDaily()),
 //																		// Optional.of(holidayWorkTimeSheet.get().getWorkHolidayTime()))
 		return new OutsideWorkTimeSheet(
-				   overTimeWorkSheet
+				   Optional.of(new OverTimeSheet(new SubHolOccurrenceInfo(),
+						   						 overTimeWorkFrameTimeSheet,
+						   						 new RaisingSalaryTime()
+						   						 ))
 				   ,holidayWorkTimeSheet);
 
 	}

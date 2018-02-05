@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,20 @@ public class OverTimeSheet {
 	//加給時間
 	private RaisingSalaryTime raisingsalyryTime;
 	
+	/**
+	 * Constrctor
+	 * @param subOccurrenceInfo
+	 * @param frameTimeSheets
+	 * @param raisingsalyryTime
+	 */
+	public OverTimeSheet(SubHolOccurrenceInfo subOccurrenceInfo, List<OverTimeFrameTimeSheetForCalc> frameTimeSheets,
+			RaisingSalaryTime raisingsalyryTime) {
+		super();
+		this.subOccurrenceInfo = subOccurrenceInfo;
+		this.frameTimeSheets = frameTimeSheets;
+		this.raisingsalyryTime = raisingsalyryTime;
+	}
+	
 	
 	/**
 	 * 分割後の残業時間枠時間帯を受け取り
@@ -56,6 +71,19 @@ public class OverTimeSheet {
 //		return  overWorkTimeOfDaily;
 //	}
 //	
+	/**
+	 * 残業時間枠時間帯をループさせ時間を計算する
+	 * @param autoCalcSet 時間外時間の自動計算設定
+	 */
+	public List<OverTimeFrameTime> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
+		List<OverTimeFrameTimeSheetForCalc> calcOverTimeWorkTimeList = new ArrayList<>();
+		for(OverTimeFrameTimeSheetForCalc OverTimeFrameTime : frameTimeSheets) {
+			//calcOverTimeWorkTimeList.add(OverTimeFrameTime.calcOverTimeWorkTime(autoCalcSet));
+			//calcOverTimeWorkTimeList.add();
+		}
+		return calcOverTimeWorkTimeList;
+	}
+	
 	/**
 	 * 深夜時間計算後の時間帯再作成
 	 * @return
@@ -181,6 +209,8 @@ public class OverTimeSheet {
 			return new AttendanceTime(0);
 		}
 	}
+
+
 	
 //	/**
 //	 * 指定時間の振替処理
