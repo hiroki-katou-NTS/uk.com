@@ -75,16 +75,22 @@ module nts.uk.at.view.kml001.a {
                         self.loadData(dfdPersonCostCalculationSelectData, 0);
                         self.currentGridPersonCost.subscribe(function(value) { // change current personCostCalculation when grid is selected
                             if(value!=null) {
+                                nts.uk.ui.block.invisible();
                                 self.currentPersonCost(self.clonePersonCostCalculation(_.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, self.textKML001_40, 1)[0]; })));
                                 self.newStartDate(self.currentPersonCost().startDate());
                                 _.defer(() => {$("#startDateInput").ntsError('clear');}); 
                                 nts.uk.ui.errors.clearAll();
+                                let allRequest = [];
                                 ko.utils.arrayForEach(self.currentPersonCost().premiumSets(), function(premiumSet, index) {
                                     let iDList = [];
                                     self.currentPersonCost().premiumSets()[index].attendanceItems().forEach(function(item) {
                                         iDList.push(item.shortAttendanceID);
                                     });
-                                    self.getItem(iDList, index);
+                                    let request = self.getItem(iDList, index);
+                                    allRequest.push(request);
+                                });
+                                $.when.apply($, allRequest).then(()=>{
+                                    nts.uk.ui.block.clear();            
                                 });
                                 self.isInsert(false);
                                 $("#memo").focus(); 
@@ -152,13 +158,17 @@ module nts.uk.at.view.kml001.a {
                             });
                             self.currentPersonCost().premiumSets()[index].attendanceItems(newList);
                             self.createViewAttendanceItems(newList,index);
+                            dfd.resolve();
                         })
                         .fail(function(res) {
                             nts.uk.ui.dialog.alertError(res.message);
+                            dfd.reject();
                         });
                 } else {
-                    self.createViewAttendanceItems([],index);        
+                    self.createViewAttendanceItems([],index); 
+                    dfd.resolve();       
                 }
+                return dfd.promise();
             }
             
             /**
