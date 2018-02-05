@@ -178,7 +178,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 
 	@Override
-	public DisplayPrePost getDisplayPrePost(String companyID, int uiType, String appDate) {
+	public DisplayPrePost getDisplayPrePost(String companyID, int uiType, String appDate,int appType) {
 		Optional<ApplicationSetting> applicationSetting = applicationSettingRepository
 				.getApplicationSettingByComID(companyID);
 		DisplayPrePost result = new DisplayPrePost();
@@ -192,7 +192,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 				 */
 				if (uiType == 0) {
 					Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo
-							.getAppTypeDiscreteSettingByAppType(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
+							.getAppTypeDiscreteSettingByAppType(companyID, appType);
 					if (discreteSetting.isPresent()) {
 						result.setPrePostAtr(discreteSetting.get().getPrePostInitFlg().value);
 					}

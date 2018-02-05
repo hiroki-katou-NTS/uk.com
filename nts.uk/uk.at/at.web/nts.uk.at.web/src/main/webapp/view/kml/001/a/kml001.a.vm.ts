@@ -75,7 +75,7 @@ module nts.uk.at.view.kml001.a {
                         self.loadData(dfdPersonCostCalculationSelectData, 0);
                         self.currentGridPersonCost.subscribe(function(value) { // change current personCostCalculation when grid is selected
                             if(value!=null) {
-                                self.currentPersonCost(self.clonePersonCostCalculation(_.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, ' ', 1)[0]; })));
+                                self.currentPersonCost(self.clonePersonCostCalculation(_.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, self.textKML001_40, 1)[0]; })));
                                 self.newStartDate(self.currentPersonCost().startDate());
                                 _.defer(() => {$("#startDateInput").ntsError('clear');}); 
                                 nts.uk.ui.errors.clearAll();

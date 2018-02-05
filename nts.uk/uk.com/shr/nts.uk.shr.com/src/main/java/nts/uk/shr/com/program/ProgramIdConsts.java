@@ -620,6 +620,11 @@ public class ProgramIdConsts {
 	public static final String CMM001C = "CMM001C";
 	public static final String CMM001D = "CMM001D";
 	
+	public static final String KAL003A = "KAL003A";
+	public static final String KAL003B = "KAL003B";
+	public static final String KAL003C = "KAL003C";
+	public static final String KAL003D = "KAL003D";
+	
 	public static final String KAL004A = "KAL004A";
 	public static final String KAL004B = "KAL004B";
 	public static final String KAL004F = "KAL004F";

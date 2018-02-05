@@ -3353,10 +3353,7 @@ var nts;
                     //            if($("#functions-area-bottom").length!=0){
                     //            }    
                 };
-                $(function () {
-                    ui.documentReady.fire();
-                    __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
-                        .map(function (v) { return JSON.parse(v); });
+                var startP = function () {
                     _.defer(function () { return _start.call(__viewContext); });
                     // Menu
                     if ($(document).find("#header").length > 0) {
@@ -3376,6 +3373,30 @@ var nts;
                         $("#master-wrapper").prepend(header);
                         ui.menu.request();
                     }
+                };
+                $(function () {
+                    console.log("call");
+                    ui.documentReady.fire();
+                    __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
+                        .map(function (v) { return JSON.parse(v); });
+                    if ($(".html-loading").length <= 0) {
+                        startP();
+                        return;
+                    }
+                    var dfd = [];
+                    _.forEach($(".html-loading"), function (e) {
+                        var $container = $(e);
+                        var dX = $.Deferred();
+                        $container.load($container.attr("link"), function () {
+                            dX.resolve();
+                        });
+                        dfd.push(dX);
+                        dX.promise();
+                    });
+                    $.when.apply($, dfd).then(function (data, textStatus, jqXHR) {
+                        $('.html-loading').contents().unwrap();
+                        startP();
+                    });
                 });
             })(init || (init = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -4413,8 +4434,13 @@ var nts;
                             return error.$control.is($element) && error.errorCode === errorCode;
                         });
                     };
+                    ErrorsViewModel.prototype.removeKibanError = function ($element) {
+                        this.errors.remove(function (error) {
+                            return error.$control.is($element) && error.businessError == false;
+                        });
+                    };
                     ErrorsViewModel.prototype.getErrorByElement = function ($element) {
-                        return _.find(this.errors(), function (e) {
+                        return _.filter(this.errors(), function (e) {
                             return e.$control.is($element);
                         });
                     };
@@ -4545,6 +4571,10 @@ var nts;
                     errorsViewModel().removeErrorByCode($control, errorCode);
                 }
                 errors_1.removeByCode = removeByCode;
+                function removeCommonError($control) {
+                    errorsViewModel().removeKibanError($control);
+                }
+                errors_1.removeCommonError = removeCommonError;
                 function getErrorByElement($element) {
                     return errorsViewModel().getErrorByElement($element);
                 }
@@ -6407,7 +6437,7 @@ var nts;
                             var $yearType = $("<label/>").attr("for", idString)
                                 .css({ "position": "absolute",
                                 "line-height": "30px",
-                                "right": "5px" });
+                                "right": jumpButtonsDisplay ? "40px" : "5px" });
                             var labelText = fiscalYear ? "年度" : "年";
                             $yearType.text(labelText);
                             container.append($yearType);
@@ -6447,7 +6477,7 @@ var nts;
                                 value(result.parsedValue);
                             }
                             else {
-                                $input.ntsError('set', result.errorMessage, result.errorCode);
+                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                 value(newText);
                             }
                         });
@@ -6455,7 +6485,7 @@ var nts;
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage, result.errorCode);
+                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
                             }
                             else if (acceptJapaneseCalendar) {
                                 // Day of Week
@@ -6470,9 +6500,9 @@ var nts;
                         $input.on('validate', (function (e) {
                             var newText = $input.val();
                             var result = validator.validate(newText);
-                            $input.ntsError('clear');
+                            $input.ntsError('clearKibanError');
                             if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage, result.errorCode);
+                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
                             }
                             else if (acceptJapaneseCalendar) {
                                 // Day of Week
@@ -7404,9 +7434,9 @@ var nts;
                             }
                             else {
                                 var error = $input.ntsError('getError');
-                                if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
+                                if (nts.uk.util.isNullOrEmpty(error) || error.messageText !== result.errorMessage) {
                                     $input.ntsError('clear');
-                                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                 }
                                 value(newText);
                             }
@@ -7419,14 +7449,14 @@ var nts;
                                 var validator = self.getValidator(data);
                                 var result = validator.validate(newText);
                                 if (result.isValid) {
-                                    $input.ntsError('clear');
+                                    $input.ntsError('clearKibanError');
                                     $input.val(formatter.format(result.parsedValue));
                                 }
                                 else {
                                     var error = $input.ntsError('getError');
-                                    if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
-                                        $input.ntsError('clear');
-                                        $input.ntsError('set', result.errorMessage, result.errorCode);
+                                    if (nts.uk.util.isNullOrEmpty(error) || error.messageText !== result.errorMessage) {
+                                        $input.ntsError('clearKibanError');
+                                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                     }
                                     value(newText);
                                 }
@@ -7436,9 +7466,9 @@ var nts;
                             var newText = $input.val();
                             var validator = self.getValidator(data);
                             var result = validator.validate(newText);
-                            $input.ntsError('clear');
+                            $input.ntsError('clearKibanError');
                             if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage, result.errorCode);
+                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
@@ -7526,7 +7556,7 @@ var nts;
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 $input.ntsError('clear');
                                 if (!result.isValid) {
-                                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                 }
                             }
                         });
@@ -7537,21 +7567,22 @@ var nts;
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 if (!result.isValid) {
-                                    var oldError = $("#companyCode").ntsError('getError');
+                                    var oldError = $input.ntsError('getError');
                                     if (nts.uk.util.isNullOrUndefined(oldError)) {
-                                        $input.ntsError('set', result.errorMessage, result.errorCode);
+                                        $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                     }
                                     else {
-                                        if (oldError.errorCode !== result.errorCode) {
-                                            $input.ntsError('clear');
+                                        var inListError = _.find(oldError, function (o) { return o.errorCode !== result.errorCode; });
+                                        if (nts.uk.util.isNullOrUndefined(inListError)) {
+                                            $input.ntsError('clearKibanError');
                                             setTimeout(function () {
-                                                $input.ntsError('set', result.errorMessage, result.errorCode);
+                                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                             }, 10);
                                         }
                                     }
                                 }
                                 else {
-                                    $input.ntsError('clear');
+                                    $input.ntsError('clearKibanError');
                                 }
                             }
                         });
@@ -7570,7 +7601,7 @@ var nts;
                                     }
                                 }
                                 else {
-                                    $input.ntsError('set', result.errorMessage, result.errorCode);
+                                    $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                     value(newText);
                                 }
                             }
@@ -7579,9 +7610,9 @@ var nts;
                             var validator = self.getValidator(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
-                            $input.ntsError('clear');
+                            $input.ntsError('clearKibanError');
                             if (!result.isValid) {
-                                $input.ntsError('set', result.errorMessage, result.errorCode);
+                                $input.ntsError('set', result.errorMessage, result.errorCode, false);
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
@@ -9196,14 +9227,9 @@ var nts;
                         if (data.childField) {
                             childField = ko.unwrap(data.childField);
                         }
-                        var component;
                         var targetMode = data.mode;
                         if (targetMode === "listbox") {
-                            component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
                             targetMode = "igGrid";
-                        }
-                        else {
-                            component = $("#" + ko.unwrap(data.comId));
                         }
                         var $container = $(element);
                         var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
@@ -9226,7 +9252,8 @@ var nts;
                             var $clearButton = $container.find("button.clear-btn");
                             minusWidth += $clearButton.outerWidth(true);
                             $clearButton.click(function (evt, ui) {
-                                if (component.length === 0) {
+                                var component = $("#" + ko.unwrap(data.comId));
+                                if (component.hasClass("listbox-wrapper")) {
                                     component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
                                 }
                                 var srh = $container.data("searchObject");
@@ -9234,7 +9261,7 @@ var nts;
                                 component.igGrid("option", "dataSource", srh.seachBox.getDataSource());
                                 component.igGrid("dataBind");
                                 $container.data("searchKey", null);
-                                component.attr("filtered", false);
+                                component.attr("filtered", "false");
                                 _.defer(function () {
                                     component.trigger("selectChange");
                                 });
@@ -9249,20 +9276,21 @@ var nts;
                         var search = function (searchKey) {
                             if (targetMode) {
                                 var selectedItems = void 0, isMulti = void 0;
+                                var component_1 = $("#" + ko.unwrap(data.comId));
                                 if (targetMode == 'igGrid') {
-                                    if (component.length === 0) {
-                                        component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
+                                    if (component_1.hasClass("listbox-wrapper")) {
+                                        component_1 = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
                                     }
-                                    selectedItems = component.ntsGridList("getSelected");
-                                    isMulti = component.igGridSelection('option', 'multipleSelection');
+                                    selectedItems = component_1.ntsGridList("getSelected");
+                                    isMulti = component_1.igGridSelection('option', 'multipleSelection');
                                 }
                                 else if (targetMode == 'igTree') {
-                                    selectedItems = component.ntsTreeView("getSelected");
-                                    isMulti = component.igTreeGridSelection('option', 'multipleSelection');
+                                    selectedItems = component_1.ntsTreeView("getSelected");
+                                    isMulti = component_1.igTreeGridSelection('option', 'multipleSelection');
                                 }
                                 else if (targetMode == 'igTreeDrag') {
-                                    selectedItems = component.ntsTreeDrag("getSelected");
-                                    isMulti = component.ntsTreeDrag('option', 'isMulti');
+                                    selectedItems = component_1.ntsTreeDrag("getSelected");
+                                    isMulti = component_1.ntsTreeDrag('option', 'isMulti');
                                 }
                                 var srh_1 = $container.data("searchObject");
                                 var result_1 = srh_1.search(searchKey, selectedItems);
@@ -9275,10 +9303,10 @@ var nts;
                                 }
                                 var selectedProperties = _.map(result_1.selectItems, primaryKey);
                                 if (targetMode === 'igGrid') {
-                                    component.ntsGridList("setSelected", selectedProperties);
+                                    component_1.ntsGridList("setSelected", selectedProperties);
                                     if (searchMode === "filter") {
                                         $container.data("filteredSrouce", result_1.options);
-                                        component.attr("filtered", true);
+                                        component_1.attr("filtered", "true");
                                         //selected(selectedValue);
                                         //selected.valueHasMutated();
                                         var source = _.filter(data.items(), function (item) {
@@ -9288,25 +9316,25 @@ var nts;
                                                 return oldItem[primaryKey] === item[primaryKey];
                                             }) === undefined;
                                         });
-                                        component.igGrid("option", "dataSource", _.cloneDeep(source));
-                                        component.igGrid("dataBind");
+                                        component_1.igGrid("option", "dataSource", _.cloneDeep(source));
+                                        component_1.igGrid("dataBind");
                                         if (nts.uk.util.isNullOrEmpty(selectedProperties)) {
-                                            component.trigger("selectionchanged");
+                                            component_1.trigger("selectionchanged");
                                         }
                                     }
                                     else {
-                                        component.trigger("selectionchanged");
+                                        component_1.trigger("selectionchanged");
                                     }
                                 }
                                 else if (targetMode == 'igTree') {
-                                    component.ntsTreeView("setSelected", selectedProperties);
-                                    component.trigger("selectionchanged");
+                                    component_1.ntsTreeView("setSelected", selectedProperties);
+                                    component_1.trigger("selectionchanged");
                                 }
                                 else if (targetMode == 'igTreeDrag') {
-                                    component.ntsTreeDrag("setSelected", selectedProperties);
+                                    component_1.ntsTreeDrag("setSelected", selectedProperties);
                                 }
                                 _.defer(function () {
-                                    component.trigger("selectChange");
+                                    component_1.trigger("selectChange");
                                 });
                                 $container.data("searchKey", searchKey);
                             }
@@ -9350,17 +9378,15 @@ var nts;
                         var searchMode = ko.unwrap(data.searchMode);
                         var primaryKey = ko.unwrap(data.targetKey);
                         var enable = ko.unwrap(data.enable);
-                        var targetMode = data.mode;
                         var component;
-                        if (targetMode === "listbox") {
+                        if (data.mode === "listbox") {
                             component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
-                            targetMode = "igGrid";
                         }
                         else {
                             component = $("#" + ko.unwrap(data.comId));
                         }
                         var srhX = $searchBox.data("searchObject");
-                        if (component.attr("filtered") === true || component.attr("filtered") === "true") {
+                        if (component.attr("filtered") === "true") {
                             var currentSoruce_1 = srhX.getDataSource();
                             var newItems = _.filter(arr, function (i) {
                                 return _.find(currentSoruce_1, function (ci) {
@@ -12121,7 +12147,7 @@ var nts;
                 (function (ntsError) {
                     var DATA_HAS_ERROR = 'hasError';
                     var DATA_GET_ERROR = 'getError';
-                    $.fn.ntsError = function (action, message, errorCode) {
+                    $.fn.ntsError = function (action, message, errorCode, businessError) {
                         var $control = $(this);
                         if (action === DATA_HAS_ERROR) {
                             return _.some($control, function (c) { return hasError($(c)); });
@@ -12132,31 +12158,34 @@ var nts;
                         else {
                             $control.each(function (index) {
                                 var $item = $(this);
-                                $item = processErrorOnItem($item, message, action, errorCode);
+                                $item = processErrorOnItem($item, message, action, errorCode, businessError);
                             });
                             return $control;
                         }
                     };
-                    function processErrorOnItem($control, message, action, errorCode) {
+                    function processErrorOnItem($control, message, action, errorCode, businessError) {
                         switch (action) {
                             case 'set':
-                                return setError($control, message, errorCode);
+                                return setError($control, message, errorCode, businessError);
                             case 'clear':
                                 return clearErrors($control);
                             case 'clearByCode':
                                 return clearErrorByCode($control, message);
+                            case 'clearKibanError':
+                                return clearKibanError($control);
                         }
                     }
                     function getErrorByElement($control) {
                         return ui.errors.getErrorByElement($control);
                     }
-                    function setError($control, message, errorCode) {
+                    function setError($control, message, errorCode, businessError) {
                         $control.data(DATA_HAS_ERROR, true);
                         ui.errors.add({
                             location: $control.data('name') || "",
                             message: message,
                             errorCode: errorCode,
-                            $control: $control
+                            $control: $control,
+                            businessError: businessError
                         });
                         $control.parent().addClass('error');
                         return $control;
@@ -12170,7 +12199,16 @@ var nts;
                     function clearErrorByCode($control, errorCode) {
                         ui.errors.removeByCode($control, errorCode);
                         var remainErrors = ui.errors.getErrorByElement($control);
-                        if (uk.util.isNullOrUndefined(remainErrors)) {
+                        if (uk.util.isNullOrEmpty(remainErrors)) {
+                            $control.data(DATA_HAS_ERROR, false);
+                            $control.parent().removeClass('error');
+                        }
+                        return $control;
+                    }
+                    function clearKibanError($control) {
+                        ui.errors.removeCommonError($control);
+                        var remainErrors = ui.errors.getErrorByElement($control);
+                        if (uk.util.isNullOrEmpty(remainErrors)) {
                             $control.data(DATA_HAS_ERROR, false);
                             $control.parent().removeClass('error');
                         }
@@ -14763,7 +14801,9 @@ var nts;
                     function setErrorPosition($displayPanel) {
                         setTimeout(function () {
                             if ($displayPanel.find(".sidebar-content-header").length > 0) {
-                                $('#func-notifier-errors').position({ my: 'left+5 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+                                $('#func-notifier-errors').addClass("show-immediately");
+                                $('#func-notifier-errors').position({ my: 'left+145 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+                                $('#func-notifier-errors').removeClass("show-immediately");
                             }
                             else {
                                 setErrorPosition($(".sidebar-content"));

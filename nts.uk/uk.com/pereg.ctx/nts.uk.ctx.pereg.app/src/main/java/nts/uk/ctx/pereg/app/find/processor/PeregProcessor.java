@@ -2,9 +2,7 @@ package nts.uk.ctx.pereg.app.find.processor;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,7 +48,6 @@ import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
@@ -390,47 +387,35 @@ public class PeregProcessor {
 	
 	private List<PerInfoItemDefForLayoutDto> getPerItemDefForLayout(ParamForGetPerItem paramObject, String empId, boolean isCtgViewOnly, GeneralDate sDate){
 		// get per info item def with order
-		List<PersonInfoItemDefinition> lstPerInfoDef = perItemRepo.getAllPerInfoItemDefByCategoryId(
-				paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), paramObject.getContractCode());
+		List<PersonInfoItemDefinition> lstPerInfoDef = perItemRepo.getAllItemByCtgWithAuth(paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), 
+				paramObject.getContractCode(), paramObject.getRoleId(), paramObject.isSelfAuth());
 		List<PerInfoItemDefForLayoutDto> lstReturn = new ArrayList<>();
 		PersonInfoItemDefinition x;
 		PerInfoItemDefForLayoutDto item;
-		Map<Integer, List<ComboBoxObject>> mapListCombo = new HashMap<>();
 		for(int i = 0; i < lstPerInfoDef.size(); i++) {
 			x = lstPerInfoDef.get(i);
-			if(x.getIsAbolition() == IsAbolition.ABOLITION) break;
 			
-			Optional<PersonInfoItemAuth> personInfoItemAuth = itemAuthRepo
+			PersonInfoItemAuth personInfoItemAuth = itemAuthRepo
 					.getItemDetai(paramObject.getRoleId(), paramObject.getPersonInfoCategory().getPersonInfoCategoryId(),
-							x.getPerInfoItemDefId());
-			if(personInfoItemAuth.isPresent())
+							x.getPerInfoItemDefId()).get();
 				if(paramObject.isSelfAuth()) {
-					PersonInfoAuthType itemRole = personInfoItemAuth.get().getSelfAuth();
-					if(itemRole != PersonInfoAuthType.HIDE) {
-						//set item
-						
+					PersonInfoAuthType itemRole = personInfoItemAuth.getSelfAuth();
 						item = new PerInfoItemDefForLayoutDto();
 						item.setActionRole(itemRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT);
 						itemForLayoutFinder.setItemForLayout(item, empId, paramObject.getPersonInfoCategory().getCategoryType().value, x, 
-								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate, mapListCombo);
-						
-						
-						if(item.getActionRole() != ActionRole.HIDDEN)
+								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate);
 							lstReturn.add(item);
-					}
+					
 				}else {
-					PersonInfoAuthType itemRole = personInfoItemAuth.get().getOtherAuth();
-					if(itemRole != PersonInfoAuthType.HIDE) {
-						//set item
+					PersonInfoAuthType itemRole = personInfoItemAuth.getOtherAuth();
 						item = new PerInfoItemDefForLayoutDto();
 						item.setActionRole(itemRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT);
 						itemForLayoutFinder.setItemForLayout(item, empId, paramObject.getPersonInfoCategory().getCategoryType().value, x, 
-								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate, mapListCombo);
-						if(item.getActionRole() != ActionRole.HIDDEN)
+								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate);
 							lstReturn.add(item);
 					}
 				}		
-		}
+		
 		return lstReturn;
 	}
 	

@@ -6,28 +6,28 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
+		<com:EnumScript>
+			nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr
+		</com:EnumScript>
 		<div class="contentD" tabindex="-1">
 			<div tabindex="-1">
 				<label tabindex="-1">#{i18n.getText('KSC001_21')}</label>
 			</div>
 			<div class="radioboxCaseAll" tabindex="1" id="inputCreateMethodAtr">
 				<div tabindex="-1" class="radioboxCase">
-					<div tabindex="1" 
-						data-bind="ntsRadioButton: {checked: checkCreateMethodAtrPersonalInfo, 
-						name: '#[KSC001_30]', enable: true, optionText: '#{i18n.getText('KSC001_22')}' }" />
+					<div tabindex = "1" 
+						data-bind="ntsRadioButton: { checked: checkCreateMethodAtrPersonalInfo, option: lstCreateMethod()[0], name: '#[KSC001_30]', optionValue: 'value', optionText: 'name', group: 'KSC001_30'}" />
 				</div>
 				<div tabindex="-1" class="radioboxCase">
-					<div tabindex="1"  
-						data-bind="ntsRadioButton: {checked: checkCreateMethodAtrPatternSchedule, 
-						name: '#[KSC001_30]', enable: true, optionText: '#{i18n.getText('KSC001_23')}' }" /> 
+					<div tabindex = "1" 
+						data-bind="ntsRadioButton: { checked: checkCreateMethodAtrPersonalInfo, option: lstCreateMethod()[1], name: '#[KSC001_30]', optionValue: 'value', optionText: 'name', group: 'KSC001_30'}" />
 					<button tabindex="2"  class="buttonCase" 
 						data-bind="click: showDialogKDL023, 
-						enable: checkCreateMethodAtrPatternSchedule">#{i18n.getText('KSC001_25')}</button>
+						enable: ko.computed(function(){ return checkCreateMethodAtrPersonalInfo()==1; })">#{i18n.getText('KSC001_25')}</button>
 				</div>
 				<div tabindex="-1" class="radioboxCase">
-					<div tabindex="1"  
-						data-bind="ntsRadioButton: {checked: checkCreateMethodAtrCopyPastSchedule, 
-						name: '#[KSC001_30]', enable: true, optionText: '#{i18n.getText('KSC001_24')}' }" />
+					<div tabindex = "1" 
+						data-bind="ntsRadioButton: { checked: checkCreateMethodAtrPersonalInfo, option: lstCreateMethod()[2], name: '#[KSC001_30]', optionValue: 'value', optionText: 'name', group: 'KSC001_30'}" />
 				</div>
 			</div>
 			<div class="lableCase" tabindex="-1" >
@@ -35,7 +35,7 @@
 				<div tabindex="3" id="copy-start-date"
 					data-bind="ntsDatePicker: {value: copyStartDate, 
 					dateFormat: 'YYYY/MM/DD', required: true, 
-					name: '#[KSC001_26]',enable:checkCreateMethodAtrCopyPastSchedule}"></div>
+					name: '#[KSC001_26]',enable:ko.computed(function(){ return checkCreateMethodAtrPersonalInfo()==2; })}"></div>
 			</div>	
 			<div tabindex="-1"  class="buttonBeginPrevious">
 				<button tabindex="4" class="large"  

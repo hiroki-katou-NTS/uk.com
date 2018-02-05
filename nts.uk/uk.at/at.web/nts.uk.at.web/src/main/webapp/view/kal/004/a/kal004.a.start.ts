@@ -6,6 +6,5 @@ module nts.uk.at.view.kal004.a {
         screenModel.startPage().done(function(){           
         });
          __viewContext.bind(screenModel);
-         _.defer(() => {screenModel.setFocus();});
     });
 }

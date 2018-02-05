@@ -111,6 +111,9 @@ public class VerticalTotalOfMonthly {
 			}
 		}
 		
+		// 休暇加算設定　取得
+		val vacationAddSet = new VacationAddSet(companyId, repositories);
+		
 		// 回数集計　取得
 		//*****（未）　集計での利用方法があいまいなため、設計確認要。
 		//val totalTimesList = repositories.getTotalTimes().getAllTotalTimes(companyId);
@@ -120,8 +123,9 @@ public class VerticalTotalOfMonthly {
 				attendanceTimeOfDailys, timeLeaveingOfDailys);
 		
 		// 勤務日数集計
-		this.workDays.aggregate(datePeriod, workInfoOfDailys, attendanceTimeOfDailys, timeLeaveingOfDailys,
-				specificDateAtrOfDailys, workTypeMap, predetermineTimeSetMap, attendanceStatusMap);
+		this.workDays.aggregate(datePeriod, workingSystem, workInfoOfDailys, attendanceTimeOfDailys,
+				timeLeaveingOfDailys, specificDateAtrOfDailys, workTypeMap, predetermineTimeSetMap,
+				attendanceStatusMap, vacationAddSet);
 		
 		// 勤務時間集計
 		this.workTime.aggregate(datePeriod, workInfoOfDailyMap, attendanceTimeOfDailys,

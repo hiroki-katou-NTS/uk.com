@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -21,7 +19,7 @@ public class KrcstDailyRecOpe extends UkJpaEntity{
 	public String comment;
 	
 	@Column(name = "SETTING_UNIT")
-	public BigDecimal settingUnit;
+	public int settingUnit;
 
 	@Override
 	protected Object getKey() {
