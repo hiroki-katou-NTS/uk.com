@@ -2,7 +2,9 @@ package nts.uk.ctx.pereg.app.find.person.info.item;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -62,9 +64,9 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @param mapListCombo
 	 */
 	public void setItemForLayout(PerInfoItemDefForLayoutDto itemForLayout, String empId, int ctgType,
-			PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder, boolean isCtgViewOnly, GeneralDate sDate) {
+			PersonInfoItemDefinition itemDef, String perInfoCd, int dispOrder, boolean isCtgViewOnly, GeneralDate sDate, Map<Integer, Map<String,  List<ComboBoxObject>>> combobox) {
 		List<PerInfoItemDefForLayoutDto> lstChildren = getPerItemSet(empId, ctgType, itemDef.getItemTypeState(),
-				perInfoCd, dispOrder, isCtgViewOnly, sDate, itemForLayout.getActionRole());
+				perInfoCd, dispOrder, isCtgViewOnly, sDate, itemForLayout.getActionRole(), combobox);
 		if (lstChildren.size() == 0 && itemDef.getItemTypeState().getItemType().value == 1)
 			itemForLayout.setActionRole(ActionRole.HIDDEN);
 		else {
@@ -93,12 +95,51 @@ public class PerInfoItemDefForLayoutFinder {
 				if (dataTypeValue == 6) {
 					DataTypeStateDto dataTypeStateDto = createDataTypeStateDto(singleItemDom.getDataTypeState());
 					SelectionItemDto selectionItemDto = (SelectionItemDto) dataTypeStateDto;
-					List<ComboBoxObject> lstCombo = getLstComboBoxValue(selectionItemDto, empId, sDate,
-							itemForLayout.getIsRequired() == 1);
+					
+					List<ComboBoxObject> lstCombo = getCombo(selectionItemDto, combobox, empId, sDate, itemForLayout.getIsRequired() == 1);
 					itemForLayout.setLstComboxBoxValue(lstCombo);
 
 				}
 			}
+		}
+	}
+	
+	private List<ComboBoxObject> getCombo(SelectionItemDto selectionItemDto, Map<Integer, Map<String, List<ComboBoxObject>>> combobox, String empId, GeneralDate sDate, boolean isRequired){
+		List<Object> key = new ArrayList<Object>();
+		int dataType = selectionItemDto.getReferenceType().value;
+		key.add(dataType);
+		switch(dataType) {
+			case 1:
+				MasterRefConditionDto master = (MasterRefConditionDto)selectionItemDto;
+				key.add(master.getMasterType());
+				break;
+			case 2: 
+				CodeNameRefTypeDto code = (CodeNameRefTypeDto)selectionItemDto;
+				key.add(code.getTypeCode());
+				break;
+			case 3:
+				EnumRefConditionDto enu = (EnumRefConditionDto)selectionItemDto;
+				key.add(enu.getEnumName());
+				break;
+		}
+		if(combobox.containsKey(key.get(0))) {
+			Map<String, List<ComboBoxObject>> mapComboValue = combobox.get(key.get(0));
+			if(mapComboValue.containsKey(key.get(1))) {
+				return mapComboValue.get(key.get(1));
+			}else {
+				 List<ComboBoxObject> returnList =  getLstComboBoxValue(selectionItemDto, empId, sDate,
+						isRequired);
+				 mapComboValue.put((String) key.get(1), returnList);
+				 combobox.put((Integer) key.get(0), mapComboValue);
+				 return returnList;
+			}
+		}else {
+			List<ComboBoxObject> returnList =  getLstComboBoxValue(selectionItemDto, empId, sDate,
+					isRequired);
+			Map<String, List<ComboBoxObject>> mapComboValue = new HashMap<>();
+			mapComboValue.put((String) key.get(1), returnList);
+			combobox.put((Integer) key.get(0), mapComboValue);
+			return returnList;
 		}
 	}
 
@@ -165,7 +206,7 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @return
 	 */
 	private List<PerInfoItemDefForLayoutDto> getPerItemSet(String empId, int ctgType, ItemTypeState item,
-			String perInfoCd, int dispOrder, boolean ctgIsViewOnly, GeneralDate sDate, ActionRole actionRole) {
+			String perInfoCd, int dispOrder, boolean ctgIsViewOnly, GeneralDate sDate, ActionRole actionRole, Map<Integer, Map<String,  List<ComboBoxObject>>> combobox) {
 		// 1 set - 2 Single
 		List<PerInfoItemDefForLayoutDto> lstResult = new ArrayList<>();
 		if (item.getItemType().value == 1) {
@@ -185,7 +226,7 @@ public class PerInfoItemDefForLayoutFinder {
 				childItem = new PerInfoItemDefForLayoutDto();
 				childItem.setActionRole(actionRole);
 				setItemForLayout(childItem, empId, ctgType, lstDomain.get(i), perInfoCd, dispOrder, ctgIsViewOnly,
-						sDate);
+						sDate,combobox) ;
 				lstResult.add(childItem);
 			}
 		}
