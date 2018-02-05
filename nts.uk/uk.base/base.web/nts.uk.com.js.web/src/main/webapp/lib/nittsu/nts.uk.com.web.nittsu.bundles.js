@@ -3058,7 +3058,7 @@ var nts;
                 }
                 asyncTask.getInfo = getInfo;
                 function requestToCancel(taskId) {
-                    ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId);
+                    return ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId);
                 }
                 asyncTask.requestToCancel = requestToCancel;
             })(asyncTask = request.asyncTask || (request.asyncTask = {}));
