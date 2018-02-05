@@ -6,13 +6,14 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationListAtr;
@@ -23,8 +24,11 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInf
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
@@ -53,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -104,10 +109,24 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	public DatePeriod getInitialPeriod(String companyId) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
+		//ドメイン「締め」を取得する
+		List<Closure> lstClosure = repoClosure.findAllActive(companyID, UseClassification.UseClass_Use);
+		List<ClosureHistory> lstClosureHist = new ArrayList<>();
+		for (Closure closure : lstClosure) {
+			ClosureHistory closureHist = this.findHistClosure(closure.getClosureHistories(), closure.getClosureMonth());
+			if(closureHist != null){
+				lstClosureHist.add(closureHist);
+			}
+		}
+		
+		
+		
+		
 		GeneralDate baseDate = GeneralDate.today();
 		//find employment by employeeId
 		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, employeeID, baseDate);
 		//アルゴリズム「会社の締め日を取得する」を実行する
+		//アルゴリズム「締めIDを取得する」を実行する
 		Optional<ClosureEmployment> closureEmployment = closureEmpRepository.findByEmploymentCD(companyID, empHistImport.getEmploymentCode());
 		//ドメインモデル「申請締切設定」を取得する (get domain deadline setting)
 		Optional<AppDeadlineSetting> deadlinSet =  repoDeadlineSet.getDeadlineByClosureId(companyId, closureEmployment.get().getClosureId());
@@ -119,6 +138,15 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 		//開始日付の4か月後を終了日付として取得
 		// TODO Auto-generated method stub
 		return new DatePeriod(start,end);
+	}
+	private ClosureHistory findHistClosure(List<ClosureHistory> closureHistories, CurrentMonth closureMonth){
+		for (ClosureHistory closureHist : closureHistories) {
+			if(closureHist.getStartYearMonth().lessThanOrEqualTo(closureMonth.getProcessingYm()) &&
+					closureHist.getEndYearMonth().greaterThanOrEqualTo(closureMonth.getProcessingYm())){
+				return closureHist;
+			}
+		}
+		return null;
 	}
 	/**
 	 * 0 - 申請一覧事前必須チェック
@@ -232,7 +260,14 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 		ApplicationStatus appStatus = new ApplicationStatus(0,0,0,0,0,0,0);
 		List<ApplicationFullOutput> lstAppFull = mergeAppAndPhase(lstApp);
 		for (ApplicationFullOutput appFull : lstAppFull) {
-			switch(appFull.getApplication().getReflectionInformation().getStateReflectionReal().value){
+			PhaseFrameStatus status = this.findPhaseFrameStatus(appFull.getLstPhaseState(), AppContexts.user().employeeId());
+			int statusApp = this.calApplication(appFull.getApplication().getReflectionInformation().getStateReflection(), status, status.getAgentId());
+			appFull.setStatus(statusApp);
+			appFull.setAgentId(status.getAgentId());
+		}
+		
+		for (ApplicationFullOutput appFull : lstAppFull) {
+			switch(appFull.getStatus()){
 				case 0:
 					appStatus.setNotReflectNumber(appStatus.getNotReflectNumber() + 1);
 					break;
@@ -328,8 +363,11 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	public Boolean getAppListAchievementOverTime(String sID, GeneralDate date) {
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
+		
 		//Imported(申請承認)「計算残業時間」を取得する - req #23
+		// TODO Auto-generated method stub
 		//Imported(申請承認)「計算休出時間」を取得する - req #23
+		// TODO Auto-generated method stub
 		//Imported(申請承認)「計算加給時間」を取得する - req #23
 		// TODO Auto-generated method stub
 		return null;
@@ -429,8 +467,287 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 		for (Application_New app : lstApp) {
 			List<ApprovalPhaseStateImport_New> lstPhase = approvalRootStateAdapter.getApprovalRootContent(companyID, 
 					app.getEmployeeID(), app.getAppType().value, app.getAppDate(), app.getAppID(), false).getApprovalRootState().getListApprovalPhaseState();
-			lstAppFull.add(new ApplicationFullOutput(app, lstPhase));
+			lstAppFull.add(new ApplicationFullOutput(app, lstPhase,-1,""));
 		}
 		return lstAppFull;
+	}
+	/**
+	 * find status phase and frame
+	 * @param lstPhase
+	 * @param sID
+	 * @return
+	 */
+	private PhaseFrameStatus findPhaseFrameStatus(List<ApprovalPhaseStateImport_New> lstPhase, String sID){
+		PhaseFrameStatus status = new PhaseFrameStatus();
+		for (ApprovalPhaseStateImport_New appPhase : lstPhase) {
+			FrameOutput frame = this.checkPhaseCurrent(appPhase, sID);
+			if(frame.getFrameStatus() != null){
+				status.setFrameStatus(EnumAdaptor.valueOf(frame.getFrameStatus(), ApprovalBehaviorAtrImport_New.class));
+				status.setPhaseStatus(appPhase.getApprovalAtr_Enum());
+				status.setAgentId(frame.getAgentId());
+				break;
+			}
+		}
+		return status;
+		
+	}
+	/**
+	 * check phase current (login)
+	 * @param phase
+	 * @param sID
+	 * @return null: not phase
+	 * @return not null: phase current and status frame
+	 */
+	private FrameOutput checkPhaseCurrent(ApprovalPhaseStateImport_New phase, String sID){
+		List<ApprovalFrameImport_New> lstFrame = phase.getListApprovalFrame();
+		FrameOutput statusFrame = new FrameOutput();
+		for (ApprovalFrameImport_New frame : lstFrame) {
+			if(this.checkExistEmp(frame.getListApprover(), sID)){
+				statusFrame.setFrameStatus(frame.getApprovalAtr_Enum().value);
+				statusFrame.setAgentId(frame.getRepresenterID());
+				break;
+			}
+		}
+		return statusFrame;
+	}
+	/**
+	 * check frame exist employee?
+	 * @param listApprover
+	 * @param sID
+	 * @return
+	 */
+	private boolean checkExistEmp(List<ApproverStateImport_New> listApprover, String sID){
+		boolean check = false;
+		for (ApproverStateImport_New approver : listApprover) {
+			if(approver.getApprover().equals(sID)){
+				check = true;
+				break;
+			}
+		}
+		return check;
+	}
+	private int calApplication(ReflectedState_New appStatus, PhaseFrameStatus status, String agentId){
+		String sIdLogin = AppContexts.user().employeeId();
+		if(agentId != null & agentId.equals(sIdLogin)){//※ログイン者　　＝代行者の場合
+			return this.calAppAgent(appStatus, status);
+		}else{//※ログイン者　　＝承認者の場合
+			return this.calAppAproval(appStatus, status);
+		}
+	}
+	
+	/**
+	 * calculate status TH ログイン者　　＝承認者の場合
+	 * @param appStatus
+	 * @param status
+	 * @return
+	 */
+	private int calAppAproval(ReflectedState_New appStatus, PhaseFrameStatus status){
+		switch(appStatus.value){
+			case 0://APP: 未反映 - NOTREFLECTED
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){//Phase: 未承認
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){//Frame: 未承認
+						return 5;
+					}
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){//Frame: 承認済  
+						return 4;
+					}
+					return 0;
+				}
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.REMAND)){//差し戻し 
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+						return 2;
+					}
+					return 0;
+				}
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){//Phase: 承認済   
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){//Frame: 未承認/承認済 
+						return 4;
+					}
+					return 0;
+				}
+				return 0;
+			case 1://APP: 反映待ち - WAITREFLECTION
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){//Phase: 承認済 
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){//Frame: 未承認/承認済 
+						return 4;
+					}
+					return 0;
+				}
+				return 0;
+			case 2://APP: 反映済 - REFLECTED
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){//Phase: 承認済 
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){//Frame: 未承認/承認済 
+						return 4;
+					}
+					return 0;
+				}
+				return 0;
+			case 5://APP: 差し戻し - REMAND
+				return 0;
+			case 6://APP: 否認 - DENIAL
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){//Phase: 未承認
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Frame: 未承認/承認済/否認
+						return 1;
+					}
+					return 0;
+				}
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){//Phase: 承認済
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Frame: 未承認/承認済/否認
+						return 1;
+					}
+					return 0;
+				}
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Phase: 否認
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Frame: 未承認/承認済/否認
+						return 1;
+					}
+					return 0;
+				}
+				return 0;
+			default://APP: 取消待ち - WAITCANCEL/取消済  - CANCELED
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){//Phase: 未承認
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Frame: 未承認/承認済/否認
+						return 3;
+					}
+					return 0;
+				}
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){//Phase: 承認済
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Frame: 未承認/承認済/否認
+						return 3;
+					}
+					return 0;
+				}
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Phase: 否認
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Frame: 未承認/承認済/否認
+						return 3;
+					}
+					return 0;
+				}
+				return 0;
+		}
+	}
+	
+	/**
+	 * calculate status TH ログイン者　　＝代行者の場合
+	 * @param appStatus
+	 * @param status
+	 * @return
+	 */
+	private int calAppAgent(ReflectedState_New appStatus, PhaseFrameStatus status){
+		switch(appStatus.value){
+			case 0://APP: 未反映 - NOTREFLECTED
+				//Phase: 未承認
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){//Frame: 未承認
+						return 5;
+					}
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){//Frame: 承認済  
+						return 4;
+					}
+					return 0;
+				}
+				//差し戻し 
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.REMAND)){
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+						return 2;
+					}
+					return 0;
+				}
+				//Phase: 承認済   
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){//Frame: 承認済 
+						return 4;
+					}
+					return 0;
+				}
+				return 0;
+			case 1://APP: 反映待ち - WAITREFLECTION
+				//Phase: 承認済 
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){//Frame: 承認済 
+						return 4;
+					}
+					return 0;
+				}
+				return 0;
+			case 2://APP: 反映済 - REFLECTED
+				//Phase: 承認済 
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){//Frame: 承認済 
+						return 4;
+					}
+					return 0;
+				}
+				return 0;
+			case 5://APP: 差し戻し - REMAND
+				return 0;
+			case 6://APP: 否認 - DENIAL
+				//Phase: 未承認
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Frame: 承認済/否認
+						return 1;
+					}
+					return 0;
+				}
+				//Phase: 承認済
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Frame: 承認済/否認
+						return 1;
+					}
+					return 0;
+				}
+				//Phase: 否認
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Frame: 承認済/否認
+						return 1;
+					}
+					return 0;
+				}
+				return 0;
+			default://APP: 取消待ち - WAITCANCEL/取消済  - CANCELED
+				////Phase: 未承認
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.UNAPPROVED)){
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Frame: 承認済/否認
+						return 3;
+					}
+					return 0;
+				}
+				//Phase: 承認済
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED)){
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Frame: 承認済/否認
+						return 3;
+					}
+					return 0;
+				}
+				//Phase: 否認
+				if(status.getPhaseStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){
+					if(status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.APPROVED) ||
+							status.getFrameStatus().equals(ApprovalBehaviorAtrImport_New.DENIAL)){//Frame: 承認済/否認
+						return 3;
+					}
+					return 0;
+				}
+				return 0;
+		}
 	}
 }
