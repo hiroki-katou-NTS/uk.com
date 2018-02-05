@@ -17,6 +17,7 @@ import nts.uk.ctx.at.auth.app.command.employmentrole.UpdateEmploymentRoleCmd;
 import nts.uk.ctx.at.auth.app.command.employmentrole.UpdateEmploymentRoleCmdHandler;
 import nts.uk.ctx.at.auth.app.find.employmentrole.EmploymentRoleDataFinder;
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.EmploymentRoleDataDto;
+import nts.uk.shr.com.context.AppContexts;
 
 //import nts.uk.ctx.at.auth.pub.wkpmanager.WorkplaceManagerExport;
 //import nts.uk.ctx.at.auth.pub.wkpmanager.WorkplaceManagerPub;
@@ -75,6 +76,13 @@ public class EmploymentRoleDataWebService {
 	@Path("deleteemploymentrole")
 	public void deleteEmploymentRole(DeleteEmploymentRoleCmd command) {
 		this.deleteEmploymentRole.handle(command);
+	}
+
+	@POST
+	@Path("getpermitbysystype/{systype}")
+	public boolean getFuturePermitBySysType(@PathParam("systype") int sysType) {
+		String roleId = AppContexts.user().roles().forAttendance(); // 就業
+		return this.employmentRoleFinder.getEmploymentRoleById(roleId).getFutureDateRefPermit() == 0 ? false : true;
 	}
 
 }

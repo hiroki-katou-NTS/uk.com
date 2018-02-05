@@ -30,6 +30,7 @@ import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleTypeDto;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRoleFinder;
 import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
 import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("ctx/sys/auth/grant/roleindividual")
 @Produces("application/json")
@@ -138,4 +139,11 @@ public class RoleIndividualWebService extends WebService {
 		this.deleteRoleGrant.deleteRoleGrant(roleGrant);
 	}
 	
+	@POST
+	@Path("getpermitbysystype/{systype}")
+	public boolean getFuturePermitBySysType(@PathParam("systype") int sysType) {
+		String roleId = AppContexts.user().roles().forPersonalInfo();
+		return this.personInforRoleFinder.find(roleId).getReferFutureDate();
+	}
+
 }
