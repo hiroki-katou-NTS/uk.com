@@ -18,33 +18,114 @@ module nts.layout {
         }
     }
 
-    export const constraint = (lstCls: Array<any>) => {
-        let self = {
-            _lst: lstCls,
-            lst: (lstCls?: Array<any>) => {
-                if (_.isArray(lstCls)) {
-                    self._lst = lstCls;
-                }
+    class constraint {
+        lstCls: Array<any> = [];
+        constructor(lstCls: Array<any>) {
+            let self = this;
 
-                return self._lst;
-            },
-            combobox: (categoryCode: string, subscribeCode: string, targetCode: string) => {
-                let controls = _(self.lst()).map(x => x.items()).flatten().flatten().value(),
-                    target = _.find(controls, (x: any) => x.categoryCode == categoryCode && x.itemCode == targetCode),
-                    subscribe = _.find(controls, (x: any) => x.categoryCode == categoryCode && x.itemCode == subscribeCode);
+            self.lstCls = lstCls;
+        }
+        find = (categoryCode: string, subscribeCode: string): IFindData => {
+            let self = this,
+                controls: Array<any> = _(self.lstCls).map(x => x.items()).flatten().flatten().value(),
+                subscribe: any = _.find(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemCode == subscribeCode);
 
-                debugger;
-                fetch.combobox("", "");
+            if (subscribe) {
+                return <IFindData>{
+                    data: subscribe,
+                    ctrl: $('#' + subscribe.itemDefId.replace(/[-_]/g, ''))
+                };
             }
+
+            return null;
         };
 
-        self.lst(lstCls);
+        finds = (categoryCode: string, subscribesCode: Array<string>): Array<IFindData> => {
+            if (!_.isArray(subscribesCode)) {
+                throw "[subscribesCode] isn't an array!";
+            }
 
-        return self;
+            let self = this,
+                controls: Array<any> = _(self.lstCls).map(x => x.items()).flatten().flatten().value(),
+                subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && (subscribesCode || []).indexOf(x.itemCode) > -1);
+
+            return subscribes.map(x => {
+                return <IFindData>{
+                    data: x,
+                    ctrl: $('#' + x.itemDefId.replace(/[-_]/g, ''))
+                };
+            });
+        };
+
+        findChilds = (categoryCode: string, parentCode: string): Array<IFindData> => {
+            let self = this,
+                controls: Array<any> = _(self.lstCls).map(x => x.items()).flatten().flatten().value(),
+                subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemParentCode == parentCode);
+
+            return subscribes.map(x => {
+                return <IFindData>{
+                    data: x,
+                    ctrl: $('#' + x.itemDefId.replace(/[-_]/g, ''))
+                };
+            });
+        };
     }
 
     const fetch = {
         combobox: (baseDate: string, itemCode: string) => ajax(`/pereg/get-combo-value/${itemCode}/${baseDate}`)
+    }
+
+    export class validation {
+        finder: IFinder = undefined;
+        constructor(lstCls: Array<any>) {
+            let self = this;
+            self.finder = new constraint(lstCls);
+
+            self.radio();
+            self.button();
+            self.combobox();
+        }
+
+        radio = () => {
+            let self = this,
+                finder = self.finder,
+                CS00020_IS00248: IFindData = finder.find('CS00020', 'IS00248');
+
+            if (CS00020_IS00248) {
+                CS00020_IS00248.data.value.subscribe(x => {
+                    let ctrls: Array<IFindData> = finder.findChilds(CS00020_IS00248.data.categoryCode, CS00020_IS00248.data.itemParentCode);
+
+                    _.each(ctrls, c => {
+                        if (c.data.itemCode != CS00020_IS00248.data.itemCode) {
+                            c.data.editable(x == 1);
+                        }
+                    });
+                });
+            }
+            
+            
+        };
+
+        button = () => {
+            let self = this,
+                finder = self.finder,
+                CS00020_IS00128: IFindData = finder.find('CS00020', 'IS00128');
+
+            if (CS00020_IS00128) {
+                CS00020_IS00128.ctrl.on('click', () => {
+                    let _finder = finder;
+
+                    CS00020_IS00128.data.value('clicked');
+                });
+            }
+            
+            
+            
+            
+        };
+
+        combobox = () => {
+        };
     }
 
 
@@ -53,5 +134,30 @@ module nts.layout {
         ITEM = <any>"ITEM", // single item
         LIST = <any>"LIST", // list item
         SPER = <any>"SeparatorLine" // line item
+    }
+
+    interface IValidation {
+        radio: () => void;
+        button: () => void;
+        combobox: () => void;
+    }
+
+    interface IFinder {
+        find: (categoryCode: string, subscribeCode: string) => IFindData;
+        finds: (categoryCode: string, subscribesCode: Array<string>) => Array<IFindData>;
+        findChilds: (categoryCode: string, parentCode: string) => Array<IFindData>;
+    }
+
+    interface IFindData {
+        ctrl: any;
+        data: IItemData
+    }
+
+    interface IItemData {
+        value: KnockoutObservable<any>;
+        editable: KnockoutObservable<boolean>;
+        categoryCode: string;
+        itemCode: string;
+        itemParentCode?: string;
     }
 } 

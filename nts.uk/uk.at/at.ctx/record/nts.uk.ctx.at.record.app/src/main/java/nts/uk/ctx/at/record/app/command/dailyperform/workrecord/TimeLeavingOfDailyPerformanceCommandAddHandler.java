@@ -17,7 +17,7 @@ public class TimeLeavingOfDailyPerformanceCommandAddHandler extends CommandFacad
 	protected void handle(CommandHandlerContext<TimeLeavingOfDailyPerformanceCommand> context) {
 		TimeLeavingOfDailyPerformanceCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.add(command.toDomain());
+			repo.add(command.getData().get());
 		}
 	}
 }

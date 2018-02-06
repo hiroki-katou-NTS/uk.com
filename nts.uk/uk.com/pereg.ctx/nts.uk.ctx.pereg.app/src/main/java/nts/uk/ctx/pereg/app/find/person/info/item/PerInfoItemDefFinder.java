@@ -25,7 +25,9 @@ import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.numericitem.NumericItem;
 import nts.uk.ctx.pereg.dom.person.info.order.PerInfoItemDefOrder;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionButton;
 import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionItem;
+import nts.uk.ctx.pereg.dom.person.info.selectionitem.SelectionRadio;
 import nts.uk.ctx.pereg.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeState;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
@@ -167,7 +169,8 @@ public class PerInfoItemDefFinder {
 		return this.pernfoItemDefRep
 				.getPerInfoItemDefByListId(listItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream()
 				.map(item -> {
-					int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(item.getPerInfoCategoryId(), item.getPerInfoItemDefId());
+					int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(item.getPerInfoCategoryId(),
+							item.getPerInfoItemDefId());
 					return mappingFromDomaintoDto(item, dispOrder);
 				}).collect(Collectors.toList());
 	};
@@ -185,16 +188,17 @@ public class PerInfoItemDefFinder {
 		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
 		return mappingItemAndOrder(itemDefs, itemOrders);
 	};
-	
+
 	// Function get item used for Layout
 	public List<PerInfoItemDefDto> getAllPerInfoItemUsedByCtgIdForLayout(String perInfoCtgId) {
 		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep
 				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream()
-				.filter(e -> (e.getItemParentCode().equals("") && e.getIsAbolition().value == 0)) // filter set
-																// item or
-																// single item
-																// (has'nt
-																// parent item)
+				.filter(e -> (e.getItemParentCode().equals("") && e.getIsAbolition().value == 0)) // filter
+																									// set
+				// item or
+				// single item
+				// (has'nt
+				// parent item)
 				.collect(Collectors.toList());
 		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
 		return mappingItemAndOrder(itemDefs, itemOrders);
@@ -258,10 +262,10 @@ public class PerInfoItemDefFinder {
 		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class, ukResouce);
 		ItemTypeStateDto itemTypeStateDto = createItemTypeStateDto(itemDef.getItemTypeState());
 		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
-				itemDef.getItemCode().v(), itemDef.getItemParentCode().v(), itemDef.getItemName().v(), itemDef.getIsAbolition().value,
-				itemDef.getIsFixed().value, itemDef.getIsRequired().value, itemDef.getSystemRequired().value,
-				itemDef.getRequireChangable().value, dispOrder, itemDef.getSelectionItemRefType(), itemTypeStateDto,
-				selectionItemRefTypes);
+				itemDef.getItemCode().v(), itemDef.getItemParentCode().v(), itemDef.getItemName().v(),
+				itemDef.getIsAbolition().value, itemDef.getIsFixed().value, itemDef.getIsRequired().value,
+				itemDef.getSystemRequired().value, itemDef.getRequireChangable().value, dispOrder,
+				itemDef.getSelectionItemRefType(), itemTypeStateDto, selectionItemRefTypes);
 	}
 
 	private PerInfoItemChangeDefDto mappingFromDomaintoDto_for_Selection(PersonInfoItemDefinition itemDef,
@@ -301,7 +305,7 @@ public class PerInfoItemDefFinder {
 				selectionLst);
 	}
 
-	private ItemTypeStateDto createItemTypeStateDto(ItemTypeState itemTypeState) {
+	public static ItemTypeStateDto createItemTypeStateDto(ItemTypeState itemTypeState) {
 		ItemType itemType = itemTypeState.getItemType();
 		if (itemType == ItemType.SINGLE_ITEM) {
 			SingleItem singleItemDom = (SingleItem) itemTypeState;
@@ -312,7 +316,7 @@ public class PerInfoItemDefFinder {
 		}
 	}
 
-	private DataTypeStateDto createDataTypeStateDto(DataTypeState dataTypeState) {
+	public static DataTypeStateDto createDataTypeStateDto(DataTypeState dataTypeState) {
 		int dataTypeValue = dataTypeState.getDataTypeValue().value;
 		switch (dataTypeValue) {
 		case 1:
@@ -339,13 +343,21 @@ public class PerInfoItemDefFinder {
 		case 6:
 			SelectionItem sItem = (SelectionItem) dataTypeState;
 			return DataTypeStateDto.createSelectionItemDto(sItem.getReferenceTypeState());
+
+		case 7:
+			SelectionRadio rItem = (SelectionRadio) dataTypeState;
+			return DataTypeStateDto.createSelectionRadioDto(rItem.getReferenceTypeState());
+
+		case 8:
+			SelectionButton bItem = (SelectionButton) dataTypeState;
+			return DataTypeStateDto.createSelectionButtonDto(bItem.getReferenceTypeState());
 		default:
 			return null;
 		}
 	}
-	
-	public boolean checkExistedSelectionItemId(String selectionItemId){
-		
+
+	public boolean checkExistedSelectionItemId(String selectionItemId) {
+
 		return this.pernfoItemDefRep.checkExistedSelectionItemId(selectionItemId);
 	}
 

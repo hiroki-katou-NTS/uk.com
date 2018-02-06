@@ -5,20 +5,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkPreAndReferDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkInputDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
-import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -30,6 +28,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.outpu
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayPreProcess;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
@@ -39,6 +39,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.TimeItemTypeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
+import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
@@ -47,13 +49,20 @@ import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReas
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+@Stateless
 public class AppHolidayWorkFinder {
 	final static String DATE_FORMAT = "yyyy/MM/dd";
 	final static String ZEZO_TIME = "00:00";
@@ -77,6 +86,13 @@ public class AppHolidayWorkFinder {
 	private PersonalLaborConditionRepository personalLaborConditionRepository;
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	@Inject
+	private WorkTimeSettingRepository workTimeRepository;
+	@Inject
+	private WorkdayoffFrameRepository workdayoffFrameRepository;
+	
 	
 	public AppHolidayWorkDto getAppHolidayWork(String appDateInput,int uiType){
 		
@@ -103,7 +119,7 @@ public class AppHolidayWorkFinder {
 		 }
 		 // アルゴリズム「初期データの取得」を実行する
 		 getData(companyID,employeeID,appDateInput,appCommonSettingOutput,result,uiType);
-		return null;
+		return result;
 	}
 	
 	/**
@@ -114,7 +130,7 @@ public class AppHolidayWorkFinder {
 	 * @param appCommonSettingOutput
 	 * @param result
 	 */
-	public void getData(String companyID,String employeeID,String appDate,AppCommonSettingOutput appCommonSettingOutput,AppHolidayWorkDto result,int uiType){
+	private void getData(String companyID,String employeeID,String appDate,AppCommonSettingOutput appCommonSettingOutput,AppHolidayWorkDto result,int uiType){
 		ApplicationDto_New applicationDto = new ApplicationDto_New();
 		List<HolidayWorkInputDto> holidayWorkInputDtos = new ArrayList<>();
 		//01-12_申請日付取得
@@ -167,7 +183,32 @@ public class AppHolidayWorkFinder {
 		getAppReason(appCommonSettingOutput, result,companyID);
 		// 01-08_乖離定型理由を取得, 01-07_乖離理由を取得
 		getDivigenceReason(overtimeRestAppCommonSet,result,companyID);
+		
+		// xu li hien thi du lieu xin truoc
+		if(overtimeRestAppCommonSet.isPresent()){
+			// hien thi du lieu thuc te
+			if(result.getApplication().getPrePostAtr() == InitValueAtr.POST.value && overtimeRestAppCommonSet.get().getPerformanceDisplayAtr().value == UseAtr.USE.value){
+				result.setReferencePanelFlg(true);
+			}
+			// hien thi don xin truoc
+			if(overtimeRestAppCommonSet.get().getPreDisplayAtr().value == UseAtr.NOTUSE.value && result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value){
+				result.setAllPreAppPanelFlg(false);
+			}else{
+				result.setAllPreAppPanelFlg(true);
+			}
+		}
 		// 01-09_事前申請を取得
+		if(result.isAllPreAppPanelFlg()){
+			//01-09_事前申請を取得
+			if(result.getApplication().getPrePostAtr()  == PrePostAtr.POSTERIOR.value ){
+				result.setPreAppPanelFlg(false);
+				AppHolidayWork appHolidayWork = holidayPreProcess.getPreApplicationHoliday(companyID, employeeID,overtimeRestAppCommonSet, appDate,result.getApplication().getPrePostAtr());
+				if(appHolidayWork != null){
+					result.setPreAppPanelFlg(true);
+					convertAppHolidayWorkDto(companyID,result,appHolidayWork);
+				}			
+			}
+		}
 	}
 	/**
 	 * 4.勤務種類を取得する, 5.就業時間帯を取得する,01-14_勤務時間取得, 01-17_休憩時間取得
@@ -286,5 +327,67 @@ public class AppHolidayWorkFinder {
 			divergenceReasonDtos.add(divergenceReasonDto);
 		}
 		result.setDivergenceReasonDtos(divergenceReasonDtos);
+	}
+	private void convertAppHolidayWorkDto(String companyID, AppHolidayWorkDto result,AppHolidayWork appHolidayWork){
+		AppHolidayWorkPreAndReferDto  appHolidayWorkPreAndReferDto= new AppHolidayWorkPreAndReferDto();
+		if(appHolidayWork.getApplication() != null){
+			if(appHolidayWork.getApplication().getAppDate() != null){
+				appHolidayWorkPreAndReferDto.setAppDate(appHolidayWork.getApplication().getAppDate().toString(DATE_FORMAT));
+			}
+		}
+		
+		if (appHolidayWork.getWorkTypeCode() != null) {
+			WorkTypeOvertime workTypeOvertime = new WorkTypeOvertime();
+			workTypeOvertime.setWorkTypeCode(appHolidayWork.getWorkTypeCode().toString());
+			Optional<WorkType> workType = workTypeRepository.findByPK(companyID,
+					appHolidayWork.getWorkTypeCode().toString());
+			if (workType.isPresent()) {
+				workTypeOvertime.setWorkTypeName(workType.get().getName().toString());
+			}
+			appHolidayWorkPreAndReferDto.setWorkType(workTypeOvertime);
+		}
+		if (appHolidayWork.getWorkTimeCode() != null) {
+			SiftType siftType = new SiftType();
+
+			siftType.setSiftCode(appHolidayWork.getWorkTimeCode().toString());
+			Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(companyID,
+					appHolidayWork.getWorkTimeCode().toString());
+			if (workTime.isPresent()) {
+				siftType.setSiftName(workTime.get().getWorkTimeDisplayName().getWorkTimeName().toString());
+			}
+			appHolidayWorkPreAndReferDto.setWorkTime(siftType);
+		}
+		appHolidayWorkPreAndReferDto.setWorkClockStart1(appHolidayWork.getWorkClock1().getStartTime().v());
+		appHolidayWorkPreAndReferDto.setWorkClockEnd1(appHolidayWork.getWorkClock1().getEndTime().v());
+		appHolidayWorkPreAndReferDto.setWorkClockStart2(appHolidayWork.getWorkClock2().getStartTime() == null ? null : appHolidayWork.getWorkClock2().getStartTime().v());
+		appHolidayWorkPreAndReferDto.setWorkClockEnd2(appHolidayWork.getWorkClock2().getEndTime() == null ? null : appHolidayWork.getWorkClock2().getEndTime().v());
+		
+		List<HolidayWorkInputDto> holidayWorkInputDtos = new ArrayList<>();
+		List<HolidayWorkInput> holidayWorkInputs = appHolidayWork.getHolidayWorkInputs();
+		if (holidayWorkInputs != null && !holidayWorkInputs.isEmpty()) {
+			List<Integer> frameNo = new ArrayList<>();
+			for (HolidayWorkInput holidayWorkInput : holidayWorkInputs) {
+				HolidayWorkInputDto holidayWorkInputDto = new HolidayWorkInputDto();
+				holidayWorkInputDto.setAttendanceType(holidayWorkInput.getAttendanceType().value);
+				holidayWorkInputDto.setFrameNo(holidayWorkInput.getFrameNo());
+				holidayWorkInputDto.setStartTime(holidayWorkInput.getStartTime().v());
+				holidayWorkInputDto.setEndTime(holidayWorkInput.getEndTime().v());
+				holidayWorkInputDto.setApplicationTime(holidayWorkInput.getApplicationTime().v());
+				holidayWorkInputDtos.add(holidayWorkInputDto);
+				frameNo.add(holidayWorkInput.getFrameNo());
+			}
+			List<WorkdayoffFrame> workDayoffFrames = this.workdayoffFrameRepository.getWorkdayoffFrameBy(new CompanyId(companyID),frameNo);
+			for (HolidayWorkInputDto holidayWorkInputDto : holidayWorkInputDtos) {
+				for (WorkdayoffFrame workdayoffFrame : workDayoffFrames) {
+					if (holidayWorkInputDto.getFrameNo() == workdayoffFrame.getWorkdayoffFrNo().v().intValueExact()) {
+						holidayWorkInputDto.setFrameName(workdayoffFrame.getWorkdayoffFrName().toString());
+						continue;
+					}
+				}
+			}
+			appHolidayWorkPreAndReferDto.setHolidayWorkInputs(holidayWorkInputDtos);
+			
+		}
+		result.setPreAppHolidayWorkDto(appHolidayWorkPreAndReferDto);
 	}
 }

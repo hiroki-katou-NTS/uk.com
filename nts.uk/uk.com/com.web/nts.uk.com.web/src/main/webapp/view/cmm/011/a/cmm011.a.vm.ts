@@ -165,10 +165,12 @@ module nts.uk.com.view.cmm011.a {
              */
             public removeWorkplace() {
                 let self = this;
-
+                
                 // show message confirm
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
                 
+                    let parentWorkplaceId: string = self.getParentWorkplaceId(self.treeWorkplace().selectedWpkId());
+                    
                     // to JsObject
                     let command: any = {};
                     command.historyIdWkpConfigInfo = self.wkpConfigHistId;
@@ -189,7 +191,11 @@ module nts.uk.com.view.cmm011.a {
                                 
                                 // set choose item first of list
                                 if (self.treeWorkplace().lstWorkplace().length > 0) {
-                                    self.treeWorkplace().selectFirst();
+                                    if (nts.uk.util.isNullOrEmpty(parentWorkplaceId)) {
+                                        self.treeWorkplace().selectFirst();
+                                    } else {
+                                        self.treeWorkplace().selectedWpkId(parentWorkplaceId);
+                                    }                                 
                                 }
                             });
                         });
@@ -244,6 +250,27 @@ module nts.uk.com.view.cmm011.a {
                     nts.uk.ui.block.clear();
                     self.showMessageError(res);
                 });
+            }
+            
+            /**
+             * getParentWorkplaceId
+             */        
+            private getParentWorkplaceId(childWorkplaceId: string): string {
+                let self = this;
+                
+                let workplaces: any[] = self.treeWorkplace().treeArray();
+                let childWorkplace: any = _.find(workplaces, (wk) => { return wk.workplaceId === childWorkplaceId; });
+                let parentWorkplaceHierarchy: string = childWorkplace.hierarchyCode.slice(0, -3);
+                
+                if (nts.uk.util.isNullOrEmpty(parentWorkplaceHierarchy)) {
+                    return null;
+                }
+                
+                let parentWorkplace: any = _.find(workplaces, (wk) => { return wk.hierarchyCode === parentWorkplaceHierarchy; });
+                if (nts.uk.util.isNullOrUndefined(parentWorkplace)) {
+                    return null;
+                }
+                return parentWorkplace.workplaceId;
             }
 
             /**

@@ -45,8 +45,21 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 			+ " INNER JOIN PpemtPerInfoCtg infoCtg ON itemInfo.perInfoCtgId = infoCtg.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " where itemData.primaryKey.perInfoDefId = :perInfoDefId and itemData.primaryKey.recordId = :recordId";
 
-	private static final String SELECT_ALL_INFO_ITEM_BY_CTGID_AND_PID = SELECT_ALL_INFO_ITEM_NO_WHERE
+	private static final String SELECT_ALL_INFO_ITEM_BY_CTGID_AND_PID = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,ic.pInfoCtgId,pc.categoryCd FROM PpemtPerInfoItemData id"
+			+ " INNER JOIN PpemtPerInfoItem pi"
+			+ " ON id.primaryKey.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtgData ic" + " ON id.primaryKey.recordId = ic.recordId"
+			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON ic.pInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " WHERE ic.pInfoCtgId = :ctgid AND ic.pId = :pid";
+	
+	private static final String SEL_ALL_ITEM_BY_CTG_IDS = "SELECT id.ppemtEmpInfoItemDataPk.perInfoDefId"
+			+ " FROM PpemtPerInfoItemData id"
+			+ " INNER JOIN PpemtPerInfoItem pi ON id.primaryKey.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
+			+ " WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd"
+			+ " AND pi.perInfoCtgId IN :perInfoCtgId";
+	
 
 	private PersonInfoItemData toDomain(Object[] entity) {
 
@@ -186,6 +199,19 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 		return this.queryProxy().query(GET_BY_ITEM_DEF_ID_AND_RECORD_ID)
 				.setParameter("recordId", recordId)
 				.setParameter("perInfoDefId", perInfoDefId).getSingle(data -> toDomainNew(data));
+	}
+
+	@Override
+	public boolean isExitedItem(List<String> ctgId, String itemCd) {
+		List<Object[]> itemLst = this.queryProxy().query(SEL_ALL_ITEM_BY_CTG_IDS,  Object[].class)
+				.setParameter("ctgid", ctgId)
+				.setParameter("itemCd", itemCd)
+				.getList();
+		if(itemLst != null && itemLst.size() > 0) {
+			
+			return true;
+		}
+		return false;
 	}
 
 }
