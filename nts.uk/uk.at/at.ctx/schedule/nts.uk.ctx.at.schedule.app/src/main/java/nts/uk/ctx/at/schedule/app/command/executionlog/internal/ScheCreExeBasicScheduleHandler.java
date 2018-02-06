@@ -36,8 +36,10 @@ import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInforma
 import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
@@ -181,11 +183,11 @@ public class ScheCreExeBasicScheduleHandler {
 	private void saveBasicSchedule(BasicScheduleSaveCommand command) {
 
 		// find basic schedule by id
-		Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(command.getEmployeeId(),
+		boolean optionalBasicSchedule = this.basicScheduleRepository.isExists(command.getEmployeeId(),
 				command.getYmd());
 
 		// check exist data
-		if (optionalBasicSchedule.isPresent()) {
+		if (optionalBasicSchedule) {
 
 			// update domain
 			this.basicScheduleRepository.update(command.toDomain());
@@ -391,6 +393,9 @@ public class ScheCreExeBasicScheduleHandler {
 	 */
 	private BasicScheduleSaveCommand saveScheduleTime(BasicScheduleSaveCommand commandSave) {
 		ScTimeParam param = ScTimeParam.builder()
+				.employeeId(commandSave.getEmployeeId())
+				.workTypeCode(new WorkTypeCode(commandSave.getWorktypeCode()))
+				.workTimeCode(new WorkTimeCode(commandSave.getWorktimeCode()))
 				.build();
 		ScTimeImport scTimeImport = scTimeAdapter.calculation(param);
 		WorkScheduleTime workScheduleTime = new WorkScheduleTime(
@@ -401,7 +406,7 @@ public class ScheCreExeBasicScheduleHandler {
 				scTimeImport.getPreTime(),
 				scTimeImport.getTotalWorkTime(), 
 				scTimeImport.getChildCareTime());
-		commandSave.setWorkScheduleTime(workScheduleTime);
+		commandSave.setWorkScheduleTime(Optional.ofNullable(workScheduleTime));
 		return commandSave;
 	}
 }

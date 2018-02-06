@@ -27,6 +27,7 @@ public class UpdateMailOtInstructionCommandHandler extends CommandHandler<MailOt
 		MailOtInstruction mailHd = MailOtInstruction.createFromJavaType(data.getCompanyId(), data.getSubject(), data.getContent());
 		if(mail.isPresent()){
 			mailRep.update(mailHd);
+			return;
 		}
 		mailRep.insert(mailHd);
 	}

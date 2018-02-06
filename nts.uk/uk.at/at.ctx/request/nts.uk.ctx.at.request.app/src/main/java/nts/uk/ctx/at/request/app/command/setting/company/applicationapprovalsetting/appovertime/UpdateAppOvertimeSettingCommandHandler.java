@@ -27,6 +27,7 @@ public class UpdateAppOvertimeSettingCommandHandler extends CommandHandler<AppOv
 				data.getNormalOvertimeUseAtr(), data.getAttendanceId(), data.getUseOt());
 		if(appOver.isPresent()){
 			appOverRep.update(appOvertime);
+			return;
 		}
 		appOverRep.insert(appOvertime);
 	};

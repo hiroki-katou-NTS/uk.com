@@ -28,6 +28,7 @@ public class UpdateApprovalSetCommandHandler extends CommandHandler<ApprovalSetC
 		ApprovalSet appro = data.toDomain(companyId);
 		if(app.isPresent()){
 			approRep.update(appro);
+			return;
 		}
 		approRep.insert(appro);
 	}

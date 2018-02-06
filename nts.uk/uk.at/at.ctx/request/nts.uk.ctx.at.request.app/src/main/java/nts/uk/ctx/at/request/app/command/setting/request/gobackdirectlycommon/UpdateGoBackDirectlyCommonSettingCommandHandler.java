@@ -30,6 +30,7 @@ public class UpdateGoBackDirectlyCommonSettingCommandHandler extends CommandHand
 		GoBackDirectlyCommonSetting goBackCommon = data.toDomain(companyId);
 		if(goBack.isPresent()){
 			goBackCommonRep.update(goBackCommon);
+			return;
 		}
 		goBackCommonRep.insert(goBackCommon);
 	}

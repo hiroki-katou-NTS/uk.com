@@ -43,6 +43,12 @@ public interface AttendanceTimeOfMonthlyRepository {
 	 * @param attendanceTimeOfMonthly 月別実績の勤怠時間
 	 */
 	void update(AttendanceTimeOfMonthly attendanceTimeOfMonthly);
+
+	/**
+	 * 登録および更新
+	 * @param attendanceTimeOfMonthly 月別実績の勤怠時間
+	 */
+	void persistAndUpdate(AttendanceTimeOfMonthly attendanceTimeOfMonthly);
 	
 	/**
 	 * 削除

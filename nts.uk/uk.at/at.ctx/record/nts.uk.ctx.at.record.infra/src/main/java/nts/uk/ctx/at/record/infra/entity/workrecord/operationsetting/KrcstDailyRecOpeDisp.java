@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,28 +16,28 @@ public class KrcstDailyRecOpeDisp extends UkJpaEntity{
 	public String cid;
 	
 	@Column(name = "SAVING_YEAR_HD_DISP_RES_CHECK")
-	public BigDecimal savingYearHdDispResCheck; 
+	public int savingYearHdDispResCheck; 
 	
 	@Column(name = "SAVING_YEAR_HD_DISP_RES_ATR")
-	public BigDecimal savingYearHdDispResAtr;
+	public int savingYearHdDispResAtr;
 	
 	@Column(name = "COM_HD_DISP_RES_CHECK")
-	public BigDecimal comHdDispResCheck;
+	public int comHdDispResCheck;
 	
 	@Column(name = "COM_HD_DISP_RES_ATR")
-	public BigDecimal comHdDispResAtr;
+	public int comHdDispResAtr;
 	
 	@Column(name = "SUB_HD_DISP_RES_CHECK")
-	public BigDecimal subHdDispResCheck;
+	public int subHdDispResCheck;
 	
 	@Column(name = "SUB_HD_DISP_RES_ATR")
-	public BigDecimal subHdDispResAtr;
+	public int subHdDispResAtr;
 	
 	@Column(name = "YEAR_HD_DISP_RES_CHECK")
-	public BigDecimal yearHdDispResCheck;
+	public int yearHdDispResCheck;
 	
 	@Column(name = "YEAR_HD_DISP_RES_ATR")
-	public BigDecimal yearHdDispResAtr;
+	public int yearHdDispResAtr;
 	
 	/**
 	 * 

@@ -1,5 +1,7 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.jobtitlesearchset;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -66,6 +68,19 @@ public class JpaJobtitleSearchSetRepository extends JpaRepository implements Job
 	public void insert(JobtitleSearchSet jobSearch) {
 		WwfstJobtitleSearchSet entity = toEntityJob(jobSearch);
 		this.commandProxy().insert(entity);
+	}
+
+	@Override
+	public List<JobtitleSearchSet> findByListJob(String cid, List<String> jobtitleId) {
+		List<JobtitleSearchSet> listJob = new ArrayList<>();
+		for(String item: jobtitleId){
+			WwfstJobtitleSearchSet entity = this.getEntityManager().find(WwfstJobtitleSearchSet.class,
+					new WwfstJobtitleSearchSetPK(cid, item));
+			if(entity != null){
+				listJob.add(toDomain(entity));
+			}
+		}
+		return listJob;
 	}
 
 }

@@ -17,7 +17,7 @@ public class OutingTimeOfDailyPerformanceCommandAddHandler extends CommandFacade
 	protected void handle(CommandHandlerContext<OutingTimeOfDailyPerformanceCommand> context) {
 		OutingTimeOfDailyPerformanceCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.add(command.toDomain());
+			repo.add(command.getData().get());
 		}
 	}
 }

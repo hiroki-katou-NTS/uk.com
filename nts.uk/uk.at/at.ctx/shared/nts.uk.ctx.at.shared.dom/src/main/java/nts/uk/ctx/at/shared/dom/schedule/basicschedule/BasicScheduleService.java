@@ -12,12 +12,23 @@ public interface BasicScheduleService {
 
 	/**
 	 * Return state of error checking process: nothing or throw error
+	 * 勤務種類・就業時間帯ペアチェック
 	 * 
 	 * @param workTypeCode
 	 * @param workTimeCode
 	 */
 	void checkPairWorkTypeWorkTime(String workTypeCode, String workTimeCode);
 
+	/**
+	 * 勤務種類のマスタチェック
+	 */
+	void checkWorkTypeMaster(String workTypeCode, String workTimeCode);
+	
+	/**
+	 * 就業時間帯のマスタチェック
+	 */
+	void checkWorkTimeMater(String workTypeCode, String workTimeCode);
+	
 	/**
 	 * Check needed of Work Time setting
 	 * 

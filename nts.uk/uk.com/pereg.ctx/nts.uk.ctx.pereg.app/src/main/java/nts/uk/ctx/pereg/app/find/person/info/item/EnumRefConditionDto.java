@@ -7,13 +7,14 @@ import nts.uk.ctx.pereg.dom.person.info.selectionitem.ReferenceTypes;
 public class EnumRefConditionDto extends SelectionItemDto {
 
 	private String enumName;
-	
-	private EnumRefConditionDto(String enumName) {
+
+	private EnumRefConditionDto(String enumName, int dataType) {
 		super(ReferenceTypes.ENUM);
+		this.dataTypeValue = dataType;
 		this.enumName = enumName;
 	}
 
-	public static EnumRefConditionDto createFromJavaType(String enumName) {
-		return new EnumRefConditionDto(enumName);
+	public static SelectionItemDto createFromJavaType(String enumName, int dataTypeValue) {
+		return new EnumRefConditionDto(enumName, dataTypeValue);
 	}
 }

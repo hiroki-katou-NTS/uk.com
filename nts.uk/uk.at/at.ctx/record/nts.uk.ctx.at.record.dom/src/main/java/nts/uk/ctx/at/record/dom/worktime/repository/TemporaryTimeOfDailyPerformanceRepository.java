@@ -15,6 +15,8 @@ public interface TemporaryTimeOfDailyPerformanceRepository {
 	
 	Optional<TemporaryTimeOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd);
 
+	List<TemporaryTimeOfDailyPerformance> findbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
+
 	List<TemporaryTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd);
 
 	void add(TemporaryTimeOfDailyPerformance temporaryTime);

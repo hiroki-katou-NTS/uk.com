@@ -121,6 +121,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_CLASSIFICATION = "SELECT c FROM BsymtClassification c WHERE c.bsymtClassificationPK.cid = :companyId";
 
 	private final static String SEL_EMPLOYEE;
+	
+	private final static String SEL_EMPLOYEE_WITH_SID;
 
 	private final static String SEL_PERSON = "SELECT p FROM BpsmtPerson p WHERE p.bpsmtPersonPk.pId IN :lstPersonId";
 
@@ -258,6 +260,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		// builderString.append("OR s.bsymtEmployeePk.sId =
 		// c.kmnmtClassificationHistPK.empId ");
 		SEL_EMPLOYEE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT DISTINCT s FROM BsymtEmployeeDataMngInfo s ");
+		builderString.append("JOIN BsymtAffiWorkplaceHistItem w ");
+		builderString.append("WHERE s.bsymtEmployeeDataMngInfoPk.sId IN :sids ");
+		builderString.append("AND s.bsymtEmployeeDataMngInfoPk.sId = w.sid ");
+		SEL_EMPLOYEE_WITH_SID = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT c FROM KshstDailyServiceTypeControl c ");
@@ -568,7 +577,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					"", false);
 		}).collect(Collectors.toList());
 	}
-
+    
 	@Override
 	public List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange) {
 		return this.queryProxy().query(SEL_BUSINESS_TYPE, String.class).setParameter("lstSID", lstEmployee)
@@ -786,7 +795,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				KrcstDailyRecOpe.class);
 		if (krcstDailyRecOpeOpt.isPresent()) {
 			return new OperationOfDailyPerformanceDto(companyId,
-					EnumAdaptor.valueOf(krcstDailyRecOpeOpt.get().settingUnit.intValue(), SettingUnit.class),
+					EnumAdaptor.valueOf(krcstDailyRecOpeOpt.get().settingUnit, SettingUnit.class),
 					krcstDailyRecOpeOpt.get().comment);
 		} else
 			return null;
@@ -952,6 +961,30 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		Optional<KrcstDailyRecOpeFun> krcstDailyRecOpeFunOpt = this.queryProxy().find(companyId.toString(),
 				KrcstDailyRecOpeFun.class);
 		return !krcstDailyRecOpeFunOpt.isPresent() ? Optional.empty() : Optional.of(new DailyRecOpeFuncDto(krcstDailyRecOpeFunOpt.get().confirmByYourselfAtr, krcstDailyRecOpeFunOpt.get().yourselfConfirmWhenError));
+	}
+
+	@Override
+	public List<DailyPerformanceEmployeeDto> getListEmployeeWithSid(List<String> sid) {
+		List<BsymtEmployeeDataMngInfo> lstEmployee = this.queryProxy()
+				.query(SEL_EMPLOYEE_WITH_SID, BsymtEmployeeDataMngInfo.class)
+				.setParameter("sids", sid).getList();
+		List<String> ids = lstEmployee.stream().map((employee) -> {
+			return employee.bsymtEmployeeDataMngInfoPk.pId.trim();
+		}).collect(Collectors.toList());
+		List<BpsmtPerson> lstPerson = this.queryProxy().query(SEL_PERSON, BpsmtPerson.class)
+				.setParameter("lstPersonId",ids).getList();
+		return lstEmployee.stream().map((employee) -> {
+			for (BpsmtPerson person : lstPerson) {
+				if (person.bpsmtPersonPk.pId.equals(employee.bsymtEmployeeDataMngInfoPk.pId)) {
+					return new DailyPerformanceEmployeeDto(employee.bsymtEmployeeDataMngInfoPk.sId,
+							employee.employeeCode, person.personName, "",
+							"", "", false);
+				}
+			}
+			return new DailyPerformanceEmployeeDto(employee.bsymtEmployeeDataMngInfoPk.sId, employee.employeeCode, "",
+					"", "",
+					"", false);
+		}).collect(Collectors.toList());
 	}
 
 }

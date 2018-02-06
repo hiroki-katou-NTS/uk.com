@@ -14,6 +14,7 @@ module cps001.a.vm {
     import permision4Cat = service.getPermision4Cat;
     import format = nts.uk.text.format;
     import lv = nts.layout.validate;
+    import vc = nts.layout.validation;
 
     const REPL_KEY = '__REPLACE',
         RELOAD_KEY = "__RELOAD",
@@ -699,6 +700,7 @@ module cps001.a.vm {
                                 layout.listItemCls(data.classificationItems || []);
 
                                 _.defer(() => {
+                                    new vc(layout.listItemCls());
                                     $('.drag-panel input:first').focus();
                                 });
                             } else {
@@ -732,6 +734,7 @@ module cps001.a.vm {
                                         lv.removeDoubleLine(data.classificationItems);
                                         layout.listItemCls(data.classificationItems || []);
                                         _.defer(() => {
+                                            new vc(layout.listItemCls());
                                             $('.drag-panel input:first').focus();
                                         });
                                     } else {
@@ -875,6 +878,7 @@ module cps001.a.vm {
                             layout.listItemCls(data.classificationItems || []);
 
                             _.defer(() => {
+                                new vc(layout.listItemCls());
                                 $('.drag-panel input:first').focus();
                             });
 

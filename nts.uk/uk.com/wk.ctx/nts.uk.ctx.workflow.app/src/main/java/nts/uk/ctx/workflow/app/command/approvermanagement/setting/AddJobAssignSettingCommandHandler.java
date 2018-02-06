@@ -32,9 +32,10 @@ public class AddJobAssignSettingCommandHandler extends CommandHandler<JobAssignS
 		Optional<JobAssignSetting> job = jobRep.findById();
 		JobAssignSetting jobSet = data.toDomain(companyId);
 		jobSet.validate();
-		if(job == null){
-			jobRep.insertJob(jobSet);
+		if(job.isPresent()){
+			jobRep.updateJob(jobSet);
+			return;
 		}
-		jobRep.updateJob(jobSet);
+		jobRep.insertJob(jobSet);
 	}
 }

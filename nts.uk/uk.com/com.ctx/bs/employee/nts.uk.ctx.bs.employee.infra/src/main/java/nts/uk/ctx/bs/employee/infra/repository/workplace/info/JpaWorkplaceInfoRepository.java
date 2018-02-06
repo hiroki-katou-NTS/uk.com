@@ -239,7 +239,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 	private BsymtWorkplaceInfo toEntity(WorkplaceInfo workplaceInfo) {
 		Optional<BsymtWorkplaceInfo> optional = this.queryProxy()
 				.find(new BsymtWorkplaceInfoPK(workplaceInfo.getCompanyId(),
-						workplaceInfo.getHistoryId(), workplaceInfo.getWorkplaceId()),
+						workplaceInfo.getWorkplaceId(), workplaceInfo.getHistoryId()),
 						BsymtWorkplaceInfo.class);
 		BsymtWorkplaceInfo entity = new BsymtWorkplaceInfo();
 		if (optional.isPresent()) {
