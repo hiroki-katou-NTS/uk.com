@@ -6,14 +6,17 @@ import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
 
 @Getter
 public class SelectionButton extends DataTypeState {
-	private SelectionButton() {
+	
+	private ReferenceTypeState referenceTypeState;
+	private SelectionButton(ReferenceTypeState referenceTypeState) {
 		super();
+		this.referenceTypeState = referenceTypeState;
 		this.dataTypeValue = DataTypeValue.SELECTION_BUTTON;
 
 	}
 
-	public static SelectionButton createFromJavaType() {
-		return new SelectionButton();
+	public static SelectionButton createFromJavaType(ReferenceTypeState referenceTypeState) {
+		return new SelectionButton(referenceTypeState);
 	}
 
 }

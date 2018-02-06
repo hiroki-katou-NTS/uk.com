@@ -50,6 +50,16 @@ public interface WorkTypeRepository {
 	 */
 	
 	List<WorkType> findNotDeprecateByCompanyId(String companyId);
+	
+	/**
+	 *1日.休職
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @return the list
+	 */
+	
+	List<List<String>> findCodeAndNameOfWorkTypeByCompanyId(String companyId);
 
 	/**
 	 * Find not deprecated.
