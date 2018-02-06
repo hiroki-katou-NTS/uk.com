@@ -162,7 +162,7 @@ module nts.layout {
     }
 
     interface IFindData {
-        ctrl: any;
+        ctrl: JQuery;
         data: IItemData
     }
 
