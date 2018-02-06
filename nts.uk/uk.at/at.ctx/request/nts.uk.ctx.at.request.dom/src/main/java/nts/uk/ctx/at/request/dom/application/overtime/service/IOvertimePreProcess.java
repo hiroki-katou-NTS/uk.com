@@ -137,6 +137,7 @@ public interface IOvertimePreProcess {
 	public Optional<BonusPaySetting> getBonusPaySetting(String employeeID,String siftCode,String companyID,SWkpHistImport sWkpHistImport);
 	
 	/**
+	 * if is 当日の場合 return true
 	 * @param appDate
 	 * @param workTimeSet
 	 * @return
