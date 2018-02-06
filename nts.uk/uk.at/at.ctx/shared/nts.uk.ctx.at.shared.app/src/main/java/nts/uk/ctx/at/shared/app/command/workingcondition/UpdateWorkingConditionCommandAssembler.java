@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternWorkScheduleCre;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
@@ -187,7 +188,7 @@ public class UpdateWorkingConditionCommandAssembler {
 						command.getEmployeeId(),
 						command.getVacationAddedTimeAtr() != null ? EnumAdaptor.valueOf(command.getVacationAddedTimeAtr().intValue(),NotUseAtr.class) : null,
 						// Default vaule is 0
-						command.getContractTime() != null ? command.getContractTime().intValue() : 0,
+						command.getContractTime() != null ? new LaborContractTime(command.getContractTime().intValue()) : null,
 								command.getLaborSystem() != null ? EnumAdaptor.valueOf(command.getLaborSystem().intValue(),
 								WorkingSystem.class) : null,
 						holidayAddTimeSet, scheduleMethod, command.getHourlyPaymentAtr() != null? command.getHourlyPaymentAtr().intValue() : null,

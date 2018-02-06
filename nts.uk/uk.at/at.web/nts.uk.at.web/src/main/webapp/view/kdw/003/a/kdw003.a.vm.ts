@@ -330,7 +330,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                              self.createSumColumn(data);
                             self.employmentCode(data.employmentCode);
                             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
-                            self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit));
+                            self.showButton(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit));
                             self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto == null ? false : data.yearHolidaySettingDto.manageAtr, data.substVacationDto == null ? false : data.substVacationDto.manageAtr, data.compensLeaveComDto == null ? false : data.compensLeaveComDto.manageAtr, data.com60HVacationDto == null ? false : data.com60HVacationDto.manageAtr, self.showButton()));
                             // Fixed Header
                             self.fixHeaders(data.lstFixedHeader);
@@ -858,9 +858,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         destroyGrid() {
             $("#dpGrid").ntsGrid("destroy");
-            $("#dpGrid").remove();
-            $(".nts-grid-sheet-buttons").remove();
-            $('<table id="dpGrid"></table>').appendTo('#gid');
+//            $("#dpGrid").remove();
+//            $(".nts-grid-sheet-buttons").remove();
+//            $('<table id="dpGrid"></table>').appendTo('#gid');
         }
         setColorWeekend() {
             var self = this;
@@ -1131,7 +1131,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
             } else if (self.displayFormat() === 1) {
                 _.each(lstEmployee, value => {
-                    data.push(self.displayFormat() + "_" + value.id + "_" + startDate + "_" + endDate + "_" + i)
+                    data.push(self.displayFormat() + "_" + value.id + "_" + startDate + "_" + endDate)
                     i++;
                 });
             } else {
@@ -1181,8 +1181,27 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let start = performance.now();
             $("#dpGrid").ntsGrid({
                 width: (window.screen.availWidth - 200) + "px",
-                height: '500px',
+                height: '650px',
                 dataSource: self.formatDate(self.dailyPerfomanceData()),
+                dataSourceAdapter: function(ds) {
+                    let start = performance.now();
+                    let data = ds.map((data) => {
+                        var object = {
+                            id: data.id,
+                            state: data.state,
+                            error: data.error,
+                            date: moment(data.date, "YYYY/MM/DD").format("MM/DD(dd)"),
+                            sign: data.sign,
+                            employeeId: data.employeeId,
+                            employeeCode: data.employeeCode,
+                            employeeName: data.employeeName
+                        }
+                        _.each(data.cellDatas, function(item) { object[item.columnKey] = item.value });
+                        return object;
+                    });
+                    console.log("calc load source :" + (start - performance.now()));
+                    return data;
+                },
                 primaryKey: 'id',
                 rowVirtualization: true,
                 virtualization: true,
@@ -1190,11 +1209,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 enter: self.selectedDirection() == 0 ? 'below' : 'right',
                 autoFitWindow: false,
                 preventEditInError: false,
-                avgRowHeight: 20,
-                autoAdjustHeight: true,
-                adjustVirtualHeights: true,
                 columns: self.headersGrid(),
                 hidePrimaryKey: true,
+                recordKeys: self.createKeyLoad(),
                 features: [
                     { name: 'Paging', pageSize: 31, currentPageIndex: 0 },
                     { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false, columnSettings: self.fixColGrid() },
@@ -1206,21 +1223,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         showDropDownButton: false,
                         columnSettings: self.columnSettings(),
                         resultTemplate: '{1}'
-                    },
-                    {
-                        name: "Updating",
-                        enableAddRow: true,
-                        editMode: "cell",
-                        enableDeleteRow: true,
-                        rowEditDialogContainment: "owner",
-                        horizontalMoveOnEnter: true,
-                        showReadonlyEditors: false,
-                        enableDataDirtyException: false,
-                    },
-                    {
-                        name: 'Selection',
-                        mode: 'cell'
-                    },
+                    }
                 ],
                 ntsFeatures: self.createNtsFeatures(),
                 ntsControls: [
@@ -1348,13 +1351,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 { name: 'RowState', rows: self.rowStates() },
                 { name: 'TextColor', rowId: 'rowId', columnKey: 'columnKey', color: 'color', colorsTable: self.textColors() },
                 { name: 'HeaderStyles', columns: self.headerColors() }
-//                ,
-//                {
-//                    name: "LoadOnDemand",
-//                    allKeysPath: "/kdw003/lazyload/keys",
-//                    pageRecordsPath: "/kdw003/lazyload/data",
-//                }
             ];
+//            let lzyLoad = {
+//                name: "LoadOnDemand",
+//                allKeysPath: "/kdw003/lazyload/keys",
+//                pageRecordsPath: "/kdw003/lazyload/data",
+//            }
+//            if(self.displayFormat() == 1){
+//               lstNtsFeature.push(lzyLoad); 
+//            }
             if (self.sheetsGrid().length > 0) {
                 lstNtsFeature.push({
                     name: "Sheet",

@@ -64,9 +64,13 @@ public class CommonGuidelineSettingSaveCommandHandler
 		} else {
 			this.commonGuidelineSettingRepo.update(commonGuidelineSetting);
 		}
+		// Find EstimateComparison
+		Optional<EstimateComparison> estCom = this.estimateComparisonRepo.findByCompanyId(companyId);
 		
-		// Delete EstimateComparison
-		this.estimateComparisonRepo.remove(companyId);
+		if (estCom.isPresent()) {
+			// Delete EstimateComparison
+			this.estimateComparisonRepo.remove(companyId);
+		}
 		
 		// Add EstimateComparison
 		this.estimateComparisonRepo.add(estComparison);

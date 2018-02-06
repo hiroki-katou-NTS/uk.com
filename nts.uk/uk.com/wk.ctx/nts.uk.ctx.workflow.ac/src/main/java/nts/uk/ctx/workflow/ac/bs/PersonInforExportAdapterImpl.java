@@ -16,7 +16,7 @@ public class PersonInforExportAdapterImpl implements PersonAdapter{
 	public PersonImport getPersonInfo(String sID) {
 		PersonInfoExport data = psInfor.getPersonInfo(sID);
 		return new PersonImport(data.getEmployeeId(), data.getEmployeeCode(),
-				data.getPname(),
+				data.getBusinessName(),
 				"");	
 	}
 

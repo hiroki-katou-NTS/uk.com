@@ -66,9 +66,8 @@ module nts.uk.at.view.kml001.b {
                 var self = this;
                 let premiumItemListCommand = [];
                 let rootLists = self.rootList;
-                let userList = _.filter(self.premiumItemList(), function(o) { return o.useAtr()==1; });
-                ko.utils.arrayForEach(userList, function(item, index) { 
-                    $(".premiumName").eq(item.displayNumber()-1).trigger("validate");
+                ko.utils.arrayForEach(self.premiumItemList(), function(item, index) { 
+                    if(item.useAtr() == 1) $(".premiumName").eq(item.displayNumber()-1).trigger("validate");
                     if(ko.mapping.toJSON(item)!=ko.mapping.toJSON(rootLists[item.displayNumber()-1])){
                         item.isChange(true);        
                     }

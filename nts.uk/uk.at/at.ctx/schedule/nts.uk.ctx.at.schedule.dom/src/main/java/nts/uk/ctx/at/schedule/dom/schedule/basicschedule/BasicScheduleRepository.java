@@ -26,6 +26,15 @@ public interface BasicScheduleRepository {
 	Optional<BasicSchedule> find(String sId, GeneralDate date);
 
 	/**
+	 * Check exists BasicSchedule by primary key
+	 * 
+	 * @param sId
+	 * @param date
+	 * @return Optional BasicSchedule
+	 */
+	boolean isExists(String sId, GeneralDate date);
+	
+	/**
 	 * insert Basic Schedule
 	 * 
 	 * @param bSchedule
