@@ -96,7 +96,8 @@ module nts.layout {
             let self = this,
                 finder = self.finder,
                 CS00020_IS00248: IFindData = finder.find('CS00020', 'IS00248'),
-                CS00020_IS00121: IFindData = finder.find('CS00020', 'IS00121');
+                CS00020_IS00121: IFindData = finder.find('CS00020', 'IS00121'),
+                CS00020_IS00123: IFindData = finder.find("CS00020", "IS00123");
 
             if (CS00020_IS00248) {
                 CS00020_IS00248.data.value.subscribe(x => {
@@ -105,7 +106,6 @@ module nts.layout {
                     _.each(ctrls, c => {
                         if (c.data.itemCode != CS00020_IS00248.data.itemCode) {
                             c.data.editable(x == 1);
-                            c.data.readonly(x != 1);
                         }
                     });
                 });
@@ -113,11 +113,14 @@ module nts.layout {
 
             if (CS00020_IS00121) {
                 CS00020_IS00121.data.value.subscribe(x => {
-                    let ctrls: Array<IFindData> = finder.findChilds(CS00020_IS00248.data.categoryCode, CS00020_IS00248.data.itemParentCode);
+                    let ctrls: Array<IFindData> = finder.findChilds(CS00020_IS00121.data.categoryCode, CS00020_IS00121.data.itemParentCode);
 
                     _.each(ctrls, c => {
-                        if (c.data.itemCode != CS00020_IS00248.data.itemCode) {
+                        if (c.data.itemCode != CS00020_IS00121.data.itemCode) {
                             c.data.editable(x == 1);
+                            if (x == 1 && CS00020_IS00123) {
+                                CS00020_IS00123.data.value.valueHasMutated();
+                            }
                         }
                     });
                 });
@@ -148,7 +151,7 @@ module nts.layout {
                 CS00020_IS00242: IFindData = finder.find('CS00020', 'IS00242'),
                 CS00020_IS00244: IFindData = finder.find('CS00020', 'IS00244'),
                 CS00020_IS00245: IFindData = finder.find('CS00020', 'IS00245'),
- 
+
                 CS00020_IS00148: IFindData = finder.find('CS00020', 'IS00148'),
                 CS00020_IS00149: IFindData = finder.find('CS00020', 'IS00149'),
                 CS00020_IS00151: IFindData = finder.find('CS00020', 'IS00151'),
@@ -169,7 +172,7 @@ module nts.layout {
                 CS00020_IS00188: IFindData = finder.find('CS00020', 'IS00188'),
                 CS00020_IS00190: IFindData = finder.find('CS00020', 'IS00190'),
                 CS00020_IS00191: IFindData = finder.find('CS00020', 'IS00191'),
-                
+
                 CS00020_IS00193: IFindData = finder.find('CS00020', 'IS00193'),
                 CS00020_IS00194: IFindData = finder.find('CS00020', 'IS00194'),
                 CS00020_IS00196: IFindData = finder.find('CS00020', 'IS00196'),
@@ -317,7 +320,7 @@ module nts.layout {
             };
 
 
-            
+
 
             if (CS00020_IS00238 || CS00020_IS00239) {
 
@@ -367,7 +370,7 @@ module nts.layout {
                         });
                     });
             };
-            
+
 
             if (CS00020_IS00184 || CS00020_IS00185) {
 
@@ -417,9 +420,9 @@ module nts.layout {
                         });
                     });
             };
-        
 
-          if (CS00020_IS00220 || CS00020_IS00221) {
+
+            if (CS00020_IS00220 || CS00020_IS00221) {
 
                 $(`#${CS00020_IS00220 && CS00020_IS00220.ctrl.attr('id')}, #${CS00020_IS00221 && CS00020_IS00221.ctrl.attr('id')}`)
                     .on('click', () => {
@@ -812,6 +815,39 @@ module nts.layout {
         };
 
         combobox = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                CS00020_IS00123: IFindData = finder.find("CS00020", "IS00123"),
+                CS00020_IS00124: IFindData = finder.find("CS00020", "IS00124"),
+                CS00020_IS00125: IFindData = finder.find("CS00020", "IS00125"),
+                CS00020_IS00126: IFindData = finder.find("CS00020", "IS00126"),
+                CS00020_IS00127: IFindData = finder.find("CS00020", "IS00127");
+
+            if (CS00020_IS00123) {
+                CS00020_IS00123.data.value.subscribe(v => {
+                    switch (v) {
+                        case "0":
+                            CS00020_IS00124.data.editable(true);
+                            CS00020_IS00125.data.editable(true);
+                            CS00020_IS00126.data.editable(true);
+                            CS00020_IS00127.data.editable(false);
+                            break;
+                        case "1":
+                            CS00020_IS00124.data.editable(false);
+                            CS00020_IS00125.data.editable(false);
+                            CS00020_IS00126.data.editable(true);
+                            CS00020_IS00127.data.editable(true);
+                            break;
+                        case "2":
+                            CS00020_IS00124.data.editable(false);
+                            CS00020_IS00125.data.editable(false);
+                            CS00020_IS00126.data.editable(false);
+                            CS00020_IS00127.data.editable(false);
+                            break;
+                    }
+                });
+                CS00020_IS00123.data.value.valueHasMutated();
+            }
         };
     }
 
