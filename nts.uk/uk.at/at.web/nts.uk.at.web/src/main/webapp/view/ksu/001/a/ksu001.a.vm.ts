@@ -636,6 +636,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateExTable(): void {
             let self = this;
+            $("#extable").exTable("saveScroll");
             self.stopRequest(false);
 
             let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newDetailHeaderDs = [], newObjDetailHeaderDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
@@ -771,6 +772,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").on("extablecellupdated", function() { });
                 $("#extable").on("extablerowupdated", function() { });
 
+                setTimeout($("#extable").exTable("scrollBack", 2), 1000);
 
                 /**
                  * validate when stick data in cell
@@ -806,6 +808,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         updateDetailAndHorzSum(): void {
             let self = this;
+            $("#extable").exTable("saveScroll");
             //Get dates in time period
             let currentDay = new Date(self.dtPrev().toString());
             self.arrDay = [];
@@ -881,6 +884,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
                     $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
 
+                    setTimeout($("#extable").exTable("scrollBack", 2), 1000);
 
                     self.stopRequest(true);
                 });
@@ -946,6 +950,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
+                        setTimeout($("#extable").exTable("scrollBack", 2), 1000);
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1012,6 +1017,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
+                        setTimeout($("#extable").exTable("scrollBack", 2), 1000);
                     });
                 }).always(() => {
                     self.stopRequest(true);

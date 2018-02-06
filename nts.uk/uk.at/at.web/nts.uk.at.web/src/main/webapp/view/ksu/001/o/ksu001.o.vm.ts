@@ -52,7 +52,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                         workTypeName = null;
                         workTypeCode = null;
                     }
-
+                    
                     let workTimeCd: string = null;
                     if (self.selectedWorkTimeCode()) {
                         workTimeCd = self.selectedWorkTimeCode().slice(0, 3);
