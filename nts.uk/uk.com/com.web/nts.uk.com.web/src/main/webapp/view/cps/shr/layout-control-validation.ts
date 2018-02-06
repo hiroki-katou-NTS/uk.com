@@ -113,10 +113,10 @@ module nts.layout {
 
             if (CS00020_IS00121) {
                 CS00020_IS00121.data.value.subscribe(x => {
-                    let ctrls: Array<IFindData> = finder.findChilds(CS00020_IS00248.data.categoryCode, CS00020_IS00248.data.itemParentCode);
+                    let ctrls: Array<IFindData> = finder.findChilds(CS00020_IS00121.data.categoryCode, CS00020_IS00121.data.itemParentCode);
 
                     _.each(ctrls, c => {
-                        if (c.data.itemCode != CS00020_IS00248.data.itemCode) {
+                        if (c.data.itemCode != CS00020_IS00121.data.itemCode) {
                             c.data.editable(x == 1);
                         }
                     });
