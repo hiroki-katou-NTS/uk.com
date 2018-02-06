@@ -290,6 +290,18 @@ public class ScheduleCreatorExecutionCommandHandler
 		this.scheduleExecutionLogRepository.update(domain);
 	}
 	
+	/**
+	 * Update status schedule execution log.
+	 *
+	 * @param domain the domain
+	 */
+	private void updateStatusScheduleExecutionLog(ScheduleExecutionLog domain, CompletionStatus completionStatus) {
+		// check exist data schedule error log
+		domain.setCompletionStatus(completionStatus);
+		domain.updateExecutionTimeEndToNow();
+		this.scheduleExecutionLogRepository.update(domain);
+	}
+	
 	
 	/**
 	 * Creates the schedule based person.
@@ -311,9 +323,11 @@ public class ScheduleCreatorExecutionCommandHandler
 		// loop start period date => end period date
 		while (command.getToDate().beforeOrEquals(domain.getPeriod().end())) {
 
-			// check is client submit cancel
+			// check is client submit cancel ［中断］(Interrupt)
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				asyncTask.finishedAsCancelled();
+				// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
+				this.updateStatusScheduleExecutionLog(domain, CompletionStatus.INTERRUPTION);
 				break;
 			}
 			Optional<WorkingConditionItem> workingConditionItem = this.scheCreExeWorkTimeHandler
