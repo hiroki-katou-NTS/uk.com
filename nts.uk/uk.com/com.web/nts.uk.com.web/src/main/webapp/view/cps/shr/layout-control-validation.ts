@@ -791,6 +791,7 @@ module nts.layout {
 
     interface IItemData {
         value: KnockoutObservable<any>;
+        textValue: KnockoutObservable<any>;
         editable: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
         categoryCode: string;
