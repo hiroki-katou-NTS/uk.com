@@ -517,10 +517,10 @@ module nts.custombinding {
                                     <div class="set-items" data-bind="let: {
                                                 _first: _.find(_items, function(x, i) { return i == 0; }) || {},
                                                 _childs: _.filter(_items, function(x) { return x.itemParentCode == _item.itemCode; }) || [],
-                                                _render: _.filter(_items, function(x) { return [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(x.item.dataTypeValue) > -1; } ) || []
+                                                _render: _.filter(_items, function(x) { return x.item && [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(x.item.dataTypeValue) > -1; } ) || []
                                         }">
                                         <!-- ko if: _items.length == 1 || (_items.length < 3 && _render.length == _items.length) -->
-                                            <!-- ko if: _items.length == 1 && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
+                                            <!-- ko if: _items.length == 1 && _items[0].item && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
                                             <div class="set-group"></div>
                                             <!-- /ko -->
                                             <div class="set-group">
@@ -530,7 +530,7 @@ module nts.custombinding {
                                                     <span data-bind="text: text('CPS001_89')"></span>
                                                 </div>
                                                 <!-- /ko -->
-                                                <!-- ko if: _items.length == 1 && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
+                                                <!-- ko if: _items.length == 1 && _items[0].item && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
                                                 <div class="child-label" data-bind="text: set.itemName"></div>
                                                 <!-- /ko -->
                                                 <div data-bind="template: {
@@ -542,10 +542,10 @@ module nts.custombinding {
                                         <!-- /ko -->
                                         <!-- ko if: _items.length != 1 && (_items.length >= 3 || _render.length != _items.length) -->
                                             <!-- ko foreach: { data: _childs, as: 'set' } -->
-                                                <!-- ko if: $index() == 0 && [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) == -1 -->
+                                                <!-- ko if: $index() == 0 && set.item && [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) == -1 -->
                                                     <div class="set-group"></div>
                                                 <!-- /ko -->
-                                                <div class="set-group" data-bind="css: { 'radio': [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) > -1 }">
+                                                <div class="set-group" data-bind="css: { 'radio':  set.item && [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) > -1 }">
                                                     <!-- ko if: (set || {}).type == CTRL_TYPE.SET -->
                                                         <div class="child-label" data-bind="text: set.itemName"></div>
                                                         <!-- ko foreach: { data: _.filter(__items, function(x) { return x.itemParentCode == set.itemCode }), as: 'child' } -->
@@ -1700,10 +1700,7 @@ module nts.custombinding {
 
                             def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
 
-                            def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [
-                                { optionValue: '0', optionText: text('CPS001_99') },
-                                { optionValue: '1', optionText: text('CPS001_100') }
-                            ];
+                            def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [];
 
                             def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
                             def.readonly = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled());
