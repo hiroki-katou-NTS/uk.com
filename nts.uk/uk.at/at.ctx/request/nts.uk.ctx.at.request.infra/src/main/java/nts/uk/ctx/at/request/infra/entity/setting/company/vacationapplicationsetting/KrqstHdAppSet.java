@@ -24,7 +24,7 @@ public class KrqstHdAppSet extends UkJpaEntity implements Serializable{
 	@Column(name = "USE_60H_HOLIDAY")
 	public int use60h;
 	
-	/** 代表者名  */
+	/** 代休名称  */
 	@Column(name = "OBSTACLE_NAME")
 	public String obstacleName;
 	
