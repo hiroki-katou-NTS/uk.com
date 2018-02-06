@@ -9320,9 +9320,8 @@ var nts;
                                         });
                                         component_1.igGrid("option", "dataSource", _.cloneDeep(source));
                                         component_1.igGrid("dataBind");
-                                        if (nts.uk.util.isNullOrEmpty(selectedProperties)) {
-                                            component_1.trigger("selectionchanged");
-                                        }
+                                        //                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
+                                        component_1.trigger("selectionchanged");
                                     }
                                     else {
                                         component_1.trigger("selectionchanged");
