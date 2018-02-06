@@ -5,6 +5,7 @@ module nts.uk.at.view.kml001.shr {
             personCostCalculationInsert: "at/schedule/budget/premium/insertPersonCostCalculation",
             personCostCalculationUpdate: "at/schedule/budget/premium/updatePersonCostCalculation",
             personCostCalculationDelete: "at/schedule/budget/premium/deletePersonCostCalculation",
+            findByHistoryID: "at/schedule/budget/premium/findByHistoryID",
             premiumItemSelect: "at/schedule/budget/premium/findPremiumItemByCompanyID",
             premiumItemUpdate: "at/schedule/budget/premium/updatePremiumItem",
             getAttendanceItems: "at/schedule/budget/premium/attendancePremiumName",
@@ -26,6 +27,10 @@ module nts.uk.at.view.kml001.shr {
         
         export function personCostCalculationDelete(command): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.personCostCalculationDelete, command);
+        }
+        
+        export function findByHistoryID(historyID): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.findByHistoryID, historyID);
         }
         
         export function premiumItemSelect(): JQueryPromise<any> {
