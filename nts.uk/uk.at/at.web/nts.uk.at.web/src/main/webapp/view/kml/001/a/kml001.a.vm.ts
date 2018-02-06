@@ -63,7 +63,7 @@ module nts.uk.at.view.kml001.a {
                     self.premiumItems().forEach(function(item){
                         if(item.useAtr()) {
                             self.currentPersonCost().premiumSets.push(
-                                new vmbase.PremiumSetting("", "", item.displayNumber(), 1, item.name(), item.useAtr(), []));
+                                new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), []));
                         }
                         sum+=item.useAtr();    
                     });
@@ -75,16 +75,22 @@ module nts.uk.at.view.kml001.a {
                         self.loadData(dfdPersonCostCalculationSelectData, 0);
                         self.currentGridPersonCost.subscribe(function(value) { // change current personCostCalculation when grid is selected
                             if(value!=null) {
-                                self.currentPersonCost(self.clonePersonCostCalculation(_.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, ' ', 1)[0]; })));
+                                nts.uk.ui.block.invisible();
+                                self.currentPersonCost(self.clonePersonCostCalculation(_.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, self.textKML001_40, 1)[0]; })));
                                 self.newStartDate(self.currentPersonCost().startDate());
                                 _.defer(() => {$("#startDateInput").ntsError('clear');}); 
                                 nts.uk.ui.errors.clearAll();
+                                let allRequest = [];
                                 ko.utils.arrayForEach(self.currentPersonCost().premiumSets(), function(premiumSet, index) {
                                     let iDList = [];
                                     self.currentPersonCost().premiumSets()[index].attendanceItems().forEach(function(item) {
                                         iDList.push(item.shortAttendanceID);
                                     });
-                                    self.getItem(iDList, index);
+                                    let request = self.getItem(iDList, index);
+                                    allRequest.push(request);
+                                });
+                                $.when.apply($, allRequest).then(()=>{
+                                    nts.uk.ui.block.clear();            
                                 });
                                 self.isInsert(false);
                                 $("#memo").focus(); 
@@ -152,13 +158,17 @@ module nts.uk.at.view.kml001.a {
                             });
                             self.currentPersonCost().premiumSets()[index].attendanceItems(newList);
                             self.createViewAttendanceItems(newList,index);
+                            dfd.resolve();
                         })
                         .fail(function(res) {
                             nts.uk.ui.dialog.alertError(res.message);
+                            dfd.reject();
                         });
                 } else {
-                    self.createViewAttendanceItems([],index);        
+                    self.createViewAttendanceItems([],index); 
+                    dfd.resolve();       
                 }
+                return dfd.promise();
             }
             
             /**
@@ -233,6 +243,7 @@ module nts.uk.at.view.kml001.a {
                 let index = currentIndex?currentIndex:0;
                 nts.uk.ui.windows.setShared('isInsert', self.isInsert());
                 nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                    nts.uk.ui.block.invisible();
                     if (nts.uk.ui.windows.getShared('updatePremiumSeting') == true) {
                         nts.uk.ui.errors.clearAll();
                         var dfdPremiumItemSelect = servicebase.premiumItemSelect();
@@ -256,7 +267,7 @@ module nts.uk.at.view.kml001.a {
                                 self.premiumItems().forEach(function(item){
                                     if(item.useAtr()) {
                                         self.currentPersonCost().premiumSets.push(
-                                            new vmbase.PremiumSetting("", "", item.displayNumber(), 1, item.name(), item.useAtr(), []));
+                                            new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), []));
                                     }
                                 });    
                                 $("#startDateInput").focus(); 
@@ -266,7 +277,7 @@ module nts.uk.at.view.kml001.a {
                                     self.premiumItems().forEach(function(item){
                                         if(item.useAtr()) {
                                             self.currentPersonCost().premiumSets.push(
-                                                new vmbase.PremiumSetting("", "", item.displayNumber(), 1, item.name(), item.useAtr(), []));
+                                                new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), []));
                                         }
                                     });    
                                     $("#startDateInput").focus();
@@ -342,7 +353,7 @@ module nts.uk.at.view.kml001.a {
                                                 "", 
                                                 "", 
                                                 item.displayNumber(), 
-                                                1, 
+                                                100, 
                                                 item.name(), 
                                                 item.useAtr(), 
                                                 []));
@@ -382,7 +393,7 @@ module nts.uk.at.view.kml001.a {
                                             "", 
                                             "", 
                                             item.displayNumber(), 
-                                            1, 
+                                            100, 
                                             item.name(),
                                             item.useAtr(), 
                                             []));

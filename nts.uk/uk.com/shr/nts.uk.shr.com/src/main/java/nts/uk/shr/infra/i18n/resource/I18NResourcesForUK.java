@@ -61,7 +61,7 @@ public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer
 			languageId = AppContexts.user().language().basicLanguageId();
 			String companyId = AppContexts.user().companyId();
 			
-			this.refreshIfRequired(languageId, companyId);
+			//this.refreshIfRequired(languageId, companyId);
 			
 			val customizedOptional = this.customizedResources.getContent(companyId, languageId, resourceId);
 			if (customizedOptional.isPresent()) {

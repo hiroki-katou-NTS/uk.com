@@ -167,7 +167,7 @@ module nts.uk.com.view.kal004.b.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_812"});
                 return false;    
             }else if(self.getCategoryId() == 5 || self.getCategoryId() == 13){
-                if(self.strSelected() == 0 && (self.strDay() < self.endDay())){
+                if(self.strSelected() == 0 && (Number(self.strDay()) < Number(self.endDay()))){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_812"});
                     return false;
                 }else{
@@ -177,10 +177,10 @@ module nts.uk.com.view.kal004.b.viewmodel {
                 if(self.strSelected() == 0 && self.strPreviousDay() == 1 && self.endPreviousDay() == 0 ){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_812"});
                     return false;
-                }else if (self.strSelected() == 0 && self.strPreviousDay() == 0 && self.endPreviousDay() == 0 && (self.strDay() < self.endDay())){
+                }else if (self.strSelected() == 0 && self.strPreviousDay() == 0 && self.endPreviousDay() == 0 && (Number(self.strDay()) < Number(self.endDay()))){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_812"});
                     return false;   
-                }else if(self.strSelected() == 0 && self.strPreviousDay() == 1 && self.endPreviousDay() == 1 && (self.strDay() > self.endDay())){
+                }else if(self.strSelected() == 0 && self.strPreviousDay() == 1 && self.endPreviousDay() == 1 && (Number(self.strDay()) > Number(self.endDay()))){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_812"});
                     return false;  
                 }else{

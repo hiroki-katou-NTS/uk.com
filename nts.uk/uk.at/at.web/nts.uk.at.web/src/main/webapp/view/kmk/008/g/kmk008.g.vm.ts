@@ -19,6 +19,7 @@ module nts.uk.at.view.kmk008.g {
             items: KnockoutObservableArray<ItemModel>;
             items2: KnockoutObservableArray<ItemModel>;
             columns: KnockoutObservableArray<NtsGridListColumn>;
+            columns2: KnockoutObservableArray<NtsGridListColumn>;
             currentCode: KnockoutObservable<any>;
 
             selectedId: KnockoutObservable<string>;
@@ -84,7 +85,7 @@ module nts.uk.at.view.kmk008.g {
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     isShowWorkPlaceName: true,
                     employeeInputList: self.employeeList,
-                    tabindex : 4
+                    tabindex: 4
                 };
 
                 //search
@@ -115,6 +116,9 @@ module nts.uk.at.view.kmk008.g {
                         self.employeeList(_.map(dataList, item => {
                             return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
                         }));
+                        if (self.employeeList() && self.employeeList().length > 0){
+                            self.selectedCode(self.employeeList()[0].code);
+                        }
                     },
                     onSearchOnlyClicked: function(data: EmployeeSearchDto) {
                         self.showinfoSelectedEmployee(true);
@@ -123,6 +127,9 @@ module nts.uk.at.view.kmk008.g {
                         self.selectedEmployee(dataEmployee);
                         self.employeeList([]);
                         self.employeeList.push(new UnitModel(data.employeeCode, data.employeeName, data.workplaceName, data.employeeId));
+                        if (self.employeeList() && self.employeeList().length > 0){
+                            self.selectedCode(self.employeeList()[0].code);
+                        }
                     },
                     onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -131,6 +138,9 @@ module nts.uk.at.view.kmk008.g {
                         self.employeeList(_.map(dataList, item => {
                             return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
                         }));
+                        if (self.employeeList() && self.employeeList().length > 0){
+                            self.selectedCode(self.employeeList()[0].code);
+                        }
                     },
                     onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -140,6 +150,9 @@ module nts.uk.at.view.kmk008.g {
                         self.employeeList(_.map(dataList, item => {
                             return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
                         }));
+                        if (self.employeeList() && self.employeeList().length > 0){
+                            self.selectedCode(self.employeeList()[0].code);
+                        }
                     },
                     onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
                         self.showinfoSelectedEmployee(true);
@@ -149,6 +162,9 @@ module nts.uk.at.view.kmk008.g {
                         self.employeeList(_.map(dataList, item => {
                             return new UnitModel(item.employeeCode, item.employeeName, item.workplaceName, item.employeeId);
                         }));
+                        if (self.employeeList() && self.employeeList().length > 0){
+                            self.selectedCode(self.employeeList()[0].code);
+                        }
                     }
                 }
 
@@ -163,6 +179,11 @@ module nts.uk.at.view.kmk008.g {
 
                 self.columns = ko.observableArray([
                     { headerText: '年度', key: 'year', width: 100 },
+                    { headerText: 'エラー', key: 'error', width: 150 },
+                    { headerText: 'アラーム', key: 'alarm', width: 150 }
+                ]);
+                self.columns2 = ko.observableArray([
+                    { headerText: '年月', key: 'year', width: 100 },
                     { headerText: 'エラー', key: 'error', width: 150 },
                     { headerText: 'アラーム', key: 'alarm', width: 150 }
                 ]);
@@ -233,8 +254,8 @@ module nts.uk.at.view.kmk008.g {
                     service.getMonth(employmentCategoryCode).done(function(monthData: Array<model.MonthDto>) {
                         if (monthData) {
                             self.items2([]);
-                            monthData = _.sortBy(monthData, item => { return monthData.yearMonthValue });
-                            monthData.reverse();
+                            //                            monthData = _.sortBy(monthData, item => { return monthData.yearMonthValue });
+                            //                            monthData.reverse();
                             _.forEach(monthData, function(value) {
                                 self.items2.push(new ItemModel(nts.uk.time.parseYearMonth(value.yearMonthValue).format(), nts.uk.time.parseTime(value.errorOneMonth, true).format(), nts.uk.time.parseTime(value.alarmOneMonth, true).format()));
                             });
@@ -248,8 +269,8 @@ module nts.uk.at.view.kmk008.g {
                     service.getYear(employmentCategoryCode).done(function(yearData: Array<model.YearDto>) {
                         if (yearData) {
                             self.items([]);
-                            yearData = _.sortBy(yearData, item => { return yearData.yearValue });
-                            yearData.reverse();
+                            //                            yearData = _.sortBy(yearData, item => { return yearData.yearValue });
+                            //                            yearData.reverse();
                             _.forEach(yearData, function(value) {
                                 self.items.push(new ItemModel(value.yearValue, nts.uk.time.parseTime(value.errorOneYear, true).format(), nts.uk.time.parseTime(value.alarmOneYear, true).format()));
                             });

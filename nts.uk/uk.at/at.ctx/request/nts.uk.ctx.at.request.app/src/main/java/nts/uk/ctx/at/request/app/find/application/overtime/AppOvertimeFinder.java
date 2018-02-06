@@ -23,11 +23,15 @@ import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeInputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.PreAppOvertimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
@@ -106,6 +110,10 @@ public class AppOvertimeFinder {
 	private OvertimeSixProcess overtimeSixProcess;
 	@Inject
 	private OvertimeFourProcess overtimeFourProcess;
+	@Inject
+	private CollectApprovalRootPatternService collectApprovalRootPatternService;
+	@Inject
+	private StartupErrorCheckService startupErrorCheckService;
 	
 	/**
 	 * @param url
@@ -130,9 +138,9 @@ public class AppOvertimeFinder {
 				rootAtr, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class),appDate == null ? null : GeneralDate.fromString(appDate, DATE_FORMAT));
 		result.setManualSendMailAtr(appCommonSettingOutput.applicationSetting.getManualSendMailAtr().value  ==1 ?true : false);
 		//アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する
-		//startApprovalRootService.getApprovalRootPattern(companyID, employeeID, 1, ApplicationType.OVER_TIME_APPLICATION.value, null);
+		ApprovalRootPattern approvalRootPattern = collectApprovalRootPatternService.getApprovalRootPatternService(companyID, employeeID, EmploymentRootAtr.APPLICATION, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), appCommonSettingOutput.generalDate, "", true);
 		//アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する 
-		// startCheckErrorService.checkError(ApplicationType.OVER_TIME_APPLICATION.value);
+		 startupErrorCheckService.startupErrorCheck(appCommonSettingOutput.generalDate, ApplicationType.OVER_TIME_APPLICATION.value, approvalRootPattern.getApprovalRootContentImport());
 		// 02_残業区分チェック : check loai lam them
 		int overtimeAtr = overtimeService.checkOvertime(url);
 		result.setOvertimeAtr(overtimeAtr);
@@ -249,8 +257,6 @@ public class AppOvertimeFinder {
 				
 				WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, appOverTime.getSiftCode().v()).get();
 				overTimeDto.setSiftType(new SiftType(workTime.getWorktimeCode().v(), workTime.getWorkTimeDisplayName().getWorkTimeName().v()));
-				
-				;
 				
 				// 01-17_休憩時間取得(lay thoi gian nghi ngoi)
 				boolean displayRestTime = iOvertimePreProcess.getRestTime(approvalFunctionSetting);
@@ -590,7 +596,7 @@ public class AppOvertimeFinder {
 		 * chưa phải làm
 		 */
 		// 01-13_事前事後区分を取得
-		DisplayPrePost displayPrePost =	iOvertimePreProcess.getDisplayPrePost(companyID, uiType,appDate);
+		DisplayPrePost displayPrePost =	iOvertimePreProcess.getDisplayPrePost(companyID, uiType,appDate,ApplicationType.OVER_TIME_APPLICATION.value);
 		result.setDisplayPrePostFlg(displayPrePost.getDisplayPrePostFlg());
 		applicationDto.setPrePostAtr(displayPrePost.getPrePostAtr());
 		result.setApplication(applicationDto);

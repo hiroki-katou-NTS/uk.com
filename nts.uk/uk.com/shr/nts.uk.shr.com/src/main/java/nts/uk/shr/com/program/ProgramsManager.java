@@ -1473,22 +1473,25 @@ public class ProgramsManager {
 			"/view/cmm/001/d/index.xhtml");
 	/**CCG018	 */
 	
-	
-	/**
-	 * KBT002
-	 */
-	public static final Program KBT002A = new Program(WebAppId.AT, ProgramIdConsts.KBT002A, "KBT002_114",
-			"/view/kbt/002/a/index.xhtml");
-	public static final Program KBT002B = new Program(WebAppId.AT, ProgramIdConsts.KBT002B, "KBT002_115",
-			"/view/kbt/002/b/index.xhtml");
-	public static final Program KBT002C = new Program(WebAppId.AT, ProgramIdConsts.KBT002C, "KBT002_116",
-			"/view/kbt/002/c/index.xhtml");
-	public static final Program KBT002D = new Program(WebAppId.AT, ProgramIdConsts.KBT002D, "KBT002_117",
-			"/view/kbt/002/d/index.xhtml");
-	public static final Program KBT002F = new Program(WebAppId.AT, ProgramIdConsts.KBT002F, "KBT002_125",
-			"/view/kbt/002/f/index.xhtml");
-	public static final Program KBT002G = new Program(WebAppId.AT, ProgramIdConsts.KBT002G, "KBT002_148",
-			"/view/kbt/002/g/index.xhtml");
+	/**  KAL002 */
+	public static final Program KAL002A = new Program(WebAppId.AT, ProgramIdConsts.KAL002A, "KAL002_1",
+			"view/kal/002/a/index.xhtml");
+	/**  KAL003 */
+	public static final Program KAL003A = new Program(WebAppId.AT, ProgramIdConsts.KAL003A, "KAL003_1",
+			"view/kal/003/a/index.xhtml");
+	public static final Program KAL003B = new Program(WebAppId.AT, ProgramIdConsts.KAL003B, "KAL003_2",
+			"view/kal/003/b/index.xhtml");
+	public static final Program KAL003C = new Program(WebAppId.AT, ProgramIdConsts.KAL003C, "KAL003_3",
+			"view/kal/003/c/index.xhtml");
+	public static final Program KAL003D = new Program(WebAppId.AT, ProgramIdConsts.KAL003D, "KAL003_4",
+			"view/kal/003/d/index.xhtml");
+	/**  KAL004 */
+	public static final Program KAL004A = new Program(WebAppId.AT, ProgramIdConsts.KAL004A, "KAL007_1",
+			"/view/kal/004/a/index.xhtml");
+	public static final Program KAL004B = new Program(WebAppId.AT, ProgramIdConsts.KAL004B, "KAL007_2",
+			"/view/kal/004/b/index.xhtml");
+	public static final Program KAL004F = new Program(WebAppId.AT, ProgramIdConsts.KAL004F, "KAL007_2",
+			"/view/kal/004/f/index.xhtml");
 	
 	/**
 	 * All programs map.

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.config.info;
@@ -18,6 +18,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WkpConfigInfoFindObject;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceHierarchyDto;
 import nts.uk.ctx.bs.employee.dom.access.role.SyRoleAdapter;
@@ -60,7 +61,7 @@ public class WorkplaceConfigInfoFinder {
 
 	@Inject
 	private SyRoleAdapter syRoleWorkplaceAdapter;
-	
+
 	/**
 	 * Find all by base date.
 	 *
@@ -89,14 +90,14 @@ public class WorkplaceConfigInfoFinder {
 		List<WorkplaceHierarchy> lstHierarchy = opWkpConfigInfo.get().getLstWkpHierarchy();
 
 		WorkplaceIDImport workplaceIDImport = syRoleWorkplaceAdapter.findListWkpIdByRoleId(object.getSystemType());
-		
+
 		List<WorkplaceHierarchy> result = new ArrayList<>();
-		
+
 		// if listWorkplaceIds is empty
 		if(workplaceIDImport.getListWorkplaceIds().isEmpty()){
 			return this.initTree(baseD, result);
 		}
-		
+
 		// if listWorkplaceIds is not empty
 		for (WorkplaceHierarchy item : lstHierarchy) {
 			if (workplaceIDImport.getListWorkplaceIds().contains(item.getWorkplaceId())) {
@@ -116,19 +117,19 @@ public class WorkplaceConfigInfoFinder {
 						// add childs workplace id to list
 						result.add(item);
 					}
-				// if get all of list workplace id 
+					// if get all of list workplace id 
 				} else {
 					result.add(item);
 				}
 			}
-		
-		// remove dublicate element in list
-		result = result.stream().distinct().collect(Collectors.toList());
-		
+
+			// remove dublicate element in list
+			result = result.stream().distinct().collect(Collectors.toList());
+
 		}
 		return this.initTree(baseD, result);
 	}
-	
+
 	/**
 	 * Find all by start date.
 	 *
@@ -184,18 +185,18 @@ public class WorkplaceConfigInfoFinder {
 	private List<WorkplaceHierarchyDto> createTree(
 			Iterator<WorkplaceHierarchy> iteratorWkpHierarchy, List<WorkplaceInfo> lstHWkpInfo,
 			List<WorkplaceHierarchyDto> lstReturn) {
-		
+
 		List<WorkplaceHierarchy> lstWkpHierarchyRemove = new ArrayList<>();
-		
+
 		// while have workplace
 		while (iteratorWkpHierarchy.hasNext()) {
 			// pop 1 item
 			WorkplaceHierarchy wkpHierarchy = iteratorWkpHierarchy.next();
-			
+
 			// convert
 			WorkplaceHierarchyDto dto = new WorkplaceHierarchyDto();
 			wkpHierarchy.saveToMemento(dto);
-			
+
 			// get workplace hierarchy by wkpId
 			Optional<WorkplaceInfo> opWkpInfo = lstHWkpInfo.stream()
 					.filter(w -> w.getWorkplaceId().equals(wkpHierarchy.getWorkplaceId()))
@@ -207,7 +208,7 @@ public class WorkplaceConfigInfoFinder {
 			} else {
 				lstWkpHierarchyRemove.add(wkpHierarchy);
 			}
-			
+
 			// ignore workplace that don't have code and name.
 			if (lstWkpHierarchyRemove.contains(wkpHierarchy)) {
 				continue;
@@ -262,7 +263,7 @@ public class WorkplaceConfigInfoFinder {
 					hierarchyCode.substring(HIERARCHY_LENGTH, hierarchyCode.length()), searchCode);
 		}
 	}
-     
+
 	/**
 	 * Find all by base date.
 	 *
@@ -291,14 +292,14 @@ public class WorkplaceConfigInfoFinder {
 		List<WorkplaceHierarchy> lstHierarchy = opWkpConfigInfo.get().getLstWkpHierarchy();
 
 		WorkplaceIDImport workplaceIDImport = syRoleWorkplaceAdapter.findListWkpId(object.getSystemType());
-		
+
 		List<WorkplaceHierarchy> result = new ArrayList<>();
-		
+
 		// if listWorkplaceIds is empty
 		if(workplaceIDImport.getListWorkplaceIds().isEmpty()){
 			return this.initTree(baseD, result);
 		}
-		
+
 		// if listWorkplaceIds is not empty
 		for (WorkplaceHierarchy item : lstHierarchy) {
 			if (workplaceIDImport.getListWorkplaceIds().contains(item.getWorkplaceId())) {
@@ -318,16 +319,56 @@ public class WorkplaceConfigInfoFinder {
 						// add childs workplace id to list
 						result.add(item);
 					}
-				// if get all of list workplace id 
+					// if get all of list workplace id 
 				} else {
 					result.add(item);
 				}
 			}
-		
-		// remove dublicate element in list
-		result = result.stream().distinct().collect(Collectors.toList());
-		
+
+			// remove dublicate element in list
+			result = result.stream().distinct().collect(Collectors.toList());
+
 		}
 		return this.initTree(baseD, result);
+	}
+
+	/**
+	 * Find flat list.
+	 *
+	 * @param strD the str D
+	 * @return the list6
+	 */
+	public List<WorkplaceHierarchyDto> findFlatList(GeneralDate strD) {
+		WkpConfigInfoFindObject findObject = new WkpConfigInfoFindObject();
+		findObject.setBaseDate(strD);
+		findObject.setSystemType(1);
+		List<WorkplaceHierarchyDto> treeList = this.findAllByBaseDate(findObject);
+
+		// flat workplace tree.
+		List<WorkplaceHierarchyDto> flatList = new ArrayList<>();
+		treeList.stream().forEach(wpl -> {
+			// Convert tree to flat list.
+			flatList.addAll(this.convertToFlatList(wpl));
+		});
+
+		return flatList;
+	}
+
+	/**
+	 * Convert to flat list.
+	 *
+	 * @param dto the dto
+	 * @return the list
+	 */
+	private List<WorkplaceHierarchyDto> convertToFlatList(WorkplaceHierarchyDto dto) {
+		List<WorkplaceHierarchyDto> resultList = new ArrayList<>();;
+		resultList.add(dto);
+		if(CollectionUtil.isEmpty(dto.getChilds())) {
+			return resultList;
+		}
+		dto.getChilds().stream().forEach(wpl -> {
+			resultList.addAll(this.convertToFlatList(wpl));
+		});
+		return resultList;
 	}
 }

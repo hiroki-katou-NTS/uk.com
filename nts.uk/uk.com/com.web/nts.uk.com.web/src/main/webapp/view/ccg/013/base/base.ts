@@ -17,7 +17,7 @@ function validateNameInput($input: JQuery, nameId: string, value: string, constr
         $input.removeAttr("style");
     } else {
         let error = $input.ntsError('getError');
-        if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
+        if (nts.uk.util.isNullOrEmpty(error) || error.messageText !== result.errorMessage) {
             $input.ntsError('clear');
             $input.ntsError('set', result.errorMessage, result.errorCode);
         }

@@ -87,7 +87,7 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 		if (this.publicHdManagementClassification == 1) {
 			PublicHoliday publicHoliday = (PublicHoliday) publicHolidayManagementStartDate;
 			this.dayMonth = publicHoliday.getDayMonth();
-			this.fullDate = publicHoliday.getDate().toString("YYYYMMDD");
+			this.fullDate = publicHoliday.getDate().toString();
 			this.determineStartD = publicHoliday.getDetermineStartDate().value;
 		} else {
 			PublicHolidayGrantDate holidayGrantDate = (PublicHolidayGrantDate) publicHolidayManagementStartDate;
@@ -104,7 +104,7 @@ public class PublicHolidaySettingFindDto implements PublicHolidaySettingSetMemen
 				this.dayMonth = publicHoliday.getDayMonth();
 			}
 			if (publicHoliday.getDate() != null) {
-				this.fullDate = publicHoliday.getDate().toString("YYYYMMDD");
+				this.fullDate = publicHoliday.getDate().toString();
 			} 
 			if (publicHoliday.getDetermineStartDate() != null) {
 				this.determineStartD = publicHoliday.getDetermineStartDate().value;

@@ -11,7 +11,10 @@ module nts.uk.at.view.kml001.b {
                 var self = this;
                 self.premiumItemList = ko.observableArray([]);   
                 self.isInsert = nts.uk.ui.windows.getShared('isInsert');
-                self.textKML001_18 = nts.uk.resource.getText("KML001_28",[__viewContext.primitiveValueConstraints.PremiumName.maxLength/2]);
+                self.textKML001_18 = nts.uk.resource.getText("KML001_28") + "("
+                        + nts.uk.text.getCharType('PremiumName').viewName +
+                        + __viewContext.primitiveValueConstraints.PremiumName.maxLength/2
+                        + "文字)";
             }
             
             getText(index): string {
@@ -63,9 +66,10 @@ module nts.uk.at.view.kml001.b {
                 var self = this;
                 let premiumItemListCommand = [];
                 let rootLists = self.rootList;
-                $(".premiumName").trigger("validate");
-                ko.utils.arrayForEach(self.premiumItemList(), function(item, index) { 
-                    if(ko.mapping.toJSON(item)!=ko.mapping.toJSON(rootLists[index])){
+                let userList = _.filter(self.premiumItemList(), function(o) { return o.useAtr()==1; });
+                ko.utils.arrayForEach(userList, function(item, index) { 
+                    $(".premiumName").eq(item.displayNumber()-1).trigger("validate");
+                    if(ko.mapping.toJSON(item)!=ko.mapping.toJSON(rootLists[item.displayNumber()-1])){
                         item.isChange(true);        
                     }
                     premiumItemListCommand.push(ko.mapping.toJS(item));

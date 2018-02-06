@@ -416,6 +416,7 @@ public class RegularAndIrregularTimeOfMonthly {
 	 * @param datePeriod 期間
 	 * @param workingSystem 労働制
 	 * @param aggregateAtr 集計区分
+	 * @param isRetireMonth 退職月かどうか
 	 * @param workplaceId 職場ID
 	 * @param employmentCd 雇用コード
 	 * @param aggrSettingMonthly 月別実績集計設定
@@ -433,6 +434,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			DatePeriod datePeriod,
 			WorkingSystem workingSystem,
 			MonthlyAggregateAtr aggregateAtr,
+			boolean isRetireMonth,
 			String workplaceId,
 			String employmentCd,
 			AggrSettingMonthly aggrSettingMonthly,
@@ -461,7 +463,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			
 			// 変形労働勤務の月単位の時間を集計する
 			this.aggregateTimePerMonthOfIrregular(companyId, employeeId,
-					yearMonth, closureId, closureDate, datePeriod,
+					yearMonth, closureId, closureDate, datePeriod, isRetireMonth,
 					aggrSettingMonthly.getIrregularWork(), addSet, aggregateTotalWorkingTime,
 					statutoryWorkingTimeMonth, repositories);
 		}
@@ -522,6 +524,7 @@ public class RegularAndIrregularTimeOfMonthly {
 	 * @param closureId 締めID
 	 * @param closureDate 締め日付
 	 * @param datePeriod 期間
+	 * @param isRetireMonth 退職月かどうか
 	 * @param legalAggrSetOfIrg 変形労働時間勤務の法定内集計設定
 	 * @param addSet 加算設定
 	 * @param aggregateTotalWorkingTime 集計総労働時間
@@ -535,6 +538,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			ClosureId closureId,
 			ClosureDate closureDate,
 			DatePeriod datePeriod,
+			boolean isRetireMonth,
 			LegalAggrSetOfIrg legalAggrSetOfIrg,
 			AddSet addSet,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime,
@@ -565,10 +569,7 @@ public class RegularAndIrregularTimeOfMonthly {
 			isSettlementMonth = true;
 		}
 		else{
-			//*****（未）　退職者なら、その月に精算。退職者かどうかを取る方法の確認要。
-			//if (退職者なら)　{
-			//	isSettlementMonth = true;
-			//}
+			if (isRetireMonth) isSettlementMonth = true;
 		}
 
 		if (isSettlementMonth){

@@ -1,12 +1,9 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の深夜時間
@@ -71,44 +68,57 @@ public class MidnightTimeOfMonthly {
 	
 	/**
 	 * 集計
-	 * @param datePeriod 期間
-	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
+	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 */
-	public void aggregate(
-			DatePeriod datePeriod,
-			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys){
-		
-		this.overWorkMidnightTime = TimeMonthWithCalculation.ofSameTime(0);
-		this.legalMidnightTime = TimeMonthWithCalculation.ofSameTime(0);
-		this.illegalMidnightTime = new IllegalMidnightTime();
-		this.legalHolidayWorkMidnightTime = TimeMonthWithCalculation.ofSameTime(0);
-		this.illegalHolidayWorkMidnightTime = TimeMonthWithCalculation.ofSameTime(0);
-		this.specialHolidayWorkMidnightTime = TimeMonthWithCalculation.ofSameTime(0);
+	public void aggregate(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily){
 
-		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
-			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
-			val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
-			val legalTime = totalWorkingTime.getWithinStatutoryTimeOfDaily();
-			val illegalTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
-			//*****（未）　日別実績の休出時間の実装待ち。→　祝日休出深夜時間に集計。
-			
-			// 日別実績の「深夜時間」を集計する
-			val legalMidnightTime = legalTime.getWithinStatutoryMidNightTime().getTime();
-			this.legalMidnightTime = this.legalMidnightTime.addMinutes(
-					legalMidnightTime.getTime().v(), legalMidnightTime.getCalcTime().v());
-			val illegalMidnightTime = illegalTime.getExcessOfStatutoryMidNightTime();
-			this.illegalMidnightTime.addMinutesToTime(
-					illegalMidnightTime.getTime().getTime().v(), illegalMidnightTime.getTime().getCalcTime().v());
-			this.illegalMidnightTime.addMinutesToBeforeTime(
-					illegalMidnightTime.getBeforeApplicationTime().v());
-			if (illegalTime.getOverTimeWork().isPresent()){
-				val overTime = illegalTime.getOverTimeWork().get();
-				val overWorkMidnightTime = overTime.getExcessOverTimeWorkMidNightTime().get().getTime();
-				this.overWorkMidnightTime = this.overWorkMidnightTime.addMinutes(
-						overWorkMidnightTime.getTime().v(), overWorkMidnightTime.getCalcTime().v());
-				//*****（未）　残業深夜時間の集計先として、所定外深夜時間のどの項目にするか確認要。
+		if (attendanceTimeOfDaily == null) return;
+		
+		val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+		val legalTime = totalWorkingTime.getWithinStatutoryTimeOfDaily();
+		val illegalTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+		
+		// 所定内深夜時間を累積
+		val legalMidnightTime = legalTime.getWithinStatutoryMidNightTime().getTime();
+		this.legalMidnightTime = this.legalMidnightTime.addMinutes(
+				legalMidnightTime.getTime().v(), legalMidnightTime.getCalcTime().v());
+		
+		// 所定外深夜時間を累積
+		val illegalMidnightTime = illegalTime.getExcessOfStatutoryMidNightTime();
+		this.illegalMidnightTime.addMinutesToTime(
+				illegalMidnightTime.getTime().getTime().v(), illegalMidnightTime.getTime().getCalcTime().v());
+		this.illegalMidnightTime.addMinutesToBeforeTime(
+				illegalMidnightTime.getBeforeApplicationTime().v());
+		
+		// 残業深夜時間を累積
+		if (illegalTime.getOverTimeWork().isPresent()){
+			val overTime = illegalTime.getOverTimeWork().get();
+			val overWorkMidnightTime = overTime.getExcessOverTimeWorkMidNightTime().get().getTime();
+			this.overWorkMidnightTime = this.overWorkMidnightTime.addMinutes(
+					overWorkMidnightTime.getTime().v(), overWorkMidnightTime.getCalcTime().v());
+		}
+		
+		// 休出深夜時間を累積
+		if (illegalTime.getWorkHolidayTime().isPresent()){
+			val holidayWorkTime = illegalTime.getWorkHolidayTime().get();
+			val hdwkMidnightTimeList = holidayWorkTime.getHolidayMidNightWork().get().getHolidayWorkMidNightTime();
+			for (val hdwkMidnightTime : hdwkMidnightTimeList){
+				val targetTime = hdwkMidnightTime.getTime();
+				switch (hdwkMidnightTime.getStatutoryAtr()){
+				case WithinPrescribedHolidayWork:
+					this.legalHolidayWorkMidnightTime = this.legalHolidayWorkMidnightTime.addMinutes(
+							targetTime.getTime().v(), targetTime.getCalcTime().v());
+					break;
+				case ExcessOfStatutoryHolidayWork:
+					this.illegalHolidayWorkMidnightTime = this.illegalHolidayWorkMidnightTime.addMinutes(
+							targetTime.getTime().v(), targetTime.getCalcTime().v());
+					break;
+				case PublicHolidayWork:
+					this.specialHolidayWorkMidnightTime = this.specialHolidayWorkMidnightTime.addMinutes(
+							targetTime.getTime().v(), targetTime.getCalcTime().v());
+					break;
+				}
 			}
-			//*****（未）　休出深夜時間から、祝日休出深夜時間へ集計する。日別側のクラス実装待ち。
 		}
 	}
 }

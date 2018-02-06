@@ -3,10 +3,13 @@ package nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の所属情報")
@@ -58,5 +61,13 @@ public class AffiliationInforOfDailyPerforDto implements ConvertibleAttendanceIt
 	@Override
 	public GeneralDate workingDate() {
 		return this.baseDate;
+	}
+
+	@Override
+	public AffiliationInforOfDailyPerfor toDomain() {
+		return new AffiliationInforOfDailyPerfor(new EmploymentCode(this.employmentCode), this.employeeId,
+				this.jobId, this.workplaceID, this.baseDate,
+				new ClassificationCode(this.classificationCode),
+				new BonusPaySettingCode(this.subscriptionCode));
 	}
 }

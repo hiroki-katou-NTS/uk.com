@@ -86,21 +86,22 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	private BreakTimeOfDailyPerformance toDtomain(Integer type, List<KrcdtDaiBreakTime> value) {
-		BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = new BreakTimeOfDailyPerformance(
+		return new BreakTimeOfDailyPerformance(
 				value.get(0).krcdtDaiBreakTimePK.employeeId, EnumAdaptor.valueOf(type, BreakType.class),
-				value.stream().map(item -> {
-					WorkStamp startActualStamp = new WorkStamp(new TimeWithDayAttr(item.startStampRoundingTimeDay),
-							new TimeWithDayAttr(item.startStampTime), new WorkLocationCD(item.startStampPlaceCode),
-							EnumAdaptor.valueOf(item.startStampSourceInfo, StampSourceInfo.class));
+				value.stream().map(item -> new BreakTimeSheet(
+							new BreakFrameNo(item.krcdtDaiBreakTimePK.breakFrameNo), 
+							toWorkStamp(item.startStampRoundingTimeDay, item.startStampTime, item.startStampPlaceCode, item.startStampSourceInfo),
+							toWorkStamp(item.endStampRoundingTimeDay, item.endStampTime, item.endStampPlaceCode, item.endStampSourceInfo), 
+							new AttendanceTime(0))).collect(Collectors.toList()), 
+				value.get(0).krcdtDaiBreakTimePK.ymd);
+	}
 
-					WorkStamp endActualStamp = new WorkStamp(new TimeWithDayAttr(item.endStampRoundingTimeDay),
-							new TimeWithDayAttr(item.endStampTime), new WorkLocationCD(item.endStampPlaceCode),
-							EnumAdaptor.valueOf(item.endStampSourceInfo, StampSourceInfo.class));
-
-					return new BreakTimeSheet(new BreakFrameNo(item.krcdtDaiBreakTimePK.breakFrameNo), startActualStamp,
-							endActualStamp, new AttendanceTime(0));
-				}).collect(Collectors.toList()), value.get(0).krcdtDaiBreakTimePK.ymd);
-		return breakTimeOfDailyPerformance;
+	private WorkStamp toWorkStamp(Integer stampRound, Integer stamp, String workplaceCode, Integer stampInfo) {
+		return new WorkStamp(
+				stampRound == null ? null : new TimeWithDayAttr(stampRound),
+				stamp == null ? null : new TimeWithDayAttr(stamp), 
+				workplaceCode == null ? null : new WorkLocationCD(workplaceCode),
+				stampInfo == null ? null : EnumAdaptor.valueOf(stampInfo, StampSourceInfo.class));
 	}
 
 	@Override

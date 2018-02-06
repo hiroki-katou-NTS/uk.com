@@ -170,10 +170,11 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	 * update(nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition)
 	 */
 	@Override
-	public void update(WorkingCondition workingCondition) {
+	@Transactional
+	public void update(WorkingCondition workingCondition) {			
 		List<KshmtWorkingCond> entities = this.findBy(workingCondition.getCompanyId(),
 				workingCondition.getEmployeeId(), null);
-		this.commandProxy().removeAll(entities);
+//		this.commandProxy().removeAll(entities);
 		workingCondition.saveToMemento(new JpaWorkingConditionSetMemento(entities));
 		this.commandProxy().updateAll(entities);
 	}
@@ -200,9 +201,18 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	 */
 	@Override
 	@Transactional
-	public void save(WorkingCondition workingCondition) {
-		deleteAll(workingCondition);
-		add(workingCondition);
+	public void save(WorkingCondition workingCondition) {	
+		this.deleteAll(workingCondition);
+		this.add(workingCondition);
+//		// Using for insert/update/delete
+//		Optional<WorkingCondition> oldDomain = this.getBySid(workingCondition.getCompanyId(), workingCondition.getEmployeeId());
+//		if (oldDomain.isPresent()) {
+//			// Update
+//			this.update(workingCondition);
+//			return;
+//		} 
+//		// Add
+//		this.add(workingCondition);
 	}
 
 	@Transactional
@@ -261,7 +271,7 @@ public class JpaWorkingConditionRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// Order by start date
-		cq.orderBy(criteriaBuilder.asc(root.get(KshmtWorkingCond_.strD)));
+		cq.orderBy(criteriaBuilder.desc(root.get(KshmtWorkingCond_.strD)));
 
 		// creat query
 		TypedQuery<KshmtWorkingCond> query = em.createQuery(cq);

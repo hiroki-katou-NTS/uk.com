@@ -21,9 +21,10 @@ module nts.uk.at.view.kal004.share.model {
         alarmCategory: number;
         checkConditionCodes: Array<string>;
         extractionDaily?: ExtractionDailyDto;
+        extractionUnit?: PeriodUnitDto;
     }
 
-   
+
 
     export interface AlarmCheckConditonCodeDto {
         category: EnumConstantDto;
@@ -47,7 +48,7 @@ module nts.uk.at.view.kal004.share.model {
             this.GUID = dto.category.value + dto.checkConditonCode;
             this.cssClass = "";
         }
-        
+
         public static createNotFoundCheckConditonCode(category: EnumConstantDto, checkConditonCode: string): ModelCheckConditonCode {
             var result = new ModelCheckConditonCode({
                 category: category,
@@ -77,6 +78,7 @@ module nts.uk.at.view.kal004.share.model {
         endCurrentMonth?: number;
         endMonth?: number;
     }
+
 
     export class ExtractionDaily {
         extractionId: KnockoutObservable<string>;
@@ -117,7 +119,14 @@ module nts.uk.at.view.kal004.share.model {
         }
     }
 
+    export interface PeriodUnitDto {
+        extractionId: string;
+        extractionRange: number;
+        segmentationOfCycle: number;
+    }
 
+    
+    
 
     //Command
     export class AddAlarmPatternSettingCommand {
@@ -147,11 +156,12 @@ module nts.uk.at.view.kal004.share.model {
         alarmCategory: number;
         extractionPeriodDaily: ExtractionPeriodDailyCommand;
         checkConditionCodes: Array<string>;
+        extractionPeriodUnit: PeriodUnitCommand;
 
-        constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand) {
+        constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand, extractionPeriodUnit: PeriodUnitCommand) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
-            if (nts.uk.util.isNullOrUndefined(extractionPeriodDaily)) {
+            if (nts.uk.util.isNullOrUndefined(extractionPeriodDaily)  && alarmCategory!=2) {
                 this.extractionPeriodDaily = new ExtractionPeriodDailyCommand({
                     extractionId: "",
                     extractionRange: 0,
@@ -173,11 +183,24 @@ module nts.uk.at.view.kal004.share.model {
             } else {
                 this.extractionPeriodDaily = extractionPeriodDaily;
             }
+            if(nts.uk.util.isNullOrUndefined(extractionPeriodUnit) && alarmCategory == 2){
+                this.extractionPeriodUnit = new PeriodUnitCommand({
+                    extractionId: "",
+                    extractionRange: 3,
+                    segmentationOfCycle: 1
+                })
+            }else{
+                this.extractionPeriodUnit =  extractionPeriodUnit;
+            }
         }
 
-        setExtractPeriod(extractionPeriodDaily: ExtractionPeriodDailyCommand) {
+        public setExtractPeriod(extractionPeriodDaily: ExtractionPeriodDailyCommand) {
             this.extractionPeriodDaily = extractionPeriodDaily;
         }
+        
+        public setExtractUnit(extractionPeriodUnit: PeriodUnitCommand) {
+            this.extractionPeriodUnit = extractionPeriodUnit;
+        }        
     }
 
     export class ExtractionPeriodDailyCommand {
@@ -217,4 +240,17 @@ module nts.uk.at.view.kal004.share.model {
             this.endMonth = extractionDailyDto.endMonth;
         }
     }
+    
+        export class PeriodUnitCommand {
+        extractionId: string;
+        extractionRange: number;
+        segmentationOfCycle: number;
+        constructor(periodUnitDto: PeriodUnitDto) {
+            this.extractionId = periodUnitDto.extractionId;
+            this.extractionRange = periodUnitDto.extractionRange;
+            this.segmentationOfCycle = periodUnitDto.segmentationOfCycle;
+            
+        }
+    }
+
 }

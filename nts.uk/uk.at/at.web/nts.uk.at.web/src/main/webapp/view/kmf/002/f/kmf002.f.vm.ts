@@ -15,6 +15,7 @@ module nts.uk.at.view.kmf002.f {
             isManageWkpPublicHd: KnockoutObservable<number>;
             isManageEmpPublicHd: KnockoutObservable<number>;
             isManageEmployeePublicHd: KnockoutObservable<number>;
+            enableTypeSelectUnitRadioBox: KnockoutObservable<boolean>;
             
             constructor() {
                 let _self = this;
@@ -23,74 +24,101 @@ module nts.uk.at.view.kmf002.f {
                                                                     {"id":0,"name": nts.uk.resource.getText("Com_Employment"),"enable":true},
                                                                     {"id":1,"name": nts.uk.resource.getText("Com_Workplace"),"enable":true}
                                                                 ]);
-                _self.valueDefaultTypeSelect = ko.observable(1);
+                _self.valueDefaultTypeSelect = ko.observable(0);
                 _self.selectEmployee = ko.observable(true);
-                _self.isManageWkpPublicHd = ko.observable(1);
-                _self.isManageEmpPublicHd = ko.observable(1);
-                _self.isManageEmployeePublicHd = ko.observable(1);
+                _self.isManageWkpPublicHd = ko.observable(BoolValue.FALSE);
+                _self.isManageEmpPublicHd = ko.observable(BoolValue.FALSE);
+                _self.isManageEmployeePublicHd = ko.observable(BoolValue.FALSE);
+                _self.enableTypeSelectUnitRadioBox = ko.observable(false);
                 
                 _self.selectUnitCheck.subscribe(function(newValue) {
                     if (newValue == false) {
-                        _self.isManageWkpPublicHd(0);
-                        _self.isManageEmpPublicHd(0);
-                        _self.valueDefaultTypeSelect(-1);
+                        _self.isManageWkpPublicHd(BoolValue.FALSE);
+                        _self.isManageEmpPublicHd(BoolValue.FALSE);
+                        _self.enableTypeSelectUnitRadioBox(false);
+                    } else {
+                        _self.isManageWkpPublicHd(BoolValue.TRUE);
+                        _self.valueDefaultTypeSelect(0);
+                        _self.enableTypeSelectUnitRadioBox(true);
                     }
-                    setShared('isManageWkpPublicHd', _self.isManageWkpPublicHd());
-                    setShared('isManageEmpPublicHd', _self.isManageEmpPublicHd());
                 });
                 
                 _self.selectEmployee.subscribe(function(newValue) {
                     if (newValue == true) {
-                        _self.isManageEmployeePublicHd(1);
+                        _self.isManageEmployeePublicHd(BoolValue.TRUE);
                     } else {
-                        _self.isManageEmployeePublicHd(0);    
+                        _self.isManageEmployeePublicHd(BoolValue.FALSE);
                     }
-                    setShared('isManageEmployeePublicHd', _self.isManageEmployeePublicHd());
                 });
                 
                 _self.valueDefaultTypeSelect.subscribe(function(newValue) {
                     if (_self.selectUnitCheck() == true) {
-                        if (newValue == 1) {
-                            _self.isManageWkpPublicHd(1);
-                            _self.isManageEmpPublicHd(0);
+                        if (newValue == BoolValue.TRUE) {
+                            _self.isManageWkpPublicHd(BoolValue.TRUE);
+                            _self.isManageEmpPublicHd(BoolValue.FALSE);
                         } else {
-                            _self.isManageWkpPublicHd(0);
-                            _self.isManageEmpPublicHd(1);    
+                            _self.isManageWkpPublicHd(BoolValue.FALSE);
+                            _self.isManageEmpPublicHd(BoolValue.TRUE);
                         }
-                        setShared('isManageWkpPublicHd', _self.isManageWkpPublicHd());
-                        setShared('isManageEmpPublicHd', _self.isManageEmpPublicHd());    
                     }
                 });
                 
+            }
+            
+            private notifyVariableChange(): void {
+                let _self = this;
+                _self.isManageEmployeePublicHd.valueHasMutated();
+                _self.isManageWkpPublicHd.valueHasMutated();
+                _self.isManageEmpPublicHd.valueHasMutated();    
             }
             
             public start_page(): JQueryPromise<any> {
                 let _self = this;
                 $( "#selectUnitCheck" ).focus();
                 var dfd = $.Deferred<any>();
-                _self.isManageWkpPublicHd(getShared('isManageWkpPublicHd'));
-                _self.isManageEmpPublicHd(getShared('isManageEmpPublicHd'));
-                _self.isManageEmployeePublicHd(getShared('isManageEmployeePublicHd'));
-                if (_self.isManageEmpPublicHd() == 0 && _self.isManageWkpPublicHd()  == 0){
+                _self.isManageWkpPublicHd(nts.uk.ui.windows.getShared('isManageWkpPublicHd'));
+                _self.isManageEmpPublicHd(nts.uk.ui.windows.getShared('isManageEmpPublicHd'));
+                _self.isManageEmployeePublicHd(nts.uk.ui.windows.getShared('isManageEmployeePublicHd'));
+                _self.notifyVariableChange();
+                if (_self.isManageEmpPublicHd() == BoolValue.FALSE && _self.isManageWkpPublicHd()  == BoolValue.FALSE){
                     _self.selectUnitCheck(false);
                 } else {
                     _self.selectUnitCheck(true);
+                    if (_self.isManageEmpPublicHd() == BoolValue.TRUE) {
+                        _self.valueDefaultTypeSelect(0);
+                    } else {
+                        _self.valueDefaultTypeSelect(1);
+                    }
                 }
                 
-                if (_self.isManageEmpPublicHd() == 1) {
-                    _self.valueDefaultTypeSelect(0);
-                } else if (_self.isManageWkpPublicHd() == 1) {
-                    _self.valueDefaultTypeSelect(1);
+                if (_self.isManageEmployeePublicHd() == BoolValue.TRUE) {
+                    _self.selectEmployee(true);
+                } else {
+                    _self.selectEmployee(false);    
                 }
                 
                 dfd.resolve();
                 return dfd.promise();
             }
             
-            public closeSaveDialog(): void {
+            private closeSaveDialog(): void {
+                let _self = this;
+                nts.uk.ui.windows.setShared('saveManageUnit', true);
+                nts.uk.ui.windows.setShared('isManageWkpPublicHd', _self.isManageWkpPublicHd());
+                nts.uk.ui.windows.setShared('isManageEmpPublicHd', _self.isManageEmpPublicHd());
+                nts.uk.ui.windows.setShared('isManageEmployeePublicHd', _self.isManageEmployeePublicHd());  
+                nts.uk.ui.windows.close();  
+            }
+            
+            private closeDialog(): void {
+                nts.uk.ui.windows.setShared('saveManageUnit', false);
                 nts.uk.ui.windows.close();
             }
         }
         
+        export enum BoolValue {
+            TRUE = 1,
+            FALSE = 0    
+        }
     }
 }
