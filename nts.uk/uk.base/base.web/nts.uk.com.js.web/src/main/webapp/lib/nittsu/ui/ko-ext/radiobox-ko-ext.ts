@@ -203,12 +203,14 @@ module nts.uk.ui.koExtentions {
                 container.data("options", _.cloneDeep(options));
             }
 
-            // Checked
-            var checkedRadio = _.find(container.find("input[type='radio']"), (item) => {
-                return _.isEqual(JSON.parse(ko.toJSON(selectedValue())), $(item).data("value"));
-            });
-            if (checkedRadio !== undefined)
-                $(checkedRadio).prop("checked", true);
+            if(!nts.uk.util.isNullOrUndefined(selectedValue())){  
+                // Checked
+                var checkedRadio = _.find(container.find("input[type='radio']"), (item) => {
+                    return _.isEqual(JSON.parse(ko.toJSON(selectedValue())), $(item).data("value"));
+                });
+                if (checkedRadio !== undefined)
+                    $(checkedRadio).prop("checked", true);
+            }
 
             // Enable
             if(enable === true) {
