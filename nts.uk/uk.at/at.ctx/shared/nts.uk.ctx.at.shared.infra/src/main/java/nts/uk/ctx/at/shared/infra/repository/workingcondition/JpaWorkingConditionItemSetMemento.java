@@ -213,7 +213,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	public void setScheduleMethod(Optional<ScheduleMethod> scheduleMethod) {
 		// Check exist
 		if (!scheduleMethod.isPresent()) {
-			this.entity.setKshmtScheduleMethod(null);
+//			this.entity.setKshmtScheduleMethod(null);
 			return;
 		}
 
@@ -241,9 +241,9 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	public void setHolidayAddTimeSet(Optional<BreakdownTimeDay> holidayAddTimeSet) {
 		// Check exist
 		if (!holidayAddTimeSet.isPresent()) {
-			this.entity.setHdAddTimeMorning(null);
-			this.entity.setHdAddTimeAfternoon(null);
-			this.entity.setHdAddTimeOneDay(null);
+//			this.entity.setHdAddTimeMorning(null);
+//			this.entity.setHdAddTimeAfternoon(null);
+//			this.entity.setHdAddTimeOneDay(null);
 			return;
 		}
 
@@ -283,7 +283,6 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	@Override
 	public void setTimeApply(Optional<BonusPaySettingCode> timeApply) {
 		if (timeApply == null || !timeApply.isPresent() || StringUtil.isNullOrEmpty(timeApply.get().v(), true)) {
-			this.entity.setTimeApply(null);
 			return;
 		}
 		this.entity.setTimeApply(timeApply.get().v());
@@ -299,7 +298,6 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	@Override
 	public void setMonthlyPattern(Optional<MonthlyPatternCode> monthlyPattern) {
 		if (monthlyPattern == null || !monthlyPattern.isPresent() || StringUtil.isNullOrEmpty(monthlyPattern.get().v(), true)) {
-			this.entity.setMonthlyPattern(null);
 			return;
 		}
 		this.entity.setMonthlyPattern(monthlyPattern.get().v());
