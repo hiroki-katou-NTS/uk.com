@@ -330,14 +330,15 @@ module nts.uk.at.view.kmk003.a {
                     _.defer(() => nts.uk.ui.block.invisible());
 
                     service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
-                        // enter update mode
-                        self.enterUpdateMode();
 
                         // update mainSettingModel data
                         self.mainSettingModel.updateData(worktimeSettingInfo);
 
                         self.isLoading(true);
                         self.mainSettingModel.isChangeItemTable.valueHasMutated();
+                        
+                        // enter update mode
+                        self.enterUpdateMode();
                         dfd.resolve();
                     }).always(() => _.defer(() => nts.uk.ui.block.clear()));
                     return dfd.promise();
