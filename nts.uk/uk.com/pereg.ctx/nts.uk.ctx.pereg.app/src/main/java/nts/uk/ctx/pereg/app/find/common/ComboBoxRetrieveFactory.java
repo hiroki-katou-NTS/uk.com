@@ -235,7 +235,7 @@ public class ComboBoxRetrieveFactory {
 
 			return lstReturn;
 		case "M00009":
-			return new ArrayList<>();
+//			return new ArrayList<>();
 			// 就業時間帯マスタ
 			PeregDto resultDto = layoutingProcessor.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
 			if (resultDto != null) {
