@@ -20,10 +20,6 @@ public class KrqstHdAppSet extends UkJpaEntity implements Serializable{
 	@EmbeddedId
 	public KrqstHdAppSetPK krqstHdAppSetPK;
 	
-	/** 未選択を表示する */
-	@Column(name = "DISPLAY_UNSELECTED")
-	public int dispUnselec;
-	
 	/** 60H超休を利用する名 */
 	@Column(name = "USE_60H_HOLIDAY")
 	public int use60h;

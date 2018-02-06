@@ -49,7 +49,6 @@ module nts.uk.at.view.kmf022.a.service {
         
         // C27 -> C49 có thể lấy theo company rồi lên lọc hoặc lấy thẳng object bằng cả holiday app type
         findAllVaca: "at/request/vacation/setting/hdapp",
-        findVaca: "at/request/vacation/setting/hdappset",
         
         //D
         findWorkChange: "at/request/application/workchange/workChangeSet",
@@ -115,9 +114,9 @@ module nts.uk.at.view.kmf022.a.service {
         return nts.uk.request.ajax("at", paths.findOvertime); 
     }
     
-    export function findVaca(hdAppType: number): JQueryPromise<void>{
-        return nts.uk.request.ajax("at", paths.findVaca + "/" + hdAppType);     
-    }
+//    export function findVaca(hdAppType: number): JQueryPromise<void>{
+//        return nts.uk.request.ajax("at", paths.findVaca + "/" + hdAppType);     
+//    }
     
     export function findAllVaca() {
         return nts.uk.request.ajax("at", paths.findAllVaca); 
