@@ -23,11 +23,13 @@ module nts.layout {
 
     class constraint {
         lstCls: Array<any> = [];
+
         constructor(lstCls: Array<any>) {
             let self = this;
 
             self.lstCls = lstCls;
         }
+
         find = (categoryCode: string, subscribeCode: string): IFindData => {
             let self = this,
                 controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
@@ -75,7 +77,8 @@ module nts.layout {
     }
 
     const fetch = {
-        combobox: (baseDate: string, itemCode: string) => ajax(`/pereg/get-combo-value/${itemCode}/${baseDate}`)
+        check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
+        check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param)
     }
 
     export class validation {
@@ -737,8 +740,13 @@ module nts.layout {
         first: IDateRange;
         second: IDateRange;
     }
+
     interface IDateRange {
         start: number;
         end: number;
+    }
+
+    interface ICheckParam {
+        workTimeCode?: string;
     }
 } 
