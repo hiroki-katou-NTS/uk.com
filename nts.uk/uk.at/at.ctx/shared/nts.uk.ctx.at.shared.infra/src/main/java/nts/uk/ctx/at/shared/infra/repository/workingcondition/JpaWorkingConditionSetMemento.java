@@ -118,18 +118,20 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 
 		if (!CollectionUtil.isEmpty(dateHistoryItems)) {
 			dateHistoryItems.stream().forEach(item -> {
-				KshmtWorkingCondPK kshmtWorkingCondPK = new KshmtWorkingCondPK(employeeId,
+				KshmtWorkingCondPK pk = new KshmtWorkingCondPK(employeeId,
 						item.identifier());
-				KshmtWorkingCond entity = mapHistoryItems.get(kshmtWorkingCondPK);
+				KshmtWorkingCond entity = mapHistoryItems.get(pk);
 				if (entity == null) {
 					entity = new KshmtWorkingCond();
-					entity.setKshmtWorkingCondPK(kshmtWorkingCondPK);
+					entity.setKshmtWorkingCondPK(pk);
 					entity.setCid(companyId);
 				}					
 				entity.setStrD(item.start());
 				entity.setEndD(item.end());
-				this.entities.add(entity);
+				mapHistoryItems.put(pk, entity);				
 			});
+			this.entities.clear();
+			this.entities.addAll(mapHistoryItems.values());
 		}
 	}
 	

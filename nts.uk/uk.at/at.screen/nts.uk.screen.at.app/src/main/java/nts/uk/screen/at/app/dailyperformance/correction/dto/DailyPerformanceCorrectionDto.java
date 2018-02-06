@@ -124,8 +124,7 @@ public class DailyPerformanceCorrectionDto {
 	}
 
 	/** Create Access Modifier Cellstate */
-	public void createAccessModifierCellState(Map<Integer, DPAttendanceItem> mapDP) {
-		String loginUser = AppContexts.user().employeeId();
+	public void createAccessModifierCellState(Map<Integer, DPAttendanceItem> mapDP, String loginUser) {
 		this.getLstData().forEach(data -> {
 			boolean isLoginUser = loginUser.equals(data.getEmployeeId());
 			this.getLstControlDisplayItem().getLstHeader().forEach(header -> {

@@ -223,4 +223,10 @@ public class DailyRecordDto implements ConvertibleAttendanceItem {
 	public GeneralDate workingDate() {
 		return this.date;
 	}
+
+	@Override
+	public Object toDomain() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

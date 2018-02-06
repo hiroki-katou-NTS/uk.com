@@ -6,26 +6,27 @@ import java.util.List;
 import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 public class EditStateOfDailyPerformCommand extends DailyWorkCommonCommand {
 
 	@Getter
-	private List<EditStateOfDailyPerformanceDto> data = new ArrayList<>();
+	private List<EditStateOfDailyPerformance> data = new ArrayList<>();
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		if(item != null){
-			this.data.add((EditStateOfDailyPerformanceDto) item);
+			this.data.add(((EditStateOfDailyPerformanceDto) item).toDomain());
 		}
 	}
-	
+
 	@Override
-	public List<EditStateOfDailyPerformance> toDomain() {
-		return ConvertHelper.mapTo(data, (c) -> new EditStateOfDailyPerformance(getEmployeeId(), c.getAttendanceItemId(),
-				getWorkDate(), ConvertHelper.getEnum(c.getEditStateSetting(), EditStateSetting.class)));
+	public void updateData(Object data) {
+		if(data != null){
+			EditStateOfDailyPerformance d = (EditStateOfDailyPerformance) data;
+			this.data.removeIf(es -> es.getAttendanceItemId() == d.getAttendanceItemId());
+			this.data.add(d);
+		}
 	}
 }
