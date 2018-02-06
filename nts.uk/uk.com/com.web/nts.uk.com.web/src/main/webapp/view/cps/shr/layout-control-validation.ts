@@ -203,7 +203,13 @@ module nts.layout {
                 CS00020_IS00223: IFindData = finder.find('CS00020', 'IS00223'),
                 CS00020_IS00224: IFindData = finder.find('CS00020', 'IS00224'),
                 CS00020_IS00226: IFindData = finder.find('CS00020', 'IS00226'),
-                CS00020_IS00227: IFindData = finder.find('CS00020', 'IS00227');
+                CS00020_IS00227: IFindData = finder.find('CS00020', 'IS00227'),
+                CS00020_IS00229: IFindData = finder.find('CS00020', 'IS00229'),
+                CS00020_IS00230: IFindData = finder.find('CS00020', 'IS00232'),
+                CS00020_IS00232: IFindData = finder.find('CS00020', 'IS00233'),
+                CS00020_IS00233: IFindData = finder.find('CS00020', 'IS00230'),
+                CS00020_IS00235: IFindData = finder.find('CS00020', 'IS00235'),
+                CS00020_IS00236: IFindData = finder.find('CS00020', 'IS00236');
 
             if (CS00020_IS00130 || CS00020_IS00131) {
 
@@ -286,7 +292,7 @@ module nts.layout {
 
             if (CS00020_IS00238 || CS00020_IS00239) {
 
-                $(`${CS00020_IS00238 && CS00020_IS00238.ctrl.attr('id')}, ${CS00020_IS00239 && CS00020_IS00239.ctrl.attr('id')}`)
+                $(`#${CS00020_IS00238 && CS00020_IS00238.ctrl.attr('id')}, #${CS00020_IS00239 && CS00020_IS00239.ctrl.attr('id')}`)
                     .on('click', () => {
                         let _finder = finder,
                             lstComboBoxValue = CS00020_IS00238.data.lstComboBoxValue,
@@ -361,7 +367,7 @@ module nts.layout {
 
             if (CS00020_IS00184 || CS00020_IS00185) {
 
-                $(`${CS00020_IS00184 && CS00020_IS00184.ctrl.attr('id')}, ${CS00020_IS00185 && CS00020_IS00185.ctrl.attr('id')}`)
+                $(`#${CS00020_IS00184 && CS00020_IS00184.ctrl.attr('id')}, #${CS00020_IS00185 && CS00020_IS00185.ctrl.attr('id')}`)
                     .on('click', () => {
                         let _finder = finder,
                             lstComboBoxValue = CS00020_IS00184.data.lstComboBoxValue,
@@ -438,7 +444,7 @@ module nts.layout {
 
             if (CS00020_IS00220 || CS00020_IS00221) {
 
-                $(`${CS00020_IS00220 && CS00020_IS00220.ctrl.attr('id')}, ${CS00020_IS00221 && CS00020_IS00221.ctrl.attr('id')}`)
+                $(`#${CS00020_IS00220 && CS00020_IS00220.ctrl.attr('id')}, #${CS00020_IS00221 && CS00020_IS00221.ctrl.attr('id')}`)
                     .on('click', () => {
                         let _finder = finder,
                             lstComboBoxValue = CS00020_IS00220.data.lstComboBoxValue,
@@ -497,11 +503,59 @@ module nts.layout {
                         });
                     });
             };
+            if (CS00020_IS00229 || CS00020_IS00230) {
+
+                $(`#${CS00020_IS00229 && CS00020_IS00229.ctrl.attr('id')}, #${CS00020_IS00221 && CS00020_IS00221.ctrl.attr('id')}`)
+                    .on('click', () => {
+                        let _finder = finder,
+                            lstComboBoxValue = CS00020_IS00229.data.lstComboBoxValue,
+                            selectedWorkTypeCode = CS00020_IS00229 ? CS00020_IS00229.data.value() || "" : "",
+                            selectedWorkTimeCode = CS00020_IS00230 ? CS00020_IS00230.data.value() || "" : "";
+
+                        setShared('parentCodes', {
+                            workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                            selectedWorkTypeCode: selectedWorkTypeCode,
+                            workTimeCodes: [],
+                            selectedWorkTimeCode: selectedWorkTimeCode
+                        }, true);
+
+                        modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                            var childData: IChildData = getShared('childData');
+                            if (!childData) {
+                                CS00020_IS00229.data.value(undefined);
+                                CS00020_IS00230.data.value(undefined);
+                            } else {
+                                if (CS00020_IS00229) {
+                                    CS00020_IS00229.data.value(childData.selectedWorkTypeCode);
+                                }
+                                if (CS00020_IS00230) {
+                                    CS00020_IS00230.data.value(childData.selectedWorkTimeCode);
+                                }
+                                if (childData.first) {
+                                    if (CS00020_IS00232) {
+                                        CS00020_IS00232.data.value(childData.first.start);
+                                    }
+                                    if (CS00020_IS00233) {
+                                        CS00020_IS00233.data.value(childData.first.end);
+                                    }
+                                }
+                                if (childData.second) {
+                                    if (CS00020_IS00235) {
+                                        CS00020_IS00235.data.value(childData.second.start);
+                                    }
+                                    if (CS00020_IS00236) {
+                                        CS00020_IS00236.data.value(childData.second.end);
+                                    }
+                                }
+                            }
+                        });
+                    });
+            };
 
 
             if (CS00020_IS00148 || CS00020_IS00149) {
 
-                $(`${CS00020_IS00148 && CS00020_IS00148.ctrl.attr('id')}, ${CS00020_IS00149 && CS00020_IS00149.ctrl.attr('id')}`)
+                $(`#${CS00020_IS00148 && CS00020_IS00148.ctrl.attr('id')}, #${CS00020_IS00149 && CS00020_IS00149.ctrl.attr('id')}`)
                     .on('click', () => {
                         let _finder = finder,
                             lstComboBoxValue = CS00020_IS00148.data.lstComboBoxValue,
@@ -565,7 +619,7 @@ module nts.layout {
 
             if (CS00020_IS00193 || CS00020_IS00194) {
 
-                $(`${CS00020_IS00193 && CS00020_IS00193.ctrl.attr('id')}, ${CS00020_IS00194 && CS00020_IS00194.ctrl.attr('id')}`)
+                $(`#${CS00020_IS00193 && CS00020_IS00193.ctrl.attr('id')}, #${CS00020_IS00194 && CS00020_IS00194.ctrl.attr('id')}`)
                     .on('click', () => {
                         let _finder = finder,
                             lstComboBoxValue = CS00020_IS00193.data.lstComboBoxValue,
