@@ -60,28 +60,6 @@ module nts.uk.ui {
             kiban.systemName(__viewContext.env.systemName);
             
             viewModelBuilt.fire(_viewModel);
-            
-            if($(".html-loading").length > 0) {
-                let dfd = [];
-                _.forEach($(".html-loading"), function(e){
-                    let $container = $(e);
-                    let dX = $.Deferred(); 
-                    $container.load($container.attr("link"), function(){
-                        dX.resolve();
-                    });
-                    dfd.push(dX);
-                    dX.promise();
-                })
-                $.when(...dfd).then(function( data, textStatus, jqXHR ) {
-                    $('.html-loading').contents().unwrap();
-                    binding(_viewModel);
-                });    
-            } else {
-                binding(_viewModel);
-            }
-        }
-        
-        var binding = function(_viewModel: any){
             ko.applyBindings(_viewModel);
             
             // off event reset for class reset-not-apply
@@ -150,19 +128,6 @@ module nts.uk.ui {
                 $('.html-loading').contents().unwrap();
                 startP();
             });  
-        });
-
-
-        $(function () {
-            let lastPause: any = new Date();
-            $(window).keydown(e => {
-                if (e.keyCode !== 19) return;
-                let now: any = new Date();
-                if (now - lastPause < 500) {
-                    ui.dialog.version();
-                }
-                lastPause = new Date();
-            });
         });
     }
 }
