@@ -81,8 +81,8 @@
 							]}"></div>
 					<button id="btnExtraction" data-bind="click: btnExtraction_Click">#{i18n.getText('KDW003_20')}</button>
 					<div class="vacationRemaining-container">
-						<button id="btnVacationRemaining"
-							data-bind="click: btnVacationRemaining_Click , false">#{i18n.getText('KDW003_21')}</button>
+						<button style="visibility: hidden;" id="btnVacationRemaining"
+							data-bind="click: btnVacationRemaining_Click ">#{i18n.getText('KDW003_21')}</button>
 							<!-- visible: referenceVacation().allVacation -->
 						<div id="vacationRemaining-content">
 							<button data-bind="visible: referenceVacation().yearHoliday20">#{i18n.getText('Com_PaidHoliday')}</button>
