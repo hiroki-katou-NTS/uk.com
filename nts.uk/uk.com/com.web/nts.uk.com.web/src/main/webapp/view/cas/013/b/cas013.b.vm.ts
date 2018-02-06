@@ -11,8 +11,8 @@ module nts.uk.com.view.cas013.b.viewmodel {
         userName: KnockoutObservable<string>;
         paramUserIds: Array<string>
 
-        special: KnockoutObserveble<boolean>;
-        multi: KnockoutObserveble<boolean>;
+        special: KnockoutObservable<boolean>;
+        multi: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
@@ -40,15 +40,10 @@ module nts.uk.com.view.cas013.b.viewmodel {
             var key = self.searchValue();
             var Special = self.special();
             var Multi = self.multi();
+            var UserIds =  self.paramUserIds;
             nts.uk.ui.block.invisible();
-            service.searchUser(key, Special, Multi).done(function(data) {
+            service.searchUser(key, Special, Multi, UserIds).done(function(data) {
                 var items = [];
-                _.remove(data, (item: any) => {
-                    let founded = _.find(self.paramUserIds, (matchItem: string) => {
-                        return matchItem == item.userID;
-                    });
-                    return (founded == undefined) ? false : true;
-                });
                 items = _.sortBy(data, ["loginID"]);
                 self.dataSource(items);
             }).always(() => {

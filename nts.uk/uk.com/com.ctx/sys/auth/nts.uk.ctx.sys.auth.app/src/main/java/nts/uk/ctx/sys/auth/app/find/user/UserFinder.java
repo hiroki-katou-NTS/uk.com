@@ -68,10 +68,16 @@ public class UserFinder {
 					}
 				}
 			}
+			for(String id : userKeyDto.getUserId()){
+				result = result.stream().filter(c -> c.getUserName().equals(id)).collect(Collectors.toList());
+			}
 			return result;
 		}
 
 		result = listUser.stream().filter(c -> c.getUserName().v().toLowerCase().contains(userKeyDto.getKey().toLowerCase())).map(c -> UserDto.fromDomain(c)).collect(Collectors.toList());
+		for(String id : userKeyDto.getUserId()){
+			result = result.stream().filter(c -> c.getUserName().equals(id)).collect(Collectors.toList());
+		}
 		return result;
 	}
 
