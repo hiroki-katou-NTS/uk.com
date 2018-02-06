@@ -125,25 +125,19 @@ module nts.layout {
             let self = this,
                 finder = self.finder,
                 CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
-
                 CS00020_IS00238: IFindData = finder.find('CS00020', 'IS00238'),
                 CS00020_IS00239: IFindData = finder.find('CS00020', 'IS00239'),
                 CS00020_IS00184: IFindData = finder.find('CS00020', 'IS00184'),
                 CS00020_IS00185: IFindData = finder.find('CS00020', 'IS00185'),
-
-
                 CS00020_IS00148: IFindData = finder.find('CS00020', 'IS00148'),
                 CS00020_IS00149: IFindData = finder.find('CS00020', 'IS00149'),
                 CS00020_IS00193: IFindData = finder.find('CS00020', 'IS00193'),
-
-                CS00020_IS00194: IFindData = finder.find('CS00020', 'IS00194'),
-
                 CS00020_IS00194: IFindData = finder.find('CS00020', 'IS00194'),
                 CS00020_IS00202: IFindData = finder.find('CS00020', 'IS00202'),
                 CS00020_IS00203: IFindData = finder.find('CS00020', 'IS00203'),
                 CS00020_IS00211: IFindData = finder.find('CS00020', 'IS00211'),
                 CS00020_IS00212: IFindData = finder.find('CS00020', 'IS00212'),
-                 CS00020_IS00220: IFindData = finder.find('CS00020', 'IS00220'),
+                CS00020_IS00220: IFindData = finder.find('CS00020', 'IS00220'),
                 CS00020_IS00221: IFindData = finder.find('CS00020', 'IS00221');
             if (CS00020_IS00220) {
                 CS00020_IS00220.ctrl.on('click', () => {
