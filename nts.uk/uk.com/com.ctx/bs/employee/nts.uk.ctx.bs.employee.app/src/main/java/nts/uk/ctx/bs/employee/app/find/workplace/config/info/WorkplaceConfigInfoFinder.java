@@ -341,6 +341,7 @@ public class WorkplaceConfigInfoFinder {
 	public List<WorkplaceHierarchyDto> findFlatList(GeneralDate strD) {
 		WkpConfigInfoFindObject findObject = new WkpConfigInfoFindObject();
 		findObject.setBaseDate(strD);
+		findObject.setSystemType(1);
 		List<WorkplaceHierarchyDto> treeList = this.findAllByBaseDate(findObject);
 
 		// flat workplace tree.

@@ -1,6 +1,6 @@
 module nts.uk.at.view.kaf010.shr.service {
     var paths: any = {
-        getOvertimeByUI: "at/request/application/overtime/getOvertimeByUI",
+        getHolidayWorkByUI: "at/request/application/holidaywork/getHolidayWorkByUI",
         findByChangeAppDate: "at/request/application/overtime/findByChangeAppDate",
         checkConvertPrePost: "at/request/application/overtime/checkConvertPrePost",
         getCaculationResult: "at/request/application/overtime/getCaculationResult",
@@ -13,8 +13,8 @@ module nts.uk.at.view.kaf010.shr.service {
         getRecordWork: "at/request/application/overtime/getRecordWork"
     }
     /** Get TitleMenu */
-    export function getOvertimeByUI(param: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getOvertimeByUI, param);
+    export function getHolidayWorkByUI(param: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getHolidayWorkByUI, param);
     }
     
     export function findByChangeAppDate(param: any): JQueryPromise<any> {

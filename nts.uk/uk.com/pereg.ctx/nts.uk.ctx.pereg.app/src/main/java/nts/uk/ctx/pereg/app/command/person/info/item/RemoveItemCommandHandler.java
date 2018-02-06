@@ -16,6 +16,7 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 
 @Stateless
 public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveItemCommand, String> {
@@ -28,6 +29,9 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 
 	@Inject
 	private EmpInfoItemDataRepository empInfoRepo;
+	
+	@Inject
+	private PerInfoItemDataRepository perItemRepo;
 
 	@Override
 	protected String handle(CommandHandlerContext<RemoveItemCommand> context) {
@@ -48,7 +52,7 @@ public class RemoveItemCommandHandler extends CommandHandlerWithResult<RemoveIte
 		}
 		List<String> perInfoCtgIds = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList,
 				category.getCategoryCode().v());
-		if (this.empInfoRepo.getAllInfoItem(itemDef.getItemCode().toString(), perInfoCtgIds)) {
+		if (this.empInfoRepo.getAllInfoItem(itemDef.getItemCode().toString(), perInfoCtgIds) || this.perItemRepo.isExitedItem(perInfoCtgIds, itemDef.getItemCode().toString())) {
 			throw  new BusinessException(new RawErrorMessage("Msg_214"));
 		}
 		perInfoCtgIds.add(itemDef.getPerInfoCategoryId());

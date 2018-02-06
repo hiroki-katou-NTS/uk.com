@@ -38,5 +38,9 @@ public class HolidayWorkClock {
 			throw new BusinessException("Msg_307");
 		}
 		return new HolidayWorkClock(new HolidayAppPrimitiveTime(startTime), new HolidayAppPrimitiveTime(endTime),EnumAdaptor.valueOf(goAtr, GoBackAtr.class),EnumAdaptor.valueOf(backAtr, GoBackAtr.class));
-	} 
+	}
+	public HolidayWorkClock(Integer startTime, Integer endTime){
+		this.startTime = new HolidayAppPrimitiveTime(startTime);
+		this.endTime = new HolidayAppPrimitiveTime(endTime);
+	}
 }

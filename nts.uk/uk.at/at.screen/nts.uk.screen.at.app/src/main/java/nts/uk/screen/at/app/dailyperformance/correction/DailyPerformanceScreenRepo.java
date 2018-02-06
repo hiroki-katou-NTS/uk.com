@@ -4,7 +4,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -98,6 +97,9 @@ public interface DailyPerformanceScreenRepo {
 	/** Get list employee by jobTitle, employment, workplace, classification */
 	List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification);
+	
+	/** Get list employee by sid*/
+	List<DailyPerformanceEmployeeDto> getListEmployeeWithSid(List<String> sid);
 
 	/** Get list business type of list employee (no duplicated) */
 	List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange);
@@ -160,9 +162,9 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<AuthorityFormatInitialDisplayDto> findAuthorityFormatInitialDisplay(String companyId);
 	
-	List<AuthorityFomatDailyDto> findAuthorityFomatDaily(String companyId, Collection<String> formatCode);
+	List<AuthorityFomatDailyDto> findAuthorityFomatDaily(String companyId, List<String> formatCode);
 	
-	List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, Collection<String> formatCode,  Collection<BigDecimal>sheetNo);
+	List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode,  List<BigDecimal>sheetNo);
 	
 	Optional<DivergenceTimeDto> findDivergenceTime(String companyId, int divTimeId);
 	

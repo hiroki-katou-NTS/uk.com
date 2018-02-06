@@ -462,12 +462,14 @@ public class LayoutFinder {
 
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
 				DataTypeStateDto itemDataTypeSate = valueItem.getItem();
-
-				if (itemDataTypeSate != null && itemDataTypeSate.getDataTypeValue() == DataTypeValue.SELECTION.value) {
-
-					SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
-					valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, employeeId,
-							comboBoxStandardDate, true, valueItem.isRequired()));
+				if (itemDataTypeSate != null) {
+					int dataType = itemDataTypeSate.getDataTypeValue();
+					if (dataType == DataTypeValue.SELECTION.value || dataType == DataTypeValue.SELECTION_RADIO.value
+							|| dataType == DataTypeValue.SELECTION_BUTTON.value) {
+						SelectionItemDto selectionItemDto = (SelectionItemDto) valueItem.getItem();
+						valueItem.setLstComboBoxValue(comboBoxFactory.getComboBox(selectionItemDto, employeeId,
+								comboBoxStandardDate, valueItem.isRequired()));
+					}
 				}
 			}
 		}

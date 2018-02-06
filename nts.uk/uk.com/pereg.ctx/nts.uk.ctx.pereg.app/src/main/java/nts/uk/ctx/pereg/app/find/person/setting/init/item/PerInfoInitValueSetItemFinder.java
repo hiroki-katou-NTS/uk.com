@@ -32,15 +32,18 @@ public class PerInfoInitValueSetItemFinder {
 					PerInfoInitValueSettingItemDto dto = PerInfoInitValueSettingItemDto.fromDomain(c);
 					SelectionItemDto selectionItemDto = null;
 					if (dto.getSelectionItemRefType() == 1) {
-						selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId());
+						selectionItemDto = SelectionItemDto.createMasterRefDto(dto.getSelectionItemId(),
+								dto.getSelectionItemRefType());
 					} else if (dto.getSelectionItemRefType() == 2) {
-						selectionItemDto = SelectionItemDto.createCodeNameRefDto(dto.getSelectionItemId());
+						selectionItemDto = SelectionItemDto.createCodeNameRefDto(dto.getSelectionItemId(),
+								dto.getSelectionItemRefType());
 					} else if (dto.getSelectionItemRefType() == 3) {
-						selectionItemDto = SelectionItemDto.createEnumRefDto(dto.getSelectionItemId());
+						selectionItemDto = SelectionItemDto.createEnumRefDto(dto.getSelectionItemId(),
+								dto.getSelectionItemRefType());
 					}
 
 					List<ComboBoxObject> selectionDto = this.comboBoxFactory.getComboBox(selectionItemDto,
-							AppContexts.user().employeeId(), GeneralDate.today(), true, true);
+							AppContexts.user().employeeId(), GeneralDate.today(), true);
 
 					dto.setSelection(selectionDto);
 					return dto;
