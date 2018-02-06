@@ -25,6 +25,7 @@ public class UpdateAppDispNameCommandHandler extends CommandHandler<AppDispNameC
 		AppDispName app = AppDispName.createFromJavaType(data.getCompanyId(), data.getAppType(), data.getDispName());
 		if(appDisp.isPresent()){
 			dispRep.update(app);
+			return;
 		}
 		dispRep.insert(app);
 	}
