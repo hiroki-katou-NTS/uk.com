@@ -157,7 +157,7 @@ public class ComboBoxRetrieveFactory {
 		}
 		return getComboBox(RefType, refCd, standardDate, employeeId, "", false, isRequired);
 	}
-	
+
 	public List<ComboBoxObject> getFlexibleComboBox(ComboBoxParam comboBoxParam) {
 		ReferenceTypes refType = comboBoxParam.getComboBoxType();
 		String refCode = "";
@@ -171,8 +171,9 @@ public class ComboBoxRetrieveFactory {
 		default:
 			break;
 		}
-		return getComboBox(refType, refCode, GeneralDate.legacyDate(comboBoxParam.getStandardDate()), comboBoxParam.getEmployeeId(),
-				comboBoxParam.getWorkplaceId(), comboBoxParam.isCps002(), comboBoxParam.isRequired());
+		return getComboBox(refType, refCode, GeneralDate.legacyDate(comboBoxParam.getStandardDate()),
+				comboBoxParam.getEmployeeId(), comboBoxParam.getWorkplaceId(), comboBoxParam.isCps002(),
+				comboBoxParam.isRequired());
 
 	}
 
@@ -196,14 +197,13 @@ public class ComboBoxRetrieveFactory {
 					.map(employment -> new ComboBoxObject(employment.getEmploymentCode().v(),
 							employment.getEmploymentCode().v() + JP_SPACE + employment.getEmploymentName().v()))
 					.collect(Collectors.toList());
-			
+
 		case "M00004":
 			// 分類マスタ１
-			return classificationRepo.getAllManagementCategory(companyId)
-					.stream().map(
-							classification -> new ComboBoxObject(classification.getClassificationCode().v(),
-									classification.getClassificationCode().v() + JP_SPACE
-											+ classification.getClassificationName().v()))
+			return classificationRepo.getAllManagementCategory(companyId).stream()
+					.map(classification -> new ComboBoxObject(classification.getClassificationCode().v(),
+							classification.getClassificationCode().v() + JP_SPACE
+									+ classification.getClassificationName().v()))
 					.collect(Collectors.toList());
 		case "M00005":
 			// 職位マスタ
@@ -218,20 +218,22 @@ public class ComboBoxRetrieveFactory {
 					.collect(Collectors.toList());
 		case "M00007":
 			// 勤務種別マスタ
-			return businessTypeRepo.findAll(companyId).stream().map(businessType -> new ComboBoxObject(
-					businessType.getBusinessTypeCode().v(),
-					businessType.getBusinessTypeCode().v() + JP_SPACE + businessType.getBusinessTypeName().v()))
+			return businessTypeRepo.findAll(companyId).stream()
+					.map(businessType -> new ComboBoxObject(businessType.getBusinessTypeCode().v(),
+							businessType.getBusinessTypeCode().v() + JP_SPACE + businessType.getBusinessTypeName().v()))
 					.collect(Collectors.toList());
 		case "M00008":
 			// 勤務種類マスタ
 			List<List<String>> lstWTDomain = workTypeRepo.findCodeAndNameOfWorkTypeByCompanyId(companyId);
-			List<ComboBoxObject> lstReturn =  lstWTDomain.stream()
-					.map(workType -> new ComboBoxObject(workType.get(0),
-							workType.get(0) + JP_SPACE + workType.get(1)))
+			List<ComboBoxObject> lstReturn = lstWTDomain.stream()
+					.map(workType -> new ComboBoxObject(workType.get(0), workType.get(0) + JP_SPACE + workType.get(1)))
 					.collect(Collectors.toList());
-			
+
 			return lstReturn;
 		case "M00009":
+		case "M000010":
+		case "M000011":
+		case "M000012":
 			// 就業時間帯マスタ
 			PeregDto resultDto = layoutingProcessor.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
 			if (resultDto != null) {
@@ -244,16 +246,16 @@ public class ComboBoxRetrieveFactory {
 							workTimeSetting.getWorktimeCode() + JP_SPACE
 									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
 					.collect(Collectors.toList());
-			
+
 		case "M00014":
 			// 月間パターンマスタ
 			return monthlyPatternRepo.findAll(companyId).stream()
 					.map(x -> new ComboBoxObject(x.getMonthlyPatternCode().v(),
 							x.getMonthlyPatternCode().v() + JP_SPACE + x.getMonthlyPatternName().v()))
 					.collect(Collectors.toList());
-			
+
 		case "M00015":
-			// 加給時間帯マスタ 
+			// 加給時間帯マスタ
 			return bPSettingRepo.getAllBonusPaySetting(companyId).stream()
 					.map(x -> new ComboBoxObject(x.getCode().v(), x.getCode().v() + JP_SPACE + x.getName().v()))
 					.collect(Collectors.toList());
@@ -311,5 +313,5 @@ public class ComboBoxRetrieveFactory {
 		}
 		return comboboxItems;
 	}
-	
+
 }
