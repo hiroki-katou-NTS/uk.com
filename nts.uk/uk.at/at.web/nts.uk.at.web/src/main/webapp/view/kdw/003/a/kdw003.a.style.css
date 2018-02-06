@@ -151,7 +151,7 @@
 	border: 2px solid #CCC;
 	text-align: center;
 	padding: 0 2px;
-	width: 400px;
+	/* width: 400px; */
 }
 #numberHoliday {
 	/* margin-left: 5px;
