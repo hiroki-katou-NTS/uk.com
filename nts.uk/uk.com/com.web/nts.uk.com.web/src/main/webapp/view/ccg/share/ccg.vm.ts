@@ -369,6 +369,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 //service.getRefRangeBySysType(self.systemType)// get ref range
                 // TODO: AppContexts.user().roles().forPersonalInfo() null?
+                self.acquireBaseDate().done(date => {
+                    console.log(date);
+                    //TODO: set basedate to query param. 
+                });
                 self.loadClosure().done(() => {
                     dfd.resolve();
                 });
@@ -637,17 +641,21 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
             }
 
-            public acquireBaseDate(): String {
+            public acquireBaseDate(): JQueryPromise<String> {
+                let dfd = $.Deferred<String>();
                 let self = this;
                 if (self.showBaseDate) {
-                    return self.baseDate().toString();
+                    dfd.resolve(self.baseDate().toString());
                 } else {
                     if (self.periodAccuracy == 1) { //TODO: is accuracy year month date 
-                        return self.periodEndDate();
+                        dfd.resolve(self.periodEndDate().toString());
                     } else {
-                        return 'call ws to calculate period';
+                        service.calculatePeriod(1, 201802).done(date => { //TODO mock data
+                            return dfd.resolve(date);
+                        });
                     }
                 }
+                return dfd.promise();
             }
 
             public validateBaseDate(): void {
@@ -850,7 +858,7 @@ module nts.uk.com.view.ccg.share.ccg {
             static MAX_ROWS_EMPLOYEE = 20;    
         }
 
-        interface QueryParam {
+        interface BaseQueryParam {
             baseDate: any;
             referenceRange: number;
             filterByEmployment: boolean;
@@ -876,6 +884,12 @@ module nts.uk.com.view.ccg.share.ccg {
 
             sortOrderNo: number;
             nameType: number;
+        }
+
+        interface QuickSearchParam extends BaseQueryParam {
+        }
+
+        interface AdvancedSearchParam extends BaseQueryParam {
         }
         
         interface WorkType {

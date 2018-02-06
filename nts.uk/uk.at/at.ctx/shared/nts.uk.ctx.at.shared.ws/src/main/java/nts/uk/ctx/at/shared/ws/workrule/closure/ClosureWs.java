@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.workrule.closure;
@@ -38,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.DayMonthChange;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -46,6 +47,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Path("ctx/at/shared/workrule/closure")
 @Produces("application/json")
 public class ClosureWs {
+	/** The closure service. */
+	@Inject
+	private ClosureService closureService;
 	
 	/** The finder. */
 	@Inject
@@ -280,4 +284,9 @@ public class ClosureWs {
 		}).collect(Collectors.toList());
 	}
 	
+	@POST
+	@Path("calculateperiod/{closureid}/{yearmonth}")
+	public String calculatePeriod(@PathParam("closureid") int closureId, @PathParam("yearmonth") int yearMonth) {
+		return this.closureService.getClosurePeriod(closureId, YearMonth.of(yearMonth)).end().toString(); //TODO dung tam. ko biet dung hay khong
+	}
 }
