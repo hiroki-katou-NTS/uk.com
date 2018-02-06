@@ -487,7 +487,9 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     self.itemTotalTimesDetail.listTotalSubjects(_.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 0));
                     // insert data worktype
                     for (var item of shareWorkCocde) {
-                        self.itemTotalTimesDetail.listTotalSubjects().push(self.toSubjectModel(item, 1));
+                        if (!_.isNull(item) && !_.isEmpty(item) && !_.isUndefined(item) && item != 'null' ) {
+                            self.itemTotalTimesDetail.listTotalSubjects().push(self.toSubjectModel(item, 1));    
+                        }
                     }
                     self.loadListWorkType();
                     self.loadListWorkTimes();

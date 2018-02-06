@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.find.copysetting.item;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -88,6 +89,11 @@ public class CopySettingItemFinder {
 				}
 
 			});
+		} else {
+			if (!isSetText) {
+				return Collections.emptyList();
+			}
+
 		}
 
 		if (isSetText) {

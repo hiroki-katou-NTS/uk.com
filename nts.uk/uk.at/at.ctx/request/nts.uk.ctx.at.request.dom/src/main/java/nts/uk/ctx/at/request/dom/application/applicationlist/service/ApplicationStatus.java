@@ -12,10 +12,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ApplicationStatus {
-	private int notReflectNumber;
-	private int waitReflectNumber;
-	private int reflectNumber;
-	private int waitCancelNumber;
+	private int unApprovalNumber;
+	private int approvalNumber;
+	private int approvalAgentNumber;
 	private int cancelNumber;
 	private int remandNumner;
 	private int denialNumber;

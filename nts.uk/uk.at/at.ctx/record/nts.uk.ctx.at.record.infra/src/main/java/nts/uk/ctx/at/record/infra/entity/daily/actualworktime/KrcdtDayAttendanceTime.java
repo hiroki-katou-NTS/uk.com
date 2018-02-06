@@ -81,6 +81,9 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 	/* 所定外深夜時間 */
 	@Column(name = "OUT_PRS_MIDN_TIME")
 	public int outPrsMidnTime;
+	/* 計算所定外深夜時間 */
+	@Column(name = "CALC_OUT_PRS_MIDN_TIME")
+	public int calcOutPrsMidnTime;
 	/* 事前所定外深夜時間 */
 	@Column(name = "PRE_OUT_PRS_MIDN_TIME")
 	public int preOutPrsMidnTime;
@@ -202,7 +205,8 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 		}
 		if(excessStt != null){
 			/* 所定外深夜時間 */
-			this.outPrsMidnTime = excessStt.getTime() == null | excessStt.getTime().getCalcTime() == null ? 0 : excessStt.getTime().getCalcTime().valueAsMinutes();
+			this.outPrsMidnTime = excessStt.getTime() == null | excessStt.getTime().getTime() == null ? 0 : excessStt.getTime().getTime().valueAsMinutes();
+			this.calcOutPrsMidnTime = excessStt.getTime() == null | excessStt.getTime().getCalcTime() == null ? 0 : excessStt.getTime().getCalcTime().valueAsMinutes();
 			/* 事前所定外深夜時間 */
 			this.preOutPrsMidnTime = excessStt.getBeforeApplicationTime() == null ? 0 : excessStt.getBeforeApplicationTime().valueAsMinutes();
 		}
@@ -243,7 +247,7 @@ public class KrcdtDayAttendanceTime extends UkJpaEntity implements Serializable 
 				.addAll(this.krcdtDayHolidyWorkTs != null ? this.krcdtDayHolidyWorkTs.toDomain(): new ArrayList<>());
 		ExcessOfStatutoryTimeOfDaily excess = new ExcessOfStatutoryTimeOfDaily(
 				new ExcessOfStatutoryMidNightTime(
-						TimeWithCalculation.sameTime(new AttendanceTime(this.outPrsMidnTime)),
+						TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.outPrsMidnTime), new AttendanceTime(this.calcOutPrsMidnTime)),
 						new AttendanceTime(this.preOutPrsMidnTime)),
 				Optional.ofNullable(overTime), Optional.ofNullable(holiday));
 		List<LateTimeOfDaily> lateTime = new ArrayList<>();

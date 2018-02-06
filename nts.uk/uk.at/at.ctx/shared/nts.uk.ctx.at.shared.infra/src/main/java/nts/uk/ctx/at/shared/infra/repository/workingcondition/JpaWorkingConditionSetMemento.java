@@ -109,6 +109,27 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 //			}
 //		});
 		
+//		Map<KshmtWorkingCondPK, KshmtWorkingCond> mapHistoryItems = this.entities.stream()
+//				.collect(Collectors.toMap(KshmtWorkingCond::getKshmtWorkingCondPK, Function.identity()));
+//
+//		if (!CollectionUtil.isEmpty(dateHistoryItems)) {
+//			dateHistoryItems.stream().forEach(item -> {
+//				KshmtWorkingCondPK pk = new KshmtWorkingCondPK(employeeId,
+//						item.identifier());
+//				KshmtWorkingCond entity = mapHistoryItems.get(pk);
+//				if (entity == null) {
+//					entity = new KshmtWorkingCond();
+//					entity.setKshmtWorkingCondPK(pk);
+//					entity.setCid(companyId);
+//				}					
+//				entity.setStrD(item.start());
+//				entity.setEndD(item.end());
+//				mapHistoryItems.put(pk, entity);				
+//			});
+//			this.entities = new ArrayList<>();
+//			this.entities.addAll(mapHistoryItems.values());
+//		}
+		
 		if (dateHistoryItems != null) {
 			dateHistoryItems.stream().forEach(item -> {
 //				if (!entityHistIds.contains(item.identifier())) {
@@ -123,7 +144,6 @@ public class JpaWorkingConditionSetMemento implements WorkingConditionSetMemento
 //				}
 			});
 		}
-
 	}
-
+	
 }

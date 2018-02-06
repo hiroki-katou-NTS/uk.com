@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
@@ -58,5 +59,11 @@ public class EmployeeDailyPerErrorDto implements ConvertibleAttendanceItem {
 	@Override
 	public GeneralDate workingDate() {
 		return this.date;
+	}
+	
+	@Override
+	public EmployeeDailyPerError toDomain() {
+		return new EmployeeDailyPerError(companyID, employeeID, date,
+				new ErrorAlarmWorkRecordCode(errorCode), attendanceItemList, 0);
 	}
 }

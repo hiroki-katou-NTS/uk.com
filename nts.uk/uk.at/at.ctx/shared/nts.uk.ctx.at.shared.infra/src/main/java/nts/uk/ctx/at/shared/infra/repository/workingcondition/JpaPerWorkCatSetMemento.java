@@ -37,7 +37,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	public JpaPerWorkCatSetMemento(String historyId, List<KshmtPerWorkCat> entities) {
 		this.mapSingleDaySchedule = new HashMap<>();
-		if (CollectionUtil.isEmpty(entities)) {
+		if (!CollectionUtil.isEmpty(entities)) {
 			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
 					entity -> entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), entity -> entity));
 		}
@@ -59,7 +59,9 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setHolidayWork(SingleDaySchedule holidayWork) {
-		this.entities.add(this.toEntity(holidayWork, WorkCategoryAtr.HOLIDAY_WORK.value));
+		if (holidayWork != null) {
+			this.entities.add(this.toEntity(holidayWork, WorkCategoryAtr.HOLIDAY_WORK.value));
+		}		
 	}
 
 	/*
@@ -72,7 +74,9 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setHolidayTime(SingleDaySchedule holidayTime) {
-		this.entities.add(this.toEntity(holidayTime, WorkCategoryAtr.HOLIDAY_TIME.value));
+		if (holidayTime != null) {
+			this.entities.add(this.toEntity(holidayTime, WorkCategoryAtr.HOLIDAY_TIME.value));
+		}	
 	}
 
 	/*
@@ -85,7 +89,9 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	@Override
 	public void setWeekdayTime(SingleDaySchedule weekdayTime) {
-		this.entities.add(this.toEntity(weekdayTime, WorkCategoryAtr.WEEKDAY_TIME.value));
+		if (weekdayTime != null) {
+			this.entities.add(this.toEntity(weekdayTime, WorkCategoryAtr.WEEKDAY_TIME.value));
+		}
 	}
 
 	/*
