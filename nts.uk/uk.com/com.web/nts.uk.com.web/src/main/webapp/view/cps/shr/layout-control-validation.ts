@@ -142,7 +142,51 @@ module nts.layout {
                 CS00020_IS00202: IFindData = finder.find('CS00020', 'IS00202'),
                 CS00020_IS00203: IFindData = finder.find('CS00020', 'IS00203'),
                 CS00020_IS00211: IFindData = finder.find('CS00020', 'IS00211'),
-                CS00020_IS00212: IFindData = finder.find('CS00020', 'IS00212');
+                CS00020_IS00212: IFindData = finder.find('CS00020', 'IS00212'),
+                 CS00020_IS00220: IFindData = finder.find('CS00020', 'IS00220'),
+                CS00020_IS00221: IFindData = finder.find('CS00020', 'IS00221');
+            if (CS00020_IS00220) {
+                CS00020_IS00220.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00220.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00220.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode
+                    }, true);
+
+                    modal('at','/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00220.data.value(undefined);
+                        } else {
+                            CS00020_IS00220.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+            
+            if (CS00020_IS00221) {
+                CS00020_IS00221.ctrl.on('click', () => {
+                    let _finder = finder,
+                        selectedWorkTypeCode = CS00020_IS00221.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: "",
+                        selectedWorkTypeCode: selectedWorkTypeCode
+                    }, true);
+
+                    modal('at','/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00221.data.value(undefined);
+                        } else {
+                            CS00020_IS00221.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
 
 
             if (CS00020_IS00130) {
