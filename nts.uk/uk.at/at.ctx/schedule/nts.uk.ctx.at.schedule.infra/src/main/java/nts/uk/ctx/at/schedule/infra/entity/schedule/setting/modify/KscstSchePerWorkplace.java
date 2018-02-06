@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.setting;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify;
 
 import java.io.Serializable;
 
@@ -11,29 +11,29 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-/**
- * 表示可能勤務種類制御
- * 
- * @author sonnh1
- *
- */
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_WORKTYPE_DISPLAY")
-public class KscstWorkTypeDisplay extends UkJpaEntity implements Serializable {
+@Table(name = "KSCST_SCHE_PER_WORKPLACE")
+public class KscstSchePerWorkplace  extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	@EmbeddedId
-	public KscstWorkTypeDisplayPK kscstWorkTypeDisplayPk;
+	public KscstSchePerWorkplacePK kscstSchePerWorkplacePK;
+	
+			/** 利用できる*/
+			@Column(name = "AVAILABLE_WORKPLACE")
+			public int availableWorkplace;
+			
 
-	@Column(name = "USE_ATR")
-	public int useAtr;
 
 	@Override
 	protected Object getKey() {
-		return this.kscstWorkTypeDisplayPk;
+		// TODO Auto-generated method stub
+		return null;
 	}
-
+	
+	
 }
