@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
  *
  */
 @Stateless
+@Transactional
 public class UpdateWDAppSetCommandHandler extends CommandHandler<WithdrawalAppSetCommand>{
 	@Inject
 	private WithdrawalAppSetRepository withRep;

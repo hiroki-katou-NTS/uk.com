@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.trip
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.TripRequestSetRepository;
 
 @Stateless
+@Transactional
 public class UpdateTripRequestSetCommandHandler extends CommandHandler<TripRequestSetCommand>{
 	@Inject
 	private TripRequestSetRepository tripRep;

@@ -19,9 +19,9 @@ module nts.uk.at.view.kmf022.a.service {
         // A13_4 có 2 sự lựa chọn, có thể lấy list cty đang đăng nhập rồi lên UI lọc, hoặc lấy thẳng 1 object(nhớ truyền apptype) 
         findAllPro: "at/request/application/setting/proxy/findAll",
         findProByApp: "at/request/application/setting/proxy/findApp",
-        // A14_3 
-        findJobAssign: "job/assign/setting/getjob",
-        //A15_4, truyền lần lượt job id trong list lấy được để lấy ra A15_4. (ver 2)
+        // A14_3 (com)
+        findJobAssign: "job/assign/setting/getjob", 
+        //A15_4, truyền lần lượt job id trong list lấy được để lấy ra A15_4. (ver 2) (com)
         findJobTitleSearch: "workflow/jobtitlesearchset/job/getbyId",
         // A16_7, A16_8
         findMail: "at/request/application/mail/holiday",
@@ -29,7 +29,7 @@ module nts.uk.at.view.kmf022.a.service {
         findOt: "at/request/application/mail/ot",
         // A16_11
         findTemp: "at/request/application/mail/template",
-        // A17_5
+        // A17_5 (com)
         findAppro: "approval/setting/approval",
         // A17_4, A9_5
         findAppSet: "at/request/application/setting/appset",
@@ -68,13 +68,13 @@ module nts.uk.at.view.kmf022.a.service {
         // I
         findLateEarly: "at/request/application/applicationlatearrival/findByCompanyID",
         
-        //jobId. Muốn lấy được jobid thì phải truyền companyId và baseDate
+        //jobId. Muốn lấy được jobid thì phải truyền companyId và baseDate (com)
         findJobId: "bs/employee/jobtitle/findAll",
-        // lấy xong list job Id thì có thể truyền cả list jobId để lấy list A15_4
+        // lấy xong list job Id thì có thể truyền cả list jobId để lấy list A15_4 (com)
         findJobTitleSearchList: "workflow/jobtitlesearchset/job/getbyCode",
         
 //        add: 'at/shared/yearservicecom/add',
-//        update: 'at/shared/yearservicecom/update'
+        update: 'screen/at/kaf022/update',
     }
     
     export function findJobTitleSearchList(param: any): JQueryPromise<void>{
@@ -217,7 +217,7 @@ module nts.uk.at.view.kmf022.a.service {
 //        return ajax("at", paths.add, command);
 //    }
 //
-//    export function update(command): JQueryPromise<Array<string>>{
-//        return ajax("at", paths.update, command);
-//    }    
+    export function update(command): JQueryPromise<Array<string>>{
+        return ajax("at", paths.update, command);
+    }    
 }
