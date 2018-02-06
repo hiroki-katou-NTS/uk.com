@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
 
 @AllArgsConstructor
 @Data
@@ -12,12 +11,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vaca
 public class HdAppSetDto {
 	/** 会社ID **/
 	public String companyId;
-	
-	/** 休暇申請の種類  **/
-	public int hdAppType;
-	
-	/** 未選択を表示する */
-	public int dispUnselec;
 	
 	/** 60H超休を利用する名 */
 	public int use60h;
@@ -92,8 +85,8 @@ public class HdAppSetDto {
 	public int regisShortReser;
 	
 	public static HdAppSetDto convertToDto(HdAppSet domain){
-		return new HdAppSetDto(domain.getCompanyId(), domain.getHdAppType().value, 
-				domain.getDispUnselec().value, domain.getUse60h().value, domain.getObstacleName().v(), 
+		return new HdAppSetDto(domain.getCompanyId(), 
+				domain.getUse60h().value, domain.getObstacleName().v(), 
 				domain.getRegisShortLostHd().value, domain.getHdName().v(), domain.getRegisLackPubHd().value,
 				domain.getChangeWrkHour().value, domain.getCkuperLimit().value, domain.getActualDisp().value, 
 				domain.getWrkHours().value, domain.getPridigCheck().value, domain.getYearHdName().v(), 

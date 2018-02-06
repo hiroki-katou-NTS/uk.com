@@ -38,9 +38,7 @@ public class JpaWithDrawalReqSetRepository extends JpaRepository implements With
 				entity.getDeferredLettleColor(),
 				entity.getDeferredWorkTimeSelect(),
 				entity.getSimulAppliReq(),
-				entity.getLettleSuperLeave(),
-				entity.getSimutanAppRequired(),
-				entity.getLettleSuspensionLeave());
+				entity.getLettleSuperLeave());
 		return domain;
 	}
 
@@ -63,8 +61,6 @@ public class JpaWithDrawalReqSetRepository extends JpaRepository implements With
 		oldEntity.setDeferredWorkTimeSelect(entity.getDeferredWorkTimeSelect());
 		oldEntity.setSimulAppliReq(entity.getSimulAppliReq());
 		oldEntity.setLettleSuperLeave(entity.getLettleSuperLeave());
-		oldEntity.setSimutanAppRequired(entity.getSimutanAppRequired());
-		oldEntity.setLettleSuspensionLeave(entity.getLettleSuspensionLeave());
 		
 		this.commandProxy().update(oldEntity);
 	}
@@ -91,8 +87,6 @@ public class JpaWithDrawalReqSetRepository extends JpaRepository implements With
 		entity.setDeferredWorkTimeSelect(withDrawalReqSet.getDeferredWorkTimeSelect().value);
 		entity.setSimulAppliReq(withDrawalReqSet.getSimulAppliReq().value);
 		entity.setLettleSuperLeave(withDrawalReqSet.getLettleSuperLeave().value);
-		entity.setSimutanAppRequired(withDrawalReqSet.getSimutanAppRequired().value);
-		entity.setLettleSuspensionLeave(withDrawalReqSet.getLettleSuspensionLeave().value);
 		return entity;
 	}
 
