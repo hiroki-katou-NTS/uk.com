@@ -26,6 +26,7 @@ public class UpdateApprovalTempCommandHandler extends CommandHandler<ApprovalTem
 		ApprovalTemp app = ApprovalTemp.createFromJavaType(data.getCompanyId(), data.getContent());
 		if(appTemp.isPresent()){
 			appRep.update(app);
+			return;
 		}
 		appRep.insert(app);
 	}

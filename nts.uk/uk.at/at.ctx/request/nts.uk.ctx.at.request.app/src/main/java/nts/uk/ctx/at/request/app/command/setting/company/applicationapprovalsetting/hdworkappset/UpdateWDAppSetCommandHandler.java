@@ -30,6 +30,7 @@ public class UpdateWDAppSetCommandHandler extends CommandHandler<WithdrawalAppSe
 				data.getDirectDivi(), data.getRestTime());
 		if(with.isPresent()){
 			withRep.update(withDraw);
+			return;
 		}
 		withRep.insert(withDraw);
 	}

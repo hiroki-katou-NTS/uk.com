@@ -32,6 +32,7 @@ public class UpdateLateEarReqHandler extends CommandHandler<LateEarlyRequestComm
 		
 		if(lateEarlyRequest.isPresent()){
 			repository.updateLateEarlyRequest(data);
+			return;
 		}
 		
 		repository.addLateEarlyRequest(data);

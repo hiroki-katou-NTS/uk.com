@@ -47,9 +47,16 @@
 					
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='l'">
-					<button  id="btn_001" class="button proceed separate-button fix-button"  data-bind="click: function(){$parent.viewmodelL.registerEmploymentSet($parent.viewmodelL);}">#{i18n.getText('KAF022_1')}</button>
-					<button  id="btn_002" class="button separate-button fix-button" data-bind="click: function(){$parent.viewmodelL.copyEmploymentSet($parent.viewmodelL);}">#{i18n.getText('KAF022_274')}</button>
-					<button  id="btn_004" class="button danger separate-button fix-button" data-bind="click: function(){$parent.viewmodelL.deleteEmploymentSet($parent.viewmodelL);}" >#{i18n.getText('KAF022_275')}</button>
+					<div class="center-content-kaf022l">
+                        <button  id="btn_001" class="button proceed separate-button fix-button"  
+                                data-bind="click: function(){$parent.viewmodelL.registerEmploymentSet($parent.viewmodelL);}">#{i18n.getText('KAF022_1')}</button>
+                        <button  id="btn_002" class="button separate-button fix-button" 
+                                data-bind="click: function(){$parent.viewmodelL.copyEmploymentSet($parent.viewmodelL);},
+                                enable: $parent.viewmodelL.screenMode() == 1">#{i18n.getText('KAF022_274')}</button>
+                        <button  id="btn_004" class="button danger separate-button fix-button" 
+                                data-bind="click: function(){$parent.viewmodelL.deleteEmploymentSet($parent.viewmodelL);},
+                                enable: $parent.viewmodelL.screenMode() == 1" >#{i18n.getText('KAF022_275')}</button>
+                    </div>
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='m'">
 					<button  id="btn_001" class="button separate-button fix-button"  data-bind="click: $parent.viewmodelM.update">#{i18n.getText('KAF022_1')}</button>

@@ -3,6 +3,7 @@ module nts.uk.com.view.ccg026.component {
 
     export module viewmodel {
         export class ComponentModel {
+            private componentId: string = nts.uk.util.randomId();
             roleId: KnockoutObservable<string> = ko.observable("");
             listPermissions: KnockoutObservableArray<model.FunctionPermission> = ko.observableArray([]);
             
@@ -32,7 +33,7 @@ module nts.uk.com.view.ccg026.component {
                 // caculate height by row number
                 var headerHeight: number = 23;
                 var heigth: number = (self.setting.maxRow) * 28 + headerHeight;
-                $("html").find("#table-permission").ntsFixedTable({ height: heigth });
+                $("html").find("#table-permission-" + self.componentId).ntsFixedTable({ height: heigth });
                 self.getListOfFunctionPermission().done(() => {
                     self.buildAvialabilityFunctionPermission().done(() => {
                         dfd.resolve();

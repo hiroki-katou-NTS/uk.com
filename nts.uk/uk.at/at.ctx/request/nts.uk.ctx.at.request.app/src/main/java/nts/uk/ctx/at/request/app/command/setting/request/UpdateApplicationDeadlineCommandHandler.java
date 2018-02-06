@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.setting.request;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -22,10 +24,15 @@ public class UpdateApplicationDeadlineCommandHandler extends CommandHandler<Appl
 	protected void handle(CommandHandlerContext<ApplicationDeadlineCommand> context) {
 		ApplicationDeadlineCommand data = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		Optional<ApplicationDeadline> app = appRep.getDeadlineByClosureId(companyId, data.getClosureId());
 		ApplicationDeadline appDeadline = ApplicationDeadline.createSimpleFromJavaType(companyId, data.getClosureId(),
 																				data.getUserAtr(), data.getDeadline(), 
 																				data.getDeadlineCriteria());
 		appDeadline.validate();
-		appRep.update(appDeadline);
+		if(app.isPresent()){
+			appRep.update(appDeadline);
+			return;
+		}
+		appRep.insert(appDeadline);
 	}
 }

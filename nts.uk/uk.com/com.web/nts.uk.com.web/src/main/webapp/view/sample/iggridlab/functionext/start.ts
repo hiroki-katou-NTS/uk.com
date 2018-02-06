@@ -147,6 +147,9 @@ module nts.uk.ui.gridlist {
                             width: '1500px',
                             height: '800px',
                             dataSource: model.items,
+                            dataSourceAdapter: function(ds) {
+                                return ds;
+                            },
                             primaryKey: 'id',
                             rowVirtualization: true,
                             virtualization: true,
@@ -155,7 +158,7 @@ module nts.uk.ui.gridlist {
                             autoFitWindow: true,
                             preventEditInError: false,
                             hidePrimaryKey: true,
-                            recordKeys: keys, 
+//                            recordKeys: keys, 
 //                            avgRowHeight: 36,
 //                            autoAdjustHeight: false,
 //                            adjustVirtualHeights: false,
