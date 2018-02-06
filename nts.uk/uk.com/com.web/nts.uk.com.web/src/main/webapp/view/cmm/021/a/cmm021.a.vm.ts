@@ -557,8 +557,9 @@ module nts.uk.com.view.cmm021.a {
                     .done((data: any) => {
                         if (_self.selectUse() == 0 && isCheck == true) {
                             _self.listUserInfos([]);
-                            _self.listUserInfos(_self.listUserUnsetting.filter(item => item.userId != _self.userIdBeChoosen()));
-                            _self.loadUserInfoAfterSaveWinAcc();
+                            _self.listUserUnsetting = _self.listUserUnsetting.filter(item => item.userId != _self.userIdBeChoosen());
+                            _self.listUserInfos(_self.listUserUnsetting);                                                    
+                            _self.loadUserInfoAfterSaveWinAcc();                         
                             _self.selectedEmployeeId("");
                             _self.selectedEmployeeId(_self.listUserUnsetting.filter(item => item.userId != _self.userIdBeChoosen())[0].employeeId);
                             _self.loadNewWindowAccount();
@@ -1258,7 +1259,8 @@ module nts.uk.com.view.cmm021.a {
                         .done((data: any) => {
                             if (_self.selectUse() == 0 && otherAcc.useAtr == 1) {
                                 _self.listUserInfos([]);
-                                _self.listUserInfos(_self.listUserUnsettingScreenAC.filter(item => item.userId != _self.userIdBeChoosen()));
+                                _self.listUserUnsettingScreenAC = _self.listUserUnsettingScreenAC.filter(item => item.userId != _self.userIdBeChoosen());
+                                _self.listUserInfos(_self.listUserUnsettingScreenAC);
                                 _self.selectedEmployeeId("");
                                 _self.selectedEmployeeId(_self.listUserUnsettingScreenAC.filter(item => item.userId != _self.userIdBeChoosen())[0].employeeId);
                                 _self.loadUserInfoAfterSaveOtherAcc();
