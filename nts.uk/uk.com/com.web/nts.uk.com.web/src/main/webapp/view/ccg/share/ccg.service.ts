@@ -17,7 +17,8 @@ module nts.uk.com.view.ccg.share.ccg {
             getRefRangeBySysType: "ctx/sys/auth/role/getrefrangebysystype",
             getClosuresByBaseDate: "ctx/at/shared/workrule/closure/getclosuresbybasedate",
             calculatePeriod: "ctx/at/shared/workrule/closure/calculateperiod",
-            getClosureTiedByEmployment: "ctx/at/shared/workrule/closure/getclosuretiedbyemployment"
+            getClosureTiedByEmployment: "ctx/at/shared/workrule/closure/getclosuretiedbyemployment",
+            getCurrentHistoryItem: "bs/employee/employment/history/getcurrenthistoryitem"
         }
 
         /**
@@ -25,6 +26,10 @@ module nts.uk.com.view.ccg.share.ccg {
          */
         export function searchAllEmployee(baseDate: Date): JQueryPromise<Array<model.EmployeeSearchDto>> {
             return nts.uk.request.ajax('com', servicePath.searchAllEmployee, baseDate);
+        }
+
+        export function getCurrentHistoryItem(): JQueryPromise<any> {
+            return nts.uk.request.ajax('com', servicePath.getCurrentHistoryItem);
         }
 
         export function getRefRangeBySysType(sysType: number): JQueryPromise<number> {
@@ -35,8 +40,8 @@ module nts.uk.com.view.ccg.share.ccg {
             return nts.uk.request.ajax('at', servicePath.getClosuresByBaseDate + '/' + baseDate);
         }
 
-        export function getClosureTiedByEmployment(): JQueryPromise<number> {
-            return nts.uk.request.ajax('at', servicePath.getClosureTiedByEmployment);
+        export function getClosureTiedByEmployment(employmentCd: string): JQueryPromise<number> {
+            return nts.uk.request.ajax('at', servicePath.getClosureTiedByEmployment + '/' + employmentCd);
         }
 
         export function getEmployeeRangeSelection(key: any): JQueryPromise<model.EmployeeRangeSelection> {

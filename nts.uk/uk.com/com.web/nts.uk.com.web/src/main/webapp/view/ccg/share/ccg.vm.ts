@@ -503,7 +503,9 @@ module nts.uk.com.view.ccg.share.ccg {
                             default: break; // systemType not found
                         }
                     } else {
-                        service.getClosureTiedByEmployment().done(id => dfd.resolve(id));
+                        service.getCurrentHistoryItem().done(item => {
+                            service.getClosureTiedByEmployment(item.employmentCode).done(id => dfd.resolve(id));
+                        });
                     }
                 });
                 return dfd.promise();

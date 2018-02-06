@@ -283,11 +283,16 @@ public class ClosureWs {
 		}).collect(Collectors.toList());
 	}
 	
+	/**
+	 * Gets the closure tied by employment.
+	 *
+	 * @param employmentCode the employment code
+	 * @return the closure tied by employment
+	 */
 	@POST
-	@Path("getclosuretiedbyemployment")
-	public int getClosureTiedByEmployment() {
-		GeneralDate now = GeneralDate.today();
-		return 1; // TODO: get closure id.
+	@Path("getclosuretiedbyemployment/{employmentcode}")
+	public int getClosureTiedByEmployment(@PathParam("employmentcode") String employmentCode) {
+		return this.finder.getClosureIdByEmploymentCode(employmentCode);
 	}
 
 	@POST

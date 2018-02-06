@@ -316,4 +316,15 @@ public class ClosureFinder {
 		return closureEmpList.stream().map(ClosureEmployment::getEmploymentCD)
 				.collect(Collectors.toList());
 	}
+
+	/**
+	 * Gets the closure id by employment code.
+	 *
+	 * @param employmentCode the employment code
+	 * @return the closure id by employment code
+	 */
+	public int getClosureIdByEmploymentCode(String employmentCode) {
+		return this.closureEmpRepo.findByEmploymentCD(AppContexts.user().companyId(), employmentCode).get()
+				.getClosureId();
+	}
 }
