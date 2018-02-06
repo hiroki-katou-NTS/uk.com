@@ -1576,13 +1576,13 @@ module nts.custombinding {
                                                     && ko.isObservable(next.value)) {
 
                                                     def.endDate = ko.computed(() => {
-                                                        return moment.utc(ko.toJS(next.value) || '9999-12-31').add(ko.toJS(next.value) ? -1 : 0, "days").toDate();
+                                                        return moment.utc(ko.toJS(next.value) || '9999/12/31', "YYYY/MM/DD").add(ko.toJS(next.value) ? -1 : 0, "days").toDate();
                                                     });
                                                     def.startDate = ko.observable();
 
                                                     next.endDate = ko.observable();
                                                     next.startDate = ko.computed(() => {
-                                                        return moment.utc(ko.toJS(def.value) || '1900-01-01').add(ko.toJS(def.value) ? 1 : 0, "days").toDate();
+                                                        return moment.utc(ko.toJS(def.value) || '1900/01/01', "YYYY/MM/DD").add(ko.toJS(def.value) ? 1 : 0, "days").toDate();
                                                     });
                                                 }
                                             }
