@@ -188,7 +188,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 					.sorted((a, b) -> a.getTimezone().getStart().compareTo(b.getTimezone().getStart()))
 					.collect(Collectors.toList());
 			if (!CollectionUtil.isEmpty(lstEarlyOT)) {
-				int earlyOTEndTime = lstEarlyOT.get(lstEarlyOT.size() - 1).getTimezone().getEnd().v();
+				int earlyOTEndTime = lstEarlyOT.get(0).getTimezone().getEnd().v();
 				List<EmTimeZoneSet> invalidList = item.getWorkTimezone().getEmploymentTimezones().stream()
 						.filter(work -> work.getTimezone().getStart().v() - aheadChange < earlyOTEndTime)
 						.collect(Collectors.toList());
@@ -197,7 +197,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 				}
 			}
 			if (!CollectionUtil.isEmpty(lstLateOT)) {
-				int lateOTStartTime = lstLateOT.get(0).getTimezone().getStart().v();
+				int lateOTStartTime = lstLateOT.get(lstEarlyOT.size() - 1).getTimezone().getStart().v();
 				List<EmTimeZoneSet> invalidList = item.getWorkTimezone().getEmploymentTimezones().stream()
 						.filter(work -> work.getTimezone().getEnd().v() + behindChange > lateOTStartTime)
 						.collect(Collectors.toList());
