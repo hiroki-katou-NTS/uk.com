@@ -151,12 +151,10 @@
 	padding: 0 2px;
 	width: 400px;
 }
-#numberHoliday{
-    margin-left: 5px;
-	height: 80px ; 
-	margin-top: 10px; 
-	margin-bottom: 10px;
-}
+#numberHoliday {
+	margin-left: 5px;
+	height: 80px;
+	margin-top: 4px;}
 #emp-component{
 	margin-top: 10px;
 	margin-left: -10px;
@@ -167,6 +165,7 @@
 }
 #content-grid{
     position: absolute;
+    top: 93px;
 }
 #content-grid-not{
 	height: 20px ;

@@ -3,12 +3,12 @@
  */
 package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
@@ -59,7 +59,6 @@ public class DPControlDisplayItem {
 	}
 	
 	private boolean isExistSheet(DPSheetDto sheet){
-		//TODO: to Thanh: only equal name?
 		for(DPSheetDto exstSheet : this.lstSheet){
 			if(exstSheet.getName().equals(sheet.getName())){
 				return true;
@@ -77,10 +76,13 @@ public class DPControlDisplayItem {
 	}
 
 	public void createSheets(List<DPSheetDto> lstSheet) {
-		this.lstSheet.addAll(lstSheet.stream().filter(s -> !isExistSheet(s)).collect(Collectors.toList()));
+		for (DPSheetDto sheet : lstSheet) {
+			if(!isExistSheet(sheet)){
+				this.lstSheet.add(sheet);
+			}
+		}
 		if(!this.lstSheet.isEmpty()) {
-//			this.lstSheet.sort((e1,e2) -> new BigDecimal(e1.getName()).compareTo(new BigDecimal(e2.getName())));
-			this.lstSheet.sort((e1,e2) -> e1.getName().compareTo(e2.getName()));
+			this.lstSheet.sort((e1,e2) -> new BigDecimal(e1.getName()).compareTo(new BigDecimal(e2.getName())));
 		}
 	}
 
