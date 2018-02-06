@@ -21,9 +21,10 @@ public class HolidayWorkWebService extends WebService{
 	public AppHolidayWorkDto getOvertimeByUIType(Param param) {
 		return this.appHolidayWorkFinder.getAppHolidayWork(param.getAppDate(), param.getUiType());
 	}
-	@Value
-	class Param{
-		private String appDate;
-		private int uiType;
-	}
+	
+}
+@Value
+class Param{
+	private String appDate;
+	private int uiType;
 }

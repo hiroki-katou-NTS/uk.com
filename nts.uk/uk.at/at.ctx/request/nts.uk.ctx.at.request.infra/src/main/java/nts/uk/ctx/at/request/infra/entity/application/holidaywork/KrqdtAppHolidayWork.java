@@ -89,7 +89,7 @@ public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable {
     /**
      * 勤務終了時刻2
      */
-    @Column(name = "WORK_CLOCK_END1")
+    @Column(name = "WORK_CLOCK_END2")
     private Integer workClockEnd2;
     
     /**

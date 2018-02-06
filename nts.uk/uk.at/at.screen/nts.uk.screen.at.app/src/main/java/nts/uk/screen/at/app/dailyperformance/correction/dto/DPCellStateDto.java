@@ -28,8 +28,4 @@ public class DPCellStateDto {
     	this.state.add(state);
     }
     
-    public void addState(List<String> state) {
-    	this.state.addAll(state);
-    }
-    
 }
