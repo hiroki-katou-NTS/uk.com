@@ -151,5 +151,18 @@ module nts.uk.ui {
                 startP();
             });  
         });
+
+
+        $(function () {
+            let lastPause: any = new Date();
+            $(window).keydown(e => {
+                if (e.keyCode !== 19) return;
+                let now: any = new Date();
+                if (now - lastPause < 500) {
+                    ui.dialog.version();
+                }
+                lastPause = new Date();
+            });
+        });
     }
 }
