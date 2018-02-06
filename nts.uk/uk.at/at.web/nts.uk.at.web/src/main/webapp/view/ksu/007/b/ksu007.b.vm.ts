@@ -2,9 +2,11 @@ module nts.uk.at.view.ksu007.b {
 
     import ScheduleBatchCorrectSetting = nts.uk.at.view.ksu007.a.viewmodel.ScheduleBatchCorrectSetting;
     import ScheduleBatchCorrectSettingSave = nts.uk.at.view.ksu007.a.service.model.ScheduleBatchCorrectSettingSave;
+
     export module viewmodel {
 
         export class ScreenModel {
+            errorLogs: KnockoutObservableArray<any>;
             columns: KnockoutObservableArray<any>;
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
@@ -17,17 +19,19 @@ module nts.uk.at.view.ksu007.b {
             totalRecord: KnockoutObservable<number>;
             numberSuccess: KnockoutObservable<number>;
             numberFail: KnockoutObservable<number>;
+            dataError: KnockoutObservableArray<ErrorContentDto>;
             inputData: ScheduleBatchCorrectSettingSave;
             isError: KnockoutObservable<boolean>;
             isFinish: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
-
+                self.errorLogs = ko.observableArray([]);
+                
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KSC001_55"), key: 'employeeId', width: 80},
-                    { headerText: nts.uk.resource.getText("KSC001_56"), key: 'employeeCode', width: 150 },
-                    { headerText: nts.uk.resource.getText("KSC001_57"), key: 'employeeName', width: 150 },
-                    { headerText: nts.uk.resource.getText("KSC001_58"), key: 'errorContent', width: 150 }
+                    { headerText: nts.uk.resource.getText("KSU007_16"), key: 'employeeId', width: 80},
+                    { headerText: nts.uk.resource.getText("KSU007_17"), key: 'employeeName', width: 150 },
+                    { headerText: nts.uk.resource.getText("KSU007_18"), key: 'ymd', width: 150 },
+                    { headerText: nts.uk.resource.getText("KSU007_19"), key: 'message', width: 150 }
                 ]);
 
                 self.currentCode = ko.observable();
@@ -36,12 +40,13 @@ module nts.uk.at.view.ksu007.b {
                 self.totalRecord = ko.observable(0);
                 self.numberSuccess = ko.observable(0);
                 self.numberFail = ko.observable(0);
+                self.dataError = ko.observableArray([]);
                 self.executionTotal = ko.observable('xxxxxx');
                 self.executionError = ko.observable('yyyyyyyyy');
                 self.isError = ko.observable(false);
                 self.isFinish = ko.observable(false);
             }
-
+            
             /**
             * start page data 
             */
@@ -104,7 +109,25 @@ module nts.uk.at.view.ksu007.b {
                              _.forEach(res.taskDatas, item => {
                                 if (item.key == 'DATA_EXECUTION') {
                                     console.log(item);
+                                    var errors = JSON.parse(item.valueAsString);
+                                    _.forEach(errors, error => {
+                                        var errorContent : ErrorContentDto {
+                                            employeeId : error.employeeCode,
+                                            employeeName : error.employeeName,
+                                            ymd : error.dateYMD,
+                                            message : nts.uk.resource.getMessage(error.message)
+                                        }
+                                        self.dataError.push(errorContent);
+                                        self.errorLogs.push(errorContent);
+                                    };
                                 }
+                                if (item.key == 'NUMBER_OF_SUCCESS') {
+                                     self.numberSuccess(item.valueAsNumber);
+                                }
+                                if (item.key == 'NUMBER_OF_ERROR') {
+                                     self.numberFail(item.valueAsNumber);
+                                }
+                                self.totalRecord(self.numberSuccess() + self.numberFail());
                             });
                         }
                         self.executionTotal(nts.uk.resource.getText("KSC001_84", [self.numberSuccess(), self.totalRecord()]));
@@ -115,6 +138,12 @@ module nts.uk.at.view.ksu007.b {
                             if (res.succeeded) {
                                 $('#closeDialog').focus();
                             }
+                            if (self.numberFail() > 0) {
+                                self.isError(true);
+                                $('#tableShowError').show();
+                            }
+                            
+                            self.isFinish(true);
                         }
                     });
                 }).while(infor => {
@@ -150,8 +179,22 @@ module nts.uk.at.view.ksu007.b {
                 // interrupt process import then close dialog
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
             }
-        }     
-
-        
+            
+            /**
+             * funtion export file csv error
+             */
+            private exportFileError(): void {
+                let self = this;
+                _.forEach(self.errorLogs(), error => {
+                    error.employeeCode = error.employeeId;
+                    error.dateYMD = moment(error.ymd, 'YYYY/MM/DD').toDate();                   
+                });
+                nts.uk.ui.block.grayout();
+                service.exportFileError(self.errorLogs()).done(function() {
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+        }
     }
 }
