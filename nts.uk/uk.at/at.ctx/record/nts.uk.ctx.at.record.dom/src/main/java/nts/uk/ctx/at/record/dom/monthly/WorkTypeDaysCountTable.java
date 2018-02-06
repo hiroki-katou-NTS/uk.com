@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.record.dom.monthly;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -31,7 +35,7 @@ public class WorkTypeDaysCountTable {
 	/** 特休日数 */
 	private AttendanceDaysMonth specialHolidayDays;
 	/** 欠勤日数 */
-	private AttendanceDaysMonth absenceDays;
+	private Map<Integer, AggregateAbsenceDays> absenceDaysMap;
 	/** 代休日数 */
 	private AttendanceDaysMonth compensatoryLeaveDays;
 	/** 振出日数 */
@@ -73,7 +77,7 @@ public class WorkTypeDaysCountTable {
 		this.annualLeaveDays = new AttendanceDaysMonth(0.0);
 		this.retentionYearlyDays = new AttendanceDaysMonth(0.0);
 		this.specialHolidayDays = new AttendanceDaysMonth(0.0);
-		this.absenceDays = new AttendanceDaysMonth(0.0);
+		this.absenceDaysMap = new HashMap<>();
 		this.compensatoryLeaveDays = new AttendanceDaysMonth(0.0);
 		this.transferAttendanceDays = new AttendanceDaysMonth(0.0);
 		this.transferHolidayGenerateDays = new AttendanceDaysMonth(0.0);
@@ -153,10 +157,12 @@ public class WorkTypeDaysCountTable {
 		boolean publicHoliday = false;
 		boolean notCountForHolidayDays = false;
 		//boolean generateCompensatoryLeave = false;
+		int sumAbsenceNo = -1;
 		if (workTypeSet != null) {
 			publicHoliday = (workTypeSet.getDigestPublicHd() == WorkTypeSetCheck.CHECK); 
 			notCountForHolidayDays = (workTypeSet.getCountHodiday() != WorkTypeSetCheck.CHECK);
 			//generateCompensatoryLeave = (workTypeSet.getGenSubHodiday() == WorkTypeSetCheck.CHECK);
+			sumAbsenceNo = workTypeSet.getSumAbsenseNo();
 		}
 		
 		switch (workTypeClass){
@@ -186,7 +192,14 @@ public class WorkTypeDaysCountTable {
 			this.predetermineDays = this.predetermineDays.addDays(addDays);
 			break;
 		case Absence:
-			this.absenceDays = this.absenceDays.addDays(addDays);
+			if (sumAbsenceNo >= 0){
+				val absenceFrameNo = Integer.valueOf(sumAbsenceNo);
+				if (!this.absenceDaysMap.containsKey(absenceFrameNo)) {
+					this.absenceDaysMap.put(absenceFrameNo, new AggregateAbsenceDays(absenceFrameNo));
+				}
+				val targetAbsenceDays = this.absenceDaysMap.get(absenceFrameNo);
+				targetAbsenceDays.addDays(addDays);
+			}
 			this.predetermineDays = this.predetermineDays.addDays(addDays);
 			break;
 		case SubstituteHoliday:

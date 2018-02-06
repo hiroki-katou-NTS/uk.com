@@ -63,16 +63,14 @@ public class AttendanceItemUtil {
 						currentLayout = mergeLayout(layoutCode, layout.layout());
 				if (isList) {
 					List<T> list = ReflectionUtil.getFieldValue(field, attendanceItems);
-					boolean listNoIdx = layout.listNoIndex();
-					return mapByPath(
-									c.getValue(),
-									x -> listNoIdx ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path())
+					return mapByPath(c.getValue(),
+									x -> layout.listNoIndex() ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path())
 								).entrySet().stream().map(idx -> {
 										T idxValue = list == null || list.size() < idx.getKey() ? null : list.get(idx.getKey() - 1);
 										return getItemValues(
 													fieldValue(className, idxValue), 
 													layoutIdx + 1,
-													listNoIdx ? currentLayout : currentLayout + idx.getKey(), 
+													layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(), 
 													pathName,
 													extraCondition, 
 													idx.getKey(),
@@ -124,12 +122,13 @@ public class AttendanceItemUtil {
 										className, 
 										layout.indexField());
 					boolean listNoIdx = layout.listNoIndex();
-					Field idxField = layout.indexField().isEmpty() ? null : getField(layout.indexField(), className);
+					String idxFieldName = listNoIdx ? layout.enumField() : layout.indexField();
+					Field idxField = idxFieldName.isEmpty() ? null : getField(idxFieldName, className);
 					Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), 
 							x -> listNoIdx ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path()));
 					list.stream().forEach(eVal -> {
-						Integer idx = idxField == null ? 1 : ReflectionUtil.getFieldValue(idxField, eVal);
-						List<ItemValue> subList = listNoIdx ? c.getValue() : itemsForIdx.get(idx);
+						Integer idx = idxField == null ? null : ReflectionUtil.getFieldValue(idxField, eVal);
+						List<ItemValue> subList = idx == null ? null : itemsForIdx.get(listNoIdx ? idx + 1 : idx);
 						if (subList != null) {
 							fromItemValues(
 									eVal, 
@@ -149,8 +148,7 @@ public class AttendanceItemUtil {
 					AttendanceItemValue valueAnno = getItemValueAnnotation(field);
 					if (valueAnno != null) {
 						String enumText = getEnumTextFromList(c.getValue()), 
-								currentPath = getKey(pathName,
-								enumText == null ? "" : enumText, needCheckWithIdx, index);
+								currentPath = getKey(pathName, enumText == null ? "" : enumText, needCheckWithIdx, index);
 						ItemValue itemValue = c.getValue().stream()
 														.filter(id -> id.path().equals(currentPath))
 														.findFirst().orElse(null);

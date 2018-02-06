@@ -27,6 +27,8 @@ public class JpaMPatternWorkScheCreSetMemento implements MonthlyPatternWorkSched
 	 */
 	@Override
 	public void setReferenceType(TimeZoneScheduledMasterAtr referenceType) {
-		this.kshmtScheduleMethod.setMPatternWorkScheCreate(referenceType.value);
+		if (referenceType != null) {
+			this.kshmtScheduleMethod.setMPatternWorkScheCreate(referenceType.value);
+		}
 	}
 }

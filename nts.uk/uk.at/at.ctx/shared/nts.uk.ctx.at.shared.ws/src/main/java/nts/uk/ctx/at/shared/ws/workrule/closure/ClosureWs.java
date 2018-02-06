@@ -15,15 +15,12 @@ import javax.ws.rs.Produces;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureEmpAddCommandHandler;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommandHandler;
-import nts.uk.ctx.at.shared.app.command.workrule.closure.ClousureEmpAddCommand;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.CurrentClosureFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CheckSaveDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
-import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureEmployDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureForLogDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
@@ -38,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.DayMonthChange;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -270,9 +268,9 @@ public class ClosureWs {
 	@POST
 	@Path("findClosureListByCurrentMonth")
 	public List<ClosureDto> findClosureListByCurrentMonth() {
-		GeneralDate now = GeneralDate.today();
+		GeneralDate now = GeneralDate.today();	
 		YearMonth currentMonth = YearMonth.of(now.year(), now.month());
-		return this.closureRepository.findByCurrentMonth(currentMonth).stream().map(item -> {
+		return this.closureRepository.findByCurrentMonth(AppContexts.user().companyId(), currentMonth).stream().map(item -> {
 			return ClosureDto.builder()
 					.id(item.getClosureId().value)
 					.name(item.getClosureName().v())

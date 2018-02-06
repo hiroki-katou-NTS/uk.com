@@ -247,15 +247,15 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 					workScheduleTimeZones.add(new WorkScheduleTimeZone(timezoneUseK1.getWorkNo(),
 							timezoneUseK1.getStart(), morningEndTime, bounceAtr));
 				} else {
-					workScheduleTimeZones = listTimezoneUse.stream().map((timezoneUse) -> {
+					listTimezoneUse.forEach((timezoneUse) -> {
 						if (timezoneUse.getWorkNo() == 2) {
-							return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
-									morningEndTime, bounceAtr);
+							workScheduleTimeZones.add(new WorkScheduleTimeZone(timezoneUse.getWorkNo(),
+									timezoneUse.getStart(), morningEndTime, bounceAtr));
 						} else {
-							return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
-									timezoneUse.getEnd(), bounceAtr);
+							workScheduleTimeZones.add(new WorkScheduleTimeZone(timezoneUse.getWorkNo(),
+									timezoneUse.getStart(), timezoneUse.getEnd(), bounceAtr));
 						}
-					}).collect(Collectors.toList());
+					});
 				}
 			} else
 			// if workTypeCode is work on afternoon, replace startTime =
@@ -263,28 +263,42 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			if (basicScheduleService.checkWorkDay(basicScheduleObj.getWorkTypeCode()) == WorkStyle.AFTERNOON_WORK) {
 				TimeWithDayAttr afternoonStartTime = prescribedTimezoneSetting.getAfternoonStartTime();
 
-				if (timezoneUseK2.isPresent()) {
-					if (afternoonStartTime.valueAsMinutes() <= timezoneUseK1.getEnd().valueAsMinutes()) {
-						workScheduleTimeZones = listTimezoneUse.stream().map((timezoneUse) -> {
-							if (timezoneUse.getWorkNo() == 1) {
-								return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), afternoonStartTime,
-										timezoneUse.getEnd(), bounceAtr);
-							} else {
-								return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
-										timezoneUse.getEnd(), bounceAtr);
-							}
-						}).collect(Collectors.toList());
-					} else {
-						workScheduleTimeZones.add(new WorkScheduleTimeZone(timezoneUseK2.get().getWorkNo(),
-								afternoonStartTime, timezoneUseK2.get().getEnd(), bounceAtr));
-					}
+				// if (!timezoneUseK2.isPresent()) {
+				if (afternoonStartTime.valueAsMinutes() <= timezoneUseK1.getEnd().valueAsMinutes()) {
+					// workScheduleTimeZones =
+					// listTimezoneUse.stream().map((timezoneUse) -> {
+					// if (timezoneUse.getWorkNo() == 1) {
+					// return new WorkScheduleTimeZone(timezoneUse.getWorkNo(),
+					// afternoonStartTime,
+					// timezoneUse.getEnd(), bounceAtr);
+					// } else if (timezoneUse.getWorkNo() == 2 &&
+					// timezoneUseK2.isPresent()) {
+					// return new WorkScheduleTimeZone(timezoneUse.getWorkNo(),
+					// timezoneUse.getStart(),
+					// timezoneUse.getEnd(), bounceAtr);
+					// }
+					// }).collect(Collectors.toList());
+
+					listTimezoneUse.forEach(timezoneUse -> {
+						if (timezoneUse.getWorkNo() == 1) {
+							workScheduleTimeZones.add(new WorkScheduleTimeZone(timezoneUse.getWorkNo(),
+									afternoonStartTime, timezoneUse.getEnd(), bounceAtr));
+						} else if (timezoneUse.getWorkNo() == 2 && timezoneUseK2.isPresent()) {
+							workScheduleTimeZones.add(new WorkScheduleTimeZone(timezoneUse.getWorkNo(),
+									timezoneUse.getStart(), timezoneUse.getEnd(), bounceAtr));
+						}
+					});
+				} else {
+					workScheduleTimeZones.add(new WorkScheduleTimeZone(timezoneUseK2.get().getWorkNo(),
+							afternoonStartTime, timezoneUseK2.get().getEnd(), bounceAtr));
 				}
+				// }
 
 			} else {
-				workScheduleTimeZones = listTimezoneUse.stream().filter(x -> x.isUsed()).map((timezoneUse) -> {
-					return new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
-							timezoneUse.getEnd(), bounceAtr);
-				}).collect(Collectors.toList());
+				listTimezoneUse.stream().filter(x -> x.isUsed()).forEach((timezoneUse) -> {
+					workScheduleTimeZones.add(new WorkScheduleTimeZone(timezoneUse.getWorkNo(), timezoneUse.getStart(),
+							timezoneUse.getEnd(), bounceAtr));
+				});
 			}
 		}
 

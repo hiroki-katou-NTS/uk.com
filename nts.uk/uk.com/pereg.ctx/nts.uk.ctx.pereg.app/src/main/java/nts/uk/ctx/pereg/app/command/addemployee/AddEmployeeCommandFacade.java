@@ -152,7 +152,7 @@ public class AddEmployeeCommandFacade {
 
 	private List<SettingItemDto> mergeData(List<ItemsByCategory> inputs, AddEmployeeCommand command) {
 
-		List<SettingItemDto> dataList = this.layoutFinder.getAllSettingItemList(command);
+		List<SettingItemDto> dataList = this.layoutFinder.getSetItems(command);
 
 		dataList.forEach(x -> {
 

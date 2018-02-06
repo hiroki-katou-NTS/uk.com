@@ -35,7 +35,7 @@ public class LayoutWebService extends WebService {
 	@Path("getByCreateType")
 	@POST
 	public NewLayoutDto getByCreateType(AddEmployeeCommand command) {
-		return this.layoutFinder.getByCreateType(command);
+		return this.layoutFinder.getLayoutByCreateType(command);
 	}
 	
 	/**

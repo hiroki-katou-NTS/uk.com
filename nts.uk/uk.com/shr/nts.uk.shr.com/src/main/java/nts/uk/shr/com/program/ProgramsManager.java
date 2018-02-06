@@ -1486,11 +1486,11 @@ public class ProgramsManager {
 	public static final Program KAL003D = new Program(WebAppId.AT, ProgramIdConsts.KAL003D, "KAL003_4",
 			"view/kal/003/d/index.xhtml");
 	/**  KAL004 */
-	public static final Program KAL004A = new Program(WebAppId.AT, ProgramIdConsts.KAL004A, "KAL007_1",
+	public static final Program KAL004A = new Program(WebAppId.AT, ProgramIdConsts.KAL004A, "KAL004_1",
 			"/view/kal/004/a/index.xhtml");
-	public static final Program KAL004B = new Program(WebAppId.AT, ProgramIdConsts.KAL004B, "KAL007_2",
+	public static final Program KAL004B = new Program(WebAppId.AT, ProgramIdConsts.KAL004B, "KAL004_2",
 			"/view/kal/004/b/index.xhtml");
-	public static final Program KAL004F = new Program(WebAppId.AT, ProgramIdConsts.KAL004F, "KAL007_2",
+	public static final Program KAL004F = new Program(WebAppId.AT, ProgramIdConsts.KAL004F, "KAL004_2",
 			"/view/kal/004/f/index.xhtml");
 	
 	/**

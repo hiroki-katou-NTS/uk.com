@@ -4,15 +4,23 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.Data;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeSheetDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
+import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
+import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の休憩時間帯")
@@ -80,5 +88,27 @@ public class BreakTimeDailyDto implements ConvertibleAttendanceItem {
 	@Override
 	public GeneralDate workingDate() {
 		return this.ymd;
+	}
+	
+	@Override
+	public BreakTimeOfDailyPerformance toDomain() {
+		return new BreakTimeOfDailyPerformance(employeeId,
+				EnumAdaptor.valueOf(restTimeType, BreakType.class),
+				ConvertHelper.mapTo(timeZone,
+						(d) -> new BreakTimeSheet(new BreakFrameNo(d.getTimeSheetNo()),
+								createWorkStamp(d.getStart()),
+								createWorkStamp(d.getEnd()),
+								// TODO: calculate break time
+								new AttendanceTime(d.getBreakTime()))),
+				ymd);
+	}
+
+	private WorkStamp createWorkStamp(TimeStampDto d) {
+		return d == null ? null : new WorkStamp(
+				d.getTimesOfDay() == null ? d.getAfterRoundingTimesOfDay() == null ? null : new TimeWithDayAttr(d.getAfterRoundingTimesOfDay())
+						: new TimeWithDayAttr(d.getTimesOfDay()),
+				d.getTimesOfDay() == null ? null : new TimeWithDayAttr(d.getTimesOfDay()),
+				d.getPlaceCode() == null ? null : new WorkLocationCD(d.getPlaceCode()),
+				d.getStampSourceInfo() == null ? StampSourceInfo.HAND_CORRECTION_BY_MYSELF : EnumAdaptor.valueOf(d.getStampSourceInfo(), StampSourceInfo.class));
 	}
 }

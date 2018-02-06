@@ -9,11 +9,14 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applicationlist.extractcondition.ApplicationListAtr;
@@ -93,67 +96,15 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	private RelationshipRepository repoRelationship;
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
-	@Inject
-	private AppDeadlineSettingRepository repoDeadlineSet;
-	@Inject
-	private EmployeeRequestAdapter employeeAdaptor;
-	@Inject
-	private ClosureEmploymentRepository closureEmpRepository;
 	
-	/**
-	 * 12 - 申請一覧初期日付期間
-	 */
-	@Override
-	public DatePeriod getInitialPeriod(String companyId) {
-		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
-		//ドメイン「締め」を取得する
-		List<Closure> lstClosure = repoClosure.findAllActive(companyID, UseClassification.UseClass_Use);
-		List<ClosureHistory> lstClosureHist = new ArrayList<>();
-		for (Closure closure : lstClosure) {
-			ClosureHistory closureHist = this.findHistClosure(closure.getClosureHistories(), closure.getClosureMonth());
-			if(closureHist != null){
-				lstClosureHist.add(closureHist);
-			}
-		}
-		
-		
-		
-		
-		GeneralDate baseDate = GeneralDate.today();
-		//find employment by employeeId
-		SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID, employeeID, baseDate);
-		//アルゴリズム「会社の締め日を取得する」を実行する
-		//アルゴリズム「締めIDを取得する」を実行する
-		Optional<ClosureEmployment> closureEmployment = closureEmpRepository.findByEmploymentCD(companyID, empHistImport.getEmploymentCode());
-		//ドメインモデル「申請締切設定」を取得する (get domain deadline setting)
-		Optional<AppDeadlineSetting> deadlinSet =  repoDeadlineSet.getDeadlineByClosureId(companyId, closureEmployment.get().getClosureId());
-		
-		//締め日より開始日付を取得
-		// TODO Auto-generated method stub
-		GeneralDate start = GeneralDate.fromString("", "yyyy-MM-dd");
-		GeneralDate end = GeneralDate.fromString("", "yyyy-MM-dd");
-		//開始日付の4か月後を終了日付として取得
-		// TODO Auto-generated method stub
-		return new DatePeriod(start,end);
-	}
-	private ClosureHistory findHistClosure(List<ClosureHistory> closureHistories, CurrentMonth closureMonth){
-		for (ClosureHistory closureHist : closureHistories) {
-			if(closureHist.getStartYearMonth().lessThanOrEqualTo(closureMonth.getProcessingYm()) &&
-					closureHist.getEndYearMonth().greaterThanOrEqualTo(closureMonth.getProcessingYm())){
-				return closureHist;
-			}
-		}
-		return null;
-	}
 	/**
 	 * 0 - 申請一覧事前必須チェック
 	 */
 	@Override
 	public Boolean checkAppPredictRequire(int appType, String wkpID) {
 		//申請種類-(Check AppType)
-		if(appType !=0 && appType != 6){//「休出時間申請」又は「残業申請」以外の場合
-			return null;
+		if(appType != 0 && appType != 6){//「休出時間申請」又は「残業申請」以外の場合
+			return false;
 		}
 		//「休出時間申請」又は「残業申請」の場合
 		//ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
@@ -161,9 +112,12 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 		Optional<ApprovalFunctionSetting> appFuncSet = null;
 		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpID, appType);
 		//対象が存在しない場合 - TH doi tuong k ton tai
-		if(!appFuncSet.isPresent()){
+		if(!appFuncSet.isPresent() || appFuncSet.get().getInstructionUseSetting().getInstructionAtr().equals(UseAtr.NOTUSE)){
 			//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
 			appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
+		}
+		if(!appFuncSet.isPresent()|| appFuncSet.get().getInstructionUseSetting().getInstructionAtr().equals(UseAtr.NOTUSE)){
+			return false;
 		}
 		//申請承認機能設定.残業申請の事前必須設定
 		if(appFuncSet.get().getOvertimeAppSetting().equals(SettingFlg.SETTING)){
@@ -255,7 +209,8 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 	 */
 	@Override
 	public ApplicationStatus countAppListApproval(List<Application_New> lstApp) {
-		ApplicationStatus appStatus = new ApplicationStatus(0,0,0,0,0,0,0);
+		String sID = AppContexts.user().employeeId();
+		ApplicationStatus appStatus = new ApplicationStatus(0,0,0,0,0,0);
 		List<ApplicationFullOutput> lstAppFull = mergeAppAndPhase(lstApp);
 		for (ApplicationFullOutput appFull : lstAppFull) {
 			PhaseFrameStatus status = this.findPhaseFrameStatus(appFull.getLstPhaseState(), AppContexts.user().employeeId());
@@ -263,36 +218,30 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 			appFull.setStatus(statusApp);
 			appFull.setAgentId(status.getAgentId());
 		}
-		
 		for (ApplicationFullOutput appFull : lstAppFull) {
 			switch(appFull.getStatus()){
-				case 0:
-					appStatus.setNotReflectNumber(appStatus.getNotReflectNumber() + 1);
+				case 1://承認状況＝否
+					//否認件数に＋１する
+					appStatus.setDenialNumber(appStatus.getDenialNumber() + 1);
 					break;
-				case 1:
-					//k lam gi ca
-//					appStatus.setWaitReflectNumber(appStatus.getWaitReflectNumber() + 1);
-					break;
-				case 2:
-					//check
-					if(true){
-						
-					}else{
-						
-					}
-					appStatus.setReflectNumber(appStatus.getReflectNumber() + 1);
-					break;
-				case 3:
-//					appStatus.setWaitCancelNumber(appStatus.getWaitCancelNumber() + 1);
-					break;
-				case 4:
-					appStatus.setCancelNumber(appStatus.getCancelNumber() + 1);
-					break;
-				case 5:
+				case 2://承認状況＝差戻
+					//差戻件数に＋１する
 					appStatus.setRemandNumner(appStatus.getRemandNumner() + 1);
 					break;
-				case 6:
-					appStatus.setDenialNumber(appStatus.getDenialNumber() + 1);
+				case 3://承認状況＝取消
+					//取消件数に＋１する
+					appStatus.setCancelNumber(appStatus.getCancelNumber() + 1);
+					break;
+				case 4://承認状況＝承認済み/反映済み
+					if(StringUtil.isNullOrEmpty(appFull.getAgentId(), true) || appFull.getAgentId().equals(sID)){//代行者＝未登録　または　代行者＝ログインID
+						appStatus.setApprovalNumber(appStatus.getApprovalNumber() + 1);
+					}else{//代行者≠ログインID
+						appStatus.setApprovalAgentNumber(appStatus.getApprovalAgentNumber() + 1);
+					}
+					break;
+				case 5://承認状況＝未
+					//未承認件数に＋１する
+					appStatus.setUnApprovalNumber(appStatus.getUnApprovalNumber() + 1);
 					break;
 				default:
 					break;
@@ -455,6 +404,76 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 		return null;
 	}
 	/**
+	 * 12 - 申請一覧初期日付期間
+	 */
+	@Override
+	public DatePeriod getInitialPeriod(String companyId) {
+		String companyID = AppContexts.user().companyId();
+		//ドメイン「締め」を取得する
+		List<Closure> lstClosure = repoClosure.findAllActive(companyID, UseClassification.UseClass_Use);
+		//list clourse hist
+		for (Closure closure : lstClosure) {
+			//find clourse Hist trong khoang thoi gian
+			ClosureHistory closureHist = this.findHistClosure(closure.getClosureHistories(), closure.getClosureMonth());
+			List<ClosureHistory> lstClosureHist = new ArrayList<>();
+			if(closureHist != null){
+				lstClosureHist.add(closureHist);
+				closure.setClosureHistories(lstClosureHist);
+			}else{
+				closure.setClosureHistories(null);
+			}
+		}
+		lstClosure.stream().filter(c-> c.getClosureHistories() != null);
+		Closure histMin = this.findHistMin(lstClosure);
+		CurrentMonth month = histMin.getClosureMonth();
+		GeneralDate start = null;
+		//最小日付に＋１日－１ヵ月して開始日付とする
+		if(histMin.getClosureHistories().get(0).getClosureDate().getLastDayOfMonth().booleanValue()==true){//締めが末締めの場合
+			GeneralDate tmp = GeneralDate.ymd(month.getProcessingYm().year(), month.getProcessingYm().month() + 1, 1);
+			start = tmp.addMonths(-1);
+		}else{//末締めではない場合
+			GeneralDate tmp = GeneralDate.
+					ymd(month.getProcessingYm().year(), month.getProcessingYm().month(), histMin.getClosureHistories().get(0).getClosureDate().getClosureDay().v());
+			GeneralDate date = tmp.addDays(1);
+			start = date.addMonths(-1);
+		}
+		//開始日付の4か月後を終了日付として取得
+		GeneralDate end = start.addMonths(4);
+		return new DatePeriod(start,end);
+	}
+	/**
+	 * find closure history min
+	 * @param lstClosureHist
+	 * @return
+	 */
+	private Closure findHistMin(List<Closure> lstClosure){
+		lstClosure.sort((hist1, hist2)
+				-> hist1.getClosureHistories().get(0).getClosureDate().getClosureDay().compareTo(hist2.getClosureHistories().get(0).getClosureDate().getClosureDay()));
+		Closure histMin = null;
+		for (Closure closure : lstClosure) {
+			if(closure.getClosureHistories().get(0).getClosureDate().getLastDayOfMonth() != true){
+				histMin = closure;
+				break;
+			}
+		}
+		return histMin == null? lstClosure.get(0) : histMin;
+	}
+	/**
+	 * find closure history by period
+	 * @param closureHistories
+	 * @param closureMonth
+	 * @return
+	 */
+	private ClosureHistory findHistClosure(List<ClosureHistory> closureHistories, CurrentMonth closureMonth){
+		for (ClosureHistory closureHist : closureHistories) {
+			if(closureHist.getStartYearMonth().lessThanOrEqualTo(closureMonth.getProcessingYm()) &&
+					closureHist.getEndYearMonth().greaterThanOrEqualTo(closureMonth.getProcessingYm())){
+				return closureHist;
+			}
+		}
+		return null;
+	}
+	/**
 	 * merge App And Phase
 	 * @param lstApp
 	 * @return
@@ -524,6 +543,13 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 		}
 		return check;
 	}
+	/**
+	 * calculate status of application
+	 * @param appStatus
+	 * @param status
+	 * @param agentId
+	 * @return
+	 */
 	private int calApplication(ReflectedState_New appStatus, PhaseFrameStatus status, String agentId){
 		String sIdLogin = AppContexts.user().employeeId();
 		if(agentId != null & agentId.equals(sIdLogin)){//※ログイン者　　＝代行者の場合

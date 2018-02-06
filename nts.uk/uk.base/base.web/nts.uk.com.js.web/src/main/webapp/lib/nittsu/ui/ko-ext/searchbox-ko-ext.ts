@@ -251,9 +251,9 @@ module nts.uk.ui.koExtentions {
                             component.igGrid("option", "dataSource", _.cloneDeep(source));  
                             component.igGrid("dataBind");  
                             
-                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
+//                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
                                 component.trigger("selectionchanged");        
-                            }
+//                            }
                         } else {
                             component.trigger("selectionchanged");    
                         }
