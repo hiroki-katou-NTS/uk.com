@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -27,7 +27,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRoo
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
@@ -52,7 +51,6 @@ import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceReposit
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -190,7 +188,7 @@ public class ApplicationListInitialImpl implements ApplicationListInitialReposit
 		//取得した一覧の申請種類(単一化）でリストを作成する - create list for drop-down list (A4_4_1)
 		// TODO Auto-generated method stub
 		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)- YenNTH
-		List<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
+		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
 		return null;
 	}
 	/**
