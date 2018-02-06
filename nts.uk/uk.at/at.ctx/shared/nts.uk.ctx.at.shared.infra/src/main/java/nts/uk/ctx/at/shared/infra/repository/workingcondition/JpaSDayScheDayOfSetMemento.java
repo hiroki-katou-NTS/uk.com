@@ -70,13 +70,15 @@ public class JpaSDayScheDayOfSetMemento implements SingleDayScheduleSetMemento {
 	 */
 	@Override
 	public void setWorkingHours(List<TimeZone> workingHours) {
-		List<KshmtDayofweekTimeZone> kshmtDayofweekTimeZones = workingHours.stream().map(item -> {
-			KshmtDayofweekTimeZone entity = new KshmtDayofweekTimeZone();
-			item.saveToMemento(new JpaTimezoneSetMemento<KshmtDayofweekTimeZone>(historyId,
-					this.perWorkDayOffAtr, entity));
-			return entity;
-		}).collect(Collectors.toList());
-		this.entity.setKshmtDayofweekTimeZones(kshmtDayofweekTimeZones);
+		if (workingHours.size() > 0){
+			List<KshmtDayofweekTimeZone> kshmtDayofweekTimeZones = workingHours.stream().map(item -> {
+				KshmtDayofweekTimeZone entity = new KshmtDayofweekTimeZone();
+				item.saveToMemento(new JpaTimezoneSetMemento<KshmtDayofweekTimeZone>(historyId,
+						this.perWorkDayOffAtr, entity));
+				return entity;
+			}).collect(Collectors.toList());
+			this.entity.setKshmtDayofweekTimeZones(kshmtDayofweekTimeZones);
+		}
 	}
 
 	/*
