@@ -232,13 +232,17 @@ public class AppHolidayWorkFinder {
 				List<AppEmploymentSetting> appEmploymentWorkType = appCommonSettingOutput.appEmploymentWorkType;
 				WorkTypeHolidayWork WorkTypes =  holidayService.getWorkTypes(companyID, employeeID, appEmploymentWorkType, baseDate, personalLablorCodition);
 				result.setWorkTypes(WorkTypes.getWorkTypeCodes());
-				result.getWorkType().setWorkTypeCode(WorkTypes.getWorkTypeCode());
-				result.getWorkType().setWorkTypeName(WorkTypes.getWorkTypeName());
+				WorkTypeOvertime workType = new WorkTypeOvertime();
+				workType.setWorkTypeCode(WorkTypes.getWorkTypeCode());
+				workType.setWorkTypeName(WorkTypes.getWorkTypeName());
+				result.setWorkType(workType);
 				// 5.就業時間帯を取得する
 				WorkTimeHolidayWork workTimes = this.holidayService.getWorkTimeHolidayWork(companyID, employeeID, baseDate, personalLablorCodition);
 				result.setWorkTimes(workTimes.getWorkTimeCodes());
-				result.getWorkTime().setSiftCode(workTimes.getWorkTimeCode());
-				result.getWorkTime().setSiftName(workTimes.getWorkTimeName());
+				SiftType workTime = new SiftType();
+				workTime.setSiftCode(workTimes.getWorkTimeCode());
+				workTime.setSiftName(workTimes.getWorkTimeName());
+				result.setWorkTime(workTime);
 				// 01-14_勤務時間取得(lay thoi gian): chua xong  Imported(申請承認)「勤務実績」を取得する(lay domain 「勤務実績」): to do
 				RecordWorkOutput recordWorkOutput = iOvertimePreProcess.getWorkingHours(companyID, employeeID,appDate,approvalFunctionSetting,result.getWorkTime().getSiftCode());
 				result.setWorkClockStart1(recordWorkOutput.getStartTime1());

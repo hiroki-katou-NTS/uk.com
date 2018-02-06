@@ -39,7 +39,7 @@
 			<div id="functions-area">
 				<div id="function-content">
 					<button class="proceed"
-						data-bind="enable: $root.errors.isEmpty ,showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
+						data-bind="enable: $root.errors.isEmpty , visible:showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
 					<button data-bind="visible: showButton().available4">#{i18n.getText('KDW003_5')}</button>
 					<button data-bind="visible: showButton().available2">#{i18n.getText('KDW003_6')}</button>
 					<button data-bind="visible: showButton().available3">#{i18n.getText('KDW003_12')}</button>

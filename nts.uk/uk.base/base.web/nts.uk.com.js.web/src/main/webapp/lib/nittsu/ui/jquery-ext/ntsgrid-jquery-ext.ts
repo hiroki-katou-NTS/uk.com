@@ -3700,6 +3700,8 @@ module nts.uk.ui.jqueryExtentions {
                             if (!sheetMng.sheetColumns) {
                                 sheetMng.sheetColumns = {};
                             }
+                            
+                            let settings = $grid.data(internal.SETTINGS);
                             columns = sheetMng.sheetColumns[sheet.name];
                             if (!columns) {
                                 columns = getSheetColumns(options.columns, sheet, options.features);
@@ -3708,12 +3710,10 @@ module nts.uk.ui.jqueryExtentions {
                                 utils.analyzeColumns(columns.unfixed).forEach(function(c, i) {
                                     idxes[c.key] = i;
                                 });
-                                let settings = $grid.data(internal.SETTINGS);
                                 settings.descriptor.colIdxes = idxes; 
                                 clonedColumns = columns.all;
                             } else {
                                 let idxes = {};
-                                let settings = $grid.data(internal.SETTINGS);
                                 let fixedColumns = settings.descriptor.fixedColumns;
                                 if (fixedColumns) {
                                     let unfixed = columns.slice(fixedColumns.length);
@@ -3731,13 +3731,12 @@ module nts.uk.ui.jqueryExtentions {
                             $grid.off();
                             
                             let pagingFt = feature.find(clonedOpts.features, feature.PAGING);
-                            let loader = $grid.data(internal.LOADER);
-                            if (pagingFt && loader) {
-                                if (!util.isNullOrUndefined(loader.pageIndex)) {
-                                    pagingFt.currentPageIndex = loader.pageIndex;
+                            if (pagingFt && settings) {
+                                if (!util.isNullOrUndefined(settings.pageIndex)) {
+                                    pagingFt.currentPageIndex = settings.pageIndex;
                                 }
-                                if (!util.isNullOrUndefined(loader.pageSize)) {
-                                    pagingFt.pageSize = loader.pageSize;
+                                if (!util.isNullOrUndefined(settings.pageSize)) {
+                                    pagingFt.pageSize = settings.pageSize;
                                 }
                                 feature.replaceBy(clonedOpts, feature.PAGING, pagingFt); 
                             }
@@ -3796,12 +3795,9 @@ module nts.uk.ui.jqueryExtentions {
                 allKeysPath: any;
                 pageRecordsPath: any;
                 keys: Array<any>;
-                pageIndex: any;
-                pageSize: number;
-                constructor(allKeysPath: any, pageRecordsPath: any, pageSize: number) {
+                constructor(allKeysPath: any, pageRecordsPath: any) {
                     this.allKeysPath = allKeysPath;
                     this.pageRecordsPath = pageRecordsPath;
-                    this.pageSize = pageSize;
                 }
             }
             
@@ -3857,15 +3853,20 @@ module nts.uk.ui.jqueryExtentions {
                 if (!options) return false;
                 let pagingFt = feature.find(options.features, feature.PAGING);
                 if (!pagingFt) return false;
+                bindPageChange($grid);
+                
+                let setting = $grid.data(internal.SETTINGS);
+                if (util.isNullOrUndefined(setting.pageSize)) {
+                    setting.pageSize = pagingFt.pageSize;
+                }
                 let demandLoadFt = feature.find(options.ntsFeatures, feature.DEMAND_LOAD);
                 if (!demandLoadFt) return false;
                 let pageSize = pagingFt.pageSize;
                 let loader = $grid.data(internal.LOADER);
                 if (!loader) {
-                    $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath, pagingFt.pageSize));
+                    $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                 } else if (loader.keys) { // Switch sheet
-                    pageSize = loader.pageSize;
-                    bindPageChange($grid);
+                    pageSize = setting.pageSize;
                     return false;
                 }
                 
@@ -3882,13 +3883,12 @@ module nts.uk.ui.jqueryExtentions {
                     let firstPageItems = keys.slice(firstRecordIndex, lastRecordIndex);
                     loadLazy(demandLoadFt.pageRecordsPath, firstPageItems, firstRecordIndex, lastRecordIndex,
                         ds, primaryKey).done(function(data) {
-                        options.dataSource = data;
+                        options.dataSource = options.dataSourceAdapter ? options.dataSourceAdapter(data) : data;
                         $grid.igGrid(options);
-                        bindPageChange($grid);
                     });  
                 };
                 
-                if (options.recordKeys) {
+                if (options.recordKeys && options.recordKeys.constructor === Array) {
                     loader = $grid.data(internal.LOADER);
                     loader.keys = options.recordKeys;
                     bindKeys(options.recordKeys);
@@ -3911,12 +3911,13 @@ module nts.uk.ui.jqueryExtentions {
                     let pageSize = ui.owner.pageSize();
                     let startIndex = newPageIndex * pageSize;
                     let endIndex = startIndex + pageSize;
+                    let settings = $grid.data(internal.SETTINGS);
+                    settings.pageChanged = true;
+                    settings.pageIndex = ui.newPageIndex;
                     let loader = $grid.data(internal.LOADER);
                     if (!loader || !loader.keys) return;
                     let dataSource = $grid.igGrid("option", "dataSource");
                     let primaryKey = $grid.igGrid("option", "primaryKey");
-                    loader.pageIndex = ui.newPageIndex;
-                    loader.pageChanged = true;
                     let newKeys = loader.keys.slice(startIndex, endIndex);
                     for (let i = endIndex - 1; i >= startIndex; i--) {
                         if (dataSource[i] && dataSource[i].loaded) {
@@ -3925,17 +3926,19 @@ module nts.uk.ui.jqueryExtentions {
                     }
                     if (newKeys.length === 0) return;
                     loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function(data) {
-                        $grid.igGrid("option", "dataSource", data);
+                        let ds = settings.dataSourceAdapter ? settings.dataSourceAdapter(data) : data;
+                        $grid.igGrid("option", "dataSource", ds);
                         ui.owner.pageIndex(ui.newPageIndex);
                     });
                     return false;
                 });
                 
                 $grid.on(events.Handler.PAGE_SIZE_CHANGE, function(evt: any, ui: any) {
+                    let setting = $grid.data(internal.SETTINGS);
+                    setting.pageSize = ui.newPageSize;
+                    setting.pageIndex = 0;
                     let loader = $grid.data(internal.LOADER);
                     if (!loader) return;
-                    loader.pageSize = ui.newPageSize;
-                    loader.pageIndex = 0;
                     let currentPageIndex = 0;
                     let startIndex = currentPageIndex * ui.newPageSize;
                     let endIndex = startIndex + ui.newPageSize;
@@ -3949,7 +3952,8 @@ module nts.uk.ui.jqueryExtentions {
                     }
                     if (newKeys.length === 0) return;
                     loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function(data) {
-                        $grid.igGrid("option", "dataSource", data);
+                        let ds = setting.dataSourceAdapter ? setting.dataSourceAdapter(data) : data;
+                        $grid.igGrid("option", "dataSource", ds);
                         ui.owner.pageSize(ui.newPageSize);
                     });
                     return false;
@@ -4000,6 +4004,7 @@ module nts.uk.ui.jqueryExtentions {
                 let data: any = {};
                 let rebuild;
                 data.preventEditInError = options.preventEditInError;
+                data.dataSourceAdapter = options.dataSourceAdapter;
                 if (!$grid.data(internal.SETTINGS)) {
                     $grid.data(internal.SETTINGS, data);
                 } else {
@@ -4008,21 +4013,20 @@ module nts.uk.ui.jqueryExtentions {
                 
                 $grid.on(events.Handler.RECORDS, function(evt, arg) {
                     if (util.isNullOrUndefined(arg.owner._startRowIndex)) return;
-                    let loader = $grid.data(internal.LOADER);
                     let setting = $grid.data(internal.SETTINGS);
                     let owner = arg.owner;
                     let pageIndex = 0, pageSize = 0;
-                    if (!util.isNullOrUndefined(loader.pageIndex)) {
-                        pageIndex = loader.pageIndex;
+                    if (!util.isNullOrUndefined(setting.pageIndex)) {
+                        pageIndex = setting.pageIndex;
                     }
-                    if (!util.isNullOrUndefined(loader.pageSize)) {
-                        pageSize = loader.pageSize;
+                    if (!util.isNullOrUndefined(setting.pageSize)) {
+                        pageSize = setting.pageSize;
                     }
                     let startRow = owner._startRowIndex + pageIndex * pageSize;
-                    if (loader.pageChanged) { 
+                    if (setting.pageChanged) { 
                         startRow = pageIndex * pageSize;
                         setTimeout(function() {
-                            loader.pageChanged = false;
+                            setting.pageChanged = false;
                         }, 0);
                     }
                     if (!setting.descriptor) {
