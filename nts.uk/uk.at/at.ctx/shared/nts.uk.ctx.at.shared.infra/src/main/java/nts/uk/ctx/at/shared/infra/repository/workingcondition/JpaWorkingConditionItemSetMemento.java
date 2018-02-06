@@ -182,7 +182,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setEmployeeId(String employeeId) {
-		if(StringUtil.isNullOrEmpty(employeeId, false)){
+		if(!StringUtil.isNullOrEmpty(employeeId, false)){
 			this.entity.setSid(employeeId);
 		}
 	}
