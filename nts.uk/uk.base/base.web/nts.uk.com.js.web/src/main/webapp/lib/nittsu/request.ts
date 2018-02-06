@@ -337,7 +337,7 @@ module nts.uk.request {
         }
         
         export function requestToCancel(taskId: string) {
-            return ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId); 
+            return ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId);
         }
     }
     
