@@ -120,8 +120,8 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 	}
 
 	public static KrcdtTimeLeavingWork toEntity(String employeeId, GeneralDate ymd, TimeLeavingWork domain, int type) {
-		TimeActualStamp attendanceStamp = domain.getAttendanceStamp().orElse(null);
-		TimeActualStamp leaveStamp = domain.getLeaveStamp().orElse(null);
+		TimeActualStamp attendanceStamp = (domain.getAttendanceStamp() != null && domain.getAttendanceStamp().isPresent()) ? domain.getAttendanceStamp().get() : null;
+		TimeActualStamp leaveStamp = (domain.getLeaveStamp() != null && domain.getLeaveStamp().isPresent()) ? domain.getLeaveStamp().get() : null;
 		KrcdtTimeLeavingWork krcdtTimeLeavingWork = new KrcdtTimeLeavingWork();
 		KrcdtTimeLeavingWorkPK krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK(employeeId, domain.getWorkNo().v(), ymd, type);
 		krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK = krcdtTimeLeavingWorkPK;

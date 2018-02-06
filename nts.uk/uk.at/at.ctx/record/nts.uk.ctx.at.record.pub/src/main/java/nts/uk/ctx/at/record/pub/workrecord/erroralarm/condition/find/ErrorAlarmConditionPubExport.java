@@ -363,6 +363,8 @@ public class ErrorAlarmConditionPubExport {
 			erAlAtdItemConditionDto.setConditionType(itemDomain.getCompareSingleValue().getConditionType().value);
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareSingleValue().getCompareOpertor().value);
 		}
+		if (erAlAtdItemConditionDto.getCompareStartValue() == null) erAlAtdItemConditionDto.setCompareStartValue(new BigDecimal(0));
+		if (erAlAtdItemConditionDto.getCompareEndValue() == null) erAlAtdItemConditionDto.setCompareEndValue(new BigDecimal(0));
 		return erAlAtdItemConditionDto;
 	}
 	
