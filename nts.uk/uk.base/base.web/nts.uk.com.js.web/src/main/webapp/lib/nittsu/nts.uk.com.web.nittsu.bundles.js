@@ -18663,8 +18663,11 @@ var nts;
                                     utils.analyzeColumns(options.columns).forEach(function (c, i) {
                                         idxes_1[c.key] = i;
                                     });
-                                    var settings_1 = $grid.data(internal.SETTINGS);
-                                    settings_1.descriptor.colIdxes = idxes_1;
+                                    var setting = $grid.data(internal.SETTINGS);
+                                    if (!setting.descriptor) {
+                                        setting.descriptor = new settings.Descriptor();
+                                    }
+                                    setting.descriptor.colIdxes = idxes_1;
                                     return;
                                 }
                                 Configurator.load($grid, sheetFeature);
@@ -19022,8 +19025,9 @@ var nts;
                                 rebuild = true;
                             }
                             $grid.on(events.Handler.RECORDS, function (evt, arg) {
-                                if (uk.util.isNullOrUndefined(arg.owner._startRowIndex))
-                                    return;
+                                if (uk.util.isNullOrUndefined(arg.owner._startRowIndex)) {
+                                    arg.owner._startRowIndex = 0;
+                                }
                                 var setting = $grid.data(internal.SETTINGS);
                                 var owner = arg.owner;
                                 var pageIndex = 0, pageSize = 0;

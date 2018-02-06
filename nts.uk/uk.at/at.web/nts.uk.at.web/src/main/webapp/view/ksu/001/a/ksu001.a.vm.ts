@@ -85,7 +85,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         modeDisplay: KnockoutObservableArray<any> = ko.observableArray([
             { code: 1, name: '略名' },
             { code: 2, name: '時刻' },
-            { code: 3, name: '記号' }]);
+            //            { code: 3, name: '記号' }
+        ]);
         selectedModeDisplay: KnockoutObservable<number> = ko.observable(1);
 
         modeDisplayObject: KnockoutObservableArray<any> = ko.observableArray([
@@ -167,14 +168,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $('#oViewModel').show();
                     $('#qViewModel').hide();
                     $("#extable").exTable("updateMode", "none");
-                    $("#extable").exTable("viewMode", "shortName", { y: 175 });
+//                    $("#extable").exTable("viewMode", "shortName", { y: 175 });
+                    $("#extable").exTable("viewMode", "shortName", { y: 230 });
                     $("#combo-box1").focus();
                     // get data to stickData
                     $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
                 } else if (newValue == 2) {
                     $('#contain-view').hide();
                     $("#extable").exTable("updateMode", "edit");
-                    $("#extable").exTable("viewMode", "time", { y: 115 });
+//                    $("#extable").exTable("viewMode", "time", { y: 115 });
+                    $("#extable").exTable("viewMode", "time", { y: 170 });
                 } else {
                     $('#contain-view').show();
                     $('#contain-view').addClass('h-90');
@@ -596,7 +599,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     areaResize: true,
                     bodyHeightMode: "dynamic",
                     windowXOccupation: 25,
-                    windowYOccupation: 175,
+//                    windowYOccupation: 175,
+                    windowYOccupation: 230,
                     updateMode: "none",
                     pasteOverWrite: true,
                     stickOverWrite: true,
@@ -607,11 +611,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     },
                 })
                     .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
-                    .MiddleHeader(middleHeader).MiddleContent(middleContent)
+                    //                    .MiddleHeader(middleHeader).MiddleContent(middleContent)
                     .DetailHeader(detailHeader).DetailContent(detailContent)
-                    .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
-                    .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
-                    .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent).create();
+                    //                    .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
+                    //                    .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
+                    //                    .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)
+                    .create();
 
                 /**
                  * update text for row 2 of detailHeader
@@ -763,11 +768,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 };
 
                 $("#extable").exTable("updateTable", "leftmost", {}, updateLeftmostContent);
-                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
-                $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
-                $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
+                //                $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
+                //                $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
+                //                $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
                 $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+                //                $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                 $("#extable").on("extablecellupdated", function() { });
                 $("#extable").on("extablerowupdated", function() { });
@@ -882,7 +887,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     };
 
                     $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
-                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
+                    //                    $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, {});
 
                     setTimeout($("#extable").exTable("scrollBack", 2), 1000);
 
@@ -948,7 +953,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
 
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+                        //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                         setTimeout($("#extable").exTable("scrollBack", 2), 1000);
                     });
@@ -1015,7 +1020,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
 
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
+                        //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
                         setTimeout($("#extable").exTable("scrollBack", 2), 1000);
                     });

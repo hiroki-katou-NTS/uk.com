@@ -132,7 +132,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setContractTime(LaborContractTime contractTime) {
-		if (contractTime != null && contractTime.v() != null) {
+		if (contractTime != null) {
 			this.entity.setContractTime(contractTime.v());
 		}
 	}
@@ -213,7 +213,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	public void setScheduleMethod(Optional<ScheduleMethod> scheduleMethod) {
 		// Check exist
 		if (!scheduleMethod.isPresent()) {
-			this.entity.setKshmtScheduleMethod(null);
+//			this.entity.setKshmtScheduleMethod(null);
 			return;
 		}
 
@@ -241,18 +241,21 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	public void setHolidayAddTimeSet(Optional<BreakdownTimeDay> holidayAddTimeSet) {
 		// Check exist
 		if (!holidayAddTimeSet.isPresent()) {
-			this.entity.setHdAddTimeMorning(null);
-			this.entity.setHdAddTimeAfternoon(null);
-			this.entity.setHdAddTimeOneDay(null);
+//			this.entity.setHdAddTimeMorning(null);
+//			this.entity.setHdAddTimeAfternoon(null);
+//			this.entity.setHdAddTimeOneDay(null);
 			return;
 		}
 
-		this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning() != null
-				? holidayAddTimeSet.get().getMorning().v() : null);
-		this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon() != null
-				? holidayAddTimeSet.get().getAfternoon().v() : null);
-		this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay() != null
-				? holidayAddTimeSet.get().getOneDay().v() : null);
+		if (holidayAddTimeSet.get().getMorning() != null && !holidayAddTimeSet.get().getMorning().v().equals("")){
+			this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning().v());
+		}
+		if (holidayAddTimeSet.get().getAfternoon() != null && !holidayAddTimeSet.get().getAfternoon().v().equals("")){
+			this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon().v());
+		}
+		if (holidayAddTimeSet.get().getOneDay() != null && !holidayAddTimeSet.get().getOneDay().v().equals("")){
+			this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay().v());
+		}
 	}
 
 	/*
@@ -280,7 +283,6 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	@Override
 	public void setTimeApply(Optional<BonusPaySettingCode> timeApply) {
 		if (timeApply == null || !timeApply.isPresent() || StringUtil.isNullOrEmpty(timeApply.get().v(), true)) {
-			this.entity.setTimeApply(null);
 			return;
 		}
 		this.entity.setTimeApply(timeApply.get().v());
@@ -296,7 +298,6 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	@Override
 	public void setMonthlyPattern(Optional<MonthlyPatternCode> monthlyPattern) {
 		if (monthlyPattern == null || !monthlyPattern.isPresent() || StringUtil.isNullOrEmpty(monthlyPattern.get().v(), true)) {
-			this.entity.setMonthlyPattern(null);
 			return;
 		}
 		this.entity.setMonthlyPattern(monthlyPattern.get().v());

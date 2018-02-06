@@ -124,13 +124,179 @@ module nts.layout {
         button = () => {
             let self = this,
                 finder = self.finder,
-                CS00020_IS00128: IFindData = finder.find('CS00020', 'IS00128');
+                CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
 
-            if (CS00020_IS00128) {
-                CS00020_IS00128.ctrl.on('click', () => {
+                CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131'),
+                CS00020_IS00133: IFindData = finder.find('CS00020', 'IS00133'),
+                CS00020_IS00134: IFindData = finder.find('CS00020', 'IS00134'),
+                CS00020_IS00136: IFindData = finder.find('CS00020', 'IS00136'),
+                CS00020_IS00137: IFindData = finder.find('CS00020', 'IS00137'),
+
+
+                CS00020_IS00238: IFindData = finder.find('CS00020', 'IS00238'),
+                CS00020_IS00239: IFindData = finder.find('CS00020', 'IS00239'),
+                CS00020_IS00148: IFindData = finder.find('CS00020', 'IS00148'),
+                CS00020_IS00149: IFindData = finder.find('CS00020', 'IS00149'),
+                CS00020_IS00157: IFindData = finder.find('CS00020', 'IS00157'),
+                CS00020_IS00158: IFindData = finder.find('CS00020', 'IS00158'),
+                CS00020_IS00166: IFindData = finder.find('CS00020', 'IS00166'),
+                CS00020_IS00167: IFindData = finder.find('CS00020', 'IS00167'),
+                CS00020_IS00175: IFindData = finder.find('CS00020', 'IS00175'),
+                CS00020_IS00176: IFindData = finder.find('CS00020', 'IS00176'),
+                CS00020_IS00184: IFindData = finder.find('CS00020', 'IS00184'),
+                CS00020_IS00185: IFindData = finder.find('CS00020', 'IS00185'),
+                CS00020_IS00193: IFindData = finder.find('CS00020', 'IS00193'),
+                CS00020_IS00194: IFindData = finder.find('CS00020', 'IS00194'),
+                CS00020_IS00202: IFindData = finder.find('CS00020', 'IS00202'),
+                CS00020_IS00203: IFindData = finder.find('CS00020', 'IS00203'),
+                CS00020_IS00211: IFindData = finder.find('CS00020', 'IS00211'),
+                CS00020_IS00212: IFindData = finder.find('CS00020', 'IS00212'),
+                CS00020_IS00220: IFindData = finder.find('CS00020', 'IS00220'),
+                CS00020_IS00221: IFindData = finder.find('CS00020', 'IS00221');
+
+            if (CS00020_IS00130 || CS00020_IS00131) {
+
+                $(`${CS00020_IS00130 && CS00020_IS00130.ctrl.attr('id')}, ${CS00020_IS00131 && CS00020_IS00131.ctrl.attr('id')}`)
+                    .on('click', () => {
+                        let _finder = finder,
+                            lstComboBoxValue = CS00020_IS00130.data.lstComboBoxValue,
+                            selectedWorkTypeCode = CS00020_IS00130 ? CS00020_IS00130.data.value() || "" : "",
+                            selectedWorkTimeCode = CS00020_IS00131 ? CS00020_IS00131.data.value() || "" : "";
+
+                        setShared('parentCodes', {
+                            workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                            selectedWorkTypeCode: selectedWorkTypeCode,
+                            workTimeCodes: [],
+                            selectedWorkTimeCode: selectedWorkTimeCode
+                        }, true);
+
+                        modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                            var childData: IChildData = getShared('childData');
+                            if (!childData) {
+                                CS00020_IS00130.data.value(undefined);
+                                CS00020_IS00131.data.value(undefined);
+                            } else {
+                                if (CS00020_IS00130) {
+                                    CS00020_IS00130.data.value(childData.selectedWorkTypeCode);
+                                }
+                                if (CS00020_IS00131) {
+                                    CS00020_IS00131.data.value(childData.selectedWorkTimeCode);
+                                }
+                                if (childData.first) {
+                                    if (CS00020_IS00133) {
+                                        CS00020_IS00133.data.value(childData.first.start);
+                                    }
+                                    if (CS00020_IS00134) {
+                                        CS00020_IS00134.data.value(childData.first.end);
+                                    }
+                                }
+                                if (childData.second) {
+                                    if (CS00020_IS00136) {
+                                        CS00020_IS00136.data.value(childData.second.start);
+                                    }
+                                    if (CS00020_IS00137) {
+                                        CS00020_IS00137.data.value(childData.second.end);
+                                    }
+                                }
+                            }
+                        });
+                    });
+            };
+
+            // Button IS00238
+            if (CS00020_IS00238) {
+                CS00020_IS00238.ctrl.on('click', () => {
                     let _finder = finder,
-                        lstComboBoxValue = CS00020_IS00128.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00128.data.value() || "";
+                        lstComboBoxValue = CS00020_IS00238.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00238.data.value() || "";
+
+                    setShared('CS00020_IS00238', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('CS00020_IS00238');
+                        if (!childData) {
+                            CS00020_IS00238.data.value(undefined);
+                        } else {
+                            CS00020_IS00238.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+            // Button IS00239
+            if (CS00020_IS00239) {
+                CS00020_IS00239.ctrl.on('click', () => {
+                    let _finder = finder,
+                        selectedWorkTimeCode = CS00020_IS00239.data.value() || "";
+
+                    setShared('CS00020_IS00239', {
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: selectedWorkTimeCode
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('CS00020_IS00239');
+                        if (!childData) {
+                            CS00020_IS00239.data.value(undefined);
+                        } else {
+                            CS00020_IS00239.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+            if (CS00020_IS00220) {
+                CS00020_IS00220.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00220.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00220.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00220.data.value(undefined);
+                        } else {
+                            CS00020_IS00220.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+            if (CS00020_IS00221) {
+                CS00020_IS00221.ctrl.on('click', () => {
+                    let _finder = finder,
+                        selectedWorkTypeCode = CS00020_IS00221.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: "",
+                        selectedWorkTypeCode: selectedWorkTypeCode
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00221.data.value(undefined);
+                        } else {
+                            CS00020_IS00221.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+
+            if (CS00020_IS00148) {
+                CS00020_IS00148.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00148.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00148.data.value() || "";
 
                     setShared('parentCodes', {
                         workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
@@ -139,16 +305,379 @@ module nts.layout {
                         selectedWorkTimeCode: ""
                     }, true);
 
-                    modal('/view/kdl/003/a/index.xhtml', {}).onClosed(() => {
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
                         var childData: IChildData = getShared('childData');
                         if (!childData) {
-                            CS00020_IS00128.data.value(undefined);
+                            CS00020_IS00148.data.value(undefined);
                         } else {
-                            CS00020_IS00128.data.value(childData.selectedWorkTypeCode);
+                            CS00020_IS00239.data.value(childData.selectedWorkTypeCode);
+
                         }
                     });
                 });
             }
+
+            if (CS00020_IS00149) {
+                CS00020_IS00149.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00149.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00149.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00149.data.value(undefined);
+                        } else {
+                            CS00020_IS00149.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+
+            // Button IS00184
+            if (CS00020_IS00184) {
+                CS00020_IS00184.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00184.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00184.data.value() || "";
+
+                    setShared('CS00020_IS00184', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('CS00020_IS00184');
+                        if (!childData) {
+                            CS00020_IS00184.data.value(undefined);
+                        } else {
+                            CS00020_IS00184.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+
+            if (CS00020_IS00193) {
+                CS00020_IS00193.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00193.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00193.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00193.data.value(undefined);
+                        } else {
+                            CS00020_IS00193.data.value(childData.selectedWorkTypeCode);
+
+                        }
+                    });
+                });
+            }
+
+
+
+            // Button IS00185
+            if (CS00020_IS00185) {
+                CS00020_IS00185.ctrl.on('click', () => {
+                    let _finder = finder,
+                        selectedWorkTimeCode = CS00020_IS00185.data.value() || "";
+
+                    setShared('CS00020_IS00185', {
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: selectedWorkTimeCode
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('CS00020_IS00185');
+                        if (!childData) {
+                            CS00020_IS00185.data.value(undefined);
+                        } else {
+                            CS00020_IS00185.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+            if (CS00020_IS00194) {
+                CS00020_IS00194.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00194.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00194.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00194.data.value(undefined);
+                        } else {
+                            CS00020_IS00194.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+            if (CS00020_IS00202) {
+                CS00020_IS00202.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00202.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00202.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00202.data.value(undefined);
+                        } else {
+                            CS00020_IS00202.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+            if (CS00020_IS00203) {
+                CS00020_IS00203.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00203.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00203.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00203.data.value(undefined);
+                        } else {
+                            CS00020_IS00203.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+            if (CS00020_IS00211) {
+                CS00020_IS00211.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00211.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00211.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00211.data.value(undefined);
+                        } else {
+                            CS00020_IS00211.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+            if (CS00020_IS00212) {
+                CS00020_IS00212.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00212.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00212.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00212.data.value(undefined);
+                        } else {
+                            CS00020_IS00212.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+
+            if (CS00020_IS00157) {
+                CS00020_IS00157.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00157.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00157.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00157.data.value(undefined);
+                        } else {
+                            CS00020_IS00157.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+            if (CS00020_IS00158) {
+                CS00020_IS00158.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00158.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00158.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00158.data.value(undefined);
+                        } else {
+                            CS00020_IS00158.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+            if (CS00020_IS00166) {
+                CS00020_IS00166.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00166.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00166.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00166.data.value(undefined);
+                        } else {
+                            CS00020_IS00166.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+            if (CS00020_IS00167) {
+                CS00020_IS00167.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00167.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00167.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00167.data.value(undefined);
+                        } else {
+                            CS00020_IS00167.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+            if (CS00020_IS00175) {
+                CS00020_IS00175.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00175.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00175.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00175.data.value(undefined);
+                        } else {
+                            CS00020_IS00175.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+            if (CS00020_IS00176) {
+                CS00020_IS00176.ctrl.on('click', () => {
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00176.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00176.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00176.data.value(undefined);
+                        } else {
+                            CS00020_IS00176.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
+                });
+            }
+
+
         };
 
         combobox = () => {
@@ -207,7 +736,11 @@ module nts.layout {
         selectedWorkTypeName: string;
         selectedWorkTimeCode: string;
         selectedWorkTimeName: string;
-        firstTime: string;
-        secondTime: string;
+        first: IDateRange;
+        second: IDateRange;
+    }
+    interface IDateRange {
+        start: number;
+        end: number;
     }
 } 
