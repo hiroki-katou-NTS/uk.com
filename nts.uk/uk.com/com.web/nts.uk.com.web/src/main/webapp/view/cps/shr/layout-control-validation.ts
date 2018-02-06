@@ -183,7 +183,7 @@ module nts.layout {
 
             if (CS00020_IS00130 || CS00020_IS00131) {
 
-                $(`${CS00020_IS00130 && CS00020_IS00130.ctrl.attr('id')}, ${CS00020_IS00131 && CS00020_IS00131.ctrl.attr('id')}`)
+                $(`#${CS00020_IS00130 && CS00020_IS00130.ctrl.attr('id')}, #${CS00020_IS00131 && CS00020_IS00131.ctrl.attr('id')}`)
                     .on('click', () => {
                         let _finder = finder,
                             lstComboBoxValue = CS00020_IS00130.data.lstComboBoxValue,
