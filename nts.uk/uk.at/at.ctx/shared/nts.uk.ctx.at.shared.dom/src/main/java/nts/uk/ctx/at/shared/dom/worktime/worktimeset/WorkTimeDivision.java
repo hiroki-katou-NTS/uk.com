@@ -29,6 +29,10 @@ public class WorkTimeDivision extends WorkTimeDomainObject {
 	 * @return　フレックスか流動である
 	 */
 	public boolean isfluidorFlex() {
-		return workTimeDailyAtr.isFlex()||workTimeMethodSet.isFluidWork();
+		return workTimeDailyAtr.isFlex() || workTimeMethodSet.isFluidWork();
+	}
+	
+	public boolean isFlow() {
+		return workTimeDailyAtr.isRegular() && workTimeMethodSet.isFluidWork();
 	}
 }
