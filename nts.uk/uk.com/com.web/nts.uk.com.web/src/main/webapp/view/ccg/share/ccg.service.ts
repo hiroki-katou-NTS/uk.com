@@ -16,7 +16,8 @@ module nts.uk.com.view.ccg.share.ccg {
             quickSearchEmployee: "basic/organization/employee/quicksearch",
             getRefRangeBySysType: "ctx/sys/auth/role/getrefrangebysystype",
             findClosureListByCurrentMonth: "ctx/at/shared/workrule/closure/findClosureListByCurrentMonth", //TODO: basedate truyen len hay lay system date?
-            calculatePeriod: "ctx/at/shared/workrule/closure/calculateperiod"
+            calculatePeriod: "ctx/at/shared/workrule/closure/calculateperiod",
+            getClosureTiedByEmployment: "ctx/at/shared/workrule/closure/getclosuretiedbyemployment"
         }
 
         /**
@@ -32,6 +33,19 @@ module nts.uk.com.view.ccg.share.ccg {
 
         export function findClosureListByCurrentMonth(): JQueryPromise<Array<any>> {
             return nts.uk.request.ajax('at', servicePath.findClosureListByCurrentMonth);
+        }
+
+        export function getClosureTiedByEmployment(): JQueryPromise<number> {
+            return nts.uk.request.ajax('at', servicePath.getClosureTiedByEmployment);
+        }
+
+        export function getEmployeeRangeSelection(key: any): JQueryPromise<model.EmployeeRangeSelection> {
+            return nts.uk.characteristics.restore(key);
+        }
+
+        export function saveEmployeeRangeSelection(data: model.EmployeeRangeSelection): JQueryPromise<void> {
+            const key = data.userId + '' + data.companyId;
+            return nts.uk.characteristics.save(key, data);
         }
 
         export function calculatePeriod(closureId: number, yearMonth: number): JQueryPromise<Array<any>> {
@@ -165,7 +179,21 @@ module nts.uk.com.view.ccg.share.ccg {
                 
                 onApplyEmployee: (data: EmployeeSearchDto[]) => void;
             }
-    
+
+            export interface SelectedInformation {
+                sortOrder: number; // 前回選択していた並び順
+                selectedClosureId: number; // 前回選択していた締め
+            }
+
+            export interface EmployeeRangeSelection {
+                userId: String; // ユーザID
+                companyId: String; // 会社ID
+                personnelInfo: SelectedInformation; // 人事の選択している情報
+                personalInfo: SelectedInformation; // 個人情報の選択している情報
+                employmentInfo: SelectedInformation; // 就業の選択している情報
+                salaryInfo: SelectedInformation; // 給与の選択している情報
+            }
+
         }
     }
 }

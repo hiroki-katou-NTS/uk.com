@@ -83,7 +83,7 @@ module nts.uk.com.view.ccg.share.ccg {
             workplaces: TreeComponentOption;
             employeeinfo: any;
             closureList: KnockoutObservableArray<any>;
-            selectedClosure: KnockoutObservable<string>;
+            selectedClosure: KnockoutObservable<number>;
             quickSearchParam: QuickSearchParam;
             advancedSearchParam: AdvancedSearchParam;
             
@@ -155,7 +155,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isOpenWorkplaceList = ko.observable(false);
                 self.isOpenWorkTypeList = ko.observable(false);
                 self.closureList = ko.observableArray([]);
-                self.selectedClosure = ko.observable('');
+                self.selectedClosure = ko.observable(null);
                 self.periodStartDate = ko.observable(new Date());
                 self.periodEndDate = ko.observable(new Date());
                 self.periodStartYm = ko.observable('');
@@ -480,11 +480,33 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.showClosure) {
                     service.findClosureListByCurrentMonth().done(data => {
                         self.closureList(data);
-                        dfd.resolve();
+                        self.getSelectedClosure().done(selected => {
+                            self.selectedClosure(selected);
+                            dfd.resolve();
+                        });
                     });
                 } else {
                     dfd.resolve();
                 }
+                return dfd.promise();
+            }
+
+            private getSelectedClosure(): JQueryPromise<number> {
+                let dfd = $.Deferred<number>();
+                let self = this;
+                const key = 'test';
+                service.getEmployeeRangeSelection(key).done(data => {
+                    if (data) {
+                        switch (self.systemType) {
+                            case 1:
+                                dfd.resolve(data.personnelInfo.selectedClosureId);
+                                break;
+                            default: break; // systemType not found
+                        }
+                    } else {
+                        service.getClosureTiedByEmployment().done(id => dfd.resolve(id));
+                    }
+                });
                 return dfd.promise();
             }
 

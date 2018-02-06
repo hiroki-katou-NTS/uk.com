@@ -47,6 +47,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Path("ctx/at/shared/workrule/closure")
 @Produces("application/json")
 public class ClosureWs {
+
 	/** The closure service. */
 	@Inject
 	private ClosureService closureService;
@@ -284,6 +285,13 @@ public class ClosureWs {
 		}).collect(Collectors.toList());
 	}
 	
+	@POST
+	@Path("getclosuretiedbyemployment")
+	public int getClosureTiedByEmployment() {
+		GeneralDate now = GeneralDate.today();
+		return 1; // TODO: get closure id.
+	}
+
 	@POST
 	@Path("calculateperiod/{closureid}/{yearmonth}")
 	public String calculatePeriod(@PathParam("closureid") int closureId, @PathParam("yearmonth") int yearMonth) {
