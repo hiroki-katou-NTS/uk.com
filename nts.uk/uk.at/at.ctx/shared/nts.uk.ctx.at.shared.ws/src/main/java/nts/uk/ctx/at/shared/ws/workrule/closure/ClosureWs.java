@@ -295,4 +295,10 @@ public class ClosureWs {
 	public String calculatePeriod(@PathParam("closureid") int closureId, @PathParam("yearmonth") int yearMonth) {
 		return this.closureService.getClosurePeriod(closureId, YearMonth.of(yearMonth)).end().toString(); //TODO dung tam. ko biet dung hay khong
 	}
+
+	@POST
+	@Path("getclosuresbybasedate/{basedate}")
+	public List<ClosureIdNameDto> getClosuresByBaseDate(@PathParam("basedate") String basedate) {
+		return this.finder.getClosuresByBaseDate(GeneralDate.fromString(basedate, "yyyy-MM-dd"));
+	}
 }
