@@ -17,7 +17,7 @@ public class PersonInfoExport {
 
 	private String pid;
 
-	private String pname;
+	private String businessName;
 
 	private GeneralDate entryDate;
 
