@@ -18,4 +18,8 @@ public class WorkTimeDto {
 	public String workTime2;
 	public String workAtr;
 	public String remark;
+	public Integer firstStartTime;
+	public Integer firstEndTime;
+	public Integer secondStartTime;
+	public Integer secondEndTime;
 }
