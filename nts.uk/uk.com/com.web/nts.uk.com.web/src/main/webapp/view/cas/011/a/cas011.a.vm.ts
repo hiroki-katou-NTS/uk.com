@@ -452,7 +452,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
                 self.listWebMenus(self.listAllWebMenus.filter(item1 => !self.isSelectedWebMenu(item1.webMenuCode)));
                 // get Web Menu Name for Web menu
                 let listWebMenuRight = self.listAllWebMenus.filter(item1 => self.isSelectedWebMenu(item1.webMenuCode));
-                currentRoleSet.webMenus.removeAll();
+                //currentRoleSet.webMenus.removeAll();
                 currentRoleSet.webMenus(listWebMenuRight);
             }
         }
