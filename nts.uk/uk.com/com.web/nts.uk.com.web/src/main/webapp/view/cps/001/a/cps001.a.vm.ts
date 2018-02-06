@@ -1053,7 +1053,7 @@ module cps001.a.vm {
 
                             person.gender(data.gender);
                             if (data.birthday) {
-                                person.birthDate(moment.utc(data.birthday).toDate());
+                                person.birthDate(moment.utc(data.birthday, "YYYY/MM/DD").toDate());
                             } else {
                                 person.birthDate(undefined);
                             }
