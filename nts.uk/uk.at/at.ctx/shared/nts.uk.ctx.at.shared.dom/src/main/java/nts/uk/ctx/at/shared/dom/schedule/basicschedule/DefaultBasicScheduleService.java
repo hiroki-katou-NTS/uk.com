@@ -35,10 +35,10 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	public WorkTypeRepository workTypeRepo;
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
-	
+
 	/** The Constant DEFAULT_CODE. */
 	private static final String DEFAULT_CODE = "000";
-	
+
 	@Override
 	public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 		String companyId = AppContexts.user().companyId();
@@ -177,7 +177,10 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	}
 
 	/*
+	 * 勤務種類と職業時間帯のペアチェック
+	 * 
 	 * (non-Javadoc)
+	 * 
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService#
@@ -197,7 +200,7 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 			throw new BusinessException("Msg_434");
 		}
 	}
-	
+
 	@Override
 	public void checkWorkTypeMaster(String companyId, String worktypeCode) {
 		// call repository find work type by code
@@ -214,17 +217,17 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 			throw new BusinessException("Msg_468");
 		}
 	}
-	
+
 	@Override
 	public void checkWorkTimeMater(String companyId, String workTimeCode) {
 		// check default work time code
-		//設定されていない（就業時間帯コード＝NULL || 就業時間帯コード＝000）
+		// 設定されていない（就業時間帯コード＝NULL || 就業時間帯コード＝000）
 		if ((DEFAULT_CODE.equals(workTimeCode) || StringUtil.isNullOrEmpty(workTimeCode, false))) {
 			return;
 		}
 
 		// call repository find work time by code
-		//ドメインモデル「就業時間帯の設定」に該当の就業時間帯コードが存在するかチェックする
+		// ドメインモデル「就業時間帯の設定」に該当の就業時間帯コードが存在するかチェックする
 		Optional<WorkTimeSetting> optionalWorkTime = this.workTimeRepository.findByCode(companyId, workTimeCode);
 
 		// check work time not exits
