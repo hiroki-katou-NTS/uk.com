@@ -1,5 +1,8 @@
 module nts.layout {
     import ajax = nts.uk.request.ajax;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export const validate = {
         removeDoubleLine: (items: Array<any>) => {
@@ -27,7 +30,7 @@ module nts.layout {
         }
         find = (categoryCode: string, subscribeCode: string): IFindData => {
             let self = this,
-                controls: Array<any> = _(self.lstCls).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
                 subscribe: any = _.find(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemCode == subscribeCode);
 
             if (subscribe) {
@@ -46,7 +49,7 @@ module nts.layout {
             }
 
             let self = this,
-                controls: Array<any> = _(self.lstCls).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
                 subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && (subscribesCode || []).indexOf(x.itemCode) > -1);
 
             return subscribes.map(x => {
@@ -59,7 +62,7 @@ module nts.layout {
 
         findChilds = (categoryCode: string, parentCode: string): Array<IFindData> => {
             let self = this,
-                controls: Array<any> = _(self.lstCls).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
                 subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemParentCode == parentCode);
 
             return subscribes.map(x => {
@@ -89,10 +92,24 @@ module nts.layout {
         radio = () => {
             let self = this,
                 finder = self.finder,
-                CS00020_IS00248: IFindData = finder.find('CS00020', 'IS00248');
+                CS00020_IS00248: IFindData = finder.find('CS00020', 'IS00248'),
+                CS00020_IS00121: IFindData = finder.find('CS00020', 'IS00121');
 
             if (CS00020_IS00248) {
                 CS00020_IS00248.data.value.subscribe(x => {
+                    let ctrls: Array<IFindData> = finder.findChilds(CS00020_IS00248.data.categoryCode, CS00020_IS00248.data.itemParentCode);
+
+                    _.each(ctrls, c => {
+                        if (c.data.itemCode != CS00020_IS00248.data.itemCode) {
+                            c.data.editable(x == 1);
+                            c.data.readonly(x != 1);
+                        }
+                    });
+                });
+            }
+
+            if (CS00020_IS00121) {
+                CS00020_IS00121.data.value.subscribe(x => {
                     let ctrls: Array<IFindData> = finder.findChilds(CS00020_IS00248.data.categoryCode, CS00020_IS00248.data.itemParentCode);
 
                     _.each(ctrls, c => {
@@ -102,8 +119,6 @@ module nts.layout {
                     });
                 });
             }
-            
-            
         };
 
         button = () => {
@@ -113,15 +128,27 @@ module nts.layout {
 
             if (CS00020_IS00128) {
                 CS00020_IS00128.ctrl.on('click', () => {
-                    let _finder = finder;
+                    let _finder = finder,
+                        lstComboBoxValue = CS00020_IS00128.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00128.data.value() || "";
 
-                    CS00020_IS00128.data.value('clicked');
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
+
+                    modal('/view/kdl/003/a/index.xhtml', {}).onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00128.data.value(undefined);
+                        } else {
+                            CS00020_IS00128.data.value(childData.selectedWorkTypeCode);
+                        }
+                    });
                 });
             }
-            
-            
-            
-            
         };
 
         combobox = () => {
@@ -149,15 +176,38 @@ module nts.layout {
     }
 
     interface IFindData {
-        ctrl: any;
+        ctrl: JQuery;
         data: IItemData
     }
 
     interface IItemData {
         value: KnockoutObservable<any>;
         editable: KnockoutObservable<boolean>;
+        readonly: KnockoutObservable<boolean>;
         categoryCode: string;
         itemCode: string;
+        lstComboBoxValue: Array<any>;
         itemParentCode?: string;
+    }
+
+    interface IComboboxItem {
+        optionText: string;
+        optionValue: string;
+    }
+
+    interface IParentCodes {
+        workTypeCodes: string;
+        selectedWorkTypeCode: string;
+        workTimeCodes: string;
+        selectedWorkTimeCode: string
+    }
+
+    interface IChildData {
+        selectedWorkTypeCode: string;
+        selectedWorkTypeName: string;
+        selectedWorkTimeCode: string;
+        selectedWorkTimeName: string;
+        firstTime: string;
+        secondTime: string;
     }
 } 
