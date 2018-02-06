@@ -201,15 +201,18 @@ public class JpaWorkingConditionRepository extends JpaRepository
 	 */
 	@Override
 	@Transactional
-	public void save(WorkingCondition workingCondition) {		
-		Optional<WorkingCondition> oldDomain = this.getBySid(workingCondition.getCompanyId(), workingCondition.getEmployeeId());
-		if (oldDomain.isPresent()) {
-			// Update
-			this.update(workingCondition);
-			return;
-		} 
-		// Add
+	public void save(WorkingCondition workingCondition) {	
+		this.deleteAll(workingCondition);
 		this.add(workingCondition);
+//		// Using for insert/update/delete
+//		Optional<WorkingCondition> oldDomain = this.getBySid(workingCondition.getCompanyId(), workingCondition.getEmployeeId());
+//		if (oldDomain.isPresent()) {
+//			// Update
+//			this.update(workingCondition);
+//			return;
+//		} 
+//		// Add
+//		this.add(workingCondition);
 	}
 
 	@Transactional
