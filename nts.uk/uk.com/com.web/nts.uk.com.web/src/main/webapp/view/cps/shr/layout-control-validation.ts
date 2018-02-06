@@ -120,25 +120,7 @@ module nts.layout {
                 });
             }
         };
-        getStartDate(dateString) {
-            let dates = dateString.split(' ~ ');
-            return self.convertToInt(dates.length > 1 ? dateString.split(' ~ ')[0].replace("当日", "") : "");
-        }
-        getEndDate(dateString) {
-            let dates = dateString.split(' ~ ');
-
-
-            return self.convertToInt(dates.length > 1 ? dateString.split(' ~ ')[1].replace("当日", "") : "");
-        }
-
-        convertToInt(stringDate) {
-            if (stringDate) {
-
-                return nts.uk.time.parseTime(stringDate).hours * 60 + nts.uk.time.parseTime(stringDate).minutes
-            }
-            return stringDate;
-
-        }
+        
         button = () => {
             let self = this,
                 finder = self.finder,
@@ -199,16 +181,16 @@ module nts.layout {
                                 CS00020_IS00131.data.value(childData.selectedWorkTimeCode);
                             }
                             if (CS00020_IS00133) {
-                                CS00020_IS00133.data.value(self.getStartDate(childData.firstTime));
+                                CS00020_IS00133.data.value(childData.firstStartTime);
                             }
                             if (CS00020_IS00134) {
-                                CS00020_IS00134.data.value(self.getEndDate(childData.firstTime));
+                                CS00020_IS00134.data.value(childData.firstEndTime);
                             }
                             if (CS00020_IS00136) {
-                                CS00020_IS00136.data.value(self.getStartDate(childData.secondTime));
+                                CS00020_IS00136.data.value(childData.secondStartTime);
                             }
                             if (CS00020_IS00137) {
-                                CS00020_IS00137.data.value(self.getEndDate(childData.secondTime));
+                                CS00020_IS00137.data.value(childData.secondEndTime);
                             }
                         }
                     });
@@ -748,7 +730,9 @@ module nts.layout {
         selectedWorkTypeName: string;
         selectedWorkTimeCode: string;
         selectedWorkTimeName: string;
-        firstTime: string;
-        secondTime: string;
+        firstStartTime: string;
+        firstEndTime: string;
+        secondStartTime: string;
+        secondEndTime: string;
     }
 } 
