@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
+import nts.uk.ctx.at.schedule.app.command.processbatch.ScheBatchCorrectSetCheckSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.ChildCareScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.WorkScheduleBreakSaveCommand;
@@ -413,13 +414,21 @@ public class ScheCreExeBasicScheduleHandler {
 	 * Create a basic schedule command to save
 	 * @param basicSchedule the basic schedule
 	 * @param optPrescribedSetting the Optional prescribed setting
-	 * @return the basic schedule command to save
+	 * @param command the work time set getter command
+	 * @param employeeId the employee Id
+	 * @param baseDate the base date (input from screen A)
 	 */
-	public void registerBasicScheduleSaveCommand(Optional<BasicSchedule> optBasicSchedule, Optional<PrescribedTimezoneSetting> optPrescribedSetting) {
-		if (!optBasicSchedule.isPresent())
-			return;
+	public void registerBasicScheduleSaveCommand(Optional<BasicSchedule> optBasicSchedule, Optional<PrescribedTimezoneSetting> optPrescribedSetting,
+			WorkTimeSetGetterCommand command, String employeeId, GeneralDate baseDate) {
+		BasicSchedule basicSchedule;
 		
-		BasicSchedule basicSchedule = optBasicSchedule.get();
+		// Create basic schedule
+		if (!optBasicSchedule.isPresent()) {
+			basicSchedule = new BasicSchedule(employeeId, baseDate, command.getWorktypeCode(), command.getWorkingCode(), ConfirmedAtr.CONFIRMED);
+		}
+		else {
+			basicSchedule = optBasicSchedule.get();
+		}
 		BasicScheduleSaveCommand basicScheduleSaveCommand = new BasicScheduleSaveCommand();
 		basicScheduleSaveCommand.setEmployeeId(basicSchedule.getEmployeeId());
 		basicScheduleSaveCommand.setWorktimeCode(basicSchedule.getWorkTimeCode());

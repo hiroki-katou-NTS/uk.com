@@ -242,7 +242,8 @@ public class ScheBatchCorrectExecutionCommandHandler
 			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(employeeId, baseDate);
 			
 			// 登録メイン処理
-			scheCreExeBasicScheduleHandler.registerBasicScheduleSaveCommand(optionalBasicSchedule, optPrescribedSetting);
+			scheCreExeBasicScheduleHandler.registerBasicScheduleSaveCommand(optionalBasicSchedule, optPrescribedSetting, workTimeSetGetterCommand, 
+					employeeId, baseDate);
 		}
 		else {
 			return optionalMessage;
