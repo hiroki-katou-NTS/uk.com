@@ -243,7 +243,7 @@ public class DailyPerformanceCorrectionProcessor {
 		service.submit(new Runnable() {
 			@Override
 			public void run() {
-				screenDto.createAccessModifierCellState(mapDP);
+				screenDto.createAccessModifierCellState(mapDP, sId);
 				screenDto.getLstFixedHeader().forEach(column -> {
 					screenDto.getLstControlDisplayItem().getColumnSettings()
 							.add(new ColumnSetting(column.getKey(), false));
