@@ -188,7 +188,7 @@ module nts.layout {
                 CS00020_IS00221: IFindData = finder.find('CS00020', 'IS00221'),
 
 
-                CS00020_IS00128: IFindData = finder.find('CS00020', 'IS00128');
+                CS00020_IS00128: IFindData = finder.find('CS00020', 'IS00128'),
 
                 CS00020_IS00223: IFindData = finder.find('CS00020', 'IS00223'),
                 CS00020_IS00224: IFindData = finder.find('CS00020', 'IS00224'),
