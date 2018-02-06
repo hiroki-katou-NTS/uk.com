@@ -22,8 +22,8 @@ public class UpdateTripRequestSetCommandHandler extends CommandHandler<TripReque
 		TripRequestSetCommand data = context.getCommand();
 		Optional<TripRequestSet> trip = tripRep.findByCid();
 		TripRequestSet tripRequest = TripRequestSet.createFromJavaType(data.getCompanyId(), 
-				data.getComment1(), data.getColor1(), data.getWeight1(), data.getComment2(), 
-				data.getColor2(), data.getWeight2(), data.getWorkType(), data.getWorkChange(), 
+				data.getComment1(), "", 0, data.getComment2(), 
+				"", 0, data.getWorkType(), data.getWorkChange(), 
 				data.getWorkChangeTime(), data.getContractCheck(), data.getLateLeave());
 		if(trip.isPresent()){
 			tripRep.update(tripRequest);
