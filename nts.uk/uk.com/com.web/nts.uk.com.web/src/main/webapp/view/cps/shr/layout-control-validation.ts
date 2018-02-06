@@ -143,15 +143,14 @@ module nts.layout {
             let self = this,
                 finder = self.finder,
                 CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
-<<<<<<< HEAD
+
                 CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131'),
                 CS00020_IS00133: IFindData = finder.find('CS00020', 'IS00133'),
                 CS00020_IS00134: IFindData = finder.find('CS00020', 'IS00134'),
                 CS00020_IS00136: IFindData = finder.find('CS00020', 'IS00136'),
                 CS00020_IS00137: IFindData = finder.find('CS00020', 'IS00137'),
 
-=======
->>>>>>> 258e8ab9fd02e570aa4aa23ad442517e3a31bcfb
+
                 CS00020_IS00238: IFindData = finder.find('CS00020', 'IS00238'),
                 CS00020_IS00239: IFindData = finder.find('CS00020', 'IS00239'),
                 CS00020_IS00148: IFindData = finder.find('CS00020', 'IS00148'),
@@ -548,8 +547,7 @@ module nts.layout {
                 });
             }
 
-<<<<<<< HEAD
-=======
+
             if (CS00020_IS00157) {
                 CS00020_IS00157.ctrl.on('click', () => {
                     let _finder = finder,
@@ -690,7 +688,6 @@ module nts.layout {
                     });
                 });
             }
->>>>>>> 258e8ab9fd02e570aa4aa23ad442517e3a31bcfb
 
 
         };
