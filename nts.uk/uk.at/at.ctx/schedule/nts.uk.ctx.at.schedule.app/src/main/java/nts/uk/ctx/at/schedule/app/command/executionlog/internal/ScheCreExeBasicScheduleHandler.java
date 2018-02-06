@@ -183,11 +183,11 @@ public class ScheCreExeBasicScheduleHandler {
 	private void saveBasicSchedule(BasicScheduleSaveCommand command) {
 
 		// find basic schedule by id
-		Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(command.getEmployeeId(),
+		boolean optionalBasicSchedule = this.basicScheduleRepository.isExists(command.getEmployeeId(),
 				command.getYmd());
 
 		// check exist data
-		if (optionalBasicSchedule.isPresent()) {
+		if (optionalBasicSchedule) {
 
 			// update domain
 			this.basicScheduleRepository.update(command.toDomain());
