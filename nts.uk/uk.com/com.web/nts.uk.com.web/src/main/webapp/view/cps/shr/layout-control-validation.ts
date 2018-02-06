@@ -219,9 +219,11 @@ module nts.layout {
                             } else {
                                 if (CS00020_IS00130) {
                                     CS00020_IS00130.data.value(childData.selectedWorkTypeCode);
+                                    CS00020_IS00131.data.textValue(childData.selectedWorkTypeName);
                                 }
                                 if (CS00020_IS00131) {
                                     CS00020_IS00131.data.value(childData.selectedWorkTimeCode);
+                                    CS00020_IS00131.data.textValue(childData.selectedWorkTimeName);
                                 }
                                 if (childData.first) {
                                     if (CS00020_IS00133) {
