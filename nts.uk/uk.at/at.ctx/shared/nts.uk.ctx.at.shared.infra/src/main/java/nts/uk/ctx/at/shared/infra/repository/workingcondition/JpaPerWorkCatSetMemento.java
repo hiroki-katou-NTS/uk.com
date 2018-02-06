@@ -37,7 +37,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 */
 	public JpaPerWorkCatSetMemento(String historyId, List<KshmtPerWorkCat> entities) {
 		this.mapSingleDaySchedule = new HashMap<>();
-		if (CollectionUtil.isEmpty(entities)) {
+		if (!CollectionUtil.isEmpty(entities)) {
 			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
 					entity -> entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), entity -> entity));
 		}

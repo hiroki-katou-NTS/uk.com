@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.command.dailyperform;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 

@@ -9,6 +9,7 @@ module cps002.a.vm {
     import liveView = nts.uk.request.liveView;
     import character = nts.uk.characteristics;
     import block = nts.uk.ui.block;
+    import vc = nts.layout.validation;
 
     export class ViewModel {
 
@@ -412,7 +413,10 @@ module cps002.a.vm {
                     layout.standardDate(data.standardDate);
                 }
 
-                layout.listItemClsDto(data.itemsClassification || []);
+                layout.listItemCls(data.itemsClassification || []);
+                if (layout.listItemCls().length > 0) {
+                    new vc(layout.listItemCls());
+                }
 
             });
 
@@ -912,7 +916,7 @@ module cps002.a.vm {
         layoutCode: KnockoutObservable<string> = ko.observable('');
         layoutName: KnockoutObservable<string> = ko.observable('');
         maintenanceLayoutID: KnockoutObservable<string> = ko.observable('');
-        listItemClsDto: KnockoutObservableArray<any> = ko.observableArray([]);
+        listItemCls: KnockoutObservableArray<any> = ko.observableArray([]);
         standardDate: KnockoutObservable<string> = ko.observable(undefined);
 
         constructor(param?: ILayout) {
@@ -923,7 +927,7 @@ module cps002.a.vm {
                 self.maintenanceLayoutID(param.maintenanceLayoutID || '');
                 self.standardDate(param.standardDate)
 
-                self.listItemClsDto(param.itemsClassification || []);
+                self.listItemCls(param.itemsClassification || []);
             }
         }
 
