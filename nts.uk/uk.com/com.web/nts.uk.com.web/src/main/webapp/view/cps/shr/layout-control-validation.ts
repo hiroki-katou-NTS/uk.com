@@ -99,6 +99,7 @@ module nts.layout {
                     _.each(ctrls, c => {
                         if (c.data.itemCode != CS00020_IS00248.data.itemCode) {
                             c.data.editable(x == 1);
+                            c.data.readonly(x != 1);
                         }
                     });
                 });
@@ -169,6 +170,7 @@ module nts.layout {
     interface IItemData {
         value: KnockoutObservable<any>;
         editable: KnockoutObservable<boolean>;
+        readonly: KnockoutObservable<boolean>;
         categoryCode: string;
         itemCode: string;
         itemParentCode?: string;
