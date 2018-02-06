@@ -1230,17 +1230,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     {
                         name: 'Link2',
-                        click: function(event) {
+                        click: function(rowId, key, event) {
                            // self.helps(event);
-                            let cell : any = $("#dpGrid").igGrid("activeCell");
-                            if (cell) {
-                                let rowId = cell.id;
-                                let key = cell.columnKey;
+                            //let cell : any = $("#dpGrid").igGrid("activeCell");
+                           // if (cell) {
                                 let value = $("#dpGrid").igGrid("getCellValue", rowId, "Code" + key.substring(4, key.length));
                                 let dialog: TypeDialog = new TypeDialog(key.substring(4, key.length), self.lstAttendanceItem(), value, rowId);
                                 dialog.showDialog(self);
                                 nts.uk.ui.block.clear();
-                            }
+                          //  }
                         },
                         controlType: 'LinkLabel'
                     },
