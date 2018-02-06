@@ -308,6 +308,7 @@ module nts.custombinding {
 
                     .layout-control .item-classification .value-text {
                         padding-left: 20px;
+                        display: inline-block;
                     }
 
                     .layout-control .item-classification .ntsRadioBox {
@@ -523,7 +524,7 @@ module nts.custombinding {
                                             <div class="set-group"></div>
                                             <!-- /ko -->
                                             <div class="set-group">
-                                                <!-- ko foreach: { data: _childs, as: 'set'} -->
+                                                <!-- ko foreach: { data: _childs, as: 'set' } -->
                                                 <!-- ko if: $index() && _render.length > 1 -->
                                                 <div class="set-item set-item-sperator">
                                                     <span data-bind="text: text('CPS001_89')"></span>
@@ -540,40 +541,40 @@ module nts.custombinding {
                                             </div>
                                         <!-- /ko -->
                                         <!-- ko if: _items.length != 1 && (_items.length >= 3 || _render.length != _items.length) -->
-                                            <!-- ko foreach: { data: _childs, as: 'set'} -->
-                                            <!-- ko if: $index() == 0 && [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) == -1 -->
-                                            <div class="set-group"></div>
-                                            <!-- /ko -->
-                                            <div class="set-group" data-bind="css: { 'radio': [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) > -1 }">
-                                                <!-- ko if: (set || {}).type == CTRL_TYPE.SET -->
-                                                    <div class="child-label" data-bind="text: set.itemName"></div>
-                                                    <!-- ko foreach: _.filter(__items, function(x) { x.itemParentCode == set.itemCode }) -->
-                                                        <!-- ko if: $index() && _render.length > 1 -->
-                                                        <div class="set-item set-item-sperator">
-                                                            <span data-bind="text: text('CPS001_89')"></span>
-                                                        </div>
+                                            <!-- ko foreach: { data: _childs, as: 'set' } -->
+                                                <!-- ko if: $index() == 0 && [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) == -1 -->
+                                                    <div class="set-group"></div>
+                                                <!-- /ko -->
+                                                <div class="set-group" data-bind="css: { 'radio': [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) > -1 }">
+                                                    <!-- ko if: (set || {}).type == CTRL_TYPE.SET -->
+                                                        <div class="child-label" data-bind="text: set.itemName"></div>
+                                                        <!-- ko foreach: { data: _.filter(__items, function(x) { return x.itemParentCode == set.itemCode }), as: 'child' } -->
+                                                            <!-- ko if: $index() && _render.length > 1 -->
+                                                            <div class="set-item set-item-sperator">
+                                                                <span data-bind="text: text('CPS001_89')"></span>
+                                                            </div>
+                                                            <!-- /ko -->
+                                                        <div data-bind="template: {
+                                                                data: child,
+                                                                name: 'ctr_template'
+                                                            }" class="set-item"></div>
                                                         <!-- /ko -->
-                                                    <div data-bind="template: {
-                                                            data: set,
-                                                            name: 'ctr_template'
-                                                        }" class="set-item"></div>
                                                     <!-- /ko -->
-                                                <!-- /ko -->
-                                                <!-- ko if: (set || {}).type == CTRL_TYPE.SINGLE -->
-                                                    <div class="child-label" data-bind="text: set.itemName"></div>
-                                                    <div data-bind="template: {
-                                                            data: set,
-                                                            name: 'ctr_template'
-                                                        }" class="set-item"></div>
-                                                <!-- /ko -->
-                                            </div>
+                                                    <!-- ko if: (set || {}).type == CTRL_TYPE.SINGLE -->
+                                                        <div class="child-label" data-bind="text: set.itemName"></div>
+                                                        <div data-bind="template: {
+                                                                data: set,
+                                                                name: 'ctr_template'
+                                                            }" class="set-item"></div>
+                                                    <!-- /ko -->
+                                                </div>
                                             <!-- /ko -->
                                         <!-- /ko -->
                                     </div>
                                     <!-- /ko -->
                                     <!-- ko if: (_item || {}).type == CTRL_TYPE.SINGLE -->
                                     <div class="single-items">
-                                        <!-- ko foreach: {data: __items, as: 'single'} -->
+                                        <!-- ko foreach: { data: __items, as: 'single' } -->
                                         <div data-bind="template: { 
                                                 data: single,
                                                 name: 'ctr_template'
@@ -1102,6 +1103,7 @@ module nts.custombinding {
                                             item.listItemDf = [def];
                                             item.className = def.itemName;
                                             item.personInfoCategoryID = def.perInfoCtgId;
+
                                             // setitem
                                             if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
                                                 services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
@@ -1113,7 +1115,37 @@ module nts.custombinding {
                                                                 x.dispOrder = i + 1;
                                                                 item.listItemDf.push(x);
                                                             });
-                                                        dfd.resolve(item);
+
+                                                        let setItem = _.filter(defs, x => x.itemTypeState.itemType == ITEM_TYPE.SET);
+                                                        if (setItem.length) {
+                                                            let _dfds: Array<JQueryDeferred<any>> = [];
+                                                            _.each(setItem, x => {
+                                                                let _dfd = $.Deferred<any>();
+                                                                services.getItemsByIds(x.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
+                                                                    if (defs && defs.length) {
+                                                                        _(defs)
+                                                                            .filter(x => !x.isAbolition)
+                                                                            .orderBy(x => x.dispOrder)
+                                                                            .each((x, i) => {
+                                                                                x.dispOrder = i + 1;
+                                                                                item.listItemDf.push(x);
+                                                                            });
+                                                                        _dfd.resolve(item);
+                                                                    } else {
+                                                                        _dfd.reject(false);
+                                                                    }
+                                                                });
+                                                                _dfds.push(_dfd);
+                                                            });
+
+                                                            $.when.apply($, _dfds).then(function() {
+                                                                dfd.resolve(item);
+                                                            });
+                                                        } else {
+                                                            dfd.resolve(item);
+                                                        }
+                                                    } else {
+                                                        dfd.reject(false);
                                                     }
                                                 });
                                             } else {
@@ -1124,7 +1156,11 @@ module nts.custombinding {
                                         });
 
                                     $.when.apply($, dfds).then(function() {
-                                        _.each(arguments, x => opts.sortable.pushItem(x));
+                                        _.each(arguments, x => {
+                                            if (x) {
+                                                opts.sortable.pushItem(x);
+                                            }
+                                        });
                                         scrollDown();
                                     });
                                 };

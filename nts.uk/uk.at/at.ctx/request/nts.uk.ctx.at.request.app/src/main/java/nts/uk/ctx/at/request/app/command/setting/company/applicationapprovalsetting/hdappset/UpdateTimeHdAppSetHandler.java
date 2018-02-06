@@ -31,6 +31,7 @@ public class UpdateTimeHdAppSetHandler extends CommandHandler<TimeHdAppSetComman
 				data.getUseAfter(), data.getNameAfter());
 		if(time.isPresent()){
 			timeRep.update(timeHd);
+			return;
 		}
 		timeRep.insert(timeHd);
 	}

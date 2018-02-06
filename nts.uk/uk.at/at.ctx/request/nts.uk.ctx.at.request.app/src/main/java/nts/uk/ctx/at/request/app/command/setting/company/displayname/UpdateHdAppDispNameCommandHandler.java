@@ -27,6 +27,7 @@ public class UpdateHdAppDispNameCommandHandler extends CommandHandler<HdAppDispN
 													data.getHdAppType(), data.getDispName());
 		if(hdApp.isPresent()){
 			hdAppRep.update(hdAppDisp);
+			return;
 		}
 		hdAppRep.insert(hdAppDisp);
 	} 
