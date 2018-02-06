@@ -15,7 +15,7 @@ module nts.uk.com.view.ccg.share.ccg {
             searchAllWorkType: "at/share/worktype/findNotDeprecated",
             quickSearchEmployee: "basic/organization/employee/quicksearch",
             getRefRangeBySysType: "ctx/sys/auth/role/getrefrangebysystype",
-            findClosureListByCurrentMonth: "ctx/at/shared/workrule/closure/findClosureListByCurrentMonth", //TODO: basedate truyen len hay lay system date?
+            getClosuresByBaseDate: "ctx/at/shared/workrule/closure/getclosuresbybasedate",
             calculatePeriod: "ctx/at/shared/workrule/closure/calculateperiod",
             getClosureTiedByEmployment: "ctx/at/shared/workrule/closure/getclosuretiedbyemployment"
         }
@@ -31,8 +31,8 @@ module nts.uk.com.view.ccg.share.ccg {
             return nts.uk.request.ajax('com', servicePath.getRefRangeBySysType + '/' + sysType);
         }
 
-        export function findClosureListByCurrentMonth(): JQueryPromise<Array<any>> {
-            return nts.uk.request.ajax('at', servicePath.findClosureListByCurrentMonth);
+        export function getClosuresByBaseDate(baseDate: string): JQueryPromise<Array<any>> {
+            return nts.uk.request.ajax('at', servicePath.getClosuresByBaseDate + '/' + baseDate);
         }
 
         export function getClosureTiedByEmployment(): JQueryPromise<number> {
@@ -144,9 +144,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 periodAccuracy: number; // 対象期間精度
 
                 /** Required parameter */
-                baseDate?: KnockoutObservable<Date>; // 基準日
-                periodStartDate?: KnockoutObservable<any>; // 対象期間開始日
-                periodEndDate?: KnockoutObservable<any>; // 対象期間終了日
+                baseDate?: KnockoutObservable<string>; // 基準日
+                periodStartDate?: KnockoutObservable<string>; // 対象期間開始日
+                periodEndDate?: KnockoutObservable<string>; // 対象期間終了日
                 inService: boolean; // 在職区分
                 leaveOfAbsence: boolean; // 休職区分
                 closed: boolean; // 休業区分

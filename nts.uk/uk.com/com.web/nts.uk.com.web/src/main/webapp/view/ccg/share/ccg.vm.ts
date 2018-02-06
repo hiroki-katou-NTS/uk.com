@@ -28,14 +28,14 @@ module nts.uk.com.view.ccg.share.ccg {
             showClosure: boolean; // 就業締め日利用
             showAllClosure: boolean; // 全締め表示
             showPeriod: boolean; // 対象期間利用
-            periodAccuracy: number; // 対象期間精度
+            showPeriodYM: boolean; // 対象期間精度
 
             /** Required parameter */
-            baseDate: KnockoutObservable<Date>;
-            periodStartDate: KnockoutObservable<any>;
-            periodEndDate: KnockoutObservable<any>;
-            periodStartYm: KnockoutObservable<any>;
-            periodEndYm: KnockoutObservable<any>;
+            baseDate: KnockoutObservable<string>;
+            periodStartDate: KnockoutObservable<string>;
+            periodEndDate: KnockoutObservable<string>;
+            periodStartYm: KnockoutObservable<string>;
+            periodEndYm: KnockoutObservable<string>;
             inService: boolean; // 在職区分
             leaveOfAbsence: boolean; // 休職区分
             closed: boolean; // 休業区分
@@ -128,7 +128,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.initQuickSearchParam();
                 self.initAdvancedSearchParam();
                 
-                self.baseDate = ko.observable(new Date());
                 self.tabs = ko.observableArray([
                     {
                         id: 'tab-1',
@@ -156,8 +155,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isOpenWorkTypeList = ko.observable(false);
                 self.closureList = ko.observableArray([]);
                 self.selectedClosure = ko.observable(null);
-                self.periodStartDate = ko.observable(new Date());
-                self.periodEndDate = ko.observable(new Date());
+                self.periodStartDate = ko.observable('');
+                self.periodEndDate = ko.observable('');
                 self.periodStartYm = ko.observable('');
                 self.periodEndYm = ko.observable('');
                 
@@ -399,7 +398,7 @@ module nts.uk.com.view.ccg.share.ccg {
             private startComponent(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
-                //service.getRefRangeBySysType(self.systemType)// get ref range
+                service.getRefRangeBySysType(self.systemType)// get ref range
                 // TODO: AppContexts.user().roles().forPersonalInfo() null?
                 self.acquireBaseDate().done(date => {
                     console.log(date);
@@ -420,21 +419,21 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 /** Common properties */
                 self.isSelectAllEmployee = options.isSelectAllEmployee;
-                self.systemType = 1; //TODO: mock data
+                self.systemType = 5; //TODO: mock data
                 self.isQuickSearchTab = options.isQuickSearchTab;
                 self.isAdvancedSearchTab = options.isAdvancedSearchTab;
                 self.showBaseDate = options.showBaseDate;
-                self.showClosure = options.showClosure;
+                self.showClosure = true; //TODO: mock data
                 self.showAllClosure = options.showAllClosure;
                 self.showPeriod = options.showPeriod;
-                self.periodAccuracy = options.periodAccuracy;
+                self.showPeriodYM = options.periodAccuracy == 1 ? true : false; // 1 == YM, other = YMD
 
                 /** Required parameter */
-                self.baseDate = options.baseDate;
-                self.periodStartDate = options.periodStartDate;
-                self.periodEndDate = options.periodEndDate;
-                self.periodStartYm = options.periodStartDate;
-                self.periodEndYm = options.periodEndDate;
+                self.baseDate = ko.observable('2018-06-02'); //TODO: mock data
+                self.periodStartDate = ko.observable('2018-06-02');
+                self.periodEndDate = ko.observable('2018-06-02');
+                self.periodStartYm = ko.observable('2018-06-02');
+                self.periodEndYm = ko.observable('2018-06-02');
                 self.inService = options.inService;
                 self.leaveOfAbsence = options.leaveOfAbsence;
                 self.closed = options.closed;
@@ -478,7 +477,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 if (self.showClosure) {
-                    service.findClosureListByCurrentMonth().done(data => {
+                    service.getClosuresByBaseDate('2018-06-02').done(data => { // mock base date
                         self.closureList(data);
                         self.getSelectedClosure().done(selected => {
                             self.selectedClosure(selected);
@@ -569,25 +568,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.validateClient()) {
                     return;
                 }
-                service.searchAllEmployee(self.baseDate()).done(data => {
-                    self.onSearchAllClicked(data);
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                });
-            }
-            
-            /**
-             * convert model to dto => call service 
-             */
-            toEmployeeDto(): EmployeeSearchInDto {
-                var self = this;
-                var dto: EmployeeSearchInDto = new EmployeeSearchInDto();
-                dto.baseDate = self.baseDate();
-                dto.classificationCodes = self.selectedCodeClassification();
-                dto.employmentCodes = self.selectedCodeEmployment();
-                dto.jobTitleCodes = self.selectedCodeJobtitle();
-                dto.workplaceCodes = self.selectedCodeWorkplace();
-                return dto;
             }
 
             /**
@@ -603,6 +583,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     return;
                 }
 
+                return;
                 nts.uk.ui.block.invisible(); // block ui
                 service.searchWorkplaceOfEmployee(self.baseDate()).done(function(data) {
                     self.selectedCodeWorkplace(data);
@@ -650,12 +631,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.validateClient()) {
                     return;
                 }
-                service.searchModeEmployee(self.toEmployeeDto()).done(data => {
-                    self.employeeinfo.employeeInputList(self.toUnitModelList(data));
-                }).fail(function(error){
-                   nts.uk.ui.dialog.alertError(error); 
-                });
-
             }
 
             /**
@@ -686,13 +661,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.validateClient()) {
                     return;
                 }
-                service.searchEmployeeByLogin(self.baseDate()).done(data => {
-                    if (data.length > 0) {
-                        self.onSearchOnlyClicked(data[0]);
-                    }
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                });
             }
 
             public acquireBaseDate(): JQueryPromise<String> {
@@ -701,7 +669,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.showBaseDate) {
                     dfd.resolve(self.baseDate().toString());
                 } else {
-                    if (self.periodAccuracy == 1) { //TODO: is accuracy year month date 
+                    if (self.showPeriodYM) { //TODO: is accuracy year month date 
                         dfd.resolve(self.periodEndDate().toString());
                     } else {
                         service.calculatePeriod(1, 201802).done(date => { //TODO mock data
@@ -744,11 +712,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.validateClient()) {
                     return;
                 }
-                service.searchOfWorkplace(self.baseDate()).done(data => {
-                    self.onSearchOfWorkplaceClicked(data);
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                });
             }
 
             /**
@@ -759,11 +722,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (self.validateClient()) {
                     return;
                 }
-                service.searchWorkplaceChild(self.baseDate()).done(data => {
-                    self.onSearchOfWorkplaceClicked(data);
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                });
             }
 
             /**
@@ -773,21 +731,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 var self = this;
                 if (self.validateClient()) {
                     return;
-                }
-                if (self.isSelectAllEmployee) {
-                    service.searchModeEmployee(self.toEmployeeDto()).done(data => {
-                        self.onApplyEmployee(data);
-                    }).fail(function(error){
-                        nts.uk.ui.dialog.alertError(error);
-                    });
-                } else {
-                    
-                    service.getOfSelectedEmployee(self.baseDate(), self.getSelectedCodeEmployee()).done(data => {
-                        self.onApplyEmployee(data);
-                    }).fail(function(error) {
-                        nts.uk.ui.dialog.alertError(error);
-                    });
-
                 }
             }
 
@@ -873,18 +816,20 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectType: SelectType.SELECT_ALL,
                         selectedCode: self.selectedCodeJobtitle,
                         isDialog: true,
-                        baseDate: self.baseDate,
+                        baseDate: ko.observable(new Date()),
                         maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
                     }
 
                     self.workplaces = {
                         isShowAlreadySet: false,
+                        systemType: self.systemType,
+                        isMultipleUse: false,
                         isMultiSelect: true,
                         treeType: TreeType.WORK_PLACE,
                         selectType: SelectType.SELECT_BY_SELECTED_CODE,
                         isShowSelectButton: true,
                         selectedWorkplaceId: self.selectedCodeWorkplace,
-                        baseDate: self.baseDate,
+                        baseDate: ko.observable(new Date()),
                         maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
                         isDialog: true
                     }
