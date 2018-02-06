@@ -60,6 +60,7 @@ module nts.uk.ui {
             kiban.systemName(__viewContext.env.systemName);
             
             viewModelBuilt.fire(_viewModel);
+            
             ko.applyBindings(_viewModel);
             
             // off event reset for class reset-not-apply
@@ -78,7 +79,7 @@ module nts.uk.ui {
             }
             $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
             //            if($("#functions-area-bottom").length!=0){
-            //            }    
+            //            } 
         }
         
         var startP = function(){
@@ -128,6 +129,19 @@ module nts.uk.ui {
                 $('.html-loading').contents().unwrap();
                 startP();
             });  
+        });
+
+
+        $(function () {
+            let lastPause: any = new Date();
+            $(window).keydown(e => {
+                if (e.keyCode !== 19) return;
+                let now: any = new Date();
+                if (now - lastPause < 500) {
+                    ui.dialog.version();
+                }
+                lastPause = new Date();
+            });
         });
     }
 }
