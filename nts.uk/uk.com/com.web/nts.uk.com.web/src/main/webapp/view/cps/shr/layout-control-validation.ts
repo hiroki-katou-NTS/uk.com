@@ -730,9 +730,9 @@ module nts.layout {
         selectedWorkTypeName: string;
         selectedWorkTimeCode: string;
         selectedWorkTimeName: string;
-        firstStartTime: string;
-        firstEndTime: string;
-        secondStartTime: string;
-        secondEndTime: string;
+        firstStartTime: number;
+        firstEndTime: number;
+        secondStartTime: number;
+        secondEndTime: number;
     }
 } 
