@@ -5,13 +5,22 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalHolidaySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfLeaveEarlySetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalOfOverTime;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalRaisingSalarySetting;
+import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
+import nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveAttr;
+import nts.uk.ctx.at.record.dom.calculationattribute.enums.SalaryCalAttr;
+import nts.uk.ctx.at.record.dom.calculationattribute.enums.SpecificSalaryCalAttr;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 
 @Data
 @AttendanceItemRoot(rootName = "日別実績の計算区分")
@@ -106,5 +115,56 @@ public class CalcAttrOfDailyPerformanceDto implements ConvertibleAttendanceItem 
 	@Override
 	public GeneralDate workingDate() {
 		return this.ymd;
+	}
+
+	@Override
+	public CalAttrOfDailyPerformance toDomain() {
+		return new CalAttrOfDailyPerformance(
+				this.employeeId, 
+				this.ymd, 
+				newAutoCalcSetting(this.flexExcessTime),
+				createAutoCalcRaisingSalarySetting(),
+				createAutoCalcHolidaySetting(),
+				createAutoOverTimeSetting(),
+				createAutoCalcLeaveSetting(),
+				new AutoCalcSetOfDivergenceTime(getEnum(this.divergenceTime, DivergenceTimeAttr.class)));
+	}
+
+	private AutoCalRaisingSalarySetting createAutoCalcRaisingSalarySetting() {
+		return this.rasingSalarySetting == null ? null : new AutoCalRaisingSalarySetting(
+				getEnum(this.rasingSalarySetting.getSalaryCalSetting(), SalaryCalAttr.class),
+				getEnum(this.rasingSalarySetting.getSpecificSalaryCalSetting(), SpecificSalaryCalAttr.class));
+	}
+
+	private AutoCalHolidaySetting createAutoCalcHolidaySetting() {
+		return this.holidayTimeSetting == null ? null : new AutoCalHolidaySetting(
+				newAutoCalcSetting(this.holidayTimeSetting.getHolidayWorkTime()),
+				newAutoCalcSetting(this.holidayTimeSetting.getLateNightTime()));
+	}
+
+	private AutoCalOfLeaveEarlySetting createAutoCalcLeaveSetting() {
+		return this.leaveEarlySetting == null ? null : new AutoCalOfLeaveEarlySetting(
+				getEnum(this.leaveEarlySetting.getLeaveEarly(), LeaveAttr.class),
+				getEnum(this.leaveEarlySetting.getLeaveLate(), LeaveAttr.class));
+	}
+
+	private AutoCalOfOverTime createAutoOverTimeSetting() {
+		return this.overtimeSetting == null ? null : new AutoCalOfOverTime(
+				newAutoCalcSetting(this.overtimeSetting.getEarlyOverTime()),
+				newAutoCalcSetting(this.overtimeSetting.getEarlyMidnightOverTime()),
+				newAutoCalcSetting(this.overtimeSetting.getNormalOverTime()),
+				newAutoCalcSetting(this.overtimeSetting.getNormalMidnightOverTime()),
+				newAutoCalcSetting(this.overtimeSetting.getLegalOverTime()),
+				newAutoCalcSetting(this.overtimeSetting.getLegalMidnightOverTime()));
+	}
+	
+	private AutoCalculationSetting newAutoCalcSetting(AutoCalculationSettingDto dto) {
+		return dto == null ? null : new AutoCalculationSetting(
+				getEnum(dto.getCalculationAttr(), AutoCalAtrOvertime.class),
+				getEnum(dto.getUpperLimitSetting(), TimeLimitUpperLimitSetting.class));
+	}
+
+	private <T> T getEnum(int value, Class<T> enumType) {
+		return ConvertHelper.getEnum(value, enumType);
 	}
 }

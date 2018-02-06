@@ -27,7 +27,7 @@ module nts.layout {
         }
         find = (categoryCode: string, subscribeCode: string): IFindData => {
             let self = this,
-                controls: Array<any> = _(self.lstCls).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
                 subscribe: any = _.find(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemCode == subscribeCode);
 
             if (subscribe) {
@@ -46,7 +46,7 @@ module nts.layout {
             }
 
             let self = this,
-                controls: Array<any> = _(self.lstCls).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
                 subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && (subscribesCode || []).indexOf(x.itemCode) > -1);
 
             return subscribes.map(x => {
@@ -59,7 +59,7 @@ module nts.layout {
 
         findChilds = (categoryCode: string, parentCode: string): Array<IFindData> => {
             let self = this,
-                controls: Array<any> = _(self.lstCls).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
                 subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemParentCode == parentCode);
 
             return subscribes.map(x => {
@@ -89,7 +89,8 @@ module nts.layout {
         radio = () => {
             let self = this,
                 finder = self.finder,
-                CS00020_IS00248: IFindData = finder.find('CS00020', 'IS00248');
+                CS00020_IS00248: IFindData = finder.find('CS00020', 'IS00248'),
+                CS00020_IS00121: IFindData = finder.find('CS00020', 'IS00121');
 
             if (CS00020_IS00248) {
                 CS00020_IS00248.data.value.subscribe(x => {
@@ -102,8 +103,20 @@ module nts.layout {
                     });
                 });
             }
-            
-            
+
+            if (CS00020_IS00121) {
+                CS00020_IS00121.data.value.subscribe(x => {
+                    let ctrls: Array<IFindData> = finder.findChilds(CS00020_IS00248.data.categoryCode, CS00020_IS00248.data.itemParentCode);
+
+                    _.each(ctrls, c => {
+                        if (c.data.itemCode != CS00020_IS00248.data.itemCode) {
+                            c.data.editable(x == 1);
+                        }
+                    });
+                });
+            }
+
+
         };
 
         button = () => {
@@ -118,10 +131,10 @@ module nts.layout {
                     CS00020_IS00128.data.value('clicked');
                 });
             }
-            
-            
-            
-            
+
+
+
+
         };
 
         combobox = () => {

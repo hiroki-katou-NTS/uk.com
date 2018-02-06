@@ -37,4 +37,10 @@ public class SampleConvertibleAttendanceItem implements ConvertibleAttendanceIte
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Object toDomain() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -15,8 +15,7 @@ public class WorkInformationOfDailyPerformCommandAddHandler extends CommandFacad
 
 	@Override
 	protected void handle(CommandHandlerContext<WorkInformationOfDailyPerformCommand> context) {
-		WorkInformationOfDailyPerformCommand command = context.getCommand();
-		repo.insert(command.toDomain());
+		repo.insert(context.getCommand().getData());
 	}
 
 }
