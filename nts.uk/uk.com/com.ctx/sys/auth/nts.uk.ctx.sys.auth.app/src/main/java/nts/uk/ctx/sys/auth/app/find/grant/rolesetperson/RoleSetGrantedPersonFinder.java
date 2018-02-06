@@ -39,7 +39,7 @@ public class RoleSetGrantedPersonFinder {
 	public List<RoleSetDto> getAllRoleSet() {
 		String companyId = AppContexts.user().companyId();
 		LoginUserContext user = AppContexts.user();
-		if (!user.roles().have().companyAdmin() || !user.roles().have().systemAdmin())
+		if (!user.roles().have().companyAdmin() && !user.roles().have().systemAdmin())
 			return null;
 		// get Role Set by companyId, sort ASC
 		List<RoleSetDto> listRoleSet = roleSetRepo.findByCompanyId(companyId).stream()

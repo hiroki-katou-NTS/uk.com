@@ -64,9 +64,7 @@ module nts.uk.com.view.cas014.a {
                             self.roleSetJobTitle().details(details);
                         }
                     } else {
-                        alertError({ messageId: "Msg_713" }).then(() => {
-                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
-                        });
+                        nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     }
                     self.viewmodelB.startPage();
                     $("#A4").focus();

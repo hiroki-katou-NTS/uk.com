@@ -36,7 +36,7 @@ public class RoleSetGrantedJobTitleFinder {
 	public GrantRoleSetJobDto getAllData(GeneralDate refDate) {
 		String companyId = AppContexts.user().companyId();
 		LoginUserContext user = AppContexts.user();
-		if (!user.roles().have().companyAdmin() || !user.roles().have().systemAdmin())
+		if (!user.roles().have().companyAdmin() && !user.roles().have().systemAdmin())
 			return null;
 
 		// get Job Title by date, companyId
