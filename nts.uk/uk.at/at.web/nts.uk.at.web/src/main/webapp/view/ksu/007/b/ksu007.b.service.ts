@@ -19,7 +19,7 @@ module nts.uk.at.view.ksu007.b {
          /**
          * executeImportFile
          */
-        export function exportFileError(data): JQueryPromise<any> {
+        export function exportFileError(data : Model.ErrorContentDto[]): JQueryPromise<any> {
              return nts.uk.request.exportFile(paths.exportFileError, data);  
         }    
         

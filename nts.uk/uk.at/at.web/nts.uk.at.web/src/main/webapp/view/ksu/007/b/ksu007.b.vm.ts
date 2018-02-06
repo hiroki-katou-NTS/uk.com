@@ -12,7 +12,7 @@ module nts.uk.at.view.ksu007.b {
             currentCodeList: KnockoutObservableArray<any>;
             count: number = 100;
             executionStartDate: string;
-            executionTotal: KnockoutObservable<string>;
+            executionState: KnockoutObservable<string>;
             executionError: KnockoutObservable<string>;
             periodInfo: string;
             taskId: KnockoutObservable<string>;
@@ -41,7 +41,7 @@ module nts.uk.at.view.ksu007.b {
                 self.numberSuccess = ko.observable(0);
                 self.numberFail = ko.observable(0);
                 self.dataError = ko.observableArray([]);
-                self.executionTotal = ko.observable('xxxxxx');
+                self.executionState = ko.observable('zzzzzz');
                 self.executionError = ko.observable('yyyyyyyyy');
                 self.isError = ko.observable(false);
                 self.isFinish = ko.observable(false);
@@ -101,6 +101,9 @@ module nts.uk.at.view.ksu007.b {
                 // start count time
                 $('.countdown').startCount();
                 
+                // Set execution state to processing
+                self.executionState('処理中… ');
+                
                 nts.uk.deferred.repeat(conf => conf
                 .task(() => {
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
@@ -127,13 +130,16 @@ module nts.uk.at.view.ksu007.b {
                                 if (item.key == 'NUMBER_OF_ERROR') {
                                      self.numberFail(item.valueAsNumber);
                                 }
-                                self.totalRecord(self.numberSuccess() + self.numberFail());
+                                //self.totalRecord(self.numberSuccess() + self.numberFail());
                             });
                         }
-                        self.executionTotal(nts.uk.resource.getText("KSC001_84", [self.numberSuccess(), self.totalRecord()]));
+                        
+                        //self.executionTotal(nts.uk.resource.getText("KSC001_84", [self.numberSuccess(), self.totalRecord()]));
                         self.executionError(nts.uk.resource.getText("KSC001_85", [self.numberFail()]));
                         // finish task
                         if (res.succeeded || res.failed || res.cancelled) {
+                            self.executionState('完了');
+                            
                             $('.countdown').stopCount();
                             if (res.succeeded) {
                                 $('#closeDialog').focus();
