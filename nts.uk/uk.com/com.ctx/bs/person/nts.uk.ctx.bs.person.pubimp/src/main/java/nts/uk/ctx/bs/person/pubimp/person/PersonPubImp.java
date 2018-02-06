@@ -10,9 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.uk.ctx.bs.person.pub.person.MailAddress;
 import nts.uk.ctx.bs.person.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.person.pub.person.PersonPub;
 import nts.uk.ctx.bs.person.pub.person.PubPersonDto;
@@ -36,7 +34,9 @@ public class PersonPubImp implements PersonPub {
 	@Override
 	public List<PubPersonDto> findByPersonIds(List<String> personIds) {
 		return personRepository.getPersonByPersonIds(personIds).stream()
-				.map(item -> new PubPersonDto(item.getPersonId(), item.getPersonNameGroup().getPersonName().getFullName().v()))
+				.map(item -> new PubPersonDto(item.getPersonId(),
+						item.getPersonNameGroup().getPersonName().getFullName().v(),
+						item.getPersonNameGroup().getBusinessName().v()))
 				.collect(Collectors.toList());
 	}
 
