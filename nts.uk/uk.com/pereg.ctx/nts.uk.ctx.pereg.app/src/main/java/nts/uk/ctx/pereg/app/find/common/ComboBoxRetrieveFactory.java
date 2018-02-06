@@ -223,6 +223,10 @@ public class ComboBoxRetrieveFactory {
 							businessType.getBusinessTypeCode().v() + JP_SPACE + businessType.getBusinessTypeName().v()))
 					.collect(Collectors.toList());
 		case "M00008":
+		case "M00010":
+		case "M00011":
+		case "M00012":
+		case "M00013":
 			// 勤務種類マスタ
 			List<List<String>> lstWTDomain = workTypeRepo.findCodeAndNameOfWorkTypeByCompanyId(companyId);
 			List<ComboBoxObject> lstReturn = lstWTDomain.stream()
@@ -231,21 +235,19 @@ public class ComboBoxRetrieveFactory {
 
 			return lstReturn;
 		case "M00009":
-		case "M000010":
-		case "M000011":
-		case "M000012":
+			return new ArrayList<>();
 			// 就業時間帯マスタ
-			PeregDto resultDto = layoutingProcessor.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
-			if (resultDto != null) {
-				AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
-				workplaceId = workPlaceItem.getWorkplaceCode();
-			}
-			List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId);
-			return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
-					.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
-							workTimeSetting.getWorktimeCode() + JP_SPACE
-									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
-					.collect(Collectors.toList());
+//			PeregDto resultDto = layoutingProcessor.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
+//			if (resultDto != null) {
+//				AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
+//				workplaceId = workPlaceItem.getWorkplaceCode();
+//			}
+//			List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId);
+//			return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
+//					.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
+//							workTimeSetting.getWorktimeCode() + JP_SPACE
+//									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
+//					.collect(Collectors.toList());
 
 		case "M00014":
 			// 月間パターンマスタ

@@ -126,9 +126,28 @@ module nts.layout {
 
             if (CS00020_IS00128) {
                 CS00020_IS00128.ctrl.on('click', () => {
-                    let _finder = finder;
+                    let _finder = finder,
+                        selectedWorkTypeCode = CS00020_IS00128.data.value() || ""
+                        , workTypeCodes = _.map(CS00020_IS00128.data.lstComboBoxValue, (v) => {
+                            return v.optionValue;
+                        });
+                    nts.uk.ui.windows.setShared('parentCodes', {
+                        workTypeCodes: workTypeCodes,
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: "",
+                        selectedWorkTimeCode: ""
+                    }, true);
 
-                    CS00020_IS00128.data.value('clicked');
+
+                    nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml', {}).onClosed(function(): any {
+                        
+                        var childData: IChildData = nts.uk.ui.windows.getShared('childData');
+                        if (childData) {
+                            CS00020_IS00128.data.value(childData.selectedWorkTypeCode + " " + childData.selectedWorkTypeName);
+
+                        }
+                    });
+
                 });
             }
 
@@ -171,6 +190,27 @@ module nts.layout {
         editable: KnockoutObservable<boolean>;
         categoryCode: string;
         itemCode: string;
+        lstComboBoxValue: Array<any>;
         itemParentCode?: string;
+    }
+    interface IComboboxItem {
+        optionText: string;
+        optionValue: string;
+    }
+    interface IParentCodes {
+        workTypeCodes: string;
+        selectedWorkTypeCode: string;
+        workTimeCodes: string;
+        selectedWorkTimeCode: string
+    }
+
+    interface IChildData {
+        selectedWorkTypeCode: string;
+        selectedWorkTypeName: string;
+        selectedWorkTimeCode: string;
+        selectedWorkTimeName: string;
+        firstTime: string;
+        secondTime: string;
+
     }
 } 
