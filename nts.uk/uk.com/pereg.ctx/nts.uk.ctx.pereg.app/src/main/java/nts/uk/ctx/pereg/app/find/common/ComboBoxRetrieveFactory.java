@@ -237,17 +237,17 @@ public class ComboBoxRetrieveFactory {
 		case "M00009":
 			return new ArrayList<>();
 			// 就業時間帯マスタ
-//			PeregDto resultDto = layoutingProcessor.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
-//			if (resultDto != null) {
-//				AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
-//				workplaceId = workPlaceItem.getWorkplaceCode();
-//			}
-//			List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId);
-//			return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
-//					.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
-//							workTimeSetting.getWorktimeCode() + JP_SPACE
-//									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
-//					.collect(Collectors.toList());
+			PeregDto resultDto = layoutingProcessor.findSingle(new PeregQuery("CS00017", employeeId, "", standardDate));
+			if (resultDto != null) {
+				AffWorlplaceHistItemDto workPlaceItem = (AffWorlplaceHistItemDto) resultDto.getDomainDto();
+				workplaceId = workPlaceItem.getWorkplaceCode();
+			}
+			List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId);
+			return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
+					.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
+							workTimeSetting.getWorktimeCode() + JP_SPACE
+									+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
+					.collect(Collectors.toList());
 
 		case "M00014":
 			// 月間パターンマスタ
