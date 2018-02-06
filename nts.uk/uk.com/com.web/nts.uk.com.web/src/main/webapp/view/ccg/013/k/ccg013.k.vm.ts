@@ -170,12 +170,16 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                         { columnKey: "targetItems", editorOptions: { disabled: true} },
                     ],
                     editCellEnded: function(evt, ui){ 
-                        let dataSource: Array<any> = $("#grid").igGrid("option", "dataSource"),
-                            row = dataSource[ui.rowID];
-                        if (row) {
-                            row.displayName = ui.value;
-                        }  
-                        $("#grid").igGrid("option", "dataSource", dataSource); 
+                        let dataSource: Array<any> = $("#grid").igGrid("option", "dataSource");
+                        if (dataSource && dataSource.length > 0) {
+                            let row = _.find(dataSource, function(item:StandardMenu) {
+                               return ui.rowID == item.id;     
+                            });
+                            if (row) {
+                                row.displayName = ui.value;
+                            }  
+                            $("#grid").igGrid("option", "dataSource", dataSource);
+                        } 
                     }
                 }]
             });   
