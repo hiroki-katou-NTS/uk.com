@@ -130,19 +130,24 @@ module nts.layout {
                 CS00020_IS00133: IFindData = finder.find('CS00020', 'IS00133'),
                 CS00020_IS00134: IFindData = finder.find('CS00020', 'IS00134'),
                 CS00020_IS00136: IFindData = finder.find('CS00020', 'IS00136'),
-                CS00020_IS00137: IFindData = finder.find('CS00020', 'IS00137'),
+                CS00020_IS00139: IFindData = finder.find('CS00020', 'IS00139'),
+                CS00020_IS00140: IFindData = finder.find('CS00020', 'IS00140'),
+                CS00020_IS00142: IFindData = finder.find('CS00020', 'IS00142'),
+                CS00020_IS00143: IFindData = finder.find('CS00020', 'IS00143'),
+                CS00020_IS00145: IFindData = finder.find('CS00020', 'IS00145'),
+                CS00020_IS00146: IFindData = finder.find('CS00020', 'IS00146'),
 
 
                 CS00020_IS00238: IFindData = finder.find('CS00020', 'IS00238'),
                 CS00020_IS00239: IFindData = finder.find('CS00020', 'IS00239'),
-                
+
                 CS00020_IS00148: IFindData = finder.find('CS00020', 'IS00148'),
                 CS00020_IS00149: IFindData = finder.find('CS00020', 'IS00149'),
                 CS00020_IS00151: IFindData = finder.find('CS00020', 'IS00151'),
                 CS00020_IS00152: IFindData = finder.find('CS00020', 'IS00152'),
                 CS00020_IS00154: IFindData = finder.find('CS00020', 'IS00154'),
                 CS00020_IS00155: IFindData = finder.find('CS00020', 'IS00155'),
-                
+
                 CS00020_IS00157: IFindData = finder.find('CS00020', 'IS00157'),
                 CS00020_IS00158: IFindData = finder.find('CS00020', 'IS00158'),
                 CS00020_IS00166: IFindData = finder.find('CS00020', 'IS00166'),
@@ -151,20 +156,22 @@ module nts.layout {
                 CS00020_IS00176: IFindData = finder.find('CS00020', 'IS00176'),
                 CS00020_IS00184: IFindData = finder.find('CS00020', 'IS00184'),
                 CS00020_IS00185: IFindData = finder.find('CS00020', 'IS00185'),
-                
+
                 CS00020_IS00193: IFindData = finder.find('CS00020', 'IS00193'),
                 CS00020_IS00194: IFindData = finder.find('CS00020', 'IS00194'),
                 CS00020_IS00196: IFindData = finder.find('CS00020', 'IS00196'),
                 CS00020_IS00197: IFindData = finder.find('CS00020', 'IS00197'),
                 CS00020_IS00199: IFindData = finder.find('CS00020', 'IS00199'),
                 CS00020_IS00200: IFindData = finder.find('CS00020', 'IS00200'),
-                
+
                 CS00020_IS00202: IFindData = finder.find('CS00020', 'IS00202'),
                 CS00020_IS00203: IFindData = finder.find('CS00020', 'IS00203'),
                 CS00020_IS00211: IFindData = finder.find('CS00020', 'IS00211'),
                 CS00020_IS00212: IFindData = finder.find('CS00020', 'IS00212'),
                 CS00020_IS00220: IFindData = finder.find('CS00020', 'IS00220'),
-                CS00020_IS00221: IFindData = finder.find('CS00020', 'IS00221');
+                CS00020_IS00221: IFindData = finder.find('CS00020', 'IS00221'),
+
+                CS00020_IS00128: IFindData = finder.find('CS00020', 'IS00128');
 
             if (CS00020_IS00130 || CS00020_IS00131) {
 
@@ -214,6 +221,82 @@ module nts.layout {
                         });
                     });
             };
+            //BUTTON IS00128
+            if (CS00020_IS00128) {
+                CS00020_IS00128.ctrl.on('click', () => {
+                    let lstComboBoxValue = CS00020_IS00128.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00128 ? CS00020_IS00128.data.value() || "" : "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                        selectedWorkTypeCode: selectedWorkTypeCode,
+                        workTimeCodes: [],
+                        selectedWorkTimeCode: ""
+                    }, true);
+                    modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00130.data.value(undefined);
+                        } else {
+                            if (CS00020_IS00130) {
+                                CS00020_IS00130.data.value(childData.selectedWorkTypeCode);
+                            }
+                        }
+                    });
+
+                });
+
+            }
+            //BUTTON IS00139 ,IS00140
+            if (CS00020_IS00139 || CS00020_IS00140) {
+
+                $(`${CS00020_IS00139 && CS00020_IS00139.ctrl.attr('id')}, ${CS00020_IS00140 && CS00020_IS00140.ctrl.attr('id')}`)
+                    .on('click', () => {
+                        let _finder = finder,
+                            lstComboBoxValue = CS00020_IS00139.data.lstComboBoxValue,
+                            selectedWorkTypeCode = CS00020_IS00139 ? CS00020_IS00139.data.value() || "" : "",
+                            selectedWorkTimeCode = CS00020_IS00140 ? CS00020_IS00140.data.value() || "" : "";
+
+                        setShared('parentCodes', {
+                            workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
+                            selectedWorkTypeCode: selectedWorkTypeCode,
+                            workTimeCodes: [],
+                            selectedWorkTimeCode: selectedWorkTimeCode
+                        }, true);
+
+                        modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                            var childData: IChildData = getShared('childData');
+                            if (!childData) {
+                                CS00020_IS00139.data.value(undefined);
+                                CS00020_IS00140.data.value(undefined);
+                            } else {
+                                if (CS00020_IS00139) {
+                                    CS00020_IS00139.data.value(childData.selectedWorkTypeCode);
+                                }
+                                if (CS00020_IS00140) {
+                                    CS00020_IS00140.data.value(childData.selectedWorkTimeCode);
+                                }
+                                if (childData.first) {
+                                    if (CS00020_IS00142) {
+                                        CS00020_IS00142.data.value(childData.first.start);
+                                    }
+                                    if (CS00020_IS00143) {
+                                        CS00020_IS00143.data.value(childData.first.end);
+                                    }
+                                }
+                                if (childData.second) {
+                                    if (CS00020_IS00145) {
+                                        CS00020_IS00145.data.value(childData.second.start);
+                                    }
+                                    if (CS00020_IS00146) {
+                                        CS00020_IS00146.data.value(childData.second.end);
+                                    }
+                                }
+                            }
+                        });
+                    });
+            };
+
 
             // Button IS00238
             if (CS00020_IS00238) {
@@ -304,7 +387,7 @@ module nts.layout {
             }
 
 
-             if (CS00020_IS00148 || CS00020_IS00149) {
+            if (CS00020_IS00148 || CS00020_IS00149) {
 
                 $(`${CS00020_IS00148 && CS00020_IS00148.ctrl.attr('id')}, ${CS00020_IS00149 && CS00020_IS00149.ctrl.attr('id')}`)
                     .on('click', () => {
@@ -448,7 +531,7 @@ module nts.layout {
                     });
             };
 
-            
+
             if (CS00020_IS00202) {
                 CS00020_IS00202.ctrl.on('click', () => {
                     let _finder = finder,
