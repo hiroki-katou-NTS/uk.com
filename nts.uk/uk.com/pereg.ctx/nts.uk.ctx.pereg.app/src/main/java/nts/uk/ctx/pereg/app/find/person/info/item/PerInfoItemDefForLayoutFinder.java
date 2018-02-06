@@ -63,15 +63,15 @@ public class PerInfoItemDefForLayoutFinder {
 		// get children by itemId list
 		if(itemDef.getItemTypeState().getItemType() == ItemType.SET_ITEM) {
 			List<PersonInfoItemDefinition> lstDomain = getListChildrenDef(itemDef.getItemTypeState());
-			List<PerInfoItemDefForLayoutDto> lstChildren = getPerItemSet(lstDomain, empId, ctgType, itemDef.getItemCode().v(), itemDef.getItemTypeState(),
+			List<PerInfoItemDefForLayoutDto> lstChildren = getPerItemSet(lstDomain, empId, ctgType, itemDef.getItemCode().v(),
 					perInfoCd, dispOrder, isCtgViewOnly, sDate, itemForLayout.getActionRole(), combobox);					
 			for(int index = 0; index < lstDomain.size(); index++) {
 				PersonInfoItemDefinition i = lstDomain.get(index);
 				if(i.getItemTypeState().getItemType() == ItemType.SET_ITEM) {
-					List<PersonInfoItemDefinition> lstDomainSub = getListChildrenDef(itemDef.getItemTypeState());
-					List<PerInfoItemDefForLayoutDto> lstChildrenSub = getPerItemSet(lstDomainSub, empId, ctgType, i.getItemCode().v(), i.getItemTypeState(),
+					List<PersonInfoItemDefinition> lstGrandChild = getListChildrenDef(i.getItemTypeState());
+					List<PerInfoItemDefForLayoutDto> lstGrandChildDto = getPerItemSet(lstGrandChild, empId, ctgType, i.getItemCode().v(),
 							perInfoCd, dispOrder, isCtgViewOnly, sDate, lstChildren.get(index).getActionRole(), combobox);		
-					lstChildren.get(index).setLstChildItemDef(lstChildrenSub);
+					lstChildren.addAll(lstGrandChildDto);
 				}
 			}
 			itemForLayout.setLstChildItemDef(lstChildren);
@@ -172,7 +172,7 @@ public class PerInfoItemDefForLayoutFinder {
 	 * @param item
 	 * @return
 	 */
-	private List<PerInfoItemDefForLayoutDto> getPerItemSet(List<PersonInfoItemDefinition> lstDomain, String empId, int ctgType, String itemParentCode, ItemTypeState item,
+	private List<PerInfoItemDefForLayoutDto> getPerItemSet(List<PersonInfoItemDefinition> lstDomain, String empId, int ctgType, String itemParentCode,
 			String perInfoCd, int dispOrder, boolean ctgIsViewOnly, GeneralDate sDate, ActionRole actionRole, Map<Integer, Map<String,  List<ComboBoxObject>>> combobox) {
 		// 1 set - 2 Single
 		List<PerInfoItemDefForLayoutDto> lstResult = new ArrayList<>();		
