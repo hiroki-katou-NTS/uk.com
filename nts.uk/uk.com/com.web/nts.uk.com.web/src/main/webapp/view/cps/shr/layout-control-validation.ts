@@ -1,5 +1,8 @@
 module nts.layout {
     import ajax = nts.uk.request.ajax;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     export const validate = {
         removeDoubleLine: (items: Array<any>) => {
@@ -116,8 +119,6 @@ module nts.layout {
                     });
                 });
             }
-
-
         };
 
         button = () => {
@@ -128,33 +129,26 @@ module nts.layout {
             if (CS00020_IS00128) {
                 CS00020_IS00128.ctrl.on('click', () => {
                     let _finder = finder,
-                        selectedWorkTypeCode = CS00020_IS00128.data.value() || ""
-                        , workTypeCodes = _.map(CS00020_IS00128.data.lstComboBoxValue, (v) => {
-                            return v.optionValue;
-                        });
-                    nts.uk.ui.windows.setShared('parentCodes', {
-                        workTypeCodes: workTypeCodes,
+                        lstComboBoxValue = CS00020_IS00128.data.lstComboBoxValue,
+                        selectedWorkTypeCode = CS00020_IS00128.data.value() || "";
+
+                    setShared('parentCodes', {
+                        workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
                         selectedWorkTypeCode: selectedWorkTypeCode,
                         workTimeCodes: "",
                         selectedWorkTimeCode: ""
                     }, true);
 
-
-                    nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml', {}).onClosed(function(): any {
-                        
-                        var childData: IChildData = nts.uk.ui.windows.getShared('childData');
-                        if (childData) {
-                            CS00020_IS00128.data.value(childData.selectedWorkTypeCode + " " + childData.selectedWorkTypeName);
-
+                    modal('/view/kdl/003/a/index.xhtml', {}).onClosed(() => {
+                        var childData: IChildData = getShared('childData');
+                        if (!childData) {
+                            CS00020_IS00128.data.value(undefined);
+                        } else {
+                            CS00020_IS00128.data.value(childData.selectedWorkTypeCode);
                         }
                     });
-
                 });
             }
-
-
-
-
         };
 
         combobox = () => {
@@ -195,10 +189,12 @@ module nts.layout {
         lstComboBoxValue: Array<any>;
         itemParentCode?: string;
     }
+
     interface IComboboxItem {
         optionText: string;
         optionValue: string;
     }
+
     interface IParentCodes {
         workTypeCodes: string;
         selectedWorkTypeCode: string;
@@ -213,6 +209,5 @@ module nts.layout {
         selectedWorkTimeName: string;
         firstTime: string;
         secondTime: string;
-
     }
 } 
