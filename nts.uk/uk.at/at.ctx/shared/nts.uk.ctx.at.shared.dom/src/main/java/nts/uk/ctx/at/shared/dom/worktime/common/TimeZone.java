@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
@@ -111,4 +113,42 @@ public class TimeZone extends WorkTimeDomainObject {
 		return new TimeSpanForCalc(this.start,this.end);
 	}
 
+	/**
+	 * 指定時刻が時間帯に含まれているか判断する Returns true if a given time is contained by this time
+	 * span.
+	 * 
+	 * @param time
+	 *            指定時刻
+	 * @return 含まれていればtrue
+	 */
+	public boolean contains(TimeWithDayAttr time) {
+		return this.start.lessThanOrEqualTo(time) && this.end.greaterThanOrEqualTo(time);
+	}
+	
+	/**
+	 * 重複している時間帯を返す
+	 * @param other 比較対象
+	 * @return 重複部分
+	 */
+	public Optional<TimeSpanForCalc> getDuplicatedWith(TimeSpanForCalc other) {
+		TimeSpanForCalc result;
+		
+		if (this.timeSpan().contains(other)) {
+			result = other;
+		} else if (other.getSpan().contains(this.timeSpan())) {
+			result = this.timeSpan();
+		} else if (this.contains(other.getStart())) {
+			result = new TimeSpanForCalc(other.getStart(), this.end);
+		} else if (this.contains(other.getEnd())) {
+			result = new TimeSpanForCalc(this.start, other.getEnd());
+		} else {
+			return Optional.empty();
+		}
+		
+		if (result.lengthAsMinutes() == 0) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(result);
+	}
 }
