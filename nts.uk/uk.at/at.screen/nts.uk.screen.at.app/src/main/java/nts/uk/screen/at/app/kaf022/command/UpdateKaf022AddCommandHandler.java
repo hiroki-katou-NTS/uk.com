@@ -30,63 +30,64 @@ import nts.uk.ctx.at.request.app.command.setting.request.gobackdirectlycommon.Up
 @Stateless
 @Transactional
 public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddCommand>{
+	// 申請締切設定
 	@Inject
 	private UpdateApplicationDeadlineCommandHandler updateApp;
-	
+	// 承認一覧表示設定, データが確立が確定されている場合の承認済申請の反映
 	@Inject
 	private UpdateApprovalSetCommandHandler updateAppSet;
-	
+	// 申請一覧共通設定
 	@Inject 
 	private UpdateAppCommonSetCommandHandler updateAppCom;
-	
+	// 代行申請で利用できる申請設定
 	@Inject
 	private UpdateProxyAppSetCommandHandler updatePro;
-	
+	// 休出指示のメール内容
 	@Inject
 	private UpdateMailHdInstructionCommandHandler updateMailHd;
-	
+	// 残業指示のメール内容
 	@Inject
 	private UpdateMailOtInstructionCommandHandler updateMailOt;
-	
+	// 申請承認メールテンプレート
 	@Inject
 	private UpdateApprovalTempCommandHandler updateAppTemp;
-	
+	// 申請設定/申請承認設定/申請表示設定/申請制限設定
 	@Inject
 	private UpdateApplicationSettingCommandHandler updateAppliSet;
-	
+	// 申請表示名設定
 	@Inject 
 	private UpdateAppDispNameCommandHandler updateAppDisp;
-	
+	// 休暇申請種類表示名
 	@Inject
 	private UpdateHdAppDispNameCommandHandler updateHdApp;
-	
+	// 打刻申請設定
 	@Inject
 	private UpdateStampRequestSettingCommandHandler updateStamp;
-	
+	// 直行直帰申請共通設定
 	@Inject
 	private UpdateGoBackDirectlyCommonSettingCommandHandler updateGoBack;
-	
+	// 残業申請設定
 	@Inject 
 	private UpdateAppOvertimeSettingCommandHandler updateAppOver;
-	
+	// 休暇申請設定
 	@Inject
 	private UpdateHdAppSetCommandHandler updateHd;
-	
+	// 勤務変更申請設定
 	@Inject
 	private InsertAppWorkChangeSetCommandHandler updateAppWork;
-	
+	// 出張申請設定
 	@Inject
 	private UpdateTripRequestSetCommandHandler updateTrip;
-	
+	// 休出申請設定, 休出事後反映設定, 休出事前反映設定
 	@Inject
 	private UpdateWDAppSetCommandHandler updateWd;
-	
+	// 時間休申請設定
 	@Inject
 	private UpdateTimeHdAppSetHandler updateTime;
-	
+	// 振休振出申請設定
 	@Inject
 	private UpdateWithDrawalReqSetHandler updateWdReq;
-	
+	//遅刻早退取消申請設定
 	@Inject
 	private UpdateLateEarReqHandler updateLateEar;
 	

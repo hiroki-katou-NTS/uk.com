@@ -26,9 +26,9 @@ public class UpdateWDAppSetCommandHandler extends CommandHandler<WithdrawalAppSe
 		WithdrawalAppSetCommand data = context.getCommand();
 		Optional<WithdrawalAppSet> with = withRep.getWithDraw();
 		WithdrawalAppSet withDraw = WithdrawalAppSet.createFromJavaType(data.getCompanyId(), 
-				data.getPrePerflex(), data.getBreakTime(), data.getWorkTime(), data.getCheckHdTime(), 
+				0, data.getBreakTime(), data.getWorkTime(), data.getCheckHdTime(), 
 				data.getTypePaidLeave(), data.getWorkChange(), data.getTimeInit(), data.getCheckOut(), 
-				data.getPrefixLeave(), data.getUnitTime(), data.getAppSimul(), data.getBounSeg(), 
+				data.getPrefixLeave(), 0, 0, data.getBounSeg(), 
 				data.getDirectDivi(), data.getRestTime());
 		if(with.isPresent()){
 			withRep.update(withDraw);

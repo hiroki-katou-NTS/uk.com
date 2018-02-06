@@ -74,6 +74,7 @@ module nts.uk.at.view.kmf022.a.service {
         findJobTitleSearchList: "workflow/jobtitlesearchset/job/getbyCode",
         
 //        add: 'at/shared/yearservicecom/add',
+        // update kaf022
         update: 'screen/at/kaf022/update',
     }
     
