@@ -234,7 +234,7 @@ module nts.layout {
 
             if (CS00020_IS00238 || CS00020_IS00239) {
 
-                $(`${CS00020_IS00238 && CS00020_IS00238.ctrl.attr('id')}, ${CS00020_IS00239 && CS00020_IS00239.ctrl.attr('id')}`)
+                $(`#${CS00020_IS00238 && CS00020_IS00238.ctrl.attr('id')}, #${CS00020_IS00239 && CS00020_IS00239.ctrl.attr('id')}`)
                     .on('click', () => {
                         let _finder = finder,
                             lstComboBoxValue = CS00020_IS00238.data.lstComboBoxValue,
@@ -284,7 +284,7 @@ module nts.layout {
 
             if (CS00020_IS00184 || CS00020_IS00185) {
 
-                $(`${CS00020_IS00184 && CS00020_IS00184.ctrl.attr('id')}, ${CS00020_IS00185 && CS00020_IS00185.ctrl.attr('id')}`)
+                $(`#${CS00020_IS00184 && CS00020_IS00184.ctrl.attr('id')}, #${CS00020_IS00185 && CS00020_IS00185.ctrl.attr('id')}`)
                     .on('click', () => {
                         let _finder = finder,
                             lstComboBoxValue = CS00020_IS00184.data.lstComboBoxValue,
@@ -334,7 +334,7 @@ module nts.layout {
 
           if (CS00020_IS00220 || CS00020_IS00221) {
 
-                $(`${CS00020_IS00220 && CS00020_IS00220.ctrl.attr('id')}, ${CS00020_IS00221 && CS00020_IS00221.ctrl.attr('id')}`)
+                $(`#${CS00020_IS00220 && CS00020_IS00220.ctrl.attr('id')}, #${CS00020_IS00221 && CS00020_IS00221.ctrl.attr('id')}`)
                     .on('click', () => {
                         let _finder = finder,
                             lstComboBoxValue = CS00020_IS00220.data.lstComboBoxValue,
@@ -384,7 +384,7 @@ module nts.layout {
 
              if (CS00020_IS00148 || CS00020_IS00149) {
 
-                $(`${CS00020_IS00148 && CS00020_IS00148.ctrl.attr('id')}, ${CS00020_IS00149 && CS00020_IS00149.ctrl.attr('id')}`)
+                $(`#${CS00020_IS00148 && CS00020_IS00148.ctrl.attr('id')}, #${CS00020_IS00149 && CS00020_IS00149.ctrl.attr('id')}`)
                     .on('click', () => {
                         let _finder = finder,
                             lstComboBoxValue = CS00020_IS00148.data.lstComboBoxValue,
@@ -435,7 +435,7 @@ module nts.layout {
 
             if (CS00020_IS00193 || CS00020_IS00194) {
 
-                $(`${CS00020_IS00193 && CS00020_IS00193.ctrl.attr('id')}, ${CS00020_IS00194 && CS00020_IS00194.ctrl.attr('id')}`)
+                $(`#${CS00020_IS00193 && CS00020_IS00193.ctrl.attr('id')}, #${CS00020_IS00194 && CS00020_IS00194.ctrl.attr('id')}`)
                     .on('click', () => {
                         let _finder = finder,
                             lstComboBoxValue = CS00020_IS00193.data.lstComboBoxValue,
