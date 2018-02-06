@@ -211,7 +211,7 @@ module nts.uk.com.view.cas014.b {
                         block.clear();
                     });
 
-                }).ifCancel(() => {
+                }).ifNo(() => {
                 });
 
             }

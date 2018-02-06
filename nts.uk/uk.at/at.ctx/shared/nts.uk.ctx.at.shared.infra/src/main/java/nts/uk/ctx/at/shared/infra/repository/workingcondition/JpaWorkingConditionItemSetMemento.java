@@ -132,7 +132,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setContractTime(LaborContractTime contractTime) {
-		if (contractTime != null && contractTime.v() != null) {
+		if (contractTime != null) {
 			this.entity.setContractTime(contractTime.v());
 		}
 	}
@@ -247,12 +247,15 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 			return;
 		}
 
-		this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning() != null
-				? holidayAddTimeSet.get().getMorning().v() : null);
-		this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon() != null
-				? holidayAddTimeSet.get().getAfternoon().v() : null);
-		this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay() != null
-				? holidayAddTimeSet.get().getOneDay().v() : null);
+		if (holidayAddTimeSet.get().getMorning() != null && !holidayAddTimeSet.get().getMorning().v().equals("")){
+			this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning().v());
+		}
+		if (holidayAddTimeSet.get().getAfternoon() != null && !holidayAddTimeSet.get().getAfternoon().v().equals("")){
+			this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon().v());
+		}
+		if (holidayAddTimeSet.get().getOneDay() != null && !holidayAddTimeSet.get().getOneDay().v().equals("")){
+			this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay().v());
+		}
 	}
 
 	/*

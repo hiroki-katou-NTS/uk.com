@@ -141,10 +141,10 @@ module nts.uk.at.view.kal003.a.tab {
             }
             if (self.currentRowSelected() >= self.listWorkRecordExtractingConditions().length) {
                 self.currentRowSelected(self.listWorkRecordExtractingConditions().length);
-                $("#check-condition-table tr")[self.listWorkRecordExtractingConditions().length - 1].scrollIntoView();
             }
             self.currentRowSelected.valueHasMutated();
-            $("#check-condition-table tr")[self.currentRowSelected() - 1].scrollIntoView();
+            if (self.currentRowSelected() > 0) 
+                $("#check-condition-table tr")[self.currentRowSelected() - 1].scrollIntoView();
             info({ messageId: "Msg_16" }).then(() => {
                 block.clear();
             });
