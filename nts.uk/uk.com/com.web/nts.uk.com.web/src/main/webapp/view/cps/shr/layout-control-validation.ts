@@ -120,7 +120,7 @@ module nts.layout {
                 });
             }
         };
-        
+
         button = () => {
             let self = this,
                 finder = self.finder,
@@ -180,17 +180,21 @@ module nts.layout {
                             if (CS00020_IS00131) {
                                 CS00020_IS00131.data.value(childData.selectedWorkTimeCode);
                             }
-                            if (CS00020_IS00133) {
-                                CS00020_IS00133.data.value(childData.firstStartTime);
+                            if (childData.first) {
+                                if (CS00020_IS00133) {
+                                    CS00020_IS00133.data.value(childData.first.start);
+                                }
+                                if (CS00020_IS00134) {
+                                    CS00020_IS00134.data.value(childData.first.end);
+                                }
                             }
-                            if (CS00020_IS00134) {
-                                CS00020_IS00134.data.value(childData.firstEndTime);
-                            }
-                            if (CS00020_IS00136) {
-                                CS00020_IS00136.data.value(childData.secondStartTime);
-                            }
-                            if (CS00020_IS00137) {
-                                CS00020_IS00137.data.value(childData.secondEndTime);
+                            if (childData.second) {
+                                if (CS00020_IS00136) {
+                                    CS00020_IS00136.data.value(childData.second.start);
+                                }
+                                if (CS00020_IS00137) {
+                                    CS00020_IS00137.data.value(childData.second.end);
+                                }
                             }
                         }
                     });
@@ -730,9 +734,11 @@ module nts.layout {
         selectedWorkTypeName: string;
         selectedWorkTimeCode: string;
         selectedWorkTimeName: string;
-        firstStartTime: number;
-        firstEndTime: number;
-        secondStartTime: number;
-        secondEndTime: number;
+        first: IDateRange;
+        second: IDateRange;
+    }
+    interface IDateRange {
+        start: number;
+        end: number;
     }
 } 
