@@ -9026,11 +9026,19 @@ var nts;
                             container.data("options", _.cloneDeep(options));
                         }
                         // Checked
-                        var checkedRadio = _.find(container.find("input[type='radio']"), function (item) {
-                            return _.isEqual(selectedValue(), $(item).data("value"));
-                        });
-                        if (checkedRadio !== undefined)
-                            $(checkedRadio).prop("checked", true);
+                        //var checkedRadio = _.find(container.find("input[type='radio']"), (item) => {
+                        //    return _.isEqual(selectedValue(), $(item).data("value"));
+                        //});
+                        //if (checkedRadio !== undefined)
+                        //    $(checkedRadio).prop("checked", true);
+                        if (!nts.uk.util.isNullOrUndefined(selectedValue())) {
+                            // Checked
+                            var checkedRadio = _.find(container.find("input[type='radio']"), function (item) {
+                                return _.isEqual(JSON.parse(ko.toJSON(selectedValue())), $(item).data("value"));
+                            });
+                            if (checkedRadio !== undefined)
+                                $(checkedRadio).prop("checked", true);
+                        }
                         // Enable
                         if (enable === true) {
                             _.forEach(container.find("input[type='radio']"), function (radio) {
@@ -9318,9 +9326,8 @@ var nts;
                                         });
                                         component_1.igGrid("option", "dataSource", _.cloneDeep(source));
                                         component_1.igGrid("dataBind");
-                                        if (nts.uk.util.isNullOrEmpty(selectedProperties)) {
-                                            component_1.trigger("selectionchanged");
-                                        }
+                                        //                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
+                                        component_1.trigger("selectionchanged");
                                     }
                                     else {
                                         component_1.trigger("selectionchanged");
