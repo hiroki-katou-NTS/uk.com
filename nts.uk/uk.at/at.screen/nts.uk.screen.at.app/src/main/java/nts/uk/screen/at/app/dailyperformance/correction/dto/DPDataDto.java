@@ -17,7 +17,7 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 public class DPDataDto {
-    private int id;
+    private String id;
 	private String state;
     private String error;
     private GeneralDate date;
@@ -28,7 +28,7 @@ public class DPDataDto {
     private String workplaceId;
     private Set<DPCellDataDto> cellDatas;
     
-	public DPDataDto(int id, String state, String error, GeneralDate date, boolean sign, String employeeId,
+	public DPDataDto(String id, String state, String error, GeneralDate date, boolean sign, String employeeId,
 			String employeeCode, String employeeName, String workplaceId) {
 		this.id = id;
 		this.state = state;

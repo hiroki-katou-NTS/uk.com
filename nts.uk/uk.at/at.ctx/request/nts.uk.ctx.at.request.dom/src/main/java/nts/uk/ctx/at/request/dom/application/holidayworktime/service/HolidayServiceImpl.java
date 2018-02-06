@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -39,6 +40,7 @@ public class HolidayServiceImpl implements HolidayService {
 		WorkTypeHolidayWork workTypeHolidayWorks = new WorkTypeHolidayWork();
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する 
 		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
+		List<String> workTypeCodes = new ArrayList<>();
 		if(sEmpHistImport != null && !CollectionUtil.isEmpty(appEmploymentSettings)){
 			// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する
 			List<AppEmployWorkType> lstEmploymentWorkType = appEmploymentSettings.get(0).getLstWorkType();
@@ -46,7 +48,11 @@ public class HolidayServiceImpl implements HolidayService {
 				return workTypeHolidayWorks;
 			}
 			Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
-			lstEmploymentWorkType.forEach(x -> {workTypeHolidayWorks.getWorkTypeCodes().add(x.getWorkTypeCode());});
+			lstEmploymentWorkType.forEach(x -> {
+				
+				workTypeCodes.add(x.getWorkTypeCode());
+				});
+			workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
 		}else{
 			////休出
 			int breakDay = 11;
@@ -56,8 +62,9 @@ public class HolidayServiceImpl implements HolidayService {
 				return workTypeHolidayWorks;
 			}
 			workrTypes.forEach(x -> {
-				workTypeHolidayWorks.getWorkTypeCodes().add(x.getWorkTypeCode().toString());
+				workTypeCodes.add(x.getWorkTypeCode().toString());
 			});
+			workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
 		}
 		// 勤務種類初期選択 :4_c.初期選択 : TODO
 		getWorkType(workTypeHolidayWorks,baseDate,employeeID,personalLablorCodition);
@@ -82,10 +89,12 @@ public class HolidayServiceImpl implements HolidayService {
 		WorkTimeHolidayWork workTimeHolidayWork = new WorkTimeHolidayWork();
 		// 1.職場別就業時間帯を取得
 		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate);
+		List<String> workTimes = new ArrayList<>();
 		if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
-			listWorkTimeCodes.forEach(x -> workTimeHolidayWork.getWorkTimeCodes().add(x));
+			listWorkTimeCodes.forEach(x -> workTimes.add(x));
 		}
-		if(personalLablorCodition.isPresent() && personalLablorCodition.get().getWorkCategory().getWeekdayTime() == null){
+		workTimeHolidayWork.setWorkTimeCodes(workTimes);
+		if(!personalLablorCodition.isPresent() || personalLablorCodition.get().getWorkCategory().getWeekdayTime() == null){
 			// 先頭の勤務種類を選択する
 			if(!CollectionUtil.isEmpty(workTimeHolidayWork.getWorkTimeCodes())){
 				workTimeHolidayWork.setWorkTimeCode(workTimeHolidayWork.getWorkTimeCodes().get(0));
