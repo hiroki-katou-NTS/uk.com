@@ -16,6 +16,7 @@ import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * 
@@ -37,7 +38,8 @@ public class RoleSetGrantedPersonFinder {
 
 	public List<RoleSetDto> getAllRoleSet() {
 		String companyId = AppContexts.user().companyId();
-		if (companyId == null)
+		LoginUserContext user = AppContexts.user();
+		if (!user.roles().have().companyAdmin() || !user.roles().have().systemAdmin())
 			return null;
 		// get Role Set by companyId, sort ASC
 		List<RoleSetDto> listRoleSet = roleSetRepo.findByCompanyId(companyId).stream()
