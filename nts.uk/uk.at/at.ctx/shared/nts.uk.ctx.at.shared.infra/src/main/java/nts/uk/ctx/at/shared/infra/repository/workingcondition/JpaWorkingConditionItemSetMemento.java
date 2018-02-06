@@ -182,7 +182,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setEmployeeId(String employeeId) {
-		if(!StringUtil.isNullOrEmpty(employeeId, false)){
+		if (!StringUtil.isNullOrEmpty(employeeId, true)) {
 			this.entity.setSid(employeeId);
 		}
 	}
@@ -279,7 +279,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setTimeApply(Optional<BonusPaySettingCode> timeApply) {
-		if (!timeApply.isPresent() && StringUtil.isNullOrEmpty(timeApply.get().v(), true)) {
+		if (!timeApply.isPresent() || StringUtil.isNullOrEmpty(timeApply.get().v(), true)) {
 			this.entity.setTimeApply(null);
 			return;
 		}
@@ -295,7 +295,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setMonthlyPattern(Optional<MonthlyPatternCode> monthlyPattern) {
-		if (!monthlyPattern.isPresent() && StringUtil.isNullOrEmpty(monthlyPattern.get().v(), true)) {
+		if (!monthlyPattern.isPresent() || StringUtil.isNullOrEmpty(monthlyPattern.get().v(), true)) {
 			this.entity.setMonthlyPattern(null);
 			return;
 		}
