@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.portal.dom.webmenu;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.sys.portal.dom.webmenu.valueobject.WebMenuSimple;
+
 
 /**
  * 
@@ -39,6 +41,13 @@ public interface WebMenuRepository {
 	 * @return web menu list
 	 */
 	List<WebMenu> find(String companyId, List<String> webMenuCodes);
+	
+	/**
+	 * Find all simple web menus.
+	 * @return list web menu simple value object
+	 * @see WebMenuSimple
+	 */
+	List<WebMenuSimple> findAllSimpleValue(String companyId);
 	
 	/**
 	 * add new a web menu

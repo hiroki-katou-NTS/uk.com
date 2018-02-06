@@ -8,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.webmenu.AddPersonalTyingCommandHandler;
@@ -28,12 +30,14 @@ import nts.uk.ctx.sys.portal.app.find.webmenu.EditMenuBarDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.PersonTypeDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuFinder;
+import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuSimpleDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.WebMenuDetailDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.SessionLowLayer;
 
 @Path("sys/portal/webmenu")
 @Produces("application/json")
+@Slf4j
 public class WebMenuWebService extends WebService {
 
 	@Inject
@@ -92,8 +96,12 @@ public class WebMenuWebService extends WebService {
 
 	@POST
 	@Path("findallwithnomenubar")
-	public List<WebMenuDto> findAllWithNoMenuBar() {
-		return this.webMenuFinder.findAllWithNoMenuBar();
+	public List<WebMenuSimpleDto> findAllWithNoMenuBar() {
+    	long startTime = System.currentTimeMillis();
+		val test = this.webMenuFinder.findAllWithNoMenuBar();
+        long endTime = System.currentTimeMillis();
+        log.info("findAllWithNoMenuBar: " + (endTime - startTime) + " milliseconds");
+        return test;
 	}
 
 	@POST
