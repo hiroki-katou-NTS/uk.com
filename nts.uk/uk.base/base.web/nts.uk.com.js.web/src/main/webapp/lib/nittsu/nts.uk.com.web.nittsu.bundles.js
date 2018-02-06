@@ -3058,7 +3058,7 @@ var nts;
                 }
                 asyncTask.getInfo = getInfo;
                 function requestToCancel(taskId) {
-                    return ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId);
+                    ajax('/ntscommons/arc/task/async/requesttocancel/' + taskId);
                 }
                 asyncTask.requestToCancel = requestToCancel;
             })(asyncTask = request.asyncTask || (request.asyncTask = {}));
@@ -9027,7 +9027,7 @@ var nts;
                         }
                         // Checked
                         var checkedRadio = _.find(container.find("input[type='radio']"), function (item) {
-                            return _.isEqual(selectedValue(), $(item).data("value"));
+                            return _.isEqual(JSON.parse(ko.toJSON(selectedValue())), $(item).data("value"));
                         });
                         if (checkedRadio !== undefined)
                             $(checkedRadio).prop("checked", true);
@@ -18656,8 +18656,11 @@ var nts;
                                     utils.analyzeColumns(options.columns).forEach(function (c, i) {
                                         idxes_1[c.key] = i;
                                     });
-                                    var settings_1 = $grid.data(internal.SETTINGS);
-                                    settings_1.descriptor.colIdxes = idxes_1;
+                                    var setting = $grid.data(internal.SETTINGS);
+                                    if (!setting.descriptor) {
+                                        setting.descriptor = new settings.Descriptor();
+                                    }
+                                    setting.descriptor.colIdxes = idxes_1;
                                     return;
                                 }
                                 Configurator.load($grid, sheetFeature);
@@ -19015,8 +19018,9 @@ var nts;
                                 rebuild = true;
                             }
                             $grid.on(events.Handler.RECORDS, function (evt, arg) {
-                                if (uk.util.isNullOrUndefined(arg.owner._startRowIndex))
-                                    return;
+                                if (uk.util.isNullOrUndefined(arg.owner._startRowIndex)) {
+                                    arg.owner._startRowIndex = 0;
+                                }
                                 var setting = $grid.data(internal.SETTINGS);
                                 var owner = arg.owner;
                                 var pageIndex = 0, pageSize = 0;

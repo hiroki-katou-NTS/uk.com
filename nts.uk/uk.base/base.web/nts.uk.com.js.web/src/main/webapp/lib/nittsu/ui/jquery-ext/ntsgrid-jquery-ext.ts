@@ -3643,8 +3643,11 @@ module nts.uk.ui.jqueryExtentions {
                         utils.analyzeColumns(options.columns).forEach(function(c, i) {
                             idxes[c.key] = i;
                         });
-                        let settings = $grid.data(internal.SETTINGS);
-                        settings.descriptor.colIdxes = idxes;
+                        let setting = $grid.data(internal.SETTINGS);
+                        if (!setting.descriptor) {
+                            setting.descriptor = new settings.Descriptor();
+                        } 
+                        setting.descriptor.colIdxes = idxes;
                         return;
                     }
                     Configurator.load($grid, sheetFeature);
@@ -4012,7 +4015,9 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 
                 $grid.on(events.Handler.RECORDS, function(evt, arg) {
-                    if (util.isNullOrUndefined(arg.owner._startRowIndex)) return;
+                    if (util.isNullOrUndefined(arg.owner._startRowIndex)) {
+                        arg.owner._startRowIndex = 0;
+                    }
                     let setting = $grid.data(internal.SETTINGS);
                     let owner = arg.owner;
                     let pageIndex = 0, pageSize = 0;
