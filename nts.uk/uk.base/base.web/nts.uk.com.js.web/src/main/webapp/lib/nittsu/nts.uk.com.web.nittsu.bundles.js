@@ -18669,6 +18669,7 @@ var nts;
                                         if (!sheetMng.sheetColumns) {
                                             sheetMng.sheetColumns = {};
                                         }
+                                        var settings = $grid.data(internal.SETTINGS);
                                         columns = sheetMng.sheetColumns[sheet.name];
                                         if (!columns) {
                                             columns = getSheetColumns(options.columns, sheet, options.features);
@@ -18677,20 +18678,18 @@ var nts;
                                             utils.analyzeColumns(columns.unfixed).forEach(function (c, i) {
                                                 idxes_3[c.key] = i;
                                             });
-                                            var settings_2 = $grid.data(internal.SETTINGS);
-                                            settings_2.descriptor.colIdxes = idxes_3;
+                                            settings.descriptor.colIdxes = idxes_3;
                                             clonedColumns = columns.all;
                                         }
                                         else {
                                             var idxes_4 = {};
-                                            var settings_3 = $grid.data(internal.SETTINGS);
-                                            var fixedColumns_3 = settings_3.descriptor.fixedColumns;
+                                            var fixedColumns_3 = settings.descriptor.fixedColumns;
                                             if (fixedColumns_3) {
                                                 var unfixed = columns.slice(fixedColumns_3.length);
                                                 utils.analyzeColumns(unfixed).forEach(function (c, i) {
                                                     idxes_4[c.key] = i;
                                                 });
-                                                settings_3.descriptor.colIdxes = idxes_4;
+                                                settings.descriptor.colIdxes = idxes_4;
                                             }
                                             clonedColumns = columns;
                                         }
@@ -18700,13 +18699,12 @@ var nts;
                                         $grid.igGrid("destroy");
                                         $grid.off();
                                         var pagingFt = feature.find(clonedOpts.features, feature.PAGING);
-                                        var loader = $grid.data(internal.LOADER);
-                                        if (pagingFt && loader) {
-                                            if (!uk.util.isNullOrUndefined(loader.pageIndex)) {
-                                                pagingFt.currentPageIndex = loader.pageIndex;
+                                        if (pagingFt && settings) {
+                                            if (!uk.util.isNullOrUndefined(settings.pageIndex)) {
+                                                pagingFt.currentPageIndex = settings.pageIndex;
                                             }
-                                            if (!uk.util.isNullOrUndefined(loader.pageSize)) {
-                                                pagingFt.pageSize = loader.pageSize;
+                                            if (!uk.util.isNullOrUndefined(settings.pageSize)) {
+                                                pagingFt.pageSize = settings.pageSize;
                                             }
                                             feature.replaceBy(clonedOpts, feature.PAGING, pagingFt);
                                         }
@@ -18757,10 +18755,9 @@ var nts;
                     var onDemand;
                     (function (onDemand) {
                         var Loader = (function () {
-                            function Loader(allKeysPath, pageRecordsPath, pageSize) {
+                            function Loader(allKeysPath, pageRecordsPath) {
                                 this.allKeysPath = allKeysPath;
                                 this.pageRecordsPath = pageRecordsPath;
-                                this.pageSize = pageSize;
                             }
                             return Loader;
                         }());
@@ -18821,17 +18818,21 @@ var nts;
                             var pagingFt = feature.find(options.features, feature.PAGING);
                             if (!pagingFt)
                                 return false;
+                            bindPageChange($grid);
+                            var setting = $grid.data(internal.SETTINGS);
+                            if (uk.util.isNullOrUndefined(setting.pageSize)) {
+                                setting.pageSize = pagingFt.pageSize;
+                            }
                             var demandLoadFt = feature.find(options.ntsFeatures, feature.DEMAND_LOAD);
                             if (!demandLoadFt)
                                 return false;
                             var pageSize = pagingFt.pageSize;
                             var loader = $grid.data(internal.LOADER);
                             if (!loader) {
-                                $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath, pagingFt.pageSize));
+                                $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
                             else if (loader.keys) {
-                                pageSize = loader.pageSize;
-                                bindPageChange($grid);
+                                pageSize = setting.pageSize;
                                 return false;
                             }
                             var bindKeys = function (keys) {
@@ -18846,12 +18847,11 @@ var nts;
                                 var lastRecordIndex = firstRecordIndex + pageSize;
                                 var firstPageItems = keys.slice(firstRecordIndex, lastRecordIndex);
                                 loadLazy(demandLoadFt.pageRecordsPath, firstPageItems, firstRecordIndex, lastRecordIndex, ds, primaryKey).done(function (data) {
-                                    options.dataSource = data;
+                                    options.dataSource = options.dataSourceAdapter ? options.dataSourceAdapter(data) : data;
                                     $grid.igGrid(options);
-                                    bindPageChange($grid);
                                 });
                             };
-                            if (options.recordKeys) {
+                            if (options.recordKeys && options.recordKeys.constructor === Array) {
                                 loader = $grid.data(internal.LOADER);
                                 loader.keys = options.recordKeys;
                                 bindKeys(options.recordKeys);
@@ -18873,13 +18873,14 @@ var nts;
                                 var pageSize = ui.owner.pageSize();
                                 var startIndex = newPageIndex * pageSize;
                                 var endIndex = startIndex + pageSize;
+                                var settings = $grid.data(internal.SETTINGS);
+                                settings.pageChanged = true;
+                                settings.pageIndex = ui.newPageIndex;
                                 var loader = $grid.data(internal.LOADER);
                                 if (!loader || !loader.keys)
                                     return;
                                 var dataSource = $grid.igGrid("option", "dataSource");
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
-                                loader.pageIndex = ui.newPageIndex;
-                                loader.pageChanged = true;
                                 var newKeys = loader.keys.slice(startIndex, endIndex);
                                 for (var i = endIndex - 1; i >= startIndex; i--) {
                                     if (dataSource[i] && dataSource[i].loaded) {
@@ -18889,17 +18890,19 @@ var nts;
                                 if (newKeys.length === 0)
                                     return;
                                 loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function (data) {
-                                    $grid.igGrid("option", "dataSource", data);
+                                    var ds = settings.dataSourceAdapter ? settings.dataSourceAdapter(data) : data;
+                                    $grid.igGrid("option", "dataSource", ds);
                                     ui.owner.pageIndex(ui.newPageIndex);
                                 });
                                 return false;
                             });
                             $grid.on(events.Handler.PAGE_SIZE_CHANGE, function (evt, ui) {
+                                var setting = $grid.data(internal.SETTINGS);
+                                setting.pageSize = ui.newPageSize;
+                                setting.pageIndex = 0;
                                 var loader = $grid.data(internal.LOADER);
                                 if (!loader)
                                     return;
-                                loader.pageSize = ui.newPageSize;
-                                loader.pageIndex = 0;
                                 var currentPageIndex = 0;
                                 var startIndex = currentPageIndex * ui.newPageSize;
                                 var endIndex = startIndex + ui.newPageSize;
@@ -18914,7 +18917,8 @@ var nts;
                                 if (newKeys.length === 0)
                                     return;
                                 loadLazy(loader.pageRecordsPath, newKeys, startIndex, endIndex, dataSource, primaryKey).done(function (data) {
-                                    $grid.igGrid("option", "dataSource", data);
+                                    var ds = setting.dataSourceAdapter ? setting.dataSourceAdapter(data) : data;
+                                    $grid.igGrid("option", "dataSource", ds);
                                     ui.owner.pageSize(ui.newPageSize);
                                 });
                                 return false;
@@ -18955,6 +18959,7 @@ var nts;
                             var data = {};
                             var rebuild;
                             data.preventEditInError = options.preventEditInError;
+                            data.dataSourceAdapter = options.dataSourceAdapter;
                             if (!$grid.data(internal.SETTINGS)) {
                                 $grid.data(internal.SETTINGS, data);
                             }
@@ -18964,21 +18969,20 @@ var nts;
                             $grid.on(events.Handler.RECORDS, function (evt, arg) {
                                 if (uk.util.isNullOrUndefined(arg.owner._startRowIndex))
                                     return;
-                                var loader = $grid.data(internal.LOADER);
                                 var setting = $grid.data(internal.SETTINGS);
                                 var owner = arg.owner;
                                 var pageIndex = 0, pageSize = 0;
-                                if (!uk.util.isNullOrUndefined(loader.pageIndex)) {
-                                    pageIndex = loader.pageIndex;
+                                if (!uk.util.isNullOrUndefined(setting.pageIndex)) {
+                                    pageIndex = setting.pageIndex;
                                 }
-                                if (!uk.util.isNullOrUndefined(loader.pageSize)) {
-                                    pageSize = loader.pageSize;
+                                if (!uk.util.isNullOrUndefined(setting.pageSize)) {
+                                    pageSize = setting.pageSize;
                                 }
                                 var startRow = owner._startRowIndex + pageIndex * pageSize;
-                                if (loader.pageChanged) {
+                                if (setting.pageChanged) {
                                     startRow = pageIndex * pageSize;
                                     setTimeout(function () {
-                                        loader.pageChanged = false;
+                                        setting.pageChanged = false;
                                     }, 0);
                                 }
                                 if (!setting.descriptor) {
