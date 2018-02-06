@@ -2,7 +2,9 @@ package nts.uk.ctx.pereg.app.find.processor;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,7 +30,6 @@ import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
-import nts.uk.ctx.pereg.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.pereg.dom.person.info.category.IsFixed;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
@@ -48,6 +49,7 @@ import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.dto.EmpOptionalDto;
@@ -180,7 +182,12 @@ public class PeregProcessor {
 		}
 		ParamForGetPerItem getItemDefParam = new ParamForGetPerItem(perInfoCtg, query.getInfoId(),
 				roleId == null ? "" : roleId, companyId, contractCode, loginEmpId.equals(query.getEmployeeId()));
-		lstPerInfoItemDefForLayout = getPerItemDefForLayout(getItemDefParam, loginEmpId, checkViewOnly.isViewOnly, checkViewOnly.startDate);				
+		//measure
+		long start = System.currentTimeMillis();
+		lstPerInfoItemDefForLayout = getPerItemDefForLayout(getItemDefParam, loginEmpId, checkViewOnly.isViewOnly, checkViewOnly.startDate);		
+		long elapsedTimeMillis = System.currentTimeMillis()-start;
+		System.out.println("Total time to get item def: " + elapsedTimeMillis);
+		
 		EmpMaintLayoutDto empMaintLayoutDto = new EmpMaintLayoutDto();
 		if(lstPerInfoItemDefForLayout.size() == 0) return empMaintLayoutDto;
 		List<LayoutPersonInfoClsDto> classItemList = getClassItemList(query, perInfoCtg, lstPerInfoItemDefForLayout, peregDto);
@@ -387,23 +394,27 @@ public class PeregProcessor {
 	
 	private List<PerInfoItemDefForLayoutDto> getPerItemDefForLayout(ParamForGetPerItem paramObject, String empId, boolean isCtgViewOnly, GeneralDate sDate){
 		// get per info item def with order
+		
 		List<PersonInfoItemDefinition> lstPerInfoDef = perItemRepo.getAllItemByCtgWithAuth(paramObject.getPersonInfoCategory().getPersonInfoCategoryId(), 
 				paramObject.getContractCode(), paramObject.getRoleId(), paramObject.isSelfAuth());
+		
 		List<PerInfoItemDefForLayoutDto> lstReturn = new ArrayList<>();
 		PersonInfoItemDefinition x;
 		PerInfoItemDefForLayoutDto item;
+		Map<Integer, Map<String,  List<ComboBoxObject>>> combobox = new HashMap<Integer, Map<String,  List<ComboBoxObject>>>();
 		for(int i = 0; i < lstPerInfoDef.size(); i++) {
 			x = lstPerInfoDef.get(i);
-			
 			PersonInfoItemAuth personInfoItemAuth = itemAuthRepo
 					.getItemDetai(paramObject.getRoleId(), paramObject.getPersonInfoCategory().getPersonInfoCategoryId(),
 							x.getPerInfoItemDefId()).get();
+
+			
 				if(paramObject.isSelfAuth()) {
 					PersonInfoAuthType itemRole = personInfoItemAuth.getSelfAuth();
 						item = new PerInfoItemDefForLayoutDto();
 						item.setActionRole(itemRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT);
 						itemForLayoutFinder.setItemForLayout(item, empId, paramObject.getPersonInfoCategory().getCategoryType().value, x, 
-								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate);
+								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate, combobox);
 							lstReturn.add(item);
 					
 				}else {
@@ -411,11 +422,11 @@ public class PeregProcessor {
 						item = new PerInfoItemDefForLayoutDto();
 						item.setActionRole(itemRole == PersonInfoAuthType.REFERENCE ? ActionRole.VIEW_ONLY : ActionRole.EDIT);
 						itemForLayoutFinder.setItemForLayout(item, empId, paramObject.getPersonInfoCategory().getCategoryType().value, x, 
-								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate);
+								paramObject.getPersonInfoCategory().getCategoryCode().v(), i, isCtgViewOnly, sDate, combobox);
 							lstReturn.add(item);
 					}
-				}		
-		
+				
+		}		
 		return lstReturn;
 	}
 	
