@@ -26,7 +26,7 @@ module nts.uk.com.view.ccg.share.ccg {
         }
 
         export function getRefRangeBySysType(sysType: number): JQueryPromise<number> {
-            return nts.uk.request.ajax('com', servicePath.getRefRangeBySysType, sysType);
+            return nts.uk.request.ajax('com', servicePath.getRefRangeBySysType + '/' + sysType);
         }
 
         export function findClosureListByCurrentMonth(): JQueryPromise<Array<any>> {

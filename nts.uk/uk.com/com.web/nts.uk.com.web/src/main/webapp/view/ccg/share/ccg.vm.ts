@@ -19,9 +19,6 @@ module nts.uk.com.view.ccg.share.ccg {
         
         export class ListGroupScreenModel {
 
-            // flags
-            isMultiple: boolean;
-
             /** Common properties */
             isSelectAllEmployee: boolean; // 検索タイプ
             systemType: number; // システム区分
@@ -56,7 +53,7 @@ module nts.uk.com.view.ccg.share.ccg {
             showClassification: boolean; // 分類条件
             showJobTitle: boolean; // 職位条件
             showWorktype: boolean; // 勤種条件
-            isMutipleCheck: boolean; // 選択モード
+            isMultiple: boolean; // 選択モード
 
             isShow: KnockoutObservable<boolean>;
             isFistTimeShow: boolean;
@@ -371,6 +368,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 let dfd = $.Deferred<void>();
                 let self = this;
                 //service.getRefRangeBySysType(self.systemType)// get ref range
+                // TODO: AppContexts.user().roles().forPersonalInfo() null?
                 self.loadClosure().done(() => {
                     dfd.resolve();
                 });
@@ -386,7 +384,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 /** Common properties */
                 self.isSelectAllEmployee = options.isSelectAllEmployee;
-                self.systemType = options.systemType;
+                self.systemType = 1; //TODO: mock data
                 self.isQuickSearchTab = options.isQuickSearchTab;
                 self.isAdvancedSearchTab = options.isAdvancedSearchTab;
                 self.showBaseDate = options.showBaseDate;
@@ -536,16 +534,13 @@ module nts.uk.com.view.ccg.share.ccg {
 
             /**
              * function click by apply data search employee (init tab 2)
+             * get base date
              */
             applyDataSearch(): void {
                 var self = this;
                 
-                // call service search by base date
-                if (!self.baseDate()) {
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_374' });
-                    return;
-                }
-                
+                // validate input base date
+                self.validateBaseDateAndTargetPeriod();
                 if (self.validateClient()) {
                     return;
                 }
@@ -861,9 +856,9 @@ module nts.uk.com.view.ccg.share.ccg {
             filterByEmployment: boolean;
             listEmploymentCode: Array<any>;
             filterByDepartment: boolean;
-            listDepartmentId
+            listDepartmentId: Array<any>;
             filterByWorkplace: boolean;
-            listWorkplaceid: Array<any>;
+            listWorkplaceId: Array<any>;
             filterByClassification: boolean;
             listClassificationCode: Array<any>;
             filterByJobTitle: boolean;
