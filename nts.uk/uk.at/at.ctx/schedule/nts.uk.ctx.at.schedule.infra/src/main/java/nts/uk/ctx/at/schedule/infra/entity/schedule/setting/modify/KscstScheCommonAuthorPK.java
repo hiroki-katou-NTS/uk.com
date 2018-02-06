@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.setting;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify;
 
 import java.io.Serializable;
 
@@ -7,23 +7,21 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
-/**
- * 
- * @author sonnh1
- *
- */
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscstWorkTypeDispSetPK implements Serializable {
-
+public class KscstScheCommonAuthorPK implements Serializable{
 	private static final long serialVersionUID = 1L;
-
+	
+	/** 会社ID*/
 	@Column(name = "CID")
 	public String companyId;
-
-	@Column(name = "WORKTYPE_CD")
-	public String workTypeCode;
-
+	
+	/** ロールID*/
+	@Column(name = "ROLE_ID")
+	public String roleId;
+	
+	/** 機能NO*/
+	@Column(name = "FUNCTION_NO_COMMON")
+	public int functionNoCommon;
 }
