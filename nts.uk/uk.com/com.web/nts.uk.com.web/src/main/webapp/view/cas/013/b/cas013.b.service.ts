@@ -3,12 +3,12 @@ module nts.uk.com.view.cas013.b.service {
         searchUser : "ctx/sys/auth/user/findByKey",
     }
 
-    export function searchUser(key: string, Special: boolean, Multi: boolean, userId: Array<string>): JQueryPromise<any> {
+    export function searchUser(key: string, Special: boolean, Multi: boolean, roleType: number): JQueryPromise<any> {
         var userKeyDto = {
                     key: key,
                     Special: Special,
                     Multi: Multi,
-                    userId: userId
+                    roleType: roleType
                 };
         return nts.uk.request.ajax("com", paths.searchUser, userKeyDto);
     }

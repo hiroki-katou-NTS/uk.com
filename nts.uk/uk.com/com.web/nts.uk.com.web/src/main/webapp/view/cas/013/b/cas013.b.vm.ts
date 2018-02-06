@@ -9,14 +9,14 @@ module nts.uk.com.view.cas013.b.viewmodel {
         //user
         selectUserID: KnockoutObservable<string>;
         userName: KnockoutObservable<string>;
-        paramUserIds: Array<string>
+        roleTypeParam: number;
 
         special: KnockoutObservable<boolean>;
         multi: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
-            self.paramUserIds = nts.uk.ui.windows.getShared("userIds");
+            self.roleTypeParam = nts.uk.ui.windows.getShared("roleType");
 
             self.special = ko.observable(true);
             self.multi = ko.observable(true);
@@ -40,9 +40,9 @@ module nts.uk.com.view.cas013.b.viewmodel {
             var key = self.searchValue();
             var Special = self.special();
             var Multi = self.multi();
-            var UserIds =  self.paramUserIds;
+            var roleType =  self.roleTypeParam;
             nts.uk.ui.block.invisible();
-            service.searchUser(key, Special, Multi, UserIds).done(function(data) {
+            service.searchUser(key, Special, Multi, roleType).done(function(data) {
                 var items = [];
                 items = _.sortBy(data, ["loginID"]);
                 self.dataSource(items);
