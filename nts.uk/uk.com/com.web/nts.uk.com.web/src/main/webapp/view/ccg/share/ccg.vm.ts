@@ -84,6 +84,8 @@ module nts.uk.com.view.ccg.share.ccg {
             employeeinfo: any;
             closureList: KnockoutObservableArray<any>;
             selectedClosure: KnockoutObservable<string>;
+            quickSearchParam: QuickSearchParam;
+            advancedSearchParam: AdvancedSearchParam;
             
             //params Status Of Employee
             incumbentDatasource: KnockoutObservableArray<any>;
@@ -121,6 +123,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedCodeJobtitle = ko.observableArray([]);
                 self.selectedCodeWorkplace = ko.observableArray([]);
                 self.selectedCodeEmployee = ko.observableArray([]);
+
+                // init query param
+                self.initQuickSearchParam();
+                self.initAdvancedSearchParam();
+                
                 self.baseDate = ko.observable(new Date());
                 self.tabs = ko.observableArray([
                     {
@@ -187,6 +194,31 @@ module nts.uk.com.view.ccg.share.ccg {
                     { headerText: nts.uk.resource.getText('CCG001_60'), prop: 'workTypeCode', width: 50 },
                     { headerText: nts.uk.resource.getText('CCG001_61'), prop: 'name', width: 100 }
                 ]);
+            }
+
+            private initQuickSearchParam(): void {
+                let self = this;
+                self.quickSearchParam = <QuickSearchParam>{};
+                self.quickSearchParam.filterByDepartment = false;
+                self.quickSearchParam.listDepartmentId = [];
+                self.quickSearchParam.filterByWorkplace = false;
+                self.quickSearchParam.listWorkplaceId = [];
+                self.quickSearchParam.filterByClassification = false;
+                self.quickSearchParam.listClassificationCode = [];
+                self.quickSearchParam.filterByJobTitle = false;
+                self.quickSearchParam.listPositionId = [];
+                self.quickSearchParam.includeIncumbents = true;
+                self.quickSearchParam.includeOccupancy = false;
+                self.quickSearchParam.includeRetirees = false;
+                self.quickSearchParam.sortOrderNo = 1; // 並び順NO＝1
+                self.quickSearchParam.nameType = 1; // ビジネスネーム（日本語）
+            }
+
+            private initAdvancedSearchParam(): void {
+                let self = this;
+                self.advancedSearchParam = <QuickSearchParam>{};
+                self.advancedSearchParam.sortOrderNo = 1; // 並び順NO＝1
+                self.advancedSearchParam.nameType = 1; // ビジネスネーム（日本語）
             }
 
             /**
