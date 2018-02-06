@@ -97,6 +97,9 @@ public interface DailyPerformanceScreenRepo {
 	/** Get list employee by jobTitle, employment, workplace, classification */
 	List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification);
+	
+	/** Get list employee by sid*/
+	List<DailyPerformanceEmployeeDto> getListEmployeeWithSid(List<String> sid);
 
 	/** Get list business type of list employee (no duplicated) */
 	List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange);

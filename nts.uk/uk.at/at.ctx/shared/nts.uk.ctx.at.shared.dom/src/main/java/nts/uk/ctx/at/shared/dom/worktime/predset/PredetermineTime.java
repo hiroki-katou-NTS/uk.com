@@ -23,6 +23,16 @@ public class PredetermineTime extends WorkTimeDomainObject {
 	private BreakDownTimeDay predTime;
 	
 	/**
+	 * Constructor
+	 */
+	public PredetermineTime(BreakDownTimeDay addTime, BreakDownTimeDay predTime) {
+		super();
+		this.addTime = addTime;
+		this.predTime = predTime;
+	}
+	
+	
+	/**
 	 * Instantiates a new predetermine time.
 	 *
 	 * @param memento the memento
@@ -41,5 +51,7 @@ public class PredetermineTime extends WorkTimeDomainObject {
 		memento.setAddTime(this.addTime);
 		memento.setPredTime(this.predTime);
 	}
+
+
 	
 }

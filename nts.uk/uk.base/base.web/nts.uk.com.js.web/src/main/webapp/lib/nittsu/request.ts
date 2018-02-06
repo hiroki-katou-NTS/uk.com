@@ -41,7 +41,7 @@ module nts.uk.request {
             return instance;
         }
 
-        get(key: string): any {
+        get(key: string): any { 
             return this.items[key];
         }
 

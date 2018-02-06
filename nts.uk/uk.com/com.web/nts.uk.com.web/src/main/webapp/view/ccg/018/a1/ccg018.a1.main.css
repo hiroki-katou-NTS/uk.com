@@ -60,7 +60,7 @@ td {
 }
 
 .table1 {
-	width: 842px
+	width: 842px;
 }
 
 .table1 thead tr, .table1 tbody {
@@ -75,7 +75,7 @@ td {
 
 /* for IE browser */
 *::-ms-backdrop, .table1 tbody {
-	height: 300px;
+	height: 296px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }

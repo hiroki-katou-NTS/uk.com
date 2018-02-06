@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DivergenceReasonDto;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHolidayWorkPreAndReferDto;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 
@@ -38,11 +39,11 @@ public class AppHolidayWorkDto {
 	/**
 	 * overtimeInstructInformation
 	 */
-	private String overtimeInstructInformation;
+	private String holidayInstructInformation;
 	/**
 	 * displayOvertimeInstructInforFlg
 	 */
-	private boolean displayOvertimeInstructInforFlg;
+	private boolean displayHolidayInstructInforFlg;
 	/**
 	 * employeeID
 	 */
@@ -79,21 +80,21 @@ public class AppHolidayWorkDto {
 	private List<String> workTimes;
 
 	/**
-	 * 勤務時間From1
+	 * 勤務時間Start1
 	 */
-	private Integer workClockFrom1;
+	private Integer workClockStart1;
 	/**
-	 * 勤務時間To1
+	 * 勤務時間End1
 	 */
-	private Integer workClockTo1;
+	private Integer workClockEnd1;
 	/**
-	 * 勤務時間From2
+	 * 勤務時間Start2
 	 */
-	private Integer workClockFrom2;
+	private Integer workClockStart2;
 	/**
-	 * 勤務時間To2
+	 * 勤務時間End2
 	 */
-	private Integer workClockTo2;
+	private Integer workClockEnd2;
 	/**
 	 * goAtr1
 	 */
@@ -126,7 +127,7 @@ public class AppHolidayWorkDto {
 	/**
 	 * 就業時間外深夜時間
 	 */
-	private Integer overTimeShiftNight;
+	private Integer holidayShiftNight;
 	/**
 	 * 時刻計算利用
 	 */
@@ -236,7 +237,7 @@ public class AppHolidayWorkDto {
 				"", 
 				appHolidayWork.getDivergenceReason(), 
 				0,
-				appHolidayWork.getOverTimeShiftNight(), 
+				appHolidayWork.getHolidayShiftNight(), 
 				false, 
 				false, 
 				false, 

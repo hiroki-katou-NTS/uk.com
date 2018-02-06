@@ -22,6 +22,7 @@ public class UpdateAppCommonSetCommandHandler extends CommandHandler<AppCommonSe
 		AppCommonSet app = AppCommonSet.createFromJavaType(data.getCompanyId(), data.getShowWkpNameBelong());
 		if(appCom.isPresent()){
 			appRep.update(app);
+			return;
 		}
 		appRep.insert(app);
 	}

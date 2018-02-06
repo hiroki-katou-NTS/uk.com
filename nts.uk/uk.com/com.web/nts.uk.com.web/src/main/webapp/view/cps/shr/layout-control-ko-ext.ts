@@ -114,6 +114,30 @@ module nts.custombinding {
                         margin-top: 3px;
                     }
 
+                    .layout-control .item-classification div.item-control>.set-items .set-group {
+                        min-height: 34px;
+                    }
+
+                    .layout-control .item-classification div.item-control>.set-items .set-group>div {
+                        display: inline-block;
+                    }
+
+                    .layout-control .item-classification div.item-control>.set-items .set-group:not(:first-child) {
+                        margin-left: -165px;
+                        padding-top: 3px;
+                        padding-bottom: 3px;
+                    }
+
+                    .layout-control .item-classification div.item-control>.set-items .set-group .child-label {
+                        width: 160px;
+                        vertical-align: top;
+                        line-height: 32px;
+                    }
+
+                    .layout-control .item-classification div.item-control>.set-items .set-group:first-child .child-label {
+                        display: none;
+                    }
+
                     .layout-control .item-classification div.multiple-items {
                         overflow: hidden;
                     }
@@ -276,6 +300,21 @@ module nts.custombinding {
                         overflow-y: scroll;
                     }
 
+                    .layout-control .item-classification .ntsControl.radio-wrapper {
+                        margin-top: -2px;
+                        line-height: 30px;
+                        margin-bottom: 10px;
+                    }
+
+                    .layout-control .item-classification .value-text {
+                        padding-left: 20px;
+                        display: inline-block;
+                    }
+
+                    .layout-control .item-classification .ntsRadioBox {
+                        margin-right: 25px;
+                    }
+
                     .layout-control .item-classification .item-controls .ntsControl,
                     .layout-control .item-classification .item-controls textarea.nts-editor,
                     .layout-control .item-classification .item-controls .ui-igcombo-wrapper {
@@ -303,10 +342,6 @@ module nts.custombinding {
                         content: '▾';
                         display: block;
                         position: absolute;
-                    }
-
-                    .layout-control .item-classification .item-controls .ntsControl.nts-datepicker-wrapper>label {
-                        right: 0 !important;
                     }
 
                     .layout-control .item-classification .ui-igcombo-wrapper {
@@ -426,7 +461,9 @@ module nts.custombinding {
                                             DATE: 3,
                                             TIME: 4,
                                             TIMEPOINT: 5,
-                                            SELECTION: 6
+                                            SELECTION: 6,
+                                            SEL_RADIO: 7,
+                                            SEL_BUTTON: 8
                                         },
                                         STRING_TYPE: {
                                             ANY: 1,
@@ -445,13 +482,21 @@ module nts.custombinding {
                                             SINGLE: 2
                                         },
                                         cls: $data, 
-                                        _item: items && _.find(items(), function(x, i) { return i == 0}), 
-                                        _items: items && _.filter(items(), function(x, i) { return i > 0}),
-                                        __items: items && _.filter(items(), function(x, i) { return i >= 0})
+                                        _item: items && _.find(items(), function(x, i) { return i == 0; }), 
+                                        _items: items && _.filter(items(), function(x, i) { return i > 0; }),
+                                        __items: items && _.filter(items(), function(x, i) { return i >= 0; })
                                     }">
                                 <!-- ko if: layoutItemType == LAYOUT_TYPE.ITEM -->
                                 <div class="item-control" data-bind="let: { _constraint: _(__items.length == 1 ? __items : _items)
-                                        .filter(function(x) { return (__items.length == 1 ? [ITEM_TYPE.DATE, ITEM_TYPE.SELECTION] : [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION]).indexOf((x.item||{}).dataTypeValue) == -1})
+                                        .filter(function(x) {
+                                                if ((_item || {}).type == CTRL_TYPE.SET) {
+                                                    return false;
+                                                }
+                                                if (__items.length == 1) {
+                                                    return [ITEM_TYPE.DATE, ITEM_TYPE.SELECTION, ITEM_TYPE.SEL_RADIO, ITEM_TYPE.SEL_BUTTON].indexOf((x.item || {}).dataTypeValue) == -1;
+                                                }
+                                                return [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT, ITEM_TYPE.SELECTION, ITEM_TYPE.SEL_RADIO, ITEM_TYPE.SEL_BUTTON].indexOf((x.item || {}).dataTypeValue) == -1;
+                                        })
                                         .map(function(x) { return x.itemDefId.replace(/[-_]/g, '') })
                                         .value() }">
                                     <div data-bind="ntsFormLabel: { 
@@ -469,23 +514,67 @@ module nts.custombinding {
                                         required: !!_.find(__items, function(x) { return x.required }),
                                         constraint: _constraint.length && _constraint || undefined  }"></div>
                                     <!-- ko if: (_item || {}).type == CTRL_TYPE.SET -->
-                                    <div class="set-items">
-                                        <!-- ko foreach: { data: _items, as: 'set'} -->
-                                        <div class="set-item set-item-sperator" data-bind="css: { 'hidden': !$index() }">
-                                            <!-- ko if: [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(set.item.dataTypeValue) > -1 -->
-                                                <span data-bind="text: text('CPS001_89')"></span>
+                                    <div class="set-items" data-bind="let: {
+                                                _first: _.find(_items, function(x, i) { return i == 0; }) || {},
+                                                _childs: _.filter(_items, function(x) { return x.itemParentCode == _item.itemCode; }) || [],
+                                                _render: _.filter(_items, function(x) { return x.item && [ITEM_TYPE.DATE, ITEM_TYPE.TIME, ITEM_TYPE.TIMEPOINT].indexOf(x.item.dataTypeValue) > -1; } ) || []
+                                        }">
+                                        <!-- ko if: _items.length == 1 || (_items.length < 3 && _render.length == _items.length) -->
+                                            <!-- ko if: _items.length == 1 && _items[0].item && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
+                                            <div class="set-group"></div>
                                             <!-- /ko -->
-                                        </div>
-                                        <div data-bind="template: {
-                                                data: set,
-                                                name: 'ctr_template'
-                                            }" class="set-item"></div>
+                                            <div class="set-group">
+                                                <!-- ko foreach: { data: _childs, as: 'set' } -->
+                                                <!-- ko if: $index() && _render.length > 1 -->
+                                                <div class="set-item set-item-sperator">
+                                                    <span data-bind="text: text('CPS001_89')"></span>
+                                                </div>
+                                                <!-- /ko -->
+                                                <!-- ko if: _items.length == 1 && _items[0].item && [ITEM_TYPE.SEL_RADIO].indexOf(_items[0].item.dataTypeValue) == -1 -->
+                                                <div class="child-label" data-bind="text: set.itemName"></div>
+                                                <!-- /ko -->
+                                                <div data-bind="template: {
+                                                        data: set,
+                                                        name: 'ctr_template'
+                                                    }" class="set-item"></div>
+                                                <!-- /ko -->
+                                            </div>
+                                        <!-- /ko -->
+                                        <!-- ko if: _items.length != 1 && (_items.length >= 3 || _render.length != _items.length) -->
+                                            <!-- ko foreach: { data: _childs, as: 'set' } -->
+                                                <!-- ko if: $index() == 0 && set.item && [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) == -1 -->
+                                                    <div class="set-group"></div>
+                                                <!-- /ko -->
+                                                <div class="set-group" data-bind="css: { 'radio':  set.item && [ITEM_TYPE.SEL_RADIO].indexOf(set.item.dataTypeValue) > -1 }">
+                                                    <!-- ko if: (set || {}).type == CTRL_TYPE.SET -->
+                                                        <div class="child-label" data-bind="text: set.itemName"></div>
+                                                        <!-- ko foreach: { data: _.filter(__items, function(x) { return x.itemParentCode == set.itemCode }), as: 'child' } -->
+                                                            <!-- ko if: $index() && _render.length > 1 -->
+                                                            <div class="set-item set-item-sperator">
+                                                                <span data-bind="text: text('CPS001_89')"></span>
+                                                            </div>
+                                                            <!-- /ko -->
+                                                        <div data-bind="template: {
+                                                                data: child,
+                                                                name: 'ctr_template'
+                                                            }" class="set-item"></div>
+                                                        <!-- /ko -->
+                                                    <!-- /ko -->
+                                                    <!-- ko if: (set || {}).type == CTRL_TYPE.SINGLE -->
+                                                        <div class="child-label" data-bind="text: set.itemName"></div>
+                                                        <div data-bind="template: {
+                                                                data: set,
+                                                                name: 'ctr_template'
+                                                            }" class="set-item"></div>
+                                                    <!-- /ko -->
+                                                </div>
+                                            <!-- /ko -->
                                         <!-- /ko -->
                                     </div>
                                     <!-- /ko -->
                                     <!-- ko if: (_item || {}).type == CTRL_TYPE.SINGLE -->
                                     <div class="single-items">
-                                        <!-- ko foreach: {data: __items, as: 'single'} -->
+                                        <!-- ko foreach: { data: __items, as: 'single' } -->
                                         <div data-bind="template: { 
                                                 data: single,
                                                 name: 'ctr_template'
@@ -495,7 +584,7 @@ module nts.custombinding {
                                     <!-- /ko -->
                                 </div>
                                 <!-- /ko -->
-                                <!-- ko if: layoutItemType == LAYOUT_TYPE.LIST -->     
+                                <!-- ko if: layoutItemType == LAYOUT_TYPE.LIST -->
                                 <div class="item-controls">
                                     <div data-bind="ntsFormLabel: { required: !!_.find(_items, function(x) { return !!x.required }), text: className || '' }"></div>
                                     <div class="multiple-items table-container header-1rows">
@@ -556,12 +645,15 @@ module nts.custombinding {
                         <button id="cps007_btn_line"></button>
                     </div>
                 </div>
+                <script type="text/html" id="set_template">
+
+                </script>
                 <script type="text/html" id="ctr_template">
                     <div data-bind="let: {
                             nameid : itemDefId.replace(/[-_]/g, '')
                         }">
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.STRING -->
-                        <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
+                        <!-- ko if: item.stringItemType == STRING_TYPE.NUMERIC || item.stringItemLength < 40 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
                         <input data-bind=" ntsTextEditor: {
                                 name: itemName,
                                 value: value,
@@ -576,10 +668,12 @@ module nts.custombinding {
                             },  attr: {
                                 id: nameid,
                                 nameid: nameid,
-                                title: itemName
+                                title: itemName,
+                                'data-code': itemCode,
+                                'data-category': categoryCode
                             }," />
                         <!-- /ko -->
-                        <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
+                        <!-- ko if: item.stringItemType != STRING_TYPE.NUMERIC && (([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) == -1 && item.stringItemLength >= 40) || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength > 80)) -->
                         <textarea data-bind="ntsMultilineEditor: {
                                 name: itemName,
                                 value: value,
@@ -594,7 +688,9 @@ module nts.custombinding {
                             }, attr: { 
                                 id: nameid, 
                                 nameid: nameid,
-                                title: itemName
+                                title: itemName,
+                                'data-code': itemCode,
+                                'data-category': categoryCode
                             }" />
                         <!-- /ko -->
                         <!-- /ko -->
@@ -614,7 +710,9 @@ module nts.custombinding {
                                 }, attr: {
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemName
+                                    title: itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode
                                 }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.DATE -->
@@ -631,7 +729,9 @@ module nts.custombinding {
                             }, attr: { 
                                 id: nameid, 
                                 nameid: nameid,
-                                title: itemName
+                                title: itemName,
+                                'data-code': itemCode,
+                                'data-category': categoryCode
                             }"></div>
                         <!-- /ko -->
                         <!-- ko if: index == 2 -->
@@ -652,7 +752,9 @@ module nts.custombinding {
                                 }, attr: { 
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemName
+                                    title: itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode
                                 }"></div>
                             <!-- /ko -->
                         <!-- /ko -->
@@ -669,7 +771,9 @@ module nts.custombinding {
                                 }, attr: { 
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemName
+                                    title: itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode
                                 }"></div>
                         <!-- /ko -->
                         <!-- /ko -->
@@ -687,7 +791,9 @@ module nts.custombinding {
                                 }, attr: {
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemName
+                                    title: itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode
                                 }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.TIMEPOINT -->
@@ -701,7 +807,9 @@ module nts.custombinding {
                                 }, attr: {
                                     id: nameid, 
                                     nameid: nameid,
-                                    title: itemName
+                                    title: itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode
                                 }" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SELECTION -->
@@ -718,8 +826,33 @@ module nts.custombinding {
                                 }, attr: {
                                     id: nameid,
                                     nameid: nameid,
-                                    title: itemName
+                                    title: itemName,
+                                    'data-code': itemCode,
+                                    'data-category': categoryCode
                                 }"></div>
+                        <!-- /ko -->
+                        <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_RADIO -->
+                            <div data-bind="ntsRadioBoxGroup: {
+                                name: itemName,
+                                value: value,
+                                options: ko.observableArray(lstComboBoxValue || []),
+                                optionsText: 'optionText',
+                                optionsValue: 'optionValue',
+                                enable: editable
+                            }, attr: {
+                                id: nameid,
+                                'data-code': itemCode,
+                                'data-category': categoryCode
+                            }"></div>
+                        <!-- /ko -->
+                        <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_BUTTON -->
+                            <button data-bind="attr: { 
+                                id: nameid, 
+                                title: itemName,
+                                'data-code': itemCode,
+                                'data-category': categoryCode
+                             }, text: text('CPS001_106'), enable: editable">選択</button>
+                            <label class="value-text" data-bind="text: value"></label>
                         <!-- /ko -->
                     </div>
                 </script>`;
@@ -952,16 +1085,19 @@ module nts.custombinding {
                                     }
                                 },
                                 pushItems = (defs: Array<IItemDefinition>) => {
+                                    let dfds: Array<JQueryDeferred<any>> = [];
+
                                     _(defs)
                                         .filter(x => !x.isAbolition) // remove all item if it's abolition
                                         .each(def => {
-                                            let item: IItemClassification = {
-                                                layoutID: random(),
-                                                dispOrder: -1,
-                                                personInfoCategoryID: undefined,
-                                                layoutItemType: IT_CLA_TYPE.ITEM,
-                                                listItemDf: []
-                                            };
+                                            let dfd = $.Deferred<any>(),
+                                                item: IItemClassification = {
+                                                    layoutID: random(),
+                                                    dispOrder: -1,
+                                                    personInfoCategoryID: undefined,
+                                                    layoutItemType: IT_CLA_TYPE.ITEM,
+                                                    listItemDf: []
+                                                };
 
                                             def.dispOrder = -1;
                                             item.listItemDf = [def];
@@ -980,13 +1116,53 @@ module nts.custombinding {
                                                                 item.listItemDf.push(x);
                                                             });
 
-                                                        opts.sortable.pushItem(item);
+                                                        let setItem = _.filter(defs, x => x.itemTypeState.itemType == ITEM_TYPE.SET);
+                                                        if (setItem.length) {
+                                                            let _dfds: Array<JQueryDeferred<any>> = [];
+                                                            _.each(setItem, x => {
+                                                                let _dfd = $.Deferred<any>();
+                                                                services.getItemsByIds(x.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
+                                                                    if (defs && defs.length) {
+                                                                        _(defs)
+                                                                            .filter(x => !x.isAbolition)
+                                                                            .orderBy(x => x.dispOrder)
+                                                                            .each((x, i) => {
+                                                                                x.dispOrder = i + 1;
+                                                                                item.listItemDf.push(x);
+                                                                            });
+                                                                        _dfd.resolve(item);
+                                                                    } else {
+                                                                        _dfd.reject(false);
+                                                                    }
+                                                                });
+                                                                _dfds.push(_dfd);
+                                                            });
+
+                                                            $.when.apply($, _dfds).then(function() {
+                                                                dfd.resolve(item);
+                                                            });
+                                                        } else {
+                                                            dfd.resolve(item);
+                                                        }
+                                                    } else {
+                                                        dfd.reject(false);
                                                     }
                                                 });
                                             } else {
-                                                opts.sortable.pushItem(item);
+                                                dfd.resolve(item);
+                                            }
+
+                                            dfds.push(dfd);
+                                        });
+
+                                    $.when.apply($, dfds).then(function() {
+                                        _.each(arguments, x => {
+                                            if (x) {
+                                                opts.sortable.pushItem(x);
                                             }
                                         });
+                                        scrollDown();
+                                    });
                                 };
 
                             if (!defs || !defs.length) {
@@ -1149,6 +1325,12 @@ module nts.custombinding {
                             case ITEM_SINGLE_TYPE.SELECTION:
                                 constraint.valueType = "Selection";
                                 break;
+                            case ITEM_SINGLE_TYPE.SEL_RADIO:
+                                constraint.valueType = "Radio";
+                                break;
+                            case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                                constraint.valueType = "Button";
+                                break;
                         }
                     }
                     return constraint;
@@ -1190,6 +1372,7 @@ module nts.custombinding {
 
             $element
                 .append(self.tmp)
+                .disableSelection()
                 .addClass('ntsControl layout-control');
 
 
@@ -1393,13 +1576,13 @@ module nts.custombinding {
                                                     && ko.isObservable(next.value)) {
 
                                                     def.endDate = ko.computed(() => {
-                                                        return moment.utc(ko.toJS(next.value) || '9999/12/31').add(ko.toJS(next.value) ? -1 : 0, "days").toDate();
+                                                        return moment.utc(ko.toJS(next.value) || '9999-12-31').add(ko.toJS(next.value) ? -1 : 0, "days").toDate();
                                                     });
                                                     def.startDate = ko.observable();
 
                                                     next.endDate = ko.observable();
                                                     next.startDate = ko.computed(() => {
-                                                        return moment.utc(ko.toJS(def.value) || '1900/01/01').add(ko.toJS(def.value) ? 1 : 0, "days").toDate();
+                                                        return moment.utc(ko.toJS(def.value) || '1900-01-01').add(ko.toJS(def.value) ? 1 : 0, "days").toDate();
                                                     });
                                                 }
                                             }
@@ -1513,13 +1696,15 @@ module nts.custombinding {
                             def.itemDefId = _.has(def, "itemDefId") && def.itemDefId || item.id;
                             def.required = _.has(def, "required") && def.required || !!item.isRequired;
 
+                            def.itemParentCode = _.has(def, "itemParentCode") && def.itemParentCode || item.itemParentCode;
+
                             def.categoryCode = _.has(def, "categoryCode") && def.categoryCode || '';
 
                             def.lstComboBoxValue = _.has(def, "lstComboBoxValue") ? def.lstComboBoxValue : [];
 
                             def.hidden = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.HIDDEN : true;
-                            def.readonly = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled();
-                            def.editable = _.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable();
+                            def.readonly = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.VIEW_ONLY : !!opts.sortable.isEnabled());
+                            def.editable = ko.observable(_.has(def, "actionRole") ? def.actionRole == ACTION_ROLE.EDIT : !!opts.sortable.isEditable());
                             def.showColor = _.has(def, "showColor") ? (ko.isObservable(def.showColor) ? def.showColor : ko.observable(def.showColor)) :
                                 (ko.isObservable(opts.sortable.showColor) ? opts.sortable.showColor : ko.observable(opts.sortable.showColor));
 
@@ -1588,6 +1773,16 @@ module nts.custombinding {
                                                                 typeData: 1
                                                             };
                                                         }
+                                                }
+                                            case ITEM_SINGLE_TYPE.SEL_RADIO:
+                                                return {
+                                                    value: data.value ? String(data.value).replace(/:/g, '') : undefined,
+                                                    typeData: 2 // be error
+                                                };
+                                            case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                                                return {
+                                                    value: data.value ? String(data.value).replace(/:/g, '') : undefined,
+                                                    typeData: 2 // be error
                                                 }
                                         }
                                     };
@@ -2243,6 +2438,7 @@ module nts.custombinding {
         dispOrder?: number;
         perInfoCtgId?: string;
         itemCode?: string;
+        itemParentCode?: string;
         itemName: string;
         isAbolition?: number;
         isFixed?: number;
@@ -2250,15 +2446,6 @@ module nts.custombinding {
         systemRequired?: number;
         requireChangable?: number;
         itemTypeState: IItemTypeState;
-    }
-
-    interface IItemDefinitionValue {
-        id: string;
-        row?: number;
-        col?: number;
-        itemCode?: string;
-        itemName?: string;
-        itemValue: any;
     }
 
     interface IItemTypeState extends ISetItem, ISingleItem {
@@ -2361,7 +2548,9 @@ module nts.custombinding {
         DATE = 3,
         TIME = 4,
         TIMEPOINT = 5,
-        SELECTION = 6
+        SELECTION = 6,
+        SEL_RADIO = 7,
+        SEL_BUTTON = 8
     }
 
     // define ITEM_STRING_DATA_TYPE

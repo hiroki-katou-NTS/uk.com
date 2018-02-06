@@ -16,7 +16,4 @@ public class KrqstHdAppSetPK implements Serializable{
 	/** 会社ID **/
 	@Column(name = "CID")
 	public String companyId;
-	/** 休暇申請の種類  **/
-	@Column(name = "HD_APP_TYPE")
-	public int hdAppType;
 }

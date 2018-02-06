@@ -18,6 +18,8 @@ public class PerInfoItemDefDto {
 	private String perInfoCtgId;
 
 	private String itemCode;
+	
+	private String itemParentCode;
 
 	private String itemName;
 

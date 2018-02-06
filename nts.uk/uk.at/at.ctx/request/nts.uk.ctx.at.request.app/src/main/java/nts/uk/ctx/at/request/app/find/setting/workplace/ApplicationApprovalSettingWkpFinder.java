@@ -21,8 +21,8 @@ public class ApplicationApprovalSettingWkpFinder {
 	@Inject
 	private RequestOfEachWorkplaceRepository repo;
 
-	public List<ApplicationApprovalSettingWkpDto> getAll() {
-		return repo.getAll().stream().map((domain) -> {
+	public List<ApplicationApprovalSettingWkpDto> getAll(List<String> lstWkpId) {
+		return repo.getAll(lstWkpId).stream().map((domain) -> {
 			return ApplicationApprovalSettingWkpDto.fromDomain(domain);
 		}).collect(Collectors.toList());
 	}

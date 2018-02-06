@@ -30,4 +30,9 @@ public class StampDisplayControl {
 	 * 応援入/応援出
 	 */
 	private DisplayAtr stampAtrSupDisp;
+	
+	/**
+	 * 育児外出/育児戻り
+	 */
+	private DisplayAtr stampAtrChildCareDisp;
 }

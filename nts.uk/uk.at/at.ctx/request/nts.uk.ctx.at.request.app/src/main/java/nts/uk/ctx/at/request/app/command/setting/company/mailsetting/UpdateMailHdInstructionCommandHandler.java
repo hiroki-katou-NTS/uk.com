@@ -26,6 +26,7 @@ public class UpdateMailHdInstructionCommandHandler extends CommandHandler<MailHd
 		MailHdInstruction mailHd = MailHdInstruction.createFromJavaType(data.getCompanyId(), data.getSubject(), data.getContent());
 		if(mail.isPresent()){
 			mailRep.update(mailHd);
+			return;
 		}
 		mailRep.insert(mailHd);
 	}

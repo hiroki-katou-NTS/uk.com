@@ -27,10 +27,10 @@ public class ApprovalSettingWkpCommand {
 	// 選択
 	private Integer selectionFlg;
 	// 申請承認機能設定
-	public List<ApprovalFunctionSettingCommand> comAppConfigDetails;
+	public List<ApprovalFunctionSettingCommand> approvalFunctionSettingDtoLst;
 
 	public RequestOfEachWorkplace toDomain() {
 		return new RequestOfEachWorkplace(companyId, wkpId, EnumAdaptor.valueOf(selectionFlg, SelectionFlg.class),
-				comAppConfigDetails.stream().map(x -> x.toDomainDetail()).collect(Collectors.toList()));
+				approvalFunctionSettingDtoLst.stream().map(x -> x.toDomainDetail()).collect(Collectors.toList()));
 	}
 }

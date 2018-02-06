@@ -90,4 +90,18 @@ public class HolidaySettingConfigFinder {
 		
 		return dto;
 	}
+	
+	public PublicHolidaySettingFindDto findIsManage() {
+		String companyId = AppContexts.user().companyId();
+		PublicHolidaySettingFindDto pubHdSetDto = new PublicHolidaySettingFindDto();
+		
+		Optional<PublicHolidaySetting> optPubHDSet = this.pubHdSetRepo.findByCID(companyId);
+		if (optPubHDSet.isPresent()) {
+			PublicHolidaySetting pubHDSet = optPubHDSet.get();
+			pubHDSet.saveToMemento(pubHdSetDto);
+		} else {
+			pubHdSetDto = null;
+		}
+		return pubHdSetDto;
+	}
 }

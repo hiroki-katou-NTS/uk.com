@@ -15,7 +15,7 @@ public class AffiliationInforOfDailyPerformCommandUpdateHandler extends CommandF
 
 	@Override
 	protected void handle(CommandHandlerContext<AffiliationInforOfDailyPerformCommand> context) {
-		repo.updateByKey(context.getCommand().toDomain());
+		repo.updateByKey(context.getCommand().getData());
 	}
 
 }

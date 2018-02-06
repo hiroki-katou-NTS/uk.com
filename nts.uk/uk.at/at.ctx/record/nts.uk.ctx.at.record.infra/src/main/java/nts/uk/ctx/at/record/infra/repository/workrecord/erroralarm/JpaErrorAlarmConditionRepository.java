@@ -51,7 +51,7 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
 		targetEntity.filterByJobTitle = domainAfterConvert.filterByJobTitle;
 		targetEntity.group2UseAtr = domainAfterConvert.group2UseAtr;
 		targetEntity.krcstErAlConGroup1 = domainAfterConvert.krcstErAlConGroup1;
-		targetEntity.krcstErAlConGroup2 = domainAfterConvert.krcstErAlConGroup1;
+		targetEntity.krcstErAlConGroup2 = domainAfterConvert.krcstErAlConGroup2;
 		targetEntity.lstBusinessType = domainAfterConvert.lstBusinessType;
 		targetEntity.lstClassification = domainAfterConvert.lstClassification;
 		targetEntity.lstEmployment = domainAfterConvert.lstEmployment;
@@ -72,7 +72,7 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
 		targetEntity.wtCompareAtr = domainAfterConvert.wtCompareAtr;
 		targetEntity.wtPlanActualOperator = domainAfterConvert.wtPlanActualOperator;
 		targetEntity.wtPlanFilterAtr = domainAfterConvert.wtPlanFilterAtr;
-
+		targetEntity.continuousPeriod = domainAfterConvert.continuousPeriod;
 		this.commandProxy().update(targetEntity);
 	}
 

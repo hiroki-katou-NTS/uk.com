@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.operationsetting;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 
 @Getter
@@ -73,10 +71,10 @@ public class DisplayRestriction {
 	 * @param substitutionDisplayAtr
 	 * @param substitutionRemainingNumberCheck
 	 */
-	public DisplayRestriction(BigDecimal yearDisplayAtr, BigDecimal yearRemainingNumberCheck, 
-			BigDecimal savingYearDisplayAtr, BigDecimal savingYearRemainingNumberCheck,
-			BigDecimal compensatoryDisplayAtr, BigDecimal compensatoryRemainingNumberCheck, 
-			BigDecimal substitutionDisplayAtr, BigDecimal substitutionRemainingNumberCheck) {
+	public DisplayRestriction(int yearDisplayAtr, int yearRemainingNumberCheck, 
+			int savingYearDisplayAtr, int savingYearRemainingNumberCheck,
+			int compensatoryDisplayAtr, int compensatoryRemainingNumberCheck, 
+			int substitutionDisplayAtr, int substitutionRemainingNumberCheck) {
 		super();
 		this.year = new LeaveHolidayRestriction(yearDisplayAtr, yearRemainingNumberCheck);
 		this.savingYear = new LeaveHolidayRestriction(savingYearDisplayAtr, savingYearRemainingNumberCheck);

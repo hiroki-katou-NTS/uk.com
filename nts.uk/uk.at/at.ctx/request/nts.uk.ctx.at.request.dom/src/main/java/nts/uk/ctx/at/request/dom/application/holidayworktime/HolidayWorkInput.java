@@ -48,7 +48,7 @@ public class HolidayWorkInput {
 	private OvertimeAppPrimitiveTime applicationTime;
 	
 	
-	public static HolidayWorkInput createSimpleFromJavaType(String companyID, String appID, int attendanceID, int frameNo, Integer startTime, Integer endTime, Integer applicationTime, int timeItemTypeAtr){
+	public static HolidayWorkInput createSimpleFromJavaType(String companyID, String appID, int attendanceID, int frameNo, Integer startTime, Integer endTime, Integer applicationTime){
 		return new HolidayWorkInput(companyID,
 				appID,
 				EnumAdaptor.valueOf(attendanceID, AttendanceType.class),

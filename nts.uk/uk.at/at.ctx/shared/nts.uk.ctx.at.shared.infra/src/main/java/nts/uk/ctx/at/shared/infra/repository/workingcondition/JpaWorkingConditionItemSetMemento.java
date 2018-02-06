@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
@@ -51,7 +52,9 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		this.entity.setHistoryId(historyId);
+		if (!StringUtil.isNullOrEmpty(historyId, false)){
+			this.entity.setHistoryId(historyId);
+		}
 	}
 
 	/*
@@ -64,7 +67,9 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setScheduleManagementAtr(NotUseAtr scheduleManagementAtr) {
-		this.entity.setScheManagementAtr(scheduleManagementAtr.value);
+		if(scheduleManagementAtr != null){
+			this.entity.setScheManagementAtr(scheduleManagementAtr.value);
+		}
 	}
 
 	/*
@@ -77,7 +82,9 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setVacationAddedTimeAtr(NotUseAtr vacationAddedTimeAtr) {
-		this.entity.setVacationAddTimeAtr(vacationAddedTimeAtr.value);
+		if(vacationAddedTimeAtr != null){
+			this.entity.setVacationAddTimeAtr(vacationAddedTimeAtr.value);
+		}
 	}
 
 	/*
@@ -89,7 +96,9 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setLaborSystem(WorkingSystem laborSystem) {
-		this.entity.setLaborSys(laborSystem.value);
+		if(laborSystem != null){
+			this.entity.setLaborSys(laborSystem.value);
+		}
 	}
 
 	/*
@@ -102,13 +111,15 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setWorkCategory(PersonalWorkCategory workCategory) {
-		List<KshmtPerWorkCat> kshmtPerWorkCats = new ArrayList<>();
-		if(this.entity.getKshmtPerWorkCats() != null){
-			kshmtPerWorkCats = this.entity.getKshmtPerWorkCats();
+		if(workCategory != null) {
+			List<KshmtPerWorkCat> kshmtPerWorkCats = new ArrayList<>();
+			if(this.entity.getKshmtPerWorkCats() != null){
+				kshmtPerWorkCats = this.entity.getKshmtPerWorkCats();
+			}
+			workCategory.saveToMemento(
+					new JpaPerWorkCatSetMemento(this.entity.getHistoryId(), kshmtPerWorkCats));
+			this.entity.setKshmtPerWorkCats(kshmtPerWorkCats);
 		}
-		workCategory.saveToMemento(
-				new JpaPerWorkCatSetMemento(this.entity.getHistoryId(), kshmtPerWorkCats));
-		this.entity.setKshmtPerWorkCats(kshmtPerWorkCats);
 	}
 
 	/*
@@ -121,7 +132,9 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setContractTime(LaborContractTime contractTime) {
-		this.entity.setContractTime(contractTime.v());
+		if (contractTime != null) {
+			this.entity.setContractTime(contractTime.v());
+		}
 	}
 
 	/*
@@ -134,7 +147,9 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setAutoIntervalSetAtr(NotUseAtr autoIntervalSetAtr) {
-		this.entity.setAutoIntervalSetAtr(autoIntervalSetAtr.value);
+		if (autoIntervalSetAtr != null){
+			this.entity.setAutoIntervalSetAtr(autoIntervalSetAtr.value);
+		}
 	}
 
 	/*
@@ -147,13 +162,15 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setWorkDayOfWeek(PersonalDayOfWeek workDayOfWeek) {
-		List<KshmtPersonalDayOfWeek> kshmtPersonalDayOfWeeks = new ArrayList<>();
-		if(this.entity.getKshmtPersonalDayOfWeeks() != null){
-			kshmtPersonalDayOfWeeks = this.entity.getKshmtPersonalDayOfWeeks();
+		if (workDayOfWeek != null) {
+			List<KshmtPersonalDayOfWeek> kshmtPersonalDayOfWeeks = new ArrayList<>();
+			if(this.entity.getKshmtPersonalDayOfWeeks() != null){
+				kshmtPersonalDayOfWeeks = this.entity.getKshmtPersonalDayOfWeeks();
+			}
+			workDayOfWeek.saveToMemento(
+					new JpaPerDayOfWeekSetMemento(this.entity.getHistoryId(), kshmtPersonalDayOfWeeks));
+			this.entity.setKshmtPersonalDayOfWeeks(kshmtPersonalDayOfWeeks);
 		}
-		workDayOfWeek.saveToMemento(
-				new JpaPerDayOfWeekSetMemento(this.entity.getHistoryId(), kshmtPersonalDayOfWeeks));
-		this.entity.setKshmtPersonalDayOfWeeks(kshmtPersonalDayOfWeeks);
 	}
 
 	/*
@@ -165,7 +182,9 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setEmployeeId(String employeeId) {
-		this.entity.setSid(employeeId);
+		if (!StringUtil.isNullOrEmpty(employeeId, true)) {
+			this.entity.setSid(employeeId);
+		}
 	}
 
 	/*
@@ -177,7 +196,9 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setAutoStampSetAtr(NotUseAtr autoStampSetAtr) {
-		this.entity.setAutoStampSetAtr(autoStampSetAtr.value);
+		if (autoStampSetAtr != null){
+			this.entity.setAutoStampSetAtr(autoStampSetAtr.value);
+		}
 	}
 
 	/*
@@ -226,12 +247,15 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 			return;
 		}
 
-		this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning() != null
-				? holidayAddTimeSet.get().getMorning().v() : null);
-		this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon() != null
-				? holidayAddTimeSet.get().getAfternoon().v() : null);
-		this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay() != null
-				? holidayAddTimeSet.get().getOneDay().v() : null);
+		if (holidayAddTimeSet.get().getMorning() != null && !holidayAddTimeSet.get().getMorning().v().equals("")){
+			this.entity.setHdAddTimeMorning(holidayAddTimeSet.get().getMorning().v());
+		}
+		if (holidayAddTimeSet.get().getAfternoon() != null && !holidayAddTimeSet.get().getAfternoon().v().equals("")){
+			this.entity.setHdAddTimeAfternoon(holidayAddTimeSet.get().getAfternoon().v());
+		}
+		if (holidayAddTimeSet.get().getOneDay() != null && !holidayAddTimeSet.get().getOneDay().v().equals("")){
+			this.entity.setHdAddTimeOneDay(holidayAddTimeSet.get().getOneDay().v());
+		}
 	}
 
 	/*
@@ -244,7 +268,9 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setHourlyPaymentAtr(HourlyPaymentAtr hourlyPaymentAtr) {
-		this.entity.setHourlyPayAtr(hourlyPaymentAtr.value);
+		if (hourlyPaymentAtr != null){
+			this.entity.setHourlyPayAtr(hourlyPaymentAtr.value);
+		}
 	}
 
 	/*
@@ -256,7 +282,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setTimeApply(Optional<BonusPaySettingCode> timeApply) {
-		if (!timeApply.isPresent()) {
+		if (timeApply == null || !timeApply.isPresent() || StringUtil.isNullOrEmpty(timeApply.get().v(), true)) {
 			this.entity.setTimeApply(null);
 			return;
 		}
@@ -272,7 +298,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 */
 	@Override
 	public void setMonthlyPattern(Optional<MonthlyPatternCode> monthlyPattern) {
-		if (!monthlyPattern.isPresent()) {
+		if (monthlyPattern == null || !monthlyPattern.isPresent() || StringUtil.isNullOrEmpty(monthlyPattern.get().v(), true)) {
 			this.entity.setMonthlyPattern(null);
 			return;
 		}

@@ -39,6 +39,8 @@ public class StampRequestSettingCommand {
 	
 	public Integer stampAtr_Sup_Disp;
 	
+	public Integer stampAtr_Child_Care_Disp;
+	
 	public Integer stampGoOutAtr_Private_Disp;
 	
 	public Integer stampGoOutAtr_Public_Disp;
@@ -52,7 +54,8 @@ public class StampRequestSettingCommand {
 								this.getTopCommentFontColor(), this.getTopCommentFontWeight(), this.getBottomComment(), 
 								this.getBottomCommentFontColor(), this.getBottomCommentFontWeight(), this.getResultDisp(), 
 								this.getSupFrameDispNO(), this.getStampPlaceDisp(), this.getStampAtr_Work_Disp(), 
-								this.getStampAtr_GoOut_Disp(), this.getStampAtr_Care_Disp(), this.getStampAtr_Sup_Disp(), 
+								this.getStampAtr_GoOut_Disp(), this.getStampAtr_Care_Disp(), this.getStampAtr_Sup_Disp(),
+								this.getStampAtr_Child_Care_Disp(),
 								this.getStampGoOutAtr_Private_Disp(), this.getStampGoOutAtr_Public_Disp(), 
 								this.getStampGoOutAtr_Compensation_Disp(), this.getStampGoOutAtr_Union_Disp());
 		return stampRequest;

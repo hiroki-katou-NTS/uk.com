@@ -26,6 +26,7 @@ public class InsertAppWorkChangeSetCommandHandler extends CommandHandler<AppWork
 				data.getCommentFontColor2());
 		if(appWork.isPresent()){
 			appWorkRep.update(appChange);
+			return;
 		}
 		appWorkRep.add(appChange);
 	}

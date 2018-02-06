@@ -79,22 +79,17 @@ public class ErrorAlarmConditionPubExport {
 			// Set WorkTypeCondition
 			condition.createWorkTypeCondition(this.workTypeCondition.isUseAtr(),
 					this.workTypeCondition.getComparePlanAndActual());
-
-			List<ErAlAtdItemConditionPubExport> listLstErAlAtdItemCon = this.attendanceItemCondition.getGroup1().getLstErAlAtdItemCon();
-			ErAlAtdItemConditionPubExport erAlAtdItemConditionPubExport = new ErAlAtdItemConditionPubExport();
-			if (listLstErAlAtdItemCon != null && !listLstErAlAtdItemCon.isEmpty()) {
-				erAlAtdItemConditionPubExport = listLstErAlAtdItemCon.get(0);
-			}
 			
 			if (this.workTypeCondition.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME.value) {
 				condition.setWorkTypePlan(this.workTypeCondition.isPlanFilterAtr(), this.workTypeCondition.getPlanLstWorkType());
 				condition.setWorkTypeActual(this.workTypeCondition.isActualFilterAtr(),
 						this.workTypeCondition.getActualLstWorkType());
-				condition.chooseWorkTypeOperator(erAlAtdItemConditionPubExport.getCompareOperator());
+				condition.chooseWorkTypeOperator(0); //set deault value
 			} else {
 				condition.setWorkTypeSingle(this.workTypeCondition.isPlanFilterAtr(),
 						this.workTypeCondition.getPlanLstWorkType());
 			}
+			
 			// Set WorkTimeCondtion
 			condition.createWorkTimeCondition(this.workTimeCondition.isUseAtr(),
 					this.workTimeCondition.getComparePlanAndActual());
@@ -102,7 +97,7 @@ public class ErrorAlarmConditionPubExport {
 				condition.setWorkTimePlan(this.workTimeCondition.isPlanFilterAtr(), this.workTimeCondition.getPlanLstWorkTime());
 				condition.setWorkTimeActual(this.workTimeCondition.isActualFilterAtr(),
 						this.workTimeCondition.getActualLstWorkTime());
-				condition.chooseWorkTimeOperator(erAlAtdItemConditionPubExport.getCompareOperator());
+				condition.chooseWorkTimeOperator(0); //set deault value
 			} else {
 				condition.setWorkTimeSingle(this.workTimeCondition.isPlanFilterAtr(),
 						this.workTimeCondition.getPlanLstWorkTime());
@@ -110,8 +105,10 @@ public class ErrorAlarmConditionPubExport {
 			// Set AttendanceItemCondition
 			
 			List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = this.attendanceItemCondition.getGroup1().getLstErAlAtdItemCon().stream()
+					.filter(item -> item.getCompareStartValue() != null)
 					.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon, companyId, errorAlarmCode)).collect(Collectors.toList());
 			List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = this.attendanceItemCondition.getGroup2().getLstErAlAtdItemCon().stream()
+					.filter(item -> item.getCompareStartValue() != null)
 					.map(atdItemCon -> convertAtdIemConToDomain(atdItemCon, companyId, errorAlarmCode)).collect(Collectors.toList());
 			
 			condition.createAttendanceItemCondition(this.attendanceItemCondition.getOperatorBetweenGroups(),
@@ -206,6 +203,7 @@ public class ErrorAlarmConditionPubExport {
 			this.workTypeCondition = new WorkTypeConditionPubExport();
 			this.workTimeCondition = new WorkTimeConditionPubExport();
 			// Set WorkTypeConditionDto
+			this.workTypeCondition.setComparePlanAndActual(conditionDomain.getWorkTypeCondition().getComparePlanAndActual().value);
 			if (conditionDomain.getWorkTypeCondition()
 					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
 				PlanActualWorkType wtypeConditionDomain = (PlanActualWorkType) conditionDomain
@@ -217,9 +215,8 @@ public class ErrorAlarmConditionPubExport {
 				this.workTypeCondition.setPlanFilterAtr(wtypeConditionDomain.getWorkTypePlan().getFilterAtr());
 				this.workTypeCondition.setPlanLstWorkType(wtypeConditionDomain.getWorkTypePlan().getLstWorkType().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-				/*errorAlarmWorkRecordDto
-						.setOperatorBetweenPlanActual(wtypeConditionDomain.getOperatorBetweenPlanActual().value);
-						*/
+				this.workTypeCondition.setComparePlanAndActual(wtypeConditionDomain.getComparePlanAndActual().value);
+						
 			} else {
 				SingleWorkType wtypeConditionDomain = (SingleWorkType) conditionDomain
 						.getWorkTypeCondition();
@@ -228,10 +225,9 @@ public class ErrorAlarmConditionPubExport {
 				this.workTypeCondition.setPlanLstWorkType(wtypeConditionDomain.getTargetWorkType().getLstWorkType().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 			}
-			this.workTimeCondition.setComparePlanAndActual(
-					conditionDomain.getWorkTypeCondition().getComparePlanAndActual().value);
 			//errorAlarmWorkRecordDto.setWorkTypeCondition(wtypeConditionDto);
 			// Set WorkTimeConditionDto
+			this.workTimeCondition.setComparePlanAndActual(conditionDomain.getWorkTimeCondition().getComparePlanAndActual().value);
 			if (conditionDomain.getWorkTimeCondition()
 					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
 				PlanActualWorkTime wtimeConditionDomain = (PlanActualWorkTime) conditionDomain
@@ -251,8 +247,6 @@ public class ErrorAlarmConditionPubExport {
 				this.workTimeCondition.setPlanLstWorkTime(wtimeConditionDomain.getTargetWorkTime().getLstWorkTime().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 			}
-			this.workTimeCondition.setComparePlanAndActual(
-					conditionDomain.getWorkTimeCondition().getComparePlanAndActual().value);
 			//errorAlarmWorkRecordDto.setWorkTimeCondition(wtimeConditionDto);
 			// Set ErAlAtdItemConditionDto
 			
@@ -369,6 +363,8 @@ public class ErrorAlarmConditionPubExport {
 			erAlAtdItemConditionDto.setConditionType(itemDomain.getCompareSingleValue().getConditionType().value);
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareSingleValue().getCompareOpertor().value);
 		}
+		if (erAlAtdItemConditionDto.getCompareStartValue() == null) erAlAtdItemConditionDto.setCompareStartValue(new BigDecimal(0));
+		if (erAlAtdItemConditionDto.getCompareEndValue() == null) erAlAtdItemConditionDto.setCompareEndValue(new BigDecimal(0));
 		return erAlAtdItemConditionDto;
 	}
 	
