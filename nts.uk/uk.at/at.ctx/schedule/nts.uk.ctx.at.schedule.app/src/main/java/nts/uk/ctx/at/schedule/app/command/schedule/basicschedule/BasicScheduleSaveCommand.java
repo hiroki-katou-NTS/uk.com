@@ -57,7 +57,7 @@ public class BasicScheduleSaveCommand {
 	/** The child care schedules. */
 	private List<ChildCareScheduleSaveCommand> childCareSchedules;
 	
-	private WorkScheduleTime workScheduleTime;
+	private Optional<WorkScheduleTime> workScheduleTime;
 		
 	private ScheMasterInfo workScheduleMaster;
 	
@@ -201,7 +201,7 @@ public class BasicScheduleSaveCommand {
 		 */
 		@Override
 		public Optional<WorkScheduleTime> getWorkScheduleTime() {
-			return Optional.empty();
+			return workScheduleTime;
 		}
 
 		/*
