@@ -27,15 +27,16 @@ public class UpdateJobAssignSettingCommandHandler extends CommandHandler<JobAssi
 
 	@Override
 	protected void handle(CommandHandlerContext<JobAssignSettingCommand> context) {
-		JobAssignSettingCommand command = context.getCommand();
+		JobAssignSettingCommand data = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		Optional<JobAssignSetting> job = jobRep.findById();
-		JobAssignSetting jobAssign = JobAssignSetting.createFromJavaType(companyId, command.getIsConcurrently());
-		jobAssign.validate();
+		JobAssignSetting jobSet = data.toDomain(companyId);
+		jobSet.validate();
 		if(job.isPresent()){
-			jobRep.updateJob(jobAssign);
+			jobRep.updateJob(jobSet);
+			return;
 		}
-		jobRep.insertJob(jobAssign);
+		jobRep.insertJob(jobSet);
 	}
 	
 }

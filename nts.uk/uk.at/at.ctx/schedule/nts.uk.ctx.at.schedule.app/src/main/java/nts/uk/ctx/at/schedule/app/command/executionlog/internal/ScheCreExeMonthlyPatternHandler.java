@@ -109,7 +109,7 @@ public class ScheCreExeMonthlyPatternHandler {
 				//アルゴリズム「社員の短時間勤務を取得」を実行し、短時間勤務を取得する // request list #72
 				//取得した情報をもとに「勤務予定基本情報」を作成する (create basic schedule)
 				//予定確定区分を取得し、「勤務予定基本情報. 確定区分」に設定する
-				scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, command.getEmployeeId(), workTypeOpt.get(), workTimeOpt != null ? workTimeOpt.get() : null);
+				scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, workingConditionItem.getEmployeeId(), workTypeOpt.get(), workTimeOpt != null ? workTimeOpt.get() : null);
 			}
 		}			
 		
