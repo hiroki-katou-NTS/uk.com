@@ -125,6 +125,14 @@ module nts.layout {
             let self = this,
                 finder = self.finder,
                 CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
+
+                CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131'),
+                CS00020_IS00133: IFindData = finder.find('CS00020', 'IS00133'),
+                CS00020_IS00134: IFindData = finder.find('CS00020', 'IS00134'),
+                CS00020_IS00136: IFindData = finder.find('CS00020', 'IS00136'),
+                CS00020_IS00137: IFindData = finder.find('CS00020', 'IS00137'),
+
+
                 CS00020_IS00238: IFindData = finder.find('CS00020', 'IS00238'),
                 CS00020_IS00239: IFindData = finder.find('CS00020', 'IS00239'),
                 CS00020_IS00148: IFindData = finder.find('CS00020', 'IS00148'),
@@ -146,29 +154,52 @@ module nts.layout {
                 CS00020_IS00220: IFindData = finder.find('CS00020', 'IS00220'),
                 CS00020_IS00221: IFindData = finder.find('CS00020', 'IS00221');
 
-            if (CS00020_IS00130) {
-                CS00020_IS00130.ctrl.on('click', () => {
+            if (CS00020_IS00130 || CS00020_IS00131) {
+                $(CS00020_IS00130, CS00020_IS00131).ctrl.on('click', () => {
                     let _finder = finder,
                         lstComboBoxValue = CS00020_IS00130.data.lstComboBoxValue,
-                        selectedWorkTypeCode = CS00020_IS00130.data.value() || "";
+                        selectedWorkTypeCode = CS00020_IS00130 ? CS00020_IS00130.data.value() || "" : "",
+                        selectedWorkTimeCode = CS00020_IS00131 ? CS00020_IS00131.data.value() || "" : "";
 
                     setShared('parentCodes', {
                         workTypeCodes: _.map(lstComboBoxValue, x => x.optionValue),
                         selectedWorkTypeCode: selectedWorkTypeCode,
-                        workTimeCodes: "",
-                        selectedWorkTimeCode: ""
+                        workTimeCodes: [],
+                        selectedWorkTimeCode: selectedWorkTimeCode
                     }, true);
 
                     modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
                         var childData: IChildData = getShared('childData');
                         if (!childData) {
                             CS00020_IS00130.data.value(undefined);
+                            CS00020_IS00131.data.value(undefined);
                         } else {
-                            CS00020_IS00130.data.value(childData.selectedWorkTypeCode);
+                            if (CS00020_IS00130) {
+                                CS00020_IS00130.data.value(childData.selectedWorkTypeCode);
+                            }
+                            if (CS00020_IS00131) {
+                                CS00020_IS00131.data.value(childData.selectedWorkTimeCode);
+                            }
+                            if (childData.first) {
+                                if (CS00020_IS00133) {
+                                    CS00020_IS00133.data.value(childData.first.start);
+                                }
+                                if (CS00020_IS00134) {
+                                    CS00020_IS00134.data.value(childData.first.end);
+                                }
+                            }
+                            if (childData.second) {
+                                if (CS00020_IS00136) {
+                                    CS00020_IS00136.data.value(childData.second.start);
+                                }
+                                if (CS00020_IS00137) {
+                                    CS00020_IS00137.data.value(childData.second.end);
+                                }
+                            }
                         }
                     });
                 });
-            }
+            };
 
             // Button IS00238
             if (CS00020_IS00238) {
@@ -277,7 +308,7 @@ module nts.layout {
                         if (!childData) {
                             CS00020_IS00148.data.value(undefined);
                         } else {
-                            CS00020_IS00148.data.value(childData.selectedWorkTypeCode);
+                            CS00020_IS00239.data.value(childData.selectedWorkTypeCode);
 
                         }
                     });
@@ -502,6 +533,7 @@ module nts.layout {
                 });
             }
 
+
             if (CS00020_IS00157) {
                 CS00020_IS00157.ctrl.on('click', () => {
                     let _finder = finder,
@@ -702,7 +734,11 @@ module nts.layout {
         selectedWorkTypeName: string;
         selectedWorkTimeCode: string;
         selectedWorkTimeName: string;
-        firstTime: string;
-        secondTime: string;
+        first: IDateRange;
+        second: IDateRange;
+    }
+    interface IDateRange {
+        start: number;
+        end: number;
     }
 } 
