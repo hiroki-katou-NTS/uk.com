@@ -1,10 +1,12 @@
-package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
+package nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto;
 
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
 
@@ -15,12 +17,12 @@ public class AppHolidayWorkPreAndReferDto {
 	/**
 	 * appDate
 	 */
-	private String appDate;
+	private GeneralDate appDate;
 
 	/**
 	 * 残業申請時間設定
 	 */
-	private List<HolidayWorkInputDto> holidayWorkInputs;
+	private List<CaculationTime> holidayWorkInputs;
 
 	/**
 	 * workType
@@ -48,11 +50,6 @@ public class AppHolidayWorkPreAndReferDto {
 	 * 勤務時間End2
 	 */
 	private Integer workClockEnd2;
-	
-	/**
-	 * フレックス超過時間
-	 */
-	private Integer flexExessTime;
 	/**
 	 * 就業時間外深夜時間
 	 */

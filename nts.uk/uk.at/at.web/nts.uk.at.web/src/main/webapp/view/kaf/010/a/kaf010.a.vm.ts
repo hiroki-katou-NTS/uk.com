@@ -19,9 +19,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         employeeName: KnockoutObservable<string> = ko.observable("");
         //Pre-POST
         prePostSelected: KnockoutObservable<number> = ko.observable(0);
-        backSelected : KnockoutObservable<number> = ko.observable(0);
-        goSelected : KnockoutObservable<number> = ko.observable(0);
-        workState: KnockoutObservable<boolean> = ko.observable(true);;
+        backSelected1: KnockoutObservable<number> = ko.observable(0);
+        goSelected1 : KnockoutObservable<number> = ko.observable(0);
+        backSelected2 : KnockoutObservable<number> = ko.observable(0);
+        goSelected2 : KnockoutObservable<number> = ko.observable(0);
+        workState: KnockoutObservable<boolean> = ko.observable(true);
         typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
         // 申請日付
         appDate: KnockoutObservable<string> = ko.observable('');
@@ -128,7 +130,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             let self = this;             
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
-            //startPage 005a AFTER start 000_A
+            //startPage 010a AFTER start 000_A
             self.startPage().done(function() {
                 self.kaf000_a.start(self.employeeID, 1, 0, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
                     $("#fixed-table").ntsFixedTable({ height: 120 });
