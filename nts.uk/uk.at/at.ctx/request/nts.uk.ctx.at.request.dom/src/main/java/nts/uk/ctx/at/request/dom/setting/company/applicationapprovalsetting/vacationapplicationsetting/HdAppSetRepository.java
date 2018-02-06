@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface HdAppSetRepository {
@@ -9,14 +8,7 @@ public interface HdAppSetRepository {
 	 * @return
 	 * @author yennth
 	 */
-	List<HdAppSet> getAll();
-	/**
-	 * get hd app set by hd app type
-	 * @param hdAppType
-	 * @return
-	 * @author yennth
-	 */
-	Optional<HdAppSet> getHdAppSet(int hdAppType);
+	Optional<HdAppSet> getAll();
 	/**
 	 * update hd app set
 	 * @param hdAppSet

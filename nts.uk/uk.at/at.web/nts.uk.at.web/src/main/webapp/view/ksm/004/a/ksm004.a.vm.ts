@@ -47,7 +47,7 @@ module nts.uk.at.view.ksm004.a {
                 endDate: 31,
                 workplaceId: ko.observable("0"),
                 workplaceName: ko.observable(""),
-                eventDisplay: ko.observable(false),
+                eventDisplay: ko.observable(true),
                 eventUpdatable: ko.observable(false),
                 holidayDisplay: ko.observable(true),
                 cellButtonDisplay: ko.observable(false)

@@ -9,12 +9,12 @@ package nts.uk.ctx.bs.employee.dom.temporaryabsence.frame;
  */
 //するしない区分
 public enum NotUseAtr {
+	
+	/** The use. */
+	USE(1, "Enum_UseClassificationAtr_USE"),
 
 	/** The not use. */
-	NOT_USE(0, "Enum_UseClassificationAtr_NOT_USE"),
-
-	/** The use. */
-	USE(1, "Enum_UseClassificationAtr_USE");
+	NOT_USE(0, "Enum_UseClassificationAtr_NOT_USE");
 
 	/** The value. */
 	public final int value;

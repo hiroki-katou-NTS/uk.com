@@ -11,6 +11,7 @@ import nts.uk.ctx.sys.portal.dom.placement.externalurl.Row;
 
 /**
  * @author LamDT
+ * 配置
  */
 @Value
 @EqualsAndHashCode(callSuper = false)

@@ -43,7 +43,9 @@ public class JpaScheduleMethodSetMemento implements ScheduleMethodSetMemento {
 	 */
 	@Override
 	public void setBasicCreateMethod(WorkScheduleBasicCreMethod basicCreateMethod) {
-		this.entity.setBasicCreateMethod(basicCreateMethod.value);
+		if (basicCreateMethod != null) {
+			this.entity.setBasicCreateMethod(basicCreateMethod.value);
+		}
 	}
 
 	/*
