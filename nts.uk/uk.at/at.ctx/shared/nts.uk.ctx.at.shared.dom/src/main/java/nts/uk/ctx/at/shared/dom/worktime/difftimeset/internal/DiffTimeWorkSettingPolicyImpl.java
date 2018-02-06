@@ -168,8 +168,11 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 
 			lstRestTime.stream().forEach(rest -> {
 				List<EmTimeZoneSet> lstWorkFilter = lstWorkTime.stream().filter(
-						work -> (work.getTimezone().getStart().v() - aheadChange < rest.getStart().valueAsMinutes())
-								&& (work.getTimezone().getEnd().v() + behindChange > rest.getEnd().valueAsMinutes()))
+						work -> (work.getTimezone().getStart().v() - aheadChange <= rest.getStart().valueAsMinutes())
+								&& (work.getTimezone().getEnd().v() - aheadChange >= rest.getEnd().valueAsMinutes())
+								&& (work.getTimezone().getStart().v() + behindChange <= rest.getStart()
+										.valueAsMinutes())
+								&& (work.getTimezone().getEnd().v() + behindChange >= rest.getEnd().valueAsMinutes()))
 						.collect(Collectors.toList());
 				if (CollectionUtil.isEmpty(lstWorkFilter)) {
 					be.addMessage("Msg_783");
