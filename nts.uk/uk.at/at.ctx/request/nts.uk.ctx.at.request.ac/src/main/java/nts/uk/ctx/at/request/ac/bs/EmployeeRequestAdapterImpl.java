@@ -82,14 +82,14 @@ public class EmployeeRequestAdapterImpl implements EmployeeRequestAdapter {
 	 */
 	@Override
 	public String getEmployeeName(String sID) {
-		return this.personPub.getPersonInfo(sID).getPname();
+		return this.personPub.getPersonInfo(sID).getBusinessName();
 	}
 
 	@Override
 	public PesionInforImport getEmployeeInfor(String sID) {
 		PersonInfoExport personIn = this.personPub.getPersonInfo(sID);
 		PesionInforImport person = new PesionInforImport(personIn.getPid(),
-				personIn.getPname(),
+				personIn.getBusinessName(),
 				personIn.getEntryDate(),
 				personIn.getGender(),
 				personIn.getBirthDay(),
