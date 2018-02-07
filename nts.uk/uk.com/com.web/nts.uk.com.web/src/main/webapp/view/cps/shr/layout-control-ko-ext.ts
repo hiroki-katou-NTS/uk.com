@@ -1453,12 +1453,6 @@ module nts.custombinding {
                         }
                     },
                         modifitems = (row: Array<any>) => {
-                            let _valids = [ITEM_SINGLE_TYPE.DATE, ITEM_SINGLE_TYPE.TIME, ITEM_SINGLE_TYPE.TIMEPOINT];
-
-                            if (row.length != 3 || _valids.indexOf(row[1].item.dataTypeValue) == -1 || _valids.indexOf(row[1].item.dataTypeValue) == -1) {
-                                return;
-                            }
-
                             _.each(row, (def, j) => {
                                 // call some validate function at here
                                 if (_.has(def, "item") && !_.isNull(def.item)) {
@@ -1468,21 +1462,18 @@ module nts.custombinding {
                                         }
 
                                         let id1 = '#' + prev.itemDefId.replace(/[-_]/g, ""),
-                                            id2 = '#' + next.itemDefId.replace(/[-_]/g, "");
+                                            id2 = '#' + next.itemDefId.replace(/[-_]/g, ""),
+                                            dom1 = $(id1),
+                                            dom2 = $(id2);
 
-                                        if (id1 == id2) {
+                                        if ((id1 == id2) ||
+                                            (!dom1[0] || !dom2[0]) ||
+                                            ((dom1[0].nodeName.toUpperCase() != "INPUT") || (dom2[0].nodeName.toUpperCase() != "INPUT"))) {
                                             return;
                                         }
 
                                         $(document).on('blur', `${id1}, ${id2}`, (evt) => {
                                             setTimeout(() => {
-                                                let dom1 = $(id1),
-                                                    dom2 = $(id2);
-
-                                                if (!dom1[0] || !dom2[0]) {
-                                                    return;
-                                                }
-
                                                 let pv = ko.toJS(prev.value),
                                                     nv = ko.toJS(next.value),
                                                     tpt = typeof pv == 'number',
