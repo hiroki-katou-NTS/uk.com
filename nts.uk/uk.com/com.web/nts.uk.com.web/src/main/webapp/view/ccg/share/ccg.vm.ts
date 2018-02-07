@@ -695,6 +695,10 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             extractSelectedEmployees(): void {
                 var self = this;
+                if (nts.uk.util.isNullOrEmpty(self.getSelectedCodeEmployee())) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_758" });
+                    return;
+                }
                 nts.uk.ui.block.invisible(); // block ui
                 service.getOfSelectedEmployee(new Date(), self.getSelectedCodeEmployee())
                     .done(selectedEmps => {
