@@ -93,6 +93,10 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 			+ " OR (c.worktypeAtr = 0 AND c.oneDayAtr = 7)"
 			+ " OR (c.worktypeAtr = 0 AND c.oneDayAtr = 11))"
 			+ " ORDER BY o.dispOrder ASC";
+	
+	private static final String FIND_WORKTYPE_BY_DEPRECATE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
+			+ " AND c.kshmtWorkTypePK.workTypeCode = :workTypeCd"
+			+ " AND c.deprecateAtr = 0";
 
 	// findWorkType(java.lang.String, java.lang.Integer, java.util.List,
 	// java.util.List)
@@ -334,5 +338,12 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public List<WorkType> getAcquiredLeaveSystemWorkTypes(String companyId) {
 		return this.queryProxy().query(FIND_LEAVE_SYSTEM_WORKTYPE, KshmtWorkType.class).setParameter("companyId", companyId)
 				.getList(x -> toDomain(x));
+	}
+
+	@Override
+	public Optional<WorkType> findByDeprecated(String companyId, String workTypeCd) {
+		return this.queryProxy().query(FIND_WORKTYPE_BY_DEPRECATE, KshmtWorkType.class).setParameter("companyId", companyId)
+				.setParameter("workTypeCd", workTypeCd)
+				.getSingle(x -> toDomain(x));
 	}
 }
