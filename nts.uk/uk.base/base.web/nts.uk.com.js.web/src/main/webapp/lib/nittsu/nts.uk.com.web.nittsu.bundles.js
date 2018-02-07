@@ -4891,36 +4891,36 @@ var nts;
                         if (typeof arguments[1] !== 'string') {
                             return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                         }
-                        if (webAppId == nts.uk.request.location.currentAppId) {
-                            path = nts.uk.request.resolvePath(path);
-                        }
-                        else {
-                            path = nts.uk.request.location.siteRoot
-                                .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-                                .mergeRelativePath(path).serialize();
-                        }
-                        options = options || {};
-                        options.modal = true;
-                        return open(path, options);
+                        return dialog(webAppId, path, true, options);
                     }
                     sub.modal = modal;
                     function modeless(webAppId, path, options) {
                         if (typeof arguments[1] !== 'string') {
                             return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                         }
+                        return dialog(webAppId, path, false, options);
+                    }
+                    sub.modeless = modeless;
+                    function dialog(webAppId, path, modal, options) {
+                        options = options || {};
+                        options.modal = modal;
                         if (webAppId == nts.uk.request.location.currentAppId) {
                             path = nts.uk.request.resolvePath(path);
+                            return open(path, options);
                         }
                         else {
                             path = nts.uk.request.location.siteRoot
                                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
                                 .mergeRelativePath(path).serialize();
+                            uk.request.login.keepSerializedSession()
+                                .then(function () {
+                                return uk.request.login.restoreSessionTo(webAppId);
+                            })
+                                .then(function () {
+                                return open(path, options);
+                            });
                         }
-                        options = options || {};
-                        options.modal = false;
-                        return open(path, options);
                     }
-                    sub.modeless = modeless;
                     function open(path, options) {
                         nts.uk.ui.block.invisible();
                         return windows.container.createDialog(path, options, windows.selfId);

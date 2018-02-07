@@ -40,7 +40,7 @@
 #btn-legend {
 	/* float: left; */
 	margin-top: 3px;
-	margin-left: 150px;
+	margin-left: 200px;
 }
 
 .grid-container {
@@ -51,9 +51,9 @@
 
 .setting-container {
 	display: inline-block;
-	float: left;
-	margin: 3px 100px 0 20px;
-	position: relative;
+	margin: 3px ;
+	/* position: relative; */
+	margin-left: 100px;
 }
 
 #setting-content {
