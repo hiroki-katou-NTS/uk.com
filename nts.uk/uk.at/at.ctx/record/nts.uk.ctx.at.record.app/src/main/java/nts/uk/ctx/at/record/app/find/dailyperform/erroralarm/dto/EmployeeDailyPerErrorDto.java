@@ -64,6 +64,6 @@ public class EmployeeDailyPerErrorDto implements ConvertibleAttendanceItem {
 	@Override
 	public EmployeeDailyPerError toDomain() {
 		return new EmployeeDailyPerError(companyID, employeeID, date,
-				new ErrorAlarmWorkRecordCode(errorCode), attendanceItemList, 0);
+				errorCode == null ? null : new ErrorAlarmWorkRecordCode(errorCode), attendanceItemList, 0);
 	}
 }

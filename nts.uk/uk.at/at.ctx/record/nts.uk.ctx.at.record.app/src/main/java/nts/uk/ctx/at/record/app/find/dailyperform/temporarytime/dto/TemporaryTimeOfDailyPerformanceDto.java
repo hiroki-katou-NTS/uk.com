@@ -83,8 +83,8 @@ public class TemporaryTimeOfDailyPerformanceDto implements ConvertibleAttendance
 
 	@Override
 	public TemporaryTimeOfDailyPerformance toDomain() {
-		return new TemporaryTimeOfDailyPerformance(getEmployeeId(), new WorkTimes(toWorkTimes()), workLeaveTime == null
-				? new ArrayList<>() : ConvertHelper.mapTo(workLeaveTime, (c) -> toTimeLeaveWork(c)), ymd);
+		return new TemporaryTimeOfDailyPerformance(getEmployeeId(), new WorkTimes(toWorkTimes()), 
+					workLeaveTime == null ? new ArrayList<>() : ConvertHelper.mapTo(workLeaveTime, (c) -> toTimeLeaveWork(c)), ymd);
 	}
 
 	private int toWorkTimes() {

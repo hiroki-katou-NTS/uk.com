@@ -327,33 +327,37 @@ module nts.uk.ui {
                 if (typeof arguments[1] !== 'string') {
                     return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
-                if(webAppId==nts.uk.request.location.currentAppId){
-                    path = nts.uk.request.resolvePath(path);
-                }else{
-                    path = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-                    .mergeRelativePath(path).serialize();
-                }
                 
-                options = options || {};
-                options.modal = true;
-                return open(path, options);
+                return dialog(webAppId, path, true, options);
             }
             export function modeless(path: string, options?: any)
             export function modeless(webAppId: nts.uk.request.WebAppId, path: string, options?: any) {
                  if (typeof arguments[1] !== 'string') {
                     return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
+                return dialog(webAppId, path, false, options);
+            }
+            
+            function dialog(webAppId: nts.uk.request.WebAppId, path: string, modal: boolean, options?: any){
+                options = options || {};
+                options.modal = modal;
                 if(webAppId==nts.uk.request.location.currentAppId){
                     path = nts.uk.request.resolvePath(path);
+                    return open(path, options);
                 }else{
                     path = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
                     .mergeRelativePath(path).serialize();
+                    
+                    request.login.keepSerializedSession()
+                        .then(() => {
+                            return request.login.restoreSessionTo(webAppId);
+                        })
+                        .then(() => {
+                            return open(path, options);
+                        });
                 }
-                options = options || {};
-                options.modal = false;
-                return open(path, options);
+                
             }
 
             export function open(path: string, options?: any) {
@@ -448,6 +452,16 @@ module nts.uk.ui {
                 $this.dialog("option", "title", header.text);
             }
             return $this;
+        }
+        
+        export function version() {
+            let versinText = "AP version: ...";
+            
+            let $this = window.parent.$('<div/>').addClass('version-dialog')
+                .append($('<div/>').addClass('text').append(versinText))
+                .appendTo('body')
+                .dialog({
+                });
         }
 
 		/**

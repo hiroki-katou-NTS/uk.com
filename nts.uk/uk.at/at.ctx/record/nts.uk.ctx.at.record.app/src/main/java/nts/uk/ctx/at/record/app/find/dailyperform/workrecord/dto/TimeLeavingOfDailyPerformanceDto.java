@@ -80,8 +80,8 @@ public class TimeLeavingOfDailyPerformanceDto implements ConvertibleAttendanceIt
 	@Override
 	public TimeLeavingOfDailyPerformance toDomain() {
 		return new TimeLeavingOfDailyPerformance(getEmployeeId(), new WorkTimes(toWorkTime()),
-				workAndLeave == null ? new ArrayList<>() : ConvertHelper.mapTo(workAndLeave, c -> toTimeLeaveWork(c)),
-				ymd);
+					workAndLeave == null ? new ArrayList<>() : ConvertHelper.mapTo(workAndLeave, c -> toTimeLeaveWork(c)),
+					ymd);
 	}
 
 	private int toWorkTime() {

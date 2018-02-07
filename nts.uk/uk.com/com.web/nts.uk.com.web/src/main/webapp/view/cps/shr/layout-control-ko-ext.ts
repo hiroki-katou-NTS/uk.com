@@ -852,7 +852,7 @@ module nts.custombinding {
                                 'data-code': itemCode,
                                 'data-category': categoryCode
                              }, text: text('CPS001_106'), enable: editable">選択</button>
-                            <label class="value-text" data-bind="text: value"></label>
+                            <label class="value-text" data-bind="text: ko.computed(function() { return value() + '&nbsp;&nbsp;&nbsp;' + textValue() })"></label>
                         <!-- /ko -->
                     </div>
                 </script>`;
@@ -1712,6 +1712,7 @@ module nts.custombinding {
                             def.item = _.has(def, "item") ? def.item : $.extend({}, ((item || <any>{}).itemTypeState || <any>{}).dataTypeState || {});
 
                             def.value = ko.isObservable(def.value) ? def.value : ko.observable(isStr(def.item) && def.value ? String(def.value) : def.value);
+                            def.textValue = ko.isObservable(def.textValue) ? def.textValue : ko.observable(isStr(def.item) && def.textValue ? String(def.textValue) : def.textValue);
                             def.value.subscribe(x => {
                                 let inputs = [],
                                     proc = function(data: any): any {
@@ -1738,7 +1739,7 @@ module nts.custombinding {
                                                 };
                                             case ITEM_SINGLE_TYPE.DATE:
                                                 return {
-                                                    value: data.value ? moment.utc(data.value).format("YYYY/MM/DD") : undefined,
+                                                    value: data.value ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
                                                     typeData: 3
                                                 };
                                             case ITEM_SINGLE_TYPE.SELECTION:
