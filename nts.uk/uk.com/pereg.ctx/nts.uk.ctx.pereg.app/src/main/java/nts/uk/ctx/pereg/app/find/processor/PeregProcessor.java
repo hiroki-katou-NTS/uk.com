@@ -229,7 +229,7 @@ public class PeregProcessor {
 				break;
 			}
 		}
-		if(classItemList.get(0).getPersonInfoCategoryCD().equals("CS00020")) {
+		if(query.getCategoryCode().equals("CS00020")) {
 			MappingFactory.setDefaultValueRadio(classItemList);
 		}
 		return classItemList;
