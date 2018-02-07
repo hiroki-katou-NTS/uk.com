@@ -140,8 +140,8 @@ public class RoleIndividualWebService extends WebService {
 	}
 	
 	@POST
-	@Path("getpermitbysystype/{systype}")
-	public boolean getFuturePermitBySysType(@PathParam("systype") int sysType) {
+	@Path("get/futurerefpermit")
+	public boolean getFutureDateRefPermit() {
 		String roleId = AppContexts.user().roles().forPersonalInfo();
 		return this.personInforRoleFinder.find(roleId).getReferFutureDate();
 	}

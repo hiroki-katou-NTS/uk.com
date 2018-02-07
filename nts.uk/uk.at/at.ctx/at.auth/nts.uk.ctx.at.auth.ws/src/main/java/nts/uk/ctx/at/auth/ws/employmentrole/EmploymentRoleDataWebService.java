@@ -79,8 +79,8 @@ public class EmploymentRoleDataWebService {
 	}
 
 	@POST
-	@Path("getpermitbysystype/{systype}")
-	public boolean getFuturePermitBySysType(@PathParam("systype") int sysType) {
+	@Path("get/futurerefpermit")
+	public boolean getFutureDateRefPermit() {
 		String roleId = AppContexts.user().roles().forAttendance(); // 就業
 		return this.employmentRoleFinder.getEmploymentRoleById(roleId).getFutureDateRefPermit() == 0 ? false : true;
 	}

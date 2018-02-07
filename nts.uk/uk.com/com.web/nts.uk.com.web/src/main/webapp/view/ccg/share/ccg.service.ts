@@ -18,7 +18,9 @@ module nts.uk.com.view.ccg.share.ccg {
             getClosuresByBaseDate: "ctx/at/shared/workrule/closure/getclosuresbybasedate",
             calculatePeriod: "ctx/at/shared/workrule/closure/calculateperiod",
             getClosureTiedByEmployment: "ctx/at/shared/workrule/closure/getclosuretiedbyemployment",
-            getCurrentHistoryItem: "bs/employee/employment/history/getcurrenthistoryitem"
+            getCurrentHistoryItem: "bs/employee/employment/history/getcurrenthistoryitem",
+            getPersonalRoleFuturePermit: "ctx/sys/auth/grant/roleindividual/get/futurerefpermit",
+            getEmploymentRoleFuturePermit: "at/auth/workplace/employmentrole/get/futurerefpermit"
         }
 
         /**
@@ -26,6 +28,14 @@ module nts.uk.com.view.ccg.share.ccg {
          */
         export function searchAllEmployee(baseDate: Date): JQueryPromise<Array<model.EmployeeSearchDto>> {
             return nts.uk.request.ajax('com', servicePath.searchAllEmployee, baseDate);
+        }
+
+        export function getPersonalRoleFuturePermit(): JQueryPromise<boolean> {
+            return nts.uk.request.ajax('com', servicePath.getPersonalRoleFuturePermit);
+        }
+
+        export function getEmploymentRoleFuturePermit(): JQueryPromise<boolean> {
+            return nts.uk.request.ajax('at', servicePath.getEmploymentRoleFuturePermit);
         }
 
         export function getCurrentHistoryItem(): JQueryPromise<any> {
