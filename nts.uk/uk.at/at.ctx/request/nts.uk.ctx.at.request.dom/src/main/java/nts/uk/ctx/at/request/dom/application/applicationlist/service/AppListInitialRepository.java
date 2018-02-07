@@ -12,13 +12,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author hoatt
  *
  */
-public interface ApplicationListInitialRepository {
-	/**
-	 * 12 - 申請一覧初期日付期間
-	 * @param companyId
-	 * @return
-	 */
-	public DatePeriod getInitialPeriod(String companyId);
+public interface AppListInitialRepository {
 	/**
 	 * 0 - 申請一覧事前必須チェック
 	 * @param appType
@@ -39,7 +33,7 @@ public interface ApplicationListInitialRepository {
 	 * @param param
 	 * @return
 	 */
-	public List<Application_New> getApplicationListByApp(AppListExtractCondition param);
+	public AppListOutPut getApplicationListByApp(AppListExtractCondition param);
 	/**
 	 * 3 - 申請一覧リスト取得承認
 	 * @param param
@@ -97,5 +91,11 @@ public interface ApplicationListInitialRepository {
 	 * @param lstApp
 	 * @return
 	 */
-	public List<Application_New> getListAppMasterInfo(List<Application_New> lstApp);
+	public List<AppMasterInfo> getListAppMasterInfo(List<Application_New> lstApp);
+	/**
+	 * 12 - 申請一覧初期日付期間
+	 * @param companyId
+	 * @return
+	 */
+	public DatePeriod getInitialPeriod(String companyId);
 }
