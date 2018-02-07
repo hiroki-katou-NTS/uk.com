@@ -9,14 +9,14 @@ module nts.uk.com.view.cas013.b.viewmodel {
         //user
         selectUserID: KnockoutObservable<string>;
         userName: KnockoutObservable<string>;
-        paramUserIds: Array<string>
+        roleTypeParam: number;
 
-        special: KnockoutObserveble<boolean>;
-        multi: KnockoutObserveble<boolean>;
+        special: KnockoutObservable<boolean>;
+        multi: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
-            self.paramUserIds = nts.uk.ui.windows.getShared("userIds");
+            self.roleTypeParam = nts.uk.ui.windows.getShared("roleType");
 
             self.special = ko.observable(true);
             self.multi = ko.observable(true);
@@ -34,21 +34,16 @@ module nts.uk.com.view.cas013.b.viewmodel {
         search() {
             let self = this;
             if (nts.uk.text.isNullOrEmpty(self.searchValue())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_438", messageParams: ['検索文字列 '] });
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_438", messageParams: [nts.uk.resource.getText("CAS013_33")] });
                 return;
             }
             var key = self.searchValue();
             var Special = self.special();
             var Multi = self.multi();
-            nts.uk.ui.block.invisible();
-            service.searchUser(key, Special, Multi).done(function(data) {
+            var roleType =  self.roleTypeParam;
+            nts.uk.ui.block.invisible(); 
+            service.searchUser(key, Special, Multi, roleType).done(function(data) {
                 var items = [];
-                _.remove(data, (item: any) => {
-                    let founded = _.find(self.paramUserIds, (matchItem: string) => {
-                        return matchItem == item.userID;
-                    });
-                    return (founded == undefined) ? false : true;
-                });
                 items = _.sortBy(data, ["loginID"]);
                 self.dataSource(items);
             }).always(() => {

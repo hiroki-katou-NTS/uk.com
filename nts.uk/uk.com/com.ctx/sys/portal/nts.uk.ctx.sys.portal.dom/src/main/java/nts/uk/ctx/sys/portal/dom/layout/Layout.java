@@ -6,7 +6,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
+ * 
  * @author LamDT
+ * レイアウト
  */
 @Value
 @EqualsAndHashCode(callSuper = false)

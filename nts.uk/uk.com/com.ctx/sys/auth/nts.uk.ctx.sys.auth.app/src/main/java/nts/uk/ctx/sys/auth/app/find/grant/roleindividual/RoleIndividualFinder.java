@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.gul.text.StringUtil;
@@ -87,7 +88,7 @@ public class RoleIndividualFinder {
 					roleIndividualGrant.getValidPeriod().end());
 			listRoleIndividualGrantDto.add(dto);
 		}
-
+		listRoleIndividualGrantDto.sort((obj1,obj2)->{return obj1.getLoginID().compareTo(obj2.getLoginID());});
 		return new RoleIndividualDto(COMPANY_ID_SYSADMIN, listRoleIndividualGrantDto);
 
 	}
@@ -104,8 +105,9 @@ public class RoleIndividualFinder {
 	}
 
 	public List<RoleTypeDto> GetRoleType(){
-		String companyId = AppContexts.user().companyId();
-		if (companyId == null)
+		
+		val user = AppContexts.user();
+		if (user.roles().have().systemAdmin() && user.roles().have().companyAdmin())
 			return null;
 		
 		List<RoleTypeDto> roleTypeDtos = new ArrayList<>();
