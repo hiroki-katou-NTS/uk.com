@@ -3314,28 +3314,7 @@ var nts;
                     });
                     kiban.systemName(__viewContext.env.systemName);
                     ui.viewModelBuilt.fire(ui._viewModel);
-                    if ($(".html-loading").length > 0) {
-                        var dfd_1 = [];
-                        _.forEach($(".html-loading"), function (e) {
-                            var $container = $(e);
-                            var dX = $.Deferred();
-                            $container.load($container.attr("link"), function () {
-                                dX.resolve();
-                            });
-                            dfd_1.push(dX);
-                            dX.promise();
-                        });
-                        $.when.apply($, dfd_1).then(function (data, textStatus, jqXHR) {
-                            $('.html-loading').contents().unwrap();
-                            binding(ui._viewModel);
-                        });
-                    }
-                    else {
-                        binding(ui._viewModel);
-                    }
-                };
-                var binding = function (_viewModel) {
-                    ko.applyBindings(_viewModel);
+                    ko.applyBindings(ui._viewModel);
                     // off event reset for class reset-not-apply
                     $(".reset-not-apply").find(".reset-element").off("reset");
                     //avoid page content overlap header and function area
@@ -3351,7 +3330,7 @@ var nts;
                     }
                     $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
                     //            if($("#functions-area-bottom").length!=0){
-                    //            }    
+                    //            } 
                 };
                 var startP = function () {
                     _.defer(function () { return _start.call(__viewContext); });
@@ -3396,6 +3375,18 @@ var nts;
                     $.when.apply($, dfd).then(function (data, textStatus, jqXHR) {
                         $('.html-loading').contents().unwrap();
                         startP();
+                    });
+                });
+                $(function () {
+                    var lastPause = new Date();
+                    $(window).keydown(function (e) {
+                        if (e.keyCode !== 19)
+                            return;
+                        var now = new Date();
+                        if (now - lastPause < 500) {
+                            ui.dialog.version();
+                        }
+                        lastPause = new Date();
                     });
                 });
             })(init || (init = {}));
@@ -4151,6 +4142,10 @@ var nts;
                         this.constraint = getConstraint(primitiveValueName);
                         if (nts.uk.util.isNullOrUndefined(this.constraint)) {
                             this.constraint = {};
+                            if (option && option.min && option.max) {
+                                this.constraint.min = option.min;
+                                this.constraint.max = option.max;
+                            }
                         }
                         this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
                         this.required = ((option && option.required) ? option.required : false) || this.constraint.required === true;
@@ -4831,6 +4826,15 @@ var nts;
                         subWindow.setupAsDialog(path, options);
                         return subWindow;
                     };
+                    ScreenWindowContainer.prototype.createDialogNotOpen = function (path, options, parentId) {
+                        var parentwindow = this.windows[parentId];
+                        var subWindow = ScreenWindow.createSubWindow(parentwindow);
+                        this.windows[subWindow.id] = subWindow;
+                        return subWindow;
+                    };
+                    ScreenWindowContainer.prototype.mergeOption = function (options) {
+                        return $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
+                    };
                     ScreenWindowContainer.prototype.getShared = function (key) {
                         return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
                     };
@@ -4896,41 +4900,48 @@ var nts;
                         if (typeof arguments[1] !== 'string') {
                             return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                         }
-                        if (webAppId == nts.uk.request.location.currentAppId) {
-                            path = nts.uk.request.resolvePath(path);
-                        }
-                        else {
-                            path = nts.uk.request.location.siteRoot
-                                .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
-                                .mergeRelativePath(path).serialize();
-                        }
-                        options = options || {};
-                        options.modal = true;
-                        return open(path, options);
+                        return dialog(webAppId, path, true, options);
                     }
                     sub.modal = modal;
                     function modeless(webAppId, path, options) {
                         if (typeof arguments[1] !== 'string') {
                             return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                         }
+                        return dialog(webAppId, path, false, options);
+                    }
+                    sub.modeless = modeless;
+                    function dialog(webAppId, path, modal, options) {
+                        options = options || {};
+                        options.modal = modal;
                         if (webAppId == nts.uk.request.location.currentAppId) {
                             path = nts.uk.request.resolvePath(path);
+                            return open(path, options);
                         }
                         else {
                             path = nts.uk.request.location.siteRoot
                                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
                                 .mergeRelativePath(path).serialize();
+                            var dialog_1 = createDialog(path, options);
+                            uk.request.login.keepSerializedSession()
+                                .then(function () {
+                                return uk.request.login.restoreSessionTo(webAppId);
+                            })
+                                .then(function () {
+                                dialog_1.setupAsDialog(path, windows.container.mergeOption(options));
+                            });
+                            return dialog_1;
                         }
-                        options = options || {};
-                        options.modal = false;
-                        return open(path, options);
                     }
-                    sub.modeless = modeless;
                     function open(path, options) {
                         nts.uk.ui.block.invisible();
                         return windows.container.createDialog(path, options, windows.selfId);
                     }
                     sub.open = open;
+                    function createDialog(path, options) {
+                        nts.uk.ui.block.invisible();
+                        return windows.container.createDialogNotOpen(path, options, windows.selfId);
+                    }
+                    sub.createDialog = createDialog;
                 })(sub = windows.sub || (windows.sub = {}));
             })(windows = ui_1.windows || (ui_1.windows = {}));
             function localize(textId) {
@@ -5012,6 +5023,14 @@ var nts;
                     }
                     return $this;
                 }
+                function version() {
+                    var versinText = "AP version: ...";
+                    var $this = window.parent.$('<div/>').addClass('version-dialog')
+                        .append($('<div/>').addClass('text').append(versinText))
+                        .appendTo('body')
+                        .dialog({});
+                }
+                dialog.version = version;
                 /**
                  * Show information dialog.
                  *
@@ -17903,7 +17922,8 @@ var nts;
                                         return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                             .validate(value);
                                     case "Clock":
-                                        this.options.outputFormat = "time";
+                                        // Don't merge with time type.
+                                        this.options.mode = "time";
                                         return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
                                             .validate(value);
                                     case "TimeWithDay":
@@ -18279,7 +18299,8 @@ var nts;
                                                 var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
                                                 var timeOpts = { timeWithDay: false };
                                                 var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
-                                                value = formatter.format(minutes);
+                                                if (!uk.util.isNullOrUndefined(minutes))
+                                                    value = formatter.format(minutes);
                                             }
                                             else if (valueType === "Currency") {
                                                 var currencyOpts = new ui.option.CurrencyEditorOption();
@@ -19060,9 +19081,11 @@ var nts;
                                 if (!setting.descriptor.keyIdxes) {
                                     var pk_2 = owner.dataSource.settings.primaryKey;
                                     var keyIdxes_2 = {};
-                                    owner.dataSource._origDs.forEach(function (d, i) {
-                                        keyIdxes_2[d[pk_2]] = i;
-                                    });
+                                    if (owner.dataSource._origDs) {
+                                        owner.dataSource._origDs.forEach(function (d, i) {
+                                            keyIdxes_2[d[pk_2]] = i;
+                                        });
+                                    }
                                     setting.descriptor.keyIdxes = keyIdxes_2;
                                     setting.descriptor.fixedTable = owner._fixedTable;
                                 }
@@ -19121,6 +19144,7 @@ var nts;
                                 && idx <= descriptor.rowCount + descriptor.startRow - 1 && !uk.util.isNullOrUndefined(colIdx)) {
                                 return $(descriptor.elements[idx - descriptor.startRow][colIdx]);
                             }
+                            return $grid.igGrid("cellById", rowId, key);
                         }
                         internal.getCellById = getCellById;
                     })(internal || (internal = {}));

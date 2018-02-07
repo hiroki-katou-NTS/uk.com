@@ -69,7 +69,14 @@ public class MappingFactory {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
 			for (Object item : classItem.getItems()) {
 				LayoutPersonInfoValueDto valueItem = (LayoutPersonInfoValueDto) item;
-				valueItem.setValue(itemCodeValueMap.get(valueItem.getItemCode()));
+				Object value = itemCodeValueMap.get(valueItem.getItemCode());
+				if(valueItem.getItem() != null)
+				{
+					if(valueItem.getItem().getDataTypeValue() == 7) {
+						value = value.toString();
+					}
+				}
+				valueItem.setValue(value);
 				boolean optionItemNoValue = itemCodeValueMap.containsKey(valueItem.getItemCode());
 				if (optionItemNoValue ) {
 					valueItem.setRecordId(recordId);

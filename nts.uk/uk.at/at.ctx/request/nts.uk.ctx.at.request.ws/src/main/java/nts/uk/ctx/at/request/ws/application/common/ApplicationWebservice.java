@@ -17,7 +17,6 @@ import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCom
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDelete;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDenyHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationReleaseHandler;
-import nts.uk.ctx.at.request.app.command.setting.request.AddApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDataDateFinder;
@@ -71,8 +70,7 @@ public class ApplicationWebservice extends WebService {
 	private AppDataDateFinder appDataDateFinder;
 	@Inject
 	private UpdateApplicationDeadlineCommandHandler update;
-	@Inject
-	private AddApplicationDeadlineCommandHandler add;
+
 	
 	
 	/**
@@ -187,18 +185,10 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("update")
-	public void update(ApplicationDeadlineCommand command){
+	public void update(List<ApplicationDeadlineCommand> command){
 		this.update.handle(command);
 	}
-	/**
-	 * insert application dead line
-	 * @param command
-	 */
-	@POST
-	@Path("add")
-	public void insert(ApplicationDeadlineCommand command){
-		this.add.handle(command);
-	}
+
 }
 
 @Value

@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.request.app.command.setting.company.applicationsetting;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ProxyAppSet;
@@ -14,6 +18,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
  *
  */
 @Stateless
+@Transactional
 public class UpdateProxyAppSetCommandHandler extends CommandHandler<ProxyAppSetCommand>{
 	@Inject
 	private ProxyAppSetRepository proxyRep;
@@ -21,9 +26,14 @@ public class UpdateProxyAppSetCommandHandler extends CommandHandler<ProxyAppSetC
 	@Override
 	protected void handle(CommandHandlerContext<ProxyAppSetCommand> context) {
 		ProxyAppSetCommand data = context.getCommand();
-		ProxyAppSet proxy = ProxyAppSet.createFromJavaType(data.getCompanyId(), data.getAppType());
-		proxy.validate();
-		proxyRep.insert(proxy);
+		if(!data.getAppType().isEmpty()){
+			proxyRep.delete(data.getCompanyId());
+			for(Integer item : data.getAppType()){
+				ProxyAppSet proxy = ProxyAppSet.createFromJavaType(data.getCompanyId(), item);
+				proxy.validate();
+				proxyRep.insert(proxy);
+			}
+		}
 	}
 	
 }

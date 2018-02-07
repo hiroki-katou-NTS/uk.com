@@ -29,7 +29,7 @@ public class UserFinder {
 
 	@Inject
 	private EmployeeInfoAdapter employeeInfoAdapter;
-
+	
 	@Inject
 	private RoleIndividualGrantRepository roleIndividualGrantRepo;
 
@@ -62,10 +62,9 @@ public class UserFinder {
 				.stream().map(c -> c.getUserId()).collect(Collectors.toList());
 
 		DisabledSegment specialUser = EnumAdaptor.valueOf(userKeyDto.isSpecial() ? 1 : 0, DisabledSegment.class);
-		DisabledSegment multiCompanyConcurrent = EnumAdaptor.valueOf(userKeyDto.isMulti() ? 1 : 0,
-				DisabledSegment.class);
-		List<User> listUser = userRepo.searchBySpecialAndMulti(GeneralDate.today(), specialUser.value,
-				multiCompanyConcurrent.value);
+		DisabledSegment multiCompanyConcurrent = EnumAdaptor.valueOf(userKeyDto.isMulti() ? 1 : 0, DisabledSegment.class);
+		List<User> listUser = userRepo.searchBySpecialAndMulti(GeneralDate.today(), specialUser.value, multiCompanyConcurrent.value);
+	
 
 		if (!userKeyDto.isMulti() && !userKeyDto.isSpecial()) {
 			List<EmployeeInfoImport> listEmployeeInfo = employeeInfoAdapter.getEmployeesAtWorkByBaseDate(companyId,
@@ -87,16 +86,14 @@ public class UserFinder {
 				}
 			}
 			for (String id : userIds) {
-				result = result.stream().filter(c -> c.getUserName().equals(id)).collect(Collectors.toList());
+				result.removeIf(c -> c.getUserID().equals(id));
 			}
 			return result;
 		}
 
-		result = listUser.stream()
-				.filter(c -> c.getUserName().v().toLowerCase().contains(userKeyDto.getKey().toLowerCase()))
-				.map(c -> UserDto.fromDomain(c)).collect(Collectors.toList());
+		result = listUser.stream().filter(c -> c.getUserName().v().toLowerCase().contains(userKeyDto.getKey().toLowerCase())).map(c -> UserDto.fromDomain(c)).collect(Collectors.toList());
 		for (String id : userIds) {
-			result = result.stream().filter(c -> c.getUserName().equals(id)).collect(Collectors.toList());
+			result.removeIf(c -> c.getUserID().equals(id));
 		}
 		return result;
 	}

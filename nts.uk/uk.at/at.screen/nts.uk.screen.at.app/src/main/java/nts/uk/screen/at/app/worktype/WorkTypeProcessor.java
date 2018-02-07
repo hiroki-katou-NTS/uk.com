@@ -42,9 +42,21 @@ public class WorkTypeProcessor {
 		return this.workTypeQueryRepository.findAllWorkType(companyId, workTypeAtr);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public List<WorkTypeDto> findWorkTypeSpe(){
 		String companyId = AppContexts.user().companyId();
 		return this.workTypeQueryRepository.findAllWorkTypeSPE(companyId, DeprecateClassification.NotDeprecated.value, WorkTypeClassification.SpecialHoliday.value, WorkTypeClassification.Absence.value);
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<WorkTypeDto> findWorkTypeDisp(){
+		String companyId = AppContexts.user().companyId();
+		return this.workTypeQueryRepository.findAllWorkTypeDisp(companyId, DeprecateClassification.NotDeprecated.value);
+	}
 }

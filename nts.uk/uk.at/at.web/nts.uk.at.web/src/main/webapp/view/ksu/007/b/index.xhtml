@@ -45,7 +45,12 @@
 						</tr>
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" >#{i18n.getText('KSU007_11')}</td>
-							<td class="valueScheduleSetting" data-bind="text: executionTotal"></td>
+							<td class="valueScheduleSetting">
+								<span class="executionStateTime" data-bind="text: executionState"></span>
+								<span class="errorCount">#{i18n.getText('KSU007_12')}</span>
+								<span>:</span>
+								<span data-bind="text: executionError"></span>
+							</td>
 						</tr>
 					</table>
 					<com:ko tag="if" bind="isError()">
