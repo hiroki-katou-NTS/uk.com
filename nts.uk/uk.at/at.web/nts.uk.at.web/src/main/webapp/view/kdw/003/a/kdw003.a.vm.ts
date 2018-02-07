@@ -400,6 +400,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             // todo
                         } else {
                             //get layout , and type
+                            let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
                                 return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                             });
                             let value: any;
