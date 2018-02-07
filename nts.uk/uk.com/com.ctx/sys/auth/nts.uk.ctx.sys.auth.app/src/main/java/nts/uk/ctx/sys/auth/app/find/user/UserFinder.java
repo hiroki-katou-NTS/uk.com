@@ -14,6 +14,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoImport;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.user.DisabledSegment;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserName;
@@ -28,6 +29,9 @@ public class UserFinder {
 
 	@Inject
 	private EmployeeInfoAdapter employeeInfoAdapter;
+	
+	@Inject
+	private RoleIndividualGrantRepository roleIndividualGrantRepo;
 
 	public List<UserDto> searchUser(String userNameID) {
 		GeneralDate date = GeneralDate.today();
@@ -53,6 +57,9 @@ public class UserFinder {
 		DisabledSegment specialUser = EnumAdaptor.valueOf(userKeyDto.isSpecial() ? 1 : 0, DisabledSegment.class);
 		DisabledSegment multiCompanyConcurrent = EnumAdaptor.valueOf(userKeyDto.isMulti() ? 1 : 0, DisabledSegment.class);
 		List<User> listUser = userRepo.searchBySpecialAndMulti(GeneralDate.today(), specialUser.value, multiCompanyConcurrent.value);
+		
+		List<String> userIds = roleIndividualGrantRepo.findByCompanyIdAndRoleType(companyId, 0)
+				.stream().map(c -> c.getUserId()).collect(Collectors.toList());
 
 		if (!userKeyDto.isMulti() && !userKeyDto.isSpecial()) {
 			List<EmployeeInfoImport> listEmployeeInfo = employeeInfoAdapter.getEmployeesAtWorkByBaseDate(companyId, GeneralDate.today());
@@ -68,10 +75,16 @@ public class UserFinder {
 					}
 				}
 			}
+			for (String id : userIds) {
+				result.removeIf(c -> c.getUserID().equals(id));
+			}
 			return result;
 		}
 
 		result = listUser.stream().filter(c -> c.getUserName().v().toLowerCase().contains(userKeyDto.getKey().toLowerCase())).map(c -> UserDto.fromDomain(c)).collect(Collectors.toList());
+		for (String id : userIds) {
+			result.removeIf(c -> c.getUserID().equals(id));
+		}
 		return result;
 	}
 
