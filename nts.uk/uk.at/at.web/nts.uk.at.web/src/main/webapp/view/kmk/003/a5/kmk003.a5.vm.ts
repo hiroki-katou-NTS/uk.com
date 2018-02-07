@@ -323,7 +323,7 @@ module a5 {
                     defaultValue: ko.observable(0),
                     width: 110,
                     template: `<input class="time-edior-column" data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowPassageTime,
-                        required: true, inputFormat: 'time', mode: 'time', enable: true, name: '#[KMK003_174]' }" />`
+                        required: false, inputFormat: 'time', mode: 'time', enable: true, name: '#[KMK003_174]' }" />`
                 },
                 {
                     headerText: nts.uk.resource.getText("KMK003_176"),
@@ -331,7 +331,7 @@ module a5 {
                     defaultValue: ko.observable(0),
                     width: 110,
                     template: `<input class="time-edior-column" data-bind="ntsTimeEditor: { constraint: 'AttendanceTime', value: flowRestTime,
-                        required: true, inputFormat: 'time', mode: 'time', enable: true, name: '#[KMK003_176]' }" />`
+                        required: false, inputFormat: 'time', mode: 'time', enable: true, name: '#[KMK003_176]' }" />`
                 }
             ];
         }
