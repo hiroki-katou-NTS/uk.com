@@ -3,6 +3,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	
    	<div>
 		<div>#{i18n.getText('KMK003_31')}</div>
 		<div>
@@ -189,51 +190,49 @@
 		/>
 	</div>
 </com:ko>
-<div class="setting_rows">
-	<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_39')}</div>
-	<input tabindex ="40" id="breakTimeStartInput" data-bind="ntsTimeWithDayEditor: {
-		name: '#[KMK003_39]',
-		value: predseting.prescribedTimezoneSetting.morningEndTime,
-		constraint: 'TimeWithDayAttr',
-		inputFormat: 'time',
-		mode: 'time',
-		option: beforeUpdateWorkTimeOption,
-		required: true,
-		enable: true,
-		readonly: false,
-		immediate: false}" 
-	/>
-</div>
-<div class="setting_rows">
-	<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_40')}</div>
-	<input tabindex ="41" id="breakTimeEndInput" data-bind="ntsTimeWithDayEditor: {
-		name: '#[KMK003_40]',
-		value: predseting.prescribedTimezoneSetting.afternoonStartTime,
-		constraint: 'TimeWithDayAttr',
-		inputFormat: 'time',
-		mode: 'time',
-		option: beforeUpdateWorkTimeOption,
-		required: true,
-		enable: true,
-		readonly: false,
-		immediate: false}" 
-	/>
-</div>
-<table>
-	<tr>
-		<td class="td-cell" colspan="2">
-			<div>#{i18n.getText('KMK003_41')}</div>
-			<div>
-				<hr />
-			</div>
-		</td>
-	</tr>
-	<tr>
-		<td class="td-cell">
-			<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_42')}</div>
-		</td>
-		<td class="td-cell">
-			<input tabindex ="42" id="oneDayInput" data-bind="ntsTimeEditor: {
+	<div class="setting_rows">
+		<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_39')}</div>
+		<input tabindex ="40" id="breakTimeStartInput" data-bind="ntsTimeWithDayEditor: {
+			name: '#[KMK003_39]',
+			value: predseting.prescribedTimezoneSetting.morningEndTime,
+			constraint: 'TimeWithDayAttr',
+			inputFormat: 'time',
+			mode: 'time',
+			option: beforeUpdateWorkTimeOption,
+			required: true,
+			enable: true,
+			readonly: false,
+			immediate: false}" 
+		/>
+	</div>
+	<div class="setting_rows">
+		<div class="setting_header_tab1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_40')}</div>
+		<input tabindex ="41" id="breakTimeEndInput" data-bind="ntsTimeWithDayEditor: {
+			name: '#[KMK003_40]',
+			value: predseting.prescribedTimezoneSetting.afternoonStartTime,
+			constraint: 'TimeWithDayAttr',
+			inputFormat: 'time',
+			mode: 'time',
+			option: beforeUpdateWorkTimeOption,
+			required: true,
+			enable: true,
+			readonly: false,
+			immediate: false}" 
+		/>
+	</div>
+	
+	<div class="setting_rows"></div>
+	
+	<div>
+		<div>#{i18n.getText('KMK003_41')}</div>
+		<div>
+			<hr />
+		</div>
+	</div>
+	
+	<div class="setting_rows">
+		<div class="setting_header_tab1_2" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_42')}</div>
+		<input tabindex ="42" id="oneDayInput" data-bind="ntsTimeEditor: {
 				name: '#[KMK003_42]',
 				value: predseting.predTime.predTime.oneDay,
 				constraint: 'AttendanceTime',
@@ -243,16 +242,12 @@
 				required: true,
 				enable: true,
 				readonly: false,
-				immediate: false}" 
-			/>
-		</td>
-	</tr>
-	<tr>
-		<td class="td-cell">
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_43')}</div>
-		</td>
-		<td class="td-cell">
-			<input tabindex ="43" data-bind="ntsTimeEditor: {
+				immediate: false}" />
+	</div>
+	
+	<div class="setting_rows">
+		<div class="setting_header_tab1_2" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_43')}</div>
+		<input tabindex ="43" data-bind="ntsTimeEditor: {
 				name: '#[KMK003_43]',
 				value: predseting.predTime.predTime.morning,
 				constraint: 'AttendanceTime',
@@ -263,14 +258,11 @@
 				enable: true,
 				readonly: false,
 				immediate: false}" />
-		</td>
-	</tr>
-	<tr>
-		<td class="td-cell">
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_44')}</div>
-		</td>
-		<td class="td-cell">
-			<input tabindex ="44" data-bind="ntsTimeEditor: {
+	</div>
+	
+	<div class="setting_rows">
+		<div class="setting_header_tab1_2" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_44')}</div>
+		<input tabindex ="44" data-bind="ntsTimeEditor: {
 				name: '#[KMK003_44]',
 				value: predseting.predTime.predTime.afternoon,
 				constraint: 'AttendanceTime',
@@ -281,7 +273,5 @@
 				enable: true,
 				readonly: false,
 				immediate: false}" />
-		</td>
-	</tr>
-</table>
+	</div>	
 </ui:composition>

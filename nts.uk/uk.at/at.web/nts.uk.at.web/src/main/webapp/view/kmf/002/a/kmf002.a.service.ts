@@ -108,10 +108,10 @@ module nts.uk.at.view.kmf002.a {
             inLegelHdFwph: number;
             outLegelHdFwph: number;
         
-            constructor(isOneWeekHoliday: number, isFourWeekHoliday: number, inLegalHdLwhnoow: 
-                            number, outLegalHdLwhnoow: number, inLegalHdOwph: number, outLegalHdOwph: number, 
-                            inLegalHdLwhnofw: number, outLegalHdLwhnofw: number, inLegelHdFwph: number, 
-                            outLegelHdFwph: number) {
+            constructor(isOneWeekHoliday: number, isFourWeekHoliday: number, inLegalHdOwph: number, 
+                        outLegalHdOwph: number, inLegalHdLwhnoow: number, outLegalHdLwhnoow: number,  
+                        inLegelHdFwph: number, outLegelHdFwph: number, inLegalHdLwhnofw: number, 
+                        outLegalHdLwhnofw: number) {
                 this.isOneWeekHoliday = isOneWeekHoliday;
                 this.isFourWeekHoliday = isFourWeekHoliday;
                 this.inLegalHdLwhnoow = inLegalHdLwhnoow;

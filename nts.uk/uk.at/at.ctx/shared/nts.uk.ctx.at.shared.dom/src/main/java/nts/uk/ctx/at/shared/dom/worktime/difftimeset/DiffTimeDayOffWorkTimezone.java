@@ -87,7 +87,7 @@ public class DiffTimeDayOffWorkTimezone extends WorkTimeDomainObject {
 							&& (work.getTimezone().getEnd().v() >= rest.getEnd().v()))
 					.collect(Collectors.toList());
 			if (CollectionUtil.isEmpty(workTime)) {
-				this.bundledBusinessExceptions.addMessage("Msg_755");
+				this.bundledBusinessExceptions.addMessage("Msg_756");
 			}
 		});
 	}
