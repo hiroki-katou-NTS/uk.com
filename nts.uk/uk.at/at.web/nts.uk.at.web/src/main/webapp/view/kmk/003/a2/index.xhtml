@@ -71,7 +71,7 @@
 		</div>
 		
 		<div class="tab-block" style="display: inline-flex;">
-			<div tabindex="49" style="margin-right: 10px;" data-bind="ntsComboBox: {
+			<div tabindex="49" style="margin-right: 10px; width: 100px;" data-bind="ntsComboBox: {
 						options: settingEnum.roundingTime,
 						optionsValue: 'value',
 						visibleItemsCount: 8,
@@ -80,10 +80,7 @@
 						editable: false,
 						name: '#[KMK003_169]',
 						enable: true,
-						dropDownAttachedToBody: true,
-						columns: [
-							{ prop: 'localizedName', length: 10 }
-						]}">
+						dropDownAttachedToBody: true }">
 			</div>
 			<div tabindex="50"
 				data-bind="ntsSwitchButton: {
