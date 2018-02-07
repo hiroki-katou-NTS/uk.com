@@ -191,11 +191,12 @@ module nts.uk.com.view.cmm011.a {
                                 
                                 // set choose item first of list
                                 if (self.treeWorkplace().lstWorkplace().length > 0) {
-                                    if (nts.uk.util.isNullOrEmpty(parentWorkplaceId)) {
-                                        self.treeWorkplace().selectFirst();
-                                    } else {
-                                        self.treeWorkplace().selectedWpkId(parentWorkplaceId);
-                                    }                                 
+                                    self.treeWorkplace().selectFirst();
+//                                    if (nts.uk.util.isNullOrEmpty(parentWorkplaceId)) {
+//                                        self.treeWorkplace().selectFirst();
+//                                    } else {
+//                                        self.treeWorkplace().selectedWpkId(parentWorkplaceId);
+//                                    }                                 
                                 }
                             });
                         });

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -67,7 +68,7 @@ public class AttendanceLeavingGateOfDailyDto implements ConvertibleAttendanceIte
 	@Override
 	public AttendanceLeavingGateOfDaily toDomain() {
 		return new AttendanceLeavingGateOfDaily(employeeId, ymd,
-				ConvertHelper.mapTo(attendanceLeavingGateTime,
+					attendanceLeavingGateTime == null ? new ArrayList<>() : ConvertHelper.mapTo(attendanceLeavingGateTime,
 						(c) -> new AttendanceLeavingGate(new WorkNo(c.getTimeSheetNo()),
 								createWorkStamp(c.getStart()),
 								createWorkStamp(c.getEnd()))));

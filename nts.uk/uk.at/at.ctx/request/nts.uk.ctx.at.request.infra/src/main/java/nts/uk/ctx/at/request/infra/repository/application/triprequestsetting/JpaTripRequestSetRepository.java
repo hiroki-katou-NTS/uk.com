@@ -60,14 +60,14 @@ public class JpaTripRequestSetRepository extends JpaRepository implements TripRe
 	public void update(TripRequestSet tripRequest) {
 		KrqstTripRequestSet entity = toEntity(tripRequest);
 		KrqstTripRequestSet oldEntity = this.queryProxy().find(entity.companyId, KrqstTripRequestSet.class).get();
-		oldEntity.color1 = entity.color1;
-		oldEntity.color2 = entity.color2;
+		oldEntity.color1 = oldEntity.color1;
+		oldEntity.color2 = oldEntity.color2;
 		oldEntity.comment1 = entity.comment1;
 		oldEntity.comment2 = entity.comment2;
 		oldEntity.contractCheck = entity.contractCheck;
 		oldEntity.lateLeave = entity.lateLeave;
-		oldEntity.weight1 = entity.weight1;
-		oldEntity.weight2 = entity.weight2;
+		oldEntity.weight1 = oldEntity.weight1;
+		oldEntity.weight2 = oldEntity.weight2;
 		oldEntity.workChange = entity.workChange;
 		oldEntity.workChangeTime = entity.workChangeTime;
 		oldEntity.workType = entity.workType;

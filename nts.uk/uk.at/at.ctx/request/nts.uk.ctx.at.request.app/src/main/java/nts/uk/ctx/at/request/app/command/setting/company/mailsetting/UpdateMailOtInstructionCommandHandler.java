@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.request.dom.setting.company.mailsetting.overtimeworkinstruc
  *
  */
 @Stateless
+@Transactional
 public class UpdateMailOtInstructionCommandHandler extends CommandHandler<MailOtInstructionCommand>{
 	@Inject
 	private MailOtInstructionRepository mailRep;
@@ -27,6 +29,7 @@ public class UpdateMailOtInstructionCommandHandler extends CommandHandler<MailOt
 		MailOtInstruction mailHd = MailOtInstruction.createFromJavaType(data.getCompanyId(), data.getSubject(), data.getContent());
 		if(mail.isPresent()){
 			mailRep.update(mailHd);
+			return;
 		}
 		mailRep.insert(mailHd);
 	}

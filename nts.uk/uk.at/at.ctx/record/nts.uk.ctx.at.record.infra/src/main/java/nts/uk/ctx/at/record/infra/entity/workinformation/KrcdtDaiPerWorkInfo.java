@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -62,6 +63,7 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	public Integer backStraightAttribute;
 
 	@OneToMany(mappedBy = "daiPerWorkInfo", cascade = CascadeType.ALL)
+	@JoinColumn(nullable = true)
 	public List<KrcdtWorkScheduleTime> scheduleTimes;
 
 	public KrcdtDaiPerWorkInfo(KrcdtDaiPerWorkInfoPK krcdtDaiPerWorkInfoPK) {
@@ -96,9 +98,10 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 				workInfoOfDailyPerformance.getCalculationState().value,
 				workInfoOfDailyPerformance.getGoStraightAtr().value,
 				workInfoOfDailyPerformance.getBackStraightAtr().value,
+				workInfoOfDailyPerformance.getScheduleTimeSheets() != null ? 
 				workInfoOfDailyPerformance.getScheduleTimeSheets().stream().map(f -> KrcdtWorkScheduleTime
 						.toEntity(workInfoOfDailyPerformance.getEmployeeId(), workInfoOfDailyPerformance.getYmd(), f))
-						.collect(Collectors.toList()));
+						.collect(Collectors.toList()) : null);
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruct
  *
  */
 @Stateless
+@Transactional
 public class UpdateMailHdInstructionCommandHandler extends CommandHandler<MailHdInstructionCommand>{
 	@Inject
 	private MailHdInstructionRepository mailRep;
@@ -26,6 +28,7 @@ public class UpdateMailHdInstructionCommandHandler extends CommandHandler<MailHd
 		MailHdInstruction mailHd = MailHdInstruction.createFromJavaType(data.getCompanyId(), data.getSubject(), data.getContent());
 		if(mail.isPresent()){
 			mailRep.update(mailHd);
+			return;
 		}
 		mailRep.insert(mailHd);
 	}

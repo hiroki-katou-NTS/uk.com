@@ -169,7 +169,7 @@ public class EmployeeSearchQueryProcessor {
 				EmployeeSearchData dto = new EmployeeSearchData();
 				dto.setEmployeeId(employee.getEmployeeId());
 				dto.setEmployeeCode(employee.getEmployeeCode().v());
-				dto.setEmployeeName(personMap.get(employee.getPersonId()).getPersonName());
+				dto.setEmployeeName(personMap.get(employee.getPersonId()).getBusinessName());
 				dto.setWorkplaceId(wplId);
 
 				dto.setWorkplaceCode(workplaceMap.get(dto.getWorkplaceId()).getWorkplaceCode().v());
@@ -472,7 +472,7 @@ public class EmployeeSearchQueryProcessor {
 
 			// check exist person data
 			if (personMap.containsKey(employeeData.getPersonId())) {
-				data.setEmployeeName(personMap.get(employeeData.getPersonId()).getPersonName());
+				data.setEmployeeName(personMap.get(employeeData.getPersonId()).getBusinessName());
 			}
 
 			// check exist work place history

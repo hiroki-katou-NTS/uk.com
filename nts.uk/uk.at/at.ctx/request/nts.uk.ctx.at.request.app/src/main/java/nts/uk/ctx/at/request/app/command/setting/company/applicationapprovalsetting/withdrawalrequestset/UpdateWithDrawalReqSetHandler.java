@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.with
  *
  */
 @Stateless
+@Transactional
 public class UpdateWithDrawalReqSetHandler extends CommandHandler<UpdateWithDrawalReqSetCommand> {
 	@Inject
 	private WithDrawalReqSetRepository repository;
@@ -38,12 +40,11 @@ public class UpdateWithDrawalReqSetHandler extends CommandHandler<UpdateWithDraw
 																	data.getDeferredLettleColor(),
 																	data.getDeferredWorkTimeSelect(),
 																	data.getSimulAppliReq(),
-																	data.getLettleSuperLeave(),
-																	data.getSimutanAppRequired(),
-																	data.getLettleSuspensionLeave());
+																	data.getLettleSuperLeave());
 		
 		if(withDrawalReqSet.isPresent()){
 			repository.updateWithDrawalReqSet(item);
+			return;
 		}
 		
 		repository.addWithDrawalReqSet(item);

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.infra.repository.setting.company.vacationapplicationsetting;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -19,8 +18,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class JpaHdAppSetRepository extends JpaRepository implements HdAppSetRepository{
-	private final String SELECT_NO_WHERE = "SELECT c FROM KrqstHdAppSet c ";
-	private final String SELECT_BY_CID = SELECT_NO_WHERE + "WHERE c.krqstHdAppSetPK.companyId = :companyId";
 	/**
 	 * convert from entity to domain
 	 * @param entity
@@ -29,7 +26,7 @@ public class JpaHdAppSetRepository extends JpaRepository implements HdAppSetRepo
 	 */
 	private HdAppSet toDomain(KrqstHdAppSet entity){
 		HdAppSet domain = HdAppSet.createFromJavaType(entity.krqstHdAppSetPK.companyId, 
-				entity.krqstHdAppSetPK.hdAppType, entity.dispUnselec, entity.use60h, entity.obstacleName, 
+				entity.use60h, entity.obstacleName, 
 				entity.regisShortLostHd, entity.hdName, entity.regisLackPubHd, entity.changeWrkHour,
 				entity.ckuperLimit, entity.actualDisp, entity.wrkHours, entity.pridigCheck, 
 				entity.yearHdName, entity.regisNumYear, entity.furikyuName, entity.regisInsuff, 
@@ -46,7 +43,7 @@ public class JpaHdAppSetRepository extends JpaRepository implements HdAppSetRepo
 	 */
 	private static KrqstHdAppSet toEntity(HdAppSet domain){
 		val entity = new KrqstHdAppSet();
-		entity.krqstHdAppSetPK = new KrqstHdAppSetPK(domain.getCompanyId(), domain.getHdAppType().value);
+		entity.krqstHdAppSetPK = new KrqstHdAppSetPK(domain.getCompanyId());
 		entity.absenteeism = domain.getAbsenteeism().v();
 		entity.actualDisp = domain.getActualDisp().value;
 		entity.appDateContra = domain.getAppDateContra().value;
@@ -54,7 +51,6 @@ public class JpaHdAppSetRepository extends JpaRepository implements HdAppSetRepo
 		entity.ckuperLimit = domain.getCkuperLimit().value;
 		entity.concheckDateRelease = domain.getConcheckDateRelease().value;
 		entity.concheckOutLegal = domain.getConcheckOutLegal().value;
-		entity.dispUnselec = domain.getDispUnselec().value;
 		entity.furikyuName = domain.getFurikyuName().v();
 		entity.hdName = domain.getHdName().v();
 		entity.obstacleName = domain.getObstacleName().v();
@@ -76,23 +72,12 @@ public class JpaHdAppSetRepository extends JpaRepository implements HdAppSetRepo
 	}
 	
 	/**
-	 * get all hd app set by company
-	 * @author yennth
-	 */
-	@Override
-	public List<HdAppSet> getAll() {
-		String companyId = AppContexts.user().companyId();
-		return this.queryProxy().query(SELECT_BY_CID, KrqstHdAppSet.class)
-								.setParameter("companyId", companyId)
-								.getList(c -> toDomain(c));
-	}
-	/**
 	 * get hd app set by companyId and hd app type
 	 * @author yennth
 	 */
 	@Override
-	public Optional<HdAppSet> getHdAppSet(int hdAppType) {
-		val pk = new KrqstHdAppSetPK(AppContexts.user().companyId(), hdAppType);
+	public Optional<HdAppSet> getAll() {
+		val pk = new KrqstHdAppSetPK(AppContexts.user().companyId());
 		return this.queryProxy().find(pk, KrqstHdAppSet.class).map(x -> toDomain(x));
 	}
 	/**

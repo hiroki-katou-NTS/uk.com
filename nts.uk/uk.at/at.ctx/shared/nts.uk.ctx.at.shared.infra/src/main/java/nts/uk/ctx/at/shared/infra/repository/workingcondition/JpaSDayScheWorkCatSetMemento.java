@@ -65,13 +65,15 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 */
 	@Override
 	public void setWorkingHours(List<TimeZone> workingHours) {
-		this.entity.setKshmtWorkCatTimeZones(workingHours.stream().map(item -> {
-			KshmtWorkCatTimeZone kshmtWorkCatTimeZone = new KshmtWorkCatTimeZone();
-			item.saveToMemento(new JpaTimezoneSetMemento<KshmtWorkCatTimeZone>(
-					this.entity.getKshmtPerWorkCatPK().getHistoryId(),
-					this.entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), kshmtWorkCatTimeZone));
-			return kshmtWorkCatTimeZone;
-		}).collect(Collectors.toList()));
+		if (workingHours.size() >0){
+			this.entity.setKshmtWorkCatTimeZones(workingHours.stream().map(item -> {
+				KshmtWorkCatTimeZone kshmtWorkCatTimeZone = new KshmtWorkCatTimeZone();
+				item.saveToMemento(new JpaTimezoneSetMemento<KshmtWorkCatTimeZone>(
+						this.entity.getKshmtPerWorkCatPK().getHistoryId(),
+						this.entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), kshmtWorkCatTimeZone));
+				return kshmtWorkCatTimeZone;
+			}).collect(Collectors.toList()));
+		}
 	}
 
 	/*

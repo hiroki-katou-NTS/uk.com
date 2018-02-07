@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdap
  *
  */
 @Stateless
+@Transactional
 public class UpdateTimeHdAppSetHandler extends CommandHandler<TimeHdAppSetCommand>{
 	@Inject
 	private TimeHdAppSetRepository timeRep;
@@ -31,6 +33,7 @@ public class UpdateTimeHdAppSetHandler extends CommandHandler<TimeHdAppSetComman
 				data.getUseAfter(), data.getNameAfter());
 		if(time.isPresent()){
 			timeRep.update(timeHd);
+			return;
 		}
 		timeRep.insert(timeHd);
 	}
