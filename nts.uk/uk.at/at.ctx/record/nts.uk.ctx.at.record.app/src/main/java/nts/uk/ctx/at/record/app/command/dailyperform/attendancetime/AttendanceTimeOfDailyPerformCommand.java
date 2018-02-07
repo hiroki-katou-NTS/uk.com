@@ -15,7 +15,7 @@ public class AttendanceTimeOfDailyPerformCommand extends DailyWorkCommonCommand 
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null ? Optional.empty() : Optional.of(((AttendanceTimeDailyPerformDto) item).toDomain());
+		this.data = item == null ? Optional.empty() : Optional.of(((AttendanceTimeDailyPerformDto) item).toDomain(getEmployeeId(), getWorkDate()));
 	}
 
 	@Override

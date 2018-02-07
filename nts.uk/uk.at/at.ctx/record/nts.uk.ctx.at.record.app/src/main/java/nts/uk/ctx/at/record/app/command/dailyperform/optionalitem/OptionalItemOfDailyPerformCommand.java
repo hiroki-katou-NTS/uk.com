@@ -15,7 +15,7 @@ public class OptionalItemOfDailyPerformCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null ? Optional.empty() : Optional.of(((OptionalItemOfDailyPerformDto) item).toDomain());
+		this.data = item == null ? Optional.empty() : Optional.of(((OptionalItemOfDailyPerformDto) item).toDomain(getEmployeeId(), getWorkDate()));
 	}
 
 	@Override

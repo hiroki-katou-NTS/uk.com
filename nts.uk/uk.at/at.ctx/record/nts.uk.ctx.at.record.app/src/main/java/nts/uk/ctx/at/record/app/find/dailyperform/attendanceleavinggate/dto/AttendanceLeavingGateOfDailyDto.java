@@ -66,7 +66,7 @@ public class AttendanceLeavingGateOfDailyDto implements ConvertibleAttendanceIte
 	}
 
 	@Override
-	public AttendanceLeavingGateOfDaily toDomain() {
+	public AttendanceLeavingGateOfDaily toDomain(String employeeId, GeneralDate ymd) {
 		return new AttendanceLeavingGateOfDaily(employeeId, ymd,
 					attendanceLeavingGateTime == null ? new ArrayList<>() : ConvertHelper.mapTo(attendanceLeavingGateTime,
 						(c) -> new AttendanceLeavingGate(new WorkNo(c.getTimeSheetNo()),

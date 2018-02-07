@@ -15,7 +15,7 @@ public class AttendanceLeavingGateOfDailyCommand extends DailyWorkCommonCommand 
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null ? Optional.empty() : Optional.of(((AttendanceLeavingGateOfDailyDto) item).toDomain());
+		this.data = item == null ? Optional.empty() : Optional.of(((AttendanceLeavingGateOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
 	}
 
 	@Override

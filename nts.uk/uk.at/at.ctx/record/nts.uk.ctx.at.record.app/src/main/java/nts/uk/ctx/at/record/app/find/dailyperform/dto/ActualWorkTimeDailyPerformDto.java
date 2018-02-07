@@ -79,8 +79,7 @@ public class ActualWorkTimeDailyPerformDto {
 	}
 
 	private static List<PremiumTimeDto> getPremiumTime(PremiumTimeOfDailyPerformance domain) {
-		return domain == null || domain.getPremiumTimes() == null ? new ArrayList<>()
-				: ConvertHelper.mapTo(domain.getPremiumTimes(),
+		return domain == null || domain.getPremiumTimes() == null ? new ArrayList<>() : ConvertHelper.mapTo(domain.getPremiumTimes(),
 						c -> new PremiumTimeDto(
 								c.getPremitumTime() == null ? null : c.getPremitumTime().valueAsMinutes(),
 								c.getPremiumTimeNo()));

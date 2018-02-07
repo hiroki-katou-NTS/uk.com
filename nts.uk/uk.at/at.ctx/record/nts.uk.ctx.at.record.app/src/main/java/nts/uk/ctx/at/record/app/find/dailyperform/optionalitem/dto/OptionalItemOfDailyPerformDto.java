@@ -58,7 +58,7 @@ public class OptionalItemOfDailyPerformDto implements ConvertibleAttendanceItem 
 	}
 	
 	@Override
-	public AnyItemValueOfDaily toDomain() {
+	public AnyItemValueOfDaily toDomain(String employeeId, GeneralDate date) {
 		return new AnyItemValueOfDaily(employeeId, date,
 						optionalItems == null ? new ArrayList<>() : ConvertHelper.mapTo(optionalItems,
 								(c) -> new AnyItemValue(new AnyItemNo(c.getItemNo()), 
