@@ -139,6 +139,8 @@ module nts.layout {
             Item && Item.data.editable(value);
         }
 
+
+
         regClickEvent(btnEvent: IButtonEvent) {
             _.each(btnEvent.btnCodes, (code) => {
                 let self = this,
@@ -150,7 +152,25 @@ module nts.layout {
                     startItem1: IFindData = finder.find(currentCtg, btnEvent.startTime1),
                     startItem2: IFindData = finder.find(currentCtg, btnEvent.startTime2),
                     endItem1: IFindData = finder.find(currentCtg, btnEvent.endTime1),
-                    endItem2: IFindData = finder.find(currentCtg, btnEvent.endTime2);
+                    endItem2: IFindData = finder.find(currentCtg, btnEvent.endTime2),
+                    validateEditable = (wtc: any) => {
+                        let command: ICheckParam = {
+                            workTimeCode: ko.toJS(wtc)
+                        };
+
+                        fetch.check_start_end(command).done(first => {
+                            self.setEditAble(startItem1, !!first);
+                            self.setEditAble(endItem1, !!first);
+
+                            fetch.check_multi_time(command).done(second => {
+                                self.setEditAble(startItem2, !!first && !!second);
+                                self.setEditAble(endItem2, !!first && !!second);
+                            });
+                        });
+                    };
+
+                // for first run
+                validateEditable(wkTimeItem != null ? wkTimeItem.data.value : '');
 
                 if (btnItem) {
                     btnItem.ctrl.on('click', () => {
@@ -179,33 +199,13 @@ module nts.layout {
                                 self.setItemData(startItem2, childData.second ? childData.second.start : undefined);
                                 self.setItemData(endItem2, childData.second ? childData.second.end : undefined);
 
-                                let command: ICheckParam = {
-                                    workTimeCode: ko.toJS(wkTimeItem != null ? wkTimeItem.data.value : '')
-                                };
-
-                                fetch.check_start_end(command).done(first => {
-
-                                    self.setEditAble(startItem1, !!first);
-                                    self.setEditAble(endItem1, !!first);
-
-                                    fetch.check_multi_time(command).done(second => {
-                                        self.setEditAble(startItem2, !!first && !!second);
-                                        self.setEditAble(endItem2, !!first && !!second);
-                                    });
-
-                                });
-
+                                validateEditable(wkTimeItem != null ? wkTimeItem.data.value : '');
                             }
-
                         });
-
-
                     });
-
                 }
             });
         }
-
 
         button = () => {
             let self = this,
@@ -224,7 +224,6 @@ module nts.layout {
                         endTime1: '',
                         startTime2: '',
                         endTime2: ''
-
                     },
                     //130 131
                     {
@@ -237,7 +236,6 @@ module nts.layout {
                         endTime1: 'IS00134',
                         startTime2: 'IS00136',
                         endTime2: 'IS00137'
-
                     },
                     //139 140
                     {
@@ -250,8 +248,6 @@ module nts.layout {
                         endTime1: 'IS00143',
                         startTime2: 'IS00145',
                         endTime2: 'IS00146'
-
-
                     },
                     //157 158
                     {
@@ -264,7 +260,6 @@ module nts.layout {
                         endTime1: 'IS00161',
                         startTime2: 'IS00163',
                         endTime2: 'IS00164'
-
                     },
 
                     //166 167
@@ -278,7 +273,6 @@ module nts.layout {
                         endTime1: 'IS00170',
                         startTime2: 'IS00172',
                         endTime2: 'IS00173'
-
                     },
 
                     //175 176
@@ -292,7 +286,6 @@ module nts.layout {
                         endTime1: 'IS00179',
                         startTime2: 'IS00181',
                         endTime2: 'IS00182'
-
                     },
                     //148 149
                     {
@@ -305,7 +298,6 @@ module nts.layout {
                         endTime1: 'IS00152',
                         startTime2: 'IS00154',
                         endTime2: 'IS00155'
-
                     },
                     //193 194
                     {
@@ -318,7 +310,6 @@ module nts.layout {
                         endTime1: 'IS00197',
                         startTime2: 'IS00199',
                         endTime2: 'IS00200'
-
                     },
                     //202 203
                     {
@@ -331,7 +322,6 @@ module nts.layout {
                         endTime1: 'IS00206',
                         startTime2: 'IS00208',
                         endTime2: 'IS00209'
-
                     },
                     //211 212
                     {
@@ -344,7 +334,6 @@ module nts.layout {
                         endTime1: 'IS00215',
                         startTime2: 'IS00217',
                         endTime2: 'IS00218'
-
                     },
 
                     //220 221
@@ -358,7 +347,6 @@ module nts.layout {
                         endTime1: 'IS00224',
                         startTime2: 'IS00226',
                         endTime2: 'IS00227'
-
                     },
                     //220 221
                     {
@@ -371,7 +359,6 @@ module nts.layout {
                         endTime1: 'IS00233',
                         startTime2: 'IS00235',
                         endTime2: 'IS00236'
-
                     },
 
                     //238 239
@@ -385,7 +372,6 @@ module nts.layout {
                         endTime1: 'IS00242',
                         startTime2: 'IS00244',
                         endTime2: 'IS00245'
-
                     },
                     //184 185
                     {
@@ -398,7 +384,6 @@ module nts.layout {
                         endTime1: 'IS00188',
                         startTime2: 'IS00190',
                         endTime2: 'IS00191'
-
                     }
                 ];
 

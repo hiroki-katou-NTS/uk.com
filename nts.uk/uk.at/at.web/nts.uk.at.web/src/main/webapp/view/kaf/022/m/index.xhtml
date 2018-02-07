@@ -1,5 +1,8 @@
-<div class="wrap-content">
+<div id="contents-area" class="fixed-flex-layout">
+	<div class="fixed-flex-layout-left">
 	<div id="wkp-list"></div>
+	</div>
+	<div class="fixed-flex-layout-right">
 	<div id="display-detail" data-bind="with: selectedSetting">
 		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF022_276',["#Com_Workplace"])}</div>
 		<span data-bind="text: wkpName"></span><br/>
@@ -297,5 +300,6 @@
 				</tr>
 			</tbody>
 		</table>
+	</div>
 	</div>
 </div>

@@ -228,7 +228,10 @@ public class ScheduleCreatorExecutionCommandHandler
 			domain.updateToCreated();
 			this.scheduleCreatorRepository.update(domain);
 		}
-		this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
+		
+		if (!asyncTask.hasBeenRequestedToCancel()) {
+			this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
+		}
 	}
 	
 	/**

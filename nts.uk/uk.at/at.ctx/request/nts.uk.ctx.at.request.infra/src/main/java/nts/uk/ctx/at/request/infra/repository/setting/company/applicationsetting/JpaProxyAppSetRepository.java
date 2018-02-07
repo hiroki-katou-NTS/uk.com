@@ -66,11 +66,18 @@ public class JpaProxyAppSetRepository extends JpaRepository implements ProxyAppS
 	 */
 	@Override
 	public void insert(ProxyAppSet proxy) {
-		List<KrqstProxyAppSet> listDel = this.queryProxy().query(SELECT_BY_COMID, KrqstProxyAppSet.class).getList();
+		KrqstProxyAppSet entity = toEntity(proxy);
+		this.commandProxy().insert(entity);
+	}
+	/**
+	 * delete proxy app set by company Id
+	 * @author yennth
+	 */
+	@Override
+	public void delete(String companyId) {
+		List<KrqstProxyAppSet> listDel = this.queryProxy().query(SELECT_BY_COMID, KrqstProxyAppSet.class)
+				.setParameter("companyId", companyId)
+				.getList();
 		this.commandProxy().removeAll(listDel);
-		if(proxy != null){
-			KrqstProxyAppSet entity = toEntity(proxy);
-			this.commandProxy().insert(entity);
-		}
 	}
 }

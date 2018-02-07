@@ -38,7 +38,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		Application_New applicationData = applicationRepository.findByID(companyID, appID).get();
 		// Output variables
 		DetailedScreenPreBootModeOutput outputData = new DetailedScreenPreBootModeOutput(User.OTHER, ReflectPlanPerState.NOTREFLECTED, false, ApprovalAtr.UNAPPROVED, false, false);
-		if(applicationData.getEmployeeID().contains(employeeID)) {
+		if(applicationData.getEmployeeID().equals(employeeID)||applicationData.getEnteredPersonID().equals(employeeID)) {
 			outputData.setLoginInputOrApproval(true);
 		}
 		//4.社員の当月の期間を算出する

@@ -16,7 +16,7 @@ module nts.uk.at.view.ksu007.a {
             });
             //Load ScheduleBatchCorrect
             self.findScheduleBatchCorrectSetting().done(function(e) {
-                if(e != undefined){                   
+                 if(!nts.uk.util.isNullOrUndefined(e)){                 
                     self.periodDate({
                         startDate: e.startDate,
                         endDate: e.endDate

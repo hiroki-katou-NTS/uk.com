@@ -1,6 +1,32 @@
 module nts.uk.at.view.kaf000.shr{
     
     export module model {
+        // loại người đăng nhập
+        // người đại diện tương đương người approver, người confirm có ưu tiên cao hơn
+        export enum UserType { 
+                 APPLICANT_APPROVER = 0,
+                 APPROVER = 1,
+                 APPLICANT = 2,
+                 OTHER = 3,        
+            };
+        // trạng thái của phase chứa user
+        export enum ApprovalAtr { 
+             UNAPPROVED = 0,   
+             APPROVED = 1,
+             DENIAL = 2,
+             REMAND = 3,
+        };
+        export enum Status {
+            NOTREFLECTED = 0, // 未反映
+            WAITREFLECTION = 1, //反映待ち
+            REFLECTED = 2, //反映済
+            WAITCANCEL = 3, //取消待ち
+            CANCELED = 4, //取消済
+            REMAND = 5,//差し戻し
+            DENIAL = 6, //否認
+            PASTAPP = 99, //過去申請 
+        };
+        
         export class ApplicationMetadata {
                 appID: string;
                 appType: number;

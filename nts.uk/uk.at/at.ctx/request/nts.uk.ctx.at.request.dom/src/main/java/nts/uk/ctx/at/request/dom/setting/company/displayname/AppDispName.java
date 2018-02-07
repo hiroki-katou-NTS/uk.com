@@ -7,7 +7,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 /**
- * 申請表示名設定
+ * 申請表示名
  * @author yennth
  *
  */

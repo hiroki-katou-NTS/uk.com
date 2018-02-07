@@ -26,4 +26,5 @@ public interface ProxyAppSetRepository {
 	 * @author yennth
 	 */
 	void insert (ProxyAppSet proxy);
+	void delete (String companyId);
 }
