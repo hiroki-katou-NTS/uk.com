@@ -9,6 +9,7 @@ module nts.uk.com.view.ccg.share.ccg {
     import EmployeeSearchDto = service.model.EmployeeSearchDto;
     import GroupOption = service.model.GroupOption;
     import EmployeeSearchInDto = service.model.EmployeeSearchInDto;
+    import EmployeeRangeSelection = service.model.EmployeeRangeSelection;
 
 
     export module viewmodel {
@@ -692,11 +693,17 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * function click by button search employee
              */
-            searchDataEmployee(): void {
+            extractSelectedEmployees(): void {
                 var self = this;
-                if (self.validateClient()) {
-                    return;
-                }
+                nts.uk.ui.block.invisible(); // block ui
+                service.getOfSelectedEmployee(new Date(), self.getSelectedCodeEmployee())
+                    .done(selectedEmps => {
+                        nts.uk.ui.block.clear(); // clear block UI
+                        self.onSearchAllClicked(selectedEmps);
+                        // Hide component.
+                        self.isShow(false);
+                        $('#component-ccg001').toggle("slide");
+                    });
             }
 
             /**
@@ -800,11 +807,26 @@ module nts.uk.com.view.ccg.share.ccg {
             /**
              * function click apply search employee
              */
-            applyEmployee(): void {
-                var self = this;
-                if (self.validateClient()) {
-                    return;
-                }
+            advancedSearchEmployee(): void {
+                let self = this;
+                const mock = <EmployeeRangeSelection>{};
+                mock.userId = __viewContext.user.employeeId;
+                mock.companyId = __viewContext.user.companyId;
+
+                nts.uk.ui.block.invisible(); // block ui
+                service.saveEmployeeRangeSelection(mock).done(() => {
+                    service.searchAllEmployee(new Date()).done(data => {
+                        nts.uk.ui.block.clear(); // clear block UI
+                        if (!self.isSelectAllEmployee) {
+                            self.employeeinfo.employeeInputList(self.toUnitModelList(data));
+                        } else {
+                            self.onSearchAllClicked(data);
+                            // Hide component.
+                            self.isShow(false);
+                            $('#component-ccg001').toggle("slide");
+                        }
+                    })
+                });
             }
 
             /**
