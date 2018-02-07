@@ -4110,6 +4110,8 @@ module nts.uk.ui.jqueryExtentions {
                     && idx <= descriptor.rowCount + descriptor.startRow - 1 && !util.isNullOrUndefined(colIdx)) {
                     return $(descriptor.elements[idx - descriptor.startRow][colIdx]);
                 }
+                
+                return $grid.igGrid("cellById", rowId, key);
             }
         }
         
