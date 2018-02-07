@@ -181,7 +181,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 								caculationTimes.add(caculation);
 								frameNos.add(holidayWorkInput.getFrameNo());
 							}
-							List<WorkdayoffFrame> workDayoffFrames = this.workdayoffFrameRepository.getWorkdayoffFrameBy(new CompanyId(companyID),frameNos);
+							List<WorkdayoffFrame> workDayoffFrames = this.workdayoffFrameRepository.getWorkdayoffFrameBy(companyID,frameNos);
 							for (CaculationTime caculation : caculationTimes) {
 								for (WorkdayoffFrame workdayoffFrame : workDayoffFrames) {
 									if (caculation.getFrameNo() == workdayoffFrame.getWorkdayoffFrNo().v().intValueExact()) {
