@@ -60,26 +60,29 @@ public class WorkTimeCommonSaveCommandHandler {
 		PredetemineTimeSetting predseting = command.toDomainPredetemineTimeSetting();
 
 		// check is add mode
-		if (command.isAddMode()) {
+		if (command.isAddMode()) {						
+			// call repository add predetemine time setting
+			predseting.restoreDefaultData(screenMode, command.getWorktimeSetting().getWorkTimeDivision());
+			
 			// Validate
 			this.validate(command, workTimeSetting, predseting);
 			
-			// call repository add work time setting
+			// Call repository add work time setting
 			this.workTimeSettingRepository.add(workTimeSetting);
-
-			// call repository add predetemine time setting
-			predseting.restoreDefaultData(screenMode, command.getWorktimeSetting().getWorkTimeDivision());
 			this.predetemineTimeSettingRepository.add(predseting);
 		} else {
-			// call repository update work time setting
-			this.workTimeSettingRepository.update(workTimeSetting);
-
 			// call repository update predetemine time setting
 			Optional<PredetemineTimeSetting> opPredetemineTimeSetting = this.predetemineTimeSettingRepository
 					.findByWorkTimeCode(companyId, command.getWorktimeSetting().worktimeCode);
 			if (opPredetemineTimeSetting.isPresent()) {
 				predseting.restoreData(screenMode, command.getWorktimeSetting().getWorkTimeDivision(),
 						opPredetemineTimeSetting.get());
+				
+				// Validate
+				this.validate(command, workTimeSetting, predseting);
+				
+				// Call repository add work time setting
+				this.workTimeSettingRepository.update(workTimeSetting);
 				this.predetemineTimeSettingRepository.update(predseting);
 			}
 		}
@@ -97,7 +100,7 @@ public class WorkTimeCommonSaveCommandHandler {
 			PredetemineTimeSetting predseting) {
 		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
 
-		// Check workTimeSetting domain
+		// Check workTimeSetting domain		
 		try {
 			workTimeSetting.validate();
 		} catch (BundledBusinessException e) {
@@ -116,8 +119,10 @@ public class WorkTimeCommonSaveCommandHandler {
 		}
 
 		// check register
-		this.workTimeSetPolicy.validateExist(bundledBusinessExceptions, workTimeSetting);
-
+		if (command.isAddMode()) {
+			this.workTimeSetPolicy.validateExist(bundledBusinessExceptions, workTimeSetting);
+		}
+		
 		// Throw exceptions if exist
 		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
 			throw bundledBusinessExceptions;
