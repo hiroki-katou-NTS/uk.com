@@ -42,4 +42,10 @@ public class JpaHolidayWorkInputRepository extends JpaRepository implements Holi
 				entity.getEndTime(),
 				entity.getApplicationTime());
 	}
+	@Override
+	public List<HolidayWorkInput> getHolidayWorkInputByAppID(String companyID, String appID) {
+		return this.queryProxy().query(FIND_BY_APPID,KrqdtHolidayWorkInput.class)
+				.setParameter("companyID", companyID)
+				.setParameter("appID", appID).getList(e -> convertToDomain(e));
+	}
 }

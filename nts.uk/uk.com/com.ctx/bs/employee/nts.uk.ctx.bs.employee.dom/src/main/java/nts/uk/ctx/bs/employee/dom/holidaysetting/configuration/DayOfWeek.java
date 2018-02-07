@@ -28,7 +28,7 @@ public enum DayOfWeek {
 	
 	/** The friday. */
 	// 金曜日
-	FRIDAY(4, "Enum_DayOfWeek_Friday", "火曜日"),
+	FRIDAY(4, "Enum_DayOfWeek_Friday", "金曜日"),
 	
 	/** The saturday. */
 	// 土曜日

@@ -284,6 +284,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 // Fixed Header
                 self.fixHeaders(data.lstFixedHeader);
                 self.showPrincipal(data.showPrincipal);
+                self.showPrincipal(false);
                 if(data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                 if (data.showPrincipal || data.lstControlDisplayItem.lstHeader.length == 0) {
                     self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
@@ -334,11 +335,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                              self.createSumColumn(data);
                             self.employmentCode(data.employmentCode);
                             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
-                            self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit));
+                            self.showButton(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit));
                             self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto == null ? false : data.yearHolidaySettingDto.manageAtr, data.substVacationDto == null ? false : data.substVacationDto.manageAtr, data.compensLeaveComDto == null ? false : data.compensLeaveComDto.manageAtr, data.com60HVacationDto == null ? false : data.com60HVacationDto.manageAtr, self.showButton()));
                             // Fixed Header
                             self.fixHeaders(data.lstFixedHeader);
                             self.showPrincipal(data.showPrincipal);
+                             self.showPrincipal(false);
                             if (data.showPrincipal) {
                                 self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
                                 self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
@@ -389,40 +391,42 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
             let dataChangeProcess: any = [];
             _.each(dataChange, (data: any) => {
-                let dataTemp = _.find(self.dpData, (item: any) => {
-                    return item.id == data.rowId.substring(1, data.rowId.length);
-                });
-                if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
-                    if (data.columnKey.indexOf("Name") != -1) {
-                        // todo
-                    } else {
-                        //get layout , and type
-                        let layoutAndType : any  = _.find(self.itemValueAll(), (item :any) =>{
-                              return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                if (data.columnKey != "sign") {
+                    let dataTemp = _.find(self.dpData, (item: any) => {
+                        return item.id == data.rowId.substring(1, data.rowId.length);
+                    });
+                    if (data.columnKey.indexOf("Code") == -1 && data.columnKey.indexOf("NO") == -1) {
+                        if (data.columnKey.indexOf("Name") != -1) {
+                            // todo
+                        } else {
+                            //get layout , and type
+                            let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                                return item.itemId == data.columnKey.substring(1, data.columnKey.length);
                             });
-                        let value: any;
-                        value = self.getPrimitiveValue(data.value);
-                        let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" :layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), 0);
+                            let value: any;
+                            value = self.getPrimitiveValue(data.value);
+                            let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), 0);
+                            dataChangeProcess.push(dataMap);
+                        }
+                    } else {
+                        let columnKey: any;
+                        let item: any;
+                        if (data.columnKey.indexOf("Code") != -1) {
+                            columnKey = data.columnKey.substring(4, data.columnKey.length);
+                        } else {
+                            columnKey = data.columnKey.substring(2, data.columnKey.length);
+                        }
+                        //TO Thanh: move find logic out if condition
+                        item = _.find(self.lstAttendanceItem(), (data) => {
+                            return String(data.id) === columnKey;
+                        })
+
+                        let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                            return item.itemId == columnKey;
+                        });
+                        let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), item.typeGroup);
                         dataChangeProcess.push(dataMap);
                     }
-                }else{
-                    let columnKey: any;
-                    let item : any;
-                    if (data.columnKey.indexOf("Code") != -1) {
-                        columnKey = data.columnKey.substring(4, data.columnKey.length);
-                    } else {
-                        columnKey = data.columnKey.substring(2, data.columnKey.length);
-                    }
-                    //TO Thanh: move find logic out if condition
-                    item = _.find(self.lstAttendanceItem(), (data) => {
-                        return String(data.id) === columnKey;
-                    })
-
-                    let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-                        return item.itemId == columnKey;
-                    });
-                    let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, moment(dataTemp.date).utc().toISOString(), item.typeGroup);
-                    dataChangeProcess.push(dataMap);
                 }
             });
             let param = { itemValues: dataChangeProcess }
@@ -540,6 +544,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.createSumColumn(data);
                     self.columnSettings(data.lstControlDisplayItem.columnSettings);
                     self.showPrincipal(data.showPrincipal);
+                     self.showPrincipal(false);
                     if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                     if (data.showPrincipal || data.lstControlDisplayItem.lstHeader.length == 0) {
                         self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
@@ -1135,7 +1140,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 });
             } else if (self.displayFormat() === 1) {
                 _.each(lstEmployee, value => {
-                    data.push(self.displayFormat() + "_" + value.id + "_" + startDate + "_" + endDate + "_" + i)
+                    data.push(self.displayFormat() + "_" + value.id + "_" + startDate + "_" + endDate)
                     i++;
                 });
             } else {
@@ -1185,8 +1190,27 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let start = performance.now();
             $("#dpGrid").ntsGrid({
                 width: (window.screen.availWidth - 200) + "px",
-                height: '500px',
+                height: '650px',
                 dataSource: self.formatDate(self.dailyPerfomanceData()),
+                dataSourceAdapter: function(ds) {
+                    let start = performance.now();
+                    let data = ds.map((data) => {
+                        var object = {
+                            id: data.id,
+                            state: data.state,
+                            error: data.error,
+                            date: moment(data.date, "YYYY/MM/DD").format("MM/DD(dd)"),
+                            sign: data.sign,
+                            employeeId: data.employeeId,
+                            employeeCode: data.employeeCode,
+                            employeeName: data.employeeName
+                        }
+                        _.each(data.cellDatas, function(item) { object[item.columnKey] = item.value });
+                        return object;
+                    });
+                    console.log("calc load source :" + (start - performance.now()));
+                    return data;
+                },
                 primaryKey: 'id',
                 rowVirtualization: true,
                 virtualization: true,
@@ -1194,11 +1218,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 enter: self.selectedDirection() == 0 ? 'below' : 'right',
                 autoFitWindow: false,
                 preventEditInError: false,
-                avgRowHeight: 20,
-                autoAdjustHeight: true,
-                adjustVirtualHeights: true,
                 columns: self.headersGrid(),
                 hidePrimaryKey: true,
+               // recordKeys: self.createKeyLoad(),
                 features: [
                     { name: 'Paging', pageSize: 31, currentPageIndex: 0 },
                     { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false, columnSettings: self.fixColGrid() },
@@ -1210,38 +1232,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         showDropDownButton: false,
                         columnSettings: self.columnSettings(),
                         resultTemplate: '{1}'
-                    },
-                    {
-                        name: "Updating",
-                        enableAddRow: true,
-                        editMode: "cell",
-                        enableDeleteRow: true,
-                        rowEditDialogContainment: "owner",
-                        horizontalMoveOnEnter: true,
-                        showReadonlyEditors: false,
-                        enableDataDirtyException: false,
-                    },
-                    {
-                        name: 'Selection',
-                        mode: 'cell'
-                    },
+                    }
                 ],
                 ntsFeatures: self.createNtsFeatures(),
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     {
                         name: 'Link2',
-                        click: function(event) {
+                        click: function(rowId, key, event) {
                            // self.helps(event);
-                            let cell : any = $("#dpGrid").igGrid("activeCell");
-                            if (cell) {
-                                let rowId = cell.id;
-                                let key = cell.columnKey;
+                            //let cell : any = $("#dpGrid").igGrid("activeCell");
+                           // if (cell) {
                                 let value = $("#dpGrid").igGrid("getCellValue", rowId, "Code" + key.substring(4, key.length));
                                 let dialog: TypeDialog = new TypeDialog(key.substring(4, key.length), self.lstAttendanceItem(), value, rowId);
                                 dialog.showDialog(self);
                                 nts.uk.ui.block.clear();
-                            }
+                          //  }
                         },
                         controlType: 'LinkLabel'
                     },
@@ -1352,13 +1358,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 { name: 'RowState', rows: self.rowStates() },
                 { name: 'TextColor', rowId: 'rowId', columnKey: 'columnKey', color: 'color', colorsTable: self.textColors() },
                 { name: 'HeaderStyles', columns: self.headerColors() }
-//                ,
-//                {
-//                    name: "LoadOnDemand",
-//                    allKeysPath: "/kdw003/lazyload/keys",
-//                    pageRecordsPath: "/kdw003/lazyload/data",
-//                }
             ];
+//            let lzyLoad = {
+//                name: "LoadOnDemand",
+//                allKeysPath: "/kdw003/lazyload/keys",
+//                pageRecordsPath: "/kdw003/lazyload/data",
+//            }
+//            if(self.displayFormat() == 1){
+//               lstNtsFeature.push(lzyLoad); 
+//            }
             if (self.sheetsGrid().length > 0) {
                 lstNtsFeature.push({
                     name: "Sheet",
@@ -1562,6 +1570,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.available7(self.checkAvailable(data, 7));
             this.available23(self.checkAvailable(data, 23));
             this.available25(self.checkAvailable(data, 25));
+            if(self.checkAvailable(data, 25)){
+                $("#btn-signAll").css("visibility", "visible"); 
+            }else{
+                $("#btn-signAll").css("visibility", "hidden");
+            }
             this.available17(self.checkAvailable(data, 17));
             this.available18(self.checkAvailable(data, 18));
             this.available19(self.checkAvailable(data, 19));

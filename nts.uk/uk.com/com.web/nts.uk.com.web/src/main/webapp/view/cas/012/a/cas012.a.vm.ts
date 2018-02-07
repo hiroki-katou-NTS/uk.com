@@ -144,17 +144,19 @@ module nts.uk.com.view.cas012.a.viewmodel {
         private createRoleProcess(param: RoleIndividualGrantBaseCommand): void {
             console.time("Create");
             var self = this;
-            service.create(param).done((data: any) => {
-                self.getData().done(() => {
-                    self.selectRoleByKey(data.companyID, data.userID, data.roleType);
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+            if(param.decisionCompanyID != null ){
+                service.create(param).done((data: any) => {
+                    self.getData().done(() => {
+                        self.selectRoleByKey(data.companyID, data.userID, data.roleType);
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    });
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                }).always(() => {
+                    block.clear();
                 });
-            }).fail((res) => {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-            }).always(() => {
-                block.clear();
-            });
-            console.timeEnd("Create");
+            }
+            console.timeEnd("Create"); 
         }
         
         private updateRole(): void {
