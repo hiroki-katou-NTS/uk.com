@@ -88,7 +88,7 @@ public class RoleIndividualFinder {
 					roleIndividualGrant.getValidPeriod().end());
 			listRoleIndividualGrantDto.add(dto);
 		}
-
+		listRoleIndividualGrantDto.sort((obj1,obj2)->{return obj1.getLoginID().compareTo(obj2.getLoginID());});
 		return new RoleIndividualDto(COMPANY_ID_SYSADMIN, listRoleIndividualGrantDto);
 
 	}

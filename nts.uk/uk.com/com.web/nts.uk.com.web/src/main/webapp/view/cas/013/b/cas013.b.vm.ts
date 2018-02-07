@@ -41,7 +41,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
             var Special = self.special();
             var Multi = self.multi();
             var roleType =  self.roleTypeParam;
-            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.invisible(); 
             service.searchUser(key, Special, Multi, roleType).done(function(data) {
                 var items = [];
                 items = _.sortBy(data, ["loginID"]);

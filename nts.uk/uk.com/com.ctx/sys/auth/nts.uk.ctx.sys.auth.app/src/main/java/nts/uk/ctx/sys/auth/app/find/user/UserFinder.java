@@ -41,7 +41,7 @@ public class UserFinder {
 		List<UserDto> listUserDto = userRepo.searchUser(userNameID, date).stream().map(c -> UserDto.fromDomain(c))
 				.collect(Collectors.toList());
 		// Sort
-		listUserDto = listUserDto.stream().sorted(Comparator.comparing(UserDto::getUserID))
+		listUserDto = listUserDto.stream().sorted(Comparator.comparing(UserDto::getLoginID))
 				.collect(Collectors.toList());
 		return listUserDto;
 
